@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#F2ECDF"/>
+
+  <!-- Mark, centered horizontally, upper portion -->
+  <g transform="translate(530, 140)">
+    <circle cx="70" cy="70" r="53" fill="none" stroke="#0E0E0C" stroke-width="18"/>
+    <path d="M 80 8 C 112 10 134 28 130 50 C 118 32 100 18 80 8 Z" fill="#D94B2B"/>
+  </g>
+
+  <!-- Wordmark in geometric sans (Avenir Next is on every macOS system) -->
+  <text x="600" y="400"
+        font-family="Avenir Next, Avenir, Helvetica Neue, Helvetica, sans-serif"
+        font-weight="500"
+        font-size="84"
+        letter-spacing="-2"
+        fill="#0E0E0C"
+        text-anchor="middle">orionfold</text>
+
+  <!-- Tagline in tracked small-caps -->
+  <text x="600" y="468"
+        font-family="Menlo, Monaco, monospace"
+        font-weight="400"
+        font-size="18"
+        letter-spacing="6"
+        fill="#6B6259"
+        text-anchor="middle">AN AI PRODUCT STUDIO  ·  IN STEALTH</text>
+
+  <!-- Footer coordinate -->
+  <text x="600" y="580"
+        font-family="Menlo, Monaco, monospace"
+        font-weight="400"
+        font-size="13"
+        letter-spacing="4"
+        fill="#6B6259"
+        opacity="0.7"
+        text-anchor="middle">CALIFORNIA  ·  MMXXVI</text>
+</svg>

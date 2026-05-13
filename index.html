@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>orionfold</title>
+  <meta name="description" content="An AI product studio. In stealth.">
+  <meta name="theme-color" content="#F2ECDF">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="orionfold">
+  <meta property="og:description" content="An AI product studio. In stealth.">
+  <meta property="og:image" content="og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="orionfold">
+  <meta name="twitter:description" content="An AI product studio. In stealth.">
+  <meta name="twitter:image" content="og-image.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Geist+Mono:wght@400&display=swap">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="cursor" aria-hidden="true"></div>
+  <span class="drift" aria-hidden="true"></span>
+
+  <header class="top">
+    <a class="brand" href="#">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <circle class="mark-ring" cx="50" cy="50" r="38" fill="none" stroke="currentColor" stroke-width="13"/>
+        <path class="mark-fold" d="M 57 6 C 80 7 95 20 92 36 C 84 23 72 13 57 6 Z" fill="var(--vermillion)"/>
+      </svg>
+      <span class="brand-text">orionfold</span>
+    </a>
+    <div class="meta">
+      <span class="coord">california &middot; mmxxvi</span>
+      <span class="dot" aria-hidden="true"></span>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="manifesto" aria-labelledby="manifesto">
+      <h1 id="manifesto" class="headline">
+        <span class="line"><span>a studio for the machines</span></span>
+        <span class="line"><span>that will build</span></span>
+        <span class="line"><span>the next machines.</span></span>
+      </h1>
+      <p class="signature">&mdash;&nbsp; in stealth.</p>
+    </section>
+
+    <section class="signup" aria-label="Word from the studio">
+      <form class="signup-form" novalidate>
+        <label for="email" class="signup-label">word from the studio</label>
+        <div class="signup-row">
+          <input
+            id="email"
+            class="signup-input"
+            name="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            spellcheck="false"
+            required
+            placeholder="your email">
+          <button type="submit" class="signup-submit" aria-label="Subscribe">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M6 18 L18 6 M9 6 H18 V15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+            </svg>
+          </button>
+        </div>
+        <p class="signup-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <hr class="rule">
+
+    <section class="notes" aria-label="Notes">
+      <article class="note">
+        <span class="note-num">001</span>
+        <h2 class="note-head">the fold</h2>
+        <p class="note-body">small, deliberate, local.</p>
+      </article>
+      <article class="note">
+        <span class="note-num">002</span>
+        <h2 class="note-head">the studio</h2>
+        <p class="note-body">a slow line of work.</p>
+      </article>
+      <article class="note">
+        <span class="note-num">003</span>
+        <h2 class="note-head">the catalog</h2>
+        <p class="note-body">forthcoming.</p>
+      </article>
+    </section>
+
+    <hr class="rule">
+  </main>
+
+  <footer class="foot">
+    <span>&copy; orionfold llc</span>
+    <span class="sep">&middot;</span>
+    <span>ca b20260182423</span>
+    <span class="sep">&middot;</span>
+    <span>made on apple silicon</span>
+  </footer>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
