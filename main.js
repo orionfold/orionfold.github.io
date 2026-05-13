@@ -1,16 +1,12 @@
 /* ----------------------------------------------------------------
    orionfold — main.js
-   Three concerns: entry stagger, custom cursor, form submission.
+   Four concerns: entry stagger, custom cursor, form submission,
+                  confirmation banner.
 ---------------------------------------------------------------- */
 
-// Set this to the endpoint that should receive { email } as JSON.
-// Examples:
-//   Buttondown:   "https://buttondown.email/api/emails/embed-subscribe/orionfold"
-//   ConvertKit:   "https://app.convertkit.com/forms/<id>/subscriptions"
-//   Resend Audi.: your serverless function URL
-//   Custom:       any HTTPS endpoint that accepts POST with JSON body
-// Leave as "" to log to the console only (useful while still in stealth).
-const SIGNUP_ENDPOINT = "";
+// Supabase edge function that captures the signup and sends a double
+// opt-in confirmation email. Set to "" to log locally without posting.
+const SIGNUP_ENDPOINT = "https://orionfold.supabase.co/functions/v1/waitlist-signup";
 
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fineHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -71,6 +67,8 @@ function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+const honeypot = form.querySelector('input[name="website"]');
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = input.value.trim();
@@ -86,19 +84,24 @@ form.addEventListener("submit", async (e) => {
 
   try {
     if (!SIGNUP_ENDPOINT) {
-      // Stealth mode: no endpoint yet. Log locally so the form is testable.
       console.log("[orionfold] signup (no endpoint configured):", email);
       await new Promise((r) => setTimeout(r, 400));
+      input.value = "";
+      setStatus("ok", "received. we'll be in touch.");
     } else {
       const res = await fetch(SIGNUP_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email, website: honeypot ? honeypot.value : "" })
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setStatus("err", data.error || "that didn't go through. write hello@orionfold.com.");
+        return;
+      }
+      input.value = "";
+      setStatus("ok", data.message || "check your inbox to confirm.");
     }
-    input.value = "";
-    setStatus("ok", "received. we'll be in touch.");
   } catch (err) {
     setStatus("err", "that didn't go through. write hello@orionfold.com.");
     console.warn("[orionfold] signup error:", err);
@@ -106,3 +109,18 @@ form.addEventListener("submit", async (e) => {
     form.removeAttribute("aria-busy");
   }
 });
+
+/* ---- confirmation banner -------------------------------------- */
+// When users click the confirmation link in the email, the edge function
+// redirects them back to orionfold.com/?confirmed=1 (or =already, or
+// =error&error=<msg>). Surface that state in the existing status element.
+(() => {
+  const params = new URLSearchParams(location.search);
+  const state = params.get("confirmed");
+  if (!state) return;
+  if (state === "1")            setStatus("ok",  "confirmed. you're on the list.");
+  else if (state === "already") setStatus("ok",  "you're already on the list.");
+  else if (state === "error")   setStatus("err", params.get("error") || "that link didn't work.");
+  // Clean the URL so a reload doesn't re-show the banner.
+  history.replaceState({}, "", location.pathname);
+})();
