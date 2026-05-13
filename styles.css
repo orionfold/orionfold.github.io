@@ -151,6 +151,7 @@ body > * { position: relative; z-index: 1; }
   letter-spacing: -0.035em;
   color: var(--ink);
 }
+.accent { color: var(--vermillion); }
 .line {
   display: block;
   overflow: hidden;
@@ -359,8 +360,13 @@ body > * { position: relative; z-index: 1; }
 }
 
 /* ---- responsive ------------------------------------------------- */
+/* Below desktop, the longest headline line ("a studio for the machines")
+   can outgrow its row at the clamp-scaled font size. The reveal animation
+   plays per .line block, so letting the inner span wrap is animation-safe
+   and produces a far better result than clipping. */
 @media (max-width: 1023px) {
-  .headline { max-width: 16ch; }
+  .line { overflow: clip; padding-bottom: 0.08em; }
+  .line > span { white-space: normal; }
 }
 @media (max-width: 720px) {
   body { gap: clamp(32px, 6vh, 80px); }
@@ -369,13 +375,7 @@ body > * { position: relative; z-index: 1; }
   .notes { grid-template-columns: 1fr; gap: 32px; }
   .note { padding-top: 0; border-top: 1px solid var(--hairline); padding-top: 20px; }
   .foot { font-size: 10px; gap: 8px; }
-
-  /* Allow natural wrapping on narrow viewports.
-     The mask-reveal animation still plays per .line block, but lines
-     can now wrap internally so nothing overflows the viewport. */
   .headline { font-size: clamp(34px, 9vw, 56px); line-height: 1.05; }
-  .line { overflow: clip; padding-bottom: 0.08em; }
-  .line > span { white-space: normal; }
 }
 @media (max-width: 460px) {
   .headline {
