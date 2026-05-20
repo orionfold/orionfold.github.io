@@ -360,7 +360,7 @@ body > * { position: relative; z-index: 1; }
 }
 
 /* ---- responsive ------------------------------------------------- */
-/* Below desktop, the longest headline line ("a studio for the machines")
+/* Below desktop, the longest headline line ("the machines that will build")
    can outgrow its row at the clamp-scaled font size. The reveal animation
    plays per .line block, so letting the inner span wrap is animation-safe
    and produces a far better result than clipping. */
