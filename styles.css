@@ -157,8 +157,14 @@ body > * { position: relative; z-index: 1; }
 .hero-text {
   container-type: inline-size;
   display: grid;
-  gap: clamp(14px, 2.4vh, 28px);
+  gap: clamp(8px, 1.4vh, 14px);
   min-width: 0;
+}
+/* Tagline (headline + signature) reads as a tight pair; the email CTA
+   gets balanced breathing room below to separate "what we are" from
+   "stay in touch". */
+.hero-text > .signup {
+  margin-top: clamp(20px, 4vh, 44px);
 }
 .hero-media {
   display: grid;
@@ -168,10 +174,23 @@ body > * { position: relative; z-index: 1; }
 
 .headline {
   font-weight: 700;
-  font-size: clamp(14px, 5cqi, 56px);
+  /* 6cqi packs the longest line to ~94% of column width — the tagline
+     fills the left section with a hair of breathing room to the right
+     edge. The clamp keeps a readable floor on tiny phones and a sane
+     ceiling that rarely fires (column caps at ~611px on desktop). */
+  font-size: clamp(14px, 6cqi, 56px);
   line-height: 1.08;
   letter-spacing: -0.025em;
   color: var(--ink);
+}
+/* Wrap headline + signature in a shrink-to-fit container so the
+   signature's right edge aligns with the longest tagline line, not
+   the column edge. */
+.tagline {
+  width: fit-content;
+  max-width: 100%;
+  display: grid;
+  gap: clamp(8px, 1.4vh, 14px);
 }
 .accent { color: var(--vermillion); }
 .line {
@@ -250,6 +269,8 @@ body > * { position: relative; z-index: 1; }
 .signature {
   font-size: clamp(15px, 1.2vw, 18px);
   font-weight: 500;
+  font-style: italic;
+  text-align: right;
   color: var(--ink-soft);
   letter-spacing: -0.005em;
   opacity: 0;
