@@ -17,6 +17,50 @@ const fineHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
 // soon as the elements paint, so the reveal is robust across cache
 // states, navigations, and timing edge cases.
 
+/* ---- film + replay -------------------------------------------- */
+// Brand reel plays once with sound. The replay button serves a dual
+// role: it's the "start" CTA when the browser blocks autoplay with
+// audio (most desktops on a first visit), and the "replay" CTA after
+// the video ends naturally. Either way, the click is a user gesture,
+// so the next play() call honors muted = false.
+{
+  const film   = document.querySelector(".film-video");
+  const replay = document.querySelector(".film-replay");
+
+  if (film && replay) {
+    const showReplay = (show, kind) => {
+      replay.toggleAttribute("hidden", !show);
+      if (show) replay.setAttribute("aria-label", kind === "ended" ? "replay" : "play");
+    };
+
+    film.addEventListener("play",  () => showReplay(false));
+    film.addEventListener("ended", () => showReplay(true, "ended"));
+
+    const tryAutoplay = async () => {
+      if (reduceMotion) { showReplay(true, "start"); return; }
+      film.muted = false;
+      try {
+        await film.play();
+      } catch {
+        // Autoplay with sound was blocked. Surface the replay button
+        // as a start CTA — one click and the video plays from frame 0
+        // with audio, since user gestures unlock unmuted playback.
+        showReplay(true, "start");
+      }
+    };
+
+    if (film.readyState >= 1) tryAutoplay();
+    else film.addEventListener("loadedmetadata", tryAutoplay, { once: true });
+
+    replay.addEventListener("click", async () => {
+      film.muted = false;
+      film.currentTime = 0;
+      try { await film.play(); }
+      catch { showReplay(true, "start"); }
+    });
+  }
+}
+
 /* ---- custom cursor -------------------------------------------- */
 if (fineHover && !reduceMotion) {
   const cursor = document.querySelector(".cursor");

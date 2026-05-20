@@ -44,44 +44,62 @@
   </header>
 
   <main class="page">
-    <section class="manifesto" aria-labelledby="manifesto">
-      <h1 id="manifesto" class="headline">
-        <span class="line"><span>a <span class="accent">studio</span> building</span></span>
-        <span class="line"><span>the machines that will build</span></span>
-        <span class="line"><span>the next machines<span class="accent">.</span></span></span>
-      </h1>
-      <p class="signature">&mdash;&nbsp; in stealth.</p>
-    </section>
-
-    <section class="signup" aria-label="Word from the studio">
-      <form class="signup-form" novalidate>
-        <label for="email" class="signup-label">word from the studio</label>
-        <div class="signup-row">
-          <input
-            id="email"
-            class="signup-input"
-            name="email"
-            type="email"
-            inputmode="email"
-            autocomplete="email"
-            spellcheck="false"
-            required
-            placeholder="your email">
-          <input
-            type="text"
-            name="website"
-            tabindex="-1"
-            autocomplete="off"
-            aria-hidden="true"
-            style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
-          <button type="submit" class="signup-submit" aria-label="Subscribe">
-            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-              <path d="M6 18 L18 6 M9 6 H18 V15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+    <section class="hero" aria-labelledby="manifesto">
+      <div class="hero-text">
+        <h1 id="manifesto" class="headline">
+          <span class="line"><span>a <span class="accent">studio</span> for building the machines</span></span>
+          <span class="line"><span>that will build the next machines<span class="accent">.</span></span></span>
+        </h1>
+        <p class="signature">&mdash;&nbsp; in stealth.</p>
+        <div class="signup">
+          <form class="signup-form" novalidate>
+            <label for="email" class="signup-label">word from the studio</label>
+            <div class="signup-row">
+              <input
+                id="email"
+                class="signup-input"
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                spellcheck="false"
+                required
+                placeholder="your email">
+              <input
+                type="text"
+                name="website"
+                tabindex="-1"
+                autocomplete="off"
+                aria-hidden="true"
+                style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+              <button type="submit" class="signup-submit" aria-label="Subscribe">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path d="M6 18 L18 6 M9 6 H18 V15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+                </svg>
+              </button>
+            </div>
+            <p class="signup-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+      <div class="hero-media">
+        <div class="film-meta">
+          <button class="film-replay" type="button" aria-label="play" hidden>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M3 3 v5 h5 M3 12 a9 9 0 1 0 9 -9 9.7 9.7 0 0 0 -6.74 2.74 L3 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
             </svg>
           </button>
         </div>
-        <p class="signup-status" role="status" aria-live="polite"></p>
-      </form>
+        <figure class="film">
+          <video
+            class="film-video"
+            src="video.mp4"
+            playsinline
+            preload="auto"
+            disablepictureinpicture
+            disableremoteplayback></video>
+        </figure>
+      </div>
     </section>
 
     <hr class="rule">

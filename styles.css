@@ -17,7 +17,7 @@
   --ease-fold: cubic-bezier(0.16, 1, 0.3, 1);
 
   --pad-x: clamp(24px, 5vw, 96px);
-  --pad-y: clamp(24px, 4vw, 56px);
+  --pad-y: clamp(12px, 2vw, 28px);
 }
 
 /* ---- reset ------------------------------------------------------ */
@@ -42,7 +42,7 @@ body {
   display: grid;
   grid-template-rows: auto 1fr auto;
   padding: var(--pad-y) var(--pad-x);
-  gap: clamp(40px, 8vh, 120px);
+  gap: clamp(20px, 4vh, 60px);
   cursor: none;
   overflow-x: hidden;
   position: relative;
@@ -138,17 +138,39 @@ body > * { position: relative; z-index: 1; }
   max-width: 1280px;
 }
 
-/* ---- manifesto -------------------------------------------------- */
-.manifesto {
+/* ---- hero ------------------------------------------------------- */
+/* Two-column hero: text + CTA on the left, video panel on the right.
+   The text column sets `container-type: inline-size` so the headline
+   can scale with the column width via `cqi` units — that's what keeps
+   the two-line tagline on exactly two visual lines without wrap at
+   every viewport (the column reflows; the type scales with it). The
+   video resizes naturally inside the right column at 16:9. On narrow
+   viewports the grid collapses to a single column with the media on
+   top so the visual hero still leads. */
+.hero {
   display: grid;
-  gap: clamp(20px, 3.5vh, 40px);
-  padding-top: clamp(0px, 4vh, 40px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 80px);
+  align-items: center;
+  padding-top: clamp(0px, 2vh, 20px);
 }
+.hero-text {
+  container-type: inline-size;
+  display: grid;
+  gap: clamp(14px, 2.4vh, 28px);
+  min-width: 0;
+}
+.hero-media {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
 .headline {
   font-weight: 700;
-  font-size: clamp(36px, 6.4vw, 92px);
-  line-height: 1.0;
-  letter-spacing: -0.035em;
+  font-size: clamp(14px, 5cqi, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
   color: var(--ink);
 }
 .accent { color: var(--vermillion); }
@@ -169,6 +191,60 @@ body > * { position: relative; z-index: 1; }
 .line:nth-child(3) > span { animation-delay: 600ms; }
 @keyframes lineRise {
   to { transform: translateY(0); }
+}
+
+/* ---- film ------------------------------------------------------- */
+/* The brand reel sits in the right hero column at 16:9, resizing
+   with its grid cell. The replay icon lives in a small row above it,
+   right-aligned to the video panel's right edge, as a plain line-art
+   glyph matching the signup-submit stroke style. */
+.film-meta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 32px;
+}
+.film {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  max-width: none;
+  aspect-ratio: 16 / 9;
+  background: var(--ink);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: filmIn 900ms var(--ease-fold) 200ms forwards;
+}
+.film-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.film-replay {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--ink);
+  transition:
+    color 220ms ease,
+    transform 220ms var(--ease-fold);
+}
+.film-replay[hidden] { display: none; }
+.film-replay:hover {
+  color: var(--vermillion);
+  transform: translateY(-1px);
+}
+.film-replay:focus-visible {
+  outline: 2px solid var(--vermillion);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.film-replay svg { display: block; }
+@keyframes filmIn {
+  to { opacity: 1; transform: none; }
 }
 
 .signature {
@@ -360,28 +436,27 @@ body > * { position: relative; z-index: 1; }
 }
 
 /* ---- responsive ------------------------------------------------- */
-/* Below desktop, the longest headline line ("the machines that will build")
-   can outgrow its row at the clamp-scaled font size. The reveal animation
-   plays per .line block, so letting the inner span wrap is animation-safe
-   and produces a far better result than clipping. */
-@media (max-width: 1023px) {
-  .line { overflow: clip; padding-bottom: 0.08em; }
-  .line > span { white-space: normal; }
-}
+/* The headline scales with the .hero-text container (cqi), so it stays
+   on two no-wrap lines as the column reflows. Below 720px the hero
+   collapses to a single column with the video on top; the column now
+   spans the full content width, so 5cqi still produces a fitting size
+   thanks to the wider container. */
 @media (max-width: 720px) {
-  body { gap: clamp(32px, 6vh, 80px); }
+  body { gap: clamp(24px, 5vh, 56px); }
   .top { flex-wrap: wrap; }
   .meta { width: 100%; justify-content: flex-start; }
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(20px, 4vh, 36px);
+    align-items: stretch;
+  }
+  .hero-media { order: -1; }
   .notes { grid-template-columns: 1fr; gap: 32px; }
   .note { padding-top: 0; border-top: 1px solid var(--hairline); padding-top: 20px; }
   .foot { font-size: 10px; gap: 8px; }
-  .headline { font-size: clamp(34px, 9vw, 56px); line-height: 1.05; }
 }
 @media (max-width: 460px) {
-  .headline {
-    font-size: clamp(30px, 8vw, 44px);
-    letter-spacing: -0.025em;
-  }
+  .headline { letter-spacing: -0.02em; }
 }
 
 /* ---- reduced motion -------------------------------------------- */
@@ -390,7 +465,7 @@ body > * { position: relative; z-index: 1; }
     animation: none !important;
     transition: none !important;
   }
-  .top, .signature, .signup, .cursor, .mark-fold,
+  .top, .signature, .signup, .cursor, .mark-fold, .film,
   .line > span { opacity: 1 !important; transform: none !important; }
   .drift { opacity: 0.85 !important; }
   body { cursor: auto; }
