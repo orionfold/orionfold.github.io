@@ -214,15 +214,9 @@ body > * { position: relative; z-index: 1; }
 
 /* ---- film ------------------------------------------------------- */
 /* The brand reel sits in the right hero column at 16:9, resizing
-   with its grid cell. The replay icon lives in a small row above it,
-   right-aligned to the video panel's right edge, as a plain line-art
-   glyph matching the signup-submit stroke style. */
-.film-meta {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  min-height: 32px;
-}
+   with its grid cell. The play/replay glyph is centered on the plate
+   as a hairline cream ring with a hairline triangle — discoverable
+   for the start-CTA case, architectural rather than player chrome. */
 .film {
   position: relative;
   width: 100%;
@@ -242,11 +236,16 @@ body > * { position: relative; z-index: 1; }
   object-fit: cover;
 }
 .film-replay {
+  position: absolute;
+  inset: 0;
+  margin: auto;
   display: inline-grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
-  color: var(--ink);
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  color: var(--paper);
   transition:
     color 220ms ease,
     transform 220ms var(--ease-fold);
@@ -258,10 +257,11 @@ body > * { position: relative; z-index: 1; }
 }
 .film-replay:focus-visible {
   outline: 2px solid var(--vermillion);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline-offset: 4px;
 }
-.film-replay svg { display: block; }
+/* Optical centering: a geometric triangle's centroid sits ~0.7 units
+   left of the bbox center, so nudge it right 1px to look balanced. */
+.film-replay svg { display: block; transform: translateX(1px); }
 @keyframes filmIn {
   to { opacity: 1; transform: none; }
 }
