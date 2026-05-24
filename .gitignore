@@ -1,2 +1,14 @@
 GIT-HANDOFF.md
 OPS-NOTES.md
+
+# Local secrets — OPENROUTER_API_KEY etc. (never commit)
+.env.local
+
+# Planning specs (local-only canonical strategy docs)
+specs/
+
+# Astro / Node build artifacts
+node_modules/
+dist/
+.astro/
+.DS_Store
