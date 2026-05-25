@@ -1,5 +1,12 @@
 # HANDOFF — orionfold.com build
 
+> ## 🟢 STATUS: LIVE — build complete (S1–S12), `2026-05-24`
+> The site is shipped and serving at **https://orionfold.com** via GitHub Actions → Pages.
+> All twelve sessions are ✅. **There are no queued build tasks left.** Remaining work lives in
+> separate specs (OpenRouter AI features, real Story content, book/model artwork).
+> **One open ops item:** the live lead-form submit + double-opt-in email is not yet exercised
+> end-to-end — operator to submit a test signup on the live domain (see S12 note).
+
 > **What this is.** The build spine for rebuilding orionfold.com from a vanilla HTML/CSS/JS
 > stealth page into an **Astro 5 marketing site** cloned from `ainative.business` (light theme
 > only), framing **Orionfold as the parent studio** that ships the AI Native platform, neosignal,
@@ -24,9 +31,10 @@
 2. Skim *only* the donor files that task names (the main lever that keeps a session in one context window).
 
 **Golden rules (do not violate without operator approval)**
-- 🔒 **Never switch the GitHub Pages source until S12 ("the flip").** Pages serves the vanilla
-  `index.html` today; the Astro build develops alongside it and goes live only at launch. Until
-  then, build sessions are local-only (`npm run dev` / `npm run build`).
+- 🔴 **`main` is now LIVE-DEPLOYING (post-flip).** Pages source = GitHub Actions; every push to
+  `main` runs `deploy.yml` and ships `dist/` to production `orionfold.com` in ~40s. Treat every
+  push as a deploy — build clean first, and don't push WIP. (Switching the Pages source itself is
+  operator-only: `gh` is authed as `manavsehgal` = pull-only on the repo.)
 - 🔒 **Never touch the live `waitlist`/`confirm-email` edge fns, the `waitlist` migration, or any
   secret.** New backend work is additive only.
 - 🔒 **Secrets live on Supabase / in `.env.local` (git-ignored), never committed.**
@@ -63,6 +71,10 @@ domain — don't treat a localhost CORS error as a bug.
 | S10 | Terms + Privacy (Orionfold-modified) | ✅ done |
 | S11 | SEO baseline | ✅ done |
 | S12 | Launch readiness + the flip | ✅ done (LIVE) |
+
+**Post-launch additions** (not in the original S1–S12 plan; each shipped as its own commit + auto-deploy):
+- **Google Analytics 4** (`G-04PH843W2C`) — operator-supplied at launch; wired into `Layout` head (`is:inline`, once/page). `privacy.astro` analytics/cookies/sharing clauses flipped back to **disclose GA** (S10 had written them as "no analytics" since none ran). Commit `00ba7b2`.
+- **Favicon cache-bust** (`?v=2` on the icon `<link>`s) — the retired stealth page used the same `/favicon.*` paths, so returning visitors saw a stale cached icon; the version query forces a re-fetch of the ainative mark. Commit `8374353`.
 
 > **Future (separate specs):** OpenRouter AI features · real Story content · book/model artwork.
 
