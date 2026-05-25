@@ -57,7 +57,7 @@ domain — don't treat a localhost CORS error as a bug.
 | S4 | Homepage part 1: hero + CTA + narrative + lead form | ✅ done |
 | S5 | Homepage part 2: highlights + stories carousel | ✅ done |
 | S6 | Books page (showcase + link out) | ✅ done |
-| S7 | Software page (platform, neosignal, fieldkit, API) | ⬜ queued |
+| S7 | Software page (platform, neosignal, fieldkit, API) | ✅ done |
 | S8 | Models page (8 HF models + dataset) | ⬜ queued |
 | S9 | Story collection + index + posts | ⬜ queued |
 | S10 | Terms + Privacy (Orionfold-modified) | ⬜ queued |
@@ -154,13 +154,15 @@ domain — don't treat a localhost CORS error as a bug.
 
 ---
 
-## S7 — Software page ⬜
+## S7 — Software page ✅ `2026-05-24`
 
 **Source:** spec §6 (Software). `src/data/software.ts` + `src/pages/software.astro`.
 
 - Four cards: AI Native Platform (→ /docs/), neosignal (→ neosignal.io), fieldkit (→ /fieldkit/), AI Native API (→ /docs/api/).
 
-**DoD:** ☐ `/software/` renders four cards · ☐ external links correct · ☐ build clean.
+**DoD:** ☑ `/software/` renders four cards · ☑ external links correct · ☑ build clean.
+
+**→ next/gotchas:** Page is **data-driven** like S6: new typed `src/data/software.ts` (`SoftwareProduct[]` — eyebrow/title/body/pills/href/ctaText, no `cover`) feeds `software.astro`. **Resolved the S6 open question** ("four bands vs grid"): four equal-weight products read better as a **2×2 catalog grid** than four tall alternating `Highlight` bands, so I built a new lighter **`src/components/ui/ProductCard.astro`** (mono eyebrow → `h2` title → plain pitch → label pills → off-site CTA) and laid it out in a `data-animate-stagger` `grid max-w-5xl gap-6 sm:grid-cols-2`. `Highlight.astro`/`books.ts` left untouched — `/books/` keeps its alternating bands. All four cards are **external** (`target=_blank rel=noopener noreferrer` + up-right "leaves the site" arrow, same SVG path as `Highlight`'s `external`): `https://ainative.business/docs/`, `https://neosignal.io`, `https://ainative.business/fieldkit/`, `https://ainative.business/docs/api/` (donor routes `/docs`, `/docs/api`, `/fieldkit` verified to exist; neosignal is its own product, no donor page). **First page to fold in `BehindTheScenes.astro`** (spec §7): one page-level reveal `summary="The technical details"` holds the donor's real vocab the cards omit — task execution/workflows/profiles/schedules/monitoring/cost ledger/agent integration/chat; scoring system + compatibility matrix; KV-cache/NIM/RAG/eval/training/lineage/quantization/HF publish/CLI/viz/notebooks; REST API + 27 endpoint groups across core/intelligence/content/platform/operations. Cards stay grade 3–5 with inline glosses ("flows that run step by step", "the chips that run AI"); **0 reader-facing em-dashes**, 0 `noindex`/`S3 STUB`/`Coming soon`, 0 `stagent`/`data-theme`/`gtag` leak (grepped `dist/software/index.html`). Stub retired (`noindex` dropped, real `title`/`description`). Browser-verified (chrome-devtools, preview, force `.is-visible`): 4 `<article>` cards in the grid, correct titles/eyebrows/pills/CTAs/hrefs, BTS `<details>` present, full-page screenshot clean (light theme + Geist + footer intact). `npm run build` clean → 7 pages + sitemap. **S8 (next)** builds the Models page (`src/data/models.ts` + `src/pages/models.astro`): 8 HF models + 1 dataset grouped by domain (Patent/Security/Legal/Finance/Medical), real `huggingface.co/Orionfold/<repo>` links, copy from donor `src/content/artifacts/*.yaml` + HF cards. It can reuse this exact `data.ts → ProductCard grid + BehindTheScenes` pattern (Models is the other technical page per spec §7) — though grouping by domain may want a sub-heading per group above each card cluster.
 
 ---
 

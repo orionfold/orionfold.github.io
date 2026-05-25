@@ -1,14 +1,58 @@
 ---
-// S3 STUB — real Software showcase lands in S7.
+// Software showcase (S7). Four product cards built from src/data/software.ts,
+// each linking out to its canonical home. Unlike /books/' alternating Highlight
+// bands, four equal-weight products read better as a 2x2 grid of compact cards
+// (ProductCard). A page-level BehindTheScenes holds the real technical depth so
+// the cards stay grade 3–5 (spec §7 — Software is the first technical page).
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import ProductCard from '../components/ui/ProductCard.astro';
+import SectionLabel from '../components/ui/SectionLabel.astro';
+import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
+import { software } from '../data/software';
 ---
-<Layout title="Software · Orionfold" noindex>
+<Layout
+  title="Software · Orionfold"
+  description="Open software for running AI on your own computer: the AI Native Platform, neosignal, fieldkit, and the AI Native API."
+>
   <Nav />
-  <main class="mx-auto max-w-3xl px-6 pt-40 pb-32 text-center">
-    <h1 data-animate>Software</h1>
-    <p class="mt-6 text-text-muted" data-animate>Coming soon. Our open software will live here.</p>
+  <main>
+    <!-- Page header -->
+    <section class="px-6 pt-36 pb-4 text-center sm:pt-40">
+      <div class="mx-auto max-w-3xl">
+        <SectionLabel text="Software" />
+        <h1 data-animate class="mb-5 mt-4">Open software you control</h1>
+        <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
+          The tools to run AI on your own computer. A platform to do the work, a way to see where AI is headed, a free toolbox to build with, and an API to tie it all together.
+        </p>
+      </div>
+    </section>
+
+    <!-- Product grid -->
+    <section class="px-6 pb-8 sm:pb-12">
+      <div data-animate-stagger class="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2">
+        {software.map((product) => (
+          <ProductCard
+            eyebrow={product.eyebrow}
+            title={product.title}
+            body={product.body}
+            pills={product.pills}
+            href={product.href}
+            ctaText={product.ctaText}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- Technical depth (held back from the cards per spec §7) -->
+    <section class="px-6 pb-28">
+      <div data-animate>
+        <BehindTheScenes summary="The technical details">
+          The platform runs fully on your machine: task execution, workflows, profiles, schedules, monitoring, a cost ledger, agent integration, and chat. neosignal compares models, accelerators (the chips that run AI), cloud providers, and frameworks with a scoring system and a compatibility matrix. fieldkit ships patterns we verified on Spark-class hardware: KV-cache, NIM, RAG (retrieval-augmented generation, where the model reads your own files before it answers), eval, training, lineage, quantization, HuggingFace publish, a CLI, charts, and notebooks. The AI Native API is a REST API with 27 endpoint groups across core, intelligence, content, platform, and operations.
+        </BehindTheScenes>
+      </div>
+    </section>
   </main>
   <Footer />
 </Layout>

@@ -1,0 +1,48 @@
+---
+// Product card (S7) — a compact showcase card for the /software/ grid, the
+// counterpart to /books/' full-width Highlight bands. Four sibling products of
+// equal weight read better as a 2x2 catalog than four tall alternating bands,
+// so this is a lighter card: mono eyebrow, title, plain pitch, label pills, and
+// an off-site "leaves the site" CTA. Built from src/data/software.ts; copy is
+// grade 3–5 (memory `website-copy-style`). data-animate rides the scroll-reveal.
+interface Props {
+  eyebrow: string;
+  title: string;
+  body: string;
+  pills?: string[];
+  href: string;
+  ctaText: string;
+}
+
+const { eyebrow, title, body, pills = [], href, ctaText } = Astro.props;
+---
+<article
+  data-animate
+  class="flex flex-col rounded-2xl border border-border bg-surface-raised p-7 transition-colors hover:border-primary/30 sm:p-8"
+>
+  <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{eyebrow}</span>
+  <h2 class="mt-3 font-display text-2xl font-bold leading-tight">{title}</h2>
+  <p class="mt-3 flex-1 leading-relaxed text-text-muted">{body}</p>
+
+  {pills.length > 0 && (
+    <div class="mt-5 flex flex-wrap gap-1.5">
+      {pills.map((pill) => (
+        <span class="rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1 font-mono text-[10px] tracking-wider text-primary">
+          {pill}
+        </span>
+      ))}
+    </div>
+  )}
+
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="mt-6 inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
+  >
+    {ctaText}
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M7 17L17 7M7 7h10v10" />
+    </svg>
+  </a>
+</article>
