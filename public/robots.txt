@@ -1,0 +1,60 @@
+# Orionfold is open to crawl. The site markets open AI software, free models,
+# and a free book, so there is nothing here to hide from search or AI engines.
+User-agent: *
+Allow: /
+
+# Explicit allow-list for major answer-engine crawlers. These bots already
+# respect "User-agent: *", but naming them makes the intent unambiguous: the
+# site is open AI work and we welcome AI discovery and citation.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+Sitemap: https://orionfold.com/sitemap-index.xml

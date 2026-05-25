@@ -6,22 +6,15 @@
 // Orionfold runs no third-party analytics today — porting "we use Google
 // Analytics" verbatim would make this policy inaccurate. Real processors are
 // Supabase + Resend (the live waitlist funnel), GitHub (hosting/repos), and
-// Hugging Face (model downloads). Inline `publisher` mirrors terms.astro; S11
-// can DRY both into a shared PUBLISHER const in src/data/seo.ts (additive).
+// Hugging Face (model downloads). Uses the shared PUBLISHER from
+// src/data/seo.ts (S11 DRYed it out of the S10 inline copy).
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
-import { SITE } from '../data/seo';
+import { SITE, PUBLISHER } from '../data/seo';
 
 const lastUpdated = 'May 24, 2026';
-
-const publisher = {
-  '@type': 'Organization',
-  name: 'Orionfold LLC',
-  url: SITE.url,
-  logo: SITE.logo,
-};
 
 const summaryCards = [
   {
@@ -152,7 +145,7 @@ const sections = [
       name: 'Privacy Policy · Orionfold',
       url: `${SITE.url}/privacy/`,
       inLanguage: 'en',
-      publisher,
+      publisher: PUBLISHER,
       dateModified: '2026-05-24',
     },
     {

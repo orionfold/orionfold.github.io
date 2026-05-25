@@ -21,7 +21,18 @@ const { title, date, summary, tags } = post.data;
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
 const dateIso = date.toISOString().slice(0, 10);
 ---
-<Layout title={`${title} · Orionfold`} description={summary} ogType="article">
+<Layout
+  title={`${title} · Orionfold`}
+  description={summary}
+  ogType="article"
+  article={{
+    datePublished: dateIso,
+    dateModified: dateIso,
+    author: 'Manav Sehgal',
+    section: 'Story',
+    tags,
+  }}
+>
   <Nav />
   <main class="px-6 pt-36 pb-28 sm:pt-40">
     <article class="mx-auto max-w-2xl">

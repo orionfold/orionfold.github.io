@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { SITE } from '../data/seo';
+import { SITE, ORGANIZATION } from '../data/seo';
 
 interface Props {
   title?: string;
@@ -31,7 +31,11 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const jsonLdSchemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+// Global Organization node ships on every page so the whole site reads as one
+// entity (Orionfold LLC); page-specific schemas (passed via jsonLd) come after.
+const orgSchema = { '@context': 'https://schema.org', ...ORGANIZATION };
+const pageSchemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const jsonLdSchemas = [orgSchema, ...pageSchemas];
 ---
 <!doctype html>
 <html lang="en">

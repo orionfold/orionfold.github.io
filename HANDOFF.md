@@ -61,7 +61,7 @@ domain — don't treat a localhost CORS error as a bug.
 | S8 | Models page (8 HF models + dataset) | ✅ done |
 | S9 | Story collection + index + posts | ✅ done |
 | S10 | Terms + Privacy (Orionfold-modified) | ✅ done |
-| S11 | SEO baseline | ⬜ queued |
+| S11 | SEO baseline | ✅ done |
 | S12 | Launch readiness + the flip | ⬜ queued |
 
 > **Future (separate specs):** OpenRouter AI features · real Story content · book/model artwork.
@@ -204,15 +204,15 @@ domain — don't treat a localhost CORS error as a bug.
 
 ---
 
-## S11 — SEO baseline ⬜
+## S11 — SEO baseline ✅ `2026-05-24`
 
 **Port-from:** donor sitemap config, `public/robots.txt`, `src/data/seo.ts`.
 
 - Confirm `@astrojs/sitemap` output; add `public/robots.txt`; static `public/og-image.png`; per-page title/description/OG; Organization JSON-LD (Orionfold LLC) in `Layout`.
 
-**DoD:** ☐ `/sitemap-index.xml` builds · ☐ robots present · ☐ each page has meta + OG · ☐ build clean.
+**DoD:** ☑ `/sitemap-index.xml` builds · ☑ robots present · ☑ each page has meta + OG · ☑ build clean.
 
----
+**→ next/gotchas:** Most per-page meta was **already in place** (S4–S10 each set descriptive `title`/`description`; homepage rides Layout defaults), so S11 was the global scaffolding. **`src/data/seo.ts` enriched** (additive): added `PERSON` (Manav Sehgal, minimal — name/url/sameAs github+x+linkedin; dropped the donor's AWS jobTitle/employer/alumni — not republishing employment claims on a new entity), `ORGANIZATION` (**Orionfold LLC**, `founder: PERSON`, `foundingDate 2026`, `sameAs` = the real public homes github/x/youtube `@ainativebusiness`/`huggingface.co/Orionfold`), and `PUBLISHER` (Organization w/ ImageObject logo). **`Layout.astro` now injects a global Organization JSON-LD on every page** — `orgSchema = {'@context', ...ORGANIZATION}` prepended to the page-level `jsonLd` array (verified: all 11 pages carry it; page-specific schemas still follow). **Legal pages DRYed** (per S10 note): `terms.astro` + `privacy.astro` dropped their inline `publisher` consts and now import the shared `PUBLISHER` from `seo.ts` (their TermsOfService/PrivacyPolicy + Breadcrumb schemas unchanged). **Story posts folded into the OG sweep** (per S9 heads-up): `story/[slug]/index.astro` now passes Layout's `article` prop (`datePublished`/`dateModified` = post date ISO, `author: 'Manav Sehgal'`, `section: 'Story'`, `tags`), so each post emits `article:published_time/author/section/tag` meta. **`public/robots.txt`** ported from donor: open crawl + the AI-answer-engine allowlist (GPTBot/ClaudeBot/PerplexityBot/etc.), `Sitemap: https://orionfold.com/sitemap-index.xml`; **dropped** the donor's `Disallow: /confirmed/` + `/og/` (no such routes here — `?confirmed=` is a homepage query param, not a path). **Sitemap priority/changefreq hints** added via `astro.config.mjs` `sitemap({ serialize })`: home 1.0/weekly, showcase pages 0.8/monthly, story 0.7/weekly, legal 0.3/yearly, default 0.6 (no `filter` needed — nothing to exclude). **`public/og-image.png`** generated (1200×630, the previously-referenced-but-missing asset, so social cards were 404ing): light surface `#f6f9fc` + soft top-right primary glow, the real `orionfold-logo.png` mark, two-color "Orionfold" wordmark (Orion `#141925` + fold `#296cd8`), tagline, `ORIONFOLD.COM` label. **Built with ImageMagick** (this build has **no Pango delegate** — `pango:` fails with "no decode delegate"; fell back to per-word `label:` renders joined with `+append` for the two-color wordmark; **inline `-resize` in an IM7 compose collapses the whole image list**, so the logo must be pre-sized to its own temp file first). Font is **Arial-Bold/Arial** (system; Geist is woff2-only and ImageMagick/rsvg can't load woff2 — acceptable, og-image is an explicit placeholder per spec §3; real artwork is a later spec). Verified: 11/11 pages carry the Org JSON-LD, all **15 JSON-LD blocks parse** (python `json.loads`), home OG `og:image` → `/og-image.png`, story `article:*` tags emit, legal pages keep TermsOfService + shared publisher ImageObject, 0 `ainative`/`stagent` leak in robots/sitemap, `npm run build` clean → 11 pages + sitemap. **S12 (next, `[ops]`) is the flip:** final build + route review, then uncomment the `push: [main]` trigger in `.github/workflows/deploy.yml` **and** switch the Pages source to GitHub Actions together, push to deploy `dist/`, retire the vanilla files (`index.html`/`styles.css`/`main.js`/`video.mp4`), and verify live on `orionfold.com` (pages serve, CNAME intact, **lead-form submit + email confirm end-to-end** now that CORS passes off-localhost, sitemap reachable). S12 is operator-gated — do not flip the Pages source without explicit go-ahead.
 
 ## S12 — Launch readiness + the flip ⬜ `[ops]`
 
