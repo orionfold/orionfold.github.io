@@ -1,13 +1,13 @@
 ---
-// Privacy Policy (S10). Ported from the donor privacy.astro, structure + section
-// headings kept; legal entity swapped to Orionfold LLC and contact to
-// manav@orionfold.com. The analytics, data-sharing, and cookie clauses are
-// adapted to the *actual* site: S3 dropped the donor's Google Analytics tag, so
-// Orionfold runs no third-party analytics today — porting "we use Google
-// Analytics" verbatim would make this policy inaccurate. Real processors are
-// Supabase + Resend (the live waitlist funnel), GitHub (hosting/repos), and
-// Hugging Face (model downloads). Uses the shared PUBLISHER from
-// src/data/seo.ts (S11 DRYed it out of the S10 inline copy).
+// Privacy Policy (S10, analytics clauses updated post-launch). Ported from the
+// donor privacy.astro, structure + section headings kept; legal entity swapped to
+// Orionfold LLC and contact to manav@orionfold.com. The analytics, data-sharing,
+// and cookie clauses describe the *actual* site: Orionfold runs Google Analytics 4
+// (GA4 id G-04PH843W2C, wired in Layout.astro) plus the Supabase + Resend waitlist
+// funnel, with GitHub (hosting/repos) and Hugging Face (model downloads) as the
+// other processors. (S3 had dropped the donor's GA tag and S10 wrote these clauses
+// as "no analytics"; GA was added later, so these clauses were flipped back to
+// disclose it.) Uses the shared PUBLISHER from src/data/seo.ts.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -18,8 +18,8 @@ const lastUpdated = 'May 24, 2026';
 
 const summaryCards = [
   {
-    title: 'Minimal Tracking',
-    body: 'The website does not run third-party analytics or advertising trackers today. Only basic server request logs are kept to keep the site running and secure.',
+    title: 'Website Analytics',
+    body: 'The website uses Google Analytics to understand traffic and which pages are used. We do not run advertising trackers.',
   },
   {
     title: 'Newsletter Data',
@@ -45,7 +45,7 @@ const sections = [
       'The information collected depends on how you interact with Orionfold.',
     ],
     bullets: [
-      'Website usage information. The site keeps basic request metadata, such as server logs, to measure traffic at a high level, keep the site available, and protect against abuse. The site does not run third-party analytics or advertising trackers today.',
+      'Website usage information. The site uses Google Analytics (GA4) and similar request metadata to measure traffic, understand which pages are used, and improve the site. We do not run advertising trackers.',
       'Newsletter information. If you subscribe, Orionfold LLC collects your email address and operational metadata used for confirmation, abuse prevention, and delivery, such as confirmation status, timestamps, IP address, and user-agent data.',
       'Communications. If you email Orionfold LLC or open an issue, Orionfold LLC will receive the information you include in that message.',
       'Local software data. Orionfold software is intended to run locally by default, so workflow data, prompts, documents, and project state are generally stored on your own systems unless you intentionally connect external services.',
@@ -68,7 +68,7 @@ const sections = [
   {
     title: '4. Legal Bases',
     paragraphs: [
-      'Where applicable, Orionfold LLC relies on consent for newsletter signup, legitimate interests for security and service operation, and legal obligations where processing is necessary to comply with law.',
+      'Where applicable, Orionfold LLC relies on consent for newsletter signup, legitimate interests for security, service operation, and basic analytics, and legal obligations where processing is necessary to comply with law.',
     ],
   },
   {
@@ -77,7 +77,7 @@ const sections = [
       'Orionfold LLC does not sell personal information. Information may be shared only as needed to operate the service or comply with law.',
     ],
     bullets: [
-      'Service providers such as Supabase, Resend, and hosting or infrastructure vendors that help run the newsletter and website.',
+      'Service providers such as Google Analytics, Supabase, Resend, and hosting or infrastructure vendors that help run the website and newsletter.',
       'Code, model, and file distribution providers such as GitHub and Hugging Face when you download releases, models, or interact with project repositories.',
       'Authorities, courts, regulators, or advisors when required by law or reasonably necessary to protect rights, safety, or security.',
       'A successor entity in connection with a merger, acquisition, financing, or asset transfer.',
@@ -100,7 +100,7 @@ const sections = [
   {
     title: '8. Cookies and Similar Technologies',
     paragraphs: [
-      'The website aims to keep cookies to a minimum and does not use advertising or third-party analytics cookies today. Essential cookies may be used to remember basic preferences or keep the site secure. You can control cookies through your browser settings, though some site functionality may be affected.',
+      'The website uses Google Analytics, which sets cookies or similar identifiers to measure traffic and understand how the site is used. Essential cookies may also be used to remember basic preferences or keep the site secure. We do not use advertising cookies. You can control cookies through your browser settings, though some site functionality may be affected.',
     ],
   },
   {
@@ -207,7 +207,7 @@ const sections = [
         <aside data-animate class="lg:sticky lg:top-28 h-fit rounded-2xl border border-border bg-surface-raised/70 p-5">
           <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-text-dim">Short version</p>
           <p class="mt-4 text-sm leading-relaxed text-text-muted">
-            The website keeps basic logs and runs no third-party trackers, the newsletter stores your signup information, and the software is built to keep your working data local unless you choose to connect external services.
+            The website uses Google Analytics to understand traffic, the newsletter stores your signup information, and the software is built to keep your working data local unless you choose to connect external services.
           </p>
         </aside>
 
