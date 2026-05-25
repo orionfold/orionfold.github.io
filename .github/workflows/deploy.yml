@@ -1,12 +1,11 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Auto-deploy on push is intentionally OFF until S12 ("the flip").
-  # GitHub Pages still serves the vanilla page from its branch source, so an
-  # auto-deploy now would fail at the deploy-pages step. S12 uncomments this
-  # push trigger and switches the Pages source to GitHub Actions together.
-  # push:
-  #   branches: [main]
+  # The flip (S12): Pages source is now GitHub Actions, so every push to main
+  # rebuilds and deploys the Astro site in dist/. workflow_dispatch stays for
+  # manual re-runs.
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
