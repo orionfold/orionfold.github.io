@@ -60,7 +60,7 @@ domain — don't treat a localhost CORS error as a bug.
 | S7 | Software page (platform, neosignal, fieldkit, API) | ✅ done |
 | S8 | Models page (8 HF models + dataset) | ✅ done |
 | S9 | Story collection + index + posts | ✅ done |
-| S10 | Terms + Privacy (Orionfold-modified) | ⬜ queued |
+| S10 | Terms + Privacy (Orionfold-modified) | ✅ done |
 | S11 | SEO baseline | ⬜ queued |
 | S12 | Launch readiness + the flip | ⬜ queued |
 
@@ -192,13 +192,15 @@ domain — don't treat a localhost CORS error as a bug.
 
 ---
 
-## S10 — Terms + Privacy ⬜
+## S10 — Terms + Privacy ✅ `2026-05-24`
 
 **Port-from:** donor `src/pages/terms.astro`, `src/pages/privacy.astro`.
 
 - Port both; swap entity → **Orionfold LLC**, domain/email → Orionfold. Footer already links here (S3).
 
-**DoD:** ☐ `/terms/` + `/privacy/` render with Orionfold details · ☐ build clean.
+**DoD:** ☑ `/terms/` + `/privacy/` render with Orionfold details · ☑ build clean.
+
+**→ next/gotchas:** Both stubs retired (`noindex` dropped). Ported donor structure + section headings **verbatim** (Terms = 15 sections, Privacy = 13) per spec §6; swapped legal entity `Manav Sehgal` → **Orionfold LLC**, product framing `ainative-business` (single local-first product) → **Orionfold** the studio (website + open software + models + newsletter + services; section 1 of each defines that scope), and contact `team@ainative.business` → **`manav@orionfold.com`** (operator-chosen this session over the `hello@orionfold.com` that `main.js` uses; `manav@` is the live `reply_to` in the waitlist edge fn). `lastUpdated` set to today (`May 24, 2026` / `dateModified 2026-05-24`). **Accuracy fix — Privacy does NOT port the donor's "we use Google Analytics" line:** S3 deliberately dropped the GA tag, so Orionfold runs **no** third-party analytics today; the analytics summary card (now "Minimal Tracking"), §2 usage bullet, §5 sharing list, and §8 cookies clause were rewritten to match what actually runs — server logs only; real processors = **Supabase + Resend** (waitlist funnel), **GitHub** (hosting/repos), **Hugging Face** (model downloads). Each page carries page-level JSON-LD (`TermsOfService`/`PrivacyPolicy` + `BreadcrumbList`) with an **inline `publisher` Organization** built from `SITE` — `seo.ts` still exports only `SITE` (the donor imported a shared `PUBLISHER` that doesn't exist locally yet); **S11 owns `PUBLISHER`** and can DRY both inline objects into the shared const (additive). Verified (grep of built HTML + browser, force `.is-visible`): 0 `noindex`/`S3 STUB`/`ainative-business`/`Manav Sehgal`/`team@ainative`/`google analytics`/em-dash on both; `Orionfold LLC` + `manav@orionfold.com` present; JSON-LD types emit; light theme + Geist + nav/footer intact. `npm run build` clean → 11 pages + sitemap. **S11 (next)** is the SEO baseline: `@astrojs/sitemap` output check, `public/robots.txt`, static `public/og-image.png`, per-page title/description/OG sweep (**include the 4 story posts** per S9's heads-up), and Organization JSON-LD (Orionfold LLC) in `Layout` — fold the two inline legal-page `publisher` objects into the new shared `PUBLISHER`/`SITE` export while there.
 
 ---
 

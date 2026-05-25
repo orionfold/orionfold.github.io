@@ -1,14 +1,247 @@
 ---
-// S3 STUB — real Privacy lands in S10.
+// Privacy Policy (S10). Ported from the donor privacy.astro, structure + section
+// headings kept; legal entity swapped to Orionfold LLC and contact to
+// manav@orionfold.com. The analytics, data-sharing, and cookie clauses are
+// adapted to the *actual* site: S3 dropped the donor's Google Analytics tag, so
+// Orionfold runs no third-party analytics today — porting "we use Google
+// Analytics" verbatim would make this policy inaccurate. Real processors are
+// Supabase + Resend (the live waitlist funnel), GitHub (hosting/repos), and
+// Hugging Face (model downloads). Inline `publisher` mirrors terms.astro; S11
+// can DRY both into a shared PUBLISHER const in src/data/seo.ts (additive).
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import SectionLabel from '../components/ui/SectionLabel.astro';
+import { SITE } from '../data/seo';
+
+const lastUpdated = 'May 24, 2026';
+
+const publisher = {
+  '@type': 'Organization',
+  name: 'Orionfold LLC',
+  url: SITE.url,
+  logo: SITE.logo,
+};
+
+const summaryCards = [
+  {
+    title: 'Minimal Tracking',
+    body: 'The website does not run third-party analytics or advertising trackers today. Only basic server request logs are kept to keep the site running and secure.',
+  },
+  {
+    title: 'Newsletter Data',
+    body: 'Newsletter signup collects your email address and limited anti-abuse metadata through Supabase and Resend.',
+  },
+  {
+    title: 'Local-First Software',
+    body: 'Orionfold software is designed so your work stays on your own systems by default unless you choose to connect external providers or services.',
+  },
+];
+
+const sections = [
+  {
+    title: '1. Scope',
+    paragraphs: [
+      'This Privacy Policy explains how Orionfold LLC collects, uses, discloses, and retains personal information in connection with the Orionfold website, newsletter, downloadable software, models, and related communications.',
+      'This Policy applies to information Orionfold LLC controls directly. If you connect Orionfold software to third-party providers, those providers process data under their own terms and privacy policies.',
+    ],
+  },
+  {
+    title: '2. Information We Collect',
+    paragraphs: [
+      'The information collected depends on how you interact with Orionfold.',
+    ],
+    bullets: [
+      'Website usage information. The site keeps basic request metadata, such as server logs, to measure traffic at a high level, keep the site available, and protect against abuse. The site does not run third-party analytics or advertising trackers today.',
+      'Newsletter information. If you subscribe, Orionfold LLC collects your email address and operational metadata used for confirmation, abuse prevention, and delivery, such as confirmation status, timestamps, IP address, and user-agent data.',
+      'Communications. If you email Orionfold LLC or open an issue, Orionfold LLC will receive the information you include in that message.',
+      'Local software data. Orionfold software is intended to run locally by default, so workflow data, prompts, documents, and project state are generally stored on your own systems unless you intentionally connect external services.',
+      'Connected provider data. If you configure model providers, APIs, or other integrations, your data may be sent directly to those providers based on your configuration.',
+    ],
+  },
+  {
+    title: '3. How We Use Information',
+    paragraphs: [
+      'Orionfold LLC uses information to operate the website and newsletter, deliver downloads and updates, respond to requests, secure the services, and improve product quality and documentation.',
+    ],
+    bullets: [
+      'Provide and maintain the site, downloads, models, and newsletter.',
+      'Confirm newsletter subscriptions and send release, product, and operational updates.',
+      'Detect abuse, spam, fraud, misuse, and security incidents.',
+      'Understand aggregate usage patterns and improve the website and documentation.',
+      'Comply with legal obligations and enforce the Terms of Use.',
+    ],
+  },
+  {
+    title: '4. Legal Bases',
+    paragraphs: [
+      'Where applicable, Orionfold LLC relies on consent for newsletter signup, legitimate interests for security and service operation, and legal obligations where processing is necessary to comply with law.',
+    ],
+  },
+  {
+    title: '5. How Information Is Shared',
+    paragraphs: [
+      'Orionfold LLC does not sell personal information. Information may be shared only as needed to operate the service or comply with law.',
+    ],
+    bullets: [
+      'Service providers such as Supabase, Resend, and hosting or infrastructure vendors that help run the newsletter and website.',
+      'Code, model, and file distribution providers such as GitHub and Hugging Face when you download releases, models, or interact with project repositories.',
+      'Authorities, courts, regulators, or advisors when required by law or reasonably necessary to protect rights, safety, or security.',
+      'A successor entity in connection with a merger, acquisition, financing, or asset transfer.',
+    ],
+  },
+  {
+    title: '6. Data Retention',
+    paragraphs: [
+      'Orionfold LLC retains personal information only for as long as reasonably necessary for the purposes described in this Policy, including delivery, abuse prevention, security, legal compliance, and recordkeeping.',
+      'Newsletter subscription records are generally kept until you unsubscribe or ask for deletion, subject to backup retention and legitimate security or legal needs.',
+    ],
+  },
+  {
+    title: '7. Your Choices and Rights',
+    paragraphs: [
+      'You can unsubscribe from newsletter emails at any time by using the unsubscribe link in the email or by contacting manav@orionfold.com.',
+      'Depending on where you live, you may have rights to request access, correction, deletion, portability, restriction, or objection. Orionfold LLC will review and respond in accordance with applicable law.',
+    ],
+  },
+  {
+    title: '8. Cookies and Similar Technologies',
+    paragraphs: [
+      'The website aims to keep cookies to a minimum and does not use advertising or third-party analytics cookies today. Essential cookies may be used to remember basic preferences or keep the site secure. You can control cookies through your browser settings, though some site functionality may be affected.',
+    ],
+  },
+  {
+    title: '9. International Transfers',
+    paragraphs: [
+      'Service providers used by Orionfold LLC may process information in countries other than your own. By using Orionfold, you understand that data may be transferred to and processed in jurisdictions that may have different data-protection laws than your location.',
+    ],
+  },
+  {
+    title: '10. Security',
+    paragraphs: [
+      'Orionfold LLC uses reasonable administrative, technical, and organizational measures to protect information, but no method of transmission or storage is completely secure. You are also responsible for protecting your own devices, local data, credentials, and connected provider keys.',
+    ],
+  },
+  {
+    title: '11. Children’s Privacy',
+    paragraphs: [
+      'Orionfold is not directed to children under 13, and Orionfold LLC does not knowingly collect personal information from children under 13. If you believe a child has provided personal information, contact manav@orionfold.com so it can be reviewed and removed where appropriate.',
+    ],
+  },
+  {
+    title: '12. Changes to This Policy',
+    paragraphs: [
+      'Orionfold LLC may update this Privacy Policy from time to time. The updated version will be posted on this page with a revised “Last updated” date.',
+    ],
+  },
+  {
+    title: '13. Contact',
+    paragraphs: [
+      'Questions or privacy requests can be sent to manav@orionfold.com.',
+    ],
+  },
+];
 ---
-<Layout title="Privacy · Orionfold" noindex>
+<Layout
+  title="Privacy Policy · Orionfold"
+  description="Privacy Policy for the Orionfold website, newsletter, and related services."
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'PrivacyPolicy',
+      name: 'Privacy Policy · Orionfold',
+      url: `${SITE.url}/privacy/`,
+      inLanguage: 'en',
+      publisher,
+      dateModified: '2026-05-24',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Privacy', item: `${SITE.url}/privacy/` },
+      ],
+    },
+  ]}
+>
   <Nav />
-  <main class="mx-auto max-w-3xl px-6 pt-40 pb-32 text-center">
-    <h1 data-animate>Privacy</h1>
-    <p class="mt-6 text-text-muted" data-animate>Coming soon.</p>
+  <main>
+    <section class="relative overflow-hidden px-6 pt-32 pb-18">
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute left-1/2 top-14 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-primary/[0.10] blur-[150px]"></div>
+        <div class="absolute inset-x-0 bottom-0 h-40" style="background: linear-gradient(to bottom, transparent, var(--color-surface-raised));"></div>
+      </div>
+
+      <div class="relative z-10 mx-auto max-w-5xl">
+        <div data-animate>
+          <SectionLabel text="Privacy" />
+        </div>
+        <div class="mt-5 grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_18rem] lg:items-end">
+          <div>
+            <h1 data-animate class="font-display text-[clamp(2.2rem,6vw,4.5rem)] leading-[1.02]" style="transition-delay: 80ms">
+              Privacy Policy
+            </h1>
+            <p data-animate class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted" style="transition-delay: 160ms">
+              A plain-language description of what Orionfold collects today, why it is collected, and where your responsibility begins when you connect outside providers.
+            </p>
+          </div>
+
+          <div data-animate class="rounded-2xl border border-border bg-surface-raised/80 p-5 shadow-[0_20px_80px_-40px_rgba(0,0,0,0.75)]" style="transition-delay: 220ms">
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-text-dim">Last Updated</p>
+            <p class="mt-3 text-xl text-text">{lastUpdated}</p>
+            <p class="mt-4 text-sm leading-relaxed text-text-muted">
+              Privacy requests: <a class="text-primary hover:text-primary/80 transition-colors" href="mailto:manav@orionfold.com">manav@orionfold.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-border bg-surface-raised px-6 py-10">
+      <div class="mx-auto grid max-w-6xl gap-4 md:grid-cols-3" data-animate-stagger>
+        {summaryCards.map((card) => (
+          <article data-animate class="rounded-2xl border border-border/70 bg-surface/80 p-5">
+            <p class="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-primary">{card.title}</p>
+            <p class="mt-4 text-sm leading-relaxed text-text-muted">{card.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="px-6 py-18">
+      <div class="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
+        <aside data-animate class="lg:sticky lg:top-28 h-fit rounded-2xl border border-border bg-surface-raised/70 p-5">
+          <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-text-dim">Short version</p>
+          <p class="mt-4 text-sm leading-relaxed text-text-muted">
+            The website keeps basic logs and runs no third-party trackers, the newsletter stores your signup information, and the software is built to keep your working data local unless you choose to connect external services.
+          </p>
+        </aside>
+
+        <div class="space-y-5" data-animate-stagger>
+          {sections.map((section) => (
+            <section data-animate class="rounded-2xl border border-border bg-surface-raised/70 p-6 sm:p-8">
+              <h2 class="text-2xl">{section.title}</h2>
+              <div class="mt-4 space-y-4">
+                {section.paragraphs.map((paragraph) => (
+                  <p class="text-base leading-relaxed text-text-muted">{paragraph}</p>
+                ))}
+                {section.bullets && (
+                  <ul class="space-y-3 pt-2">
+                    {section.bullets.map((bullet) => (
+                      <li class="flex items-start gap-3 text-sm leading-relaxed text-text-muted">
+                        <span class="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary"></span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
   </main>
   <Footer />
 </Layout>
