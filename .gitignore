@@ -8,6 +8,9 @@ OPS-NOTES.md
 specs/
 HANDOFF.md
 
+# SEO/AEO audit reports — may contain Search Console / Analytics figures (local-only)
+audit-reports/
+
 # Astro / Node build artifacts
 node_modules/
 dist/

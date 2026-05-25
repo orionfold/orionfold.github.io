@@ -1,0 +1,19 @@
+# Orionfold
+
+> Orionfold builds open AI software, custom AI models, and the playbooks to
+> run them. The goal is simple: help you grow 10x with AI on your own computer.
+> Everything is open and built on real, working code.
+
+## Pages
+- [Software](https://orionfold.com/software/): Open software to run AI on your own computer. The AI Native Platform and API, plus apps and developer tools.
+- [Models](https://orionfold.com/models/): Open-weight AI models tuned for patents, security, law, finance, and medicine. Free to download and run offline.
+- [Books](https://orionfold.com/books/): The AI Native Business book and Field Notes. Free, open, and built on working code.
+- [Story](https://orionfold.com/story/): Building in public. Honest notes on what we shipped, what broke, and what we learned.
+
+## More
+- [GitHub](https://github.com/manavsehgal): Source code and open projects.
+- [Hugging Face](https://huggingface.co/Orionfold): Open-weight models to download.
+
+## Optional
+- [Privacy](https://orionfold.com/privacy/): How we handle data.
+- [Terms](https://orionfold.com/terms/): Terms of use.
