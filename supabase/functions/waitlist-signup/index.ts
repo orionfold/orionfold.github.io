@@ -150,10 +150,10 @@ async function sendConfirmationEmail(email: string, token: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "orionfold studio <manav@updates.orionfold.com>",
+      from: "Orionfold Studio <manav@updates.orionfold.com>",
       reply_to: "manav@orionfold.com",
       to: [email],
-      subject: "confirm your orionfold subscription",
+      subject: "Don't fall behind. One click to confirm.",
       text: confirmationEmailText(confirmUrl),
     }),
   });
@@ -166,24 +166,24 @@ async function sendConfirmationEmail(email: string, token: string) {
 }
 
 function confirmationEmailText(confirmUrl: string): string {
-  return `hi,
+  return `Hi,
 
-thanks for subscribing to word from the studio.
+You're almost in. Confirm and you'll stay ahead while AI
+moves fast.
 
-orionfold is an ai product studio. small, deliberate, local.
-this list gets occasional updates — when something ships, when
-something is worth saying.
+Orionfold builds the software, models, and playbooks to
+grow with AI on your own machine. You'll get each new
+piece first, plus the lessons to keep up.
 
-click the link below to confirm your email:
+Confirm your email:
 
 ${confirmUrl}
 
-this link expires in 7 days. if you didn't request this, you can
-safely ignore this email.
+This link expires in 7 days. If you didn't sign up, ignore
+this email.
 
 --
-orionfold
+Orionfold
 https://orionfold.com
-a studio for the machines that will build the next machines
 `;
 }
