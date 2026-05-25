@@ -1,14 +1,92 @@
 ---
-// S3 STUB — real Models showcase lands in S8.
+// Models showcase (S8). Eight open-weight models + one benchmark dataset, all
+// live under huggingface.co/Orionfold, built from src/data/models.ts. Grouped
+// by domain (spec §6): the Patent Strategist gets its own block (one model,
+// four builds), the four single-domain models share a grid, and the dataset
+// stands alone. A page-level BehindTheScenes holds the real benchmark detail so
+// the cards stay grade 3–5 (spec §7 — Models is the second technical page).
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import ModelCard from '../components/ui/ModelCard.astro';
+import SectionLabel from '../components/ui/SectionLabel.astro';
+import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
+import { models } from '../data/models';
+
+const patent = models.filter((m) => m.group === 'patent');
+const domain = models.filter((m) => m.group === 'domain');
+const dataset = models.filter((m) => m.group === 'dataset');
 ---
-<Layout title="Models · Orionfold" noindex>
+<Layout
+  title="Models · Orionfold"
+  description="Open-weight AI models tuned for patents, security, law, finance, and medicine. Free to download and run offline, on huggingface.co/Orionfold."
+>
   <Nav />
-  <main class="mx-auto max-w-3xl px-6 pt-40 pb-32 text-center">
-    <h1 data-animate>Models</h1>
-    <p class="mt-6 text-text-muted" data-animate>Coming soon. Our custom AI models will live here.</p>
+  <main>
+    <!-- Page header -->
+    <section class="px-6 pt-36 pb-4 text-center sm:pt-40">
+      <div class="mx-auto max-w-3xl">
+        <SectionLabel text="Models" />
+        <h1 data-animate class="mb-5 mt-4">AI tuned for your field</h1>
+        <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
+          Open AI models built for one job each, like patents, security, law, money, and health. All are free to download and run in private, right on your own computer.
+        </p>
+      </div>
+    </section>
+
+    <!-- Patent: one model, four builds -->
+    <section class="px-6 pt-12">
+      <div class="mx-auto max-w-5xl">
+        <div class="mb-8 text-center">
+          <h2 data-animate>Patent Strategist</h2>
+          <p data-animate class="mx-auto mt-3 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
+            Our flagship model reads and reasons about patents fully offline. It comes in four builds: two training toolkits (unsloth and NeMo) and two formats (ready-to-run files, or a small add-on patch for builders).
+          </p>
+        </div>
+        <div data-animate-stagger class="grid gap-6 sm:grid-cols-2">
+          {patent.map((m) => <ModelCard {...m} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- One model per domain -->
+    <section class="px-6 pt-20">
+      <div class="mx-auto max-w-5xl">
+        <div class="mb-8 text-center">
+          <h2 data-animate>More domain models</h2>
+          <p data-animate class="mx-auto mt-3 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
+            Each one is tuned for a single field, so it knows the words and rules of that work.
+          </p>
+        </div>
+        <div data-animate-stagger class="grid gap-6 sm:grid-cols-2">
+          {domain.map((m) => <ModelCard {...m} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- Benchmark dataset -->
+    <section class="px-6 pt-20">
+      <div class="mx-auto max-w-5xl">
+        <div class="mb-8 text-center">
+          <h2 data-animate>Benchmark dataset</h2>
+          <p data-animate class="mx-auto mt-3 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
+            The test set we use to check how well a model reasons about patents.
+          </p>
+        </div>
+        <div class="mx-auto grid max-w-2xl gap-6">
+          {dataset.map((m) => <ModelCard {...m} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical depth (held back from the cards per spec §7) -->
+    <section class="px-6 pb-28 pt-16">
+      <div data-animate>
+        <BehindTheScenes summary="The technical details">
+          All weights are open and free to run. The four Patent Strategist builds start from DeepSeek-R1-0528-Qwen3-8B and ship two ways: GGUF files (ready to run with llama.cpp) and LoRA adapters (small training patches in BF16). On Spark-class hardware (a small ~$3,000 AI desktop) the Q5_K_M GGUF runs around 32 to 35 tokens per second. SecurityLLM builds on ZySec-AI/SecurityLLM, Saul 7B on Equall/Saul-7B-Instruct-v1, Finance Chat on AdaptLLM/finance-chat, and II-Medical 8B on Intelligent-Internet/II-Medical-8B, each shipped as GGUF from Q4 through Q8 and F16, and scored on domain tests like CyberMetric, LegalBench, FinanceBench, and MedMCQA. The Patent Strategist Bench is 200 questions across seven shapes (claim drafting, prior-art ranking, MPEP-grounded reasoning, and more), released CC-BY-4.0.
+        </BehindTheScenes>
+      </div>
+    </section>
   </main>
   <Footer />
 </Layout>

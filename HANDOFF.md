@@ -58,7 +58,7 @@ domain — don't treat a localhost CORS error as a bug.
 | S5 | Homepage part 2: highlights + stories carousel | ✅ done |
 | S6 | Books page (showcase + link out) | ✅ done |
 | S7 | Software page (platform, neosignal, fieldkit, API) | ✅ done |
-| S8 | Models page (8 HF models + dataset) | ⬜ queued |
+| S8 | Models page (8 HF models + dataset) | ✅ done |
 | S9 | Story collection + index + posts | ⬜ queued |
 | S10 | Terms + Privacy (Orionfold-modified) | ⬜ queued |
 | S11 | SEO baseline | ⬜ queued |
@@ -166,14 +166,16 @@ domain — don't treat a localhost CORS error as a bug.
 
 ---
 
-## S8 — Models page ⬜
+## S8 — Models page ✅ `2026-05-24`
 
 **Source:** spec §6 (Models) + donor `src/content/artifacts/*.yaml` + `huggingface.co/Orionfold`.
 `src/data/models.ts` + `src/pages/models.astro`.
 
 - Group by domain (Patent, Security, Legal, Finance, Medical) + the bench dataset. Each card: base model, format, recommended variant, one-line positioning, downloads → real `huggingface.co/Orionfold/<repo>`.
 
-**DoD:** ☐ all 8 models + dataset shown · ☐ every link resolves to a real HF repo · ☐ build clean.
+**DoD:** ☑ all 8 models + dataset shown · ☑ every link resolves to a real HF repo · ☑ build clean.
+
+**→ next/gotchas:** Data-driven like S6/S7: new typed `src/data/models.ts` (`Model[]` with a `group: 'patent'|'domain'|'dataset'` tag + `domain` eyebrow) feeds `models.astro`. Built a **new `src/components/ui/ModelCard.astro`** rather than reusing `ProductCard` — a model's value is its **metadata**, so the card pairs a plain tagline with a small `<dl>` spec list (`Built on` / `Format` / `Best build` / `License`, rows built from whichever fields the entry carries) instead of label pills. **Grouping (spec §6) resolved into 3 sections** to avoid sparse single-card groups: **Patent Strategist** (one model, 4 builds = 2 toolkits unsloth/NeMo × 2 formats GGUF/LoRA-adapter, 2×2 grid) · **More domain models** (Security/Legal/Finance/Medical, each domain-labeled, 2×2 grid) · **Benchmark dataset** (the bench, centered). All 9 `<article>`s + the `data-animate-stagger` grids verified in-browser. **All facts pulled from the donor `src/content/artifacts/*.yaml`** (base_model, class→format, recommended_variant, license.model) — NOT invented: patent ×4 = `deepseek-ai/DeepSeek-R1-0528-Qwen3-8B` Apache-2.0 (GGUF rec `Q5_K_M`, adapters `BF16`); SecurityLLM = `ZySec-AI/SecurityLLM` Apache-2.0 rec `Q4_K_M`; Saul = `Equall/Saul-7B-Instruct-v1` **MIT** (no rec_variant in YAML → row omitted, which the optional-spec filter handles); finance-chat = `AdaptLLM/finance-chat` license **Free** (YAML had `tier:free`, no `model:` key); II-Medical = `Intelligent-Internet/II-Medical-8B` Apache-2.0 rec `Q5_K_M`; bench = CC-BY-4.0, 200 questions. **Every HF link verified to resolve against the live org page** (WebFetch of `huggingface.co/Orionfold` listed exactly these 8 models + 1 dataset; repo names are case-correct, e.g. `SecurityLLM-GGUF`, `Saul-7B-Instruct-v1-GGUF`). Dataset link uses the **`/datasets/` prefix** (`huggingface.co/datasets/Orionfold/...`); models do not. **Second page to fold in `BehindTheScenes.astro`** (spec §7): one reveal holds the donor's hard facts the cards omit — DeepSeek-R1 base, GGUF (llama.cpp) vs LoRA/BF16 adapter, ~32–35 tok/s for Q5_K_M on Spark, the four base models, Q4–Q8/F16 quants, and the domain benchmarks (CyberMetric/LegalBench/FinanceBench/MedMCQA). Cards stay grade 3–5 with glosses ("patents (the legal cover for inventions)", "Spark-class hardware (a small ~$3,000 AI desktop)"); **0 reader-facing em-dashes** (the `·` middot separates variant labels), 0 `noindex`/`S3 STUB`. Stub retired. Browser-verified (chrome-devtools, preview, force `.is-visible`): 9 cards, correct domain/title/variant/spec-rows/CTA (models "Download on HuggingFace", dataset "Get the dataset"), BTS present, full-page screenshot clean. `npm run build` clean → 7 pages + sitemap. **Gotcha:** chrome-devtools `take_screenshot` to a project-root path was denied by the auto-mode classifier mid-session — write screenshots to the temp workspace root (`$TMPDIR`) instead, not the repo. **S9 (next)** builds the Story collection (`src/content.config.ts` `story` collection + `src/pages/story/index.astro` + `[slug]/index.astro` + 3–4 placeholder `.md` posts) and **rewires the homepage carousel** (S5's `StoriesCarousel.astro`, currently inline-stubbed) to read top-3 by date — the donor `FieldNotesRail.astro` `dateFmt` + card markup were mirrored in S5 so that swap is mechanical.
 
 ---
 
