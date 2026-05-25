@@ -1,0 +1,29 @@
+---
+// Placeholder book cover (S6) — a CSS-only stand-in for real artwork, which is
+// a later spec. Generalises the homepage book-cover idiom (a tilted, spine'd
+// card) so each /books/ entry renders its own title. Purely decorative, so it
+// carries aria-hidden; data-animate lets it ride the scroll-reveal system.
+interface Props {
+  title: string;
+  subtitle: string;
+  tag: string;
+}
+
+const { title, subtitle, tag } = Astro.props;
+---
+<div data-animate class="relative mx-auto w-[220px] sm:w-[250px]">
+  <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.10] blur-[90px]"></div>
+  <div
+    class="relative flex aspect-[2/3] flex-col justify-between overflow-hidden rounded-l-sm rounded-r-lg border border-border bg-surface-raised p-6 shadow-2xl shadow-primary/10"
+    style="transform: perspective(900px) rotateY(-6deg) rotateX(2deg);"
+    aria-hidden="true"
+  >
+    <span class="absolute inset-y-0 left-0 w-1.5 bg-primary/70"></span>
+    <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted">Orionfold</span>
+    <div>
+      <div class="font-display text-2xl font-bold leading-tight">{title}</div>
+      <p class="mt-2 text-xs leading-relaxed text-text-muted">{subtitle}</p>
+    </div>
+    <span class="font-mono text-[10px] tracking-wider text-primary">{tag}</span>
+  </div>
+</div>

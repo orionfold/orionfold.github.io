@@ -1,0 +1,12 @@
+---
+// Eyebrow label above section headings. Ported verbatim from the donor —
+// brand-neutral, reused across the homepage sections and S6–S10 showcases.
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+---
+<span class="inline-block font-mono text-xs tracking-[0.2em] uppercase text-text-muted">
+  {text}
+</span>

@@ -1,0 +1,26 @@
+{
+  "name": "Orionfold",
+  "short_name": "Orionfold",
+  "description": "Orionfold is the studio shipping AI Native software, custom models, and personal devices to help you grow 10x with AI.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f6f9fc",
+  "theme_color": "#296cd8",
+  "icons": [
+    {
+      "src": "/orionfold-64.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    },
+    {
+      "src": "/orionfold-128.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "/orionfold-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

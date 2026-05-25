@@ -1,0 +1,47 @@
+---
+// Books showcase (S6). Two cards built from src/data/books.ts, each linking out
+// to its canonical home on ainative.business. Reuses the homepage Highlight
+// band (two-column, alternating sides) so the showcase keeps the homepage
+// rhythm; covers are CSS-only placeholders (real artwork is a later spec).
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Highlight from '../components/ui/Highlight.astro';
+import BookCover from '../components/ui/BookCover.astro';
+import SectionLabel from '../components/ui/SectionLabel.astro';
+import { books } from '../data/books';
+---
+<Layout
+  title="Books · Orionfold"
+  description="The AI Native Business book and Field Notes. Free, open, and grounded in real, working code."
+>
+  <Nav />
+  <main>
+    <!-- Page header -->
+    <section class="px-6 pt-36 pb-4 text-center sm:pt-40">
+      <div class="mx-auto max-w-3xl">
+        <SectionLabel text="Books" />
+        <h1 data-animate class="mb-5 mt-4">Read how it's built</h1>
+        <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
+          A free book and a running set of notes on building a business that runs on AI. Both are open to read, and both come straight from the work we do.
+        </p>
+      </div>
+    </section>
+
+    {books.map((book, i) => (
+      <Highlight
+        eyebrow={book.eyebrow}
+        title={book.title}
+        body={book.body}
+        pills={book.pills}
+        href={book.href}
+        ctaText={book.ctaText}
+        external
+        reverse={i % 2 === 1}
+      >
+        <BookCover slot="media" title={book.cover.title} subtitle={book.cover.subtitle} tag={book.cover.tag} />
+      </Highlight>
+    ))}
+  </main>
+  <Footer />
+</Layout>

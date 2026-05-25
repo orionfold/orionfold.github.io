@@ -1,0 +1,45 @@
+---
+// Homepage hero (spec §5.2). Centered headline → subtitle → scroll CTA.
+// Layout is dictated by the spec, but the atmospheric dual-glow, the
+// `.hero-gradient-text` H1, the bottom fade into the next section, and the
+// `data-animate-stagger` reveal are ported idioms from the donor's Hero.
+//
+// The CTA is a plain anchor to #why — `html { scroll-behavior: smooth }`
+// (global.css) handles the smooth scroll; no JS needed.
+---
+<section class="relative flex min-h-[calc(100dvh-80px)] items-center overflow-x-clip px-6 pb-24 pt-28">
+  <!-- Dual atmospheric glow -->
+  <div class="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
+    <div class="absolute h-[800px] w-[800px] rounded-full bg-primary/[0.10] blur-[180px]"></div>
+    <div class="absolute h-[400px] w-[400px] rounded-full bg-primary/[0.15] blur-[100px]"></div>
+  </div>
+
+  <!-- Bottom gradient fade into the narrative -->
+  <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-40" style="background: linear-gradient(to bottom, transparent, var(--color-surface));"></div>
+
+  <div class="relative z-10 mx-auto w-full max-w-3xl text-center" data-animate-stagger>
+    <p data-animate class="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-text-muted">
+      Orionfold · an AI studio
+    </p>
+
+    <h1 data-animate class="hero-gradient-text text-balance font-display font-bold">
+      Do you want to grow 10x using AI?
+    </h1>
+
+    <p data-animate class="mx-auto mt-6 max-w-xl text-balance text-lg leading-relaxed text-text-muted">
+      Fast, easy AI journey with expert playbooks, open software, custom models, on personal devices.
+    </p>
+
+    <div data-animate class="mt-10">
+      <a
+        href="#why"
+        class="group inline-flex items-center gap-2 rounded-md bg-primary px-8 py-4 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-surface transition-colors hover:bg-primary/90"
+      >
+        I am ready to grow 10x fast
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true">
+          <path d="M12 5v14M19 12l-7 7-7-7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

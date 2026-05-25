@@ -1,0 +1,69 @@
+---
+// Optional technical depth for the curious. The visible marketing copy reads
+// at grade 3–5; this collapsible reveal holds the real detail (model names,
+// GGUF, Spark, edge functions). The inverse of the donor Field Notes pattern,
+// which explains technical topics *down* — here simple copy reveals *up*.
+//
+// Visual idiom ported from the donor's field-notes/TermsInThisPiece.astro:
+// bordered rounded box, surface-raised tint, mono uppercase eyebrow, chevron
+// that rotates when open. Native <details>/<summary> — no JS, keyboard- and
+// screen-reader-friendly out of the box. Reused on the Software/Models pages.
+interface Props {
+  summary?: string;
+}
+const { summary = 'Behind the scenes' } = Astro.props;
+---
+<details class="bts mx-auto mt-8 max-w-2xl text-left">
+  <summary class="bts__summary">
+    <span class="bts__eyebrow">{summary}</span>
+    <svg class="bts__chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  </summary>
+  <div class="bts__body">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .bts {
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: color-mix(in oklch, var(--color-surface-raised) 60%, transparent);
+    padding: 0.85rem 1.1rem;
+  }
+  .bts__summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--color-text-muted);
+    transition: color 0.15s;
+  }
+  .bts__summary::-webkit-details-marker { display: none; }
+  .bts__summary:hover { color: var(--color-primary); }
+  .bts__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .bts__chev {
+    margin-left: auto;
+    opacity: 0.65;
+    transition: transform 0.2s ease;
+  }
+  .bts[open] .bts__chev { transform: rotate(180deg); }
+  .bts__body {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px dashed color-mix(in oklch, var(--color-border) 80%, transparent);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bts__chev { transition: none; }
+  }
+</style>

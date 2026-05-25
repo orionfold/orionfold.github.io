@@ -1,0 +1,219 @@
+---
+// Lead-capture form. Ported from the donor's WaitlistForm and fused with the
+// vanilla `main.js` `?confirmed=` redirect-banner handling (see §9 of the spec).
+//
+// Two behaviours in one component:
+//   1. Submit  — POSTs { email, website (honeypot), source } to the live
+//      Supabase edge function that runs the Resend double-opt-in funnel.
+//      DO NOT change the endpoint or payload shape — the funnel is live.
+//   2. watchConfirmed — when true, the script reads the `?confirmed=` query
+//      param the confirm-email edge function redirects back to and surfaces
+//      the result in this form's own success/error slots, then cleans the URL.
+//      Only the homepage instance sets this (the redirect lands on `/`).
+//
+// Dev gotcha: the edge-function CORS allowlist is https://orionfold.com, so a
+// real submit CORS-fails from localhost. Full submit is verified live at S12.
+interface Props {
+  variant?: 'hero' | 'cta' | 'footer';
+  id?: string;
+  buttonText?: string;
+  source?: string;
+  successMessage?: string;
+  iconOnly?: boolean;
+  watchConfirmed?: boolean;
+}
+
+const {
+  variant = 'cta',
+  id = 'waitlist',
+  buttonText = 'Subscribe',
+  source = 'home',
+  successMessage = 'Check your inbox to confirm.',
+  iconOnly = false,
+  watchConfirmed = false,
+} = Astro.props;
+const formId = `form-${id}`;
+const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
+---
+
+<form
+  id={formId}
+  data-endpoint={endpoint}
+  class:list={[
+    'w-full max-w-md',
+    variant === 'footer' ? 'mx-0' : 'mx-auto',
+  ]}
+  novalidate
+>
+  <div class:list={[
+    'flex gap-2',
+    iconOnly ? 'flex-row' : 'flex-col sm:flex-row',
+  ]}>
+    <label for={`${formId}-email`} class="sr-only">Email address</label>
+    <input
+      id={`${formId}-email`}
+      type="email"
+      name="email"
+      placeholder="you@example.com"
+      required
+      autocomplete="email"
+      class="flex-1 bg-transparent border border-border font-mono text-xs tracking-wide px-4 py-3 text-text placeholder:text-text-dim focus:border-primary focus:outline-none transition-colors rounded-md"
+    />
+    <!-- Honeypot — hidden from real users -->
+    <input
+      type="text"
+      name="website"
+      tabindex="-1"
+      autocomplete="off"
+      aria-hidden="true"
+      style="position:absolute;left:-9999px;opacity:0;height:0;width:0;"
+    />
+    <button
+      type="submit"
+      {...(iconOnly ? { 'data-icon-only': 'true', 'aria-label': buttonText } : {})}
+      class:list={[
+        'bg-primary text-surface hover:bg-primary/90 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md',
+        iconOnly
+          ? 'p-3 flex items-center justify-center'
+          : 'font-mono text-xs tracking-[0.2em] uppercase px-6 py-3 whitespace-nowrap font-semibold',
+      ]}
+    >
+      {iconOnly ? (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="M22 7l-10 7L2 7"/>
+        </svg>
+      ) : (
+        buttonText
+      )}
+    </button>
+  </div>
+
+  <!-- Error message -->
+  <p
+    id={`${formId}-error`}
+    role="alert"
+    class="hidden mt-3 font-mono text-xs text-red-500"
+  ></p>
+
+  <!-- Success message -->
+  <div
+    id={`${formId}-success`}
+    class:list={[
+      'hidden mt-4 flex items-center gap-2',
+      variant === 'footer' ? 'justify-start' : 'justify-center',
+    ]}
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-success">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id={`${formId}-success-text`} class="font-mono text-xs text-success"></span>
+  </div>
+</form>
+
+<script define:vars={{ formId, source, successMessage, watchConfirmed }}>
+  (function () {
+    const form = document.getElementById(formId);
+    if (!form) return;
+
+    const endpoint = form.getAttribute('data-endpoint');
+    const emailInput = form.querySelector('input[name="email"]');
+    const honeypot = form.querySelector('input[name="website"]');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const errorEl = document.getElementById(`${formId}-error`);
+    const successEl = document.getElementById(`${formId}-success`);
+    const successText = document.getElementById(`${formId}-success-text`);
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+      successEl.classList.add('hidden');
+    }
+
+    function showSuccess(msg) {
+      successText.textContent = msg;
+      successEl.classList.remove('hidden');
+      errorEl.classList.add('hidden');
+      form.querySelector('div').classList.add('hidden');
+    }
+
+    function clearMessages() {
+      errorEl.classList.add('hidden');
+      successEl.classList.add('hidden');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessages();
+
+      const email = emailInput.value.trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError('Please enter a real email address.');
+        emailInput.focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const isIconOnly = submitBtn.hasAttribute('data-icon-only');
+      const originalChildren = isIconOnly ? Array.from(submitBtn.childNodes).map(n => n.cloneNode(true)) : null;
+      const originalText = isIconOnly ? null : submitBtn.textContent;
+      if (isIconOnly) {
+        submitBtn.classList.add('animate-pulse');
+      } else {
+        submitBtn.textContent = 'SENDING...';
+      }
+
+      function restoreBtn() {
+        submitBtn.disabled = false;
+        if (isIconOnly) { submitBtn.replaceChildren(...originalChildren); submitBtn.classList.remove('animate-pulse'); }
+        else { submitBtn.textContent = originalText; }
+      }
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            website: honeypot.value,
+            source,
+          }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          showError(data.error || data.message || 'Something went wrong. Please try again.');
+          restoreBtn();
+          return;
+        }
+
+        if (data.already_confirmed) {
+          showSuccess("You're already on the list.");
+        } else if (data.message) {
+          showSuccess(data.message);
+        } else {
+          showSuccess(successMessage);
+        }
+      } catch {
+        showError('Could not connect. Please try again.');
+        restoreBtn();
+      }
+    });
+
+    // ── Confirmation banner (ported from main.js) ──
+    // The confirm-email edge function redirects to /?confirmed=1 (or =already,
+    // or =error&error=<msg>). Surface that state in this form, then clean the
+    // URL so a reload doesn't re-show the banner.
+    if (watchConfirmed) {
+      const params = new URLSearchParams(location.search);
+      const state = params.get('confirmed');
+      if (state) {
+        if (state === '1') showSuccess("You're on the list.");
+        else if (state === 'already') showSuccess("You're already on the list.");
+        else if (state === 'error') showError(params.get('error') || "That link didn't work. Please try again.");
+        history.replaceState({}, '', location.pathname);
+      }
+    }
+  })();
+</script>

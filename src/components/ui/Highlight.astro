@@ -1,0 +1,65 @@
+---
+// Reusable homepage highlight block (spec §5.4–5.6): a two-column band that
+// pairs a short pitch with a placeholder visual, alternating sides down the
+// page for rhythm. The donor's Book.astro is one bespoke two-column section;
+// this generalises that idiom so Book / Software / Model share one shell.
+//
+// The visual side is a named <slot name="media"> so each highlight can pass
+// its own placeholder (cover, app frame, terminal) — real artwork lands later.
+// Copy reads grade 3–5 (memory `website-copy-style`); pills are short labels.
+import SectionLabel from './SectionLabel.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  body: string;
+  pills?: string[];
+  href: string;
+  ctaText: string;
+  reverse?: boolean;
+  external?: boolean; // off-site link: opens in a new tab + uses a "leaves the site" arrow
+}
+
+const { eyebrow, title, body, pills = [], href, ctaText, reverse = false, external = false } = Astro.props;
+---
+<section class="px-6 py-20 sm:py-24">
+  <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <!-- Media (placeholder visual) -->
+    <div class:list={['order-1', reverse ? 'lg:order-2' : 'lg:order-1']}>
+      <slot name="media" />
+    </div>
+
+    <!-- Pitch -->
+    <div class:list={['order-2 text-center lg:text-left', reverse ? 'lg:order-1' : 'lg:order-2']}>
+      <SectionLabel text={eyebrow} />
+      <h2 data-animate class="mb-4 mt-4">{title}</h2>
+      <p data-animate class="mx-auto mb-6 max-w-xl text-lg leading-relaxed text-text-muted lg:mx-0" style="transition-delay: 80ms">
+        {body}
+      </p>
+
+      {pills.length > 0 && (
+        <div data-animate class="mb-7 flex flex-wrap justify-center gap-1.5 lg:justify-start" style="transition-delay: 120ms">
+          {pills.map((pill) => (
+            <span class="rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1 font-mono text-[10px] tracking-wider text-primary">
+              {pill}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <a
+        href={href}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
+        data-animate
+        class="inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
+        style="transition-delay: 160ms"
+      >
+        {ctaText}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          {external ? <path d="M7 17L17 7M7 7h10v10" /> : <path d="M5 12h14M12 5l7 7-7 7" />}
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,19 +1,21 @@
 ---
-// S1 scaffold placeholder. The real homepage is built in S4
-// (hero + narrative + lead form) on top of the Layout shell from S3.
+// Homepage (S4 + S5). Hero + narrative (Why → What → How) + lead form,
+// then the Book/Software/Model highlights and the stories carousel.
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/sections/Hero.astro';
+import Narrative from '../components/sections/Narrative.astro';
+import Highlights from '../components/sections/Highlights.astro';
+import StoriesCarousel from '../components/sections/StoriesCarousel.astro';
+import Footer from '../components/Footer.astro';
 ---
-
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Orionfold</title>
-  </head>
-  <body>
-    <main>
-      <h1>Orionfold</h1>
-      <p>Astro scaffold online. Design system and pages land in S2–S12.</p>
-    </main>
-  </body>
-</html>
+<Layout>
+  <Nav />
+  <main>
+    <Hero />
+    <Narrative />
+    <Highlights />
+    <StoriesCarousel />
+  </main>
+  <Footer />
+</Layout>

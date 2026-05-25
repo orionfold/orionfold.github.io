@@ -1,0 +1,158 @@
+---
+// Homepage narrative (spec §5.3): the CTA target. Three stacked sections —
+// Why (anchor #why) → What you need to do → How Orionfold can help — closing
+// with the lead-capture form. Section rhythm (eyebrow → h2 → muted intro →
+// data-animate grid) is the donor's; the copy is Orionfold's parent-studio
+// framing (spec §1). Copy reads grade 3–5 per memory `website-copy-style`;
+// each section carries a "Behind the scenes" reveal with the technical depth.
+import SectionLabel from '../ui/SectionLabel.astro';
+import WaitlistForm from '../ui/WaitlistForm.astro';
+import BehindTheScenes from '../ui/BehindTheScenes.astro';
+
+const forces = [
+  {
+    title: 'New tools every week',
+    body: "AI changes so fast that a once-a-year plan can't keep up.",
+  },
+  {
+    title: 'Skill, not staff',
+    body: "A 10x worker isn't busier. AI helpers run their daily tasks, right on their own computer.",
+  },
+  {
+    title: 'Open tools caught up',
+    body: 'Free, open AI now matches the big paid tools. No lock to one company. No fee per person.',
+  },
+];
+
+// Order mirrors the hero subtitle: playbooks → software → models → devices.
+const pillars = [
+  {
+    title: 'Expert playbooks',
+    body: 'Books, notes, and real stories that turn hard lessons into steps you can follow.',
+  },
+  {
+    title: 'Open software',
+    body: 'Run AI helpers and tasks yourself. Free and open, with no cap on what you automate.',
+  },
+  {
+    title: 'Custom models',
+    body: 'AI trained for your field, like patents, security, law, money, or health. Not a one-size chatbot.',
+  },
+  {
+    title: 'Personal devices',
+    body: 'A computer strong enough to run that AI in private, right on your desk.',
+  },
+];
+
+// Links out to the showcase pages (built in S6–S8); routes exist as stubs today.
+const products = [
+  { label: 'AI Native Platform', href: '/software/' },
+  { label: 'neosignal', href: '/software/' },
+  { label: 'fieldkit', href: '/software/' },
+  { label: 'AI Native API', href: '/software/' },
+  { label: 'The book', href: '/books/' },
+  { label: 'Field Notes', href: '/books/' },
+  { label: 'Models', href: '/models/' },
+];
+---
+<!-- ── Why ── -->
+<section id="why" class="scroll-mt-24 px-6 py-24">
+  <div class="mx-auto max-w-5xl">
+    <div class="mb-12 text-center">
+      <SectionLabel text="Why now" />
+      <h2 data-animate class="mb-4 mt-4">AI is moving fast. The gap is growing.</h2>
+      <p data-animate class="mx-auto max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
+        Every few months, AI gets better, faster, and cheaper. People who build with AI keep up. People who wait fall behind. Not because they try less. Their work just isn't made for AI yet.
+      </p>
+    </div>
+
+    <div data-animate-stagger class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {forces.map(({ title, body }) => (
+        <div data-animate class="rounded-xl border border-border bg-surface-raised p-6">
+          <div class="mb-2 font-semibold">{title}</div>
+          <p class="text-sm leading-relaxed text-text-muted">{body}</p>
+        </div>
+      ))}
+    </div>
+
+    <div data-animate>
+      <BehindTheScenes>
+        Open vs closed, in tech terms. Open models are free to download and run on your own machine. Closed models live behind a company's paid service. On public benchmarks (shared tests that score AI on the same questions), the best open models now land within a few points of the closed ones.
+      </BehindTheScenes>
+    </div>
+  </div>
+</section>
+
+<!-- ── What you need to do about it ── -->
+<section class="px-6 py-24">
+  <div class="mx-auto max-w-5xl">
+    <div class="mb-12 text-center">
+      <SectionLabel text="What to do" />
+      <h2 data-animate class="mb-4 mt-4">Own your AI setup.</h2>
+      <p data-animate class="mx-auto max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
+        You don't need a bigger team or budget. You need four things you control.
+      </p>
+    </div>
+
+    <div data-animate-stagger class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {pillars.map(({ title, body }, i) => (
+        <div data-animate class="rounded-xl border border-primary/20 bg-primary/[0.04] p-6">
+          <div class="mb-3 font-mono text-3xl font-bold text-primary">{String(i + 1).padStart(2, '0')}</div>
+          <div class="mb-2 font-semibold">{title}</div>
+          <p class="text-sm leading-relaxed text-text-muted">{body}</p>
+        </div>
+      ))}
+    </div>
+
+    <div data-animate>
+      <BehindTheScenes>
+        Open software means the code is public and free to run, with no fee per user. Custom models start from open base models like DeepSeek-R1 and Qwen, then get fine-tuned (trained a bit more) for one field and ship as GGUF files (a format that runs on your own GPU). Personal devices means Spark-class hardware: a small desktop, around $3,000, built to run these models offline.
+      </BehindTheScenes>
+    </div>
+  </div>
+</section>
+
+<!-- ── How Orionfold can help (closes with the lead form) ── -->
+<section class="px-6 py-24">
+  <div class="mx-auto max-w-3xl text-center">
+    <SectionLabel text="How we help" />
+    <h2 data-animate class="mb-4 mt-4">Orionfold builds all four.</h2>
+    <p data-animate class="mx-auto mb-10 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
+      We're the studio behind a full AI kit. Open software, custom models, and the guides to run it all in private. Every piece links from one place.
+    </p>
+
+    <div data-animate class="mb-10 flex flex-wrap items-center justify-center gap-2" style="transition-delay: 160ms">
+      {products.map(({ label, href }) => (
+        <a
+          href={href}
+          class="rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 font-mono text-[11px] tracking-wider text-primary transition-colors hover:border-primary/40 hover:bg-primary/10"
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+
+    <div data-animate class="mb-14">
+      <BehindTheScenes>
+        The AI Native platform runs on your own machine. neosignal tracks how AI models, chips, and clouds stack up. fieldkit is a free Python toolbox of patterns proven on Spark. The AI Native API lets you drive it all with code. Any AI feature here runs on a small server function, so keys and private data never reach your browser.
+      </BehindTheScenes>
+    </div>
+
+    <!-- Lead capture -->
+    <div data-animate class="mx-auto max-w-md rounded-2xl border border-primary/30 bg-surface-raised p-8 primary-pulse">
+      <p class="relative z-10 mb-2 font-semibold">Grow with us.</p>
+      <p class="relative z-10 mb-6 text-sm leading-relaxed text-text-muted">
+        Get a newsletter made for you, plus early offers, as we build.
+      </p>
+      <div class="relative z-10">
+        <WaitlistForm
+          id="home-waitlist"
+          variant="cta"
+          source="home"
+          buttonText="I'm in"
+          watchConfirmed
+        />
+      </div>
+    </div>
+  </div>
+</section>

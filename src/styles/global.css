@@ -1,0 +1,381 @@
+@import "tailwindcss";
+
+/* ── Self-hosted fonts (preloaded in Layout.astro) ── */
+@font-face {
+  font-family: 'Geist Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/geist-sans-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Geist Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('/fonts/geist-sans-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Geist Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('/fonts/geist-sans-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Geist Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('/fonts/geist-mono-latin-wght-normal.woff2') format('woff2');
+}
+
+/* ── Design Tokens — single light theme (OKLCH hue 260 blue-indigo) ──
+   Ported from the donor's html[data-theme="light"] values, promoted into
+   the default @theme. The donor's dark defaults, the [data-theme] override
+   block, the no-FOUC theme script, ThemeToggle, and .theme-transitions are
+   intentionally dropped: this site ships one light theme, no toggle. */
+@theme {
+  --color-surface: oklch(0.98 0.005 260);
+  --color-surface-raised: oklch(0.99 0.002 260 / 0.92);
+  --color-surface-overlay: oklch(0.94 0.008 260);
+  --color-text: oklch(0.15 0.02 260);
+  --color-text-muted: oklch(0.45 0.03 260);
+  --color-text-dim: oklch(0.47 0.03 260);
+  --color-primary: oklch(0.55 0.18 260);
+  --color-primary-dim: oklch(0.55 0.18 260 / 0.10);
+  --color-primary-glow: oklch(0.55 0.18 260 / 0.20);
+  --color-success: oklch(0.45 0.15 170);
+  --color-success-dim: oklch(0.45 0.15 170 / 0.10);
+  --color-success-glow: oklch(0.45 0.15 170 / 0.20);
+  --color-border: oklch(0.8 0.02 260 / 0.25);
+
+  /* ── SVG semantic tokens (light) ── */
+  --svg-card-fill: oklch(0.99 0.002 260);
+  --svg-card-stroke: oklch(0.85 0.02 260 / 0.3);
+  --svg-bg: oklch(0.96 0.005 260);
+  --svg-bg-inner: oklch(0.97 0.003 260);
+  --svg-bg-inner-stroke: oklch(0.88 0.015 260 / 0.4);
+  --svg-stroke: oklch(0.85 0.02 260 / 0.3);
+  --svg-text-bright: oklch(0.25 0.05 260);
+  --svg-text-dim: oklch(0.55 0.03 260);
+  --svg-text-muted: oklch(0.45 0.03 260);
+  --svg-text-extra-dim: oklch(0.55 0.03 260);
+  --svg-text-faint: oklch(0.6 0.02 260);
+  --svg-connector: oklch(0.55 0.1 260);
+  --svg-connector-label: oklch(0.5 0.08 260);
+  --svg-accent-blue: oklch(0.50 0.18 250);
+  --svg-accent-teal: oklch(0.45 0.15 195);
+  --svg-accent-green: oklch(0.45 0.15 170);
+  --svg-accent-green-alt: oklch(0.45 0.18 150);
+  --svg-accent-cyan: oklch(0.45 0.15 180);
+  --svg-accent-purple: oklch(0.45 0.15 300);
+  --svg-accent-orange: oklch(0.55 0.15 75);
+  --svg-accent-red: oklch(0.50 0.2 25);
+  --svg-accent-pink: oklch(0.55 0.15 340);
+
+  --font-display: "Geist Sans", system-ui, sans-serif;
+  --font-body: "Geist Sans", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 100%; /* 16px base on mobile */
+}
+
+@media (min-width: 640px) {
+  html {
+    font-size: 112.5%; /* 18px base on desktop */
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ── Noise grain overlay (light-theme opacity) ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0.015;
+  will-change: transform;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+@media (max-width: 639px) {
+  body::before {
+    display: none;
+  }
+}
+
+/* ── Typography ── */
+@layer base {
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--color-text);
+  }
+
+  h1 { font-size: clamp(2rem, 6vw, 5rem); }
+  h2 { font-size: clamp(1.75rem, 4vw, 3rem); }
+  h3 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); }
+}
+
+/* ── CSS containment for section isolation ── */
+section {
+  contain: layout style;
+}
+
+/* ── Scroll-reveal animation system ── */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(24px);
+  will-change: opacity, transform;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  will-change: auto;
+}
+
+/* Stagger delays */
+[data-animate-stagger] > [data-animate]:nth-child(1) { transition-delay: 0ms; }
+[data-animate-stagger] > [data-animate]:nth-child(2) { transition-delay: 80ms; }
+[data-animate-stagger] > [data-animate]:nth-child(3) { transition-delay: 160ms; }
+[data-animate-stagger] > [data-animate]:nth-child(4) { transition-delay: 240ms; }
+[data-animate-stagger] > [data-animate]:nth-child(5) { transition-delay: 320ms; }
+[data-animate-stagger] > [data-animate]:nth-child(6) { transition-delay: 400ms; }
+[data-animate-stagger] > [data-animate]:nth-child(7) { transition-delay: 480ms; }
+
+/* ── Primary glow pulse (GPU-composited via opacity) ── */
+.primary-pulse {
+  position: relative;
+}
+.primary-pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 24px 4px var(--color-primary-glow);
+  opacity: 0;
+  animation: primary-pulse 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes primary-pulse {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* ── Timeline active marker pulse (positioning-neutral) ── */
+.timeline-marker-active {
+  animation: timeline-marker-pulse 3s ease-in-out infinite;
+}
+@keyframes timeline-marker-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--color-primary) 40%, transparent); }
+  50%      { box-shadow: 0 0 0 10px color-mix(in oklch, var(--color-primary) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline-marker-active { animation: none; }
+}
+
+/* ── SVG scroll-reveal animations ── */
+.svg-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.svg-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.svg-reveal-d1 { transition-delay: 0.1s; }
+.svg-reveal-d2 { transition-delay: 0.2s; }
+.svg-reveal-d3 { transition-delay: 0.3s; }
+.svg-reveal-d4 { transition-delay: 0.4s; }
+.svg-reveal-d5 { transition-delay: 0.5s; }
+.svg-reveal-d6 { transition-delay: 0.6s; }
+.svg-reveal-d7 { transition-delay: 0.7s; }
+.svg-reveal-d8 { transition-delay: 0.8s; }
+
+/* Hover lift for interactive SVG elements */
+.svg-hover-lift {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.svg-hover-lift:hover {
+  transform: translateY(-2px);
+  opacity: 1;
+}
+
+/* Line draw animation (stroke-dasharray driven) */
+.line-draw {
+  stroke-dasharray: var(--path-length);
+  stroke-dashoffset: var(--path-length);
+  transition: stroke-dashoffset 1s ease;
+}
+.line-draw.visible {
+  stroke-dashoffset: 0;
+}
+
+/* Bar/element grow animation */
+.bar-grow {
+  transform-origin: bottom;
+  transform: scaleY(0);
+  transition: transform 0.6s ease;
+}
+.bar-grow.visible {
+  transform: scaleY(1);
+}
+
+/* Ring expand from center */
+.ring-expand {
+  transform-origin: center;
+  transform: scale(0);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ring-expand.visible {
+  transform: scale(1);
+}
+
+/* Bar grow from left (width-based) */
+.bar-grow-x {
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.6s ease;
+}
+.bar-grow-x.visible {
+  transform: scaleX(1);
+}
+
+/* Dot pop-in */
+.dot-pop {
+  transform-origin: center;
+  transform: scale(0);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dot-pop.visible {
+  transform: scale(1);
+}
+
+/* ── Image reveal animation (more dramatic than data-animate) ── */
+.img-reveal {
+  opacity: 0;
+  transform: translateY(32px) scale(0.97);
+  will-change: opacity, transform;
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.img-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  will-change: auto;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  [data-animate] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .primary-pulse {
+    animation: none;
+  }
+
+  .img-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .svg-reveal,
+  .line-draw,
+  .bar-grow,
+  .ring-expand,
+  .bar-grow-x,
+  .dot-pop {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    stroke-dashoffset: 0;
+  }
+
+  .svg-hover-lift {
+    transition: none;
+  }
+
+  main img {
+    transition: none;
+  }
+  main img:hover {
+    transform: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ── Image hover zoom ── */
+main img {
+  transition: transform 0.6s ease-in-out;
+}
+main img.img-zoomed {
+  transform: scale(1.5);
+}
+
+/* ── Focus accessibility ── */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ── Selection ── */
+::selection {
+  background: var(--color-primary-glow);
+  color: var(--color-text);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+/* ── Timeline line ── */
+.timeline-line { opacity: 0.25; }
+
+/* ── Hero gradient text ── */
+.hero-gradient-text {
+  background: linear-gradient(135deg, oklch(0.42 0.12 230), oklch(0.45 0.18 260), oklch(0.38 0.18 280));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
