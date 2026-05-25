@@ -1,4 +1,4 @@
-// Models showcase data (spec §6). A small typed array feeding /models/. Eight
+// Models showcase data (spec §6). A small typed array feeding /models/. Six
 // open-weight models plus one benchmark dataset, all live under
 // huggingface.co/Orionfold. Facts (base model, format, recommended build,
 // license) come from the donor artifact YAMLs; the plain taglines read grade
@@ -8,7 +8,7 @@ export interface Model {
   group: 'patent' | 'domain' | 'dataset';
   domain: string; // eyebrow label
   title: string;
-  variant?: string; // build differentiator, e.g. "unsloth · GGUF"
+  variant?: string; // build differentiator, e.g. "nemo · GGUF"
   tagline: string;
   base?: string; // base model id (mono spec row)
   format: string;
@@ -21,31 +21,7 @@ export interface Model {
 const HF = 'https://huggingface.co/Orionfold';
 
 export const models: Model[] = [
-  // ── Patent Strategist: one model, four builds (two training toolkits × two formats) ──
-  {
-    group: 'patent',
-    domain: 'Patent',
-    title: 'Patent Strategist',
-    variant: 'unsloth · GGUF',
-    tagline: 'Offline patent reasoning in ready-to-run files. Private text never leaves your desktop.',
-    base: 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B',
-    format: 'GGUF',
-    recommended: 'Q5_K_M',
-    license: 'Apache-2.0',
-    href: `${HF}/patent-strategist-v3-unsloth-GGUF`,
-  },
-  {
-    group: 'patent',
-    domain: 'Patent',
-    title: 'Patent Strategist',
-    variant: 'unsloth · adapter',
-    tagline: 'The same patent reasoning as a small add-on patch for the base model. Best if you build your own setup.',
-    base: 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B',
-    format: 'LoRA adapter (BF16)',
-    recommended: 'BF16',
-    license: 'Apache-2.0',
-    href: `${HF}/patent-strategist-v3-unsloth`,
-  },
+  // ── Patent Strategist: one model, two NeMo builds (two formats) ──
   {
     group: 'patent',
     domain: 'Patent',

@@ -331,6 +331,9 @@ section {
   main img:hover {
     transform: none;
   }
+  .book-float {
+    animation: none;
+  }
 
   html {
     scroll-behavior: auto;
@@ -343,6 +346,16 @@ main img {
 }
 main img.img-zoomed {
   transform: scale(1.5);
+}
+
+/* ── Book cover float (real-artwork mode of BookCover) ── */
+@keyframes bookFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.book-float {
+  animation: bookFloat 6s ease-in-out infinite;
+  will-change: transform;
 }
 
 /* ── Focus accessibility ── */

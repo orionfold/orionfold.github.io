@@ -1,39 +1,46 @@
 ---
-// Story card (S9) — one post teaser, shared by the /story/ index and the
-// homepage carousel (StoriesCarousel) so both stay in sync. Generalised from
-// S5's inline carousel card: tag eyebrow + date row, title, summary. The outer
-// <a> takes a `class` prop for context-specific sizing (the carousel adds
-// snap/width classes; the index leaves it as a grid cell). `animate` opts the
-// card into the scroll-reveal when used inside a data-animate-stagger grid.
+// Story card (S9, cover added V6) — one post teaser, shared by the /story/ index
+// and the homepage carousel (StoriesCarousel) so both stay in sync. Now leads
+// with a full-bleed constellation cover seeded off the post (so each post has a
+// distinct-but-on-brand cover, no donor screenshot needed), then the tag/date
+// row, title, and summary. The outer <a> takes a `class` for context sizing
+// (carousel adds snap/width); `animate` opts into the scroll-reveal grid.
+import ConstellationCover from './ConstellationCover.astro';
+
 interface Props {
   href: string;
   title: string;
   date: Date;
   tag?: string;
   summary: string;
+  seed?: string; // constellation seed (defaults to href slug)
   class?: string;
   animate?: boolean;
 }
 
-const { href, title, date, tag, summary, class: className = '', animate = false } = Astro.props;
+const { href, title, date, tag, summary, seed, class: className = '', animate = false } = Astro.props;
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
 const dateIso = date.toISOString().slice(0, 10);
+const coverSeed = seed ?? href;
 ---
 <a
   href={href}
   data-animate={animate ? '' : undefined}
   class:list={[
-    'group flex flex-col rounded-xl border border-border bg-surface-raised/50 p-6 transition-colors hover:border-primary/40 hover:bg-primary/[0.03]',
+    'group flex flex-col overflow-hidden rounded-xl border border-border bg-surface-raised/50 transition-colors hover:border-primary/40 hover:bg-primary/[0.03]',
     className,
   ]}
 >
-  <div class="mb-3 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">
-    {tag && <span class="text-primary">{tag}</span>}
-    <span class="h-px flex-1 bg-border"></span>
-    <time datetime={dateIso}>{dateFmt}</time>
+  <ConstellationCover seed={coverSeed} rounded="rounded-none" />
+  <div class="flex flex-1 flex-col p-6">
+    <div class="mb-3 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">
+      {tag && <span class="text-primary">{tag}</span>}
+      <span class="h-px flex-1 bg-border"></span>
+      <time datetime={dateIso}>{dateFmt}</time>
+    </div>
+    <h3 class="mb-2 font-semibold leading-snug transition-colors group-hover:text-primary" style="font-size: 1.1rem;">
+      {title}
+    </h3>
+    <p class="mt-auto text-sm leading-relaxed text-text-muted">{summary}</p>
   </div>
-  <h3 class="mb-2 font-semibold leading-snug transition-colors group-hover:text-primary" style="font-size: 1.1rem;">
-    {title}
-  </h3>
-  <p class="mt-auto text-sm leading-relaxed text-text-muted">{summary}</p>
 </a>

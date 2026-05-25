@@ -40,6 +40,7 @@ const posts = (await getCollection('story')).sort(
             date={post.data.date}
             tag={post.data.tags[0]}
             summary={post.data.summary}
+            seed={post.data.accent}
             animate
           />
         ))}

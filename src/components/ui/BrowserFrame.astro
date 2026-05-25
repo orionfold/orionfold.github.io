@@ -1,0 +1,67 @@
+---
+// BrowserFrame (V3) — a refined macOS-style window that frames a product
+// screenshot. Ported and tightened from the donor's BrowserFrame idiom (the
+// homepage software band hand-rolled the same dots-bar). Wrapping every
+// screenshot this way gives the page one consistent "this is the running app"
+// language and, crucially, lets dark-themed shots (neosignal, Command) sit
+// cleanly on the light site — the light chrome reads as a window around them.
+//
+// Takes an astro:assets ImageMetadata so the heavy donor/GitHub PNGs ship as
+// optimized WebP/AVIF. `coverFit` crops into a fixed aspect for tidy card grids;
+// without it the image keeps its natural ratio (used for the prominent homepage
+// band). Images carry data-no-zoom to opt out of the global main-img 1.5x zoom.
+import { Image } from 'astro:assets';
+import WindowBar from './WindowBar.astro';
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  label?: string; // faint title-bar caption
+  eager?: boolean;
+  coverFit?: boolean; // crop into aspectClass with object-cover (uniform grids)
+  aspectClass?: string;
+  flush?: boolean; // sit flush inside a parent card (drop own rounding/border/shadow)
+  widths?: number[];
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  image,
+  alt,
+  label,
+  eager = false,
+  coverFit = false,
+  aspectClass = 'aspect-[16/9]',
+  flush = false,
+  widths = [480, 768, 1200],
+  sizes = '(min-width: 1024px) 40vw, 90vw',
+  class: className = '',
+} = Astro.props;
+---
+<div
+  class:list={[
+    'group/frame overflow-hidden',
+    flush
+      ? 'border-b border-border'
+      : 'rounded-xl border border-border bg-surface-raised shadow-2xl shadow-primary/10',
+    className,
+  ]}
+>
+  <WindowBar label={label} />
+  <div class:list={['overflow-hidden', coverFit && aspectClass]}>
+    <Image
+      src={image}
+      alt={alt}
+      widths={widths}
+      sizes={sizes}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      data-no-zoom
+      class:list={[
+        'block w-full transition-transform duration-500 group-hover/frame:scale-[1.03]',
+        coverFit && 'h-full object-cover object-top',
+      ]}
+    />
+  </div>
+</div>

@@ -1,8 +1,8 @@
 ---
-// Models showcase (S8). Eight open-weight models + one benchmark dataset, all
+// Models showcase (S8). Six open-weight models + one benchmark dataset, all
 // live under huggingface.co/Orionfold, built from src/data/models.ts. Grouped
 // by domain (spec §6): the Patent Strategist gets its own block (one model,
-// four builds), the four single-domain models share a grid, and the dataset
+// two NeMo builds), the four single-domain models share a grid, and the dataset
 // stands alone. A page-level BehindTheScenes holds the real benchmark detail so
 // the cards stay grade 3–5 (spec §7 — Models is the second technical page).
 import Layout from '../layouts/Layout.astro';
@@ -11,6 +11,7 @@ import Footer from '../components/Footer.astro';
 import ModelCard from '../components/ui/ModelCard.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
 import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
+import ConstellationCover from '../components/ui/ConstellationCover.astro';
 import { models } from '../data/models';
 
 const patent = models.filter((m) => m.group === 'patent');
@@ -34,13 +35,21 @@ const dataset = models.filter((m) => m.group === 'dataset');
       </div>
     </section>
 
-    <!-- Patent: one model, four builds -->
+    <!-- Decorative constellation band (V6) — on-brand header visual, no
+         misleading screenshot since these are open weights, not an app. -->
+    <section class="px-6 pt-10">
+      <div data-animate class="mx-auto max-w-5xl">
+        <ConstellationCover seed="orionfold-open-models" ratio="wide" label="Open weights · runs offline" />
+      </div>
+    </section>
+
+    <!-- Patent: one model, two NeMo builds -->
     <section class="px-6 pt-12">
       <div class="mx-auto max-w-5xl">
         <div class="mb-8 text-center">
           <h2 data-animate>Patent Strategist</h2>
           <p data-animate class="mx-auto mt-3 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
-            Our flagship model reads and reasons about patents fully offline. It comes in four builds: two training toolkits (unsloth and NeMo) and two formats (ready-to-run files, or a small add-on patch for builders).
+            Our flagship model reads and reasons about patents fully offline. Built with the NeMo toolkit, it comes in two formats: ready-to-run files, or a small add-on patch for builders.
           </p>
         </div>
         <div data-animate-stagger class="grid gap-6 sm:grid-cols-2">
@@ -83,7 +92,7 @@ const dataset = models.filter((m) => m.group === 'dataset');
     <section class="px-6 pb-28 pt-16">
       <div data-animate>
         <BehindTheScenes summary="The technical details">
-          All weights are open and free to run. The four Patent Strategist builds start from DeepSeek-R1-0528-Qwen3-8B and ship two ways: GGUF files (ready to run with llama.cpp) and LoRA adapters (small training patches in BF16). On Spark-class hardware (a small ~$3,000 AI desktop) the Q5_K_M GGUF runs around 32 to 35 tokens per second. SecurityLLM builds on ZySec-AI/SecurityLLM, Saul 7B on Equall/Saul-7B-Instruct-v1, Finance Chat on AdaptLLM/finance-chat, and II-Medical 8B on Intelligent-Internet/II-Medical-8B, each shipped as GGUF from Q4 through Q8 and F16, and scored on domain tests like CyberMetric, LegalBench, FinanceBench, and MedMCQA. The Patent Strategist Bench is 200 questions across seven shapes (claim drafting, prior-art ranking, MPEP-grounded reasoning, and more), released CC-BY-4.0.
+          All weights are open and free to run. The two Patent Strategist builds start from DeepSeek-R1-0528-Qwen3-8B, are made with the NeMo toolkit, and ship two ways: GGUF files (ready to run with llama.cpp) and LoRA adapters (small training patches in BF16). On Spark-class hardware (a small ~$3,000 AI desktop) the Q5_K_M GGUF runs around 32 to 35 tokens per second. SecurityLLM builds on ZySec-AI/SecurityLLM, Saul 7B on Equall/Saul-7B-Instruct-v1, Finance Chat on AdaptLLM/finance-chat, and II-Medical 8B on Intelligent-Internet/II-Medical-8B, each shipped as GGUF from Q4 through Q8 and F16, and scored on domain tests like CyberMetric, LegalBench, FinanceBench, and MedMCQA. The Patent Strategist Bench is 200 questions across seven shapes (claim drafting, prior-art ranking, MPEP-grounded reasoning, and more), released CC-BY-4.0.
         </BehindTheScenes>
       </div>
     </section>

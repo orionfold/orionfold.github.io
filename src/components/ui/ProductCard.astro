@@ -1,10 +1,16 @@
 ---
-// Product card (S7) — a compact showcase card for the /software/ grid, the
-// counterpart to /books/' full-width Highlight bands. Four sibling products of
-// equal weight read better as a 2x2 catalog than four tall alternating bands,
-// so this is a lighter card: mono eyebrow, title, plain pitch, label pills, and
-// an off-site "leaves the site" CTA. Built from src/data/software.ts; copy is
-// grade 3–5 (memory `website-copy-style`). data-animate rides the scroll-reveal.
+// Product card (S7, covers added V5) — a showcase card for the /software/ grid.
+// Each card now leads with a full-bleed 16:9 cover so the grid reads visually,
+// not as a wall of text. The cover has three modes, all the same height so the
+// grid stays tidy: a framed product screenshot (BrowserFrame, flush), a logo
+// centered on the constellation motif, or the bare constellation motif for
+// products with no imagery. Below the cover: mono eyebrow, title, plain pitch,
+// label pills, and an off-site CTA. Copy grade 3–5 (memory `website-copy-style`).
+import { Image } from 'astro:assets';
+import BrowserFrame from './BrowserFrame.astro';
+import ConstellationCover from './ConstellationCover.astro';
+import WindowBar from './WindowBar.astro';
+
 interface Props {
   eyebrow: string;
   title: string;
@@ -12,37 +18,68 @@ interface Props {
   pills?: string[];
   href: string;
   ctaText: string;
+  cover?: ImageMetadata;
+  coverType?: 'screenshot' | 'logo' | 'motif';
+  seed?: string; // constellation seed (defaults to title)
 }
 
-const { eyebrow, title, body, pills = [], href, ctaText } = Astro.props;
+const { eyebrow, title, body, pills = [], href, ctaText, cover, coverType = 'motif', seed } = Astro.props;
+const coverSeed = seed ?? title;
 ---
 <article
   data-animate
-  class="flex flex-col rounded-2xl border border-border bg-surface-raised p-7 transition-colors hover:border-primary/30 sm:p-8"
+  class="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-raised transition-colors hover:border-primary/30"
 >
-  <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{eyebrow}</span>
-  <h2 class="mt-3 font-display text-2xl font-bold leading-tight">{title}</h2>
-  <p class="mt-3 flex-1 leading-relaxed text-text-muted">{body}</p>
-
-  {pills.length > 0 && (
-    <div class="mt-5 flex flex-wrap gap-1.5">
-      {pills.map((pill) => (
-        <span class="rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1 font-mono text-[10px] tracking-wider text-primary">
-          {pill}
-        </span>
-      ))}
+  <!-- Cover (one of three modes; every mode leads with the same window bar so
+       the grid reads consistently regardless of image availability) -->
+  {coverType === 'screenshot' && cover ? (
+    <BrowserFrame image={cover} alt={`${title} interface`} label={title} coverFit flush sizes="(min-width: 640px) 50vw, 100vw" />
+  ) : (
+    <div class="overflow-hidden border-b border-border">
+      <WindowBar label={title} />
+      {coverType === 'logo' && cover ? (
+        <ConstellationCover seed={coverSeed} rounded="rounded-none">
+          <Image
+            src={cover}
+            alt={`${title} logo`}
+            width={180}
+            height={180}
+            data-no-zoom
+            class="max-h-[60%] w-auto max-w-[66%] object-contain drop-shadow-[0_8px_24px_oklch(0.15_0.04_260/0.55)]"
+          />
+        </ConstellationCover>
+      ) : (
+        <ConstellationCover seed={coverSeed} rounded="rounded-none" />
+      )}
     </div>
   )}
 
-  <a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    class="mt-6 inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
-  >
-    {ctaText}
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M7 17L17 7M7 7h10v10" />
-    </svg>
-  </a>
+  <!-- Body -->
+  <div class="flex flex-1 flex-col p-7 sm:p-8">
+    <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{eyebrow}</span>
+    <h2 class="mt-3 font-display text-2xl font-bold leading-tight">{title}</h2>
+    <p class="mt-3 flex-1 leading-relaxed text-text-muted">{body}</p>
+
+    {pills.length > 0 && (
+      <div class="mt-5 flex flex-wrap gap-1.5">
+        {pills.map((pill) => (
+          <span class="rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1 font-mono text-[10px] tracking-wider text-primary">
+            {pill}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-6 inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
+    >
+      {ctaText}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 17L17 7M7 7h10v10" />
+      </svg>
+    </a>
+  </div>
 </article>

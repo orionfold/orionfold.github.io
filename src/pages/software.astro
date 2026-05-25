@@ -1,20 +1,34 @@
 ---
-// Software showcase (S7). Four product cards built from src/data/software.ts,
-// each linking out to its canonical home. Unlike /books/' alternating Highlight
-// bands, four equal-weight products read better as a 2x2 grid of compact cards
-// (ProductCard). A page-level BehindTheScenes holds the real technical depth so
-// the cards stay grade 3–5 (spec §7 — Software is the first technical page).
+// Software showcase (S7; expanded V5). Twelve products built from
+// src/data/software.ts, grouped into four clusters (platform, apps, intel,
+// devtools). Each cluster is a SectionLabel + blurb over a unified-cover grid of
+// ProductCards (sm:2 lg:3). Covers resolve here: the two donor screenshots are
+// imported directly, the rest come from a glob over src/assets/projects/. A
+// page-level BehindTheScenes still holds the technical depth (spec §7).
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ProductCard from '../components/ui/ProductCard.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
 import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
-import { software } from '../data/software';
+import { software, softwareGroups } from '../data/software';
+import platformImg from '../assets/platform/ai-native-platform.png';
+import neosignalImg from '../assets/neosignal/neosignal-models.png';
+
+// Resolve a software entry's cover key to an ImageMetadata. Donor screenshots
+// are imported directly; project covers come from a glob map keyed by filename.
+const projectImgs = import.meta.glob<{ default: ImageMetadata }>('../assets/projects/*.png', { eager: true });
+function resolveCover(key?: string): ImageMetadata | undefined {
+  if (!key) return undefined;
+  if (key === '@platform') return platformImg;
+  if (key === '@neosignal') return neosignalImg;
+  const entry = Object.entries(projectImgs).find(([path]) => path.endsWith('/' + key));
+  return entry?.[1]?.default;
+}
 ---
 <Layout
   title="Software · Orionfold"
-  description="Open software for running AI on your own computer: the AI Native Platform, neosignal, fieldkit, and the AI Native API."
+  description="Open software for running AI on your own computer: the AI Native Platform and API, personal apps like NeoCash and OpenVolo, research tools like neosignal and Trends, and developer tools like Command, Sentinel, and fieldkit."
 >
   <Nav />
   <main>
@@ -24,32 +38,48 @@ import { software } from '../data/software';
         <SectionLabel text="Software" />
         <h1 data-animate class="mb-5 mt-4">Open software you control</h1>
         <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
-          The tools to run AI on your own computer. A platform to do the work, a way to see where AI is headed, a free toolbox to build with, and an API to tie it all together.
+          A growing set of tools to run AI on your own computer. A platform to do the work, ready-to-use apps that keep your data private, research tools to see where AI is headed, and developer tools to build with.
         </p>
       </div>
     </section>
 
-    <!-- Product grid -->
-    <section class="px-6 pb-8 sm:pb-12">
-      <div data-animate-stagger class="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2">
-        {software.map((product) => (
-          <ProductCard
-            eyebrow={product.eyebrow}
-            title={product.title}
-            body={product.body}
-            pills={product.pills}
-            href={product.href}
-            ctaText={product.ctaText}
-          />
-        ))}
-      </div>
-    </section>
+    <!-- Grouped product clusters -->
+    {softwareGroups.map((group, gi) => {
+      const items = software.filter((p) => p.group === group.id);
+      return (
+        <section class="px-6 pt-12">
+          <div class="mx-auto max-w-6xl">
+            <div class="mb-6">
+              <SectionLabel text={group.label} />
+              <p data-animate class="mt-2 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 60ms">
+                {group.blurb}
+              </p>
+            </div>
+            <div data-animate-stagger class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((product) => (
+                <ProductCard
+                  eyebrow={product.eyebrow}
+                  title={product.title}
+                  body={product.body}
+                  pills={product.pills}
+                  href={product.href}
+                  ctaText={product.ctaText}
+                  cover={resolveCover(product.cover)}
+                  coverType={product.coverType}
+                  seed={product.slug}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    })}
 
     <!-- Technical depth (held back from the cards per spec §7) -->
-    <section class="px-6 pb-28">
+    <section class="px-6 pb-28 pt-16">
       <div data-animate>
         <BehindTheScenes summary="The technical details">
-          The platform runs fully on your machine: task execution, workflows, profiles, schedules, monitoring, a cost ledger, agent integration, and chat. neosignal compares models, accelerators (the chips that run AI), cloud providers, and frameworks with a scoring system and a compatibility matrix. fieldkit ships patterns we verified on Spark-class hardware: KV-cache, NIM, RAG (retrieval-augmented generation, where the model reads your own files before it answers), eval, training, lineage, quantization, HuggingFace publish, a CLI, charts, and notebooks. The AI Native API is a REST API with 27 endpoint groups across core, intelligence, content, platform, and operations.
+          The platform runs fully on your machine: task execution, workflows, profiles, schedules, monitoring, a cost ledger, agent integration, and chat. neosignal compares models, accelerators (the chips that run AI), cloud providers, and frameworks with a scoring system and a compatibility matrix. fieldkit ships patterns we verified on Spark-class hardware: KV-cache, NIM, RAG (retrieval-augmented generation, where the model reads your own files before it answers), eval, training, lineage, quantization, HuggingFace publish, a CLI, charts, and notebooks. The AI Native API is a REST API with 27 endpoint groups across core, intelligence, content, platform, and operations. The personal apps (NeoCash, OpenVolo, Memo, Marketer) and research tools (Trends, Moments) follow the same local-first rule: they run on your own machine and call out to the AI provider you choose, so your data stays with you. Command is a terminal client across 7 providers and 15+ models, and Sentinel is a visual harness for testing agent behaviour.
         </BehindTheScenes>
       </div>
     </section>

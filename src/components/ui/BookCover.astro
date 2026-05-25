@@ -1,29 +1,55 @@
 ---
-// Placeholder book cover (S6) — a CSS-only stand-in for real artwork, which is
-// a later spec. Generalises the homepage book-cover idiom (a tilted, spine'd
-// card) so each /books/ entry renders its own title. Purely decorative, so it
-// carries aria-hidden; data-animate lets it ride the scroll-reveal system.
+// BookCover (S6, real-artwork mode added V4) — renders a book's cover. When an
+// `image` (astro:assets ImageMetadata) is passed it shows the real 3D render
+// with a tilt, a soft floor shadow + primary glow, and a gentle float (the
+// donor's book-cover treatment). With no image it falls back to the original
+// CSS-only placeholder card (used by Field Notes, which has no render yet).
+// Purely decorative -> aria-hidden / data-no-zoom; data-animate rides the reveal.
+import { Image } from 'astro:assets';
+
 interface Props {
   title: string;
   subtitle: string;
   tag: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  eager?: boolean;
 }
 
-const { title, subtitle, tag } = Astro.props;
+const { title, subtitle, tag, image, imageAlt, eager = false } = Astro.props;
 ---
-<div data-animate class="relative mx-auto w-[220px] sm:w-[250px]">
-  <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.10] blur-[90px]"></div>
-  <div
-    class="relative flex aspect-[2/3] flex-col justify-between overflow-hidden rounded-l-sm rounded-r-lg border border-border bg-surface-raised p-6 shadow-2xl shadow-primary/10"
-    style="transform: perspective(900px) rotateY(-6deg) rotateX(2deg);"
-    aria-hidden="true"
-  >
-    <span class="absolute inset-y-0 left-0 w-1.5 bg-primary/70"></span>
-    <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted">Orionfold</span>
-    <div>
-      <div class="font-display text-2xl font-bold leading-tight">{title}</div>
-      <p class="mt-2 text-xs leading-relaxed text-text-muted">{subtitle}</p>
+{image ? (
+  <div data-animate class="relative mx-auto w-[230px] sm:w-[270px]">
+    <div class="absolute -inset-12 -z-10 rounded-full bg-primary/[0.12] blur-[100px]"></div>
+    <div class="book-float">
+      <Image
+        src={image}
+        alt={imageAlt ?? `${title} book cover`}
+        widths={[230, 270, 540]}
+        sizes="270px"
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        data-no-zoom
+        class="h-auto w-full"
+        style="transform: perspective(900px) rotateY(-6deg) rotateX(2deg); filter: drop-shadow(-10px 16px 36px oklch(0.2 0.04 260 / 0.4)) drop-shadow(0 0 64px oklch(0.55 0.18 260 / 0.18));"
+      />
     </div>
-    <span class="font-mono text-[10px] tracking-wider text-primary">{tag}</span>
   </div>
-</div>
+) : (
+  <div data-animate class="relative mx-auto w-[220px] sm:w-[250px]">
+    <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.10] blur-[90px]"></div>
+    <div
+      class="relative flex aspect-[2/3] flex-col justify-between overflow-hidden rounded-l-sm rounded-r-lg border border-border bg-surface-raised p-6 shadow-2xl shadow-primary/10"
+      style="transform: perspective(900px) rotateY(-6deg) rotateX(2deg);"
+      aria-hidden="true"
+    >
+      <span class="absolute inset-y-0 left-0 w-1.5 bg-primary/70"></span>
+      <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted">Orionfold</span>
+      <div>
+        <div class="font-display text-2xl font-bold leading-tight">{title}</div>
+        <p class="mt-2 text-xs leading-relaxed text-text-muted">{subtitle}</p>
+      </div>
+      <span class="font-mono text-[10px] tracking-wider text-primary">{tag}</span>
+    </div>
+  </div>
+)}

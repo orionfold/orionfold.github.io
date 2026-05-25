@@ -178,7 +178,7 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
     <!-- Image hover zoom-pulse: zoom in then auto-zoom-out after 1.8s -->
     <script>
       function initImgZoom() {
-        document.querySelectorAll('main img').forEach((img) => {
+        document.querySelectorAll('main img:not([data-no-zoom])').forEach((img) => {
           let timeout: ReturnType<typeof setTimeout> | null = null;
           img.addEventListener('mouseenter', () => {
             img.classList.add('img-zoomed');

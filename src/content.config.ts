@@ -14,6 +14,9 @@ const story = defineCollection({
     date: z.coerce.date(),
     summary: z.string(),
     tags: z.array(z.string()).default([]),
+    // Optional seed for the card's constellation cover (V6). Omitted -> the
+    // cover seeds off the post slug, so each post still gets a distinct motif.
+    accent: z.string().optional(),
   }),
 });
 

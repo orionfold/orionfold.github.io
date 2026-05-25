@@ -1,0 +1,17 @@
+---
+// WindowBar (V5 polish) — the macOS-style title bar (three traffic-light dots +
+// an optional caption) shared by BrowserFrame and the constellation card covers.
+// Extracted so every /software/ card carries a pixel-identical bar, regardless of
+// whether its cover is a screenshot, a logo, or the bare constellation motif.
+interface Props {
+  label?: string;
+  class?: string;
+}
+const { label, class: className = '' } = Astro.props;
+---
+<div class:list={['flex items-center gap-1.5 border-b border-border bg-surface-raised px-3 py-2.5', className]}>
+  <span class="h-2.5 w-2.5 rounded-full bg-[#ff5f57]"></span>
+  <span class="h-2.5 w-2.5 rounded-full bg-[#febc2e]"></span>
+  <span class="h-2.5 w-2.5 rounded-full bg-[#28c840]"></span>
+  {label && <span class="ml-1.5 truncate font-mono text-[10px] tracking-wider text-text-muted">{label}</span>}
+</div>
