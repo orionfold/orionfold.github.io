@@ -1,10 +1,12 @@
 ---
 // Story card (S9, cover added V6) — one post teaser, shared by the /story/ index
 // and the homepage carousel (StoriesCarousel) so both stay in sync. Now leads
-// with a full-bleed constellation cover seeded off the post (so each post has a
-// distinct-but-on-brand cover, no donor screenshot needed), then the tag/date
-// row, title, and summary. The outer <a> takes a `class` for context sizing
-// (carousel adds snap/width); `animate` opts into the scroll-reveal grid.
+// with a cover (a curated hero image if the post has one, else a full-bleed
+// constellation seeded off the post so each post still gets a distinct-but-on-
+// brand cover), then the tag/date row, title, and summary. The outer <a> takes a
+// `class` for context sizing (carousel adds snap/width); `animate` opts into the
+// scroll-reveal grid.
+import { Image } from 'astro:assets';
 import ConstellationCover from './ConstellationCover.astro';
 
 interface Props {
@@ -14,11 +16,13 @@ interface Props {
   tag?: string;
   summary: string;
   seed?: string; // constellation seed (defaults to href slug)
+  cover?: ImageMetadata; // curated hero (I-series); falls back to constellation
+  coverAlt?: string;
   class?: string;
   animate?: boolean;
 }
 
-const { href, title, date, tag, summary, seed, class: className = '', animate = false } = Astro.props;
+const { href, title, date, tag, summary, seed, cover, coverAlt, class: className = '', animate = false } = Astro.props;
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
 const dateIso = date.toISOString().slice(0, 10);
 const coverSeed = seed ?? href;
@@ -31,7 +35,22 @@ const coverSeed = seed ?? href;
     className,
   ]}
 >
-  <ConstellationCover seed={coverSeed} rounded="rounded-none" />
+  {cover ? (
+    <div class="aspect-[16/9] overflow-hidden">
+      <Image
+        src={cover}
+        alt={coverAlt ?? title}
+        widths={[400, 640]}
+        sizes="(min-width: 1024px) 22rem, 100vw"
+        loading="lazy"
+        decoding="async"
+        data-no-zoom
+        class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+      />
+    </div>
+  ) : (
+    <ConstellationCover seed={coverSeed} rounded="rounded-none" />
+  )}
   <div class="flex flex-1 flex-col p-6">
     <div class="mb-3 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">
       {tag && <span class="text-primary">{tag}</span>}

@@ -59,6 +59,8 @@ const stories = (await getCollection('story'))
             tag={post.data.tags[0]}
             summary={post.data.summary}
             seed={post.data.accent}
+            cover={post.data.hero}
+            coverAlt={post.data.heroAlt}
             class="w-[82%] shrink-0 snap-start sm:w-[330px]"
           />
         ))}

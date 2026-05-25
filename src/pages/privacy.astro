@@ -13,8 +13,10 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
 import { SITE, PUBLISHER } from '../data/seo';
+import { ogMeta } from '../data/og';
 
 const lastUpdated = 'May 24, 2026';
+const og = ogMeta('/privacy/');
 
 const summaryCards = [
   {
@@ -138,6 +140,8 @@ const sections = [
 <Layout
   title="Privacy Policy · Orionfold"
   description="Privacy Policy for the Orionfold website, newsletter, and related services."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
   jsonLd={[
     {
       '@context': 'https://schema.org',

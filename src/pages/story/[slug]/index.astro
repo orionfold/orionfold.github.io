@@ -5,9 +5,11 @@
 // .story-prose container, and a back link. trailingSlash:'always' → the route
 // lives at /story/<slug>/.
 import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
+import { ogPath, storyOgSlug } from '../../../data/og';
 
 export async function getStaticPaths() {
   const posts = await getCollection('story');
@@ -16,7 +18,7 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const { title, date, summary, tags } = post.data;
+const { title, date, summary, tags, hero, heroAlt } = post.data;
 
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
 const dateIso = date.toISOString().slice(0, 10);
@@ -24,6 +26,8 @@ const dateIso = date.toISOString().slice(0, 10);
 <Layout
   title={`${title} · Orionfold`}
   description={summary}
+  ogImage={ogPath(storyOgSlug(post.id))}
+  ogImageAlt={`${title} · Orionfold story`}
   ogType="article"
   article={{
     datePublished: dateIso,
@@ -40,6 +44,19 @@ const dateIso = date.toISOString().slice(0, 10);
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
         All stories
       </a>
+
+      {hero && (
+        <Image
+          src={hero}
+          alt={heroAlt ?? title}
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 768px) 42rem, 100vw"
+          loading="eager"
+          decoding="async"
+          data-no-zoom
+          class="mt-8 aspect-[1200/630] w-full rounded-xl border border-border object-cover"
+        />
+      )}
 
       <header class="mt-8">
         <div class="mb-4 flex flex-wrap items-center gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">

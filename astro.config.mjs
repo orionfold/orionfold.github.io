@@ -8,6 +8,9 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [
     sitemap({
+      // The /og/*.png endpoint emits social-card images, not pages — keep them
+      // out of the sitemap.
+      filter: (page) => !page.includes('/og/'),
       // Priority + changefreq hints. Search engines treat these as signals, not
       // directives, but they nudge crawl scheduling toward the pages that change.
       serialize(item) {

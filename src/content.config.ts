@@ -9,15 +9,22 @@ import { glob } from 'astro/loaders';
 // tags so the index and the homepage carousel can render and sort by date.
 const story = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/story' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    summary: z.string(),
-    tags: z.array(z.string()).default([]),
-    // Optional seed for the card's constellation cover (V6). Omitted -> the
-    // cover seeds off the post slug, so each post still gets a distinct motif.
-    accent: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: z.coerce.date(),
+      summary: z.string(),
+      tags: z.array(z.string()).default([]),
+      // Optional seed for the card's constellation cover (V6). Omitted -> the
+      // cover seeds off the post slug, so each post still gets a distinct motif.
+      accent: z.string().optional(),
+      // Optional curated hero image (I-series). Shown atop the post and used as
+      // the card cover. By convention the source lives at
+      // src/assets/story/<slug>/hero.png so the OG endpoint can find it too
+      // (see specs/2026-05-25-og-and-featured-image-pipeline.md).
+      hero: image().optional(),
+      heroAlt: z.string().optional(),
+    }),
 });
 
 export const collections = { story };
