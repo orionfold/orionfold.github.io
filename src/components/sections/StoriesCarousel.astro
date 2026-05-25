@@ -1,36 +1,17 @@
 ---
 // Homepage stories carousel (spec §5.7): the three newest Story posts in a
-// horizontal scroll-snap rail. Posts are stubbed here (S9 builds the `story`
-// collection and re-points this to read the top 3 by date, and the cards to
-// real `/story/[slug]/` routes). The rail is native CSS scroll-snap; the
-// prev/next buttons are a progressive enhancement in the Nav.astro script
+// horizontal scroll-snap rail. Reads the live `story` collection (S9), top 3 by
+// date, linking to real /story/<slug>/ routes; cards are the shared StoryCard
+// (same teaser used by the /story/ index). The rail is native CSS scroll-snap;
+// the prev/next buttons are a progressive enhancement in the Nav.astro script
 // idiom (initX + astro:after-swap), so the rail still scrolls without JS.
+import { getCollection } from 'astro:content';
 import SectionLabel from '../ui/SectionLabel.astro';
+import StoryCard from '../ui/StoryCard.astro';
 
-// Stub posts — replaced by the live `story` collection in S9.
-const stories = [
-  {
-    title: 'Why we folded Orionfold',
-    date: '2026-05-20',
-    tag: 'Studio',
-    summary: 'The short story of why we started, and what we want to build with you.',
-  },
-  {
-    title: 'Building in public, week one',
-    date: '2026-05-22',
-    tag: 'Build log',
-    summary: 'What we shipped, what broke, and what we learned in the first week.',
-  },
-  {
-    title: 'Shipping models from one small desktop',
-    date: '2026-05-24',
-    tag: 'Models',
-    summary: 'A look at how we train and share AI models on a single Spark desktop.',
-  },
-];
-
-const dateFmt = (iso: string) =>
-  new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(iso));
+const stories = (await getCollection('story'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
 ---
 <section class="px-6 py-20 sm:py-24">
   <div class="mx-auto max-w-6xl">
@@ -70,21 +51,15 @@ const dateFmt = (iso: string) =>
 
     <div data-animate>
       <div id="stories-track" class="-mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {stories.map(({ title, date, tag, summary }) => (
-          <a
-            href="/story/"
-            class="group flex w-[82%] shrink-0 snap-start flex-col rounded-xl border border-border bg-surface-raised/50 p-6 transition-colors hover:border-primary/40 hover:bg-primary/[0.03] sm:w-[330px]"
-          >
-            <div class="mb-3 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">
-              <span class="text-primary">{tag}</span>
-              <span class="h-px flex-1 bg-border"></span>
-              <time datetime={date}>{dateFmt(date)}</time>
-            </div>
-            <h3 class="mb-2 font-semibold leading-snug transition-colors group-hover:text-primary" style="font-size: 1.1rem;">
-              {title}
-            </h3>
-            <p class="mt-auto text-sm leading-relaxed text-text-muted">{summary}</p>
-          </a>
+        {stories.map((post) => (
+          <StoryCard
+            href={`/story/${post.id}/`}
+            title={post.data.title}
+            date={post.data.date}
+            tag={post.data.tags[0]}
+            summary={post.data.summary}
+            class="w-[82%] shrink-0 snap-start sm:w-[330px]"
+          />
         ))}
       </div>
     </div>

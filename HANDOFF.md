@@ -59,7 +59,7 @@ domain — don't treat a localhost CORS error as a bug.
 | S6 | Books page (showcase + link out) | ✅ done |
 | S7 | Software page (platform, neosignal, fieldkit, API) | ✅ done |
 | S8 | Models page (8 HF models + dataset) | ✅ done |
-| S9 | Story collection + index + posts | ⬜ queued |
+| S9 | Story collection + index + posts | ✅ done |
 | S10 | Terms + Privacy (Orionfold-modified) | ⬜ queued |
 | S11 | SEO baseline | ⬜ queued |
 | S12 | Launch readiness + the flip | ⬜ queued |
@@ -179,14 +179,16 @@ domain — don't treat a localhost CORS error as a bug.
 
 ---
 
-## S9 — Story collection + index + posts ⬜
+## S9 — Story collection + index + posts ✅ `2026-05-24`
 
 **Source:** spec §6 (Story).
 
 - `src/content.config.ts` with a `story` collection (title/date/summary/tags). `src/pages/story/index.astro` + `src/pages/story/[slug]/index.astro`. 3–4 placeholder `.md` posts.
 - Wire the homepage carousel (S5) to read top 3 by date.
 
-**DoD:** ☐ `/story/` lists posts · ☐ post pages render · ☐ homepage carousel reads real posts · ☐ build clean.
+**DoD:** ☑ `/story/` lists posts · ☑ post pages render · ☑ homepage carousel reads real posts · ☑ build clean.
+
+**→ next/gotchas:** First (and only, per spec §2) **content collection**. New `src/content.config.ts` defines `story` via the **Astro 5 `glob` loader** (`pattern:'**/*.md', base:'./src/content/story'`) — the old "folder = collection" magic is gone in v5, so even one blog needs this file. Schema is minimal `{title, date: z.coerce.date(), summary, tags: string[]=[]}` (`coerce` so frontmatter date strings become real `Date`s for `.sort()`/`.toISOString()`). `generateId` defaults to filename → slug, so `why-we-folded-orionfold.md` → `/story/why-we-folded-orionfold/`. **Four placeholder `.md` posts** in `src/content/story/` (grade 3–5, 0 em-dashes): shipping-models-from-one-small-desktop (05-24), building-in-public-week-one (05-22), why-we-folded-orionfold (05-20), picking-open-models-over-closed (05-17). **Dates chosen so top-3-by-date = the 3 newest** → the carousel shows those three and the index shows all four, which proves the carousel slices and the index doesn't (verified: carousel `dist/index.html` has exactly the 3 newest slugs, index has all 4). **New shared `src/components/ui/StoryCard.astro`** (generalised from S5's inline carousel card: tag eyebrow + date, title, summary) — used by **both** the index grid and the carousel, with a `class` prop for context sizing (carousel adds `w-[82%] shrink-0 snap-start sm:w-[330px]`) and an `animate` prop (index grid only, rides `data-animate-stagger`). **`StoriesCarousel.astro` rewired** (S5 stub array deleted): now `await getCollection('story')` → sort desc → `.slice(0,3)` → `StoryCard` with real `/story/<slug>/` hrefs; the prev/next progressive-enhancement script + scroll-snap rail are unchanged. **Post page** `story/[slug]/index.astro` is a **light article layout** — deliberately NOT the donor's `FieldNotesLayout` (TOC/reader-settings/ordinals/bookmarks are out of scope per spec §2); just back-link + tag/date header + `<h1>` + summary lede + `<Content/>` in a `.story-prose` div + tag chips, `ogType="article"`. **New `.story-prose` block in `global.css`** (was 0 prose rules): markdown renders via `<Content/>` to real tags (not utilities), and the global heading clamp scale (h1→5rem, h2→3rem) is way too big for body copy, so prose resets h2→1.5rem/h3→1.2rem + list/blockquote/link/strong styling. Browser-verified (chrome-devtools, preview): index lists 4 newest-first, post body renders with article-scaled headings, footer intact. `npm run build` clean → **11 pages** (+4 posts) + sitemap; 0 `noindex`/em-dash on story pages, `og:type=article` confirmed. **S10 (next)** ports the donor `terms.astro` + `privacy.astro`, swapping entity → **Orionfold LLC** and domain/email → Orionfold (footer already links both; the stubs at `/terms/` + `/privacy/` are `noindex` and need retiring). **Heads-up for S11:** the homepage `Narrative.astro` "How we help" product pills still point `neosignal`/`fieldkit`/`AI Native API`/`AI Native Platform` all at `/software/` and the book/Field-Notes pills at `/books/` — fine, but if per-anchor deep links are ever wanted that's the spot; also S11 should add the story posts to its SEO/OG sweep.
 
 ---
 

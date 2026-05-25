@@ -379,3 +379,43 @@ main img.img-zoomed {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ── Story post prose (S9) ── */
+/* Long-form body for /story/[slug]/. The global heading clamp scale is tuned
+   for big marketing sections, so prose headings are reset to an article scale.
+   Markdown renders via <Content />, so these target real tags, not utilities. */
+.story-prose > * + * { margin-top: 1.4em; }
+.story-prose h2 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+  margin-top: 2.2em;
+}
+.story-prose h3 {
+  font-size: 1.2rem;
+  line-height: 1.3;
+  margin-top: 1.8em;
+}
+.story-prose p,
+.story-prose li {
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+.story-prose ul,
+.story-prose ol {
+  padding-left: 1.4em;
+}
+.story-prose ul { list-style: disc; }
+.story-prose ol { list-style: decimal; }
+.story-prose li + li { margin-top: 0.5em; }
+.story-prose a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.story-prose strong { color: var(--color-text); font-weight: 600; }
+.story-prose blockquote {
+  border-left: 3px solid var(--color-primary);
+  padding-left: 1.1em;
+  color: var(--color-text-muted);
+  font-style: italic;
+}

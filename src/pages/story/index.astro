@@ -1,14 +1,50 @@
 ---
-// S3 STUB — real Story index + posts land in S9.
+// Story index (S9). Lists every post in the `story` collection, newest first.
+// Cards are the shared StoryCard (also used by the homepage carousel) in a
+// scroll-reveal grid. Posts are plain .md under src/content/story/.
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
+import StoryCard from '../../components/ui/StoryCard.astro';
+import SectionLabel from '../../components/ui/SectionLabel.astro';
+
+const posts = (await getCollection('story')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
 ---
-<Layout title="Story · Orionfold" noindex>
+<Layout
+  title="Story · Orionfold"
+  description="Building in public: short, honest notes on what we shipped, what broke, and what we learned along the way."
+>
   <Nav />
-  <main class="mx-auto max-w-3xl px-6 pt-40 pb-32 text-center">
-    <h1 data-animate>Story</h1>
-    <p class="mt-6 text-text-muted" data-animate>Coming soon. Our build stories will live here.</p>
+  <main>
+    <!-- Page header -->
+    <section class="px-6 pt-36 pb-4 text-center sm:pt-40">
+      <div class="mx-auto max-w-3xl">
+        <SectionLabel text="Story" />
+        <h1 data-animate class="mb-5 mt-4">From the build log</h1>
+        <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
+          We build in public. Each note is a short, honest look at what we shipped, what broke, and what we learned.
+        </p>
+      </div>
+    </section>
+
+    <!-- Post grid -->
+    <section class="px-6 pb-28 pt-8">
+      <div data-animate-stagger class="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((post) => (
+          <StoryCard
+            href={`/story/${post.id}/`}
+            title={post.data.title}
+            date={post.data.date}
+            tag={post.data.tags[0]}
+            summary={post.data.summary}
+            animate
+          />
+        ))}
+      </div>
+    </section>
   </main>
   <Footer />
 </Layout>

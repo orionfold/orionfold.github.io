@@ -1,0 +1,20 @@
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+// Story — a small building-in-public blog (spec §6). The only content
+// collection on the site; everything else reads typed src/data/*.ts. Posts are
+// plain .md under src/content/story/ (no MDX, spec §3); the glob loader maps
+// each filename to its URL slug, so why-we-folded-orionfold.md → /story/why-we-
+// folded-orionfold/. Frontmatter stays minimal: title/date/summary + optional
+// tags so the index and the homepage carousel can render and sort by date.
+const story = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/story' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    summary: z.string(),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
+export const collections = { story };
