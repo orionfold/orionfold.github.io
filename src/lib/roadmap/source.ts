@@ -17,6 +17,7 @@ import type { RoadmapFeature, RoadmapStatus, SponsorTier } from '../../data/road
 import { software } from '../../data/software';
 import { models } from '../../data/models';
 import { books } from '../../data/books';
+import { roadmapOverlay } from '../../data/roadmap-overlay';
 import type { FieldkitModule, FieldStage, RoadmapSignals } from './signals';
 
 export type { RoadmapSignals } from './signals';
@@ -154,6 +155,29 @@ export function buildRoadmap(signals: RoadmapSignals): RoadmapItem[] {
       features: m.features,
       cta: 'sponsor',
       roadmapOrder: m.roadmapOrder ?? 200 + i,
+    });
+  });
+
+  // Curated net-new / planned items (R3 roadmap-overlay.ts). Appended last and
+  // shown only on /roadmap. An overlay id that collides with a generated showcase
+  // id is skipped, so the real offering always wins (purely additive).
+  const existingIds = new Set(items.map((i) => i.id));
+  roadmapOverlay.forEach((o, i) => {
+    if (existingIds.has(o.id)) return;
+    items.push({
+      id: o.id,
+      type: o.type,
+      title: o.title,
+      blurb: o.blurb,
+      status: o.status,
+      href: o.href,
+      cover: o.cover,
+      assetBase: o.assetBase,
+      sponsorTier: o.sponsorTier,
+      features: o.features,
+      cta: o.type === 'book' ? 'buy' : 'sponsor',
+      lookupKey: o.lookupKey,
+      roadmapOrder: o.roadmapOrder ?? 300 + i,
     });
   });
 
