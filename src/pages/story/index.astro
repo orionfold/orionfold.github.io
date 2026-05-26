@@ -8,6 +8,7 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import StoryCard from '../../components/ui/StoryCard.astro';
 import SectionLabel from '../../components/ui/SectionLabel.astro';
+import PageHeader from '../../components/ui/PageHeader.astro';
 import { ogMeta } from '../../data/og';
 import { bentoSplit } from '../../lib/bento';
 
@@ -27,16 +28,12 @@ const og = ogMeta('/story/');
 >
   <Nav />
   <main>
-    <!-- Page header -->
-    <section class="px-6 pt-36 pb-4 text-center sm:pt-40">
-      <div class="mx-auto max-w-3xl">
-        <SectionLabel text="Story" />
-        <h1 data-animate class="mb-5 mt-4">From the build log</h1>
-        <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
-          We build in public. Each note is a short, honest look at what we shipped, what broke, and what we learned.
-        </p>
-      </div>
-    </section>
+    <!-- Page header (slim masthead so the story comics rise above the fold) -->
+    <PageHeader
+      eyebrow="Story"
+      title="From the build log"
+      subtitle="We build in public. Each note is a short, honest look at what we shipped, what broke, and what we learned."
+    />
 
     <!-- Post grid: optional full-width lead, then two per row -->
     <section class="px-6 pb-28 pt-8">

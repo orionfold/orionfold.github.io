@@ -1,0 +1,29 @@
+---
+// Slim landing-page masthead (H2 revision). The landing pages already carry the
+// brand's art in their card grids; the old big centered hero (pt-36, h1 clamped
+// to 5rem) just pushed that art below the fold. This compact, left-aligned header
+// — eyebrow, a slimmer headline, and the subtitle beside it on desktop — reclaims
+// vertical space so the real visual content shifts up into view. The homepage
+// keeps its own "split + poster rail" hero (it has no grid right below). A default
+// <slot/> carries page extras (e.g. the roadmap momentum strip).
+import SectionLabel from './SectionLabel.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+}
+const { eyebrow, title, subtitle } = Astro.props;
+---
+<section class="px-6 pt-28 pb-3 sm:pt-32">
+  <div class="mx-auto max-w-6xl">
+    <SectionLabel text={eyebrow} />
+    <div class="mt-3 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
+      <h1 data-animate class="max-w-2xl text-4xl leading-[1.1] sm:text-5xl">{title}</h1>
+      <p data-animate class="max-w-md text-base leading-relaxed text-text-muted lg:pt-1.5" style="transition-delay: 80ms">
+        {subtitle}
+      </p>
+    </div>
+    <slot />
+  </div>
+</section>

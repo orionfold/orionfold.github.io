@@ -18,9 +18,25 @@ interface Props {
   ctaText: string;
   reverse?: boolean;
   external?: boolean; // off-site link: opens in a new tab + uses a "leaves the site" arrow
+  // Optional paid-bundle Buy button (C4, /books freemium). When set, a primary
+  // checkout button leads and the href CTA drops to a secondary "read free" link.
+  buyLookupKey?: string;
+  buyText?: string;
 }
 
-const { eyebrow, title, body, pills = [], href, ctaText, reverse = false, external = false } = Astro.props;
+const {
+  eyebrow,
+  title,
+  body,
+  pills = [],
+  href,
+  ctaText,
+  reverse = false,
+  external = false,
+  buyLookupKey,
+  buyText,
+} = Astro.props;
+const buyErrorId = buyLookupKey ? `buy-err-${buyLookupKey}` : undefined;
 ---
 <section class="px-6 py-20 sm:py-24">
   <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
@@ -47,19 +63,36 @@ const { eyebrow, title, body, pills = [], href, ctaText, reverse = false, extern
         </div>
       )}
 
-      <a
-        href={href}
-        target={external ? '_blank' : undefined}
-        rel={external ? 'noopener noreferrer' : undefined}
-        data-animate
-        class="inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
-        style="transition-delay: 160ms"
-      >
-        {ctaText}
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          {external ? <path d="M7 17L17 7M7 7h10v10" /> : <path d="M5 12h14M12 5l7 7-7 7" />}
-        </svg>
-      </a>
+      <div data-animate class="flex flex-col items-center gap-3 lg:items-start" style="transition-delay: 160ms">
+        {buyLookupKey && (
+          <div class="flex flex-col items-center gap-2 lg:items-start">
+            <button
+              type="button"
+              data-checkout={buyLookupKey}
+              data-error-target={buyErrorId}
+              class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-3 font-mono text-sm tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {buyText}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </button>
+            <p id={buyErrorId} role="alert" hidden class="font-mono text-xs text-red-500"></p>
+          </div>
+        )}
+
+        <a
+          href={href}
+          target={external ? '_blank' : undefined}
+          rel={external ? 'noopener noreferrer' : undefined}
+          class="inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
+        >
+          {ctaText}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            {external ? <path d="M7 17L17 7M7 7h10v10" /> : <path d="M5 12h14M12 5l7 7-7 7" />}
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
 </section>

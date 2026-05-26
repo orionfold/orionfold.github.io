@@ -1,0 +1,65 @@
+---
+// Book purchase thank-you (C4). The Checkout success_url for books lands here
+// with ?session_id=…. Delivery is NOT done here — the stripe-webhook emails the
+// signed PDF+EPUB links server-side (never trusted to this redirect). This page
+// just confirms and reassures. It shows a sensible message even if the optional
+// order-status lookup fails (e.g. CORS on localhost), then enhances it with the
+// book title + email when the lookup succeeds. noindex (post-checkout).
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import SectionLabel from '../components/ui/SectionLabel.astro';
+---
+<Layout title="Thank you · Orionfold" description="Your Orionfold book purchase is confirmed." noindex>
+  <Nav />
+  <main>
+    <section class="px-6 pt-40 pb-32 text-center">
+      <div class="mx-auto max-w-xl">
+        <SectionLabel text="Thank you" />
+        <div data-animate class="mx-auto mt-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </div>
+        <h1 data-animate class="mb-4 mt-6" style="transition-delay: 60ms">Your book is on the way</h1>
+        <p id="thanks-msg" data-animate class="mx-auto max-w-lg text-lg leading-relaxed text-text-muted" style="transition-delay: 120ms">
+          We just sent your download links to your inbox. You get both the PDF and the EPUB, so you can read on any device. The links work for 7 days, so save the files once you open them.
+        </p>
+        <p data-animate class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-text-dim" style="transition-delay: 160ms">
+          Do not see it? Check your spam folder, then email <a href="mailto:manav@orionfold.com" class="text-primary hover:underline">manav@orionfold.com</a> and we will help.
+        </p>
+
+        <div data-animate class="mt-10 flex flex-wrap items-center justify-center gap-4" style="transition-delay: 200ms">
+          <a href="/books/" class="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 px-5 py-2.5 font-mono text-sm tracking-wider text-primary transition-colors hover:bg-primary/5">
+            More books
+          </a>
+          <a href="/roadmap/" class="inline-flex items-center gap-1.5 rounded-lg px-5 py-2.5 font-mono text-sm tracking-wider text-text-muted transition-colors hover:text-primary">
+            See the roadmap
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { fetchOrderStatus } from '../lib/checkout';
+
+  async function confirmOrder() {
+    const sessionId = new URLSearchParams(location.search).get('session_id');
+    if (!sessionId) return;
+    const status = await fetchOrderStatus(sessionId);
+    if (!status || !status.paid) return;
+
+    const msg = document.getElementById('thanks-msg');
+    if (msg) {
+      const book = status.label ? `your copy of ${status.label}` : 'your book';
+      const where = status.email ? ` to ${status.email}` : '';
+      msg.textContent =
+        `We just sent the download links for ${book}${where}. You get both the PDF and the EPUB, so you can read on any device. The links work for 7 days, so save the files once you open them.`;
+    }
+  }
+  confirmOrder();
+  document.addEventListener('astro:after-swap', confirmOrder);
+</script>

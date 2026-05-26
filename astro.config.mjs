@@ -9,8 +9,12 @@ export default defineConfig({
   integrations: [
     sitemap({
       // The /og/*.png endpoint emits social-card images, not pages — keep them
-      // out of the sitemap.
-      filter: (page) => !page.includes('/og/'),
+      // out of the sitemap. The post-checkout /thanks pages are noindex, so they
+      // don't belong in the sitemap either (C4).
+      filter: (page) =>
+        !page.includes('/og/') &&
+        !page.endsWith('/thanks/') &&
+        !page.endsWith('/sponsor/thanks/'),
       // Priority + changefreq hints. Search engines treat these as signals, not
       // directives, but they nudge crawl scheduling toward the pages that change.
       serialize(item) {

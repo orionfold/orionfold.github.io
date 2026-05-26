@@ -10,13 +10,23 @@
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import SectionLabel from '../components/ui/SectionLabel.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
 import RoadmapCard from '../components/ui/RoadmapCard.astro';
 import { roadmap, roadmapLanes, roadmapSignals } from '../data/roadmap';
 import { ogMeta } from '../data/og';
 import { SITE } from '../data/seo';
+import aiNativeCover from '../assets/book/ai-native-business-book.jpg';
+import aiResearchCover from '../assets/book/ai-research-dgx-spark-book.jpg';
 
 const og = ogMeta('/roadmap/');
+
+// Books have no flat cover key in the roadmap data, but their real cover art
+// lives in src/assets/book/. Map by roadmap item id so book cards show the
+// actual cover (contained + centered in RoadmapCard) instead of the constellation.
+const bookCovers: Record<string, ImageMetadata> = {
+  'book:ai-native-business': aiNativeCover,
+  'book:field-notes': aiResearchCover,
+};
 
 // Resolve an item's cover key to ImageMetadata. Software posters live flat under
 // assets/projects/; model covers nest under assets/models/<slug>/cover.png.
@@ -39,8 +49,8 @@ const stats = [
 ];
 
 const lanes = [
-  { key: 'released' as const, title: 'Shipped', blurb: 'Out now, open, and free to use.', dot: 'bg-text-muted/50', items: roadmapLanes.released },
   { key: 'active' as const, title: 'Building now', blurb: 'Active work you can sponsor to move faster. Open a card to back a single feature.', dot: 'bg-primary animate-pulse', items: roadmapLanes.active },
+  { key: 'released' as const, title: 'Shipped', blurb: 'Out now, open, and free to use.', dot: 'bg-text-muted/50', items: roadmapLanes.released },
   { key: 'planned' as const, title: 'Planned', blurb: 'On the horizon. Sponsor the work to help pick what ships next.', dot: 'bg-text-muted/30 ring-1 ring-text-muted/40', items: roadmapLanes.planned },
 ];
 
@@ -65,24 +75,21 @@ const itemListLd = {
 >
   <Nav />
   <main>
-    <!-- Page header + momentum strip -->
-    <section class="px-6 pt-36 pb-4 text-center sm:pt-40">
-      <div class="mx-auto max-w-3xl">
-        <SectionLabel text="Roadmap" />
-        <h1 data-animate class="mb-5 mt-4">What we ship, build, and plan next</h1>
-        <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
-          One place for everything Orionfold makes, sorted by where it stands. Back an offering or a single feature to move it up the list, or send us a custom enquiry.
-        </p>
-        <dl data-animate class="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-8 gap-y-4" style="transition-delay: 140ms">
-          {stats.map((s) => (
-            <div class="flex flex-col items-center">
-              <dt class="font-display text-2xl font-bold text-primary">{s.value}</dt>
-              <dd class="font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">{s.label}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
+    <!-- Page header + momentum strip (slim masthead so the lanes rise up) -->
+    <PageHeader
+      eyebrow="Roadmap"
+      title="What we build, ship, and plan next"
+      subtitle="One place for everything Orionfold makes, sorted by where it stands. Back an offering or a single feature to move it up the list, or send us a custom enquiry."
+    >
+      <dl data-animate class="mt-7 flex flex-wrap items-center gap-x-8 gap-y-4" style="transition-delay: 140ms">
+        {stats.map((s) => (
+          <div class="flex flex-col">
+            <dt class="font-display text-2xl font-bold text-primary">{s.value}</dt>
+            <dd class="font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">{s.label}</dd>
+          </div>
+        ))}
+      </dl>
+    </PageHeader>
 
     <!-- Status lanes -->
     {lanes.map((lane) => (
@@ -99,7 +106,7 @@ const itemListLd = {
           {lane.items.length > 0 ? (
             <div data-animate-stagger class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {lane.items.map((item) => (
-                <RoadmapCard item={item} cover={resolveCover(item.assetBase, item.cover)} />
+                <RoadmapCard item={item} cover={resolveCover(item.assetBase, item.cover) ?? bookCovers[item.id]} />
               ))}
             </div>
           ) : (
@@ -189,4 +196,12 @@ const itemListLd = {
 
   initRoadmapSelection();
   document.addEventListener('astro:after-swap', initRoadmapSelection);
+</script>
+
+<script>
+  // Wire the Buy (book) + Sponsor-tier buttons to Stripe Checkout (C4). CORS-fails
+  // on localhost (allowlist is orionfold.com); the live buy/sponsor test is L1.
+  import { wireCheckoutButtons } from '../lib/checkout';
+  wireCheckoutButtons();
+  document.addEventListener('astro:after-swap', () => wireCheckoutButtons());
 </script>

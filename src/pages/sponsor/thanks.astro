@@ -1,0 +1,102 @@
+---
+// Sponsor thank-you (C4). The Checkout success_url for sponsor tiers lands here
+// with ?session_id=…. The stripe-webhook persists the subscription server-side;
+// this page confirms and offers an immediate "Manage subscription" button (the
+// session id is proof of a just-completed checkout, so customer-portal can open
+// the Billing Portal from it). Shows a sensible default even if the order-status
+// lookup fails (e.g. CORS on localhost), enhancing with the tier when it works.
+// noindex (post-checkout).
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import SectionLabel from '../../components/ui/SectionLabel.astro';
+---
+<Layout title="Thank you for sponsoring · Orionfold" description="Your Orionfold sponsorship is active." noindex>
+  <Nav />
+  <main>
+    <section class="px-6 pt-40 pb-32 text-center">
+      <div class="mx-auto max-w-xl">
+        <SectionLabel text="You're in" />
+        <div data-animate class="mx-auto mt-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </div>
+        <h1 data-animate class="mb-4 mt-6" style="transition-delay: 60ms">Thank you for backing the work</h1>
+        <p id="sponsor-thanks-msg" data-animate class="mx-auto max-w-lg text-lg leading-relaxed text-text-muted" style="transition-delay: 120ms">
+          Your sponsorship is active. Your feature, fix, and support requests now move up the line, and you help decide what we build next.
+        </p>
+        <p data-animate class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-text-dim" style="transition-delay: 160ms">
+          We sent a receipt to your inbox. Reply to it anytime, or use the button below to manage your sponsorship.
+        </p>
+
+        <div data-animate class="mt-10 flex flex-wrap items-center justify-center gap-4" style="transition-delay: 200ms">
+          <button
+            id="manage-btn"
+            type="button"
+            hidden
+            class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 font-mono text-sm tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Manage subscription
+          </button>
+          <a href="/roadmap/" class="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 px-5 py-2.5 font-mono text-sm tracking-wider text-primary transition-colors hover:bg-primary/5">
+            See what to back next
+          </a>
+        </div>
+        <p id="manage-error" role="alert" hidden class="mt-3 font-mono text-xs text-red-500"></p>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { fetchOrderStatus, openPortalBySession } from '../../lib/checkout';
+
+  const TIER_NAMES: Record<string, string> = {
+    bronze: 'Bronze',
+    silver: 'Silver',
+    gold: 'Gold',
+    platinum: 'Platinum',
+  };
+
+  async function initSponsorThanks() {
+    const sessionId = new URLSearchParams(location.search).get('session_id');
+    if (!sessionId) return;
+
+    // Wire the manage button (session id is the proof; opens the Billing Portal).
+    const manageBtn = document.getElementById('manage-btn') as HTMLButtonElement | null;
+    const errorEl = document.getElementById('manage-error');
+    if (manageBtn && !manageBtn.dataset.wired) {
+      manageBtn.dataset.wired = '1';
+      manageBtn.hidden = false;
+      manageBtn.addEventListener('click', async () => {
+        if (errorEl) errorEl.hidden = true;
+        manageBtn.disabled = true;
+        manageBtn.setAttribute('aria-busy', 'true');
+        try {
+          await openPortalBySession(sessionId);
+        } catch (err) {
+          manageBtn.disabled = false;
+          manageBtn.removeAttribute('aria-busy');
+          if (errorEl) {
+            errorEl.textContent = err instanceof Error ? err.message : 'Could not open the portal.';
+            errorEl.hidden = false;
+          }
+        }
+      });
+    }
+
+    // Enhance the message with the tier when order-status is reachable.
+    const status = await fetchOrderStatus(sessionId);
+    if (!status || !status.paid) return;
+    const tierName = status.tier ? TIER_NAMES[status.tier] ?? null : null;
+    const msg = document.getElementById('sponsor-thanks-msg');
+    if (msg && tierName) {
+      msg.textContent =
+        `You're now a ${tierName} sponsor. Your feature, fix, and support requests now move up the line, and you help decide what we build next.`;
+    }
+  }
+  initSponsorThanks();
+  document.addEventListener('astro:after-swap', initSponsorThanks);
+</script>

@@ -49,9 +49,16 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/roadmap/': {
     slug: 'roadmap',
     eyebrow: 'Roadmap',
-    title: 'What we ship, build, and plan next',
+    title: 'What we build, ship, and plan next',
     seed: 'roadmap',
     alt: 'Orionfold roadmap: every offering by status, with ways to sponsor the work',
+  },
+  '/sponsor/': {
+    slug: 'sponsor',
+    eyebrow: 'Sponsor',
+    title: 'Back the work, move it up the list',
+    seed: 'sponsor',
+    alt: 'Sponsor Orionfold: monthly tiers that prioritize your feature and support requests',
   },
   '/books/': {
     slug: 'books',

@@ -67,6 +67,7 @@ export interface RoadmapItem {
   sponsorTier?: SponsorTier; // gold/platinum badge
   features?: RoadmapFeature[]; // active items expand into these
   cta: 'buy' | 'sponsor'; // books buy; everything else sponsors
+  lookupKey?: string; // Stripe lookup key for buy items (books); C4 buy button
   roadmapOrder: number; // sort key within a status lane
 }
 
@@ -112,6 +113,7 @@ export function buildRoadmap(signals: RoadmapSignals): RoadmapItem[] {
       sponsorTier: b.sponsorTier,
       features: b.slug === 'field-notes' ? stagesToFeatures(signals.fieldNotes.stages) : b.features,
       cta: 'buy',
+      lookupKey: b.lookupKey,
       roadmapOrder: b.roadmapOrder ?? i,
     });
   });

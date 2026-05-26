@@ -10,6 +10,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ProductCard from '../components/ui/ProductCard.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
 import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
 import { software, softwareGroups } from '../data/software';
 import platformImg from '../assets/platform/ai-native-platform.png';
@@ -38,16 +39,12 @@ function resolveCover(key?: string): ImageMetadata | undefined {
 >
   <Nav />
   <main>
-    <!-- Page header -->
-    <section class="px-6 pt-36 pb-4 text-center sm:pt-40">
-      <div class="mx-auto max-w-3xl">
-        <SectionLabel text="Software" />
-        <h1 data-animate class="mb-5 mt-4">Open software you control</h1>
-        <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
-          A growing set of tools to run AI on your own computer. A platform to do the work, ready-to-use apps that keep your data private, research tools to see where AI is headed, and developer tools to build with.
-        </p>
-      </div>
-    </section>
+    <!-- Page header (slim masthead so the poster grid rises above the fold) -->
+    <PageHeader
+      eyebrow="Software"
+      title="Open software you control"
+      subtitle="A growing set of tools to run AI on your own computer. A platform to do the work, ready-to-use apps that keep your data private, research tools to see where AI is headed, and developer tools to build with."
+    />
 
     <!-- Grouped product clusters -->
     {softwareGroups.map((group) => {

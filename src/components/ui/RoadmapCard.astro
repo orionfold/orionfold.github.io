@@ -9,6 +9,7 @@
 import { Image } from 'astro:assets';
 import ConstellationCover from './ConstellationCover.astro';
 import type { RoadmapItem } from '../../lib/roadmap/source';
+import { SPONSOR_TIERS, getCatalogItem, sponsorLookupKey, formatUsd } from '../../data/commerce';
 
 interface Props {
   item: RoadmapItem;
@@ -33,8 +34,12 @@ const SPONSOR_BADGE: Record<NonNullable<RoadmapItem['sponsorTier']>, string> = {
 };
 
 const isBuy = item.cta === 'buy';
-const ctaHref = isBuy ? '/books/' : `/sponsor/?item=${encodeURIComponent(item.id)}`;
-const ctaText = isBuy ? 'Get the book' : 'Sponsor this';
+// getElementById tolerates any string, but keep the id selector-clean (item.id has a colon).
+const errId = `rm-err-${item.id.replace(/[^a-z0-9]+/gi, '-')}`;
+const sponsorTiers = SPONSOR_TIERS.map((tier) => {
+  const c = getCatalogItem(sponsorLookupKey(tier))!;
+  return { tier, lookupKey: c.lookupKey, price: c.amount };
+});
 
 const features = item.features ?? [];
 const featureDot: Record<RoadmapItem['status'], string> = {
@@ -51,16 +56,45 @@ const featureDot: Record<RoadmapItem['status'], string> = {
   <!-- Cover + overlays -->
   <div class="relative aspect-[16/9] overflow-hidden border-b border-border">
     {cover ? (
-      <Image
-        src={cover}
-        alt={`${item.title} key art`}
-        widths={[400, 640]}
-        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-        loading="lazy"
-        decoding="async"
-        data-no-zoom
-        class="h-full w-full object-cover object-top"
-      />
+      item.type === 'book' ? (
+        // Books are portrait covers: show the whole cover (full title + subtitle),
+        // vertically centered, over a blurred fill so the 16:9 frame reads as art.
+        <>
+          <Image
+            src={cover}
+            alt=""
+            aria-hidden="true"
+            widths={[400, 640]}
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            loading="lazy"
+            decoding="async"
+            data-no-zoom
+            class="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
+          />
+          <div class="absolute inset-0 bg-black/20"></div>
+          <Image
+            src={cover}
+            alt={`${item.title} cover`}
+            widths={[240, 400]}
+            sizes="240px"
+            loading="lazy"
+            decoding="async"
+            data-no-zoom
+            class="relative z-[1] mx-auto h-full w-auto object-contain p-3"
+          />
+        </>
+      ) : (
+        <Image
+          src={cover}
+          alt={`${item.title} key art`}
+          widths={[400, 640]}
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          loading="lazy"
+          decoding="async"
+          data-no-zoom
+          class="h-full w-full object-cover object-top"
+        />
+      )
     ) : (
       <ConstellationCover seed={item.id} rounded="rounded-none" label={item.title} />
     )}
@@ -137,20 +171,53 @@ const featureDot: Record<RoadmapItem['status'], string> = {
       </details>
     )}
 
-    <!-- Commerce CTA: books Buy, everything else Sponsor -->
-    <a
-      href={ctaHref}
-      class:list={[
-        'mt-5 inline-flex items-center gap-1.5 self-start rounded-lg px-4 py-2 font-mono text-sm tracking-wider transition-colors',
-        isBuy
-          ? 'bg-primary text-white hover:bg-primary/90'
-          : 'border border-primary/30 text-primary hover:bg-primary/5',
-      ]}
-    >
-      {ctaText}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M5 12h14M13 6l6 6-6 6" />
-      </svg>
-    </a>
+    <!-- Commerce CTA: books Buy straight to Checkout; everything else opens an
+         in-flow Sponsor menu of the four tiers (deep-links to each tier's
+         subscription Checkout, carrying this item id into Stripe metadata). The
+         menu is in-flow, not absolute, so the card's overflow-hidden can't clip it. -->
+    {isBuy ? (
+      <div class="mt-5">
+        <button
+          type="button"
+          data-checkout={item.lookupKey}
+          data-item={item.id}
+          data-error-target={errId}
+          class="inline-flex items-center gap-1.5 self-start rounded-lg bg-primary px-4 py-2 font-mono text-sm tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Get the book
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </button>
+        <p id={errId} role="alert" hidden class="mt-2 font-mono text-xs text-red-500"></p>
+      </div>
+    ) : (
+      <details class="mt-5">
+        <summary class="inline-flex cursor-pointer list-none items-center gap-1.5 self-start rounded-lg border border-primary/30 px-4 py-2 font-mono text-sm tracking-wider text-primary transition-colors hover:bg-primary/5 marker:hidden">
+          Sponsor this
+          <svg class="transition-transform [details[open]_&]:rotate-180" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </summary>
+        <div class="mt-3 space-y-1 rounded-xl border border-border bg-surface p-2">
+          {sponsorTiers.map((t) => (
+            <button
+              type="button"
+              data-checkout={t.lookupKey}
+              data-item={item.id}
+              data-error-target={errId}
+              class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm capitalize text-text transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {t.tier}
+              <span class="font-mono text-xs tracking-wider text-text-muted">{formatUsd(t.price)}/mo</span>
+            </button>
+          ))}
+          <a href={`/sponsor/?item=${encodeURIComponent(item.id)}`} class="block rounded-lg px-3 py-2 text-center font-mono text-xs tracking-wider text-text-muted transition-colors hover:text-primary">
+            Compare tiers →
+          </a>
+        </div>
+        <p id={errId} role="alert" hidden class="mt-2 font-mono text-xs text-red-500"></p>
+      </details>
+    )}
   </div>
 </article>

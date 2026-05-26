@@ -10,6 +10,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ModelCard from '../components/ui/ModelCard.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
 import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
 import { models } from '../data/models';
 import { ogMeta } from '../data/og';
@@ -42,24 +43,20 @@ function resolveCover(key?: string): ImageMetadata | undefined {
 >
   <Nav />
   <main>
-    <!-- Page header -->
-    <section class="px-6 pt-36 pb-4 text-center sm:pt-40">
-      <div class="mx-auto max-w-3xl">
-        <SectionLabel text="Models" />
-        <h1 data-animate class="mb-5 mt-4">AI tuned for your field</h1>
-        <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
-          Open AI models built for one job each, like patents, security, law, money, and health. All are free to download and run in private, right on your own computer.
-        </p>
-      </div>
-    </section>
+    <!-- Page header (slim masthead so the model covers rise above the fold) -->
+    <PageHeader
+      eyebrow="Models"
+      title="AI tuned for your field"
+      subtitle="Open AI models built for one job each, like patents, security, law, money, and health. All are free to download and run in private, right on your own computer."
+    />
 
     <!-- Patent: one model, two NeMo builds -->
     <section class="px-6 pt-12">
-      <div class="mx-auto max-w-5xl">
-        <div class="mb-8 text-center">
-          <h2 data-animate>Patent Strategist</h2>
-          <p data-animate class="mx-auto mt-3 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
-            Our flagship model reads and reasons about patents fully offline. Built with the NeMo toolkit, it comes in two formats: ready-to-run files, or a small add-on patch for builders.
+      <div class="mx-auto max-w-6xl">
+        <div class="mb-6">
+          <SectionLabel text="Flagship Model" />
+          <p data-animate class="mt-2 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 60ms">
+            This model reads and reasons about patents fully offline. Built with the NeMo toolkit, it comes in two formats: ready-to-run files, or a small add-on patch for builders.
           </p>
         </div>
         {patentSplit.lead && <ModelCard {...patentSplit.lead} cover={resolveCover(patentSplit.lead.cover)} featured />}
@@ -71,10 +68,10 @@ function resolveCover(key?: string): ImageMetadata | undefined {
 
     <!-- One model per domain -->
     <section class="px-6 pt-20">
-      <div class="mx-auto max-w-5xl">
-        <div class="mb-8 text-center">
-          <h2 data-animate>More domain models</h2>
-          <p data-animate class="mx-auto mt-3 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
+      <div class="mx-auto max-w-6xl">
+        <div class="mb-6">
+          <SectionLabel text="More domain models" />
+          <p data-animate class="mt-2 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 60ms">
             Each one is tuned for a single field, so it knows the words and rules of that work.
           </p>
         </div>
@@ -87,16 +84,14 @@ function resolveCover(key?: string): ImageMetadata | undefined {
 
     <!-- Benchmark dataset -->
     <section class="px-6 pt-20">
-      <div class="mx-auto max-w-5xl">
-        <div class="mb-8 text-center">
-          <h2 data-animate>Benchmark dataset</h2>
-          <p data-animate class="mx-auto mt-3 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
+      <div class="mx-auto max-w-6xl">
+        <div class="mb-6">
+          <SectionLabel text="Benchmark dataset" />
+          <p data-animate class="mt-2 max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 60ms">
             The test set we use to check how well a model reasons about patents.
           </p>
         </div>
-        <div class="mx-auto grid max-w-2xl gap-6">
-          {dataset.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
-        </div>
+        {dataset.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} featured />)}
       </div>
     </section>
 

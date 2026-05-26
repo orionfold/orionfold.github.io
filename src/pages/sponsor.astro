@@ -1,0 +1,194 @@
+---
+// Sponsor (C4, spec §2/§4/§5) — the four monthly sponsor tiers, with a benefit
+// ladder that prioritizes a sponsor's feature/fix/support requests by tier, plus
+// recognition (Gold/Platinum earn a per-item roadmap badge). Each tier's button
+// starts a Stripe subscription Checkout via the shared client helper. When a
+// visitor arrives from a roadmap item (/sponsor/?item=<id>), a client script
+// shows what they're backing and threads that item id into checkout metadata.
+// Returning sponsors use the "Manage your sponsorship" form (emails a Billing
+// Portal link). Static page; the checkout/portal calls CORS-fail on localhost
+// by design (live-domain test at L1), so the UI degrades gracefully.
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import SponsorCard from '../components/ui/SponsorCard.astro';
+import { SPONSOR_TIER_DISPLAY } from '../data/commerce';
+import { roadmap } from '../data/roadmap';
+import { ogMeta } from '../data/og';
+
+const og = ogMeta('/sponsor/');
+
+// id -> title for the "You're backing: …" banner (resolved client-side from ?item=).
+const itemTitles: Record<string, string> = Object.fromEntries(roadmap.map((i) => [i.id, i.title]));
+
+// How priority works, in plain words (spec: priority-by-tier).
+const howItWorks = [
+  { q: 'What does priority mean?', a: 'When you send a feature, fix, or support request, your tier decides how soon we pick it up. Higher tiers move up the line.' },
+  { q: 'Can I back one thing?', a: 'Yes. On the roadmap you can sponsor a single offering or even a single feature, and your sponsorship is tied to that work.' },
+  { q: 'Can I change or cancel?', a: 'Anytime. Use the manage link below to update your card, switch tiers, or cancel. No emails, no waiting.' },
+];
+---
+<Layout
+  title="Sponsor · Orionfold"
+  description="Sponsor Orionfold from $10 a month. Bronze to Platinum tiers prioritize your feature, fix, and support requests, with a roadmap badge for Gold and Platinum."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+>
+  <Nav />
+  <main>
+    <!-- Header (slim masthead, matching the other landing pages) -->
+    <PageHeader
+      eyebrow="Sponsor"
+      title="Back the work, move it up the list"
+      subtitle="Sponsors keep the open software, models, and books coming. Pick a monthly tier and your feature, fix, and support requests jump up the line. You can stop anytime."
+    >
+      <!-- Backing-an-item banner (shown by the script when arriving via ?item=) -->
+      <p
+        id="sponsor-backing"
+        hidden
+        data-animate
+        class="mt-6 inline-flex max-w-xl items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 font-mono text-xs tracking-wide text-primary"
+        style="transition-delay: 120ms"
+      >
+        <span class="inline-block h-2 w-2 rounded-full bg-primary"></span>
+        You're backing: <strong id="sponsor-backing-title" class="font-semibold"></strong>
+      </p>
+    </PageHeader>
+
+    <!-- Tiers -->
+    <section class="px-6 pt-10">
+      <div data-animate-stagger class="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {SPONSOR_TIER_DISPLAY.map((tier) => (
+          <SponsorCard tier={tier} />
+        ))}
+      </div>
+      <p class="mx-auto mt-6 max-w-6xl text-center font-mono text-xs tracking-wide text-text-muted">
+        Secure checkout by Stripe. Cancel anytime.
+      </p>
+    </section>
+
+    <!-- How priority works -->
+    <section class="px-6 pt-20">
+      <div class="mx-auto max-w-3xl">
+        <h2 data-animate class="mb-8 text-center text-2xl">How sponsoring works</h2>
+        <dl data-animate-stagger class="grid gap-6 sm:grid-cols-3">
+          {howItWorks.map((item) => (
+            <div data-animate class="rounded-xl border border-border bg-surface-raised p-5">
+              <dt class="font-display text-base font-bold leading-snug">{item.q}</dt>
+              <dd class="mt-2 text-sm leading-relaxed text-text-muted">{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <!-- Manage your sponsorship (returning sponsors) -->
+    <section class="px-6 pt-20 pb-24">
+      <div class="mx-auto max-w-xl rounded-2xl border border-border bg-surface-raised p-8 text-center">
+        <h2 data-animate class="mb-3 text-2xl">Already a sponsor?</h2>
+        <p data-animate class="mb-6 text-sm leading-relaxed text-text-muted" style="transition-delay: 60ms">
+          Enter your email and we will send you a secure link to update your card, switch tiers, or cancel.
+        </p>
+        <form id="portal-form" novalidate class="mx-auto w-full max-w-md">
+          <div class="flex flex-col gap-2 sm:flex-row">
+            <label for="portal-email" class="sr-only">Email address</label>
+            <input
+              id="portal-email"
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+              class="flex-1 rounded-md border border-border bg-transparent px-4 py-3 font-mono text-xs tracking-wide text-text transition-colors placeholder:text-text-dim focus:border-primary focus:outline-none"
+            />
+            <button
+              type="submit"
+              class="cursor-pointer whitespace-nowrap rounded-md bg-primary px-6 py-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-surface transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Email me a link
+            </button>
+          </div>
+          <p id="portal-error" role="alert" hidden class="mt-3 font-mono text-xs text-red-500"></p>
+          <p id="portal-success" hidden class="mt-3 font-mono text-xs text-success"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script define:vars={{ itemTitles }}>
+  // Carry a roadmap item id (from /sponsor/?item=<id>) into checkout + show what
+  // the visitor is backing. Done client-side because the page is static.
+  function applyRoadmapItem() {
+    const itemId = new URLSearchParams(location.search).get('item');
+    if (!itemId) return;
+    document.querySelectorAll('[data-checkout]').forEach((btn) => {
+      btn.setAttribute('data-item', itemId);
+    });
+    const title = itemTitles[itemId];
+    const banner = document.getElementById('sponsor-backing');
+    const titleEl = document.getElementById('sponsor-backing-title');
+    if (title && banner && titleEl) {
+      titleEl.textContent = title;
+      banner.hidden = false;
+    }
+  }
+  applyRoadmapItem();
+  document.addEventListener('astro:after-swap', applyRoadmapItem);
+</script>
+
+<script>
+  import { wireCheckoutButtons, requestPortalByEmail } from '../lib/checkout';
+
+  function initSponsor() {
+    wireCheckoutButtons();
+
+    const form = document.getElementById('portal-form') as HTMLFormElement | null;
+    if (!form || form.dataset.wired) return;
+    form.dataset.wired = '1';
+
+    const emailInput = form.querySelector<HTMLInputElement>('input[name="email"]')!;
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const errorEl = document.getElementById('portal-error')!;
+    const successEl = document.getElementById('portal-success')!;
+
+    const show = (el: HTMLElement, msg: string) => {
+      el.textContent = msg;
+      el.hidden = false;
+    };
+    const hide = (el: HTMLElement) => {
+      el.hidden = true;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hide(errorEl);
+      hide(successEl);
+
+      const email = emailInput.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        show(errorEl, 'Please enter a real email address.');
+        emailInput.focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const original = submitBtn.textContent;
+      submitBtn.textContent = 'SENDING...';
+      try {
+        const message = await requestPortalByEmail(email);
+        show(successEl, message);
+        form.querySelector('div')?.classList.add('hidden');
+      } catch (err) {
+        show(errorEl, err instanceof Error ? err.message : 'Could not connect. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = original;
+      }
+    });
+  }
+
+  initSponsor();
+  document.addEventListener('astro:after-swap', initSponsor);
+</script>
