@@ -4,6 +4,10 @@ OPS-NOTES.md
 # Local secrets — OPENROUTER_API_KEY etc. (never commit)
 .env.local
 
+# Edge-function secrets (Stripe rk_/whsec_, etc.) — never commit. Only *.env.example is tracked.
+supabase/functions/.env
+supabase/functions/*/.env
+
 # Stripe setup notes — sensitive, local-only (never commit)
 STRIPE-HANDOFF.md
 

@@ -1,0 +1,22 @@
+{
+  "version": "5",
+  "redirects": {
+    "https://esm.sh/@supabase/supabase-js@2": "https://esm.sh/@supabase/supabase-js@2.106.1"
+  },
+  "remote": {
+    "https://esm.sh/@supabase/supabase-js@2.106.1": "1b378cc89620ed0bf3e646b946b593e75d8e8ac0e43a4e07db6b71516ca757ec",
+    "https://esm.sh/stripe@18.5.0?target=deno": "d9b6d1310d5168cc94495f0ffc275048be7aac23ea942ddc7f8bff513ffd9e71"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@astrojs/sitemap@3",
+        "npm:@resvg/resvg-js@^2.6.2",
+        "npm:@tailwindcss/vite@4",
+        "npm:astro@5",
+        "npm:satori@0.26",
+        "npm:tailwindcss@4"
+      ]
+    }
+  }
+}
