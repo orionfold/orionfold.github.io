@@ -38,6 +38,8 @@ export const models: Model[] = [
     recommended: 'Q5_K_M',
     license: 'Apache-2.0',
     href: `${HF}/patent-strategist-v3-nemo-GGUF`,
+    cover: 'patent-strategist/cover.png',
+    coverAlt: 'A movie-poster style picture. A Victorian inventor workshop full of brass gears and blueprints, with a small gold AI computer on the desk. The title reads Prior Art.',
   },
   {
     group: 'patent',
@@ -50,6 +52,8 @@ export const models: Model[] = [
     recommended: 'BF16',
     license: 'Apache-2.0',
     href: `${HF}/patent-strategist-v3-nemo`,
+    cover: 'patent-strategist/cover.png',
+    coverAlt: 'A movie-poster style picture. A Victorian inventor workshop full of brass gears and blueprints, with a small gold AI computer on the desk. The title reads Prior Art.',
   },
 
   // ── One model per domain ──
@@ -63,6 +67,8 @@ export const models: Model[] = [
     recommended: 'Q4_K_M',
     license: 'Apache-2.0',
     href: `${HF}/SecurityLLM-GGUF`,
+    cover: 'securityllm/cover.png',
+    coverAlt: 'A movie-poster style picture. A 1940s code room with old cipher machines, where a small gold AI computer turns secret code into a glowing shield. The title reads Zero Day.',
   },
   {
     group: 'domain',
@@ -73,6 +79,8 @@ export const models: Model[] = [
     format: 'GGUF',
     license: 'MIT',
     href: `${HF}/Saul-7B-Instruct-v1-GGUF`,
+    cover: 'saul-7b-instruct/cover.png',
+    coverAlt: 'A movie-poster style picture. A grand courtroom with a gavel, where a small gold AI computer glows beside the case files. The title reads The Verdict.',
   },
   {
     group: 'domain',
@@ -83,6 +91,8 @@ export const models: Model[] = [
     format: 'GGUF',
     license: 'Free',
     href: `${HF}/finance-chat-GGUF`,
+    cover: 'finance-chat/cover.png',
+    coverAlt: 'A movie-poster style picture. A 1980s trading floor with a golden bull and rising green charts, with a small gold AI computer on the desk. The title reads The Bull Run.',
   },
   {
     group: 'domain',
@@ -94,6 +104,8 @@ export const models: Model[] = [
     recommended: 'Q5_K_M',
     license: 'Apache-2.0',
     href: `${HF}/II-Medical-8B-GGUF`,
+    cover: 'ii-medical-8b/cover.png',
+    coverAlt: 'A movie-poster style picture. An old medical room with an anatomy chart, where a small gold AI computer shows a calm health read-out. The title reads The Diagnosis.',
   },
 
   // ── Benchmark dataset ──
@@ -106,5 +118,7 @@ export const models: Model[] = [
     license: 'CC-BY-4.0',
     href: 'https://huggingface.co/datasets/Orionfold/patent-strategist-bench-v0.1',
     ctaText: 'Get the dataset',
+    cover: 'patent-strategist-bench/cover.png',
+    coverAlt: 'A movie-poster style picture. An exam hall with a big score gauge and a chalkboard of grades, where a small gold AI computer marks the test papers. The title reads The Final Exam.',
   },
 ];

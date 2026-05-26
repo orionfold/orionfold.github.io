@@ -6,12 +6,13 @@
 // page's "Behind the scenes" reveal (memory `website-copy-style`, spec §7).
 //
 // `cover` is an asset key: a filename under src/assets/projects/ (resolved by a
-// glob in software.astro), or the sentinels '@platform' / '@neosignal' for the
-// two donor screenshots imported directly. `coverType` picks how it renders:
-// a framed screenshot, a logo on the constellation motif, or the bare motif.
+// glob in software.astro). Every card now leads with a curated witty movie-poster
+// key-art (`<slug>-poster.png`, featured-imagery skill, generated on Gemini), so
+// `coverType` is 'poster' across the board: full-bleed 16:9 illustrative art, each
+// in its own film genre + era, with only the film title as text (memory
+// `poster-variety-feedback`). The real product screenshots are kept in the repo as
+// compositing material but the in-card cover is the poster.
 export type SoftwareGroup = 'platform' | 'apps' | 'intel' | 'devtools';
-// 'poster' is a curated witty movie-poster key-art (featured-imagery skill),
-// rendered full-bleed (no BrowserFrame) since it is illustrative art, not a UI.
 export type CoverType = 'screenshot' | 'logo' | 'motif' | 'poster';
 
 export interface SoftwareProduct {
@@ -24,7 +25,7 @@ export interface SoftwareProduct {
   href: string; // canonical home (external)
   ctaText: string;
   coverType: CoverType;
-  cover?: string; // asset filename, or '@platform' / '@neosignal'
+  cover?: string; // asset filename under src/assets/projects/
 }
 
 // Group headings + blurbs for the page sections (order = display order).
@@ -46,8 +47,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Runs local', 'Agents', 'Workflows', 'Cost tracking'],
     href: 'https://ainative.business/docs/',
     ctaText: 'Read the docs',
-    coverType: 'screenshot',
-    cover: '@platform',
+    coverType: 'poster',
+    cover: 'ai-native-platform-poster.png',
   },
   {
     slug: 'ai-native-api',
@@ -58,7 +59,8 @@ export const software: SoftwareProduct[] = [
     pills: ['REST API', '27 groups', 'For developers'],
     href: 'https://ainative.business/docs/api/',
     ctaText: 'Read the API docs',
-    coverType: 'motif',
+    coverType: 'poster',
+    cover: 'ai-native-api-poster.png',
   },
 
   // ── Personal AI apps ──
@@ -71,8 +73,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Runs local', '5 money agents', 'Private', 'Web app'],
     href: 'https://neocash.io',
     ctaText: 'Visit NeoCash',
-    coverType: 'screenshot',
-    cover: 'neocash.png',
+    coverType: 'poster',
+    cover: 'neocash-poster.png',
   },
   {
     slug: 'openvolo',
@@ -83,8 +85,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Runs local', 'X · LinkedIn · Gmail', 'AI drafting', 'One command'],
     href: 'https://openvolo.com',
     ctaText: 'Visit OpenVolo',
-    coverType: 'logo',
-    cover: 'openvolo-logo.png',
+    coverType: 'poster',
+    cover: 'openvolo-poster.png',
   },
   {
     slug: 'memo',
@@ -95,8 +97,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Chrome extension', '4 AI providers', 'Local-first', 'YouTube'],
     href: 'https://github.com/navam-io/memo',
     ctaText: 'See it on GitHub',
-    coverType: 'screenshot',
-    cover: 'memo.png',
+    coverType: 'poster',
+    cover: 'memo-poster.png',
   },
   {
     slug: 'marketer',
@@ -107,7 +109,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Copy-paste', 'AI drafts', 'Kanban', 'Local-first'],
     href: 'https://github.com/navam-io/marketer',
     ctaText: 'See it on GitHub',
-    coverType: 'motif',
+    coverType: 'poster',
+    cover: 'marketer-poster.png',
   },
 
   // ── Intelligence & research ──
@@ -120,8 +123,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Model scores', 'Chips & clouds', 'Fit matrix', 'Alerts'],
     href: 'https://neosignal.io',
     ctaText: 'Visit neosignal',
-    coverType: 'screenshot',
-    cover: '@neosignal',
+    coverType: 'poster',
+    cover: 'neosignal-poster.png',
   },
   {
     slug: 'trends',
@@ -132,8 +135,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Multi-agent', 'Build vs buy', 'Live demo', 'Next.js'],
     href: 'https://github.com/navam-io/trends',
     ctaText: 'See it on GitHub',
-    coverType: 'screenshot',
-    cover: 'trends.png',
+    coverType: 'poster',
+    cover: 'trends-poster.png',
   },
   {
     slug: 'moments',
@@ -144,8 +147,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Runs local', 'Multi-agent', 'Dashboards', 'Claude SDK'],
     href: 'https://github.com/navam-io/moments',
     ctaText: 'See it on GitHub',
-    coverType: 'screenshot',
-    cover: 'moments.png',
+    coverType: 'poster',
+    cover: 'moments-poster.png',
   },
 
   // ── Developer tools ──
@@ -158,8 +161,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Terminal', '15+ models', '7 providers', 'Local-first'],
     href: 'https://github.com/navam-io/command',
     ctaText: 'See it on GitHub',
-    coverType: 'screenshot',
-    cover: 'command.png',
+    coverType: 'poster',
+    cover: 'command-poster.png',
   },
   {
     slug: 'sentinel',
@@ -170,8 +173,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Visual canvas', 'Desktop app', 'YAML export', 'Well tested'],
     href: 'https://github.com/navam-io/sentinel',
     ctaText: 'See it on GitHub',
-    coverType: 'logo',
-    cover: 'sentinel-logo.png',
+    coverType: 'poster',
+    cover: 'sentinel-poster.png',
   },
   {
     slug: 'fieldkit',
@@ -182,6 +185,7 @@ export const software: SoftwareProduct[] = [
     pills: ['Open source', 'Python', 'Proven on Spark', 'Free'],
     href: 'https://ainative.business/fieldkit/',
     ctaText: 'Get fieldkit',
-    coverType: 'motif',
+    coverType: 'poster',
+    cover: 'fieldkit-poster.png',
   },
 ];
