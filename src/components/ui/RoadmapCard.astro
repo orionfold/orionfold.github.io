@@ -1,0 +1,156 @@
+---
+// Roadmap card (R1, spec §5). One offering on the /roadmap status lanes. Reuses
+// the ProductCard visual idiom (rounded-2xl border bg-surface-raised, full-bleed
+// 16:9 cover, mono eyebrow, primary pills) but adds the roadmap-specific bits:
+// a status pill, an optional Gold/Platinum sponsor badge, a select checkbox (for
+// the R2 enquiry drawer), and — on active items — a no-JS <details> expansion
+// listing individually selectable features. Covers resolve in roadmap.astro and
+// arrive as ImageMetadata; books have none and fall back to ConstellationCover.
+import { Image } from 'astro:assets';
+import ConstellationCover from './ConstellationCover.astro';
+import type { RoadmapItem } from '../../lib/roadmap/source';
+
+interface Props {
+  item: RoadmapItem;
+  cover?: ImageMetadata;
+}
+const { item, cover } = Astro.props;
+
+const TYPE_LABEL: Record<RoadmapItem['type'], string> = { book: 'Book', software: 'Software', model: 'Model' };
+
+// Status presentation stays inside the brand palette: active is the primary
+// blue-indigo with a pulsing dot, shipped is calm/neutral, planned is dashed.
+const STATUS: Record<RoadmapItem['status'], { label: string; pill: string; dot: string }> = {
+  released: { label: 'Shipped', pill: 'border-white/40 bg-black/25 text-white', dot: 'bg-white/70' },
+  active: { label: 'Building now', pill: 'border-primary/50 bg-primary/90 text-white', dot: 'bg-white animate-pulse' },
+  planned: { label: 'Planned', pill: 'border-dashed border-white/50 bg-black/25 text-white', dot: 'bg-white/40' },
+};
+const status = STATUS[item.status];
+
+const SPONSOR_BADGE: Record<NonNullable<RoadmapItem['sponsorTier']>, string> = {
+  gold: '🥇 Gold sponsor',
+  platinum: '🏅 Platinum sponsor',
+};
+
+const isBuy = item.cta === 'buy';
+const ctaHref = isBuy ? '/books/' : `/sponsor/?item=${encodeURIComponent(item.id)}`;
+const ctaText = isBuy ? 'Get the book' : 'Sponsor this';
+
+const features = item.features ?? [];
+const featureDot: Record<RoadmapItem['status'], string> = {
+  released: 'bg-text-muted/40',
+  active: 'bg-primary',
+  planned: 'border border-text-muted/40',
+};
+---
+<article
+  data-animate
+  data-roadmap-item={item.id}
+  class="group/card flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-raised transition-colors hover:border-primary/30"
+>
+  <!-- Cover + overlays -->
+  <div class="relative aspect-[16/9] overflow-hidden border-b border-border">
+    {cover ? (
+      <Image
+        src={cover}
+        alt={`${item.title} key art`}
+        widths={[400, 640]}
+        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+        loading="lazy"
+        decoding="async"
+        data-no-zoom
+        class="h-full w-full object-cover object-top"
+      />
+    ) : (
+      <ConstellationCover seed={item.id} rounded="rounded-none" label={item.title} />
+    )}
+
+    <!-- Select for enquiry (R2 reads [data-roadmap-select]) -->
+    <label class="absolute left-3 top-3 z-10 cursor-pointer">
+      <input type="checkbox" data-roadmap-select value={item.id} data-label={item.title} class="peer sr-only" />
+      <span
+        class="flex h-7 w-7 items-center justify-center rounded-md border border-white/50 bg-black/30 text-white backdrop-blur transition peer-checked:border-primary peer-checked:bg-primary peer-checked:[&>svg]:opacity-100 peer-focus-visible:ring-2 peer-focus-visible:ring-white/80"
+      >
+        <svg class="opacity-0 transition" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      </span>
+      <span class="sr-only">Select {item.title} for an enquiry</span>
+    </label>
+
+    <!-- Status pill -->
+    <span class:list={['absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider backdrop-blur', status.pill]}>
+      <span class:list={['h-1.5 w-1.5 rounded-full', status.dot]}></span>{status.label}
+    </span>
+
+    <!-- Sponsor badge (gold/platinum only) -->
+    {item.sponsorTier && (
+      <span class="absolute bottom-3 left-3 rounded-full border border-white/30 bg-black/40 px-2.5 py-1 font-mono text-[10px] tracking-wider text-white backdrop-blur">
+        {SPONSOR_BADGE[item.sponsorTier]}
+      </span>
+    )}
+  </div>
+
+  <!-- Body -->
+  <div class="flex flex-1 flex-col p-6">
+    <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{TYPE_LABEL[item.type]}</span>
+    <h3 class="mt-2 font-display text-xl font-bold leading-tight">
+      {item.href ? (
+        <a href={item.href} target="_blank" rel="noopener noreferrer" class="hover:text-primary">{item.title}</a>
+      ) : (
+        item.title
+      )}
+    </h3>
+    <p class="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-text-muted">{item.blurb}</p>
+
+    <!-- Active items expand into selectable features (no JS needed to open) -->
+    {features.length > 0 && (
+      <details class="mt-4 border-t border-border pt-3">
+        <summary class="flex cursor-pointer list-none items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-primary marker:hidden">
+          <svg class="transition-transform [details[open]_&]:rotate-90" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+          {features.length} features you can sponsor
+        </summary>
+        <ul class="mt-3 space-y-1">
+          {features.map((f) => (
+            <li>
+              <label class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-primary/5">
+                <input
+                  type="checkbox"
+                  data-roadmap-select
+                  value={f.id}
+                  data-label={`${item.title}: ${f.label}`}
+                  class="peer sr-only"
+                />
+                <span class="flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded border border-border bg-surface text-primary transition peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:[&>svg]:opacity-100 peer-focus-visible:ring-2 peer-focus-visible:ring-primary/40">
+                  <svg class="opacity-0 transition" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                </span>
+                <span class:list={['h-1.5 w-1.5 shrink-0 rounded-full', featureDot[f.status ?? item.status]]}></span>
+                <span class="text-sm leading-snug text-text">{f.label}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </details>
+    )}
+
+    <!-- Commerce CTA: books Buy, everything else Sponsor -->
+    <a
+      href={ctaHref}
+      class:list={[
+        'mt-5 inline-flex items-center gap-1.5 self-start rounded-lg px-4 py-2 font-mono text-sm tracking-wider transition-colors',
+        isBuy
+          ? 'bg-primary text-white hover:bg-primary/90'
+          : 'border border-primary/30 text-primary hover:bg-primary/5',
+      ]}
+    >
+      {ctaText}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    </a>
+  </div>
+</article>

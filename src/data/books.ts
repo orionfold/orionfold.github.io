@@ -3,7 +3,10 @@
 // work and links to its canonical home on ainative.business — we don't port
 // chapters or articles here. Copy reads grade 3–5, no em-dashes, with quick
 // inline glosses for jargon (memory `website-copy-style`).
-export interface Book {
+import type { RoadmapMeta } from './roadmap-types';
+
+// extends RoadmapMeta -> optional status/sponsorTier/features/roadmapOrder (F1, spec §9).
+export interface Book extends RoadmapMeta {
   slug: string;
   eyebrow: string;
   title: string;
@@ -46,5 +49,6 @@ export const books: Book[] = [
       subtitle: 'Pushing the Frontier of Local AI on a Petascale Desktop',
       tag: 'Running log',
     },
+    status: 'active', // F1: living / early-access book, sold as it grows (spec §2 books pricing)
   },
 ];

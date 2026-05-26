@@ -12,10 +12,13 @@
 // in its own film genre + era, with only the film title as text (memory
 // `poster-variety-feedback`). The real product screenshots are kept in the repo as
 // compositing material but the in-card cover is the poster.
+import type { RoadmapMeta } from './roadmap-types';
+
 export type SoftwareGroup = 'platform' | 'apps' | 'intel' | 'devtools';
 export type CoverType = 'screenshot' | 'logo' | 'motif' | 'poster';
 
-export interface SoftwareProduct {
+// extends RoadmapMeta -> optional status/sponsorTier/features/roadmapOrder (F1, spec §9).
+export interface SoftwareProduct extends RoadmapMeta {
   slug: string;
   group: SoftwareGroup;
   eyebrow: string;
@@ -187,5 +190,6 @@ export const software: SoftwareProduct[] = [
     ctaText: 'Get fieldkit',
     coverType: 'poster',
     cover: 'fieldkit-poster.png',
+    status: 'active', // F1: still growing; F2 pulls its module/feature list from GitHub
   },
 ];

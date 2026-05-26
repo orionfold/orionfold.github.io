@@ -46,6 +46,13 @@ export const OG_PAGES: Record<string, OgPage> = {
     seed: 'models',
     alt: 'Orionfold models: open-weight AI tuned for your field',
   },
+  '/roadmap/': {
+    slug: 'roadmap',
+    eyebrow: 'Roadmap',
+    title: 'What we ship, build, and plan next',
+    seed: 'roadmap',
+    alt: 'Orionfold roadmap: every offering by status, with ways to sponsor the work',
+  },
   '/books/': {
     slug: 'books',
     eyebrow: 'Books',

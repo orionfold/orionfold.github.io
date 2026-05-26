@@ -1,0 +1,120 @@
+{
+  "generatedAt": "2026-05-26T05:14:11.946Z",
+  "fieldkit": {
+    "version": "0.8.0",
+    "modules": [
+      {
+        "id": "capabilities",
+        "title": "fieldkit.capabilities",
+        "summary": "Typed Python facade over the project's Spark capabilities map. Canonical KV-cache and weight arithmetic.",
+        "order": 1
+      },
+      {
+        "id": "nim",
+        "title": "fieldkit.nim",
+        "summary": "OpenAI-compatible NIM client with retries, context-overflow preflight, and a chunker that respects the 8192-token ceiling.",
+        "order": 2
+      },
+      {
+        "id": "rag",
+        "title": "fieldkit.rag",
+        "summary": "Composable ingest → retrieve → rerank → fuse RAG pipeline backed by pgvector + a NIM embedder + the strict-context grounded prompt from `naive-rag-on-spark`.",
+        "order": 3
+      },
+      {
+        "id": "eval",
+        "title": "fieldkit.eval",
+        "summary": "Bench, Judge, Trajectory, the project's refusal detector — plus the v0.2 verifier-loop additions (AssertionGrader, PassAtK, AgentRun, MatchedBaseComparison) for agent + RL benchmarks.",
+        "order": 4
+      },
+      {
+        "id": "training",
+        "title": "fieldkit.training",
+        "summary": "Fine-tuning primitives for any RL or SFT loop on the Spark — a declarative TrainRecipe, an HF→Megatron-Core converter with the Megatron-Bridge YARN-rope-defaults fix baked in, an idempotent llama.cpp pre-tokenizer registrar, a symmetric `run()`/`merge_and_export()` driver across NeMo and Unsloth backends with poll-disk liveness and the BF16-clean export transformation baked in, a budget-normalizing `ReasoningProbe` + `ProbeReport.compare` for chain-of-thought preservation checks, a YAML-lookup `train_backend()` decision API with a `refresh()` flywheel for keeping the decision corpus current, a CPU-resident LoRA reference snapshot that sidesteps peft 0.19's offloader bug, and a pre/post weight-delta tracker for sanity-checking that gradients actually moved.",
+        "order": 5
+      },
+      {
+        "id": "lineage",
+        "title": "fieldkit.lineage",
+        "summary": "Append-only trial log + deterministic prompt rendering — the portable part of cxcscmu's Auto-Research-Recipes harness. A 17-column TSV per trial, a 10-class status enum, and the Markdown lineage block the next specialist reads at session entry.",
+        "order": 6
+      },
+      {
+        "id": "quant",
+        "title": "fieldkit.quant",
+        "summary": "GGUF quantize + measure pipeline — wraps llama.cpp's `convert_hf_to_gguf.py` + `llama-quantize` + `llama-perplexity` + `llama-bench`, plus a pure-stdlib `nvidia-smi` thermal probe. Emits the `QuantReport` shape `fieldkit.publish.publish_quant` consumes. Non-GGUF formats (AWQ / GPTQ / EXL3 / MLX / NVFP4) are named stubs reserving the v0.5 API surface.",
+        "order": 7
+      },
+      {
+        "id": "publish",
+        "title": "fieldkit.publish",
+        "summary": "HuggingFace push surface — `ModelCard` (frontmatter + body renderer), `ArtifactManifest` (Phase-2 sync record), `HFHubAdapter` (lazy huggingface_hub wrapper, dry-run by default), `publish_quant` orchestrator. Every Orionfold artifact card carries the same Spark-tested measurement quad (perplexity, tok/s, thermal envelope, optional vertical-eval) — this module is what makes that shape deterministic.",
+        "order": 8
+      },
+      {
+        "id": "cli",
+        "title": "fieldkit (CLI)",
+        "summary": "A thin Typer wrapper over the modules. Quick checks and smoke benchmarks without writing Python.",
+        "order": 9
+      },
+      {
+        "id": "viz",
+        "title": "fieldkit.viz",
+        "summary": "Branded chart + hero-table builders for Orionfold artifact notebooks. Turns an `ArtifactManifest` (or its bare measurement dicts) into marketing-grade matplotlib `Figure`s styled by the bundled `orionfold.mplstyle`, plus great_tables `GT` hero tables with inline nano-plots. The visual layer behind the notebooks-as-artifacts pilot, article figures, and (eventually) the home-page infographic. Lazy + optional — lives behind the `fieldkit[notebook]` extra.",
+        "order": 10
+      },
+      {
+        "id": "notebook",
+        "title": "fieldkit.notebook",
+        "summary": "Dual-path notebook runtime + scaffolding for Orionfold artifact notebooks. `detect_runtime()` branches Spark (full local fieldkit path) vs Colab/Kaggle (pull published GGUF → llama-cpp-python on the free GPU); `open_model(hf_repo, variant=...)` returns a backend-agnostic `ChatClient` with one `.chat()` surface; URL/badge builders + a deterministic `NotebookBuilder` lay the jupytext py:percent skeleton the notebook-author skill fills with prose. Lazy + optional — behind the `fieldkit[notebook]` extra.",
+        "order": 11
+      }
+    ]
+  },
+  "fieldNotes": {
+    "articlesPublished": 42,
+    "articlesUpcoming": 5,
+    "stages": [
+      {
+        "id": "foundations",
+        "published": 12,
+        "upcoming": 0
+      },
+      {
+        "id": "training",
+        "published": 12,
+        "upcoming": 1
+      },
+      {
+        "id": "fine-tuning",
+        "published": 12,
+        "upcoming": 2
+      },
+      {
+        "id": "inference",
+        "published": 14,
+        "upcoming": 0
+      },
+      {
+        "id": "deployment",
+        "published": 6,
+        "upcoming": 0
+      },
+      {
+        "id": "agentic",
+        "published": 14,
+        "upcoming": 0
+      },
+      {
+        "id": "observability",
+        "published": 10,
+        "upcoming": 1
+      },
+      {
+        "id": "dev-tools",
+        "published": 2,
+        "upcoming": 1
+      }
+    ]
+  }
+}

@@ -4,7 +4,10 @@
 // license) come from the donor artifact YAMLs; the plain taglines read grade
 // 3–5 with inline glosses, and the deeper detail lives in the page's
 // BehindTheScenes reveal (memory `website-copy-style`, spec §7).
-export interface Model {
+import type { RoadmapMeta } from './roadmap-types';
+
+// extends RoadmapMeta -> optional status/sponsorTier/features/roadmapOrder (F1, spec §9).
+export interface Model extends RoadmapMeta {
   group: 'patent' | 'domain' | 'dataset';
   domain: string; // eyebrow label
   title: string;
