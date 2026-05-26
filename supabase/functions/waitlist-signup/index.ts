@@ -153,7 +153,7 @@ async function sendConfirmationEmail(email: string, token: string) {
       from: "Orionfold Studio <manav@updates.orionfold.com>",
       reply_to: "manav@orionfold.com",
       to: [email],
-      subject: "Don't fall behind. One click to confirm.",
+      subject: "One click to get Orionfold stories",
       text: confirmationEmailText(confirmUrl),
     }),
   });
@@ -168,12 +168,12 @@ async function sendConfirmationEmail(email: string, token: string) {
 function confirmationEmailText(confirmUrl: string): string {
   return `Hi,
 
-You're almost in. Confirm and you'll stay ahead while AI
-moves fast.
+You're almost in. Confirm your email and we'll send you
+our stories.
 
-Orionfold builds the software, models, and playbooks to
-grow with AI on your own machine. You'll get each new
-piece first, plus the lessons to keep up.
+Each one is a short, honest note from building Orionfold
+in public. What we shipped, what broke, and what we
+learned along the way. No spam, just the real build log.
 
 Confirm your email:
 

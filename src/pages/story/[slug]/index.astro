@@ -9,6 +9,7 @@ import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
+import StorySubscribe from '../../../components/sections/StorySubscribe.astro';
 import { ogPath, storyOgSlug } from '../../../data/og';
 
 export async function getStaticPaths() {
@@ -86,5 +87,8 @@ const dateIso = date.toISOString().slice(0, 10);
       )}
     </article>
   </main>
+
+  <!-- Subscribe to stories (H3): same capture block as the story index -->
+  <StorySubscribe class="border-t border-border" />
   <Footer />
 </Layout>

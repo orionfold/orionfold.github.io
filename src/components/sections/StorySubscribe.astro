@@ -1,0 +1,38 @@
+---
+// "Subscribe to stories" capture (H3). After H1 removed the homepage newsletter,
+// this is the site's only remaining email capture — reframed around the
+// build-log stories and rendered on the /story index and at the foot of each
+// post. It reuses WaitlistForm, so it POSTs to the same live double-opt-in
+// funnel (waitlist-signup → Resend → confirm-email); only the framing changes.
+// The post-confirmation banner lives separately in ConfirmBanner (the funnel
+// redirects to the homepage, not back here).
+import SectionLabel from '../ui/SectionLabel.astro';
+import WaitlistForm from '../ui/WaitlistForm.astro';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+<section class:list={['px-6 py-20', className]} aria-labelledby="story-subscribe-heading">
+  <div class="mx-auto max-w-2xl">
+    <div class="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/[0.04] px-6 py-12 text-center sm:px-10">
+      <div class="pointer-events-none absolute left-1/2 top-0 -z-10 h-48 w-[90%] -translate-x-1/2 rounded-full bg-primary/[0.06] blur-[80px]"></div>
+      <SectionLabel text="Subscribe to stories" />
+      <h2 id="story-subscribe-heading" data-animate class="mb-3 mt-4 leading-tight" style="font-size: clamp(1.6rem, 4vw, 2.2rem);">
+        Get each new story in your inbox.
+      </h2>
+      <p data-animate class="mx-auto mb-8 max-w-md leading-relaxed text-text-muted" style="transition-delay: 80ms">
+        Short, honest notes from building Orionfold in public. What we shipped, what broke, and what we learned. No spam.
+      </p>
+      <div data-animate style="transition-delay: 160ms">
+        <WaitlistForm
+          id="story-subscribe"
+          source="story"
+          buttonText="Subscribe"
+          successMessage="Check your inbox to confirm."
+        />
+      </div>
+    </div>
+  </div>
+</section>

@@ -9,6 +9,7 @@ import Footer from '../../components/Footer.astro';
 import StoryCard from '../../components/ui/StoryCard.astro';
 import SectionLabel from '../../components/ui/SectionLabel.astro';
 import PageHeader from '../../components/ui/PageHeader.astro';
+import StorySubscribe from '../../components/sections/StorySubscribe.astro';
 import { ogMeta } from '../../data/og';
 import { bentoSplit } from '../../lib/bento';
 
@@ -69,6 +70,9 @@ const og = ogMeta('/story/');
         </div>
       </div>
     </section>
+
+    <!-- Subscribe to stories (H3): the site's only remaining email capture -->
+    <StorySubscribe />
   </main>
   <Footer />
 </Layout>
