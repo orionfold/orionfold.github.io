@@ -13,10 +13,15 @@ import SectionLabel from '../components/ui/SectionLabel.astro';
 import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
 import { models } from '../data/models';
 import { ogMeta } from '../data/og';
+import { bentoSplit } from '../lib/bento';
 
 const patent = models.filter((m) => m.group === 'patent');
 const domain = models.filter((m) => m.group === 'domain');
 const dataset = models.filter((m) => m.group === 'dataset');
+// Odd 3+ sections lead with a full-width featured card (the shared bento rule).
+// With today's counts (patent 2, domain 4) neither leads; wired for future growth.
+const patentSplit = bentoSplit(patent);
+const domainSplit = bentoSplit(domain);
 const og = ogMeta('/models/');
 
 // Resolve a model's curated comic cover (a path under src/assets/models/, e.g.
@@ -57,8 +62,9 @@ function resolveCover(key?: string): ImageMetadata | undefined {
             Our flagship model reads and reasons about patents fully offline. Built with the NeMo toolkit, it comes in two formats: ready-to-run files, or a small add-on patch for builders.
           </p>
         </div>
-        <div data-animate-stagger class="grid gap-6 sm:grid-cols-2">
-          {patent.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
+        {patentSplit.lead && <ModelCard {...patentSplit.lead} cover={resolveCover(patentSplit.lead.cover)} featured />}
+        <div data-animate-stagger class:list={['grid gap-6 sm:grid-cols-2', patentSplit.lead && 'mt-6']}>
+          {patentSplit.rest.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
         </div>
       </div>
     </section>
@@ -72,8 +78,9 @@ function resolveCover(key?: string): ImageMetadata | undefined {
             Each one is tuned for a single field, so it knows the words and rules of that work.
           </p>
         </div>
-        <div data-animate-stagger class="grid gap-6 sm:grid-cols-2">
-          {domain.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
+        {domainSplit.lead && <ModelCard {...domainSplit.lead} cover={resolveCover(domainSplit.lead.cover)} featured />}
+        <div data-animate-stagger class:list={['grid gap-6 sm:grid-cols-2', domainSplit.lead && 'mt-6']}>
+          {domainSplit.rest.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
         </div>
       </div>
     </section>

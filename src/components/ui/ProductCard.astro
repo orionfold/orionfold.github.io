@@ -21,24 +21,28 @@ interface Props {
   cover?: ImageMetadata;
   coverType?: 'screenshot' | 'logo' | 'motif' | 'poster';
   seed?: string; // constellation seed (defaults to title)
+  featured?: boolean; // wide image-left/text-right hero (odd-section bento lead)
 }
 
-const { eyebrow, title, body, pills = [], href, ctaText, cover, coverType = 'motif', seed } = Astro.props;
+const { eyebrow, title, body, pills = [], href, ctaText, cover, coverType = 'motif', seed, featured = false } = Astro.props;
 const coverSeed = seed ?? title;
 ---
 <article
   data-animate
-  class="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-raised transition-colors hover:border-primary/30"
+  class:list={[
+    'overflow-hidden rounded-2xl border border-border bg-surface-raised transition-colors hover:border-primary/30',
+    featured ? 'grid items-stretch sm:grid-cols-2' : 'flex flex-col',
+  ]}
 >
   <!-- Cover (one of four modes; the screenshot/logo/motif modes lead with the
        same window bar so the grid reads consistently, while a poster is full-bleed
        illustrative key-art with no chrome) -->
   {coverType === 'poster' && cover ? (
-    <div class="aspect-[16/9] overflow-hidden border-b border-border">
+    <div class:list={['overflow-hidden border-border', featured ? 'aspect-[16/9] border-b sm:aspect-auto sm:h-full sm:border-b-0 sm:border-r' : 'aspect-[16/9] border-b']}>
       <Image
         src={cover}
         alt={`${title} poster`}
-        widths={[400, 640]}
+        widths={featured ? [640, 960] : [400, 640]}
         sizes="(min-width: 640px) 50vw, 100vw"
         loading="lazy"
         decoding="async"
@@ -69,7 +73,7 @@ const coverSeed = seed ?? title;
   )}
 
   <!-- Body -->
-  <div class="flex flex-1 flex-col p-7 sm:p-8">
+  <div class:list={['flex flex-1 flex-col p-7 sm:p-8', featured && 'sm:justify-center sm:p-10']}>
     <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{eyebrow}</span>
     <h2 class="mt-3 font-display text-2xl font-bold leading-tight">{title}</h2>
     <p class="mt-3 flex-1 leading-relaxed text-text-muted">{body}</p>

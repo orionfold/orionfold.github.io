@@ -9,15 +9,14 @@ import Footer from '../../components/Footer.astro';
 import StoryCard from '../../components/ui/StoryCard.astro';
 import SectionLabel from '../../components/ui/SectionLabel.astro';
 import { ogMeta } from '../../data/og';
+import { bentoSplit } from '../../lib/bento';
 
 const posts = (await getCollection('story')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
-// Two per row; if the count is odd the newest post leads as a full-width hero
-// (image left, text right) so the grid below always pairs up evenly.
-const isOdd = posts.length % 2 === 1;
-const lead = isOdd ? posts[0] : null;
-const rest = isOdd ? posts.slice(1) : posts;
+// Two per row; the shared bento rule leads with a full-width hero (image left,
+// text right) when the count is odd (3+) so the grid below always pairs up.
+const { lead, rest } = bentoSplit(posts);
 const og = ogMeta('/story/');
 ---
 <Layout

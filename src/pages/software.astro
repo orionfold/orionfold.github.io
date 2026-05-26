@@ -15,6 +15,7 @@ import { software, softwareGroups } from '../data/software';
 import platformImg from '../assets/platform/ai-native-platform.png';
 import neosignalImg from '../assets/neosignal/neosignal-models.png';
 import { ogMeta } from '../data/og';
+import { bentoSplit } from '../lib/bento';
 
 const og = ogMeta('/software/');
 
@@ -49,8 +50,10 @@ function resolveCover(key?: string): ImageMetadata | undefined {
     </section>
 
     <!-- Grouped product clusters -->
-    {softwareGroups.map((group, gi) => {
+    {softwareGroups.map((group) => {
       const items = software.filter((p) => p.group === group.id);
+      // Odd 3+ sections lead with a full-width featured card so the rest pair up.
+      const { lead, rest } = bentoSplit(items);
       return (
         <section class="px-6 pt-12">
           <div class="mx-auto max-w-6xl">
@@ -60,8 +63,22 @@ function resolveCover(key?: string): ImageMetadata | undefined {
                 {group.blurb}
               </p>
             </div>
-            <div data-animate-stagger class="grid gap-6 sm:grid-cols-2">
-              {items.map((product) => (
+            {lead && (
+              <ProductCard
+                eyebrow={lead.eyebrow}
+                title={lead.title}
+                body={lead.body}
+                pills={lead.pills}
+                href={lead.href}
+                ctaText={lead.ctaText}
+                cover={resolveCover(lead.cover)}
+                coverType={lead.coverType}
+                seed={lead.slug}
+                featured
+              />
+            )}
+            <div data-animate-stagger class:list={['grid gap-6 sm:grid-cols-2', lead && 'mt-6']}>
+              {rest.map((product) => (
                 <ProductCard
                   eyebrow={product.eyebrow}
                   title={product.title}

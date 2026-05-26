@@ -25,9 +25,10 @@ interface Props {
   cover?: ImageMetadata; // curated comic cover (I-series); falls back to constellation
   coverAlt?: string;
   seed?: string; // constellation seed (defaults to title)
+  featured?: boolean; // wide cover-left/text-right hero (odd-section bento lead)
 }
 
-const { domain, title, variant, tagline, base, format, recommended, license, href, ctaText = 'Download on HuggingFace', cover, coverAlt, seed } = Astro.props;
+const { domain, title, variant, tagline, base, format, recommended, license, href, ctaText = 'Download on HuggingFace', cover, coverAlt, seed, featured = false } = Astro.props;
 const coverSeed = seed ?? title;
 
 // Build the spec rows from whichever facts the entry carries.
@@ -40,15 +41,18 @@ const specs = [
 ---
 <article
   data-animate
-  class="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-raised transition-colors hover:border-primary/30"
+  class:list={[
+    'overflow-hidden rounded-2xl border border-border bg-surface-raised transition-colors hover:border-primary/30',
+    featured ? 'grid items-stretch sm:grid-cols-2' : 'flex flex-col',
+  ]}
 >
   <!-- Cover (curated comic if present, else seeded constellation motif) -->
   {cover ? (
-    <div class="aspect-[16/9] overflow-hidden border-b border-border">
+    <div class:list={['overflow-hidden border-border', featured ? 'aspect-[16/9] border-b sm:aspect-auto sm:h-full sm:border-b-0 sm:border-r' : 'aspect-[16/9] border-b']}>
       <Image
         src={cover}
         alt={coverAlt ?? `${title} comic cover`}
-        widths={[400, 640]}
+        widths={featured ? [640, 960] : [400, 640]}
         sizes="(min-width: 640px) 50vw, 100vw"
         loading="lazy"
         decoding="async"
@@ -57,12 +61,12 @@ const specs = [
       />
     </div>
   ) : (
-    <div class="border-b border-border">
-      <ConstellationCover seed={coverSeed} rounded="rounded-none" />
+    <div class:list={['border-border', featured ? 'border-b sm:h-full sm:border-b-0 sm:border-r' : 'border-b']}>
+      <ConstellationCover seed={coverSeed} rounded="rounded-none" class={featured ? 'h-full' : undefined} />
     </div>
   )}
 
-  <div class="flex flex-1 flex-col p-7">
+  <div class:list={['flex flex-1 flex-col p-7', featured && 'sm:justify-center sm:p-10']}>
     <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{domain}</span>
     <h3 class="mt-3 font-display text-xl font-bold leading-tight">
       {title}
