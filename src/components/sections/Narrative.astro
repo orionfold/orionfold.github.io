@@ -1,26 +1,36 @@
 ---
 // Homepage narrative (spec §5.3): the CTA target. Three stacked sections —
-// Why (anchor #why) → What you need to do → How Orionfold can help — closing
-// with the lead-capture form. Section rhythm (eyebrow → h2 → muted intro →
-// data-animate grid) is the donor's; the copy is Orionfold's parent-studio
-// framing (spec §1). Copy reads grade 3–5 per memory `website-copy-style`;
-// each section carries a "Behind the scenes" reveal with the technical depth.
+// Why (anchor #why) → What you need to do → How Orionfold can help. (The
+// closing lead-capture form was removed in H1.) The H-series visual pass added:
+// per-card line icons in distinct accent colors, richer cards, a StarWave motif
+// (slim dividers between sections + a fuller closing band, echoing the
+// book-cover bottoms), and benefit/capability chips in "How we help" (was
+// product names). Section rhythm (eyebrow → h2 → muted intro → data-animate
+// grid) is the donor's; copy reads grade 3–5 per memory `website-copy-style`;
+// each section keeps its "Behind the scenes" reveal.
 import SectionLabel from '../ui/SectionLabel.astro';
-import WaitlistForm from '../ui/WaitlistForm.astro';
 import BehindTheScenes from '../ui/BehindTheScenes.astro';
+import LineIcon from '../ui/LineIcon.astro';
+import StarWave from '../ui/StarWave.astro';
 
 const forces = [
   {
     title: 'New tools every week',
     body: "AI changes so fast that a once-a-year plan can't keep up.",
+    icon: 'refresh',
+    accent: 'blue',
   },
   {
     title: 'Skill, not staff',
     body: "A 10x worker isn't busier. AI helpers run their daily tasks, right on their own computer.",
+    icon: 'spark',
+    accent: 'cyan',
   },
   {
     title: 'Open tools caught up',
     body: 'Free, open AI now matches the big paid tools. No lock to one company. No fee per person.',
+    icon: 'unlock',
+    accent: 'teal',
   },
 ];
 
@@ -29,31 +39,58 @@ const pillars = [
   {
     title: 'Expert playbooks',
     body: 'Books, notes, and real stories that turn hard lessons into steps you can follow.',
+    icon: 'book',
+    accent: 'orange',
   },
   {
     title: 'Open software',
     body: 'Run AI helpers and tasks yourself. Free and open, with no cap on what you automate.',
+    icon: 'code',
+    accent: 'blue',
   },
   {
     title: 'Custom models',
     body: 'AI trained for your field, like patents, security, law, money, or health. Not a one-size chatbot.',
+    icon: 'chip',
+    accent: 'purple',
   },
   {
     title: 'Personal devices',
     body: 'A computer strong enough to run that AI in private, right on your desk.',
+    icon: 'monitor',
+    accent: 'teal',
   },
 ];
 
-// Links out to the showcase pages (built in S6–S8); routes exist as stubs today.
-const products = [
-  { label: 'AI Native Platform', href: '/software/' },
-  { label: 'neosignal', href: '/software/' },
-  { label: 'fieldkit', href: '/software/' },
-  { label: 'AI Native API', href: '/software/' },
-  { label: 'The book', href: '/books/' },
-  { label: 'AI Research Field Notes', href: '/books/' },
-  { label: 'Models', href: '/models/' },
+// What you can do + get (benefits/capabilities, not product names). Grade 3–5,
+// drawn from the real software/model/book offerings.
+const benefits = [
+  'Runs on your own computer',
+  'Private by default',
+  'Free and open source',
+  'Custom models for your field',
+  'Tracks models, chips, and clouds',
+  'Automate daily tasks',
+  'Drive it all with code',
 ];
+
+// Per-icon accent (literal oklch — the global.css @theme --svg-accent-* tokens
+// are tree-shaken since nothing references them as Tailwind utilities). Vivid
+// mid-tones in the brand's blue→cyan→teal→purple→orange family; the icon takes
+// the color, its chip a 14% tint of the same.
+const ACCENTS: Record<string, string> = {
+  blue: 'oklch(0.55 0.18 255)',
+  cyan: 'oklch(0.60 0.13 215)',
+  teal: 'oklch(0.58 0.12 190)',
+  purple: 'oklch(0.55 0.19 300)',
+  orange: 'oklch(0.65 0.15 65)',
+};
+// Large faded background watermark: the icon bleeds from the card's top-left
+// corner, lighter (low opacity), masked so it fades toward the bottom-right.
+const watermarkStyle = (accent: string) => {
+  const c = ACCENTS[accent] ?? ACCENTS.blue;
+  return `color: ${c}; opacity: 0.22; -webkit-mask-image: linear-gradient(135deg, #000 0%, transparent 70%); mask-image: linear-gradient(135deg, #000 0%, transparent 70%);`;
+};
 ---
 <!-- ── Why ── -->
 <section id="why" class="scroll-mt-24 px-6 py-24">
@@ -62,17 +99,25 @@ const products = [
       <SectionLabel text="Why now" />
       <h2 data-animate class="mb-4 mt-4">AI is moving fast. The gap is growing.</h2>
       <p data-animate class="mx-auto max-w-2xl leading-relaxed text-text-muted" style="transition-delay: 80ms">
-        Every few months, AI gets better, faster, and cheaper. People who build with AI keep up. People who wait fall behind. Not because they try less. Their work just isn't made for AI yet.
+        Every few months, AI gets better, faster, and cheaper. People who build with AI pull ahead. People who wait fall behind. The difference isn't talent or effort. It's whether your work is built to run on AI.
       </p>
     </div>
 
-    <div data-animate-stagger class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      {forces.map(({ title, body }) => (
-        <div data-animate class="rounded-xl border border-border bg-surface-raised p-6">
-          <div class="mb-2 font-semibold">{title}</div>
-          <p class="text-sm leading-relaxed text-text-muted">{body}</p>
-        </div>
-      ))}
+    <div class="relative">
+      <div class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-72 w-[92%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.06] blur-[90px]"></div>
+      <div data-animate-stagger class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {forces.map(({ title, body, icon, accent }) => (
+          <div data-animate class="relative overflow-hidden rounded-2xl border border-border bg-surface-raised p-6 transition-colors hover:border-primary/30">
+            <div class="pointer-events-none absolute left-6 top-6 aspect-square w-1/2" style={watermarkStyle(accent)}>
+              <LineIcon name={icon} strokeWidth={2.25} class="h-full w-full" />
+            </div>
+            <div class="relative z-10">
+              <div class="mb-2 font-semibold">{title}</div>
+              <p class="text-sm leading-relaxed text-text-muted">{body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
 
     <div data-animate>
@@ -82,6 +127,8 @@ const products = [
     </div>
   </div>
 </section>
+
+<StarWave variant="divider" palette="indigo" seed="why" />
 
 <!-- ── What you need to do about it ── -->
 <section class="px-6 py-24">
@@ -95,11 +142,16 @@ const products = [
     </div>
 
     <div data-animate-stagger class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {pillars.map(({ title, body }, i) => (
-        <div data-animate class="rounded-xl border border-primary/20 bg-primary/[0.04] p-6">
-          <div class="mb-3 font-mono text-3xl font-bold text-primary">{String(i + 1).padStart(2, '0')}</div>
-          <div class="mb-2 font-semibold">{title}</div>
-          <p class="text-sm leading-relaxed text-text-muted">{body}</p>
+      {pillars.map(({ title, body, icon, accent }, i) => (
+        <div data-animate class="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/[0.04] p-6 transition-colors hover:border-primary/40">
+          <div class="pointer-events-none absolute left-6 top-6 aspect-square w-1/2" style={watermarkStyle(accent)}>
+            <LineIcon name={icon} strokeWidth={2.25} class="h-full w-full" />
+          </div>
+          <div class="relative z-10">
+            <div class="mb-3 text-right font-mono text-2xl font-bold text-primary/25">{String(i + 1).padStart(2, '0')}</div>
+            <div class="mb-2 font-semibold">{title}</div>
+            <p class="text-sm leading-relaxed text-text-muted">{body}</p>
+          </div>
         </div>
       ))}
     </div>
@@ -112,7 +164,9 @@ const products = [
   </div>
 </section>
 
-<!-- ── How Orionfold can help (closes with the lead form) ── -->
+<StarWave variant="divider" palette="indigo" seed="what" />
+
+<!-- ── How Orionfold can help ── -->
 <section class="px-6 py-24">
   <div class="mx-auto max-w-3xl text-center">
     <SectionLabel text="How we help" />
@@ -122,37 +176,20 @@ const products = [
     </p>
 
     <div data-animate class="mb-10 flex flex-wrap items-center justify-center gap-2" style="transition-delay: 160ms">
-      {products.map(({ label, href }) => (
-        <a
-          href={href}
-          class="rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 font-mono text-[11px] tracking-wider text-primary transition-colors hover:border-primary/40 hover:bg-primary/10"
-        >
-          {label}
-        </a>
+      {benefits.map((b) => (
+        <span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 font-mono text-[11px] tracking-wider text-primary">
+          <span class="h-1 w-1 rounded-full bg-primary/60"></span>
+          {b}
+        </span>
       ))}
     </div>
 
-    <div data-animate class="mb-14">
+    <div data-animate>
       <BehindTheScenes>
         The AI Native platform runs on your own machine. neosignal tracks how AI models, chips, and clouds stack up. fieldkit is a free Python toolbox of patterns proven on Spark. The AI Native API lets you drive it all with code. Any AI feature here runs on a small server function, so keys and private data never reach your browser.
       </BehindTheScenes>
     </div>
-
-    <!-- Lead capture -->
-    <div data-animate class="mx-auto max-w-md rounded-2xl border border-primary/30 bg-surface-raised p-8 primary-pulse">
-      <p class="relative z-10 mb-2 font-semibold">Don't fall behind.</p>
-      <p class="relative z-10 mb-6 text-sm leading-relaxed text-text-muted">
-        AI moves fast. Get each new piece first, plus the lessons to keep up.
-      </p>
-      <div class="relative z-10">
-        <WaitlistForm
-          id="home-waitlist"
-          variant="cta"
-          source="home"
-          buttonText="Keep me ahead"
-          watchConfirmed
-        />
-      </div>
-    </div>
   </div>
 </section>
+
+<StarWave variant="band" palette="gold" seed="orionfold" />

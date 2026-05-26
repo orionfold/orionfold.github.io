@@ -1,0 +1,268 @@
+---
+// StarWave (H-series v2) — the homepage narrative's signature motif: a bright
+// "starry space" band where layered waves UNDULATE like water (not a sliding
+// shape) over a parallax, drifting + twinkling starfield, fading seamlessly
+// into the page with no hard edge. Decorative (aria-hidden, pointer-events-none),
+// pure SVG + CSS, no canvas/JS.
+//
+// Technique (researched): each wave is an SVG <path> that MORPHS its `d` between
+// two states via one shared @keyframes that reads per-element CSS vars
+// (--d0/--d1) — so 3 layered wave forms each morph on their own clock, plus a
+// gentle translateX sway, reading as moving water. The starfield is layered
+// radial-gradient tiles whose background-position drifts at different speeds
+// (parallax) while opacity twinkles. The whole band is feathered with mask-image
+// (transparent top+bottom) so there is no seam — it melts into the light page.
+// Everything freezes (still + visible) under prefers-reduced-motion.
+//
+//   variant="divider"  slim, airy stroke-waves — separates sections
+//   variant="band"     taller, filled waves + nebula gradient — closes the run
+//   palette="indigo"   brand primary/cyan (default, used on dividers)
+//   palette="gold"     DGX Spark gold/amber (used on the closing band)
+interface Props {
+  variant?: 'divider' | 'band';
+  palette?: 'indigo' | 'gold';
+  seed?: string;
+  class?: string;
+}
+const { variant = 'divider', palette = 'indigo', seed = 'orionfold', class: className = '' } = Astro.props;
+
+// deterministic PRNG (string hash -> mulberry32), same idiom as ConstellationCover
+function hash(str: string): number {
+  let h = 1779033703 ^ str.length;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  return h >>> 0;
+}
+function mulberry32(a: number) {
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rnd = mulberry32(hash(seed + variant + palette));
+
+const isBand = variant === 'band';
+const W = 1440;
+const H = isBand ? 190 : 112;
+const uid = 'sw' + hash(seed + variant + palette).toString(36);
+
+// ── palette token sets ──
+const P =
+  palette === 'gold'
+    ? {
+        star: 'oklch(0.74 0.14 80)',
+        waveStops: ['oklch(0.88 0.13 95)', 'oklch(0.76 0.15 78)', 'oklch(0.6 0.13 58)'],
+        fill: 'oklch(0.78 0.14 80)',
+        dot: 'oklch(0.84 0.15 88)',
+        neb: ['oklch(0.95 0.05 92 / 0.85)', 'oklch(0.9 0.1 74 / 0.5)', 'oklch(0.93 0.07 100 / 0.45)'],
+      }
+    : {
+        star: 'oklch(0.58 0.15 252)',
+        waveStops: ['oklch(0.64 0.15 205)', 'oklch(0.55 0.18 260)', 'oklch(0.5 0.16 292)'],
+        fill: 'oklch(0.55 0.18 262)',
+        dot: 'oklch(0.62 0.14 215)',
+        neb: ['oklch(0.96 0.03 250 / 0.7)', 'oklch(0.93 0.05 255 / 0.4)', 'oklch(0.94 0.04 230 / 0.4)'],
+      };
+
+// ── wave geometry: a sine sampled as a polyline, extended past the edges so the
+// sway never exposes a gap. d0/d1 differ in phase + amplitude so morphing reads
+// as crests rising and shifting (undulation). Same point count -> interpolable. ──
+const X0 = -90;
+const X1 = W + 90;
+function wavePath(amp: number, period: number, base: number, phase: number, fill: boolean): string {
+  let d = `M ${X0} ${(base + amp * Math.sin((X0 / period) * Math.PI * 2 + phase)).toFixed(1)}`;
+  for (let x = X0 + 24; x <= X1; x += 24) {
+    const y = base + amp * Math.sin((x / period) * Math.PI * 2 + phase);
+    d += ` L ${x} ${y.toFixed(1)}`;
+  }
+  if (fill) d += ` L ${X1} ${H} L ${X0} ${H} Z`;
+  return d;
+}
+
+interface WaveDef {
+  amp: number;
+  period: number;
+  base: number;
+  phase: number;
+  fill: boolean;
+  stroke: boolean;
+  opacity: number;
+  dur: number;
+  sway: number;
+  dots?: boolean;
+}
+// Both variants share the same design (filled undulating waves + nebula),
+// differing only by height + palette. Bases sit lower-mid so the gold/indigo
+// "ribbon" hugs the waves and the band fades to white BOTH above and below.
+const waveDefs: WaveDef[] = [
+  { amp: H * 0.085, period: 560, base: H * 0.5, phase: 0.0, fill: true, stroke: false, opacity: 0.1, dur: 9, sway: H * 0.13 },
+  { amp: H * 0.12, period: 740, base: H * 0.63, phase: 1.1, fill: true, stroke: true, opacity: 0.16, dur: 6.6, sway: H * 0.1 },
+  { amp: H * 0.085, period: 430, base: H * 0.76, phase: 2.0, fill: true, stroke: true, opacity: 0.24, dur: 4.6, sway: H * 0.07, dots: true },
+];
+const waves = waveDefs.map((w, i) => ({
+  ...w,
+  i,
+  d0: wavePath(w.amp, w.period, w.base, w.phase, w.fill),
+  d1: wavePath(w.amp * 1.18, w.period, w.base - 3, w.phase + 0.9, w.fill),
+}));
+
+// glowing dots ride the front (dots:true) wave's resting line
+const frontWave = waves.find((w) => w.dots);
+const ridingDots = frontWave
+  ? Array.from({ length: isBand ? 9 : 6 }, (_, i) => {
+      const x = Math.round(((i + 0.5) / (isBand ? 9 : 6)) * W);
+      return { x, y: Math.round(frontWave.base + frontWave.amp * Math.sin((x / frontWave.period) * Math.PI * 2 + frontWave.phase)) };
+    })
+  : [];
+
+// ── parallax starfield layers (radial-gradient tiles, drift via bg-position) ──
+function starBg(n: number, tile: number): string {
+  return Array.from({ length: n }, () => {
+    const x = Math.round(rnd() * tile);
+    const y = Math.round(rnd() * tile);
+    const r = rnd() > 0.74 ? 1.6 : 1;
+    return `radial-gradient(${r}px ${r}px at ${x}px ${y}px, ${P.star}, transparent)`;
+  }).join(', ');
+}
+const starLayers = (isBand
+  ? [
+      { tile: 230, n: 9, op: 0.5, dur: 150, dx: -230, dy: -70, tw: 7 },
+      { tile: 175, n: 8, op: 0.6, dur: 100, dx: -175, dy: -55, tw: 5.5 },
+      { tile: 130, n: 7, op: 0.7, dur: 64, dx: -130, dy: -40, tw: 4 },
+    ]
+  : [
+      { tile: 210, n: 6, op: 0.45, dur: 120, dx: -210, dy: -36, tw: 6 },
+      { tile: 140, n: 6, op: 0.6, dur: 70, dx: -140, dy: -28, tw: 4.5 },
+    ]
+).map((l) => ({ ...l, bg: starBg(l.n, l.tile) }));
+---
+<div class:list={['starwave relative w-full overflow-hidden', className]} style={`height:${H}px`} aria-hidden="true">
+  <!-- nebula glow anchored ON the wave zone (~70% y) so it fades to white both
+       above the crests and below — a centered ribbon, no wash above the waves -->
+  <div
+    class="absolute inset-0"
+    style={`background: radial-gradient(130% 78% at 50% 72%, ${P.neb[0]}, transparent 62%), radial-gradient(85% 66% at 26% 80%, ${P.neb[1]}, transparent 54%), radial-gradient(90% 66% at 76% 74%, ${P.neb[2]}, transparent 54%);`}
+  ></div>
+
+  <!-- parallax starfield -->
+  {starLayers.map((l) => (
+    <div
+      class="sw-stars absolute inset-0"
+      style={`background-image:${l.bg}; background-size:${l.tile}px ${l.tile}px; background-repeat:repeat; --op:${l.op}; --dur:${l.dur}s; --dx:${l.dx}px; --dy:${l.dy}px; --tw:${l.tw}s;`}
+    ></div>
+  ))}
+
+  <!-- undulating waves -->
+  <svg class="absolute inset-0 h-full w-full" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" fill="none">
+    <defs>
+      <linearGradient id={`${uid}-w`} x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color={P.waveStops[0]}></stop>
+        <stop offset="50%" stop-color={P.waveStops[1]}></stop>
+        <stop offset="100%" stop-color={P.waveStops[2]}></stop>
+      </linearGradient>
+      <radialGradient id={`${uid}-g`} cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color={P.dot} stop-opacity="0.85"></stop>
+        <stop offset="100%" stop-color={P.dot} stop-opacity="0"></stop>
+      </radialGradient>
+    </defs>
+
+    {waves.map((w) => (
+      <path
+        class="sw-wave"
+        d={w.d0}
+        fill={w.fill ? P.fill : 'none'}
+        fill-opacity={w.fill ? w.opacity : 0}
+        stroke={w.stroke ? `url(#${uid}-w)` : 'none'}
+        stroke-width={isBand ? 1.5 : 1.3}
+        stroke-opacity={w.stroke ? Math.min(0.6, w.opacity + 0.2) : 0}
+        style={`--d0:path('${w.d0}'); --d1:path('${w.d1}'); --dur:${w.dur}s; --sway:${w.sway}px;`}
+      ></path>
+    ))}
+
+    {ridingDots.map((p) => (
+      <g class="sw-dot">
+        <circle cx={p.x} cy={p.y} r={isBand ? 7 : 5} fill={`url(#${uid}-g)`} opacity="0.45"></circle>
+        <circle cx={p.x} cy={p.y} r={isBand ? 1.9 : 1.5} fill={P.dot}></circle>
+      </g>
+    ))}
+  </svg>
+</div>
+
+<style>
+  /* Feather the whole band into the page top + bottom — no hard seam. */
+  .starwave {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 15%, #000 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 15%, #000 85%, transparent 100%);
+  }
+
+  /* Waves morph between two states (undulation) + a gentle lateral sway. */
+  .sw-wave {
+    will-change: d, transform;
+    animation:
+      sw-morph var(--dur) ease-in-out infinite,
+      sw-sway calc(var(--dur) * 1.8) ease-in-out infinite;
+  }
+  @keyframes sw-morph {
+    0%,
+    100% {
+      d: var(--d0);
+    }
+    50% {
+      d: var(--d1);
+    }
+  }
+  @keyframes sw-sway {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(calc(var(--sway) * -1));
+    }
+  }
+
+  /* Parallax drift (seamless: one tile via background-position) + twinkle. */
+  .sw-stars {
+    opacity: var(--op);
+    will-change: background-position, opacity;
+    animation:
+      sw-drift var(--dur) linear infinite,
+      sw-twinkle var(--tw) ease-in-out infinite;
+  }
+  @keyframes sw-drift {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: var(--dx) var(--dy);
+    }
+  }
+  @keyframes sw-twinkle {
+    0%,
+    100% {
+      opacity: var(--op);
+    }
+    50% {
+      opacity: calc(var(--op) * 0.6);
+    }
+  }
+
+  .sw-dot {
+    animation: sw-twinkle 5s ease-in-out infinite;
+    --op: 1;
+  }
+
+  /* Respect the user: freeze to a still, still-visible state. */
+  @media (prefers-reduced-motion: reduce) {
+    .sw-wave,
+    .sw-stars,
+    .sw-dot {
+      animation: none;
+    }
+  }
+</style>

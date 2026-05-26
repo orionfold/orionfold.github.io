@@ -1,0 +1,121 @@
+---
+// Homepage poster rail (H1). A slow "media wall" of the studio's own art —
+// the 12 software movie-posters + 6 model covers (16:9) + 2 book covers (2:3) —
+// split across two columns that scroll vertically in OPPOSITE directions and
+// fade out top + bottom. It is the hero's trust signal: proof of how much the
+// studio has shipped, shown rather than claimed.
+//
+// The tiles are interactive: each is a LINK to its category landing page
+// (poster → /software, cover → /models, book → /books) that pops + highlights
+// on hover/focus. Hovering a column pauses its scroll so the tile stays put to
+// click. Each poster renders twice for a seamless loop (the keyframe translates
+// exactly one set, -50%); the duplicate copies are aria-hidden + tabindex=-1 so
+// each tile is reached once, not twice, by keyboard and screen readers.
+//
+// Mixed aspect ratios are deliberate — landscape posters read wide and the
+// portrait books read tall, an organic wall, not a uniform grid. Hidden below
+// lg (mobile gets the clean pitch). Collapses to a static wall under
+// prefers-reduced-motion.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+// Glob the existing astro:assets art. Posters + model covers are 16:9 PNGs;
+// book covers are 2:3 JPGs. eager so the metadata is available at build time.
+const posterImgs = import.meta.glob<{ default: ImageMetadata }>('../../assets/projects/*-poster.png', { eager: true });
+const modelImgs = import.meta.glob<{ default: ImageMetadata }>('../../assets/models/**/cover.png', { eager: true });
+const bookImgs = import.meta.glob<{ default: ImageMetadata }>('../../assets/book/*.jpg', { eager: true });
+
+interface Tile { src: ImageMetadata; href: string; label: string; }
+
+function collect(
+  mod: Record<string, { default: ImageMetadata }>,
+  href: string,
+  label: string,
+): Tile[] {
+  return Object.values(mod).map((m) => ({ src: m.default, href, label }));
+}
+
+const tiles: Tile[] = [
+  ...collect(posterImgs, '/software/', 'Explore Orionfold software'),
+  ...collect(modelImgs, '/models/', 'Explore Orionfold models'),
+  ...collect(bookImgs, '/books/', 'Explore Orionfold books'),
+];
+
+// Alternate into two columns so each is a mix of wide posters + tall books.
+const colA = tiles.filter((_, i) => i % 2 === 0);
+const colB = tiles.filter((_, i) => i % 2 === 1);
+
+const tileClass =
+  'group relative block overflow-hidden rounded-xl border border-border bg-surface-overlay ' +
+  'shadow-[0_8px_30px_-12px_rgba(0,0,0,0.25)] transition duration-300 ease-out ' +
+  'hover:z-10 hover:scale-[1.05] hover:border-primary/60 hover:brightness-[1.04] ' +
+  'focus-visible:z-10 focus-visible:scale-[1.05] focus-visible:border-primary/60 ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60';
+---
+
+<div class="poster-rail absolute inset-0 grid grid-cols-2 gap-4 overflow-hidden">
+  {[colA, colB].map((col, idx) => (
+    <div class="poster-col" data-dir={idx === 0 ? 'up' : 'down'}>
+      {/* rendered twice → the -50% keyframe loops seamlessly */}
+      <div class="poster-track flex flex-col gap-4">
+        {col.map((t) => (
+          <a href={t.href} class={tileClass} aria-label={t.label}>
+            <Image src={t.src} alt="" width={400} loading="lazy" class="block w-full" />
+          </a>
+        ))}
+        {/* duplicate set: out of the a11y tree + tab order (loop filler only) */}
+        {col.map((t) => (
+          <a href={t.href} class={tileClass} tabindex="-1" aria-hidden="true">
+            <Image src={t.src} alt="" width={400} loading="lazy" class="block w-full" />
+          </a>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  /* Fade the wall into the background at top + bottom so it reads as a window. */
+  .poster-rail {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  }
+
+  .poster-track {
+    will-change: transform;
+  }
+
+  /* Opposite directions, slightly different speeds so the columns never sync. */
+  .poster-col[data-dir='up'] .poster-track {
+    animation: rail-up 64s linear infinite;
+  }
+  .poster-col[data-dir='down'] .poster-track {
+    /* start already shifted up one set so it scrolls DOWN into view */
+    transform: translateY(-50%);
+    animation: rail-down 78s linear infinite;
+  }
+
+  /* Pause the hovered column so its tiles hold still to click. */
+  .poster-col:hover .poster-track,
+  .poster-col:focus-within .poster-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes rail-up {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-50%); }
+  }
+  @keyframes rail-down {
+    from { transform: translateY(-50%); }
+    to   { transform: translateY(0); }
+  }
+
+  /* Respect the user: no motion → a still wall (still shows + links the art). */
+  @media (prefers-reduced-motion: reduce) {
+    .poster-col[data-dir='up'] .poster-track,
+    .poster-col[data-dir='down'] .poster-track {
+      animation: none;
+      transform: none;
+    }
+  }
+</style>
