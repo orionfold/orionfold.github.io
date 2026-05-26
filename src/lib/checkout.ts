@@ -20,13 +20,19 @@ interface PostResult {
 }
 
 async function postJson(fn: string, payload: Record<string, unknown>): Promise<PostResult> {
-  const res = await fetch(`${FUNCTIONS_BASE}/${fn}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
-  return { ok: res.ok, status: res.status, data };
+  try {
+    const res = await fetch(`${FUNCTIONS_BASE}/${fn}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+    return { ok: res.ok, status: res.status, data };
+  } catch {
+    // Network/CORS rejection (e.g. on localhost) — surface a friendly message
+    // rather than the raw "Failed to fetch".
+    return { ok: false, status: 0, data: { error: "Could not connect. Please try again." } };
+  }
 }
 
 /**
@@ -34,8 +40,15 @@ async function postJson(fn: string, payload: Record<string, unknown>): Promise<P
  * On success the browser is redirected to Stripe and this never returns; on
  * failure it throws with a friendly message for the caller to surface.
  */
-export async function startCheckout(lookupKey: string, itemId?: string): Promise<void> {
-  const { ok, data } = await postJson("create-checkout-session", { lookupKey, itemId });
+export async function startCheckout(
+  lookupKey: string,
+  itemId?: string,
+  itemIds?: string[],
+): Promise<void> {
+  const payload: Record<string, unknown> = { lookupKey };
+  if (itemId) payload.itemId = itemId;
+  if (itemIds && itemIds.length) payload.itemIds = itemIds;
+  const { ok, data } = await postJson("create-checkout-session", payload);
   if (ok && typeof data.url === "string") {
     window.location.assign(data.url);
     return;
@@ -83,8 +96,9 @@ export async function fetchOrderStatus(sessionId: string): Promise<OrderStatus |
 
 /**
  * Wire every <button data-checkout="<lookupKey>"> in `root` to startCheckout.
- * Optional attributes: data-item="<roadmap item id>" (carried into Stripe
- * metadata) and data-error-target="<element id>" (where to show a failure).
+ * Optional attributes: data-item="<roadmap item id>" (single) and/or
+ * data-items="<id,id,id>" (a comma-joined selection) carried into Stripe
+ * metadata, plus data-error-target="<element id>" (where to show a failure).
  * Idempotent — safe to call again after astro:after-swap.
  */
 export function wireCheckoutButtons(root: ParentNode = document): void {
@@ -95,6 +109,9 @@ export function wireCheckoutButtons(root: ParentNode = document): void {
     btn.addEventListener("click", async () => {
       const lookupKey = btn.dataset.checkout!;
       const itemId = btn.dataset.item || undefined;
+      const itemIds = btn.dataset.items
+        ? btn.dataset.items.split(",").map((s) => s.trim()).filter(Boolean)
+        : undefined;
       const errEl = btn.dataset.errorTarget ? document.getElementById(btn.dataset.errorTarget) : null;
       if (errEl) {
         errEl.textContent = "";
@@ -104,7 +121,7 @@ export function wireCheckoutButtons(root: ParentNode = document): void {
       btn.setAttribute("aria-busy", "true");
 
       try {
-        await startCheckout(lookupKey, itemId);
+        await startCheckout(lookupKey, itemId, itemIds);
         // Success → the browser is redirecting; leave the button disabled.
       } catch (err) {
         btn.disabled = false;

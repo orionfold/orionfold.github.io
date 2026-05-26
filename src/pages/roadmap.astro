@@ -12,7 +12,9 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import RoadmapCard from '../components/ui/RoadmapCard.astro';
+import EnquiryDrawer from '../components/ui/EnquiryDrawer.astro';
 import { roadmap, roadmapLanes, roadmapSignals } from '../data/roadmap';
+import { SPONSOR_TIER_DISPLAY, formatUsd } from '../data/commerce';
 import { ogMeta } from '../data/og';
 import { SITE } from '../data/seo';
 import aiNativeCover from '../assets/book/ai-native-business-book.jpg';
@@ -46,6 +48,15 @@ const stats = [
   { value: String(roadmapLanes.active.length), label: 'building now' },
   { value: `v${roadmapSignals.fieldkit.version}`, label: 'fieldkit' },
   { value: `${roadmapSignals.fieldNotes.articlesPublished}`, label: `field notes (+${roadmapSignals.fieldNotes.articlesUpcoming} coming)` },
+];
+
+// Enquiry guide — teaches the select → Enquiry → reply flow, which is otherwise
+// only discoverable by spotting the checkboxes. The <strong> words map to the
+// real UI (the checkbox and the "Enquiry" button) so the steps are concrete.
+const enquirySteps = [
+  'Tick the box on any card or feature you care about.',
+  'Hit the <strong class="font-semibold text-text">Enquiry</strong> button in the bar that appears.',
+  'Add a line about your project. We email you back, usually within a day.',
 ];
 
 const lanes = [
@@ -89,6 +100,39 @@ const itemListLd = {
           </div>
         ))}
       </dl>
+
+      <!-- Enquiry guide: what it is, how to use it, what happens (R2). -->
+      <div
+        data-animate
+        class="mt-8 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.07] to-primary/[0.015]"
+        style="transition-delay: 220ms"
+      >
+        <div class="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:gap-8">
+          <div class="flex items-start gap-3.5 lg:max-w-xs lg:shrink-0">
+            <span class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="8" height="4" x="8" y="2" rx="1" />
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                <path d="M12 11h4M12 16h4M8 11h.01M8 16h.01" />
+              </svg>
+            </span>
+            <div>
+              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Custom enquiry</p>
+              <p class="mt-1 text-sm font-medium leading-snug text-text">
+                Need something we haven't built yet? Pick the parts you want and send a short brief.
+              </p>
+            </div>
+          </div>
+          <ol class="grid flex-1 gap-x-6 gap-y-3 sm:grid-cols-3 lg:border-l lg:border-primary/15 lg:pl-8">
+            {enquirySteps.map((step, i) => (
+              <li class="flex items-start gap-2.5">
+                <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-surface">{i + 1}</span>
+                <span class="text-sm leading-snug text-text-muted" set:html={step}></span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
     </PageHeader>
 
     <!-- Status lanes -->
@@ -124,13 +168,13 @@ const itemListLd = {
     <div class="h-20"></div>
   </main>
 
-  <!-- Selection tray. R1 ships working multi-select + a count/clear; R2 turns
-       this into the "Enquiry (n)" trigger that opens the enquiry drawer, reading
-       the same window.roadmapSelection store. -->
+  <!-- Selection tray + enquiry trigger. R1 shipped the multi-select store + count;
+       R2 adds the "Enquiry (n)" button that opens the EnquiryDrawer, reading the
+       same window.roadmapSelection store. -->
   <div
     id="roadmap-tray"
     hidden
-    class="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 rounded-full border border-border bg-surface-raised/95 px-5 py-2.5 shadow-lg backdrop-blur"
+    class="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 rounded-full border border-border bg-surface-raised/95 py-1.5 pl-5 pr-1.5 shadow-lg backdrop-blur"
   >
     <span class="flex items-center gap-2 font-mono text-sm">
       <span class="inline-block h-2 w-2 rounded-full bg-primary"></span>
@@ -139,7 +183,62 @@ const itemListLd = {
     <button id="roadmap-tray-clear" type="button" class="font-mono text-xs uppercase tracking-wider text-text-muted hover:text-primary">
       Clear
     </button>
+
+    <!-- Sponsor picker: the same selection, the other outcome. A sponsorship is
+         one monthly tier (one Stripe subscription); the picked items ride along as
+         a priority signal in the subscription metadata. "Compare tiers" carries the
+         selection to /sponsor. Checkout CORS-fails on localhost (live test = L1). -->
+    <div class="relative">
+      <button
+        id="roadmap-sponsor-open"
+        type="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+        class="inline-flex items-center gap-1.5 rounded-full border border-primary/40 px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-primary transition-colors hover:bg-primary/5"
+      >
+        Sponsor
+        <svg id="roadmap-sponsor-caret" class="transition-transform" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+      <div
+        id="roadmap-sponsor-menu"
+        hidden
+        role="menu"
+        class="absolute bottom-full right-0 z-50 mb-3 w-60 rounded-xl border border-border bg-surface-raised p-2 shadow-xl"
+      >
+        <p class="px-2 pb-1.5 pt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">Sponsor monthly</p>
+        {SPONSOR_TIER_DISPLAY.map((t) => (
+          <button
+            type="button"
+            role="menuitem"
+            data-tier-checkout={t.lookupKey}
+            class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm capitalize text-text transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <span class="flex items-center gap-1.5">{t.name}{t.featured && <span class="text-[10px] not-italic text-primary">★</span>}</span>
+            <span class="font-mono text-xs tracking-wider text-text-muted">{formatUsd(t.price)}/mo</span>
+          </button>
+        ))}
+        <a id="roadmap-compare-tiers" href="/sponsor/" class="mt-1 block rounded-lg px-3 py-2 text-center font-mono text-xs tracking-wider text-text-muted transition-colors hover:text-primary">
+          Compare tiers →
+        </a>
+        <p id="roadmap-sponsor-error" role="alert" hidden class="px-3 pb-1 pt-1 font-mono text-[11px] leading-snug text-red-500"></p>
+      </div>
+    </div>
+
+    <button
+      id="roadmap-enquiry-open"
+      type="button"
+      class="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-surface transition-colors hover:bg-primary/90"
+    >
+      <span id="roadmap-enquiry-label">Enquiry</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    </button>
   </div>
+
+  <EnquiryDrawer />
 
   <Footer />
 </Layout>
@@ -166,12 +265,20 @@ const itemListLd = {
     const tray = document.getElementById('roadmap-tray');
     const count = document.getElementById('roadmap-tray-count');
     const clear = document.getElementById('roadmap-tray-clear');
+    const enquiryBtn = document.getElementById('roadmap-enquiry-open');
+    const enquiryLabel = document.getElementById('roadmap-enquiry-label');
 
     const render = () => {
       const n = items.size;
       if (tray) tray.hidden = n === 0;
       if (count) count.textContent = `${n} selected`;
+      if (enquiryLabel) enquiryLabel.textContent = n > 0 ? `Enquiry (${n})` : 'Enquiry';
     };
+
+    // The drawer (EnquiryDrawer.astro) listens for this and reads the same store.
+    enquiryBtn?.addEventListener('click', () => {
+      document.dispatchEvent(new CustomEvent('enquiry:open'));
+    });
 
     boxes.forEach((box) => {
       box.addEventListener('change', () => {
@@ -199,9 +306,80 @@ const itemListLd = {
 </script>
 
 <script>
-  // Wire the Buy (book) + Sponsor-tier buttons to Stripe Checkout (C4). CORS-fails
-  // on localhost (allowlist is orionfold.com); the live buy/sponsor test is L1.
-  import { wireCheckoutButtons } from '../lib/checkout';
-  wireCheckoutButtons();
-  document.addEventListener('astro:after-swap', () => wireCheckoutButtons());
+  // Wire the Buy (book) + per-card Sponsor-tier buttons to Stripe Checkout (C4),
+  // plus the tray's Sponsor picker (R2): the same multi-select drives a single
+  // subscription Checkout, carrying every picked item id along as a priority
+  // signal. CORS-fails on localhost (allowlist is orionfold.com); live test = L1.
+  import { wireCheckoutButtons, startCheckout } from '../lib/checkout';
+
+  function selectedIds(): string[] {
+    const store = (window as any).roadmapSelection;
+    return store ? Array.from(store.items.keys()) as string[] : [];
+  }
+
+  function setSponsorMenu(open: boolean) {
+    const menu = document.getElementById('roadmap-sponsor-menu');
+    const openBtn = document.getElementById('roadmap-sponsor-open');
+    const caret = document.getElementById('roadmap-sponsor-caret');
+    const compare = document.getElementById('roadmap-compare-tiers') as HTMLAnchorElement | null;
+    if (!menu || !openBtn) return;
+    menu.hidden = !open;
+    openBtn.setAttribute('aria-expanded', String(open));
+    if (caret) caret.style.transform = open ? 'rotate(180deg)' : '';
+    if (open && compare) {
+      const ids = selectedIds();
+      compare.href = ids.length ? `/sponsor/?items=${encodeURIComponent(ids.join(','))}` : '/sponsor/';
+    }
+  }
+
+  function initRoadmapCommerce() {
+    wireCheckoutButtons();
+
+    const openBtn = document.getElementById('roadmap-sponsor-open');
+    const menu = document.getElementById('roadmap-sponsor-menu');
+    if (!openBtn || !menu || openBtn.dataset.wired) return;
+    openBtn.dataset.wired = '1';
+
+    const errEl = document.getElementById('roadmap-sponsor-error');
+
+    openBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setSponsorMenu(menu.hidden);
+    });
+
+    menu.querySelectorAll<HTMLButtonElement>('[data-tier-checkout]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+        btn.disabled = true;
+        try {
+          await startCheckout(btn.dataset.tierCheckout!, undefined, selectedIds());
+          // Success → the browser is redirecting; leave the button disabled.
+        } catch (err) {
+          btn.disabled = false;
+          if (errEl) {
+            errEl.textContent = err instanceof Error ? err.message : 'Could not start checkout.';
+            errEl.hidden = false;
+          }
+        }
+      });
+    });
+  }
+
+  // Close the menu on an outside click or Escape. Attached at the document level
+  // and re-querying by id so they survive view-transition swaps.
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('roadmap-sponsor-menu');
+    const openBtn = document.getElementById('roadmap-sponsor-open');
+    const target = e.target as Node;
+    if (menu && !menu.hidden && !menu.contains(target) && !openBtn?.contains(target)) {
+      setSponsorMenu(false);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    const menu = document.getElementById('roadmap-sponsor-menu');
+    if (e.key === 'Escape' && menu && !menu.hidden) setSponsorMenu(false);
+  });
+
+  initRoadmapCommerce();
+  document.addEventListener('astro:after-swap', initRoadmapCommerce);
 </script>

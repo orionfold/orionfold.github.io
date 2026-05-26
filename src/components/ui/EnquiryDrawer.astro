@@ -1,0 +1,326 @@
+---
+// EnquiryDrawer (R2, spec §6) — the inline custom-enquiry flow on /roadmap.
+//
+// Visitors tick offerings/features (R1's window.roadmapSelection store), open
+// this slide-in panel from the tray, and send a brief. It mirrors
+// WaitlistForm.astro's submit/validation/honeypot idiom and POSTs to the new
+// `enquiry-submit` edge function (row in `enquiries` + a Resend notice to the
+// operator).
+//
+// The selection is read on OPEN — by then the user has been ticking boxes, so
+// window.roadmapSelection is initialised (no script-init race with roadmap.astro).
+// Dropping an item here re-dispatches `change` on the source checkbox, so R1's
+// store stays the single source of truth and the card + tray stay in sync.
+//
+// Dev gotcha: the edge-fn CORS allowlist is https://orionfold.com, so a real
+// submit CORS-fails from localhost — the live submit test is an ops step (L1),
+// same as the waitlist funnel.
+const endpoint = 'https://orionfold.supabase.co/functions/v1/enquiry-submit';
+---
+
+<!-- Backdrop -->
+<div
+  id="enquiry-backdrop"
+  hidden
+  class="fixed inset-0 z-50 bg-black/40 opacity-0 transition-opacity duration-200 motion-reduce:transition-none"
+></div>
+
+<!-- Slide-in panel -->
+<aside
+  id="enquiry-drawer"
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="enquiry-title"
+  class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md translate-x-full flex-col bg-surface shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-none"
+>
+  <!-- Header -->
+  <div class="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
+    <div>
+      <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Custom enquiry</p>
+      <h2 id="enquiry-title" class="mt-1 text-2xl">Tell us what you need</h2>
+    </div>
+    <button
+      id="enquiry-close"
+      type="button"
+      aria-label="Close enquiry"
+      class="-mr-2 -mt-1 shrink-0 rounded-md p-2 text-text-muted transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M18 6 6 18M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Body (scrolls) -->
+  <div class="flex-1 overflow-y-auto px-6 py-5">
+    <!-- Selected items, read live from the R1 store on open -->
+    <div class="mb-6">
+      <p class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">
+        Selected (<span id="enquiry-count">0</span>)
+      </p>
+      <ul id="enquiry-items" class="flex flex-wrap gap-2"></ul>
+      <p id="enquiry-empty" class="text-sm leading-relaxed text-text-muted">
+        Nothing picked yet. Describe what you need below, or close this and tick a few items first.
+      </p>
+    </div>
+
+    <form id="enquiry-form" data-endpoint={endpoint} novalidate class="space-y-4">
+      <div>
+        <label for="enquiry-name" class="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-text-muted">Name</label>
+        <input
+          id="enquiry-name"
+          type="text"
+          name="name"
+          autocomplete="name"
+          class="w-full rounded-md border border-border bg-transparent px-4 py-2.5 text-sm text-text transition-colors placeholder:text-text-dim focus:border-primary focus:outline-none"
+        />
+      </div>
+
+      <div>
+        <label for="enquiry-company" class="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-text-muted">Company <span class="normal-case text-text-dim">(optional)</span></label>
+        <input
+          id="enquiry-company"
+          type="text"
+          name="company"
+          autocomplete="organization"
+          class="w-full rounded-md border border-border bg-transparent px-4 py-2.5 text-sm text-text transition-colors placeholder:text-text-dim focus:border-primary focus:outline-none"
+        />
+      </div>
+
+      <div>
+        <label for="enquiry-email" class="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-text-muted">Email</label>
+        <input
+          id="enquiry-email"
+          type="email"
+          name="email"
+          required
+          autocomplete="email"
+          placeholder="you@example.com"
+          class="w-full rounded-md border border-border bg-transparent px-4 py-2.5 text-sm text-text transition-colors placeholder:text-text-dim focus:border-primary focus:outline-none"
+        />
+      </div>
+
+      <div>
+        <label for="enquiry-description" class="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-text-muted">What do you need?</label>
+        <textarea
+          id="enquiry-description"
+          name="description"
+          rows="4"
+          placeholder="A line or two about your project, timeline, or the help you're after."
+          class="w-full resize-y rounded-md border border-border bg-transparent px-4 py-2.5 text-sm leading-relaxed text-text transition-colors placeholder:text-text-dim focus:border-primary focus:outline-none"
+        ></textarea>
+      </div>
+
+      <!-- Honeypot — hidden from real users -->
+      <input
+        type="text"
+        name="website"
+        tabindex="-1"
+        autocomplete="off"
+        aria-hidden="true"
+        style="position:absolute;left:-9999px;opacity:0;height:0;width:0;"
+      />
+
+      <p id="enquiry-error" role="alert" class="hidden font-mono text-xs text-red-500"></p>
+
+      <button
+        type="submit"
+        class="w-full rounded-md bg-primary px-6 py-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-surface transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Send enquiry
+      </button>
+    </form>
+
+    <!-- Success state (replaces the form on submit) -->
+    <div id="enquiry-success" class="hidden">
+      <div class="flex items-start gap-2.5 rounded-lg border border-success/30 bg-success/5 p-4">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0 text-success" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <p id="enquiry-success-text" class="text-sm leading-relaxed text-text"></p>
+      </div>
+      <button
+        id="enquiry-done"
+        type="button"
+        class="mt-4 w-full rounded-md border border-border px-6 py-3 font-mono text-xs uppercase tracking-[0.2em] text-text-muted transition-colors hover:border-primary hover:text-primary"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</aside>
+
+<script define:vars={{ endpoint }}>
+  (function () {
+    const backdrop = document.getElementById('enquiry-backdrop');
+    const drawer = document.getElementById('enquiry-drawer');
+    const form = document.getElementById('enquiry-form');
+    if (!backdrop || !drawer || !form) return;
+
+    const closeBtn = document.getElementById('enquiry-close');
+    const doneBtn = document.getElementById('enquiry-done');
+    const list = document.getElementById('enquiry-items');
+    const empty = document.getElementById('enquiry-empty');
+    const countEl = document.getElementById('enquiry-count');
+    const nameInput = form.querySelector('input[name="name"]');
+    const emailInput = form.querySelector('input[name="email"]');
+    const honeypot = form.querySelector('input[name="website"]');
+    const descInput = form.querySelector('textarea[name="description"]');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const errorEl = document.getElementById('enquiry-error');
+    const successEl = document.getElementById('enquiry-success');
+    const successText = document.getElementById('enquiry-success-text');
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let lastFocus = null;
+
+    function getStore() {
+      return window.roadmapSelection || null;
+    }
+
+    // Render the picked items as removable chips, read fresh from the R1 store.
+    function renderItems() {
+      const store = getStore();
+      const entries = store ? Array.from(store.items.entries()) : [];
+      countEl.textContent = String(entries.length);
+      empty.hidden = entries.length > 0;
+      list.replaceChildren();
+      for (const [id, label] of entries) {
+        const li = document.createElement('li');
+        li.className = 'inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-raised px-3 py-1 text-xs text-text';
+        const text = document.createElement('span');
+        text.textContent = label;
+        const rm = document.createElement('button');
+        rm.type = 'button';
+        rm.setAttribute('aria-label', `Remove ${label}`);
+        rm.className = 'leading-none text-text-muted transition-colors hover:text-primary';
+        rm.textContent = '×';
+        rm.addEventListener('click', () => removeItem(id));
+        li.append(text, rm);
+        list.appendChild(li);
+      }
+    }
+
+    // Removing here unticks the source checkbox and re-fires change, so R1's
+    // store + the card overlay + the tray count all stay correct.
+    function removeItem(id) {
+      const box = document.querySelector(`input[data-roadmap-select][value="${CSS.escape(id)}"]`);
+      if (box) {
+        box.checked = false;
+        box.dispatchEvent(new Event('change', { bubbles: true }));
+      } else {
+        getStore()?.items.delete(id);
+      }
+      renderItems();
+    }
+
+    function openDrawer() {
+      lastFocus = document.activeElement;
+      renderItems();
+      backdrop.hidden = false;
+      drawer.hidden = false;
+      requestAnimationFrame(() => {
+        backdrop.classList.remove('opacity-0');
+        drawer.classList.remove('translate-x-full');
+      });
+      document.body.style.overflow = 'hidden';
+      window.setTimeout(() => emailInput?.focus(), reduce ? 0 : 60);
+      document.addEventListener('keydown', onKeydown);
+    }
+
+    function closeDrawer() {
+      backdrop.classList.add('opacity-0');
+      drawer.classList.add('translate-x-full');
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', onKeydown);
+      window.setTimeout(() => {
+        backdrop.hidden = true;
+        drawer.hidden = true;
+      }, reduce ? 0 : 300);
+      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+    }
+
+    function onKeydown(e) {
+      if (e.key === 'Escape') closeDrawer();
+    }
+
+    function clearMessages() {
+      errorEl.classList.add('hidden');
+    }
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessages();
+
+      const email = emailInput.value.trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError('Please enter a real email address.');
+        emailInput.focus();
+        return;
+      }
+
+      const description = descInput.value.trim();
+      const store = getStore();
+      const items = store
+        ? Array.from(store.items.entries()).map(([id, label]) => ({ id, label }))
+        : [];
+
+      if (!description && items.length === 0) {
+        showError('Add a short description, or pick a few items to enquire about.');
+        descInput.focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'SENDING...';
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: nameInput.value.trim(),
+            company: form.querySelector('input[name="company"]').value.trim(),
+            email,
+            description,
+            items,
+            website: honeypot.value,
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          showError(data.error || data.message || 'Something went wrong. Please try again.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+
+        // Success — clear the selection (the brief now holds it) and swap to the
+        // confirmation state.
+        successText.textContent = data.message || "Thanks — we'll get back to you soon.";
+        form.classList.add('hidden');
+        successEl.classList.remove('hidden');
+        const clearBtn = document.getElementById('roadmap-tray-clear');
+        if (clearBtn) clearBtn.click();
+      } catch {
+        showError('Could not connect. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    backdrop.addEventListener('click', closeDrawer);
+    closeBtn?.addEventListener('click', closeDrawer);
+    doneBtn?.addEventListener('click', closeDrawer);
+
+    // The roadmap tray's "Enquiry" button dispatches this to open the drawer.
+    document.addEventListener('enquiry:open', openDrawer);
+  })();
+</script>

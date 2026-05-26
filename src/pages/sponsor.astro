@@ -19,8 +19,14 @@ import { ogMeta } from '../data/og';
 
 const og = ogMeta('/sponsor/');
 
-// id -> title for the "You're backing: …" banner (resolved client-side from ?item=).
-const itemTitles: Record<string, string> = Object.fromEntries(roadmap.map((i) => [i.id, i.title]));
+// id -> label for the "You're backing: …" banner (resolved client-side from
+// ?item= or the multi-select ?items=). Covers both the top-level offerings and
+// the individually selectable features, matching the roadmap select labels.
+const itemTitles: Record<string, string> = {};
+for (const i of roadmap) {
+  itemTitles[i.id] = i.title;
+  for (const f of i.features ?? []) itemTitles[f.id] = `${i.title}: ${f.label}`;
+}
 
 // How priority works, in plain words (spec: priority-by-tier).
 const howItWorks = [
@@ -119,19 +125,30 @@ const howItWorks = [
 </Layout>
 
 <script define:vars={{ itemTitles }}>
-  // Carry a roadmap item id (from /sponsor/?item=<id>) into checkout + show what
-  // the visitor is backing. Done client-side because the page is static.
+  // Carry the roadmap selection (from /sponsor/?item=<id> or the multi-select
+  // /sponsor/?items=<id,id,id>) into checkout + show what the visitor is backing.
+  // Done client-side because the page is static.
   function applyRoadmapItem() {
-    const itemId = new URLSearchParams(location.search).get('item');
-    if (!itemId) return;
+    const params = new URLSearchParams(location.search);
+    const multi = params.get('items');
+    const single = params.get('item');
+    const ids = multi
+      ? multi.split(',').map((s) => s.trim()).filter(Boolean)
+      : single ? [single] : [];
+    if (ids.length === 0) return;
+
+    // Thread the selection into every tier button so checking out from here tags
+    // the subscription: data-item = the primary id, data-items = the full list.
     document.querySelectorAll('[data-checkout]').forEach((btn) => {
-      btn.setAttribute('data-item', itemId);
+      btn.setAttribute('data-item', ids[0]);
+      btn.setAttribute('data-items', ids.join(','));
     });
-    const title = itemTitles[itemId];
+
+    const titles = ids.map((id) => itemTitles[id]).filter(Boolean);
     const banner = document.getElementById('sponsor-backing');
     const titleEl = document.getElementById('sponsor-backing-title');
-    if (title && banner && titleEl) {
-      titleEl.textContent = title;
+    if (titles.length && banner && titleEl) {
+      titleEl.textContent = titles.join(', ');
       banner.hidden = false;
     }
   }

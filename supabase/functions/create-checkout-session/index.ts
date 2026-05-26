@@ -35,7 +35,11 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json().catch(() => ({}));
     const lookupKey = body.lookupKey ?? body.lookup_key;
-    const itemId = body.itemId ?? body.item_id; // optional roadmap item the buy started from
+    const itemId = body.itemId ?? body.item_id; // single roadmap item (per-card buy/sponsor)
+    const itemIdsRaw = body.itemIds ?? body.item_ids; // multiple (roadmap selection → sponsor)
+    const itemIds = Array.isArray(itemIdsRaw)
+      ? itemIdsRaw.map((x: unknown) => String(x)).filter(Boolean)
+      : [];
 
     // Server-trusted allowlist: the client can only name a known offering.
     if (!isAllowedLookupKey(lookupKey)) {
@@ -61,7 +65,13 @@ Deno.serve(async (req) => {
       kind: item.kind,
     };
     if (item.tier) metadata.tier = item.tier;
-    if (itemId) metadata.roadmap_item = String(itemId);
+    // roadmap_item = the single/primary item (the deployed C3 webhook persists this
+    // to purchases/sponsors). roadmap_items = the full comma-joined selection when
+    // a sponsorship is started from the roadmap multi-select (a priority signal,
+    // visible on the Stripe subscription). Stripe caps a metadata value at 500 chars.
+    const primaryItem = itemId ? String(itemId) : itemIds[0];
+    if (primaryItem) metadata.roadmap_item = primaryItem;
+    if (itemIds.length) metadata.roadmap_items = itemIds.join(",").slice(0, 480);
 
     const session = await stripe.checkout.sessions.create({
       mode: item.mode, // 'payment' for books, 'subscription' for sponsors
