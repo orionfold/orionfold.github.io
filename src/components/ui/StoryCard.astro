@@ -1,11 +1,14 @@
 ---
 // Story card (S9, cover added V6) — one post teaser, shared by the /story/ index
-// and the homepage carousel (StoriesCarousel) so both stay in sync. Now leads
-// with a cover (a curated hero image if the post has one, else a full-bleed
-// constellation seeded off the post so each post still gets a distinct-but-on-
-// brand cover), then the tag/date row, title, and summary. The outer <a> takes a
-// `class` for context sizing (carousel adds snap/width); `animate` opts into the
-// scroll-reveal grid.
+// and the homepage carousel (StoriesCarousel) so both stay in sync. Leads with a
+// cover (a curated hero image if the post has one, else a full-bleed constellation
+// seeded off the post so each post still gets a distinct-but-on-brand cover), then
+// the tag/date row, title, and summary. The outer <a> takes a `class` for context
+// sizing; `animate` opts into the scroll-reveal grid.
+//
+// `featured` switches to a wide hero layout (image left, text right, full
+// container width) used for the lead story on the homepage bento and as the
+// odd-one-out feature on the /story/ index.
 import { Image } from 'astro:assets';
 import ConstellationCover from './ConstellationCover.astro';
 
@@ -20,9 +23,10 @@ interface Props {
   coverAlt?: string;
   class?: string;
   animate?: boolean;
+  featured?: boolean; // wide image-left/text-right hero layout
 }
 
-const { href, title, date, tag, summary, seed, cover, coverAlt, class: className = '', animate = false } = Astro.props;
+const { href, title, date, tag, summary, seed, cover, coverAlt, class: className = '', animate = false, featured = false } = Astro.props;
 // timeZone:'UTC' so a date-only value (UTC midnight) shows the authored day, not
 // the day before in a behind-UTC timezone.
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
@@ -33,17 +37,19 @@ const coverSeed = seed ?? href;
   href={href}
   data-animate={animate ? '' : undefined}
   class:list={[
-    'group flex flex-col overflow-hidden rounded-xl border border-border bg-surface-raised/50 transition-colors hover:border-primary/40 hover:bg-primary/[0.03]',
+    'group overflow-hidden rounded-xl border border-border bg-surface-raised/50 transition-colors hover:border-primary/40 hover:bg-primary/[0.03]',
+    featured ? 'grid items-stretch sm:grid-cols-2' : 'flex flex-col',
     className,
   ]}
 >
+  {/* Cover */}
   {cover ? (
-    <div class="aspect-[16/9] overflow-hidden">
+    <div class:list={['overflow-hidden', featured ? 'aspect-[16/9] sm:aspect-auto sm:h-full' : 'aspect-[16/9]']}>
       <Image
         src={cover}
         alt={coverAlt ?? title}
-        widths={[400, 640]}
-        sizes="(min-width: 1024px) 22rem, 100vw"
+        widths={featured ? [640, 960] : [400, 640]}
+        sizes={featured ? '(min-width: 640px) 50vw, 100vw' : '(min-width: 1024px) 22rem, 100vw'}
         loading="lazy"
         decoding="async"
         data-no-zoom
@@ -51,17 +57,22 @@ const coverSeed = seed ?? href;
       />
     </div>
   ) : (
-    <ConstellationCover seed={coverSeed} rounded="rounded-none" />
+    <ConstellationCover seed={coverSeed} rounded="rounded-none" class={featured ? 'h-full' : undefined} />
   )}
-  <div class="flex flex-1 flex-col p-6">
+
+  {/* Body */}
+  <div class:list={['flex flex-1 flex-col', featured ? 'justify-center p-8 sm:p-10' : 'p-6']}>
     <div class="mb-3 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">
       {tag && <span class="text-primary">{tag}</span>}
       <span class="h-px flex-1 bg-border"></span>
       <time datetime={dateIso}>{dateFmt}</time>
     </div>
-    <h3 class="mb-2 font-semibold leading-snug transition-colors group-hover:text-primary" style="font-size: 1.1rem;">
+    <h3
+      class="mb-2 font-semibold leading-snug transition-colors group-hover:text-primary"
+      style={`font-size: ${featured ? '1.5rem' : '1.1rem'};`}
+    >
       {title}
     </h3>
-    <p class="mt-auto text-sm leading-relaxed text-text-muted">{summary}</p>
+    <p class:list={['mt-auto leading-relaxed text-text-muted', featured ? 'text-base' : 'text-sm']}>{summary}</p>
   </div>
 </a>

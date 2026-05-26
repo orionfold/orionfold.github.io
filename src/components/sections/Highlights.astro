@@ -2,13 +2,15 @@
 // Homepage highlights (spec §5.4–5.6): one curated pick from each pillar —
 // the book, the software, a model — each linking to its showcase page (built
 // in S6–S8, routes already stubbed). Layout sides alternate via Highlight's
-// `reverse`. Visuals are placeholders (real artwork is a later spec); they're
-// CSS-only and aria-hidden so they add texture without misleading a reader.
+// `reverse`. The software and model picks now lead with their curated movie
+// poster (featured-imagery skill), matching their showcase cards; the book
+// keeps its CSS BookCover.
+import { Image } from 'astro:assets';
 import Highlight from '../ui/Highlight.astro';
 import BookCover from '../ui/BookCover.astro';
-import BrowserFrame from '../ui/BrowserFrame.astro';
 import aiNativeCover from '../../assets/book/ai-native-business-book.png';
-import platformImg from '../../assets/platform/ai-native-platform.png';
+import platformPoster from '../../assets/projects/ai-native-platform-poster.png';
+import patentPoster from '../../assets/models/patent-strategist/cover.png';
 ---
 <!-- ── Highlight: the book ── -->
 <Highlight
@@ -19,7 +21,9 @@ import platformImg from '../../assets/platform/ai-native-platform.png';
   href="/books/"
   ctaText="See the book"
 >
-  <BookCover slot="media" title="AI Native Business" subtitle="Build with AI agents." tag="Free · open" image={aiNativeCover} />
+  <a slot="media" href="/books/" aria-label="See the book" class="block">
+    <BookCover title="AI Native Business" subtitle="Build with AI agents." tag="Free · open" image={aiNativeCover} />
+  </a>
 </Highlight>
 
 <!-- ── Highlight: the software ── -->
@@ -34,12 +38,16 @@ import platformImg from '../../assets/platform/ai-native-platform.png';
 >
   <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
     <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
-    <BrowserFrame
-      image={platformImg}
-      alt="The AI Native Platform dashboard: running tasks, workflows, and live agent activity"
-      label="ai-native-business"
-      sizes="(min-width: 1024px) 42vw, 90vw"
-    />
+    <a href="/software/" aria-label="See the software" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
+      <Image
+        src={platformPoster}
+        alt="AI Native Platform poster art"
+        widths={[440, 680, 880]}
+        sizes="(min-width: 1024px) 42vw, 90vw"
+        data-no-zoom
+        class="aspect-[16/9] w-full object-cover"
+      />
+    </a>
   </div>
 </Highlight>
 
@@ -52,21 +60,17 @@ import platformImg from '../../assets/platform/ai-native-platform.png';
   href="/models/"
   ctaText="See the models"
 >
-  <div slot="media" data-animate class="relative mx-auto w-full max-w-md">
+  <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
     <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
-    <div class="overflow-hidden rounded-xl border border-border bg-surface-raised shadow-2xl shadow-primary/10" aria-hidden="true">
-      <div class="flex items-center gap-2 border-b border-border px-4 py-3">
-        <span class="h-3 w-3 rounded-full bg-[#ff5f57]"></span>
-        <span class="h-3 w-3 rounded-full bg-[#febc2e]"></span>
-        <span class="h-3 w-3 rounded-full bg-[#28c840]"></span>
-        <span class="ml-2 font-mono text-[10px] tracking-wider text-text-muted">patent-strategist</span>
-      </div>
-      <div class="space-y-2 p-5 font-mono text-[12px] leading-relaxed">
-        <p class="text-text-muted"><span class="text-primary">$</span> run --offline</p>
-        <p class="text-text-muted">reading claim 1 of 12…</p>
-        <p class="text-text-muted">prior art found: 3 close matches</p>
-        <p class="text-success">ok · answered on this desktop</p>
-      </div>
-    </div>
+    <a href="/models/" aria-label="See the models" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
+      <Image
+        src={patentPoster}
+        alt="Patent Strategist poster art: Prior Art"
+        widths={[440, 680, 880]}
+        sizes="(min-width: 1024px) 42vw, 90vw"
+        data-no-zoom
+        class="aspect-[16/9] w-full object-cover"
+      />
+    </a>
   </div>
 </Highlight>

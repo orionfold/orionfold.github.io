@@ -1,10 +1,10 @@
 ---
-// Homepage stories carousel (spec §5.7): the three newest Story posts in a
-// horizontal scroll-snap rail. Reads the live `story` collection (S9), top 3 by
+// Homepage stories bento (spec §5.7): the three newest Story posts in a bento
+// layout — the lead story as a full-width hero (image left, text right), then
+// the next two side by side. Reads the live `story` collection (S9), top 3 by
 // date, linking to real /story/<slug>/ routes; cards are the shared StoryCard
-// (same teaser used by the /story/ index). The rail is native CSS scroll-snap;
-// the prev/next buttons are a progressive enhancement in the Nav.astro script
-// idiom (initX + astro:after-swap), so the rail still scrolls without JS.
+// (same teaser used by the /story/ index), with the lead using its `featured`
+// variant. Pure layout, no JS.
 import { getCollection } from 'astro:content';
 import SectionLabel from '../ui/SectionLabel.astro';
 import StoryCard from '../ui/StoryCard.astro';
@@ -12,6 +12,7 @@ import StoryCard from '../ui/StoryCard.astro';
 const stories = (await getCollection('story'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
+const [lead, ...rest] = stories;
 ---
 <section class="px-6 py-20 sm:py-24">
   <div class="mx-auto max-w-6xl">
@@ -20,38 +21,32 @@ const stories = (await getCollection('story'))
         <SectionLabel text="Story" />
         <h2 data-animate class="mt-4">From the build log.</h2>
       </div>
-
-      <div class="flex items-center gap-3">
-        <div class="hidden gap-2 sm:flex">
-          <button
-            id="stories-prev"
-            type="button"
-            aria-label="Previous stories"
-            class="grid h-10 w-10 place-items-center rounded-md border border-border text-text-muted transition-colors hover:border-primary/40 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
-          </button>
-          <button
-            id="stories-next"
-            type="button"
-            aria-label="Next stories"
-            class="grid h-10 w-10 place-items-center rounded-md border border-border text-text-muted transition-colors hover:border-primary/40 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
-          </button>
-        </div>
-        <a
-          href="/story/"
-          class="rounded-md border border-primary/30 px-5 py-2.5 font-mono text-xs uppercase tracking-[0.15em] text-primary transition-colors hover:bg-primary/10"
-        >
-          All stories →
-        </a>
-      </div>
+      <a
+        href="/story/"
+        class="rounded-md border border-primary/30 px-5 py-2.5 font-mono text-xs uppercase tracking-[0.15em] text-primary transition-colors hover:bg-primary/10"
+      >
+        All stories →
+      </a>
     </div>
 
-    <div data-animate>
-      <div id="stories-track" class="-mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {stories.map((post) => (
+    {lead && (
+      <StoryCard
+        href={`/story/${lead.id}/`}
+        title={lead.data.title}
+        date={lead.data.date}
+        tag={lead.data.tags[0]}
+        summary={lead.data.summary}
+        seed={lead.data.accent}
+        cover={lead.data.hero}
+        coverAlt={lead.data.heroAlt}
+        featured
+        animate
+      />
+    )}
+
+    {rest.length > 0 && (
+      <div data-animate-stagger class="mt-6 grid gap-6 sm:grid-cols-2">
+        {rest.map((post) => (
           <StoryCard
             href={`/story/${post.id}/`}
             title={post.data.title}
@@ -61,44 +56,10 @@ const stories = (await getCollection('story'))
             seed={post.data.accent}
             cover={post.data.hero}
             coverAlt={post.data.heroAlt}
-            class="w-[82%] shrink-0 snap-start sm:w-[330px]"
+            animate
           />
         ))}
       </div>
-    </div>
+    )}
   </div>
 </section>
-
-<script>
-  function initStoriesCarousel() {
-    const track = document.getElementById('stories-track');
-    const prev = document.getElementById('stories-prev') as HTMLButtonElement | null;
-    const next = document.getElementById('stories-next') as HTMLButtonElement | null;
-    if (!track || !prev || !next) return;
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Scroll by one card (first card width + gap), respecting reduced motion.
-    function step(dir: number) {
-      const card = track.querySelector('a');
-      const gap = 20; // matches gap-5
-      const amount = card ? card.getBoundingClientRect().width + gap : track.clientWidth * 0.8;
-      track.scrollBy({ left: dir * amount, behavior: reduceMotion ? 'auto' : 'smooth' });
-    }
-
-    // Disable the arrows at the ends of the rail.
-    function syncButtons() {
-      const maxScroll = track.scrollWidth - track.clientWidth - 1;
-      prev.disabled = track.scrollLeft <= 0;
-      next.disabled = track.scrollLeft >= maxScroll;
-    }
-
-    prev.addEventListener('click', () => step(-1));
-    next.addEventListener('click', () => step(1));
-    track.addEventListener('scroll', syncButtons, { passive: true });
-    syncButtons();
-  }
-
-  initStoriesCarousel();
-  document.addEventListener('astro:after-swap', initStoriesCarousel);
-</script>

@@ -13,6 +13,11 @@ import { ogMeta } from '../../data/og';
 const posts = (await getCollection('story')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
+// Two per row; if the count is odd the newest post leads as a full-width hero
+// (image left, text right) so the grid below always pairs up evenly.
+const isOdd = posts.length % 2 === 1;
+const lead = isOdd ? posts[0] : null;
+const rest = isOdd ? posts.slice(1) : posts;
 const og = ogMeta('/story/');
 ---
 <Layout
@@ -34,22 +39,38 @@ const og = ogMeta('/story/');
       </div>
     </section>
 
-    <!-- Post grid -->
+    <!-- Post grid: optional full-width lead, then two per row -->
     <section class="px-6 pb-28 pt-8">
-      <div data-animate-stagger class="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post) => (
+      <div class="mx-auto max-w-6xl">
+        {lead && (
           <StoryCard
-            href={`/story/${post.id}/`}
-            title={post.data.title}
-            date={post.data.date}
-            tag={post.data.tags[0]}
-            summary={post.data.summary}
-            seed={post.data.accent}
-            cover={post.data.hero}
-            coverAlt={post.data.heroAlt}
+            href={`/story/${lead.id}/`}
+            title={lead.data.title}
+            date={lead.data.date}
+            tag={lead.data.tags[0]}
+            summary={lead.data.summary}
+            seed={lead.data.accent}
+            cover={lead.data.hero}
+            coverAlt={lead.data.heroAlt}
+            featured
             animate
           />
-        ))}
+        )}
+        <div data-animate-stagger class:list={['grid gap-6 sm:grid-cols-2', lead && 'mt-6']}>
+          {rest.map((post) => (
+            <StoryCard
+              href={`/story/${post.id}/`}
+              title={post.data.title}
+              date={post.data.date}
+              tag={post.data.tags[0]}
+              summary={post.data.summary}
+              seed={post.data.accent}
+              cover={post.data.hero}
+              coverAlt={post.data.heroAlt}
+              animate
+            />
+          ))}
+        </div>
       </div>
     </section>
   </main>

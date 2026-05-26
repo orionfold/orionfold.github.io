@@ -11,7 +11,6 @@ import Footer from '../components/Footer.astro';
 import ModelCard from '../components/ui/ModelCard.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
 import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
-import ConstellationCover from '../components/ui/ConstellationCover.astro';
 import { models } from '../data/models';
 import { ogMeta } from '../data/og';
 
@@ -46,14 +45,6 @@ function resolveCover(key?: string): ImageMetadata | undefined {
         <p data-animate class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted" style="transition-delay: 80ms">
           Open AI models built for one job each, like patents, security, law, money, and health. All are free to download and run in private, right on your own computer.
         </p>
-      </div>
-    </section>
-
-    <!-- Decorative constellation band (V6) — on-brand header visual, no
-         misleading screenshot since these are open weights, not an app. -->
-    <section class="px-6 pt-10">
-      <div data-animate class="mx-auto max-w-5xl">
-        <ConstellationCover seed="orionfold-open-models" ratio="wide" label="Open weights · runs offline" />
       </div>
     </section>
 

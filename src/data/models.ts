@@ -52,8 +52,8 @@ export const models: Model[] = [
     recommended: 'BF16',
     license: 'Apache-2.0',
     href: `${HF}/patent-strategist-v3-nemo`,
-    cover: 'patent-strategist/cover.png',
-    coverAlt: 'A movie-poster style picture. A Victorian inventor workshop full of brass gears and blueprints, with a small gold AI computer on the desk. The title reads Prior Art.',
+    cover: 'patent-strategist-adapter/cover.png',
+    coverAlt: 'A movie-poster style picture. A robot arm clicks a small glowing blue add-on into a little gold AI computer on a workbench, with patent drawings all around. The title reads The Upgrade.',
   },
 
   // ── One model per domain ──
