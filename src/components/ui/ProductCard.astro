@@ -19,7 +19,7 @@ interface Props {
   href: string;
   ctaText: string;
   cover?: ImageMetadata;
-  coverType?: 'screenshot' | 'logo' | 'motif';
+  coverType?: 'screenshot' | 'logo' | 'motif' | 'poster';
   seed?: string; // constellation seed (defaults to title)
 }
 
@@ -30,9 +30,23 @@ const coverSeed = seed ?? title;
   data-animate
   class="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-raised transition-colors hover:border-primary/30"
 >
-  <!-- Cover (one of three modes; every mode leads with the same window bar so
-       the grid reads consistently regardless of image availability) -->
-  {coverType === 'screenshot' && cover ? (
+  <!-- Cover (one of four modes; the screenshot/logo/motif modes lead with the
+       same window bar so the grid reads consistently, while a poster is full-bleed
+       illustrative key-art with no chrome) -->
+  {coverType === 'poster' && cover ? (
+    <div class="aspect-[16/9] overflow-hidden border-b border-border">
+      <Image
+        src={cover}
+        alt={`${title} poster`}
+        widths={[400, 640]}
+        sizes="(min-width: 640px) 50vw, 100vw"
+        loading="lazy"
+        decoding="async"
+        data-no-zoom
+        class="h-full w-full object-cover object-top"
+      />
+    </div>
+  ) : coverType === 'screenshot' && cover ? (
     <BrowserFrame image={cover} alt={`${title} interface`} label={title} coverFit flush sizes="(min-width: 640px) 50vw, 100vw" />
   ) : (
     <div class="overflow-hidden border-b border-border">

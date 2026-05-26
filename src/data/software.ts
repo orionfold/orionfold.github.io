@@ -10,7 +10,9 @@
 // two donor screenshots imported directly. `coverType` picks how it renders:
 // a framed screenshot, a logo on the constellation motif, or the bare motif.
 export type SoftwareGroup = 'platform' | 'apps' | 'intel' | 'devtools';
-export type CoverType = 'screenshot' | 'logo' | 'motif';
+// 'poster' is a curated witty movie-poster key-art (featured-imagery skill),
+// rendered full-bleed (no BrowserFrame) since it is illustrative art, not a UI.
+export type CoverType = 'screenshot' | 'logo' | 'motif' | 'poster';
 
 export interface SoftwareProduct {
   slug: string;

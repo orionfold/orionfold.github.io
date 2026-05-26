@@ -19,6 +19,16 @@ const patent = models.filter((m) => m.group === 'patent');
 const domain = models.filter((m) => m.group === 'domain');
 const dataset = models.filter((m) => m.group === 'dataset');
 const og = ogMeta('/models/');
+
+// Resolve a model's curated comic cover (a path under src/assets/models/, e.g.
+// "patent-strategist/cover.png") to ImageMetadata via a glob. Absent → the card
+// falls back to its seeded constellation motif. Mirrors software.astro.
+const modelImgs = import.meta.glob<{ default: ImageMetadata }>('../assets/models/**/*.{png,jpg,jpeg}', { eager: true });
+function resolveCover(key?: string): ImageMetadata | undefined {
+  if (!key) return undefined;
+  const entry = Object.entries(modelImgs).find(([path]) => path.endsWith('/' + key));
+  return entry?.[1]?.default;
+}
 ---
 <Layout
   title="Models · Orionfold"
@@ -57,7 +67,7 @@ const og = ogMeta('/models/');
           </p>
         </div>
         <div data-animate-stagger class="grid gap-6 sm:grid-cols-2">
-          {patent.map((m) => <ModelCard {...m} />)}
+          {patent.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
         </div>
       </div>
     </section>
@@ -72,7 +82,7 @@ const og = ogMeta('/models/');
           </p>
         </div>
         <div data-animate-stagger class="grid gap-6 sm:grid-cols-2">
-          {domain.map((m) => <ModelCard {...m} />)}
+          {domain.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
         </div>
       </div>
     </section>
@@ -87,7 +97,7 @@ const og = ogMeta('/models/');
           </p>
         </div>
         <div class="mx-auto grid max-w-2xl gap-6">
-          {dataset.map((m) => <ModelCard {...m} />)}
+          {dataset.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
         </div>
       </div>
     </section>

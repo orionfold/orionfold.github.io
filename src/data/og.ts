@@ -7,7 +7,7 @@
 // specs/2026-05-25-og-and-featured-image-pipeline.md.
 
 export interface OgPage {
-  /** Output file is /og/<slug>.png */
+  /** Output file is /og/<slug>.jpg */
   slug: string;
   /** Small uppercase label at the top of the card. */
   eyebrow: string;
@@ -76,7 +76,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   },
 };
 
-export const ogPath = (slug: string) => `/og/${slug}.png`;
+export const ogPath = (slug: string) => `/og/${slug}.jpg`;
 export const storyOgSlug = (id: string) => `story-${id}`;
 
 /** Image path + alt for a static route, used by page templates. */

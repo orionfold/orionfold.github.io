@@ -20,7 +20,9 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 const { title, date, summary, tags, hero, heroAlt } = post.data;
 
-const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+// timeZone:'UTC' so a date-only frontmatter value (parsed as UTC midnight) shows
+// the authored day, not the day before in a behind-UTC build/local timezone.
+const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
 const dateIso = date.toISOString().slice(0, 10);
 ---
 <Layout
@@ -54,7 +56,7 @@ const dateIso = date.toISOString().slice(0, 10);
           loading="eager"
           decoding="async"
           data-no-zoom
-          class="mt-8 aspect-[1200/630] w-full rounded-xl border border-border object-cover"
+          class="mt-8 aspect-[16/9] w-full rounded-xl border border-border object-cover"
         />
       )}
 

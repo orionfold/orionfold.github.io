@@ -3,6 +3,8 @@ title: Why we folded Orionfold
 date: 2026-05-20
 summary: The short story of why we started, and what we want to build with you.
 tags: [Studio]
+hero: ../../assets/story/why-we-folded-orionfold/hero.png
+heroAlt: A wide starry comic. A builder smiles at his desk at night while a huge sky of stars and AI folds down, like paper, into one small glowing gold AI computer in front of him. Fold it down. Open, private, yours.
 ---
 
 We started Orionfold with one belief. AI is changing how work gets done, and the people who learn to build with it will pull ahead.

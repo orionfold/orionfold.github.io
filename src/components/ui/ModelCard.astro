@@ -1,10 +1,16 @@
 ---
-// Model card (S8) — a showcase card for the /models/ grid. Unlike /software/'s
-// ProductCard (pitch + label pills), a model's value is its metadata, so this
-// card pairs a plain tagline with a small <dl> spec list (base model, format,
-// recommended build, license) and an off-site link to its HuggingFace repo.
+// Model card (S8; cover added I-series) — a showcase card for the /models/ grid.
+// Unlike /software/'s ProductCard (pitch + label pills), a model's value is its
+// metadata, so this card pairs a plain tagline with a small <dl> spec list (base
+// model, format, recommended build, license) and an off-site link to its
+// HuggingFace repo. It now leads with a 16:9 cover so the grid reads visually:
+// a curated comic cover if the model has one, else a full-bleed constellation
+// motif seeded off the title (same present-or-fallback pattern as StoryCard).
 // Built from src/data/models.ts; tagline reads grade 3–5 (memory
 // `website-copy-style`). data-animate rides the scroll-reveal.
+import { Image } from 'astro:assets';
+import ConstellationCover from './ConstellationCover.astro';
+
 interface Props {
   domain: string;
   title: string;
@@ -16,9 +22,13 @@ interface Props {
   license: string;
   href: string;
   ctaText?: string;
+  cover?: ImageMetadata; // curated comic cover (I-series); falls back to constellation
+  coverAlt?: string;
+  seed?: string; // constellation seed (defaults to title)
 }
 
-const { domain, title, variant, tagline, base, format, recommended, license, href, ctaText = 'Download on HuggingFace' } = Astro.props;
+const { domain, title, variant, tagline, base, format, recommended, license, href, ctaText = 'Download on HuggingFace', cover, coverAlt, seed } = Astro.props;
+const coverSeed = seed ?? title;
 
 // Build the spec rows from whichever facts the entry carries.
 const specs = [
@@ -30,33 +40,55 @@ const specs = [
 ---
 <article
   data-animate
-  class="flex flex-col rounded-2xl border border-border bg-surface-raised p-7 transition-colors hover:border-primary/30"
+  class="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface-raised transition-colors hover:border-primary/30"
 >
-  <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{domain}</span>
-  <h3 class="mt-3 font-display text-xl font-bold leading-tight">
-    {title}
-    {variant && <span class="mt-1 block font-mono text-xs font-normal tracking-wider text-text-muted">{variant}</span>}
-  </h3>
-  <p class="mt-3 flex-1 leading-relaxed text-text-muted">{tagline}</p>
+  <!-- Cover (curated comic if present, else seeded constellation motif) -->
+  {cover ? (
+    <div class="aspect-[16/9] overflow-hidden border-b border-border">
+      <Image
+        src={cover}
+        alt={coverAlt ?? `${title} comic cover`}
+        widths={[400, 640]}
+        sizes="(min-width: 640px) 50vw, 100vw"
+        loading="lazy"
+        decoding="async"
+        data-no-zoom
+        class="h-full w-full object-cover object-top"
+      />
+    </div>
+  ) : (
+    <div class="border-b border-border">
+      <ConstellationCover seed={coverSeed} rounded="rounded-none" />
+    </div>
+  )}
 
-  <dl class="mt-5 space-y-1.5 border-t border-border pt-4 font-mono text-[11px] leading-relaxed">
-    {specs.map(({ k, v }) => (
-      <div class="flex gap-3">
-        <dt class="w-[4.5rem] shrink-0 uppercase tracking-wider text-text-muted">{k}</dt>
-        <dd class="break-all text-text">{v}</dd>
-      </div>
-    ))}
-  </dl>
+  <div class="flex flex-1 flex-col p-7">
+    <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{domain}</span>
+    <h3 class="mt-3 font-display text-xl font-bold leading-tight">
+      {title}
+      {variant && <span class="mt-1 block font-mono text-xs font-normal tracking-wider text-text-muted">{variant}</span>}
+    </h3>
+    <p class="mt-3 flex-1 leading-relaxed text-text-muted">{tagline}</p>
 
-  <a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    class="mt-6 inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
-  >
-    {ctaText}
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M7 17L17 7M7 7h10v10" />
-    </svg>
-  </a>
+    <dl class="mt-5 space-y-1.5 border-t border-border pt-4 font-mono text-[11px] leading-relaxed">
+      {specs.map(({ k, v }) => (
+        <div class="flex gap-3">
+          <dt class="w-[4.5rem] shrink-0 uppercase tracking-wider text-text-muted">{k}</dt>
+          <dd class="break-all text-text">{v}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-6 inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
+    >
+      {ctaText}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 17L17 7M7 7h10v10" />
+      </svg>
+    </a>
+  </div>
 </article>

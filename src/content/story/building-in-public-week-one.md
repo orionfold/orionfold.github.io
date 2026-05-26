@@ -3,6 +3,8 @@ title: Building in public, week one
 date: 2026-05-22
 summary: What we shipped, what broke, and what we learned in the first week.
 tags: [Build log]
+hero: ../../assets/story/building-in-public-week-one/hero.png
+heroAlt: A four-panel daytime comic. A builder and a friend put up a new site, spot some broken links, fix them by hand at a laptop, and end up smiling by the small gold AI computer. Small and clear wins.
 ---
 
 Week one is done. Here is the honest log.

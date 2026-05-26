@@ -3,6 +3,8 @@ title: Shipping models from one small desktop
 date: 2026-05-24
 summary: A look at how we train and share AI models on a single Spark desktop.
 tags: [Models]
+hero: ../../assets/story/shipping-models-from-one-small-desktop/hero.png
+heroAlt: A two-panel before and after comic. On the left, a tiny worried builder stands in a huge cold server room under the words it used to need a room of servers. On the right, the same builder sits happy at a small desk with one gold AI computer sending up a sky of free model icons, under the words now it fits on one desk.
 ---
 
 People ask how a small studio ships eight AI models. The answer is one desktop and a tight loop.

@@ -16,6 +16,11 @@ export interface Model {
   license: string;
   href: string; // real HuggingFace repo
   ctaText?: string;
+  // Curated comic cover (featured-imagery skill). A filename under
+  // src/assets/models/<slug>/, resolved to ImageMetadata by a glob in
+  // models.astro. When absent the card falls back to the constellation motif.
+  cover?: string;
+  coverAlt?: string; // grade 3-5, no em-dashes (website-copy-style)
 }
 
 const HF = 'https://huggingface.co/Orionfold';

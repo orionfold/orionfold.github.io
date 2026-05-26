@@ -23,7 +23,9 @@ interface Props {
 }
 
 const { href, title, date, tag, summary, seed, cover, coverAlt, class: className = '', animate = false } = Astro.props;
-const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+// timeZone:'UTC' so a date-only value (UTC midnight) shows the authored day, not
+// the day before in a behind-UTC timezone.
+const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
 const dateIso = date.toISOString().slice(0, 10);
 const coverSeed = seed ?? href;
 ---

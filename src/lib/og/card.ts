@@ -1,7 +1,9 @@
-// OG card renderer (I-series). Composes a 1200x630 social-share PNG:
-//   constellation background (resvg-rasterized SVG)  ->  Satori text overlay  ->  resvg PNG.
-// Satori does the typography (real Geist shaping + flexbox wrapping); resvg
-// rasterizes. See specs/2026-05-25-og-and-featured-image-pipeline.md.
+// OG card renderer (I-series). Composes a 1200x630 social-share JPG:
+//   constellation background (resvg-rasterized SVG)  ->  Satori text overlay  ->
+//   resvg PNG  ->  sharp JPG. Satori does the typography (real Geist shaping +
+//   flexbox wrapping); resvg rasterizes; sharp re-encodes to JPG so detailed
+//   photographic hero backgrounds stay well under the social-card weight budget
+//   (spec §8 targets ~100-300KB). See specs/2026-05-25-og-and-featured-image-pipeline.md.
 //
 // Satori cannot read the site's .woff2 fonts, so we load the TTFs converted from
 // the exact same Geist weights (src/lib/og/fonts/, a committed build input).
@@ -10,6 +12,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
+import sharp from 'sharp';
 import { constellationSvg } from './constellation';
 
 const ROOT = process.cwd();
@@ -269,12 +272,18 @@ function cardTree(opts: CardOptions): El {
   );
 }
 
-/** Render a 1200x630 OG PNG for the given card options. */
+/**
+ * Render a 1200x630 OG card for the given card options as a JPG buffer.
+ * resvg rasterizes the Satori SVG to PNG, then sharp re-encodes to mozjpeg —
+ * the constellation/screenshot cards stay crisp and the photographic hero cards
+ * drop from ~1MB PNG to ~150-250KB. Quality 90 keeps the overlaid Geist text sharp.
+ */
 export async function renderOgCard(opts: CardOptions): Promise<Buffer> {
   const svg = await satori(cardTree(opts) as unknown as Parameters<typeof satori>[0], {
     width: 1200,
     height: 630,
     fonts: FONTS,
   });
-  return Buffer.from(new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng());
+  const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
+  return await sharp(png).jpeg({ quality: 90, mozjpeg: true }).toBuffer();
 }

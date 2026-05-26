@@ -4,12 +4,18 @@ OPS-NOTES.md
 # Local secrets — OPENROUTER_API_KEY etc. (never commit)
 .env.local
 
+# Stripe setup notes — sensitive, local-only (never commit)
+STRIPE-HANDOFF.md
+
 # Planning specs + build spine (local-only docs)
 specs/
 HANDOFF.md
 
 # SEO/AEO audit reports — may contain Search Console / Analytics figures (local-only)
 audit-reports/
+
+# Brainstorm / visual-companion scratch (mockups, generated proofs)
+.superpowers/
 
 # Astro / Node build artifacts
 node_modules/

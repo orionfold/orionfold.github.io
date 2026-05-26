@@ -1,8 +1,8 @@
 // Per-page OG image endpoint (I-series). A static endpoint: getStaticPaths
 // enumerates the static route map (src/data/og.ts) plus every `story` post, and
-// each GET renders a 1200x630 PNG. In Astro's static build these materialize as
-// dist/og/<slug>.png (dist/ is gitignored, so the PNGs are CI-only). Page
-// templates point og:image at /og/<slug>.png via ogMeta()/storyOgSlug().
+// each GET renders a 1200x630 JPG (mozjpeg, q90 - see card.ts). In Astro's static
+// build these materialize as dist/og/<slug>.jpg (dist/ is gitignored, so they are
+// CI-only). Page templates point og:image at /og/<slug>.jpg via ogMeta()/storyOgSlug().
 import type { APIRoute, GetStaticPaths } from 'astro';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -55,10 +55,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const GET: APIRoute = async ({ props }) => {
-  const png = await renderOgCard(props as CardOptions);
-  return new Response(new Uint8Array(png), {
+  const jpg = await renderOgCard(props as CardOptions);
+  return new Response(new Uint8Array(jpg), {
     headers: {
-      'Content-Type': 'image/png',
+      'Content-Type': 'image/jpeg',
       'Cache-Control': 'public, max-age=31536000, immutable',
     },
   });
