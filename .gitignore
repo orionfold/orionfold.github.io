@@ -21,6 +21,9 @@ audit-reports/
 # Brainstorm / visual-companion scratch (mockups, generated proofs)
 .superpowers/
 
+# Claude Code project config + local skills (local-only tooling, never commit)
+.claude/
+
 # Astro / Node build artifacts
 node_modules/
 dist/
