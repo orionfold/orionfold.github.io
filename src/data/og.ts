@@ -93,6 +93,12 @@ export const OG_PAGES: Record<string, OgPage> = {
 export const ogPath = (slug: string) => `/og/${slug}.jpg`;
 export const storyOgSlug = (id: string) => `story-${id}`;
 
+// OG card slug for a product detail page (P8). Namespaced by type so a model
+// slug (slugify(title)) can't collide with a software/book slug, and so none of
+// these collide with the static-page slugs above or with story-<id>. The detail
+// route emits /og/<type>-<slug>.jpg via the same [slug].jpg.ts pipeline.
+export const productOgSlug = (type: string, slug: string) => `${type}-${slug}`;
+
 /** Image path + alt for a static route, used by page templates. */
 export function ogMeta(route: string): { image: string; alt: string } {
   const p = OG_PAGES[route];

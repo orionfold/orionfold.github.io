@@ -22,6 +22,8 @@ import SponsorBlock from '../components/product/SponsorBlock.astro';
 import RelatedRail from '../components/product/RelatedRail.astro';
 import ResourcesFooter from '../components/product/ResourcesFooter.astro';
 import { getCatalogItem, formatUsd } from '../data/commerce';
+import { SITE, PERSON, PUBLISHER } from '../data/seo';
+import { ogPath, productOgSlug } from '../data/og';
 import type { ProductView, RelatedItem } from '../lib/product/detail';
 import type { TrustStat } from '../lib/trust/source';
 import type { CollectionEntry } from 'astro:content';
@@ -66,8 +68,74 @@ const resourceLinks: { label: string; href: string; kind: ResourceKind }[] = [
   ...(detail.outbound ?? []),
   ...externalRelated.map((r) => ({ label: r.title, href: r.href, kind: relatedResourceKind(r.href) })),
 ].filter((l, i, all) => all.findIndex((x) => x.href === l.href) === i);
+
+// SEO / AEO (P8, spec §5.8). Per-product OG card (the P8 OG endpoint renders one
+// at /og/<type>-<slug>.jpg) plus structured data: a Book + Offer for the paid
+// books, a Product for the free/open software and models, and a BreadcrumbList
+// (Home -> listing -> here) on every page. Layout still ships the global
+// Organization node; these are the page-specific schemas it appends.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageRel = ogPath(productOgSlug(view.type, view.slug));
+const ogImageAbs = `${SITE.url}${ogImageRel}`;
+
+const LISTING: Record<ProductView['type'], { base: string; label: string }> = {
+  software: { base: 'software', label: 'Software' },
+  model: { base: 'models', label: 'Models' },
+  book: { base: 'books', label: 'Books' },
+};
+const listing = LISTING[view.type];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: listing.label, item: `${SITE.url}/${listing.base}/` },
+    { '@type': 'ListItem', position: 3, name: view.title, item: canonical },
+  ],
+};
+
+const productSchema =
+  view.cta === 'buy' && item
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Book',
+        name: view.title,
+        description: view.valueProp,
+        url: canonical,
+        image: ogImageAbs,
+        inLanguage: 'en',
+        author: PERSON,
+        publisher: PUBLISHER,
+        offers: {
+          '@type': 'Offer',
+          price: (item.amount / 100).toFixed(2),
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: canonical,
+          category: 'PDF + EPUB download',
+        },
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: view.title,
+        description: view.valueProp,
+        url: canonical,
+        image: ogImageAbs,
+        category: view.typeTag,
+        brand: { '@type': 'Brand', name: 'Orionfold' },
+      };
+
+const jsonLd = [productSchema, breadcrumbSchema];
 ---
-<Layout title={`${view.title} · Orionfold`} description={view.valueProp}>
+<Layout
+  title={`${view.title} · Orionfold`}
+  description={view.valueProp}
+  ogImage={ogImageRel}
+  ogImageAlt={detail.heroAlt ?? view.valueProp}
+  jsonLd={jsonLd}
+>
   <Nav />
   <main class="pb-24">
     <HeroDetail view={view} hero={hero} heroAlt={detail.heroAlt} chips={detail.chips} priceLabel={priceLabel} />
