@@ -59,6 +59,7 @@ const P =
         waveStops: ['oklch(0.88 0.13 95)', 'oklch(0.76 0.15 78)', 'oklch(0.6 0.13 58)'],
         fill: 'oklch(0.78 0.14 80)',
         dot: 'oklch(0.84 0.15 88)',
+        starAccent: 'oklch(0.95 0.09 92)',
         neb: ['oklch(0.95 0.05 92 / 0.85)', 'oklch(0.9 0.1 74 / 0.5)', 'oklch(0.93 0.07 100 / 0.45)'],
       }
     : {
@@ -66,6 +67,7 @@ const P =
         waveStops: ['oklch(0.64 0.15 205)', 'oklch(0.55 0.18 260)', 'oklch(0.5 0.16 292)'],
         fill: 'oklch(0.55 0.18 262)',
         dot: 'oklch(0.62 0.14 215)',
+        starAccent: 'oklch(0.7 0.13 215)',
         neb: ['oklch(0.96 0.03 250 / 0.7)', 'oklch(0.93 0.05 255 / 0.4)', 'oklch(0.94 0.04 230 / 0.4)'],
       };
 
@@ -120,26 +122,60 @@ const ridingDots = frontWave
     })
   : [];
 
-// ── parallax starfield layers (radial-gradient tiles, drift via bg-position) ──
-function starBg(n: number, tile: number): string {
-  return Array.from({ length: n }, () => {
-    const x = Math.round(rnd() * tile);
-    const y = Math.round(rnd() * tile);
-    const r = rnd() > 0.74 ? 1.6 : 1;
-    return `radial-gradient(${r}px ${r}px at ${x}px ${y}px, ${P.star}, transparent)`;
-  }).join(', ');
+// ── constellation starfield — individual stars (NOT a repeating tile, which
+// read as a uniform bolted-on texture): varied sizes, a soft glow halo on the
+// bright ones, each twinkling on its own clock, with faint lines linking nearby
+// bright stars (the book-cover neural/constellation look). The whole field sways
+// gently for parallax life; x runs past both edges so the sway never opens a gap
+// (the .starwave container clips). All deterministic via the shared PRNG. ──
+interface Star {
+  x: number;
+  y: number;
+  r: number;
+  bright: boolean;
+  col: string;
+  op: number;
+  tw: number;
+  dly: number;
 }
-const starLayers = (isBand
-  ? [
-      { tile: 230, n: 9, op: 0.5, dur: 150, dx: -230, dy: -70, tw: 7 },
-      { tile: 175, n: 8, op: 0.6, dur: 100, dx: -175, dy: -55, tw: 5.5 },
-      { tile: 130, n: 7, op: 0.7, dur: 64, dx: -130, dy: -40, tw: 4 },
-    ]
-  : [
-      { tile: 210, n: 6, op: 0.45, dur: 120, dx: -210, dy: -36, tw: 6 },
-      { tile: 140, n: 6, op: 0.6, dur: 70, dx: -140, dy: -28, tw: 4.5 },
-    ]
-).map((l) => ({ ...l, bg: starBg(l.n, l.tile) }));
+const STAR_N = isBand ? 64 : 34;
+const stars: Star[] = Array.from({ length: STAR_N }, () => {
+  const bright = rnd() > 0.84;
+  const accent = rnd() > 0.82; // a few cyan (indigo) / warm-white (gold) accents
+  return {
+    x: +(-15 + rnd() * (W + 30)).toFixed(1),
+    y: +(rnd() * H * 0.82).toFixed(1), // sky: above the lower wave crests
+    r: +(bright ? 1.8 + rnd() * 1.1 : 0.5 + rnd() * 0.9).toFixed(2),
+    bright,
+    col: accent ? P.starAccent : P.star,
+    op: +(bright ? 0.92 : 0.38 + rnd() * 0.34).toFixed(2),
+    tw: +(2.4 + rnd() * 4).toFixed(2),
+    dly: +(rnd() * 5).toFixed(2),
+  };
+});
+// link each bright star to its nearest bright neighbor within reach (dedup pairs)
+const brightStars = stars.filter((s) => s.bright);
+const linkSeen = new Set<string>();
+const links = brightStars.flatMap((s) => {
+  let best = -1;
+  let bd = Infinity;
+  brightStars.forEach((t, j) => {
+    if (t === s) return;
+    const d = Math.hypot(s.x - t.x, s.y - t.y);
+    if (d < bd) {
+      bd = d;
+      best = j;
+    }
+  });
+  if (best < 0 || bd >= W * 0.17) return [];
+  const t = brightStars[best];
+  const key = [stars.indexOf(s), stars.indexOf(t)].sort((a, b) => a - b).join('-');
+  if (linkSeen.has(key)) return [];
+  linkSeen.add(key);
+  return [{ x1: s.x, y1: s.y, x2: t.x, y2: t.y, dly: +(rnd() * 3).toFixed(1) }];
+});
+const fieldSway = +(W * 0.008).toFixed(1);
+const fieldDur = isBand ? 26 : 20;
 ---
 <div class:list={['starwave relative w-full overflow-hidden', className]} style={`height:${H}px`} aria-hidden="true">
   <!-- nebula glow anchored ON the wave zone (~70% y) so it fades to white both
@@ -149,13 +185,42 @@ const starLayers = (isBand
     style={`background: radial-gradient(130% 78% at 50% 72%, ${P.neb[0]}, transparent 62%), radial-gradient(85% 66% at 26% 80%, ${P.neb[1]}, transparent 54%), radial-gradient(90% 66% at 76% 74%, ${P.neb[2]}, transparent 54%);`}
   ></div>
 
-  <!-- parallax starfield -->
-  {starLayers.map((l) => (
-    <div
-      class="sw-stars absolute inset-0"
-      style={`background-image:${l.bg}; background-size:${l.tile}px ${l.tile}px; background-repeat:repeat; --op:${l.op}; --dur:${l.dur}s; --dx:${l.dx}px; --dy:${l.dy}px; --tw:${l.tw}s;`}
-    ></div>
-  ))}
+  <!-- constellation starfield (sits behind the waves) -->
+  <svg
+    class="sw-starfield absolute inset-0 h-full w-full"
+    viewBox={`0 0 ${W} ${H}`}
+    preserveAspectRatio="none"
+    fill="none"
+    aria-hidden="true"
+  >
+    <g class="sw-field" style={`--sway:${fieldSway}px; --dur:${fieldDur}s;`}>
+      {links.map((l) => (
+        <line
+          class="sw-link"
+          x1={l.x1}
+          y1={l.y1}
+          x2={l.x2}
+          y2={l.y2}
+          stroke={P.star}
+          stroke-width="0.5"
+          style={`--dur:${fieldDur}s; --dly:${l.dly}s;`}
+        ></line>
+      ))}
+      {stars.map((s) => (
+        <Fragment>
+          {s.bright && <circle cx={s.x} cy={s.y} r={(s.r * 3.4).toFixed(1)} fill={s.col} opacity="0.16"></circle>}
+          <circle
+            class="sw-star"
+            cx={s.x}
+            cy={s.y}
+            r={s.r}
+            fill={s.col}
+            style={`--o:${s.op}; --tw:${s.tw}s; --dly:${s.dly}s;`}
+          ></circle>
+        </Fragment>
+      ))}
+    </g>
+  </svg>
 
   <!-- undulating waves -->
   <svg class="absolute inset-0 h-full w-full" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" fill="none">
@@ -226,20 +291,47 @@ const starLayers = (isBand
     }
   }
 
-  /* Parallax drift (seamless: one tile via background-position) + twinkle. */
-  .sw-stars {
-    opacity: var(--op);
-    will-change: background-position, opacity;
-    animation:
-      sw-drift var(--dur) linear infinite,
-      sw-twinkle var(--tw) ease-in-out infinite;
+  /* Constellation field: the whole field sways gently (parallax), each star
+     twinkles on its own clock, links pulse faintly. */
+  .sw-field {
+    will-change: transform;
+    animation: sw-fieldsway var(--dur) ease-in-out infinite;
   }
-  @keyframes sw-drift {
-    from {
-      background-position: 0 0;
+  .sw-star {
+    opacity: var(--o);
+    will-change: opacity;
+    animation: sw-startwinkle var(--tw) ease-in-out var(--dly) infinite;
+  }
+  .sw-link {
+    opacity: 0.12;
+    will-change: opacity;
+    animation: sw-linkpulse var(--dur) ease-in-out var(--dly) infinite;
+  }
+  @keyframes sw-fieldsway {
+    0%,
+    100% {
+      transform: translateX(0);
     }
-    to {
-      background-position: var(--dx) var(--dy);
+    50% {
+      transform: translateX(calc(var(--sway) * -1));
+    }
+  }
+  @keyframes sw-startwinkle {
+    0%,
+    100% {
+      opacity: var(--o);
+    }
+    50% {
+      opacity: calc(var(--o) * 0.32);
+    }
+  }
+  @keyframes sw-linkpulse {
+    0%,
+    100% {
+      opacity: 0.06;
+    }
+    50% {
+      opacity: 0.2;
     }
   }
   @keyframes sw-twinkle {
@@ -260,7 +352,9 @@ const starLayers = (isBand
   /* Respect the user: freeze to a still, still-visible state. */
   @media (prefers-reduced-motion: reduce) {
     .sw-wave,
-    .sw-stars,
+    .sw-field,
+    .sw-star,
+    .sw-link,
     .sw-dot {
       animation: none;
     }
