@@ -1,0 +1,57 @@
+---
+// Sticky Buy/Sponsor bar (P1, spec §4 "Apple sticky CTA"). A compact bottom bar
+// that fades in once the hero CTA scrolls out of view, so the conversion action
+// is always one tap away. Progressive enhancement: hidden by default, revealed by
+// an IntersectionObserver watching the #hero-cta-sentinel; reduced-motion just
+// snaps it in. The Buy variant reuses data-checkout (wired by the layout); the
+// Sponsor variant anchors to #sponsor.
+import type { ProductView } from '../../lib/product/detail';
+
+interface Props {
+  view: ProductView;
+  priceLabel?: string;
+}
+const { view, priceLabel } = Astro.props;
+const buyLabel = priceLabel ? `Buy · ${priceLabel}` : 'Buy now';
+---
+<div
+  id="sticky-cta"
+  class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-border bg-surface/95 backdrop-blur transition-transform duration-300 [&.is-visible]:translate-y-0 motion-reduce:transition-none"
+>
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
+    <p class="truncate font-display text-sm font-bold">{view.title}</p>
+    {view.cta === 'buy' ? (
+      <button
+        type="button"
+        data-checkout={view.lookupKey}
+        class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-mono text-xs tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {buyLabel}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </button>
+    ) : (
+      <a
+        href="#sponsor"
+        class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-mono text-xs tracking-wider text-white transition-colors hover:bg-primary/90"
+      >
+        Sponsor
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </a>
+    )}
+  </div>
+</div>
+
+<script>
+  function initStickyCta() {
+    const bar = document.getElementById('sticky-cta');
+    const sentinel = document.getElementById('hero-cta-sentinel');
+    if (!bar || !sentinel) return;
+    const io = new IntersectionObserver(
+      ([entry]) => bar.classList.toggle('is-visible', !entry.isIntersecting),
+      { rootMargin: '0px 0px -80% 0px' },
+    );
+    io.observe(sentinel);
+  }
+  initStickyCta();
+  document.addEventListener('astro:after-swap', initStickyCta);
+</script>

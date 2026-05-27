@@ -1,0 +1,24 @@
+---
+// Book detail route (P-series, spec §5.2). Emits /books/<slug>/ only for slugs
+// that have a productDetail entry. Books carry a lookupKey, so ProductDetail
+// renders the BuyBox conversion point (vs SponsorBlock for software/models). The
+// hero comes from the entry's own `hero` (the dedicated book cover wiring lands
+// with the DGX book page in P5; until then set `hero` in frontmatter).
+import { render } from 'astro:content';
+import ProductDetail from '../../../layouts/ProductDetail.astro';
+import { getProductPaths, toProductView, resolveRelated } from '../../../lib/product/detail';
+
+export async function getStaticPaths() {
+  return getProductPaths('book');
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const view = toProductView('book', entry);
+const related = await resolveRelated(entry);
+const hero = entry.data.hero;
+const hasBody = Boolean(entry.body && entry.body.trim());
+---
+<ProductDetail view={view} detail={entry.data} hero={hero} related={related} hasBody={hasBody}>
+  <Content />
+</ProductDetail>

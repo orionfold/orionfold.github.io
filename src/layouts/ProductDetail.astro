@@ -1,0 +1,84 @@
+---
+// Adaptive product-detail engine (P1, spec §5.3). One layout drives all three
+// types: a rich product gets the full Apple-style scroll, a thin one gets a tight
+// honest page, because every section below renders ONLY when its data is present.
+// The three routes (/software|/models|/books/[slug]/) join the .ts SSOT record to
+// a productDetail entry (src/lib/product/detail.ts), then hand the normalized
+// ProductView + the raw detail data + resolved hero/related here, with the
+// rendered markdown body in the default slot. Wraps the shared Layout/Nav/Footer.
+import Layout from './Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import HeroDetail from '../components/product/HeroDetail.astro';
+import StickyCtaBar from '../components/product/StickyCtaBar.astro';
+import CodeTabs from '../components/product/CodeTabs.astro';
+import BookContents from '../components/product/BookContents.astro';
+import Gallery from '../components/product/Gallery.astro';
+import SpecTable from '../components/product/SpecTable.astro';
+import BenchmarkTable from '../components/product/BenchmarkTable.astro';
+import TrustBlock from '../components/product/TrustBlock.astro';
+import BuyBox from '../components/product/BuyBox.astro';
+import SponsorBlock from '../components/product/SponsorBlock.astro';
+import RelatedRail from '../components/product/RelatedRail.astro';
+import ResourcesFooter from '../components/product/ResourcesFooter.astro';
+import { getCatalogItem, formatUsd } from '../data/commerce';
+import type { ProductView, RelatedItem } from '../lib/product/detail';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  view: ProductView;
+  detail: CollectionEntry<'productDetail'>['data'];
+  hero?: ImageMetadata;
+  related: { relatedModels: RelatedItem[]; relatedBook?: RelatedItem; relatedReading: RelatedItem[] };
+  hasBody: boolean;
+}
+const { view, detail, hero, related, hasBody } = Astro.props;
+
+// Book price (display only; CATALOG is the SSOT) for the hero + sticky CTA.
+const item = view.lookupKey ? getCatalogItem(view.lookupKey) : undefined;
+const priceLabel = item ? formatUsd(item.amount) : undefined;
+---
+<Layout title={`${view.title} · Orionfold`} description={view.valueProp}>
+  <Nav />
+  <main class="pb-24">
+    <HeroDetail view={view} hero={hero} heroAlt={detail.heroAlt} chips={detail.chips} priceLabel={priceLabel} />
+    <StickyCtaBar view={view} priceLabel={priceLabel} />
+
+    {detail.install && <CodeTabs heading="Install" tabs={detail.install} />}
+    {detail.usage && <CodeTabs heading="Use it" tabs={detail.usage} />}
+
+    {detail.chapters && <BookContents chapters={detail.chapters} />}
+
+    {hasBody && (
+      <section class="px-6 py-12">
+        <div data-animate class="story-prose mx-auto max-w-3xl">
+          <slot />
+        </div>
+      </section>
+    )}
+
+    {detail.gallery && <Gallery items={detail.gallery} />}
+
+    {detail.specs && <SpecTable specs={detail.specs} />}
+    {detail.benchmarks && <BenchmarkTable benchmarks={detail.benchmarks} />}
+
+    <TrustBlock testimonials={detail.testimonials} />
+
+    {view.cta === 'buy' ? <BuyBox view={view} /> : <SponsorBlock view={view} />}
+
+    <RelatedRail models={related.relatedModels} book={related.relatedBook} reading={related.relatedReading} />
+
+    {detail.outbound && <ResourcesFooter outbound={detail.outbound} />}
+  </main>
+  <Footer />
+</Layout>
+
+<!-- Wire Buy / Sponsor buttons to hosted Stripe Checkout (C4 pattern). The site
+     holds no Stripe key; this POSTs the lookup key to the edge function and
+     redirects to the returned URL. CORS-fails on localhost by design (L1 tests
+     it live) — a network error surfaces the friendly "Could not connect". -->
+<script>
+  import { wireCheckoutButtons } from '../lib/checkout';
+  wireCheckoutButtons();
+  document.addEventListener('astro:after-swap', () => wireCheckoutButtons());
+</script>

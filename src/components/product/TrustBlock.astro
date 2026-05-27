@@ -1,0 +1,27 @@
+---
+// Trust block (P1, spec §4 "trust for an unknown studio"). For now it renders
+// attributed quotes; the live HF-downloads + book-stats trust figures arrive in
+// P3 (src/lib/trust/source.ts) and slot in here. Renders only when there is
+// something to show (testimonials present).
+interface Props {
+  testimonials?: { quote: string; author: string; role?: string }[];
+}
+const { testimonials = [] } = Astro.props;
+---
+{testimonials.length > 0 && (
+  <section class="px-6 py-12">
+    <div class="mx-auto max-w-3xl">
+      <h2 data-animate class="font-display text-2xl font-bold">What people say</h2>
+      <div data-animate-stagger class="mt-6 grid gap-5 sm:grid-cols-2">
+        {testimonials.map((t) => (
+          <figure data-animate class="rounded-xl border border-border bg-surface-raised p-5">
+            <blockquote class="text-text">“{t.quote}”</blockquote>
+            <figcaption class="mt-4 font-mono text-xs tracking-wider text-text-muted">
+              {t.author}{t.role && <span class="text-text-muted/70"> · {t.role}</span>}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

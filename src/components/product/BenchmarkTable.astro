@@ -1,0 +1,42 @@
+---
+// Benchmark table (P1, spec §4). For models: the accuracy/throughput/latency
+// numbers from the HF card or project-stats.json, rendered on-page so the proof
+// is in front of the reader. A simple responsive table; renders only when
+// `benchmarks` is present.
+interface Props {
+  benchmarks: { columns: string[]; rows: string[][] };
+}
+const { benchmarks } = Astro.props;
+const { columns, rows } = benchmarks;
+---
+{rows.length > 0 && (
+  <section class="px-6 py-12">
+    <div data-animate class="mx-auto max-w-3xl">
+      <h2 class="font-display text-2xl font-bold">Benchmarks</h2>
+      <div class="mt-5 overflow-x-auto rounded-xl border border-border bg-surface-raised">
+        <table class="w-full border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-border">
+              {columns.map((col, i) => (
+                <th class:list={['px-4 py-3 font-mono text-[11px] uppercase tracking-wider text-text-muted', i === 0 ? 'text-left' : 'text-right']}>
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr class="border-b border-border last:border-0">
+                {row.map((cell, i) => (
+                  <td class:list={['px-4 py-3', i === 0 ? 'text-left font-medium text-text' : 'text-right text-text-muted']}>
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+)}

@@ -1,0 +1,38 @@
+---
+// Gallery (P1, spec §4/§5.5). Real product screenshots, reused DGX figures, or
+// posters shown on-page. Items carry resolved ImageMetadata (the productDetail
+// schema uses image() so each gets WebP/AVIF + responsive sizes). data-no-zoom
+// opts out of the global main-img hover-zoom (covers/figures look wrong zoomed).
+import { Image } from 'astro:assets';
+
+interface Props {
+  items: { src: ImageMetadata; alt: string; caption?: string }[];
+}
+const { items } = Astro.props;
+---
+{items.length > 0 && (
+  <section class="px-6 py-12">
+    <div class="mx-auto max-w-5xl">
+      <h2 data-animate class="font-display text-2xl font-bold">A closer look</h2>
+      <div data-animate-stagger class="mt-6 grid gap-5 sm:grid-cols-2">
+        {items.map((item) => (
+          <figure data-animate class="overflow-hidden rounded-xl border border-border bg-surface-raised">
+            <Image
+              src={item.src}
+              alt={item.alt}
+              widths={[400, 768]}
+              sizes="(min-width: 640px) 24rem, 100vw"
+              loading="lazy"
+              decoding="async"
+              data-no-zoom
+              class="aspect-video w-full object-cover"
+            />
+            {item.caption && (
+              <figcaption class="border-t border-border px-4 py-2.5 text-sm text-text-muted">{item.caption}</figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

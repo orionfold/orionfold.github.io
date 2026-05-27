@@ -1,0 +1,38 @@
+---
+// Resources footer (P1, spec §4 "demote outbound"). The off-site links (GitHub,
+// HuggingFace, docs, the product site) live here, AFTER the conversion point, as
+// quiet ghost buttons that open in a new tab. So the page reads "decide here,
+// then go get the code/weights", not "leave immediately". Renders only when
+// `outbound` is present.
+interface Props {
+  outbound: { label: string; href: string; kind: 'github' | 'huggingface' | 'docs' | 'site' }[];
+}
+const { outbound } = Astro.props;
+const KIND_LABEL: Record<string, string> = {
+  github: 'Code',
+  huggingface: 'Weights',
+  docs: 'Docs',
+  site: 'Site',
+};
+---
+{outbound.length > 0 && (
+  <section class="border-t border-border px-6 py-12">
+    <div class="mx-auto max-w-5xl">
+      <h2 data-animate class="font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">Resources</h2>
+      <div data-animate class="mt-4 flex flex-wrap gap-3" style="transition-delay: 60ms">
+        {outbound.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-raised px-4 py-2.5 text-sm transition-colors hover:border-primary/40 hover:text-primary"
+          >
+            <span class="font-mono text-[10px] uppercase tracking-wider text-text-muted">{KIND_LABEL[link.kind]}</span>
+            <span class="font-medium">{link.label}</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

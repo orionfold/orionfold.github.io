@@ -1,0 +1,36 @@
+---
+// Sponsor block (P1, spec §4/§5.4). The software/model conversion point: the
+// four sponsor tiers rendered inline (Gold highlighted), each pre-selected to
+// THIS product via itemId (`${type}:${slug}`) so the checkout metadata records
+// which line of work the sponsorship backs. Reuses the /sponsor SponsorCard +
+// SPONSOR_TIER_DISPLAY so prices/benefits never drift. An enquiry deep-link
+// offers the custom-ask path. Renders for software/models (cta === 'sponsor').
+import SponsorCard from '../ui/SponsorCard.astro';
+import { SPONSOR_TIER_DISPLAY } from '../../data/commerce';
+import type { ProductView } from '../../lib/product/detail';
+
+interface Props {
+  view: ProductView;
+}
+const { view } = Astro.props;
+---
+<section id="sponsor" class="scroll-mt-24 px-6 py-16">
+  <div class="mx-auto max-w-5xl">
+    <div data-animate class="text-center">
+      <h2 class="font-display text-2xl font-bold sm:text-3xl">Sponsor {view.title}</h2>
+      <p class="mx-auto mt-3 max-w-xl text-text-muted">
+        Back this work with a monthly tier. Your support moves your requests up the list, and Gold or Platinum earns a badge on the roadmap item you back.
+      </p>
+    </div>
+
+    <div data-animate-stagger class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {SPONSOR_TIER_DISPLAY.map((tier) => (
+        <SponsorCard tier={tier} itemId={view.roadmapItemId} />
+      ))}
+    </div>
+
+    <p data-animate class="mt-8 text-center text-sm text-text-muted">
+      Need something specific? <a href={`/roadmap/?item=${view.roadmapItemId}`} class="text-primary underline-offset-2 hover:underline">Send an enquiry</a> from the roadmap.
+    </p>
+  </div>
+</section>

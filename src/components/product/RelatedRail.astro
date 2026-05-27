@@ -1,0 +1,53 @@
+---
+// Related rail (P1, spec §4/§5.4). Turns the leak into a funnel: instead of one
+// outbound trapdoor, point readers at related models, the documenting book, and
+// field-notes articles. Each link goes to an on-site detail page when one exists,
+// else to the canonical home (resolveRelated decides). Renders only when there is
+// at least one related item.
+import type { RelatedItem } from '../../lib/product/detail';
+
+interface Props {
+  models?: RelatedItem[];
+  book?: RelatedItem;
+  reading?: RelatedItem[];
+}
+const { models = [], book, reading = [] } = Astro.props;
+
+const groups: { label: string; items: RelatedItem[] }[] = [
+  { label: 'Related models', items: models },
+  { label: 'The book', items: book ? [book] : [] },
+  { label: 'Further reading', items: reading },
+].filter((g) => g.items.length > 0);
+---
+{groups.length > 0 && (
+  <section class="border-t border-border px-6 py-14">
+    <div class="mx-auto max-w-5xl">
+      <h2 data-animate class="font-display text-2xl font-bold">Keep exploring</h2>
+      <div data-animate-stagger class="mt-6 grid gap-6 sm:grid-cols-3">
+        {groups.map((group) => (
+          <div data-animate>
+            <p class="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">{group.label}</p>
+            <ul class="space-y-2">
+              {group.items.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    class="group inline-flex items-start gap-1.5 text-sm font-medium text-text transition-colors hover:text-primary"
+                  >
+                    {item.title}
+                    {item.external ? (
+                      <svg class="mt-0.5 shrink-0 text-text-muted transition-colors group-hover:text-primary" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>
+                    ) : (
+                      <svg class="mt-0.5 shrink-0 text-text-muted transition-colors group-hover:text-primary" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

@@ -1,0 +1,24 @@
+---
+// Spec table (P1, spec §4). A plain label/value list of the hard facts a
+// technical reader scans for (base model, format, license, size, etc.). Mirrors
+// the ModelCard <dl> idiom. Renders only when `specs` is present.
+interface Props {
+  specs: { label: string; value: string }[];
+}
+const { specs } = Astro.props;
+---
+{specs.length > 0 && (
+  <section class="px-6 py-12">
+    <div data-animate class="mx-auto max-w-3xl">
+      <h2 class="font-display text-2xl font-bold">Specs</h2>
+      <dl class="mt-5 divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface-raised">
+        {specs.map((row) => (
+          <div class="flex items-baseline justify-between gap-4 px-4 py-3">
+            <dt class="font-mono text-xs uppercase tracking-wider text-text-muted">{row.label}</dt>
+            <dd class="text-right text-sm font-medium text-text">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+)}

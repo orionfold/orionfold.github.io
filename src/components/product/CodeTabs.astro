@@ -1,0 +1,77 @@
+---
+// Copy-paste code tabs (P1, spec §4 "bring off-site content on-site"). Renders an
+// install or usage block right on the page so the GitHub/HF link becomes "go get
+// the weights/code", not "go learn what this is". No framework: tab buttons + a
+// copy button are wired by one scoped inline script. Each instance is independent
+// (scoped by a unique group id), so install + usage can both appear.
+interface Props {
+  heading: string;
+  tabs: { label: string; lang: string; code: string }[];
+}
+const { heading, tabs } = Astro.props;
+const group = `code-${heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+---
+{tabs.length > 0 && (
+  <section class="px-6 py-12" data-code-group={group}>
+    <div data-animate class="mx-auto max-w-3xl">
+      <h2 class="font-display text-2xl font-bold">{heading}</h2>
+      <div class="mt-5 overflow-hidden rounded-xl border border-border bg-surface-raised">
+        <div class="flex items-center justify-between border-b border-border px-2">
+          <div role="tablist" class="flex gap-1">
+            {tabs.map((tab, i) => (
+              <button
+                type="button"
+                role="tab"
+                data-tab={i}
+                aria-selected={i === 0 ? 'true' : 'false'}
+                class="rounded-t-md px-3 py-2 font-mono text-xs tracking-wider text-text-muted transition-colors aria-selected:text-primary aria-selected:bg-primary/5"
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <button type="button" data-copy class="px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-text-muted transition-colors hover:text-primary">
+            Copy
+          </button>
+        </div>
+        {tabs.map((tab, i) => (
+          <pre data-panel={i} hidden={i !== 0} class="overflow-x-auto px-4 py-4 text-sm leading-relaxed"><code data-lang={tab.lang}>{tab.code}</code></pre>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  function initCodeTabs() {
+    document.querySelectorAll<HTMLElement>('[data-code-group]').forEach((root) => {
+      if (root.dataset.codeWired) return;
+      root.dataset.codeWired = '1';
+      const tabs = root.querySelectorAll<HTMLButtonElement>('[data-tab]');
+      const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
+      const copyBtn = root.querySelector<HTMLButtonElement>('[data-copy]');
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const idx = tab.dataset.tab!;
+          tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === idx)));
+          panels.forEach((p) => (p.hidden = p.dataset.panel !== idx));
+        });
+      });
+
+      copyBtn?.addEventListener('click', async () => {
+        const active = root.querySelector<HTMLElement>('[data-panel]:not([hidden]) code');
+        if (!active) return;
+        try {
+          await navigator.clipboard.writeText(active.textContent ?? '');
+          copyBtn.textContent = 'Copied';
+          setTimeout(() => (copyBtn.textContent = 'Copy'), 1500);
+        } catch {
+          /* clipboard blocked (e.g. insecure context) — leave the label alone */
+        }
+      });
+    });
+  }
+  initCodeTabs();
+  document.addEventListener('astro:after-swap', initCodeTabs);
+</script>

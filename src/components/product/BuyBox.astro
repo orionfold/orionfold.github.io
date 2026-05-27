@@ -1,0 +1,58 @@
+---
+// Buy box (P1, spec §4/§5.4). The book conversion point: a real price (resolved
+// from the CATALOG SSOT by lookup key, never hardcoded), a Buy button wired by
+// wireCheckoutButtons(), a "Read free online" secondary, and a money-back note.
+// Renders only for books (a lookupKey is present).
+import { getCatalogItem, formatUsd } from '../../data/commerce';
+import type { ProductView } from '../../lib/product/detail';
+
+interface Props {
+  view: ProductView;
+}
+const { view } = Astro.props;
+const item = view.lookupKey ? getCatalogItem(view.lookupKey) : undefined;
+const priceLabel = item ? formatUsd(item.amount) : undefined;
+---
+{view.lookupKey && (
+  <section id="buy" class="scroll-mt-24 px-6 py-12">
+    <div data-animate class="mx-auto max-w-3xl rounded-2xl border border-primary/40 bg-surface-raised p-8 shadow-lg shadow-primary/5">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 class="font-display text-2xl font-bold">Get the full book</h2>
+          <p class="mt-1 text-sm text-text-muted">PDF and EPUB, yours to keep.</p>
+        </div>
+        {priceLabel && (
+          <p class="flex items-baseline gap-1">
+            <span class="font-display text-4xl font-bold text-primary">{priceLabel}</span>
+            <span class="font-mono text-xs tracking-wider text-text-muted">one time</span>
+          </p>
+        )}
+      </div>
+
+      <div class="mt-6 flex flex-wrap items-center gap-4">
+        <button
+          type="button"
+          data-checkout={view.lookupKey}
+          data-error-target="buybox-err"
+          class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-5 py-3 font-mono text-sm tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {priceLabel ? `Buy PDF + EPUB · ${priceLabel}` : 'Buy now'}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
+        {view.outboundPrimary && (
+          <a
+            href={view.outboundPrimary.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-text-muted transition-colors hover:text-primary"
+          >
+            {view.outboundPrimary.label}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>
+          </a>
+        )}
+      </div>
+      <p id="buybox-err" role="alert" hidden class="mt-2 font-mono text-xs text-red-500"></p>
+      <p class="mt-4 text-sm text-text-muted">Not happy in the first 14 days? Email us and we refund you, no questions asked.</p>
+    </div>
+  </section>
+)}

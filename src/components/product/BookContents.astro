@@ -1,0 +1,61 @@
+---
+// Book table of contents (P1, spec §4). Brings the chapter list on-site so a
+// reader sees the shape of the book before they buy. Groups chapters by their
+// `part` (in first-seen order); each row shows number, title, optional subtitle
+// and reading time. Renders only when `chapters` is present (books).
+interface Chapter {
+  number?: number | string;
+  part?: string;
+  title: string;
+  subtitle?: string;
+  readingTime?: string;
+}
+interface Props {
+  chapters: Chapter[];
+}
+const { chapters } = Astro.props;
+
+// Preserve authored order while grouping by part.
+const parts: { part: string; items: Chapter[] }[] = [];
+for (const ch of chapters) {
+  const key = ch.part ?? '';
+  let group = parts.find((p) => p.part === key);
+  if (!group) {
+    group = { part: key, items: [] };
+    parts.push(group);
+  }
+  group.items.push(ch);
+}
+---
+{chapters.length > 0 && (
+  <section class="px-6 py-12">
+    <div data-animate class="mx-auto max-w-3xl">
+      <h2 class="font-display text-2xl font-bold">What's inside</h2>
+      <div class="mt-6 space-y-8">
+        {parts.map((group) => (
+          <div>
+            {group.part && (
+              <p class="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-primary">{group.part}</p>
+            )}
+            <ol class="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface-raised">
+              {group.items.map((ch) => (
+                <li class="flex items-baseline gap-4 px-4 py-3">
+                  {ch.number != null && (
+                    <span class="w-6 shrink-0 font-mono text-xs text-text-muted">{ch.number}</span>
+                  )}
+                  <div class="flex-1">
+                    <p class="font-medium leading-snug text-text">{ch.title}</p>
+                    {ch.subtitle && <p class="mt-0.5 text-sm text-text-muted">{ch.subtitle}</p>}
+                  </div>
+                  {ch.readingTime && (
+                    <span class="shrink-0 font-mono text-[11px] text-text-muted">{ch.readingTime}</span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

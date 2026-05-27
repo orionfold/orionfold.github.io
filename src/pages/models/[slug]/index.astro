@@ -1,0 +1,28 @@
+---
+// Model detail route (P-series, spec §5.2). Emits /models/<slug>/ only for slugs
+// that have a productDetail entry. The model slug is slugify(title), so build
+// variants (GGUF/adapter) collapse to one detail page; findRecords returns every
+// variant for the page to list (P4 renders the variant section). Hero reuses the
+// listing cover (src/assets/models/<slug>/cover.png).
+import { render } from 'astro:content';
+import ProductDetail from '../../../layouts/ProductDetail.astro';
+import { getProductPaths, toProductView, resolveRelated, coverKey } from '../../../lib/product/detail';
+
+export async function getStaticPaths() {
+  return getProductPaths('model');
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const view = toProductView('model', entry);
+const related = await resolveRelated(entry);
+
+const modelImgs = import.meta.glob<{ default: ImageMetadata }>('../../../assets/models/**/cover.png', { eager: true });
+const { key } = coverKey('model', entry.data.slug);
+const ssotHero = key ? Object.entries(modelImgs).find(([p]) => p.endsWith('/' + key))?.[1]?.default : undefined;
+const hero = entry.data.hero ?? ssotHero;
+const hasBody = Boolean(entry.body && entry.body.trim());
+---
+<ProductDetail view={view} detail={entry.data} hero={hero} related={related} hasBody={hasBody}>
+  <Content />
+</ProductDetail>
