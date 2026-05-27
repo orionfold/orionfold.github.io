@@ -23,6 +23,7 @@ import RelatedRail from '../components/product/RelatedRail.astro';
 import ResourcesFooter from '../components/product/ResourcesFooter.astro';
 import { getCatalogItem, formatUsd } from '../data/commerce';
 import type { ProductView, RelatedItem } from '../lib/product/detail';
+import type { TrustStat } from '../lib/trust/source';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -30,22 +31,47 @@ interface Props {
   detail: CollectionEntry<'productDetail'>['data'];
   hero?: ImageMetadata;
   related: { relatedModels: RelatedItem[]; relatedBook?: RelatedItem; relatedReading: RelatedItem[] };
+  /** Live HuggingFace trust tiles (P3) — empty when there's nothing real to show. */
+  trustStats?: TrustStat[];
   hasBody: boolean;
 }
-const { view, detail, hero, related, hasBody } = Astro.props;
+const { view, detail, hero, related, trustStats = [], hasBody } = Astro.props;
 
 // Book price (display only; CATALOG is the SSOT) for the hero + sticky CTA.
 const item = view.lookupKey ? getCatalogItem(view.lookupKey) : undefined;
 const priceLabel = item ? formatUsd(item.amount) : undefined;
+
+// Split related items by destination: internal Orionfold pages stay as full
+// cards in "Keep exploring"; external links demote into the slim Resources rail.
+const internalModels = related.relatedModels.filter((r) => !r.external);
+const internalBook = related.relatedBook && !related.relatedBook.external ? related.relatedBook : undefined;
+const internalReading = related.relatedReading.filter((r) => !r.external);
+const externalRelated = [
+  ...related.relatedModels.filter((r) => r.external),
+  ...(related.relatedBook && related.relatedBook.external ? [related.relatedBook] : []),
+  ...related.relatedReading.filter((r) => r.external),
+];
+
+// Classify each external related link the way the Resources rail tags links:
+// HF data/weights + repos are "get it" resources; anything else is an article.
+type ResourceKind = 'github' | 'huggingface' | 'docs' | 'site' | 'dataset' | 'reading';
+const relatedResourceKind = (href: string): ResourceKind =>
+  /huggingface\.co\/datasets/.test(href) ? 'dataset'
+  : /huggingface\.co/.test(href) ? 'huggingface'
+  : /github\.com/.test(href) ? 'github'
+  : 'reading';
+
+// Merge frontmatter outbound + external related, deduped by href, for the rail.
+const resourceLinks: { label: string; href: string; kind: ResourceKind }[] = [
+  ...(detail.outbound ?? []),
+  ...externalRelated.map((r) => ({ label: r.title, href: r.href, kind: relatedResourceKind(r.href) })),
+].filter((l, i, all) => all.findIndex((x) => x.href === l.href) === i);
 ---
 <Layout title={`${view.title} · Orionfold`} description={view.valueProp}>
   <Nav />
   <main class="pb-24">
     <HeroDetail view={view} hero={hero} heroAlt={detail.heroAlt} chips={detail.chips} priceLabel={priceLabel} />
     <StickyCtaBar view={view} priceLabel={priceLabel} />
-
-    {detail.install && <CodeTabs heading="Install" tabs={detail.install} />}
-    {detail.usage && <CodeTabs heading="Use it" tabs={detail.usage} />}
 
     {detail.chapters && <BookContents chapters={detail.chapters} />}
 
@@ -59,16 +85,21 @@ const priceLabel = item ? formatUsd(item.amount) : undefined;
 
     {detail.gallery && <Gallery items={detail.gallery} />}
 
+    {/* Install / Use-it commands follow the prose (the model pages' "How to run
+        it" section) and sit just above the spec table. */}
+    {detail.install && <CodeTabs heading="Install" tabs={detail.install} />}
+    {detail.usage && <CodeTabs heading="Use it" tabs={detail.usage} />}
+
     {detail.specs && <SpecTable specs={detail.specs} />}
     {detail.benchmarks && <BenchmarkTable benchmarks={detail.benchmarks} />}
 
-    <TrustBlock testimonials={detail.testimonials} />
+    <TrustBlock stats={trustStats} testimonials={detail.testimonials} />
 
     {view.cta === 'buy' ? <BuyBox view={view} /> : <SponsorBlock view={view} />}
 
-    <RelatedRail models={related.relatedModels} book={related.relatedBook} reading={related.relatedReading} />
+    <RelatedRail models={internalModels} book={internalBook} reading={internalReading} />
 
-    {detail.outbound && <ResourcesFooter outbound={detail.outbound} />}
+    {resourceLinks.length > 0 && <ResourcesFooter outbound={resourceLinks} />}
   </main>
   <Footer />
 </Layout>

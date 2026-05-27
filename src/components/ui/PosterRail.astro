@@ -5,9 +5,12 @@
 // fade out top + bottom. It is the hero's trust signal: proof of how much the
 // studio has shipped, shown rather than claimed.
 //
-// The tiles are interactive: each is a LINK to its category landing page
-// (poster → /software, cover → /models, book → /books) that pops + highlights
-// on hover/focus. Hovering a column pauses its scroll so the tile stays put to
+// The tiles are interactive: each is a LINK to that product's own detail page
+// (poster → /software/<slug>/, cover → /models/<slug>/, book → /books/<slug>/),
+// resolved from the data SSOT joined with detailKeySet so a tile only deep-links
+// when its page exists (else it falls back to the category landing page — e.g.
+// the bench cover, which has no detail page). It pops + highlights on hover/focus.
+// Hovering a column pauses its scroll so the tile stays put to
 // click. Each poster renders twice for a seamless loop (the keyframe translates
 // exactly one set, -50%); the duplicate copies are aria-hidden + tabindex=-1 so
 // each tile is reached once, not twice, by keyboard and screen readers.
@@ -18,28 +21,53 @@
 // prefers-reduced-motion.
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { getCollection } from 'astro:content';
+import { software } from '../../data/software';
+import { models } from '../../data/models';
+import { books } from '../../data/books';
+import { detailKeySet, slugify } from '../../lib/product/detail';
 
 // Glob the existing astro:assets art. Posters + model covers are 16:9 PNGs;
-// book covers are 2:3 JPGs. eager so the metadata is available at build time.
+// book covers (2:3 JPGs) ride in as each book's detail hero. eager so the
+// metadata is available at build time.
 const posterImgs = import.meta.glob<{ default: ImageMetadata }>('../../assets/projects/*-poster.png', { eager: true });
 const modelImgs = import.meta.glob<{ default: ImageMetadata }>('../../assets/models/**/cover.png', { eager: true });
-const bookImgs = import.meta.glob<{ default: ImageMetadata }>('../../assets/book/*.jpg', { eager: true });
+const pick = (mod: Record<string, { default: ImageMetadata }>, key?: string): ImageMetadata | undefined =>
+  key ? Object.entries(mod).find(([p]) => p.endsWith('/' + key))?.[1].default : undefined;
+
+// Which products have a detail page (so a tile deep-links instead of landing).
+const detailKeys = await detailKeySet();
+const bookHeroes = (await getCollection('productDetail')).filter((e) => e.data.type === 'book');
 
 interface Tile { src: ImageMetadata; href: string; label: string; }
 
-function collect(
-  mod: Record<string, { default: ImageMetadata }>,
-  href: string,
-  label: string,
-): Tile[] {
-  return Object.values(mod).map((m) => ({ src: m.default, href, label }));
-}
+// Software: poster -> its detail page (all 12 have one); else /software/.
+const swTiles: Tile[] = software.flatMap((s) => {
+  const src = pick(posterImgs, s.cover);
+  if (!src) return [];
+  const href = detailKeys.has(`software:${s.slug}`) ? `/software/${s.slug}/` : '/software/';
+  return [{ src, href, label: `Explore ${s.title}` }];
+});
 
-const tiles: Tile[] = [
-  ...collect(posterImgs, '/software/', 'Explore Orionfold software'),
-  ...collect(modelImgs, '/models/', 'Explore Orionfold models'),
-  ...collect(bookImgs, '/books/', 'Explore Orionfold books'),
-];
+// Models: cover -> the model detail page (slug = slugify(title), so the GGUF +
+// adapter art both point at the one page); the bench has no detail -> /models/.
+const modelTiles: Tile[] = models.flatMap((m) => {
+  const src = pick(modelImgs, m.cover);
+  if (!src) return [];
+  const slug = slugify(m.title);
+  const href = detailKeys.has(`model:${slug}`) ? `/models/${slug}/` : '/models/';
+  return [{ src, href, label: `Explore ${m.title}` }];
+});
+
+// Books: cover (the detail hero) -> the book detail page; else /books/.
+const bookTiles: Tile[] = books.flatMap((b) => {
+  const src = bookHeroes.find((e) => e.data.slug === b.slug)?.data.hero;
+  if (!src) return [];
+  const href = detailKeys.has(`book:${b.slug}`) ? `/books/${b.slug}/` : '/books/';
+  return [{ src, href, label: `Explore ${b.title}` }];
+});
+
+const tiles: Tile[] = [...swTiles, ...modelTiles, ...bookTiles];
 
 // Alternate into two columns so each is a mix of wide posters + tall books.
 const colA = tiles.filter((_, i) => i % 2 === 0);

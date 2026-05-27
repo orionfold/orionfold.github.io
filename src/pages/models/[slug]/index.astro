@@ -7,6 +7,7 @@
 import { render } from 'astro:content';
 import ProductDetail from '../../../layouts/ProductDetail.astro';
 import { getProductPaths, toProductView, resolveRelated, coverKey } from '../../../lib/product/detail';
+import { trust, buildTrustStats } from '../../../data/trust';
 
 export async function getStaticPaths() {
   return getProductPaths('model');
@@ -16,6 +17,7 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const view = toProductView('model', entry);
 const related = await resolveRelated(entry);
+const trustStats = buildTrustStats(trust, 'model', entry.data.slug);
 
 const modelImgs = import.meta.glob<{ default: ImageMetadata }>('../../../assets/models/**/cover.png', { eager: true });
 const { key } = coverKey('model', entry.data.slug);
@@ -23,6 +25,6 @@ const ssotHero = key ? Object.entries(modelImgs).find(([p]) => p.endsWith('/' + 
 const hero = entry.data.hero ?? ssotHero;
 const hasBody = Boolean(entry.body && entry.body.trim());
 ---
-<ProductDetail view={view} detail={entry.data} hero={hero} related={related} hasBody={hasBody}>
+<ProductDetail view={view} detail={entry.data} hero={hero} related={related} trustStats={trustStats} hasBody={hasBody}>
   <Content />
 </ProductDetail>

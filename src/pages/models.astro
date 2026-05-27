@@ -15,6 +15,15 @@ import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
 import { models } from '../data/models';
 import { ogMeta } from '../data/og';
 import { bentoSplit } from '../lib/bento';
+import { detailKeySet, slugify } from '../lib/product/detail';
+
+// A model's join slug is slugify(title) (build variants collapse to one detail
+// page); link a card inward when that slug has a detail entry (spec §3).
+const detailKeys = await detailKeySet();
+const detailHrefFor = (title: string) => {
+  const slug = slugify(title);
+  return detailKeys.has(`model:${slug}`) ? `/models/${slug}/` : undefined;
+};
 
 const patent = models.filter((m) => m.group === 'patent');
 const domain = models.filter((m) => m.group === 'domain');
@@ -59,9 +68,9 @@ function resolveCover(key?: string): ImageMetadata | undefined {
             This model reads and reasons about patents fully offline. Built with the NeMo toolkit, it comes in two formats: ready-to-run files, or a small add-on patch for builders.
           </p>
         </div>
-        {patentSplit.lead && <ModelCard {...patentSplit.lead} cover={resolveCover(patentSplit.lead.cover)} featured />}
+        {patentSplit.lead && <ModelCard {...patentSplit.lead} cover={resolveCover(patentSplit.lead.cover)} detailHref={detailHrefFor(patentSplit.lead.title)} featured />}
         <div data-animate-stagger class:list={['grid gap-6 sm:grid-cols-2', patentSplit.lead && 'mt-6']}>
-          {patentSplit.rest.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
+          {patentSplit.rest.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} detailHref={detailHrefFor(m.title)} />)}
         </div>
       </div>
     </section>
@@ -75,9 +84,9 @@ function resolveCover(key?: string): ImageMetadata | undefined {
             Each one is tuned for a single field, so it knows the words and rules of that work.
           </p>
         </div>
-        {domainSplit.lead && <ModelCard {...domainSplit.lead} cover={resolveCover(domainSplit.lead.cover)} featured />}
+        {domainSplit.lead && <ModelCard {...domainSplit.lead} cover={resolveCover(domainSplit.lead.cover)} detailHref={detailHrefFor(domainSplit.lead.title)} featured />}
         <div data-animate-stagger class:list={['grid gap-6 sm:grid-cols-2', domainSplit.lead && 'mt-6']}>
-          {domainSplit.rest.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} />)}
+          {domainSplit.rest.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} detailHref={detailHrefFor(m.title)} />)}
         </div>
       </div>
     </section>
@@ -91,7 +100,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
             The test set we use to check how well a model reasons about patents.
           </p>
         </div>
-        {dataset.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} featured />)}
+        {dataset.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} detailHref={detailHrefFor(m.title)} featured />)}
       </div>
     </section>
 

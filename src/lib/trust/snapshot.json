@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-05-27T06:12:59.772Z",
+  "models": {
+    "patent-strategist": {
+      "repo": "Orionfold/patent-strategist-v3-nemo-GGUF",
+      "kind": "model",
+      "downloads": 623,
+      "downloadsAllTime": null,
+      "likes": 0
+    },
+    "securityllm": {
+      "repo": "Orionfold/SecurityLLM-GGUF",
+      "kind": "model",
+      "downloads": 525,
+      "downloadsAllTime": null,
+      "likes": 0
+    },
+    "saul-7b-instruct": {
+      "repo": "Orionfold/Saul-7B-Instruct-v1-GGUF",
+      "kind": "model",
+      "downloads": 567,
+      "downloadsAllTime": null,
+      "likes": 0
+    },
+    "finance-chat": {
+      "repo": "Orionfold/finance-chat-GGUF",
+      "kind": "model",
+      "downloads": 503,
+      "downloadsAllTime": null,
+      "likes": 0
+    },
+    "ii-medical-8b": {
+      "repo": "Orionfold/II-Medical-8B-GGUF",
+      "kind": "model",
+      "downloads": 420,
+      "downloadsAllTime": null,
+      "likes": 0
+    },
+    "patent-strategist-bench": {
+      "repo": "Orionfold/patent-strategist-bench-v0.1",
+      "kind": "dataset",
+      "downloads": 31,
+      "downloadsAllTime": null,
+      "likes": 0
+    }
+  },
+  "books": {
+    "ai-native-business": {
+      "chapters": 14,
+      "parts": 4
+    },
+    "field-notes": {
+      "chapters": 53,
+      "parts": 8
+    }
+  }
+}

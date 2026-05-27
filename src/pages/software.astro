@@ -17,8 +17,14 @@ import platformImg from '../assets/platform/ai-native-platform.png';
 import neosignalImg from '../assets/neosignal/neosignal-models.png';
 import { ogMeta } from '../data/og';
 import { bentoSplit } from '../lib/bento';
+import { detailKeySet } from '../lib/product/detail';
 
 const og = ogMeta('/software/');
+
+// Which software slugs have an on-site detail page: those cards link inward
+// (/software/<slug>/) instead of off-site (spec §3). Others keep their external link.
+const detailKeys = await detailKeySet();
+const detailHrefFor = (slug: string) => (detailKeys.has(`software:${slug}`) ? `/software/${slug}/` : undefined);
 
 // Resolve a software entry's cover key to an ImageMetadata. Donor screenshots
 // are imported directly; project covers come from a glob map keyed by filename.
@@ -68,6 +74,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
                 pills={lead.pills}
                 href={lead.href}
                 ctaText={lead.ctaText}
+                detailHref={detailHrefFor(lead.slug)}
                 cover={resolveCover(lead.cover)}
                 coverType={lead.coverType}
                 seed={lead.slug}
@@ -83,6 +90,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
                   pills={product.pills}
                   href={product.href}
                   ctaText={product.ctaText}
+                  detailHref={detailHrefFor(product.slug)}
                   cover={resolveCover(product.cover)}
                   coverType={product.coverType}
                   seed={product.slug}

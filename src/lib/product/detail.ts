@@ -9,9 +9,21 @@
 // Sponsor CTA can pre-select THIS product): software/book use the record's
 // `.slug`; a model has no slug field, so it is slugify(title), deduped by title.
 import { getCollection, type CollectionEntry } from 'astro:content';
+import type { ImageMetadata } from 'astro';
 import { software, type SoftwareProduct } from '../../data/software';
 import { models, type Model } from '../../data/models';
 import { books, type Book } from '../../data/books';
+
+// Listing covers, resolved once so the RelatedRail can show real art on a card:
+// models live at src/assets/models/<slug>/cover.png, software posters at the
+// top level of src/assets/projects/ (<slug>-poster.png). Book covers come from
+// the book's own detail hero; story covers from the story collection (below).
+const MODEL_COVERS = import.meta.glob<{ default: ImageMetadata }>('../../assets/models/**/cover.png', { eager: true });
+const SOFTWARE_COVERS = import.meta.glob<{ default: ImageMetadata }>('../../assets/projects/*.png', { eager: true });
+const pickCover = (covers: Record<string, { default: ImageMetadata }>, key?: string): ImageMetadata | undefined =>
+  key ? Object.entries(covers).find(([p]) => p.endsWith('/' + key))?.[1].default : undefined;
+const resolveModelCover = (key?: string) => pickCover(MODEL_COVERS, key);
+const resolveSoftwareCover = (key?: string) => pickCover(SOFTWARE_COVERS, key);
 
 export type ProductType = 'software' | 'model' | 'book';
 export type ProductEntry = CollectionEntry<'productDetail'>;
@@ -49,10 +61,29 @@ export async function getProductPaths(type: ProductType) {
     .map((entry) => ({ params: { slug: entry.data.slug }, props: { entry } }));
 }
 
+/**
+ * The set of `${type}:${slug}` keys that have a productDetail entry. Listing
+ * pages call this once to decide per card whether it links inward to its detail
+ * page (/type/slug/) or keeps today's external link (the detailHref? fallback,
+ * spec §3). Fetched once per build, no live call.
+ */
+export async function detailKeySet(): Promise<Set<string>> {
+  const all = await getCollection('productDetail');
+  return new Set(all.map((e) => `${e.data.type}:${e.data.slug}`));
+}
+
 export interface RelatedItem {
   title: string;
   href: string; // internal detail href when one exists, else the canonical home
   external: boolean;
+  /** Drives the card eyebrow + the book portrait-cover treatment. */
+  kind: ProductType | 'reading' | 'story';
+  /** One-line pitch for the card body (model tagline / book blurb); reading has none. */
+  blurb?: string;
+  /** Resolved listing cover; absent -> the card falls back to a seeded constellation. */
+  cover?: ImageMetadata;
+  /** Constellation seed when there's no cover. */
+  seed: string;
 }
 
 export interface ProductView {
@@ -131,7 +162,15 @@ export async function resolveRelated(entry: ProductEntry) {
     const m = models.find((mm) => slugify(mm.title) === s);
     if (!m) return [];
     const internal = hasDetail.has(detailKey('model', s));
-    return [{ title: m.title, href: internal ? `/models/${s}/` : m.href, external: !internal }];
+    return [{
+      title: m.title,
+      href: internal ? `/models/${s}/` : m.href,
+      external: !internal,
+      kind: 'model',
+      blurb: m.tagline,
+      cover: resolveModelCover(m.cover),
+      seed: s,
+    }];
   });
 
   let relatedBook: RelatedItem | undefined;
@@ -139,15 +178,50 @@ export async function resolveRelated(entry: ProductEntry) {
     const b = books.find((bb) => bb.slug === entry.data.relatedBook);
     if (b) {
       const internal = hasDetail.has(detailKey('book', b.slug));
-      relatedBook = { title: b.title, href: internal ? `/books/${b.slug}/` : b.href, external: !internal };
+      // The book's own detail entry carries the real cover image as its hero.
+      const bookEntry = all.find((e) => e.data.type === 'book' && e.data.slug === b.slug);
+      relatedBook = {
+        title: b.title,
+        href: internal ? `/books/${b.slug}/` : b.href,
+        external: !internal,
+        kind: 'book',
+        blurb: b.body,
+        cover: bookEntry?.data.hero,
+        seed: b.slug,
+      };
     }
   }
 
-  const relatedReading: RelatedItem[] = (entry.data.relatedReading ?? []).map((r) => ({
-    title: r.title,
-    href: r.href,
-    external: /^https?:\/\//.test(r.href),
-  }));
+  // Reading links are mostly off-site articles, but some point inward (a Story
+  // post, or a product page). Internal ones become full cards, so pull the
+  // target's real cover + blurb (a story shows its comic hero, not a motif).
+  const stories = await getCollection('story');
+  const storyBySlug = new Map(stories.map((s) => [s.id, s]));
+
+  const relatedReading: RelatedItem[] = (entry.data.relatedReading ?? []).map((r) => {
+    const external = /^https?:\/\//.test(r.href);
+    const base: RelatedItem = { title: r.title, href: r.href, external, kind: 'reading', seed: slugify(r.title) };
+    if (external) return base;
+    let m: RegExpMatchArray | null;
+    if ((m = r.href.match(/^\/story\/([^/]+)\/?$/))) {
+      const s = storyBySlug.get(m[1]);
+      return { ...base, kind: 'story', blurb: s?.data.summary, cover: s?.data.hero, seed: m[1] };
+    }
+    if ((m = r.href.match(/^\/software\/([^/]+)\/?$/))) {
+      const p = software.find((x) => x.slug === m![1]);
+      return { ...base, kind: 'software', blurb: p?.body, cover: resolveSoftwareCover(p?.cover), seed: m[1] };
+    }
+    if ((m = r.href.match(/^\/models\/([^/]+)\/?$/))) {
+      const mm = models.find((x) => slugify(x.title) === m![1]);
+      return { ...base, kind: 'model', blurb: mm?.tagline, cover: resolveModelCover(mm?.cover), seed: m[1] };
+    }
+    if ((m = r.href.match(/^\/books\/([^/]+)\/?$/))) {
+      const b = books.find((x) => x.slug === m![1]);
+      const be = all.find((e) => e.data.type === 'book' && e.data.slug === m![1]);
+      return { ...base, kind: 'book', blurb: b?.body, cover: be?.data.hero, seed: m[1] };
+    }
+    return base;
+  });
 
   return { relatedModels, relatedBook, relatedReading };
 }

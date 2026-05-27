@@ -14,6 +14,12 @@ import aiNativeCover from '../assets/book/ai-native-business-book.jpg';
 import aiResearchCover from '../assets/book/ai-research-dgx-spark-book.jpg';
 import { ogMeta } from '../data/og';
 import { getCatalogItem, formatUsd } from '../data/commerce';
+import { detailKeySet } from '../lib/product/detail';
+
+// Books with an on-site detail page link the band's secondary CTA inward (to the
+// chapter list + buy box), keeping the Buy button; others keep the external
+// "read free" link (spec §3).
+const detailKeys = await detailKeySet();
 
 // Buy-button label per book: "Buy PDF + EPUB · $20" (price from the catalog,
 // which mirrors Stripe; the checkout fn resolves the real price by lookup key).
@@ -45,22 +51,25 @@ const og = ogMeta('/books/');
       subtitle="A free book and a running set of notes on building a business that runs on AI. Both are open to read, and both come straight from the work we do."
     />
 
-    {books.map((book, i) => (
+    {books.map((book, i) => {
+      const hasDetail = detailKeys.has(`book:${book.slug}`);
+      return (
       <Highlight
         eyebrow={book.eyebrow}
         title={book.title}
         body={book.body}
         pills={book.pills}
-        href={book.href}
-        ctaText={book.ctaText}
-        external
+        href={hasDetail ? `/books/${book.slug}/` : book.href}
+        ctaText={hasDetail ? 'See the chapters' : book.ctaText}
+        external={!hasDetail}
         reverse={i % 2 === 1}
         buyLookupKey={book.lookupKey}
         buyText={buyText(book.lookupKey)}
       >
         <BookCover slot="media" title={book.cover.title} subtitle={book.cover.subtitle} tag={book.cover.tag} image={covers[book.slug]} eager={i === 0} />
       </Highlight>
-    ))}
+      );
+    })}
   </main>
   <Footer />
 </Layout>

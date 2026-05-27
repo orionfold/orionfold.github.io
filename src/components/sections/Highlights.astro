@@ -1,10 +1,11 @@
 ---
 // Homepage highlights (spec §5.4–5.6): one curated pick from each pillar —
-// the book, the software, a model — each linking to its showcase page (built
-// in S6–S8, routes already stubbed). Layout sides alternate via Highlight's
-// `reverse`. The software and model picks now lead with their curated movie
-// poster (featured-imagery skill), matching their showcase cards; the book
-// keeps its CSS BookCover.
+// the book, the software, a model. P2 deep-links each straight to its on-site
+// detail page (/books/ai-native-business/, /software/ai-native-platform/,
+// /models/patent-strategist/) instead of the listing page, fixing the
+// "click a product, get a catalog" leak (spec §3). Layout sides alternate via
+// Highlight's `reverse`. The software and model picks lead with their curated
+// movie poster (featured-imagery skill); the book keeps its cover art.
 import { Image } from 'astro:assets';
 import Highlight from '../ui/Highlight.astro';
 import BookCover from '../ui/BookCover.astro';
@@ -18,10 +19,10 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
   title="AI Native Business"
   body="A free book on running a business with AI agents (software helpers that do the work for you). Fourteen short chapters, about a two hour read."
   pills={['14 chapters', '4 parts', '~2h read', 'Free to read']}
-  href="/books/"
-  ctaText="See the book"
+  href="/books/ai-native-business/"
+  ctaText="Explore the book"
 >
-  <a slot="media" href="/books/" aria-label="See the book" class="block">
+  <a slot="media" href="/books/ai-native-business/" aria-label="Explore the book" class="block">
     <BookCover title="AI Native Business" subtitle="Build with AI agents." tag="Free · open" image={aiNativeCover} />
   </a>
 </Highlight>
@@ -32,13 +33,13 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
   title="AI Native Platform"
   body="Run AI agents on your own computer. Hand them tasks, set schedules, watch the work, and track what it costs. One place, no cloud needed."
   pills={['Runs local', 'Open', 'Agents', 'Workflows']}
-  href="/software/"
-  ctaText="See the software"
+  href="/software/ai-native-platform/"
+  ctaText="Explore the platform"
   reverse
 >
   <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
     <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
-    <a href="/software/" aria-label="See the software" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
+    <a href="/software/ai-native-platform/" aria-label="Explore the platform" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
       <Image
         src={platformPoster}
         alt="AI Native Platform poster art"
@@ -57,12 +58,12 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
   title="Patent Strategist"
   body="An AI built to reason about patents (legal cover for inventions). It runs fully offline on a small desktop, so your ideas and filings never leave the room."
   pills={['Patents', 'Runs offline', 'Open weights']}
-  href="/models/"
-  ctaText="See the models"
+  href="/models/patent-strategist/"
+  ctaText="Explore Patent Strategist"
 >
   <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
     <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
-    <a href="/models/" aria-label="See the models" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
+    <a href="/models/patent-strategist/" aria-label="Explore Patent Strategist" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
       <Image
         src={patentPoster}
         alt="Patent Strategist poster art: Prior Art"

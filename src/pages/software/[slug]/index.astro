@@ -7,6 +7,7 @@
 import { render } from 'astro:content';
 import ProductDetail from '../../../layouts/ProductDetail.astro';
 import { getProductPaths, toProductView, resolveRelated, coverKey } from '../../../lib/product/detail';
+import { trust, buildTrustStats } from '../../../data/trust';
 
 export async function getStaticPaths() {
   return getProductPaths('software');
@@ -16,6 +17,7 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const view = toProductView('software', entry);
 const related = await resolveRelated(entry);
+const trustStats = buildTrustStats(trust, 'software', entry.data.slug);
 
 // Hero reuses the listing poster (src/assets/projects/<slug>-poster.png) unless
 // the entry overrides it with its own `hero`.
@@ -25,6 +27,6 @@ const ssotHero = key ? Object.entries(projectImgs).find(([p]) => p.endsWith('/' 
 const hero = entry.data.hero ?? ssotHero;
 const hasBody = Boolean(entry.body && entry.body.trim());
 ---
-<ProductDetail view={view} detail={entry.data} hero={hero} related={related} hasBody={hasBody}>
+<ProductDetail view={view} detail={entry.data} hero={hero} related={related} trustStats={trustStats} hasBody={hasBody}>
   <Content />
 </ProductDetail>

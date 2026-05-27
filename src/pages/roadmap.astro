@@ -14,6 +14,8 @@ import PageHeader from '../components/ui/PageHeader.astro';
 import RoadmapCard from '../components/ui/RoadmapCard.astro';
 import EnquiryDrawer from '../components/ui/EnquiryDrawer.astro';
 import { roadmap, roadmapLanes, roadmapSignals } from '../data/roadmap';
+import { detailKeySet } from '../lib/product/detail';
+import type { RoadmapItem } from '../lib/roadmap/source';
 import { SPONSOR_TIER_DISPLAY, formatUsd } from '../data/commerce';
 import { ogMeta } from '../data/og';
 import { SITE } from '../data/seo';
@@ -41,6 +43,15 @@ function resolveCover(assetBase?: string, key?: string): ImageMetadata | undefin
   const entry = Object.entries(map).find(([path]) => path.endsWith('/' + key));
   return entry?.[1]?.default;
 }
+
+// A card gets a "Details ->" link to its on-site detail page only when one exists
+// (P-series). detailKeySet() returns the `${type}:${slug}` keys that have a detail
+// entry — the same shape as a roadmap item id — so a card links inward iff its id
+// is in the set. Stages / sub-features (non-product ids) never match, so no 404s.
+const detailKeys = await detailKeySet();
+const DETAIL_BASE: Record<RoadmapItem['type'], string> = { software: 'software', model: 'models', book: 'books' };
+const detailHrefFor = (item: RoadmapItem): string | undefined =>
+  detailKeys.has(item.id) ? `/${DETAIL_BASE[item.type]}/${item.id.slice(item.id.indexOf(':') + 1)}/` : undefined;
 
 // Momentum strip — live signals (F2) make the page read as a working studio.
 const stats = [
@@ -150,7 +161,7 @@ const itemListLd = {
           {lane.items.length > 0 ? (
             <div data-animate-stagger class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {lane.items.map((item) => (
-                <RoadmapCard item={item} cover={resolveCover(item.assetBase, item.cover) ?? bookCovers[item.id]} />
+                <RoadmapCard item={item} cover={resolveCover(item.assetBase, item.cover) ?? bookCovers[item.id]} detailHref={detailHrefFor(item)} />
               ))}
             </div>
           ) : (

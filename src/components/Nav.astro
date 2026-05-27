@@ -1,7 +1,7 @@
 ---
 // Orionfold top nav: parent mark + "Orionfold" wordmark ("fold" in primary),
-// five section links + an emphasized Sponsor CTA, mobile hamburger, and a
-// scroll-triggered blur.
+// six section links (Sponsor reads as a plain link like the rest), mobile
+// hamburger, and a scroll-triggered blur.
 // Ported from the donor Nav, minus ThemeToggle and the in-nav social icon
 // (social links live in the Footer per the spec).
 const links = [
@@ -10,6 +10,7 @@ const links = [
   { href: '/models/', label: 'Models' },
   { href: '/story/', label: 'Story' },
   { href: '/roadmap/', label: 'Roadmap' },
+  { href: '/sponsor/', label: 'Sponsor' },
 ];
 ---
 <div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
@@ -42,13 +43,6 @@ const links = [
           {link.label}
         </a>
       ))}
-      <!-- Emphasized Sponsor CTA (the "Buy / Sponsor" family lives here) -->
-      <a
-        href="/sponsor/"
-        class="rounded-full bg-primary px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-white hover:bg-primary/90 transition-colors"
-      >
-        Sponsor
-      </a>
     </div>
 
     <!-- Mobile hamburger -->
@@ -73,9 +67,6 @@ const links = [
       {links.map((link) => (
         <a href={link.href} class="font-mono text-sm text-text-muted hover:text-primary transition-colors py-2">{link.label}</a>
       ))}
-      <a href="/sponsor/" class="mt-1 rounded-full bg-primary px-4 py-2.5 text-center font-mono text-sm uppercase tracking-widest text-white hover:bg-primary/90 transition-colors">
-        Sponsor
-      </a>
     </div>
   </div>
 </nav>

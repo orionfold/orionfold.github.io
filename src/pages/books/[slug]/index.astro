@@ -7,6 +7,7 @@
 import { render } from 'astro:content';
 import ProductDetail from '../../../layouts/ProductDetail.astro';
 import { getProductPaths, toProductView, resolveRelated } from '../../../lib/product/detail';
+import { trust, buildTrustStats } from '../../../data/trust';
 
 export async function getStaticPaths() {
   return getProductPaths('book');
@@ -16,9 +17,10 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const view = toProductView('book', entry);
 const related = await resolveRelated(entry);
+const trustStats = buildTrustStats(trust, 'book', entry.data.slug);
 const hero = entry.data.hero;
 const hasBody = Boolean(entry.body && entry.body.trim());
 ---
-<ProductDetail view={view} detail={entry.data} hero={hero} related={related} hasBody={hasBody}>
+<ProductDetail view={view} detail={entry.data} hero={hero} related={related} trustStats={trustStats} hasBody={hasBody}>
   <Content />
 </ProductDetail>

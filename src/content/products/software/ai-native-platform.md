@@ -1,9 +1,11 @@
 ---
-# P1 smoke entry (spec §5.2 "one smoke entry to prove the render"). Deliberately
-# maximal: it populates every software-applicable section so the adaptive engine
-# is exercised end to end. P2 authors the real one-of-each pilot (this entry's
-# copy/screenshots/benchmarks get curated then). The book-only sections (BuyBox,
-# BookContents) are proven by P2's book entry.
+# P2 software pilot (spec §3, "Software → SPONSOR"; began as the P1 smoke entry).
+# It is the homepage software deep-link target (/software/ai-native-platform/),
+# so curating this entry doubles as the software shape of the one-of-each pilot.
+# Sections are data-gated, so it exercises the full software scroll: hero, code
+# tabs, gallery (real screenshots), specs, narrative, sponsor tiers. No benchmark
+# table here — we have no measured platform numbers to quote, and the engine just
+# omits the section. Copy is grade 3-5 (website-copy-style).
 type: software
 slug: ai-native-platform
 valueProp: Run AI helpers on your own computer, hand them work, and watch every step. No cloud, and your data never leaves your machine.
@@ -48,13 +50,6 @@ specs:
   - label: License
     value: Open source
 
-benchmarks:
-  columns: [Task, On your laptop, In the cloud]
-  rows:
-    - [Summarize a page, 12s, 4s]
-    - [Search your files, 3s, 2s]
-    - [Draft a plan, 20s, 8s]
-
 gallery:
   - src: ../../../assets/platform/ai-native-platform.png
     alt: The AI Native Platform screen showing a task running step by step.
@@ -62,14 +57,6 @@ gallery:
   - src: ../../../assets/neosignal/neosignal-models.png
     alt: A model intelligence view comparing AI models side by side.
     caption: See how models, chips, and clouds stack up before you pick one.
-
-testimonials:
-  - quote: I run everything on my own laptop now. It is fast, and nothing leaves my machine.
-    author: A early user
-    role: Indie builder
-  - quote: The cost tracker alone paid for the time it took to set up.
-    author: A small team lead
-    role: Two person studio
 
 relatedModels: [patent-strategist]
 relatedBook: ai-native-business

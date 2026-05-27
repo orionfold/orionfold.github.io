@@ -18,19 +18,30 @@ interface Props {
   pills?: string[];
   href: string;
   ctaText: string;
+  // When this product has an on-site detail page (P-series), the card links
+  // inward to it instead of off-site, turning the listing into a hub (spec §3).
+  // Absent -> the external href is the fallback (today's behaviour).
+  detailHref?: string;
   cover?: ImageMetadata;
   coverType?: 'screenshot' | 'logo' | 'motif' | 'poster';
   seed?: string; // constellation seed (defaults to title)
   featured?: boolean; // wide image-left/text-right hero (odd-section bento lead)
 }
 
-const { eyebrow, title, body, pills = [], href, ctaText, cover, coverType = 'motif', seed, featured = false } = Astro.props;
+const { eyebrow, title, body, pills = [], href, ctaText, detailHref, cover, coverType = 'motif', seed, featured = false } = Astro.props;
 const coverSeed = seed ?? title;
+// The whole card is the link: its detail page when one exists, else the off-site
+// link (target=_blank). No inner CTA — the card itself is clickable (like StoryCard).
+const linkHref = detailHref ?? href;
 ---
-<article
+<a
+  href={linkHref}
+  target={detailHref ? undefined : '_blank'}
+  rel={detailHref ? undefined : 'noopener noreferrer'}
   data-animate
+  aria-label={title}
   class:list={[
-    'overflow-hidden rounded-2xl border border-border bg-surface-raised transition-colors hover:border-primary/30',
+    'group overflow-hidden rounded-2xl border border-border bg-surface-raised transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-primary/[0.03] hover:shadow-xl hover:shadow-primary/10',
     featured ? 'grid items-stretch sm:grid-cols-2' : 'flex flex-col',
   ]}
 >
@@ -47,7 +58,7 @@ const coverSeed = seed ?? title;
         loading="lazy"
         decoding="async"
         data-no-zoom
-        class="h-full w-full object-cover object-top"
+        class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
       />
     </div>
   ) : coverType === 'screenshot' && cover ? (
@@ -75,7 +86,7 @@ const coverSeed = seed ?? title;
   <!-- Body -->
   <div class:list={['flex flex-1 flex-col p-7 sm:p-8', featured && 'sm:justify-center sm:p-10']}>
     <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{eyebrow}</span>
-    <h2 class="mt-3 font-display text-2xl font-bold leading-tight">{title}</h2>
+    <h2 class="mt-3 font-display text-2xl font-bold leading-tight transition-colors group-hover:text-primary">{title}</h2>
     <p class="mt-3 flex-1 leading-relaxed text-text-muted">{body}</p>
 
     {pills.length > 0 && (
@@ -87,17 +98,5 @@ const coverSeed = seed ?? title;
         ))}
       </div>
     )}
-
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="mt-6 inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
-    >
-      {ctaText}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M7 17L17 7M7 7h10v10" />
-      </svg>
-    </a>
   </div>
-</article>
+</a>
