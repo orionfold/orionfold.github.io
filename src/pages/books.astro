@@ -48,7 +48,7 @@ const og = ogMeta('/books/');
     <PageHeader
       eyebrow="Books"
       title="Read how it's built"
-      subtitle="A free book and a running set of notes on building a business that runs on AI. Both are open to read, and both come straight from the work we do."
+      subtitle="Two books on building with AI. One on running a business with AI agents, the other on doing AI research on your own desktop. Both are open to read, and both come straight from the work we do."
     />
 
     {books.map((book, i) => {
@@ -60,13 +60,19 @@ const og = ogMeta('/books/');
         body={book.body}
         pills={book.pills}
         href={hasDetail ? `/books/${book.slug}/` : book.href}
-        ctaText={hasDetail ? 'See the chapters' : book.ctaText}
+        ctaText={hasDetail ? 'Details' : book.ctaText}
         external={!hasDetail}
         reverse={i % 2 === 1}
         buyLookupKey={book.lookupKey}
         buyText={buyText(book.lookupKey)}
       >
-        <BookCover slot="media" title={book.cover.title} subtitle={book.cover.subtitle} tag={book.cover.tag} image={covers[book.slug]} eager={i === 0} />
+        {hasDetail ? (
+          <a slot="media" href={`/books/${book.slug}/`} aria-label={`See ${book.title} details`} class="block">
+            <BookCover title={book.cover.title} subtitle={book.cover.subtitle} tag={book.cover.tag} image={covers[book.slug]} eager={i === 0} />
+          </a>
+        ) : (
+          <BookCover slot="media" title={book.cover.title} subtitle={book.cover.subtitle} tag={book.cover.tag} image={covers[book.slug]} eager={i === 0} />
+        )}
       </Highlight>
       );
     })}
