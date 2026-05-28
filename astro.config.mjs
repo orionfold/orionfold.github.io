@@ -6,6 +6,18 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://orionfold.com',
   trailingSlash: 'always',
+  // The 4 original thin /story posts were retired for the N-series story arc
+  // (their themes survive at higher quality in the new arc). These send the old
+  // slugs to the story hub so nothing 404s. N10 may repoint each to its exact
+  // successor (why-we-folded → why-i-folded-orionfold, one-desktop →
+  // my-first-model-on-a-desktop, week-one → building-in-public, open-vs-closed →
+  // the-year-the-gap-closed) once those pages exist.
+  redirects: {
+    '/story/why-we-folded-orionfold/': '/story/',
+    '/story/building-in-public-week-one/': '/story/',
+    '/story/picking-open-models-over-closed/': '/story/',
+    '/story/shipping-models-from-one-small-desktop/': '/story/',
+  },
   integrations: [
     sitemap({
       // The /og/*.png endpoint emits social-card images, not pages — keep them

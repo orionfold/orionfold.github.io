@@ -54,8 +54,7 @@ const dateIso = date.toISOString().slice(0, 10);
           alt={heroAlt ?? title}
           widths={[480, 768, 1024]}
           sizes="(min-width: 768px) 42rem, 100vw"
-          loading="eager"
-          decoding="async"
+          priority
           data-no-zoom
           class="mt-8 aspect-[16/9] w-full rounded-xl border border-border object-cover"
         />

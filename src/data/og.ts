@@ -74,6 +74,13 @@ export const OG_PAGES: Record<string, OgPage> = {
     seed: 'story',
     alt: 'Orionfold story: building in public',
   },
+  '/about/': {
+    slug: 'about',
+    eyebrow: 'About',
+    title: 'The builder behind Orionfold',
+    seed: 'about',
+    alt: 'About Manav Sehgal, the builder behind Orionfold',
+  },
   '/terms/': {
     slug: 'terms',
     eyebrow: 'Legal',

@@ -24,9 +24,10 @@ interface Props {
   class?: string;
   animate?: boolean;
   featured?: boolean; // wide image-left/text-right hero layout
+  priority?: boolean; // above-the-fold LCP cover → load eager + fetchpriority high (else lazy)
 }
 
-const { href, title, date, tag, summary, seed, cover, coverAlt, class: className = '', animate = false, featured = false } = Astro.props;
+const { href, title, date, tag, summary, seed, cover, coverAlt, class: className = '', animate = false, featured = false, priority = false } = Astro.props;
 // timeZone:'UTC' so a date-only value (UTC midnight) shows the authored day, not
 // the day before in a behind-UTC timezone.
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
@@ -50,7 +51,8 @@ const coverSeed = seed ?? href;
         alt={coverAlt ?? title}
         widths={featured ? [640, 960] : [400, 640]}
         sizes={featured ? '(min-width: 640px) 50vw, 100vw' : '(min-width: 1024px) 22rem, 100vw'}
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
         decoding="async"
         data-no-zoom
         class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"

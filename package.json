@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "export:catalog": "node --experimental-strip-types scripts/export-catalog.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3",

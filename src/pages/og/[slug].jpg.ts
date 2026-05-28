@@ -9,7 +9,13 @@ import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { renderOgCard, type CardOptions } from '../../lib/og/card';
 import { OG_PAGES, storyOgSlug, productOgSlug } from '../../data/og';
-import { toProductView } from '../../lib/product/detail';
+import { toProductView, coverKey } from '../../lib/product/detail';
+
+// Book detail OG cards frame the portrait cover on the left over the banner.
+const BOOK_COVERS: Record<string, string> = {
+  'ai-native-business': 'src/assets/book/ai-native-business-book.jpg',
+  'field-notes': 'src/assets/book/ai-research-dgx-spark-book.jpg',
+};
 
 export const prerender = true;
 
@@ -29,6 +35,8 @@ function heroBackground(id: string): string | undefined {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  // Landing / listing pages + homepage: the brand banner is the background, with the
+  // page title + orionfold.com kept on the left, clear of the banner's Orion logo.
   const fromPages = Object.values(OG_PAGES).map((p) => ({
     params: { slug: p.slug },
     props: {
@@ -36,7 +44,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       eyebrow: p.eyebrow,
       seed: p.seed,
       meta: p.meta,
-      screenshotPath: p.screenshot ? path.join(process.cwd(), p.screenshot) : undefined,
+      banner: true,
     } satisfies CardOptions,
   }));
 
@@ -52,20 +60,34 @@ export const getStaticPaths: GetStaticPaths = async () => {
     } satisfies CardOptions,
   }));
 
-  // Product detail pages (P8): one card per productDetail entry. The view's
-  // title + typeTag drive the headline + eyebrow; the namespaced slug seeds a
-  // distinct constellation. Mirrors the story loop above — same renderer, no
-  // per-product hand-authoring. (Earlier these pages fell back to the site OG.)
+  // Product detail pages: each card now shows the product's own featured art.
+  // Software posters + model covers are landscape, used full-bleed. Book covers are
+  // portrait, so they are framed on the left over the brand banner instead.
   const products = await getCollection('productDetail');
   const fromProducts = products.map((entry: CollectionEntry<'productDetail'>) => {
-    const view = toProductView(entry.data.type, entry);
-    const slug = productOgSlug(entry.data.type, entry.data.slug);
+    const type = entry.data.type;
+    const pslug = entry.data.slug;
+    const view = toProductView(type, entry);
+    const slug = productOgSlug(type, pslug);
+
+    let art: Partial<CardOptions>;
+    if (type === 'book') {
+      const rel = BOOK_COVERS[pslug];
+      const abs = rel ? path.join(process.cwd(), rel) : undefined;
+      art = abs && fs.existsSync(abs) ? { banner: true, insetPath: abs } : { banner: true };
+    } else {
+      const { key, base } = coverKey(type, pslug);
+      const abs = key && base ? path.join(process.cwd(), 'src/assets', base, key) : undefined;
+      art = abs && fs.existsSync(abs) ? { backgroundPath: abs } : {};
+    }
+
     return {
       params: { slug },
       props: {
         title: view.title,
         eyebrow: view.typeTag,
         seed: slug,
+        ...art,
       } satisfies CardOptions,
     };
   });

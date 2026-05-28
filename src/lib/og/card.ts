@@ -19,6 +19,11 @@ const ROOT = process.cwd();
 const fontRegular = fs.readFileSync(path.join(ROOT, 'src/lib/og/fonts/Geist-Regular.ttf'));
 const fontBold = fs.readFileSync(path.join(ROOT, 'src/lib/og/fonts/Geist-Bold.ttf'));
 
+// Brand banner (committed build input, 1200x630, Orion logo on the right). Used as
+// the OG background for landing/listing pages and the homepage, and behind a framed
+// book cover for book detail pages. Read + encoded once and reused across cards.
+const BANNER_URI = `data:image/png;base64,${fs.readFileSync(path.join(ROOT, 'src/lib/og/banner.png')).toString('base64')}`;
+
 const FONTS = [
   { name: 'Geist', data: fontRegular, weight: 400 as const, style: 'normal' as const },
   { name: 'Geist', data: fontBold, weight: 700 as const, style: 'normal' as const },
@@ -51,25 +56,45 @@ export interface CardOptions {
   screenshotPath?: string;
   /**
    * Absolute path to a curated hero image used full-bleed as the card background
-   * (story cards). When set, it replaces the constellation; a heavier scrim keeps
-   * the title legible. PNG/JPG only (resvg does not decode webp).
+   * (story comics, software posters, model covers). When set, it replaces the
+   * constellation; a heavier scrim keeps the title legible. PNG/JPG only (resvg
+   * does not decode webp).
    */
   backgroundPath?: string;
+  /**
+   * Use the brand banner as the background instead of the constellation
+   * (landing/listing pages + homepage). The title is constrained to the left so
+   * it never collides with the Orion logo on the banner's right. Overrides
+   * backgroundPath.
+   */
+  banner?: boolean;
+  /**
+   * Absolute path to a portrait image (a book cover) framed on the left over the
+   * banner. Implies banner mode; the text column shifts right of the cover. PNG/JPG.
+   */
+  insetPath?: string;
 }
 
-const ACCENT = '#5b8def';
 const WHITE = '#ffffff';
-const MUTED = '#9aa6c8';
+// Soft dark halo behind white text so it stays legible over bright, true-color art
+// without darkening the image. Layered: a crisp near shadow + two wider soft glows.
+const TEXT_GLOW = '0 0 5px rgba(0,0,0,0.95), 0 2px 7px rgba(0,0,0,0.92), 0 0 24px rgba(0,0,0,0.85), 0 0 54px rgba(0,0,0,0.6)';
 
 function wordmark(): El {
   return h(
     'div',
-    { style: { display: 'flex', alignItems: 'center', fontSize: 30, fontWeight: 700, letterSpacing: -0.5 } },
-    [
-      h('span', { style: { color: WHITE } }, 'Orion'),
-      h('span', { style: { color: ACCENT } }, 'fold'),
-      h('span', { style: { color: MUTED, fontWeight: 400, fontSize: 20, marginLeft: 14 } }, 'orionfold.com'),
-    ],
+    {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        fontSize: 30,
+        fontWeight: 700,
+        letterSpacing: -0.5,
+        color: WHITE,
+        textShadow: TEXT_GLOW,
+      },
+    },
+    'orionfold.com',
   );
 }
 
@@ -81,11 +106,12 @@ function eyebrow(text: string): El {
       'div',
       {
         style: {
-          color: ACCENT,
+          color: WHITE,
           fontSize: 22,
           fontWeight: 700,
           letterSpacing: 3,
           textTransform: 'uppercase',
+          textShadow: TEXT_GLOW,
         },
       },
       text,
@@ -95,54 +121,33 @@ function eyebrow(text: string): El {
 
 /** Build the Satori element tree for a card. */
 function cardTree(opts: CardOptions): El {
-  const hasShot = Boolean(opts.screenshotPath);
-  const usePhoto = Boolean(opts.backgroundPath);
-  const bg = usePhoto ? fileDataUri(opts.backgroundPath as string) : pngDataUri(constellationSvg(opts.seed));
+  const useBanner = Boolean(opts.banner);
+  const hasInset = Boolean(opts.insetPath);
+  const hasShot = Boolean(opts.screenshotPath) && !useBanner;
+  const usePhoto = Boolean(opts.backgroundPath) && !useBanner;
+  const bg = useBanner
+    ? BANNER_URI
+    : usePhoto
+      ? fileDataUri(opts.backgroundPath as string)
+      : pngDataUri(constellationSvg(opts.seed));
 
-  // Title scales down for long strings and narrows when a screenshot shares the row.
+  // Title scales down for long strings. It also narrows when a screenshot shares the
+  // row, when the banner logo must stay clear on the right, or when a book cover sits
+  // on the left.
   const titleSize = opts.title.length > 42 ? 58 : opts.title.length > 28 ? 66 : 74;
-  const titleMaxWidth = hasShot ? 600 : 900;
+  const titleMaxWidth = hasInset ? 480 : useBanner ? 660 : hasShot ? 600 : 900;
+  const padLeft = hasInset ? 392 : 80;
 
   const layers: El[] = [
-    // background: full-bleed hero photo, or the seeded constellation
+    // Background: full-bleed featured art shown in TRUE COLOR (no darkening scrim).
+    // Legibility comes from the text glow (TEXT_GLOW) instead.
     h('img', {
       src: bg,
       width: 1200,
       height: 630,
       style: { position: 'absolute', top: 0, left: 0, width: 1200, height: 630, objectFit: 'cover' },
     }),
-    // left-weighted scrim so text stays legible (heavier over a photo)
-    h('div', {
-      style: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: 1200,
-        height: 630,
-        display: 'flex',
-        backgroundImage: usePhoto
-          ? 'linear-gradient(100deg, rgba(8,11,20,0.94) 0%, rgba(8,11,20,0.62) 48%, rgba(8,11,20,0.34) 100%)'
-          : 'linear-gradient(105deg, rgba(10,13,22,0.86) 0%, rgba(10,13,22,0.45) 52%, rgba(10,13,22,0.05) 100%)',
-      },
-    }),
   ];
-
-  // Extra bottom scrim over photos so the wordmark + meta stay readable.
-  if (usePhoto) {
-    layers.push(
-      h('div', {
-        style: {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: 1200,
-          height: 630,
-          display: 'flex',
-          backgroundImage: 'linear-gradient(0deg, rgba(8,11,20,0.85) 0%, rgba(8,11,20,0) 40%)',
-        },
-      }),
-    );
-  }
 
   // Optional framed product screenshot, bleeding off the right edge.
   if (hasShot) {
@@ -192,6 +197,33 @@ function cardTree(opts: CardOptions): El {
     );
   }
 
+  // Optional portrait book cover, framed on the left over the banner (book cards).
+  if (hasInset) {
+    layers.push(
+      h(
+        'div',
+        {
+          style: {
+            position: 'absolute',
+            top: 92,
+            left: 64,
+            width: 296,
+            height: 446,
+            display: 'flex',
+            borderRadius: 12,
+            border: '1px solid rgba(255,255,255,0.20)',
+            boxShadow: '0 24px 60px rgba(0,0,0,0.55)',
+            overflow: 'hidden',
+          },
+        },
+        h('img', {
+          src: fileDataUri(opts.insetPath as string),
+          style: { width: 296, height: 446, objectFit: 'cover' },
+        }),
+      ),
+    );
+  }
+
   // Foreground content column.
   const content = h(
     'div',
@@ -205,7 +237,7 @@ function cardTree(opts: CardOptions): El {
         height: 630,
         paddingTop: 72,
         paddingBottom: 64,
-        paddingLeft: 80,
+        paddingLeft: padLeft,
         paddingRight: 80,
       },
     },
@@ -225,6 +257,7 @@ function cardTree(opts: CardOptions): El {
               lineHeight: 1.06,
               letterSpacing: -1,
               maxWidth: titleMaxWidth,
+              textShadow: TEXT_GLOW,
             },
           },
           opts.title,
@@ -241,10 +274,11 @@ function cardTree(opts: CardOptions): El {
                 {
                   style: {
                     display: 'flex',
-                    color: MUTED,
+                    color: WHITE,
                     fontSize: 20,
                     fontWeight: 400,
                     letterSpacing: 0.3,
+                    textShadow: TEXT_GLOW,
                   },
                 },
                 opts.meta,
