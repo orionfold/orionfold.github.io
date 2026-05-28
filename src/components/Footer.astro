@@ -1,11 +1,57 @@
 ---
-// Orionfold footer: section menu (the four pages) + Terms/Privacy + social
-// icons (YouTube / X / GitHub). Re-skinned from the donor Footer; the
-// "personal research project" disclaimer is dropped (Orionfold is a studio).
+// Orionfold footer. A "fat footer" directory (deep links to every product
+// detail page + the 5 newest stories) sits above a slim meta row (wordmark ·
+// explore · legal · social). The directory is data-driven from the SSOT and
+// gated by detailKeySet() so it only links products that actually have a detail
+// page; surfacing the latest stories puts a fresh internal link to new posts on
+// every page (helps crawl discovery + AEO catalog mapping). Column headers link
+// to the listing hubs; items link to the detail pages. NOTE: the productDetail
+// `type` token is SINGULAR (software/model/book) even though the URL bases are
+// plural (/software//models//books/).
+import { getCollection } from 'astro:content';
+import { software } from '../data/software';
+import { models } from '../data/models';
+import { books } from '../data/books';
+import { detailKeySet, slugify } from '../lib/product/detail';
+
+const detailKeys = await detailKeySet();
+
+// Software, grouped (platform → apps → intel → devtools), detail-gated.
+const SW_GROUPS = [
+  { key: 'platform', label: 'Platform' },
+  { key: 'apps', label: 'Apps' },
+  { key: 'intel', label: 'Intel' },
+  { key: 'devtools', label: 'Devtools' },
+] as const;
+const softwareLinks = software
+  .filter((s) => detailKeys.has(`software:${s.slug}`))
+  .map((s) => ({ href: `/software/${s.slug}/`, label: s.title, group: s.group }));
+
+// Models: slug = slugify(title); dedupe build variants to one entry (first seen),
+// then gate to those with a detail page (drops the dataset, which has none).
+const modelBySlug = new Map<string, string>();
+for (const m of models) {
+  const slug = slugify(m.title);
+  if (!modelBySlug.has(slug)) modelBySlug.set(slug, m.title);
+}
+const modelLinks = [...modelBySlug]
+  .filter(([slug]) => detailKeys.has(`model:${slug}`))
+  .map(([slug, label]) => ({ href: `/models/${slug}/`, label }));
+
+// Books, detail-gated.
+const bookLinks = books
+  .filter((b) => detailKeys.has(`book:${b.slug}`))
+  .map((b) => ({ href: `/books/${b.slug}/`, label: b.title }));
+
+// The 5 newest stories (same sort as the /story index).
+const latestStories = (await getCollection('story'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5)
+  .map((p) => ({ href: `/story/${p.id}/`, label: p.data.title }));
+
+// Slim meta-row nav: the listing hubs now live as directory column headers, so
+// Explore keeps only the pages without a directory column.
 const explore = [
-  { href: '/books/', label: 'Books' },
-  { href: '/software/', label: 'Software' },
-  { href: '/models/', label: 'Models' },
   { href: '/story/', label: 'Story' },
   { href: '/about/', label: 'About' },
   { href: '/roadmap/', label: 'Roadmap' },
@@ -17,9 +63,61 @@ const legal = [
 ];
 const year = new Date().getFullYear();
 ---
-<footer class="border-t border-border py-10 px-6">
-  <div class="max-w-6xl mx-auto text-text-muted text-xs font-mono">
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8 text-center sm:text-left">
+<footer class="border-t border-border">
+  <!-- Directory band (tinted, full-bleed): deep links to every detail page +
+       the latest stories. Software spans 2 columns, its 4 groups in a 2-col
+       sub-grid, so the tall catalog reads as two balanced columns. -->
+  <div class="bg-primary/[0.07] px-6 py-10">
+    <div class="max-w-6xl mx-auto text-text-muted text-xs font-mono">
+      <div class="grid grid-cols-2 gap-x-6 gap-y-8 md:flex md:justify-between text-center sm:text-left">
+        <!-- Software (full width on mobile, first proportional col on desktop;
+             its 4 groups sit in a 2-col sub-grid) -->
+        <div class="col-span-2 md:col-span-1 flex flex-col gap-3">
+          <a href="/software/" class="text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Software</a>
+          <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+            {SW_GROUPS.map((g) => (
+              <div class="flex flex-col gap-1.5">
+                <span class="text-[0.6rem] uppercase tracking-[0.1em] text-text-dim">{g.label}</span>
+                {softwareLinks.filter((s) => s.group === g.key).map((s) => (
+                  <a href={s.href} class="hover:text-primary transition-colors">{s.label}</a>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Models -->
+        <div class="flex flex-col gap-2">
+          <a href="/models/" class="text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Models</a>
+          {modelLinks.map((m) => (
+            <a href={m.href} class="hover:text-primary transition-colors">{m.label}</a>
+          ))}
+        </div>
+
+        <!-- Books -->
+        <div class="flex flex-col gap-2">
+          <a href="/books/" class="text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Books</a>
+          {bookLinks.map((b) => (
+            <a href={b.href} class="hover:text-primary transition-colors">{b.label}</a>
+          ))}
+        </div>
+
+        <!-- Latest stories (full width on mobile, widest col on desktop so the
+             post titles sit on one line) -->
+        <div class="col-span-2 md:col-span-1 flex flex-col gap-2">
+          <a href="/story/" class="text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Latest stories</a>
+          {latestStories.map((s) => (
+            <a href={s.href} class="hover:text-primary transition-colors text-balance">{s.label}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Meta band (default surface): wordmark · explore · legal · connect -->
+  <div class="px-6 py-10">
+    <div class="max-w-6xl mx-auto text-text-muted text-xs font-mono">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center sm:text-left">
       <!-- Wordmark -->
       <div class="col-span-2 sm:col-span-1 flex flex-col items-center sm:items-start gap-3">
         <a href="/" class="inline-flex items-center gap-1.5 text-text hover:text-primary transition-colors" aria-label="Orionfold home">
@@ -90,8 +188,9 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <div class="pt-6 border-t border-border text-center sm:text-left">
-      <span>&copy; {year} Orionfold LLC. Apache 2.0.</span>
+      <div class="pt-6 mt-8 border-t border-border text-center sm:text-left">
+        <span>&copy; {year} Orionfold LLC. Apache 2.0.</span>
+      </div>
     </div>
   </div>
 </footer>
