@@ -4,7 +4,7 @@ import { glob } from 'astro/loaders';
 // Story — a small building-in-public blog (spec §6). The only content
 // collection on the site; everything else reads typed src/data/*.ts. Posts are
 // plain .md under src/content/story/ (no MDX, spec §3); the glob loader maps
-// each filename to its URL slug, so why-we-folded-orionfold.md → /story/why-we-
+// each filename to its URL slug, so why-i-folded-orionfold.md → /story/why-i-
 // folded-orionfold/. Frontmatter stays minimal: title/date/summary + optional
 // tags so the index and the homepage carousel can render and sort by date.
 const story = defineCollection({

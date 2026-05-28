@@ -85,8 +85,8 @@ chapters:
 relatedModels: [patent-strategist]
 relatedBook: field-notes
 relatedReading:
-  - title: Why we folded Orionfold
-    href: /story/why-we-folded-orionfold/
+  - title: Why I folded Orionfold
+    href: /story/why-i-folded-orionfold/
 
 outbound:
   - label: Read the book free online

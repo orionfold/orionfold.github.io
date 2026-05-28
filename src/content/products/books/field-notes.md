@@ -247,10 +247,10 @@ chapters:
 relatedModels: [patent-strategist, securityllm, saul-7b-instruct, finance-chat, ii-medical-8b]
 relatedBook: ai-native-business
 relatedReading:
-  - title: Shipping models from one small desktop
-    href: /story/shipping-models-from-one-small-desktop/
-  - title: Picking open models over closed
-    href: /story/picking-open-models-over-closed/
+  - title: My first model on a desktop
+    href: /story/my-first-model-on-a-desktop/
+  - title: Access first, models second
+    href: /story/access-first-models-second/
 
 outbound:
   - label: Read the book free online

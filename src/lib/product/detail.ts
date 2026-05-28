@@ -198,24 +198,45 @@ export async function resolveRelated(entry: ProductEntry) {
   const stories = await getCollection('story');
   const storyBySlug = new Map(stories.map((s) => [s.id, s]));
 
+  // Build-time guard. An internal relatedReading link that points at an on-site
+  // page whose target no longer exists used to degrade silently — motif cover, no
+  // blurb, dead /story/<slug>/ link (404). This is the drift that bites when story
+  // slugs change as the arc is rebuilt. So fail the build loudly instead, naming
+  // the offending file + href. A story is valid iff the story exists (the story
+  // route builds them all); a product link is valid iff a productDetail entry
+  // exists for it (that entry is what emits the /type/slug/ page). The `never`
+  // return narrows the value to non-null for the callers below. A plain internal
+  // link with no typed shape (e.g. /about/) still passes through as a reading card.
+  const where = `${entry.data.type}/${entry.data.slug}`;
+  const missing = (kind: string, slug: string): never => {
+    throw new Error(
+      `[product-detail] ${where}: relatedReading link "/${kind === 'model' ? 'models' : kind}/${slug}/" ` +
+        `has no matching ${kind} page. Fix the href or drop the link ` +
+        `(internal targets drift when stories/products are renamed).`,
+    );
+  };
+
   const relatedReading: RelatedItem[] = (entry.data.relatedReading ?? []).map((r) => {
     const external = /^https?:\/\//.test(r.href);
     const base: RelatedItem = { title: r.title, href: r.href, external, kind: 'reading', seed: slugify(r.title) };
     if (external) return base;
     let m: RegExpMatchArray | null;
     if ((m = r.href.match(/^\/story\/([^/]+)\/?$/))) {
-      const s = storyBySlug.get(m[1]);
-      return { ...base, kind: 'story', blurb: s?.data.summary, cover: s?.data.hero, seed: m[1] };
+      const s = storyBySlug.get(m[1]) ?? missing('story', m[1]);
+      return { ...base, kind: 'story', blurb: s.data.summary, cover: s.data.hero, seed: m[1] };
     }
     if ((m = r.href.match(/^\/software\/([^/]+)\/?$/))) {
+      if (!hasDetail.has(detailKey('software', m[1]))) missing('software', m[1]);
       const p = software.find((x) => x.slug === m![1]);
       return { ...base, kind: 'software', blurb: p?.body, cover: resolveSoftwareCover(p?.cover), seed: m[1] };
     }
     if ((m = r.href.match(/^\/models\/([^/]+)\/?$/))) {
+      if (!hasDetail.has(detailKey('model', m[1]))) missing('model', m[1]);
       const mm = models.find((x) => slugify(x.title) === m![1]);
       return { ...base, kind: 'model', blurb: mm?.tagline, cover: resolveModelCover(mm?.cover), seed: m[1] };
     }
     if ((m = r.href.match(/^\/books\/([^/]+)\/?$/))) {
+      if (!hasDetail.has(detailKey('book', m[1]))) missing('book', m[1]);
       const b = books.find((x) => x.slug === m![1]);
       const be = all.find((e) => e.data.type === 'book' && e.data.slug === m![1]);
       return { ...base, kind: 'book', blurb: b?.body, cover: be?.data.hero, seed: m[1] };

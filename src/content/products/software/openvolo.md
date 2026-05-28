@@ -63,8 +63,8 @@ gallery:
 
 relatedBook: ai-native-business
 relatedReading:
-  - title: Building in public, week one
-    href: /story/building-in-public-week-one/
+  - title: Building in public
+    href: /story/building-in-public/
 
 outbound:
   - label: Visit OpenVolo

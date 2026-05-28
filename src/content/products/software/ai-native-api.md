@@ -68,8 +68,8 @@ specs:
 relatedReading:
   - title: AI Native Platform
     href: /software/ai-native-platform/
-  - title: Building in public, week one
-    href: /story/building-in-public-week-one/
+  - title: Building in public
+    href: /story/building-in-public/
 relatedBook: ai-native-business
 
 outbound:

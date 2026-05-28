@@ -62,8 +62,8 @@ gallery:
 relatedModels: [finance-chat]
 relatedBook: ai-native-business
 relatedReading:
-  - title: Picking open models over closed
-    href: /story/picking-open-models-over-closed/
+  - title: Access first, models second
+    href: /story/access-first-models-second/
 
 outbound:
   - label: Visit NeoCash

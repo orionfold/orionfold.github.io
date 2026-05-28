@@ -66,8 +66,8 @@ specs:
 relatedModels: [patent-strategist]
 relatedBook: field-notes
 relatedReading:
-  - title: Shipping models from one small desktop
-    href: /story/shipping-models-from-one-small-desktop/
+  - title: My first model on a desktop
+    href: /story/my-first-model-on-a-desktop/
 
 outbound:
   - label: fieldkit on GitHub

@@ -61,10 +61,10 @@ gallery:
 relatedModels: [patent-strategist]
 relatedBook: ai-native-business
 relatedReading:
-  - title: Picking open models over closed
-    href: /story/picking-open-models-over-closed/
-  - title: Shipping models from one small desktop
-    href: /story/shipping-models-from-one-small-desktop/
+  - title: Access first, models second
+    href: /story/access-first-models-second/
+  - title: My first model on a desktop
+    href: /story/my-first-model-on-a-desktop/
 
 outbound:
   - label: command on GitHub
