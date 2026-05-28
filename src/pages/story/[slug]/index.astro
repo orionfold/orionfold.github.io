@@ -10,6 +10,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import StorySubscribe from '../../../components/sections/StorySubscribe.astro';
+import StoryPrevNext from '../../../components/story/StoryPrevNext.astro';
 import { ogPath, storyOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 
@@ -21,6 +22,12 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const { title, date, summary, tags, hero, heroAlt } = post.data;
+
+// Ascending by date (oldest → newest) so a left-to-right walk in the index IS
+// the founder-arc walk. StoryPrevNext picks neighbors by simple index math.
+const allStories = (await getCollection('story')).sort(
+  (a, b) => a.data.date.getTime() - b.data.date.getTime(),
+);
 
 // timeZone:'UTC' so a date-only frontmatter value (parsed as UTC midnight) shows
 // the authored day, not the day before in a behind-UTC build/local timezone.
@@ -124,6 +131,9 @@ const breadcrumbSchema = {
       )}
     </article>
   </main>
+
+  <!-- Read-next/prev within the arc; renders nothing at the ends if neither neighbor exists -->
+  <StoryPrevNext current={post} posts={allStories} />
 
   <!-- Subscribe to stories (H3): same capture block as the story index -->
   <StorySubscribe class="border-t border-border" />

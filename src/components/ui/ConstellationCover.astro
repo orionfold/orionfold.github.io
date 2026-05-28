@@ -13,7 +13,7 @@
 interface Props {
   seed: string;
   label?: string; // faint mono caption, bottom-left
-  ratio?: 'card' | 'band' | 'wide'; // 16:9 | 3:1 | 5:2
+  ratio?: 'card' | 'band' | 'wide' | 'square'; // 16:9 | 3:1 | 5:2 | 1:1
   rounded?: string; // tailwind rounding; use 'rounded-none' when embedded full-bleed
   class?: string;
 }
@@ -69,7 +69,7 @@ const hue = 250 + Math.floor(rnd() * 24);
 const glowX = 18 + Math.round(rnd() * 64);
 const uid = 'cc' + hash(seed).toString(36);
 
-const aspect = ratio === 'wide' ? 'aspect-[5/2]' : ratio === 'band' ? 'aspect-[3/1]' : 'aspect-[16/9]';
+const aspect = ratio === 'wide' ? 'aspect-[5/2]' : ratio === 'band' ? 'aspect-[3/1]' : ratio === 'square' ? 'aspect-square' : 'aspect-[16/9]';
 ---
 <div
   class:list={['relative overflow-hidden', aspect, rounded, className]}
