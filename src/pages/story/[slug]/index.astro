@@ -11,6 +11,7 @@ import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import StorySubscribe from '../../../components/sections/StorySubscribe.astro';
 import { ogPath, storyOgSlug } from '../../../data/og';
+import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 
 export async function getStaticPaths() {
   const posts = await getCollection('story');
@@ -25,6 +26,42 @@ const { title, date, summary, tags, hero, heroAlt } = post.data;
 // the authored day, not the day before in a behind-UTC build/local timezone.
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
 const dateIso = date.toISOString().slice(0, 10);
+
+// Page-specific JSON-LD (N10). Layout appends these after the global
+// Organization node. BlogPosting makes each story eligible for article rich
+// results + gives answer engines a clean author/date/headline triple; the
+// author resolves to /about/ (a Person/ProfilePage) for E-E-A-T. The
+// BreadcrumbList matches the Home → listing → page trail every other inner
+// page (books/products/about) already ships.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogPath(storyOgSlug(post.id)), Astro.site).href;
+
+const blogPostingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: summary,
+  image: ogImageUrl,
+  datePublished: dateIso,
+  dateModified: dateIso,
+  author: { ...PERSON, url: `${SITE.url}/about/` },
+  publisher: PUBLISHER,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  url: canonical,
+  inLanguage: 'en',
+  articleSection: 'Story',
+  ...(tags.length ? { keywords: tags.join(', ') } : {}),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Story', item: `${SITE.url}/story/` },
+    { '@type': 'ListItem', position: 3, name: title, item: canonical },
+  ],
+};
 ---
 <Layout
   title={`${title} · Orionfold`}
@@ -39,6 +76,7 @@ const dateIso = date.toISOString().slice(0, 10);
     section: 'Story',
     tags,
   }}
+  jsonLd={[blogPostingSchema, breadcrumbSchema]}
 >
   <Nav />
   <main class="px-6 pt-36 pb-28 sm:pt-40">
