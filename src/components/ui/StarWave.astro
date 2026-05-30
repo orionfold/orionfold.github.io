@@ -185,15 +185,14 @@ const fieldDur = isBand ? 26 : 20;
     style={`background: radial-gradient(130% 78% at 50% 72%, ${P.neb[0]}, transparent 62%), radial-gradient(85% 66% at 26% 80%, ${P.neb[1]}, transparent 54%), radial-gradient(90% 66% at 76% 74%, ${P.neb[2]}, transparent 54%);`}
   ></div>
 
-  <!-- constellation starfield (sits behind the waves) -->
-  <svg
-    class="sw-starfield absolute inset-0 h-full w-full"
-    viewBox={`0 0 ${W} ${H}`}
-    preserveAspectRatio="none"
-    fill="none"
-    aria-hidden="true"
-  >
-    <g class="sw-field" style={`--sway:${fieldSway}px; --dur:${fieldDur}s;`}>
+  <!-- Constellation starfield (behind the waves). The stars/halos are DOM dots
+       positioned by left=%-of-width + top=px so they stay PERFECTLY ROUND at any
+       width — only the waves are allowed to stretch (preserveAspectRatio="none").
+       The link <svg> uses the same none-mapping, so its line endpoints land on the
+       exact same screen points as the DOM stars (x/W·width, y px) and stay glued.
+       The whole field is wrapped in one swaying div so lines + stars drift together. -->
+  <div class="sw-field absolute inset-0" style={`--sway:${fieldSway}px; --dur:${fieldDur}s;`}>
+    <svg class="absolute inset-0 h-full w-full" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" fill="none" aria-hidden="true">
       {links.map((l) => (
         <line
           class="sw-link"
@@ -203,26 +202,28 @@ const fieldDur = isBand ? 26 : 20;
           y2={l.y2}
           stroke={P.star}
           stroke-width="0.5"
+          vector-effect="non-scaling-stroke"
           style={`--dur:${fieldDur}s; --dly:${l.dly}s;`}
         ></line>
       ))}
-      {stars.map((s) => (
-        <Fragment>
-          {s.bright && <circle cx={s.x} cy={s.y} r={(s.r * 3.4).toFixed(1)} fill={s.col} opacity="0.16"></circle>}
-          <circle
-            class="sw-star"
-            cx={s.x}
-            cy={s.y}
-            r={s.r}
-            fill={s.col}
-            style={`--o:${s.op}; --tw:${s.tw}s; --dly:${s.dly}s;`}
-          ></circle>
-        </Fragment>
-      ))}
-    </g>
-  </svg>
+    </svg>
+    {stars.map((s) => (
+      <Fragment>
+        {s.bright && (
+          <span
+            class="sw-halo"
+            style={`left:${((s.x / W) * 100).toFixed(3)}%; top:${s.y}px; width:${(s.r * 6.8).toFixed(1)}px; height:${(s.r * 6.8).toFixed(1)}px; background:radial-gradient(circle, ${s.col} 0%, transparent 70%);`}
+          ></span>
+        )}
+        <span
+          class="sw-star"
+          style={`left:${((s.x / W) * 100).toFixed(3)}%; top:${s.y}px; width:${(s.r * 2).toFixed(2)}px; height:${(s.r * 2).toFixed(2)}px; background:${s.col}; --o:${s.op}; --tw:${s.tw}s; --dly:${s.dly}s;`}
+        ></span>
+      </Fragment>
+    ))}
+  </div>
 
-  <!-- undulating waves -->
+  <!-- undulating waves (intentionally stretch full-bleed) -->
   <svg class="absolute inset-0 h-full w-full" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" fill="none">
     <defs>
       <linearGradient id={`${uid}-w`} x1="0" y1="0" x2="1" y2="0">
@@ -230,10 +231,6 @@ const fieldDur = isBand ? 26 : 20;
         <stop offset="50%" stop-color={P.waveStops[1]}></stop>
         <stop offset="100%" stop-color={P.waveStops[2]}></stop>
       </linearGradient>
-      <radialGradient id={`${uid}-g`} cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color={P.dot} stop-opacity="0.85"></stop>
-        <stop offset="100%" stop-color={P.dot} stop-opacity="0"></stop>
-      </radialGradient>
     </defs>
 
     {waves.map((w) => (
@@ -248,14 +245,24 @@ const fieldDur = isBand ? 26 : 20;
         style={`--d0:path('${w.d0}'); --d1:path('${w.d1}'); --dur:${w.dur}s; --sway:${w.sway}px;`}
       ></path>
     ))}
-
-    {ridingDots.map((p) => (
-      <g class="sw-dot">
-        <circle cx={p.x} cy={p.y} r={isBand ? 7 : 5} fill={`url(#${uid}-g)`} opacity="0.45"></circle>
-        <circle cx={p.x} cy={p.y} r={isBand ? 1.9 : 1.5} fill={P.dot}></circle>
-      </g>
-    ))}
   </svg>
+
+  <!-- glowing dots riding the front wave (in front of the waves). Also DOM dots
+       (left=%-of-width + top=px) so they stay round and sit on the wave line. -->
+  <div class="absolute inset-0">
+    {ridingDots.map((p) => (
+      <span class="sw-dot" style={`left:${((p.x / W) * 100).toFixed(3)}%; top:${p.y}px;`}>
+        <span
+          class="sw-dot-glow"
+          style={`width:${isBand ? 14 : 10}px; height:${isBand ? 14 : 10}px; background:radial-gradient(circle, ${P.dot} 0%, transparent 70%);`}
+        ></span>
+        <span
+          class="sw-dot-core"
+          style={`width:${isBand ? 3.8 : 3}px; height:${isBand ? 3.8 : 3}px; background:${P.dot};`}
+        ></span>
+      </span>
+    ))}
+  </div>
 </div>
 
 <style>
@@ -297,10 +304,23 @@ const fieldDur = isBand ? 26 : 20;
     will-change: transform;
     animation: sw-fieldsway var(--dur) ease-in-out infinite;
   }
+  /* Stars + glow halos are absolutely-positioned ROUND dots (left=%-of-width,
+     top=px) so they never distort with the band's width. translate(-50%,-50%)
+     makes left/top the dot CENTRE, matching the old SVG cx/cy. */
+  .sw-star,
+  .sw-halo {
+    position: absolute;
+    border-radius: 9999px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
   .sw-star {
     opacity: var(--o);
     will-change: opacity;
     animation: sw-startwinkle var(--tw) ease-in-out var(--dly) infinite;
+  }
+  .sw-halo {
+    opacity: 0.16;
   }
   .sw-link {
     opacity: 0.12;
@@ -344,9 +364,22 @@ const fieldDur = isBand ? 26 : 20;
     }
   }
 
+  /* Riding dots: a positioned point; glow + core are round spans centred on it. */
   .sw-dot {
+    position: absolute;
     animation: sw-twinkle 5s ease-in-out infinite;
     --op: 1;
+  }
+  .sw-dot > span {
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 9999px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .sw-dot-glow {
+    opacity: 0.5;
   }
 
   /* Respect the user: freeze to a still, still-visible state. */
