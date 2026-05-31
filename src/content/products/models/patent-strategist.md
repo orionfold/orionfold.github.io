@@ -79,7 +79,7 @@ relatedReading:
     href: https://ainative.business/field-notes/patent-strategist-bakeoff-unsloth-vs-nemo-framework/
   - title: The 200 question test set
     href: https://huggingface.co/datasets/Orionfold/patent-strategist-bench-v0.1
-relatedBook: field-notes
+relatedBook: ai-research-on-nvidia-dgx-spark
 
 outbound:
   - label: GGUF files (ready to run)

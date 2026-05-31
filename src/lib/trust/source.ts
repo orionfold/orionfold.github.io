@@ -44,7 +44,7 @@ export const MODEL_REPOS: Record<string, RepoRef> = {
 // records: {number, part, title, ...}). Author-time only; CI uses the snapshot.
 export const BOOK_MANIFESTS: Record<string, string> = {
   'ai-native-business': '/Users/manavsehgal/orionfold/books/ainative/_build/manifest.json',
-  'field-notes': '/Users/manavsehgal/orionfold/books/dgx-spark/_build/manifest.json',
+  'ai-research-on-nvidia-dgx-spark': '/Users/manavsehgal/orionfold/books/dgx-spark/_build/manifest.json',
 };
 
 const SNAPSHOT_PATH = path.join(process.cwd(), 'src/lib/trust/snapshot.json');

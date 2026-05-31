@@ -64,7 +64,7 @@ specs:
     value: Apache 2.0 (free to use)
 
 relatedModels: [patent-strategist]
-relatedBook: field-notes
+relatedBook: ai-research-on-nvidia-dgx-spark
 relatedReading:
   - title: My first model on a desktop
     href: /story/my-first-model-on-a-desktop/

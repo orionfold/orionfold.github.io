@@ -112,7 +112,7 @@ export function buildRoadmap(signals: RoadmapSignals): RoadmapItem[] {
       status: b.status ?? 'released',
       href: b.href,
       sponsorTier: b.sponsorTier,
-      features: b.slug === 'field-notes' ? stagesToFeatures(signals.fieldNotes.stages) : b.features,
+      features: b.slug === 'ai-research-on-nvidia-dgx-spark' ? stagesToFeatures(signals.fieldNotes.stages) : b.features,
       cta: 'buy',
       lookupKey: b.lookupKey,
       roadmapOrder: b.roadmapOrder ?? i,

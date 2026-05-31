@@ -76,7 +76,7 @@ relatedModels:
 relatedReading:
   - title: Why the smallest build scored best
     href: https://ainative.business/field-notes/becoming-a-cyber-curator-on-spark/
-relatedBook: field-notes
+relatedBook: ai-research-on-nvidia-dgx-spark
 
 outbound:
   - label: GGUF files (ready to run)

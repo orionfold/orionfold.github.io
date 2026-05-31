@@ -7,7 +7,7 @@
 # style). Word count (~145k) verified from the rendered prose, not the manifest.
 # Hero is the real book cover; books resolve the hero from this frontmatter.
 type: book
-slug: field-notes
+slug: ai-research-on-nvidia-dgx-spark
 valueProp: A growing field journal of real AI research run on one desktop machine, the NVIDIA DGX Spark. Fifty three chapters in eight parts, every lesson backed by code you can run yourself. Free to read online.
 
 # Books resolve the hero from frontmatter (the route does not glob a poster).

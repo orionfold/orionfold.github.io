@@ -14,7 +14,7 @@ import { toProductView, coverKey } from '../../lib/product/detail';
 // Book detail OG cards frame the portrait cover on the left over the banner.
 const BOOK_COVERS: Record<string, string> = {
   'ai-native-business': 'src/assets/book/ai-native-business-book.jpg',
-  'field-notes': 'src/assets/book/ai-research-dgx-spark-book.jpg',
+  'ai-research-on-nvidia-dgx-spark': 'src/assets/book/ai-research-dgx-spark-book.jpg',
 };
 
 export const prerender = true;

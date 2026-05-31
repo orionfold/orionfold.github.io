@@ -83,7 +83,7 @@ chapters:
     subtitle: Using the system to build the system.
 
 relatedModels: [patent-strategist]
-relatedBook: field-notes
+relatedBook: ai-research-on-nvidia-dgx-spark
 relatedReading:
   - title: Why I folded Orionfold
     href: /story/why-i-folded-orionfold/

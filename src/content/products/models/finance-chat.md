@@ -74,7 +74,7 @@ relatedModels:
 relatedReading:
   - title: Shrinking a model with almost no quality loss
     href: https://ainative.business/field-notes/becoming-a-gguf-publisher-on-spark/
-relatedBook: field-notes
+relatedBook: ai-research-on-nvidia-dgx-spark
 
 outbound:
   - label: GGUF files (ready to run)

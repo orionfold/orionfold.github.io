@@ -74,7 +74,7 @@ relatedModels:
 relatedReading:
   - title: A reasoning model, measured on a desktop
     href: https://ainative.business/field-notes/becoming-a-medical-curator-on-spark/
-relatedBook: field-notes
+relatedBook: ai-research-on-nvidia-dgx-spark
 
 outbound:
   - label: GGUF files (ready to run)

@@ -74,7 +74,7 @@ relatedModels:
 relatedReading:
   - title: Picking the best legal build by the numbers
     href: https://ainative.business/field-notes/becoming-a-legal-curator-on-spark/
-relatedBook: field-notes
+relatedBook: ai-research-on-nvidia-dgx-spark
 
 outbound:
   - label: GGUF files (ready to run)

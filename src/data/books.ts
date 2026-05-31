@@ -40,7 +40,7 @@ export const books: Book[] = [
     },
   },
   {
-    slug: 'field-notes',
+    slug: 'ai-research-on-nvidia-dgx-spark',
     eyebrow: 'AI Research Field Notes',
     title: 'AI Research on NVIDIA DGX Spark',
     body: 'Real notes from doing AI research on one desktop. The NVIDIA DGX Spark is a small machine with huge power (petascale means it runs about a quadrillion math steps a second), so you can push local AI further with no cloud needed. Every lesson is backed by code that runs.',
