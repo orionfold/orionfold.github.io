@@ -15,6 +15,8 @@ export default defineConfig({
     '/story/building-in-public-week-one/': '/story/building-in-public/',
     '/story/picking-open-models-over-closed/': '/story/the-year-the-gap-closed/',
     '/story/shipping-models-from-one-small-desktop/': '/story/my-first-model-on-a-desktop/',
+    // Retitled to drop the marketing-fluff "free" from the slug + headline.
+    '/story/a-book-you-can-read-free-and-run/': '/story/a-book-you-can-read-and-run/',
   },
   integrations: [
     sitemap({

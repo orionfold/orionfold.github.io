@@ -40,4 +40,4 @@ The point of open tools is not only that they are free. It is that the boring, s
 
 The whole tagline fits on one line: ship AI features faster, cheaper, with less glue. You can see it on the [fieldkit page](/software/fieldkit/).
 
-The kit came straight out of writing things down, over and over, until the patterns were clear. Which brings me to the books: [A book you can read free and run](/story/a-book-you-can-read-free-and-run/).
+The kit came straight out of writing things down, over and over, until the patterns were clear. Which brings me to the books: [A book you can read and run](/story/a-book-you-can-read-and-run/).
