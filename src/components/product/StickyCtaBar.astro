@@ -20,6 +20,18 @@ const buyLabel = priceLabel ? `Buy · ${priceLabel}` : 'Buy now';
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
     <p class="truncate font-display text-sm font-bold">{view.title}</p>
+    <div class="flex shrink-0 items-center gap-2">
+    {view.demo && (
+      <a
+        href={view.demo.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-primary/40 bg-primary/10 px-4 py-2 font-mono text-xs tracking-wider text-primary transition-colors hover:bg-primary/15"
+      >
+        {view.demo.label}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>
+      </a>
+    )}
     {view.cta === 'buy' ? (
       <button
         type="button"
@@ -38,6 +50,7 @@ const buyLabel = priceLabel ? `Buy · ${priceLabel}` : 'Buy now';
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
       </a>
     )}
+    </div>
   </div>
 </div>
 

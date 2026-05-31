@@ -27,6 +27,10 @@ export interface SoftwareProduct extends RoadmapMeta {
   pills: string[];
   href: string; // canonical home (external)
   ctaText: string;
+  /** Optional hosted-demo URL. When set, the detail page surfaces a prominent
+   *  "try it" button in the hero + sticky bar (only products with a live demo). */
+  demoHref?: string;
+  demoLabel?: string; // demo button label; defaults to "Try the live demo"
   coverType: CoverType;
   cover?: string; // asset filename under src/assets/projects/
 }
@@ -191,5 +195,20 @@ export const software: SoftwareProduct[] = [
     coverType: 'poster',
     cover: 'fieldkit-poster.png',
     status: 'active', // F1: still growing; F2 pulls its module/feature list from GitHub
+  },
+  {
+    slug: 'arena',
+    group: 'devtools',
+    eyebrow: 'Eval cockpit',
+    title: 'Orionfold Arena',
+    body: 'One screen to run, compare, and score the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, and chat or test two side by side. Nothing you type leaves your machine.',
+    pills: ['Runs local', 'Leaderboard', 'Live telemetry', 'Private'],
+    href: 'https://ainative.business/arena/',
+    ctaText: 'See Arena',
+    demoHref: 'https://ainative.business/arena/demo/',
+    demoLabel: 'Try the live demo',
+    coverType: 'poster',
+    cover: 'arena-poster.png',
+    status: 'active', // living tool, served by fieldkit; appears on the roadmap
   },
 ];

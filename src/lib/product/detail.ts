@@ -101,6 +101,9 @@ export interface ProductView {
   roadmapItemId: string;
   /** The now-demoted SSOT link (canonical home / repo), shown after the CTA. */
   outboundPrimary?: { label: string; href: string };
+  /** Optional prominent live-demo link (software with a hosted demo). Rendered as
+   *  a dedicated button in the hero + sticky bar, next to the Sponsor CTA. */
+  demo?: { label: string; href: string };
   /** Short label pills from the SSOT (software/book). */
   pills: string[];
 }
@@ -133,6 +136,7 @@ export function toProductView(type: ProductType, entry: ProductEntry): ProductVi
   } else if (type === 'software') {
     const s = primary as SoftwareProduct;
     base.outboundPrimary = { label: s.ctaText, href: s.href };
+    if (s.demoHref) base.demo = { label: s.demoLabel ?? 'Try the live demo', href: s.demoHref };
   } else {
     const m = primary as Model;
     base.outboundPrimary = { label: m.ctaText ?? 'Open on HuggingFace', href: m.href };

@@ -2,8 +2,10 @@
 // Product detail hero (P1, spec §4 "10-second hero"). Type tag, name, one-line
 // value prop, ONE role-correct primary CTA, the key visual, and a metadata-chip
 // strip. The primary CTA is a Buy button (books, wired by wireCheckoutButtons)
-// or a "Sponsor" anchor that scrolls to the SponsorBlock (#sponsor). The demoted
-// canonical/outbound link sits beside it as a ghost secondary. Always renders.
+// or a "Sponsor" anchor that scrolls to the SponsorBlock (#sponsor). A product
+// with a hosted demo (view.demo) gets a prominent outlined "try it" button next
+// to it; the demoted canonical/outbound link sits beside them as a ghost
+// secondary. Always renders.
 import { Image } from 'astro:assets';
 import type { ProductView } from '../../lib/product/detail';
 
@@ -53,6 +55,18 @@ const buyLabel = priceLabel ? `Buy PDF + EPUB · ${priceLabel}` : 'Buy now';
           >
             Sponsor this work
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+        )}
+
+        {view.demo && (
+          <a
+            href={view.demo.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary/10 px-5 py-3 font-mono text-sm tracking-wider text-primary transition-colors hover:bg-primary/15"
+          >
+            {view.demo.label}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>
           </a>
         )}
 
