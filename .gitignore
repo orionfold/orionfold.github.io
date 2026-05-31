@@ -11,6 +11,10 @@ supabase/functions/*/.env
 # Stripe setup notes — sensitive, local-only (never commit)
 STRIPE-HANDOFF.md
 
+# Marketing-repo handoff specs — sister `marketing/` workspace drops these here for
+# the website session to implement. Local-only by the doc's own preamble; never commit.
+MARKETING-HANDOFF.md
+
 # Planning specs + build spine (local-only docs)
 specs/
 HANDOFF.md
