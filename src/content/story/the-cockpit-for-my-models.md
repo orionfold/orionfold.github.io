@@ -1,7 +1,7 @@
 ---
 title: The cockpit for my models
 date: 2026-05-29
-summary: I had a shelf of models I built on one desktop and nowhere to drive them from. So in about fifteen hours I built a cockpit to run, compare, and score them, all on the machine under my desk.
+summary: I had a shelf of models on one desktop and no way to drive them. In fifteen hours I built a cockpit to run, compare, and score them, all on that desk.
 hero: ../../assets/story/the-cockpit-for-my-models/hero.jpeg
 heroAlt: "Three-panel painted comic. A builder looks overwhelmed at a shelf full of glowing AI model boxes and a tangle of terminal windows, then sketches a single dashboard beside a glowing gold desktop computer, then sits back happy at one screen with live dials, a leaderboard, and two models racing, under a blue star constellation. A banner reads One cockpit for every model."
 tags:

@@ -73,13 +73,13 @@ const year = new Date().getFullYear();
         <!-- Software (full width on mobile, first proportional col on desktop;
              its 4 groups sit in a 2-col sub-grid) -->
         <div class="col-span-2 md:col-span-1 flex flex-col gap-3">
-          <a href="/software/" class="text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Software</a>
+          <a href="/software/" class="block py-1 -my-0.5 text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Software</a>
           <div class="grid grid-cols-2 gap-x-6 gap-y-3">
             {SW_GROUPS.map((g) => (
               <div class="flex flex-col gap-1.5">
                 <span class="text-[0.6rem] uppercase tracking-[0.1em] text-text-dim">{g.label}</span>
                 {softwareLinks.filter((s) => s.group === g.key).map((s) => (
-                  <a href={s.href} class="hover:text-primary transition-colors">{s.label}</a>
+                  <a href={s.href} class="block py-1 -my-0.5 hover:text-primary transition-colors">{s.label}</a>
                 ))}
               </div>
             ))}
@@ -88,26 +88,26 @@ const year = new Date().getFullYear();
 
         <!-- Models -->
         <div class="flex flex-col gap-2">
-          <a href="/models/" class="text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Models</a>
+          <a href="/models/" class="block py-1 -my-0.5 text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Models</a>
           {modelLinks.map((m) => (
-            <a href={m.href} class="hover:text-primary transition-colors">{m.label}</a>
+            <a href={m.href} class="block py-1 -my-0.5 hover:text-primary transition-colors">{m.label}</a>
           ))}
         </div>
 
         <!-- Books -->
         <div class="flex flex-col gap-2">
-          <a href="/books/" class="text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Books</a>
+          <a href="/books/" class="block py-1 -my-0.5 text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Books</a>
           {bookLinks.map((b) => (
-            <a href={b.href} class="hover:text-primary transition-colors">{b.label}</a>
+            <a href={b.href} class="block py-1 -my-0.5 hover:text-primary transition-colors">{b.label}</a>
           ))}
         </div>
 
         <!-- Latest stories (full width on mobile, widest col on desktop so the
              post titles sit on one line) -->
         <div class="col-span-2 md:col-span-1 flex flex-col gap-2">
-          <a href="/story/" class="text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Latest stories</a>
+          <a href="/story/" class="block py-1 -my-0.5 text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Latest stories</a>
           {latestStories.map((s) => (
-            <a href={s.href} class="hover:text-primary transition-colors text-balance">{s.label}</a>
+            <a href={s.href} class="block py-1 -my-0.5 hover:text-primary transition-colors text-balance">{s.label}</a>
           ))}
         </div>
       </div>

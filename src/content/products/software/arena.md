@@ -11,7 +11,7 @@
 # (GGUF, quantize, throughput) glossed in plain words.
 type: software
 slug: arena
-valueProp: One screen to run, compare, and score the AI models on your own desktop. Watch live speed and memory, rank your models on a private board, and put two head to head. Free, and nothing you type ever leaves your machine.
+valueProp: Run, compare, and score AI models on your own desktop. Live speed and memory, a private board, two side by side. Free, and nothing leaves your machine.
 
 chips:
   - label: Language
