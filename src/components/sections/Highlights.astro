@@ -1,7 +1,7 @@
 ---
 // Homepage highlights (spec §5.4–5.6): one curated pick from each pillar —
 // the book, the software, a model. P2 deep-links each straight to its on-site
-// detail page (/books/ai-native-business/, /software/ai-native-platform/,
+// detail page (/books/ai-research-on-nvidia-dgx-spark/, /software/arena/,
 // /models/patent-strategist/) instead of the listing page, fixing the
 // "click a product, get a catalog" leak (spec §3). Layout sides alternate via
 // Highlight's `reverse`. The software and model picks lead with their curated
@@ -9,40 +9,40 @@
 import { Image } from 'astro:assets';
 import Highlight from '../ui/Highlight.astro';
 import BookCover from '../ui/BookCover.astro';
-import aiNativeCover from '../../assets/book/ai-native-business-book.jpg';
-import platformPoster from '../../assets/projects/ai-native-platform-poster.png';
+import dgxResearchCover from '../../assets/book/ai-research-dgx-spark-book.jpg';
+import arenaPoster from '../../assets/projects/arena-poster.png';
 import patentPoster from '../../assets/models/patent-strategist/cover.png';
 ---
 <!-- ── Highlight: the book ── -->
 <Highlight
   eyebrow="The book"
-  title="AI Native Business"
-  body="A free book on running a business with AI agents (software helpers that do the work for you). Fourteen short chapters, about a two hour read."
-  pills={['14 chapters', '4 parts', '~2h read', 'Free to read']}
-  href="/books/ai-native-business/"
+  title="AI Research on NVIDIA DGX Spark"
+  body="Real notes from doing AI research on one desktop. The NVIDIA DGX Spark packs huge power into a small machine, so you can push local AI further with no cloud needed. Every lesson is backed by code that runs."
+  pills={['Local AI', 'NVIDIA DGX Spark', 'Petascale desktop', 'Backed by code']}
+  href="/books/ai-research-on-nvidia-dgx-spark/"
   ctaText="Explore the book"
 >
-  <a slot="media" href="/books/ai-native-business/" aria-label="Explore the book" class="block">
-    <BookCover title="AI Native Business" subtitle="Build with AI agents." tag="Free · open" image={aiNativeCover} />
+  <a slot="media" href="/books/ai-research-on-nvidia-dgx-spark/" aria-label="Explore the book" class="block">
+    <BookCover title="AI Research on NVIDIA DGX Spark" subtitle="Pushing the Frontier of Local AI on a Petascale Desktop" tag="Running log" image={dgxResearchCover} />
   </a>
 </Highlight>
 
 <!-- ── Highlight: the software ── -->
 <Highlight
   eyebrow="The software"
-  title="AI Native Platform"
-  body="Run AI agents on your own computer. Hand them tasks, set schedules, watch the work, and track what it costs. One place, no cloud needed."
-  pills={['Runs local', 'Open', 'Agents', 'Workflows']}
-  href="/software/ai-native-platform/"
-  ctaText="Explore the platform"
+  title="Orionfold Arena"
+  body="One screen to run, compare, and score the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, and test two side by side. Nothing you type leaves your machine."
+  pills={['Runs local', 'Leaderboard', 'Live telemetry', 'Private']}
+  href="/software/arena/"
+  ctaText="Explore Arena"
   reverse
 >
   <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
     <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
-    <a href="/software/ai-native-platform/" aria-label="Explore the platform" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
+    <a href="/software/arena/" aria-label="Explore Arena" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
       <Image
-        src={platformPoster}
-        alt="AI Native Platform poster art"
+        src={arenaPoster}
+        alt="Orionfold Arena poster art"
         widths={[440, 680, 880]}
         sizes="(min-width: 1024px) 42vw, 90vw"
         data-no-zoom

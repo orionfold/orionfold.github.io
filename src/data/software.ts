@@ -38,9 +38,9 @@ export interface SoftwareProduct extends RoadmapMeta {
 // Group headings + blurbs for the page sections (order = display order).
 export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }[] = [
   { id: 'platform', label: 'The platform', blurb: 'The core: run AI on your own computer, and drive it with code.' },
+  { id: 'devtools', label: 'Developer tools', blurb: 'For builders: testing, terminals, and reusable patterns.' },
   { id: 'apps', label: 'Personal AI apps', blurb: 'Ready-to-use apps that keep your data on your machine.' },
   { id: 'intel', label: 'Intelligence & research', blurb: 'Tools that turn the fast-moving AI world into clear answers.' },
-  { id: 'devtools', label: 'Developer tools', blurb: 'For builders: testing, terminals, and reusable patterns.' },
 ];
 
 export const software: SoftwareProduct[] = [
@@ -160,30 +160,6 @@ export const software: SoftwareProduct[] = [
 
   // ── Developer tools ──
   {
-    slug: 'command',
-    group: 'devtools',
-    eyebrow: 'Developer tool',
-    title: 'Command',
-    body: 'Turn your terminal into a fast personal AI app that runs 15+ models, including private ones on your laptop, with three simple commands.',
-    pills: ['Terminal', '15+ models', '7 providers', 'Local-first'],
-    href: 'https://github.com/navam-io/command',
-    ctaText: 'See it on GitHub',
-    coverType: 'poster',
-    cover: 'command-poster.png',
-  },
-  {
-    slug: 'sentinel',
-    group: 'devtools',
-    eyebrow: 'Agent testing',
-    title: 'Sentinel',
-    body: 'Build and run tests for your AI helpers by dragging boxes around. Like Postman, but for checking that AI agents behave.',
-    pills: ['Visual canvas', 'Desktop app', 'YAML export', 'Well tested'],
-    href: 'https://github.com/navam-io/sentinel',
-    ctaText: 'See it on GitHub',
-    coverType: 'poster',
-    cover: 'sentinel-poster.png',
-  },
-  {
     slug: 'fieldkit',
     group: 'devtools',
     eyebrow: 'Open toolbox',
@@ -210,5 +186,29 @@ export const software: SoftwareProduct[] = [
     coverType: 'poster',
     cover: 'arena-poster.png',
     status: 'active', // living tool, served by fieldkit; appears on the roadmap
+  },
+  {
+    slug: 'command',
+    group: 'devtools',
+    eyebrow: 'Developer tool',
+    title: 'Command',
+    body: 'Turn your terminal into a fast personal AI app that runs 15+ models, including private ones on your laptop, with three simple commands.',
+    pills: ['Terminal', '15+ models', '7 providers', 'Local-first'],
+    href: 'https://github.com/navam-io/command',
+    ctaText: 'See it on GitHub',
+    coverType: 'poster',
+    cover: 'command-poster.png',
+  },
+  {
+    slug: 'sentinel',
+    group: 'devtools',
+    eyebrow: 'Agent testing',
+    title: 'Sentinel',
+    body: 'Build and run tests for your AI helpers by dragging boxes around. Like Postman, but for checking that AI agents behave.',
+    pills: ['Visual canvas', 'Desktop app', 'YAML export', 'Well tested'],
+    href: 'https://github.com/navam-io/sentinel',
+    ctaText: 'See it on GitHub',
+    coverType: 'poster',
+    cover: 'sentinel-poster.png',
   },
 ];
