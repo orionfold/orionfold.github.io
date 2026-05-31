@@ -28,15 +28,15 @@ export const books: Book[] = [
     slug: 'ai-native-business',
     eyebrow: 'The book',
     title: 'AI Native Business',
-    body: 'A free book on running a business with AI agents (software helpers that do the work for you). Fourteen short chapters in four parts take you from the first idea to a working system. About a two hour read, open to all.',
-    pills: ['14 chapters', '4 parts', '~2h read', 'Free to read'],
+    body: 'A book on running a business with AI agents (software helpers that do the work for you). Fourteen short chapters in four parts take you from the first idea to a working system. About a two hour read, open to all.',
+    pills: ['14 chapters', '4 parts', '~2h read'],
     href: 'https://ainative.business/book',
     ctaText: 'Read online',
     lookupKey: 'book_ai_native_business',
     cover: {
       title: 'AI Native Business',
       subtitle: 'Build with AI agents.',
-      tag: 'Free · open',
+      tag: 'Open',
     },
   },
   {

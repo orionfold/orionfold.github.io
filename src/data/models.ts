@@ -92,7 +92,7 @@ export const models: Model[] = [
     tagline: 'Tuned for finance and money questions in plain chat.',
     base: 'AdaptLLM/finance-chat',
     format: 'GGUF',
-    license: 'Free',
+    license: 'Open',
     href: `${HF}/finance-chat-GGUF`,
     cover: 'finance-chat/cover.png',
     coverAlt: 'A movie-poster style picture. A 1980s trading floor with a golden bull and rising green charts, with a small gold AI computer on the desk. The title reads The Bull Run.',

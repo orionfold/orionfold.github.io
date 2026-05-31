@@ -46,7 +46,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
 ---
 <Layout
   title="Models · Orionfold"
-  description="Open-weight AI models tuned for patents, security, law, finance, and medicine. Free to download and run offline, on huggingface.co/Orionfold."
+  description="Open-weight AI models tuned for patents, security, law, finance, and medicine. Download and run offline, on huggingface.co/Orionfold."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
@@ -56,7 +56,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
     <PageHeader
       eyebrow="Models"
       title="AI tuned for your field"
-      subtitle="Open AI models built for one job each, like patents, security, law, money, and health. All are free to download and run in private, right on your own computer."
+      subtitle="Open AI models built for one job each, like patents, security, law, money, and health. Download and run them in private, right on your own computer."
     />
 
     <!-- Patent: one model, two NeMo builds -->
@@ -108,7 +108,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
     <section class="px-6 pb-28 pt-16">
       <div data-animate>
         <BehindTheScenes summary="The technical details">
-          All weights are open and free to run. The two Patent Strategist builds start from DeepSeek-R1-0528-Qwen3-8B, are made with the NeMo toolkit, and ship two ways: GGUF files (ready to run with llama.cpp) and LoRA adapters (small training patches in BF16). On Spark-class hardware (a small ~$3,000 AI desktop) the Q5_K_M GGUF runs around 32 to 35 tokens per second. SecurityLLM builds on ZySec-AI/SecurityLLM, Saul 7B on Equall/Saul-7B-Instruct-v1, Finance Chat on AdaptLLM/finance-chat, and II-Medical 8B on Intelligent-Internet/II-Medical-8B, each shipped as GGUF from Q4 through Q8 and F16, and scored on domain tests like CyberMetric, LegalBench, FinanceBench, and MedMCQA. The Patent Strategist Bench is 200 questions across seven shapes (claim drafting, prior-art ranking, MPEP-grounded reasoning, and more), released CC-BY-4.0.
+          All weights are open. The two Patent Strategist builds start from DeepSeek-R1-0528-Qwen3-8B, are made with the NeMo toolkit, and ship two ways: GGUF files (ready to run with llama.cpp) and LoRA adapters (small training patches in BF16). On Spark-class hardware (a small ~$3,000 AI desktop) the Q5_K_M GGUF runs around 32 to 35 tokens per second. SecurityLLM builds on ZySec-AI/SecurityLLM, Saul 7B on Equall/Saul-7B-Instruct-v1, Finance Chat on AdaptLLM/finance-chat, and II-Medical 8B on Intelligent-Internet/II-Medical-8B, each shipped as GGUF from Q4 through Q8 and F16, and scored on domain tests like CyberMetric, LegalBench, FinanceBench, and MedMCQA. The Patent Strategist Bench is 200 questions across seven shapes (claim drafting, prior-art ranking, MPEP-grounded reasoning, and more), released CC-BY-4.0.
         </BehindTheScenes>
       </div>
     </section>
