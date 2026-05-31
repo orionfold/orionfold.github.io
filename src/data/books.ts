@@ -31,7 +31,7 @@ export const books: Book[] = [
     body: 'A free book on running a business with AI agents (software helpers that do the work for you). Fourteen short chapters in four parts take you from the first idea to a working system. About a two hour read, open to all.',
     pills: ['14 chapters', '4 parts', '~2h read', 'Free to read'],
     href: 'https://ainative.business/book',
-    ctaText: 'Read free online',
+    ctaText: 'Read online',
     lookupKey: 'book_ai_native_business',
     cover: {
       title: 'AI Native Business',
@@ -46,7 +46,7 @@ export const books: Book[] = [
     body: 'Real notes from doing AI research on one desktop. The NVIDIA DGX Spark is a small machine with huge power (petascale means it runs about a quadrillion math steps a second), so you can push local AI further with no cloud needed. Every lesson is backed by code that runs.',
     pills: ['Local AI', 'NVIDIA DGX Spark', 'Petascale desktop', 'Backed by code'],
     href: 'https://ainative.business/field-notes',
-    ctaText: 'Read free online',
+    ctaText: 'Read online',
     lookupKey: 'book_ai_research_dgx_spark',
     cover: {
       title: 'AI Research on NVIDIA DGX Spark',

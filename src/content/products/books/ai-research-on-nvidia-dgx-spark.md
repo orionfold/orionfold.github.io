@@ -253,7 +253,7 @@ relatedReading:
     href: /story/access-first-models-second/
 
 outbound:
-  - label: Read the book free online
+  - label: Read online
     href: https://ainative.business/field-notes
     kind: site
 

@@ -89,7 +89,7 @@ relatedReading:
     href: /story/why-i-folded-orionfold/
 
 outbound:
-  - label: Read the book free online
+  - label: Read online
     href: https://ainative.business/book
     kind: site
 
