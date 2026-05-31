@@ -11,6 +11,8 @@
 // UI + wiring verify locally, but the real checkout/portal test is a live-domain
 // step (L1, in Stripe TEST mode). A localhost network error is expected, not a bug.
 
+import { getAttribution } from "./attribution";
+
 const FUNCTIONS_BASE = "https://orionfold.supabase.co/functions/v1";
 
 interface PostResult {
@@ -48,6 +50,10 @@ export async function startCheckout(
   const payload: Record<string, unknown> = { lookupKey };
   if (itemId) payload.itemId = itemId;
   if (itemIds && itemIds.length) payload.itemIds = itemIds;
+  // Carry any captured ad attribution (utm_* / gclid / v) into the Stripe
+  // session metadata — the durable ad→purchase join key (Task 4).
+  const attribution = getAttribution();
+  if (Object.keys(attribution).length) payload.attribution = attribution;
   const { ok, data } = await postJson("create-checkout-session", payload);
   if (ok && typeof data.url === "string") {
     window.location.assign(data.url);
@@ -85,6 +91,12 @@ export interface OrderStatus {
   label: string | null;
   tier: string | null;
   email: string | null;
+  /** Catalog lookup key (GA4 item_id). */
+  lookupKey: string | null;
+  /** Order total in cents from the real Stripe session (null if unavailable). */
+  amount: number | null;
+  /** ISO currency, e.g. "usd" (null if unavailable). */
+  currency: string | null;
 }
 
 /** Read-only confirmation for the /thanks pages. Returns null if the session is unknown. */

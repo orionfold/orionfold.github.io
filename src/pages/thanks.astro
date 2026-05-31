@@ -45,12 +45,25 @@ import SectionLabel from '../components/ui/SectionLabel.astro';
 
 <script>
   import { fetchOrderStatus } from '../lib/checkout';
+  import { reportPurchase } from '../lib/conversion';
 
   async function confirmOrder() {
     const sessionId = new URLSearchParams(location.search).get('session_id');
     if (!sessionId) return;
     const status = await fetchOrderStatus(sessionId);
     if (!status || !status.paid) return;
+
+    // Report the purchase: GA4 `purchase` + native Google Ads conversion with
+    // hashed-email Enhanced Conversions (MARKETING-HANDOFF.md Tasks 1–3).
+    await reportPurchase({
+      transactionId: sessionId,
+      value: typeof status.amount === 'number' ? status.amount / 100 : null,
+      currency: status.currency ? status.currency.toUpperCase() : 'USD',
+      itemId: status.lookupKey,
+      itemName: status.label,
+      email: status.email,
+      isBook: true,
+    });
 
     const msg = document.getElementById('thanks-msg');
     if (msg) {

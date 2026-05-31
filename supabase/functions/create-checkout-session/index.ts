@@ -22,6 +22,29 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
 
 const SITE_URL = (Deno.env.get("SITE_URL") ?? "https://orionfold.com").replace(/\/$/, "");
 
+// Allowlist of attribution params → Stripe metadata keys. `v` (cache-buster) is
+// stored as `ad_v` so it reads clearly beside the utm_* keys in the dashboard.
+// Stripe caps metadata values at 500 chars; we trim to 480 to stay safe.
+const ATTRIBUTION_KEYS: Record<string, string> = {
+  utm_source: "utm_source",
+  utm_medium: "utm_medium",
+  utm_campaign: "utm_campaign",
+  utm_content: "utm_content",
+  utm_term: "utm_term",
+  gclid: "gclid",
+  v: "ad_v",
+};
+
+function sanitizeAttribution(raw: unknown): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (!raw || typeof raw !== "object") return out;
+  for (const [src, dest] of Object.entries(ATTRIBUTION_KEYS)) {
+    const val = (raw as Record<string, unknown>)[src];
+    if (typeof val === "string" && val) out[dest] = val.slice(0, 480);
+  }
+  return out;
+}
+
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
 
@@ -40,6 +63,12 @@ Deno.serve(async (req) => {
     const itemIds = Array.isArray(itemIdsRaw)
       ? itemIdsRaw.map((x: unknown) => String(x)).filter(Boolean)
       : [];
+
+    // Ad attribution (Task 4): the client forwards utm_* / gclid / v captured on
+    // the landing page (lib/attribution.ts). Persist a sanitized, allowlisted
+    // copy onto the session metadata so a purchase round-trips to the exact ad
+    // initiative even if the browser pixel is incomplete.
+    const attribution = sanitizeAttribution(body.attribution);
 
     // Server-trusted allowlist: the client can only name a known offering.
     if (!isAllowedLookupKey(lookupKey)) {
@@ -65,6 +94,7 @@ Deno.serve(async (req) => {
       kind: item.kind,
     };
     if (item.tier) metadata.tier = item.tier;
+    Object.assign(metadata, attribution);
     // roadmap_item = the single/primary item (the deployed C3 webhook persists this
     // to purchases/sponsors). roadmap_items = the full comma-joined selection when
     // a sponsorship is started from the roadmap multi-select (a priority signal,
@@ -79,6 +109,11 @@ Deno.serve(async (req) => {
       // NOTE: never set payment_method_types — dynamic payment methods stay on.
       success_url: `${SITE_URL}${isSponsor ? "/sponsor/thanks/" : "/thanks/"}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}${isSponsor ? "/sponsor/" : "/books/"}`,
+      // Show the promo-code box on book checkouts so the per-channel code
+      // (e.g. DGX-GOOGLE) works — the zero-engineering attribution backstop
+      // (MARKETING-HANDOFF.md Task 5). The coupon is product-restricted, so
+      // sponsorships keep a clean, code-free checkout.
+      ...(isSponsor ? {} : { allow_promotion_codes: true }),
       metadata,
       // Mirror the tier/item onto the subscription so C3's lifecycle webhooks
       // (invoice.paid, customer.subscription.updated/deleted) can read it too.

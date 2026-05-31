@@ -52,6 +52,7 @@ import SectionLabel from '../../components/ui/SectionLabel.astro';
 
 <script>
   import { fetchOrderStatus, openPortalBySession } from '../../lib/checkout';
+  import { reportPurchase } from '../../lib/conversion';
 
   const TIER_NAMES: Record<string, string> = {
     bronze: 'Bronze',
@@ -90,6 +91,19 @@ import SectionLabel from '../../components/ui/SectionLabel.astro';
     // Enhance the message with the tier when order-status is reachable.
     const status = await fetchOrderStatus(sessionId);
     if (!status || !status.paid) return;
+
+    // GA4 `purchase` for the sponsorship start (no native Ads conversion — the
+    // ad campaign sells books, not sponsorships). MARKETING-HANDOFF.md Task 3.
+    await reportPurchase({
+      transactionId: sessionId,
+      value: typeof status.amount === 'number' ? status.amount / 100 : null,
+      currency: status.currency ? status.currency.toUpperCase() : 'USD',
+      itemId: status.lookupKey,
+      itemName: status.label,
+      email: status.email,
+      isBook: false,
+    });
+
     const tierName = status.tier ? TIER_NAMES[status.tier] ?? null : null;
     const msg = document.getElementById('sponsor-thanks-msg');
     if (msg && tierName) {

@@ -49,6 +49,9 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-04PH843W2C');
+      // Google Ads (AW) shares the one gtag.js load. Drives the native
+      // "Purchase" conversion fired on /thanks (MARKETING-HANDOFF.md, src/data/ads.ts).
+      gtag('config', 'AW-18188052159');
     </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -127,6 +130,14 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
   </head>
   <body class="bg-surface text-text min-h-screen">
     <slot />
+
+    <!-- Capture ad attribution (utm_* / gclid / v) on landing, before any
+         redirect to Stripe drops the query string (MARKETING-HANDOFF.md Task 4). -->
+    <script>
+      import { captureAttribution } from '../lib/attribution';
+      captureAttribution();
+      document.addEventListener('astro:after-swap', captureAttribution);
+    </script>
 
     <!-- IntersectionObserver for scroll-reveal -->
     <script>

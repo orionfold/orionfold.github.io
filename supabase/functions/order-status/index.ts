@@ -53,6 +53,11 @@ Deno.serve(async (req) => {
         label: item?.label ?? null,
         tier: session.metadata?.tier ?? item?.tier ?? null,
         email: session.customer_details?.email ?? null,
+        // For conversion reporting on the /thanks pages (value-based Google Ads
+        // conversion + GA4 purchase). Amount is the real Stripe total in cents.
+        lookupKey: lookupKey || null,
+        amount: typeof session.amount_total === "number" ? session.amount_total : null,
+        currency: session.currency ?? null,
       },
       corsHeaders,
     );
