@@ -94,6 +94,7 @@ const buyLabel = priceLabel ? `Buy PDF + EPUB · ${priceLabel}` : 'Buy now';
           sizes="(min-width: 1024px) 32rem, 100vw"
           loading="eager"
           decoding="async"
+          fetchpriority="high"
           data-no-zoom
           class="aspect-[16/10] w-full rounded-2xl border border-border object-cover shadow-lg shadow-primary/5"
         />
