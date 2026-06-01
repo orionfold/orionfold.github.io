@@ -152,11 +152,11 @@ const itemListLd = {
         <div class="mx-auto max-w-6xl">
           <div class="mb-6 flex items-baseline gap-3 border-b border-border pb-3">
             <span class:list={['inline-block h-2.5 w-2.5 shrink-0 translate-y-px rounded-full', lane.dot]}></span>
-            <h2 data-animate class="text-2xl">{lane.title}</h2>
+            <h2 class="text-2xl">{lane.title}</h2>
             <span class="font-mono text-sm text-text-muted">{lane.items.length}</span>
-            <p data-animate class="ml-auto hidden max-w-md text-right text-sm leading-relaxed text-text-muted sm:block" style="transition-delay: 60ms">{lane.blurb}</p>
+            <p class="ml-auto hidden max-w-md text-right text-sm leading-relaxed text-text-muted sm:block">{lane.blurb}</p>
           </div>
-          <p data-animate class="mb-6 text-sm leading-relaxed text-text-muted sm:hidden">{lane.blurb}</p>
+          <p class="mb-6 text-sm leading-relaxed text-text-muted sm:hidden">{lane.blurb}</p>
 
           {lane.items.length > 0 ? (
             <div data-animate-stagger class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
