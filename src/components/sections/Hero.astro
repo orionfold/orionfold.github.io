@@ -30,22 +30,25 @@ const whyUs = [
   <div class="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-32" style="background: linear-gradient(to bottom, transparent, var(--color-surface));"></div>
 
   <div class="mx-auto grid min-h-[calc(100dvh-80px)] max-w-7xl items-center gap-12 px-6 pb-20 pt-28 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:pb-24">
-    <!-- Left: the pitch -->
-    <div class="relative z-10 text-center lg:text-left" data-animate-stagger>
-      <p data-animate class="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-text-muted">
+    <!-- Left: the pitch. The pitch column used to stagger-reveal via [data-animate]
+         + IntersectionObserver, but that made the subtitle P the page's LCP element
+         at ~7.5s on mobile (Lighthouse won't count an opacity:0 element as painted).
+         Painting the pitch immediately is the bigger UX win than the stagger polish. -->
+    <div class="relative z-10 text-center lg:text-left">
+      <p class="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-text-muted">
         Orionfold · an AI studio
       </p>
 
-      <h1 data-animate class="hero-gradient-text text-balance font-display font-bold">
+      <h1 class="hero-gradient-text text-balance font-display font-bold">
         Grow 10x with AI, fast.
       </h1>
 
-      <p data-animate class="mx-auto mt-6 max-w-xl text-balance text-lg leading-relaxed text-text-muted lg:mx-0">
+      <p class="mx-auto mt-6 max-w-xl text-balance text-lg leading-relaxed text-text-muted lg:mx-0">
         Fast, easy AI journey with expert playbooks, open software, custom models, on personal devices.
       </p>
 
       <!-- Dual CTAs: the two commerce families -->
-      <div data-animate class="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+      <div class="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
         <a
           href="/books/"
           class="group inline-flex items-center gap-2 rounded-lg bg-primary px-7 py-3.5 font-mono text-sm font-semibold tracking-wider text-white transition-colors hover:bg-primary/90"
@@ -64,7 +67,7 @@ const whyUs = [
       </div>
 
       <!-- Why us: the one-line reason to choose Orionfold over cloud AI -->
-      <p data-animate class="mx-auto mt-8 max-w-md font-mono text-[11px] leading-relaxed tracking-wider text-primary lg:mx-0 lg:max-w-lg">
+      <p class="mx-auto mt-8 max-w-md font-mono text-[11px] leading-relaxed tracking-wider text-primary lg:mx-0 lg:max-w-lg">
         {whyUs.map((line) => <span class="block">{line}</span>)}
       </p>
     </div>
