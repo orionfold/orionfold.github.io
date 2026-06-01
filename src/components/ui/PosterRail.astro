@@ -88,13 +88,13 @@ const tileClass =
       <div class="poster-track flex flex-col gap-4">
         {col.map((t) => (
           <a href={t.href} class={tileClass} aria-label={t.label}>
-            <Image src={t.src} alt="" width={400} loading="eager" class="block w-full" />
+            <Image src={t.src} alt="" width={400} loading="lazy" decoding="async" class="block w-full" />
           </a>
         ))}
         {/* duplicate set: out of the a11y tree + tab order (loop filler only) */}
         {col.map((t) => (
           <a href={t.href} class={tileClass} tabindex="-1" aria-hidden="true">
-            <Image src={t.src} alt="" width={400} loading="eager" class="block w-full" />
+            <Image src={t.src} alt="" width={400} loading="lazy" decoding="async" class="block w-full" />
           </a>
         ))}
       </div>
