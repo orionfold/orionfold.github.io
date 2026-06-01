@@ -146,11 +146,13 @@ section {
    Gated on .js-ready (added inline in <head> by Layout.astro). Without that
    class, [data-animate] elements default to visible — so if JS fails to load,
    content is still readable. With JS, the inline class-add runs before <body>
-   paints, so the hide/reveal animation plays normally on fast devices. */
+   paints, so the hide/reveal animation plays normally on fast devices.
+   will-change is NOT in this rule on purpose: the observer adds it just before
+   adding .is-visible (and the transitionend listener clears it) so we don't
+   pre-promote every animated element to its own compositing layer at paint. */
 .js-ready [data-animate] {
   opacity: 0;
   transform: translateY(24px);
-  will-change: opacity, transform;
   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -158,7 +160,6 @@ section {
 .js-ready [data-animate].is-visible {
   opacity: 1;
   transform: translateY(0);
-  will-change: auto;
 }
 
 /* Stagger delays */
@@ -280,21 +281,6 @@ section {
   transform: scale(1);
 }
 
-/* ── Image reveal animation (more dramatic than data-animate) ── */
-.img-reveal {
-  opacity: 0;
-  transform: translateY(32px) scale(0.97);
-  will-change: opacity, transform;
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.img-reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  will-change: auto;
-}
-
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   /* Match the .js-ready specificity so this overrides the scoped reveal rule. */
@@ -307,12 +293,6 @@ section {
 
   .primary-pulse {
     animation: none;
-  }
-
-  .img-reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
   }
 
   .svg-reveal,

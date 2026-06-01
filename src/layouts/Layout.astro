@@ -158,9 +158,15 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                entry.target.addEventListener('transitionend', () => {
-                  (entry.target as HTMLElement).style.willChange = 'auto';
+                // Promote to its own compositing layer just before the reveal
+                // animation starts. We don't set will-change in CSS because
+                // doing so on every animated element at paint creates a layer
+                // for each (137+ on the homepage) — a real cost on low-end mobile.
+                const el = entry.target as HTMLElement;
+                el.style.willChange = 'opacity, transform';
+                el.classList.add('is-visible');
+                el.addEventListener('transitionend', () => {
+                  el.style.willChange = 'auto';
                 }, { once: true });
                 observer.unobserve(entry.target);
               }
@@ -169,7 +175,7 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
           { threshold: 0, rootMargin: '0px 0px 33% 0px' }
         );
 
-        document.querySelectorAll('[data-animate], .img-reveal').forEach((el) => {
+        document.querySelectorAll('[data-animate]').forEach((el) => {
           observer.observe(el);
         });
 
