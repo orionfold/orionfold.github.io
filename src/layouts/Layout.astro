@@ -41,6 +41,12 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- Scroll-reveal gate. Without this class, [data-animate] elements paint
+         visible by default — so if JS fails to load (CSP, network drop, CDN
+         error), content is still readable instead of stuck at opacity:0. With
+         JS, this runs synchronously before <body> paints, so the hide-then-
+         reveal animation still plays on fast devices. -->
+    <script is:inline>document.documentElement.classList.add('js-ready');</script>
     <!-- Warm DNS+TLS for the analytics origins so the gtag.js + beacons land
          a touch faster on mobile (Google Ads pulls a second tagmanager script
          when AW-... is configured below; the GA collect endpoint lives on

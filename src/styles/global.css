@@ -142,8 +142,12 @@ section {
   contain: layout style;
 }
 
-/* ── Scroll-reveal animation system ── */
-[data-animate] {
+/* ── Scroll-reveal animation system ──
+   Gated on .js-ready (added inline in <head> by Layout.astro). Without that
+   class, [data-animate] elements default to visible — so if JS fails to load,
+   content is still readable. With JS, the inline class-add runs before <body>
+   paints, so the hide/reveal animation plays normally on fast devices. */
+.js-ready [data-animate] {
   opacity: 0;
   transform: translateY(24px);
   will-change: opacity, transform;
@@ -151,20 +155,20 @@ section {
               transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-[data-animate].is-visible {
+.js-ready [data-animate].is-visible {
   opacity: 1;
   transform: translateY(0);
   will-change: auto;
 }
 
 /* Stagger delays */
-[data-animate-stagger] > [data-animate]:nth-child(1) { transition-delay: 0ms; }
-[data-animate-stagger] > [data-animate]:nth-child(2) { transition-delay: 40ms; }
-[data-animate-stagger] > [data-animate]:nth-child(3) { transition-delay: 80ms; }
-[data-animate-stagger] > [data-animate]:nth-child(4) { transition-delay: 120ms; }
-[data-animate-stagger] > [data-animate]:nth-child(5) { transition-delay: 160ms; }
-[data-animate-stagger] > [data-animate]:nth-child(6) { transition-delay: 200ms; }
-[data-animate-stagger] > [data-animate]:nth-child(7) { transition-delay: 240ms; }
+.js-ready [data-animate-stagger] > [data-animate]:nth-child(1) { transition-delay: 0ms; }
+.js-ready [data-animate-stagger] > [data-animate]:nth-child(2) { transition-delay: 40ms; }
+.js-ready [data-animate-stagger] > [data-animate]:nth-child(3) { transition-delay: 80ms; }
+.js-ready [data-animate-stagger] > [data-animate]:nth-child(4) { transition-delay: 120ms; }
+.js-ready [data-animate-stagger] > [data-animate]:nth-child(5) { transition-delay: 160ms; }
+.js-ready [data-animate-stagger] > [data-animate]:nth-child(6) { transition-delay: 200ms; }
+.js-ready [data-animate-stagger] > [data-animate]:nth-child(7) { transition-delay: 240ms; }
 
 /* ── Primary glow pulse (GPU-composited via opacity) ── */
 .primary-pulse {
@@ -293,6 +297,8 @@ section {
 
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
+  /* Match the .js-ready specificity so this overrides the scoped reveal rule. */
+  .js-ready [data-animate],
   [data-animate] {
     opacity: 1;
     transform: none;
