@@ -7,6 +7,7 @@
 ## Pages
 - [Software](https://orionfold.com/software/): Open software to run AI on your own computer. The AI Native Platform and API, plus apps and developer tools.
 - [Models](https://orionfold.com/models/): Open-weight AI models tuned for patents, security, law, finance, and medicine. Free to download and run offline.
+- [DGX Spark](https://orionfold.com/dgx-spark/): Built on the NVIDIA stack. The book, open models, and tools all proven on the NVIDIA DGX Spark, a small AI supercomputer that runs on one desk with no cloud.
 - [Books](https://orionfold.com/books/): The AI Native Business book and Field Notes. Free, open, and built on working code.
 - [Story](https://orionfold.com/story/): Building in public. Honest notes on what we shipped, what broke, and what we learned.
 

@@ -21,6 +21,10 @@ export interface OgPage {
   meta?: string;
   /** Optional repo-relative product screenshot, framed on the right (offering cards). */
   screenshot?: string;
+  /** Optional repo-relative curated hero art, used FULL-BLEED as the card background
+   *  instead of the brand banner (a landing page with its own featured image, e.g.
+   *  /dgx-spark/). Title legibility comes from the card's text glow. PNG/JPG only. */
+  background?: string;
 }
 
 export const OG_PAGES: Record<string, OgPage> = {
@@ -66,6 +70,14 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: "Read how it's built",
     seed: 'books',
     alt: 'Orionfold books: read how an AI-native business is built',
+  },
+  '/dgx-spark/': {
+    slug: 'dgx-spark',
+    eyebrow: 'NVIDIA DGX Spark',
+    title: 'AI research, run on one desk',
+    seed: 'dgx-spark',
+    alt: 'Orionfold on NVIDIA DGX Spark: the book, models, and tools proven on one small AI desktop',
+    background: 'src/assets/dgx-spark/hero.jpg',
   },
   '/story/': {
     slug: 'story',

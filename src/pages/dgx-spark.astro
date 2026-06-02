@@ -1,0 +1,280 @@
+---
+// NVIDIA DGX Spark hub (G-series, spec 2026-06-02). Gathers the NVIDIA-stack body
+// of work — scattered across the book, models, software, and stories — onto one
+// posture surface so a reviewer (or a DGX Spark developer arriving from an NVIDIA
+// channel) lands on a page that says "this studio builds on the NVIDIA stack."
+// Funnel: NVIDIA channels -> here -> free book -> $50 bundle + sponsorship.
+//
+// Compliance gate (strategy partners/nvidia §11): pre-approval this page may only
+// state factual, nominative things ("built on the NVIDIA stack / DGX Spark is our
+// reference platform"). NO Inception Member badge, NO membership/endorsement claim
+// until NVIDIA approves and supplies the official asset kit. See the reserved slot
+// below. Copy reads grade 3-5, no em-dashes (website-copy-style).
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import Highlight from '../components/ui/Highlight.astro';
+import BookCover from '../components/ui/BookCover.astro';
+import TrustBlock from '../components/product/TrustBlock.astro';
+import SectionLabel from '../components/ui/SectionLabel.astro';
+import { SITE } from '../data/seo';
+import { ogMeta } from '../data/og';
+import { books } from '../data/books';
+import { models } from '../data/models';
+import { software } from '../data/software';
+import { trust } from '../data/trust';
+import { detailKeySet, slugify } from '../lib/product/detail';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import dgxCover from '../assets/book/ai-research-dgx-spark-book.jpg';
+import sparkHero from '../assets/dgx-spark/hero.jpg';
+
+const og = ogMeta('/dgx-spark/');
+
+// Hardware facts (ABOUT-ORIONFOLD.md "Reference hardware: NVIDIA DGX Spark"),
+// kept as plain chips so the spec figures read at a glance.
+const sparkSpecs = [
+  'GB10 Grace Blackwell',
+  '128 GB shared memory',
+  'About 1 PFLOP at FP4',
+  'Fine-tune up to ~70B',
+  'Run up to ~200B',
+];
+
+// Inward links: a card routes to its on-site detail page when one exists, else
+// to its canonical home (detailKeySet, the same gate the listing pages use).
+const keys = await detailKeySet();
+
+interface Work { eyebrow: string; title: string; blurb: string; href: string; cta: string }
+
+// The book — the funnel's lead magnet.
+const book = books.find((b) => b.slug === 'ai-research-on-nvidia-dgx-spark')!;
+
+// Models tuned and benchmarked on the Spark stack (the flagship is built with
+// NVIDIA's NeMo toolkit). Dedupe by title so the two Patent Strategist builds and
+// the benchmark dataset collapse to one card each; drop the dataset here.
+const modelWorks: Work[] = [
+  ...new Map(models.filter((m) => m.group !== 'dataset').map((m) => [m.title, m])).values(),
+].map((m) => {
+  const slug = slugify(m.title);
+  return {
+    eyebrow: m.domain,
+    title: m.title,
+    blurb: m.tagline,
+    href: keys.has(`model:${slug}`) ? `/models/${slug}/` : m.href,
+    cta: 'Explore the model',
+  };
+});
+
+// Software proven on the Spark.
+const softwareWorks: Work[] = ['fieldkit', 'arena'].flatMap((s) => {
+  const p = software.find((x) => x.slug === s);
+  if (!p) return [];
+  return [{
+    eyebrow: p.eyebrow,
+    title: p.title,
+    blurb: p.body,
+    href: keys.has(`software:${s}`) ? `/software/${s}/` : p.href,
+    cta: 'Open the project',
+  }];
+});
+
+// Field notes — representative build-log stories from the Spark work.
+const storyIds = ['my-first-model-on-a-desktop', 'access-first-models-second', 'the-cockpit-for-my-models'];
+const allStories = await getCollection('story');
+const storyWorks: Work[] = storyIds.flatMap((id) => {
+  const s = allStories.find((x) => x.id === id);
+  return s ? [{ eyebrow: 'Field note', title: s.data.title, blurb: s.data.summary, href: `/story/${id}/`, cta: 'Read the note' }] : [];
+});
+
+// Honest proof: genuinely HuggingFace-live counts, refreshed each build (matches
+// TrustBlock's own "Live counts from HuggingFace" copy). A 0 count yields no tile.
+const fmt = (n: number) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k' : String(n));
+const modelDownloads = Object.values(trust.models)
+  .filter((m) => m.kind === 'model')
+  .reduce((sum, m) => sum + m.downloads, 0);
+const patentDownloads = trust.models['patent-strategist']?.downloads ?? 0;
+const trustStats: { value: string; label: string }[] = [];
+if (modelDownloads > 0) trustStats.push({ value: fmt(modelDownloads), label: 'Model downloads · last 30 days' });
+if (patentDownloads > 0) trustStats.push({ value: fmt(patentDownloads), label: 'Patent Strategist · last 30 days' });
+
+const groups: { label: string; blurb: string; works: Work[] }[] = [
+  { label: 'The models', blurb: 'Open-weight models tuned for one field each, all benchmarked on the Spark. The flagship is built with NVIDIA NeMo.', works: modelWorks },
+  { label: 'The software', blurb: 'Open tools whose patterns were proven on the Spark before they shipped.', works: softwareWorks },
+  { label: 'The field notes', blurb: 'Short build-log posts from the real work on the machine.', works: storyWorks },
+];
+---
+<Layout
+  title="Built on NVIDIA DGX Spark · Orionfold"
+  description="Orionfold's reference machine is the NVIDIA DGX Spark. The book, the open models, and the tools here were all proven on one small AI desktop, no cloud."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      url: `${SITE.url}/dgx-spark/`,
+      name: 'Built on NVIDIA DGX Spark',
+      description:
+        'The NVIDIA DGX Spark is Orionfold’s reference platform. This page gathers the book, open models, and tools proven on it.',
+      isPartOf: { '@type': 'WebSite', url: SITE.url, name: 'Orionfold' },
+      about: ['NVIDIA DGX Spark', 'Local AI', 'On-device inference', 'NVIDIA NeMo', 'Open-weight models'],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'DGX Spark', item: `${SITE.url}/dgx-spark/` },
+      ],
+    },
+  ]}
+>
+  <Nav />
+  <main>
+    <PageHeader
+      eyebrow="Built on the NVIDIA stack"
+      title="AI research, run on one desk."
+      subtitle="The NVIDIA DGX Spark is Orionfold's reference machine. The book, the open models, and the tools below were all proven on it first."
+    />
+
+    {/*
+      G5 (post-approval): the NVIDIA Inception Member badge mounts in this region.
+      Pre-approval it renders NOTHING by design — compliance gate (strategy §11):
+      no badge, no membership/endorsement claim, no restyled NVIDIA logos until
+      NVIDIA approves and supplies the official asset kit. Do not add badge markup
+      here before then.
+    */}
+
+    <!-- Featured hero art (G3). Eager + high priority as the page's one hero image;
+         not data-animate (it is an LCP candidate, per the mobile-perf invariant). -->
+    <section class="px-6 pt-6">
+      <figure class="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border">
+        <Image
+          src={sparkHero}
+          alt="A small gold desktop computer glows on a plain desk at night, sending bright beams of light up into a wide sky full of stars and constellations."
+          widths={[640, 960, 1280, 1600]}
+          sizes="(min-width: 1152px) 72rem, 100vw"
+          loading="eager"
+          fetchpriority="high"
+          data-no-zoom
+          class="aspect-[16/9] w-full object-cover"
+        />
+      </figure>
+    </section>
+
+    <!-- Posture: why the Spark, in plain words -->
+    <section class="px-6 pb-8 pt-6">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-lg leading-relaxed text-text-muted">
+          Most powerful AI lives far away, in a rented cloud. Orionfold builds the other way. Our
+          reference machine is the NVIDIA DGX Spark, a small AI supercomputer that sits on one desk.
+        </p>
+        <p class="mt-5 text-lg leading-relaxed text-text-muted">
+          It is tiny but mighty. Inside is NVIDIA's GB10 Grace Blackwell chip and 128 GB of shared
+          memory. That is enough to fine-tune (retrain) models up to about 70 billion parameters, and
+          to run models up to about 200 billion, all on your own desk with no cloud and no meter
+          running.
+        </p>
+        <p class="mt-5 text-lg leading-relaxed text-text-muted">
+          Everything below was proven on this machine first. The book is the field log of the work.
+          The models are tuned and tested on it, with the flagship built using NVIDIA's NeMo toolkit
+          (NVIDIA's open kit for training models). The fieldkit toolbox is the set of patterns that
+          held up on it.
+        </p>
+        <p class="mt-5 text-lg leading-relaxed text-text-muted">
+          The Spark is our reference, not our only home. The same models and tools also run on Apple
+          Silicon and other small devices, a lighter path for when you do not need the full machine.
+        </p>
+        <div data-animate class="mt-7 flex flex-wrap gap-1.5" style="transition-delay: 80ms">
+          {sparkSpecs.map((spec) => (
+            <span class="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-[10px] tracking-wider text-primary">
+              {spec}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- The book: the field log + funnel lead magnet -->
+    <Highlight
+      eyebrow="The field log"
+      title="AI Research on NVIDIA DGX Spark"
+      body={book.body}
+      pills={book.pills}
+      href="/books/ai-research-on-nvidia-dgx-spark/"
+      ctaText="Explore the book"
+    >
+      <a slot="media" href="/books/ai-research-on-nvidia-dgx-spark/" aria-label="Explore the book" class="block">
+        <BookCover
+          title={book.cover.title}
+          subtitle={book.cover.subtitle}
+          tag={book.cover.tag}
+          image={dgxCover}
+          imageAlt="The AI Research on NVIDIA DGX Spark book cover, a glowing gold brain made of network nodes on a black cover."
+        />
+      </a>
+    </Highlight>
+
+    <!-- The work, gathered: models, software, field notes (all link inward) -->
+    {groups.map((group) => (
+      <section class="px-6 py-10">
+        <div class="mx-auto max-w-6xl">
+          <SectionLabel text={group.label} />
+          <p class="mt-3 max-w-2xl text-base leading-relaxed text-text-muted">{group.blurb}</p>
+          <div data-animate-stagger class="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {group.works.map((w) => (
+              <a
+                data-animate
+                href={w.href}
+                class="group flex flex-col rounded-2xl border border-border bg-surface-raised/70 p-6 transition hover:border-primary/50"
+              >
+                <p class="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-primary">{w.eyebrow}</p>
+                <p class="mt-2 font-display text-lg leading-tight text-text">{w.title}</p>
+                <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{w.blurb}</p>
+                <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary">
+                  {w.cta}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    ))}
+
+    <!-- Proof: real, live HuggingFace counts -->
+    <TrustBlock stats={trustStats} />
+
+    <!-- Funnel CTA -->
+    <section class="px-6 pb-24 pt-6">
+      <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
+        <p class="font-display text-2xl leading-snug">Start with the book. It is free to read, and every lesson runs.</p>
+        <p class="mt-4 text-base leading-relaxed text-text-muted">
+          Read the field log online, keep a copy if you want one, then run the open models and tools on
+          your own machine. Want to move the work forward faster? You can sponsor it.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href={book.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded-full bg-primary px-6 py-3 text-sm font-medium text-white transition hover:bg-primary/90"
+          >
+            Read the book free
+          </a>
+          <a href="/books/ai-research-on-nvidia-dgx-spark/" class="rounded-full border border-border px-6 py-3 text-sm font-medium text-text transition hover:border-primary/50">
+            Get the book and bundle
+          </a>
+          <a href="/sponsor/" class="rounded-full border border-border px-6 py-3 text-sm font-medium text-text transition hover:border-primary/50">
+            Sponsor the work
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>

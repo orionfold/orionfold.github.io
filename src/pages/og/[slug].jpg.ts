@@ -37,16 +37,22 @@ function heroBackground(id: string): string | undefined {
 export const getStaticPaths: GetStaticPaths = async () => {
   // Landing / listing pages + homepage: the brand banner is the background, with the
   // page title + orionfold.com kept on the left, clear of the banner's Orion logo.
-  const fromPages = Object.values(OG_PAGES).map((p) => ({
-    params: { slug: p.slug },
-    props: {
-      title: p.title,
-      eyebrow: p.eyebrow,
-      seed: p.seed,
-      meta: p.meta,
-      banner: true,
-    } satisfies CardOptions,
-  }));
+  // A landing page that ships its own curated hero (OgPage.background) uses that art
+  // full-bleed instead, with the title's text glow keeping it legible.
+  const fromPages = Object.values(OG_PAGES).map((p) => {
+    const bgAbs = p.background ? path.join(process.cwd(), p.background) : undefined;
+    const useBackground = Boolean(bgAbs && fs.existsSync(bgAbs));
+    return {
+      params: { slug: p.slug },
+      props: {
+        title: p.title,
+        eyebrow: p.eyebrow,
+        seed: p.seed,
+        meta: p.meta,
+        ...(useBackground ? { backgroundPath: bgAbs } : { banner: true }),
+      } satisfies CardOptions,
+    };
+  });
 
   const posts = await getCollection('story');
   const fromPosts = posts.map((post: CollectionEntry<'story'>) => ({
