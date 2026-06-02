@@ -125,6 +125,19 @@ const productSchema =
         image: ogImageAbs,
         category: view.typeTag,
         brand: { '@type': 'Brand', name: 'Orionfold' },
+        // A Product must carry at least one of offers/review/aggregateRating or
+        // Google rejects the rich result ("1 invalid item"). The software and
+        // open models are genuinely free, so a price-0 Offer is both the
+        // documented fix for free products and truthful — no invented reviews
+        // or ratings (consistent with the no-testimonials rule). Sponsorship is
+        // a separate ask; this Offer just states the product costs nothing.
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: canonical,
+        },
       };
 
 const jsonLd = [productSchema, breadcrumbSchema];
