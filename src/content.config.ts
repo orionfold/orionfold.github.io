@@ -35,7 +35,15 @@ const story = defineCollection({
 // `story` glob-loader idiom. Every field below the join keys is optional, so the
 // detail template is adaptive: a section renders only when its data is present.
 const productDetail = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/products' }),
+  // id includes the type folder (software/ai-native-platform, books/ai-native-
+  // platform) so two products of different types can share a slug-named file
+  // without one silently overwriting the other. Identity is (type, slug); the
+  // default loader keys by bare filename stem, which collides across folders.
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/content/products',
+    generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+  }),
   schema: ({ image }) =>
     z.object({
       // Join keys (required).

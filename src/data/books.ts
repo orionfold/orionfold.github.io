@@ -55,4 +55,19 @@ export const books: Book[] = [
     },
     status: 'active', // F1: living / early-access book, sold as it grows (spec §2 books pricing)
   },
+  {
+    slug: 'ai-native-platform',
+    eyebrow: 'The book',
+    title: 'AI Native Platform',
+    body: 'A hands-on walkthrough of the open platform that runs AI agents, the software helpers that do the work for you, on your own computer. Twenty one chapters in five parts take you from the shop floor to every part of the API. Free to read, with a copy to keep if you want one.',
+    pills: ['21 chapters', '5 parts', '~115,000 words'],
+    href: 'https://ainative.business/platform',
+    ctaText: 'Read online',
+    lookupKey: 'book_ai_native_platform',
+    cover: {
+      title: 'AI Native Platform',
+      subtitle: "An operator's walkthrough of the agent factory.",
+      tag: 'Open',
+    },
+  },
 ];

@@ -52,6 +52,13 @@ export const CATALOG: Record<string, CatalogItem> = {
     label: "AI Research on NVIDIA DGX Spark",
     amount: 5000,
   },
+  book_ai_native_platform: {
+    lookupKey: "book_ai_native_platform",
+    kind: "book",
+    mode: "payment",
+    label: "AI Native Platform",
+    amount: 4000,
+  },
   sponsor_bronze: {
     lookupKey: "sponsor_bronze",
     kind: "sponsor",
