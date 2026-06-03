@@ -51,3 +51,31 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+      # D2: purge the Cloudflare edge cache so a fresh deploy is never served
+      # stale. HTML is already DYNAMIC (uncached) and /_astro/* is fingerprinted,
+      # so this mainly refreshes the stable-URL assets (OG images, sitemap,
+      # robots.txt, llms.txt, favicon). Uses a purge-ONLY scoped token. Fail-safe:
+      # if the secret is not set (e.g. on a fork), the step skips cleanly instead
+      # of failing the deploy.
+      - name: Purge Cloudflare cache
+        env:
+          CF_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_PURGE_TOKEN }}
+          CF_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        run: |
+          if [ -z "$CF_PURGE_TOKEN" ] || [ -z "$CF_ZONE_ID" ]; then
+            echo "Cloudflare purge secrets not set — skipping cache purge."
+            exit 0
+          fi
+          echo "Purging Cloudflare cache for zone $CF_ZONE_ID"
+          resp=$(curl -s -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer $CF_PURGE_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}')
+          echo "$resp"
+          echo "$resp" | grep -q '"success":true' || {
+            echo "::warning::Cloudflare purge did not report success (deploy still succeeded)."
+            exit 0
+          }
+          echo "Cloudflare cache purged."
