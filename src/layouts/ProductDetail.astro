@@ -95,12 +95,15 @@ const breadcrumbSchema = {
   ],
 };
 
-// Merchant-listings completeness for the paid books (GSC flagged both as
-// missing on the Offer). These are instant digital downloads from a US-based
-// LLC, so the honest values are: free "shipping" (nothing physical ships) and
-// no returns (a delivered PDF + EPUB can't be returned). Books only — the free
-// price-0 Product Offer below stays bare on purpose (it exists solely to make
-// software/models valid Product snippets, not to enter the shopping experience).
+// Merchant-listings completeness for EVERY priced Offer — the paid books AND
+// the free software/models. GSC flagged both fields as missing in "offers".
+// The catch: the price-0 Offer we add below (to make free products valid
+// Product snippets) also makes them Merchant-listings-eligible, which then
+// demands shipping + returns — so the same fields are needed on both branches;
+// there's no way to be a valid Product snippet without entering that lane. All
+// products here are instant digital/no-ship deliverables from a US-based LLC,
+// so the honest values are uniform: free "shipping" (nothing physical ships)
+// and no returns (a delivered file — or a free download — can't be returned).
 const digitalMerchantFields = {
   hasMerchantReturnPolicy: {
     '@type': 'MerchantReturnPolicy',
@@ -150,13 +153,16 @@ const productSchema =
         // open models are genuinely free, so a price-0 Offer is both the
         // documented fix for free products and truthful — no invented reviews
         // or ratings (consistent with the no-testimonials rule). Sponsorship is
-        // a separate ask; this Offer just states the product costs nothing.
+        // a separate ask; this Offer just states the product costs nothing. The
+        // merchant fields ride along because the price-0 Offer makes the page
+        // Merchant-listings-eligible (see digitalMerchantFields above).
         offers: {
           '@type': 'Offer',
           price: '0',
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
           url: canonical,
+          ...digitalMerchantFields,
         },
       };
 
