@@ -15,27 +15,11 @@
 // is the primary field-CWV source until CrUX fills; rerun this periodically and
 // it will start returning data once traffic crosses the threshold.
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { loadEnvLocal, writeMetric } from './lib/metrics.mjs';
 
 const ORIGIN = 'https://orionfold.com';
 const FORM_FACTORS = ['PHONE', 'DESKTOP'];
 const ENDPOINT = 'https://chromeuxreport.googleapis.com/v1/records:queryRecord';
-
-// Minimal .env.local loader (zero-dep): only fills keys not already in env.
-function loadEnvLocal() {
-  try {
-    const text = readFileSync(resolve(process.cwd(), '.env.local'), 'utf8');
-    for (const line of text.split('\n')) {
-      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
-      if (m && process.env[m[1]] === undefined) {
-        process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
-      }
-    }
-  } catch {
-    /* no .env.local — rely on the ambient environment */
-  }
-}
 
 loadEnvLocal();
 const KEY = process.env.GOOGLE_CLOUD_API_KEY;
@@ -90,9 +74,5 @@ for (const formFactor of FORM_FACTORS) {
   console.log(`[crux] ${formFactor}: ${Object.entries(p75).map(([k, v]) => `${k}=${v}`).join(', ') || '(no metrics)'}`);
 }
 
-const date = result.fetchedAt.slice(0, 10);
-const dir = resolve(process.cwd(), 'audit-reports/metrics');
-mkdirSync(dir, { recursive: true });
-const outPath = resolve(dir, `crux-${date}.json`);
-writeFileSync(outPath, JSON.stringify(result, null, 2) + '\n');
+const outPath = writeMetric('crux', result);
 console.log(`[crux] wrote ${outPath}`);
