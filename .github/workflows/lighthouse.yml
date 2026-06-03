@@ -1,0 +1,59 @@
+name: Lighthouse CI
+
+# M2 — lab performance budgets. DELIBERATELY a separate workflow from
+# deploy.yml: it must NEVER gate the prod deploy (golden rule — main ships in
+# ~40s, unblocked). A red Lighthouse run flags a perf regression for review; it
+# does not stop the site from shipping. Budgets/assertions live in
+# .lighthouserc.cjs (mobile + devtools throttling, the 6 D2-baseline pages).
+
+on:
+  # Surface regressions right after a deploy, on a weekly cadence, and on demand.
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 7 * * 1' # Mondays 07:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lighthouse
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Run Lighthouse CI
+        # treosh action provides the Chrome runtime + lhci; configPath points at
+        # our rc (staticDistDir = ./dist, so no separate server step needed).
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./.lighthouserc.cjs
+
+      - name: Upload Lighthouse reports
+        if: always() # keep the reports even when a budget assertion fails
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: |
+            .lighthouseci/
+            audit-reports/lhci/
+          retention-days: 30
+          if-no-files-found: ignore

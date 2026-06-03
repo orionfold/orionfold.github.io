@@ -22,6 +22,9 @@ HANDOFF.md
 # SEO/AEO audit reports — may contain Search Console / Analytics figures (local-only)
 audit-reports/
 
+# Lighthouse CI transient working dir (reports land in audit-reports/lhci/ via the filesystem target)
+.lighthouseci/
+
 # Brainstorm / visual-companion scratch (mockups, generated proofs)
 .superpowers/
 
