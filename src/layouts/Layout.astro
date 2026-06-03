@@ -82,6 +82,12 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
         fbq('track', 'PageView');
       </script>
     )}
+    <!-- Meta domain verification (Business Settings → Brand Safety → Domains,
+         domain asset 1003335682186241). Deliberately UNGATED by META_PIXEL_ID:
+         Meta polls for this tag independent of the pixel and re-checks it
+         periodically after verification, so it must stay in static HTML on
+         every deploy. Not a secret (visible in any verified site's source). -->
+    <meta name="facebook-domain-verification" content="obnuck074w2envh4k4ksolj4djuoa6" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
