@@ -7,7 +7,13 @@
 // funnel, with GitHub (hosting/repos) and Hugging Face (model downloads) as the
 // other processors. (S3 had dropped the donor's GA tag and S10 wrote these clauses
 // as "no analytics"; GA was added later, so these clauses were flipped back to
-// disclose it.) Uses the shared PUBLISHER from src/data/seo.ts.
+// disclose it.) Updated 2026-06-03 (MARKETING-HANDOFF.md): the "no advertising
+// trackers/cookies" claims were removed and replaced with real disclosures —
+// Google Ads conversion tracking, the Meta Pixel (_fbp/_fbc cookies) + server-
+// side Conversions API with hashed email, and Stripe purchase data (the page
+// predated commerce). Meta's Lead Ads form cites this URL as its privacy
+// policy, so ad review reads this page. Uses the shared PUBLISHER from
+// src/data/seo.ts.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -15,17 +21,17 @@ import SectionLabel from '../components/ui/SectionLabel.astro';
 import { SITE, PUBLISHER } from '../data/seo';
 import { ogMeta } from '../data/og';
 
-const lastUpdated = 'May 24, 2026';
+const lastUpdated = 'June 3, 2026';
 const og = ogMeta('/privacy/');
 
 const summaryCards = [
   {
-    title: 'Website Analytics',
-    body: 'The website uses Google Analytics to understand traffic and which pages are used. We do not run advertising trackers.',
+    title: 'Analytics & Ads',
+    body: 'The website uses Google Analytics to understand traffic. It also uses Google and Meta (Facebook) ad tools to measure whether our ads lead to book purchases.',
   },
   {
-    title: 'Newsletter Data',
-    body: 'Newsletter signup collects your email address and limited anti-abuse metadata through Supabase and Resend.',
+    title: 'Newsletter & Purchases',
+    body: 'Newsletter signup collects your email address through Supabase and Resend. Book purchases are handled by Stripe; we never see your card number.',
   },
   {
     title: 'Local-First Software',
@@ -47,7 +53,9 @@ const sections = [
       'The information collected depends on how you interact with Orionfold.',
     ],
     bullets: [
-      'Website usage information. The site uses Google Analytics (GA4) and similar request metadata to measure traffic, understand which pages are used, and improve the site. We do not run advertising trackers.',
+      'Website usage information. The site uses Google Analytics (GA4) and similar request metadata to measure traffic, understand which pages are used, and improve the site.',
+      'Ad measurement information. When we run ads, the site uses Google Ads conversion tracking and the Meta (Facebook) Pixel to learn whether an ad click led to a purchase. These tools set cookies (Meta uses _fbp and _fbc) and read ad click ids from the page address. When you buy a book, we also report that purchase to Google and Meta from our server, using a hashed (scrambled, one-way) version of your email so the ad platforms can match it. We never send them your plain email address.',
+      'Purchase information. If you buy a book, payment is handled by Stripe. Orionfold LLC receives your email address, the item you bought, and the amount paid, and uses them to deliver your files and keep purchase records. We never receive or store your card number.',
       'Newsletter information. If you subscribe, Orionfold LLC collects your email address and operational metadata used for confirmation, abuse prevention, and delivery, such as confirmation status, timestamps, IP address, and user-agent data.',
       'Communications. If you email Orionfold LLC or open an issue, Orionfold LLC will receive the information you include in that message.',
       'Local software data. Orionfold software is intended to run locally by default, so workflow data, prompts, documents, and project state are generally stored on your own systems unless you intentionally connect external services.',
@@ -62,6 +70,8 @@ const sections = [
     bullets: [
       'Provide and maintain the site, downloads, models, and newsletter.',
       'Confirm newsletter subscriptions and send release, product, and operational updates.',
+      'Deliver purchased books and keep records of purchases.',
+      'Measure whether our ads on Google and Meta lead to purchases, so we can decide where advertising is worth running.',
       'Detect abuse, spam, fraud, misuse, and security incidents.',
       'Understand aggregate usage patterns and improve the website and documentation.',
       'Comply with legal obligations and enforce the Terms of Use.',
@@ -80,6 +90,8 @@ const sections = [
     ],
     bullets: [
       'Service providers such as Google Analytics, Supabase, Resend, and hosting or infrastructure vendors that help run the website and newsletter.',
+      'Payment processing by Stripe, which collects your payment details under its own privacy policy when you buy a book.',
+      'Ad platforms, namely Google and Meta (Facebook), which receive purchase conversion events that include the order value and a hashed version of your email, never the plain address. Meta explains how it uses this data at facebook.com/privacy/policy.',
       'Code, model, and file distribution providers such as GitHub and Hugging Face when you download releases, models, or interact with project repositories.',
       'Authorities, courts, regulators, or advisors when required by law or reasonably necessary to protect rights, safety, or security.',
       'A successor entity in connection with a merger, acquisition, financing, or asset transfer.',
@@ -102,7 +114,9 @@ const sections = [
   {
     title: '8. Cookies and Similar Technologies',
     paragraphs: [
-      'The website uses Google Analytics, which sets cookies or similar identifiers to measure traffic and understand how the site is used. Essential cookies may also be used to remember basic preferences or keep the site secure. We do not use advertising cookies. You can control cookies through your browser settings, though some site functionality may be affected.',
+      'The website uses Google Analytics, which sets cookies or similar identifiers to measure traffic and understand how the site is used. Essential cookies may also be used to remember basic preferences or keep the site secure.',
+      'The website also uses advertising cookies when we run ads. Google Ads conversion tracking uses Google cookies and the gclid click id. The Meta (Facebook) Pixel sets the _fbp cookie (identifies your browser) and the _fbc cookie (records that you arrived from a Meta ad), and we pass these to Meta with purchase events so ad results can be measured. You can learn how Meta handles this data at facebook.com/privacy/policy.',
+      'You can control or delete cookies through your browser settings, though some site functionality may be affected. Blocking these cookies does not affect your ability to buy or read books.',
     ],
   },
   {
@@ -150,7 +164,7 @@ const sections = [
       url: `${SITE.url}/privacy/`,
       inLanguage: 'en',
       publisher: PUBLISHER,
-      dateModified: '2026-05-24',
+      dateModified: '2026-06-03',
     },
     {
       '@context': 'https://schema.org',
@@ -211,7 +225,7 @@ const sections = [
         <aside data-animate class="lg:sticky lg:top-28 h-fit rounded-2xl border border-border bg-surface-raised/70 p-5">
           <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-text-dim">Short version</p>
           <p class="mt-4 text-sm leading-relaxed text-text-muted">
-            The website uses Google Analytics to understand traffic, the newsletter stores your signup information, and the software is built to keep your working data local unless you choose to connect external services.
+            The website uses Google Analytics to understand traffic and Google and Meta ad tools to measure ad results. The newsletter stores your signup information, Stripe handles book payments, and the software is built to keep your working data local unless you choose to connect external services.
           </p>
         </aside>
 

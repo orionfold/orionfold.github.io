@@ -32,6 +32,12 @@ const ATTRIBUTION_KEYS: Record<string, string> = {
   utm_content: "utm_content",
   utm_term: "utm_term",
   gclid: "gclid",
+  // Meta Ads (2026-Q2 book test): click id + the Pixel's browser cookies. The
+  // stripe-webhook reads fbp/fbc back off session.metadata to send the
+  // server-side CAPI Purchase (_shared/meta-capi.ts) with real match keys.
+  fbclid: "fbclid",
+  fbp: "fbp",
+  fbc: "fbc",
   v: "ad_v",
 };
 

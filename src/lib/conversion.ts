@@ -24,6 +24,13 @@ function gtag(...args: unknown[]): void {
   if (typeof w.gtag === 'function') w.gtag(...args);
 }
 
+// Delegate to the Meta Pixel installed in Layout.astro (renders only when
+// META_PIXEL_ID is set in src/data/meta.ts) — a no-op until then.
+function fbq(...args: unknown[]): void {
+  const w = window as unknown as { fbq?: (...a: unknown[]) => void };
+  if (typeof w.fbq === 'function') w.fbq(...args);
+}
+
 async function sha256Hex(input: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
   return Array.from(new Uint8Array(buf))
@@ -97,5 +104,18 @@ export async function reportPurchase(c: PurchaseConversion): Promise<void> {
       currency,
       transaction_id: c.transactionId,
     });
+  }
+
+  // Meta Pixel Purchase, books only — the browser half of the Meta conversion.
+  // The eventID is the Stripe session id, the SAME id the stripe-webhook sends
+  // server-side via CAPI, so Meta dedupes the pair into one conversion
+  // (browser event wins when both arrive; CAPI recovers the iOS/blocked cases).
+  if (c.isBook) {
+    fbq('track', 'Purchase', {
+      value,
+      currency,
+      content_ids: c.itemId ? [c.itemId] : undefined,
+      content_type: 'product',
+    }, { eventID: c.transactionId });
   }
 }

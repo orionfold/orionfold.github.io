@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { SITE, ORGANIZATION } from '../data/seo';
+import { META_PIXEL_ID } from '../data/meta';
 
 interface Props {
   title?: string;
@@ -65,6 +66,22 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
       // "Purchase" conversion fired on /thanks (MARKETING-HANDOFF.md, src/data/ads.ts).
       gtag('config', 'AW-18188052159');
     </script>
+    <!-- Meta Pixel (fbq) for the 2026-Q2 Meta Ads book test. Renders only once
+         META_PIXEL_ID is set in src/data/meta.ts, so the site deploys safely
+         before the Events Manager setup. PageView here; Purchase fires on
+         /thanks via lib/conversion.ts with an eventID that pairs with the
+         server-side CAPI event (stripe-webhook) for dedup. -->
+    {META_PIXEL_ID && (
+      <script is:inline define:vars={{ META_PIXEL_ID }}>
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+        document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', META_PIXEL_ID);
+        fbq('track', 'PageView');
+      </script>
+    )}
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />

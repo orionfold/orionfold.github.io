@@ -16,6 +16,7 @@
 import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getCatalogItem, STRIPE_API_VERSION } from "../_shared/catalog.ts";
+import { sendMetaPurchase } from "../_shared/meta-capi.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
@@ -197,6 +198,21 @@ async function fulfillBook(session: Stripe.Checkout.Session) {
     .from("purchases")
     .update({ delivered: true, delivered_at: new Date().toISOString() })
     .eq("stripe_session_id", session.id);
+
+  // Meta CAPI Purchase (2026-Q2 Meta Ads book test) — server-side twin of the
+  // /thanks Pixel event, deduped on the session id. Placed AFTER the insert's
+  // idempotency guard so webhook re-deliveries don't double-send, and isolated
+  // so an ads-attribution hiccup can never affect fulfillment (it never throws).
+  await sendMetaPurchase({
+    eventId: session.id,
+    email,
+    amountCents: session.amount_total,
+    currency: session.currency,
+    lookupKey,
+    fbp: session.metadata?.fbp ?? null,
+    fbc: session.metadata?.fbc ?? null,
+    fbclid: session.metadata?.fbclid ?? null,
+  });
 }
 
 /** List book-files/<lookupKey> and sign every PDF/EPUB found (filenames don't matter). */
