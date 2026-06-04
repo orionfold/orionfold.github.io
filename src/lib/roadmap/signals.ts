@@ -18,15 +18,21 @@ import * as path from 'node:path';
 
 const RAW = 'https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main';
 const PROJECT_STATS_URL = `${RAW}/src/data/field-notes/project-stats.json`;
-const FIELDKIT_VERSION_URL = `${RAW}/fieldkit/_version.py`;
+// The version comes from PyPI, not the repo mirror: the in-repo _version.py lags
+// releases (it read 0.13.0 while PyPI served 0.22.0 on 2026-06-03). PyPI is the
+// package's public truth, so the roadmap chip matches what `pip install` gets.
+const FIELDKIT_VERSION_URL = 'https://pypi.org/pypi/fieldkit/json';
 const FIELDKIT_API_DIR = `${RAW}/fieldkit/docs/api`;
 
 // raw.githubusercontent can't list a directory, so the known fieldkit module
 // surface is enumerated here; each file is fetched and its frontmatter parsed.
 // A module added upstream is picked up by adding its id here (or via the R3 skill).
+// 2026-06-03: +7 (arena, budget, cost, harness, memory, reward, rl) — the cockpit,
+// agent-harness, recall, and RLVR-training families that landed v0.13 → v0.22.
 export const FIELDKIT_MODULES = [
-  'capabilities', 'cli', 'eval', 'lineage', 'nim', 'notebook',
-  'publish', 'quant', 'rag', 'training', 'viz',
+  'arena', 'budget', 'capabilities', 'cli', 'cost', 'eval', 'harness', 'lineage',
+  'memory', 'nim', 'notebook', 'publish', 'quant', 'rag', 'reward', 'rl',
+  'training', 'viz',
 ] as const;
 
 const SNAPSHOT_PATH = path.join(process.cwd(), 'src/lib/roadmap/snapshot.json');
@@ -84,10 +90,11 @@ function parseFrontmatter(md: string): Record<string, string> {
   return out;
 }
 
-function parseVersion(py: string): string {
-  const m = py.match(/__version__\s*=\s*["']([^"']+)["']/);
-  if (!m) throw new Error('could not parse fieldkit __version__');
-  return m[1];
+function parseVersion(raw: string): string {
+  // PyPI JSON: { info: { version: "0.22.0", ... }, ... }
+  const v = (JSON.parse(raw) as { info?: { version?: string } }).info?.version;
+  if (!v) throw new Error('could not parse fieldkit version from PyPI');
+  return v;
 }
 
 interface ProjectStats {

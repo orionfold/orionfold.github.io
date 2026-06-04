@@ -27,15 +27,22 @@ export type { RoadmapSignals } from './signals';
 // these supply the words shown on the roadmap.
 
 const MODULE_LABELS: Record<string, string> = {
+  arena: 'The Arena cockpit screen',
+  budget: 'A brake on what jobs spend',
   capabilities: 'Check what your machine can run',
   cli: 'Command-line tools',
+  cost: 'A ledger of what each run cost',
   eval: 'Score how well a model does',
+  harness: 'Run and protect an AI agent',
   lineage: 'Track where each model came from',
+  memory: 'The Cortex memory layer',
   nim: 'Run NVIDIA model servers',
   notebook: 'Ready-made notebooks',
   publish: 'Publish models with cards',
   quant: 'Shrink models to run faster',
   rag: 'Search over your own files',
+  reward: 'Turn your tests into a training score',
+  rl: 'A loop where the model trains itself',
   training: 'Train and fine-tune models',
   viz: 'Charts and visuals',
 };

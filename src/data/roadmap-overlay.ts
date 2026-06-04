@@ -49,4 +49,17 @@ export interface RoadmapOverlayItem {
 //     href: 'https://github.com/manavsehgal/agent-studio',
 //     roadmapOrder: 300,
 //   },
-export const roadmapOverlay: RoadmapOverlayItem[] = [];
+export const roadmapOverlay: RoadmapOverlayItem[] = [
+  // Staked upstream 2026-06-03 (ainative.business/products/living-model/,
+  // status: upcoming). Graduates to software.ts when the first real training
+  // run draws its chart and the product flips to published.
+  {
+    id: 'software:living-model',
+    type: 'software',
+    title: 'The Living Model',
+    blurb: 'A local model that keeps getting better. The desktop re-trains it on a schedule against fresh tests, and a public chart shows the trend, drawn from real training records.',
+    status: 'planned',
+    href: 'https://ainative.business/products/living-model/',
+    roadmapOrder: 300,
+  },
+];

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-05-26T05:14:11.946Z",
+  "generatedAt": "2026-06-04T06:20:20.761Z",
   "fieldkit": {
-    "version": "0.8.0",
+    "version": "0.22.0",
     "modules": [
       {
         "id": "capabilities",
@@ -68,51 +68,93 @@
         "title": "fieldkit.notebook",
         "summary": "Dual-path notebook runtime + scaffolding for Orionfold artifact notebooks. `detect_runtime()` branches Spark (full local fieldkit path) vs Colab/Kaggle (pull published GGUF → llama-cpp-python on the free GPU); `open_model(hf_repo, variant=...)` returns a backend-agnostic `ChatClient` with one `.chat()` surface; URL/badge builders + a deterministic `NotebookBuilder` lay the jupytext py:percent skeleton the notebook-author skill fills with prose. Lazy + optional — behind the `fieldkit[notebook]` extra.",
         "order": 11
+      },
+      {
+        "id": "harness",
+        "title": "fieldkit.harness",
+        "summary": "Deterministic Python spine for the Harnesses content line — install / configure / serve / harden / route / eval / profile an agent harness (Hermes Agent first) on the DGX Spark. H1 ships install + doctor + configure + the NIM / llama-server lanes + the serve_lane guard; H2 adds the vLLM / Ollama lanes, the Hermes-trace tool-call-reliability eval, and the HarnessProfile artifact; H3 adds Harden (hostile-tool-call-survivable config posture); H4 adds the fieldkit-as-MCP server; H5 adds the vertical router (VerticalRoute / RouterConfig / build_vertical_router) over the 5 Orionfold GGUFs. H6 (cost router) lands separately. See _SPECS/hermes-harness-v1.md.",
+        "order": 12
+      },
+      {
+        "id": "arena",
+        "title": "fieldkit.arena",
+        "summary": "Operator cockpit for the DGX Spark — FastAPI sidecar on 127.0.0.1:7866 with SSE telemetry/chat/compare streams, a SQLite-backed `~/.fieldkit/arena.db`, and a static-mirror exporter that publishes a leak-proof leaderboard slice to `ainative.business/arena/`. Sibling to `fieldkit.harness` (Hermes = agent harness; Arena = operator harness). M2 ships the SQLite store + retroactive importer; M3 ships the FastAPI app + telemetry SSE; M4 ships the chat island; M5 ships side-by-side compare; **M6 (this release) ships the leak-proof mirror exporter** (`fieldkit.arena.mirror.export_publishable_slice` with hardcoded allowlist; regression test pins zero chat-content leaks); M7 lands the launch article + Mac sync per `_SPECS/spark-arena-v1.md`.",
+        "order": 13
+      },
+      {
+        "id": "cost",
+        "title": "fieldkit.cost",
+        "summary": "The Arena M9 cost plane (Bet 6) — CostLedger, PriceSnapshot, seed_price_snapshot, cost_per_quality. Persists the OpenRouter cost the cockpit already computes and surfaces $/task + $/quality-point as the third ranking axis. Ledger, not governor.",
+        "order": 14
+      },
+      {
+        "id": "memory",
+        "title": "fieldkit.memory",
+        "summary": "The Arena M10 recall layer (Bet 5) — MemoryIndex, KnowledgeCard, Provenance, ingest_sources, coverage_report, resolve_qa_set. A managed, multi-source, provenance-aware index over the Second Brain, with an article_index ⋈ index coverage report and an eval-gated re-index.",
+        "order": 15
+      },
+      {
+        "id": "budget",
+        "title": "fieldkit.budget",
+        "summary": "The Arena M11 budget governor (Phase 2) — BudgetGovernor, BudgetDecision, SpendDigest, EscalationReason, MemoryEnvelope, check_budget. The brake the autonomous drain consults before each job — allow / escalate (the 33% local ceiling) / defer (over cap or no envelope). Governor, not meter.",
+        "order": 16
+      },
+      {
+        "id": "reward",
+        "title": "fieldkit.reward",
+        "summary": "The verifier→reward adapter (RLVR Phase 3) — Reward, RewardAdapter, group_advantage, RewardError. The eval harness IS the reward model — a thin adapter that turns any fieldkit.eval scorer into a (success, failure_class, auxiliary) reward, reusing lineage.FailureLabel. No learned reward model.",
+        "order": 17
+      },
+      {
+        "id": "rl",
+        "title": "fieldkit.rl",
+        "summary": "The closed-loop RLVR driver (Phase 3, the engine) — GRPOConfig, RLLoop, RLLoopError. Wraps the proven hand-rolled REINFORCE-with-KL loop (not Unsloth/NeMo-RL); held-out-every-≤10-steps hard gate with held-out-only checkpoint selection; ≥100-row corpus floor; pinned vLLM. Orchestration ships; GPU seams inject.",
+        "order": 18
       }
     ]
   },
   "fieldNotes": {
-    "articlesPublished": 42,
-    "articlesUpcoming": 5,
+    "articlesPublished": 52,
+    "articlesUpcoming": 11,
     "stages": [
       {
         "id": "foundations",
-        "published": 12,
+        "published": 13,
         "upcoming": 0
       },
       {
         "id": "training",
-        "published": 12,
+        "published": 13,
         "upcoming": 1
       },
       {
         "id": "fine-tuning",
-        "published": 12,
+        "published": 13,
         "upcoming": 2
       },
       {
         "id": "inference",
-        "published": 14,
-        "upcoming": 0
+        "published": 19,
+        "upcoming": 2
       },
       {
         "id": "deployment",
-        "published": 6,
+        "published": 10,
         "upcoming": 0
       },
       {
         "id": "agentic",
-        "published": 14,
-        "upcoming": 0
+        "published": 23,
+        "upcoming": 4
       },
       {
         "id": "observability",
-        "published": 10,
-        "upcoming": 1
+        "published": 13,
+        "upcoming": 2
       },
       {
         "id": "dev-tools",
-        "published": 2,
+        "published": 3,
         "upcoming": 1
       }
     ]

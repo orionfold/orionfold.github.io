@@ -188,6 +188,21 @@ export const software: SoftwareProduct[] = [
     status: 'active', // living tool, served by fieldkit; appears on the roadmap
   },
   {
+    slug: 'cortex',
+    group: 'devtools',
+    eyebrow: 'Memory layer',
+    title: 'Orionfold Cortex',
+    body: 'A second brain that lives on your own desktop. It indexes your notes, stamps where every fact came from, and grades its own memory: a rebuild that would make recall worse is caught, not shipped. Your documents never leave your machine.',
+    pills: ['Runs local', 'Recall gate', 'Provenance', 'Private'],
+    href: 'https://ainative.business/cortex/',
+    ctaText: 'See Cortex',
+    demoHref: 'https://ainative.business/cortex/demo/',
+    demoLabel: 'Try the live demo',
+    coverType: 'poster',
+    cover: 'cortex-poster.png',
+    status: 'active', // living tool, the Arena memory layer; appears on the roadmap
+  },
+  {
     slug: 'command',
     group: 'devtools',
     eyebrow: 'Developer tool',

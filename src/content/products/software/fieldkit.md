@@ -1,7 +1,13 @@
 ---
 # P7 software rollout #2 (spec §5.5, "Software -> SPONSOR"). Authored from the
-# fieldkit README + 12 module docs (Developer/ai-field-notes/fieldkit) and the
-# marketing page (ainative.business/fieldkit/). This is the strongest inward
+# fieldkit README + module docs (GitHub manavsehgal/ai-field-notes, fieldkit/) and
+# the marketing page (ainative.business/fieldkit/). 2026-06-03 re-sync: fieldkit is
+# now 18 modules at v0.22 (PyPI-verified) — agent harness, Arena cockpit + cost +
+# budget planes, the Cortex memory layer, lineage, and the RLVR reward/rl training
+# loop all landed after the first authoring. NOTE the local mac clone of
+# ai-field-notes is stale (work moved to the Spark); pull README/docs from GitHub,
+# and treat PyPI + the live /fieldkit/ page as the version/capability truth (the
+# in-repo README lags releases). This is the strongest inward
 # funnel of the batch: fieldkit is the toolbox from the DGX Spark research, so the
 # RelatedRail points at the Field Notes book (Buy) and Patent Strategist (built
 # with it). No first-party screenshots ship; the package makes charts at run time,
@@ -50,6 +56,13 @@ usage:
           pipe.ensure_schema()
           pipe.ingest([Document(id=1, text="The DGX Spark has 128 GB of memory")])
           print(pipe.ask("How much memory does the Spark have?")["answer"])
+  - label: Open the cockpit
+    lang: bash
+    code: |
+      # fieldkit also ships the Orionfold Arena cockpit.
+      # One command brings it up in your browser.
+      pip install "fieldkit[arena]"
+      fieldkit arena up
 
 specs:
   - label: Language
@@ -59,7 +72,9 @@ specs:
   - label: Proven on
     value: An NVIDIA DGX Spark desktop, 128 GB of memory
   - label: Covers
-    value: Search, testing, fine-tuning, shrinking, and publishing
+    value: Search, testing, fine-tuning, shrinking, publishing, agents, memory, and a cockpit
+  - label: Size
+    value: 18 modules at version 0.22; take one import at a time
   - label: License
     value: Apache 2.0 (free to use)
 
@@ -84,11 +99,11 @@ sources:
   - section: overview
     type: github-readme
     ref: manavsehgal/ai-field-notes (fieldkit subfolder)
-    lastSynced: '2026-05-27'
+    lastSynced: '2026-06-03'
   - section: usage
     type: url
     ref: https://ainative.business/fieldkit/
-    lastSynced: '2026-05-27'
+    lastSynced: '2026-06-03'
 ---
 
 fieldkit is a free box of Python tools for building with AI. We made it while doing real
@@ -98,7 +113,7 @@ leave the rest.
 
 ## What is in the box
 
-The pieces cover the whole job, end to end:
+Eighteen pieces now, and they cover the whole job, end to end:
 
 - **Search your own files.** Point it at your notes or documents and ask questions. It
   finds the right parts first, then answers from them. People call this RAG, which just
@@ -111,6 +126,16 @@ The pieces cover the whole job, end to end:
 - **Shrink to run faster.** Make a model smaller so it runs quicker, and measure what
   you traded away. The trade is called quantizing.
 - **Publish.** Build a clean model card and ship the model to HuggingFace for others.
+- **Run an agent.** Install, set up, and protect an AI agent on your own machine, and
+  route each kind of question to the right model for the job.
+- **Drive it all from one screen.** The parts behind [Orionfold Arena](/software/arena/):
+  the cockpit itself, a job queue, a spending brake, and a cost ledger.
+- **Remember and recall.** The memory layer behind [Orionfold Cortex](/software/cortex/):
+  index your notes, stamp where every fact came from, and check that a rebuilt index can
+  still find its answers.
+- **Let the model train itself.** A training loop where your own tests are the score. The
+  model practices, the tests grade each try, and a hard gate makes sure a worse version is
+  never the one that gets kept.
 
 There are smaller helpers too, for drawing charts, running notebooks, and keeping a tidy
 record of every experiment you try.
@@ -118,5 +143,6 @@ record of every experiment you try.
 ## Proven, not promised
 
 Every tool here ran on a real desktop doing real work, not in a slide deck. The same kit
-built and shipped our open models. So when you reach for a piece, you are reaching for
-something that already earned its keep.
+built and shipped our open models, and it now powers the Arena cockpit and the Cortex
+memory layer too. So when you reach for a piece, you are reaching for something that
+already earned its keep.
