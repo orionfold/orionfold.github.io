@@ -21,6 +21,7 @@ import { ogMeta } from '../data/og';
 import { SITE } from '../data/seo';
 import aiNativeCover from '../assets/book/ai-native-business-book.jpg';
 import aiResearchCover from '../assets/book/ai-research-dgx-spark-book.jpg';
+import aiPlatformCover from '../assets/book/ai-native-platform-book.jpg';
 
 const og = ogMeta('/roadmap/');
 
@@ -30,6 +31,7 @@ const og = ogMeta('/roadmap/');
 const bookCovers: Record<string, ImageMetadata> = {
   'book:ai-native-business': aiNativeCover,
   'book:ai-research-on-nvidia-dgx-spark': aiResearchCover,
+  'book:ai-native-platform': aiPlatformCover,
 };
 
 // Resolve an item's cover key to ImageMetadata. Software posters live flat under
