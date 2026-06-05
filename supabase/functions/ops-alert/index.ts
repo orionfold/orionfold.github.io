@@ -80,25 +80,35 @@ Deno.serve(async (req) => {
     return json({ error: "Not configured" }, 500);
   }
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "Orionfold Telemetry <manav@updates.orionfold.com>",
-      to: ["manav@orionfold.com"],
-      subject,
-      text: lines.join("\n"),
-    }),
-  });
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Orionfold Telemetry <manav@updates.orionfold.com>",
+        to: ["manav@orionfold.com"],
+        subject,
+        text: lines.join("\n"),
+      }),
+    });
 
-  if (!res.ok) {
-    const detail = await res.text();
-    console.error("Resend error:", res.status, detail);
-    return json({ error: `Resend error ${res.status}` }, 502);
+    if (!res.ok) {
+      let detail = "(unreadable)";
+      try {
+        detail = await res.text();
+      } catch {
+        // keep the placeholder — the status code is the signal
+      }
+      console.error("Resend error:", res.status, detail);
+      return json({ error: `Resend error ${res.status}` }, 502);
+    }
+
+    return json({ sent: true }, 202);
+  } catch (err) {
+    console.error("Resend request failed:", err);
+    return json({ error: "Resend request failed" }, 502);
   }
-
-  return json({ sent: true }, 202);
 });
