@@ -79,7 +79,7 @@ function ageNote(date) {
 // inline-SVG sparkline from a numeric series (degrades to a glowing dot for 1
 // point). Phosphor palette + soft glow + area fade, to read like a CRT trace.
 let sparkSeq = 0;
-function sparkline(values, { good, bad } = {}) {
+function sparkline(values, { good, bad, lowerIsBetter } = {}) {
   const pts = values.filter((v) => typeof v === 'number' && !Number.isNaN(v));
   if (!pts.length) return '';
   const w = 132;
@@ -92,7 +92,9 @@ function sparkline(values, { good, bad } = {}) {
   const last = pts[pts.length - 1];
   let color = '#5cc8ff';
   if (typeof good === 'number' && typeof bad === 'number') {
-    color = last >= good ? '#3fe08f' : last >= bad ? '#f5b544' : '#ff5a6a';
+    color = lowerIsBetter
+      ? last <= good ? '#3fe08f' : last <= bad ? '#f5b544' : '#ff5a6a'
+      : last >= good ? '#3fe08f' : last >= bad ? '#f5b544' : '#ff5a6a';
   }
   const glow = `filter:drop-shadow(0 0 3px ${color}aa)`;
   if (pts.length === 1) {
@@ -219,11 +221,23 @@ function lighthousePanel() {
   const snap = latest('lighthouse');
   if (!snap) return panel('Lighthouse (lab)', '', empty('No Lighthouse-CI summary yet.'), 'grey');
   const d = snap.data;
-  const sub = `${d.pageCount} pages · ${esc(d.formFactor)} · ${ageNote(snap.date)} · run ${esc(d.runFetchTime?.slice(0, 16).replace('T', ' ') || '')}`;
+  // Freshness must track when LHCI actually MEASURED (runFetchTime), not when
+  // `npm run metrics` last re-summarized the same run — a re-summary is not new
+  // lab data, and a "today" badge on a days-old run hides perf regressions.
+  const runDate = d.runFetchTime?.slice(0, 10) || snap.date;
+  const sub = `${d.pageCount} pages · ${esc(d.formFactor)} · run ${esc(d.runFetchTime?.slice(0, 16).replace('T', ' ') || '')} ${ageNote(runDate)}`;
   const cat = (v) => (v >= 0.9 ? 'ok' : v >= 0.8 ? 'warn' : 'bad');
   const lcpCat = (v) => (v <= 2500 ? 'ok' : v <= 4000 ? 'warn' : 'bad');
-  // per-metric trend across days, using the min performance score
-  const perfTrend = sparkline((snaps.lighthouse || []).map((s) => s.data.minScores?.performance ?? 0), {
+  // perf trend across DISTINCT runs — snapshots that re-summarize the same
+  // runFetchTime collapse to one point, so the trace never fakes stability.
+  const seenRuns = new Set();
+  const runSeries = (snaps.lighthouse || []).filter((s) => {
+    const key = s.data.runFetchTime || s.date;
+    if (seenRuns.has(key)) return false;
+    seenRuns.add(key);
+    return true;
+  });
+  const perfTrend = sparkline(runSeries.map((s) => s.data.minScores?.performance ?? 0), {
     good: 0.9,
     bad: 0.8,
   });
@@ -251,7 +265,7 @@ function lighthousePanel() {
     </div>
     <div class="tscroll"><table class="dense"><thead><tr><th class="rt">Route</th><th class="right">Perf</th><th class="right">A11y</th><th class="right">LCP</th><th class="right">CLS</th><th class="right">TBT</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
-    <p class="muted small">SEO is 100 and best-practices a uniform 79 (third-party GA4/Ads cookies — a known floor, not a regression) on every page, so both are omitted here; their floors are in the KPIs above. Mobile, devtools-throttled, median-of-3.</p>`;
+    <p class="muted small">SEO is 100 and best-practices a uniform 79 (third-party GA4/Ads cookies — a known floor, not a regression) on every page, so both are omitted here; their floors are in the KPIs above. Mobile, devtools-throttled, median-of-3. Lab data only refreshes when <span class="mono">npm run lhci</span> reruns locally — the CI run's results stay in GitHub.</p>`;
   const worst = Math.min(m.performance ?? 1, m.accessibility ?? 1, m.seo ?? 1);
   return panel('Lighthouse (lab)', sub, body, worst >= 0.9 ? 'green' : worst >= 0.8 ? 'amber' : 'red');
 }
@@ -278,19 +292,65 @@ function cloudflarePanel() {
   // Errors: 4xx (client errors — bad URLs, mostly bot probes on a static site)
   // colored by share of sampled requests; ANY 5xx (server errors) is red.
   const errRatio = w.clientErrorRatio ?? 0;
+  // 5xx paths render ALWAYS-VISIBLE (never behind the disclosure): the red
+  // "server errors" KPI must be answerable in the same glance that raised it —
+  // a lone 5xx never ranks in the count-ordered top paths next to 404 noise.
+  let fiveXxBlock = '';
+  if ((w.serverErrors ?? 0) > 0) {
+    const rows = (w.serverErrorPaths || [])
+      .map(
+        (p) =>
+          `<tr><td class="mono">${esc(p.path)}</td><td class="mono bad">${esc(p.status)}</td><td class="mono" style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.userAgent || '—')}</td><td class="mono" style="text-align:right">${num(p.count)}</td></tr>`,
+      )
+      .join('');
+    fiveXxBlock = `<div class="note alertnote"><strong>server errors (5xx) — sampled paths</strong>
+      ${
+        rows
+          ? `<table class="small"><thead><tr><th>path</th><th>status</th><th>agent</th><th style="text-align:right">count</th></tr></thead><tbody>${rows}</tbody></table>`
+          : `<p class="muted small">${esc(w.errorDetailError ? `path lookup failed: ${w.errorDetailError}` : 'paths not captured in this snapshot — rerun `npm run metrics` (older snapshot format, or the sampled rows aged out of the window)')}</p>`
+      }
+    </div>`;
+  }
   const errPaths = (w.topErrorPaths || [])
     .map(
       (p) =>
         `<tr><td class="mono">${esc(p.path)}</td><td class="mono">${esc(p.status)}</td><td class="mono" style="text-align:right">${num(p.count)}</td></tr>`,
     )
     .join('');
+  // share of 4xx concentrated in the top path: "one noisy path" vs "broad
+  // breakage" is the first triage fork, so pre-answer it in the summary line.
+  const topPath = (w.topErrorPaths || [])[0];
+  const topShare =
+    topPath && w.clientErrors ? Math.round((topPath.count / w.clientErrors) * 100) : null;
+  const agentRows = (w.topErrorAgents || [])
+    .map(
+      (a) =>
+        `<tr><td class="mono" style="max-width:420px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.userAgent || '(no user-agent)')}</td><td class="mono" style="text-align:right">${num(a.count)}</td></tr>`,
+    )
+    .join('');
   const errBlock =
     w.clientErrors == null
       ? ''
-      : `<details class="errors"><summary class="muted small">top error paths (4xx/5xx, sampled)</summary>
+      : `<details class="errors"><summary class="muted small">top error paths (4xx/5xx, sampled)${
+          topShare != null && topPath ? ` — ${topShare}% is <span class="mono">${esc(topPath.path)}</span>` : ''
+        }</summary>
           <table class="small"><thead><tr><th>path</th><th>status</th><th style="text-align:right">count</th></tr></thead>
           <tbody>${errPaths || '<tr><td colspan="3" class="muted">none in window</td></tr>'}</tbody></table>
+          ${
+            agentRows
+              ? `<table class="small" style="margin-top:8px"><thead><tr><th>top error agents (who)</th><th style="text-align:right">count</th></tr></thead><tbody>${agentRows}</tbody></table>`
+              : ''
+          }
         </details>`;
+  // per-UTC-day trend from the SAME snapshot (the fetcher keeps the last 7
+  // completed days) — a day-over-day 4xx spike (e.g. 88→1070) must be visible
+  // here, not only inside the raw JSON.
+  const trend = d.dailyTrend || [];
+  const trendKpis =
+    trend.length < 2
+      ? ''
+      : `<div class="kpi"><span class="big">${sparkline(trend.map((t) => t.requests))}</span><span class="lbl">req / day</span></div>
+      <div class="kpi"><span class="big">${sparkline(trend.map((t) => t.clientErrorRatio), { good: 0.05, bad: 0.15, lowerIsBetter: true })}</span><span class="lbl">4xx ratio / day</span></div>`;
   const body = `
     <div class="kpis">
       <div class="kpi"><span class="big">${num(w.sampledRequests)}</span><span class="lbl">sampled req / 24h</span></div>
@@ -302,11 +362,13 @@ function cloudflarePanel() {
           : `<div class="kpi"><span class="big ${errRatio < 0.05 ? 'ok' : errRatio < 0.15 ? 'warn' : 'bad'}">${num(w.clientErrors)}</span><span class="lbl">client errors 4xx (${pct(errRatio)})</span></div>
       <div class="kpi"><span class="big ${(w.serverErrors ?? 0) === 0 ? 'ok' : 'bad'}">${num(w.serverErrors ?? 0)}</span><span class="lbl">server errors 5xx</span></div>`
       }
+      ${trendKpis}
     </div>
     <div class="stack">${bar}</div>
     <div class="legend">${legend}</div>
+    ${fiveXxBlock}
     ${errBlock}
-    <p class="muted small">Most requests are HTML (served <span class="mono">dynamic</span> by design — the apex page stays uncached); only static <span class="mono">/_astro/*</span> assets are cacheable, so the hit ratio reflects asset reuse, not page caching. 4xx on a static site is mostly bot probing (<span class="mono">/wp-admin</span>, <span class="mono">/.env</span>…) — check the paths before treating a spike as breakage; any 5xx is real. RUM CWV is dashboard-only on the free plan.</p>`;
+    <p class="muted small">Most requests are HTML (served <span class="mono">dynamic</span> by design — the apex page stays uncached); only static <span class="mono">/_astro/*</span> assets are cacheable, so the hit ratio reflects asset reuse, not page caching. On a 4xx spike, open the paths/agents above first: probe paths (<span class="mono">/wp-admin</span>, <span class="mono">/.env</span>…) are bot noise, but one path at high volume is a real client to identify; any 5xx is real. RUM CWV is dashboard-only on the free plan.</p>`;
   return panel('Cloudflare edge', sub, body, (w.serverErrors ?? 0) > 0 ? 'amber' : 'green');
 }
 
@@ -322,16 +384,36 @@ function seoPanel() {
       'grey',
     );
   }
+  // every number carries its capture window — "clicks 0" over 3 days and over
+  // 3 months are different signals — and the staleness badge is computed
+  // (ageNote), never hardcoded fresh: manual captures are the likeliest to rot.
+  const staleDays = (snap) =>
+    Math.round((Date.parse(`${today()}T00:00:00Z`) - Date.parse(`${snap.date}T00:00:00Z`)) / 86400000);
   const parts = [];
   if (gsc) {
     const g = gsc.data;
-    parts.push(`<div class="kpi-row"><strong>GSC</strong> — indexed ${esc(g.indexed ?? '—')} · clicks ${esc(g.clicks ?? '—')} · impressions ${esc(g.impressions ?? '—')} · avg pos ${esc(g.avgPosition ?? '—')} <span class="age fresh">${esc(gsc.date)}</span></div>`);
+    const idx = g.indexed ?? null;
+    const notIdx = g.notIndexed ?? null;
+    const idxStr =
+      idx != null && notIdx != null
+        ? `indexed <span class="${notIdx > idx ? 'warn' : 'ok'}">${esc(idx)}</span> / not ${esc(notIdx)}`
+        : `indexed ${esc(idx ?? '—')}`;
+    parts.push(`<div class="kpi-row"><strong>GSC</strong> — ${idxStr} · clicks ${esc(g.clicks ?? '—')} · impressions ${esc(g.impressions ?? '—')} · avg pos ${esc(g.avgPosition ?? '—')} ${ageNote(gsc.date)}${
+      g.window ? `<br><span class="muted small">window: ${esc(g.window)}</span>` : ''
+    }</div>`);
   }
   if (ga4) {
     const a = ga4.data;
-    parts.push(`<div class="kpi-row"><strong>GA4</strong> — users ${esc(a.users ?? '—')} · sessions ${esc(a.sessions ?? '—')} · conversions ${esc(a.conversions ?? '—')} <span class="age fresh">${esc(ga4.date)}</span></div>`);
+    parts.push(`<div class="kpi-row"><strong>GA4</strong> — users ${esc(a.users ?? '—')} · sessions ${esc(a.sessions ?? '—')} · conversions ${esc(a.conversions ?? '—')} ${ageNote(ga4.date)}${
+      a.window ? `<br><span class="muted small">window: ${esc(a.window)}</span>` : ''
+    }</div>`);
   }
-  return panel('SEO / AEO health', 'manual GA4/GSC capture', parts.join(''), 'green');
+  // honest dot: amber when a capture is over a week old or more pages sit
+  // outside the index than in it — neither is failure, both deserve attention.
+  const indexingBehind =
+    gsc?.data.indexed != null && gsc?.data.notIndexed != null && gsc.data.notIndexed > gsc.data.indexed;
+  const anyStale = [gsc, ga4].filter(Boolean).some((s) => staleDays(s) > 7);
+  return panel('SEO / AEO health', 'manual GA4/GSC capture', parts.join(''), anyStale || indexingBehind ? 'amber' : 'green');
 }
 
 // ── shell ────────────────────────────────────────────────────────────────────
@@ -450,6 +532,11 @@ const html = `<!doctype html>
   .muted{color:var(--muted)}
   .note{background:rgba(146,180,255,.03);border:1px solid var(--line);border-left:2px solid var(--line-strong);border-radius:6px;padding:11px 13px;margin:8px 0}
   .note strong{font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+  /* 5xx strip: alert-red signal lamp — visible without any interaction */
+  .note.alertnote{background:rgba(255,90,106,.05);border-color:rgba(255,90,106,.25);border-left:2px solid var(--alert)}
+  .note.alertnote strong{color:var(--alert);text-shadow:0 0 10px rgba(255,90,106,.35)}
+  .note.alertnote table{margin-top:8px}
+  .note.alertnote td{font-size:11.5px;padding:5px 9px}
   .age{font:600 10px/1 var(--mono);padding:3px 7px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase}
   .age.fresh{background:rgba(63,224,143,.12);color:var(--signal)}
   .age.stale{background:rgba(245,181,68,.12);color:var(--warn)}

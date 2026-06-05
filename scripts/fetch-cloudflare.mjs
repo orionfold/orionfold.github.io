@@ -171,6 +171,48 @@ try {
   console.error(`[cloudflare] last24h: ${result.last24hError}`);
 }
 
+// 3. Error detail (separate query + try/catch so a missing dimension on the
+// free plan degrades gracefully without losing last24h):
+//   - serverErrorPaths: EVERY sampled 5xx path+agent. A lone 5xx never ranks
+//     in the count-ordered topErrorPaths next to 404 bot noise, so the
+//     dashboard's red "server errors" KPI needs its own lookup to be actionable.
+//   - topErrorAgents: who drives the 4xx/5xx volume (bot probe vs monitor vs a
+//     real client hammering one path) — the "who" behind topErrorPaths.
+if (result.last24h) {
+  try {
+    const data = await cfGraphql(
+      TOKEN,
+      `query($zone:String!,$start:Time!,$end:Time!){
+        viewer{zones(filter:{zoneTag:$zone}){
+          serverErrorPaths:httpRequestsAdaptiveGroups(limit:10,orderBy:[count_DESC],
+            filter:{datetime_geq:$start,datetime_lt:$end,edgeResponseStatus_geq:500}){
+            count dimensions{edgeResponseStatus clientRequestPath userAgent}
+          }
+          topErrorAgents:httpRequestsAdaptiveGroups(limit:5,orderBy:[count_DESC],
+            filter:{datetime_geq:$start,datetime_lt:$end,edgeResponseStatus_geq:400}){
+            count dimensions{userAgent}
+          }
+        }}
+      }`,
+      { zone: ZONE, start: winStart, end: winEnd },
+    );
+    const z = data.viewer.zones[0] ?? {};
+    result.last24h.serverErrorPaths = (z.serverErrorPaths ?? []).map((r) => ({
+      path: r.dimensions.clientRequestPath,
+      status: r.dimensions.edgeResponseStatus,
+      userAgent: r.dimensions.userAgent,
+      count: r.count,
+    }));
+    result.last24h.topErrorAgents = (z.topErrorAgents ?? []).map((r) => ({
+      userAgent: r.dimensions.userAgent,
+      count: r.count,
+    }));
+  } catch (e) {
+    result.last24h.errorDetailError = String(e.message ?? e);
+    console.error(`[cloudflare] error detail: ${result.last24h.errorDetailError}`);
+  }
+}
+
 const outPath = writeMetric('cloudflare', result);
 const t = result.last24h;
 console.log(
