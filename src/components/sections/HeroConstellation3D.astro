@@ -1,0 +1,32 @@
+---
+// HeroConstellation3D — the Orion constellation panel on a slowly drifting 3D
+// plane (isometric feel). The loop animates TRANSFORM ONLY on one element, so
+// the compositor handles it without main-thread paint (unlike the old rail's
+// 42 image tracks or StarWave's d-morphs). Freezes under reduced motion.
+import HeroConstellation from './HeroConstellation.astro';
+---
+<div class="hc3d-stage h-full w-full" style="perspective: 1400px;">
+  <div class="hc3d-plane h-full w-full">
+    <HeroConstellation />
+  </div>
+</div>
+
+<style>
+  .hc3d-plane {
+    transform: rotateX(26deg) rotateZ(-5deg) scale(0.92);
+    animation: hc3d-drift 14s ease-in-out infinite alternate;
+    will-change: transform;
+    /* soft ambient shadow that drifts with the card */
+    border-radius: 1rem;
+    box-shadow:
+      0 50px 100px -30px oklch(0.25 0.07 264 / 0.45),
+      0 16px 40px -16px oklch(0.25 0.07 264 / 0.35);
+  }
+  @keyframes hc3d-drift {
+    from { transform: rotateX(26deg) rotateZ(-5deg) scale(0.92); }
+    to   { transform: rotateX(33deg) rotateZ(4deg) scale(0.96); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hc3d-plane { animation: none; }
+  }
+</style>

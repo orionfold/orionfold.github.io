@@ -177,7 +177,11 @@ const links = brightStars.flatMap((s) => {
 const fieldSway = +(W * 0.008).toFixed(1);
 const fieldDur = isBand ? 26 : 20;
 ---
-<div class:list={['starwave relative w-full overflow-hidden', className]} style={`height:${H}px`} aria-hidden="true">
+{/* content-visibility:auto lets the browser skip rendering (and animating)
+    off-screen instances entirely — the d-morph waves repaint on the main
+    thread every frame, so this is the zero-JS way to pay only for the band
+    actually in view. The explicit height doubles as the intrinsic size. */}
+<div class:list={['starwave relative w-full overflow-hidden', className]} style={`height:${H}px; content-visibility:auto; contain-intrinsic-size:auto ${H}px;`} aria-hidden="true">
   <!-- nebula glow anchored ON the wave zone (~70% y) so it fades to white both
        above the crests and below — a centered ribbon, no wash above the waves -->
   <div

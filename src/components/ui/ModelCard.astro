@@ -29,9 +29,12 @@ interface Props {
   coverAlt?: string;
   seed?: string; // constellation seed (defaults to title)
   featured?: boolean; // wide cover-left/text-right hero (odd-section bento lead)
+  // First card on the listing = the LCP candidate: eager + fetchpriority=high
+  // cover and NO data-animate reveal (opacity:0 delays the LCP). Max ONE/page.
+  priority?: boolean;
 }
 
-const { domain, title, variant, tagline, base, format, recommended, license, href, ctaText = 'Download on HuggingFace', detailHref, cover, coverAlt, seed, featured = false } = Astro.props;
+const { domain, title, variant, tagline, base, format, recommended, license, href, ctaText = 'Download on HuggingFace', detailHref, cover, coverAlt, seed, featured = false, priority = false } = Astro.props;
 const coverSeed = seed ?? title;
 // The whole card is the link: its detail page when one exists, else the HuggingFace
 // link (target=_blank). No inner CTA — the card itself is clickable (like StoryCard).
@@ -49,7 +52,7 @@ const specs = [
   href={linkHref}
   target={detailHref ? undefined : '_blank'}
   rel={detailHref ? undefined : 'noopener noreferrer'}
-  data-animate
+  data-animate={priority ? undefined : ''}
   aria-label={title}
   class:list={[
     'group overflow-hidden rounded-2xl border border-border bg-surface-raised transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-primary/[0.03] hover:shadow-xl hover:shadow-primary/10',
@@ -64,7 +67,8 @@ const specs = [
         alt={coverAlt ?? `${title} comic cover`}
         widths={featured ? [640, 960] : [400, 640]}
         sizes="(min-width: 640px) 50vw, 100vw"
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
         decoding="async"
         data-no-zoom
         class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"

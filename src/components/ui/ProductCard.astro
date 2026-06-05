@@ -26,9 +26,14 @@ interface Props {
   coverType?: 'screenshot' | 'logo' | 'motif' | 'poster';
   seed?: string; // constellation seed (defaults to title)
   featured?: boolean; // wide image-left/text-right hero (odd-section bento lead)
+  // First card on a listing page = the LCP candidate. priority loads its cover
+  // eager + fetchpriority=high AND skips the data-animate reveal (an opacity:0
+  // LCP element doesn't count as painted until the observer fires — the same
+  // ~1s inflation the 2026-05-31 audit found on hero text). Max ONE per page.
+  priority?: boolean;
 }
 
-const { eyebrow, title, body, pills = [], href, ctaText, detailHref, cover, coverType = 'motif', seed, featured = false } = Astro.props;
+const { eyebrow, title, body, pills = [], href, ctaText, detailHref, cover, coverType = 'motif', seed, featured = false, priority = false } = Astro.props;
 const coverSeed = seed ?? title;
 // The whole card is the link: its detail page when one exists, else the off-site
 // link (target=_blank). No inner CTA — the card itself is clickable (like StoryCard).
@@ -38,7 +43,7 @@ const linkHref = detailHref ?? href;
   href={linkHref}
   target={detailHref ? undefined : '_blank'}
   rel={detailHref ? undefined : 'noopener noreferrer'}
-  data-animate
+  data-animate={priority ? undefined : ''}
   aria-label={title}
   class:list={[
     'group overflow-hidden rounded-2xl border border-border bg-surface-raised transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-primary/[0.03] hover:shadow-xl hover:shadow-primary/10',
@@ -55,7 +60,8 @@ const linkHref = detailHref ?? href;
         alt={`${title} poster`}
         widths={featured ? [640, 960] : [400, 640]}
         sizes="(min-width: 640px) 50vw, 100vw"
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
         decoding="async"
         data-no-zoom
         class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"

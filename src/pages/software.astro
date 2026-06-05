@@ -53,10 +53,13 @@ function resolveCover(key?: string): ImageMetadata | undefined {
     />
 
     <!-- Grouped product clusters -->
-    {softwareGroups.map((group) => {
+    {softwareGroups.map((group, groupIndex) => {
       const items = software.filter((p) => p.group === group.id);
       // Odd 3+ sections lead with a full-width featured card so the rest pair up.
       const { lead, rest } = bentoSplit(items);
+      // The page's first card is the LCP candidate: load its poster eager +
+      // fetchpriority=high and skip its reveal animation (max 1 eager/page).
+      const isFirstGroup = groupIndex === 0;
       return (
         <section class="px-6 pt-12">
           <div class="mx-auto max-w-6xl">
@@ -79,10 +82,11 @@ function resolveCover(key?: string): ImageMetadata | undefined {
                 coverType={lead.coverType}
                 seed={lead.slug}
                 featured
+                priority={isFirstGroup}
               />
             )}
             <div data-animate-stagger class:list={['grid gap-6 sm:grid-cols-2', lead && 'mt-6']}>
-              {rest.map((product) => (
+              {rest.map((product, index) => (
                 <ProductCard
                   eyebrow={product.eyebrow}
                   title={product.title}
@@ -94,6 +98,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
                   cover={resolveCover(product.cover)}
                   coverType={product.coverType}
                   seed={product.slug}
+                  priority={isFirstGroup && !lead && index === 0}
                 />
               ))}
             </div>

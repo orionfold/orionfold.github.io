@@ -1,0 +1,203 @@
+---
+// HeroConstellation — the hero's trust signal, redrawn as the brand itself.
+// Eight featured products become the eight main stars of Orion (the studio's
+// namesake): head, shoulders, belt, feet. Each star is a real link to that
+// product's detail page, and a stat line counts everything the studio has
+// shipped. Replaces the poster rail: zero image requests, a few KB of inline
+// SVG/CSS, no infinite animation — and unlike the rail it also works on mobile.
+//
+// The star positions are hand-placed (not PRNG) so the figure reads as Orion
+// and the labels never collide. The faint background starfield IS seeded PRNG,
+// same idiom as ConstellationCover. Twinkle is opacity-only (compositor
+// friendly) on a handful of stars, and freezes under prefers-reduced-motion.
+import { software } from '../../data/software';
+import { models } from '../../data/models';
+import { books } from '../../data/books';
+
+interface Props {
+  compact?: boolean; // mobile band: fewer background stars, smaller labels
+  // panel: dark rounded card (default) · light: theme-palette stars straight on
+  // the page background · transparent: white stars, no card (the parent section
+  // supplies the dark sky, e.g. the full-bleed HeroSky variant)
+  theme?: 'panel' | 'light' | 'transparent';
+  class?: string;
+}
+const { compact = false, theme = 'panel', class: className = '' } = Astro.props;
+const onLight = theme === 'light';
+
+// ── deterministic PRNG (string hash -> mulberry32), ConstellationCover idiom ──
+function hash(str: string): number {
+  let h = 1779033703 ^ str.length;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  return h >>> 0;
+}
+function mulberry32(a: number) {
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rnd = mulberry32(hash('orionfold-hero'));
+
+// ── the figure: 8 featured products on Orion's 8 main stars ──
+// x/y are % of the panel. labelPos keeps every label clear of the stick figure.
+type LabelPos = 'top' | 'bottom' | 'left' | 'right';
+interface StarNode {
+  label: string;
+  kind: 'app' | 'model' | 'book';
+  href: string;
+  x: number;
+  y: number;
+  labelPos: LabelPos;
+  major?: boolean; // brighter dot (Rigel = the flagship book)
+}
+const starNodes: StarNode[] = [
+  { label: 'AI Native Platform', kind: 'app', href: '/software/ai-native-platform/', x: 50, y: 10, labelPos: 'top' }, // Meissa (head)
+  { label: 'cortex', kind: 'app', href: '/software/cortex/', x: 28, y: 25, labelPos: 'left' }, // Betelgeuse (left shoulder)
+  { label: 'fieldkit', kind: 'app', href: '/software/fieldkit/', x: 72, y: 23, labelPos: 'right' }, // Bellatrix (right shoulder)
+  { label: 'Arena', kind: 'app', href: '/software/arena/', x: 38, y: 50, labelPos: 'left' }, // Alnitak (belt)
+  { label: 'Kepler', kind: 'model', href: '/models/', x: 50, y: 54, labelPos: 'top' }, // Alnilam (belt; upcoming model)
+  { label: 'neosignal', kind: 'app', href: '/software/neosignal/', x: 62, y: 58, labelPos: 'right' }, // Mintaka (belt)
+  { label: 'AI Native Business', kind: 'book', href: '/books/ai-native-business/', x: 29, y: 85, labelPos: 'bottom' }, // Saiph (left foot)
+  { label: 'AI Research on DGX Spark', kind: 'book', href: '/books/ai-research-on-nvidia-dgx-spark/', x: 71, y: 80, labelPos: 'bottom', major: true }, // Rigel (right foot)
+  { label: 'Patent Strategist', kind: 'model', href: '/models/patent-strategist/', x: 52, y: 70, labelPos: 'bottom' }, // sword tip
+];
+// Orion's stick figure: head->shoulders, shoulders->belt, belt chain,
+// belt->feet, and the sword hanging from the belt's middle star.
+const edges: [number, number][] = [
+  [0, 1], [0, 2], [1, 3], [2, 5], [3, 4], [4, 5], [3, 6], [5, 7], [4, 8],
+];
+
+// ── faint background starfield (decorative, seeded) ──
+const BG_COUNT = compact ? 22 : 38;
+const bgStars = Array.from({ length: BG_COUNT }, () => ({
+  x: Math.round(rnd() * 1000) / 10,
+  y: Math.round(rnd() * 1000) / 10,
+  size: rnd() > 0.8 ? 2.5 : 1.5,
+  op: 0.2 + rnd() * 0.4,
+  twinkle: rnd() > 0.7,
+  tw: (3 + rnd() * 4).toFixed(1),
+  dly: (rnd() * 5).toFixed(1),
+}));
+
+// ── stat line: counted from the data SSOT, never hardcoded ──
+const stats = `${software.length} apps · ${models.length} models · ${books.length} books`;
+
+const kindLabel = { app: 'software', model: 'model', book: 'book' } as const;
+
+// Glowing type colors, matching the cinematic art direction: software blue,
+// model teal, book gold. Each node carries its color as --nc so the star dot
+// and the name adopt it on hover (see the scoped CSS below).
+const kindColor = {
+  app: 'oklch(0.72 0.15 262)',
+  model: 'oklch(0.76 0.13 175)',
+  book: 'oklch(0.8 0.13 85)',
+} as const;
+
+// label placement classes per position (dot is the anchor)
+const labelClass: Record<LabelPos, string> = {
+  top: 'bottom-full left-1/2 mb-2 -translate-x-1/2 text-center',
+  bottom: 'top-full left-1/2 mt-2 -translate-x-1/2 text-center',
+  left: 'right-full top-1/2 mr-2.5 -translate-y-1/2 text-right',
+  right: 'left-full top-1/2 ml-2.5 -translate-y-1/2 text-left',
+};
+---
+<div
+  class:list={[
+    'hero-constellation relative h-full w-full overflow-hidden',
+    theme === 'panel' && 'rounded-2xl',
+    className,
+  ]}
+  style={theme === 'panel' ? 'background: radial-gradient(120% 130% at 30% -10%, oklch(0.34 0.1 258) 0%, oklch(0.24 0.08 264) 52%, oklch(0.16 0.05 268) 100%);' : undefined}
+>
+  <!-- seeded background starfield (decorative) -->
+  <div class="absolute inset-0" aria-hidden="true">
+    {bgStars.map((s) => (
+      <span
+        class:list={['absolute rounded-full', onLight ? 'bg-primary' : 'bg-white', s.twinkle && 'hc-twinkle']}
+        style={`left:${s.x}%; top:${s.y}%; width:${s.size}px; height:${s.size}px; opacity:${onLight ? s.op * 0.8 : s.op}; --tw:${s.tw}s; --dly:${s.dly}s;`}
+      ></span>
+    ))}
+  </div>
+
+  <!-- the Orion stick figure (decorative lines; the stars themselves are links) -->
+  <svg class="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    {edges.map(([a, b]) => (
+      <line
+        x1={starNodes[a].x} y1={starNodes[a].y}
+        x2={starNodes[b].x} y2={starNodes[b].y}
+        class={onLight ? 'stroke-primary' : 'stroke-white'}
+        stroke-opacity={onLight ? '0.35' : '0.22'} stroke-width="1" vector-effect="non-scaling-stroke"
+      ></line>
+    ))}
+  </svg>
+
+  <!-- product stars: real links, keyboard reachable -->
+  {starNodes.map((n) => (
+    <a
+      href={n.href}
+      aria-label={`Explore ${n.label} (${kindLabel[n.kind]})`}
+      class:list={['hc-node group absolute -translate-x-1/2 -translate-y-1/2 rounded-full p-2 focus-visible:outline-none focus-visible:ring-2', onLight ? 'focus-visible:ring-primary/70' : 'focus-visible:ring-white/70']}
+      style={`left:${n.x}%; top:${n.y}%; --nc:${kindColor[n.kind]};`}
+    >
+      <span
+        class:list={[
+          'hc-dot block rounded-full transition-[transform,background-color] duration-300 group-hover:scale-150 group-focus-visible:scale-150',
+          onLight ? 'bg-primary' : 'bg-white',
+          n.major ? 'h-3.5 w-3.5' : 'h-2.5 w-2.5',
+        ]}
+        style={`box-shadow: 0 0 ${n.major ? 18 : 12}px ${n.major ? 5 : 3}px ${onLight ? 'oklch(0.55 0.18 262 / 0.4)' : 'oklch(0.8 0.1 250 / 0.55)'};`}
+      ></span>
+      <span class:list={['absolute whitespace-nowrap leading-tight', labelClass[n.labelPos]]}>
+        <span class:list={['hc-name block font-mono font-semibold tracking-wider transition-colors', onLight ? 'text-text' : 'text-white/95', compact ? 'text-[12px]' : 'text-[13.5px]']}>
+          {n.label}
+        </span>
+        <span
+          class:list={['hc-pill mt-1 inline-block rounded-full border px-2 py-[2px] font-mono uppercase tracking-[0.14em]', compact ? 'text-[8.5px]' : 'text-[9.5px]']}
+          style={`color: var(--nc); border-color: color-mix(in oklch, var(--nc), transparent 45%); background: color-mix(in oklch, var(--nc), transparent 86%); box-shadow: 0 0 12px color-mix(in oklch, var(--nc), transparent 65%);`}
+        >
+          {kindLabel[n.kind]}
+        </span>
+      </span>
+    </a>
+  ))}
+
+  <!-- stat line: the proof, counted from the data SSOT -->
+  <p class:list={['absolute bottom-4 left-1/2 w-full -translate-x-1/2 text-center font-mono tracking-wider', onLight ? 'text-text-muted' : 'text-white/60', compact ? 'text-[10px]' : 'text-xs']}>
+    {stats}<span class={onLight ? 'opacity-60' : 'text-white/40'}> · all built here</span>
+  </p>
+
+  {theme === 'panel' && <span class="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/[0.06]"></span>}
+</div>
+
+<style>
+  /* Opacity-only twinkle: cheap for the compositor, unlike SVG d-morphs. */
+  .hc-twinkle {
+    animation: hc-tw var(--tw) ease-in-out var(--dly) infinite;
+  }
+  @keyframes hc-tw {
+    50% { opacity: 0.1; }
+  }
+
+  /* Hover/focus: the star and the name adopt the node's type color (--nc),
+     so the whole node lights up in its pill's glow. */
+  .hc-node:hover .hc-dot,
+  .hc-node:focus-visible .hc-dot {
+    background: var(--nc);
+    box-shadow: 0 0 18px 5px color-mix(in oklch, var(--nc), transparent 45%) !important;
+  }
+  .hc-node:hover .hc-name,
+  .hc-node:focus-visible .hc-name {
+    color: var(--nc);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hc-twinkle { animation: none; }
+  }
+</style>

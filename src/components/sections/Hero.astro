@@ -1,15 +1,16 @@
 ---
-// Homepage hero (H1 — "split + poster rail"). The old centered headline + a
-// scroll-down CTA was the last off-theme above-the-fold: the landing pages got
-// the slim PageHeader so their card grids rise into view, but the homepage has
-// no grid right below, so it earns this richer split instead. Left: the pitch +
-// dual CTAs (the site's two commerce families — Get the books / Sponsor the
-// work) + a live trust line. Right: a slow media-wall of the studio's own art
-// (PosterRail) as the trust signal. The atmospheric dual-glow, gradient H1, and
-// staggered reveal are the donor's ported idioms; the bottom fade carries into
-// the narrative. The homepage newsletter form moved out (capture lives on the
-// Story pages now — H3).
-import PosterRail from '../ui/PosterRail.astro';
+// Homepage hero ("split + constellation"). Left: the pitch + dual CTAs (the
+// site's two commerce families — Get the books / Sponsor the work) + a live
+// trust line. Right: the trust signal — the studio's products drawn as the
+// Orion constellation on a slowly drifting 3D card (HeroConstellation3D).
+// It replaced the old animated poster rail (2026-06-05): zero image requests
+// instead of ~21 posters rendered twice, a single GPU-only transform loop
+// instead of two infinite scroll animations, every star a real inward link,
+// and mobile finally gets the proof-of-shipping band the rail never gave it.
+// The bottom fade carries into the narrative. The homepage newsletter form
+// lives on the Story pages (H3).
+import HeroConstellation from './HeroConstellation.astro';
+import HeroConstellation3D from './HeroConstellation3D.astro';
 
 // A "why us" statement, not a feature list: the reason to choose Orionfold over
 // cloud AI. Two lines — the status quo (your data goes to someone else's cloud)
@@ -72,9 +73,15 @@ const whyUs = [
       </p>
     </div>
 
-    <!-- Right: the poster rail (desktop only; mobile keeps the clean pitch) -->
+    <!-- Right: the hero visual — the studio's products drawn as the Orion
+         constellation on a slowly drifting 3D card (replaced the poster rail:
+         zero images, GPU-only animation, every star a real link). Mobile gets
+         a flat compact band below the pitch instead of the tilted card. -->
     <div class="relative hidden h-[calc(100dvh-80px)] max-h-[760px] lg:block">
-      <PosterRail />
+      <HeroConstellation3D />
+    </div>
+    <div class="relative h-[26rem] lg:hidden">
+      <HeroConstellation compact />
     </div>
   </div>
 </section>
