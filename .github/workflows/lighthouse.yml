@@ -47,6 +47,16 @@ jobs:
         with:
           configPath: ./.lighthouserc.cjs
 
+      - name: Email regression alert
+        # M5 — best-effort: a red budget run emails the operator a digest via
+        # the ops-alert edge fn. continue-on-error so a broken alerter never
+        # confuses triage of the underlying perf regression.
+        if: failure()
+        continue-on-error: true
+        env:
+          OPS_ALERT_TOKEN: ${{ secrets.OPS_ALERT_TOKEN }}
+        run: node scripts/notify-lighthouse-alert.mjs
+
       - name: Upload Lighthouse reports
         if: always() # keep the reports even when a budget assertion fails
         uses: actions/upload-artifact@v4
