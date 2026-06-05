@@ -275,16 +275,39 @@ function cloudflarePanel() {
     .map((c) => `<span class="lg"><span class="sw" style="background:${palette[c.status] || '#cbd5e1'}"></span>${esc(c.status)} ${num(c.count)}</span>`)
     .join('');
   const hit = w.cacheHitRatioCacheable ?? 0;
+  // Errors: 4xx (client errors — bad URLs, mostly bot probes on a static site)
+  // colored by share of sampled requests; ANY 5xx (server errors) is red.
+  const errRatio = w.clientErrorRatio ?? 0;
+  const errPaths = (w.topErrorPaths || [])
+    .map(
+      (p) =>
+        `<tr><td class="mono">${esc(p.path)}</td><td class="mono">${esc(p.status)}</td><td class="mono" style="text-align:right">${num(p.count)}</td></tr>`,
+    )
+    .join('');
+  const errBlock =
+    w.clientErrors == null
+      ? ''
+      : `<details class="errors"><summary class="muted small">top error paths (4xx/5xx, sampled)</summary>
+          <table class="small"><thead><tr><th>path</th><th>status</th><th style="text-align:right">count</th></tr></thead>
+          <tbody>${errPaths || '<tr><td colspan="3" class="muted">none in window</td></tr>'}</tbody></table>
+        </details>`;
   const body = `
     <div class="kpis">
       <div class="kpi"><span class="big">${num(w.sampledRequests)}</span><span class="lbl">sampled req / 24h</span></div>
       <div class="kpi"><span class="big">${kb(w.edgeResponseBytes)}</span><span class="lbl">edge bytes served</span></div>
       <div class="kpi"><span class="big ${hit >= 0.7 ? 'ok' : hit >= 0.4 ? 'warn' : 'bad'}">${pct(hit)}</span><span class="lbl">cacheable hit ratio</span></div>
+      ${
+        w.clientErrors == null
+          ? ''
+          : `<div class="kpi"><span class="big ${errRatio < 0.05 ? 'ok' : errRatio < 0.15 ? 'warn' : 'bad'}">${num(w.clientErrors)}</span><span class="lbl">client errors 4xx (${pct(errRatio)})</span></div>
+      <div class="kpi"><span class="big ${(w.serverErrors ?? 0) === 0 ? 'ok' : 'bad'}">${num(w.serverErrors ?? 0)}</span><span class="lbl">server errors 5xx</span></div>`
+      }
     </div>
     <div class="stack">${bar}</div>
     <div class="legend">${legend}</div>
-    <p class="muted small">Most requests are HTML (served <span class="mono">dynamic</span> by design — the apex page stays uncached); only static <span class="mono">/_astro/*</span> assets are cacheable, so the hit ratio reflects asset reuse, not page caching. RUM CWV is dashboard-only on the free plan.</p>`;
-  return panel('Cloudflare edge', sub, body, 'green');
+    ${errBlock}
+    <p class="muted small">Most requests are HTML (served <span class="mono">dynamic</span> by design — the apex page stays uncached); only static <span class="mono">/_astro/*</span> assets are cacheable, so the hit ratio reflects asset reuse, not page caching. 4xx on a static site is mostly bot probing (<span class="mono">/wp-admin</span>, <span class="mono">/.env</span>…) — check the paths before treating a spike as breakage; any 5xx is real. RUM CWV is dashboard-only on the free plan.</p>`;
+  return panel('Cloudflare edge', sub, body, (w.serverErrors ?? 0) > 0 ? 'amber' : 'green');
 }
 
 // ── SEO / AEO health (manual GA4 + GSC drops) ───────────────────────────────
@@ -413,6 +436,10 @@ const html = `<!doctype html>
   .tscroll{overflow-x:auto}
   table.dense{table-layout:fixed;width:100%}
   table.dense th,table.dense td{padding:6px 6px;font-size:11.5px}
+  details.errors{margin:10px 0 2px}
+  details.errors summary{cursor:pointer;user-select:none}
+  details.errors table{margin-top:6px}
+  details.errors td{font-size:11.5px;padding:5px 9px}
   td.rt,th.rt{width:40%;font-family:var(--mono);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mono{font-family:var(--mono)}.small{font-size:12px}
   td .dot{margin-right:8px}

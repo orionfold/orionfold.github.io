@@ -60,7 +60,8 @@ try {
       viewer{zones(filter:{zoneTag:$zone}){
         httpRequests1dGroups(limit:31,orderBy:[date_ASC],filter:{date_geq:$start,date_lt:$end}){
           dimensions{date}
-          sum{requests bytes cachedRequests cachedBytes threats}
+          sum{requests bytes cachedRequests cachedBytes threats encryptedRequests
+            responseStatusMap{edgeResponseStatus requests}}
           uniq{uniques}
         }
       }}
@@ -70,6 +71,15 @@ try {
   const rows = data.viewer.zones[0]?.httpRequests1dGroups ?? [];
   result.dailyTrend = rows.map((r) => {
     const reqs = r.sum.requests || 0;
+    // Status-class rollup from the per-code map (4xx = client errors, the
+    // Cloudflare account-home "Client errors" KPI; 5xx = server errors).
+    const statusMap = r.sum.responseStatusMap ?? [];
+    const inClass = (lo) =>
+      statusMap
+        .filter((s) => s.edgeResponseStatus >= lo && s.edgeResponseStatus < lo + 100)
+        .reduce((a, s) => a + s.requests, 0);
+    const clientErrors = inClass(400);
+    const serverErrors = inClass(500);
     return {
       date: r.dimensions.date,
       requests: reqs,
@@ -79,6 +89,11 @@ try {
       threats: r.sum.threats,
       uniques: r.uniq.uniques,
       cacheHitRatio: reqs ? +(r.sum.cachedRequests / reqs).toFixed(4) : null,
+      encryptedRequests: r.sum.encryptedRequests,
+      encryptedRatio: reqs ? +((r.sum.encryptedRequests || 0) / reqs).toFixed(4) : null,
+      clientErrors,
+      serverErrors,
+      clientErrorRatio: reqs ? +(clientErrors / reqs).toFixed(4) : null,
     };
   });
 } catch (e) {
@@ -100,6 +115,13 @@ try {
         byCache:httpRequestsAdaptiveGroups(limit:20,filter:{datetime_geq:$start,datetime_lt:$end}){
           count dimensions{cacheStatus}
         }
+        byStatus:httpRequestsAdaptiveGroups(limit:30,filter:{datetime_geq:$start,datetime_lt:$end}){
+          count dimensions{edgeResponseStatus}
+        }
+        topErrorPaths:httpRequestsAdaptiveGroups(limit:8,orderBy:[count_DESC],
+          filter:{datetime_geq:$start,datetime_lt:$end,edgeResponseStatus_geq:400}){
+          count dimensions{edgeResponseStatus clientRequestPath}
+        }
       }}
     }`,
     { zone: ZONE, start: winStart, end: winEnd },
@@ -107,6 +129,18 @@ try {
   const z = data.viewer.zones[0] ?? {};
   const totals = z.totals?.[0];
   const byCache = (z.byCache ?? []).map((r) => ({ status: r.dimensions.cacheStatus, count: r.count }));
+  // Status-class rollup (4xx = client errors). Sampled counts, same basis as
+  // sampledRequests, so the ratio is honest even when sampling kicks in.
+  const byStatus = (z.byStatus ?? []).map((r) => ({ status: r.dimensions.edgeResponseStatus, count: r.count }));
+  const sumClass = (lo) =>
+    byStatus.filter((r) => r.status >= lo && r.status < lo + 100).reduce((a, r) => a + r.count, 0);
+  const clientErrors = sumClass(400);
+  const serverErrors = sumClass(500);
+  const topErrorPaths = (z.topErrorPaths ?? []).map((r) => ({
+    path: r.dimensions.clientRequestPath,
+    status: r.dimensions.edgeResponseStatus,
+    count: r.count,
+  }));
   // Cache-hit ratio over CACHEABLE requests only: "dynamic" is HTML we
   // intentionally pass through (D2 cache rule), so excluding it avoids a
   // misleadingly low ratio.
@@ -121,6 +155,16 @@ try {
     avgSampleInterval: totals?.avg?.sampleInterval ?? null,
     byCacheStatus: byCache.sort((a, b) => b.count - a.count),
     cacheHitRatioCacheable: cacheable ? +(hits / cacheable).toFixed(4) : null,
+    byStatusClass: {
+      '2xx': sumClass(200),
+      '3xx': sumClass(300),
+      '4xx': clientErrors,
+      '5xx': serverErrors,
+    },
+    clientErrors,
+    serverErrors,
+    clientErrorRatio: totals?.count ? +(clientErrors / totals.count).toFixed(4) : null,
+    topErrorPaths,
   };
 } catch (e) {
   result.last24hError = String(e.message ?? e);
@@ -131,6 +175,9 @@ const outPath = writeMetric('cloudflare', result);
 const t = result.last24h;
 console.log(
   `[cloudflare] trend days=${result.dailyTrend.length}` +
-    (t ? ` · 24h sampledReq=${t.sampledRequests} cacheHit(cacheable)=${t.cacheHitRatioCacheable ?? 'n/a'}` : ''),
+    (t
+      ? ` · 24h sampledReq=${t.sampledRequests} cacheHit(cacheable)=${t.cacheHitRatioCacheable ?? 'n/a'}` +
+        ` 4xx=${t.clientErrors} 5xx=${t.serverErrors}`
+      : ''),
 );
 console.log(`[cloudflare] wrote ${outPath}`);
