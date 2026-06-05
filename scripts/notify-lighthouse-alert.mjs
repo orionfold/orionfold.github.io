@@ -60,7 +60,7 @@ async function main() {
 
   const byRoute = new Map();
   for (const f of failures) {
-    const route = routeOf(f.url);
+    const route = routeOf(f.url ?? '(unknown page)');
     if (!byRoute.has(route)) byRoute.set(route, []);
     byRoute.get(route).push(f);
   }
@@ -113,4 +113,6 @@ async function main() {
   }
 }
 
-main();
+main().catch((err) => {
+  console.log(`[ops-alert] unexpected error: ${err.message}`);
+});
