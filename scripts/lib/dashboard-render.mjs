@@ -416,6 +416,30 @@ export function renderBody(payload) {
     return panel('CI / Deploy', 'deploy.yml + lighthouse.yml', body, anyBad ? 'red' : 'green');
   }
 
+  // ── Todos (agency export ∪ local echo — the sync contract, rendered) ──────
+  function todosPanel() {
+    const t = payload.todos;
+    if (!t?.available) return panel('Todos', 'agency sync', empty(`no data — ${t?.reason || 'loader missing'}`), 'grey');
+    const order = { in_progress: 0, open: 1, blocked: 2, done: 3 };
+    const items = [...t.todos].sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9) || (b.updated || '').localeCompare(a.updated || ''));
+    const active = items.filter((x) => x.status !== 'done');
+    const done = items.filter((x) => x.status === 'done');
+    const row = (x) => {
+      const cls = x.status === 'done' ? 'green' : x.status === 'blocked' ? 'red' : x.status === 'in_progress' ? 'amber' : 'grey';
+      return `<tr>
+        <td><span class="pill ${cls}">${esc(x.status)}</span></td>
+        <td>${esc(x.title)}${x.due ? ` <span class="muted small mono">due ${esc(x.due)}</span>` : ''}</td>
+        <td class="mono small">${esc(x.origin === 'agency' ? 'agency' : x.project || '')}</td>
+      </tr>`;
+    };
+    const body = `<table><thead><tr><th>State</th><th>Todo</th><th>Origin</th></tr></thead>
+      <tbody>${active.map(row).join('') || '<tr><td colspan="3" class="muted">none open</td></tr>'}</tbody></table>
+      ${done.length ? `<details class="errors"><summary class="muted small">done (${done.length})</summary><table><tbody>${done.map(row).join('')}</tbody></table></details>` : ''}
+      <p class="muted small">read-only merge of <span class="mono">../agency/_TODOS/_export.json</span> ∪ local <span class="mono">_TODOS.json</span> (last-writer-wins by updated). Intake stays a Claude-session job.</p>`;
+    const anyBlocked = active.some((x) => x.status === 'blocked');
+    return panel('Todos', `agency export ${t.generated ? esc(t.generated) : '—'}`, body, anyBlocked ? 'amber' : 'green');
+  }
+
   const sourcesList = ['betterstack', 'cloudflare', 'lighthouse', 'crux'];
   const newestDate = Object.keys(snaps)
     .flatMap((s) => snaps[s].map((x) => x.date))
@@ -433,6 +457,6 @@ export function renderBody(payload) {
     metaHtml: `generated <b>${esc(genTs)}</b> utc<br>latest data <b>${esc(newestDate || 'none')}</b>`,
     freshnessHtml,
     mainHtml: [lighthousePanel(), cloudflarePanel(), fieldCwvPanel()].join('\n      '),
-    sideHtml: [uptimePanel(), commercePanel(), ciPanel(), seoPanel()].join('\n      '),
+    sideHtml: [uptimePanel(), commercePanel(), ciPanel(), todosPanel(), seoPanel()].join('\n      '),
   };
 }

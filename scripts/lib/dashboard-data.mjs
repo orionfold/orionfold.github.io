@@ -65,10 +65,32 @@ function ciStatus() {
   return ciCache.data;
 }
 
+// ── Todos loader (agency export ∪ local echo — plain file reads, NO subprocess)
+// METRICS_DIR = <root>/audit-reports/metrics  →  resolve(…,'..','..') = <root>
+const ROOT = resolve(METRICS_DIR, '..', '..');
+
+function todos() {
+  const readJson = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } };
+  const agency = readJson(resolve(ROOT, '..', 'agency', '_TODOS', '_export.json'));
+  const local = readJson(resolve(ROOT, '_TODOS.json'));
+  if (!agency && !local) return { available: false, reason: 'no agency _export.json or local _TODOS.json found' };
+  const byId = new Map();
+  for (const t of [...(agency?.todos || []), ...(local?.todos || [])]) {
+    if (!t?.id) continue;
+    const prev = byId.get(t.id);
+    const wins = !prev
+      || (t.updated || '') > (prev.updated || '')
+      || ((t.updated || '') === (prev.updated || '') && t.status === 'done');
+    if (wins) byId.set(t.id, { ...prev, ...t });
+  }
+  return { available: true, generated: agency?.generated ?? null, todos: [...byId.values()] };
+}
+
 export function assemble({ ci = true } = {}) {
   return {
     generatedAt: new Date().toISOString(),
     snaps: loadSnapshots(),
     ci: ci ? ciStatus() : { asOf: null, runs: [] },
+    todos: todos(),
   };
 }
