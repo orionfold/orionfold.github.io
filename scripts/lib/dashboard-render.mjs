@@ -428,7 +428,7 @@ export function renderBody(payload) {
       const cls = x.status === 'done' ? 'green' : x.status === 'blocked' ? 'red' : x.status === 'in_progress' ? 'amber' : 'grey';
       return `<tr>
         <td><span class="pill ${cls}">${esc(x.status)}</span></td>
-        <td>${esc(x.title)}${x.due ? ` <span class="muted small mono">due ${esc(x.due)}</span>` : ''}</td>
+        <td>${x.title != null ? esc(x.title) : '<span class="muted">—</span>'}${x.due ? ` <span class="muted small mono">due ${esc(x.due)}</span>` : ''}</td>
         <td class="mono small">${esc(x.origin === 'agency' ? 'agency' : x.project || '')}</td>
       </tr>`;
     };
@@ -437,7 +437,7 @@ export function renderBody(payload) {
       ${done.length ? `<details class="errors"><summary class="muted small">done (${done.length})</summary><table><tbody>${done.map(row).join('')}</tbody></table></details>` : ''}
       <p class="muted small">read-only merge of <span class="mono">../agency/_TODOS/_export.json</span> ∪ local <span class="mono">_TODOS.json</span> (last-writer-wins by updated). Intake stays a Claude-session job.</p>`;
     const anyBlocked = active.some((x) => x.status === 'blocked');
-    return panel('Todos', `agency export ${t.generated ? esc(t.generated) : '—'}`, body, anyBlocked ? 'amber' : 'green');
+    return panel('Todos', `agency export ${t.generated ? esc(t.generated) + ' ' + ageNote(t.generated) : '—'}`, body, anyBlocked ? 'amber' : 'green');
   }
 
   const sourcesList = ['betterstack', 'cloudflare', 'lighthouse', 'crux'];

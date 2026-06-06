@@ -76,7 +76,7 @@ function todos() {
   if (!agency && !local) return { available: false, reason: 'no agency _export.json or local _TODOS.json found' };
   const byId = new Map();
   for (const t of [...(agency?.todos || []), ...(local?.todos || [])]) {
-    if (!t?.id) continue;
+    if (!t?.id || !t.updated) continue;
     const prev = byId.get(t.id);
     const wins = !prev
       || (t.updated || '') > (prev.updated || '')
