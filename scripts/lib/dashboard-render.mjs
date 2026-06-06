@@ -34,9 +34,9 @@ export function renderBody(payload) {
     return `<span class="age stale">${days}d old</span>`;
   }
 
-  // inline-SVG sparkline from a numeric series (degrades to a glowing dot for 1
-  // point). Phosphor palette + soft glow + area fade, to read like a CRT trace.
-  function sparkline(values, { good, bad, lowerIsBetter } = {}) {
+  // inline-SVG sparkline from a numeric series (degrades to a dot for 1 point).
+  // Token-driven colors + area fade. Carries data-tip-* for the live tooltip.
+  function sparkline(values, { good, bad, lowerIsBetter, tipHead } = {}) {
     const pts = values.filter((v) => typeof v === 'number' && !Number.isNaN(v));
     if (!pts.length) return '';
     const w = 132;
@@ -47,26 +47,26 @@ export function renderBody(payload) {
     const x = (i) => (pts.length === 1 ? w / 2 : (i / (pts.length - 1)) * w);
     const y = (v) => h - 4 - ((v - min) / span) * (h - 8);
     const last = pts[pts.length - 1];
-    let color = '#5cc8ff';
+    let color = 'var(--blue)';
     if (typeof good === 'number' && typeof bad === 'number') {
       color = lowerIsBetter
-        ? last <= good ? '#3fe08f' : last <= bad ? '#f5b544' : '#ff5a6a'
-        : last >= good ? '#3fe08f' : last >= bad ? '#f5b544' : '#ff5a6a';
+        ? last <= good ? 'var(--green)' : last <= bad ? 'var(--amber)' : 'var(--red)'
+        : last >= good ? 'var(--green)' : last >= bad ? 'var(--amber)' : 'var(--red)';
     }
-    const glow = `filter:drop-shadow(0 0 3px ${color}aa)`;
+    const tip = `data-tip-head="${esc(tipHead || 'trend')}" data-tip-lines="${esc(JSON.stringify(pts.map((v, i) => 'point ' + (i + 1) + ': ' + v)))}"`;
     if (pts.length === 1) {
-      return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="${glow}"><circle cx="${(w / 2).toFixed(1)}" cy="${y(pts[0]).toFixed(1)}" r="3.2" fill="${color}"/></svg>`;
+      return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" ${tip}><circle cx="${(w / 2).toFixed(1)}" cy="${y(pts[0]).toFixed(1)}" r="3.2" fill="${color}"/></svg>`;
     }
     const gid = `sg${++sparkSeq}`;
     const line = pts.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
     const area = `${x(0).toFixed(1)},${h} ${line} ${x(pts.length - 1).toFixed(1)},${h}`;
-    return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="${glow}"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity="0.35"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><polygon points="${area}" fill="url(#${gid})"/><polyline fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${line}"/><circle cx="${x(pts.length - 1).toFixed(1)}" cy="${y(last).toFixed(1)}" r="3.2" fill="${color}"/></svg>`;
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" ${tip}><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity="0.35"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><polygon points="${area}" fill="url(#${gid})"/><polyline fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${line}"/><circle cx="${x(pts.length - 1).toFixed(1)}" cy="${y(last).toFixed(1)}" r="3.2" fill="${color}"/></svg>`;
   }
 
   function panel(title, sub, bodyHtml, statusDot) {
     const dot = statusDot ? `<span class="dot ${statusDot}"></span>` : '';
     const idx = String(++panelIndex).padStart(2, '0');
-    return `<section class="panel" style="animation-delay:${panelIndex * 70}ms">
+    return `<section class="panel">
     <header>
       <div class="phead"><span class="pidx">${idx}</span><h2>${dot}${esc(title)}</h2></div>
       ${sub ? `<p class="sub">${sub}</p>` : ''}
@@ -98,6 +98,7 @@ export function renderBody(payload) {
     const trend = sparkline((snaps.betterstack || []).map((s) => s.data.counts?.up ?? 0), {
       good: d.total,
       bad: d.total - 1,
+      tipHead: 'up-count trend',
     });
     const body = `
     <div class="kpis">
@@ -196,6 +197,7 @@ export function renderBody(payload) {
     const perfTrend = sparkline(runSeries.map((s) => s.data.minScores?.performance ?? 0), {
       good: 0.9,
       bad: 0.8,
+      tipHead: 'perf trend',
     });
     const rows = (d.pages || [])
       .map((p) => {
@@ -237,12 +239,17 @@ export function renderBody(payload) {
     }
     const sub = `last 24h · sampled ${num(w.sampledRequests)} req · ${ageNote(snap.date)}`;
     const total = (w.byCacheStatus || []).reduce((a, b) => a + b.count, 0) || 1;
-    const palette = { hit: '#3fe08f', revalidated: '#2bb6a8', miss: '#f5b544', expired: '#e8b84b', dynamic: '#5470a8', none: '#54607a' };
-    const bar = (w.byCacheStatus || [])
-      .map((c) => `<span class="seg" style="width:${((c.count / total) * 100).toFixed(1)}%;background:${palette[c.status] || '#cbd5e1'}" title="${esc(c.status)}: ${num(c.count)}"></span>`)
-      .join('');
+    const palette = { hit: 'var(--green)', revalidated: 'var(--teal)', miss: 'var(--amber)', expired: 'var(--amber)', dynamic: 'var(--blue)', none: 'var(--faint)' };
+    let xAcc = 0;
+    const segs = (w.byCacheStatus || []).map((c) => {
+      const segW = (c.count / total) * 100;
+      const rect = `<rect x="${xAcc.toFixed(2)}" y="0" width="${segW.toFixed(2)}" height="14" fill="${palette[c.status] || 'var(--border)'}" data-tip-head="cache: ${esc(c.status)}" data-tip-lines="${esc(JSON.stringify([num(c.count) + ' requests', ((c.count / total) * 100).toFixed(1) + '%']))}"><title>${esc(c.status)}: ${num(c.count)}</title></rect>`;
+      xAcc += segW;
+      return rect;
+    }).join('');
+    const bar = `<svg class="stack" viewBox="0 0 100 14" width="100%" height="14" preserveAspectRatio="none">${segs}</svg>`;
     const legend = (w.byCacheStatus || [])
-      .map((c) => `<span class="lg"><span class="sw" style="background:${palette[c.status] || '#cbd5e1'}"></span>${esc(c.status)} ${num(c.count)}</span>`)
+      .map((c) => `<span class="lg"><svg class="sw" viewBox="0 0 9 9"><rect width="9" height="9" rx="2" fill="${palette[c.status] || 'var(--border)'}"/></svg>${esc(c.status)} ${num(c.count)}</span>`)
       .join('');
     const hit = w.cacheHitRatioCacheable ?? 0;
     // Errors: 4xx (client errors — bad URLs, mostly bot probes on a static site)
@@ -256,13 +263,13 @@ export function renderBody(payload) {
       const rows = (w.serverErrorPaths || [])
         .map(
           (p) =>
-            `<tr><td class="mono">${esc(p.path)}</td><td class="mono bad">${esc(p.status)}</td><td class="mono" style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.userAgent || '—')}</td><td class="mono" style="text-align:right">${num(p.count)}</td></tr>`,
+            `<tr><td class="mono">${esc(p.path)}</td><td class="mono bad">${esc(p.status)}</td><td class="mono clip-260">${esc(p.userAgent || '—')}</td><td class="right mono">${num(p.count)}</td></tr>`,
         )
         .join('');
       fiveXxBlock = `<div class="note alertnote"><strong>server errors (5xx) — sampled paths</strong>
       ${
         rows
-          ? `<table class="small"><thead><tr><th>path</th><th>status</th><th>agent</th><th style="text-align:right">count</th></tr></thead><tbody>${rows}</tbody></table>`
+          ? `<table class="small"><thead><tr><th>path</th><th>status</th><th>agent</th><th class="right">count</th></tr></thead><tbody>${rows}</tbody></table>`
           : `<p class="muted small">${esc(w.errorDetailError ? `path lookup failed: ${w.errorDetailError}` : 'paths not captured in this snapshot — rerun `npm run metrics` (older snapshot format, or the sampled rows aged out of the window)')}</p>`
       }
     </div>`;
@@ -270,7 +277,7 @@ export function renderBody(payload) {
     const errPaths = (w.topErrorPaths || [])
       .map(
         (p) =>
-          `<tr><td class="mono">${esc(p.path)}</td><td class="mono">${esc(p.status)}</td><td class="mono" style="text-align:right">${num(p.count)}</td></tr>`,
+          `<tr><td class="mono">${esc(p.path)}</td><td class="mono">${esc(p.status)}</td><td class="right mono">${num(p.count)}</td></tr>`,
       )
       .join('');
     // share of 4xx concentrated in the top path: "one noisy path" vs "broad
@@ -281,7 +288,7 @@ export function renderBody(payload) {
     const agentRows = (w.topErrorAgents || [])
       .map(
         (a) =>
-          `<tr><td class="mono" style="max-width:420px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.userAgent || '(no user-agent)')}</td><td class="mono" style="text-align:right">${num(a.count)}</td></tr>`,
+          `<tr><td class="mono clip-420">${esc(a.userAgent || '(no user-agent)')}</td><td class="right mono">${num(a.count)}</td></tr>`,
       )
       .join('');
     const errBlock =
@@ -290,11 +297,11 @@ export function renderBody(payload) {
         : `<details class="errors"><summary class="muted small">top error paths (4xx/5xx, sampled)${
             topShare != null && topPath ? ` — ${topShare}% is <span class="mono">${esc(topPath.path)}</span>` : ''
           }</summary>
-          <table class="small"><thead><tr><th>path</th><th>status</th><th style="text-align:right">count</th></tr></thead>
+          <table class="small"><thead><tr><th>path</th><th>status</th><th class="right">count</th></tr></thead>
           <tbody>${errPaths || '<tr><td colspan="3" class="muted">none in window</td></tr>'}</tbody></table>
           ${
             agentRows
-              ? `<table class="small" style="margin-top:8px"><thead><tr><th>top error agents (who)</th><th style="text-align:right">count</th></tr></thead><tbody>${agentRows}</tbody></table>`
+              ? `<table class="small"><thead><tr><th>top error agents (who)</th><th class="right">count</th></tr></thead><tbody>${agentRows}</tbody></table>`
               : ''
           }
         </details>`;
@@ -305,8 +312,8 @@ export function renderBody(payload) {
     const trendKpis =
       trend.length < 2
         ? ''
-        : `<div class="kpi"><span class="big">${sparkline(trend.map((t) => t.requests))}</span><span class="lbl">req / day</span></div>
-      <div class="kpi"><span class="big">${sparkline(trend.map((t) => t.clientErrorRatio), { good: 0.05, bad: 0.15, lowerIsBetter: true })}</span><span class="lbl">4xx ratio / day</span></div>`;
+        : `<div class="kpi"><span class="big">${sparkline(trend.map((t) => t.requests), { tipHead: 'req / day' })}</span><span class="lbl">req / day</span></div>
+      <div class="kpi"><span class="big">${sparkline(trend.map((t) => t.clientErrorRatio), { good: 0.05, bad: 0.15, lowerIsBetter: true, tipHead: '4xx ratio / day' })}</span><span class="lbl">4xx ratio / day</span></div>`;
     const body = `
     <div class="kpis">
       <div class="kpi"><span class="big">${num(w.sampledRequests)}</span><span class="lbl">sampled req / 24h</span></div>

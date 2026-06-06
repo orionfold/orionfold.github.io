@@ -19,6 +19,7 @@ function render(payload) {
   document.getElementById('freshness').innerHTML = body.freshnessHtml;
   document.getElementById('col-main').innerHTML = body.mainHtml;
   document.getElementById('col-side').innerHTML = body.sideHtml;
+  bentoize();
 }
 
 async function tick() {
@@ -40,3 +41,40 @@ tick();
 setInterval(tick, POLL_MS);
 addEventListener('focus', tick);
 // (admin buttons get wired in Task 5; inert until then)
+
+// ── tooltip singleton (design-system §5.5) — textContent ONLY, never innerHTML
+const tip = document.getElementById('tip');
+addEventListener('mousemove', (e) => {
+  const el = e.target.closest?.('[data-tip-head]');
+  if (!el) { tip.style.display = 'none'; return; }
+  const head = document.createElement('div');
+  head.className = 'tip-head';
+  head.textContent = el.getAttribute('data-tip-head');
+  let lines = [];
+  try { lines = JSON.parse(el.getAttribute('data-tip-lines') || '[]'); } catch {}
+  const lineDivs = lines.map((t) => {
+    const d = document.createElement('div');
+    d.className = 'tip-line';
+    d.textContent = String(t);
+    return d;
+  });
+  tip.replaceChildren(head, ...lineDivs);
+  tip.style.display = 'block';
+  const r = tip.getBoundingClientRect();
+  tip.style.left = `${Math.min(e.clientX + 14, innerWidth - r.width - 8)}px`;
+  tip.style.top = `${Math.min(e.clientY + 14, innerHeight - r.height - 8)}px`;
+});
+
+// ── bento packer (design-system §5.6): measure → span; no structural whitespace
+function bentoize() {
+  const grid = document.querySelector('.grid');
+  if (!grid) return;
+  if (innerWidth <= 1100) { grid.classList.remove('packed'); return; }
+  grid.classList.add('packed');
+  for (const p of grid.querySelectorAll('.panel')) {
+    p.style.gridRowEnd = 'auto';
+    const h = p.scrollHeight;
+    p.style.gridRowEnd = `span ${Math.ceil((h + 14) / (10 + 14))}`; // 10px rows + 14px gap
+  }
+}
+addEventListener('resize', bentoize);
