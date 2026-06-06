@@ -22,21 +22,17 @@ function render(payload) {
 }
 
 async function tick() {
-  let res;
   try {
-    res = await fetch('/api/data', { headers: TOKEN ? { 'X-DB-Token': TOKEN } : {} });
+    const res = await fetch('/api/data', { headers: TOKEN ? { 'X-DB-Token': TOKEN } : {} });
+    if (!res.ok) { setDot('red', `api ${res.status}`); return; }
+    const payload = await res.json();
+    setDot('green', `live · last poll ${new Date().toLocaleTimeString()}`);
+    // hash-skip: identical payload (minus volatile keys) → no re-render
+    const { generatedAt, ...rest } = payload;
+    const sig = JSON.stringify(rest);
+    if (sig !== lastSig) { lastSig = sig; render(payload); }
   } catch {
-    return setDot('red', 'server unreachable');
-  }
-  if (!res.ok) return setDot('red', `api ${res.status}`);
-  const payload = await res.json();
-  setDot('green', `live · last poll ${new Date().toLocaleTimeString()}`);
-  // hash-skip: identical payload (minus volatile keys) → no re-render
-  const { generatedAt, ...rest } = payload;
-  const sig = JSON.stringify(rest);
-  if (sig !== lastSig) {
-    lastSig = sig;
-    render(payload);
+    setDot('red', 'server unreachable');
   }
 }
 
