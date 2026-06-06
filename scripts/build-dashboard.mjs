@@ -2,12 +2,15 @@
 // self-contained HTML page in git-ignored audit-reports/. The live server
 // (dashboard-server.mjs) consumes the same two libs — keep all data/render
 // logic THERE, in scripts/lib/, never here.
-import { writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { METRICS_DIR } from './lib/metrics.mjs';
 import { assemble } from './lib/dashboard-data.mjs';
 import { renderBody } from './lib/dashboard-render.mjs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const payload = assemble();
 const body = renderBody(payload);
@@ -15,122 +18,7 @@ const body = renderBody(payload);
 const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Orionfold · health telemetry</title>
-<style>
-  :root{
-    --bg:#080b12;--panel-a:rgba(146,180,255,.05);--panel-b:rgba(146,180,255,.014);
-    --line:rgba(130,165,225,.16);--line-strong:rgba(130,165,225,.32);
-    --ink:#e8eef8;--muted:#8492ab;--faint:#5b6880;
-    --signal:#3fe08f;--warn:#f5b544;--alert:#ff5a6a;--accent:#5cc8ff;--gold:#e8b84b;
-    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-  }
-  *{box-sizing:border-box}
-  html{background:var(--bg)}
-  body{margin:0;color:var(--ink);font:14px/1.55 var(--sans);background:var(--bg);-webkit-font-smoothing:antialiased}
-  /* deep-space backdrop: nebula glows, then a static starfield, behind everything */
-  body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
-    background:
-      radial-gradient(900px 600px at 12% -10%,rgba(92,200,255,.10),transparent 60%),
-      radial-gradient(820px 600px at 100% 0%,rgba(120,90,220,.08),transparent 55%),
-      radial-gradient(760px 760px at 50% 122%,rgba(63,224,143,.05),transparent 60%)}
-  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.55;
-    background-image:
-      radial-gradient(1.2px 1.2px at 8% 18%,rgba(255,255,255,.7),transparent),
-      radial-gradient(1px 1px at 23% 64%,rgba(255,255,255,.45),transparent),
-      radial-gradient(1.4px 1.4px at 41% 12%,rgba(200,225,255,.6),transparent),
-      radial-gradient(1px 1px at 57% 78%,rgba(255,255,255,.4),transparent),
-      radial-gradient(1.2px 1.2px at 69% 28%,rgba(255,255,255,.55),transparent),
-      radial-gradient(1px 1px at 82% 52%,rgba(220,235,255,.5),transparent),
-      radial-gradient(1.3px 1.3px at 91% 84%,rgba(255,255,255,.45),transparent),
-      radial-gradient(1px 1px at 34% 92%,rgba(255,255,255,.35),transparent),
-      radial-gradient(1px 1px at 15% 40%,rgba(255,255,255,.3),transparent),
-      radial-gradient(1.6px 1.6px at 77% 8%,rgba(232,184,75,.55),transparent)}
-  .wrap{max-width:1280px;margin:0 auto;padding:40px 24px 72px}
-  /* masthead */
-  .top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line)}
-  .brand{display:flex;align-items:center;gap:14px}
-  .brand .star{font-size:26px;color:var(--gold);text-shadow:0 0 14px rgba(232,184,75,.6);line-height:1}
-  .brand h1{margin:0;font:600 21px/1 var(--sans);letter-spacing:.34em;text-transform:uppercase}
-  .brand .tag{display:block;margin-top:6px;font:500 11px/1 var(--mono);letter-spacing:.22em;color:var(--accent);text-transform:uppercase}
-  .meta{font:500 11px/1.75 var(--mono);letter-spacing:.1em;color:var(--muted);text-align:right;text-transform:uppercase}
-  .meta b{color:var(--ink);font-weight:600}
-  .freshness{display:flex;flex-wrap:wrap;gap:18px;margin:16px 0 26px;font:500 11px/1 var(--mono);letter-spacing:.08em;color:var(--faint);text-transform:uppercase}
-  .freshness .fr{display:flex;align-items:center;gap:7px}
-  /* two independent flex column-stacks: a wide MAIN (data-heavy panels that want
-     width) beside a narrow SIDE (compact KPI panels). No cross-column row
-     alignment → packs densely with no stranded whitespace. Wraps to one column
-     on narrow screens. */
-  .grid{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
-  .col{display:flex;flex-direction:column;gap:16px;min-width:0}
-  .col.main{flex:1.6 1 520px}
-  .col.side{flex:1 1 320px}
-  .panel{position:relative;background:linear-gradient(180deg,var(--panel-a),var(--panel-b));border:1px solid var(--line);border-radius:10px;padding:18px 18px 20px;opacity:0;animation:rise .5s ease forwards}
-  .panel::before{content:"";position:absolute;left:18px;right:18px;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--line-strong),transparent)}
-  .panel:hover{border-color:var(--line-strong)}
-  @keyframes rise{to{opacity:1}}
-  @media (prefers-reduced-motion:reduce){.panel{animation:none;opacity:1}}
-  .panel header{margin-bottom:14px}
-  .phead{display:flex;align-items:center;gap:10px}
-  .pidx{font:600 11px/1 var(--mono);color:var(--faint);letter-spacing:.1em}
-  .panel h2{margin:0;font:600 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;gap:9px}
-  .panel .sub{margin:8px 0 0;color:var(--muted);font:500 11px/1.5 var(--mono);letter-spacing:.03em}
-  /* status dots glow like signal lamps */
-  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:0 0 auto}
-  .dot.green{background:var(--signal);box-shadow:0 0 8px var(--signal)}
-  .dot.red{background:var(--alert);box-shadow:0 0 8px var(--alert)}
-  .dot.amber{background:var(--warn);box-shadow:0 0 8px var(--warn)}
-  .dot.grey{background:var(--faint);box-shadow:0 0 6px rgba(91,104,128,.6)}
-  /* kpis */
-  .kpis{display:flex;flex-wrap:wrap;gap:22px;margin:2px 0 16px}
-  .kpi{display:flex;flex-direction:column;gap:5px}
-  .kpi .big{font:600 25px/1 var(--mono);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-  .kpi .lbl{font:500 10px/1 var(--mono);color:var(--faint);text-transform:uppercase;letter-spacing:.12em}
-  .kpi-row{padding:8px 0;border-bottom:1px solid var(--line);font:13px/1.5 var(--sans)}
-  .kpi-row:last-child{border-bottom:0}
-  .kpi-row strong{font:600 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin-right:6px}
-  /* tables */
-  table{width:100%;border-collapse:collapse;font:13px/1.4 var(--sans);font-variant-numeric:tabular-nums}
-  th{text-align:left;color:var(--faint);font:600 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;padding:7px 9px;border-bottom:1px solid var(--line-strong)}
-  td{padding:7px 9px;border-bottom:1px solid var(--line)}
-  tr:last-child td{border-bottom:0}
-  tbody tr:hover td{background:rgba(146,180,255,.045)}
-  .right{text-align:right;font-family:var(--mono)}
-  .nw{white-space:nowrap}
-  .tscroll{overflow-x:auto}
-  table.dense{table-layout:fixed;width:100%}
-  table.dense th,table.dense td{padding:6px 6px;font-size:11.5px}
-  details.errors{margin:10px 0 2px}
-  details.errors summary{cursor:pointer;user-select:none}
-  details.errors table{margin-top:6px}
-  details.errors td{font-size:11.5px;padding:5px 9px}
-  td.rt,th.rt{width:40%;font-family:var(--mono);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .mono{font-family:var(--mono)}.small{font-size:12px}
-  td .dot{margin-right:8px}
-  .ok{color:var(--signal)}.warn{color:var(--warn)}.bad{color:var(--alert);font-weight:600}
-  .big.ok{text-shadow:0 0 16px rgba(63,224,143,.4)}
-  .big.bad{text-shadow:0 0 16px rgba(255,90,106,.4)}
-  .big.warn{text-shadow:0 0 16px rgba(245,181,68,.35)}
-  .muted{color:var(--muted)}
-  .note{background:rgba(146,180,255,.03);border:1px solid var(--line);border-left:2px solid var(--line-strong);border-radius:6px;padding:11px 13px;margin:8px 0}
-  .note strong{font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
-  /* 5xx strip: alert-red signal lamp — visible without any interaction */
-  .note.alertnote{background:rgba(255,90,106,.05);border-color:rgba(255,90,106,.25);border-left:2px solid var(--alert)}
-  .note.alertnote strong{color:var(--alert);text-shadow:0 0 10px rgba(255,90,106,.35)}
-  .note.alertnote table{margin-top:8px}
-  .note.alertnote td{font-size:11.5px;padding:5px 9px}
-  .age{font:600 10px/1 var(--mono);padding:3px 7px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase}
-  .age.fresh{background:rgba(63,224,143,.12);color:var(--signal)}
-  .age.stale{background:rgba(245,181,68,.12);color:var(--warn)}
-  .spark{vertical-align:middle}
-  /* cache-status stacked bar */
-  .stack{display:flex;height:16px;border-radius:5px;overflow:hidden;margin:6px 0 12px;border:1px solid var(--line)}
-  .stack .seg{display:block;height:100%}
-  .legend{display:flex;flex-wrap:wrap;gap:13px;font:500 10px/1 var(--mono);letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
-  .legend .lg{display:flex;align-items:center;gap:6px}
-  .legend .sw{width:9px;height:9px;border-radius:2px;display:inline-block}
-  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:var(--faint);font:500 11px/1.6 var(--mono);letter-spacing:.06em;text-align:center}
-  footer .mono{color:var(--muted)}
-</style></head>
+<style>${readFileSync(resolve(__dirname, 'dashboard-web', 'styles.css'), 'utf8')}</style></head>
 <body><div class="wrap">
   <header class="top">
     <div class="brand">
