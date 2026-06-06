@@ -8,6 +8,9 @@
       "title": "M7 live admin dashboard (127.0.0.1:8789) — built per specs/2026-06-06-live-admin-dashboard.md",
       "status": "done",
       "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
       "origin": "website",
       "goal_refs": [],
       "updated": "2026-06-06"
