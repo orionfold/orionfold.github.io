@@ -15,8 +15,11 @@ ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 if curl -s -o /dev/null --max-time 1 "$URL"; then
   server_msg="Dashboard already running at $URL"
 else
-  cd "$ROOT" && { nohup node scripts/dashboard-server.mjs >/tmp/website-dashboard.log 2>&1 </dev/null & disown; }
-  server_msg="Dashboard was not running — started it at $URL"
+  if cd "$ROOT" && { nohup node scripts/dashboard-server.mjs >/tmp/website-dashboard.log 2>&1 </dev/null & disown; }; then
+    server_msg="Dashboard was not running — started it at $URL"
+  else
+    server_msg="Dashboard was not running — FAILED to start (cd or launch error; ROOT=$ROOT)"
+  fi
 fi
 
 # 2. Browser — idempotent: scan Chrome tabs, open only if no :8789 tab exists.
