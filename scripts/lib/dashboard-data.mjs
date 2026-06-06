@@ -4,7 +4,7 @@
 // Stateless: every assemble() re-reads audit-reports/metrics/ fresh — files
 // are the truth, so there is no cache to invalidate (peer-dashboard rule).
 import { readdirSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { METRICS_DIR } from './metrics.mjs';
 
@@ -68,6 +68,9 @@ function ciStatus() {
 // ── Todos loader (agency export ∪ local echo — plain file reads, NO subprocess)
 // METRICS_DIR = <root>/audit-reports/metrics  →  resolve(…,'..','..') = <root>
 const ROOT = resolve(METRICS_DIR, '..', '..');
+// This project's todo-sync key = repo dir name ('website' — local ids are
+// `website-<n>` per the sync contract). Only todos tagged to it belong here.
+const PROJECT = basename(ROOT);
 
 function todos() {
   const readJson = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } };
@@ -83,7 +86,10 @@ function todos() {
       || ((t.updated || '') === (prev.updated || '') && t.status === 'done');
     if (wins) byId.set(t.id, { ...prev, ...t });
   }
-  return { available: true, generated: agency?.generated ?? null, todos: [...byId.values()] };
+  // Merge first (last-writer-wins must see both copies), THEN keep only todos
+  // tagged to this project — by project or ref_project, per the sync contract.
+  const mine = [...byId.values()].filter((t) => t.project === PROJECT || t.ref_project === PROJECT);
+  return { available: true, generated: agency?.generated ?? null, todos: mine };
 }
 
 export function assemble({ ci = true } = {}) {
