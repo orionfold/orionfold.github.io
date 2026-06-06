@@ -36,11 +36,16 @@ function tokenOk(req) {
 // via a cache-busting query — edits surface within one poll cycle (peer rule).
 let dataMod = null;
 let dataMtime = 0;
+let loadingPromise = null;
 async function getData() {
   const m = statSync(DATA_MOD).mtimeMs;
   if (!dataMod || m !== dataMtime) {
-    dataMod = await import(pathToFileURL(DATA_MOD).href + `?t=${m}`);
-    dataMtime = m;
+    if (!loadingPromise) {
+      loadingPromise = import(pathToFileURL(DATA_MOD).href + `?t=${m}`)
+        .then((mod) => { dataMod = mod; dataMtime = m; })
+        .finally(() => { loadingPromise = null; });
+    }
+    await loadingPromise;
   }
   return dataMod;
 }
@@ -58,6 +63,7 @@ const MIME = {
 const CSP = "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:";
 
 function send(res, status, body, headers = {}) {
+  res.statusCodeSent = status;
   res.writeHead(status, { 'Content-Security-Policy': CSP, ...headers });
   res.end(body);
 }
@@ -77,7 +83,7 @@ const server = createServer(async (req, res) => {
     }
     if (path === '/' || path === '/index.html') {
       const html = readFileSync(resolve(WEB, 'index.html'), 'utf8')
-        .replace('__DB_TOKEN__', NO_TOKEN ? '' : TOKEN);
+        .replace(/__DB_TOKEN__/g, NO_TOKEN ? '' : TOKEN);
       return send(res, 200, html, { 'Content-Type': MIME['.html'], 'Cache-Control': 'no-store' });
     }
     // static assets: dashboard-web/* plus the shared renderer module
@@ -86,7 +92,7 @@ const server = createServer(async (req, res) => {
         'Content-Type': MIME['.mjs'],
       });
     }
-    if (/^\/[\w.-]+\.(js|css)$/.test(path)) {
+    if (/^\/[\w.-]+\.(js|mjs|css)$/.test(path)) {
       return send(res, 200, readFileSync(resolve(WEB, path.slice(1))), {
         'Content-Type': MIME[extname(path)] || 'application/octet-stream',
       });
@@ -96,7 +102,7 @@ const server = createServer(async (req, res) => {
     console.log(`[err] ${path} ${e.message}`); // path + message only, never payloads
     return send(res, 500, 'internal error');
   } finally {
-    console.log(`${req.method} ${path} → done`); // path + status discipline
+    console.log(`${req.method} ${path} → ${res.statusCodeSent || 0}`); // path + status discipline
   }
 });
 
