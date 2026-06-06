@@ -11,7 +11,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { resolve, dirname, extname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
-import { spawnSync } from 'node:child_process';
+import { spawnSync, spawn } from 'node:child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -50,8 +50,35 @@ async function getData() {
   return dataMod;
 }
 
-// job-state stub — Task 5 replaces this with real single-flight plumbing.
-const jobs = {};
+// single-flight admin jobs (spec §4b): 409 while running; state rides /api/data
+const jobs = {
+  refresh: { state: 'idle', finishedAt: null, error: null },
+  lhci: { state: 'idle', finishedAt: null, error: null },
+};
+const JOB_CMDS = {
+  refresh: ['npm', ['run', 'metrics']],
+  lhci: ['node', ['scripts/pull-lhci-artifact.mjs']],
+};
+function startJob(name) {
+  if (jobs[name].state === 'running') return false;
+  jobs[name] = { state: 'running', finishedAt: null, error: null };
+  const [cmd, cmdArgs] = JOB_CMDS[name];
+  const child = spawn(cmd, cmdArgs, { cwd: ROOT, stdio: ['ignore', 'ignore', 'pipe'] });
+  let errTail = '';
+  child.stderr.on('data', (d) => { errTail = (errTail + d).slice(-2000); });
+  child.on('close', async (code) => {
+    jobs[name] = {
+      state: code === 0 ? 'ok' : 'error',
+      finishedAt: new Date().toISOString(),
+      error: code === 0 ? null : (errTail.trim().slice(-500) || `exit ${code}`),
+    };
+    try { (await getData()).dropCiCache(); } catch {} // fresh CI state after a job
+  });
+  child.on('error', (e) => {
+    jobs[name] = { state: 'error', finishedAt: new Date().toISOString(), error: e.message };
+  });
+  return true;
+}
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -71,6 +98,12 @@ function send(res, status, body, headers = {}) {
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, `http://${HOST}`).pathname;
   try {
+    if ((path === '/api/refresh' || path === '/api/lhci') && req.method === 'POST') {
+      if (!tokenOk(req)) return send(res, 401, 'bad token');
+      const name = path.slice(5); // 'refresh' | 'lhci'
+      if (!startJob(name)) return send(res, 409, JSON.stringify({ job: name, state: 'running' }), { 'Content-Type': 'application/json' });
+      return send(res, 202, JSON.stringify({ job: name, state: 'running' }), { 'Content-Type': 'application/json' });
+    }
     if (path === '/api/data' && req.method === 'GET') {
       if (!tokenOk(req)) return send(res, 401, 'bad token');
       const { assemble } = await getData();

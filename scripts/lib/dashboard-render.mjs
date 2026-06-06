@@ -379,6 +379,37 @@ export function renderBody(payload) {
     return panel('SEO / AEO health', 'manual GA4/GSC capture', parts.join(''), anyStale || indexingBehind ? 'amber' : 'green');
   }
 
+  // ── CI / Deploy (gh, server-side cached — asOf is honest about it) ────────
+  function ciPanel() {
+    const ci = payload.ci;
+    if (!ci || !ci.asOf) return panel('CI / Deploy', '', empty('CI status unavailable (server-side gh lookup disabled).'), 'grey');
+    const rows = ci.runs.map((r) => {
+      if (!r.available) {
+        return `<tr><td class="mono small">${esc(r.workflow)}</td><td colspan="3" class="muted small">no data — ${esc(r.reason)}</td></tr>`;
+      }
+      const cls = r.conclusion === 'success' ? 'green' : r.status !== 'completed' ? 'amber' : 'red';
+      const label = r.status !== 'completed' ? r.status : r.conclusion;
+      return `<tr>
+        <td class="mono small">${esc(r.workflow)}</td>
+        <td><span class="pill ${cls}">${esc(label)}</span></td>
+        <td class="mono small">${esc((r.updatedAt || '').slice(0, 16).replace('T', ' '))}</td>
+        <td class="right"><a href="${esc(r.url)}" target="_blank" rel="noopener">run ↗</a></td>
+      </tr>`;
+    }).join('');
+    const anyBad = ci.runs.some((r) => r.available && r.conclusion && r.conclusion !== 'success' && r.status === 'completed');
+    const jobsHtml = payload.jobs && Object.keys(payload.jobs).length
+      ? Object.entries(payload.jobs).map(([k, j]) => {
+          const cls = j.state === 'ok' ? 'green' : j.state === 'running' ? 'amber' : j.state === 'error' ? 'red' : 'grey';
+          const when = j.finishedAt ? ` ${j.finishedAt.slice(11, 16)}` : '';
+          return `<span class="pill ${cls}" title="${esc(j.error || '')}">${esc(k)}: ${esc(j.state)}${esc(when)}</span>`;
+        }).join(' ')
+      : '';
+    const body = `<table><thead><tr><th>Workflow</th><th>State</th><th>Updated (UTC)</th><th class="right">Link</th></tr></thead><tbody>${rows}</tbody></table>
+      ${jobsHtml ? `<p class="small jobs-line">admin jobs: ${jobsHtml}</p>` : ''}
+      <p class="muted small">gh lookup cached server-side · as of ${esc(ci.asOf.slice(11, 19))} UTC (≤5 min; refreshes after admin jobs)</p>`;
+    return panel('CI / Deploy', 'deploy.yml + lighthouse.yml', body, anyBad ? 'red' : 'green');
+  }
+
   const sourcesList = ['betterstack', 'cloudflare', 'lighthouse', 'crux'];
   const newestDate = Object.keys(snaps)
     .flatMap((s) => snaps[s].map((x) => x.date))
@@ -396,6 +427,6 @@ export function renderBody(payload) {
     metaHtml: `generated <b>${esc(genTs)}</b> utc<br>latest data <b>${esc(newestDate || 'none')}</b>`,
     freshnessHtml,
     mainHtml: [lighthousePanel(), cloudflarePanel(), fieldCwvPanel()].join('\n      '),
-    sideHtml: [uptimePanel(), commercePanel(), seoPanel()].join('\n      '),
+    sideHtml: [uptimePanel(), commercePanel(), ciPanel(), seoPanel()].join('\n      '),
   };
 }

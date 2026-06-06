@@ -99,6 +99,7 @@ td .dot { margin-right: 8px }
 .age { font: 650 9.5px/1 var(--mono); padding: 3px 6px; border-radius: 5px; letter-spacing: .04em; text-transform: uppercase }
 .age.fresh { background: var(--green-soft); color: var(--green-ink) }
 .age.stale { background: var(--amber-soft); color: var(--amber-ink) }
+.jobs-line { margin: 10px 0 0 }
 .spark { vertical-align: middle }
 .stack { display: block; margin: 6px 0 10px; border: 1px solid var(--border); border-radius: 5px; overflow: hidden; line-height: 0 }
 .legend { display: flex; flex-wrap: wrap; gap: 12px; font: 600 9.5px/1 var(--mono); letter-spacing: .04em; color: var(--mute); text-transform: uppercase }

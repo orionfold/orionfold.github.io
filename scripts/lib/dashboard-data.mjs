@@ -5,6 +5,7 @@
 // are the truth, so there is no cache to invalidate (peer-dashboard rule).
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { METRICS_DIR } from './metrics.mjs';
 
 // ── load every snapshot, grouped by source, sorted oldest→newest ────────────
@@ -34,9 +35,36 @@ function loadSnapshots() {
   return bySource;
 }
 
-export function assemble() {
+// ── CI / deploy status via gh CLI — cached 5 min so the 15s poll path stays
+// egress-free (peer rule); cache drops on server start and after admin jobs.
+const CI_TTL_MS = 5 * 60 * 1000;
+let ciCache = null; // { at, data }
+export function dropCiCache() { ciCache = null; }
+function ciStatus() {
+  if (ciCache && Date.now() - ciCache.at < CI_TTL_MS) return ciCache.data;
+  const runs = ['deploy.yml', 'lighthouse.yml'].map((wf) => {
+    const r = spawnSync('gh', ['run', 'list', '--workflow', wf, '--limit', '1',
+      '--json', 'status,conclusion,updatedAt,url,displayTitle'],
+      { cwd: resolve(METRICS_DIR, '..', '..'), encoding: 'utf8', timeout: 8000 });
+    if (r.status !== 0 || !r.stdout) {
+      return { workflow: wf, available: false, reason: (r.stderr || 'gh unavailable').trim().slice(0, 200) };
+    }
+    try {
+      const [run] = JSON.parse(r.stdout);
+      return run ? { workflow: wf, available: true, ...run }
+                 : { workflow: wf, available: false, reason: 'no runs yet' };
+    } catch {
+      return { workflow: wf, available: false, reason: 'unparseable gh output' };
+    }
+  });
+  ciCache = { at: Date.now(), data: { asOf: new Date().toISOString(), runs } };
+  return ciCache.data;
+}
+
+export function assemble({ ci = true } = {}) {
   return {
     generatedAt: new Date().toISOString(),
     snaps: loadSnapshots(),
+    ci: ci ? ciStatus() : { asOf: null, runs: [] },
   };
 }

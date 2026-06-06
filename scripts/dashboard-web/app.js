@@ -28,6 +28,7 @@ async function tick() {
     if (!res.ok) { setDot('red', `api ${res.status}`); return; }
     const payload = await res.json();
     setDot('green', `live · last poll ${new Date().toLocaleTimeString()}`);
+    syncButtons(payload);
     // hash-skip: identical payload (minus volatile keys) → no re-render
     const { generatedAt, ...rest } = payload;
     const sig = JSON.stringify(rest);
@@ -40,7 +41,22 @@ async function tick() {
 tick();
 setInterval(tick, POLL_MS);
 addEventListener('focus', tick);
-// (admin buttons get wired in Task 5; inert until then)
+// ── admin actions: token-gated POSTs; job state rides /api/data
+async function post(jobName, btn) {
+  btn.disabled = true;
+  try {
+    await fetch(`/api/${jobName}`, { method: 'POST', headers: TOKEN ? { 'X-DB-Token': TOKEN } : {} });
+  } catch { /* next tick shows the state */ }
+  await tick(); // pick up the running state immediately
+}
+const btnRefresh = document.getElementById('btn-refresh');
+const btnLhci = document.getElementById('btn-lhci');
+btnRefresh.addEventListener('click', () => post('refresh', btnRefresh));
+btnLhci.addEventListener('click', () => post('lhci', btnLhci));
+function syncButtons(payload) {
+  btnRefresh.disabled = payload.jobs?.refresh?.state === 'running';
+  btnLhci.disabled = payload.jobs?.lhci?.state === 'running';
+}
 
 // ── tooltip singleton (design-system §5.5) — textContent ONLY, never innerHTML
 const tip = document.getElementById('tip');
