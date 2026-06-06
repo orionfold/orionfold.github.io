@@ -247,7 +247,7 @@ export function renderBody(payload) {
       xAcc += segW;
       return rect;
     }).join('');
-    const bar = `<svg class="stack" viewBox="0 0 100 14" width="100%" height="14" preserveAspectRatio="none">${segs}</svg>`;
+    const bar = `<svg viewBox="0 0 100 14" width="100%" height="14" preserveAspectRatio="none">${segs}</svg>`;
     const legend = (w.byCacheStatus || [])
       .map((c) => `<span class="lg"><svg class="sw" viewBox="0 0 9 9"><rect width="9" height="9" rx="2" fill="${palette[c.status] || 'var(--border)'}"/></svg>${esc(c.status)} ${num(c.count)}</span>`)
       .join('');

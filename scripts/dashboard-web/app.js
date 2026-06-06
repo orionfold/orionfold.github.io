@@ -44,21 +44,24 @@ addEventListener('focus', tick);
 
 // ── tooltip singleton (design-system §5.5) — textContent ONLY, never innerHTML
 const tip = document.getElementById('tip');
+let _tipEl = null;
 addEventListener('mousemove', (e) => {
   const el = e.target.closest?.('[data-tip-head]');
-  if (!el) { tip.style.display = 'none'; return; }
-  const head = document.createElement('div');
-  head.className = 'tip-head';
-  head.textContent = el.getAttribute('data-tip-head');
-  let lines = [];
-  try { lines = JSON.parse(el.getAttribute('data-tip-lines') || '[]'); } catch {}
-  const lineDivs = lines.map((t) => {
-    const d = document.createElement('div');
-    d.className = 'tip-line';
-    d.textContent = String(t);
-    return d;
-  });
-  tip.replaceChildren(head, ...lineDivs);
+  if (!el) { _tipEl = null; tip.style.display = 'none'; return; }
+  if (el !== _tipEl) {
+    _tipEl = el;
+    const head = document.createElement('div');
+    head.className = 'tip-head';
+    head.textContent = el.getAttribute('data-tip-head');
+    let lines = [];
+    try { lines = JSON.parse(el.getAttribute('data-tip-lines') || '[]'); } catch {}
+    tip.replaceChildren(head, ...lines.map((t) => {
+      const d = document.createElement('div');
+      d.className = 'tip-line';
+      d.textContent = String(t);
+      return d;
+    }));
+  }
   tip.style.display = 'block';
   const r = tip.getBoundingClientRect();
   tip.style.left = `${Math.min(e.clientX + 14, innerWidth - r.width - 8)}px`;
@@ -68,13 +71,14 @@ addEventListener('mousemove', (e) => {
 // ── bento packer (design-system §5.6): measure → span; no structural whitespace
 function bentoize() {
   const grid = document.querySelector('.grid');
-  if (!grid) return;
-  if (innerWidth <= 1100) { grid.classList.remove('packed'); return; }
+  if (!grid || innerWidth <= 1100) { grid?.classList.remove('packed'); return; }
+  const panels = [...grid.querySelectorAll('.panel')];
   grid.classList.add('packed');
-  for (const p of grid.querySelectorAll('.panel')) {
-    p.style.gridRowEnd = 'auto';
-    const h = p.scrollHeight;
-    p.style.gridRowEnd = `span ${Math.ceil((h + 14) / (10 + 14))}`; // 10px rows + 14px gap
-  }
+  for (const p of panels) p.style.gridRowEnd = 'auto';
+  const heights = panels.map((p) => p.scrollHeight);          // batched reads
+  panels.forEach((p, i) => {
+    p.style.gridRowEnd = `span ${Math.ceil((heights[i] + 14) / (10 + 14))}`; // 10px rows + 14px gap
+  });
 }
-addEventListener('resize', bentoize);
+let _resizeTimer;
+addEventListener('resize', () => { clearTimeout(_resizeTimer); _resizeTimer = setTimeout(bentoize, 100); });
