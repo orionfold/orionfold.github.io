@@ -37,6 +37,10 @@ function loadSnapshots() {
 
 // ── CI / deploy status via gh CLI — cached 5 min so the 15s poll path stays
 // egress-free (peer rule); cache drops on server start and after admin jobs.
+// ⚠ spawnSync here BLOCKS the event loop (up to 2×8s on a cache miss). The
+// TTL makes that rare and it's acceptable for a loopback single-operator
+// tool — but do NOT add more subprocess calls to assemble() (todos() etc.
+// must stay plain file reads).
 const CI_TTL_MS = 5 * 60 * 1000;
 let ciCache = null; // { at, data }
 export function dropCiCache() { ciCache = null; }

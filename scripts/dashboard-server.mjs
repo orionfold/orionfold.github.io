@@ -55,9 +55,10 @@ const jobs = {
   refresh: { state: 'idle', finishedAt: null, error: null },
   lhci: { state: 'idle', finishedAt: null, error: null },
 };
+const NPM = resolve(dirname(process.execPath), 'npm');
 const JOB_CMDS = {
-  refresh: ['npm', ['run', 'metrics']],
-  lhci: ['node', ['scripts/pull-lhci-artifact.mjs']],
+  refresh: [NPM, ['run', 'metrics']],
+  lhci: [process.execPath, ['scripts/pull-lhci-artifact.mjs']],
 };
 function startJob(name) {
   if (jobs[name].state === 'running') return false;

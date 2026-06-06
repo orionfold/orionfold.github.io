@@ -6,7 +6,7 @@
 // ⚠ The artifact's manifest.json carries jsonPath values that are ABSOLUTE
 // PATHS ON THE CI RUNNER (/home/runner/…). They are rewritten to the local
 // audit-reports/lhci/ copies before summarize-lighthouse.mjs reads them.
-import { readFileSync, writeFileSync, mkdirSync, rmSync, cpSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, rmSync, cpSync, renameSync, existsSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
@@ -36,9 +36,12 @@ gh(['run', 'download', String(run.databaseId), '--name', 'lighthouse-reports', '
 const srcManifest = resolve(tmp, 'audit-reports/lhci/manifest.json');
 if (!existsSync(srcManifest)) { console.error(`[lhci-pull] artifact has no audit-reports/lhci/manifest.json`); process.exit(1); }
 
-// install: copy report dir locally, rewrite jsonPath to the local basenames
+// install: stage → atomic rename so a cpSync failure can't destroy local state
+const staging = LHCI_DIR + '.new';
+rmSync(staging, { recursive: true, force: true });
+cpSync(resolve(tmp, 'audit-reports/lhci'), staging, { recursive: true });
 rmSync(LHCI_DIR, { recursive: true, force: true });
-cpSync(resolve(tmp, 'audit-reports/lhci'), LHCI_DIR, { recursive: true });
+renameSync(staging, LHCI_DIR);
 const manifest = JSON.parse(readFileSync(resolve(LHCI_DIR, 'manifest.json'), 'utf8'));
 for (const entry of manifest) entry.jsonPath = resolve(LHCI_DIR, basename(entry.jsonPath));
 writeFileSync(resolve(LHCI_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2));

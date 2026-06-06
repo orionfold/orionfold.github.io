@@ -383,11 +383,15 @@ export function renderBody(payload) {
   function ciPanel() {
     const ci = payload.ci;
     if (!ci || !ci.asOf) return panel('CI / Deploy', '', empty('CI status unavailable (server-side gh lookup disabled).'), 'grey');
+    const NEUTRAL = ['cancelled', 'skipped', 'neutral'];
     const rows = ci.runs.map((r) => {
       if (!r.available) {
         return `<tr><td class="mono small">${esc(r.workflow)}</td><td colspan="3" class="muted small">no data — ${esc(r.reason)}</td></tr>`;
       }
-      const cls = r.conclusion === 'success' ? 'green' : r.status !== 'completed' ? 'amber' : 'red';
+      const cls = r.conclusion === 'success' ? 'green'
+        : r.status !== 'completed' ? 'amber'
+        : NEUTRAL.includes(r.conclusion) ? 'grey'
+        : 'red';
       const label = r.status !== 'completed' ? r.status : r.conclusion;
       return `<tr>
         <td class="mono small">${esc(r.workflow)}</td>
@@ -396,7 +400,9 @@ export function renderBody(payload) {
         <td class="right"><a href="${esc(r.url)}" target="_blank" rel="noopener">run ↗</a></td>
       </tr>`;
     }).join('');
-    const anyBad = ci.runs.some((r) => r.available && r.conclusion && r.conclusion !== 'success' && r.status === 'completed');
+    const anyBad = ci.runs.some((r) =>
+      r.available && r.status === 'completed' && r.conclusion &&
+      r.conclusion !== 'success' && !NEUTRAL.includes(r.conclusion));
     const jobsHtml = payload.jobs && Object.keys(payload.jobs).length
       ? Object.entries(payload.jobs).map(([k, j]) => {
           const cls = j.state === 'ok' ? 'green' : j.state === 'running' ? 'amber' : j.state === 'error' ? 'red' : 'grey';
