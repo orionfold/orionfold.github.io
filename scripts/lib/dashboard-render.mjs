@@ -138,6 +138,19 @@ export function renderBody(payload) {
   function fieldCwvPanel() {
     const cf = latest('cloudflare');
     const crux = latest('crux');
+    // M-polish (b): while BOTH sources are known-unavailable (CrUX gates on
+    // traffic volume, CF RUM is dashboard-only — not in token scope), collapse
+    // the two notes into one compact row. Partial availability falls through
+    // to the per-source blocks below.
+    const cfF = cf?.data.fieldCWV;
+    const cruxFf = crux?.data.formFactors;
+    const cfAvail = !!cfF?.available;
+    const cruxAvail = !!(cruxFf && Object.values(cruxFf).some((x) => x.available));
+    if (cfF && cruxFf && !cfAvail && !cruxAvail) {
+      const cruxReason = Object.values(cruxFf)[0]?.reason || 'no field data';
+      const body = `<div class="note"><p class="muted small"><strong>No field data yet</strong> — CF RUM: ${esc(cfF.reason)} · CrUX: ${esc(cruxReason)}</p></div>`;
+      return panel('Field CWV (real users)', 'Fills as traffic grows — both free sources gate on volume', body, 'amber');
+    }
     const blocks = [];
     if (cf?.data.fieldCWV) {
       const f = cf.data.fieldCWV;
