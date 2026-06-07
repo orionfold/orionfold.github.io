@@ -10,6 +10,7 @@
     "astro": "astro",
     "export:catalog": "node --experimental-strip-types scripts/export-catalog.ts",
     "export:content": "node --experimental-strip-types scripts/export-content.ts",
+    "lhci": "npx --yes @lhci/cli@0.15.1 collect && npx --yes @lhci/cli@0.15.1 upload && npx --yes @lhci/cli@0.15.1 assert",
     "metrics": "node scripts/fetch-metrics.mjs",
     "dashboard": "node scripts/build-dashboard.mjs",
     "dashboard:serve": "node scripts/dashboard-server.mjs"

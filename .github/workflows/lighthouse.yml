@@ -41,11 +41,15 @@ jobs:
         run: npm run build
 
       - name: Run Lighthouse CI
-        # treosh action provides the Chrome runtime + lhci; configPath points at
-        # our rc (staticDistDir = ./dist, so no separate server step needed).
-        uses: treosh/lighthouse-ci-action@v12
-        with:
-          configPath: ./.lighthouserc.cjs
+        # Direct lhci (runner Chrome; no wrapper action — treosh never ran our
+        # rc's filesystem upload, so audit-reports/lhci/ was absent from every
+        # artifact). Order is collect → upload → assert so the manifest+reports
+        # that scripts/pull-lhci-artifact.mjs consumes exist even when a budget
+        # assertion reds the run. The rc (.lighthouserc.cjs) is auto-discovered.
+        run: |
+          npx --yes @lhci/cli@0.15.1 collect
+          npx --yes @lhci/cli@0.15.1 upload
+          npx --yes @lhci/cli@0.15.1 assert
 
       - name: Email regression alert
         # M5 — best-effort: a red budget run emails the operator a digest via
@@ -62,8 +66,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse-reports
+          # BOTH paths are load-bearing: upload-artifact roots the artifact at
+          # the least-common-ancestor of all search paths (= repo root), which
+          # preserves the audit-reports/lhci/manifest.json prefix that
+          # scripts/pull-lhci-artifact.mjs expects. include-hidden-files because
+          # .lighthouseci is a dot-dir — v4 silently skips it by default (the
+          # original "empty artifact" footgun).
           path: |
             .lighthouseci/
             audit-reports/lhci/
+          include-hidden-files: true
           retention-days: 30
-          if-no-files-found: ignore
+          if-no-files-found: warn # `ignore` is how the empty-artifact bug stayed invisible

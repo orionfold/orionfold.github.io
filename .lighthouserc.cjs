@@ -5,9 +5,11 @@
  * `chrome-mcp-perf-caveats` memory + the D2 baseline). The 6 URLs mirror the
  * D2 Cloudflare baseline so the lab trend lines up with the field numbers.
  *
- * Local run:   npx @lhci/cli autorun
+ * Local run:   npm run lhci  (collect → upload → assert; upload BEFORE assert
+ *              so audit-reports/lhci/ refreshes even on a red budget run —
+ *              autorun would skip it)
  * CI:          .github/workflows/lighthouse.yml (separate from deploy.yml —
- *              never gates the prod deploy).
+ *              never gates the prod deploy). Same three-step order.
  *
  * Budgets live in the `assert` block. They protect the two codified perf
  * invariants indirectly: a `data-animate` on an LCP-candidate element, or a
@@ -36,10 +38,17 @@ module.exports = {
       // Per-tier budgets. assertMatrix applies EVERY matching entry, so the
       // catch-all ".*" sets the global guards and the two tier entries add the
       // perf-score + LCP ceilings that differ between text-LCP and image-LCP
-      // pages. Thresholds are derived from the local devtools-throttled median
-      // (see audit-reports/m2-lighthouse-budgets-*.md) with headroom for CI
-      // variance: category scores are the hard ("error") regression guards
-      // (more stable than raw timings); single timing metrics are "warn".
+      // pages. Category scores are the hard ("error") regression guards (more
+      // stable than raw timings); single timing metrics are "warn".
+      //
+      // 🔴 Thresholds are calibrated to the GH-RUNNER medians (lighthouse.yml
+      // runs 2026-06-03→06), NOT local numbers — CI hardware is ~2× slower, so
+      // local devtools scores (98–99 fast tier) run far above these floors.
+      // The original local-derived floors (0.9/0.8) made the workflow red from
+      // its very first run. Baked into the baseline: the Meta Pixel (2026-06-03,
+      // deliberate, Q2 ads test) costs ~0.05 perf / +100ms TBT sitewide and
+      // dropped best-practices 79→61 (3p cookies). If the pixel is ever
+      // removed, scores rise and these floors simply gain headroom.
       assertMatrix: [
         {
           // ── Global guards (every page) ──
@@ -47,26 +56,27 @@ module.exports = {
           assertions: {
             'categories:seo': ['error', { minScore: 1.0 }], // all pages 100 — SEO is core to the site
             'categories:accessibility': ['warn', { minScore: 0.92 }], // currently 95–100
-            'categories:best-practices': ['warn', { minScore: 0.75 }], // pre-existing uniform 79 (3p cookies) — see report
-            'cumulative-layout-shift': ['warn', { maxNumericValue: 0.05 }], // warn (not error): raw metric like LCP/TBT, so it follows the same rule — the perf-category score is the hard gate. CI medians ~0.055 (within Google's "good" <0.1) tripped a 0.05 error every run; a real CLS regression drops the perf score and fails there.
-            'total-blocking-time': ['warn', { maxNumericValue: 350 }], // ~45ms now; JS-bloat warning
+            'categories:best-practices': ['warn', { minScore: 0.55 }], // CI 61 uniform since Meta Pixel (was 79, GA4/Ads cookies)
+            'cumulative-layout-shift': ['warn', { maxNumericValue: 0.1 }], // Google's "good" boundary; home ~0.087 since the hero constellation (06-05)
+            'total-blocking-time': ['warn', { maxNumericValue: 750 }], // CI 460–645ms (GA4+Ads+Meta 3p JS); a jump past 750 = real bloat
           },
         },
         {
-          // ── Fast tier: text-LCP pages. Tight LCP ceiling = the data-animate
-          //    -on-LCP-element regression net (these sit at 1.6–2.3s). ──
+          // ── Fast tier: text-LCP pages. CI medians 0.80–0.87; floor 0.75 keeps
+          //    the data-animate-on-LCP net (that bug ties LCP to TTI and tanks
+          //    the score far below any sane floor). ──
           matchingUrlPattern: '(localhost:\\d+/index\\.html|/sponsor/index\\.html|/dgx-spark/index\\.html)$',
           assertions: {
-            'categories:performance': ['error', { minScore: 0.9 }], // currently 98–99
+            'categories:performance': ['error', { minScore: 0.75 }], // CI 0.80–0.87 (local 98–99)
             'largest-contentful-paint': ['warn', { maxNumericValue: 2800 }], // dgx-spark hero ~2.3s + headroom
           },
         },
         {
-          // ── Image tier: poster/cover-LCP pages. Looser LCP (image weight is a
-          //    documented follow-up, not a regression). ──
+          // ── Image tier: poster/cover-LCP pages. Looser floors (image weight is
+          //    a documented follow-up, not a regression). ──
           matchingUrlPattern: '(/software/index\\.html|/software/fieldkit/index\\.html|/books/ai-research-on-nvidia-dgx-spark/index\\.html)$',
           assertions: {
-            'categories:performance': ['error', { minScore: 0.8 }], // currently 88–92
+            'categories:performance': ['error', { minScore: 0.65 }], // CI 0.70–0.78 (local 88–92)
             'largest-contentful-paint': ['warn', { maxNumericValue: 4500 }], // 3.3–3.8s lab / 4.3s live
           },
         },
