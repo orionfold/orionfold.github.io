@@ -1,45 +1,52 @@
 {
-  "generatedAt": "2026-05-27T06:12:59.772Z",
+  "generatedAt": "2026-06-07T10:59:57.617Z",
   "models": {
     "patent-strategist": {
       "repo": "Orionfold/patent-strategist-v3-nemo-GGUF",
       "kind": "model",
-      "downloads": 623,
+      "downloads": 680,
       "downloadsAllTime": null,
       "likes": 0
     },
     "securityllm": {
       "repo": "Orionfold/SecurityLLM-GGUF",
       "kind": "model",
-      "downloads": 525,
+      "downloads": 550,
       "downloadsAllTime": null,
       "likes": 0
     },
     "saul-7b-instruct": {
       "repo": "Orionfold/Saul-7B-Instruct-v1-GGUF",
       "kind": "model",
-      "downloads": 567,
+      "downloads": 586,
       "downloadsAllTime": null,
       "likes": 0
     },
     "finance-chat": {
       "repo": "Orionfold/finance-chat-GGUF",
       "kind": "model",
-      "downloads": 503,
+      "downloads": 567,
       "downloadsAllTime": null,
       "likes": 0
     },
     "ii-medical-8b": {
       "repo": "Orionfold/II-Medical-8B-GGUF",
       "kind": "model",
-      "downloads": 420,
+      "downloads": 461,
+      "downloadsAllTime": null,
+      "likes": 0
+    },
+    "kepler": {
+      "repo": "Orionfold/Kepler-GGUF",
+      "kind": "model",
+      "downloads": 109,
       "downloadsAllTime": null,
       "likes": 0
     },
     "patent-strategist-bench": {
       "repo": "Orionfold/patent-strategist-bench-v0.1",
       "kind": "dataset",
-      "downloads": 31,
+      "downloads": 50,
       "downloadsAllTime": null,
       "likes": 0
     }
@@ -50,8 +57,8 @@
       "parts": 4
     },
     "ai-research-on-nvidia-dgx-spark": {
-      "chapters": 53,
-      "parts": 8
+      "chapters": 63,
+      "parts": 9
     }
   }
 }

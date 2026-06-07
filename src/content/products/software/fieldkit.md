@@ -2,9 +2,13 @@
 # P7 software rollout #2 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # fieldkit README + module docs (GitHub manavsehgal/ai-field-notes, fieldkit/) and
 # the marketing page (ainative.business/fieldkit/). 2026-06-03 re-sync: fieldkit is
-# now 18 modules at v0.22 (PyPI-verified) — agent harness, Arena cockpit + cost +
+# now 18 modules — agent harness, Arena cockpit + cost +
 # budget planes, the Cortex memory layer, lineage, and the RLVR reward/rl training
-# loop all landed after the first authoring. NOTE the local mac clone of
+# loop all landed after the first authoring. 2026-06-07 re-sync: v0.30.0 on PyPI
+# (released 2026-06-06; still 18 modules). v0.23-v0.30 were the Arena cockpit
+# growth wave (guardrail settings, lane truth, run identity, operator-armed SFT
+# dispatch) — that surface is documented on the arena page; here only the version
+# moved. NOTE the local mac clone of
 # ai-field-notes is stale (work moved to the Spark); pull README/docs from GitHub,
 # and treat PyPI + the live /fieldkit/ page as the version/capability truth (the
 # in-repo README lags releases). This is the strongest inward
@@ -74,7 +78,7 @@ specs:
   - label: Covers
     value: Search, testing, fine-tuning, shrinking, publishing, agents, memory, and a cockpit
   - label: Size
-    value: 18 modules at version 0.22; take one import at a time
+    value: 18 modules at version 0.30; take one import at a time
   - label: License
     value: Apache 2.0 (free to use)
 
@@ -99,11 +103,11 @@ sources:
   - section: overview
     type: github-readme
     ref: manavsehgal/ai-field-notes (fieldkit subfolder)
-    lastSynced: '2026-06-03'
+    lastSynced: '2026-06-07'
   - section: usage
     type: url
     ref: https://ainative.business/fieldkit/
-    lastSynced: '2026-06-03'
+    lastSynced: '2026-06-07'
 ---
 
 fieldkit is a free box of Python tools for building with AI. We made it while doing real

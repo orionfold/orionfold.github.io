@@ -1,4 +1,4 @@
-// Models showcase data (spec §6). A small typed array feeding /models/. Six
+// Models showcase data (spec §6). A small typed array feeding /models/. Seven
 // open-weight models plus one benchmark dataset, all live under
 // huggingface.co/Orionfold. Facts (base model, format, recommended build,
 // license) come from the donor artifact YAMLs; the plain taglines read grade
@@ -109,6 +109,18 @@ export const models: Model[] = [
     href: `${HF}/II-Medical-8B-GGUF`,
     cover: 'ii-medical-8b/cover.png',
     coverAlt: 'A movie-poster style picture. An old medical room with an anatomy chart, where a small gold AI computer shows a calm health read-out. The title reads The Diagnosis.',
+  },
+
+  {
+    group: 'domain',
+    domain: 'Space',
+    title: 'Kepler',
+    tagline: 'Tuned for space math, like the paths satellites fly. It shows short work and ends in one number you can check.',
+    base: 'Qwen/Qwen3-8B',
+    format: 'GGUF',
+    recommended: 'Q8_0',
+    license: 'Apache-2.0',
+    href: `${HF}/Kepler-GGUF`,
   },
 
   // ── Benchmark dataset ──

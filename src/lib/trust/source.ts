@@ -37,6 +37,7 @@ export const MODEL_REPOS: Record<string, RepoRef> = {
   'saul-7b-instruct': { repo: 'Orionfold/Saul-7B-Instruct-v1-GGUF', kind: 'model' },
   'finance-chat': { repo: 'Orionfold/finance-chat-GGUF', kind: 'model' },
   'ii-medical-8b': { repo: 'Orionfold/II-Medical-8B-GGUF', kind: 'model' },
+  'kepler': { repo: 'Orionfold/Kepler-GGUF', kind: 'model' },
   'patent-strategist-bench': { repo: 'Orionfold/patent-strategist-bench-v0.1', kind: 'dataset' },
 };
 
