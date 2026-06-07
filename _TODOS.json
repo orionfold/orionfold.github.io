@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-06T00:00:00",
+  "updated": "2026-06-07T03:36:00",
   "todos": [
     {
       "id": "website-1",
@@ -14,6 +14,18 @@
       "origin": "website",
       "goal_refs": [],
       "updated": "2026-06-06"
+    },
+    {
+      "id": "website-2",
+      "title": "Arena product page sync: 11 light-theme screenshots re-pulled + arena-control-plane (jobs board) folded into /software/arena/ per operator; awaiting operator-gated push",
+      "status": "done",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-07"
     }
   ]
 }

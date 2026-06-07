@@ -9,6 +9,9 @@
 # live demo gets a prominent hero/sticky button (demoHref on the SSOT entry), so it
 # is NOT buried in the outbound rail. Copy is grade 3-5, no em-dashes, jargon
 # (GGUF, quantize, throughput) glossed in plain words.
+# 2026-06-07: operator folded the upstream arena-control-plane article (jobs
+# board / dispatcher, same product per operator) into this page; gallery now 13
+# shots (11 light-theme re-captures + 2 curated control-plane shots).
 type: software
 slug: arena
 valueProp: Run, compare, and score AI models on your own desktop. Live speed and memory, a private board, two side by side. Free, and nothing leaves your machine.
@@ -45,11 +48,13 @@ specs:
   - label: Leaderboard
     value: Your models ranked from real results, folding in every new chat and test, with no private text shared
   - label: Pick what to ship
-    value: A quality-versus-speed chart that marks the best trade-offs in gold
+    value: A quality-versus-speed chart that marks the best trade-offs in orange
   - label: Browse the shelf
     value: Every model in one grid, each with a full card before you spend GPU time
   - label: Try and test
     value: Chat with any model, score an answer against a gold answer, or duel two side by side
+  - label: Jobs board
+    value: Queue a re-test of any model, or let the board catch a leaderboard drop and queue a confirming re-test by itself
   - label: Move fast
     value: A command palette opens with one keystroke and jumps anywhere
   - label: Private
@@ -68,8 +73,8 @@ gallery:
     alt: The Arena leaderboard, with models ranked into groups, medals on the top three, and colored score bars showing how good each number is.
     caption: Your models ranked from real results, built from a safe slice that never shares your prompts.
   - src: ../../../assets/projects/arena/efficiency-frontier.png
-    alt: A chart of answer quality against speed for every model build, with the best trade-off line drawn in gold.
-    caption: Quality against speed on one chart. The gold line is the set worth shipping.
+    alt: A chart of answer quality against speed for every model build, with the best trade-off line drawn in orange.
+    caption: Quality against speed on one chart. The orange line is the set worth shipping.
   - src: ../../../assets/projects/arena/models.png
     alt: The models browser, a grid of every model you can run, with filters for kind and license on each card.
     caption: Your whole shelf in one grid. Filter it, then chat or compare with one click.
@@ -88,6 +93,12 @@ gallery:
   - src: ../../../assets/projects/arena/command-palette.png
     alt: The command palette open over the cockpit, a search box that finds any model, article, or action from a few typed letters.
     caption: One keystroke opens a search over everything. Jump to a model or fire a test without the mouse.
+  - src: ../../../assets/projects/arena/jobs-board.png
+    alt: The jobs board, with the live readout rail on top, a banner calling out a leaderboard drop, a form to queue a re-test, and four columns of jobs marked queued, running, done, and failed.
+    caption: The control plane. Queue a re-test of any model, or let the board catch a score drop and confirm it by itself.
+  - src: ../../../assets/projects/arena/board-columns.png
+    alt: A close-up of the four job columns, with done cards showing the measured score and the number of questions, and a failed card explaining why it failed.
+    caption: Every job tells its own story. Done cards carry the score; failed cards say why.
   - src: ../../../assets/projects/arena/lab.png
     alt: The Lab screen, a board of what has shipped, what is next, and what is being explored, with a timeline drawn from the build history.
     caption: The tool talks about itself. A living board of shipped, next, and exploring.
@@ -116,11 +127,19 @@ sources:
   - section: overview
     type: url
     ref: https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main/products/orionfold-arena/product.md
-    lastSynced: '2026-06-03'
+    lastSynced: '2026-06-07'
   - section: gallery
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/orionfold-arena/screenshots/
-    lastSynced: '2026-06-03'
+    lastSynced: '2026-06-07'
+  - section: overview
+    type: url
+    ref: https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main/products/arena-control-plane/product.md
+    lastSynced: '2026-06-07'
+  - section: gallery
+    type: docs-screenshots
+    ref: manavsehgal/ainative-business.github.io:products/arena-control-plane/screenshots/
+    lastSynced: '2026-06-07'
 ---
 
 Orionfold Arena is a single screen for running, comparing, and scoring the AI models on
@@ -154,12 +173,18 @@ and read one chart to decide which build is worth shipping.
   your Spark or a hosted model. It is built from a safe slice that shares only scores, never
   your prompts or the model's replies, so you can publish the board and keep your data.
 - **Pick what to ship.** One chart plots quality against speed for every build and draws the
-  best trade-offs in gold. Quality here means how well the model answers; the gold line is
-  the set where you cannot get more quality without giving up speed.
+  best trade-offs in orange. Quality here means how well the model answers; the orange line
+  is the set where you cannot get more quality without giving up speed.
 - **Try and test in one place.** Chat with any model, pull the exact test it was measured on,
   and score its answer against a gold answer without leaving the chat. Or put two models head
   to head and read the trade in plain cards: quality, speed, wait time, length, and cost,
   each with a small chart of how it moved across the session.
+- **Put the cockpit to work.** A jobs board lets the Arena start work, not just record it.
+  Type a model and a test set, press queue, and a re-test runs on your Spark. The job's card
+  moves from queued to running to done, with the measured score on it. Press scan and the
+  board compares your leaderboard to its last saved state; if a score slipped, it queues a
+  confirming re-test by itself. A failed job says why, right on the card. One job runs at a
+  time, so the board never blows past the Spark's shared memory.
 - **Move without the mouse.** One keystroke opens a search box over the whole cockpit. Type a
   few letters to jump to any model, fire a chat, or set up a duel.
 
@@ -171,9 +196,12 @@ you trade away when you do. *Throughput* is how many words a second the model ca
 
 Arena shipped as fourteen screens and 125 tests in about fifteen hours of work, with the AI
 agent doing the typing. It did not stop there. In the days after launch six more screens
-landed, and the tool now measures 17,515 lines of code and 135 tests. The newest part is a
-memory pane that indexes your own notes and checks how well it can find them again. That
-pane grew into its own product, [Orionfold Cortex](/software/cortex/), with its own page.
+landed, and the tool now measures 17,515 lines of code and 135 tests. One part, a memory
+pane that indexes your own notes and checks how well it can find them again, grew into its
+own product, [Orionfold Cortex](/software/cortex/), with its own page. The jobs board, the
+control plane, came together in one afternoon of about two and a half hours, adding
+1,762 lines and 35 tests of its own, and shipped inside fieldkit v0.16.0, the first
+packaged Arena release.
 
 ## Private by design
 
