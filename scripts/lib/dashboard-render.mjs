@@ -421,13 +421,23 @@ export function renderBody(payload) {
     const t = payload.todos;
     if (!t?.available) return panel('Todos', 'agency sync', empty(`no data — ${t?.reason || 'loader missing'}`), 'grey');
     const order = { in_progress: 0, open: 1, blocked: 2, done: 3 };
-    const items = [...t.todos].sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9) || (b.updated || '').localeCompare(a.updated || ''));
+    // Memos (kind:"memo") are the operator's standing habits, not work items
+    // (sync contract, 2026-06-06): distinct accent pill, sorted after
+    // actionable todos, never status-advanced here and never status-bearing
+    // for the panel dot.
+    const rank = (x) => (x.kind === 'memo' ? 8 : (order[x.status] ?? 9));
+    const items = [...t.todos].sort((a, b) => rank(a) - rank(b) || (b.updated || '').localeCompare(a.updated || ''));
     const active = items.filter((x) => x.status !== 'done');
     const done = items.filter((x) => x.status === 'done');
     const row = (x) => {
-      const cls = x.status === 'done' ? 'green' : x.status === 'blocked' ? 'red' : x.status === 'in_progress' ? 'amber' : 'grey';
+      const pill =
+        x.kind === 'memo'
+          ? '<span class="pill memo">memo</span>'
+          : `<span class="pill ${
+              x.status === 'done' ? 'green' : x.status === 'blocked' ? 'red' : x.status === 'in_progress' ? 'amber' : 'grey'
+            }">${esc(x.status)}</span>`;
       return `<tr>
-        <td><span class="pill ${cls}">${esc(x.status)}</span></td>
+        <td>${pill}</td>
         <td>${x.title != null ? esc(x.title) : '<span class="muted">—</span>'}${x.due ? ` <span class="muted small mono">due ${esc(x.due)}</span>` : ''}</td>
         <td class="mono small">${esc(x.origin === 'agency' ? 'agency' : x.project || '')}</td>
       </tr>`;
@@ -436,7 +446,7 @@ export function renderBody(payload) {
       <tbody>${active.map(row).join('') || '<tr><td colspan="3" class="muted">none open</td></tr>'}</tbody></table>
       ${done.length ? `<details class="errors"><summary class="muted small">done (${done.length})</summary><table><tbody>${done.map(row).join('')}</tbody></table></details>` : ''}
       <p class="muted small">read-only merge of <span class="mono">../agency/_TODOS/_export.json</span> ∪ local <span class="mono">_TODOS.json</span> (last-writer-wins by updated). Intake stays a Claude-session job.</p>`;
-    const anyBlocked = active.some((x) => x.status === 'blocked');
+    const anyBlocked = active.some((x) => x.kind !== 'memo' && x.status === 'blocked');
     return panel('Todos', `agency export ${t.generated ? esc(t.generated) + ' ' + ageNote(t.generated) : '—'}`, body, anyBlocked ? 'amber' : 'green');
   }
 
