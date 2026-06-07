@@ -121,6 +121,8 @@ export const models: Model[] = [
     recommended: 'Q8_0',
     license: 'Apache-2.0',
     href: `${HF}/Kepler-GGUF`,
+    cover: 'kepler/cover.png',
+    coverAlt: 'A movie-poster style picture. An old observatory at night, with a brass telescope and golden orbit lines drawn across a starry sky, and a small gold AI computer on the desk. The title reads The Third Law.',
   },
 
   // ── Benchmark dataset ──

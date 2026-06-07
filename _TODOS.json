@@ -17,7 +17,19 @@
     },
     {
       "id": "website-4",
-      "title": "Kepler art pass (operator-gated featured-imagery): movie-poster cover for the model card + comic for the new story (joins the NC 16-comic redo batch); after deploy run Rich Results Test on live /models/kepler/",
+      "title": "Kepler art pass done (featured-imagery, operator-curated): 'The Third Law' poster cover on the model card + 'Measure first, spend second' comic on the story; both wired + build clean",
+      "status": "done",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-07"
+    },
+    {
+      "id": "website-5",
+      "title": "After the operator-gated push deploys Kepler: run Rich Results Test on live /models/kepler/ + the owed seo-aeo-audit rerun",
       "status": "open",
       "kind": "action",
       "project": "website",

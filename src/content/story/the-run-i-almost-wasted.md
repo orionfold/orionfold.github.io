@@ -2,6 +2,8 @@
 title: The run I almost wasted
 date: 2026-06-07
 summary: I built Kepler, a space-math model, on one desktop. Three cheap checks told me the big training run would change nothing. I ran it anyway, and proving them right was the win.
+hero: ../../assets/story/the-run-i-almost-wasted/hero.jpeg
+heroAlt: "Three-panel painted comic. A builder's finger hovers over a glowing key while a screen warns of a six hour job, then he studies three small glowing gauges on his workbench, then he relaxes as a small gold AI computer runs the job as a pure test, with a blue star constellation in the window. A banner reads Measure first, spend second."
 tags:
   - Models
   - Fine-tuning
