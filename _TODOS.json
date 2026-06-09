@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-07T11:05:00",
+  "updated": "2026-06-09T17:00:00",
   "todos": [
     {
       "id": "website-3",
@@ -62,6 +62,18 @@
       "origin": "website",
       "goal_refs": [],
       "updated": "2026-06-07"
+    },
+    {
+      "id": "website-6",
+      "title": "Pitch-aligned radical design finished: flagship pages elevated with real product art, compact NVIDIA Inception band + badge (post-approval copy), stale 'grow 10x' meta/llms.txt purged, committed skills stripped back to local-only; 14 commits staged, awaiting operator-gated push",
+      "status": "done",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-09"
     }
   ]
 }
