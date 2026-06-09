@@ -1,11 +1,11 @@
 ---
 const before = [
-  'Chat tabs',
-  'Loose scripts',
-  'Cloud tools',
-  'Private files',
-  'No evals',
-  'Manual review',
+  { label: 'Chat tabs', detail: 'ad hoc prompts' },
+  { label: 'Loose scripts', detail: 'one-off glue' },
+  { label: 'Cloud tools', detail: 'external state' },
+  { label: 'Private files', detail: 'sensitive context' },
+  { label: 'No evals', detail: 'unclear quality' },
+  { label: 'Manual review', detail: 'slow approval' },
 ];
 
 const after = [
@@ -20,6 +20,13 @@ const proof = [
   { label: 'Cortex', value: 'Local memory' },
   { label: 'fieldkit', value: 'Reusable runs' },
 ];
+
+const icons = {
+  data: 'M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3Z M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6 M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6',
+  agent: 'M12 3v4 M12 17v4 M4.9 4.9l2.8 2.8 M16.3 16.3l2.8 2.8 M3 12h4 M17 12h4 M4.9 19.1l2.8-2.8 M16.3 7.7l2.8-2.8 M9 9h6v6H9z',
+  eval: 'M5 12l4 4 10-10 M5 20h14 M5 4h14',
+  output: 'M5 4h14v16H5z M8 8h8 M8 12h8 M8 16h5',
+};
 ---
 <section class="px-6 pb-12 pt-4 sm:pb-16">
   <div class="mx-auto max-w-6xl">
@@ -36,68 +43,53 @@ const proof = [
     <div class="grid gap-4 lg:grid-cols-[0.88fr_1.24fr_0.88fr]">
       <div data-animate class="of-surface rounded-2xl p-5">
         <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">Before</p>
-        <h3 class="mt-2 text-2xl leading-tight">Scattered AI experiments.</h3>
-        <div class="mess-map mt-5 grid min-h-[15rem] grid-cols-2 content-center gap-3" aria-label="Scattered tools before Orionfold">
-          {before.map((item, index) => (
-            <span class={`mess-node mess-node-${index + 1}`}>{item}</span>
+        <h3 class="map-card-title mt-2">Scattered AI sprawl.</h3>
+        <ul class="issue-list mt-5" aria-label="Scattered tools before Orionfold">
+          {before.map((item) => (
+            <li>
+              <span class="issue-marker" aria-hidden="true"></span>
+              <span>
+                <span class="issue-label">{item.label}</span>
+                <span class="issue-detail">{item.detail}</span>
+              </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       <div data-animate class="of-surface rounded-2xl p-5">
         <div class="flex items-start justify-between gap-4">
           <div>
             <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">After</p>
-            <h3 class="mt-2 text-2xl leading-tight">A controlled capability route.</h3>
+            <h3 class="map-card-title mt-2">Controlled capability route.</h3>
           </div>
           <span class="of-chip shrink-0">Mapped</span>
         </div>
 
-        <div class="system-blueprint mt-5">
-          <svg viewBox="0 0 560 286" role="img" aria-labelledby="system-map-title system-map-desc" class="h-auto w-full">
-            <title id="system-map-title">Orionfold controlled AI capability route</title>
-            <desc id="system-map-desc">Four isometric layers move from data to agent to evaluation to output, with a visible route and approval checkpoint.</desc>
-            <defs>
-              <linearGradient id="systemDeck" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="oklch(0.99 0.003 260)" />
-                <stop offset="1" stop-color="oklch(0.90 0.025 250)" />
-              </linearGradient>
-              <linearGradient id="systemSide" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="oklch(0.78 0.04 252)" />
-                <stop offset="1" stop-color="oklch(0.64 0.06 260)" />
-              </linearGradient>
-            </defs>
-
-            <path d="M74 154L188 91L310 148L431 82" fill="none" stroke="oklch(0.56 0.14 205 / 0.54)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-            <path class="blueprint-pulse" d="M74 154L188 91L310 148L431 82" fill="none" stroke="oklch(0.70 0.14 82)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-
-            {after.map((item, index) => {
-              const x = 70 + index * 122;
-              const y = index % 2 === 0 ? 146 : 84;
-              return (
-                <g class="blueprint-block">
-                  <polygon points={`${x},${y} ${x + 56},${y - 28} ${x + 116},${y} ${x + 60},${y + 31}`} fill="url(#systemDeck)" stroke="oklch(0.55 0.18 260 / 0.22)" />
-                  <polygon points={`${x},${y} ${x + 60},${y + 31} ${x + 60},${y + 66} ${x},${y + 34}`} fill="url(#systemSide)" opacity="0.5" />
-                  <polygon points={`${x + 60},${y + 31} ${x + 116},${y} ${x + 116},${y + 34} ${x + 60},${y + 66}`} fill="oklch(0.52 0.08 252 / 0.42)" />
-                  <circle cx={x + 58} cy={y + 3} r="8" fill={index === 2 ? 'oklch(0.70 0.14 82)' : 'oklch(0.55 0.18 260)'} />
-                  <text x={x + 58} y={y + 84} text-anchor="middle" fill="oklch(0.18 0.05 260)" font-size="12" font-weight="700" font-family="var(--font-display)">{item.label}</text>
-                  <text x={x + 58} y={y + 101} text-anchor="middle" fill="oklch(0.45 0.03 260)" font-size="9" font-family="var(--font-mono)">{item.detail}</text>
-                </g>
-              );
-            })}
-
-            <g class="approval-gate">
-              <rect x="430" y="126" width="92" height="46" rx="12" fill="oklch(0.55 0.18 260 / 0.09)" stroke="oklch(0.55 0.18 260 / 0.22)" />
-              <path d="M452 150l14 14 30-30" fill="none" stroke="oklch(0.45 0.15 170)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
-              <text x="476" y="190" text-anchor="middle" fill="oklch(0.45 0.03 260)" font-size="9" font-family="var(--font-mono)">approval</text>
-            </g>
-          </svg>
+        <div class="icon-route icon-route-after mt-5" aria-label="Orionfold controlled AI capability route">
+          {after.map((item, index) => (
+            <span class={`icon-node icon-node-after route-step-${index + 1}`}>
+              <span class="icon-badge">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={icons[item.label.toLowerCase()] ?? icons.output} />
+                </svg>
+              </span>
+              <span>
+                <span class="icon-node-label">{item.label}</span>
+                <span class="icon-node-detail">{item.detail}</span>
+              </span>
+            </span>
+          ))}
+          <span class="approval-pill">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6" /></svg>
+            Approval
+          </span>
         </div>
       </div>
 
       <div data-animate class="of-surface rounded-2xl p-5">
         <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">Proof</p>
-        <h3 class="mt-2 text-2xl leading-tight">Back to real surfaces.</h3>
+        <h3 class="map-card-title mt-2">Real proof surfaces.</h3>
         <div class="mt-5 space-y-3">
           {proof.map((item) => (
             <div class="rounded-xl border border-border bg-surface/70 p-3">
@@ -113,76 +105,188 @@ const proof = [
 </section>
 
 <style>
-  .mess-map {
-    background:
-      linear-gradient(135deg, transparent 0 48%, oklch(0.55 0.18 260 / 0.08) 48% 48.5%, transparent 48.8% 100%),
-      radial-gradient(circle at 24% 22%, var(--color-primary-glow), transparent 10rem);
+  .map-card-title {
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.65vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    white-space: nowrap;
   }
-  .mess-node {
-    display: inline-flex;
-    min-height: 3rem;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid color-mix(in oklch, var(--color-border) 78%, var(--color-primary) 22%);
+  .icon-route {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    background:
+      radial-gradient(circle at 18% 14%, oklch(0.55 0.18 260 / 0.13), transparent 12rem),
+      radial-gradient(circle at 82% 86%, oklch(0.70 0.14 82 / 0.11), transparent 11rem),
+      linear-gradient(180deg, color-mix(in oklch, var(--color-surface-raised) 94%, white 6%), var(--color-surface));
+  }
+  .issue-list {
+    display: grid;
+    gap: 0.65rem;
+    min-height: 15rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .issue-list li {
+    display: flex;
+    min-height: 3.1rem;
+    align-items: flex-start;
+    gap: 0.7rem;
+    border: 1px solid var(--color-border);
     border-radius: 0.85rem;
-    background: color-mix(in oklch, var(--color-surface-raised) 82%, white 18%);
-    padding: 0.7rem;
+    background: color-mix(in oklch, var(--color-surface-raised) 84%, white 16%);
+    padding: 0.72rem 0.82rem;
+  }
+  .issue-marker {
+    margin-top: 0.42rem;
+    height: 0.42rem;
+    width: 0.42rem;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-orbit-gold));
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 12%, transparent);
+  }
+  .issue-label,
+  .issue-detail {
+    display: block;
+  }
+  .issue-label {
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .issue-detail {
+    margin-top: 0.22rem;
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: 0.58rem;
     letter-spacing: 0.08em;
     line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .icon-route-after {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: center;
+    gap: 0.8rem;
+    min-height: 15rem;
+    padding: 1.25rem;
+  }
+  .icon-node {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    min-height: 4.2rem;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid color-mix(in oklch, var(--color-border) 76%, var(--color-primary) 24%);
+    border-radius: 0.85rem;
+    background:
+      linear-gradient(135deg, oklch(1 0 0 / 0.84), oklch(0.94 0.02 252 / 0.9)),
+      color-mix(in oklch, var(--color-surface-raised) 82%, white 18%);
+    padding: 0.75rem;
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.72),
+      0 18px 36px -32px oklch(0.18 0.08 260 / 0.34);
+  }
+  .icon-node-after {
+    position: relative;
+    width: auto;
+    min-height: 6.6rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.6rem;
     text-align: center;
+  }
+  .icon-badge {
+    display: grid;
+    height: 2.55rem;
+    width: 2.55rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid oklch(1 0 0 / 0.48);
+    border-radius: 0.75rem;
+    background:
+      linear-gradient(135deg, var(--color-primary), color-mix(in oklch, var(--color-primary) 54%, var(--color-orbit-gold))),
+      var(--color-primary);
+    color: white;
+    box-shadow: 0 12px 26px -18px var(--color-primary);
+  }
+  .icon-badge svg {
+    height: 1.15rem;
+    width: 1.15rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+  .icon-node-label,
+  .icon-node-detail {
+    display: block;
+  }
+  .icon-node-label {
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .icon-node-detail {
+    margin-top: 0.22rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .approval-pill {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    grid-column: 1 / -1;
+    justify-self: center;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid color-mix(in oklch, var(--color-primary) 26%, var(--color-border));
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--color-surface-raised) 88%, white 12%);
+    padding: 0.48rem 0.75rem;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.72);
   }
-  .mess-node-1,
-  .mess-node-5 {
-    transform: translateY(0.75rem);
+  .approval-pill svg {
+    height: 0.9rem;
+    width: 0.9rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.5;
   }
-  .mess-node-2,
-  .mess-node-6 {
-    transform: translateY(-0.5rem);
-  }
-  .mess-node-3 {
-    transform: translateX(0.35rem);
-  }
-  .mess-node-4 {
-    transform: translateX(-0.35rem);
-  }
-  .system-blueprint {
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    border-radius: 1rem;
-    background:
-      radial-gradient(circle at 80% 15%, oklch(0.70 0.14 82 / 0.12), transparent 13rem),
-      linear-gradient(180deg, color-mix(in oklch, var(--color-surface-raised) 92%, white 8%), var(--color-surface));
-  }
-  .blueprint-pulse {
-    stroke-dasharray: 46 260;
-    animation: blueprintPulse 4.8s linear infinite;
-  }
-  .blueprint-block {
-    filter: drop-shadow(0 18px 18px oklch(0.18 0.08 260 / 0.12));
-  }
-  .approval-gate {
-    animation: approvalLift 5.8s ease-in-out infinite;
-  }
-  @keyframes blueprintPulse {
-    from { stroke-dashoffset: 0; }
-    to { stroke-dashoffset: -306; }
-  }
-  @keyframes approvalLift {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .blueprint-pulse,
-    .approval-gate {
-      animation: none;
+  @media (max-width: 640px) {
+    .issue-list {
+      min-height: 0;
     }
-    .mess-node {
-      transform: none;
+    .icon-route-after {
+      display: grid;
+      gap: 0.75rem;
+      min-height: 0;
+    }
+    .approval-pill {
+      justify-content: center;
     }
   }
 </style>

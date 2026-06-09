@@ -9,7 +9,7 @@
 // Takes an astro:assets ImageMetadata so the heavy donor/GitHub PNGs ship as
 // optimized WebP/AVIF. `coverFit` crops into a fixed aspect for tidy card grids;
 // without it the image keeps its natural ratio (used for the prominent homepage
-// band). Images carry data-no-zoom to opt out of the global main-img 1.5x zoom.
+// band). Images carry data-no-zoom for compatibility with older pages.
 import { Image } from 'astro:assets';
 import WindowBar from './WindowBar.astro';
 
@@ -59,7 +59,7 @@ const {
       decoding="async"
       data-no-zoom
       class:list={[
-        'block w-full transition-transform duration-500 group-hover/frame:scale-[1.03]',
+        'block w-full',
         coverFit && 'h-full object-cover object-top',
       ]}
     />

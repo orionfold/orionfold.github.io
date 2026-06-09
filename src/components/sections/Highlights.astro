@@ -27,6 +27,8 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
   </a>
 </Highlight>
 
+<slot />
+
 <!-- ── Highlight: the software ── -->
 <Highlight
   eyebrow="The software"
@@ -39,7 +41,7 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
 >
   <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
     <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
-    <a href="/software/arena/" aria-label="Explore Arena" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
+    <a href="/software/arena/" aria-label="Explore Arena" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10">
       <Image
         src={arenaPoster}
         alt="Orionfold Arena poster art"
@@ -63,7 +65,7 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
 >
   <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
     <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
-    <a href="/models/patent-strategist/" aria-label="Explore Patent Strategist" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10 transition-transform duration-300 hover:scale-[1.01]">
+    <a href="/models/patent-strategist/" aria-label="Explore Patent Strategist" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10">
       <Image
         src={patentPoster}
         alt="Patent Strategist poster art: Prior Art"

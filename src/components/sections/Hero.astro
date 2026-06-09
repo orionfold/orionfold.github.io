@@ -3,12 +3,8 @@
 // and offer CTAs. Right: a quieter enterprise mission panel that turns the
 // constellation motif into trust, control, and evaluation signals. The homepage
 // newsletter form lives on the Story pages (H3).
-import HeroMissionPanel from './HeroMissionPanel.astro';
-
-const whyUs = [
-  'Use cloud AI where it fits.',
-  'Own the workflows, data boundaries, and evals where it matters.',
-];
+import { Image } from 'astro:assets';
+import heroImage from '../../assets/home/orionfold-hero-gemini.jpeg';
 ---
 <section class="relative overflow-x-clip">
   <!-- Soft atmospheric light, kept below the operational surfaces. -->
@@ -38,10 +34,10 @@ const whyUs = [
         Orionfold packages private agents, domain models, evaluations, and playbooks for teams that need AI capability with clear ownership.
       </p>
 
-      <div class="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+      <div class="mx-auto mt-9 flex w-full max-w-[24rem] flex-col items-stretch gap-3 lg:mx-0">
         <a
           href="/workflows/"
-          class="of-primary-action group"
+          class="of-primary-action group w-full justify-center !text-sm sm:!text-base"
         >
           Run a private workflow
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">
@@ -49,28 +45,30 @@ const whyUs = [
           </svg>
         </a>
         <a
-          href="/domain-packs/"
-          class="of-secondary-action"
-        >
-          Explore domain packs
-        </a>
-        <a
           href="/workbench/"
-          class="of-text-action"
+          class="of-secondary-action w-full justify-center !text-sm sm:!text-base"
         >
           Open the Workbench
         </a>
       </div>
 
-      <p class="mx-auto mt-8 max-w-[20rem] font-mono text-[11px] leading-relaxed tracking-wider text-primary lg:mx-0 lg:max-w-lg">
-        {whyUs.map((line) => <span class="block">{line}</span>)}
-      </p>
     </div>
 
-    <!-- Right: operational proof. Stars are retained as a routed capability map,
-         not as a showpiece animation, so the first impression feels enterprise. -->
-    <div class="relative">
-      <HeroMissionPanel />
+    <!-- Right: generated Orionfold hero image, optimized through Astro. -->
+    <div class="relative lg:pl-2">
+      <div class="of-surface overflow-hidden rounded-3xl p-2 shadow-[0_32px_90px_-58px_oklch(0.18_0.08_260/0.62)]">
+        <Image
+          src={heroImage}
+          alt="Illustration of a founder at a desk projecting an Orion constellation workflow from a small private AI device."
+          widths={[640, 960, 1280]}
+          sizes="(min-width: 1024px) 54vw, calc(100vw - 3rem)"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          data-no-zoom
+          class="block aspect-[16/9] w-full rounded-[1.25rem] object-cover"
+        />
+      </div>
     </div>
   </div>
 </section>

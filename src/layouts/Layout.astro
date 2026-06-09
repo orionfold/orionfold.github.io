@@ -227,26 +227,5 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
       document.addEventListener('astro:after-swap', initScrollReveal);
     </script>
 
-    <!-- Image hover zoom-pulse: zoom in then auto-zoom-out after 1.8s -->
-    <script>
-      function initImgZoom() {
-        document.querySelectorAll('main img:not([data-no-zoom])').forEach((img) => {
-          let timeout: ReturnType<typeof setTimeout> | null = null;
-          img.addEventListener('mouseenter', () => {
-            img.classList.add('img-zoomed');
-            timeout = setTimeout(() => {
-              img.classList.remove('img-zoomed');
-              timeout = null;
-            }, 1800);
-          });
-          img.addEventListener('mouseleave', () => {
-            if (timeout) { clearTimeout(timeout); timeout = null; }
-            img.classList.remove('img-zoomed');
-          });
-        });
-      }
-      initImgZoom();
-      document.addEventListener('astro:after-swap', initImgZoom);
-    </script>
   </body>
 </html>

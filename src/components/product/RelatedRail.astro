@@ -51,10 +51,10 @@ const sizes = '(min-width: 1024px) 22rem, (min-width: 640px) 50vw, 100vw';
                   <>
                     <Image src={item.cover} alt="" aria-hidden="true" widths={[400, 640]} sizes={sizes} loading="lazy" decoding="async" data-no-zoom class="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl" />
                     <div class="absolute inset-0 bg-black/20"></div>
-                    <Image src={item.cover} alt={`${item.title} cover`} widths={[240, 400]} sizes="240px" loading="lazy" decoding="async" data-no-zoom class="relative z-[1] mx-auto h-full w-auto object-contain p-3 transition-transform duration-500 group-hover:scale-[1.03]" />
+                    <Image src={item.cover} alt={`${item.title} cover`} widths={[240, 400]} sizes="240px" loading="lazy" decoding="async" data-no-zoom class="relative z-[1] mx-auto h-full w-auto object-contain p-3" />
                   </>
                 ) : (
-                  <Image src={item.cover} alt={`${item.title} cover`} widths={[400, 640]} sizes={sizes} loading="lazy" decoding="async" data-no-zoom class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]" />
+                  <Image src={item.cover} alt={`${item.title} cover`} widths={[400, 640]} sizes={sizes} loading="lazy" decoding="async" data-no-zoom class="h-full w-full object-cover object-top" />
                 )}
               </div>
             ) : (
