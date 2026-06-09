@@ -5,9 +5,9 @@
 // channel) lands on a page that says "this studio builds on the NVIDIA stack."
 // Funnel: NVIDIA channels -> here -> free book -> $50 bundle + sponsorship.
 //
-// Orionfold was accepted into the NVIDIA Inception Program on 2026-06-09.
-// Factual membership claims are now allowed; do not imply endorsement. The
-// official badge still waits for the NVIDIA asset kit and brand-guideline pass.
+// Orionfold was accepted into the NVIDIA Inception program on 2026-06-09.
+// Factual membership claims and the official badge are allowed; do not imply
+// endorsement, sponsorship, or partnership beyond program membership.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -16,6 +16,7 @@ import Highlight from '../components/ui/Highlight.astro';
 import BookCover from '../components/ui/BookCover.astro';
 import TrustBlock from '../components/product/TrustBlock.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
+import NvidiaLegalLine from '../components/flagship/NvidiaLegalLine.astro';
 import { SITE } from '../data/seo';
 import { ogMeta } from '../data/og';
 import { books } from '../data/books';
@@ -134,14 +135,27 @@ const groups: { label: string; blurb: string; works: Work[] }[] = [
     <PageHeader
       eyebrow="Built on the NVIDIA stack"
       title="AI research, run on one desk."
-      subtitle="Orionfold is an NVIDIA Inception Program member, and DGX Spark is our reference machine. The book, open models, and tools below were all proven on it first."
+      subtitle="The NVIDIA DGX Spark is Orionfold's reference machine. The book, open models, and tools below were all proven on it first."
     />
 
-    {/*
-      G5 follow-up: mount the official NVIDIA Inception Member badge here after
-      the asset kit is in hand. Until then, use factual text only: membership,
-      no endorsement claim, no improvised NVIDIA logo treatment.
-    */}
+    <section class="px-6 pt-6">
+      <div class="mx-auto flex max-w-6xl flex-col gap-5 rounded-2xl border border-border bg-surface-raised/70 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div class="min-w-0 max-w-2xl">
+          <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-text-dim">Program membership</p>
+          <p class="mt-2 text-sm leading-relaxed text-text-muted">
+            Orionfold is a member of the NVIDIA Inception program. The membership supports the same
+            practical goal as this page: make private AI work easier to build, test, and run on
+            customer-controlled hardware.
+          </p>
+        </div>
+        <img
+          src="/logos/nvidia-inception/nvidia-inception-program-badge-rgb-for-screen.svg"
+          alt="NVIDIA Inception program member badge"
+          loading="lazy"
+          class="h-auto w-40 shrink-0 sm:w-44"
+        />
+      </div>
+    </section>
 
     <!-- Featured hero art (G3). Eager + high priority as the page's one hero image;
          not data-animate (it is an LCP candidate, per the mobile-perf invariant). -->
@@ -268,6 +282,9 @@ const groups: { label: string; blurb: string; works: Work[] }[] = [
           <a href="/sponsor/" class="rounded-full border border-border px-6 py-3 text-sm font-medium text-text transition hover:border-primary/50">
             Sponsor the work
           </a>
+        </div>
+        <div class="mt-7 border-t border-border pt-5 text-left">
+          <NvidiaLegalLine />
         </div>
       </div>
     </section>

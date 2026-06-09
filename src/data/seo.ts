@@ -43,7 +43,7 @@ export const ORGANIZATION = {
   foundingDate: '2026',
   memberOf: {
     '@type': 'ProgramMembership',
-    programName: 'NVIDIA Inception Program',
+    programName: 'NVIDIA Inception',
     hostingOrganization: {
       '@type': 'Organization',
       name: 'NVIDIA',
