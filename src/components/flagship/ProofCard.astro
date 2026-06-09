@@ -1,0 +1,48 @@
+---
+// A compact, art-led proof card for the flagship offer pages. Leads with the
+// destination's real key art (poster / model cover / book cover / story hero)
+// via resolveProofArt, falling back to the seeded constellation motif so a new
+// link never ships a broken card. The whole card is the link, like ProductCard.
+import { Image } from 'astro:assets';
+import ConstellationCover from '../ui/ConstellationCover.astro';
+import { resolveProofArt } from '../../lib/flagship/proof-art';
+import type { ProofLink } from '../../data/flagship-offers';
+
+interface Props {
+  link: ProofLink;
+}
+
+const { link } = Astro.props;
+const art = resolveProofArt(link.href);
+const external = link.href.startsWith('http');
+---
+<a
+  href={link.href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  data-animate
+  class="of-surface of-pressable group flex flex-col overflow-hidden rounded-2xl"
+>
+  {art ? (
+    <div class="aspect-[16/9] overflow-hidden border-b border-border">
+      <Image
+        src={art}
+        alt={`${link.label} artwork`}
+        widths={[400, 640]}
+        sizes="(min-width: 640px) 33vw, 100vw"
+        loading="lazy"
+        decoding="async"
+        data-no-zoom
+        class="h-full w-full object-cover object-top"
+      />
+    </div>
+  ) : (
+    <div class="border-b border-border">
+      <ConstellationCover seed={link.label} rounded="rounded-none" />
+    </div>
+  )}
+  <div class="flex flex-1 flex-col p-5">
+    <span class="font-medium leading-snug text-text transition-colors group-hover:text-primary">{link.label}</span>
+    <span class="mt-1.5 text-sm leading-snug text-text-muted">{link.note}</span>
+  </div>
+</a>

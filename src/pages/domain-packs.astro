@@ -3,15 +3,30 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
-import OfferProofRail from '../components/flagship/OfferProofRail.astro';
 import CapabilityStack from '../components/flagship/CapabilityStack.astro';
-import NvidiaPortalFit from '../components/flagship/NvidiaPortalFit.astro';
-import { flagshipById } from '../data/flagship-offers';
-import { nvidiaPortalProfiles } from '../data/nvidia-portal';
+import NvidiaStackBand from '../components/flagship/NvidiaStackBand.astro';
+import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
+import patentCover from '../assets/models/patent-strategist/cover.png';
+import benchCover from '../assets/models/patent-strategist-bench/cover.png';
+import securityCover from '../assets/models/securityllm/cover.png';
+import saulCover from '../assets/models/saul-7b-instruct/cover.png';
+import financeCover from '../assets/models/finance-chat/cover.png';
+import medicalCover from '../assets/models/ii-medical-8b/cover.png';
+import keplerCover from '../assets/models/kepler/cover.png';
 
-const offer = flagshipById['domain-packs'];
 const og = ogMeta('/domain-packs/');
+
+// The model library behind the future packs. The models are shipped and free;
+// the full pack (benchmark + playbook + run path) is the packaging step, so the
+// status chips stay honest about which is which.
+const library = [
+  { img: securityCover, href: '/models/securityllm/', domain: 'Security', title: 'SecurityLLM', status: 'Model shipped · pack planned' },
+  { img: saulCover, href: '/models/saul-7b-instruct/', domain: 'Legal', title: 'Saul 7B Instruct', status: 'Model shipped · pack planned' },
+  { img: financeCover, href: '/models/finance-chat/', domain: 'Finance', title: 'Finance Chat', status: 'Model shipped · pack planned' },
+  { img: medicalCover, href: '/models/ii-medical-8b/', domain: 'Medicine', title: 'II-Medical 8B', status: 'Model shipped · pack planned' },
+  { img: keplerCover, href: '/models/kepler/', domain: 'Space math', title: 'Kepler', status: 'Model shipped · pack planned' },
+];
 ---
 <Layout
   title="Domain Packs · Orionfold"
@@ -32,28 +47,106 @@ const og = ogMeta('/domain-packs/');
       </div>
     </PageHeader>
 
+    <!-- The flagship pack: model + benchmark, side by side with real art. -->
     <section class="px-6 pt-12">
       <div class="mx-auto max-w-6xl">
-        <CapabilityStack
-          items={[
-            { label: 'Model', body: 'An offline model or adapter selected for one domain, not a generic chatbot wrapper.' },
-            { label: 'Benchmark', body: 'A test set or scorecard that makes improvement visible before the model is trusted.' },
-            { label: 'Run path', body: 'A local setup path for customer-controlled hardware and private documents.' },
-            { label: 'Playbook', body: 'Use cases, prompts, limits, and review rules for the domain.' },
-          ]}
-        />
+        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">The flagship pack</p>
+        <div data-animate class="mt-4 grid overflow-hidden rounded-2xl border border-border bg-surface-raised lg:grid-cols-[1.05fr_0.95fr]">
+          <div class="grid grid-cols-2">
+            <a href="/models/patent-strategist/" class="group overflow-hidden border-r border-border" aria-label="Patent Strategist model">
+              <Image
+                src={patentCover}
+                alt="Patent Strategist model cover"
+                widths={[400, 640]}
+                sizes="(min-width: 1024px) 27vw, 50vw"
+                loading="lazy"
+                decoding="async"
+                data-no-zoom
+                class="h-full w-full object-cover object-top transition-opacity group-hover:opacity-90"
+              />
+            </a>
+            <a href="https://huggingface.co/datasets/Orionfold/patent-strategist-bench-v0.1" target="_blank" rel="noopener noreferrer" class="group overflow-hidden" aria-label="Patent Strategist Bench dataset">
+              <Image
+                src={benchCover}
+                alt="Patent Strategist Bench cover"
+                widths={[400, 640]}
+                sizes="(min-width: 1024px) 27vw, 50vw"
+                loading="lazy"
+                decoding="async"
+                data-no-zoom
+                class="h-full w-full object-cover object-top transition-opacity group-hover:opacity-90"
+              />
+            </a>
+          </div>
+          <div class="flex flex-col justify-center border-t border-border p-7 lg:border-l lg:border-t-0 lg:p-9">
+            <span class="of-chip w-fit">Patents · live</span>
+            <h2 class="mt-3 text-3xl leading-tight">Patent Strategist</h2>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">
+              An AI built to reason about patents, fully offline. The pack pairs the model with its
+              public benchmark, so you can see how it scores before your ideas and filings ever
+              leave the room. Built with NVIDIA NeMo, shipped as GGUF and adapter artifacts.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <a href="/models/patent-strategist/" class="of-text-action of-compact text-xs">Model card →</a>
+              <a href="https://huggingface.co/datasets/Orionfold/patent-strategist-bench-v0.1" target="_blank" rel="noopener noreferrer" class="of-text-action of-compact text-xs">Public benchmark →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 pt-12">
+      <div class="mx-auto max-w-6xl">
+        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">What a pack includes</p>
+        <div class="mt-4">
+          <CapabilityStack
+            items={[
+              { label: 'Model', body: 'An offline model or adapter selected for one domain, not a generic chatbot wrapper.' },
+              { label: 'Benchmark', body: 'A test set or scorecard that makes improvement visible before the model is trusted.' },
+              { label: 'Run path', body: 'A local setup path for customer-controlled hardware and private documents.' },
+              { label: 'Playbook', body: 'Use cases, prompts, limits, and review rules for the domain.' },
+            ]}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- The library the next packs come from. -->
+    <section class="px-6 pt-12">
+      <div class="mx-auto max-w-6xl">
+        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">The library behind the next packs</p>
+        <div data-animate-stagger class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {library.map((model) => (
+            <a href={model.href} data-animate class="of-surface of-pressable group overflow-hidden rounded-2xl">
+              <div class="aspect-[16/10] overflow-hidden border-b border-border">
+                <Image
+                  src={model.img}
+                  alt={`${model.title} model cover`}
+                  widths={[300, 480]}
+                  sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+                  loading="lazy"
+                  decoding="async"
+                  data-no-zoom
+                  class="h-full w-full object-cover object-top"
+                />
+              </div>
+              <div class="p-3">
+                <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">{model.domain}</p>
+                <p class="mt-1 text-sm font-medium leading-snug text-text transition-colors group-hover:text-primary">{model.title}</p>
+                <p class="mt-1 text-[11px] leading-snug text-text-muted">{model.status}</p>
+              </div>
+            </a>
+          ))}
+        </div>
         <p class="mt-6 rounded-2xl border border-border bg-surface-raised p-5 text-sm leading-relaxed text-text-muted">
           Domain packs are implementation aids, not professional advice. Legal, medical, finance, and security outputs need qualified human review before use in real decisions.
         </p>
       </div>
     </section>
 
-    <section class="px-6 py-16">
-      <div class="mx-auto max-w-6xl">
-        <OfferProofRail links={offer.proof} />
-      </div>
-    </section>
-    <NvidiaPortalFit profile={nvidiaPortalProfiles['domain-packs']} />
+    <div class="pt-4">
+      <NvidiaStackBand note="Patent Strategist is built with NVIDIA NeMo, and packs are tested on NVIDIA DGX Spark-class hardware so they run offline on customer-controlled machines." />
+    </div>
   </main>
   <Footer />
 </Layout>

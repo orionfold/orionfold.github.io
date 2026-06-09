@@ -4,17 +4,28 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import OfferProofRail from '../components/flagship/OfferProofRail.astro';
-import NvidiaPortalFit from '../components/flagship/NvidiaPortalFit.astro';
+import NvidiaStackBand from '../components/flagship/NvidiaStackBand.astro';
 import { flagshipById } from '../data/flagship-offers';
-import { nvidiaPortalProfiles } from '../data/nvidia-portal';
 import { ogMeta } from '../data/og';
 
 const offer = flagshipById.workflows;
 const og = ogMeta('/workflows/');
+
+// The anatomy every starter kit ships with — the pitch's core trust loop,
+// shown as the pipeline it actually is.
+const pipeline = [
+  { step: 'Trigger', gloss: 'A schedule, file drop, or request starts the run.' },
+  { step: 'Runner', gloss: 'A local agent does the work with the tools it is given.' },
+  { step: 'Eval', gloss: 'Checks score the output before anyone relies on it.' },
+  { step: 'Approval', gloss: 'A person reviews and signs off. Nothing ships itself.' },
+  { step: 'Artifact', gloss: 'The run produces a real file, draft, or report.' },
+  { step: 'Audit trail', gloss: 'Every run is logged and can be replayed later.' },
+];
+
 const kits = [
-  { title: 'Founder operating memory', body: 'Capture decisions, summarize work, propose next actions, and keep a traceable memory of what changed.' },
-  { title: 'Content to launch', body: 'Turn a source note into article, social posts, product copy, screenshots, and a final approval checklist.' },
-  { title: 'Private document workflow', body: 'Read sensitive files locally, draft an artifact, run checks, and preserve the audit trail.' },
+  { n: '01', title: 'Founder operating memory', body: 'Capture decisions, summarize work, propose next actions, and keep a traceable memory of what changed.' },
+  { n: '02', title: 'Content to launch', body: 'Turn a source note into article, social posts, product copy, screenshots, and a final approval checklist.' },
+  { n: '03', title: 'Private document workflow', body: 'Read sensitive files locally, draft an artifact, run checks, and preserve the audit trail.' },
 ];
 ---
 <Layout
@@ -36,12 +47,32 @@ const kits = [
       </div>
     </PageHeader>
 
+    <!-- Anatomy of a kit: the six-stage trust loop, as a pipeline. -->
     <section class="px-6 pt-12">
       <div class="mx-auto max-w-6xl">
-        <div data-animate-stagger class="grid gap-5 md:grid-cols-3">
+        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Anatomy of every kit</p>
+        <ol data-animate-stagger class="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {pipeline.map((stage, i) => (
+            <li data-animate class="relative rounded-2xl border border-border bg-surface-raised p-4">
+              <span class="font-mono text-[10px] tracking-[0.18em] text-text-dim">{String(i + 1).padStart(2, '0')}</span>
+              <p class="mt-2 font-medium leading-tight text-text">{stage.step}</p>
+              <p class="mt-2 text-xs leading-relaxed text-text-muted">{stage.gloss}</p>
+              {i < pipeline.length - 1 && (
+                <span aria-hidden="true" class="absolute -right-2.5 top-1/2 hidden -translate-y-1/2 text-text-dim lg:block">→</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="px-6 pt-12">
+      <div class="mx-auto max-w-6xl">
+        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">First starter kits</p>
+        <div data-animate-stagger class="mt-4 grid gap-5 md:grid-cols-3">
           {kits.map((kit) => (
-            <article data-animate class="rounded-2xl border border-border bg-surface-raised p-6">
-              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Starter kit</p>
+            <article data-animate class="of-surface rounded-2xl p-6">
+              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Kit {kit.n}</p>
               <h2 class="mt-3 text-2xl leading-tight">{kit.title}</h2>
               <p class="mt-3 text-sm leading-relaxed text-text-muted">{kit.body}</p>
             </article>
@@ -52,10 +83,10 @@ const kits = [
 
     <section class="px-6 py-16">
       <div class="mx-auto max-w-6xl">
-        <OfferProofRail links={offer.proof} />
+        <OfferProofRail title="Built from shipped parts" links={offer.proof} />
       </div>
     </section>
-    <NvidiaPortalFit profile={nvidiaPortalProfiles.workflows} />
+    <NvidiaStackBand note="Kits can run on customer-controlled NVIDIA GPU systems for private inference and evaluation, while preserving approval gates, logs, and artifacts for review." />
   </main>
   <Footer />
 </Layout>

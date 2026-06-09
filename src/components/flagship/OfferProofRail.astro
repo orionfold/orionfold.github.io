@@ -1,5 +1,9 @@
 ---
+// Proof rail for flagship offer pages: real product art instead of text tiles,
+// so each offer page shows the shipped portfolio it stands on (spec rescue:
+// "reuse existing product cards, covers, and proof rails").
 import type { ProofLink } from '../../data/flagship-offers';
+import ProofCard from './ProofCard.astro';
 
 interface Props {
   title?: string;
@@ -8,14 +12,11 @@ interface Props {
 
 const { title = 'Proof in the current portfolio', links } = Astro.props;
 ---
-<div data-animate class="rounded-2xl border border-primary/20 bg-primary/[0.045] p-5 sm:p-6">
+<div>
   <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{title}</p>
-  <div class="mt-4 grid gap-3 sm:grid-cols-3">
+  <div data-animate-stagger class="mt-4 grid gap-5 sm:grid-cols-3">
     {links.map((link) => (
-      <a href={link.href} class="rounded-xl border border-border bg-surface-raised p-4 transition-colors hover:border-primary/30">
-        <span class="font-medium text-text">{link.label}</span>
-        <span class="mt-1 block text-sm leading-snug text-text-muted">{link.note}</span>
-      </a>
+      <ProofCard link={link} />
     ))}
   </div>
 </div>

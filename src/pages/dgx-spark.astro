@@ -17,6 +17,7 @@ import BookCover from '../components/ui/BookCover.astro';
 import TrustBlock from '../components/product/TrustBlock.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
 import NvidiaLegalLine from '../components/flagship/NvidiaLegalLine.astro';
+import { nvidiaPortalProfiles } from '../data/nvidia-portal';
 import { SITE } from '../data/seo';
 import { ogMeta } from '../data/og';
 import { books } from '../data/books';
@@ -154,6 +155,27 @@ const groups: { label: string; blurb: string; works: Work[] }[] = [
           loading="lazy"
           class="h-auto w-40 shrink-0 sm:w-44"
         />
+      </div>
+    </section>
+
+    <!-- How each flagship offer sits on the NVIDIA stack. This is the one place
+         the per-offer stack profiles render; the offer pages carry only a
+         compact membership band so they stay buyer-first. -->
+    <section class="px-6 pt-8">
+      <div class="mx-auto max-w-6xl">
+        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-text-dim">Offer fit on the NVIDIA stack</p>
+        <div data-animate-stagger class="mt-3 grid gap-4 sm:grid-cols-2">
+          {Object.values(nvidiaPortalProfiles).map((profile) => (
+            <a href={`/${profile.id}/`} data-animate class="of-surface of-pressable group rounded-2xl p-5">
+              <div class="flex items-start justify-between gap-3">
+                <p class="font-medium leading-snug text-text transition-colors group-hover:text-primary">{profile.productServiceName}</p>
+                <span class="of-chip shrink-0">{profile.developmentStage}</span>
+              </div>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">{profile.valueProposition}</p>
+              <p class="mt-3 font-mono text-[11px] leading-relaxed text-text-dim">NVIDIA used: {profile.nvidiaTechnologiesUsed.join(', ')}</p>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
 
