@@ -9,10 +9,10 @@ const proof = [
   <div class="mx-auto max-w-6xl">
     <div data-animate-stagger class="grid gap-4 lg:grid-cols-3">
       {proof.map((item) => (
-        <a data-animate href={item.href} class="rounded-2xl border border-border bg-surface-raised p-6 transition-colors hover:border-primary/30">
-          <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{item.eyebrow}</span>
+        <a data-animate href={item.href} class="of-surface of-pressable rounded-2xl p-6">
+          <span class="of-chip w-fit">{item.eyebrow}</span>
           <h3 class="mt-3 text-2xl leading-tight">{item.title}</h3>
-          <span class="mt-5 inline-flex font-mono text-xs tracking-wider text-primary">Explore →</span>
+          <span class="of-text-action of-compact mt-5 text-xs">Explore →</span>
         </a>
       ))}
     </div>

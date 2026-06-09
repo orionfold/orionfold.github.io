@@ -56,7 +56,7 @@ const buyErrorId = buyLookupKey ? `buy-err-${buyLookupKey}` : undefined;
       {pills.length > 0 && (
         <div data-animate class="mb-7 flex flex-wrap justify-center gap-1.5 lg:justify-start" style="transition-delay: 120ms">
           {pills.map((pill) => (
-            <span class="rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1 font-mono text-[10px] tracking-wider text-primary">
+            <span class="of-chip">
               {pill}
             </span>
           ))}
@@ -79,7 +79,7 @@ const buyErrorId = buyLookupKey ? `buy-err-${buyLookupKey}` : undefined;
               type="button"
               data-checkout={buyLookupKey}
               data-error-target={buyErrorId}
-              class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-3 font-mono text-sm tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+              class="of-primary-action disabled:cursor-not-allowed disabled:opacity-60"
             >
               {buyText}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -94,7 +94,7 @@ const buyErrorId = buyLookupKey ? `buy-err-${buyLookupKey}` : undefined;
           href={href}
           target={external ? '_blank' : undefined}
           rel={external ? 'noopener noreferrer' : undefined}
-          class="inline-flex items-center gap-1.5 font-mono text-sm tracking-wider text-primary hover:underline"
+          class="of-text-action"
         >
           {ctaText}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

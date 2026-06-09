@@ -46,7 +46,7 @@ const linkHref = detailHref ?? href;
   data-animate={priority ? undefined : ''}
   aria-label={title}
   class:list={[
-    'group overflow-hidden rounded-2xl border border-border bg-surface-raised transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-primary/[0.03] hover:shadow-xl hover:shadow-primary/10',
+    'of-surface of-pressable group overflow-hidden rounded-2xl',
     featured ? 'grid items-stretch sm:grid-cols-2' : 'flex flex-col',
   ]}
 >
@@ -91,14 +91,14 @@ const linkHref = detailHref ?? href;
 
   <!-- Body -->
   <div class:list={['flex flex-1 flex-col p-7 sm:p-8', featured && 'sm:justify-center sm:p-10']}>
-    <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{eyebrow}</span>
+    <span class="of-chip w-fit">{eyebrow}</span>
     <h2 class="mt-3 font-display text-2xl font-bold leading-tight transition-colors group-hover:text-primary">{title}</h2>
     <p class="mt-3 flex-1 leading-relaxed text-text-muted">{body}</p>
 
     {pills.length > 0 && (
       <div class="mt-5 flex flex-wrap gap-1.5">
         {pills.map((pill) => (
-          <span class="rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1 font-mono text-[10px] tracking-wider text-primary">
+          <span class="of-chip">
             {pill}
           </span>
         ))}

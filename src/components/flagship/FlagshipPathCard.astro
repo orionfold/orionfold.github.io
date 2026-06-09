@@ -10,13 +10,13 @@ const { offer } = Astro.props;
 <a
   href={offer.route}
   data-animate
-  class="group flex h-full flex-col rounded-2xl border border-border bg-surface-raised p-6 transition-colors hover:border-primary/35 hover:bg-primary/[0.035]"
+  class="of-surface of-pressable group flex h-full flex-col rounded-2xl p-6"
 >
-  <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{offer.eyebrow}</span>
+  <span class="of-chip w-fit">{offer.eyebrow}</span>
   <h3 class="mt-3 text-2xl leading-tight group-hover:text-primary">{offer.title}</h3>
   <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{offer.outcome}</p>
   <div class="mt-5 border-t border-border pt-4">
     <p class="text-xs font-medium leading-snug text-text">{offer.status}</p>
-    <span class="mt-3 inline-flex font-mono text-xs tracking-wider text-primary">Open →</span>
+    <span class="of-text-action of-compact mt-3 text-xs">Open →</span>
   </div>
 </a>
