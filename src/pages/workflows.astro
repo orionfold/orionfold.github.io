@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import OfferProofRail from '../components/flagship/OfferProofRail.astro';
+import NvidiaPortalFit from '../components/flagship/NvidiaPortalFit.astro';
+import { flagshipById } from '../data/flagship-offers';
+import { nvidiaPortalProfiles } from '../data/nvidia-portal';
+import { ogMeta } from '../data/og';
+
+const offer = flagshipById.workflows;
+const og = ogMeta('/workflows/');
+const kits = [
+  { title: 'Founder operating memory', body: 'Capture decisions, summarize work, propose next actions, and keep a traceable memory of what changed.' },
+  { title: 'Content to launch', body: 'Turn a source note into article, social posts, product copy, screenshots, and a final approval checklist.' },
+  { title: 'Private document workflow', body: 'Read sensitive files locally, draft an artifact, run checks, and preserve the audit trail.' },
+];
+---
+<Layout
+  title="Workflows · Orionfold"
+  description="Private Agent Starter Kits package one useful local workflow with trigger, runner, eval, approval, artifact output, and audit trail."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+>
+  <Nav />
+  <main>
+    <PageHeader
+      eyebrow="Workflows"
+      title="Run one private agent workflow end to end."
+      subtitle="A starter kit is not a consulting retainer. It is one reusable local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail."
+    >
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="/roadmap/#run" class="inline-flex rounded-lg bg-primary px-5 py-3 font-mono text-sm font-semibold tracking-wider text-white transition-colors hover:bg-primary/90">Request a starter kit</a>
+        <a href="/software/ai-native-platform/" class="inline-flex rounded-lg border border-primary/30 px-5 py-3 font-mono text-sm font-semibold tracking-wider text-primary transition-colors hover:bg-primary/5">Open the platform</a>
+      </div>
+    </PageHeader>
+
+    <section class="px-6 pt-12">
+      <div class="mx-auto max-w-6xl">
+        <div data-animate-stagger class="grid gap-5 md:grid-cols-3">
+          {kits.map((kit) => (
+            <article data-animate class="rounded-2xl border border-border bg-surface-raised p-6">
+              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Starter kit</p>
+              <h2 class="mt-3 text-2xl leading-tight">{kit.title}</h2>
+              <p class="mt-3 text-sm leading-relaxed text-text-muted">{kit.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-16">
+      <div class="mx-auto max-w-6xl">
+        <OfferProofRail links={offer.proof} />
+      </div>
+    </section>
+    <NvidiaPortalFit profile={nvidiaPortalProfiles.workflows} />
+  </main>
+  <Footer />
+</Layout>

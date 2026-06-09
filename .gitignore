@@ -39,6 +39,8 @@ audit-reports/
 
 # Astro / Node build artifacts
 node_modules/
+node_modules
 dist/
 .astro/
+checks/
 .DS_Store

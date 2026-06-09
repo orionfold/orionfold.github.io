@@ -1,7 +1,6 @@
 ---
-// Homepage hero ("split + constellation"). Left: the pitch + dual CTAs (the
-// site's two commerce families — Get the books / Sponsor the work) + a live
-// trust line. Right: the trust signal — the studio's products drawn as the
+// Homepage hero ("split + constellation"). Left: the capability-ownership pitch
+// and offer CTAs. Right: the trust signal — the studio's products drawn as the
 // Orion constellation on a slowly drifting 3D card (HeroConstellation3D).
 // It replaced the old animated poster rail (2026-06-05): zero image requests
 // instead of ~21 posters rendered twice, a single GPU-only transform loop
@@ -12,12 +11,9 @@
 import HeroConstellation from './HeroConstellation.astro';
 import HeroConstellation3D from './HeroConstellation3D.astro';
 
-// A "why us" statement, not a feature list: the reason to choose Orionfold over
-// cloud AI. Two lines — the status quo (your data goes to someone else's cloud)
-// then the flip (yours stays on your own machine, open + private).
 const whyUs = [
-  'Most AI sends your data to the cloud.',
-  'Ours runs on your own machine, open and private.',
+  'Use cloud AI where it fits.',
+  'Own the workflows, data boundaries, and evals where it matters.',
 ];
 ---
 <section class="relative overflow-x-clip">
@@ -30,45 +26,49 @@ const whyUs = [
   <!-- Bottom gradient fade into the narrative -->
   <div class="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-32" style="background: linear-gradient(to bottom, transparent, var(--color-surface));"></div>
 
-  <div class="mx-auto grid min-h-[calc(100dvh-80px)] max-w-7xl items-center gap-12 px-6 pb-20 pt-28 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:pb-24">
+  <div class="mx-auto grid max-w-7xl items-center gap-12 px-6 pb-16 pt-28 sm:pt-32 lg:min-h-[calc(100dvh-150px)] lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:pb-20">
     <!-- Left: the pitch. The pitch column used to stagger-reveal via [data-animate]
          + IntersectionObserver, but that made the subtitle P the page's LCP element
          at ~7.5s on mobile (Lighthouse won't count an opacity:0 element as painted).
          Painting the pitch immediately is the bigger UX win than the stagger polish. -->
     <div class="relative z-10 text-center lg:text-left">
-      <p class="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-text-muted">
-        Orionfold · an AI studio
+      <p class="mx-auto mb-6 max-w-[18rem] text-wrap font-mono text-[11px] uppercase leading-relaxed tracking-[0.18em] text-text-muted lg:mx-0 lg:max-w-none lg:text-xs">
+        Private AI capability for small teams
       </p>
 
-      <h1 class="hero-gradient-text text-balance font-display font-bold">
-        Grow 10x with AI, fast.
+      <h1 class="hero-gradient-text mx-auto max-w-[21rem] text-balance font-display text-[2.45rem] font-bold leading-[1.08] sm:max-w-2xl sm:text-6xl lg:mx-0 lg:max-w-none lg:text-[clamp(3.5rem,5.4vw,5.6rem)]">
+        Own the AI skills your company needs before you can hire the team.
       </h1>
 
-      <p class="mx-auto mt-6 max-w-xl text-balance text-lg leading-relaxed text-text-muted lg:mx-0">
-        Fast, easy AI journey with expert playbooks, open software, custom models, on personal devices.
+      <p class="mx-auto mt-6 max-w-[22rem] text-balance text-base leading-relaxed text-text-muted sm:max-w-xl sm:text-lg lg:mx-0">
+        Orionfold packages private agents, domain models, benchmarks, and playbooks that run on customer-controlled hardware.
       </p>
 
-      <!-- Dual CTAs: the two commerce families -->
       <div class="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
         <a
-          href="/books/"
+          href="/workflows/"
           class="group inline-flex items-center gap-2 rounded-lg bg-primary px-7 py-3.5 font-mono text-sm font-semibold tracking-wider text-white transition-colors hover:bg-primary/90"
         >
-          Get the books
+          Run a private workflow
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </a>
         <a
-          href="/sponsor/"
+          href="/domain-packs/"
           class="inline-flex items-center gap-2 rounded-lg border border-primary/30 px-7 py-3.5 font-mono text-sm font-semibold tracking-wider text-primary transition-colors hover:border-primary/50 hover:bg-primary/5"
         >
-          Sponsor the work
+          Explore domain packs
+        </a>
+        <a
+          href="/workbench/"
+          class="inline-flex items-center gap-2 py-3.5 font-mono text-sm font-semibold tracking-wider text-primary transition-colors hover:underline"
+        >
+          Open the Workbench
         </a>
       </div>
 
-      <!-- Why us: the one-line reason to choose Orionfold over cloud AI -->
-      <p class="mx-auto mt-8 max-w-md font-mono text-[11px] leading-relaxed tracking-wider text-primary lg:mx-0 lg:max-w-lg">
+      <p class="mx-auto mt-8 max-w-[20rem] font-mono text-[11px] leading-relaxed tracking-wider text-primary lg:mx-0 lg:max-w-lg">
         {whyUs.map((line) => <span class="block">{line}</span>)}
       </p>
     </div>

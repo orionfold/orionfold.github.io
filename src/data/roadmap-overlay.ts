@@ -50,6 +50,33 @@ export interface RoadmapOverlayItem {
 //     roadmapOrder: 300,
 //   },
 export const roadmapOverlay: RoadmapOverlayItem[] = [
+  {
+    id: 'software:orionfold-advisor',
+    type: 'software',
+    title: 'Orionfold Advisor',
+    blurb: 'A private expert interface over the Orionfold corpus. The first useful version is local retrieval over the books, stories, model cards, and implementation notes.',
+    status: 'planned',
+    href: '/advisor/',
+    roadmapOrder: 20,
+  },
+  {
+    id: 'software:private-agent-starter-kit',
+    type: 'software',
+    title: 'Private Agent Starter Kit',
+    blurb: 'One local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail.',
+    status: 'planned',
+    href: '/workflows/',
+    roadmapOrder: 55,
+  },
+  {
+    id: 'software:workflow-docs',
+    type: 'software',
+    title: 'Workflow docs',
+    blurb: 'Plain setup guides and review checklists that make each private workflow repeatable by a small team.',
+    status: 'planned',
+    href: '/workflows/',
+    roadmapOrder: 58,
+  },
   // Staked upstream 2026-06-03 (ainative.business/products/living-model/,
   // status: upcoming). Graduates to software.ts when the first real training
   // run draws its chart and the product flips to published.

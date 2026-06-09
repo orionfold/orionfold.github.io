@@ -1,0 +1,20 @@
+---
+const proof = [
+  { eyebrow: 'Workbench', title: 'Arena, Cortex, and fieldkit make the stack inspectable.', href: '/workbench/' },
+  { eyebrow: 'NVIDIA pathway', title: 'Inception and DGX Spark anchor the enterprise route.', href: '/dgx-spark/' },
+  { eyebrow: 'Playbooks', title: 'Books and field notes turn the implementation into a repeatable path.', href: '/learn/' },
+];
+---
+<section class="px-6 pb-20 pt-10">
+  <div class="mx-auto max-w-6xl">
+    <div data-animate-stagger class="grid gap-4 lg:grid-cols-3">
+      {proof.map((item) => (
+        <a data-animate href={item.href} class="rounded-2xl border border-border bg-surface-raised p-6 transition-colors hover:border-primary/30">
+          <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{item.eyebrow}</span>
+          <h3 class="mt-3 text-2xl leading-tight">{item.title}</h3>
+          <span class="mt-5 inline-flex font-mono text-xs tracking-wider text-primary">Explore →</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
