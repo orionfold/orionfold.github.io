@@ -52,10 +52,14 @@ const latestStories = (await getCollection('story'))
 // Slim meta-row nav: the listing hubs now live as directory column headers, so
 // Explore keeps only the pages without a directory column.
 const explore = [
-  { href: '/story/', label: 'Story' },
-  { href: '/about/', label: 'About' },
+  { href: '/advisor/', label: 'Advisor' },
+  { href: '/workflows/', label: 'Workflows' },
+  { href: '/domain-packs/', label: 'Domain Packs' },
+  { href: '/workbench/', label: 'Workbench' },
+  { href: '/learn/', label: 'Learn' },
   { href: '/dgx-spark/', label: 'DGX Spark' },
   { href: '/roadmap/', label: 'Roadmap' },
+  { href: '/about/', label: 'About' },
   { href: '/sponsor/', label: 'Sponsor' },
 ];
 const legal = [
@@ -128,7 +132,7 @@ const year = new Date().getFullYear();
           </span>
         </a>
         <p class="max-w-[16rem] text-[0.7rem] leading-relaxed text-text-dim text-balance">
-          We build open AI software, custom models, and the playbooks to run them.
+          We package private agents, domain models, benchmarks, and playbooks for customer-controlled hardware.
         </p>
       </div>
 

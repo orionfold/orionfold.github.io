@@ -6,11 +6,11 @@ export const SITE = {
   name: 'Orionfold',
   url: 'https://orionfold.com',
   description:
-    'Orionfold builds open AI software, custom models, and the playbooks to run them. Grow 10x with AI, on your own computer.',
+    'Orionfold packages private agents, domain models, benchmarks, and playbooks for small teams that need AI capability on customer-controlled hardware.',
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:
-    'Orionfold: open AI software, custom models, and the playbooks to run them.',
+    'Orionfold: private AI capability for small teams.',
   // Single light theme: address-bar tint matches the manifest background.
   themeColor: '#f6f9fc',
   license: 'Apache-2.0',
@@ -41,6 +41,15 @@ export const ORGANIZATION = {
   description: SITE.description,
   founder: PERSON,
   foundingDate: '2026',
+  memberOf: {
+    '@type': 'ProgramMembership',
+    programName: 'NVIDIA Inception Program',
+    hostingOrganization: {
+      '@type': 'Organization',
+      name: 'NVIDIA',
+      url: 'https://www.nvidia.com/',
+    },
+  },
   sameAs: [
     'https://github.com/manavsehgal',
     'https://x.com/manavsehgal',

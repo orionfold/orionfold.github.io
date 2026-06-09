@@ -1,6 +1,6 @@
 ---
 // Roadmap (R1, spec §5) — the hook page. Every offering (books, software,
-// models) classified into three status lanes (Shipped / Building now / Planned),
+// models) grouped into flagship lanes (Ask / Run / Know / Build / Learn),
 // built from src/data/roadmap.ts: the F1 status tags merged with the live GitHub
 // signals (F2), so the active items expand into real, current features (fieldkit
 // modules, field-notes research areas). Each card carries a select checkbox (for
@@ -72,10 +72,62 @@ const enquirySteps = [
   'Add a line about your project. We email you back, usually within a day.',
 ];
 
+const runIds = new Set([
+  'software:ai-native-platform',
+  'software:ai-native-api',
+  'software:sentinel',
+  'software:private-agent-starter-kit',
+  'software:workflow-docs',
+  'software:memo',
+  'software:marketer',
+]);
+const knowSoftwareIds = new Set(['software:cortex', 'software:neosignal', 'software:trends', 'software:moments']);
+const buildIds = new Set(['software:fieldkit', 'software:arena', 'software:command', 'software:living-model']);
+const laneOrder: Record<string, number> = {
+  'software:orionfold-advisor': 0,
+  'software:private-agent-starter-kit': 0,
+  'model:patent-strategist': 0,
+  'software:arena': 0,
+  'book:ai-native-platform': 0,
+};
+const byLane = (items: RoadmapItem[]) =>
+  items.slice().sort((a, b) => (laneOrder[a.id] ?? 50) - (laneOrder[b.id] ?? 50) || a.roadmapOrder - b.roadmapOrder);
 const lanes = [
-  { key: 'active' as const, title: 'Building now', blurb: 'Active work you can sponsor to move faster. Open a card to back a single feature.', dot: 'bg-primary animate-pulse', items: roadmapLanes.active },
-  { key: 'released' as const, title: 'Shipped', blurb: 'Out now and open to use.', dot: 'bg-text-muted/50', items: roadmapLanes.released },
-  { key: 'planned' as const, title: 'Planned', blurb: 'On the horizon. Sponsor the work to help pick what ships next.', dot: 'bg-text-muted/30 ring-1 ring-text-muted/40', items: roadmapLanes.planned },
+  {
+    key: 'ask',
+    title: 'Ask',
+    blurb: 'Advisor work: private answers over the Orionfold corpus, with sources and evals before model fine-tuning.',
+    dot: 'bg-primary animate-pulse',
+    items: byLane(roadmap.filter((item) => item.id === 'software:orionfold-advisor')),
+  },
+  {
+    key: 'run',
+    title: 'Run',
+    blurb: 'Private agent workflows, platform runtime, API surface, tests, and workflow documentation.',
+    dot: 'bg-primary/80',
+    items: byLane(roadmap.filter((item) => runIds.has(item.id))),
+  },
+  {
+    key: 'know',
+    title: 'Know',
+    blurb: 'Domain models, benchmarks, memory, and intelligence tools for sensitive work.',
+    dot: 'bg-success',
+    items: byLane(roadmap.filter((item) => item.type === 'model' || knowSoftwareIds.has(item.id))),
+  },
+  {
+    key: 'build',
+    title: 'Build',
+    blurb: 'The local AI workbench: Arena, fieldkit, Command, and the reusable artifacts around them.',
+    dot: 'bg-text-muted/50',
+    items: byLane(roadmap.filter((item) => buildIds.has(item.id) || (item.type === 'software' && !runIds.has(item.id) && !knowSoftwareIds.has(item.id) && item.id !== 'software:orionfold-advisor'))),
+  },
+  {
+    key: 'learn',
+    title: 'Learn',
+    blurb: 'Books, field notes, and the DGX Spark field lab that explain the work and keep it teachable.',
+    dot: 'bg-text-muted/30 ring-1 ring-text-muted/40',
+    items: byLane(roadmap.filter((item) => item.type === 'book')),
+  },
 ];
 
 // ItemList JSON-LD: lists every offering for answer engines (AEO).
@@ -83,7 +135,7 @@ const itemListLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: 'Orionfold roadmap',
-  description: 'Orionfold offerings by status: books, software, and models, with ways to sponsor each line of work.',
+  description: 'Orionfold flagship capability lanes: Advisor, workflows, domain packs, workbench, and learning material.',
   numberOfItems: roadmap.length,
   itemListElement: roadmap
     .filter((i) => i.href)
@@ -92,7 +144,7 @@ const itemListLd = {
 ---
 <Layout
   title="Roadmap · Orionfold"
-  description="Every Orionfold offering by status: what is shipped, what we are building now, and what is planned. Sponsor any line of work or send a custom enquiry."
+  description="Orionfold roadmap by flagship capability lane: Advisor, workflows, domain packs, workbench, and learning material."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={itemListLd}
@@ -102,8 +154,8 @@ const itemListLd = {
     <!-- Page header + momentum strip (slim masthead so the lanes rise up) -->
     <PageHeader
       eyebrow="Roadmap"
-      title="What we build, ship, and plan next"
-      subtitle="One place for everything Orionfold makes, sorted by where it stands. Back an offering or a single feature to move it up the list, or send us a custom enquiry."
+      title="The capability map, not a shelf of projects."
+      subtitle="Sponsor reusable private AI capabilities: Advisor, workflows, domain packs, the local workbench, and the playbooks that teach the stack. Each card still shows whether it is shipped, active, or planned."
     >
       <dl data-animate class="mt-7 flex flex-wrap items-center gap-x-8 gap-y-4" style="transition-delay: 140ms">
         {stats.map((s) => (

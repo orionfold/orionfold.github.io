@@ -5,11 +5,9 @@
 // channel) lands on a page that says "this studio builds on the NVIDIA stack."
 // Funnel: NVIDIA channels -> here -> free book -> $50 bundle + sponsorship.
 //
-// Compliance gate (strategy partners/nvidia §11): pre-approval this page may only
-// state factual, nominative things ("built on the NVIDIA stack / DGX Spark is our
-// reference platform"). NO Inception Member badge, NO membership/endorsement claim
-// until NVIDIA approves and supplies the official asset kit. See the reserved slot
-// below. Copy reads grade 3-5, no em-dashes (website-copy-style).
+// Orionfold was accepted into the NVIDIA Inception Program on 2026-06-09.
+// Factual membership claims are now allowed; do not imply endorsement. The
+// official badge still waits for the NVIDIA asset kit and brand-guideline pass.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -136,15 +134,13 @@ const groups: { label: string; blurb: string; works: Work[] }[] = [
     <PageHeader
       eyebrow="Built on the NVIDIA stack"
       title="AI research, run on one desk."
-      subtitle="The NVIDIA DGX Spark is Orionfold's reference machine. The book, the open models, and the tools below were all proven on it first."
+      subtitle="Orionfold is an NVIDIA Inception Program member, and DGX Spark is our reference machine. The book, open models, and tools below were all proven on it first."
     />
 
     {/*
-      G5 (post-approval): the NVIDIA Inception Member badge mounts in this region.
-      Pre-approval it renders NOTHING by design — compliance gate (strategy §11):
-      no badge, no membership/endorsement claim, no restyled NVIDIA logos until
-      NVIDIA approves and supplies the official asset kit. Do not add badge markup
-      here before then.
+      G5 follow-up: mount the official NVIDIA Inception Member badge here after
+      the asset kit is in hand. Until then, use factual text only: membership,
+      no endorsement claim, no improvised NVIDIA logo treatment.
     */}
 
     <!-- Featured hero art (G3). Eager + high priority as the page's one hero image;

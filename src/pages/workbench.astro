@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import OfferProofRail from '../components/flagship/OfferProofRail.astro';
+import CapabilityStack from '../components/flagship/CapabilityStack.astro';
+import NvidiaPortalFit from '../components/flagship/NvidiaPortalFit.astro';
+import { flagshipById } from '../data/flagship-offers';
+import { nvidiaPortalProfiles } from '../data/nvidia-portal';
+import { ogMeta } from '../data/og';
+
+const offer = flagshipById.workbench;
+const og = ogMeta('/workbench/');
+---
+<Layout
+  title="Workbench · Orionfold"
+  description="The Orionfold Workbench is Arena, Cortex, fieldkit, and supporting tools for comparing, remembering, evaluating, and shipping local AI work."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+>
+  <Nav />
+  <main>
+    <PageHeader
+      eyebrow="Workbench"
+      title="The cockpit for private AI work."
+      subtitle="Arena is the visible cockpit. Cortex gives it local memory and provenance. fieldkit carries the reusable patterns around it. Together they make private AI work inspectable instead of mysterious."
+    >
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="/software/arena/" class="inline-flex rounded-lg bg-primary px-5 py-3 font-mono text-sm font-semibold tracking-wider text-white transition-colors hover:bg-primary/90">Open Arena</a>
+        <a href="/dgx-spark/" class="inline-flex rounded-lg border border-primary/30 px-5 py-3 font-mono text-sm font-semibold tracking-wider text-primary transition-colors hover:bg-primary/5">See the field lab</a>
+      </div>
+    </PageHeader>
+
+    <section class="px-6 pt-12">
+      <div class="mx-auto max-w-6xl">
+        <CapabilityStack
+          items={[
+            { label: 'Compare', body: 'Run models side by side, track speed and memory, and keep a local leaderboard.' },
+            { label: 'Remember', body: 'Index notes and documents with source trails so recall can be tested, not guessed.' },
+            { label: 'Evaluate', body: 'Score behavior, benchmarks, and regressions before a workflow is trusted.' },
+            { label: 'Ship', body: 'Turn working local patterns into repeatable artifacts and playbooks.' },
+          ]}
+        />
+      </div>
+    </section>
+
+    <section class="px-6 py-16">
+      <div class="mx-auto max-w-6xl">
+        <OfferProofRail links={offer.proof} />
+      </div>
+    </section>
+    <NvidiaPortalFit profile={nvidiaPortalProfiles.workbench} />
+  </main>
+  <Footer />
+</Layout>

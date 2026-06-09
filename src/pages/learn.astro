@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import { books } from '../data/books';
+import { ogMeta } from '../data/og';
+
+const og = ogMeta('/learn/');
+const learning = [
+  { label: 'Books', href: '/books/', body: 'Implementation playbooks for the business, the platform, and the DGX Spark research path.' },
+  { label: 'Field lab', href: '/dgx-spark/', body: 'The customer-controlled hardware story, grounded in the DGX Spark reference platform.' },
+  { label: 'Stories', href: '/story/', body: 'Build-log essays that show the decisions, failures, and working systems behind the stack.' },
+];
+---
+<Layout
+  title="Learn · Orionfold"
+  description="Books, field notes, DGX Spark research, and story posts from Orionfold."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+>
+  <Nav />
+  <main>
+    <PageHeader
+      eyebrow="Learn"
+      title="The playbooks behind the stack."
+      subtitle="Books, field notes, DGX Spark research, and build stories explain how the private AI capability is made. The teaching layer stays linked to the software, models, and roadmap."
+    />
+
+    <section class="px-6 pt-12">
+      <div class="mx-auto max-w-6xl">
+        <div data-animate-stagger class="grid gap-5 md:grid-cols-3">
+          {learning.map((item) => (
+            <a data-animate href={item.href} class="rounded-2xl border border-border bg-surface-raised p-6 transition-colors hover:border-primary/30">
+              <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{item.label}</span>
+              <p class="mt-3 text-sm leading-relaxed text-text-muted">{item.body}</p>
+              <span class="mt-5 inline-flex font-mono text-xs tracking-wider text-primary">Open →</span>
+            </a>
+          ))}
+        </div>
+
+        <div class="mt-12 rounded-2xl border border-primary/20 bg-primary/[0.045] p-6">
+          <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Current books</p>
+          <div class="mt-4 grid gap-3 md:grid-cols-3">
+            {books.map((book) => (
+              <a href={`/books/${book.slug}/`} class="rounded-xl border border-border bg-surface-raised p-4 transition-colors hover:border-primary/30">
+                <span class="font-medium text-text">{book.title}</span>
+                <span class="mt-1 block text-sm leading-snug text-text-muted">{book.body}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-20"></div>
+  </main>
+  <Footer />
+</Layout>

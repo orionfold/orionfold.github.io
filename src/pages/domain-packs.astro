@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import OfferProofRail from '../components/flagship/OfferProofRail.astro';
+import CapabilityStack from '../components/flagship/CapabilityStack.astro';
+import NvidiaPortalFit from '../components/flagship/NvidiaPortalFit.astro';
+import { flagshipById } from '../data/flagship-offers';
+import { nvidiaPortalProfiles } from '../data/nvidia-portal';
+import { ogMeta } from '../data/og';
+
+const offer = flagshipById['domain-packs'];
+const og = ogMeta('/domain-packs/');
+---
+<Layout
+  title="Domain Packs · Orionfold"
+  description="Domain Model Packs combine offline models, benchmarks, local run paths, and use-case playbooks for sensitive work."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+>
+  <Nav />
+  <main>
+    <PageHeader
+      eyebrow="Domain Packs"
+      title="Offline models with a benchmark and a playbook."
+      subtitle="Patent Strategist leads the pattern: a domain model, a test set, a local run path, and a use-case playbook. Security, legal, finance, and medical packs follow the same shape as they mature."
+    >
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="/models/patent-strategist/" class="inline-flex rounded-lg bg-primary px-5 py-3 font-mono text-sm font-semibold tracking-wider text-white transition-colors hover:bg-primary/90">Open Patent Strategist</a>
+        <a href="/roadmap/#know" class="inline-flex rounded-lg border border-primary/30 px-5 py-3 font-mono text-sm font-semibold tracking-wider text-primary transition-colors hover:bg-primary/5">Request a domain pack</a>
+      </div>
+    </PageHeader>
+
+    <section class="px-6 pt-12">
+      <div class="mx-auto max-w-6xl">
+        <CapabilityStack
+          items={[
+            { label: 'Model', body: 'An offline model or adapter selected for one domain, not a generic chatbot wrapper.' },
+            { label: 'Benchmark', body: 'A test set or scorecard that makes improvement visible before the model is trusted.' },
+            { label: 'Run path', body: 'A local setup path for customer-controlled hardware and private documents.' },
+            { label: 'Playbook', body: 'Use cases, prompts, limits, and review rules for the domain.' },
+          ]}
+        />
+        <p class="mt-6 rounded-2xl border border-border bg-surface-raised p-5 text-sm leading-relaxed text-text-muted">
+          Domain packs are implementation aids, not professional advice. Legal, medical, finance, and security outputs need qualified human review before use in real decisions.
+        </p>
+      </div>
+    </section>
+
+    <section class="px-6 py-16">
+      <div class="mx-auto max-w-6xl">
+        <OfferProofRail links={offer.proof} />
+      </div>
+    </section>
+    <NvidiaPortalFit profile={nvidiaPortalProfiles['domain-packs']} />
+  </main>
+  <Footer />
+</Layout>
