@@ -29,12 +29,11 @@ audit-reports/
 .superpowers/
 .playwright-mcp/
 
-# Shared agent skills are committed in both trees; private session state stays local.
-.claude/*
-!.claude/skills/
-!.claude/skills/**
-.claude/skills/*-workspace/
-.agents/skills/*-workspace/
+# Agent config, skills, and session state are local-only tooling — never commit
+# (operator policy 2026-05-27, reaffirmed 2026-06-09). The .agents/ tree is the
+# Codex-side mirror of .claude/skills/; both stay on disk, out of git.
+.claude/
+.agents/
 .codex/
 
 # Astro / Node build artifacts
