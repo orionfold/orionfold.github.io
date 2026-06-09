@@ -16,7 +16,7 @@ STRIPE-HANDOFF.md
 MARKETING-HANDOFF.md
 
 # Planning specs + build spine (local-only docs)
-specs/
+_SPECS/
 HANDOFF.md
 
 # SEO/AEO audit reports — may contain Search Console / Analytics figures (local-only)
@@ -27,6 +27,7 @@ audit-reports/
 
 # Brainstorm / visual-companion scratch (mockups, generated proofs)
 .superpowers/
+.playwright-mcp/
 
 # Shared agent skills are committed in both trees; private session state stays local.
 .claude/*
