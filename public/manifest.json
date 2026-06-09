@@ -1,7 +1,7 @@
 {
   "name": "Orionfold",
   "short_name": "Orionfold",
-  "description": "Orionfold is the studio shipping AI Native software, custom models, and personal devices to help you grow 10x with AI.",
+  "description": "Orionfold packages private agents, domain models, benchmarks, and playbooks for small teams that need AI capability on customer-controlled hardware.",
   "start_url": "/",
   "display": "browser",
   "background_color": "#f6f9fc",
