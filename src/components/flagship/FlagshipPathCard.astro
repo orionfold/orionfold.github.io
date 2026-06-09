@@ -1,22 +1,59 @@
 ---
+// Homepage adoption-path card. Each path leads with its signature art — the
+// same key art its flagship page features — so the chooser reads visually,
+// not as four text tiles. Advisor keeps the constellation motif on purpose:
+// it is a build path, not a shipped product, so it gets the brand mark
+// rather than borrowed product art.
+import { Image } from 'astro:assets';
+import ConstellationCover from '../ui/ConstellationCover.astro';
 import type { FlagshipOffer } from '../../data/flagship-offers';
+import platformPoster from '../../assets/projects/ai-native-platform-poster.png';
+import patentCover from '../../assets/models/patent-strategist/cover.png';
+import arenaPoster from '../../assets/projects/arena-poster.png';
 
 interface Props {
   offer: FlagshipOffer;
 }
 
 const { offer } = Astro.props;
+
+const art: Partial<Record<FlagshipOffer['id'], { img: ImageMetadata; alt: string }>> = {
+  workflows: { img: platformPoster, alt: 'AI Native Platform poster' },
+  'domain-packs': { img: patentCover, alt: 'Patent Strategist model cover' },
+  workbench: { img: arenaPoster, alt: 'Orionfold Arena poster' },
+};
+const cover = art[offer.id];
 ---
 <a
   href={offer.route}
   data-animate
-  class="of-surface of-pressable group flex h-full flex-col rounded-2xl p-6"
+  class="of-surface of-pressable group flex h-full flex-col overflow-hidden rounded-2xl"
 >
-  <span class="of-chip w-fit">{offer.eyebrow}</span>
-  <h3 class="mt-3 text-2xl leading-tight group-hover:text-primary">{offer.title}</h3>
-  <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{offer.outcome}</p>
-  <div class="mt-5 border-t border-border pt-4">
-    <p class="text-xs font-medium leading-snug text-text">{offer.status}</p>
-    <span class="of-text-action of-compact mt-3 text-xs">Open →</span>
+  {cover ? (
+    <div class="aspect-[16/9] overflow-hidden border-b border-border">
+      <Image
+        src={cover.img}
+        alt={cover.alt}
+        widths={[300, 480]}
+        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+        loading="lazy"
+        decoding="async"
+        data-no-zoom
+        class="h-full w-full object-cover object-top"
+      />
+    </div>
+  ) : (
+    <div class="border-b border-border">
+      <ConstellationCover seed={offer.id} rounded="rounded-none" />
+    </div>
+  )}
+  <div class="flex flex-1 flex-col p-6">
+    <span class="of-chip w-fit">{offer.eyebrow}</span>
+    <h3 class="mt-3 text-2xl leading-tight group-hover:text-primary">{offer.title}</h3>
+    <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{offer.outcome}</p>
+    <div class="mt-5 border-t border-border pt-4">
+      <p class="text-xs font-medium leading-snug text-text">{offer.status}</p>
+      <span class="of-text-action of-compact mt-3 text-xs">Open →</span>
+    </div>
   </div>
 </a>
