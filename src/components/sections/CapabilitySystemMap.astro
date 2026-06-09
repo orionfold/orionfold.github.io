@@ -1,0 +1,188 @@
+---
+const before = [
+  'Chat tabs',
+  'Loose scripts',
+  'Cloud tools',
+  'Private files',
+  'No evals',
+  'Manual review',
+];
+
+const after = [
+  { label: 'Data', detail: 'Boundary' },
+  { label: 'Agent', detail: 'Tools + gate' },
+  { label: 'Eval', detail: 'Benchmark' },
+  { label: 'Output', detail: 'Runbook' },
+];
+
+const proof = [
+  { label: 'Arena', value: 'Model comparison' },
+  { label: 'Cortex', value: 'Local memory' },
+  { label: 'fieldkit', value: 'Reusable runs' },
+];
+---
+<section class="px-6 pb-12 pt-4 sm:pb-16">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">From AI sprawl to operating system</p>
+        <h2 class="mt-2 max-w-3xl text-3xl leading-tight sm:text-4xl">The work is not another chatbot. It is making invisible AI machinery legible.</h2>
+      </div>
+      <p class="max-w-md text-sm leading-relaxed text-text-muted">
+        The design language follows the product: map the messy stack, route it through controlled capability, then prove it with real tools.
+      </p>
+    </div>
+
+    <div class="grid gap-4 lg:grid-cols-[0.88fr_1.24fr_0.88fr]">
+      <div data-animate class="of-surface rounded-2xl p-5">
+        <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">Before</p>
+        <h3 class="mt-2 text-2xl leading-tight">Scattered AI experiments.</h3>
+        <div class="mess-map mt-5 grid min-h-[15rem] grid-cols-2 content-center gap-3" aria-label="Scattered tools before Orionfold">
+          {before.map((item, index) => (
+            <span class={`mess-node mess-node-${index + 1}`}>{item}</span>
+          ))}
+        </div>
+      </div>
+
+      <div data-animate class="of-surface rounded-2xl p-5">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">After</p>
+            <h3 class="mt-2 text-2xl leading-tight">A controlled capability route.</h3>
+          </div>
+          <span class="of-chip shrink-0">Mapped</span>
+        </div>
+
+        <div class="system-blueprint mt-5">
+          <svg viewBox="0 0 560 286" role="img" aria-labelledby="system-map-title system-map-desc" class="h-auto w-full">
+            <title id="system-map-title">Orionfold controlled AI capability route</title>
+            <desc id="system-map-desc">Four isometric layers move from data to agent to evaluation to output, with a visible route and approval checkpoint.</desc>
+            <defs>
+              <linearGradient id="systemDeck" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="oklch(0.99 0.003 260)" />
+                <stop offset="1" stop-color="oklch(0.90 0.025 250)" />
+              </linearGradient>
+              <linearGradient id="systemSide" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="oklch(0.78 0.04 252)" />
+                <stop offset="1" stop-color="oklch(0.64 0.06 260)" />
+              </linearGradient>
+            </defs>
+
+            <path d="M74 154L188 91L310 148L431 82" fill="none" stroke="oklch(0.56 0.14 205 / 0.54)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+            <path class="blueprint-pulse" d="M74 154L188 91L310 148L431 82" fill="none" stroke="oklch(0.70 0.14 82)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+
+            {after.map((item, index) => {
+              const x = 70 + index * 122;
+              const y = index % 2 === 0 ? 146 : 84;
+              return (
+                <g class="blueprint-block">
+                  <polygon points={`${x},${y} ${x + 56},${y - 28} ${x + 116},${y} ${x + 60},${y + 31}`} fill="url(#systemDeck)" stroke="oklch(0.55 0.18 260 / 0.22)" />
+                  <polygon points={`${x},${y} ${x + 60},${y + 31} ${x + 60},${y + 66} ${x},${y + 34}`} fill="url(#systemSide)" opacity="0.5" />
+                  <polygon points={`${x + 60},${y + 31} ${x + 116},${y} ${x + 116},${y + 34} ${x + 60},${y + 66}`} fill="oklch(0.52 0.08 252 / 0.42)" />
+                  <circle cx={x + 58} cy={y + 3} r="8" fill={index === 2 ? 'oklch(0.70 0.14 82)' : 'oklch(0.55 0.18 260)'} />
+                  <text x={x + 58} y={y + 84} text-anchor="middle" fill="oklch(0.18 0.05 260)" font-size="12" font-weight="700" font-family="var(--font-display)">{item.label}</text>
+                  <text x={x + 58} y={y + 101} text-anchor="middle" fill="oklch(0.45 0.03 260)" font-size="9" font-family="var(--font-mono)">{item.detail}</text>
+                </g>
+              );
+            })}
+
+            <g class="approval-gate">
+              <rect x="430" y="126" width="92" height="46" rx="12" fill="oklch(0.55 0.18 260 / 0.09)" stroke="oklch(0.55 0.18 260 / 0.22)" />
+              <path d="M452 150l14 14 30-30" fill="none" stroke="oklch(0.45 0.15 170)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+              <text x="476" y="190" text-anchor="middle" fill="oklch(0.45 0.03 260)" font-size="9" font-family="var(--font-mono)">approval</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div data-animate class="of-surface rounded-2xl p-5">
+        <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">Proof</p>
+        <h3 class="mt-2 text-2xl leading-tight">Back to real surfaces.</h3>
+        <div class="mt-5 space-y-3">
+          {proof.map((item) => (
+            <div class="rounded-xl border border-border bg-surface/70 p-3">
+              <p class="font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">{item.label}</p>
+              <p class="mt-1 text-sm font-medium leading-snug text-text">{item.value}</p>
+            </div>
+          ))}
+        </div>
+        <a href="/workbench/" class="of-text-action of-compact mt-5 text-xs">Open the Workbench →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mess-map {
+    background:
+      linear-gradient(135deg, transparent 0 48%, oklch(0.55 0.18 260 / 0.08) 48% 48.5%, transparent 48.8% 100%),
+      radial-gradient(circle at 24% 22%, var(--color-primary-glow), transparent 10rem);
+  }
+  .mess-node {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in oklch, var(--color-border) 78%, var(--color-primary) 22%);
+    border-radius: 0.85rem;
+    background: color-mix(in oklch, var(--color-surface-raised) 82%, white 18%);
+    padding: 0.7rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-align: center;
+    text-transform: uppercase;
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.72);
+  }
+  .mess-node-1,
+  .mess-node-5 {
+    transform: translateY(0.75rem);
+  }
+  .mess-node-2,
+  .mess-node-6 {
+    transform: translateY(-0.5rem);
+  }
+  .mess-node-3 {
+    transform: translateX(0.35rem);
+  }
+  .mess-node-4 {
+    transform: translateX(-0.35rem);
+  }
+  .system-blueprint {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    background:
+      radial-gradient(circle at 80% 15%, oklch(0.70 0.14 82 / 0.12), transparent 13rem),
+      linear-gradient(180deg, color-mix(in oklch, var(--color-surface-raised) 92%, white 8%), var(--color-surface));
+  }
+  .blueprint-pulse {
+    stroke-dasharray: 46 260;
+    animation: blueprintPulse 4.8s linear infinite;
+  }
+  .blueprint-block {
+    filter: drop-shadow(0 18px 18px oklch(0.18 0.08 260 / 0.12));
+  }
+  .approval-gate {
+    animation: approvalLift 5.8s ease-in-out infinite;
+  }
+  @keyframes blueprintPulse {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -306; }
+  }
+  @keyframes approvalLift {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .blueprint-pulse,
+    .approval-gate {
+      animation: none;
+    }
+    .mess-node {
+      transform: none;
+    }
+  }
+</style>

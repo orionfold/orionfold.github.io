@@ -402,10 +402,9 @@ main img.img-zoomed {
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(90deg, var(--color-primary) 0%, var(--color-orbit-cyan) 48%, var(--color-orbit-gold) 100%) top / 100% 2px no-repeat,
     radial-gradient(circle at 18% 18%, var(--color-primary-glow), transparent 24rem),
-    radial-gradient(circle at 84% 8%, oklch(0.70 0.14 82 / 0.13), transparent 20rem);
-  opacity: 0.78;
+    radial-gradient(circle at 84% 8%, oklch(0.70 0.14 82 / 0.10), transparent 20rem);
+  opacity: 0.72;
 }
 .of-surface::after {
   content: "";
