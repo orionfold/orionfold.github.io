@@ -114,7 +114,10 @@ const library = [
     <!-- The library the next packs come from. -->
     <section class="px-6 pt-12">
       <div class="mx-auto max-w-6xl">
-        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">The library behind the next packs</p>
+        <div class="flex flex-wrap items-baseline justify-between gap-4">
+          <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">The library behind the next packs</p>
+          <a href="/models/" class="of-text-action of-compact text-xs">All models →</a>
+        </div>
         <div data-animate-stagger class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {library.map((model) => (
             <a href={model.href} data-animate class="of-surface of-pressable group overflow-hidden rounded-2xl">

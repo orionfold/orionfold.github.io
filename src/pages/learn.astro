@@ -68,7 +68,10 @@ const bookCovers: Record<string, ImageMetadata> = {
         </div>
 
         <div class="mt-12">
-          <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Current books</p>
+          <div class="flex flex-wrap items-baseline justify-between gap-4">
+            <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Current books</p>
+            <a href="/books/" class="of-text-action of-compact text-xs">All books →</a>
+          </div>
           <div data-animate-stagger class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-3">
             {books.map((book) => (
               <a href={`/books/${book.slug}/`} data-animate class="of-surface of-pressable group flex flex-col overflow-hidden rounded-2xl">
