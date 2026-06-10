@@ -51,17 +51,17 @@ export const OG_PAGES: Record<string, OgPage> = {
   },
   '/domain-packs/': {
     slug: 'domain-packs',
-    eyebrow: 'Domain Packs',
+    eyebrow: 'Experts',
     title: 'Offline models with benchmarks and playbooks',
     seed: 'domain-packs',
-    alt: 'Orionfold Domain Packs: offline models, benchmarks, local run paths, and playbooks',
+    alt: 'Orionfold Domain Experts: offline models, benchmarks, local run paths, and playbooks',
   },
   '/workbench/': {
     slug: 'workbench',
-    eyebrow: 'Workbench',
+    eyebrow: 'Cockpit',
     title: 'The cockpit for private AI work',
     seed: 'workbench',
-    alt: 'Orionfold Workbench: Arena, Cortex, fieldkit, and tools for local AI work',
+    alt: 'Orionfold Cockpit: Arena, Cortex, fieldkit, and tools for local AI work',
   },
   '/learn/': {
     slug: 'learn',
@@ -87,10 +87,10 @@ export const OG_PAGES: Record<string, OgPage> = {
   },
   '/roadmap/': {
     slug: 'roadmap',
-    eyebrow: 'Roadmap',
+    eyebrow: 'Adoption',
     title: 'What we build, ship, and plan next',
     seed: 'roadmap',
-    alt: 'Orionfold roadmap: every offering by status, with ways to sponsor the work',
+    alt: 'Orionfold adoption map: every offering by status, with ways to sponsor the work',
   },
   '/sponsor/': {
     slug: 'sponsor',

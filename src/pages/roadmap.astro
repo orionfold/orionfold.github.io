@@ -117,7 +117,7 @@ const lanes = [
   {
     key: 'build',
     title: 'Build',
-    blurb: 'The local AI workbench: Arena, fieldkit, Command, and the reusable artifacts around them.',
+    blurb: 'The local AI cockpit: Arena, fieldkit, Command, and the reusable artifacts around them.',
     dot: 'bg-text-muted/50',
     items: byLane(roadmap.filter((item) => buildIds.has(item.id) || (item.type === 'software' && !runIds.has(item.id) && !knowSoftwareIds.has(item.id) && item.id !== 'software:orionfold-advisor'))),
   },
@@ -135,7 +135,7 @@ const itemListLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: 'Orionfold roadmap',
-  description: 'Orionfold flagship capability lanes: Advisor, workflows, domain packs, workbench, and learning material.',
+  description: 'Orionfold flagship capability lanes: Advisor, workflows, domain experts, the local cockpit, and learning material.',
   numberOfItems: roadmap.length,
   itemListElement: roadmap
     .filter((i) => i.href)
@@ -143,8 +143,8 @@ const itemListLd = {
 };
 ---
 <Layout
-  title="Roadmap · Orionfold"
-  description="Orionfold roadmap by flagship capability lane: Advisor, workflows, domain packs, workbench, and learning material."
+  title="Adoption · Orionfold"
+  description="The Orionfold adoption map by flagship capability lane: Advisor, workflows, domain experts, the local cockpit, and learning material."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={itemListLd}
@@ -153,9 +153,9 @@ const itemListLd = {
   <main>
     <!-- Page header + momentum strip (slim masthead so the lanes rise up) -->
     <PageHeader
-      eyebrow="Roadmap"
+      eyebrow="Adoption"
       title="The capability map, not a shelf of projects."
-      subtitle="Sponsor reusable private AI capabilities: Advisor, workflows, domain packs, the local workbench, and the playbooks that teach the stack. Each card still shows whether it is shipped, active, or planned."
+      subtitle="Sponsor reusable private AI capabilities: Advisor, workflows, domain experts, the local cockpit, and the playbooks that teach the stack. Each card still shows whether it is shipped, active, or planned."
     >
       <dl data-animate class="mt-7 flex flex-wrap items-center gap-x-8 gap-y-4" style="transition-delay: 140ms">
         {stats.map((s) => (

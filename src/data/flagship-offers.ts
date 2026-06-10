@@ -29,7 +29,7 @@ export const flagshipOffers: FlagshipOffer[] = [
     proof: [
       { label: 'AI Native Platform book', href: '/books/ai-native-platform/', note: 'The operating manual the first Advisor reads.' },
       { label: 'Story archive', href: '/story/', note: 'Build notes, field lessons, and decisions.' },
-      { label: 'Roadmap', href: '/roadmap/#ask', note: 'Sponsor the Advisor lane.' },
+      { label: 'Adoption map', href: '/roadmap/#ask', note: 'Sponsor the Advisor lane.' },
     ],
   },
   {
@@ -49,7 +49,7 @@ export const flagshipOffers: FlagshipOffer[] = [
   {
     id: 'domain-packs',
     eyebrow: 'Know',
-    title: 'Domain Model Packs',
+    title: 'Domain Experts',
     route: '/domain-packs/',
     outcome: 'Offline model plus benchmark, local run path, and use-case playbook for sensitive domain work.',
     buyer: 'Teams with legal, security, finance, medical, or technical work that cannot live only in a generic chatbot.',
@@ -63,7 +63,7 @@ export const flagshipOffers: FlagshipOffer[] = [
   {
     id: 'workbench',
     eyebrow: 'Build',
-    title: 'Local AI Workbench',
+    title: 'Local AI Cockpit',
     route: '/workbench/',
     outcome: 'A cockpit for comparing, remembering, evaluating, and shipping local AI work on customer-controlled hardware.',
     buyer: 'Builders who need inspection, memory, telemetry, and repeatable model runs instead of one-off demos.',

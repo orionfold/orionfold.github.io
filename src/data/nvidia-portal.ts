@@ -57,7 +57,7 @@ export const nvidiaPortalProfiles: Record<PortalOfferId, NvidiaPortalProfile> = 
   },
   'domain-packs': {
     id: 'domain-packs',
-    productServiceName: 'Domain Model Packs',
+    productServiceName: 'Orionfold Domain Experts',
     webpage: `${site}/domain-packs/`,
     type: 'Domain AI models and implementation playbooks',
     developmentStage: 'Shipping',
@@ -73,14 +73,14 @@ export const nvidiaPortalProfiles: Record<PortalOfferId, NvidiaPortalProfile> = 
   },
   workbench: {
     id: 'workbench',
-    productServiceName: 'Orionfold Local AI Workbench',
+    productServiceName: 'Orionfold Local AI Cockpit',
     webpage: `${site}/workbench/`,
-    type: 'Local AI evaluation and operations workbench',
+    type: 'Local AI evaluation and operations cockpit',
     developmentStage: 'Shipping',
     valueProposition:
-      'A local workbench for comparing, remembering, evaluating, and shipping private AI work. Arena provides the cockpit, Cortex adds local memory and provenance, and fieldkit carries reusable patterns for model runs, evals, RAG, training, and publishing.',
+      'A local cockpit for comparing, remembering, evaluating, and shipping private AI work. Arena provides the cockpit, Cortex adds local memory and provenance, and fieldkit carries reusable patterns for model runs, evals, RAG, training, and publishing.',
     technicalDetails:
-      'Workbench components run local model comparisons, telemetry, memory indexing, eval gates, RAG patterns, and training utilities. The stack is proven on NVIDIA DGX Spark and supports NVIDIA GPU acceleration for inference, fine-tuning, NIM serving, and model evaluation workflows.',
+      'Cockpit components run local model comparisons, telemetry, memory indexing, eval gates, RAG patterns, and training utilities. The stack is proven on NVIDIA DGX Spark and supports NVIDIA GPU acceleration for inference, fine-tuning, NIM serving, and model evaluation workflows.',
     runtimeAcceleratedByNvidia: 'Yes',
     usesNvidiaTechnologies: 'Yes',
     nvidiaTechnologiesUsed: ['NVIDIA DGX Spark', 'NVIDIA NIM', 'CUDA-capable inference', 'NVIDIA NeMo patterns'],

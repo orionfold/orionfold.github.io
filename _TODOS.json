@@ -1,8 +1,20 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-09T18:45:00",
+  "updated": "2026-06-09T19:05:00",
   "todos": [
+    {
+      "id": "website-9",
+      "title": "Top-nav naming once-over (operator picked variant C from live in-browser mockups): nav/footer now Advisor\u00b7Workflows\u00b7Experts\u00b7Cockpit\u00b7Learn\u00b7Adoption, routes unchanged; offer titles Domain Experts + Local AI Cockpit swept through pages, og.ts, llms.txt, NVIDIA portal draft names; build clean 59 pages",
+      "status": "done",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-09"
+    },
     {
       "id": "website-8",
       "title": "Homepage sprawl section rebuilt as the metro line (operator-approved via live mockups): pain-first hook with explicit line breaks, one animated dashed line with icon stations + Approval gate, proof-card terminus with full-width Open the Workbench CTA; vertical layout on mobile; build clean 59 pages",
