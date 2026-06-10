@@ -78,7 +78,7 @@ export const SPONSOR_TIER_DISPLAY: SponsorTierDisplay[] = SPONSOR_TIERS.map((tie
           "Everything in Silver, plus:",
           "High priority on your feature and fix requests",
           "A Gold badge on the roadmap item you back",
-          "A monthly call to plan the work",
+          "Access to Orionfold Discord server",
         ],
       };
     case "platinum":
@@ -91,6 +91,7 @@ export const SPONSOR_TIER_DISPLAY: SponsorTierDisplay[] = SPONSOR_TIERS.map((tie
           "Everything in Gold, plus:",
           "Top of the line, we work your requests first",
           "A Platinum badge on the roadmap item you back",
+          "Access to Orionfold Discord server",
           "A direct line to us and a hand in the roadmap",
         ],
       };
