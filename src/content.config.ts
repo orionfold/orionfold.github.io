@@ -86,8 +86,19 @@ const productDetail = defineCollection({
 
       // Gallery (repo docs screenshots, reused DGX figures, posters). image() so
       // each gets WebP/AVIF + responsive sizes like the rest of the site.
+      // `detail` (optional) turns the item into a large showcase row: the
+      // screenshot at its natural aspect with this explainer paragraph beside it
+      // (copy sourced from the product's upstream article, site voice). Items
+      // without `detail` render in the compact grid, also uncropped.
       gallery: z
-        .array(z.object({ src: image(), alt: z.string(), caption: z.string().optional() }))
+        .array(
+          z.object({
+            src: image(),
+            alt: z.string(),
+            caption: z.string().optional(),
+            detail: z.string().optional(),
+          }),
+        )
         .optional(),
 
       // Inward cross-sell (RelatedRail).

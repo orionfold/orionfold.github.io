@@ -8,7 +8,13 @@
 # (released 2026-06-06; still 18 modules). v0.23-v0.30 were the Arena cockpit
 # growth wave (guardrail settings, lane truth, run identity, operator-armed SFT
 # dispatch) — that surface is documented on the arena page; here only the version
-# moved. NOTE the local mac clone of
+# moved. 2026-06-10 re-sync: v0.31.0 on PyPI (released 2026-06-07; still 18
+# modules). v0.31 = guarded lane launch + teardown (the cockpit starts/stops the
+# serving model itself) + the demo recorder behind the public Arena demo; body
+# bullet extended, version bumped. fieldkit's package source (pyproject, src/,
+# CHANGELOG at 0.31.0) now lives in the ainative-business.github.io repo, so the
+# readme source ref points there; the ai-field-notes clone's fieldkit/ README is
+# frozen at v0.2.0. NOTE the local mac clone of
 # ai-field-notes is stale (work moved to the Spark); pull README/docs from GitHub,
 # and treat PyPI + the live /fieldkit/ page as the version/capability truth (the
 # in-repo README lags releases). This is the strongest inward
@@ -78,7 +84,7 @@ specs:
   - label: Covers
     value: Search, testing, fine-tuning, shrinking, publishing, agents, memory, and a cockpit
   - label: Size
-    value: 18 modules at version 0.30; take one import at a time
+    value: 18 modules at version 0.31; take one import at a time
   - label: License
     value: Apache 2.0 (free to use)
 
@@ -102,12 +108,12 @@ outbound:
 sources:
   - section: overview
     type: github-readme
-    ref: manavsehgal/ai-field-notes (fieldkit subfolder)
-    lastSynced: '2026-06-07'
+    ref: manavsehgal/ainative-business.github.io (fieldkit subfolder)
+    lastSynced: '2026-06-10'
   - section: usage
     type: url
     ref: https://ainative.business/fieldkit/
-    lastSynced: '2026-06-07'
+    lastSynced: '2026-06-10'
 ---
 
 fieldkit is a free box of Python tools for building with AI. We made it while doing real
@@ -133,7 +139,9 @@ Eighteen pieces now, and they cover the whole job, end to end:
 - **Run an agent.** Install, set up, and protect an AI agent on your own machine, and
   route each kind of question to the right model for the job.
 - **Drive it all from one screen.** The parts behind [Orionfold Arena](/software/arena/):
-  the cockpit itself, a job queue, a spending brake, and a cost ledger.
+  the cockpit itself, a job queue, a spending brake, and a cost ledger. The cockpit can
+  now start and stop the serving model too, with a memory check first and a confirm step
+  before the old model is stopped.
 - **Remember and recall.** The memory layer behind [Orionfold Cortex](/software/cortex/):
   index your notes, stamp where every fact came from, and check that a rebuilt index can
   still find its answers.

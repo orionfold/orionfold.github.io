@@ -31,7 +31,7 @@ const corpus = [
 ---
 <Layout
   title="Advisor · Orionfold"
-  description="Orionfold Advisor is the private expert interface over the Orionfold corpus, starting with local retrieval over the books, stories, models, and implementation notes."
+  description="Orionfold Advisor is live: a governed local AI advisor over the Orionfold corpus. Every answer names its exact source, unsupported questions get a refusal, and the trained model is free to download."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
@@ -40,11 +40,11 @@ const corpus = [
     <PageHeader
       eyebrow="Advisor"
       title="Ask Orionfold privately."
-      subtitle="A private expert interface over the Orionfold corpus. The first useful version is local retrieval over the books, stories, product notes, model cards, and field notes. Fine-tuned small models come after the corpus and evals are stable."
+      subtitle="A governed local AI advisor over the Orionfold corpus, running on one small desktop. Every answer names the exact source it came from. Questions the corpus cannot support get a refusal, not a guess. The first Advisor model is trained, promoted, and free to download."
     >
       <div class="mt-7 flex flex-wrap gap-3">
-        <a href="/adoption/#ask" class="inline-flex rounded-lg bg-primary px-5 py-3 font-mono text-sm font-semibold tracking-wider text-white transition-colors hover:bg-primary/90">Join the Advisor build</a>
-        <a href="/learn/" class="inline-flex rounded-lg border border-primary/30 px-5 py-3 font-mono text-sm font-semibold tracking-wider text-primary transition-colors hover:bg-primary/5">Read the corpus</a>
+        <a href="/software/advisor/" class="inline-flex rounded-lg bg-primary px-5 py-3 font-mono text-sm font-semibold tracking-wider text-white transition-colors hover:bg-primary/90">See the shipped Advisor</a>
+        <a href="/adoption/#ask" class="inline-flex rounded-lg border border-primary/30 px-5 py-3 font-mono text-sm font-semibold tracking-wider text-primary transition-colors hover:bg-primary/5">Bring your own corpus</a>
       </div>
     </PageHeader>
 
@@ -78,10 +78,10 @@ const corpus = [
       <div class="mx-auto max-w-6xl">
         <CapabilityStack
           items={[
-            { label: 'Corpus', body: 'Books, story posts, product detail pages, model cards, roadmap notes, and field lab material.' },
-            { label: 'Private first', body: 'Runs against local or customer-controlled materials before anything becomes a hosted product.' },
-            { label: 'Inspectable', body: 'Answers need sources, confidence, and a path back to the underlying material.' },
-            { label: 'Roadmapped', body: 'The Advisor is a build path, not a finished public app. The roadmap tracks what is real.' },
+            { label: 'Corpus', body: 'A sealed pack of 182 sources: books, story posts, model cards, product notes, and field lab material, with a fingerprint and its own recall checks.' },
+            { label: 'Private first', body: 'Runs on one small desktop. Questions about private state never leave the machine, and hosted help is allow-listed under a dollar cap.' },
+            { label: 'Inspectable', body: 'Every answer names the exact source it came from, and every gate the Advisor passed is a saved receipt a script can re-verify.' },
+            { label: 'Live', body: 'The first Advisor shipped in June 2026. The trained model and its test set are free on Hugging Face, and the receipts are public.' },
           ]}
         />
       </div>

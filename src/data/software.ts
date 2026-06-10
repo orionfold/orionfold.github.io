@@ -203,6 +203,21 @@ export const software: SoftwareProduct[] = [
     status: 'active', // living tool, the Arena memory layer; appears on the roadmap
   },
   {
+    // Graduated from the roadmap overlay 2026-06-10: the Advisor shipped
+    // publicly (promoted fine-tuned 4B lane, Orionfold/Advisor-GGUF +
+    // Advisor-bench on Hugging Face, receipts in the public repo).
+    slug: 'advisor',
+    group: 'apps',
+    eyebrow: 'Governed advisor',
+    title: 'Orionfold Advisor',
+    body: 'A local AI advisor over your own body of documents. Every answer names the exact source it came from. If your documents cannot support an answer, it refuses instead of guessing. Every check it passed is a saved receipt you can re-run.',
+    pills: ['Runs local', 'Exact citations', 'Trusted refusals', 'Receipts'],
+    href: 'https://ainative.business/products/orionfold-advisor/',
+    ctaText: 'See Advisor',
+    coverType: 'poster',
+    cover: 'advisor-poster.png',
+  },
+  {
     slug: 'command',
     group: 'devtools',
     eyebrow: 'Developer tool',

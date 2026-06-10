@@ -28,11 +28,11 @@ export const nvidiaPortalProfiles: Record<PortalOfferId, NvidiaPortalProfile> = 
     productServiceName: 'Orionfold Advisor',
     webpage: `${site}/advisor/`,
     type: 'AI knowledge assistant',
-    developmentStage: 'Developing',
+    developmentStage: 'Shipping',
     valueProposition:
-      'A private expert interface over the Orionfold corpus for small teams adopting local AI. Advisor starts with source-grounded retrieval over books, build notes, model cards, and product docs, then moves toward fine-tuned small models once evals are stable.',
+      'A governed local AI advisor over an enterprise corpus for small teams adopting local AI. The first Advisor shipped in June 2026: a fine-tuned NVIDIA-native 4B model lane with exact source-id citations, adversarially tested refusals, recall-gated retrieval, and deterministic frontier routing under a spend cap.',
     technicalDetails:
-      'Initial architecture is local retrieval over Orionfold materials with citations, confidence cues, and replayable evaluation sets. Target deployments run on customer-controlled hardware, with NVIDIA GPUs used for accelerated embedding, reranking, and local model inference where available.',
+      'Shipped architecture is a fine-tuned Nemotron-family 4B lane (NeMo LoRA SFT on a DGX Spark, quantized to Q8_0, ~12 GB resident) over pgvector retrieval with a NIM embedder, a frozen pre-registered evaluation bench, and a receipt-gated promotion pipeline. Published as Orionfold/Advisor-GGUF with the Advisor-bench dataset; deployments target customer-controlled NVIDIA hardware.',
     runtimeAcceleratedByNvidia: 'Deployment-dependent',
     usesNvidiaTechnologies: 'Yes',
     nvidiaTechnologiesUsed: ['NVIDIA DGX Spark reference hardware', 'CUDA-capable local inference stacks'],

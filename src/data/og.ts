@@ -40,7 +40,8 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Advisor',
     title: 'Ask Orionfold privately',
     seed: 'advisor',
-    alt: 'Orionfold Advisor: a private expert interface over the Orionfold corpus',
+    alt: 'Orionfold Advisor: a governed local AI advisor over the Orionfold corpus',
+    background: 'src/assets/projects/advisor-poster.png',
   },
   '/workflows/': {
     slug: 'workflows',

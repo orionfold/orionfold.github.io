@@ -83,7 +83,7 @@ const runIds = new Set([
 const knowSoftwareIds = new Set(['software:cortex', 'software:neosignal', 'software:trends', 'software:moments']);
 const buildIds = new Set(['software:fieldkit', 'software:arena', 'software:command']);
 const laneOrder: Record<string, number> = {
-  'software:orionfold-advisor': 0,
+  'software:advisor': 0,
   'software:private-agent-starter-kit': 0,
   'model:patent-strategist': 0,
   'software:arena': 0,
@@ -95,9 +95,9 @@ const lanes = [
   {
     key: 'ask',
     title: 'Ask',
-    blurb: 'Advisor work: private answers over the Orionfold corpus, with sources and evals before model fine-tuning.',
+    blurb: 'Advisor work: private answers over the Orionfold corpus, with exact sources, trusted refusals, and receipts.',
     dot: 'bg-primary animate-pulse',
-    items: byLane(roadmap.filter((item) => item.id === 'software:orionfold-advisor')),
+    items: byLane(roadmap.filter((item) => item.id === 'software:advisor')),
   },
   {
     key: 'run',
@@ -118,7 +118,7 @@ const lanes = [
     title: 'Build',
     blurb: 'The local AI cockpit: Arena, fieldkit, Command, and the reusable artifacts around them.',
     dot: 'bg-text-muted/50',
-    items: byLane(roadmap.filter((item) => buildIds.has(item.id) || (item.type === 'software' && !runIds.has(item.id) && !knowSoftwareIds.has(item.id) && item.id !== 'software:orionfold-advisor'))),
+    items: byLane(roadmap.filter((item) => buildIds.has(item.id) || (item.type === 'software' && !runIds.has(item.id) && !knowSoftwareIds.has(item.id) && item.id !== 'software:advisor'))),
   },
   {
     key: 'learn',

@@ -1,62 +1,141 @@
 ---
-// Gallery (P1, spec §4/§5.5). Real product screenshots, reused DGX figures, or
-// posters shown on-page under "A closer look". Items carry resolved ImageMetadata
-// (the productDetail schema uses image() so each gets WebP/AVIF + responsive
-// sizes). Each snapshot is a button: it lifts/scales on hover (cursor-zoom-in +
-// an expand badge) and opens a native <dialog> lightbox on click — Esc, focus
-// trap, and a click-out backdrop come free from the element. A high-res source
-// per item is pre-generated at build time (capped to the source width so Astro
-// never upscales) and swapped into the single lightbox <img> on open.
+// Gallery (P1, spec §4/§5.5; showcase pass 2026-06-10). Real product screenshots
+// are the key conversion hook, so items that carry a `detail` explainer render as
+// LARGE showcase rows: the shot at its natural aspect ratio (never cropped, so an
+// odd-shaped capture stays sharp) beside an explainer block sourced from the
+// product's upstream article. Rows alternate image-left/image-right; an ultra-wide
+// capture (a banner-shaped rail or strip) stacks full-width with its text below,
+// since squeezing it into a half column would shrink it to a sliver. Items without
+// `detail` keep the compact two-up grid, also uncropped. Every image is a button
+// that opens the shared native <dialog> lightbox (Esc, focus trap, and click-out
+// come free from the element); a high-res source per item is pre-generated at
+// build time, capped to the source width so Astro never upscales.
 import { Image, getImage } from 'astro:assets';
 
+interface Item {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  detail?: string;
+}
 interface Props {
-  items: { src: ImageMetadata; alt: string; caption?: string }[];
+  items: Item[];
 }
 const { items } = Astro.props;
 
 // One optimized large source per item for the expanded view.
 const full = await Promise.all(
-  items.map((it) => getImage({ src: it.src, width: Math.min(1600, it.src.width), format: 'webp' })),
+  items.map((it) => getImage({ src: it.src, width: Math.min(1920, it.src.width), format: 'webp' })),
 );
+
+const showcase = items
+  .map((item, i) => ({ item, i }))
+  .filter(({ item }) => Boolean(item.detail));
+const compact = items
+  .map((item, i) => ({ item, i }))
+  .filter(({ item }) => !item.detail);
+
+// A banner-shaped capture (e.g. a telemetry rail) is too short for a side column.
+const isUltraWide = (it: Item) => it.src.width / it.src.height >= 2.2;
 ---
 {items.length > 0 && (
   <Fragment>
   <section class="px-6 py-12">
-    <div class="mx-auto max-w-5xl">
+    <div class="mx-auto max-w-6xl">
       <h2 data-animate class="font-display text-2xl font-bold">A closer look</h2>
-      <div data-animate-stagger class="mt-6 grid gap-5 sm:grid-cols-2">
-        {items.map((item, i) => (
-          <figure data-animate class="overflow-hidden rounded-xl border border-border bg-surface-raised">
-            <button
-              type="button"
-              data-lightbox-trigger
-              data-full={full[i].src}
-              data-alt={item.alt}
-              aria-label={`Expand image: ${item.alt}`}
-              class="group relative block w-full cursor-zoom-in overflow-hidden"
+
+      {showcase.length > 0 && (
+        <div class="mt-8 space-y-14 lg:space-y-20">
+          {showcase.map(({ item, i }, n) => (
+            <figure
+              data-animate
+              class:list={[
+                'gap-6 lg:gap-10',
+                isUltraWide(item)
+                  ? 'flex flex-col'
+                  : 'grid items-center lg:grid-cols-12',
+              ]}
             >
-              <Image
-                src={item.src}
-                alt={item.alt}
-                widths={[400, 768]}
-                sizes="(min-width: 640px) 24rem, 100vw"
-                loading="lazy"
-                decoding="async"
-                data-no-zoom
-                class="aspect-video w-full object-cover"
-              />
-              <span class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/15 group-hover:opacity-100">
-                <span class="rounded-full bg-black/55 p-2.5 text-white shadow-lg backdrop-blur">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M14 10l7-7M9 21H3v-6M10 14l-7 7" /></svg>
+              <button
+                type="button"
+                data-lightbox-trigger
+                data-full={full[i].src}
+                data-alt={item.alt}
+                aria-label={`Expand image: ${item.alt}`}
+                class:list={[
+                  'group relative block w-full cursor-zoom-in overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-sm',
+                  !isUltraWide(item) && 'lg:col-span-7',
+                  !isUltraWide(item) && n % 2 === 1 && 'lg:order-2',
+                ]}
+              >
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  widths={[768, 1200, 1600]}
+                  sizes={isUltraWide(item) ? '(min-width: 1280px) 72rem, 100vw' : '(min-width: 1024px) 42rem, 100vw'}
+                  loading="lazy"
+                  decoding="async"
+                  data-no-zoom
+                  class="h-auto w-full"
+                />
+                <span class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/15 group-hover:opacity-100">
+                  <span class="rounded-full bg-black/55 p-2.5 text-white shadow-lg backdrop-blur">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M14 10l7-7M9 21H3v-6M10 14l-7 7" /></svg>
+                  </span>
                 </span>
-              </span>
-            </button>
-            {item.caption && (
-              <figcaption class="border-t border-border px-4 py-2.5 text-sm text-text-muted">{item.caption}</figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+              </button>
+              <figcaption
+                class:list={[
+                  isUltraWide(item) ? 'max-w-3xl' : 'lg:col-span-5',
+                  !isUltraWide(item) && n % 2 === 1 && 'lg:order-1',
+                ]}
+              >
+                <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{String(n + 1).padStart(2, '0')}</p>
+                {item.caption && (
+                  <p class="mt-2 font-display text-lg font-semibold leading-snug text-text">{item.caption}</p>
+                )}
+                <p class="mt-3 leading-relaxed text-text-muted">{item.detail}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+
+      {compact.length > 0 && (
+        <div data-animate-stagger class:list={['grid gap-5 sm:grid-cols-2', showcase.length > 0 ? 'mt-14' : 'mt-6']}>
+          {compact.map(({ item, i }) => (
+            <figure data-animate class="overflow-hidden rounded-xl border border-border bg-surface-raised">
+              <button
+                type="button"
+                data-lightbox-trigger
+                data-full={full[i].src}
+                data-alt={item.alt}
+                aria-label={`Expand image: ${item.alt}`}
+                class="group relative block w-full cursor-zoom-in overflow-hidden"
+              >
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  widths={[600, 960]}
+                  sizes="(min-width: 640px) 33rem, 100vw"
+                  loading="lazy"
+                  decoding="async"
+                  data-no-zoom
+                  class="h-auto w-full"
+                />
+                <span class="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/15 group-hover:opacity-100">
+                  <span class="rounded-full bg-black/55 p-2.5 text-white shadow-lg backdrop-blur">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M14 10l7-7M9 21H3v-6M10 14l-7 7" /></svg>
+                  </span>
+                </span>
+              </button>
+              {item.caption && (
+                <figcaption class="border-t border-border px-4 py-2.5 text-sm text-text-muted">{item.caption}</figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
+      )}
     </div>
   </section>
 

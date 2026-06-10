@@ -22,6 +22,14 @@ const storyHeroes = import.meta.glob<{ default: ImageMetadata }>(
   '../../assets/story/*/hero.{jpeg,jpg,png}',
   { eager: true },
 );
+const advisorShots = import.meta.glob<{ default: ImageMetadata }>(
+  '../../assets/projects/advisor/*.png',
+  { eager: true },
+);
+const sparkHero = import.meta.glob<{ default: ImageMetadata }>(
+  '../../assets/dgx-spark/hero.jpg',
+  { eager: true },
+);
 
 // Book route slugs differ from their cover filenames; map them explicitly.
 const BOOK_COVER_BY_SLUG: Record<string, string> = {
@@ -46,6 +54,19 @@ export function resolveProofArt(href: string): ImageMetadata | undefined {
   // The public benchmark lives on Hugging Face but has a curated cover here.
   if (href.includes('patent-strategist-bench'))
     return modelCovers['../../assets/models/patent-strategist-bench/cover.png']?.default;
+
+  // The Advisor's Hugging Face artifacts lead with real cockpit proof shots:
+  // the model card shows a live refusal scored at the wire, the bench card the
+  // 89 replayable measured rows.
+  if (href.includes('Orionfold/Advisor-GGUF'))
+    return advisorShots['../../assets/projects/advisor/refusal-scored.png']?.default;
+  if (href.includes('Orionfold/Advisor-bench'))
+    return advisorShots['../../assets/projects/advisor/eval-drawer.png']?.default;
+
+  // The adoption map is the site's own star chart, so it leads with the
+  // starscape key art instead of the generic constellation motif.
+  if (href.startsWith('/adoption'))
+    return sparkHero['../../assets/dgx-spark/hero.jpg']?.default;
 
   // The story archive: lead with the building-in-public hero.
   if (href.startsWith('/story'))

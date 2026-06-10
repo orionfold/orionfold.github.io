@@ -50,17 +50,10 @@ export interface RoadmapOverlayItem {
 //     roadmapOrder: 300,
 //   },
 export const roadmapOverlay: RoadmapOverlayItem[] = [
-  {
-    id: 'software:orionfold-advisor',
-    type: 'software',
-    title: 'Orionfold Advisor',
-    blurb: 'A private expert interface over the Orionfold corpus. The first useful version is local retrieval over the books, stories, model cards, and implementation notes.',
-    status: 'planned',
-    href: '/advisor/',
-    cover: 'orionfold-advisor-poster.png',
-    assetBase: 'projects',
-    roadmapOrder: 20,
-  },
+  // 2026-06-10: 'software:orionfold-advisor' graduated out of the overlay.
+  // The Advisor shipped publicly (Orionfold/Advisor-GGUF + Advisor-bench on
+  // Hugging Face), so it now lives as a real showcase entry in software.ts
+  // (slug 'advisor') with its own detail page.
   {
     id: 'software:private-agent-starter-kit',
     type: 'software',
