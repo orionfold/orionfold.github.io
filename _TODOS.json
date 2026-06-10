@@ -1,8 +1,20 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-09T18:30:00",
+  "updated": "2026-06-09T18:45:00",
   "todos": [
+    {
+      "id": "website-8",
+      "title": "Homepage sprawl section rebuilt as the metro line (operator-approved via live mockups): pain-first hook with explicit line breaks, one animated dashed line with icon stations + Approval gate, proof-card terminus with full-width Open the Workbench CTA; vertical layout on mobile; build clean 59 pages",
+      "status": "done",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-09"
+    },
     {
       "id": "website-7",
       "title": "Hero polish session (browser-use with operator): new hook 'Get an AI team without hiring one' + plain abstract (synced to seo.ts meta + manifest), DGX Spark chip doorway on the hero art, HeroConstellation3D isometric drift restored on the image card (desktop-only, softened 21deg, reduced-motion safe); Lighthouse desktop 100 / mobile 92, LCP element unchanged",

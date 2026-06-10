@@ -1,18 +1,30 @@
 ---
-const before = [
-  { label: 'Chat tabs', detail: 'ad hoc prompts' },
-  { label: 'Loose scripts', detail: 'one-off glue' },
-  { label: 'Cloud tools', detail: 'external state' },
-  { label: 'Private files', detail: 'sensitive context' },
-  { label: 'No evals', detail: 'unclear quality' },
-  { label: 'Manual review', detail: 'slow approval' },
+// CapabilitySystemMap — "the metro line". One animated line carries the whole
+// argument: scattered AI (dashed pills straddling the line) enters one
+// controlled path (four icon stations ON the line, an approval gate between
+// Eval and Output), and the line terminates at a raised proof card whose last
+// element is the section CTA. Desktop draws the line horizontally; mobile
+// rotates it vertical. Design decided in a live browser session, see
+// _SPECS/2026-06-09-capability-map-metro-line.md.
+//
+// Sprawl jitter (rotate/shift) is hand-placed static offsets, the same idiom
+// as the old hero constellation's hand-placed stars — no runtime PRNG.
+const sprawl = [
+  { label: 'Chat tabs', detail: 'ad hoc prompts', r: -3, x: 0 },
+  { label: 'Loose scripts', detail: 'one-off glue', r: 2, x: 26 },
+  { label: 'Cloud tools', detail: 'external state', r: -1, x: 6 },
+  { label: 'Private files', detail: 'sensitive context', r: 3, x: 34 },
+  { label: 'No evals', detail: 'unclear quality', r: -2, x: 12 },
+  { label: 'Manual review', detail: 'slow approval', r: 1, x: -4 },
 ];
 
-const after = [
-  { label: 'Data', detail: 'Boundary' },
-  { label: 'Agent', detail: 'Tools + gate' },
-  { label: 'Eval', detail: 'Benchmark' },
-  { label: 'Output', detail: 'Runbook' },
+// Stations sit ON the line at hand-placed x positions (% of the stations
+// zone); labels alternate above/below so neighbors never collide.
+const stages = [
+  { label: 'Data', detail: 'boundary', icon: 'data', x: 8, above: true },
+  { label: 'Agent', detail: 'tools + gate', icon: 'agent', x: 36, above: false },
+  { label: 'Eval', detail: 'benchmark', icon: 'eval', x: 64, above: true },
+  { label: 'Output', detail: 'runbook', icon: 'output', x: 92, above: false },
 ];
 
 const proof = [
@@ -21,7 +33,7 @@ const proof = [
   { label: 'fieldkit', value: 'Reusable runs' },
 ];
 
-const icons = {
+const icons: Record<string, string> = {
   data: 'M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3Z M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6 M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6',
   agent: 'M12 3v4 M12 17v4 M4.9 4.9l2.8 2.8 M16.3 16.3l2.8 2.8 M3 12h4 M17 12h4 M4.9 19.1l2.8-2.8 M16.3 7.7l2.8-2.8 M9 9h6v6H9z',
   eval: 'M5 12l4 4 10-10 M5 20h14 M5 4h14',
@@ -30,263 +42,390 @@ const icons = {
 ---
 <section class="px-6 pb-12 pt-4 sm:pb-16">
   <div class="mx-auto max-w-6xl">
-    <div class="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+    <div class="mb-7 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
       <div>
         <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">From AI sprawl to operating system</p>
-        <h2 class="mt-2 max-w-3xl text-3xl leading-tight sm:text-4xl">The work is not another chatbot. It is making invisible AI machinery legible.</h2>
+        <!-- Explicit break: the hook may only wrap at the sentence boundary. -->
+        <h2 class="mt-2 font-display text-[2.2rem] font-extrabold leading-[1.05] text-text sm:text-5xl">
+          AI everywhere.<br />Control nowhere.
+        </h2>
       </div>
-      <p class="max-w-md text-sm leading-relaxed text-text-muted">
-        The design language follows the product: map the messy stack, route it through controlled capability, then prove it with real tools.
+      <p class="max-w-md text-[0.95rem] leading-relaxed text-text-muted">
+        Sound familiar? Orionfold takes the AI scattered across your team and runs it through one path you can see, test, and approve.
       </p>
     </div>
 
-    <div class="grid gap-4 lg:grid-cols-[0.88fr_1.24fr_0.88fr]">
-      <div data-animate class="of-surface rounded-2xl p-5">
-        <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">Before</p>
-        <h3 class="map-card-title mt-2">Scattered AI sprawl.</h3>
-        <ul class="issue-list mt-5" aria-label="Scattered tools before Orionfold">
-          {before.map((item) => (
-            <li>
-              <span class="issue-marker" aria-hidden="true"></span>
-              <span>
-                <span class="issue-label">{item.label}</span>
-                <span class="issue-detail">{item.detail}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div data-animate class="flow-panel">
+      <!-- The line. Track + animated dash overlay; horizontal on desktop,
+           vertical on mobile. Decorative — the zones carry the semantics. -->
+      <svg class="flow-line flow-line-h" aria-hidden="true">
+        <line x1="0" y1="50%" x2="100%" y2="50%" class="flow-track" />
+        <line x1="0" y1="50%" x2="100%" y2="50%" class="flow-dash" />
+      </svg>
+      <svg class="flow-line flow-line-v" aria-hidden="true">
+        <line x1="50%" y1="0" x2="50%" y2="100%" class="flow-track" />
+        <line x1="50%" y1="0" x2="50%" y2="100%" class="flow-dash" />
+      </svg>
 
-      <div data-animate class="of-surface rounded-2xl p-5">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">After</p>
-            <h3 class="map-card-title mt-2">Controlled capability route.</h3>
-          </div>
-          <span class="of-chip shrink-0">Mapped</span>
+      <div class="flow-grid">
+        <!-- Today: the mess, loosely scattered across the line -->
+        <div class="flow-sprawl">
+          <p class="flow-zone-label">Today · scattered</p>
+          <ul aria-label="Scattered AI tools before Orionfold">
+            {sprawl.map((item) => (
+              <li style={`--r:${item.r}deg; --x:${item.x}px;`}>
+                <span class="sprawl-label">{item.label}</span>
+                <span class="sprawl-detail">{item.detail}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div class="icon-route icon-route-after mt-5" aria-label="Orionfold controlled AI capability route">
-          {after.map((item, index) => (
-            <span class={`icon-node icon-node-after route-step-${index + 1}`}>
-              <span class="icon-badge">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d={icons[item.label.toLowerCase()] ?? icons.output} />
-                </svg>
-              </span>
-              <span>
-                <span class="icon-node-label">{item.label}</span>
-                <span class="icon-node-detail">{item.detail}</span>
-              </span>
-            </span>
-          ))}
-          <span class="approval-pill">
+        <!-- The controlled path: stations on the line, approval gate before output -->
+        <div class="flow-stations">
+          <p class="flow-zone-label flow-zone-label-center text-primary">One controlled path</p>
+          <ol aria-label="The Orionfold controlled path: data, agent, eval, approval, output">
+            {stages.map((s) => (
+              <li class:list={['station', s.above ? 'station-above' : 'station-below']} style={`--sx:${s.x}%;`}>
+                <span class="station-dot">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons[s.icon]} /></svg>
+                </span>
+                <span class="station-text">
+                  <span class="station-label">{s.label}</span>
+                  <span class="station-detail">{s.detail}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+          <span class="approval-gate">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6" /></svg>
             Approval
           </span>
         </div>
-      </div>
 
-      <div data-animate class="of-surface rounded-2xl p-5">
-        <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">Proof</p>
-        <h3 class="map-card-title mt-2">Real proof surfaces.</h3>
-        <div class="mt-5 space-y-3">
-          {proof.map((item) => (
-            <div class="rounded-xl border border-border bg-surface/70 p-3">
-              <p class="font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">{item.label}</p>
-              <p class="mt-1 text-sm font-medium leading-snug text-text">{item.value}</p>
-            </div>
-          ))}
+        <!-- Terminus: proof, then the one CTA the line has been building to -->
+        <div class="flow-proof">
+          <p class="flow-zone-label">Proof · open it yourself</p>
+          <ul aria-label="Proof tools you can open">
+            {proof.map((item) => (
+              <li>
+                <span class="proof-label">{item.label}</span>
+                <span class="proof-value">{item.value}</span>
+              </li>
+            ))}
+          </ul>
+          <a href="/workbench/" class="of-primary-action flow-cta">Open the Workbench →</a>
         </div>
-        <a href="/workbench/" class="of-text-action of-compact mt-5 text-xs">Open the Workbench →</a>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  .map-card-title {
-    color: var(--color-text);
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 1.65vw, 1.5rem);
-    font-weight: 700;
-    line-height: 1.05;
-    white-space: nowrap;
-  }
-  .icon-route {
+  .flow-panel {
     position: relative;
     overflow: hidden;
     border: 1px solid var(--color-border);
-    border-radius: 1rem;
-    background:
-      radial-gradient(circle at 18% 14%, oklch(0.55 0.18 260 / 0.13), transparent 12rem),
-      radial-gradient(circle at 82% 86%, oklch(0.70 0.14 82 / 0.11), transparent 11rem),
-      linear-gradient(180deg, color-mix(in oklch, var(--color-surface-raised) 94%, white 6%), var(--color-surface));
+    border-radius: 1.25rem;
+    background: linear-gradient(180deg, color-mix(in oklch, var(--color-surface-raised) 94%, white 6%), var(--color-surface));
+    box-shadow: 0 30px 70px -55px oklch(0.18 0.08 260 / 0.5);
+    padding: 1.5rem 1.25rem;
   }
-  .issue-list {
-    display: grid;
-    gap: 0.65rem;
-    min-height: 15rem;
+  .flow-line {
+    position: absolute;
+    pointer-events: none;
+  }
+  .flow-track {
+    stroke: color-mix(in oklch, var(--color-primary) 22%, var(--color-border));
+    stroke-width: 5;
+  }
+  .flow-dash {
+    stroke: var(--color-primary);
+    stroke-width: 2.2;
+    stroke-opacity: 0.8;
+    stroke-dasharray: 7 6;
+    animation: flow-dash-move 1.4s linear infinite;
+  }
+  @keyframes flow-dash-move {
+    to { stroke-dashoffset: -26; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flow-dash { animation: none; }
+  }
+
+  .flow-zone-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .flow-sprawl ul,
+  .flow-proof ul {
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .issue-list li {
-    display: flex;
-    min-height: 3.1rem;
-    align-items: flex-start;
-    gap: 0.7rem;
-    border: 1px solid var(--color-border);
-    border-radius: 0.85rem;
-    background: color-mix(in oklch, var(--color-surface-raised) 84%, white 16%);
-    padding: 0.72rem 0.82rem;
-  }
-  .issue-marker {
-    margin-top: 0.42rem;
-    height: 0.42rem;
-    width: 0.42rem;
-    flex: 0 0 auto;
+  .flow-sprawl li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    transform: rotate(var(--r)) translateX(var(--x));
+    border: 1px dashed color-mix(in oklch, var(--color-border) 75%, var(--color-text) 25%);
     border-radius: 999px;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-orbit-gold));
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 12%, transparent);
+    background: color-mix(in oklch, var(--color-surface-raised) 72%, white 28%);
+    padding: 0.32rem 0.75rem;
+    opacity: 0.8;
   }
-  .issue-label,
-  .issue-detail {
-    display: block;
-  }
-  .issue-label {
-    color: var(--color-text);
+  .sprawl-label {
     font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: 0.82rem;
     font-weight: 700;
-    line-height: 1.1;
+    color: var(--color-text);
+    white-space: nowrap;
   }
-  .issue-detail {
-    margin-top: 0.22rem;
-    color: var(--color-text-muted);
+  .sprawl-detail {
     font-family: var(--font-mono);
-    font-size: 0.58rem;
+    font-size: 0.55rem;
     letter-spacing: 0.08em;
-    line-height: 1.2;
     text-transform: uppercase;
+    color: var(--color-text-muted);
+    white-space: nowrap;
   }
-  .icon-route-after {
+
+  .station-dot {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-content: center;
-    gap: 0.8rem;
-    min-height: 15rem;
-    padding: 1.25rem;
-  }
-  .icon-node {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    min-height: 4.2rem;
-    align-items: center;
-    gap: 0.75rem;
-    border: 1px solid color-mix(in oklch, var(--color-border) 76%, var(--color-primary) 24%);
-    border-radius: 0.85rem;
-    background:
-      linear-gradient(135deg, oklch(1 0 0 / 0.84), oklch(0.94 0.02 252 / 0.9)),
-      color-mix(in oklch, var(--color-surface-raised) 82%, white 18%);
-    padding: 0.75rem;
-    box-shadow:
-      inset 0 1px 0 oklch(1 0 0 / 0.72),
-      0 18px 36px -32px oklch(0.18 0.08 260 / 0.34);
-  }
-  .icon-node-after {
-    position: relative;
-    width: auto;
-    min-height: 6.6rem;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.6rem;
-    text-align: center;
-  }
-  .icon-badge {
-    display: grid;
-    height: 2.55rem;
-    width: 2.55rem;
-    flex: 0 0 auto;
     place-items: center;
-    border: 1px solid oklch(1 0 0 / 0.48);
-    border-radius: 0.75rem;
-    background:
-      linear-gradient(135deg, var(--color-primary), color-mix(in oklch, var(--color-primary) 54%, var(--color-orbit-gold))),
-      var(--color-primary);
-    color: white;
-    box-shadow: 0 12px 26px -18px var(--color-primary);
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 999px;
+    border: 3px solid var(--color-primary);
+    background: white;
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-primary) 14%, transparent);
   }
-  .icon-badge svg {
-    height: 1.15rem;
-    width: 1.15rem;
+  .station-dot svg {
+    width: 1.05rem;
+    height: 1.05rem;
     fill: none;
-    stroke: currentColor;
+    stroke: var(--color-primary);
+    stroke-width: 1.8;
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-width: 1.8;
   }
-  .icon-node-label,
-  .icon-node-detail {
+  .station-label {
     display: block;
-  }
-  .icon-node-label {
-    color: var(--color-text);
     font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 700;
-    line-height: 1.1;
+    color: var(--color-text);
   }
-  .icon-node-detail {
-    margin-top: 0.22rem;
-    color: var(--color-text-muted);
+  .station-detail {
+    display: block;
+    margin-top: 0.15rem;
     font-family: var(--font-mono);
-    font-size: 0.58rem;
+    font-size: 0.53rem;
     letter-spacing: 0.08em;
-    line-height: 1.2;
     text-transform: uppercase;
+    color: var(--color-text-muted);
   }
-  .approval-pill {
-    position: relative;
-    z-index: 2;
+  .approval-gate {
     display: inline-flex;
-    grid-column: 1 / -1;
-    justify-self: center;
     align-items: center;
     gap: 0.4rem;
-    border: 1px solid color-mix(in oklch, var(--color-primary) 26%, var(--color-border));
+    border: 1px solid color-mix(in oklch, var(--color-primary) 30%, var(--color-border));
     border-radius: 999px;
-    background: color-mix(in oklch, var(--color-surface-raised) 88%, white 12%);
-    padding: 0.48rem 0.75rem;
-    color: var(--color-primary);
+    background: color-mix(in oklch, var(--color-surface-raised) 92%, white 8%);
+    padding: 0.4rem 0.8rem;
     font-family: var(--font-mono);
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.72);
+    color: var(--color-primary);
+    white-space: nowrap;
   }
-  .approval-pill svg {
-    height: 0.9rem;
-    width: 0.9rem;
+  .approval-gate svg {
+    width: 0.85rem;
+    height: 0.85rem;
     fill: none;
     stroke: currentColor;
+    stroke-width: 2.5;
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-width: 2.5;
   }
-  @media (max-width: 640px) {
-    .issue-list {
-      min-height: 0;
+
+  .flow-proof {
+    position: relative;
+    z-index: 1; /* the card terminates the line by covering it */
+    border: 1px solid color-mix(in oklch, var(--color-border) 70%, var(--color-primary) 30%);
+    border-radius: 1rem;
+    background: linear-gradient(135deg, oklch(1 0 0 / 0.95), oklch(0.95 0.02 252 / 0.95));
+    box-shadow: 0 22px 48px -36px oklch(0.18 0.08 260 / 0.6);
+    padding: 1.1rem;
+  }
+  .flow-proof li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.42rem 0;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-border) 60%, transparent);
+  }
+  .proof-label {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .proof-value {
+    font-family: var(--font-display);
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--color-text);
+    text-align: right;
+  }
+  .flow-cta {
+    width: 100%;
+    justify-content: center;
+    margin-top: 1rem;
+    font-size: 0.85rem !important;
+  }
+
+  /* ── Mobile: the line rotates vertical, zones stack along it ── */
+  .flow-line-h { display: none; }
+  .flow-line-v {
+    left: 2.1rem;
+    top: 1.25rem;
+    bottom: 1.25rem;
+    width: 12px;
+    height: calc(100% - 2.5rem);
+  }
+  .flow-grid {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+  .flow-sprawl .flow-zone-label,
+  .flow-stations .flow-zone-label {
+    margin-bottom: 0.9rem;
+    margin-left: 2.6rem;
+  }
+  .flow-sprawl ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-left: 2.6rem;
+  }
+  .flow-sprawl li {
+    /* keep the jitter feel but tame the horizontal shift on small screens */
+    transform: rotate(var(--r)) translateX(calc(var(--x) / 2));
+  }
+  .flow-stations ol {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .station {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    /* center the dot on the vertical line: 2.1rem line center − 1.25rem panel
+       padding − half a 2.2rem dot */
+    margin-left: calc(2.1rem - 1.25rem - 1.1rem);
+  }
+  .station-text { text-align: left; }
+  .approval-gate {
+    margin-top: 1rem;
+    margin-left: 2.6rem;
+  }
+  .flow-proof { margin-top: 0.25rem; }
+
+  /* ── Desktop: horizontal metro line ── */
+  @media (min-width: 1024px) {
+    .flow-panel { padding: 2rem; }
+    .flow-line-v { display: none; }
+    .flow-line-h {
+      display: block;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      /* stop under the proof card (grid col 3 starts ~75%) — the terminus
+         covers the line's end; it must not re-emerge on the card's right */
+      width: 80%;
+      height: 12px;
     }
-    .icon-route-after {
+    .flow-grid {
       display: grid;
-      gap: 0.75rem;
-      min-height: 0;
+      grid-template-columns: 1fr 2fr 1.1fr;
+      gap: 1.5rem;
+      align-items: center;
     }
-    .approval-pill {
-      justify-content: center;
+    .flow-sprawl,
+    .flow-stations {
+      position: relative;
+      height: 300px;
     }
+    .flow-sprawl .flow-zone-label,
+    .flow-stations .flow-zone-label {
+      position: absolute;
+      top: 0;
+      margin: 0;
+    }
+    .flow-sprawl .flow-zone-label { left: 0; }
+    .flow-zone-label-center {
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .flow-sprawl ul {
+      position: absolute;
+      /* nudged past center so the jittered first pill clears the zone label */
+      top: calc(50% + 12px);
+      left: 0;
+      transform: translateY(-50%);
+      margin-left: 0;
+      gap: 0.45rem;
+    }
+    .flow-sprawl li {
+      transform: rotate(var(--r)) translateX(var(--x));
+    }
+    .flow-stations ol {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+    .station {
+      position: absolute;
+      left: var(--sx);
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: block;
+      margin-left: 0;
+    }
+    .station-dot { margin: 0 auto; }
+    .station-text {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .station-above .station-text { bottom: calc(100% + 0.55rem); }
+    .station-below .station-text { top: calc(100% + 0.55rem); }
+    .approval-gate {
+      position: absolute;
+      left: 78%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+    }
+    .flow-proof { align-self: center; }
   }
 </style>
