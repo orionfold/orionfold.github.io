@@ -1,12 +1,12 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-10T00:00:00",
+  "updated": "2026-06-10T01:00:00",
   "todos": [
     {
       "id": "website-13",
-      "title": "Sponsor checkout copy fix: create-checkout-session now puts the sponsor's selected roadmap items on the Checkout page via custom_text.submit (deployed + live-verified on a real session). Open: operator runs 4 'stripe products update --live' commands (in session transcript) to swap the stale fieldkit/MTBM product descriptions for the generic 'Supports research and development for Orionfold products and offerings' copy, per tier",
-      "status": "open",
+      "title": "Sponsor checkout copy fix DONE (clean-split, operator-picked): custom_text.submit above the Pay button names the picked roadmap items (humanized server-side, deployed + live-verified); 4 live Stripe sponsor products renamed to '<Tier> Sponsor' + descriptions swapped to 'Monthly sponsorship - <Tier> tier. Funds research and development of Orionfold products and offerings.' (Studio/MTBM branding dropped; operator added Products:Write to the rk_live CLI key to unblock)",
+      "status": "done",
       "kind": "action",
       "project": "website",
       "ref_project": null,
