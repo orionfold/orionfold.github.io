@@ -1,8 +1,20 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-09T19:20:00",
+  "updated": "2026-06-09T21:30:00",
   "todos": [
+    {
+      "id": "website-10",
+      "title": "Catalog doorway shipped (IA session continuation): homepage CatalogShelf art-shelf section (SSOT counts 14 apps / 6 distinct models / 3 books + proof-art cover fans) + All-X header actions on /experts/ /cockpit/ /workflows/ /learn/; /advisor/ untouched for the 06-10 redesign; build clean, hub links now above the footer",
+      "status": "done",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-09"
+    },
     {
       "id": "website-9",
       "title": "Top-nav naming + URL refactor (operator picked variant C from live in-browser mockups): nav/footer/routes now Advisor\u00b7Workflows\u00b7/experts/\u00b7/cockpit/\u00b7Learn\u00b7/adoption/ (page files + flagship/portal ids renamed, id==route); only /roadmap/ was live so it 301s to /adoption/ via astro.config redirect (CF edge 301 owed at go-live for GSC); offer titles Domain Experts + Local AI Cockpit swept through pages, og.ts, llms.txt, export-catalog.ts, NVIDIA portal draft names; build clean 59 pages, dist link-sweep clean",
