@@ -1,7 +1,7 @@
 {
   "name": "Orionfold",
   "short_name": "Orionfold",
-  "description": "Orionfold packages private agents, domain models, benchmarks, and playbooks for small teams that need AI capability on customer-controlled hardware.",
+  "description": "Orionfold gives small teams private AI they own: agents that do real work, models that know your field, and tests that prove it, all on hardware you control.",
   "start_url": "/",
   "display": "browser",
   "background_color": "#f6f9fc",

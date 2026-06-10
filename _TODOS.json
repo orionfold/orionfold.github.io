@@ -1,8 +1,20 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-09T17:00:00",
+  "updated": "2026-06-09T18:30:00",
   "todos": [
+    {
+      "id": "website-7",
+      "title": "Hero polish session (browser-use with operator): new hook 'Get an AI team without hiring one' + plain abstract (synced to seo.ts meta + manifest), DGX Spark chip doorway on the hero art, HeroConstellation3D isometric drift restored on the image card (desktop-only, softened 21deg, reduced-motion safe); Lighthouse desktop 100 / mobile 92, LCP element unchanged",
+      "status": "done",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-09"
+    },
     {
       "id": "website-3",
       "title": "Kepler release wave synced from ainative.business: new model card + /models/kepler/ detail page + story 'The run I almost wasted' + fieldkit v0.30 re-sync + trust snapshot; build clean at 54 pages, awaiting operator-gated push",
@@ -41,7 +53,7 @@
     },
     {
       "id": "website-1",
-      "title": "M7 live admin dashboard (127.0.0.1:8789) — built per specs/2026-06-06-live-admin-dashboard.md",
+      "title": "M7 live admin dashboard (127.0.0.1:8789) \u2014 built per specs/2026-06-06-live-admin-dashboard.md",
       "status": "done",
       "kind": "action",
       "project": "website",
