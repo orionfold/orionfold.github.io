@@ -77,12 +77,11 @@ const runIds = new Set([
   'software:ai-native-api',
   'software:sentinel',
   'software:private-agent-starter-kit',
-  'software:workflow-docs',
   'software:memo',
   'software:marketer',
 ]);
 const knowSoftwareIds = new Set(['software:cortex', 'software:neosignal', 'software:trends', 'software:moments']);
-const buildIds = new Set(['software:fieldkit', 'software:arena', 'software:command', 'software:living-model']);
+const buildIds = new Set(['software:fieldkit', 'software:arena', 'software:command']);
 const laneOrder: Record<string, number> = {
   'software:orionfold-advisor': 0,
   'software:private-agent-starter-kit': 0,
@@ -103,7 +102,7 @@ const lanes = [
   {
     key: 'run',
     title: 'Run',
-    blurb: 'Private agent workflows, platform runtime, API surface, tests, and workflow documentation.',
+    blurb: 'Private agent workflows, platform runtime, API surface, and tests.',
     dot: 'bg-primary/80',
     items: byLane(roadmap.filter((item) => runIds.has(item.id))),
   },

@@ -1,8 +1,20 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-09T21:30:00",
+  "updated": "2026-06-09T21:40:00",
   "todos": [
+    {
+      "id": "website-11",
+      "title": "Push-readiness sweep + roadmap curation: pre-push gates all green (no local-only files in 24 unpushed commits, agent parity, build 59 pages, sitemap/redirect page correct, both marketing exports run, Better Stack roster has no /roadmap/); operator-requested roadmap edits done (Living Model + Workflow docs removed from /adoption/, lane id-sets + Run blurb swept); two new Gemini posters curated + placed on the planned cards (Orionfold Advisor 'PRIVATE COUNSEL' Saul Bass cut-paper, Private Agent Starter Kit 'THE PAPER TRAIL' pastel diorama); CF edge 301 /roadmap/->/adoption/ still owed right after the operator pushes",
+      "status": "done",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-09"
+    },
     {
       "id": "website-10",
       "title": "Catalog doorway shipped (IA session continuation): homepage CatalogShelf art-shelf section (SSOT counts 14 apps / 6 distinct models / 3 books + proof-art cover fans) + All-X header actions on /experts/ /cockpit/ /workflows/ /learn/; /advisor/ untouched for the 06-10 redesign; build clean, hub links now above the footer",
