@@ -1,8 +1,20 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-09T23:30:00",
+  "updated": "2026-06-10T00:00:00",
   "todos": [
+    {
+      "id": "website-13",
+      "title": "Sponsor checkout copy fix: create-checkout-session now puts the sponsor's selected roadmap items on the Checkout page via custom_text.submit (deployed + live-verified on a real session). Open: operator runs 4 'stripe products update --live' commands (in session transcript) to swap the stale fieldkit/MTBM product descriptions for the generic 'Supports research and development for Orionfold products and offerings' copy, per tier",
+      "status": "open",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-10"
+    },
     {
       "id": "website-12",
       "title": "NVIDIA Inception portal submission prep: 7 product packets (Domain Experts, Arena, Fieldkit, Cortex, AI Native Platform, NeoSignal, Advisor) in _SPECS/nvidia/portal-submissions.md with form-validated copy + dropdown picks + brand color #0C172C; 7 logo lockups generated (Satori+resvg+Geist, color mark + black wordmarks on white); NVIDIA-tech lists grounded in the 63-chapter DGX Spark field-notes book (NIM, NeMo Framework, Megatron-Bridge, TransformerEngine, TensorRT-LLM, Nemotron 3 Super/Nano 9B v2/Embed 1B v2, CUDA Toolkit not CCCL); company-form.md description rewritten to redesign positioning, 994 chars. Open: drive the portal form in browser; Advisor packet waits on /advisor/ redesign",
