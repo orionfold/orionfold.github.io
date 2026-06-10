@@ -10,6 +10,7 @@ import SparkTeaser from '../components/sections/SparkTeaser.astro';
 import StoriesCarousel from '../components/sections/StoriesCarousel.astro';
 import FlagshipChooser from '../components/sections/FlagshipChooser.astro';
 import CapabilityProof from '../components/sections/CapabilityProof.astro';
+import CatalogShelf from '../components/sections/CatalogShelf.astro';
 import Footer from '../components/Footer.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
 import { ogMeta } from '../data/og';
@@ -28,6 +29,7 @@ const og = ogMeta('/');
     <Highlights>
       <CapabilityProof />
     </Highlights>
+    <CatalogShelf />
     <StoriesCarousel />
   </main>
   <Footer />
