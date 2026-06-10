@@ -5,7 +5,7 @@
   "todos": [
     {
       "id": "website-11",
-      "title": "Push-readiness sweep + roadmap curation: pre-push gates all green (no local-only files in 24 unpushed commits, agent parity, build 59 pages, sitemap/redirect page correct, both marketing exports run, Better Stack roster has no /roadmap/); operator-requested roadmap edits done (Living Model + Workflow docs removed from /adoption/, lane id-sets + Run blurb swept); two new Gemini posters curated + placed on the planned cards (Orionfold Advisor 'PRIVATE COUNSEL' Saul Bass cut-paper, Private Agent Starter Kit 'THE PAPER TRAIL' pastel diorama); CF edge 301 /roadmap/->/adoption/ still owed right after the operator pushes",
+      "title": "Push-readiness sweep + roadmap curation: pre-push gates all green (no local-only files in 24 unpushed commits, agent parity, build 59 pages, sitemap/redirect page correct, both marketing exports run, Better Stack roster has no /roadmap/); operator-requested roadmap edits done (Living Model + Workflow docs removed from /adoption/, lane id-sets + Run blurb swept); two new Gemini posters curated + placed on the planned cards (Orionfold Advisor 'PRIVATE COUNSEL' Saul Bass cut-paper, Private Agent Starter Kit 'THE PAPER TRAIL' pastel diorama); operator pushed (51046a3 live) and the CF edge 301 /roadmap/->/adoption/ rule 'roadmap-to-adoption-301' was created in the dashboard (Claude-driven browser, operator-authorized) and curl-verified with query strings preserved",
       "status": "done",
       "kind": "action",
       "project": "website",
