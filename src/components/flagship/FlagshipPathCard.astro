@@ -1,12 +1,12 @@
 ---
 // Homepage adoption-path card. Each path leads with its signature art — the
-// same key art its flagship page features — so the chooser reads visually,
-// not as four text tiles. Advisor keeps the constellation motif on purpose:
-// it is a build path, not a shipped product, so it gets the brand mark
-// rather than borrowed product art.
+// same key art its flagship page and the roadmap feature — so the chooser
+// reads visually, not as four text tiles. ConstellationCover stays as the
+// fallback for any path that ships without key art.
 import { Image } from 'astro:assets';
 import ConstellationCover from '../ui/ConstellationCover.astro';
 import type { FlagshipOffer } from '../../data/flagship-offers';
+import advisorPoster from '../../assets/projects/orionfold-advisor-poster.png';
 import platformPoster from '../../assets/projects/ai-native-platform-poster.png';
 import patentCover from '../../assets/models/patent-strategist/cover.png';
 import arenaPoster from '../../assets/projects/arena-poster.png';
@@ -18,6 +18,7 @@ interface Props {
 const { offer } = Astro.props;
 
 const art: Partial<Record<FlagshipOffer['id'], { img: ImageMetadata; alt: string }>> = {
+  advisor: { img: advisorPoster, alt: 'Orionfold Advisor poster' },
   workflows: { img: platformPoster, alt: 'AI Native Platform poster' },
   experts: { img: patentCover, alt: 'Patent Strategist model cover' },
   cockpit: { img: arenaPoster, alt: 'Orionfold Arena poster' },
