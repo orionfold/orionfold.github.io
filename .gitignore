@@ -44,3 +44,4 @@ dist/
 checks/
 .DS_Store
 .todos-sync-state.json
+_TODOS.json

@@ -11,9 +11,9 @@
 //   - public.waitlist  → one delegate per batch of newly CONFIRMED story
 //     subscribers.
 //
-// PII RULE: _TODOS.json is committed to a PUBLIC repo. This script selects
-// row ids, tiers, and dates — NEVER emails. The todo titles point at the
-// Supabase tables/Stripe for the actual contact details.
+// PII RULE: this script selects row ids, tiers, and dates — NEVER emails.
+// _TODOS.json is git-ignored (public repo) but the agency cockpit reads and
+// surfaces its titles; contact details stay in Supabase/Stripe.
 //
 // State: .todos-sync-state.json (git-ignored) holds the high-water marks.
 // First run bootstraps at the current position and mints nothing, so
@@ -176,4 +176,4 @@ writeFileSync(STATE_PATH, JSON.stringify(state, null, 2) + '\n');
 
 console.log(`Minted ${minted.length} todo(s) into _TODOS.json:`);
 for (const t of minted) console.log(` ${t.id}: ${t.title.slice(0, 100)}…`);
-console.log('Commit the _TODOS.json change with the session echo.');
+console.log('_TODOS.json is git-ignored (public repo) — the agency cockpit reads it from disk.');
