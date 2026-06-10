@@ -10,7 +10,7 @@
 # real book cover; books resolve the hero from this frontmatter.
 type: book
 slug: ai-native-platform
-valueProp: An operator's walkthrough of the open platform that runs AI agents, the software helpers that do the work for you, on your own computer. Twenty one chapters in five parts, from the shop floor to every API call. Free to read online.
+valueProp: An operator's walkthrough of the open platform that runs AI agents, the software helpers that do work for you, on your own computer. Free to read online.
 
 # Books resolve the hero from frontmatter (the route does not glob a poster).
 hero: ../../../assets/book/ai-native-platform-book.jpg

@@ -1,7 +1,7 @@
 ---
 title: Why I folded Orionfold
 date: 2026-06-02
-summary: After nearly nine years at Amazon, I left to start Orionfold. This is the twenty-five-year story behind that choice, and what the name means.
+summary: After nearly nine years at Amazon, I left to build Orionfold solo. The twenty-five-year story behind that choice, and what the name means. By Manav Sehgal.
 hero: ../../assets/story/why-i-folded-orionfold/hero.jpeg
 heroAlt: "A builder smiles at a night desk under a starry sky as a small gold computer folds a glowing blue constellation down onto the desk. A banner reads: Fold it down. Open, private, yours."
 tags:
