@@ -1,8 +1,20 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-09T21:40:00",
+  "updated": "2026-06-09T23:30:00",
   "todos": [
+    {
+      "id": "website-12",
+      "title": "NVIDIA Inception portal submission prep: 7 product packets (Domain Experts, Arena, Fieldkit, Cortex, AI Native Platform, NeoSignal, Advisor) in _SPECS/nvidia/portal-submissions.md with form-validated copy + dropdown picks + brand color #0C172C; 7 logo lockups generated (Satori+resvg+Geist, color mark + black wordmarks on white); NVIDIA-tech lists grounded in the 63-chapter DGX Spark field-notes book (NIM, NeMo Framework, Megatron-Bridge, TransformerEngine, TensorRT-LLM, Nemotron 3 Super/Nano 9B v2/Embed 1B v2, CUDA Toolkit not CCCL); company-form.md description rewritten to redesign positioning, 994 chars. Open: drive the portal form in browser; Advisor packet waits on /advisor/ redesign",
+      "status": "done",
+      "kind": "action",
+      "project": "website",
+      "ref_project": null,
+      "due": null,
+      "origin": "website",
+      "goal_refs": [],
+      "updated": "2026-06-09"
+    },
     {
       "id": "website-11",
       "title": "Push-readiness sweep + roadmap curation: pre-push gates all green (no local-only files in 24 unpushed commits, agent parity, build 59 pages, sitemap/redirect page correct, both marketing exports run, Better Stack roster has no /roadmap/); operator-requested roadmap edits done (Living Model + Workflow docs removed from /adoption/, lane id-sets + Run blurb swept); two new Gemini posters curated + placed on the planned cards (Orionfold Advisor 'PRIVATE COUNSEL' Saul Bass cut-paper, Private Agent Starter Kit 'THE PAPER TRAIL' pastel diorama); operator pushed (51046a3 live) and the CF edge 301 /roadmap/->/adoption/ rule 'roadmap-to-adoption-301' was created in the dashboard (Claude-driven browser, operator-authorized) and curl-verified with query strings preserved",
@@ -29,7 +41,7 @@
     },
     {
       "id": "website-9",
-      "title": "Top-nav naming + URL refactor (operator picked variant C from live in-browser mockups): nav/footer/routes now Advisor\u00b7Workflows\u00b7/experts/\u00b7/cockpit/\u00b7Learn\u00b7/adoption/ (page files + flagship/portal ids renamed, id==route); only /roadmap/ was live so it 301s to /adoption/ via astro.config redirect (CF edge 301 owed at go-live for GSC); offer titles Domain Experts + Local AI Cockpit swept through pages, og.ts, llms.txt, export-catalog.ts, NVIDIA portal draft names; build clean 59 pages, dist link-sweep clean",
+      "title": "Top-nav naming + URL refactor (operator picked variant C from live in-browser mockups): nav/footer/routes now Advisor·Workflows·/experts/·/cockpit/·Learn·/adoption/ (page files + flagship/portal ids renamed, id==route); only /roadmap/ was live so it 301s to /adoption/ via astro.config redirect (CF edge 301 owed at go-live for GSC); offer titles Domain Experts + Local AI Cockpit swept through pages, og.ts, llms.txt, export-catalog.ts, NVIDIA portal draft names; build clean 59 pages, dist link-sweep clean",
       "status": "done",
       "kind": "action",
       "project": "website",
@@ -101,7 +113,7 @@
     },
     {
       "id": "website-1",
-      "title": "M7 live admin dashboard (127.0.0.1:8789) \u2014 built per specs/2026-06-06-live-admin-dashboard.md",
+      "title": "M7 live admin dashboard (127.0.0.1:8789) — built per specs/2026-06-06-live-admin-dashboard.md",
       "status": "done",
       "kind": "action",
       "project": "website",
