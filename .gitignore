@@ -45,3 +45,10 @@ checks/
 .DS_Store
 .todos-sync-state.json
 _TODOS.json
+
+# Agent instruction files are local-only (2026-06-10) — agents read them from disk
+CLAUDE.md
+AGENTS.md
+CODEX-CC.md
+# Top-level underscore paths are local-only by convention (ops/echo files)
+/_*
