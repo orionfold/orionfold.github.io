@@ -131,9 +131,11 @@ Deno.serve(async (req) => {
         ? {
             custom_text: {
               submit: {
+                // Pure personalization — the funding mission lives in the
+                // product description next to the price, so nothing repeats.
                 message: `Your sponsorship prioritizes: ${
                   selectedIds.map(humanizeItemId).join(", ")
-                }. One subscription supports all Orionfold research and development.`.slice(0, 1200),
+                }.`.slice(0, 1200),
               },
             },
           }
