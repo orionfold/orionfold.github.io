@@ -43,3 +43,4 @@ dist/
 .astro/
 checks/
 .DS_Store
+.todos-sync-state.json
