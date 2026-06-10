@@ -41,6 +41,18 @@ const ATTRIBUTION_KEYS: Record<string, string> = {
   v: "ad_v",
 };
 
+// Turn a roadmap item id ("software:orionfold-advisor") into a display name
+// ("Orionfold Advisor") for the Checkout page. Server-side only — we never
+// render client-supplied labels on the Stripe-hosted page.
+function humanizeItemId(id: string): string {
+  const slug = id.includes(":") ? id.slice(id.indexOf(":") + 1) : id;
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
 function sanitizeAttribution(raw: unknown): Record<string, string> {
   const out: Record<string, string> = {};
   if (!raw || typeof raw !== "object") return out;
@@ -109,6 +121,24 @@ Deno.serve(async (req) => {
     if (primaryItem) metadata.roadmap_item = primaryItem;
     if (itemIds.length) metadata.roadmap_items = itemIds.join(",").slice(0, 480);
 
+    // Sponsor checkouts started from a roadmap selection: name the picked
+    // items right on the Checkout page (above the Pay button). The line-item
+    // description next to the price can't vary per session (it comes from the
+    // shared Product), so Checkout's custom_text carries the selection instead.
+    const selectedIds = itemIds.length ? itemIds : primaryItem ? [primaryItem] : [];
+    const customText =
+      isSponsor && selectedIds.length
+        ? {
+            custom_text: {
+              submit: {
+                message: `Your sponsorship prioritizes: ${
+                  selectedIds.map(humanizeItemId).join(", ")
+                }. One subscription supports all Orionfold research and development.`.slice(0, 1200),
+              },
+            },
+          }
+        : {};
+
     const session = await stripe.checkout.sessions.create({
       mode: item.mode, // 'payment' for books, 'subscription' for sponsors
       line_items: [{ price: price.id, quantity: 1 }],
@@ -120,6 +150,7 @@ Deno.serve(async (req) => {
       // (MARKETING-HANDOFF.md Task 5). The coupon is product-restricted, so
       // sponsorships keep a clean, code-free checkout.
       ...(isSponsor ? {} : { allow_promotion_codes: true }),
+      ...customText,
       metadata,
       // Mirror the tier/item onto the subscription so C3's lifecycle webhooks
       // (invoice.paid, customer.subscription.updated/deleted) can read it too.
