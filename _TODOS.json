@@ -1,11 +1,11 @@
 {
   "version": 1,
   "project": "website",
-  "updated": "2026-06-09T19:05:00",
+  "updated": "2026-06-09T19:20:00",
   "todos": [
     {
       "id": "website-9",
-      "title": "Top-nav naming once-over (operator picked variant C from live in-browser mockups): nav/footer now Advisor\u00b7Workflows\u00b7Experts\u00b7Cockpit\u00b7Learn\u00b7Adoption, routes unchanged; offer titles Domain Experts + Local AI Cockpit swept through pages, og.ts, llms.txt, NVIDIA portal draft names; build clean 59 pages",
+      "title": "Top-nav naming + URL refactor (operator picked variant C from live in-browser mockups): nav/footer/routes now Advisor\u00b7Workflows\u00b7/experts/\u00b7/cockpit/\u00b7Learn\u00b7/adoption/ (page files + flagship/portal ids renamed, id==route); only /roadmap/ was live so it 301s to /adoption/ via astro.config redirect (CF edge 301 owed at go-live for GSC); offer titles Domain Experts + Local AI Cockpit swept through pages, og.ts, llms.txt, export-catalog.ts, NVIDIA portal draft names; build clean 59 pages, dist link-sweep clean",
       "status": "done",
       "kind": "action",
       "project": "website",

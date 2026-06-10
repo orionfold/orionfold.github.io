@@ -49,15 +49,15 @@ export const OG_PAGES: Record<string, OgPage> = {
     seed: 'workflows',
     alt: 'Orionfold Workflows: private agent starter kits with evals, approvals, and audit trails',
   },
-  '/domain-packs/': {
-    slug: 'domain-packs',
+  '/experts/': {
+    slug: 'experts',
     eyebrow: 'Experts',
     title: 'Offline models with benchmarks and playbooks',
     seed: 'domain-packs',
     alt: 'Orionfold Domain Experts: offline models, benchmarks, local run paths, and playbooks',
   },
-  '/workbench/': {
-    slug: 'workbench',
+  '/cockpit/': {
+    slug: 'cockpit',
     eyebrow: 'Cockpit',
     title: 'The cockpit for private AI work',
     seed: 'workbench',
@@ -85,8 +85,8 @@ export const OG_PAGES: Record<string, OgPage> = {
     seed: 'models',
     alt: 'Orionfold models: open-weight AI tuned for your field',
   },
-  '/roadmap/': {
-    slug: 'roadmap',
+  '/adoption/': {
+    slug: 'adoption',
     eyebrow: 'Adoption',
     title: 'What we build, ship, and plan next',
     seed: 'roadmap',

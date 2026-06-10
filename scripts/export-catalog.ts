@@ -138,7 +138,7 @@ for (const item of Object.values(CATALOG)) {
     group: 'sponsor',
     title: item.label,
     summary: `${item.label}: recurring sponsorship at $${(item.amount / 100).toFixed(0)}/month.`,
-    href: 'https://orionfold.com/roadmap/',
+    href: 'https://orionfold.com/adoption/',
     status: 'released',
     monetized: true,
     commerce: { lookupKey: item.lookupKey, kind: item.kind, mode: item.mode, amount_cents: item.amount, tier: item.tier ?? null },

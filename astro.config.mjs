@@ -77,6 +77,12 @@ export default defineConfig({
     '/story/shipping-models-from-one-small-desktop/': '/story/my-first-model-on-a-desktop/',
     // Retitled to drop the marketing-fluff "free" from the slug + headline.
     '/story/a-book-you-can-read-free-and-run/': '/story/a-book-you-can-read-and-run/',
+    // 2026-06-09 nav naming (variant C): /roadmap/ was live + indexed in GSC, so
+    // it redirects to the renamed /adoption/. The other renamed flagship routes
+    // (/domain-packs/ -> /experts/, /workbench/ -> /cockpit/) were never deployed,
+    // so they get no redirect. At go-live, mirror this as a Cloudflare 301 rule
+    // (this static redirect is a meta-refresh page, weaker than an edge 301).
+    '/roadmap/': '/adoption/',
   },
   integrations: [
     sitemap({

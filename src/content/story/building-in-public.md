@@ -26,7 +26,7 @@ Third, it builds trust that compounds. You have followed how I think across this
 
 Building in public only works if the door swings both ways. So here is how you get in.
 
-The roadmap is public. You can see what I am building right now, what has already shipped, and what is planned next. Nothing is hidden behind a "coming soon." Take a look at the [roadmap](/roadmap/).
+The roadmap is public. You can see what I am building right now, what has already shipped, and what is planned next. Nothing is hidden behind a "coming soon." Take a look at the [roadmap](/adoption/).
 
 You can vote with your dollars. Sponsorship runs as simple monthly tiers, from $10 a month up to $100. Sponsoring a lane moves it up my list. You are not just donating. You are helping decide what I build next. That is on the [sponsor page](/sponsor/).
 

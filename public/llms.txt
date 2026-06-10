@@ -8,8 +8,8 @@
 ## Flagship paths
 - [Advisor](https://orionfold.com/advisor/): Ask Orionfold privately. A private expert interface over the Orionfold books, docs, model cards, and field notes. In active build.
 - [Workflows](https://orionfold.com/workflows/): Private Agent Starter Kits. One local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail.
-- [Experts](https://orionfold.com/domain-packs/): Offline domain models with benchmarks and playbooks for sensitive work. Patent Strategist is the live flagship pack.
-- [Cockpit](https://orionfold.com/workbench/): Orionfold Arena is the cockpit for local AI. Cortex memory and the fieldkit toolkit are the stack around it.
+- [Experts](https://orionfold.com/experts/): Offline domain models with benchmarks and playbooks for sensitive work. Patent Strategist is the live flagship pack.
+- [Cockpit](https://orionfold.com/cockpit/): Orionfold Arena is the cockpit for local AI. Cortex memory and the fieldkit toolkit are the stack around it.
 - [Learn](https://orionfold.com/learn/): Books, field notes, the DGX Spark Field Lab, and build stories that teach the operating model.
 
 ## Proof libraries
@@ -18,7 +18,7 @@
 - [DGX Spark](https://orionfold.com/dgx-spark/): Built on the NVIDIA stack. The book, open models, and tools all proven on the NVIDIA DGX Spark, a small AI supercomputer that runs on one desk with no cloud.
 - [Books](https://orionfold.com/books/): Implementation playbooks. The AI Native Business book, AI research on the NVIDIA DGX Spark, and Field Notes. Built on working code.
 - [Story](https://orionfold.com/story/): Building in public. Honest notes on what we shipped, what broke, and what we learned.
-- [Adoption](https://orionfold.com/roadmap/): What is shipped, what is being built, and what sponsors can fund next.
+- [Adoption](https://orionfold.com/adoption/): What is shipped, what is being built, and what sponsors can fund next.
 
 ## More
 - [GitHub](https://github.com/manavsehgal): Source code and open projects.

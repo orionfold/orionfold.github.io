@@ -19,8 +19,8 @@ const { offer } = Astro.props;
 
 const art: Partial<Record<FlagshipOffer['id'], { img: ImageMetadata; alt: string }>> = {
   workflows: { img: platformPoster, alt: 'AI Native Platform poster' },
-  'domain-packs': { img: patentCover, alt: 'Patent Strategist model cover' },
-  workbench: { img: arenaPoster, alt: 'Orionfold Arena poster' },
+  experts: { img: patentCover, alt: 'Patent Strategist model cover' },
+  cockpit: { img: arenaPoster, alt: 'Orionfold Arena poster' },
 };
 const cover = art[offer.id];
 ---

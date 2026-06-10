@@ -1,4 +1,4 @@
-export type PortalOfferId = 'advisor' | 'workflows' | 'domain-packs' | 'workbench';
+export type PortalOfferId = 'advisor' | 'workflows' | 'experts' | 'cockpit';
 
 export interface NvidiaPortalProfile {
   id: PortalOfferId;
@@ -55,10 +55,10 @@ export const nvidiaPortalProfiles: Record<PortalOfferId, NvidiaPortalProfile> = 
     nvidiaTechnologiesConsidered: ['NVIDIA NIM', 'NVIDIA NeMo Guardrails', 'TensorRT-LLM'],
     nonNvidiaTechnologies: ['AI Native Platform', 'REST APIs', 'Sentinel', 'local filesystems', 'open-weight LLMs'],
   },
-  'domain-packs': {
-    id: 'domain-packs',
+  experts: {
+    id: 'experts',
     productServiceName: 'Orionfold Domain Experts',
-    webpage: `${site}/domain-packs/`,
+    webpage: `${site}/experts/`,
     type: 'Domain AI models and implementation playbooks',
     developmentStage: 'Shipping',
     valueProposition:
@@ -71,10 +71,10 @@ export const nvidiaPortalProfiles: Record<PortalOfferId, NvidiaPortalProfile> = 
     nvidiaTechnologiesConsidered: ['NVIDIA NIM', 'TensorRT-LLM', 'NVIDIA NeMo Evaluator'],
     nonNvidiaTechnologies: ['Hugging Face', 'GGUF', 'llama.cpp', 'DeepSeek', 'Qwen', 'Apple Silicon'],
   },
-  workbench: {
-    id: 'workbench',
+  cockpit: {
+    id: 'cockpit',
     productServiceName: 'Orionfold Local AI Cockpit',
-    webpage: `${site}/workbench/`,
+    webpage: `${site}/cockpit/`,
     type: 'Local AI evaluation and operations cockpit',
     developmentStage: 'Shipping',
     valueProposition:
