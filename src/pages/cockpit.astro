@@ -64,7 +64,7 @@ const og = ogMeta('/cockpit/');
 
     <section class="px-6 py-16">
       <div class="mx-auto max-w-6xl">
-        <OfferProofRail title="The stack around the cockpit" links={offer.proof} />
+        <OfferProofRail title="The stack around the cockpit" links={offer.proof} action={{ label: 'All software →', href: '/software/' }} />
       </div>
     </section>
     <NvidiaStackBand note="The Cockpit stack is proven on NVIDIA DGX Spark and supports NVIDIA GPU acceleration for inference, fine-tuning, and model evaluation workflows." />

@@ -8,12 +8,17 @@ import ProofCard from './ProofCard.astro';
 interface Props {
   title?: string;
   links: ProofLink[];
+  /** Optional header-right action, e.g. the catalog-hub doorway link. */
+  action?: { label: string; href: string };
 }
 
-const { title = 'Proof in the current portfolio', links } = Astro.props;
+const { title = 'Proof in the current portfolio', links, action } = Astro.props;
 ---
 <div>
-  <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{title}</p>
+  <div class="flex flex-wrap items-baseline justify-between gap-4">
+    <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{title}</p>
+    {action && <a href={action.href} class="of-text-action of-compact text-xs">{action.label}</a>}
+  </div>
   <div data-animate-stagger class="mt-4 grid gap-5 sm:grid-cols-3">
     {links.map((link) => (
       <ProofCard link={link} />
