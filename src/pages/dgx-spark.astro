@@ -67,8 +67,10 @@ const modelWorks: Work[] = [
   };
 });
 
-// Software proven on the Spark.
-const softwareWorks: Work[] = ['fieldkit', 'arena'].flatMap((s) => {
+// Software proven on the Spark. Flagships first (operator 2026-06-11): the
+// Advisor was trained, gated, and promoted on the Spark; Arena is the cockpit
+// it ran through; Cortex is its memory; fieldkit is the toolbox under all three.
+const softwareWorks: Work[] = ['advisor', 'arena', 'cortex', 'fieldkit'].flatMap((s) => {
   const p = software.find((x) => x.slug === s);
   if (!p) return [];
   return [{

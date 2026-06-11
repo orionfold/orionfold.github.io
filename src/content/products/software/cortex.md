@@ -4,9 +4,15 @@
 # route /arena/cortex/, plus a /cortex/ landing + sidecar-less demo). Authored
 # from the canonical product article in the ainative.business GitHub repo
 # (manavsehgal/ainative-business.github.io, products/orionfold-cortex/product.md)
-# and 7 of its 8 real screenshots (08-catalog-page.png dropped: a tall full-page
-# web capture, not a product UI shot). The mac checkout is stale (work moved to
-# the Spark), so the sources map points at the GitHub repo. RelatedRail funnels
+# and its real screenshots. The mac checkout is stale (work moved to the
+# Spark), so the sources map points at the GitHub repo.
+# 2026-06-11 re-sync: upstream re-captured the 4 article shots in the light
+# theme off a real re-index (96% GPU, provenance 328/328, new query example)
+# and deleted its other 4 (3 dark leftovers + the tall catalog web capture).
+# Gallery follows: now the same 4 light shots; captions updated to the new
+# measured numbers. Body keeps the first measured run (313 pieces, 40.91% /
+# 72.73% over 44 questions, exact) and adds the latest 328/328 source-stamp
+# fact. RelatedRail funnels
 # inward: Arena (the parent cockpit), the privacy story, and the DGX Spark book
 # (Buy). Recall numbers are exact from the article; never round them. Copy is
 # grade 3-5, no em-dashes, jargon (index, recall, provenance) glossed in plain
@@ -58,27 +64,18 @@ specs:
     value: The fieldkit toolbox (memory, arena, harness, eval)
 
 gallery:
-  - src: ../../../assets/projects/cortex/knowledge-baseline.png
-    alt: The Cortex pane before its first rebuild, showing a degraded index with a plain warning instead of made-up numbers.
-    caption: Day one, honestly shown. Before the first rebuild, Cortex says the index is not ready.
-  - src: ../../../assets/projects/cortex/rebuild-queued.png
-    alt: The Cortex pane with a rebuild queued, showing the re-index job and its scoring job waiting in line.
-    caption: One click queues the rebuild, with a scoring run chained right behind it.
   - src: ../../../assets/projects/cortex/jobs-board.png
-    alt: The jobs board mid-rebuild, with the re-index running at 94 percent GPU and the scoring job already done.
-    caption: Watch the work move. The re-index runs hot while the score lands beside it.
+    alt: The jobs board mid-rebuild, with the re-index running at 96 percent GPU and the rest of the board carrying the queue's history beside it.
+    caption: Watch the work move. The re-index runs hot while the board keeps the queue's history beside it.
   - src: ../../../assets/projects/cortex/after-rebuild.png
-    alt: The Cortex dashboard after a rebuild, showing 100 percent coverage and a source stamp on all 313 indexed chunks.
+    alt: The Cortex dashboard after a rebuild, showing 100 percent coverage and a source stamp on every one of its 328 indexed chunks.
     caption: After the rebuild, coverage and source stamps are numbers you can read, not guesses.
   - src: ../../../assets/projects/cortex/rag-query.png
-    alt: The query console answering a plain-language question with cited passages, each tagged by the trust level of its source.
+    alt: The query console answering a plain-language question about picking the right shrunk model build, with cited passages, each tagged by the trust level of its source.
     caption: Ask in plain words, get cited passages back, each tagged by how much to trust it.
   - src: ../../../assets/projects/cortex/recall-gate.png
     alt: The recall gate after a second scoring run, comparing recall against the last run and showing a promote verdict.
     caption: The gate at work. A rebuild is only promoted when its recall holds up.
-  - src: ../../../assets/projects/cortex/standup.png
-    alt: The morning standup report listing what ran overnight, with zero regressions, zero failures, and a drained queue.
-    caption: The morning report. What ran, what regressed (nothing), and what it spent.
 
 relatedBook: ai-research-on-nvidia-dgx-spark
 relatedReading:
@@ -104,11 +101,11 @@ sources:
   - section: overview
     type: url
     ref: https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main/products/orionfold-cortex/product.md
-    lastSynced: '2026-06-03'
+    lastSynced: '2026-06-11'
   - section: gallery
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/orionfold-cortex/screenshots/
-    lastSynced: '2026-06-03'
+    lastSynced: '2026-06-11'
 ---
 
 Orionfold Cortex is a second brain for your own notes, running on your own desktop. It
@@ -149,6 +146,8 @@ On its first measured run, over 49 articles split into 313 pieces, Cortex found 
 passage in its top five answers 40.91% of the time, and the right note 72.73% of the time,
 across 44 real questions. Those are the true numbers for the simple baseline it runs
 today, with no extra ranking step yet. They are printed on the product, not rounded up.
+The notes have grown since; at the latest rebuild the index holds 328 pieces, every one
+carrying a stamp that says where it came from.
 
 The first real run also caught a real bug: a missing one-line import that eight unit tests
 had slept through, because they all used a stand-in instead of the real code. Driving the

@@ -15,12 +15,19 @@
 # 2026-06-10 re-sync: upstream article grew three features (guarded lane
 # lifecycle / LaneTruth, measured benches in the eval drawer, Advisor
 # proof cards on Cortex) tied to the Orionfold Advisor launch; body + 3 new
-# shots added (gallery now 16). Control-plane screenshots 08-11 upstream are
-# NOT backed by any article feature yet, so they were skipped (curate, don't
-# dump).
+# shots added (gallery now 16).
+# 2026-06-11 re-sync: upstream retook 4 shots against the live cockpit
+# (cockpit, leaderboard, frontier, models; the old ones showed scrollbars)
+# and ran an orphan-screenshot audit. The control-plane article gained a
+# "What the board grew into" section, so the 5 shots we skipped on 06-10
+# are now article-backed and placed here (train-dispatch, build-spine,
+# reward-gauge, guardrails, standup; gallery now 21). Skipped upstream
+# 02-dispatch-and-regression (overlaps our jobs-board shot). Leaderboard +
+# frontier copy updated for the advisor-first display layer and the violet
+# flagship diamond.
 type: software
 slug: arena
-valueProp: Run, compare, and score AI models on your own desktop. Live speed and memory, a private board, two side by side. Free, and nothing leaves your machine.
+valueProp: Run, compare, score, and train AI models on your own desktop. Live speed and memory, a private board, an overnight jobs loop. Free, and nothing leaves your machine.
 
 chips:
   - label: Language
@@ -60,7 +67,9 @@ specs:
   - label: Try and test
     value: Chat with any model, score an answer against a gold answer, or duel two side by side
   - label: Jobs board
-    value: Queue a re-test of any model, or let the board catch a leaderboard drop and queue a confirming re-test by itself
+    value: Queue a re-test, a pre-training smoke test, or a full training run; the board also catches a leaderboard drop and queues a confirming re-test by itself
+  - label: Overnight loop
+    value: A cron drains the queue while you sleep and a morning report shows what ran, what slipped, and what it spent; nothing publishes until you promote it
   - label: Move fast
     value: A command palette opens with one keystroke and jumps anywhere
   - label: Private
@@ -70,13 +79,13 @@ specs:
 
 gallery:
   - src: ../../../assets/projects/arena/cockpit.png
-    alt: The Orionfold Arena cockpit on one screen, with a live readout strip across the top, a count of what you have built, your top scored runs, and a recent activity feed.
-    caption: One home screen. Live machine readouts up top, your best runs, and what happened recently.
+    alt: The Orionfold Arena cockpit on one screen, with a live readout strip across the top, a count of what you have built, your top scored runs, the model now serving, and a recent activity feed.
+    caption: One home screen. Live machine readouts up top, your best runs, the model now serving, and what happened recently.
     detail: >-
       The cockpit is the screen you keep open. The live instrument rail reads the machine's
-      state, a strip counts what you have built, your best scored runs sit in a ticker, and
-      a feed shows what happened recently. None of it ever shows a private prompt, because
-      the feed reads only safe metadata.
+      state, a strip counts what you have built, your best scored runs sit in a ticker, the
+      model now serving is named, and a feed shows what happened recently. None of it ever
+      shows a private prompt, because the feed reads only safe metadata.
   - src: ../../../assets/projects/arena/telemetry-rail.png
     alt: The live readout rail showing GPU use, heat, shared memory, speed, wait time, the active model, and hosted spend, each over a small bar chart of recent peaks.
     caption: The instrument strip on every page. Each readout keeps a small chart of its recent peaks.
@@ -86,26 +95,34 @@ gallery:
       chart of its recent peaks, so you see the trend and not just the moment. The speed
       readouts light up the second a model starts answering.
   - src: ../../../assets/projects/arena/leaderboard.png
-    alt: The Arena leaderboard, with models ranked into groups, medals on the top three, and colored score bars showing how good each number is.
-    caption: Your models ranked from real results, built from a safe slice that never shares your prompts.
+    alt: The Arena leaderboard with the flagship Advisor group at the top, each row carrying a plain-language name, small pills for its role and the frozen test it passed, and the raw run id printed under the name.
+    caption: The flagship Advisor group leads the board. Plain names and small pills up top, the raw run id kept under every name.
     detail: >-
       The leaderboard is the Arena's memory. Models rank in groups per test, medals on the
-      top three, and every new chat or compare folds into a live section as you work. It is
-      built from a safe slice that exports only scores, never a prompt or an answer, so you
-      can publish the board and keep your data.
+      top three, and every new chat or compare folds into a live section as you work. The
+      house model gets a friendly display, not a thumb on the scale: the Advisor group
+      renders first with plain-language names and small pills for each row's role and the
+      frozen test its score came from, while the raw run id stays printed under the name.
+      Easy to read, impossible to mistake for different data. The board is built from a
+      safe slice that exports only scores, never a prompt or an answer, so you can publish
+      it and keep your data.
   - src: ../../../assets/projects/arena/efficiency-frontier.png
-    alt: A chart of answer quality against speed for every model build, with the best trade-off line drawn in orange.
-    caption: Quality against speed on one chart. The orange line is the set worth shipping.
+    alt: A chart of answer quality against speed for every model build, with the best trade-off line drawn in orange and the flagship Advisor build marked as a violet diamond sitting on that line.
+    caption: Quality against speed on one chart. The orange line is the set worth shipping; the violet diamond is the flagship, sitting right on it.
     detail: >-
       Each model build is one dot on a chart of quality against speed. The orange line marks
-      the builds where you cannot gain more quality without giving up speed. Choosing what
-      to ship stops being an argument and becomes a point you can put a finger on.
+      the builds where you cannot gain more quality without giving up speed. The flagship
+      Advisor build gets its own mark, a violet diamond drawn above the line so it never
+      hides among the dots, and here it sits on the frontier itself. Choosing what to ship
+      stops being an argument and becomes a point you can put a finger on.
   - src: ../../../assets/projects/arena/models.png
-    alt: The models browser, a grid of every model you can run, with filters for kind and license on each card.
-    caption: Your whole shelf in one grid. Filter it, then chat or compare with one click.
+    alt: The models browser, a grid of every model you can run, with the Advisor, Kepler, and Cortex cards in view and a measured speed printed on each recommended build.
+    caption: Your whole shelf in one grid, with a measured speed on each recommended build. Filter it, then chat or compare with one click.
     detail: >-
       Every model you can run sits in one grid, filterable by kind and license. Each card is
-      a launch point: one click to chat with the model, one more to send it into a duel.
+      a launch point: one click to chat with the model, one more to send it into a duel. The
+      recommended build on a card carries its measured speed, read from real runs on the
+      machine, not a brochure number.
   - src: ../../../assets/projects/arena/model-detail.png
     alt: A model detail page with what the model is for, a table of its shrunk builds with the best one marked, its known weak spots, and its own quality-versus-speed curve.
     caption: The full card on any model, including which build is the sweet spot, before you spend GPU time.
@@ -166,6 +183,49 @@ gallery:
       triggered it, you or the board itself. Done cards carry the measured score and how
       many questions were graded; a failed card says exactly why, so you never have to open
       a log.
+  - src: ../../../assets/projects/arena/train-dispatch.png
+    alt: The grown jobs board with three dispatch slots above the four columns, one to re-test a model, one to smoke-test a base model before training, and one to launch a training run from a recipe file.
+    caption: The board grew from one job kind to three. Re-test a model, smoke-test a base before training it, or launch a training run from a recipe.
+    detail: >-
+      The board's biggest growth is what it can start. Next to the original re-test slot, a
+      smoke-test slot answers "is this base model worth training?" with a small twenty-row
+      test before any long run, and a training slot takes a recipe file and launches the
+      run as a job. All three kinds drain through the same four columns, one at a time, so
+      the queue still respects the machine's shared memory.
+  - src: ../../../assets/projects/arena/build-spine.png
+    alt: The build pipeline pane showing one model's whole build as a spine of stage cards, scout, bench, corpus, fine-tune, smoke, serve, and polish, with seven of eight stages complete and a strip above naming the frozen test behind each score.
+    caption: A whole model build as one spine. Each stage card carries its receipts, and the strip pins which frozen test scored what.
+    detail: >-
+      When training jobs belong to one model being built end to end, the Build pane lines
+      them up as a spine: scouted, tested, fed its documents, fine-tuned, smoke-tested,
+      served, and polished. Each stage is a card with its own saved proof, and the strip
+      above pins exactly which frozen test produced each score, so a number is never
+      separated from the test that made it.
+  - src: ../../../assets/projects/arena/reward-gauge.png
+    alt: The reward pane, one gauge showing a 96 percent starting score for a training run, a zero percent cut-off rate, and a gate reading hold.
+    caption: The same test that scores the leaderboard is the reward a training run chases. One gauge watches both, and a gate holds promotion until the signal is clean.
+    detail: >-
+      The reward pane makes the training loop visible. The same scorer that grades the
+      leaderboard is the reward signal a training run tries to raise, so one gauge shows
+      the starting score, the live reward as the run trains, and a gate that holds
+      promotion until the signal is clean. The pane only watches; it never starts work.
+  - src: ../../../assets/projects/arena/guardrails.png
+    alt: The settings screen for cloud test guardrails, a per-run cost cap and a stall timer that lock in when a job is sent, above a table of the paid cloud models the cap covers.
+    caption: Paid cloud work gets bounds. A cost cap and a stall timer lock in the moment a job is sent.
+    detail: >-
+      Sending work to paid cloud models earned the board guardrails. A per-run cost cap and
+      a stall timer lock onto the job the moment it is sent, the fix for a real cloud test
+      that once hung for hours quietly running up a bill. Local runs on your own machine
+      stay unguarded and free, because the bounds exist exactly where the meter does.
+  - src: ../../../assets/projects/arena/standup.png
+    alt: The morning standup report, eleven jobs ran overnight, zero scores slipped, three failed honestly, the queue drained, and total spend was five cents of a five dollar cap.
+    caption: The overnight loop's report card. What ran, what slipped, what failed, and what it spent, waiting for you to review and promote.
+    detail: >-
+      The overnight layer landed as Standup, a read-only morning report of what the queue
+      ran while you slept. The loop only stages work, it never publishes it: it drains the
+      queue, runs the jobs, and stops at this gate for you to review and promote. Eleven
+      jobs, zero slipped scores, three honest failures, and five cents of spend against a
+      five dollar cap is what a delegated night looks like.
   - src: ../../../assets/projects/arena/lanetruth-guarded.png
     alt: The serving screen showing the one running model marked active, above a guarded launch form that checks memory first and asks before stopping the old model.
     caption: One model runs at a time. Starting a new one checks memory first and asks before it stops the old one.
@@ -214,19 +274,19 @@ sources:
   - section: overview
     type: url
     ref: https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main/products/orionfold-arena/product.md
-    lastSynced: '2026-06-10'
+    lastSynced: '2026-06-11'
   - section: gallery
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/orionfold-arena/screenshots/
-    lastSynced: '2026-06-10'
+    lastSynced: '2026-06-11'
   - section: overview
     type: url
     ref: https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main/products/arena-control-plane/product.md
-    lastSynced: '2026-06-10'
+    lastSynced: '2026-06-11'
   - section: gallery
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/arena-control-plane/screenshots/
-    lastSynced: '2026-06-10'
+    lastSynced: '2026-06-11'
 ---
 
 Orionfold Arena is a single screen for running, comparing, and scoring the AI models on
@@ -257,11 +317,15 @@ and read one chart to decide which build is worth shipping.
   story before you spend a second of GPU time.
 - **Rank your models.** The board ranks your models from real results and folds in every new
   chat and test as you go. Each row carries a badge that says whether the number came from
-  your Spark or a hosted model. It is built from a safe slice that shares only scores, never
-  your prompts or the model's replies, so you can publish the board and keep your data.
+  your Spark or a hosted model. The flagship group reads like a product, not a lab log:
+  plain-language names, small pills for each row's role and the frozen test behind its
+  score, and the raw run id kept under every name so a friendly label can never hide which
+  data it points at. It is built from a safe slice that shares only scores, never your
+  prompts or the model's replies, so you can publish the board and keep your data.
 - **Pick what to ship.** One chart plots quality against speed for every build and draws the
   best trade-offs in orange. Quality here means how well the model answers; the orange line
-  is the set where you cannot get more quality without giving up speed.
+  is the set where you cannot get more quality without giving up speed. The flagship build
+  is marked with a violet diamond so you can always find it among the dots.
 - **Try and test in one place.** Chat with any model, pull the exact test it was measured on,
   and score its answer against a gold answer without leaving the chat. Or put two models head
   to head and read the trade in plain cards: quality, speed, wait time, length, and cost,
@@ -283,6 +347,20 @@ and read one chart to decide which build is worth shipping.
   board compares your leaderboard to its last saved state; if a score slipped, it queues a
   confirming re-test by itself. A failed job says why, right on the card. One job runs at a
   time, so the board never blows past the Spark's shared memory.
+- **Train from the same board.** The board now starts training, not just testing. A
+  smoke-test slot answers "is this base model worth training?" with a small twenty-row test
+  before any long run, and a training slot launches a full run from a recipe file. When the
+  runs belong to one model being built end to end, a Build pane lines them up as a spine of
+  stage cards, each with its saved proof, so the whole build reads as one story.
+- **Watch the reward.** The same scorer that grades the leaderboard is the reward a training
+  run tries to raise. One gauge shows the starting score, the live reward as the run trains,
+  and a gate that holds promotion until the signal is clean.
+- **Cap what cloud work can spend.** A per-run cost cap and a stall timer lock onto a paid
+  cloud job the moment it is sent, so a hung test can never quietly run up a bill. Local runs
+  stay free and unguarded, because the bounds live exactly where the meter does.
+- **Wake up to a report.** An overnight loop drains the queue while you sleep, then stops. A
+  morning report says what ran, what slipped, what failed, and what it spent. Nothing is
+  published until you review and promote it.
 - **Move without the mouse.** One keystroke opens a search box over the whole cockpit. Type a
   few letters to jump to any model, fire a chat, or set up a duel.
 

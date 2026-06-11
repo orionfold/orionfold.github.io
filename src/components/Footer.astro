@@ -16,8 +16,9 @@ import { detailKeySet, slugify } from '../lib/product/detail';
 
 const detailKeys = await detailKeySet();
 
-// Software, grouped (platform → apps → intel → devtools), detail-gated.
+// Software, grouped (flagship → platform → apps → intel → devtools), detail-gated.
 const SW_GROUPS = [
+  { key: 'flagship', label: 'Flagship' },
   { key: 'platform', label: 'Platform' },
   { key: 'apps', label: 'Apps' },
   { key: 'intel', label: 'Intel' },

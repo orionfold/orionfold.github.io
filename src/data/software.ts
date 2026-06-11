@@ -1,9 +1,13 @@
 // Software showcase data (spec §6; expanded V5). A typed array feeding
-// /software/. Twelve products grouped into four clusters (platform, apps, intel,
-// devtools), each summed up in plain words and linking out to its canonical home
-// (a live site if it has one, else the GitHub repo). Showcase + link out, no docs
-// ported here. Copy reads grade 3–5, no em-dashes, jargon held back for the
-// page's "Behind the scenes" reveal (memory `website-copy-style`, spec §7).
+// /software/. Fourteen products grouped into five clusters (flagship, platform,
+// apps, intel, devtools), each summed up in plain words and linking out to its
+// canonical home (a live site if it has one, else the GitHub repo). Showcase +
+// link out, no docs ported here. Copy reads grade 3–5, no em-dashes, jargon held
+// back for the page's "Behind the scenes" reveal (memory `website-copy-style`,
+// spec §7).
+// 2026-06-11 (operator): Advisor, Arena, and Cortex are the commercial flagships
+// (NVIDIA Inception ICP), so they lead as their own `flagship` group at the top
+// of the page and the array (array order also drives the CatalogShelf door art).
 //
 // `cover` is an asset key: a filename under src/assets/projects/ (resolved by a
 // glob in software.astro). Every card now leads with a curated witty movie-poster
@@ -14,7 +18,7 @@
 // compositing material but the in-card cover is the poster.
 import type { RoadmapMeta } from './roadmap-types';
 
-export type SoftwareGroup = 'platform' | 'apps' | 'intel' | 'devtools';
+export type SoftwareGroup = 'flagship' | 'platform' | 'apps' | 'intel' | 'devtools';
 export type CoverType = 'screenshot' | 'logo' | 'motif' | 'poster';
 
 // extends RoadmapMeta -> optional status/sponsorTier/features/roadmapOrder (F1, spec §9).
@@ -37,6 +41,7 @@ export interface SoftwareProduct extends RoadmapMeta {
 
 // Group headings + blurbs for the page sections (order = display order).
 export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }[] = [
+  { id: 'flagship', label: 'Flagship', blurb: 'Our lead products: a governed advisor over your own documents, the cockpit that proves every claim with real tests, and the memory it answers from.' },
   { id: 'platform', label: 'The platform', blurb: 'The core: run AI on your own computer, and drive it with code.' },
   { id: 'devtools', label: 'Developer tools', blurb: 'For builders: testing, terminals, and reusable patterns.' },
   { id: 'apps', label: 'Personal AI apps', blurb: 'Ready-to-use apps that keep your data on your machine.' },
@@ -44,6 +49,53 @@ export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }
 ];
 
 export const software: SoftwareProduct[] = [
+  // ── Flagship (pole position: the products we commercialize) ──
+  {
+    // Graduated from the roadmap overlay 2026-06-10: the Advisor shipped
+    // publicly (promoted fine-tuned 4B lane, Orionfold/Advisor-GGUF +
+    // Advisor-bench on Hugging Face, receipts in the public repo).
+    slug: 'advisor',
+    group: 'flagship',
+    eyebrow: 'Governed advisor',
+    title: 'Orionfold Advisor',
+    body: 'A local AI advisor over your own body of documents. Every answer names the exact source it came from. If your documents cannot support an answer, it refuses instead of guessing. Every check it passed is a saved receipt you can re-run.',
+    pills: ['Runs local', 'Exact citations', 'Trusted refusals', 'Receipts'],
+    href: 'https://ainative.business/products/orionfold-advisor/',
+    ctaText: 'See Advisor',
+    coverType: 'poster',
+    cover: 'advisor-poster.png',
+  },
+  {
+    slug: 'arena',
+    group: 'flagship',
+    eyebrow: 'Eval cockpit',
+    title: 'Orionfold Arena',
+    body: 'One screen to run, compare, score, and now train the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, queue tests and training runs, and wake up to a morning report. Nothing you type leaves your machine.',
+    pills: ['Runs local', 'Leaderboard', 'Trains + tests', 'Private'],
+    href: 'https://ainative.business/arena/',
+    ctaText: 'See Arena',
+    demoHref: 'https://ainative.business/arena/demo/',
+    demoLabel: 'Try the live demo',
+    coverType: 'poster',
+    cover: 'arena-poster.png',
+    status: 'active', // living tool, served by fieldkit; appears on the roadmap
+  },
+  {
+    slug: 'cortex',
+    group: 'flagship',
+    eyebrow: 'Memory layer',
+    title: 'Orionfold Cortex',
+    body: 'A second brain that lives on your own desktop. It indexes your notes, stamps where every fact came from, and grades its own memory: a rebuild that would make recall worse is caught, not shipped. Your documents never leave your machine.',
+    pills: ['Runs local', 'Recall gate', 'Provenance', 'Private'],
+    href: 'https://ainative.business/cortex/',
+    ctaText: 'See Cortex',
+    demoHref: 'https://ainative.business/cortex/demo/',
+    demoLabel: 'Try the live demo',
+    coverType: 'poster',
+    cover: 'cortex-poster.png',
+    status: 'active', // living tool, the Arena memory layer; appears on the roadmap
+  },
+
   // ── The platform ──
   {
     slug: 'ai-native-platform',
@@ -171,51 +223,6 @@ export const software: SoftwareProduct[] = [
     coverType: 'poster',
     cover: 'fieldkit-poster.png',
     status: 'active', // F1: still growing; F2 pulls its module/feature list from GitHub
-  },
-  {
-    slug: 'arena',
-    group: 'devtools',
-    eyebrow: 'Eval cockpit',
-    title: 'Orionfold Arena',
-    body: 'One screen to run, compare, and score the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, and chat or test two side by side. Nothing you type leaves your machine.',
-    pills: ['Runs local', 'Leaderboard', 'Live telemetry', 'Private'],
-    href: 'https://ainative.business/arena/',
-    ctaText: 'See Arena',
-    demoHref: 'https://ainative.business/arena/demo/',
-    demoLabel: 'Try the live demo',
-    coverType: 'poster',
-    cover: 'arena-poster.png',
-    status: 'active', // living tool, served by fieldkit; appears on the roadmap
-  },
-  {
-    slug: 'cortex',
-    group: 'devtools',
-    eyebrow: 'Memory layer',
-    title: 'Orionfold Cortex',
-    body: 'A second brain that lives on your own desktop. It indexes your notes, stamps where every fact came from, and grades its own memory: a rebuild that would make recall worse is caught, not shipped. Your documents never leave your machine.',
-    pills: ['Runs local', 'Recall gate', 'Provenance', 'Private'],
-    href: 'https://ainative.business/cortex/',
-    ctaText: 'See Cortex',
-    demoHref: 'https://ainative.business/cortex/demo/',
-    demoLabel: 'Try the live demo',
-    coverType: 'poster',
-    cover: 'cortex-poster.png',
-    status: 'active', // living tool, the Arena memory layer; appears on the roadmap
-  },
-  {
-    // Graduated from the roadmap overlay 2026-06-10: the Advisor shipped
-    // publicly (promoted fine-tuned 4B lane, Orionfold/Advisor-GGUF +
-    // Advisor-bench on Hugging Face, receipts in the public repo).
-    slug: 'advisor',
-    group: 'apps',
-    eyebrow: 'Governed advisor',
-    title: 'Orionfold Advisor',
-    body: 'A local AI advisor over your own body of documents. Every answer names the exact source it came from. If your documents cannot support an answer, it refuses instead of guessing. Every check it passed is a saved receipt you can re-run.',
-    pills: ['Runs local', 'Exact citations', 'Trusted refusals', 'Receipts'],
-    href: 'https://ainative.business/products/orionfold-advisor/',
-    ctaText: 'See Advisor',
-    coverType: 'poster',
-    cover: 'advisor-poster.png',
   },
   {
     slug: 'command',

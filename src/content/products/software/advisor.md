@@ -118,11 +118,11 @@ sources:
   - section: overview
     type: url
     ref: https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main/products/orionfold-advisor/product.md
-    lastSynced: '2026-06-10'
+    lastSynced: '2026-06-11'
   - section: gallery
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/orionfold-advisor/screenshots/
-    lastSynced: '2026-06-10'
+    lastSynced: '2026-06-11'
 ---
 
 Orionfold Advisor is a local AI advisor that answers from your own body of documents. It

@@ -1,18 +1,44 @@
 ---
 // Homepage highlights (spec §5.4–5.6): one curated pick from each pillar —
-// the book, the software, a model. P2 deep-links each straight to its on-site
-// detail page (/books/ai-research-on-nvidia-dgx-spark/, /software/arena/,
-// /models/patent-strategist/) instead of the listing page, fixing the
+// the flagship, the book, the software, a model. P2 deep-links each straight
+// to its on-site detail page instead of the listing page, fixing the
 // "click a product, get a catalog" leak (spec §3). Layout sides alternate via
 // Highlight's `reverse`. The software and model picks lead with their curated
 // movie poster (featured-imagery skill); the book keeps its cover art.
+// 2026-06-11 (operator): Advisor showcase panel added FIRST — flagship pole
+// position (memory flagship-pole-position); reverse flags re-alternated.
 import { Image } from 'astro:assets';
 import Highlight from '../ui/Highlight.astro';
 import BookCover from '../ui/BookCover.astro';
 import dgxResearchCover from '../../assets/book/ai-research-dgx-spark-book.jpg';
+import advisorPoster from '../../assets/projects/advisor-poster.png';
 import arenaPoster from '../../assets/projects/arena-poster.png';
 import patentPoster from '../../assets/models/patent-strategist/cover.png';
 ---
+<!-- ── Highlight: the flagship ── -->
+<Highlight
+  eyebrow="The flagship"
+  title="Orionfold Advisor"
+  body="A local AI advisor over your own body of documents. Every answer names the exact source it came from. If your documents cannot support an answer, it refuses instead of guessing. Every check it passed is a saved receipt you can re-run."
+  pills={['Runs local', 'Exact citations', 'Trusted refusals', 'Receipts']}
+  href="/software/advisor/"
+  ctaText="Explore Advisor"
+>
+  <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
+    <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
+    <a href="/software/advisor/" aria-label="Explore Advisor" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10">
+      <Image
+        src={advisorPoster}
+        alt="Orionfold Advisor poster art: From the Source, an open star atlas with constellations rising from its pages"
+        widths={[440, 680, 880]}
+        sizes="(min-width: 1024px) 42vw, 90vw"
+        data-no-zoom
+        class="aspect-[16/9] w-full object-cover"
+      />
+    </a>
+  </div>
+</Highlight>
+
 <!-- ── Highlight: the book ── -->
 <Highlight
   eyebrow="The book"
@@ -21,6 +47,7 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
   pills={['Local AI', 'NVIDIA DGX Spark', 'Petascale desktop', 'Backed by code']}
   href="/books/ai-research-on-nvidia-dgx-spark/"
   ctaText="Explore the book"
+  reverse
 >
   <a slot="media" href="/books/ai-research-on-nvidia-dgx-spark/" aria-label="Explore the book" class="block">
     <BookCover title="AI Research on NVIDIA DGX Spark" subtitle="Pushing the Frontier of Local AI on a Petascale Desktop" tag="Running log" image={dgxResearchCover} />
@@ -33,11 +60,10 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
 <Highlight
   eyebrow="The software"
   title="Orionfold Arena"
-  body="One screen to run, compare, and score the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, and test two side by side. Nothing you type leaves your machine."
-  pills={['Runs local', 'Leaderboard', 'Live telemetry', 'Private']}
+  body="One screen to run, compare, score, and now train the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, queue tests and training runs, and wake up to a morning report. Nothing you type leaves your machine."
+  pills={['Runs local', 'Leaderboard', 'Trains + tests', 'Private']}
   href="/software/arena/"
   ctaText="Explore Arena"
-  reverse
 >
   <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
     <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
@@ -62,6 +88,7 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
   pills={['Patents', 'Runs offline', 'Open weights']}
   href="/models/patent-strategist/"
   ctaText="Explore Patent Strategist"
+  reverse
 >
   <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
     <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
