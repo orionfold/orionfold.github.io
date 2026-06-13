@@ -79,7 +79,7 @@ sources:
     lastSynced: '2026-05-26'
   - section: gallery
     type: docs-screenshots
-    ref: /Users/manavsehgal/Developer/ainative/docs
+    ref: /Users/manavsehgal/orionfold/ainative/docs
     lastSynced: '2026-05-26'
 ---
 
