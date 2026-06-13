@@ -59,6 +59,14 @@ const productDetail = defineCollection({
       // Metadata strip under the hero (the HuggingFace persistent-sidebar move).
       chips: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
 
+      // Edition split: when true, the page renders the paid Field Edition block
+      // side-by-side with the free product (the "Free and open: the machine.
+      // Paid: the evidence." commerce move). Singleton today (Arena); the copy +
+      // price + proof live in FieldEditionBox.astro, this just turns it on so the
+      // free product's chips/story stay the page's spine and the paid edition is
+      // an additive section, not a gated version.
+      fieldEdition: z.boolean().optional(),
+
       // Copy-paste code tabs (software/models): install + usage.
       install: z.array(z.object({ label: z.string(), lang: z.string(), code: z.string() })).optional(),
       usage: z.array(z.object({ label: z.string(), lang: z.string(), code: z.string() })).optional(),

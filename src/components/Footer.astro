@@ -51,12 +51,14 @@ const latestStories = (await getCollection('story'))
   .map((p) => ({ href: `/story/${p.id}/`, label: p.data.title }));
 
 // Slim meta-row nav: the listing hubs now live as directory column headers, so
-// Explore keeps only the pages without a directory column.
+// Explore keeps only the pages without a directory column. IA refocus 2026-06-13:
+// Arena (the /cockpit/ flagship, relabelled) leads; Advisor stays listed here for
+// SEO/AEO internal linking even though it left the top nav.
 const explore = [
-  { href: '/advisor/', label: 'Advisor' },
+  { href: '/cockpit/', label: 'Arena' },
   { href: '/workflows/', label: 'Workflows' },
   { href: '/experts/', label: 'Experts' },
-  { href: '/cockpit/', label: 'Cockpit' },
+  { href: '/advisor/', label: 'Advisor' },
   { href: '/learn/', label: 'Learn' },
   { href: '/dgx-spark/', label: 'DGX Spark' },
   { href: '/adoption/', label: 'Adoption' },

@@ -143,11 +143,81 @@ Deno.serve(async (req) => {
 // checkout.session.completed — the first fulfillment touchpoint for both kinds.
 // ---------------------------------------------------------------------------
 async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
-  if (session.mode === "subscription") {
+  // Dispatch on the catalog KIND, not the Checkout mode: both sponsor and the
+  // Arena Field Edition renewal are subscription mode, and both book and the
+  // Field Edition one-time/founding are payment mode. Kind is the unambiguous key.
+  const kind = getCatalogItem(session.metadata?.lookup_key ?? "")?.kind ?? session.metadata?.kind;
+  if (kind === "sponsor") {
     await fulfillSponsor(session);
+  } else if (kind === "license") {
+    await fulfillLicense(session);
   } else {
     await fulfillBook(session);
   }
+}
+
+// Arena Field Edition license fulfillment. SCAFFOLD (flag-gated): the live
+// charging button (ARENA_FIELD_EDITION_LIVE) stays OFF until the per-box key-file
+// format is settled with Spark and the field_edition installer is public, so this
+// path only runs once delivery is real. What it does today, so no paid customer is
+// ever lost the moment the flag flips: idempotently RECORD the entitlement
+// (delivered=false) and fire the Meta CAPI parity event. What it still needs
+// (TODO, blocked on the Spark relay — license-key/entitlement format + installer
+// artifact): issue the per-box key-file the installer's `verify` validates and
+// email it with the field_edition download link. Until then the first founding
+// licenses can be fulfilled by hand from the recorded rows.
+async function fulfillLicense(session: Stripe.Checkout.Session) {
+  const lookupKey = session.metadata?.lookup_key ?? "";
+  const email = session.customer_details?.email ?? session.customer_email ?? "";
+  const item = getCatalogItem(lookupKey);
+
+  if (!item || item.kind !== "license" || !email) {
+    console.error("License fulfillment skipped — missing lookup_key/email:", {
+      lookupKey,
+      hasEmail: Boolean(email),
+    });
+    return;
+  }
+
+  const supabase = supabaseAdmin();
+
+  // Same idempotency guard as books: the session id is UNIQUE (23505 on re-delivery).
+  // delivered=false — the key-file + installer delivery is a separate, Spark-gated step.
+  const { error: insertError } = await supabase.from("purchases").insert({
+    stripe_session_id: session.id,
+    stripe_customer_id: asId(session.customer),
+    lookup_key: lookupKey,
+    email,
+    amount_total: session.amount_total,
+    currency: session.currency,
+    roadmap_item: session.metadata?.roadmap_item ?? null,
+  });
+
+  if (insertError) {
+    if (insertError.code === "23505") {
+      console.log("Duplicate license checkout.session.completed, already recorded:", session.id);
+      return;
+    }
+    throw insertError;
+  }
+
+  // TODO(Spark license-key format — relay open): generate the per-box key-file the
+  // installer validates and email it + the field_edition installer link, then mark
+  // delivered=true (mirror fulfillBook's update). Recorded above so manual
+  // fulfillment of the founding cohort is possible until this lands.
+  console.log("License purchase recorded (delivery pending Spark key format):", session.id, lookupKey, email);
+
+  // Meta CAPI Purchase parity (same as book/sponsor) — isolated, never throws.
+  await sendMetaPurchase({
+    eventId: session.id,
+    email,
+    amountCents: session.amount_total,
+    currency: session.currency,
+    lookupKey,
+    fbp: session.metadata?.fbp ?? null,
+    fbc: session.metadata?.fbc ?? null,
+    fbclid: session.metadata?.fbclid ?? null,
+  });
 }
 
 async function fulfillBook(session: Stripe.Checkout.Session) {

@@ -27,6 +27,7 @@ import { trust } from '../data/trust';
 import { detailKeySet, slugify } from '../lib/product/detail';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
+import FieldEditionBand from '../components/sections/FieldEditionBand.astro';
 import dgxCover from '../assets/book/ai-research-dgx-spark-book.jpg';
 import sparkHero from '../assets/dgx-spark/hero.jpg';
 
@@ -140,6 +141,10 @@ const groups: { label: string; blurb: string; works: Work[] }[] = [
       title="AI research, run on one desk."
       subtitle="The NVIDIA DGX Spark is Orionfold's reference machine. The book, open models, and tools below were all proven on it first."
     />
+
+    <!-- The ICP for the Field Edition is the DGX Spark owner, so the buy band
+         leads this hub (own a Spark? turn it into a turnkey, proven AI lab). -->
+    <FieldEditionBand />
 
     <section class="px-6 pt-6">
       <div class="mx-auto flex max-w-6xl flex-col gap-5 rounded-2xl border border-border bg-surface-raised/70 p-5 sm:flex-row sm:items-center sm:justify-between">

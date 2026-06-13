@@ -5,13 +5,14 @@
 // an IntersectionObserver watching the #hero-cta-sentinel; reduced-motion just
 // snaps it in. The Buy variant reuses data-checkout (wired by the layout); the
 // Sponsor variant anchors to #sponsor.
-import type { ProductView } from '../../lib/product/detail';
+import type { ProductView, FieldEditionCta } from '../../lib/product/detail';
 
 interface Props {
   view: ProductView;
   priceLabel?: string;
+  fieldEditionCta?: FieldEditionCta;
 }
-const { view, priceLabel } = Astro.props;
+const { view, priceLabel, fieldEditionCta } = Astro.props;
 const buyLabel = priceLabel ? `Buy · ${priceLabel}` : 'Buy now';
 ---
 <div
@@ -32,7 +33,27 @@ const buyLabel = priceLabel ? `Buy · ${priceLabel}` : 'Buy now';
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>
       </a>
     )}
-    {view.cta === 'buy' ? (
+    {fieldEditionCta ? (
+      fieldEditionCta.live ? (
+        <button
+          type="button"
+          data-checkout={fieldEditionCta.lookupKey}
+          data-item={fieldEditionCta.itemId}
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-mono text-xs tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Buy now · {fieldEditionCta.priceLabel}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
+      ) : (
+        <a
+          href={fieldEditionCta.anchor}
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-mono text-xs tracking-wider text-white transition-colors hover:bg-primary/90"
+        >
+          Field Edition · {fieldEditionCta.priceLabel}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </a>
+      )
+    ) : view.cta === 'buy' ? (
       <button
         type="button"
         data-checkout={view.lookupKey}

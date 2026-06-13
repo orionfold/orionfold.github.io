@@ -7,7 +7,7 @@
 // to it; the demoted canonical/outbound link sits beside them as a ghost
 // secondary. Always renders.
 import { Image } from 'astro:assets';
-import type { ProductView } from '../../lib/product/detail';
+import type { ProductView, FieldEditionCta } from '../../lib/product/detail';
 
 interface Props {
   view: ProductView;
@@ -16,8 +16,10 @@ interface Props {
   chips?: { label: string; value: string }[];
   /** Display price for the Buy CTA, e.g. "$20" (books). */
   priceLabel?: string;
+  /** When set, the hero leads with a Field Edition buy CTA (Arena). */
+  fieldEditionCta?: FieldEditionCta;
 }
-const { view, hero, heroAlt, chips, priceLabel } = Astro.props;
+const { view, hero, heroAlt, chips, priceLabel, fieldEditionCta } = Astro.props;
 const buyLabel = priceLabel ? `Buy PDF + EPUB · ${priceLabel}` : 'Buy now';
 ---
 <section class="px-6 pt-32 sm:pt-36">
@@ -38,7 +40,28 @@ const buyLabel = priceLabel ? `Buy PDF + EPUB · ${priceLabel}` : 'Buy now';
       )}
 
       <div id="hero-cta-sentinel" class="mt-8 flex flex-wrap items-center gap-4">
-        {view.cta === 'buy' ? (
+        {fieldEditionCta ? (
+          fieldEditionCta.live ? (
+            <button
+              type="button"
+              data-checkout={fieldEditionCta.lookupKey}
+              data-item={fieldEditionCta.itemId}
+              data-error-target="hero-cta-err"
+              class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-5 py-3 font-mono text-sm tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Buy now · {fieldEditionCta.priceLabel}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </button>
+          ) : (
+            <a
+              href={fieldEditionCta.anchor}
+              class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-5 py-3 font-mono text-sm tracking-wider text-white transition-colors hover:bg-primary/90"
+            >
+              See the Field Edition · {fieldEditionCta.priceLabel}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+          )
+        ) : view.cta === 'buy' ? (
           <button
             type="button"
             data-checkout={view.lookupKey}
@@ -70,7 +93,7 @@ const buyLabel = priceLabel ? `Buy PDF + EPUB · ${priceLabel}` : 'Buy now';
           </a>
         )}
 
-        {view.outboundPrimary && (
+        {view.outboundPrimary && !fieldEditionCta && (
           <a
             href={view.outboundPrimary.href}
             target="_blank"
@@ -83,6 +106,12 @@ const buyLabel = priceLabel ? `Buy PDF + EPUB · ${priceLabel}` : 'Buy now';
         )}
       </div>
       <p id="hero-cta-err" role="alert" hidden class="mt-2 font-mono text-xs text-red-500"></p>
+      {fieldEditionCta && (
+        <p class="mt-3 text-sm text-text-muted">
+          {fieldEditionCta.priceLabel} for the first {fieldEditionCta.seats} licenses, then {fieldEditionCta.standardLabel}.
+          Arena itself stays free and open. The Field Edition is the assembled team, delivered turnkey.
+        </p>
+      )}
     </div>
 
     {hero && (

@@ -108,6 +108,20 @@ export interface ProductView {
   pills: string[];
 }
 
+/** Arena edition-split above-fold buy rail. Built in ProductDetail.astro when a
+ *  productDetail entry sets `fieldEdition`, consumed by HeroDetail + StickyCtaBar
+ *  so an already-convinced buyer can pay without scrolling. Flag-aware: pre-launch
+ *  the CTA scrolls to the full Field Edition block instead of charging. */
+export interface FieldEditionCta {
+  live: boolean;
+  lookupKey: string;
+  priceLabel: string;
+  standardLabel: string;
+  seats: number;
+  anchor: string;
+  itemId: string;
+}
+
 const TYPE_TAG: Record<ProductType, string> = {
   software: 'Open software',
   model: 'Open-weight model',

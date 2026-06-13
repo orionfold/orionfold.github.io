@@ -19,9 +19,11 @@ import BenchmarkTable from '../components/product/BenchmarkTable.astro';
 import TrustBlock from '../components/product/TrustBlock.astro';
 import BuyBox from '../components/product/BuyBox.astro';
 import SponsorBlock from '../components/product/SponsorBlock.astro';
+import FieldEditionBox from '../components/product/FieldEditionBox.astro';
 import RelatedRail from '../components/product/RelatedRail.astro';
 import ResourcesFooter from '../components/product/ResourcesFooter.astro';
-import { getCatalogItem, formatUsd } from '../data/commerce';
+import { getCatalogItem, formatUsd, FIELD_EDITION } from '../data/commerce';
+import { ARENA_FIELD_EDITION_LIVE } from '../data/launch';
 import { SITE, PERSON, PUBLISHER } from '../data/seo';
 import { ogPath, productOgSlug } from '../data/og';
 import type { ProductView, RelatedItem } from '../lib/product/detail';
@@ -42,6 +44,25 @@ const { view, detail, hero, related, trustStats = [], hasBody } = Astro.props;
 // Book price (display only; CATALOG is the SSOT) for the hero + sticky CTA.
 const item = view.lookupKey ? getCatalogItem(view.lookupKey) : undefined;
 const priceLabel = item ? formatUsd(item.amount) : undefined;
+
+// Edition split (Arena): the above-fold buy rail. When the page carries the
+// Field Edition, the hero + sticky bar get a buy CTA instead of the sponsor
+// anchor, so an already-convinced buyer never has to scroll to pay. The loud
+// number is the founding price ($349, first 25); $499 is the standard behind it.
+// Flag-aware: pre-launch the CTA scrolls to the full Field Edition block
+// (#field-edition) where the "launching soon" state lives, so no charge fires
+// before fulfillment exists.
+const fieldEditionCta = detail.fieldEdition
+  ? {
+      live: ARENA_FIELD_EDITION_LIVE,
+      lookupKey: FIELD_EDITION.founding.lookupKey,
+      priceLabel: formatUsd(FIELD_EDITION.founding.amount),
+      standardLabel: formatUsd(FIELD_EDITION.primary.amount),
+      seats: FIELD_EDITION.foundingSeats,
+      anchor: '#field-edition',
+      itemId: view.roadmapItemId,
+    }
+  : undefined;
 
 // Split related items by destination: internal Orionfold pages stay as full
 // cards in "Keep exploring"; external links demote into the slim Resources rail.
@@ -166,7 +187,47 @@ const productSchema =
         },
       };
 
-const jsonLd = [productSchema, breadcrumbSchema];
+// Edition split (Arena Field Edition): the page's primary Product node is the
+// FREE, open Arena (price-0 Offer above). The paid edition is a DISTINCT Product
+// in the same @graph so AEO/Merchant pick up a real priced offer without making
+// the page a new product silo. Headline price is the $499 primary SKU; the
+// founding price is the same product on a time-boxed offer, so it rides as a
+// second Offer. Both carry the digital merchant fields the free node uses.
+const fieldEditionSchema = detail.fieldEdition
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: 'Arena Field Edition for DGX Spark',
+      description:
+        'A paid edition of the free Orionfold Arena: a one-pass installer that turns an NVIDIA DGX Spark into a private AI lab with an AI research teammate (agents, domain models, and tests). It proves itself on first boot with a verifiable receipt and stays proven for a year. You buy the assembled, proven, kept-proven AI team delivered turnkey.',
+      url: `${canonical}#field-edition`,
+      image: ogImageAbs,
+      category: 'AI software license',
+      brand: { '@type': 'Brand', name: 'Orionfold' },
+      offers: [
+        {
+          '@type': 'Offer',
+          name: 'One-time license',
+          price: (FIELD_EDITION.primary.amount / 100).toFixed(2),
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: `${canonical}#field-edition`,
+          ...digitalMerchantFields,
+        },
+        {
+          '@type': 'Offer',
+          name: `Founding license (first ${FIELD_EDITION.foundingSeats})`,
+          price: (FIELD_EDITION.founding.amount / 100).toFixed(2),
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/LimitedAvailability',
+          url: `${canonical}#field-edition`,
+          ...digitalMerchantFields,
+        },
+      ],
+    }
+  : null;
+
+const jsonLd = [productSchema, breadcrumbSchema, ...(fieldEditionSchema ? [fieldEditionSchema] : [])];
 ---
 <Layout
   title={`${view.title} · Orionfold`}
@@ -177,8 +238,8 @@ const jsonLd = [productSchema, breadcrumbSchema];
 >
   <Nav />
   <main class="pb-24">
-    <HeroDetail view={view} hero={hero} heroAlt={detail.heroAlt} chips={detail.chips} priceLabel={priceLabel} />
-    <StickyCtaBar view={view} priceLabel={priceLabel} />
+    <HeroDetail view={view} hero={hero} heroAlt={detail.heroAlt} chips={detail.chips} priceLabel={priceLabel} fieldEditionCta={fieldEditionCta} />
+    <StickyCtaBar view={view} priceLabel={priceLabel} fieldEditionCta={fieldEditionCta} />
 
     {detail.chapters && <BookContents chapters={detail.chapters} />}
 
@@ -202,7 +263,13 @@ const jsonLd = [productSchema, breadcrumbSchema];
 
     <TrustBlock stats={trustStats} testimonials={detail.testimonials} />
 
-    {view.cta === 'buy' ? <BuyBox view={view} /> : <SponsorBlock view={view} />}
+    {/* Edition split: the paid Field Edition IS the conversion path on this page,
+        so it replaces the sponsor/buy block rather than competing with it. The
+        free install path stays as a quiet trust signal in the hero + the body's
+        install section. Sponsor lives on /sponsor/ and the other product pages. */}
+    {detail.fieldEdition
+      ? <FieldEditionBox view={view} />
+      : (view.cta === 'buy' ? <BuyBox view={view} /> : <SponsorBlock view={view} />)}
 
     <RelatedRail models={internalModels} book={internalBook} reading={internalReading} />
 

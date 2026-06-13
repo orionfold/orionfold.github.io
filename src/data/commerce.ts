@@ -23,6 +23,20 @@ export function formatUsd(cents: number): string {
   return Number.isInteger(dollars) ? `$${dollars}` : `$${dollars.toFixed(2)}`;
 }
 
+// Arena Field Edition price family (display only; CATALOG is the SSOT, Stripe is
+// the source of truth for what gets charged — every checkout resolves the price
+// server-side by lookup_key). The FieldEditionBox reads this so the price chips
+// and the JSON-LD Offer can never drift from the catalog or the buy button.
+export const FIELD_EDITION = {
+  primary: getCatalogItem("license_arena_field_edition")!,
+  founding: getCatalogItem("license_arena_field_edition_founding")!,
+  renewal: getCatalogItem("license_arena_field_edition_renewal")!,
+  /** First-25 founding cap (count-boxed, not dated — operator retires the price in Stripe). */
+  foundingSeats: 25,
+  /** The kept-proven update window the price includes. */
+  windowMonths: 12,
+} as const;
+
 export interface SponsorTierDisplay {
   tier: SponsorTier;
   lookupKey: string;

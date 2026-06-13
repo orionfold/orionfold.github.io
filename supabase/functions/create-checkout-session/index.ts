@@ -146,7 +146,11 @@ Deno.serve(async (req) => {
       line_items: [{ price: price.id, quantity: 1 }],
       // NOTE: never set payment_method_types — dynamic payment methods stay on.
       success_url: `${SITE_URL}${isSponsor ? "/sponsor/thanks/" : "/thanks/"}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE_URL}${isSponsor ? "/sponsor/" : "/books/"}`,
+      // Cancel returns the buyer where they started: sponsors to /sponsor/, an
+      // Arena Field Edition license to its block, books to /books/.
+      cancel_url: `${SITE_URL}${
+        isSponsor ? "/sponsor/" : item.kind === "license" ? "/software/arena/#field-edition" : "/books/"
+      }`,
       // Show the promo-code box on book checkouts so the per-channel code
       // (e.g. DGX-GOOGLE) works — the zero-engineering attribution backstop
       // (MARKETING-HANDOFF.md Task 5). The coupon is product-restricted, so

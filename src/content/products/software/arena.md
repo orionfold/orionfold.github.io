@@ -29,6 +29,12 @@ type: software
 slug: arena
 valueProp: Run, compare, score, and train AI models on your own desktop. Live speed and memory, a private board, an overnight jobs loop. Free, and nothing leaves your machine.
 
+# Edition split (Arena Field Edition launch, 2026-06): the free, open Arena above
+# stays the page's spine; the paid Field Edition renders as an additive block
+# (FieldEditionBox.astro), price + proof from the catalog SSOT, behind the
+# ARENA_FIELD_EDITION_LIVE launch flag.
+fieldEdition: true
+
 chips:
   - label: Language
     value: Python

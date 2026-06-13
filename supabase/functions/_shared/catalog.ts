@@ -14,7 +14,7 @@
 /** Pinned Stripe API version — construct every SDK client with this. */
 export const STRIPE_API_VERSION = "2026-04-22.dahlia";
 
-export type OfferingKind = "book" | "sponsor";
+export type OfferingKind = "book" | "sponsor" | "license";
 export type CheckoutMode = "payment" | "subscription";
 export type SponsorTier = "bronze" | "silver" | "gold" | "platinum";
 
@@ -59,6 +59,38 @@ export const CATALOG: Record<string, CatalogItem> = {
     label: "AI Native Platform",
     amount: 4000,
   },
+  // Arena Field Edition — the first net-new commercial product (the paid edition
+  // of the free, open Orionfold Arena). "Free and open: the machine. Paid: the
+  // evidence." A per-box, offline-tolerant key-file license for NVIDIA DGX Spark;
+  // the buyer gets the proven state of the box plus a 12-month kept-proven update
+  // window. THREE SKUs share the family, all resolved by lookup_key at runtime:
+  //   - primary  $499 one-time (includes the 12-month window)
+  //   - founding  $349 one-time, first 25 licenses only (count-boxed, not dated —
+  //     the operator retires this price in Stripe once 25 have sold)
+  //   - renewal   $149/yr, starts AFTER the 12-month window (no buyer is in renewal
+  //     at launch; surfaced later, not a launch-day primary button)
+  // Fulfillment is a third `kind` ("license") — see stripe-webhook fulfillLicense.
+  license_arena_field_edition: {
+    lookupKey: "license_arena_field_edition",
+    kind: "license",
+    mode: "payment",
+    label: "Arena Field Edition for DGX Spark",
+    amount: 49900,
+  },
+  license_arena_field_edition_founding: {
+    lookupKey: "license_arena_field_edition_founding",
+    kind: "license",
+    mode: "payment",
+    label: "Arena Field Edition for DGX Spark (Founding)",
+    amount: 34900,
+  },
+  license_arena_field_edition_renewal: {
+    lookupKey: "license_arena_field_edition_renewal",
+    kind: "license",
+    mode: "subscription",
+    label: "Arena Field Edition kept-proven renewal",
+    amount: 14900,
+  },
   sponsor_bronze: {
     lookupKey: "sponsor_bronze",
     kind: "sponsor",
@@ -98,6 +130,7 @@ export const LOOKUP_KEYS = Object.keys(CATALOG);
 
 export const BOOK_LOOKUP_KEYS = LOOKUP_KEYS.filter((k) => CATALOG[k].kind === "book");
 export const SPONSOR_LOOKUP_KEYS = LOOKUP_KEYS.filter((k) => CATALOG[k].kind === "sponsor");
+export const LICENSE_LOOKUP_KEYS = LOOKUP_KEYS.filter((k) => CATALOG[k].kind === "license");
 
 /** Sponsor tiers cheapest → priciest (display order). */
 export const SPONSOR_TIERS: SponsorTier[] = ["bronze", "silver", "gold", "platinum"];

@@ -62,6 +62,34 @@ function buildLastmodMap() {
 }
 const LASTMOD = buildLastmodMap();
 
+// Dev-only fix: Astro's dev server (Vite) does not resolve directory index.html
+// for public/ subfolders, so the committed Arena demo (public/arena/demo/ — a
+// static multi-page app with clean /arena/demo/<tab>/ URLs, mirrored from
+// ainative.business) 404s at /arena/demo/ and every sub-route under `astro dev`.
+// This middleware rewrites those directory requests to their index.html BEFORE
+// Vite's static handler, so the demo is fully navigable locally with the SAME
+// clean URLs production uses. `apply: 'serve'` scopes it to dev; the build +
+// GitHub Pages already serve directory indexes, so production is untouched.
+function arenaDemoDirIndexDev() {
+  return {
+    name: 'arena-demo-dir-index-dev',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use((req, _res, next) => {
+        if (req.url) {
+          const qi = req.url.indexOf('?');
+          const path = qi === -1 ? req.url : req.url.slice(0, qi);
+          const query = qi === -1 ? '' : req.url.slice(qi);
+          if (path.startsWith('/arena/demo/') && path.endsWith('/')) {
+            req.url = `${path}index.html${query}`;
+          }
+        }
+        next();
+      });
+    },
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://orionfold.com',
@@ -83,6 +111,11 @@ export default defineConfig({
     // so they get no redirect. At go-live, mirror this as a Cloudflare 301 rule
     // (this static redirect is a meta-refresh page, weaker than an edge 301).
     '/roadmap/': '/adoption/',
+    // Arena Field Edition (2026-06-13): marketing campaign links use the short
+    // vanity path /arena-field-edition/, but the product is an edition split on
+    // the existing Arena surface (not a new silo), so the path resolves to the
+    // Field Edition block. Mirror as a Cloudflare 301 at go-live.
+    '/arena-field-edition/': '/software/arena/',
   },
   integrations: [
     sitemap({
@@ -117,6 +150,6 @@ export default defineConfig({
     }),
   ],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), arenaDemoDirIndexDev()],
   },
 });

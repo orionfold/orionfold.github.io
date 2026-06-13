@@ -41,7 +41,7 @@ export interface SoftwareProduct extends RoadmapMeta {
 
 // Group headings + blurbs for the page sections (order = display order).
 export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }[] = [
-  { id: 'flagship', label: 'Flagship', blurb: 'Our lead products: a governed advisor over your own documents, the cockpit that proves every claim with real tests, and the memory it answers from.' },
+  { id: 'flagship', label: 'Flagship', blurb: 'Our lead products: the cockpit that runs, trains, and proves AI on your own desktop, a governed advisor over your own documents, and the memory it answers from.' },
   { id: 'platform', label: 'The platform', blurb: 'The core: run AI on your own computer, and drive it with code.' },
   { id: 'devtools', label: 'Developer tools', blurb: 'For builders: testing, terminals, and reusable patterns.' },
   { id: 'apps', label: 'Personal AI apps', blurb: 'Ready-to-use apps that keep your data on your machine.' },
@@ -50,6 +50,26 @@ export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }
 
 export const software: SoftwareProduct[] = [
   // ── Flagship (pole position: the products we commercialize) ──
+  // IA refocus 2026-06-13: Arena leads (it is the Arena Field Edition home, the
+  // site's primary commercial CTA). Order = Arena -> Advisor -> Cortex; this array
+  // order also drives the CatalogShelf door art + the /software/ section. Supersedes
+  // the 2026-06-11 Advisor-first pole position.
+  {
+    slug: 'arena',
+    group: 'flagship',
+    eyebrow: 'Eval cockpit',
+    title: 'Orionfold Arena',
+    body: 'One screen to run, compare, score, and now train the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, queue tests and training runs, and wake up to a morning report. Nothing you type leaves your machine.',
+    pills: ['Runs local', 'Leaderboard', 'Trains + tests', 'Private'],
+    href: 'https://ainative.business/arena/',
+    ctaText: 'See Arena',
+    // Demo mirrored under orionfold.com (public/arena/demo/) so buyers stay on-site.
+    demoHref: '/arena/demo/',
+    demoLabel: 'Try the live demo',
+    coverType: 'poster',
+    cover: 'arena-poster.png',
+    status: 'active', // living tool, served by fieldkit; appears on the roadmap
+  },
   {
     // Graduated from the roadmap overlay 2026-06-10: the Advisor shipped
     // publicly (promoted fine-tuned 4B lane, Orionfold/Advisor-GGUF +
@@ -64,21 +84,6 @@ export const software: SoftwareProduct[] = [
     ctaText: 'See Advisor',
     coverType: 'poster',
     cover: 'advisor-poster.png',
-  },
-  {
-    slug: 'arena',
-    group: 'flagship',
-    eyebrow: 'Eval cockpit',
-    title: 'Orionfold Arena',
-    body: 'One screen to run, compare, score, and now train the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, queue tests and training runs, and wake up to a morning report. Nothing you type leaves your machine.',
-    pills: ['Runs local', 'Leaderboard', 'Trains + tests', 'Private'],
-    href: 'https://ainative.business/arena/',
-    ctaText: 'See Arena',
-    demoHref: 'https://ainative.business/arena/demo/',
-    demoLabel: 'Try the live demo',
-    coverType: 'poster',
-    cover: 'arena-poster.png',
-    status: 'active', // living tool, served by fieldkit; appears on the roadmap
   },
   {
     slug: 'cortex',

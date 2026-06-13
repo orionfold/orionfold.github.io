@@ -4,11 +4,15 @@
 // hamburger, and a scroll-triggered blur.
 // Ported from the donor Nav, minus ThemeToggle and the in-nav social icon
 // (social links live in the Footer per the spec).
+// IA refocus 2026-06-13: nav leads with Arena (the Arena Field Edition home).
+// "Cockpit" relabelled to "Arena" — the /cockpit/ URL is kept (no redirect churn,
+// SEO equity retained) and the page leads with Arena + the Field Edition. Advisor
+// dropped from the top nav (its /advisor/ page stays live + footer-linked for
+// SEO/AEO). Arena takes pole position.
 const links = [
-  { href: '/advisor/', label: 'Advisor' },
+  { href: '/cockpit/', label: 'Arena' },
   { href: '/workflows/', label: 'Workflows' },
   { href: '/experts/', label: 'Experts' },
-  { href: '/cockpit/', label: 'Cockpit' },
   { href: '/learn/', label: 'Learn' },
   { href: '/adoption/', label: 'Adoption' },
 ];
