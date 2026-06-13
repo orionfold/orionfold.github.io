@@ -63,15 +63,16 @@ jobs:
 
       - name: Upload Lighthouse reports
         if: always() # keep the reports even when a budget assertion fails
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-reports
           # BOTH paths are load-bearing: upload-artifact roots the artifact at
           # the least-common-ancestor of all search paths (= repo root), which
           # preserves the audit-reports/lhci/manifest.json prefix that
           # scripts/pull-lhci-artifact.mjs expects. include-hidden-files because
-          # .lighthouseci is a dot-dir — v4 silently skips it by default (the
-          # original "empty artifact" footgun).
+          # .lighthouseci is a dot-dir — upload-artifact silently skips hidden
+          # files by default (the original "empty artifact" footgun; default
+          # unchanged through v7).
           path: |
             .lighthouseci/
             audit-reports/lhci/
