@@ -11,7 +11,6 @@
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import PageHeader from '../components/ui/PageHeader.astro';
 import Highlight from '../components/ui/Highlight.astro';
 import BookCover from '../components/ui/BookCover.astro';
 import TrustBlock from '../components/product/TrustBlock.astro';
@@ -136,11 +135,46 @@ const groups: { label: string; blurb: string; works: Work[] }[] = [
 >
   <Nav />
   <main>
-    <PageHeader
-      eyebrow="Built on the NVIDIA stack"
-      title="AI research, run on one desk."
-      subtitle="The NVIDIA DGX Spark is Orionfold's reference machine. The book, open models, and tools below were all proven on it first."
-    />
+    <!-- Full-bleed hero (G3 redesign): the featured art runs edge to edge — top
+         behind the transparent fixed nav, left and right to the viewport edges —
+         with the masthead on a frosted glass panel over it. It is the page's LCP
+         element (eager + fetchpriority; the largest above-fold paint; never
+         data-animate). Replaces the slim PageHeader for this hub only. -->
+    <section class="relative mt-[74px] min-h-[72vh] w-full overflow-hidden sm:min-h-[80vh]">
+      <Image
+        src={sparkHero}
+        alt="A small gold desktop computer glows on a plain desk at night, sending bright beams of light up into a wide sky full of stars and constellations."
+        widths={[768, 1280, 1920, 2560]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        data-no-zoom
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+      <!-- legibility scrim: darker at the foot where the glass panel sits -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/35"></div>
+      <div class="relative mx-auto flex min-h-[72vh] max-w-6xl items-end px-6 pb-14 pt-16 sm:min-h-[80vh]">
+        <div class="max-w-2xl rounded-3xl border border-white/15 bg-white/10 p-7 shadow-2xl backdrop-blur-md sm:p-9">
+          <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-white/75">Built on the NVIDIA stack</p>
+          <h1 class="mt-3 text-balance text-4xl leading-[1.1] text-white sm:text-5xl">AI research, run on one desk.</h1>
+          <p class="mt-4 max-w-xl text-base leading-relaxed text-white/85">
+            The NVIDIA DGX Spark is Orionfold's reference machine. The book, open models, and tools below were all proven on it first.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page-level abstract: a short, plain-spoken summary that gives breathing
+         space between the full-bleed hero and the first band below. -->
+    <section class="px-6 py-14 sm:py-20">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="text-lg leading-relaxed text-text-muted sm:text-xl">
+          Everything below was built and proven on the NVIDIA DGX Spark, a small AI computer
+          that sits on your own desk. This page gathers it in one place: the book, the open
+          models, the tools, and the Field Edition that turns a Spark into a turnkey AI lab.
+        </p>
+      </div>
+    </section>
 
     <!-- The ICP for the Field Edition is the DGX Spark owner, so the buy band
          leads this hub (own a Spark? turn it into a turnkey, proven AI lab). -->
@@ -184,23 +218,6 @@ const groups: { label: string; blurb: string; works: Work[] }[] = [
           ))}
         </div>
       </div>
-    </section>
-
-    <!-- Featured hero art (G3). Eager + high priority as the page's one hero image;
-         not data-animate (it is an LCP candidate, per the mobile-perf invariant). -->
-    <section class="px-6 pt-6">
-      <figure class="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border">
-        <Image
-          src={sparkHero}
-          alt="A small gold desktop computer glows on a plain desk at night, sending bright beams of light up into a wide sky full of stars and constellations."
-          widths={[640, 960, 1280, 1600]}
-          sizes="(min-width: 1152px) 72rem, 100vw"
-          loading="eager"
-          fetchpriority="high"
-          data-no-zoom
-          class="aspect-[16/9] w-full object-cover"
-        />
-      </figure>
     </section>
 
     <!-- Posture: why the Spark, in plain words -->
