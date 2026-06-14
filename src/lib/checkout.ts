@@ -87,7 +87,7 @@ export interface OrderStatus {
   ok: boolean;
   paid: boolean;
   mode: "payment" | "subscription";
-  kind: "book" | "sponsor";
+  kind: "book" | "sponsor" | "license";
   label: string | null;
   tier: string | null;
   email: string | null;

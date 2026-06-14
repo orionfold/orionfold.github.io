@@ -15,7 +15,16 @@
 
 import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { getCatalogItem, STRIPE_API_VERSION } from "../_shared/catalog.ts";
+import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
+import { editionForLookupKey, getCatalogItem, STRIPE_API_VERSION } from "../_shared/catalog.ts";
+import { publicKeyFromSeed, signLicense, verifyLicense } from "../_shared/license.ts";
+import {
+  buildLicensePayload,
+  licenseTerm,
+  LICENSE_KEY_ID,
+  LICENSE_SEATS,
+  LICENSE_TIER,
+} from "../_shared/license-payload.ts";
 import { sendMetaPurchase } from "../_shared/meta-capi.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
@@ -31,6 +40,21 @@ const cryptoProvider = Stripe.createSubtleCryptoProvider();
 const WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") ?? "";
 const BOOK_FILES_BUCKET = "book-files";
 const DOWNLOAD_TTL_SECONDS = 60 * 60 * 24 * 7; // 7-day signed download links
+
+// Private bucket for issued Arena Field Edition license files. The webhook
+// uploads the signed license here and hands the buyer a signed URL their
+// installer fetches (the bootstrap REQUIRES OF_LICENSE_URL — it never reads a
+// pre-placed file). 7-day TTL because the email link has no on-demand re-mint
+// yet (entitlement-fetch / task f restores short-TTL); "reply for a fresh link"
+// is the v1 fallback. The license is signed claims, not the moat (weights stay
+// on HF for v1), so a long-lived URL is low risk.
+const LICENSE_FILES_BUCKET = "field-edition";
+const LICENSE_URL_TTL_SECONDS = 60 * 60 * 24 * 7;
+
+// The prod Ed25519 seed (base64) that signs real Arena Field Edition licenses.
+// Set as a Supabase secret; pairs with the pubkey Spark embeds in TRUSTED_KEYS.
+// Absent in non-prod → fulfillLicense records the sale but does not issue.
+const LICENSE_SIGNING_SEED_ENV = "LICENSE_SIGNING_SEED_B64";
 
 // Buyer-facing download links use the branded vanity host, not the project-ref
 // host that supabase-js builds from SUPABASE_URL. The signed token signs the
@@ -156,24 +180,30 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 }
 
-// Arena Field Edition license fulfillment. SCAFFOLD (flag-gated): the live
-// charging button (ARENA_FIELD_EDITION_LIVE) stays OFF until the per-box key-file
-// format is settled with Spark and the field_edition installer is public, so this
-// path only runs once delivery is real. What it does today, so no paid customer is
-// ever lost the moment the flag flips: idempotently RECORD the entitlement
-// (delivered=false) and fire the Meta CAPI parity event. What it still needs
-// (TODO, blocked on the Spark relay — license-key/entitlement format + installer
-// artifact): issue the per-box key-file the installer's `verify` validates and
-// email it with the field_edition download link. Until then the first founding
-// licenses can be fulfilled by hand from the recorded rows.
+// Arena Field Edition license fulfillment (license-fulfillment Phase 2, task 1d).
+// A-hybrid (OPEN-1 decided 2026-06-13): issue a TOKEN-LESS orionfold.license/v1
+// file (claims + term only, no GHCR pull_token) signed with the prod Ed25519 seed,
+// persist the entitlement to fe_entitlements (the CRM/lifecycle truth), and email
+// the signed file + setup steps. Two planes are written: `purchases` (the raw sale
+// — its row count also enforces the founding-25 cap in create-checkout-session) and
+// `fe_entitlements` (the issued license). See arena-field-edition-license-workflow-v1.md.
+//
+// Note: a prod-signed license verifies on a box only once Spark embeds the prod
+// pubkey + ships a fieldkit wheel; sign + store + deliver works now. Subsequent
+// ANNUAL renewals arrive as invoice.paid on the subscription (not a new Checkout)
+// and are a fast-follow (entitlement-fetch / lifecycle) — no buyer is in renewal
+// at launch. The renewal SKU's FIRST checkout issues a standard 12-month license
+// here so a paid renewal is never dropped.
 async function fulfillLicense(session: Stripe.Checkout.Session) {
   const lookupKey = session.metadata?.lookup_key ?? "";
   const email = session.customer_details?.email ?? session.customer_email ?? "";
   const item = getCatalogItem(lookupKey);
+  const edition = editionForLookupKey(lookupKey);
 
-  if (!item || item.kind !== "license" || !email) {
-    console.error("License fulfillment skipped — missing lookup_key/email:", {
+  if (!item || item.kind !== "license" || !edition || !email) {
+    console.error("License fulfillment skipped — missing lookup_key/edition/email:", {
       lookupKey,
+      hasEdition: Boolean(edition),
       hasEmail: Boolean(email),
     });
     return;
@@ -181,8 +211,10 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
 
   const supabase = supabaseAdmin();
 
-  // Same idempotency guard as books: the session id is UNIQUE (23505 on re-delivery).
-  // delivered=false — the key-file + installer delivery is a separate, Spark-gated step.
+  // 1. Record the raw sale FIRST. The session id is UNIQUE, so a webhook
+  //    re-delivery hits 23505 and we stop here — never re-issuing a second
+  //    license. This same `purchases` row is what the founding-cap counter in
+  //    create-checkout-session counts, so it must always be written.
   const { error: insertError } = await supabase.from("purchases").insert({
     stripe_session_id: session.id,
     stripe_customer_id: asId(session.customer),
@@ -201,11 +233,21 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
     throw insertError;
   }
 
-  // TODO(Spark license-key format — relay open): generate the per-box key-file the
-  // installer validates and email it + the field_edition installer link, then mark
-  // delivered=true (mirror fulfillBook's update). Recorded above so manual
-  // fulfillment of the founding cohort is possible until this lands.
-  console.log("License purchase recorded (delivery pending Spark key format):", session.id, lookupKey, email);
+  // 2. Sign + store + deliver. The prod seed gates real issuance: without it we
+  //    keep the recorded sale (delivered=false) for manual hand-issue. We never
+  //    throw out of here — a 500 makes Stripe retry into the 23505 guard above,
+  //    which would never re-issue anyway, so a failed delivery just leaves the row
+  //    delivered=false for the operator to re-issue by hand.
+  const seedB64 = Deno.env.get(LICENSE_SIGNING_SEED_ENV);
+  if (!seedB64) {
+    console.error("LICENSE_SIGNING_SEED_B64 unset — license recorded, NOT issued:", session.id, lookupKey);
+  } else {
+    try {
+      await issueAndDeliverLicense(supabase, session, { lookupKey, edition, email, item });
+    } catch (err) {
+      console.error("License issuance/delivery failed (recorded, delivered=false):", session.id, err);
+    }
+  }
 
   // Meta CAPI Purchase parity (same as book/sponsor) — isolated, never throws.
   await sendMetaPurchase({
@@ -218,6 +260,207 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
     fbc: session.metadata?.fbc ?? null,
     fbclid: session.metadata?.fbclid ?? null,
   });
+}
+
+// Build → sign → self-verify → persist → deliver → mark delivered. Throws on any
+// failure; the caller records the sale first and swallows the throw (see above).
+async function issueAndDeliverLicense(
+  // deno-lint-ignore no-explicit-any
+  supabase: any,
+  session: Stripe.Checkout.Session,
+  ctx: {
+    lookupKey: string;
+    edition: ReturnType<typeof editionForLookupKey> & string;
+    email: string;
+    item: { label: string };
+  },
+) {
+  const seedB64 = Deno.env.get(LICENSE_SIGNING_SEED_ENV)!;
+
+  // License id from the sequence — the only nextval path (supabase-js can't call
+  // nextval directly). Drawn AFTER the purchase insert so retries don't burn ids.
+  const { data: licenseId, error: idError } = await supabase.rpc("next_fe_license_id");
+  if (idError || typeof licenseId !== "string") {
+    throw idError ?? new Error("next_fe_license_id returned no id");
+  }
+
+  // Term from the sale moment; provenance from the line item + the charge.
+  const term = licenseTerm(session.created);
+  const priceId = await sessionPriceId(session);
+  const purchaseId = asId(session.payment_intent) ?? asId(session.subscription);
+  const name = session.customer_details?.name ?? null;
+
+  const payload = buildLicensePayload({
+    licenseId,
+    edition: ctx.edition,
+    issuedTo: { email: ctx.email, name },
+    issuedAt: term.issuedAt,
+    notBefore: term.notBefore,
+    expiresAt: term.expiresAt,
+    provenance: { stripe_purchase_id: purchaseId, stripe_price_id: priceId },
+  });
+
+  // Sign with the prod seed, then self-verify against the seed's OWN public key
+  // before delivery — a corrupted/misconfigured seed must never ship a license
+  // that silently fails on the customer's box.
+  const signature = await signLicense(payload, seedB64, LICENSE_KEY_ID);
+  const pub = await publicKeyFromSeed(seedB64);
+  if (!(await verifyLicense(payload, signature.value, pub))) {
+    throw new Error(`License self-verify FAILED for ${licenseId} — refusing to deliver`);
+  }
+
+  const licenseFile = { payload, signature };
+  const fileText = JSON.stringify(licenseFile, null, 2);
+
+  // Host the signed file + mint a download URL for the installer's OF_LICENSE_URL.
+  const installUrl = await uploadAndSignLicense(supabase, licenseId, fileText);
+
+  // Persist the issued entitlement (CRM/lifecycle truth). onConflict on the
+  // unique session id keeps it idempotent. token_ref stays null (A-hybrid).
+  const { error: entError } = await supabase.from("fe_entitlements").upsert(
+    {
+      license_id: licenseId,
+      key_id: LICENSE_KEY_ID,
+      edition: ctx.edition,
+      tier: LICENSE_TIER,
+      seats: LICENSE_SEATS,
+      email: ctx.email,
+      issued_to_name: name,
+      issued_to_org: null,
+      stripe_session_id: session.id,
+      stripe_customer_id: asId(session.customer),
+      stripe_subscription_id: asId(session.subscription),
+      stripe_price_id: priceId,
+      status: "active",
+      issued_at: term.issuedAt,
+      not_before: term.notBefore,
+      expires_at: term.expiresAt,
+      token_ref: null,
+    },
+    { onConflict: "stripe_session_id" },
+  );
+  if (entError) throw entError;
+
+  // Deliver: the install command (signed URL inlined) + the file as a backup copy.
+  await sendLicenseEmail(ctx.email, ctx.item.label, licenseId, fileText, installUrl);
+
+  // Mark delivered on both planes.
+  const now = new Date().toISOString();
+  await supabase
+    .from("fe_entitlements")
+    .update({ delivered: true, delivered_at: now, updated_at: now })
+    .eq("stripe_session_id", session.id);
+  await supabase
+    .from("purchases")
+    .update({ delivered: true, delivered_at: now })
+    .eq("stripe_session_id", session.id);
+
+  console.log("License issued + delivered:", licenseId, ctx.lookupKey, ctx.email);
+}
+
+/**
+ * Upload the signed license file to the private bucket and return a signed
+ * download URL (branded host) for the installer's OF_LICENSE_URL. Throws on
+ * failure so the caller leaves the sale delivered=false for manual re-issue.
+ */
+async function uploadAndSignLicense(
+  // deno-lint-ignore no-explicit-any
+  supabase: any,
+  licenseId: string,
+  fileText: string,
+): Promise<string> {
+  const path = `licenses/${licenseId}.json`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(LICENSE_FILES_BUCKET)
+    .upload(path, new Blob([fileText], { type: "application/json" }), {
+      contentType: "application/json",
+      upsert: true, // a re-issue overwrites; the 23505 guard already blocks dupes
+    });
+  if (uploadError) throw uploadError;
+
+  const { data: signed, error: signError } = await supabase.storage
+    .from(LICENSE_FILES_BUCKET)
+    .createSignedUrl(path, LICENSE_URL_TTL_SECONDS);
+  if (signError || !signed?.signedUrl) {
+    throw signError ?? new Error(`createSignedUrl returned no url for ${path}`);
+  }
+  return brandedUrl(signed.signedUrl);
+}
+
+/** The Stripe price id charged on this session (for license provenance). */
+async function sessionPriceId(session: Stripe.Checkout.Session): Promise<string | null> {
+  try {
+    const items = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
+    return items.data[0]?.price?.id ?? null;
+  } catch (err) {
+    console.error("listLineItems failed for", session.id, err);
+    return null;
+  }
+}
+
+async function sendLicenseEmail(
+  email: string,
+  productLabel: string,
+  licenseId: string,
+  fileText: string,
+  installUrl: string,
+) {
+  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+  if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
+
+  // Attach the signed file as a backup copy (UTF-8 base64 so unicode names
+  // survive). The install itself uses the signed URL, not the attachment — the
+  // bootstrap requires OF_LICENSE_URL and never reads a pre-placed file.
+  const fileB64 = encodeBase64(new TextEncoder().encode(fileText));
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "Orionfold Studio <manav@updates.orionfold.com>",
+      reply_to: "manav@orionfold.com",
+      to: [email],
+      subject: `Your ${productLabel} license (${licenseId})`,
+      text: licenseEmailText(productLabel, licenseId, installUrl),
+      attachments: [{ filename: "orionfold-license.json", content: fileB64 }],
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("Resend error:", res.status, text);
+    throw new Error(`Resend API error: ${res.status}`);
+  }
+}
+
+function licenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
+  return `Thank you for buying ${productLabel}.
+
+Your license number is ${licenseId}. Your license file is also
+attached as a backup copy, so you always have it.
+
+To set it up on your DGX Spark, run this one command. It has
+your own private setup link, which works for 7 days:
+
+curl -fsSL https://getarena.orionfold.com | OF_LICENSE_URL='${installUrl}' sh
+
+That checks your license, installs everything, and brings Arena
+up. Each time it starts it runs a quick check and writes a
+receipt you can read.
+
+If the link stops working before you install, just reply to this
+email and we will send you a fresh one.
+
+Your license keeps you up to date for 12 months.
+
+--
+Orionfold
+https://orionfold.com
+`;
 }
 
 async function fulfillBook(session: Stripe.Checkout.Session) {

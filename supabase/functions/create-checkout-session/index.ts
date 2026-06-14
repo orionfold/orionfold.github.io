@@ -7,7 +7,11 @@
 // (dynamic payment methods stay on). See STRIPE-HANDOFF.md §2, §4.
 
 import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
+  FOUNDING_LOOKUP_KEY,
+  FOUNDING_SEATS,
+  STANDARD_LICENSE_LOOKUP_KEY,
   getCatalogItem,
   isAllowedLookupKey,
   STRIPE_API_VERSION,
@@ -19,6 +23,44 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   httpClient: Stripe.createFetchHttpClient(),
   appInfo: { name: "orionfold-website", url: "https://orionfold.com" },
 });
+
+function supabaseAdmin() {
+  return createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  );
+}
+
+// Arena Field Edition founding cap. The founding price ($349) is honored for the
+// first FOUNDING_SEATS licenses; once that many founding sales are RECORDED (the
+// stripe-webhook writes a `purchases` row per completed license sale), the 26th+
+// founding request falls back to the standard $499 price. This gates at the source
+// — Checkout for a 26th founding buyer never opens at $349 — so we never oversell
+// even though the Stripe founding price object stays active. Returns the lookup key
+// the checkout should actually use.
+async function resolveFoundingKey(lookupKey: string): Promise<string> {
+  if (lookupKey !== FOUNDING_LOOKUP_KEY) return lookupKey;
+  try {
+    const { count, error } = await supabaseAdmin()
+      .from("purchases")
+      .select("id", { count: "exact", head: true })
+      .eq("lookup_key", FOUNDING_LOOKUP_KEY);
+    if (error) throw error;
+    if ((count ?? 0) >= FOUNDING_SEATS) {
+      console.log(
+        `Founding cap reached (${count}/${FOUNDING_SEATS}) — falling back to standard price ${STANDARD_LICENSE_LOOKUP_KEY}`,
+      );
+      return STANDARD_LICENSE_LOOKUP_KEY;
+    }
+    return FOUNDING_LOOKUP_KEY;
+  } catch (err) {
+    // Fail OPEN to the advertised founding price: a transient count error must not
+    // deny an early buyer the price the marketing promised. The webhook records
+    // actual sales, so any rare oversell is visible and refundable by the operator.
+    console.error("Founding-cap count failed; honoring founding price:", err);
+    return FOUNDING_LOOKUP_KEY;
+  }
+}
 
 const SITE_URL = (Deno.env.get("SITE_URL") ?? "https://orionfold.com").replace(/\/$/, "");
 
@@ -92,23 +134,29 @@ Deno.serve(async (req) => {
     if (!isAllowedLookupKey(lookupKey)) {
       return jsonResponse({ error: "Unknown item." }, corsHeaders, 400);
     }
-    const item = getCatalogItem(lookupKey)!;
+
+    // Founding cap: a request for the founding price past the first FOUNDING_SEATS
+    // sales is transparently served the standard price instead. Everything below
+    // (item, price, metadata, fulfillment) uses this effective key, so the buyer's
+    // `purchases` row records exactly what they were charged for.
+    const effectiveKey = await resolveFoundingKey(lookupKey);
+    const item = getCatalogItem(effectiveKey)!;
 
     // Resolve the price by lookup key (never trust a client-supplied price/amount).
     const prices = await stripe.prices.list({
-      lookup_keys: [lookupKey],
+      lookup_keys: [effectiveKey],
       active: true,
       limit: 1,
     });
     const price = prices.data[0];
     if (!price) {
-      console.error("No active price for lookup key:", lookupKey);
+      console.error("No active price for lookup key:", effectiveKey);
       return jsonResponse({ error: "This item isn't available right now." }, corsHeaders, 409);
     }
 
     const isSponsor = item.kind === "sponsor";
     const metadata: Record<string, string> = {
-      lookup_key: lookupKey,
+      lookup_key: effectiveKey,
       kind: item.kind,
     };
     if (item.tier) metadata.tier = item.tier;

@@ -8,6 +8,7 @@
 // tier display order, and the per-tier benefit copy (grade 3-5, no em-dashes).
 import {
   CATALOG,
+  FOUNDING_SEATS,
   SPONSOR_TIERS,
   getCatalogItem,
   sponsorLookupKey,
@@ -31,8 +32,10 @@ export const FIELD_EDITION = {
   primary: getCatalogItem("license_arena_field_edition")!,
   founding: getCatalogItem("license_arena_field_edition_founding")!,
   renewal: getCatalogItem("license_arena_field_edition_renewal")!,
-  /** First-25 founding cap (count-boxed, not dated — operator retires the price in Stripe). */
-  foundingSeats: 25,
+  /** First-25 founding cap (count-boxed, not dated — enforced server-side in
+   * create-checkout-session, which falls the 26th+ founding request back to the
+   * standard price). Sourced from the shared catalog SSOT so display + gate agree. */
+  foundingSeats: FOUNDING_SEATS,
   /** The kept-proven update window the price includes. */
   windowMonths: 12,
 } as const;

@@ -101,7 +101,7 @@ import SectionLabel from '../../components/ui/SectionLabel.astro';
       itemId: status.lookupKey,
       itemName: status.label,
       email: status.email,
-      isBook: false,
+      kind: 'sponsor',
     });
 
     const tierName = status.tier ? TIER_NAMES[status.tier] ?? null : null;

@@ -1,0 +1,43 @@
+name: License conformance
+
+# The Website half of arena-field-edition-license-workflow-v1.md §6: assert this
+# repo's JS license issuer stays byte-identical to Spark's Python verifier by
+# re-running the shared conformance vector (license-conformance-v1.json) on every
+# change to the signing code. If canonicalization or signing ever drifts, this
+# goes red BEFORE a customer is issued an unverifiable license.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "supabase/functions/_shared/license.ts"
+      - "supabase/functions/_shared/license.test.ts"
+      - "supabase/functions/_shared/license-payload.ts"
+      - "supabase/functions/_shared/license-payload.test.ts"
+      - "supabase/functions/_shared/catalog.ts"
+      - "supabase/functions/_shared/license-conformance-v1.json"
+      - ".github/workflows/license-conformance.yml"
+  pull_request:
+    paths:
+      - "supabase/functions/_shared/license.ts"
+      - "supabase/functions/_shared/license.test.ts"
+      - "supabase/functions/_shared/license-payload.ts"
+      - "supabase/functions/_shared/license-payload.test.ts"
+      - "supabase/functions/_shared/catalog.ts"
+      - "supabase/functions/_shared/license-conformance-v1.json"
+  workflow_dispatch:
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Run license conformance vector + payload-shape lock
+        run: deno test --allow-read supabase/functions/_shared/license.test.ts supabase/functions/_shared/license-payload.test.ts

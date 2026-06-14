@@ -3,9 +3,12 @@
 // browser learns a purchase happened is the thanks page, after order-status
 // confirms it. Everything fires here, keyed by the Stripe session id.
 //
-//   • GA4 `purchase` event (Task 3) — books AND sponsors (ecommerce + audiences)
-//   • Native Google Ads "Purchase" conversion (Task 1) — book purchases only,
-//     since the ad campaign sells the two books and the action is value-based
+//   • GA4 `purchase` event (Task 3) — ALL paid kinds (books, sponsors, licenses);
+//     drives ecommerce revenue + audiences
+//   • Native Google Ads "Purchase" conversion (Task 1) — books AND Arena licenses
+//     (value-based); skipped for sponsors. NOTE: both currently use the one
+//     GOOGLE_ADS_PURCHASE_SEND_TO action — if Arena gets its own ad campaign, give
+//     it a dedicated conversion action so license value never skews book bidding.
 //   • Enhanced Conversions (Task 2) — hashed (SHA-256) buyer email set before
 //     the Ads conversion fires, recovering cookie-lost conversions. Takes effect
 //     once the operator enables Enhanced Conversions in the Google Ads UI;
@@ -65,19 +68,24 @@ export interface PurchaseConversion {
   itemName: string | null;
   /** Buyer email for Enhanced Conversions (hashed before send; never sent raw). */
   email: string | null;
-  /** True for book purchases — gates the native Google Ads conversion. */
-  isBook: boolean;
+  /** Catalog kind — gates which ad-platform conversions fire (see reportPurchase). */
+  kind: 'book' | 'sponsor' | 'license';
 }
 
 /**
- * Fire the GA4 purchase event and, for books, the native Google Ads conversion
- * (with hashed-email Enhanced Conversions). Idempotent per transaction id.
+ * Fire the GA4 purchase event and, for value-based kinds (books + Arena licenses),
+ * the native Google Ads conversion (with hashed-email Enhanced Conversions) and the
+ * Meta Pixel Purchase. Sponsors fire GA4 only. Idempotent per transaction id.
  */
 export async function reportPurchase(c: PurchaseConversion): Promise<void> {
   if (!claimOnce(c.transactionId)) return;
 
   const value = typeof c.value === 'number' ? c.value : undefined;
   const currency = c.currency || 'USD';
+
+  // Books and licenses are value-based purchases that feed the ad platforms;
+  // sponsors are recurring support and stay GA4-only.
+  const fireAdConversions = c.kind === 'book' || c.kind === 'license';
 
   // Task 3 — GA4 purchase (marked as a key event in GA4; powers audiences and
   // the GA4↔Ads assisted-conversion link the operator wires).
@@ -88,8 +96,8 @@ export async function reportPurchase(c: PurchaseConversion): Promise<void> {
     items: c.itemId ? [{ item_id: c.itemId, item_name: c.itemName || undefined }] : undefined,
   });
 
-  // Tasks 1 + 2 — native Google Ads conversion + Enhanced Conversions, books only.
-  if (c.isBook && GOOGLE_ADS_PURCHASE_SEND_TO) {
+  // Tasks 1 + 2 — native Google Ads conversion + Enhanced Conversions (books + licenses).
+  if (fireAdConversions && GOOGLE_ADS_PURCHASE_SEND_TO) {
     if (c.email) {
       try {
         const hashed = await sha256Hex(c.email.trim().toLowerCase());
@@ -106,11 +114,11 @@ export async function reportPurchase(c: PurchaseConversion): Promise<void> {
     });
   }
 
-  // Meta Pixel Purchase, books only — the browser half of the Meta conversion.
-  // The eventID is the Stripe session id, the SAME id the stripe-webhook sends
-  // server-side via CAPI, so Meta dedupes the pair into one conversion
+  // Meta Pixel Purchase (books + licenses) — the browser half of the Meta
+  // conversion. The eventID is the Stripe session id, the SAME id the stripe-webhook
+  // sends server-side via CAPI, so Meta dedupes the pair into one conversion
   // (browser event wins when both arrive; CAPI recovers the iOS/blocked cases).
-  if (c.isBook) {
+  if (fireAdConversions) {
     fbq('track', 'Purchase', {
       value,
       currency,
