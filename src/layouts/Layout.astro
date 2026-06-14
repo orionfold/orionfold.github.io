@@ -70,16 +70,45 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          META_PIXEL_ID is set in src/data/meta.ts, so the site deploys safely
          before the Events Manager setup. PageView here; Purchase fires on
          /thanks via lib/conversion.ts with an eventID that pairs with the
-         server-side CAPI event (stripe-webhook) for dedup. -->
+         server-side CAPI event (stripe-webhook) for dedup.
+
+         DEFERRED off the critical path (2026-06-13 perf pass — the eager pixel
+         was the page's heaviest 3p main-thread cost). The loader fires on the
+         FIRST of: a user interaction, requestIdleCallback, or a 3s timeout — so
+         PageView still records for essentially every engaged session. The only
+         loss is a hard-bounce (gone in <~3s, zero interaction), which is
+         low-value for audience building. Purchase is NOT affected: reportPurchase
+         in lib/conversion.ts force-loads the pixel (window.__ofLoadMetaPixel)
+         before tracking, and CAPI (stripe-webhook) is the server-side backstop.
+         Marketing can align or counter — see the strategy _RELAY.md entry. -->
     {META_PIXEL_ID && (
       <script is:inline define:vars={{ META_PIXEL_ID }}>
-        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-        document,'script','https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', META_PIXEL_ID);
-        fbq('track', 'PageView');
+        (function () {
+          var loaded = false;
+          var EVENTS = ['pointerdown', 'keydown', 'scroll', 'touchstart'];
+          var OPTS = { once: true, passive: true, capture: true };
+          function unbind() {
+            EVENTS.forEach(function (ev) { window.removeEventListener(ev, load, OPTS); });
+          }
+          function load() {
+            if (loaded) return;
+            loaded = true;
+            unbind();
+            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+            n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+            document,'script','https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', META_PIXEL_ID);
+            fbq('track', 'PageView');
+          }
+          // Exposed so reportPurchase() can force-load on the conversion page,
+          // preserving the browser↔CAPI dedup pair even though PageView is lazy.
+          window.__ofLoadMetaPixel = load;
+          EVENTS.forEach(function (ev) { window.addEventListener(ev, load, OPTS); });
+          if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 3000 });
+          else setTimeout(load, 3000);
+        })();
       </script>
     )}
     <!-- Meta domain verification (Business Settings → Brand Safety → Domains,

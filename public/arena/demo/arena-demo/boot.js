@@ -386,7 +386,7 @@
     el.id = 'arena-demo-ribbon'; el.setAttribute('role', 'note');
     el.innerHTML =
       '<a class="ofd-brand" href="/" aria-label="Orionfold home">' +
-        '<img src="/logos/orionfold-logo.png" alt="">' +
+        '<img src="/logos/orionfold-logo.webp" alt="" width="26" height="26">' +
         '<span class="ofd-word">Orion<b>fold</b></span>' +
       '</a>' +
       '<span class="ofd-tag">DEMO</span>' +

@@ -119,6 +119,11 @@ export async function reportPurchase(c: PurchaseConversion): Promise<void> {
   // sends server-side via CAPI, so Meta dedupes the pair into one conversion
   // (browser event wins when both arrive; CAPI recovers the iOS/blocked cases).
   if (fireAdConversions) {
+    // The pixel is loaded lazily for perf (see Layout.astro). Force it now so the
+    // browser Purchase + its eventID actually fire on the conversion page, even
+    // if the visitor never triggered the idle/interaction load. The fbq stub
+    // queues this track call and flushes it once fbevents.js arrives.
+    (window as unknown as { __ofLoadMetaPixel?: () => void }).__ofLoadMetaPixel?.();
     fbq('track', 'Purchase', {
       value,
       currency,
