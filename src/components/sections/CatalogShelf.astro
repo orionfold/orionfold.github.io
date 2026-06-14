@@ -13,11 +13,11 @@ import { resolveProofArt } from '../../lib/flagship/proof-art';
 
 const modelSlugs = [...new Set(models.filter((m) => m.group !== 'dataset').map((m) => slugify(m.title)))];
 
-const artFor = (hrefs: string[], max: number) =>
-  hrefs
-    .map((href) => resolveProofArt(href))
-    .filter((img): img is NonNullable<typeof img> => Boolean(img))
-    .slice(0, max);
+// 2026-06-13 (payload pass): each door shows ONE representative "best of
+// category" thumbnail instead of a 4-cover fan. The fan was 11 thumbnails =
+// 11 network hops on the homepage; this is 3. The featured href per door is the
+// flagship/lead of its category — change it here to re-pick the cover.
+const featuredArt = (href: string) => resolveProofArt(href) ?? null;
 
 const doors = [
   {
@@ -26,7 +26,7 @@ const doors = [
     count: software.length,
     unit: 'apps',
     gloss: 'The platform, the cockpit tools, and the apps that run private AI work.',
-    art: artFor(software.map((s) => `/software/${s.slug}/`), 4),
+    art: featuredArt('/software/arena/'),
   },
   {
     href: '/models/',
@@ -34,7 +34,7 @@ const doors = [
     count: modelSlugs.length,
     unit: 'models',
     gloss: 'Domain experts for patents, security, law, money, health, and space math.',
-    art: artFor(modelSlugs.map((slug) => `/models/${slug}/`), 4),
+    art: featuredArt('/models/patent-strategist/'),
   },
   {
     href: '/books/',
@@ -42,7 +42,7 @@ const doors = [
     count: books.length,
     unit: 'books',
     gloss: 'Playbooks from the build. Read free on the site.',
-    art: artFor(books.map((b) => `/books/${b.slug}/`), 3),
+    art: featuredArt('/books/ai-research-on-nvidia-dgx-spark/'),
   },
 ];
 ---
@@ -66,22 +66,20 @@ const doors = [
           aria-label={`Browse all ${door.label.toLowerCase()}`}
           class="of-surface of-pressable block overflow-hidden rounded-2xl p-6"
         >
-          {/* Cover fan: height-constrained so covers never overlap the text below. */}
-          {door.art.length > 0 && (
-            <div class="relative h-32 sm:h-36" aria-hidden="true">
-              {door.art.map((img, i) => (
-                <Image
-                  src={img}
-                  alt=""
-                  widths={[160, 320]}
-                  sizes="120px"
-                  loading="lazy"
-                  decoding="async"
-                  data-no-zoom
-                  class="absolute top-0 h-full w-auto rounded-lg border border-border shadow-lg"
-                  style={`left:${i * 18}%;transform:rotate(${(i - (door.art.length - 1) / 2) * 3}deg);aspect-ratio:3/4;object-fit:cover;object-position:top;z-index:${i};`}
-                />
-              ))}
+          {/* One representative cover per door — a single network hop instead
+              of a fan. Height-constrained so it never crowds the text below. */}
+          {door.art && (
+            <div class="h-32 overflow-hidden rounded-xl border border-border shadow-lg sm:h-36" aria-hidden="true">
+              <Image
+                src={door.art}
+                alt=""
+                widths={[320, 640]}
+                sizes="(min-width: 1024px) 22rem, 100vw"
+                loading="lazy"
+                decoding="async"
+                data-no-zoom
+                class="h-full w-full object-cover object-top"
+              />
             </div>
           )}
           <div class="mt-4"><span class="of-chip">{door.count} {door.unit}</span></div>

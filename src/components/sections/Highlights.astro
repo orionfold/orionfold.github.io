@@ -1,20 +1,17 @@
 ---
-// Homepage highlights (spec §5.4–5.6): one curated pick from each pillar —
-// the flagship, the book, the software, a model. P2 deep-links each straight
-// to its on-site detail page instead of the listing page, fixing the
-// "click a product, get a catalog" leak (spec §3). Layout sides alternate via
-// Highlight's `reverse`. The software and model picks lead with their curated
-// movie poster (featured-imagery skill); the book keeps its cover art.
+// Homepage highlights (spec §5.4–5.6): curated picks that deep-link straight to
+// their on-site detail page instead of the listing page, fixing the "click a
+// product, get a catalog" leak (spec §3).
 // 2026-06-13 (IA refocus): the flagship Arena Highlight was REMOVED — Arena now
-// leads the homepage via the hero + the Field Edition band above, so a third
-// Arena panel here just repeated it. Advisor takes "The software" pick; the book
-// and a model round out the curated row.
-import { Image } from 'astro:assets';
+// leads via the hero + the Field Edition band above.
+// 2026-06-13 (payload pass): the "The software / Orionfold Advisor" and
+// "The models / Patent Strategist" highlights were REMOVED too — each rendered a
+// ~880px movie-poster on first load, and product discovery is already carried by
+// the CatalogShelf doorway + the /software and /models listing pages below.
+// What remains: the book highlight + the CapabilityProof slot.
 import Highlight from '../ui/Highlight.astro';
 import BookCover from '../ui/BookCover.astro';
 import dgxResearchCover from '../../assets/book/ai-research-dgx-spark-book.jpg';
-import advisorPoster from '../../assets/projects/advisor-poster.png';
-import patentPoster from '../../assets/models/patent-strategist/cover.png';
 ---
 <!-- ── Highlight: the book ── -->
 <Highlight
@@ -32,52 +29,3 @@ import patentPoster from '../../assets/models/patent-strategist/cover.png';
 </Highlight>
 
 <slot />
-
-<!-- ── Highlight: the software ── -->
-<Highlight
-  eyebrow="The software"
-  title="Orionfold Advisor"
-  body="A local AI advisor over your own body of documents. Every answer names the exact source it came from. If your documents cannot support an answer, it refuses instead of guessing. Every check it passed is a saved receipt you can re-run."
-  pills={['Runs local', 'Exact citations', 'Trusted refusals', 'Receipts']}
-  href="/software/advisor/"
-  ctaText="Explore Advisor"
->
-  <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
-    <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
-    <a href="/software/advisor/" aria-label="Explore Advisor" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10">
-      <Image
-        src={advisorPoster}
-        alt="Orionfold Advisor poster art: From the Source, an open star atlas with constellations rising from its pages"
-        widths={[440, 680, 880]}
-        sizes="(min-width: 1024px) 42vw, 90vw"
-        data-no-zoom
-        class="aspect-[16/9] w-full object-cover"
-      />
-    </a>
-  </div>
-</Highlight>
-
-<!-- ── Highlight: a model ── -->
-<Highlight
-  eyebrow="The models"
-  title="Patent Strategist"
-  body="An AI built to reason about patents (legal cover for inventions). It runs fully offline on a small desktop, so your ideas and filings never leave the room."
-  pills={['Patents', 'Runs offline', 'Open weights']}
-  href="/models/patent-strategist/"
-  ctaText="Explore Patent Strategist"
-  reverse
->
-  <div slot="media" data-animate class="relative mx-auto w-full max-w-xl">
-    <div class="absolute -inset-10 -z-10 rounded-full bg-primary/[0.08] blur-[90px]"></div>
-    <a href="/models/patent-strategist/" aria-label="Explore Patent Strategist" class="block overflow-hidden rounded-xl border border-border shadow-2xl shadow-primary/10">
-      <Image
-        src={patentPoster}
-        alt="Patent Strategist poster art: Prior Art"
-        widths={[440, 680, 880]}
-        sizes="(min-width: 1024px) 42vw, 90vw"
-        data-no-zoom
-        class="aspect-[16/9] w-full object-cover"
-      />
-    </a>
-  </div>
-</Highlight>
