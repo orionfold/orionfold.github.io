@@ -47,6 +47,16 @@
   .asciinema-cast__player { position: absolute; inset: 0; z-index: 1; }
   .asciinema-cast__player:empty { display: none; }
   .asciinema-cast .ap-player { border-radius: 0; }
+  /* Once the real player exists, drop the reserved poster box (16:9) and let the
+     figure collapse to the player's true height — terminal rows + control bar,
+     which is shorter than the poster ratio, so otherwise dead space shows below
+     the controls. The player goes in-flow to define that height; the poster goes
+     absolute behind it for the brief crossfade before it fades out. Keyed off a
+     class added AFTER create() (not data-mounted, which is set pre-import) so the
+     box keeps its CLS reservation until there's actually a player to size to. */
+  .asciinema-cast--ready { aspect-ratio: auto; }
+  .asciinema-cast--ready .asciinema-cast__player { position: relative; }
+  .asciinema-cast--ready .asciinema-cast__poster { position: absolute; inset: 0; }
   @media (max-width: 640px) {
     .asciinema-cast { border-radius: 0; border-inline: none; }
   }`;
@@ -121,6 +131,10 @@
       fit: 'width',
       controls: true,
     });
+    // Player now exists: collapse the reserved 16:9 poster box to the player's
+    // real (shorter) height so no dead space shows below the controls in the
+    // inline in-article view. Fullscreen is unaffected (no reserved box there).
+    el.classList.add('asciinema-cast--ready');
     const hidePoster = () => {
       if (poster) poster.classList.add('asciinema-cast__poster--hidden');
     };
