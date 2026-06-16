@@ -318,7 +318,7 @@ and read one chart to decide which build is worth shipping.
 
 The first time you set Arena up, it walks you through every step in your terminal: it checks your machine, helps you grab a free access key, shows a plain list of what it is downloading, and gives you something to read while it works. When it is done, your AI Researcher is already warm and ready. Here is that walkthrough, replayed:
 
-::asciinema{src="/arena/casts/onboard.cast" poster="/arena/casts/17-onboard-1-preflight.svg" cols=100 rows=34 speed=1.4 alt="The guided Arena onboarding flow, replayed in the terminal" title="Arena guided onboarding, replayed"}
+::asciinema{src="/arena/casts/onboard.cast" poster="/arena/casts/17-onboard-1-preflight.svg" cols=100 rows=20 idle=2 speed=1.4 alt="The guided Arena onboarding flow, replayed in the terminal" title="Arena guided onboarding, replayed"}
 
 ## What you can do
 
