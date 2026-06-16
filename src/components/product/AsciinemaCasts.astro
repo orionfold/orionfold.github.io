@@ -28,11 +28,15 @@
     border: 1px solid var(--color-border, #2a2d35);
     background: #16181d;
     line-height: 0;
+    /* Reserve the box before the lazy poster paints to avoid CLS. Ratio matches
+       the onboard preflight poster SVG's viewBox (1043x587). */
+    aspect-ratio: 1043 / 587;
   }
   .asciinema-cast__poster {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
     margin: 0;
     border: 0;
     border-radius: 0;
@@ -61,6 +65,8 @@
     const slot = el.querySelector<HTMLElement>('.asciinema-cast__player');
     const poster = el.querySelector<HTMLElement>('.asciinema-cast__poster');
     if (!slot) return;
+    const castSrc = el.dataset.cast;
+    if (!castSrc) return;
     // Deviation: lazy-load the player bundle + CSS only now (on scroll-into-view).
     // The player CSS is imported as a URL (?url) and injected as a <link> at
     // mount, NOT as a CSS module import. A module `import('...css')` makes Vite
@@ -81,7 +87,7 @@
       document.head.appendChild(link);
     }
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const player = create(el.dataset.cast!, slot, {
+    const player = create(castSrc, slot, {
       cols: Number(el.dataset.cols) || 100,
       rows: Number(el.dataset.rows) || 18,
       autoPlay: !reduce,
@@ -131,4 +137,8 @@
   } else {
     init();
   }
+  // Match the repo island convention (Nav/Layout/StickyCtaBar): re-init after a
+  // View Transitions swap. VT is off today so this is dormant, but init() is
+  // idempotent (data-mounted + id-guarded injectCss) so it's safe to bind.
+  document.addEventListener('astro:after-swap', init);
 </script>
