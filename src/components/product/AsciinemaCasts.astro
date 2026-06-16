@@ -59,6 +59,26 @@
     document.head.appendChild(style);
   }
 
+  // Inject the player stylesheet and resolve only once it has actually loaded,
+  // so create() never paints against an empty palette / wrong metrics.
+  function ensurePlayerCss(href: string): Promise<void> {
+    let link = document.getElementById('asciinema-player-css') as HTMLLinkElement | null;
+    if (link && link.sheet) return Promise.resolve();
+    if (!link) {
+      link = document.createElement('link');
+      link.id = 'asciinema-player-css';
+      link.rel = 'stylesheet';
+      link.href = href;
+      document.head.appendChild(link);
+    }
+    const el = link;
+    return new Promise<void>((resolve) => {
+      if (el.sheet) { resolve(); return; }
+      el.addEventListener('load', () => resolve(), { once: true });
+      el.addEventListener('error', () => resolve(), { once: true });
+    });
+  }
+
   async function mount(el: HTMLElement) {
     if (el.dataset.mounted) return;
     el.dataset.mounted = '1';
@@ -79,13 +99,15 @@
       import('asciinema-player'),
       import('asciinema-player/dist/bundle/asciinema-player.css?url'),
     ]);
-    if (!document.getElementById('asciinema-player-css')) {
-      const link = document.createElement('link');
-      link.id = 'asciinema-player-css';
-      link.rel = 'stylesheet';
-      link.href = playerCssUrl;
-      document.head.appendChild(link);
-    }
+    // The player reads its ANSI palette (CSS custom props --term-color-*) and
+    // computes font metrics from the stylesheet at create() time. Because we
+    // inject the CSS as a <link> (to keep it inside the gated chunk rather than
+    // a static import that Astro would hoist onto all product pages), we MUST
+    // wait for the sheet to load before create() — otherwise the first paint
+    // reads an empty palette (renders black-on-black) and wrong cell metrics
+    // (short box, stranded control bar). Upstream sidesteps this with a static
+    // import; awaiting the link load gives the same guarantee without the leak.
+    await ensurePlayerCss(playerCssUrl);
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const player = create(castSrc, slot, {
       cols: Number(el.dataset.cols) || 100,
