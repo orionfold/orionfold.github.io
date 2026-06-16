@@ -64,9 +64,6 @@ specs:
     value: The fieldkit toolbox (memory, arena, harness, eval)
 
 gallery:
-  - src: ../../../assets/projects/cortex/jobs-board.png
-    alt: The jobs board mid-rebuild, with the re-index running at 96 percent GPU and the rest of the board carrying the queue's history beside it.
-    caption: Watch the work move. The re-index runs hot while the board keeps the queue's history beside it.
   - src: ../../../assets/projects/cortex/after-rebuild.png
     alt: The Cortex dashboard after a rebuild, showing 100 percent coverage and a source stamp on every one of its 328 indexed chunks.
     caption: After the rebuild, coverage and source stamps are numbers you can read, not guesses.
@@ -105,7 +102,7 @@ sources:
   - section: gallery
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/orionfold-cortex/screenshots/
-    lastSynced: '2026-06-11'
+    lastSynced: '2026-06-16'
 ---
 
 Orionfold Cortex is a second brain for your own notes, running on your own desktop. It

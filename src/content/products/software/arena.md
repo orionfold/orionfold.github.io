@@ -200,7 +200,7 @@ gallery:
       your machine, and it is only ever sent to the cloud service when you actually run a
       cloud model.
   - src: ../../../assets/projects/arena/jobs-board.png
-    alt: The jobs board, with the live readout rail on top, a banner calling out a leaderboard drop, a form to queue a re-test, and four columns of jobs marked queued, running, done, and failed.
+    alt: The jobs board, with the live readout rail on top, three dispatch forms to queue work, and four columns of jobs marked queued, running, done, and failed, with the queue idle and the resident Advisor model live on the rail.
     caption: The control plane. Queue a re-test of any model, or let the board catch a score drop and confirm it by itself.
     detail: >-
       This is where the cockpit starts work instead of just recording it. Type a model and a
@@ -208,39 +208,41 @@ gallery:
       against its last baseline and queues a confirming re-test for any score that slipped.
       One job runs at a time, so the queue can never blow past the shared memory.
   - src: ../../../assets/projects/arena/board-columns.png
-    alt: A close-up of the four job columns, with done cards showing the measured score and the number of questions, and a failed card explaining why it failed.
-    caption: Every job tells its own story. Done cards carry the score; failed cards say why.
+    alt: A close-up of the four job columns. The queued and running columns are idle, done cards show real lane work like a model torn down with memory freed or a model brought live on its port, and a failed card explains a guarded launch that refused before acting.
+    caption: Every job tells its own story. Done cards show the work that finished; failed cards say exactly why a job refused or stopped.
     detail: >-
       Every job card tells its own story. It names what kind of work it is and what
-      triggered it, you or the board itself. Done cards carry the measured score and how
-      many questions were graded; a failed card says exactly why, so you never have to open
-      a log.
+      triggered it, you or the board itself. A done card shows what the job actually did,
+      like freeing memory when a model is torn down or bringing one live on its port. A
+      failed card says exactly why it stopped, like a launch refused because another model
+      was still resident, so you never have to open a log.
   - src: ../../../assets/projects/arena/train-dispatch.png
-    alt: The grown jobs board with three dispatch slots above the four columns, one to re-test a model, one to smoke-test a base model before training, and one to launch a training run from a recipe file.
-    caption: The board grew from one job kind to three. Re-test a model, smoke-test a base before training it, or launch a training run from a recipe.
+    alt: The grown jobs board with three dispatch slots above the four columns, one to re-test a model, one to start a reinforcement run, and one to start a fine-tune run from a recipe file.
+    caption: The board grew from one job kind to three. Re-test a model, start a reinforcement run, or start a fine-tune run from a recipe.
     detail: >-
-      The board's biggest growth is what it can start. Next to the original re-test slot, a
-      smoke-test slot answers "is this base model worth training?" with a small twenty-row
-      test before any long run, and a training slot takes a recipe file and launches the
-      run as a job. All three kinds drain through the same four columns, one at a time, so
-      the queue still respects the machine's shared memory.
+      The board's biggest growth is what it can start. Next to the original re-test slot,
+      one slot starts a reinforcement run that trains a model against a reward, and another
+      takes a recipe file and starts a fine-tune run as a job. All three kinds drain through
+      the same four columns, one at a time, so the queue still respects the machine's shared
+      memory.
   - src: ../../../assets/projects/arena/build-spine.png
-    alt: The build pipeline pane showing one model's whole build as a spine of stage cards, scout, bench, corpus, fine-tune, smoke, serve, and polish, with seven of eight stages complete and a strip above naming the frozen test behind each score.
+    alt: The build pipeline pane showing the Advisor model's whole build as a spine of stage cards, scout, bench, corpus, fine-tune, smoke-test, serve, and reinforce, with a strip above naming the frozen test behind each score.
     caption: A whole model build as one spine. Each stage card carries its receipts, and the strip pins which frozen test scored what.
     detail: >-
       When training jobs belong to one model being built end to end, the Build pane lines
       them up as a spine: scouted, tested, fed its documents, fine-tuned, smoke-tested,
-      served, and polished. Each stage is a card with its own saved proof, and the strip
+      served, and reinforced. Each stage is a card with its own saved proof, and the strip
       above pins exactly which frozen test produced each score, so a number is never
       separated from the test that made it.
   - src: ../../../assets/projects/arena/reward-gauge.png
-    alt: The reward pane, one gauge showing a 96 percent starting score for a training run, a zero percent cut-off rate, and a gate reading hold.
+    alt: The reward pane, one gauge in its ready state before any training run, with a note that the starting score will land here once a preflight check or a run reports.
     caption: The same test that scores the leaderboard is the reward a training run chases. One gauge watches both, and a gate holds promotion until the signal is clean.
     detail: >-
       The reward pane makes the training loop visible. The same scorer that grades the
       leaderboard is the reward signal a training run tries to raise, so one gauge shows
       the starting score, the live reward as the run trains, and a gate that holds
-      promotion until the signal is clean. The pane only watches; it never starts work.
+      promotion until the signal is clean. Here it sits ready before any run, waiting for
+      the first preflight check or run to report. The pane only watches; it never starts work.
   - src: ../../../assets/projects/arena/guardrails.png
     alt: The settings screen for cloud test guardrails, a per-run cost cap and a stall timer that lock in when a job is sent, above a table of the paid cloud models the cap covers.
     caption: Paid cloud work gets bounds. A cost cap and a stall timer lock in the moment a job is sent.
@@ -250,14 +252,14 @@ gallery:
       that once hung for hours quietly running up a bill. Local runs on your own machine
       stay unguarded and free, because the bounds exist exactly where the meter does.
   - src: ../../../assets/projects/arena/standup.png
-    alt: The morning standup report, eleven jobs ran overnight, zero scores slipped, three failed honestly, the queue drained, and total spend was five cents of a five dollar cap.
+    alt: The morning standup report, forty-six jobs ran overnight, zero scores slipped, eight failed honestly, the queue drained, and total spend was about seven cents of a five dollar cap.
     caption: The overnight loop's report card. What ran, what slipped, what failed, and what it spent, waiting for you to review and promote.
     detail: >-
       The overnight layer landed as Standup, a read-only morning report of what the queue
       ran while you slept. The loop only stages work, it never publishes it: it drains the
-      queue, runs the jobs, and stops at this gate for you to review and promote. Eleven
-      jobs, zero slipped scores, three honest failures, and five cents of spend against a
-      five dollar cap is what a delegated night looks like.
+      queue, runs the jobs, and stops at this gate for you to review and promote. Forty-six
+      jobs, zero slipped scores, eight honest failures, and about seven cents of spend
+      against a five dollar cap is what a delegated night looks like.
   - src: ../../../assets/projects/arena/lanetruth-guarded.png
     alt: The serving screen showing the one running model marked active, above a guarded launch form that checks memory first and asks before stopping the old model.
     caption: One model runs at a time. Starting a new one checks memory first and asks before it stops the old one.
@@ -310,7 +312,7 @@ sources:
   - section: gallery
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/orionfold-arena/screenshots/
-    lastSynced: '2026-06-15'
+    lastSynced: '2026-06-16'
   - section: overview
     type: url
     ref: https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main/products/arena-control-plane/product.md
@@ -318,7 +320,7 @@ sources:
   - section: gallery
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/arena-control-plane/screenshots/
-    lastSynced: '2026-06-11'
+    lastSynced: '2026-06-16'
   - section: onboard-cast
     type: file
     ref: manavsehgal/ainative-business.github.io:public/products/orionfold-arena/casts/onboard.cast
