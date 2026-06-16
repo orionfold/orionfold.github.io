@@ -1,0 +1,108 @@
+---
+// AsciinemaCasts — client island that turns every `.asciinema-cast` mount point
+// (emitted by remark-asciinema) into a real asciinema-player on scroll-into-view.
+//
+// Adapted from ainative-business.github.io src/components/products/AsciinemaCasts.astro
+// (d091567). Deviation for orionfold.com mobile-perf-hygiene: the ~250 KB player
+// bundle + CSS are dynamic-import()ed INSIDE mount(), so they fetch only on
+// scroll-into-view, never at page-load. The component is itself included only
+// when the body has a cast (hasCast gate in the layout), so the chunk is absent
+// from every other page. The poster <img> is the no-JS / pre-play fallback.
+---
+<script>
+  async function mount(el: HTMLElement) {
+    if (el.dataset.mounted) return;
+    el.dataset.mounted = '1';
+    const slot = el.querySelector<HTMLElement>('.asciinema-cast__player');
+    const poster = el.querySelector<HTMLElement>('.asciinema-cast__poster');
+    if (!slot) return;
+    // Deviation: lazy-load the player bundle + CSS only now (on scroll-into-view).
+    const [{ create }] = await Promise.all([
+      import('asciinema-player'),
+      import('asciinema-player/dist/bundle/asciinema-player.css'),
+    ]);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const player = create(el.dataset.cast!, slot, {
+      cols: Number(el.dataset.cols) || 100,
+      rows: Number(el.dataset.rows) || 18,
+      autoPlay: !reduce,
+      preload: true,
+      loop: false,
+      idleTimeLimit: Number(el.dataset.idle) || 2,
+      speed: Number(el.dataset.speed) || 1,
+      theme: 'asciinema',
+      fit: 'width',
+      controls: true,
+    });
+    const hidePoster = () => {
+      if (poster) poster.classList.add('asciinema-cast__poster--hidden');
+    };
+    player.addEventListener('play', hidePoster);
+    // Belt-and-suspenders: hide once the first frame should be up (skip when
+    // reduced-motion, where we keep the poster + the player's own controls).
+    if (!reduce) setTimeout(hidePoster, 600);
+  }
+
+  function init() {
+    const casts = Array.from(
+      document.querySelectorAll<HTMLElement>('.asciinema-cast'),
+    );
+    if (!casts.length) return;
+    if (!('IntersectionObserver' in window)) {
+      casts.forEach(mount);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            mount(e.target as HTMLElement);
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.25 },
+    );
+    casts.forEach((c) => io.observe(c));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>
+
+<style is:global>
+  figure.asciinema-figure {
+    margin: 2rem auto 0.75rem;
+    max-width: 100%;
+  }
+  .asciinema-cast {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--color-border, #2a2d35);
+    background: #16181d; /* asciinema 'asciinema' theme background */
+    line-height: 0;
+  }
+  /* The poster (the static onboarding SVG) defines the box and is the no-JS /
+     pre-play fallback; the mounted player sits over it and it fades on play. */
+  .asciinema-cast__poster {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    transition: opacity 0.4s ease;
+  }
+  .asciinema-cast__poster--hidden { opacity: 0; pointer-events: none; }
+  .asciinema-cast__player { position: absolute; inset: 0; z-index: 1; }
+  .asciinema-cast__player:empty { display: none; }
+  .asciinema-cast .ap-player { border-radius: 0; }
+  @media (max-width: 640px) {
+    .asciinema-cast { border-radius: 0; border-inline: none; }
+  }
+</style>
