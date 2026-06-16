@@ -142,6 +142,10 @@ const productDetail = defineCollection({
               'docs-screenshots',
               'field-notes',
               'url',
+              // A single tracked file pulled from a repo at `owner/repo:path`
+              // (e.g. the Arena onboarding asciinema cast). Lets a future
+              // product-detail-sync re-pull the exact file it was built from.
+              'file',
             ]),
             ref: z.string(),
             lastSynced: z.string(),

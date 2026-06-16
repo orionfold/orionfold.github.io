@@ -293,6 +293,10 @@ sources:
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/arena-control-plane/screenshots/
     lastSynced: '2026-06-11'
+  - section: onboard-cast
+    type: file
+    ref: manavsehgal/ainative-business.github.io:public/products/orionfold-arena/casts/onboard.cast
+    lastSynced: '2026-06-15'
 ---
 
 Orionfold Arena is a single screen for running, comparing, and scoring the AI models on
@@ -309,6 +313,12 @@ notebook. Knowing which small build was the good one meant digging up notes you 
 ago. Arena turns that shelf into a control room. Chat with the model that is already warm
 and loaded, set two of them against each other, score an answer against a known-good answer,
 and read one chart to decide which build is worth shipping.
+
+## It starts at the install
+
+The first time you set Arena up, it walks you through every step in your terminal: it checks your machine, helps you grab a free access key, shows a plain list of what it is downloading, and gives you something to read while it works. When it is done, your AI Researcher is already warm and ready. Here is that walkthrough, replayed:
+
+::asciinema{src="/arena/casts/onboard.cast" poster="/arena/casts/17-onboard-1-preflight.svg" cols=100 rows=34 speed=1.4 alt="The guided Arena onboarding flow, replayed in the terminal" title="Arena guided onboarding, replayed"}
 
 ## What you can do
 
