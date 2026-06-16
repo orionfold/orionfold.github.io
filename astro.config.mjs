@@ -2,6 +2,8 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import remarkDirective from 'remark-directive';
+import remarkAsciinema from './src/lib/products/remark-asciinema.mjs';
 
 // Build a `pathname -> YYYY-MM-DD` map for sitemap <lastmod>. lastmod is the one
 // sitemap field Google actually uses to schedule crawls, so every value here must
@@ -116,6 +118,9 @@ export default defineConfig({
     // the existing Arena surface (not a new silo), so the path resolves to the
     // Field Edition block. Mirror as a Cloudflare 301 at go-live.
     '/arena-field-edition/': '/software/arena/',
+  },
+  markdown: {
+    remarkPlugins: [remarkDirective, remarkAsciinema],
   },
   integrations: [
     sitemap({
