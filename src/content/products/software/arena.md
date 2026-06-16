@@ -25,6 +25,12 @@
 # 02-dispatch-and-regression (overlaps our jobs-board shot). Leaderboard +
 # frontier copy updated for the advisor-first display layer and the violet
 # flagship diamond.
+# 2026-06-15 re-sync (upstream v0.34 premium/onboarding wave): refreshed body
+# (welcome first-run + bring-your-own-cloud-key + Compare horizontal bars + the
+# v0.34 third-arc build stats); 14 gallery shots recaptured in the new
+# blue-indigo+gold palette + 2 new (welcome, settings-cloud-key; gallery now 23,
+# welcome is the fixed-CTA snapshot); embedded the guided-onboarding TUI replay
+# (asciinema cast) in the "It starts at the install" section.
 type: software
 slug: arena
 valueProp: Run, compare, score, and train AI models on your own desktop. Live speed and memory, a private board, an overnight jobs loop. Free, and nothing leaves your machine.
@@ -84,6 +90,15 @@ specs:
     value: The fieldkit toolbox (arena, eval, harness, memory, nim, notebook)
 
 gallery:
+  - src: ../../../assets/projects/arena/welcome.png
+    alt: The Arena welcome screen, a navy to gold hero that reads Welcome to your Arena and Meet your AI Researcher, with the real count of what is loaded and three questions to try.
+    caption: The first screen on your first run. It greets your Researcher, says what is loaded, and offers three questions to try.
+    detail: >-
+      A first-run screen you see once. It greets you as your AI Researcher, states what is
+      actually loaded, 182 sources broken into 647 searchable pieces, and offers three
+      questions to try. The third asks what is not in your notes, so in one turn you watch the
+      model say plainly when it does not know. A small link in the top bar brings the screen
+      back any time.
   - src: ../../../assets/projects/arena/cockpit.png
     alt: The Orionfold Arena cockpit on one screen, with a live readout strip across the top, a count of what you have built, your top scored runs, the model now serving, and a recent activity feed.
     caption: One home screen. Live machine readouts up top, your best runs, the model now serving, and what happened recently.
@@ -160,12 +175,13 @@ gallery:
       measured rows and the chat replays that exact setup, scored the moment the answer
       lands.
   - src: ../../../assets/projects/arena/compare.png
-    alt: The compare screen showing two models answering the same question side by side, with cards for quality, speed, wait time, length, and cost.
+    alt: The compare screen showing two models answering the same question side by side, with cards for quality, speed, wait time, length, and cost, each drawing a bar for both models on a shared scale.
     caption: Put any two models head to head and read the trade in plain numbers.
     detail: >-
       Pick any two models and watch them answer the same question side by side. Plain cards
-      call the winner on quality, speed, wait time, length, and cost, each over a small
-      chart of the session. A local model against a hosted one is a fair fight here, and the
+      call the winner on quality, speed, wait time, length, and cost. Each card draws a bar
+      for both models on the same scale, so the bigger number makes the longer bar and the
+      gap reads at a glance. A local model against a hosted one is a fair fight here, and the
       cost card shows the local answer cost zero.
   - src: ../../../assets/projects/arena/command-palette.png
     alt: The command palette open over the cockpit, a search box that finds any model, article, or action from a few typed letters.
@@ -173,6 +189,16 @@ gallery:
     detail: >-
       One keystroke opens a search box over the whole cockpit. Type a few letters to jump to
       any model, fire a chat, or set up a duel, all without touching the mouse.
+  - src: ../../../assets/projects/arena/settings-cloud-key.png
+    alt: The Arena settings screen with a cloud key form that finds a key already on your machine or lets you paste one, beside a line saying your key stays on this machine.
+    caption: Local first. Add your own cloud key only if you want one, and it never leaves your machine.
+    detail: >-
+      Your Researcher runs locally and needs no cloud key. This screen finds a key already
+      set on your machine, or lets you paste one and save it. Until a key exists, the long
+      list of cloud models and the spend readout stay hidden, so a fresh setup shows only the
+      local model you own. A key you add is written to a private file the cockpit reads on
+      your machine, and it is only ever sent to the cloud service when you actually run a
+      cloud model.
   - src: ../../../assets/projects/arena/jobs-board.png
     alt: The jobs board, with the live readout rail on top, a banner calling out a leaderboard drop, a form to queue a re-test, and four columns of jobs marked queued, running, done, and failed.
     caption: The control plane. Queue a re-test of any model, or let the board catch a score drop and confirm it by itself.
@@ -280,11 +306,11 @@ sources:
   - section: overview
     type: url
     ref: https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main/products/orionfold-arena/product.md
-    lastSynced: '2026-06-11'
+    lastSynced: '2026-06-15'
   - section: gallery
     type: docs-screenshots
     ref: manavsehgal/ainative-business.github.io:products/orionfold-arena/screenshots/
-    lastSynced: '2026-06-11'
+    lastSynced: '2026-06-15'
   - section: overview
     type: url
     ref: https://raw.githubusercontent.com/manavsehgal/ainative-business.github.io/main/products/arena-control-plane/product.md
@@ -320,6 +346,14 @@ The first time you set Arena up, it walks you through every step in your termina
 
 ::asciinema{src="/arena/casts/onboard.cast" poster="/arena/casts/17-onboard-1-preflight.svg" cols=100 rows=20 idle=2 speed=1.4 alt="The guided Arena onboarding flow, replayed in the terminal" title="Arena guided onboarding, replayed"}
 
+## Your first run
+
+The first time the cockpit opens, a welcome screen greets you as your AI Researcher. It tells
+you what is actually loaded, 182 sources broken into 647 searchable pieces, and gives you
+three questions to try. The third one asks what is not in your notes, so in a single turn you
+watch the model say plainly when it does not know an answer. You see this screen once. A small
+link in the top bar brings it back any time you want it.
+
 ## What you can do
 
 - **Watch the machine.** A live strip across the top shows how hard the chip is working, how
@@ -344,8 +378,9 @@ The first time you set Arena up, it walks you through every step in your termina
   is marked with a violet diamond so you can always find it among the dots.
 - **Try and test in one place.** Chat with any model, pull the exact test it was measured on,
   and score its answer against a gold answer without leaving the chat. Or put two models head
-  to head and read the trade in plain cards: quality, speed, wait time, length, and cost,
-  each with a small chart of how it moved across the session.
+  to head and read the trade in plain cards: quality, speed, wait time, length, and cost. Each
+  card draws a bar for both models on the same scale, so the bigger number makes the longer bar
+  and the gap reads at a glance.
 - **Replay the real test.** A saved test set keeps everything it was measured with: the
   questions, the system rules, even whether the model was allowed to think out loud first.
   Pick a row and the chat replays that exact setup, and a scorer grades the answer the
@@ -377,8 +412,18 @@ The first time you set Arena up, it walks you through every step in your termina
 - **Wake up to a report.** An overnight loop drains the queue while you sleep, then stops. A
   morning report says what ran, what slipped, what failed, and what it spent. Nothing is
   published until you review and promote it.
+- **Bring your own cloud key.** Your Researcher is local first and needs no cloud key. The
+  settings screen finds a key already set on your machine, or lets you paste one and save it.
+  Until you add a key, the long list of cloud models and the spend readout stay hidden, so a
+  fresh setup shows only the local model you own. A key you add is written to a private file
+  the cockpit reads on your machine, and it is only ever sent to the cloud service when you
+  actually run a cloud model.
 - **Move without the mouse.** One keystroke opens a search box over the whole cockpit. Type a
   few letters to jump to any model, fire a chat, or set up a duel.
+- **See how it was built.** A Lab board shows what has shipped, what is queued from the plan,
+  and what is being explored, next to a timeline of the build drawn from the commit history.
+  Your own private notes live here too, and they sit on the never-share list, so they stay off
+  the public board.
 
 Jargon, in plain words: a *GGUF* is just a packaged model file you can run on your own
 machine. To *quantize* a model is to shrink it so it runs faster, and the chart shows what
@@ -386,14 +431,25 @@ you trade away when you do. *Throughput* is how many words a second the model ca
 
 ## It keeps growing
 
-Arena shipped as fourteen screens and 125 tests in about fifteen hours of work, with the AI
-agent doing the typing. It did not stop there. In the days after launch six more screens
-landed, and the tool now measures 17,515 lines of code and 135 tests. One part, a memory
-pane that indexes your own notes and checks how well it can find them again, grew into its
-own product, [Orionfold Cortex](/software/cortex/), with its own page. The jobs board, the
-control plane, came together in one afternoon of about two and a half hours, adding
-1,762 lines and 35 tests of its own, and shipped inside fieldkit v0.16.0, the first
-packaged Arena release.
+Arena shipped as fourteen screens and 125 tests in about fifteen hours of work, spread over
+one day and an overnight, with the AI agent doing the typing. The numbers are mined from the
+build itself, not guessed: about 12,733 lines of code written, across 12 work sessions and
+1,130 turns with the agent. Almost all of it was cheap to do, because the agent re-read the
+same growing code from a cache instead of from scratch: of the 233 million pieces of text
+it processed, 228 million, about 98 in 100, came from that cache, so fresh writing was only a
+small slice. Claude Opus 4.7 wrote every line of the launch; Opus 4.8 is the daily driver now.
+
+It did not stop there. In the days after launch six more screens landed, and the tool now
+measures 17,515 lines of code and 135 tests. One part, a memory pane that indexes your own
+notes and checks how well it can find them again, grew into its own product,
+[Orionfold Cortex](/software/cortex/), with its own page. The jobs board, the control plane,
+came together in one afternoon of about two and a half hours, adding 1,762 lines and 35 tests
+of its own, and shipped inside fieldkit v0.16.0, the first packaged Arena release.
+
+A third pass made the cockpit feel finished. A new blue and gold look replaced the first
+orange one across every screen. A welcome screen now greets you on your first run, the cloud
+models stay hidden until you bring your own key, and the install became the guided walkthrough
+you see at the top of this page. The tour above is that newer cockpit.
 
 The newest proof of the cockpit is [Orionfold Advisor](/advisor/), a governed local AI
 advisor that launched in June 2026. Its whole promotion case ran through these screens:
@@ -409,7 +465,12 @@ pick a hosted model. The whole thing is a tool you could run on a plane.
 ## Built on fieldkit
 
 Arena is a thin cockpit over the [fieldkit](/software/fieldkit/) toolbox and a year of real
-research. fieldkit serves the models, runs the tests, and scores the answers; Arena gives
-that work a screen. Because the parts already existed, the whole cockpit came together in a
-day. The honest version of that story is the better one: the cockpit is the sum of a lot of
-compounding work, not a fresh start.
+research. Each part of fieldkit does one job, and Arena just gives that job a screen: one part
+is the small server and database behind the cockpit, one runs the tests and scores the answers
+that fill the eval drawer and the board, one produced the runs the board ranks, one boots and
+reaches the models for chat and compare, and one ships the runnable notebook on every model
+page. The data is real too: the board ranks models you actually published, the
+quality-versus-speed chart plots numbers measured in real write-ups, and the eval drawer
+serves the exact tests those models were scored on. Because the parts and the data already
+existed, the whole cockpit came together in a day. The honest version of that story is the
+better one: the cockpit is the sum of a lot of compounding work, not a fresh start.
