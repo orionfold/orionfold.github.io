@@ -26,7 +26,8 @@ const { key } = coverKey('software', entry.data.slug);
 const ssotHero = key ? Object.entries(projectImgs).find(([p]) => p.endsWith('/' + key))?.[1]?.default : undefined;
 const hero = entry.data.hero ?? ssotHero;
 const hasBody = Boolean(entry.body && entry.body.trim());
+const hasCast = (entry.body ?? '').includes('::asciinema');
 ---
-<ProductDetail view={view} detail={entry.data} hero={hero} related={related} trustStats={trustStats} hasBody={hasBody}>
+<ProductDetail view={view} detail={entry.data} hero={hero} related={related} trustStats={trustStats} hasBody={hasBody} hasCast={hasCast}>
   <Content />
 </ProductDetail>

@@ -10,6 +10,51 @@
 // from every other page. The poster <img> is the no-JS / pre-play fallback.
 ---
 <script>
+  // Co-located styles for the cast figure/poster (the literal class names the
+  // remark-asciinema plugin emits). Injected from JS instead of a `<style
+  // is:global>` block on purpose: an `is:global` style in this island is
+  // hoisted by Astro into the SHARED stylesheet of every page that uses the
+  // ProductDetail layout (the layout imports this island unconditionally), which
+  // defeats the hasCast gate and ships ~0.6 KB of cast CSS + a `<link>` to the
+  // ~30 KB player CSS onto all 24 product pages. Injecting here keeps the styles
+  // bound to this island's chunk, which is gated to the Arena page. The poster
+  // <img> still styles correctly before play because this runs at init().
+  const CAST_CSS = `
+  figure.asciinema-figure { margin: 2rem auto 0.75rem; max-width: 100%; }
+  .asciinema-cast {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--color-border, #2a2d35);
+    background: #16181d;
+    line-height: 0;
+  }
+  .asciinema-cast__poster {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    transition: opacity 0.4s ease;
+  }
+  .asciinema-cast__poster--hidden { opacity: 0; pointer-events: none; }
+  .asciinema-cast__player { position: absolute; inset: 0; z-index: 1; }
+  .asciinema-cast__player:empty { display: none; }
+  .asciinema-cast .ap-player { border-radius: 0; }
+  @media (max-width: 640px) {
+    .asciinema-cast { border-radius: 0; border-inline: none; }
+  }`;
+
+  function injectCss() {
+    if (document.getElementById('asciinema-cast-css')) return;
+    const style = document.createElement('style');
+    style.id = 'asciinema-cast-css';
+    style.textContent = CAST_CSS;
+    document.head.appendChild(style);
+  }
+
   async function mount(el: HTMLElement) {
     if (el.dataset.mounted) return;
     el.dataset.mounted = '1';
@@ -17,10 +62,24 @@
     const poster = el.querySelector<HTMLElement>('.asciinema-cast__poster');
     if (!slot) return;
     // Deviation: lazy-load the player bundle + CSS only now (on scroll-into-view).
-    const [{ create }] = await Promise.all([
+    // The player CSS is imported as a URL (?url) and injected as a <link> at
+    // mount, NOT as a CSS module import. A module `import('...css')` makes Vite
+    // extract a static CSS asset that Astro then associates with this island's
+    // layout and emits as a `<link rel=stylesheet>` on EVERY page using
+    // ProductDetail (all 24 product pages) even where the island never renders.
+    // Importing the URL and creating the <link> here keeps the player CSS inside
+    // the gated dynamic-import path, so it ships only when a cast actually mounts.
+    const [{ create }, { default: playerCssUrl }] = await Promise.all([
       import('asciinema-player'),
-      import('asciinema-player/dist/bundle/asciinema-player.css'),
+      import('asciinema-player/dist/bundle/asciinema-player.css?url'),
     ]);
+    if (!document.getElementById('asciinema-player-css')) {
+      const link = document.createElement('link');
+      link.id = 'asciinema-player-css';
+      link.rel = 'stylesheet';
+      link.href = playerCssUrl;
+      document.head.appendChild(link);
+    }
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const player = create(el.dataset.cast!, slot, {
       cols: Number(el.dataset.cols) || 100,
@@ -48,6 +107,7 @@
       document.querySelectorAll<HTMLElement>('.asciinema-cast'),
     );
     if (!casts.length) return;
+    injectCss();
     if (!('IntersectionObserver' in window)) {
       casts.forEach(mount);
       return;
@@ -72,37 +132,3 @@
     init();
   }
 </script>
-
-<style is:global>
-  figure.asciinema-figure {
-    margin: 2rem auto 0.75rem;
-    max-width: 100%;
-  }
-  .asciinema-cast {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid var(--color-border, #2a2d35);
-    background: #16181d; /* asciinema 'asciinema' theme background */
-    line-height: 0;
-  }
-  /* The poster (the static onboarding SVG) defines the box and is the no-JS /
-     pre-play fallback; the mounted player sits over it and it fades on play. */
-  .asciinema-cast__poster {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    transition: opacity 0.4s ease;
-  }
-  .asciinema-cast__poster--hidden { opacity: 0; pointer-events: none; }
-  .asciinema-cast__player { position: absolute; inset: 0; z-index: 1; }
-  .asciinema-cast__player:empty { display: none; }
-  .asciinema-cast .ap-player { border-radius: 0; }
-  @media (max-width: 640px) {
-    .asciinema-cast { border-radius: 0; border-inline: none; }
-  }
-</style>

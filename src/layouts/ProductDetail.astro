@@ -14,6 +14,7 @@ import StickyCtaBar from '../components/product/StickyCtaBar.astro';
 import CodeTabs from '../components/product/CodeTabs.astro';
 import BookContents from '../components/product/BookContents.astro';
 import Gallery from '../components/product/Gallery.astro';
+import AsciinemaCasts from '../components/product/AsciinemaCasts.astro';
 import SpecTable from '../components/product/SpecTable.astro';
 import BenchmarkTable from '../components/product/BenchmarkTable.astro';
 import TrustBlock from '../components/product/TrustBlock.astro';
@@ -38,8 +39,9 @@ interface Props {
   /** Live HuggingFace trust tiles (P3) — empty when there's nothing real to show. */
   trustStats?: TrustStat[];
   hasBody: boolean;
+  hasCast?: boolean;
 }
-const { view, detail, hero, related, trustStats = [], hasBody } = Astro.props;
+const { view, detail, hero, related, trustStats = [], hasBody, hasCast = false } = Astro.props;
 
 // Book price (display only; CATALOG is the SSOT) for the hero + sticky CTA.
 const item = view.lookupKey ? getCatalogItem(view.lookupKey) : undefined;
@@ -252,6 +254,8 @@ const jsonLd = [productSchema, breadcrumbSchema, ...(fieldEditionSchema ? [field
     )}
 
     {detail.gallery && <Gallery items={detail.gallery} />}
+
+    {hasCast && <AsciinemaCasts />}
 
     {/* Install / Use-it commands follow the prose (the model pages' "How to run
         it" section) and sit just above the spec table. */}
