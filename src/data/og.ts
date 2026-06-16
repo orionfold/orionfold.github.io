@@ -129,6 +129,20 @@ export const OG_PAGES: Record<string, OgPage> = {
     seed: 'about',
     alt: 'About Manav Sehgal, the builder behind Orionfold',
   },
+  '/letter/': {
+    slug: 'letter',
+    eyebrow: 'A letter from the founder',
+    title: 'One person. One desk. One box.',
+    seed: 'letter',
+    alt: 'A letter from the founder of Orionfold: one person, one desk, one box, a whole AI lab',
+  },
+  '/proof/': {
+    slug: 'proof',
+    eyebrow: 'Receipts',
+    title: 'The proof, not the pitch',
+    seed: 'proof',
+    alt: 'Orionfold receipts: frozen tests you can rerun, a small model that out-trusts a big one',
+  },
   '/terms/': {
     slug: 'terms',
     eyebrow: 'Legal',
@@ -147,6 +161,10 @@ export const OG_PAGES: Record<string, OgPage> = {
 
 export const ogPath = (slug: string) => `/og/${slug}.jpg`;
 export const storyOgSlug = (id: string) => `story-${id}`;
+// OG card slug for a single founder-letter edition. Namespaced like story-<id>
+// so a per-edition card can't collide with the static `/letter/` index card
+// (slug 'letter') or any other route. The OG endpoint emits /og/letter-<id>.jpg.
+export const letterOgSlug = (id: string) => `letter-${id}`;
 
 // OG card slug for a product detail page (P8). Namespaced by type so a model
 // slug (slugify(title)) can't collide with a software/book slug, and so none of

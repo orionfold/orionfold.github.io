@@ -30,7 +30,7 @@ export const PERSON = {
   ],
 };
 
-// The studio entity. Layout injects this on every page so the whole site reads
+// The startup entity. Layout injects this on every page so the whole site reads
 // as one Organization (Orionfold LLC) to crawlers. sameAs lists Orionfold's
 // real public homes: GitHub, X, YouTube, and the HuggingFace model org.
 export const ORGANIZATION = {

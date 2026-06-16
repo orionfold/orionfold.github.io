@@ -1,0 +1,46 @@
+---
+// Renders one founder-letter edition: a dated masthead, the markdown body (passed
+// as the default slot, wrapped in the shared .story-prose typography), and a
+// standard capability close. The close is consistent across every edition by
+// design — per the strategy hierarchy, the letters are proof/reason-to-believe
+// that always ladder UP to the capability outcome (an AI team you own), so the
+// reader never leaves on "our numbers are honest" but on the payoff they earn.
+interface Props {
+  edition: string;
+  title: string;
+  dek: string;
+  dateIso: string;
+  dateFmt: string;
+}
+const { edition, title, dek, dateIso, dateFmt } = Astro.props;
+---
+<article class="mx-auto max-w-2xl">
+  <header>
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">
+      <span class="text-primary">A letter from the founder</span>
+      <span aria-hidden="true">·</span>
+      <span>{edition}</span>
+      <span aria-hidden="true">·</span>
+      <time datetime={dateIso}>{dateFmt}</time>
+    </div>
+    <h1 class="mt-4 font-display leading-[1.08]" style="font-size: clamp(2rem, 5vw, 3.25rem);">{title}</h1>
+    <p class="mt-5 text-lg leading-relaxed text-text-muted">{dek}</p>
+  </header>
+
+  <div class="story-prose mt-10 border-t border-border pt-10">
+    <slot />
+  </div>
+
+  <!-- Capability close (same on every edition) -->
+  <div class="mt-14 rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
+    <p class="font-display text-2xl leading-snug">Proof you can rerun. An AI team you can own.</p>
+    <p class="mt-4 text-base leading-relaxed text-text-muted">
+      Every claim here has a receipt you can check. The payoff they earn is an AI team of your own,
+      on the Spark you already own, with no cloud account and no per-token bill.
+    </p>
+    <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+      <a href="/proof/" class="of-primary-action">Read the receipts</a>
+      <a href="/cockpit/" class="of-secondary-action">Get an AI team you own</a>
+    </div>
+  </div>
+</article>

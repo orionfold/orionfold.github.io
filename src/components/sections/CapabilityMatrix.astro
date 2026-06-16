@@ -1,0 +1,147 @@
+---
+// CapabilityMatrix — the signature "proof" element for /proof/. It turns a flat
+// comparison table into a flex with three moves:
+//   1. The star legend is the hero: every star has a frozen test you can rerun.
+//   2. Progressive disclosure: you first see OUR small models shine on their own,
+//      then choose to bring in the big open base models for scale. Discovery beats
+//      declaration. (No-JS fallback: the "ours" view is the default and always shows.)
+//   3. Star cells deep-link to the public page that carries that frozen test.
+// Themed with the existing tokens; the only new color is the gold star, scoped below.
+import { cols, matrix, speedRows, speedCaveat } from '../../data/proof';
+import type { Mark } from '../../data/proof';
+
+const glyph: Record<Mark, string> = { star: '★', strong: '●', maybe: '◐', none: '○' };
+const meaning: Record<Mark, string> = {
+  star: 'Proved on a locked test you can rerun',
+  strong: 'Yes, strong',
+  maybe: 'Possible, but not guaranteed',
+  none: 'Not built for this',
+};
+---
+<section data-matrix data-view="ours" class="px-6 py-4">
+  <div class="mx-auto max-w-6xl">
+    <!-- Star legend as the hero line -->
+    <div class="of-surface rounded-2xl p-6 sm:p-7">
+      <p class="font-display text-2xl leading-snug sm:text-3xl">
+        Every <span class="mark mark-star align-middle">★</span> has a frozen test you can rerun.
+      </p>
+      <p class="mt-3 max-w-2xl text-sm leading-relaxed text-text-muted">
+        We write the hard test and lock it before we train, so we cannot cheat. A
+        <span class="mark mark-star">★</span> means we proved it and published the receipts, and it links to the page where you can check our numbers. The rest of the marks read like this:
+      </p>
+      <ul class="mt-4 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-text-muted">
+        <li><span class="mark mark-star">★</span> proved on a locked test</li>
+        <li><span class="mark mark-strong">●</span> yes, strong</li>
+        <li><span class="mark mark-maybe">◐</span> possible, not guaranteed</li>
+        <li><span class="mark mark-none">○</span> not built for it</li>
+      </ul>
+    </div>
+
+    <!-- View toggle: ours first, then add the big open models -->
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-text-dim">Show</span>
+      <div class="inline-flex rounded-full border border-border bg-surface-raised p-1 text-xs font-medium">
+        <button data-view-btn="ours" type="button" class="rounded-full px-4 py-1.5 transition">Our models</button>
+        <button data-view-btn="all" type="button" class="rounded-full px-4 py-1.5 transition">Add the big open models</button>
+      </div>
+    </div>
+
+    <!-- The matrix. Scrolls sideways on small screens; the capability column is
+         sticky so the labels stay put. -->
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full min-w-[34rem] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="sticky left-0 z-10 bg-surface px-3 py-3 text-left align-bottom font-mono text-[10px] uppercase tracking-[0.16em] text-text-dim">What it can do</th>
+            {cols.map((c) => (
+              <th data-base={!c.ours ? 'true' : undefined} class="px-2 py-3 text-center align-bottom">
+                {c.href ? (
+                  <a href={c.href} class="block leading-tight text-text transition-colors hover:text-primary">{c.label}</a>
+                ) : (
+                  <span class="block leading-tight text-text">{c.label}</span>
+                )}
+                <span class={`mt-0.5 block font-mono text-[9px] uppercase tracking-[0.12em] ${c.ours ? 'text-primary' : 'text-text-dim'}`}>{c.sub}</span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {matrix.map((row) => (
+            <tr class="border-t border-border/60">
+              <th scope="row" class="sticky left-0 z-10 bg-surface px-3 py-3 text-left font-normal leading-snug text-text-muted">{row.capability}</th>
+              {row.cells.map((cell, i) => (
+                <td data-base={!cols[i].ours ? 'true' : undefined} class="px-2 py-3 text-center">
+                  {cell.href ? (
+                    <a href={cell.href} title={meaning[cell.mark]} class={`mark mark-${cell.mark} inline-block transition-transform hover:scale-125`} aria-label={`${cols[i].label}: ${meaning[cell.mark]}`}>{glyph[cell.mark]}</a>
+                  ) : (
+                    <span title={meaning[cell.mark]} class={`mark mark-${cell.mark}`} aria-label={`${cols[i].label}: ${meaning[cell.mark]}`}>{glyph[cell.mark]}</span>
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-3 text-xs leading-relaxed text-text-dim">
+      Base-model marks (Qwen3, Llama, DeepSeek-R1) are general, vendor-documented capability, not our measurement. Only the <span class="mark mark-star">★</span> cells come with a frozen test anyone can rerun.
+    </p>
+
+    <!-- Speed: a free box on your desk, next to the big paid models -->
+    <div class="mt-10 of-surface rounded-2xl p-6 sm:p-7">
+      <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Typing speed, words a second</p>
+      <p class="mt-2 font-display text-xl leading-snug sm:text-2xl">A free box on your desk keeps pace with the big paid models.</p>
+      <div class="mt-5 grid gap-2.5">
+        {speedRows.map((s) => {
+          const n = parseFloat(s.wps.replace('~', '')) || 0;
+          const pct = Math.min(100, Math.round((n / 166.8) * 100));
+          return (
+            <div class={`flex items-center gap-4 rounded-xl px-4 py-3 ${s.ours ? 'bg-primary/[0.08] ring-1 ring-primary/25' : 'bg-surface-raised'}`}>
+              <div class="w-40 shrink-0">
+                <p class={`text-sm font-medium ${s.ours ? 'text-primary' : 'text-text'}`}>{s.model}</p>
+                <p class="text-xs text-text-dim">{s.where}</p>
+              </div>
+              <div class="h-2 flex-1 overflow-hidden rounded-full bg-border/40">
+                <div class={`h-full rounded-full ${s.ours ? 'bg-primary' : 'bg-text-muted/45'}`} style={`width:${pct}%`}></div>
+              </div>
+              <span class="w-14 shrink-0 text-right font-mono text-sm text-text">{s.wps}</span>
+            </div>
+          );
+        })}
+      </div>
+      <p class="mt-4 text-xs leading-relaxed text-text-dim">{speedCaveat}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Mark colors. The gold star is the brand in one glyph. */
+  .mark { font-size: 1.05em; line-height: 1; }
+  .mark-star { color: oklch(0.70 0.14 82); }
+  .mark-strong { color: var(--color-primary); }
+  .mark-maybe { color: var(--color-text-muted); opacity: 0.85; }
+  .mark-none { color: var(--color-text-muted); opacity: 0.3; }
+  a.mark-star { text-decoration: none; }
+
+  /* Progressive disclosure: hide the base-model columns until the reader asks. */
+  [data-matrix][data-view='ours'] [data-base] { display: none; }
+
+  /* Toggle active state, set by the inline script via aria-pressed. */
+  [data-view-btn][aria-pressed='true'] { background: var(--color-primary); color: #fff; }
+  [data-view-btn][aria-pressed='false'] { color: var(--color-text-muted); }
+</style>
+
+<script>
+  // Progressive disclosure toggle. No framework: flip a data attribute on the
+  // section and reflect it on the two buttons. Default stays "ours" so the
+  // no-JS render already tells the strongest story.
+  document.querySelectorAll('[data-matrix]').forEach((section) => {
+    const btns = section.querySelectorAll<HTMLButtonElement>('[data-view-btn]');
+    const apply = (view: string) => {
+      section.setAttribute('data-view', view);
+      btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.viewBtn === view)));
+    };
+    btns.forEach((b) => b.addEventListener('click', () => apply(b.dataset.viewBtn || 'ours')));
+    apply('ours');
+  });
+</script>

@@ -1,0 +1,78 @@
+---
+// /letter/<slug>/ — the permalink for one founder-letter edition (posterity +
+// shareable per-edition URL). Carries the canonical BlogPosting for the edition;
+// the /letter/ index is the always-fresh hub that points here.
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import LetterArticle from '../../../components/letters/LetterArticle.astro';
+import { ogPath, letterOgSlug } from '../../../data/og';
+import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
+
+export async function getStaticPaths() {
+  const letters = await getCollection('letters');
+  return letters.map((letter) => ({ params: { slug: letter.id }, props: { letter } }));
+}
+
+const { letter } = Astro.props as { letter: CollectionEntry<'letters'> };
+const { Content } = await render(letter);
+const { title, dek, edition, date } = letter.data;
+
+const dfmt = (d: Date) =>
+  new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(d);
+const dateIso = date.toISOString().slice(0, 10);
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogPath(letterOgSlug(letter.id)), Astro.site).href;
+
+const blogPostingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: dek,
+  image: ogImageUrl,
+  datePublished: dateIso,
+  dateModified: dateIso,
+  author: { ...PERSON, url: `${SITE.url}/about/` },
+  publisher: PUBLISHER,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  url: canonical,
+  inLanguage: 'en',
+  articleSection: 'Letters',
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Letters', item: `${SITE.url}/letter/` },
+    { '@type': 'ListItem', position: 3, name: title, item: canonical },
+  ],
+};
+---
+<Layout
+  title={`${title} · A letter from the founder · Orionfold`}
+  description={dek}
+  ogImage={ogPath(letterOgSlug(letter.id))}
+  ogImageAlt={`${title} · a letter from the founder of Orionfold`}
+  ogType="article"
+  article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Letters' }}
+  jsonLd={[blogPostingSchema, breadcrumbSchema]}
+>
+  <Nav />
+  <main class="px-6 pt-36 pb-24 sm:pt-40">
+    <div class="mx-auto max-w-2xl">
+      <a href="/letter/" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+        All letters
+      </a>
+    </div>
+    <div class="mt-8">
+      <LetterArticle edition={edition} title={title} dek={dek} dateIso={dateIso} dateFmt={dfmt(date)}>
+        <Content />
+      </LetterArticle>
+    </div>
+  </main>
+  <Footer />
+</Layout>

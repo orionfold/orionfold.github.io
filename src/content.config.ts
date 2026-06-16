@@ -155,4 +155,26 @@ const productDetail = defineCollection({
     }),
 });
 
-export const collections = { story, productDetail };
+// Letters — the founder's monthly letter, a dated series (one markdown file per
+// edition). A distinct genre from `story` (the build-log): these are timely,
+// first-person dispatches that make the standing Orionfold case against a current
+// industry topic, with cited sources. The canonical /letter/ route shows the
+// newest edition and archives the rest; each edition gets a permalink
+// /letter/<slug>/. Mirrors the `story` glob-loader idiom.
+const letters = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/letters' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      // Human label for the edition, e.g. "June 2026" — shown on the masthead,
+      // the homepage band, and the archive list.
+      edition: z.string(),
+      date: z.coerce.date(),
+      // One-line standfirst, used on the homepage band and the archive list.
+      dek: z.string(),
+      hero: image().optional(),
+      heroAlt: z.string().optional(),
+    }),
+});
+
+export const collections = { story, productDetail, letters };

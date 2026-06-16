@@ -1,0 +1,106 @@
+---
+// /letter/ — the founder's letters hub. Shows the NEWEST edition in full (so the
+// stable /letter/ URL the homepage, footer, about page, and the marketing campaign
+// all point at always lands on fresh content), then archives the earlier editions.
+// Each edition also has its own permalink at /letter/<slug>/ for posterity. The
+// page declares itself a Blog hub in JSON-LD; the per-edition permalink carries the
+// canonical BlogPosting, so the always-fresh index does not duplicate it.
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import LetterArticle from '../../components/letters/LetterArticle.astro';
+import { ogPath, letterOgSlug } from '../../data/og';
+import { SITE, PERSON, PUBLISHER } from '../../data/seo';
+
+const letters = (await getCollection('letters')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const latest = letters[0];
+const earlier = letters.slice(1);
+const { Content } = await render(latest);
+
+const dfmt = (d: Date) =>
+  new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(d);
+const latestIso = latest.data.date.toISOString().slice(0, 10);
+
+const blogSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Letters from the founder',
+  description:
+    'A monthly letter from the founder of Orionfold, making the case for private AI you own against what is happening in AI right now.',
+  url: `${SITE.url}/letter/`,
+  author: { ...PERSON, url: `${SITE.url}/about/` },
+  publisher: PUBLISHER,
+  blogPost: letters.map((l) => ({
+    '@type': 'BlogPosting',
+    headline: l.data.title,
+    description: l.data.dek,
+    datePublished: l.data.date.toISOString().slice(0, 10),
+    url: `${SITE.url}/letter/${l.id}/`,
+    author: { ...PERSON, url: `${SITE.url}/about/` },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Letters', item: `${SITE.url}/letter/` },
+  ],
+};
+---
+<Layout
+  title={`${latest.data.title} · A letter from the founder · Orionfold`}
+  description={latest.data.dek}
+  ogImage={ogPath(letterOgSlug(latest.id))}
+  ogImageAlt={`${latest.data.title} · a letter from the founder of Orionfold`}
+  ogType="article"
+  article={{ datePublished: latestIso, dateModified: latestIso, author: 'Manav Sehgal', section: 'Letters' }}
+  jsonLd={[blogSchema, breadcrumbSchema]}
+>
+  <Nav />
+  <main class="px-6 pt-36 pb-24 sm:pt-40">
+    <LetterArticle
+      edition={latest.data.edition}
+      title={latest.data.title}
+      dek={latest.data.dek}
+      dateIso={latestIso}
+      dateFmt={dfmt(latest.data.date)}
+    >
+      <Content />
+    </LetterArticle>
+
+    <!-- Archive: earlier editions, or the cadence note when this is the first one -->
+    <section class="mx-auto mt-20 max-w-2xl border-t border-border pt-10">
+      <div class="flex flex-wrap items-baseline justify-between gap-3">
+        <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-text-dim">Earlier letters</p>
+        <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-text-dim">A new letter about once a month</span>
+      </div>
+      {earlier.length ? (
+        <ul class="mt-6 grid gap-3">
+          {earlier.map((l) => (
+            <li>
+              <a href={`/letter/${l.id}/`} class="of-surface of-pressable group block rounded-2xl p-5">
+                <div class="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-text-dim">
+                  <span class="text-primary">{l.data.edition}</span>
+                  <time datetime={l.data.date.toISOString().slice(0, 10)}>{dfmt(l.data.date)}</time>
+                </div>
+                <p class="mt-2 font-display text-lg leading-snug text-text transition-colors group-hover:text-primary">{l.data.title}</p>
+                <p class="mt-1 text-sm leading-relaxed text-text-muted">{l.data.dek}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="mt-4 text-sm leading-relaxed text-text-muted">
+          This is the first one. New letters will land here, each making the case fresh against what is
+          happening in AI that month.
+        </p>
+      )}
+    </section>
+  </main>
+  <Footer />
+</Layout>

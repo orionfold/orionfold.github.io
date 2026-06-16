@@ -1,0 +1,109 @@
+---
+// /proof/ — "Receipts." The standing, falsifiable evidence wall: the interactive
+// capability matrix is the hero, then the headline receipts, then the contrarian
+// takes. Built for the builder who reruns your tests and the buyer they refer.
+// Voice: grade 3-5, jargon explained, no em-dashes (website-copy-style). Numbers
+// are repurposed from the field notes; the honest caveats stay in (receipt-honesty).
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import CapabilityMatrix from '../components/sections/CapabilityMatrix.astro';
+import { receipts, myths } from '../data/proof';
+import { SITE } from '../data/seo';
+import { ogMeta } from '../data/og';
+
+const og = ogMeta('/proof/');
+---
+<Layout
+  title="Receipts · Orionfold"
+  description="The proof, not the pitch. Frozen tests you can rerun, a small model that out-trusts a big one, and an AI lab that runs overnight for 2 cents, all on one desk."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: myths.map((m) => ({
+        '@type': 'Question',
+        name: m.claim,
+        acceptedAnswer: { '@type': 'Answer', text: m.bust },
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Receipts', item: `${SITE.url}/proof/` },
+      ],
+    },
+  ]}
+>
+  <Nav />
+  <main>
+    <PageHeader
+      eyebrow="Receipts"
+      title="The proof, not the pitch."
+      subtitle="We do not ask you to trust us. We lock the test before we train, publish the receipts, and let you rerun them. Here is what one desk can prove."
+    />
+
+    <!-- The signature WOW: the capability matrix + speed -->
+    <CapabilityMatrix />
+
+    <!-- Headline receipts: our number next to the world it beats -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-6xl">
+        <p class="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The numbers that pop</p>
+        <div class="grid gap-4 sm:grid-cols-2" data-animate-stagger>
+          {receipts.map((r) => (
+            <a href={r.href} data-animate class="of-surface of-pressable group flex flex-col rounded-2xl p-6">
+              <div class="flex items-baseline justify-between gap-3">
+                <span class="font-display text-3xl leading-none text-primary">{r.metric}</span>
+                <span class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-text-dim">{r.label}</span>
+              </div>
+              <p class="mt-4 text-sm leading-relaxed text-text-muted">{r.body}</p>
+              <span class="mt-4 text-sm text-primary transition-colors group-hover:text-primary/80">See the work &rarr;</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Contrarian takes: what people assume, next to the receipt that breaks it -->
+    <section class="border-y border-border bg-surface-raised px-6 py-14">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">We proved these wrong</p>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          Six things almost everyone assumes about AI. Each one, next to the receipt from our own desk that breaks it.
+        </p>
+        <ul class="grid gap-3" data-animate-stagger>
+          {myths.map((m) => (
+            <li data-animate class="rounded-2xl border border-border/70 bg-surface/60 p-5">
+              <p class="text-sm font-medium text-text-dim line-through decoration-text-dim/40">{m.claim}</p>
+              <p class="mt-2 text-base leading-relaxed text-text">{m.bust}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Close: hand the reader to the story and the catalog -->
+    <section class="px-6 py-16">
+      <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
+        <p class="font-display text-2xl leading-snug">Proof you can rerun. An AI team you can own.</p>
+        <p class="mt-4 text-base leading-relaxed text-text-muted">
+          The receipts are the reason to believe. The payoff is what they earn: a private AI team
+          that runs on the Spark you already own, with no cloud account and no per-word bills. The
+          full story of why is in the
+          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/letter/">letter from the founder</a>.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <a href="/cockpit/" class="of-primary-action">Get an AI team you own</a>
+          <a href="/letter/" class="of-secondary-action">Read the letter</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>

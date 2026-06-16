@@ -46,7 +46,7 @@ As I write this, on the second of June, 2026, I am starting Orionfold officially
 
 ## What it means to fold
 
-So I folded. I took twenty-five years, and the whole sprawling frontier of AI, and I folded them down into one small studio on one desk.
+So I folded. I took twenty-five years, and the whole sprawling frontier of AI, and I folded them down into one small startup on one desk.
 
 That is the name. Orion, for the stars, for the frontier above us. Fold, because the whole thing now folds down small enough for one person to hold. The frontier, folded down to your desk.
 

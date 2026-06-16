@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { renderOgCard, type CardOptions } from '../../lib/og/card';
-import { OG_PAGES, storyOgSlug, productOgSlug } from '../../data/og';
+import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug } from '../../data/og';
 import { toProductView, coverKey } from '../../lib/product/detail';
 
 // Book detail OG cards frame the portrait cover on the left over the banner.
@@ -29,6 +29,15 @@ const fmtDate = (d: Date) =>
 function heroBackground(id: string): string | undefined {
   for (const ext of ['png', 'jpg', 'jpeg']) {
     const p = path.join(process.cwd(), 'src/assets/story', id, `hero.${ext}`);
+    if (fs.existsSync(p)) return p;
+  }
+  return undefined;
+}
+
+// Same convention for letter editions: src/assets/letters/<id>/hero.<ext>.
+function letterHeroBackground(id: string): string | undefined {
+  for (const ext of ['png', 'jpg', 'jpeg']) {
+    const p = path.join(process.cwd(), 'src/assets/letters', id, `hero.${ext}`);
     if (fs.existsSync(p)) return p;
   }
   return undefined;
@@ -66,6 +75,21 @@ export const getStaticPaths: GetStaticPaths = async () => {
     } satisfies CardOptions,
   }));
 
+  // Founder-letter editions: one card per edition, mirroring the story cards.
+  // Background is the edition's curated hero when present (src/assets/letters/
+  // <id>/hero.*), otherwise the seeded constellation.
+  const letters = await getCollection('letters');
+  const fromLetters = letters.map((letter: CollectionEntry<'letters'>) => ({
+    params: { slug: letterOgSlug(letter.id) },
+    props: {
+      title: letter.data.title,
+      eyebrow: `Letter · ${letter.data.edition}`,
+      seed: letter.id,
+      meta: fmtDate(letter.data.date),
+      backgroundPath: letterHeroBackground(letter.id),
+    } satisfies CardOptions,
+  }));
+
   // Product detail pages: each card now shows the product's own featured art.
   // Software posters + model covers are landscape, used full-bleed. Book covers are
   // portrait, so they are framed on the left over the brand banner instead.
@@ -98,7 +122,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
   });
 
-  return [...fromPages, ...fromPosts, ...fromProducts];
+  return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts];
 };
 
 export const GET: APIRoute = async ({ props }) => {

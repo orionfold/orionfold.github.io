@@ -55,7 +55,7 @@ const DETAIL_BASE: Record<RoadmapItem['type'], string> = { software: 'software',
 const detailHrefFor = (item: RoadmapItem): string | undefined =>
   detailKeys.has(item.id) ? `/${DETAIL_BASE[item.type]}/${item.id.slice(item.id.indexOf(':') + 1)}/` : undefined;
 
-// Momentum strip — live signals (F2) make the page read as a working studio.
+// Momentum strip — live signals (F2) make the page read as a working startup.
 const stats = [
   { value: String(roadmap.length), label: 'offerings' },
   { value: String(roadmapLanes.active.length), label: 'building now' },
