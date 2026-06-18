@@ -28,3 +28,16 @@
 // local copy is designed in the live state: real "Buy now" buttons (the localhost
 // checkout CORS-fails by design; it resolves on the live push). Keep this true.
 export const ARENA_FIELD_EDITION_LIVE = true;
+
+// META_PIXEL_ENABLED — gate the browser-side Meta Pixel (fbevents.js loader +
+// PageView + the Purchase fbq track). OFF (operator 2026-06-18): BOTH Meta Ads
+// and Google Ads are paused, so the browser pixel buys nothing and is pure cost
+// — it is the cause of the Lighthouse Best-Practices third-party-cookie hit and a
+// cookie/consent surface. While OFF, fbevents.js never loads and no _fbp/_fbc
+// cookies are set (Layout.astro gates the loader on this flag; the
+// window.__ofLoadMetaPixel hook stays undefined and lib/conversion.ts already
+// no-ops safely via ?.()). The server-side CAPI Purchase (stripe-webhook) is
+// untouched and still fires its eventID, so the browser↔CAPI dedup pair is
+// preserved — re-enabling is ONE flip back to true when a Meta campaign resumes.
+// (No CAPI/webhook redeploy needed either way.) See audit-reports/seo-audit-2026-06-18.md §4.
+export const META_PIXEL_ENABLED = false;

@@ -18,11 +18,13 @@
 - [Learn](https://orionfold.com/learn/): Books, field notes, the DGX Spark Field Lab, and build stories that teach the operating model.
 
 ## Proof libraries
+- [Proof](https://orionfold.com/proof/): The receipts wall. Every capability claim links to a test you can run yourself and get the same result. It shows where the small local models already win, and where the big cloud models still lead.
 - [Software](https://orionfold.com/software/): Open software to run private AI workflows. Orionfold Arena, Advisor, and Cortex lead the catalog, with the AI Native Platform and API, apps, and developer tools behind them.
 - [Models](https://orionfold.com/models/): Open-weight AI models tuned for patents, security, law, finance, medicine, and space math. Free to download and run offline.
 - [DGX Spark](https://orionfold.com/dgx-spark/): Built on the NVIDIA stack. The book, open models, and tools all proven on the NVIDIA DGX Spark, a small AI supercomputer that runs on one desk with no cloud.
 - [Books](https://orionfold.com/books/): Implementation playbooks. The AI Native Business book, AI research on the NVIDIA DGX Spark, and Field Notes. Built on working code.
 - [Story](https://orionfold.com/story/): Building in public. Honest notes on what we shipped, what broke, and what we learned.
+- [Letter](https://orionfold.com/letter/): A monthly letter from the founder. Plain notes on the bet behind Orionfold, with sources you can check.
 - [Adoption](https://orionfold.com/adoption/): What is shipped, what is being built, and what sponsors can fund next.
 
 ## More

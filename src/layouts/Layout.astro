@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { SITE, ORGANIZATION } from '../data/seo';
 import { META_PIXEL_ID } from '../data/meta';
+import { META_PIXEL_ENABLED } from '../data/launch';
 
 interface Props {
   title?: string;
@@ -80,8 +81,15 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          low-value for audience building. Purchase is NOT affected: reportPurchase
          in lib/conversion.ts force-loads the pixel (window.__ofLoadMetaPixel)
          before tracking, and CAPI (stripe-webhook) is the server-side backstop.
-         Marketing can align or counter — see the strategy _RELAY.md entry. -->
-    {META_PIXEL_ID && (
+         Marketing can align or counter — see the strategy _RELAY.md entry.
+
+         GATED OFF while both ad channels are paused (META_PIXEL_ENABLED, set in
+         src/data/launch.ts; operator 2026-06-18). When false the loader below
+         never renders, so fbevents.js never loads and no _fbp/_fbc cookies are
+         set. window.__ofLoadMetaPixel stays undefined; reportPurchase() already
+         no-ops it via ?.(), and the server-side CAPI Purchase still fires its
+         eventID, so re-enabling is one flip back to true. -->
+    {META_PIXEL_ID && META_PIXEL_ENABLED && (
       <script is:inline define:vars={{ META_PIXEL_ID }}>
         (function () {
           var loaded = false;
