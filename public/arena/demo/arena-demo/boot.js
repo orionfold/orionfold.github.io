@@ -364,7 +364,7 @@
   // of the copied demo — RE-APPLY after any demo re-sync from ainative.business.
   function ribbon() {
     if (document.getElementById('arena-demo-ribbon')) return;
-    var P = 'oklch(0.55 0.18 260)'; // orionfold primary (global.css)
+    var P = '#0e9e98'; // orionfold primary, cyan re-found (global.css --color-primary, light)
     var s = document.createElement('style');
     s.textContent =
       '#arena-demo-ribbon{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:center;gap:14px;' +
@@ -372,7 +372,7 @@
         'font:500 13px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;color:#0C172C;box-shadow:0 2px 14px rgba(12,23,44,.07)}' +
       '#arena-demo-ribbon a{text-decoration:none}' +
       '#arena-demo-ribbon .ofd-brand{display:flex;align-items:center;gap:6px;color:#0C172C}' +
-      '#arena-demo-ribbon .ofd-brand img{display:block;width:26px;height:26px}' +
+      '#arena-demo-ribbon .ofd-brand svg{display:block;width:26px;height:26px}' +
       '#arena-demo-ribbon .ofd-word{font-size:19px;font-weight:600;letter-spacing:-.01em}' +
       '#arena-demo-ribbon .ofd-word b{font-weight:600;color:' + P + '}' +
       '#arena-demo-ribbon .ofd-tag{font:600 10px/1 ui-monospace,monospace;letter-spacing:.16em;color:' + P + ';' +
@@ -386,7 +386,12 @@
     el.id = 'arena-demo-ribbon'; el.setAttribute('role', 'note');
     el.innerHTML =
       '<a class="ofd-brand" href="/" aria-label="Orionfold home">' +
-        '<img src="/logos/orionfold-logo.webp" alt="" width="26" height="26">' +
+        '<svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">' +
+          '<circle cx="32" cy="32" r="32" fill="' + P + '"/>' +
+          '<g transform="rotate(45 32 32)">' +
+            '<path fill="#fff" d="M32,9L37.41,24.56L53.88,24.89L40.75,34.84L45.52,50.61L32,41.2L18.48,50.61L23.25,34.84L10.12,24.89L26.59,24.56Z"/>' +
+          '</g>' +
+        '</svg>' +
         '<span class="ofd-word">Orion<b>fold</b></span>' +
       '</a>' +
       '<span class="ofd-tag">DEMO</span>' +
