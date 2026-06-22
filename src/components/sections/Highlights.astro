@@ -12,20 +12,20 @@
 // homepage. What remains: the book highlight. The <slot/> stays for reuse.
 import Highlight from '../ui/Highlight.astro';
 import BookCover from '../ui/BookCover.astro';
-import dgxResearchCover from '../../assets/book/ai-research-dgx-spark-book.jpg';
+import nativeBusinessCover from '../../assets/book/ai-native-business-book.jpg';
 ---
 <!-- ── Highlight: the book ── -->
 <Highlight
   eyebrow="The book"
-  title="AI Research on NVIDIA DGX Spark"
-  body="Real notes from doing AI research on one desktop. The NVIDIA DGX Spark packs huge power into a small machine, so you can push local AI further with no cloud needed. Every lesson is backed by code that runs."
-  pills={['Local AI', 'NVIDIA DGX Spark', 'Petascale desktop', 'Backed by code']}
-  href="/books/ai-research-on-nvidia-dgx-spark/"
+  title="AI Native Business"
+  body="A book on running a business with AI agents (software helpers that do the work for you). Fourteen short chapters in four parts take you from the first idea to a working system. About a two hour read, open to all."
+  pills={['14 chapters', '4 parts', '~2h read']}
+  href="/books/ai-native-business/"
   ctaText="Explore the book"
   reverse
 >
-  <a slot="media" href="/books/ai-research-on-nvidia-dgx-spark/" aria-label="Explore the book" class="block">
-    <BookCover title="AI Research on NVIDIA DGX Spark" subtitle="Pushing the Frontier of Local AI on a Petascale Desktop" tag="Running log" image={dgxResearchCover} />
+  <a slot="media" href="/books/ai-native-business/" aria-label="Explore the book" class="block">
+    <BookCover title="AI Native Business" subtitle="Build with AI agents." tag="Open" image={nativeBusinessCover} />
   </a>
 </Highlight>
 
