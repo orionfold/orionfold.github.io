@@ -1,21 +1,21 @@
 ---
 // Orionfold top nav: parent mark + "Orionfold" wordmark ("fold" in primary),
-// six section links (Sponsor reads as a plain link like the rest), mobile
-// hamburger, and a scroll-triggered blur.
+// a product-led link set, mobile hamburger, and a scroll-triggered blur.
 // Ported from the donor Nav, minus ThemeToggle and the in-nav social icon
 // (social links live in the Footer per the spec).
-// IA refocus 2026-06-13: nav leads with Arena (the Arena Field Edition home).
-// "Cockpit" relabelled to "Arena" — the /cockpit/ URL is kept (no redirect churn,
-// SEO equity retained) and the page leads with Arena + the Field Edition. Advisor
-// dropped from the top nav (its /advisor/ page stays live + footer-linked for
-// SEO/AEO). Arena takes pole position.
+// IA refocus 2026-06-22: the top nav is product-led — Proof · Arena · Advisor,
+// then a vertical divider, then the catalog entries Models · Books. Operator kept
+// the link targets unchanged while relabelling: Arena → /cockpit/ (SEO equity
+// retained), Advisor → /advisor/, Models → /experts/, Books → /learn/. Workflows +
+// Adoption dropped from the top nav but stay footer-linked for SEO/AEO.
 import BrandMark from './ui/BrandMark.astro';
+// `divider: true` renders a separator immediately BEFORE that link.
 const links = [
+  { href: '/proof/', label: 'Proof' },
   { href: '/cockpit/', label: 'Arena' },
-  { href: '/workflows/', label: 'Workflows' },
-  { href: '/experts/', label: 'Experts' },
-  { href: '/learn/', label: 'Learn' },
-  { href: '/adoption/', label: 'Adoption' },
+  { href: '/advisor/', label: 'Advisor' },
+  { href: '/experts/', label: 'Models', divider: true },
+  { href: '/learn/', label: 'Books' },
 ];
 ---
 <div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
@@ -35,12 +35,15 @@ const links = [
     <!-- Desktop nav -->
     <div class="hidden md:flex items-center gap-6">
       {links.map((link) => (
-        <a
-          href={link.href}
-          class="font-mono text-xs tracking-widest text-text-muted hover:text-primary transition-colors"
-        >
-          {link.label}
-        </a>
+        <Fragment>
+          {link.divider && <span class="h-4 w-px bg-border" aria-hidden="true"></span>}
+          <a
+            href={link.href}
+            class="font-mono text-xs tracking-widest text-text-muted hover:text-primary transition-colors"
+          >
+            {link.label}
+          </a>
+        </Fragment>
       ))}
     </div>
 
@@ -78,7 +81,10 @@ const links = [
   <div id="mobile-menu" class="hidden md:hidden border-t border-border bg-surface/95 backdrop-blur-md">
     <div class="px-6 py-4 flex flex-col gap-3">
       {links.map((link) => (
-        <a href={link.href} class="font-mono text-sm text-text-muted hover:text-primary transition-colors py-2">{link.label}</a>
+        <Fragment>
+          {link.divider && <span class="h-px w-full bg-border my-1" aria-hidden="true"></span>}
+          <a href={link.href} class="font-mono text-sm text-text-muted hover:text-primary transition-colors py-2">{link.label}</a>
+        </Fragment>
       ))}
     </div>
   </div>
