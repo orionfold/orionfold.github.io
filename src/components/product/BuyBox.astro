@@ -34,7 +34,7 @@ const priceLabel = item ? formatUsd(item.amount) : undefined;
           type="button"
           data-checkout={view.lookupKey}
           data-error-target="buybox-err"
-          class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-5 py-3 font-mono text-sm tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+          class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           {priceLabel ? `Buy PDF + EPUB · ${priceLabel}` : 'Buy now'}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>

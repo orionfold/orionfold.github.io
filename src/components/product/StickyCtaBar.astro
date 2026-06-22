@@ -39,7 +39,7 @@ const buyLabel = priceLabel ? `Buy · ${priceLabel}` : 'Buy now';
           type="button"
           data-checkout={fieldEditionCta.lookupKey}
           data-item={fieldEditionCta.itemId}
-          class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-mono text-xs tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-accent px-4 py-2 font-mono text-xs tracking-wider text-accent-text transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           Buy now · {fieldEditionCta.priceLabel}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
@@ -47,7 +47,7 @@ const buyLabel = priceLabel ? `Buy · ${priceLabel}` : 'Buy now';
       ) : (
         <a
           href={fieldEditionCta.anchor}
-          class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-mono text-xs tracking-wider text-white transition-colors hover:bg-primary/90"
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-accent px-4 py-2 font-mono text-xs tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
         >
           Field Edition · {fieldEditionCta.priceLabel}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
@@ -57,7 +57,7 @@ const buyLabel = priceLabel ? `Buy · ${priceLabel}` : 'Buy now';
       <button
         type="button"
         data-checkout={view.lookupKey}
-        class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-mono text-xs tracking-wider text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+        class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-accent px-4 py-2 font-mono text-xs tracking-wider text-accent-text transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         {buyLabel}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
@@ -65,7 +65,7 @@ const buyLabel = priceLabel ? `Buy · ${priceLabel}` : 'Buy now';
     ) : (
       <a
         href="#sponsor"
-        class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-mono text-xs tracking-wider text-white transition-colors hover:bg-primary/90"
+        class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-accent px-4 py-2 font-mono text-xs tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
       >
         Sponsor
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>

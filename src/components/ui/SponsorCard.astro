@@ -65,7 +65,7 @@ const errorId = `sponsor-err-${tier.tier}`;
     data-error-target={errorId}
     class:list={[
       'inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-3 font-mono text-sm tracking-wider transition-colors disabled:opacity-60 disabled:cursor-not-allowed',
-      tier.featured ? 'bg-primary text-white hover:bg-primary/90' : 'border border-primary/30 text-primary hover:bg-primary/5',
+      tier.featured ? 'bg-accent text-accent-text hover:bg-accent-hover' : 'border border-primary/30 text-primary hover:bg-primary/5',
     ]}
   >
     Sponsor as {tier.name}
