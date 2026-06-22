@@ -5,7 +5,6 @@ import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import OfferProofRail from '../components/flagship/OfferProofRail.astro';
 import CapabilityStack from '../components/flagship/CapabilityStack.astro';
-import NvidiaStackBand from '../components/flagship/NvidiaStackBand.astro';
 import { Image } from 'astro:assets';
 import { flagshipById } from '../data/flagship-offers';
 import { ogMeta } from '../data/og';
@@ -92,7 +91,6 @@ const corpus = [
         <OfferProofRail links={offer.proof} />
       </div>
     </section>
-    <NvidiaStackBand note="Advisor targets customer-controlled hardware, with NVIDIA GPUs used for accelerated embedding, reranking, and local model inference where available." />
   </main>
   <Footer />
 </Layout>

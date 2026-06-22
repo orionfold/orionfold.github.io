@@ -4,7 +4,6 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import CapabilityStack from '../components/flagship/CapabilityStack.astro';
-import NvidiaStackBand from '../components/flagship/NvidiaStackBand.astro';
 import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
 import patentCover from '../assets/models/patent-strategist/cover.png';
@@ -146,10 +145,6 @@ const library = [
         </p>
       </div>
     </section>
-
-    <div class="pt-4">
-      <NvidiaStackBand note="Patent Strategist is built with NVIDIA NeMo, and packs are tested on NVIDIA DGX Spark-class hardware so they run offline on customer-controlled machines." />
-    </div>
   </main>
   <Footer />
 </Layout>

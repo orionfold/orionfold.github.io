@@ -6,7 +6,6 @@ import PageHeader from '../components/ui/PageHeader.astro';
 import BrowserFrame from '../components/ui/BrowserFrame.astro';
 import OfferProofRail from '../components/flagship/OfferProofRail.astro';
 import CapabilityStack from '../components/flagship/CapabilityStack.astro';
-import NvidiaStackBand from '../components/flagship/NvidiaStackBand.astro';
 import FieldEditionBand from '../components/sections/FieldEditionBand.astro';
 import { flagshipById } from '../data/flagship-offers';
 import { ogMeta } from '../data/og';
@@ -70,7 +69,6 @@ const og = ogMeta('/cockpit/');
         <OfferProofRail title="The stack around the cockpit" links={offer.proof} action={{ label: 'All software →', href: '/software/' }} />
       </div>
     </section>
-    <NvidiaStackBand note="The Cockpit stack is proven on NVIDIA DGX Spark and supports NVIDIA GPU acceleration for inference, fine-tuning, and model evaluation workflows." />
   </main>
   <Footer />
 </Layout>
