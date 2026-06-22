@@ -28,6 +28,7 @@ audit-reports/
 # Brainstorm / visual-companion scratch (mockups, generated proofs)
 .superpowers/
 .playwright-mcp/
+.cache-imagery/
 
 # Agent config, skills, and session state are local-only tooling — never commit
 # (operator policy 2026-05-27, reaffirmed 2026-06-09). The .agents/ tree is the
