@@ -497,11 +497,15 @@ section {
 }
 
 /* ── Theme toggle — sun/moon icon swap is pure CSS off data-theme ── */
+/* Three-way theme toggle icon: keyed off data-theme-mode (the CHOICE), so
+   "System" shows the monitor glyph regardless of the resolved light/dark. */
 .theme-toggle { display: inline-flex; align-items: center; }
-.theme-toggle .ic-sun { display: none; }
-.theme-toggle .ic-moon { display: block; }
-[data-theme="dark"] .theme-toggle .ic-sun { display: block; }
-[data-theme="dark"] .theme-toggle .ic-moon { display: none; }
+.theme-toggle .ic-sun,
+.theme-toggle .ic-moon,
+.theme-toggle .ic-system { display: none; }
+[data-theme-mode="light"] .theme-toggle .ic-sun { display: block; }
+[data-theme-mode="dark"] .theme-toggle .ic-moon { display: block; }
+[data-theme-mode="system"] .theme-toggle .ic-system { display: block; }
 
 /* ── Focus accessibility ── */
 :focus-visible {

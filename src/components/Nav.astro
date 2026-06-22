@@ -53,11 +53,11 @@ const links = [
         id="theme-toggle"
         type="button"
         class="theme-toggle text-text-muted hover:text-primary transition-colors"
-        aria-label="Switch to dark theme"
-        aria-pressed="false"
+        aria-label="Theme"
       >
-        <svg class="ic-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="ic-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></svg>
+        <svg class="ic-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="ic-system" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
       </button>
 
       <!-- Mobile hamburger -->
@@ -101,22 +101,34 @@ const links = [
     const closeIcon = document.getElementById('close-icon');
     if (!nav || !navWrapper || !menuBtn || !mobileMenu || !hamburgerIcon || !closeIcon) return;
 
-    // Theme toggle — writes localStorage 'of-theme'; the no-FOUC script in
-    // <head> reads it pre-paint. Icon swap (sun/moon) is pure CSS off data-theme.
+    // Three-way theme toggle — cycles light → dark → system → light, writing the
+    // CHOICE to localStorage 'of-theme'. The no-FOUC script in <head> reads it
+    // pre-paint and defaults new users to dark. data-theme-mode (the choice)
+    // drives the icon (pure CSS); data-theme (resolved) drives the dark remap.
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
-      const syncTheme = () => {
-        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-        themeToggle.setAttribute('aria-pressed', String(dark));
-        themeToggle.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+      const order = ['light', 'dark', 'system'];
+      const mql = window.matchMedia('(prefers-color-scheme: dark)');
+      const resolve = (mode) => (mode === 'system' ? (mql.matches ? 'dark' : 'light') : mode);
+      const currentMode = () => document.documentElement.getAttribute('data-theme-mode') || 'dark';
+      const apply = (mode) => {
+        document.documentElement.setAttribute('data-theme-mode', mode);
+        document.documentElement.setAttribute('data-theme', resolve(mode));
+        const label = mode === 'system' ? 'System' : mode[0].toUpperCase() + mode.slice(1);
+        themeToggle.setAttribute('aria-label', `Theme: ${label} (click to change)`);
+        themeToggle.setAttribute('title', `Theme: ${label}`);
       };
-      syncTheme();
+      apply(currentMode());
       themeToggle.addEventListener('click', () => {
-        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const next = dark ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
+        const next = order[(order.indexOf(currentMode()) + 1) % order.length];
         try { localStorage.setItem('of-theme', next); } catch (e) {}
-        syncTheme();
+        apply(next);
+      });
+      // While in System mode, follow live OS theme changes.
+      mql.addEventListener('change', () => {
+        if (currentMode() === 'system') {
+          document.documentElement.setAttribute('data-theme', resolve('system'));
+        }
       });
     }
 

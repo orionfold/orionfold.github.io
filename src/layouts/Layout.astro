@@ -49,19 +49,26 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          JS, this runs synchronously before <body> paints, so the hide-then-
          reveal animation still plays on fast devices. -->
     <script is:inline>document.documentElement.classList.add('js-ready');</script>
-    <!-- No-FOUC theme init. Sets data-theme on <html> BEFORE first paint, so
-         the dark remap in global.css applies with no flash. Reads the saved
-         choice (localStorage "of-theme") first, else the OS preference. The
-         toggle in the nav writes "of-theme". -->
+    <!-- No-FOUC theme init. Sets BOTH data-theme-mode (the user's CHOICE:
+         light | dark | system) and data-theme (the RESOLVED value) on <html>
+         BEFORE first paint, so the dark remap + the toggle icon apply with no
+         flash. Reads localStorage "of-theme"; a new user with no saved choice
+         DEFAULTS TO DARK (not the OS preference). Only "system" follows the OS.
+         The three-way toggle in the nav writes "of-theme". -->
     <script is:inline>
       (function () {
         try {
-          var t = localStorage.getItem('of-theme');
-          if (t !== 'light' && t !== 'dark') {
-            t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          }
-          document.documentElement.setAttribute('data-theme', t);
-        } catch (e) {}
+          var saved = localStorage.getItem('of-theme'); // 'light' | 'dark' | 'system' | null
+          var mode = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'dark';
+          var resolved = mode === 'system'
+            ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+            : mode;
+          document.documentElement.setAttribute('data-theme-mode', mode);
+          document.documentElement.setAttribute('data-theme', resolved);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme-mode', 'dark');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
       })();
     </script>
     <!-- Warm DNS+TLS for the analytics origins so the gtag.js + beacons land
