@@ -1,0 +1,24 @@
+---
+// Orionfold brand mark — SC-01f (design-system brand/, 2026-06-21): a filled
+// cyan disc with a white 5-point star knockout, rotated 45°. Inline + theme-aware:
+// the disc fill reads `var(--color-primary)`, so it goes cyan on light and the
+// brighter cyan on dark with no asset swap. aria-hidden (the adjacent wordmark
+// carries the accessible name). The white star reads on both grounds.
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 30, class: className = '' } = Astro.props;
+---
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 64 64"
+  class:list={["of-mark shrink-0", className]}
+  aria-hidden="true"
+>
+  <circle cx="32" cy="32" r="32" style="fill:var(--color-primary)" />
+  <g transform="rotate(45 32 32)">
+    <path fill="#ffffff" d="M32,9L37.41,24.56L53.88,24.89L40.75,34.84L45.52,50.61L32,41.2L18.48,50.61L23.25,34.84L10.12,24.89L26.59,24.56Z" />
+  </g>
+</svg>

@@ -30,56 +30,213 @@
   src: url('/fonts/geist-mono-latin-wght-normal.woff2') format('woff2');
 }
 
-/* ── Design Tokens — single light theme (OKLCH hue 260 blue-indigo) ──
-   Ported from the donor's html[data-theme="light"] values, promoted into
-   the default @theme. The donor's dark defaults, the [data-theme] override
-   block, the no-FOUC theme script, ThemeToggle, and .theme-transitions are
-   intentionally dropped: this site ships one light theme, no toggle. */
+/* ── Design Tokens — Orionfold design system v6 (DS 8260579) ──
+   Re-founded on the Orionfold design system: CYAN is the single action color
+   (was indigo OKLCH hue 260). Strategy: keep the site's existing token NAMES
+   (59 files + the Tailwind `bg-primary/90`-style utilities consume them) and
+   retarget their VALUES to Orionfold; DS-native names (accent/muted/faint/ok,
+   t1–t7, radius-of, shadow-of, fluid --space-*) are added alongside so new
+   surfaces and the categorical `.tag` system have their tokens.
+   Load-bearing rules: cyan (`primary`/`accent`) is the ONLY interactive color;
+   t1–t7 are categorical identity, never interactive; --ok/--warn/--danger are
+   functional status, never a 2nd accent. Single light theme, no toggle (the
+   donor's dark theme + toggle stay dropped — see the aligned/ round-trip log). */
 @theme {
-  --color-surface: oklch(0.98 0.005 260);
-  --color-surface-raised: oklch(0.99 0.002 260 / 0.92);
-  --color-surface-overlay: oklch(0.94 0.008 260);
-  --color-text: oklch(0.15 0.02 260);
-  --color-text-muted: oklch(0.45 0.03 260);
-  --color-text-dim: oklch(0.47 0.03 260);
-  --color-primary: oklch(0.55 0.18 260);
-  --color-primary-dim: oklch(0.55 0.18 260 / 0.10);
-  --color-primary-glow: oklch(0.55 0.18 260 / 0.20);
-  --color-orbit-cyan: oklch(0.56 0.14 205);
-  --color-orbit-gold: oklch(0.70 0.14 82);
-  --color-orbit-ink: oklch(0.27 0.06 260);
-  --color-success: oklch(0.45 0.15 170);
-  --color-success-dim: oklch(0.45 0.15 170 / 0.10);
-  --color-success-glow: oklch(0.45 0.15 170 / 0.20);
-  --color-border: oklch(0.8 0.02 260 / 0.25);
+  /* ── surfaces (site names retargeted to Orionfold neutrals) ── */
+  --color-surface: #f9fafb;          /* page canvas (DS --bg) */
+  --color-surface-raised: #ffffff;   /* cards / rows / header (DS --surface) */
+  --color-surface-overlay: #ffffff;  /* overlays / popovers (DS --raised) */
+  --color-bg: #f9fafb;               /* DS-native alias of the canvas */
+  --color-raised: #ffffff;
 
-  /* ── SVG semantic tokens (light) ── */
-  --svg-card-fill: oklch(0.99 0.002 260);
-  --svg-card-stroke: oklch(0.85 0.02 260 / 0.3);
-  --svg-bg: oklch(0.96 0.005 260);
-  --svg-bg-inner: oklch(0.97 0.003 260);
-  --svg-bg-inner-stroke: oklch(0.88 0.015 260 / 0.4);
-  --svg-stroke: oklch(0.85 0.02 260 / 0.3);
-  --svg-text-bright: oklch(0.25 0.05 260);
-  --svg-text-dim: oklch(0.55 0.03 260);
-  --svg-text-muted: oklch(0.45 0.03 260);
-  --svg-text-extra-dim: oklch(0.55 0.03 260);
-  --svg-text-faint: oklch(0.6 0.02 260);
-  --svg-connector: oklch(0.55 0.1 260);
-  --svg-connector-label: oklch(0.5 0.08 260);
-  --svg-accent-blue: oklch(0.50 0.18 250);
-  --svg-accent-teal: oklch(0.45 0.15 195);
-  --svg-accent-green: oklch(0.45 0.15 170);
-  --svg-accent-green-alt: oklch(0.45 0.18 150);
-  --svg-accent-cyan: oklch(0.45 0.15 180);
-  --svg-accent-purple: oklch(0.45 0.15 300);
-  --svg-accent-orange: oklch(0.55 0.15 75);
-  --svg-accent-red: oklch(0.50 0.2 25);
-  --svg-accent-pink: oklch(0.55 0.15 340);
+  /* ── text ── */
+  --color-text: #1d1f25;
+  --color-text-muted: #6b7280;
+  --color-text-dim: #9aa1ab;
+  --color-muted: #6b7280;            /* DS-native alias */
+  --color-faint: #9aa1ab;            /* DS-native alias */
+
+  /* ── THE one action color — Tide cyan (was indigo) ── */
+  --color-primary: #0e9e98;
+  --color-primary-dim: color-mix(in oklch, #0e9e98 10%, transparent);   /* faint wash */
+  --color-primary-glow: color-mix(in oklch, #0e9e98 22%, transparent);
+  --color-accent: #0e9e98;           /* DS-native name */
+  --color-accent-hover: #0c8b86;
+  --color-accent-text: #ffffff;
+  --color-accent-soft: color-mix(in oklch, #0e9e98 10%, #ffffff);       /* feature-surface tint */
+
+  /* ── status — functional only, never a 2nd accent ── */
+  --color-success: #1a9e3e;
+  --color-success-dim: color-mix(in oklch, #1a9e3e 10%, transparent);
+  --color-success-glow: color-mix(in oklch, #1a9e3e 20%, transparent);
+  --color-ok: #1a9e3e;
+  --color-warn: #b06a00;
+  --color-danger: #c0344d;
+
+  /* ── hairlines ── */
+  --color-border: #e5e9f0;
+  --color-border-strong: #d6dbe4;
+  --color-track: #eef1f5;
+
+  /* ── categorical tags t1–t7 — identity, NEVER interactive (bg + fg pairs) ── */
+  --color-t1-bg: #d2e5ff; --color-t1-fg: #1257c4;  /* patents  */
+  --color-t2-bg: #d3f8e6; --color-t2-fg: #157a3c;  /* finance  */
+  --color-t3-bg: #ffe8c2; --color-t3-fg: #9a5a00;  /* speed    */
+  --color-t4-bg: #ffd9e6; --color-t4-fg: #b02457;  /* health   */
+  --color-t5-bg: #e6dcff; --color-t5-fg: #6b32d6;  /* quality  */
+  --color-t6-bg: #cdeef0; --color-t6-fg: #0c7480;  /* (retired from values) */
+  --color-t7-bg: #dfe2f5; --color-t7-fg: #2c3a78;  /* security / risk */
+
+  /* ── retired "orbit" hues → folded into single-accent / categorical ──
+     orbit-cyan was a 2nd cyan (now a neutral data marker); orbit-gold was the
+     chip dot (now categorical t3 ink). Cyan stays the lone action color. */
+  --color-orbit-cyan: #6b7280;
+  --color-orbit-gold: #9a5a00;
+  --color-orbit-ink: #1d1f25;
+
+  /* ── radius (Linear finish) ── → rounded-of, rounded-of-lg, rounded-of-pill */
+  --radius-of: 8px;
+  --radius-of-lg: 12px;
+  --radius-of-pill: 999px;
+
+  /* ── shadow ── → shadow-of, shadow-of-pop */
+  --shadow-of: 0 1px 2px rgba(16,22,30,0.06), 0 1px 1px rgba(16,22,30,0.04);
+  --shadow-of-pop: 0 6px 18px -8px rgba(16,22,30,0.20);
+
+  /* ── fluid space scale (Utopia; vp 360–1240px @16px; rem-anchored) ── */
+  --spacing-space-3xs: clamp(0.25rem, 0.22rem + 0.11vi, 0.313rem);
+  --spacing-space-2xs: clamp(0.5rem,  0.45rem + 0.23vi, 0.625rem);
+  --spacing-space-xs:  clamp(0.75rem, 0.70rem + 0.23vi, 0.875rem);
+  --spacing-space-s:   clamp(1rem,    0.90rem + 0.45vi, 1.25rem);
+  --spacing-space-m:   clamp(1.5rem,  1.30rem + 0.91vi, 2rem);
+  --spacing-space-l:   clamp(2.25rem, 1.94rem + 1.36vi, 3rem);
+  --spacing-space-xl:  clamp(3rem,    2.39rem + 2.73vi, 4.5rem);
+  --spacing-space-2xl: clamp(4.5rem,  3.48rem + 4.55vi, 7rem);
+  --spacing-space-3xl: clamp(6rem,    4.36rem + 7.27vi, 10rem);
+
+  /* ── SVG diagram palette → single-accent rule (DESIGN.md "Charts are single
+     accent"): primary series = cyan; secondary series collapse to neutral
+     greys (a 2nd series should be a dashed neutral + direct label, never a 2nd
+     hue). Status greens/reds map to the functional --ok/--danger family. ── */
+  --svg-card-fill: #ffffff;
+  --svg-card-stroke: color-mix(in oklch, #e5e9f0 80%, transparent);
+  --svg-bg: #f4f6f9;
+  --svg-bg-inner: #f9fafb;
+  --svg-bg-inner-stroke: color-mix(in oklch, #d6dbe4 70%, transparent);
+  --svg-stroke: color-mix(in oklch, #e5e9f0 80%, transparent);
+  --svg-text-bright: #1d1f25;
+  --svg-text-dim: #6b7280;
+  --svg-text-muted: #6b7280;
+  --svg-text-extra-dim: #9aa1ab;
+  --svg-text-faint: #9aa1ab;
+  --svg-connector: #9aa1ab;
+  --svg-connector-label: #6b7280;
+  --svg-accent-blue: #0e9e98;        /* was indigo primary → cyan */
+  --svg-accent-teal: #0e9e98;
+  --svg-accent-cyan: #0e9e98;
+  --svg-accent-green: #1a9e3e;       /* status green */
+  --svg-accent-green-alt: #1a9e3e;
+  --svg-accent-purple: #6b7280;      /* 2nd series → neutral grey */
+  --svg-accent-orange: #9aa1ab;
+  --svg-accent-red: #c0344d;         /* danger status */
+  --svg-accent-pink: #9aa1ab;
 
   --font-display: "Geist Sans", system-ui, sans-serif;
   --font-body: "Geist Sans", system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+/* ── DARK THEME — remap the SAME token names (DS [data-theme="dark"]) ──
+   Driven by `data-theme="dark"` on <html> (set pre-paint by the no-FOUC script
+   in Layout.astro). Tailwind utilities resolve through these CSS vars, so every
+   bg / text / border utility flips automatically — dark mode is a remap, not a
+   rewrite. Operator reversed the earlier light-only decision (2026-06-21): the
+   dark theme reads really well, so it ships. Cyan stays the lone action color
+   (brighter #14c8c0 on dark for contrast).
+   Selector is `html[data-theme="dark"]` (specificity 0,1,1) NOT bare
+   `[data-theme="dark"]` (0,1,0) — Tailwind v4 emits the `@theme` `:root` vars
+   AFTER this rule, so an equal-specificity selector would lose on source order;
+   the `html` qualifier wins the override cleanly. */
+html[data-theme="dark"] {
+  /* surfaces */
+  --color-surface: #15171b;          /* page canvas */
+  --color-surface-raised: #1f2228;   /* cards / rows / header */
+  --color-surface-overlay: #262b33;  /* overlays / popovers */
+  --color-bg: #15171b;
+  --color-raised: #262b33;
+
+  /* text */
+  --color-text: #e9ecf0;
+  --color-text-muted: #9aa1ab;
+  --color-text-dim: #727a85;
+  --color-muted: #9aa1ab;
+  --color-faint: #727a85;
+
+  /* the one action color — brighter cyan on dark */
+  --color-primary: #14c8c0;
+  --color-primary-dim: color-mix(in oklch, #14c8c0 14%, transparent);
+  --color-primary-glow: color-mix(in oklch, #14c8c0 26%, transparent);
+  --color-accent: #14c8c0;
+  --color-accent-hover: #2ad6cd;
+  --color-accent-text: #04201f;
+  --color-accent-soft: color-mix(in oklch, #14c8c0 14%, #1f2228);
+
+  /* status */
+  --color-success: #3fd55a;
+  --color-success-dim: color-mix(in oklch, #3fd55a 14%, transparent);
+  --color-success-glow: color-mix(in oklch, #3fd55a 24%, transparent);
+  --color-ok: #3fd55a;
+  --color-warn: #f5b14a;
+  --color-danger: #ff7a93;
+
+  /* hairlines */
+  --color-border: #2c313a;
+  --color-border-strong: #3a414c;
+  --color-track: #2c313a;
+
+  /* categorical tags — dark variants */
+  --color-t1-bg: #16345e; --color-t1-fg: #7fb4ff;
+  --color-t2-bg: #143a28; --color-t2-fg: #62d98c;
+  --color-t3-bg: #4a3410; --color-t3-fg: #f5b14a;
+  --color-t4-bg: #4a1e30; --color-t4-fg: #ff8db0;
+  --color-t5-bg: #2e2256; --color-t5-fg: #b79cff;
+  --color-t6-bg: #103a3e; --color-t6-fg: #4fd6dd;
+  --color-t7-bg: #1e2a5e; --color-t7-fg: #aab6ee;
+
+  /* retired orbit hues (dark) */
+  --color-orbit-cyan: #9aa1ab;
+  --color-orbit-gold: #f5b14a;
+  --color-orbit-ink: #e9ecf0;
+
+  /* shadow (deeper on dark) */
+  --shadow-of: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-of-pop: 0 10px 28px -12px rgba(0,0,0,0.6);
+
+  /* SVG diagram palette (dark) — single-accent: cyan + neutral + status */
+  --svg-card-fill: #1f2228;
+  --svg-card-stroke: color-mix(in oklch, #2c313a 80%, transparent);
+  --svg-bg: #15171b;
+  --svg-bg-inner: #1a1d22;
+  --svg-bg-inner-stroke: color-mix(in oklch, #3a414c 70%, transparent);
+  --svg-stroke: color-mix(in oklch, #2c313a 80%, transparent);
+  --svg-text-bright: #e9ecf0;
+  --svg-text-dim: #9aa1ab;
+  --svg-text-muted: #9aa1ab;
+  --svg-text-extra-dim: #727a85;
+  --svg-text-faint: #727a85;
+  --svg-connector: #727a85;
+  --svg-connector-label: #9aa1ab;
+  --svg-accent-blue: #14c8c0;
+  --svg-accent-teal: #14c8c0;
+  --svg-accent-cyan: #14c8c0;
+  --svg-accent-green: #3fd55a;
+  --svg-accent-green-alt: #3fd55a;
+  --svg-accent-purple: #727a85;
+  --svg-accent-orange: #9aa1ab;
+  --svg-accent-red: #ff7a93;
+  --svg-accent-pink: #9aa1ab;
+
+  color-scheme: dark;
 }
 
 /* ── Base ── */
@@ -339,6 +496,13 @@ section {
   will-change: transform;
 }
 
+/* ── Theme toggle — sun/moon icon swap is pure CSS off data-theme ── */
+.theme-toggle { display: inline-flex; align-items: center; }
+.theme-toggle .ic-sun { display: none; }
+.theme-toggle .ic-moon { display: block; }
+[data-theme="dark"] .theme-toggle .ic-sun { display: block; }
+[data-theme="dark"] .theme-toggle .ic-moon { display: none; }
+
 /* ── Focus accessibility ── */
 :focus-visible {
   outline: 2px solid var(--color-primary);
@@ -366,76 +530,61 @@ section {
 /* ── Timeline line ── */
 .timeline-line { opacity: 0.25; }
 
-/* ── Hero gradient text ── */
+/* ── Hero gradient text (single-hue: ink → cyan; gold dropped — no 2nd accent) ── */
 .hero-gradient-text {
-  background: linear-gradient(135deg, oklch(0.31 0.08 246), oklch(0.46 0.16 260), oklch(0.59 0.13 82));
+  background: linear-gradient(135deg, var(--color-text), var(--color-primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* ── Orionfold enterprise AI surface language ── */
+/* ── Orionfold component language (DS v6: Linear finish, single cyan accent) ──
+   Component-class NAMES kept (used across ~24 files); values retargeted to the
+   Orionfold tokens. of-surface → calm card (1px border + soft shadow, no indigo
+   glow/grain); of-chip → the squared receipt-stub .tag (shape = never
+   interactive); the action classes → solid-cyan pill / ghost / textlink. */
 .of-surface {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-  border: 1px solid color-mix(in oklch, var(--color-border) 76%, var(--color-primary) 24%);
-  background:
-    linear-gradient(180deg, color-mix(in oklch, var(--color-surface-raised) 94%, white 6%), var(--color-surface-raised)),
-    var(--color-surface-raised);
-  box-shadow:
-    0 28px 70px -44px oklch(0.18 0.08 260 / 0.42),
-    inset 0 1px 0 oklch(1 0 0 / 0.62);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-of-lg);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-of);
 }
-.of-surface::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 18% 18%, var(--color-primary-glow), transparent 24rem),
-    radial-gradient(circle at 84% 8%, oklch(0.70 0.14 82 / 0.10), transparent 20rem);
-  opacity: 0.72;
+/* premium feature surface — a faint cyan WASH (tint, never a control) */
+.of-surface.of-feature {
+  border-color: color-mix(in oklch, var(--color-accent) 26%, var(--color-border));
+  background: linear-gradient(180deg, var(--color-accent-soft), var(--color-surface-raised));
 }
-.of-surface::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image:
-    radial-gradient(circle, oklch(1 0 0 / 0.52) 0 1px, transparent 1.4px),
-    linear-gradient(135deg, transparent 0 46%, oklch(0.55 0.16 260 / 0.07) 46% 46.4%, transparent 46.4% 100%);
-  background-position: 0 0, center;
-  background-size: 84px 84px, 100% 100%;
-  opacity: 0.24;
-}
+
+/* of-chip → categorical receipt-stub: squared (3px) + dashed "tear" edge.
+   The shape alone encodes the never-interactive contract. Neutral by default;
+   opt into a categorical hue with .t1–.t7. */
 .of-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, var(--color-border));
-  border-radius: 999px;
-  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-raised));
-  padding: 0.32rem 0.62rem;
-  color: var(--color-orbit-ink);
+  gap: 0.4rem;
+  border: 1px solid var(--color-border);
+  border-left: 2px dashed var(--color-faint);   /* the "tear" edge */
+  border-radius: 3px;                            /* NOT a pill — never pressable */
+  background: var(--color-surface-raised);
+  padding: 0.3rem 0.55rem;
+  color: var(--color-text-muted);
   font-family: var(--font-mono);
   font-size: 0.58rem;
   font-weight: 500;
   letter-spacing: 0.08em;
   line-height: 1.1;
   text-transform: uppercase;
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.55);
 }
-.of-chip::before {
-  content: "";
-  width: 0.38rem;
-  height: 0.38rem;
-  border-radius: 999px;
-  background: var(--color-orbit-gold);
-  box-shadow: 0 0 0 3px oklch(0.70 0.14 82 / 0.14);
-}
+.of-chip.t1 { background: var(--color-t1-bg); color: var(--color-t1-fg); border-color: color-mix(in oklch, var(--color-t1-fg) 22%, var(--color-border)); }
+.of-chip.t2 { background: var(--color-t2-bg); color: var(--color-t2-fg); border-color: color-mix(in oklch, var(--color-t2-fg) 22%, var(--color-border)); }
+.of-chip.t3 { background: var(--color-t3-bg); color: var(--color-t3-fg); border-color: color-mix(in oklch, var(--color-t3-fg) 22%, var(--color-border)); }
+.of-chip.t4 { background: var(--color-t4-bg); color: var(--color-t4-fg); border-color: color-mix(in oklch, var(--color-t4-fg) 22%, var(--color-border)); }
+.of-chip.t5 { background: var(--color-t5-bg); color: var(--color-t5-fg); border-color: color-mix(in oklch, var(--color-t5-fg) 22%, var(--color-border)); }
+.of-chip.t6 { background: var(--color-t6-bg); color: var(--color-t6-fg); border-color: color-mix(in oklch, var(--color-t6-fg) 22%, var(--color-border)); }
+.of-chip.t7 { background: var(--color-t7-bg); color: var(--color-t7-fg); border-color: color-mix(in oklch, var(--color-t7-fg) 22%, var(--color-border)); }
+
 .of-primary-action,
 .of-secondary-action,
 .of-text-action {
@@ -449,45 +598,51 @@ section {
   letter-spacing: 0.08em;
   transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
+/* primary → solid cyan pill (round = pressable) */
 .of-primary-action {
-  border-radius: 0.75rem;
-  background: linear-gradient(135deg, var(--color-primary), color-mix(in oklch, var(--color-primary) 76%, var(--color-orbit-ink)));
-  padding: 0.72rem 1.15rem;
-  color: white;
-  box-shadow: 0 14px 30px -20px var(--color-primary);
+  border-radius: var(--radius-of-pill);
+  background: var(--color-accent);
+  padding: 0.72rem 1.2rem;
+  color: var(--color-accent-text);
+  box-shadow: var(--shadow-of);
 }
 .of-primary-action:hover {
   transform: translateY(-1px);
-  box-shadow: 0 18px 36px -20px var(--color-primary);
+  background: var(--color-accent-hover);
+  box-shadow: var(--shadow-of-pop);
 }
+/* secondary → ghost (neutral, cyan on hover) */
 .of-secondary-action {
-  border: 1px solid color-mix(in oklch, var(--color-primary) 24%, var(--color-border));
-  border-radius: 0.75rem;
-  background: color-mix(in oklch, var(--color-surface-raised) 86%, var(--color-primary) 4%);
-  padding: 0.72rem 1.15rem;
-  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-of-pill);
+  background: var(--color-surface-raised);
+  padding: 0.72rem 1.2rem;
+  color: var(--color-text);
 }
 .of-secondary-action:hover {
-  border-color: color-mix(in oklch, var(--color-primary) 42%, var(--color-border));
+  border-color: color-mix(in oklch, var(--color-accent) 40%, var(--color-border));
   background: var(--color-primary-dim);
+  color: var(--color-accent);
 }
+/* text → cyan textlink */
 .of-text-action {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 .of-text-action:hover {
-  color: var(--color-orbit-ink);
+  color: var(--color-accent-hover);
 }
 .of-text-action.of-compact {
   min-height: 0;
 }
+/* clickable card hover */
 .of-pressable {
   transition: border-color 220ms ease, background-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
 }
 .of-pressable:hover {
   transform: translateY(-2px);
-  border-color: color-mix(in oklch, var(--color-primary) 38%, var(--color-border));
-  background-color: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-raised));
-  box-shadow: 0 18px 42px -32px var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-accent) 38%, var(--color-border));
+  background-color: color-mix(in oklch, var(--color-accent) 4%, var(--color-surface-raised));
+  box-shadow: var(--shadow-of-pop);
 }
 
 @media (prefers-reduced-motion: reduce) {

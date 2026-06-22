@@ -4,21 +4,16 @@
   "description": "Orionfold gives small teams private AI they own: agents that do real work, models that know your field, and tests that prove it, all on hardware you control.",
   "start_url": "/",
   "display": "browser",
-  "background_color": "#f6f9fc",
-  "theme_color": "#296cd8",
+  "background_color": "#f9fafb",
+  "theme_color": "#0e9e98",
   "icons": [
     {
-      "src": "/orionfold-64.png",
+      "src": "/icon-192.png",
       "type": "image/png",
-      "sizes": "64x64"
+      "sizes": "192x192"
     },
     {
-      "src": "/orionfold-128.png",
-      "type": "image/png",
-      "sizes": "128x128"
-    },
-    {
-      "src": "/orionfold-512.png",
+      "src": "/icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

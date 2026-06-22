@@ -9,6 +9,7 @@
 // SEO equity retained) and the page leads with Arena + the Field Edition. Advisor
 // dropped from the top nav (its /advisor/ page stays live + footer-linked for
 // SEO/AEO). Arena takes pole position.
+import BrandMark from './ui/BrandMark.astro';
 const links = [
   { href: '/cockpit/', label: 'Arena' },
   { href: '/workflows/', label: 'Workflows' },
@@ -25,15 +26,7 @@ const links = [
       class="group inline-flex items-center gap-1.5 text-text transition-colors hover:text-primary -ml-1"
       aria-label="Orionfold home"
     >
-      <img
-        src="/logos/orionfold-logo.webp"
-        alt=""
-        width="34"
-        height="34"
-        fetchpriority="low"
-        decoding="async"
-        class="h-[34px] w-[34px] shrink-0"
-      />
+      <BrandMark size={32} class="h-8 w-8" />
       <span class="text-2xl font-semibold tracking-tight leading-none">
         <span class="text-text">Orion</span><span class="text-primary">fold</span>
       </span>
@@ -51,20 +44,34 @@ const links = [
       ))}
     </div>
 
-    <!-- Mobile hamburger -->
-    <button
-      id="mobile-menu-btn"
-      class="md:hidden text-text-muted hover:text-primary transition-colors"
-      aria-label="Toggle menu"
-      aria-expanded="false"
-    >
-      <svg id="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-      <svg id="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="hidden">
-        <path d="M18 6L6 18M6 6l12 12" />
-      </svg>
-    </button>
+    <!-- Right cluster: theme toggle (all sizes) + mobile hamburger -->
+    <div class="flex items-center gap-4">
+      <button
+        id="theme-toggle"
+        type="button"
+        class="theme-toggle text-text-muted hover:text-primary transition-colors"
+        aria-label="Switch to dark theme"
+        aria-pressed="false"
+      >
+        <svg class="ic-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="ic-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></svg>
+      </button>
+
+      <!-- Mobile hamburger -->
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden text-text-muted hover:text-primary transition-colors"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <svg id="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg id="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="hidden">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
   </div>
 
   <!-- Mobile menu -->
@@ -87,6 +94,25 @@ const links = [
     const hamburgerIcon = document.getElementById('hamburger-icon');
     const closeIcon = document.getElementById('close-icon');
     if (!nav || !navWrapper || !menuBtn || !mobileMenu || !hamburgerIcon || !closeIcon) return;
+
+    // Theme toggle — writes localStorage 'of-theme'; the no-FOUC script in
+    // <head> reads it pre-paint. Icon swap (sun/moon) is pure CSS off data-theme.
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      const syncTheme = () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        themeToggle.setAttribute('aria-pressed', String(dark));
+        themeToggle.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+      };
+      syncTheme();
+      themeToggle.addEventListener('click', () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const next = dark ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('of-theme', next); } catch (e) {}
+        syncTheme();
+      });
+    }
 
     // Scroll-triggered blur
     let scrolled = false;

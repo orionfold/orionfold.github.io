@@ -128,8 +128,8 @@ const icons: Record<string, string> = {
     overflow: hidden;
     border: 1px solid var(--color-border);
     border-radius: 1.25rem;
-    background: linear-gradient(180deg, color-mix(in oklch, var(--color-surface-raised) 94%, white 6%), var(--color-surface));
-    box-shadow: 0 30px 70px -55px oklch(0.18 0.08 260 / 0.5);
+    background: linear-gradient(180deg, var(--color-surface-raised), var(--color-surface));
+    box-shadow: var(--shadow-of-pop);
     padding: 1.5rem 1.25rem;
   }
   .flow-line {
@@ -175,7 +175,7 @@ const icons: Record<string, string> = {
     transform: rotate(var(--r)) translateX(var(--x));
     border: 1px dashed color-mix(in oklch, var(--color-border) 75%, var(--color-text) 25%);
     border-radius: 999px;
-    background: color-mix(in oklch, var(--color-surface-raised) 72%, white 28%);
+    background: color-mix(in oklch, var(--color-surface-raised) 72%, var(--color-surface) 28%);
     padding: 0.32rem 0.75rem;
     opacity: 0.8;
   }
@@ -202,7 +202,7 @@ const icons: Record<string, string> = {
     height: 2.2rem;
     border-radius: 999px;
     border: 3px solid var(--color-primary);
-    background: white;
+    background: var(--color-surface-raised);
     box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-primary) 14%, transparent);
   }
   .station-dot svg {
@@ -236,7 +236,7 @@ const icons: Record<string, string> = {
     gap: 0.4rem;
     border: 1px solid color-mix(in oklch, var(--color-primary) 30%, var(--color-border));
     border-radius: 999px;
-    background: color-mix(in oklch, var(--color-surface-raised) 92%, white 8%);
+    background: color-mix(in oklch, var(--color-surface-raised) 92%, var(--color-surface) 8%);
     padding: 0.4rem 0.8rem;
     font-family: var(--font-mono);
     font-size: 0.6rem;
@@ -261,8 +261,8 @@ const icons: Record<string, string> = {
     z-index: 1; /* the card terminates the line by covering it */
     border: 1px solid color-mix(in oklch, var(--color-border) 70%, var(--color-primary) 30%);
     border-radius: 1rem;
-    background: linear-gradient(135deg, oklch(1 0 0 / 0.95), oklch(0.95 0.02 252 / 0.95));
-    box-shadow: 0 22px 48px -36px oklch(0.18 0.08 260 / 0.6);
+    background: linear-gradient(135deg, var(--color-surface-raised), color-mix(in oklch, var(--color-surface-raised) 92%, var(--color-primary) 8%));
+    box-shadow: var(--shadow-of-pop);
     padding: 1.1rem;
   }
   .flow-proof li {

@@ -49,6 +49,21 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          JS, this runs synchronously before <body> paints, so the hide-then-
          reveal animation still plays on fast devices. -->
     <script is:inline>document.documentElement.classList.add('js-ready');</script>
+    <!-- No-FOUC theme init. Sets data-theme on <html> BEFORE first paint, so
+         the dark remap in global.css applies with no flash. Reads the saved
+         choice (localStorage "of-theme") first, else the OS preference. The
+         toggle in the nav writes "of-theme". -->
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('of-theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
     <!-- Warm DNS+TLS for the analytics origins so the gtag.js + beacons land
          a touch faster on mobile (Google Ads pulls a second tagmanager script
          when AW-... is configured below; the GA collect endpoint lives on
@@ -167,14 +182,14 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
     <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
 
-    <!-- App icons (the ainative "A" delta mark, regenerated in S2). The ?v=2
-         query busts the favicon cache for visitors who saw the old stealth
-         page's icon at these same paths before the launch flip. -->
-    <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-    <link rel="icon" type="image/png" sizes="64x64" href="/orionfold-64.png?v=2" />
-    <link rel="icon" type="image/png" sizes="128x128" href="/orionfold-128.png?v=2" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
+    <!-- App icons — Orionfold mark SC-01f (cyan disc + white star knockout),
+         from the design-system brand/ folder (2026-06-21). The ?v=3 query busts
+         the favicon cache for visitors who saw the prior delta-mark icon. -->
+    <link rel="icon" href="/favicon.ico?v=3" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=3" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=3" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3" />
 
     <!-- Manifest -->
     <link rel="manifest" href="/manifest.json" />
@@ -186,8 +201,9 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
     <link rel="preload" href="/fonts/geist-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/geist-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 
-    <!-- Single light theme: Safari paints the address bar to match the surface -->
-    <meta name="theme-color" content={SITE.themeColor} />
+    <!-- Browser chrome paints to match the active surface (light + dark) -->
+    <meta name="theme-color" content="#f9fafb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15171b" media="(prefers-color-scheme: dark)" />
     <meta name="application-name" content="Orionfold" />
     <meta name="apple-mobile-web-app-title" content="Orionfold" />
     <meta name="format-detection" content="telephone=no" />
