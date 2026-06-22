@@ -96,6 +96,15 @@ function arenaDemoDirIndexDev() {
 export default defineConfig({
   site: 'https://orionfold.com',
   trailingSlash: 'always',
+  // Prefetch nav targets so a menu tap loads near-instantly instead of a cold
+  // full-page fetch (the site has no client router, so every nav is a real
+  // document load that re-runs gtag.js etc.). `viewport` warms each link tagged
+  // `data-astro-prefetch` as soon as it scrolls into view — for the mobile menu
+  // that's the moment the dropdown opens, so the page is usually cached by the
+  // time the user picks an item. Only opted-in links prefetch (prefetchAll off).
+  prefetch: {
+    defaultStrategy: 'viewport',
+  },
   // The 4 original thin /story posts were retired for the N-series story arc
   // (their themes survive at higher quality in the new arc). N10 repointed each
   // old slug to its exact successor story (per spec §3 mapping) so old links land
