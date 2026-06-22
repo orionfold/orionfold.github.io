@@ -119,12 +119,91 @@ function eyebrow(text: string): El {
   );
 }
 
+/**
+ * Bottom overlay strip for full-bleed art cards (story comics, software posters,
+ * model covers, curated-hero landing pages). The art is busy and often carries its
+ * own lettering, so instead of floating the title across the whole image we drop
+ * eyebrow + title + footer into a semi-transparent dark band pinned to the bottom.
+ * The band is a transparent->dark gradient (a designed scrim, not a hard bar) so the
+ * creative still breathes above it. The starry brand-banner cards keep the airy
+ * full-card layout — this strip is only for the photographic/art backgrounds.
+ */
+function bottomStrip(opts: CardOptions, titleSize: number): El {
+  return h(
+    'div',
+    {
+      style: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: 1200,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+        paddingLeft: 64,
+        paddingRight: 64,
+        paddingTop: 72,
+        paddingBottom: 48,
+        // Transparent at the top, near-opaque where the text sits.
+        backgroundImage:
+          'linear-gradient(to bottom, rgba(7,13,20,0) 0%, rgba(7,13,20,0.74) 40%, rgba(7,13,20,0.94) 100%)',
+      },
+    },
+    [
+      eyebrow(opts.eyebrow),
+      h(
+        'div',
+        {
+          style: {
+            display: 'flex',
+            color: WHITE,
+            fontSize: titleSize,
+            fontWeight: 700,
+            lineHeight: 1.06,
+            letterSpacing: -1,
+            maxWidth: 1072,
+            textShadow: TEXT_GLOW,
+          },
+        },
+        opts.title,
+      ),
+      h(
+        'div',
+        { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
+        [
+          wordmark(),
+          opts.meta
+            ? h(
+                'div',
+                {
+                  style: {
+                    display: 'flex',
+                    color: WHITE,
+                    fontSize: 20,
+                    fontWeight: 400,
+                    letterSpacing: 0.3,
+                    textShadow: TEXT_GLOW,
+                  },
+                },
+                opts.meta,
+              )
+            : h('div', { style: { display: 'flex' } }, ''),
+        ],
+      ),
+    ],
+  );
+}
+
 /** Build the Satori element tree for a card. */
 function cardTree(opts: CardOptions): El {
   const useBanner = Boolean(opts.banner);
   const hasInset = Boolean(opts.insetPath);
   const hasShot = Boolean(opts.screenshotPath) && !useBanner;
   const usePhoto = Boolean(opts.backgroundPath) && !useBanner;
+  // Full-bleed art (no framed screenshot) gets the bottom overlay strip so the title
+  // never fights busy poster art or a comic's own lettering.
+  const useStrip = usePhoto && !hasShot && !hasInset;
   const bg = useBanner
     ? BANNER_URI
     : usePhoto
@@ -288,7 +367,7 @@ function cardTree(opts: CardOptions): El {
       ),
     ],
   );
-  layers.push(content);
+  layers.push(useStrip ? bottomStrip(opts, titleSize) : content);
 
   return h(
     'div',
