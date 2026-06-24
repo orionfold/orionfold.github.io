@@ -47,7 +47,8 @@ export const models: Model[] = [
     recommended: 'Q4_K_M',
     license: 'NVIDIA Nemotron Open Model License',
     href: `${HF}/Advisor-GGUF`,
-    coverAlt: 'A movie-poster style picture. A calm reading room of open books and filing drawers, where a small gold AI computer points a light at one exact page. The title reads The Source.',
+    cover: 'advisor/cover.png',
+    coverAlt: 'A movie-poster style picture. A dark noir records room of filing drawers, where a small gold AI computer shines a beam of light on one open drawer and the one page inside it, with a detective hat on the desk. The title reads The Source.',
   },
 
   // ── Patent Strategist: one model, two NeMo builds (two formats) ──
