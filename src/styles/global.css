@@ -78,14 +78,17 @@
   --color-border-strong: #d6dbe4;
   --color-track: #eef1f5;
 
-  /* ── categorical tags t1–t7 — identity, NEVER interactive (bg + fg pairs) ── */
-  --color-t1-bg: #d2e5ff; --color-t1-fg: #1257c4;  /* patents  */
-  --color-t2-bg: #d3f8e6; --color-t2-fg: #157a3c;  /* finance  */
-  --color-t3-bg: #ffe8c2; --color-t3-fg: #9a5a00;  /* speed    */
-  --color-t4-bg: #ffd9e6; --color-t4-fg: #b02457;  /* health   */
-  --color-t5-bg: #e6dcff; --color-t5-fg: #6b32d6;  /* quality  */
-  --color-t6-bg: #cdeef0; --color-t6-fg: #0c7480;  /* (retired from values) */
-  --color-t7-bg: #dfe2f5; --color-t7-fg: #2c3a78;  /* security / risk */
+  /* ── categorical tags t1–t7 — model-domain identity, NEVER interactive
+     (bg + fg pairs). Mapped to the real huggingface.co/Orionfold domain set;
+     Advisory leads (t1, the PLG flagship). Hues reinforce the domain where it
+     helps (finance=green, medical=rose, security=indigo). ── */
+  --color-t1-bg: #d2e5ff; --color-t1-fg: #1257c4;  /* Advisory */
+  --color-t2-bg: #dfe2f5; --color-t2-fg: #2c3a78;  /* Security */
+  --color-t3-bg: #e6dcff; --color-t3-fg: #6b32d6;  /* Legal    */
+  --color-t4-bg: #d3f8e6; --color-t4-fg: #157a3c;  /* Finance  */
+  --color-t5-bg: #ffd9e6; --color-t5-fg: #b02457;  /* Medical  */
+  --color-t6-bg: #cdeef0; --color-t6-fg: #0c7480;  /* Space    */
+  --color-t7-bg: #ffe8c2; --color-t7-fg: #9a5a00;  /* Patent / Dataset */
 
   /* ── retired "orbit" hues → folded into single-accent / categorical ──
      orbit-cyan was a 2nd cyan (now a neutral data marker); orbit-gold was the
@@ -194,14 +197,15 @@ html[data-theme="dark"] {
   --color-border-strong: #3a414c;
   --color-track: #2c313a;
 
-  /* categorical tags — dark variants */
-  --color-t1-bg: #16345e; --color-t1-fg: #7fb4ff;
-  --color-t2-bg: #143a28; --color-t2-fg: #62d98c;
-  --color-t3-bg: #4a3410; --color-t3-fg: #f5b14a;
-  --color-t4-bg: #4a1e30; --color-t4-fg: #ff8db0;
-  --color-t5-bg: #2e2256; --color-t5-fg: #b79cff;
-  --color-t6-bg: #103a3e; --color-t6-fg: #4fd6dd;
-  --color-t7-bg: #1e2a5e; --color-t7-fg: #aab6ee;
+  /* categorical tags — dark variants (same domain order as the light :root block:
+     t1 Advisory · t2 Security · t3 Legal · t4 Finance · t5 Medical · t6 Space · t7 Patent/Dataset) */
+  --color-t1-bg: #16345e; --color-t1-fg: #7fb4ff;  /* Advisory (blue)  */
+  --color-t2-bg: #1e2a5e; --color-t2-fg: #aab6ee;  /* Security (indigo)*/
+  --color-t3-bg: #2e2256; --color-t3-fg: #b79cff;  /* Legal (purple)   */
+  --color-t4-bg: #143a28; --color-t4-fg: #62d98c;  /* Finance (green)  */
+  --color-t5-bg: #4a1e30; --color-t5-fg: #ff8db0;  /* Medical (rose)   */
+  --color-t6-bg: #103a3e; --color-t6-fg: #4fd6dd;  /* Space (teal)     */
+  --color-t7-bg: #4a3410; --color-t7-fg: #f5b14a;  /* Patent/Dataset (amber) */
 
   /* retired orbit hues (dark) */
   --color-orbit-cyan: #9aa1ab;

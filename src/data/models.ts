@@ -1,6 +1,8 @@
-// Models showcase data (spec §6). A small typed array feeding /models/. Seven
-// open-weight models plus one benchmark dataset, all live under
-// huggingface.co/Orionfold. Facts (base model, format, recommended build,
+// Models showcase data (spec §6). A small typed array feeding /models/. Open-
+// weight models (Advisor flagship + Patent Strategist + single-domain) plus one
+// benchmark dataset, all live under huggingface.co/Orionfold. The hermes routers
+// on the org are infra (model routing), deliberately not surfaced here. Facts
+// (base model, format, recommended build,
 // license) come from the donor artifact YAMLs; the plain taglines read grade
 // 3–5 with inline glosses, and the deeper detail lives in the page's
 // BehindTheScenes reveal (memory `website-copy-style`, spec §7).
@@ -8,7 +10,7 @@ import type { RoadmapMeta } from './roadmap-types';
 
 // extends RoadmapMeta -> optional status/sponsorTier/features/roadmapOrder (F1, spec §9).
 export interface Model extends RoadmapMeta {
-  group: 'patent' | 'domain' | 'dataset';
+  group: 'flagship' | 'patent' | 'domain' | 'dataset';
   domain: string; // eyebrow label
   title: string;
   variant?: string; // build differentiator, e.g. "nemo · GGUF"
@@ -29,6 +31,25 @@ export interface Model extends RoadmapMeta {
 const HF = 'https://huggingface.co/Orionfold';
 
 export const models: Model[] = [
+  // ── Advisor: the flagship. A small grounded-answers model that cites its
+  //    sources and refuses when it does not know (the proof point the whole
+  //    "rerun it yourself" story rests on). NVIDIA Nemotron 4B base. ──
+  {
+    group: 'flagship',
+    domain: 'Advisory',
+    title: 'Advisor',
+    variant: '4B · GGUF',
+    // grade 3–5, no em-dashes (website-copy-style). "Retrieval corpus" glossed
+    // as "your own notes and files". The differentiator = cites + refuses.
+    tagline: 'Answers from your own notes and files, with the exact source named. When the answer is not there, it says so instead of making one up. A small model you run on your own hardware.',
+    base: 'nvidia/NVIDIA-Nemotron-3-Nano-4B',
+    format: 'GGUF',
+    recommended: 'Q4_K_M',
+    license: 'NVIDIA Nemotron Open Model License',
+    href: `${HF}/Advisor-GGUF`,
+    coverAlt: 'A movie-poster style picture. A calm reading room of open books and filing drawers, where a small gold AI computer points a light at one exact page. The title reads The Source.',
+  },
+
   // ── Patent Strategist: one model, two NeMo builds (two formats) ──
   {
     group: 'patent',

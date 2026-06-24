@@ -126,8 +126,10 @@ const meaning: Record<Mark, string> = {
   /* Progressive disclosure: hide the base-model columns until the reader asks. */
   [data-matrix][data-view='ours'] [data-base] { display: none; }
 
-  /* Toggle active state, set by the inline script via aria-pressed. */
-  [data-view-btn][aria-pressed='true'] { background: var(--color-primary); color: #fff; }
+  /* Toggle active state, set by the inline script via aria-pressed. The active
+     pill uses the theme-aware accent triad — a bare #fff on the bright dark-theme
+     cyan fails WCAG (≈1.6:1); accent-text resolves to a legible ink per theme. */
+  [data-view-btn][aria-pressed='true'] { background: var(--color-accent); color: var(--color-accent-text); }
   [data-view-btn][aria-pressed='false'] { color: var(--color-text-muted); }
 </style>
 

@@ -1,10 +1,11 @@
 ---
-// Models showcase (S8). Seven open-weight models + one benchmark dataset, all
-// live under huggingface.co/Orionfold, built from src/data/models.ts. Grouped
-// by domain (spec §6): the Patent Strategist gets its own block (one model,
-// two NeMo builds), the five single-domain models share a grid, and the dataset
-// stands alone. A page-level BehindTheScenes holds the real benchmark detail so
-// the cards stay grade 3–5 (spec §7 — Models is the second technical page).
+// Models showcase (S8). Open-weight models + one benchmark dataset, all live
+// under huggingface.co/Orionfold, built from src/data/models.ts. Grouped (spec
+// §6): Advisor leads as the flagship (grounded answers that cite + refuse), the
+// Patent Strategist gets its own block (one model, two NeMo builds), the
+// single-domain models share a grid, and the dataset stands alone. A page-level
+// BehindTheScenes holds the real benchmark detail so the cards stay grade 3–5
+// (spec §7 — Models is the second technical page).
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -25,11 +26,11 @@ const detailHrefFor = (title: string) => {
   return detailKeys.has(`model:${slug}`) ? `/models/${slug}/` : undefined;
 };
 
+const flagship = models.filter((m) => m.group === 'flagship');
 const patent = models.filter((m) => m.group === 'patent');
 const domain = models.filter((m) => m.group === 'domain');
 const dataset = models.filter((m) => m.group === 'dataset');
 // Odd 3+ sections lead with a full-width featured card (the shared bento rule).
-// With today's counts (patent 2, domain 4) neither leads; wired for future growth.
 const patentSplit = bentoSplit(patent);
 const domainSplit = bentoSplit(domain);
 const og = ogMeta('/models/');
@@ -46,7 +47,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
 ---
 <Layout
   title="Models · Orionfold"
-  description="Domain experts for sensitive work. Open-weight models with benchmarks, tuned for patents, security, law, finance, medicine, and space math. Run them offline."
+  description="Domain experts for sensitive work. Open models you run offline: Advisor cites its sources and refuses when it does not know, plus models tuned for patents, security, law, finance, medicine, and space math."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
@@ -59,18 +60,32 @@ function resolveCover(key?: string): ImageMetadata | undefined {
       subtitle="Open AI models built for one field each, like patents, security, law, money, health, and space math. Each comes with a benchmark, downloads free, and runs offline on hardware you control."
     />
 
-    <!-- Patent: one model, two NeMo builds -->
+    <!-- Advisor: the flagship. Grounded answers that cite their source and
+         refuse when the answer is not there. -->
     <section class="px-6 pt-12">
       <div class="mx-auto max-w-6xl">
         <div class="mb-6">
           <SectionLabel text="Flagship Model" />
           <p class="mt-2 max-w-2xl leading-relaxed text-text-muted">
+            A small model that answers from your own notes and files and names the exact source. When the answer is not there, it says so instead of making one up. It runs offline on hardware you control.
+          </p>
+        </div>
+        {flagship.map((m, index) => <ModelCard {...m} cover={resolveCover(m.cover)} detailHref={detailHrefFor(m.title)} featured priority={index === 0} />)}
+      </div>
+    </section>
+
+    <!-- Patent Strategist: one model, two NeMo builds -->
+    <section class="px-6 pt-20">
+      <div class="mx-auto max-w-6xl">
+        <div class="mb-6">
+          <SectionLabel text="Patent Strategist" />
+          <p class="mt-2 max-w-2xl leading-relaxed text-text-muted">
             This model reads and reasons about patents fully offline. Built with the NeMo toolkit, it comes in two formats: ready-to-run files, or a small add-on patch for builders.
           </p>
         </div>
-        {patentSplit.lead && <ModelCard {...patentSplit.lead} cover={resolveCover(patentSplit.lead.cover)} detailHref={detailHrefFor(patentSplit.lead.title)} featured priority />}
+        {patentSplit.lead && <ModelCard {...patentSplit.lead} cover={resolveCover(patentSplit.lead.cover)} detailHref={detailHrefFor(patentSplit.lead.title)} featured />}
         <div data-animate-stagger class:list={['grid gap-6 sm:grid-cols-2', patentSplit.lead && 'mt-6']}>
-          {patentSplit.rest.map((m, index) => <ModelCard {...m} cover={resolveCover(m.cover)} detailHref={detailHrefFor(m.title)} priority={!patentSplit.lead && index === 0} />)}
+          {patentSplit.rest.map((m) => <ModelCard {...m} cover={resolveCover(m.cover)} detailHref={detailHrefFor(m.title)} />)}
         </div>
       </div>
     </section>
@@ -108,7 +123,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
     <section class="px-6 pb-28 pt-16">
       <div data-animate>
         <BehindTheScenes summary="The technical details">
-          All weights are open. The two Patent Strategist builds start from DeepSeek-R1-0528-Qwen3-8B, are made with the NeMo toolkit, and ship two ways: GGUF files (ready to run with llama.cpp) and LoRA adapters (small training patches in BF16). On Spark-class hardware (a small ~$3,000 AI desktop) the Q5_K_M GGUF runs around 32 to 35 tokens per second. SecurityLLM builds on ZySec-AI/SecurityLLM, Saul 7B on Equall/Saul-7B-Instruct-v1, Finance Chat on AdaptLLM/finance-chat, and II-Medical 8B on Intelligent-Internet/II-Medical-8B, each shipped as GGUF from Q4 through Q8 and F16, and scored on domain tests like CyberMetric, LegalBench, FinanceBench, and MedMCQA. The Patent Strategist Bench is 200 questions across seven shapes (claim drafting, prior-art ranking, MPEP-grounded reasoning, and more), released CC-BY-4.0.
+          All weights are open. Advisor is a 4B model built on NVIDIA Nemotron, tuned for grounded question-and-answer over a retrieval corpus with exact source-id citations and clean refusals on missing-source or private questions. Its promoted serving lane is the Q4_K_M GGUF, about 2.6 GB and roughly 70 tokens per second on Spark-class hardware, with bench behavior identical to Q8_0. The two Patent Strategist builds start from DeepSeek-R1-0528-Qwen3-8B, are made with the NeMo toolkit, and ship two ways: GGUF files (ready to run with llama.cpp) and LoRA adapters (small training patches in BF16). On Spark-class hardware (a small ~$3,000 AI desktop) the Q5_K_M GGUF runs around 32 to 35 tokens per second. SecurityLLM builds on ZySec-AI/SecurityLLM, Saul 7B on Equall/Saul-7B-Instruct-v1, Finance Chat on AdaptLLM/finance-chat, and II-Medical 8B on Intelligent-Internet/II-Medical-8B, each shipped as GGUF from Q4 through Q8 and F16, and scored on domain tests like CyberMetric, LegalBench, FinanceBench, and MedMCQA. The Patent Strategist Bench is 200 questions across seven shapes (claim drafting, prior-art ranking, MPEP-grounded reasoning, and more), released CC-BY-4.0.
         </BehindTheScenes>
       </div>
     </section>
