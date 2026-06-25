@@ -24,11 +24,11 @@ import { CATALOG } from '../supabase/functions/_shared/catalog.ts';
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(SCRIPT_DIR, '..');
 
-type ProductType = 'software' | 'model' | 'dataset' | 'book' | 'sponsor';
+type ProductType = 'software' | 'model' | 'dataset' | 'book' | 'sponsor' | 'license';
 
 interface Commerce {
   lookupKey: string;
-  kind: string; // "book" | "sponsor"
+  kind: string; // "book" | "sponsor" | "license"
   mode: string; // "payment" | "subscription"
   amount_cents: number;
   tier: string | null;
@@ -143,6 +143,47 @@ for (const item of Object.values(CATALOG)) {
     monetized: true,
     commerce: { lookupKey: item.lookupKey, kind: item.kind, mode: item.mode, amount_cents: item.amount, tier: item.tier ?? null },
     detail_page: null,
+    raw: item,
+  });
+}
+
+// ── Licensed products (6) — the paid, per-box key-file SKUs straight from the
+// commerce catalog: Orionfold Proof (the flagship) + Arena Field Edition, each a
+// three-SKU family (base / founding / renewal). These are LIVE on Stripe and the
+// site checkout resolves them by lookup_key; the marketing /catalog-sync roster
+// needs them so the flagship is visible to demand-gen. (Relay ask A2, 2026-06-25.)
+// Each license SKU maps to the on-site product surface that sells it.
+const LICENSE_SURFACE: Record<string, { id: string; slug: string; href: string; detail: string | null }> = {
+  license_orionfold_proof: { id: 'license/orionfold-proof', slug: 'orionfold-proof', href: 'https://orionfold.com/proof/', detail: null },
+  license_arena_field_edition: { id: 'license/arena-field-edition', slug: 'arena-field-edition', href: 'https://orionfold.com/software/arena/', detail: detailPage('software', 'arena') },
+};
+// Strip the family suffix so founding/renewal SKUs resolve to the same surface.
+function licenseSurface(lookupKey: string) {
+  const base = lookupKey.replace(/_(founding|renewal)$/, '');
+  return LICENSE_SURFACE[base];
+}
+
+for (const item of Object.values(CATALOG)) {
+  if (item.kind !== 'license') continue;
+  const surface = licenseSurface(item.lookupKey);
+  if (!surface) continue; // unknown license family — skip rather than mis-link
+  const founding = item.lookupKey.endsWith('_founding');
+  const renewal = item.lookupKey.endsWith('_renewal');
+  const variant = founding ? 'founding' : renewal ? 'renewal' : 'standard';
+  products.push({
+    id: variant === 'standard' ? surface.id : `${surface.id}--${variant}`,
+    type: 'license',
+    slug: variant === 'standard' ? surface.slug : `${surface.slug}-${variant}`,
+    group: 'license',
+    title: item.label,
+    summary: renewal
+      ? `${item.label}: $${(item.amount / 100).toFixed(0)}/year to keep the proof current.`
+      : `${item.label}: $${(item.amount / 100).toFixed(0)} one-time, per-box license.`,
+    href: surface.href,
+    status: 'released',
+    monetized: true,
+    commerce: { lookupKey: item.lookupKey, kind: item.kind, mode: item.mode, amount_cents: item.amount, tier: item.tier ?? null },
+    detail_page: surface.detail,
     raw: item,
   });
 }
