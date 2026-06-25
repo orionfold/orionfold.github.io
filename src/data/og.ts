@@ -142,6 +142,9 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'The proof, not the pitch',
     seed: 'proof',
     alt: 'Orionfold receipts: frozen tests you can rerun, a small model that out-trusts a big one',
+    // The Orionfold Proof poster (art-deco receipt rising from a MacBook into the
+    // Orion stars) full-bleed as the social card, same pattern as advisor/dgx-spark.
+    background: 'src/assets/proof/orionfold-proof-poster.jpeg',
   },
   '/terms/': {
     slug: 'terms',

@@ -91,6 +91,36 @@ export const CATALOG: Record<string, CatalogItem> = {
     label: "Arena Field Edition kept-proven renewal",
     amount: 14900,
   },
+  // Orionfold Proof — the second licensed product (the local-first Proof Receipt
+  // tool: `uv tool install orionfold-proof`, `orionfold up` → a cockpit at
+  // localhost:8787 that proves which AI model/setup is worth trusting and emits a
+  // signed, rerunnable receipt). Same THREE-SKU family + 12-month kept-proven
+  // window as Arena, resolved by lookup_key at runtime. The license a Proof
+  // purchase issues carries `product:orionfold-proof` (not an Arena entitlement);
+  // owning the product unlocks any included pack on the CLI side — see
+  // licenseProductForLookupKey + stripe-webhook fulfillLicense. (Relay ask
+  // orionfold-proof 2026-06-24.)
+  license_orionfold_proof: {
+    lookupKey: "license_orionfold_proof",
+    kind: "license",
+    mode: "payment",
+    label: "Orionfold Proof",
+    amount: 49900,
+  },
+  license_orionfold_proof_founding: {
+    lookupKey: "license_orionfold_proof_founding",
+    kind: "license",
+    mode: "payment",
+    label: "Orionfold Proof (Founding)",
+    amount: 34900,
+  },
+  license_orionfold_proof_renewal: {
+    lookupKey: "license_orionfold_proof_renewal",
+    kind: "license",
+    mode: "subscription",
+    label: "Orionfold Proof kept-proven renewal",
+    amount: 14900,
+  },
   sponsor_bronze: {
     lookupKey: "sponsor_bronze",
     kind: "sponsor",
@@ -136,20 +166,72 @@ export const LICENSE_LOOKUP_KEYS = LOOKUP_KEYS.filter((k) => CATALOG[k].kind ===
 export const SPONSOR_TIERS: SponsorTier[] = ["bronze", "silver", "gold", "platinum"];
 
 /**
- * Arena Field Edition founding cohort size — the founding price
- * (`license_arena_field_edition_founding`, $349) is honored for the first
- * this-many licenses, then buyers pay the standard `license_arena_field_edition`
- * ($499). The cap is enforced server-side in create-checkout-session (it counts
- * completed founding `purchases` and falls the 26th+ founding request back to the
- * standard price), so it never oversells even though the Stripe founding price
- * stays active. The frontend reads this same constant for the "first N" copy.
+ * Founding cohort size — the founding price ($349) is honored for the first
+ * this-many licenses of a family, then buyers pay the standard ($499). The cap is
+ * enforced server-side in create-checkout-session (it counts completed founding
+ * `purchases` and falls the 26th+ founding request back to that family's standard
+ * price), so it never oversells even though the Stripe founding price stays
+ * active. The frontend reads this same constant for the "first N" copy. Both
+ * licensed products (Arena + Proof) share the same 25-seat founding cohort.
  */
 export const FOUNDING_SEATS = 25;
 
-/** The founding price's lookup key, and the standard price it falls back to at the cap. */
-export const FOUNDING_LOOKUP_KEY = "license_arena_field_edition_founding";
-export const STANDARD_LICENSE_LOOKUP_KEY = "license_arena_field_edition";
-export const RENEWAL_LICENSE_LOOKUP_KEY = "license_arena_field_edition_renewal";
+/**
+ * Licensed-product families. Each licensed product ships the same three-SKU shape
+ * (a count-boxed founding price, a standard one-time price, an annual kept-proven
+ * renewal). Keying the SKUs by family — instead of single Arena-literal constants
+ * — lets the founding-cap fallback (create-checkout-session resolveFoundingKey)
+ * and the frontend price box (commerce.ts) work for every licensed product
+ * without per-product branching. Add a family here and the cap "just works".
+ */
+export interface LicenseFamily {
+  /** Stable product id baked into the signed license payload (`product` claim). */
+  product: string;
+  founding: string;
+  standard: string;
+  renewal: string;
+  foundingSeats: number;
+}
+
+export const LICENSE_FAMILIES: Record<string, LicenseFamily> = {
+  "arena-field-edition": {
+    product: "arena-field-edition",
+    founding: "license_arena_field_edition_founding",
+    standard: "license_arena_field_edition",
+    renewal: "license_arena_field_edition_renewal",
+    foundingSeats: FOUNDING_SEATS,
+  },
+  "orionfold-proof": {
+    product: "orionfold-proof",
+    founding: "license_orionfold_proof_founding",
+    standard: "license_orionfold_proof",
+    renewal: "license_orionfold_proof_renewal",
+    foundingSeats: FOUNDING_SEATS,
+  },
+};
+
+/** Resolve the license family that owns a lookup key (any of its 3 SKUs), or undefined. */
+export function licenseFamilyForLookupKey(lookupKey: string): LicenseFamily | undefined {
+  return Object.values(LICENSE_FAMILIES).find(
+    (f) => f.founding === lookupKey || f.standard === lookupKey || f.renewal === lookupKey,
+  );
+}
+
+/**
+ * The standard price a founding key falls back to once the cohort is full. Returns
+ * the input key unchanged for any non-founding key (so a plain standard/renewal/
+ * non-license key passes straight through). Used by create-checkout-session's
+ * count-boxed cap; works for every license family.
+ */
+export function foundingFallback(lookupKey: string): string {
+  const family = licenseFamilyForLookupKey(lookupKey);
+  return family && lookupKey === family.founding ? family.standard : lookupKey;
+}
+
+/** Backward-compatible Arena aliases (older imports / copy). Prefer LICENSE_FAMILIES. */
+export const FOUNDING_LOOKUP_KEY = LICENSE_FAMILIES["arena-field-edition"].founding;
+export const STANDARD_LICENSE_LOOKUP_KEY = LICENSE_FAMILIES["arena-field-edition"].standard;
+export const RENEWAL_LICENSE_LOOKUP_KEY = LICENSE_FAMILIES["arena-field-edition"].renewal;
 
 /**
  * The kept-proven window every Arena Field Edition license grants, in calendar
@@ -182,6 +264,58 @@ export function editionForLookupKey(lookupKey: string): LicenseEdition | null {
     case STANDARD_LICENSE_LOOKUP_KEY:
     case RENEWAL_LICENSE_LOOKUP_KEY:
       return "standard";
+    default:
+      return null;
+  }
+}
+
+/**
+ * The product-specific values baked into the signed `orionfold.license/v1` payload
+ * for a given license SKU. This is the one place the issuer learns "what product
+ * does this lookup key sell, and what does its license entitle?" — so the
+ * stripe-webhook fulfillment stays a single path across every licensed product
+ * (add a family + a branch here, not a new fulfillLicense). The crypto/delivery
+ * spine (license.ts, upload, signed-URL, email) is product-agnostic.
+ *
+ * - `product`   → the `product` claim (e.g. "orionfold-proof").
+ * - `tier`      → the `tier` claim (cosmetic on the CLI side; descriptive).
+ * - `entitlements` → the WHOLE gate. Proof's `product:orionfold-proof` is what the
+ *   Proof CLI's `owns_product()` checks to unlock any included pack. Arena's two
+ *   entitlements gate its proven-matrix images + signed update channel.
+ * - `edition`   → Arena's founding-25/standard badge (soft known-set). Proof has
+ *   no edition concept, so it is omitted from the payload entirely (the verifier
+ *   ignores absent optional fields).
+ */
+export interface LicenseProductDescriptor {
+  product: string;
+  tier: string;
+  entitlements: string[];
+  edition?: LicenseEdition;
+}
+
+export function licenseProductForLookupKey(
+  lookupKey: string,
+): LicenseProductDescriptor | null {
+  const family = licenseFamilyForLookupKey(lookupKey);
+  if (!family) return null;
+
+  switch (family.product) {
+    case "arena-field-edition":
+      return {
+        product: "arena-field-edition",
+        tier: "field-edition",
+        entitlements: ["proven-matrix-images", "signed-update-channel"],
+        // Arena carries the founding-25/standard edition badge.
+        edition: editionForLookupKey(lookupKey) ?? "standard",
+      };
+    case "orionfold-proof":
+      return {
+        product: "orionfold-proof",
+        tier: "proof",
+        // The single entitlement the Proof CLI gates on (owns_product()).
+        entitlements: ["product:orionfold-proof"],
+        // No edition for Proof — omitted from the signed payload.
+      };
     default:
       return null;
   }

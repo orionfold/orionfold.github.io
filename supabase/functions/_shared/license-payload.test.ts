@@ -12,7 +12,7 @@ import {
   licenseTerm,
   LICENSE_KEY_ID,
 } from "./license-payload.ts";
-import { editionForLookupKey } from "./catalog.ts";
+import { editionForLookupKey, licenseProductForLookupKey } from "./catalog.ts";
 import { publicKeyFromSeed, signLicense, verifyLicense } from "./license.ts";
 
 // The published throwaway dev seed (bytes(range(32))) from the conformance vector.
@@ -78,6 +78,58 @@ Deno.test("buildLicensePayload is token-less and has the exact v1 claim key-set"
   assertEquals(payload.entitlements, ["proven-matrix-images", "signed-update-channel"]);
   assertEquals(payload.issued_to, { email: "jane@example.com", name: "Jane Operator", org: "Acme Robotics" });
   assertEquals(payload.provenance, { stripe_purchase_id: "pi_X", stripe_price_id: "price_Y" });
+});
+
+Deno.test("licenseProductForLookupKey resolves Arena + Proof descriptors, null otherwise", () => {
+  // Arena keys → Arena descriptor (edition follows the founding/standard SKU).
+  const arenaFounding = licenseProductForLookupKey("license_arena_field_edition_founding");
+  assertEquals(arenaFounding?.product, "arena-field-edition");
+  assertEquals(arenaFounding?.tier, "field-edition");
+  assertEquals(arenaFounding?.entitlements, ["proven-matrix-images", "signed-update-channel"]);
+  assertEquals(arenaFounding?.edition, "founding-25");
+  assertEquals(licenseProductForLookupKey("license_arena_field_edition")?.edition, "standard");
+
+  // Proof keys → Proof descriptor (the single product:orionfold-proof entitlement, no edition).
+  const proof = licenseProductForLookupKey("license_orionfold_proof");
+  assertEquals(proof?.product, "orionfold-proof");
+  assertEquals(proof?.tier, "proof");
+  assertEquals(proof?.entitlements, ["product:orionfold-proof"]);
+  assertEquals(proof?.edition, undefined);
+  assertEquals(licenseProductForLookupKey("license_orionfold_proof_founding")?.product, "orionfold-proof");
+
+  // Non-license keys → null.
+  assertEquals(licenseProductForLookupKey("book_ai_native_business"), null);
+  assertEquals(licenseProductForLookupKey("sponsor_gold"), null);
+});
+
+Deno.test("buildLicensePayload builds a Proof payload: product+entitlement, NO edition, signs+verifies", async () => {
+  const d = licenseProductForLookupKey("license_orionfold_proof")!;
+  const payload = buildLicensePayload({
+    licenseId: "OF-PROOF-2026-0001",
+    product: d.product,
+    tier: d.tier,
+    entitlements: d.entitlements,
+    edition: d.edition, // undefined → omitted
+    issuedTo: { email: "buyer@example.com", name: "Pat Buyer" },
+    issuedAt: "2026-06-24T00:00:00Z",
+    notBefore: "2026-06-24T00:00:00Z",
+    expiresAt: "2027-06-24T00:00:00Z",
+    provenance: { stripe_purchase_id: "pi_P", stripe_price_id: "price_P" },
+  });
+
+  // The relay's hard requirement: product + the single gating entitlement.
+  assertEquals(payload.product, "orionfold-proof");
+  assertEquals(payload.entitlements, ["product:orionfold-proof"]);
+  assertEquals(payload.schema, "orionfold.license/v1");
+  assertEquals(payload.tier, "proof");
+  // Proof has no edition — the key must be ABSENT, not null (the verifier ignores
+  // absent optionals; a null would still serialize into the signed bytes).
+  assert(!("edition" in payload), "Proof payload must omit the edition key entirely");
+
+  // The signed bytes still verify end-to-end with the dev seed.
+  const sig = await signLicense(payload, DEV_SEED_B64, LICENSE_KEY_ID);
+  const pub = await publicKeyFromSeed(DEV_SEED_B64);
+  assert(await verifyLicense(payload, sig.value, pub), "Proof self-verify must pass");
 });
 
 Deno.test("buildLicensePayload OMITS absent issued_to name/org (not null)", () => {

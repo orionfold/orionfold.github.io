@@ -4,7 +4,7 @@
 // constellation motif into trust, control, and evaluation signals. The homepage
 // newsletter form lives on the Story pages (H3).
 import { Image } from 'astro:assets';
-import heroImage from '../../assets/home/orionfold-hero-gemini.jpeg';
+import heroImage from '../../assets/proof/orionfold-proof-poster.jpeg';
 ---
 <section class="relative overflow-x-clip">
   <!-- Soft atmospheric light, kept below the operational surfaces. -->
@@ -23,46 +23,47 @@ import heroImage from '../../assets/home/orionfold-hero-gemini.jpeg';
          Painting the pitch immediately is the bigger UX win than the stagger polish. -->
     <div class="relative z-10 text-center lg:text-left">
       <p class="mx-auto mb-6 max-w-[18rem] text-wrap font-mono text-[11px] uppercase leading-relaxed tracking-[0.18em] text-text-muted lg:mx-0 lg:max-w-none lg:text-xs">
-        Enterprise AI capability for small teams
+        Prove it yourself, on your own machine
       </p>
 
       <h1 class="hero-gradient-text mx-auto max-w-[21rem] text-balance font-display text-[2.45rem] font-bold leading-[1.08] sm:max-w-2xl sm:text-6xl lg:mx-0 lg:max-w-none lg:text-[clamp(2.9rem,4.2vw,4.2rem)]">
-        Get an AI team without hiring one.
+        Prove which AI you can trust.
       </h1>
 
       <p class="mx-auto mt-6 max-w-[22rem] text-balance text-base leading-relaxed text-text-muted sm:max-w-xl sm:text-lg lg:mx-0">
-        Right inside the NVIDIA DGX Spark you already own. Arena Field Edition gives you a private AI lab with an AI research teammate: agents that do real work, models that know your field, and tests that prove it.
+        Orionfold Proof runs on your own machine. Point it at your own task, run the AI models or setups you are weighing, and get a signed receipt: which one won, at what cost, with what failures. Nothing phones home, and you can rerun the proof any time.
       </p>
 
       <div class="mx-auto mt-9 flex w-full max-w-[24rem] flex-col items-stretch gap-3 lg:mx-0">
         <a
-          href="/software/arena/"
+          href="/proof/#get-proof"
           class="of-primary-action group w-full justify-center !text-sm sm:!text-base"
         >
-          Get Arena Field Edition
+          Get Orionfold Proof
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </a>
         <a
-          href="/arena/demo/"
+          href="/proof/"
           class="of-secondary-action w-full justify-center !text-sm sm:!text-base"
         >
-          See what's inside
+          See the receipts
         </a>
       </div>
 
     </div>
 
-    <!-- Right: generated Orionfold hero image, optimized through Astro. On
-         desktop it floats on the slowly drifting isometric plane carried over
-         from HeroConstellation3D (753bbc6), softened (21° vs 26°) so the
-         painting stays readable; mobile gets the flat card. -->
+    <!-- Right: the Orionfold Proof poster, optimized through Astro. On desktop
+         it floats on the slowly drifting isometric plane carried over from
+         HeroConstellation3D (753bbc6), softened (21° vs 26°) so the art stays
+         readable; mobile gets the flat card. The poster is the LCP image
+         (eager + fetchpriority), so the swap keeps the hero's paint timing. -->
     <div class="hero3d-stage relative lg:pl-2">
       <div class="hero3d-plane of-surface relative overflow-hidden rounded-3xl p-2 shadow-[0_32px_90px_-58px_oklch(0.18_0.08_260/0.62)]">
         <Image
           src={heroImage}
-          alt="Illustration of a founder at a desk projecting an Orion constellation workflow from a small private AI device."
+          alt="Orionfold Proof poster: a signed receipt rising from a MacBook on a working desk into the Orion constellation."
           widths={[640, 960, 1280]}
           sizes="(min-width: 1024px) 54vw, calc(100vw - 3rem)"
           loading="eager"
@@ -71,14 +72,13 @@ import heroImage from '../../assets/home/orionfold-hero-gemini.jpeg';
           data-no-zoom
           class="block aspect-[16/9] w-full rounded-[1.25rem] object-cover"
         />
-        <!-- The gold box in the art is a real NVIDIA DGX Spark. The chip clicks
-             through to the Arena Field Edition product page (the single CTA the
-             hero drives toward); /dgx-spark/ keeps its footer link. -->
+        <!-- The chip clicks through to the Orionfold Proof product page (the
+             single CTA the hero drives toward). -->
         <a
-          href="/software/arena/"
+          href="/proof/#get-proof"
           class="group absolute bottom-5 left-5 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-[oklch(0.18_0.06_260/0.62)] px-3.5 py-1.5 font-mono text-xs tracking-[0.04em] text-white backdrop-blur-md transition-colors duration-300 hover:border-white/40 hover:bg-[oklch(0.22_0.07_260/0.75)]"
         >
-          See Arena Field Edition
+          Get Orionfold Proof
           <span class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
         </a>
       </div>

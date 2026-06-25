@@ -22,9 +22,15 @@
 import { KEPT_PROVEN_MONTHS, type LicenseEdition } from "./catalog.ts";
 
 export const LICENSE_SCHEMA = "orionfold.license/v1";
+export const LICENSE_SEATS = 1;
+
+// Arena Field Edition defaults — kept as exported constants so callers that don't
+// override (and the conformance/unit tests) still reference the original values.
+// As of the Proof launch these are DEFAULTS, not the only product: the payload
+// builder accepts `product` / `tier` / `entitlements` per call so a Proof purchase
+// signs `product:orionfold-proof` instead. See licenseProductForLookupKey.
 export const LICENSE_PRODUCT = "arena-field-edition";
 export const LICENSE_TIER = "field-edition";
-export const LICENSE_SEATS = 1;
 export const LICENSE_ENTITLEMENTS = [
   "proven-matrix-images",
   "signed-update-channel",
@@ -47,8 +53,21 @@ export interface LicenseProvenance {
 }
 
 export interface LicensePayloadInput {
-  licenseId: string; // OF-FE-2026-NNNN
-  edition: LicenseEdition;
+  licenseId: string; // OF-FE-2026-NNNN (Arena) or OF-PROOF-2026-NNNN (Proof)
+  /**
+   * Per-product overrides for the signed claims. Omitted fields fall back to the
+   * Arena Field Edition defaults so existing Arena callers are unchanged. A Proof
+   * purchase passes product/tier/entitlements from licenseProductForLookupKey.
+   */
+  product?: string;
+  tier?: string;
+  entitlements?: string[];
+  /**
+   * Arena's founding-25/standard edition badge (soft known-set). OPTIONAL: a
+   * product without an edition concept (Proof) omits it and the key is left out of
+   * the payload entirely — the offline verifier ignores absent optional fields.
+   */
+  edition?: LicenseEdition;
   issuedTo: IssuedTo;
   issuedAt: string; // ISO 8601, second precision, UTC "Z"
   notBefore: string;
@@ -108,22 +127,29 @@ export function buildLicensePayload(input: LicensePayloadInput): LicensePayload 
   if (input.issuedTo.name) issuedTo.name = input.issuedTo.name;
   if (input.issuedTo.org) issuedTo.org = input.issuedTo.org;
 
-  return {
+  const payload: LicensePayload = {
     schema: LICENSE_SCHEMA,
     license_id: input.licenseId,
-    product: LICENSE_PRODUCT,
-    edition: input.edition,
-    tier: LICENSE_TIER,
+    product: input.product ?? LICENSE_PRODUCT,
+    tier: input.tier ?? LICENSE_TIER,
     issued_to: issuedTo,
     issued_at: input.issuedAt,
     not_before: input.notBefore,
     expires_at: input.expiresAt,
     seats: LICENSE_SEATS,
-    entitlements: [...LICENSE_ENTITLEMENTS],
+    entitlements: input.entitlements ?? [...LICENSE_ENTITLEMENTS],
     // NO `registry` block (A-hybrid, token-less).
     provenance: {
       stripe_purchase_id: input.provenance.stripe_purchase_id,
       stripe_price_id: input.provenance.stripe_price_id,
     },
   };
+
+  // `edition` is OMITTED when absent (Proof has no edition) rather than emitted as
+  // null — the signer covers whatever keys are present, and the verifier ignores
+  // absent optional fields. (The signer sorts every level, so insertion order here
+  // does not affect the signature.)
+  if (input.edition) payload.edition = input.edition;
+
+  return payload;
 }

@@ -40,6 +40,18 @@ export const FIELD_EDITION = {
   windowMonths: 12,
 } as const;
 
+// Orionfold Proof price family (display only; same SSOT/Stripe contract as
+// FIELD_EDITION above). The ProofBox reads this so the price chips and the buy
+// buttons can never drift from the catalog. Same 3-SKU shape + founding cap +
+// 12-month window as Arena. (Relay ask orionfold-proof 2026-06-24.)
+export const PROOF = {
+  primary: getCatalogItem("license_orionfold_proof")!,
+  founding: getCatalogItem("license_orionfold_proof_founding")!,
+  renewal: getCatalogItem("license_orionfold_proof_renewal")!,
+  foundingSeats: FOUNDING_SEATS,
+  windowMonths: 12,
+} as const;
+
 export interface SponsorTierDisplay {
   tier: SponsorTier;
   lookupKey: string;

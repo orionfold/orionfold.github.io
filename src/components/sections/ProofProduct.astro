@@ -1,0 +1,204 @@
+---
+// /proof/ — "What Orionfold Proof does." The product section that sits right after
+// the capability matrix: shows the cockpit, the configure→run→decide loop, the
+// inside-the-cockpit rails, and the flagship 18/21 governance bench reproduced on
+// a Mac. Every number cites the receipt it came from (receipt-honesty); the clean
+// wins lead, the honest misses stay in. Voice grade 3-5, no em-dashes
+// (website-copy-style). Assets are website-owned copies of secret-free captures
+// from the orionfold-proof repo + the operator's flagship bench run (relay
+// orionfold-proof 2026-06-24).
+import { Image } from 'astro:assets';
+import moneyShot from '../../assets/proof/cockpit-money-shot.png';
+import stepConfigure from '../../assets/proof/step-configure.png';
+import stepRun from '../../assets/proof/step-run.png';
+import stepDecide from '../../assets/proof/step-decide.png';
+import railDatasets from '../../assets/proof/rail-datasets.png';
+import railCandidates from '../../assets/proof/rail-candidates.png';
+import railReceipts from '../../assets/proof/rail-receipts.png';
+import flagshipResults from '../../assets/proof/flagship-results.png';
+// Animated GIF: imported as a URL so the animation survives (astro:assets Image
+// would flatten it to a still frame).
+import flagshipGif from '../../assets/proof/flagship-18of21.gif';
+
+const steps = [
+  {
+    n: '1',
+    title: 'Configure',
+    body: 'Point Proof at your own task. Pick the models or setups you are weighing, local or cloud, and the rubric to score them by.',
+    image: stepConfigure,
+    alt: 'The Configure stage: choosing candidates and a scoring rubric for a proof run.',
+  },
+  {
+    n: '2',
+    title: 'Run',
+    body: 'Proof runs every candidate on your machine, row by row, and streams the progress live. Nothing leaves your desk.',
+    image: stepRun,
+    alt: 'The Run stage: candidates generating answers row by row with live progress.',
+  },
+  {
+    n: '3',
+    title: 'Decide',
+    body: 'You get a clear winner, a leaderboard with cost and speed, the failures laid out, and a signed receipt you can rerun any time.',
+    image: stepDecide,
+    alt: 'The Decide stage: a recommended winner, leaderboard, and exportable receipt.',
+  },
+];
+
+const rails = [
+  {
+    title: 'Your datasets',
+    body: 'Bring your own task rows. Proof scores against the answers you decide are right.',
+    image: railDatasets,
+    alt: 'The datasets rail in the Proof cockpit.',
+  },
+  {
+    title: 'Any candidate',
+    body: 'Local models through Ollama or cloud models through their API, side by side in one run.',
+    image: railCandidates,
+    alt: 'The candidates rail listing local and cloud models.',
+  },
+  {
+    title: 'Signed receipts',
+    body: 'Every run exports a receipt as Markdown, HTML, or JSON. Same inputs, same receipt, every time.',
+    image: railReceipts,
+    alt: 'The receipts rail showing exported proof receipts.',
+  },
+];
+---
+<section id="what-it-does" class="scroll-mt-24 px-6 py-16">
+  <div class="mx-auto max-w-6xl">
+    <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What Orionfold Proof does</p>
+    <h2 class="font-display text-2xl leading-tight sm:text-3xl">The tool behind these receipts</h2>
+    <p class="mt-4 max-w-2xl text-base leading-relaxed text-text-muted">
+      Orionfold Proof runs on your own machine. You point it at your own task, run the AI models or
+      setups you are weighing, and it hands back a signed receipt: which one won, at what cost, with
+      what failures. One command to install, a cockpit in your browser, and you are proving in
+      minutes. Nothing phones home.
+    </p>
+
+    <!-- Hero: the money shot -->
+    <figure data-animate class="mt-8 overflow-hidden rounded-2xl border border-border bg-surface-raised">
+      <Image
+        src={moneyShot}
+        alt="The Orionfold Proof cockpit after a run: the recommended winner, the leaderboard, and the failure cases all on one screen."
+        widths={[720, 1080, 1440]}
+        sizes="(min-width: 1024px) 1024px, 100vw"
+        loading="lazy"
+        decoding="async"
+        class="h-auto w-full"
+      />
+      <figcaption class="border-t border-border px-5 py-3 text-xs text-text-dim">
+        One screen, the whole proof: the recommended winner, the leaderboard with cost and speed, and
+        every failure case.
+      </figcaption>
+    </figure>
+
+    <!-- How it works: configure -> run -> decide -->
+    <div class="mt-14">
+      <p class="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">How it works</p>
+      <div class="grid gap-5 md:grid-cols-3" data-animate-stagger>
+        {steps.map((s) => (
+          <div data-animate class="of-surface flex flex-col rounded-2xl p-5">
+            <div class="overflow-hidden rounded-xl border border-border">
+              <Image
+                src={s.image}
+                alt={s.alt}
+                widths={[360, 540, 720]}
+                sizes="(min-width: 768px) 33vw, 100vw"
+                loading="lazy"
+                decoding="async"
+                class="h-auto w-full"
+              />
+            </div>
+            <div class="mt-4 flex items-baseline gap-2">
+              <span class="font-mono text-xs text-primary">{s.n}</span>
+              <span class="font-display text-lg">{s.title}</span>
+            </div>
+            <p class="mt-2 text-sm leading-relaxed text-text-muted">{s.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Inside the cockpit: the rails -->
+    <div class="mt-14">
+      <p class="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Inside the cockpit</p>
+      <div class="grid gap-5 sm:grid-cols-3" data-animate-stagger>
+        {rails.map((r) => (
+          <div data-animate class="flex flex-col rounded-2xl border border-border/70 bg-surface/60 p-5">
+            <div class="overflow-hidden rounded-xl border border-border">
+              <Image
+                src={r.image}
+                alt={r.alt}
+                widths={[320, 480, 640]}
+                sizes="(min-width: 640px) 33vw, 100vw"
+                loading="lazy"
+                decoding="async"
+                class="h-auto w-full"
+              />
+            </div>
+            <p class="mt-4 font-display text-base">{r.title}</p>
+            <p class="mt-1 text-sm leading-relaxed text-text-muted">{r.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Flagship proof: the 18/21 governance bench, reproduced on a Mac -->
+    <div class="mt-14 rounded-3xl border border-primary/30 bg-surface-raised/70 p-6 sm:p-8">
+      <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">The flagship proof</p>
+      <h3 class="font-display text-xl leading-snug sm:text-2xl">
+        Reproduce a published model result on your own laptop, turnkey
+      </h3>
+      <p class="mt-4 max-w-2xl text-base leading-relaxed text-text-muted">
+        We took our Advisor 4B model and ran its governance bench again, this time on an Apple M3 Max
+        laptop instead of the lab box. It scored <strong class="text-text">18 of 21</strong>,
+        matching the published baseline answer for answer: the same 9 of 9 refusals, and the same 3
+        misses. It cost <strong class="text-text">$0.00</strong> because it ran fully local, and it
+        decoded at <strong class="text-text">59 tokens a second</strong>, faster than the lab box's
+        published 42. Every line of that is in the receipt, down to the config hash
+        <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-primary">50c38b0b7439</code>.
+      </p>
+
+      <figure data-animate class="mt-6 overflow-hidden rounded-2xl border border-border bg-surface">
+        <img
+          src={flagshipGif.src}
+          width={flagshipGif.width}
+          height={flagshipGif.height}
+          alt="The full Orionfold Proof workflow: configure the Advisor governance bench, run 21 rows locally, and reach an 18 of 21 result."
+          loading="lazy"
+          decoding="async"
+          class="h-auto w-full"
+        />
+        <figcaption class="border-t border-border px-5 py-3 text-xs text-text-dim">
+          The whole run in one take: configure, generate all 21 rows locally, reach 18 of 21.
+        </figcaption>
+      </figure>
+
+      <p class="mt-6 text-sm leading-relaxed text-text-muted">
+        It does not hide the losses. The result misses 3 of the 21 and shows exactly which checks
+        failed and why. A trust tool that only ever shows a perfect score is the one you should not
+        trust.
+      </p>
+
+      <!-- The full results page (a tall full-page capture): show it framed + scrollable -->
+      <figure data-animate class="mt-6">
+        <div class="max-h-[28rem] overflow-y-auto rounded-2xl border border-border bg-surface">
+          <Image
+            src={flagshipResults}
+            alt="The full Orionfold Proof results page: the recommended 18 of 21 verdict, the leaderboard with tokens per second and zero cost, the run cost ledger, and the three honest failure cases with per-check detail."
+            widths={[480, 720, 960]}
+            sizes="(min-width: 1024px) 960px, 100vw"
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full"
+          />
+        </div>
+        <figcaption class="mt-2 text-xs text-text-dim">
+          The full results page: the recommended verdict, the leaderboard, the cost ledger, and the
+          three honest misses laid out check by check. Scroll inside the frame to read it all.
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>

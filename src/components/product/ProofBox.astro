@@ -1,0 +1,112 @@
+---
+// Orionfold Proof purchase block (relay ask orionfold-proof 2026-06-24). Sits on
+// the /proof/ evidence wall and turns "here are the receipts" into "own the tool
+// that makes them". Mirrors FieldEditionBox.astro: price + founding cap + window
+// come from the catalog SSOT (PROOF in commerce.ts), so the chips and the buy
+// buttons can never drift. The charging buttons render ONLY when
+// ORIONFOLD_PROOF_LIVE is true (launch flag) — before the flip, the full pitch
+// shows with a "tell me at launch" path instead, so no one can pay before
+// fulfillment (the signed `product:orionfold-proof` license) is proven live.
+//
+// Self-contained: unlike FieldEditionBox (which rides a ProductDetail ProductView),
+// /proof/ is a plain page, so the roadmap attribution id is a literal here.
+// Voice: grade 3-5, jargon explained, no em-dashes (website-copy-style).
+import { PROOF, formatUsd } from '../../data/commerce';
+import { ORIONFOLD_PROOF_LIVE } from '../../data/launch';
+
+const ROADMAP_ITEM_ID = 'software:orionfold-proof';
+
+const primary = formatUsd(PROOF.primary.amount);
+const founding = formatUsd(PROOF.founding.amount);
+const renewal = formatUsd(PROOF.renewal.amount);
+
+const enquiryHref = `/adoption/?item=${ROADMAP_ITEM_ID}`;
+---
+<section id="get-proof" class="scroll-mt-24 px-6 py-16">
+  <div class="mx-auto max-w-3xl">
+    <div data-animate class="rounded-2xl border border-primary/40 bg-surface-raised p-8 shadow-lg shadow-primary/5">
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">
+        Prove it yourself, on your own machine
+      </p>
+
+      <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 class="font-display text-2xl font-bold sm:text-3xl">Get Orionfold Proof</h2>
+          <p class="mt-2 max-w-xl text-text-muted">
+            Orionfold Proof is the tool behind these receipts. It runs on your own machine, points at
+            your own task, and tries each AI model or setup you are weighing. It scores them on a
+            rubric you set and hands back a signed receipt: which one won, at what cost, with what
+            failures. Nothing leaves your machine, and you can rerun the proof any time.
+          </p>
+        </div>
+        {!ORIONFOLD_PROOF_LIVE && (
+          <span class="rounded-full border border-primary/40 px-3 py-1 font-mono text-xs tracking-wider text-primary">
+            Launching soon
+          </span>
+        )}
+      </div>
+
+      <p class="mt-5 text-sm text-text-muted">
+        Install it in one command, open the cockpit in your browser, and you are proving in minutes.
+        Owning Orionfold Proof unlocks every pack that ships with it, starting with the Advisor
+        governance pack: rerun our headline receipt, a 4B model that out-trusts a much bigger one, on
+        your own desk.
+      </p>
+
+      <!-- Price: lead with the founding hook, standard behind it -->
+      <div class="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-border/60 pt-6">
+        <p class="flex items-baseline gap-2">
+          <span class="font-display text-4xl font-bold text-primary">{founding}</span>
+          <span class="font-mono text-xs tracking-wider text-text-muted">
+            founding, first {PROOF.foundingSeats} licenses
+          </span>
+        </p>
+        <p class="rounded-lg bg-primary/10 px-3 py-2 font-mono text-xs tracking-wider text-primary">
+          then {primary} one time, {PROOF.windowMonths}-month window included
+        </p>
+      </div>
+
+      {ORIONFOLD_PROOF_LIVE ? (
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            data-checkout={PROOF.founding.lookupKey}
+            data-item={ROADMAP_ITEM_ID}
+            data-error-target="proof-err"
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Buy now, founding · {founding}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </button>
+          <button
+            type="button"
+            data-checkout={PROOF.primary.lookupKey}
+            data-item={ROADMAP_ITEM_ID}
+            data-error-target="proof-err"
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary/40 px-5 py-3 font-mono text-sm tracking-wider text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Buy at {primary}
+          </button>
+        </div>
+      ) : (
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <a
+            href={enquiryHref}
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
+          >
+            Tell me when it launches
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+          <span class="font-mono text-xs tracking-wider text-text-muted">
+            Founding price holds for the first {PROOF.foundingSeats} licenses.
+          </span>
+        </div>
+      )}
+      <p id="proof-err" role="alert" hidden class="mt-2 font-mono text-xs text-red-500"></p>
+      <p class="mt-4 text-sm text-text-muted">
+        After the first year, {renewal}/yr keeps it proven: new packs, new checks, and a fresh
+        receipt. Skip it and your copy keeps working, you just stop getting new proof.
+      </p>
+    </div>
+  </div>
+</section>

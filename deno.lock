@@ -51,7 +51,9 @@
         "npm:@astrojs/sitemap@3",
         "npm:@resvg/resvg-js@^2.6.2",
         "npm:@tailwindcss/vite@4",
+        "npm:asciinema-player@^3.15.1",
         "npm:astro@5",
+        "npm:remark-directive@4",
         "npm:satori@0.26",
         "npm:tailwindcss@4"
       ]

@@ -404,3 +404,8 @@ verify_jwt = false
 
 [functions.ops-alert]
 verify_jwt = false
+
+# admin-issue-license: operator-only license hand-issue, gated by ADMIN_ISSUE_TOKEN
+# (server-to-server, no browser caller → no CORS, verify_jwt off like ops-alert).
+[functions.admin-issue-license]
+verify_jwt = false

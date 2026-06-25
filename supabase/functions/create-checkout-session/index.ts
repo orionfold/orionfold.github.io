@@ -9,11 +9,10 @@
 import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
-  FOUNDING_LOOKUP_KEY,
-  FOUNDING_SEATS,
-  STANDARD_LICENSE_LOOKUP_KEY,
+  foundingFallback,
   getCatalogItem,
   isAllowedLookupKey,
+  licenseFamilyForLookupKey,
   STRIPE_API_VERSION,
 } from "../_shared/catalog.ts";
 import { getCorsHeaders, jsonResponse } from "../_shared/cors.ts";
@@ -31,34 +30,37 @@ function supabaseAdmin() {
   );
 }
 
-// Arena Field Edition founding cap. The founding price ($349) is honored for the
-// first FOUNDING_SEATS licenses; once that many founding sales are RECORDED (the
-// stripe-webhook writes a `purchases` row per completed license sale), the 26th+
-// founding request falls back to the standard $499 price. This gates at the source
-// — Checkout for a 26th founding buyer never opens at $349 — so we never oversell
-// even though the Stripe founding price object stays active. Returns the lookup key
-// the checkout should actually use.
+// Founding cap (per licensed product family — Arena + Proof both ship a count-boxed
+// founding price). The founding price ($349) is honored for the first
+// family.foundingSeats licenses; once that many founding sales are RECORDED (the
+// stripe-webhook writes a `purchases` row per completed license sale), the next
+// founding request falls back to that family's standard $499 price. This gates at
+// the source — Checkout for the 26th founding buyer never opens at $349 — so we
+// never oversell even though the Stripe founding price object stays active. Returns
+// the lookup key the checkout should actually use.
 async function resolveFoundingKey(lookupKey: string): Promise<string> {
-  if (lookupKey !== FOUNDING_LOOKUP_KEY) return lookupKey;
+  const family = licenseFamilyForLookupKey(lookupKey);
+  // Only a family's FOUNDING key is capped; any other key passes straight through.
+  if (!family || lookupKey !== family.founding) return lookupKey;
   try {
     const { count, error } = await supabaseAdmin()
       .from("purchases")
       .select("id", { count: "exact", head: true })
-      .eq("lookup_key", FOUNDING_LOOKUP_KEY);
+      .eq("lookup_key", family.founding);
     if (error) throw error;
-    if ((count ?? 0) >= FOUNDING_SEATS) {
+    if ((count ?? 0) >= family.foundingSeats) {
       console.log(
-        `Founding cap reached (${count}/${FOUNDING_SEATS}) — falling back to standard price ${STANDARD_LICENSE_LOOKUP_KEY}`,
+        `Founding cap reached for ${family.product} (${count}/${family.foundingSeats}) — falling back to standard price ${family.standard}`,
       );
-      return STANDARD_LICENSE_LOOKUP_KEY;
+      return foundingFallback(lookupKey); // → family.standard
     }
-    return FOUNDING_LOOKUP_KEY;
+    return family.founding;
   } catch (err) {
     // Fail OPEN to the advertised founding price: a transient count error must not
     // deny an early buyer the price the marketing promised. The webhook records
     // actual sales, so any rare oversell is visible and refundable by the operator.
     console.error("Founding-cap count failed; honoring founding price:", err);
-    return FOUNDING_LOOKUP_KEY;
+    return family.founding;
   }
 }
 
@@ -93,6 +95,15 @@ function humanizeItemId(id: string): string {
     .filter(Boolean)
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
+}
+
+// Where a cancelled license checkout returns the buyer: each licensed product's
+// own purchase block. Proof → /proof/#get-proof, Arena → /software/arena/#field-edition.
+function licenseCancelPath(lookupKey: string): string {
+  const family = licenseFamilyForLookupKey(lookupKey);
+  return family?.product === "orionfold-proof"
+    ? "/proof/#get-proof"
+    : "/software/arena/#field-edition";
 }
 
 function sanitizeAttribution(raw: unknown): Record<string, string> {
@@ -194,10 +205,10 @@ Deno.serve(async (req) => {
       line_items: [{ price: price.id, quantity: 1 }],
       // NOTE: never set payment_method_types — dynamic payment methods stay on.
       success_url: `${SITE_URL}${isSponsor ? "/sponsor/thanks/" : "/thanks/"}?session_id={CHECKOUT_SESSION_ID}`,
-      // Cancel returns the buyer where they started: sponsors to /sponsor/, an
-      // Arena Field Edition license to its block, books to /books/.
+      // Cancel returns the buyer where they started: sponsors to /sponsor/, a
+      // license to its product's purchase block, books to /books/.
       cancel_url: `${SITE_URL}${
-        isSponsor ? "/sponsor/" : item.kind === "license" ? "/software/arena/#field-edition" : "/books/"
+        isSponsor ? "/sponsor/" : item.kind === "license" ? licenseCancelPath(effectiveKey) : "/books/"
       }`,
       // Show the promo-code box on book checkouts so the per-channel code
       // (e.g. DGX-GOOGLE) works — the zero-engineering attribution backstop

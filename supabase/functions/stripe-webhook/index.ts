@@ -16,14 +16,19 @@
 import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
-import { editionForLookupKey, getCatalogItem, STRIPE_API_VERSION } from "../_shared/catalog.ts";
+import {
+  getCatalogItem,
+  licenseFamilyForLookupKey,
+  licenseProductForLookupKey,
+  STRIPE_API_VERSION,
+} from "../_shared/catalog.ts";
+import type { LicenseProductDescriptor } from "../_shared/catalog.ts";
 import { publicKeyFromSeed, signLicense, verifyLicense } from "../_shared/license.ts";
 import {
   buildLicensePayload,
   licenseTerm,
   LICENSE_KEY_ID,
   LICENSE_SEATS,
-  LICENSE_TIER,
 } from "../_shared/license-payload.ts";
 import { sendMetaPurchase } from "../_shared/meta-capi.ts";
 
@@ -41,10 +46,13 @@ const WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") ?? "";
 const BOOK_FILES_BUCKET = "book-files";
 const DOWNLOAD_TTL_SECONDS = 60 * 60 * 24 * 7; // 7-day signed download links
 
-// Private bucket for issued Arena Field Edition license files. The webhook
-// uploads the signed license here and hands the buyer a signed URL their
-// installer fetches (the bootstrap REQUIRES OF_LICENSE_URL — it never reads a
-// pre-placed file). 7-day TTL because the email link has no on-demand re-mint
+// Private bucket for issued license files (both Arena Field Edition and Orionfold
+// Proof — it's a generic, deny-all license store). The webhook uploads the signed
+// license here and hands the buyer a signed URL their installer fetches (Arena's
+// bootstrap REQUIRES OF_LICENSE_URL; Proof's `orionfold unlock --license-url` — in
+// both cases the license is fetched over the URL, never a pre-placed file). The
+// license id namespaces the path (OF-FE-… vs OF-PROOF-…), so the two never
+// collide. 7-day TTL because the email link has no on-demand re-mint
 // yet (entitlement-fetch / task f restores short-TTL); "reply for a fresh link"
 // is the v1 fallback. The license is signed claims, not the moat (weights stay
 // on HF for v1), so a long-lived URL is low risk.
@@ -198,12 +206,13 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
   const lookupKey = session.metadata?.lookup_key ?? "";
   const email = session.customer_details?.email ?? session.customer_email ?? "";
   const item = getCatalogItem(lookupKey);
-  const edition = editionForLookupKey(lookupKey);
+  // The product descriptor (Arena or Proof) drives the signed claims + delivery.
+  const descriptor = licenseProductForLookupKey(lookupKey);
 
-  if (!item || item.kind !== "license" || !edition || !email) {
-    console.error("License fulfillment skipped — missing lookup_key/edition/email:", {
+  if (!item || item.kind !== "license" || !descriptor || !email) {
+    console.error("License fulfillment skipped — missing lookup_key/product/email:", {
       lookupKey,
-      hasEdition: Boolean(edition),
+      hasDescriptor: Boolean(descriptor),
       hasEmail: Boolean(email),
     });
     return;
@@ -243,7 +252,7 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
     console.error("LICENSE_SIGNING_SEED_B64 unset — license recorded, NOT issued:", session.id, lookupKey);
   } else {
     try {
-      await issueAndDeliverLicense(supabase, session, { lookupKey, edition, email, item });
+      await issueAndDeliverLicense(supabase, session, { lookupKey, descriptor, email, item });
     } catch (err) {
       console.error("License issuance/delivery failed (recorded, delivered=false):", session.id, err);
     }
@@ -270,18 +279,22 @@ async function issueAndDeliverLicense(
   session: Stripe.Checkout.Session,
   ctx: {
     lookupKey: string;
-    edition: ReturnType<typeof editionForLookupKey> & string;
+    descriptor: LicenseProductDescriptor;
     email: string;
     item: { label: string };
   },
 ) {
   const seedB64 = Deno.env.get(LICENSE_SIGNING_SEED_ENV)!;
 
-  // License id from the sequence — the only nextval path (supabase-js can't call
-  // nextval directly). Drawn AFTER the purchase insert so retries don't burn ids.
-  const { data: licenseId, error: idError } = await supabase.rpc("next_fe_license_id");
+  // License id from the product's sequence — the only nextval path (supabase-js
+  // can't call nextval directly). Proof draws OF-PROOF-…, Arena draws OF-FE-….
+  // Drawn AFTER the purchase insert so retries don't burn ids.
+  const idRpc = ctx.descriptor.product === "orionfold-proof"
+    ? "next_proof_license_id"
+    : "next_fe_license_id";
+  const { data: licenseId, error: idError } = await supabase.rpc(idRpc);
   if (idError || typeof licenseId !== "string") {
-    throw idError ?? new Error("next_fe_license_id returned no id");
+    throw idError ?? new Error(`${idRpc} returned no id`);
   }
 
   // Term from the sale moment; provenance from the line item + the charge.
@@ -292,7 +305,10 @@ async function issueAndDeliverLicense(
 
   const payload = buildLicensePayload({
     licenseId,
-    edition: ctx.edition,
+    product: ctx.descriptor.product,
+    tier: ctx.descriptor.tier,
+    entitlements: ctx.descriptor.entitlements,
+    edition: ctx.descriptor.edition, // undefined for Proof → omitted from payload
     issuedTo: { email: ctx.email, name },
     issuedAt: term.issuedAt,
     notBefore: term.notBefore,
@@ -321,8 +337,9 @@ async function issueAndDeliverLicense(
     {
       license_id: licenseId,
       key_id: LICENSE_KEY_ID,
-      edition: ctx.edition,
-      tier: LICENSE_TIER,
+      product: ctx.descriptor.product,
+      edition: ctx.descriptor.edition ?? null, // null for Proof (column now nullable)
+      tier: ctx.descriptor.tier,
       seats: LICENSE_SEATS,
       email: ctx.email,
       issued_to_name: name,
@@ -342,7 +359,9 @@ async function issueAndDeliverLicense(
   if (entError) throw entError;
 
   // Deliver: the install command (signed URL inlined) + the file as a backup copy.
-  await sendLicenseEmail(ctx.email, ctx.item.label, licenseId, fileText, installUrl);
+  // The command + setup steps differ per product (Arena boots on the Spark via the
+  // getarena bootstrap; Proof unlocks a pack via `orionfold unlock`).
+  await sendLicenseEmail(ctx.email, ctx.item.label, licenseId, fileText, installUrl, ctx.descriptor.product);
 
   // Mark delivered on both planes.
   const now = new Date().toISOString();
@@ -405,14 +424,21 @@ async function sendLicenseEmail(
   licenseId: string,
   fileText: string,
   installUrl: string,
+  product: string,
 ) {
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
   if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
 
   // Attach the signed file as a backup copy (UTF-8 base64 so unicode names
-  // survive). The install itself uses the signed URL, not the attachment — the
-  // bootstrap requires OF_LICENSE_URL and never reads a pre-placed file.
+  // survive). The install itself uses the signed URL, not the attachment — both
+  // products fetch the license over the signed URL (Arena's bootstrap requires
+  // OF_LICENSE_URL; Proof's `orionfold unlock --license-url`), never a pre-placed
+  // file.
   const fileB64 = encodeBase64(new TextEncoder().encode(fileText));
+
+  const text = product === "orionfold-proof"
+    ? proofLicenseEmailText(productLabel, licenseId, installUrl)
+    : arenaLicenseEmailText(productLabel, licenseId, installUrl);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -425,19 +451,19 @@ async function sendLicenseEmail(
       reply_to: "manav@orionfold.com",
       to: [email],
       subject: `Your ${productLabel} license (${licenseId})`,
-      text: licenseEmailText(productLabel, licenseId, installUrl),
+      text,
       attachments: [{ filename: "orionfold-license.json", content: fileB64 }],
     }),
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    console.error("Resend error:", res.status, text);
+    const resText = await res.text();
+    console.error("Resend error:", res.status, resText);
     throw new Error(`Resend API error: ${res.status}`);
   }
 }
 
-function licenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
+function arenaLicenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
   return `Thank you for buying ${productLabel}.
 
 Your license number is ${licenseId}. Your license file is also
@@ -454,6 +480,39 @@ receipt you can read.
 
 If the link stops working before you install, just reply to this
 email and we will send you a fresh one.
+
+Your license keeps you up to date for 12 months.
+
+--
+Orionfold
+https://orionfold.com
+`;
+}
+
+function proofLicenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
+  return `Thank you for buying ${productLabel}.
+
+Your license number is ${licenseId}. Your license file is also
+attached as a backup copy, so you always have it.
+
+First, install Orionfold Proof and open the cockpit:
+
+uv tool install orionfold-proof
+orionfold up
+
+That opens the proof cockpit at http://localhost:8787. It runs
+on your own machine and nothing leaves it.
+
+Owning Orionfold Proof unlocks every pack that ships with it.
+When you have a pack to add, run this. It checks your license
+over your own private link (it works for 7 days), then installs
+the pack so its dataset and reference receipt are ready to run:
+
+orionfold unlock <pack> --license-url='${installUrl}'
+
+We will email you the pack download links to use in place of
+<pack>. If the link stops working before you unlock, just reply
+to this email and we will send you a fresh one.
 
 Your license keeps you up to date for 12 months.
 

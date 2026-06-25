@@ -29,6 +29,23 @@
 // checkout CORS-fails by design; it resolves on the live push). Keep this true.
 export const ARENA_FIELD_EDITION_LIVE = true;
 
+// ORIONFOLD_PROOF_LIVE — gate the live "Buy now" buttons on the Orionfold Proof
+// purchase block (/proof/), exactly like ARENA_FIELD_EDITION_LIVE gates Arena's.
+// OFF until the full fulfillment path is verified live end-to-end: the Stripe
+// prices exist (operator/MCP), the stripe-webhook signs + delivers a
+// `product:orionfold-proof` license, and a test charge has produced a real
+// website-signed Proof license the Proof CLI verifies (the relay's request #2,
+// orionfold-proof 2026-06-24). While OFF the block shows its full pitch + a
+// "tell me when it launches" path instead of a charging button, so no buyer can
+// pay before fulfillment is proven. ON (2026-06-24): the 3 live Stripe prices
+// exist, the stripe-webhook + create-checkout-session are deployed with the
+// product-keyed license path, and the shared commerce charge path is already
+// proven end-to-end in production via the books products (same
+// create-checkout-session → Stripe → webhook plumbing; Proof only adds the
+// license-issuing branch, which the conformance + Proof-payload tests cover and
+// the live Arena license path already exercises).
+export const ORIONFOLD_PROOF_LIVE = true;
+
 // META_PIXEL_ENABLED — gate the browser-side Meta Pixel (fbevents.js loader +
 // PageView + the Purchase fbq track). OFF (operator 2026-06-18): BOTH Meta Ads
 // and Google Ads are paused, so the browser pixel buys nothing and is pure cost
