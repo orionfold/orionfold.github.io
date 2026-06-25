@@ -151,6 +151,12 @@ export default defineConfig({
         if (url === 'https://orionfold.com/') {
           return { ...item, changefreq: 'weekly', priority: 1.0, lastmod };
         }
+        // Proof is the flagship conversion + demand-gen surface (single-product
+        // pivot, relay ask A8). Lift it into the top band just under the homepage
+        // (0.9) and crawl it weekly so the receipts wall stays fresh in the index.
+        if (url === 'https://orionfold.com/proof/') {
+          return { ...item, changefreq: 'weekly', priority: 0.9, lastmod };
+        }
         if (url.includes('/story/')) {
           return { ...item, changefreq: 'weekly', priority: 0.7, lastmod };
         }
