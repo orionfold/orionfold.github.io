@@ -703,3 +703,53 @@ section {
   color: var(--color-text-muted);
   font-style: italic;
 }
+
+/* Article data tables (the Proof field notes lean on leaderboards + failure
+   grids). Markdown emits a bare <table>; give it a card frame, a quiet header
+   band, comfortable cells, and horizontal scroll on narrow screens. Uses the
+   site tokens so it reads as part of the surface system, not a default table. */
+.story-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  /* The frame + clipping live on the table itself so a future scroll wrapper is
+     optional; overflow-x lets a wide leaderboard scroll instead of squashing. */
+  display: block;
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface-raised);
+  -webkit-overflow-scrolling: touch;
+}
+.story-prose thead {
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+.story-prose th {
+  text-align: left;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text);
+  padding: 0.7rem 1rem;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-border);
+}
+.story-prose td {
+  padding: 0.7rem 1rem;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-border) 60%, transparent);
+  vertical-align: top;
+  font-variant-numeric: tabular-nums;
+}
+.story-prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+.story-prose tbody tr:hover {
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
+}
+.story-prose td strong {
+  color: var(--color-primary);
+}

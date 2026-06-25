@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import remarkDirective from 'remark-directive';
 import remarkAsciinema from './src/lib/products/remark-asciinema.mjs';
+import remarkProofCta from './src/lib/products/remark-proof-cta.mjs';
 
 // Build a `pathname -> YYYY-MM-DD` map for sitemap <lastmod>. lastmod is the one
 // sitemap field Google actually uses to schedule crawls, so every value here must
@@ -129,7 +130,7 @@ export default defineConfig({
     '/arena-field-edition/': '/software/arena/',
   },
   markdown: {
-    remarkPlugins: [remarkDirective, remarkAsciinema],
+    remarkPlugins: [remarkDirective, remarkAsciinema, remarkProofCta],
   },
   integrations: [
     sitemap({

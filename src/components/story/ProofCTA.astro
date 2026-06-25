@@ -1,0 +1,117 @@
+---
+// ProofCTA — a mid-article call-to-action inviting the reader to look at
+// Orionfold Proof, the product behind the Proof field-note cluster. The story
+// page (story/[slug]) injects ONE of these into the middle of the rendered .md
+// body for Proof-tagged posts (articles are plain .md, no MDX, so the inject
+// happens at render time, not in the markdown — see story/[slug]/index.astro).
+//
+// Reads as a "mini hero": the Orionfold Proof poster floats on the same
+// drifting isometric plane as the homepage Hero (lifted recipe; desktop-only,
+// compositor-owned, reduced-motion safe), with the soft atmospheric glow behind
+// it. The right column carries the per-story pitch + one button.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  thumb: ImageMetadata;
+  thumbAlt: string;
+  title: string;
+  description: string;
+  ctaText?: string;
+  href?: string;
+}
+
+const {
+  thumb,
+  thumbAlt,
+  title,
+  description,
+  ctaText = 'See Orionfold Proof',
+  href = '/proof/',
+} = Astro.props;
+---
+<aside
+  class="not-prose relative my-12 overflow-x-clip"
+  aria-label="More about Orionfold Proof"
+>
+  <!-- Soft atmospheric light behind the card, same palette as the homepage hero. -->
+  <div class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute right-[6%] top-1/2 h-[360px] w-[360px] -translate-y-1/2 rounded-full bg-primary/[0.10] blur-[130px]"></div>
+    <div class="absolute left-[10%] top-[20%] h-[220px] w-[220px] rounded-full bg-[oklch(0.70_0.14_82/0.12)] blur-[100px]"></div>
+  </div>
+
+  <div class="of-surface grid grid-cols-1 items-center gap-6 rounded-2xl p-5 sm:p-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+    <!-- The pitch -->
+    <div class="flex flex-col gap-2 lg:order-1">
+      <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">The product behind this</span>
+      <h2 class="text-xl font-semibold leading-snug sm:text-2xl">{title}</h2>
+      <p class="text-sm leading-relaxed text-text-muted">{description}</p>
+      <a
+        href={href}
+        data-proof-cta-btn
+        class="mt-2 inline-flex w-fit items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-semibold transition-colors hover:bg-primary/90"
+      >
+        {ctaText}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </a>
+    </div>
+
+    <!-- The poster on the drifting isometric plane (desktop); flat card on
+         mobile. The whole poster links to the product (same target as the
+         button); aria-hidden + tabindex=-1 so it is not a duplicate stop for
+         keyboard / screen-reader users — the labelled button is the a11y path. -->
+    <div class="cta3d-stage relative lg:order-2">
+      <a
+        href={href}
+        tabindex="-1"
+        aria-hidden="true"
+        class="cta3d-plane of-surface block overflow-hidden rounded-2xl p-1.5 shadow-[0_24px_70px_-48px_oklch(0.18_0.08_260/0.6)] transition-shadow duration-300 hover:shadow-[0_28px_80px_-44px_oklch(0.18_0.08_260/0.7)]"
+      >
+        <Image
+          src={thumb}
+          alt={thumbAlt}
+          widths={[400, 640, 960]}
+          sizes="(min-width: 1024px) 40vw, calc(100vw - 3rem)"
+          loading="lazy"
+          decoding="async"
+          data-no-zoom
+          class="block aspect-[16/9] w-full rounded-[0.9rem] object-cover"
+        />
+      </a>
+    </div>
+  </div>
+</aside>
+
+<style>
+  /* The card is injected INTO .story-prose at runtime, and this site's prose
+     block (.story-prose a) is a plain CSS rule, not the Tailwind typography
+     plugin, so `not-prose` does not neutralise it. Force the CTA button colors
+     past `.story-prose a { color: var(--color-primary); text-decoration: underline }`. */
+  a[data-proof-cta-btn] {
+    color: var(--color-surface);
+    text-decoration: none;
+  }
+
+  /* Desktop-only isometric drift, same recipe as the homepage Hero (one
+     transformed element so the compositor owns the loop; LCP-irrelevant here
+     since the CTA is lazy + mid-page). Mobile keeps the flat poster. */
+  @media (min-width: 1024px) {
+    .cta3d-stage {
+      perspective: 1400px;
+    }
+    .cta3d-plane {
+      transform: rotateX(16deg) rotateZ(-3deg) scale(0.96);
+      animation: cta3d-drift 14s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes cta3d-drift {
+      from { transform: rotateX(16deg) rotateZ(-3deg) scale(0.96); }
+      to   { transform: rotateX(21deg) rotateZ(3deg) scale(1); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta3d-plane {
+      animation: none;
+    }
+  }
+</style>

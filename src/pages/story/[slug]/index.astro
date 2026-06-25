@@ -11,8 +11,45 @@ import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import StorySubscribe from '../../../components/sections/StorySubscribe.astro';
 import StoryPrevNext from '../../../components/story/StoryPrevNext.astro';
+import ProofCTA from '../../../components/story/ProofCTA.astro';
 import { ogPath, storyOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
+
+// Mid-article CTA for the Orionfold Proof field-note cluster. Keyed by story
+// slug: a story gets a CTA injected into the middle of its body (at the
+// `::proof-cta` directive, see remark-proof-cta) only if it appears here.
+// Copy + CTA text are chosen per story so the card matches the article it sits
+// in. The thumbnail is the Orionfold Proof featured poster (landscape key art) —
+// it grabs attention and stays undistorted in the narrow CTA panel, where the
+// tall product screenshots squished. One poster across all three keeps the
+// product's face consistent.
+import proofPoster from '../../../assets/proof/orionfold-proof-poster.jpeg';
+
+const POSTER_ALT = 'Orionfold Proof poster: a laptop on a desk emitting a long signed receipt under a star constellation, with the gold title Orionfold Proof.';
+
+const PROOF_CTA = {
+  'a-4b-model-scored-18-out-of-21-on-my-laptop': {
+    thumb: proofPoster,
+    thumbAlt: POSTER_ALT,
+    title: 'Orionfold Proof',
+    description: 'The tool that ran this bench. Point it at your own task, run any model local or cloud, and get a signed, rerunnable receipt that shows the failures too.',
+    ctaText: 'Run your own bench',
+  },
+  'the-famous-model-lost': {
+    thumb: proofPoster,
+    thumbAlt: POSTER_ALT,
+    title: 'Orionfold Proof',
+    description: 'The cockpit behind this head-to-head. Put the famous model and a small local one on the same task and let the receipt decide, on your machine, for nothing.',
+    ctaText: 'Compare your models',
+  },
+  'same-input-same-receipt': {
+    thumb: proofPoster,
+    thumbAlt: POSTER_ALT,
+    title: 'Orionfold Proof',
+    description: 'Every run writes a signed receipt with a config hash, so anyone can rerun it and confirm they ran the same thing. A benchmark you can hand over, not a screenshot.',
+    ctaText: 'See the receipts',
+  },
+} as const;
 
 export async function getStaticPaths() {
   const posts = await getCollection('story');
@@ -22,6 +59,8 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const { title, date, summary, tags, hero, heroAlt } = post.data;
+
+const proofCta = PROOF_CTA[post.id as keyof typeof PROOF_CTA];
 
 // Ascending by date (oldest → newest) so a left-to-right walk in the index IS
 // the founder-arc walk. StoryPrevNext picks neighbors by simple index math.
@@ -117,6 +156,43 @@ const breadcrumbSchema = {
       <div class="story-prose mt-12 border-t border-border pt-10">
         <Content />
       </div>
+
+      {proofCta && (
+        <>
+          {/* Server-rendered once, hidden; the inline script below moves it into
+              the `::proof-cta` slot inside the body so it sits mid-article. The
+              thumbnail still flows through <Image> (it lives outside <Content/>,
+              so the body's own inline images are untouched). Hidden-until-placed
+              = no flash; if JS is off it stays appended right after the body,
+              still a valid CTA. */}
+          <div id="proof-cta-source" hidden>
+            <ProofCTA
+              thumb={proofCta.thumb}
+              thumbAlt={proofCta.thumbAlt}
+              title={proofCta.title}
+              description={proofCta.description}
+              ctaText={proofCta.ctaText}
+            />
+          </div>
+          <script is:inline>
+            (() => {
+              const src = document.getElementById('proof-cta-source');
+              const slot = document.querySelector('[data-proof-cta-slot]');
+              if (!src) return;
+              const card = src.firstElementChild;
+              if (!card) { src.remove(); return; }
+              if (slot) {
+                slot.replaceWith(card);
+              } else {
+                // No midpoint marker in this body: drop the CTA right after the
+                // article body as a graceful fallback.
+                src.parentElement.insertBefore(card, src);
+              }
+              src.remove();
+            })();
+          </script>
+        </>
+      )}
 
       {tags.length > 0 && (
         <ul class="mt-12 flex flex-wrap gap-1.5" aria-label="Tags">
