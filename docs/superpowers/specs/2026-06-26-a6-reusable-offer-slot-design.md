@@ -131,7 +131,7 @@ Wraps `WaitlistForm`, presents the offer + companion artifact + consent UI.
 3. from-name sweep across all 5 edge functions.
 4. `WaitlistForm.astro` extension.
 5. New `OfferSlot.astro`.
-6. Wire `OfferSlot` onto `StorySubscribe` (or a single proof placement) to prove composition.
+6. Wire `OfferSlot` onto **`/proof/`** to prove composition: a soft opt-in for receipt-readers who aren't checkout-ready, placed in `src/pages/proof.astro` **between the "Proof in the field" stories section and `<ProofBox />`** (the buy block) — a low-friction capture before the hard ask. Offer = `"proof-playbook"`, `source = "proof-page"`, `destination = "/proof/"`. `StorySubscribe.astro` is left unchanged (it keeps working via null new-props).
 
 **Designed-for, DEFERRED (flagged, separate verify loop — NOT built now):**
 - Resend Audience projection on confirm (keep Postgres as consent SSOT; project only *confirmed* contacts; mirror unsubscribes back).
