@@ -2,7 +2,8 @@
   "version": "5",
   "redirects": {
     "https://esm.sh/@noble/ed25519@2?target=deno": "https://esm.sh/@noble/ed25519@2.3.0?target=deno",
-    "https://esm.sh/@supabase/supabase-js@2": "https://esm.sh/@supabase/supabase-js@2.106.1"
+    "https://esm.sh/@supabase/supabase-js@2": "https://esm.sh/@supabase/supabase-js@2.106.1",
+    "https://esm.sh/zod@3?target=deno": "https://esm.sh/zod@3.25.76?target=deno"
   },
   "remote": {
     "https://deno.land/std@0.224.0/assert/_constants.ts": "a271e8ef5a573f1df8e822a6eb9d09df064ad66a4390f21b3e31f820a38e0975",
@@ -43,7 +44,14 @@
     "https://esm.sh/@noble/ed25519@2.3.0/deno/ed25519.mjs": "bea2df027142539dfc2bc2c9042c37f72e3471b454476ced85457dc9e693825e",
     "https://esm.sh/@noble/ed25519@2.3.0?target=deno": "3b486b53bf3f3f7ab4ba0fce8d07dd081391572c738328d1b97b5cfa03812850",
     "https://esm.sh/@supabase/supabase-js@2.106.1": "1b378cc89620ed0bf3e646b946b593e75d8e8ac0e43a4e07db6b71516ca757ec",
-    "https://esm.sh/stripe@18.5.0?target=deno": "d9b6d1310d5168cc94495f0ffc275048be7aac23ea942ddc7f8bff513ffd9e71"
+    "https://esm.sh/stripe@18.5.0?target=deno": "d9b6d1310d5168cc94495f0ffc275048be7aac23ea942ddc7f8bff513ffd9e71",
+    "https://esm.sh/zod@3.25.76/deno/v3/ZodError.mjs": "7cb18052dad1b35a84cb7a3c1dc825e455f6c3fec0d89c4c4cc4059120042e30",
+    "https://esm.sh/zod@3.25.76/deno/v3/errors.mjs": "9a89b379ac5877d8c0bf4d14d6535ec5e6ab3afb526922acdc61299bac97790c",
+    "https://esm.sh/zod@3.25.76/deno/v3/external.mjs": "21935d798cd2c0c9709cabf9abfb0ed16b884a354beeaa214bfbe5f536267dcf",
+    "https://esm.sh/zod@3.25.76/deno/v3/helpers/util.mjs": "06f7d99705d93b009c1929407b1636e9c78fa69069f89361ceb3998e3b78b053",
+    "https://esm.sh/zod@3.25.76/deno/v3/locales/en.mjs": "6562956f1dd23d6a2d98b44b9e8116835a9fa6a7ec9cedd7f1d48d9e9dd1a7a0",
+    "https://esm.sh/zod@3.25.76/deno/zod.mjs": "c5134912da19c386fa022c7c5be6a68ef4c8679e42f435324208ef6e76a64161",
+    "https://esm.sh/zod@3.25.76?target=deno": "4917d7d7af061121ff1a530285a6402894d297cff6cbf78e44d96139031ff064"
   },
   "workspace": {
     "packageJson": {
