@@ -1,0 +1,36 @@
+---
+// ProofBand (A10) — a slim, generic "next step to Proof" band for deep pages
+// that have no product behind them (e.g. story posts). Same markup + voice as
+// the unproven variant of product/ProofCta.astro, but with NO product coupling
+// (no type/slug, no proof-matrix import) so editorial pages don't depend on the
+// proof catalog. The heavy 3D mini-hero (story/ProofCTA.astro) stays for
+// mid-article Proof-tagged placement; this is the lightweight universal close.
+// Voice: grade 3-5, no em-dashes, no invented claims (website-copy-style).
+interface Props {
+  eyebrow?: string;
+  line?: string;
+  linkText?: string;
+  class?: string;
+}
+const {
+  eyebrow = 'Every claim has a receipt',
+  line = 'See how the models we trust earn it. Every claim on Proof comes with a test you can rerun.',
+  linkText = 'See the receipts',
+  class: className,
+} = Astro.props;
+---
+<section class:list={['border-y border-border bg-surface-raised px-6 py-10', className]}>
+  <div data-animate class="mx-auto flex max-w-3xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">{eyebrow}</p>
+      <p class="mt-2 max-w-xl text-text-muted">{line}</p>
+    </div>
+    <a
+      href="/proof/"
+      class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
+    >
+      {linkText}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+    </a>
+  </div>
+</section>

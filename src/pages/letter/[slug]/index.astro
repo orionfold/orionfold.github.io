@@ -7,6 +7,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import LetterArticle from '../../../components/letters/LetterArticle.astro';
+import OfferSlot from '../../../components/ui/OfferSlot.astro';
 import { ogPath, letterOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 
@@ -74,5 +75,19 @@ const breadcrumbSchema = {
       </LetterArticle>
     </div>
   </main>
+
+  {/* A10: letters already link to /proof/ in their capability close; their real
+      gap is inline capture. A soft opt-in to the monthly letter itself fits a
+      reader who just finished one. Same live double-opt-in funnel as the rest. */}
+  <OfferSlot
+    offer="founder-letter"
+    source="letter-page"
+    label="Not done yet?"
+    heading="Get the next letter."
+    dek="One honest letter a month from building Orionfold in public. What we shipped, what the numbers really say, and the receipts behind every claim."
+    artifact="Monthly founder letter"
+    buttonText="Send it"
+    class="border-t border-border"
+  />
   <Footer />
 </Layout>

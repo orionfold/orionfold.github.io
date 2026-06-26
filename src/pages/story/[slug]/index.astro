@@ -12,6 +12,7 @@ import Footer from '../../../components/Footer.astro';
 import StorySubscribe from '../../../components/sections/StorySubscribe.astro';
 import StoryPrevNext from '../../../components/story/StoryPrevNext.astro';
 import ProofCTA from '../../../components/story/ProofCTA.astro';
+import ProofBand from '../../../components/ui/ProofBand.astro';
 import { ogPath, storyOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 
@@ -210,6 +211,11 @@ const breadcrumbSchema = {
 
   <!-- Read-next/prev within the arc; renders nothing at the ends if neither neighbor exists -->
   <StoryPrevNext current={post} posts={allStories} />
+
+  <!-- A10: a guaranteed next step to /proof/ on EVERY story (the bespoke
+       mid-article ProofCTA fires only on Proof-tagged posts; this universal
+       band closes the gap). Capture already lives in StorySubscribe below. -->
+  <ProofBand />
 
   <!-- Subscribe to stories (H3): same capture block as the story index -->
   <StorySubscribe class="border-t border-border" />

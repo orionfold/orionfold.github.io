@@ -276,7 +276,7 @@ const jsonLd = [productSchema, breadcrumbSchema, ...(fieldEditionSchema ? [field
       ? <FieldEditionBox view={view} />
       : (view.cta === 'buy' ? <BuyBox view={view} /> : <SponsorBlock view={view} />)}
 
-    {(view.type === 'software' || view.type === 'model') && (
+    {(view.type === 'software' || view.type === 'model' || view.type === 'book') && (
       <ProofCta type={view.type} slug={view.slug} />
     )}
 

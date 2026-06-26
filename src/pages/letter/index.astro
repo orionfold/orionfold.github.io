@@ -10,6 +10,7 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import LetterArticle from '../../components/letters/LetterArticle.astro';
+import OfferSlot from '../../components/ui/OfferSlot.astro';
 import { ogPath, letterOgSlug } from '../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../data/seo';
 
@@ -102,5 +103,18 @@ const breadcrumbSchema = {
       )}
     </section>
   </main>
+
+  {/* A10: same soft opt-in as the per-edition permalink, so the always-fresh
+      hub captures the reader who just finished the latest letter. */}
+  <OfferSlot
+    offer="founder-letter"
+    source="letter-index"
+    label="Not done yet?"
+    heading="Get the next letter."
+    dek="One honest letter a month from building Orionfold in public. What we shipped, what the numbers really say, and the receipts behind every claim."
+    artifact="Monthly founder letter"
+    buttonText="Send it"
+    class="border-t border-border"
+  />
   <Footer />
 </Layout>
