@@ -90,8 +90,8 @@ export const matrix: MatrixRow[] = [
   },
 ];
 
-// The speed table. The WOW is the dead heat on raw typing speed from a free box
-// on your desk, next to the big paid models. The caveat below is the honest part.
+// The speed table. The WOW is the dead heat on raw typing speed from a model on
+// your own desk, next to the big hosted ones. The caveat below is the honest part.
 export interface SpeedRow {
   model: string;
   where: string;
@@ -101,14 +101,14 @@ export interface SpeedRow {
 }
 
 export const speedRows: SpeedRow[] = [
-  { model: 'Our Advisor (4B)', where: 'your desk, free and private', wps: '~70', ours: true },
-  { model: 'DeepSeek V4 Pro', where: 'hosted, paid', wps: '78.6' },
-  { model: 'Claude Opus 4.7', where: 'hosted, paid', wps: '50.9' },
-  { model: 'GPT-5.4', where: 'hosted, paid', wps: '166.8' },
+  { model: 'Our Advisor (4B)', where: 'your own desk, fully private', wps: '~70', ours: true },
+  { model: 'DeepSeek V4 Pro', where: 'hosted in the cloud', wps: '78.6' },
+  { model: 'Claude Opus 4.7', where: 'hosted in the cloud', wps: '50.9' },
+  { model: 'GPT-5.4', where: 'hosted in the cloud', wps: '166.8' },
 ];
 
 export const speedCaveat =
-  'Straight talk: those big hosted models are far smarter than our small one, and some speed-chip services are faster still. The WOW is the dead heat on raw typing speed from a box on your desk, for free, that never sends your data out.';
+  'Straight talk: those big hosted models are far smarter than our small one, and some speed-chip services are faster still. The WOW is the dead heat on raw typing speed from a model on your own desk that never sends your data out.';
 
 // The headline receipts. Each pairs our number with the world it beats, and
 // points at a public page where the work lives.

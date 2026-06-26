@@ -87,10 +87,10 @@ const meaning: Record<Mark, string> = {
       Base-model marks (Qwen3, Llama, DeepSeek-R1) are general, vendor-documented capability, not our measurement. Only the <span class="mark mark-star">★</span> cells come with a frozen test anyone can rerun.
     </p>
 
-    <!-- Speed: a free box on your desk, next to the big paid models -->
+    <!-- Speed: a model on your own desk, keeping pace with the big hosted ones -->
     <div class="mt-10 of-surface rounded-2xl p-6 sm:p-7">
       <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Typing speed, words a second</p>
-      <p class="mt-2 font-display text-xl leading-snug sm:text-2xl">A free box on your desk keeps pace with the big paid models.</p>
+      <p class="mt-2 font-display text-xl leading-snug sm:text-2xl">A model on your own desk keeps pace with the big hosted ones.</p>
       <div class="mt-5 grid gap-2.5">
         {speedRows.map((s) => {
           const n = parseFloat(s.wps.replace('~', '')) || 0;

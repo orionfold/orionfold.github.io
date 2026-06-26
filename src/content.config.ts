@@ -60,11 +60,14 @@ const productDetail = defineCollection({
       chips: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
 
       // Edition split: when true, the page renders the paid Field Edition block
-      // side-by-side with the free product (the "Free and open: the machine.
-      // Paid: the evidence." commerce move). Singleton today (Arena); the copy +
-      // price + proof live in FieldEditionBox.astro, this just turns it on so the
-      // free product's chips/story stay the page's spine and the paid edition is
-      // an additive section, not a gated version.
+      // side-by-side with the open base product. Positioning is CAPABILITY/VALUE-led
+      // (the assembled, proven, kept-proven AI team delivered turnkey), NOT a
+      // free-vs-paid sell — the old "Free and open: the machine. Paid: the evidence."
+      // framing is retired (operator 2026-06-13, extended to all paid products
+      // 2026-06-26). Singleton today (Arena); the copy + price + proof live in
+      // FieldEditionBox.astro, this just turns it on so the base product's
+      // chips/story stay the page's spine and the paid edition is an additive
+      // section, not a gated version.
       fieldEdition: z.boolean().optional(),
 
       // Copy-paste code tabs (software/models): install + usage.
