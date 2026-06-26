@@ -11,6 +11,7 @@ import PageHeader from '../components/ui/PageHeader.astro';
 import CapabilityMatrix from '../components/sections/CapabilityMatrix.astro';
 import ProofProduct from '../components/sections/ProofProduct.astro';
 import ProofBox from '../components/product/ProofBox.astro';
+import OfferSlot from '../components/ui/OfferSlot.astro';
 import { getCollection } from 'astro:content';
 import { receipts, myths } from '../data/proof';
 import { SITE, PERSON } from '../data/seo';
@@ -206,6 +207,17 @@ const proofStories = (await getCollection('story'))
         </div>
       </section>
     )}
+
+    <!-- Soft opt-in: catch receipt-readers who aren't checkout-ready yet -->
+    <OfferSlot
+      offer="proof-playbook"
+      source="proof-page"
+      label="Not ready to buy?"
+      heading="Get the proof playbook."
+      dek="The one-page guide to locking a test, running it on your own desk, and reading the receipts. Plus a note when we publish new proof."
+      artifact="One-page PDF + new-proof notes"
+      buttonText="Send it"
+    />
 
     <!-- Own the tool behind the receipts -->
     <ProofBox />

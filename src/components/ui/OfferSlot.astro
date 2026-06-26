@@ -1,0 +1,67 @@
+---
+// A6 — reusable opt-in slot. A soft email capture for visitors not ready to
+// buy: an offer headline, a companion-artifact line, and a compliant consent
+// note, all wrapping the live double-opt-in WaitlistForm. The offer + UTM (read
+// from the URL by WaitlistForm) + the verbatim consent text are persisted as
+// lead attribution. Drop it on any deep page (A10).
+import SectionLabel from './SectionLabel.astro';
+import WaitlistForm from './WaitlistForm.astro';
+
+interface Props {
+  offer: string;                 // named offer -> `offer` column (e.g. "proof-playbook")
+  heading: string;
+  dek?: string;
+  artifact?: string;             // companion-artifact line
+  consentText?: string;          // verbatim consent copy -> stored
+  source?: string;               // logical placement id -> metadata.source
+  label?: string;                // eyebrow label
+  buttonText?: string;
+  successMessage?: string;
+  class?: string;
+}
+
+const {
+  offer,
+  heading,
+  dek,
+  artifact,
+  source = 'offer-slot',
+  label = 'Stay in the loop',
+  buttonText = 'Get it',
+  successMessage = 'Check your inbox to confirm.',
+  class: className,
+  consentText = 'By subscribing you agree to receive occasional Orionfold emails. You can unsubscribe any time. See our privacy policy.',
+} = Astro.props;
+const privacyNote = consentText.replace(' See our privacy policy.', '');
+---
+<section class:list={['px-6 py-16', className]} aria-labelledby={`offer-${offer}-heading`}>
+  <div class="mx-auto max-w-2xl">
+    <div class="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/[0.04] px-6 py-12 text-center sm:px-10">
+      <div class="pointer-events-none absolute left-1/2 top-0 -z-10 h-48 w-[90%] -translate-x-1/2 rounded-full bg-primary/[0.06] blur-[80px]"></div>
+      <SectionLabel text={label} />
+      <h2 id={`offer-${offer}-heading`} class="mb-3 mt-4 leading-tight" style="font-size: clamp(1.6rem, 4vw, 2.2rem);">
+        {heading}
+      </h2>
+      {dek && (
+        <p class="mx-auto mb-2 max-w-md leading-relaxed text-text-muted">{dek}</p>
+      )}
+      {artifact && (
+        <p class="mx-auto mb-8 max-w-md font-mono text-xs uppercase tracking-[0.18em] text-primary">{artifact}</p>
+      )}
+      <div data-animate style="transition-delay: 160ms">
+        <WaitlistForm
+          id={`offer-${offer}`}
+          source={source}
+          offer={offer}
+          buttonText={buttonText}
+          successMessage={successMessage}
+          consentText={consentText}
+        />
+      </div>
+      <p class="mx-auto mt-5 max-w-sm text-xs leading-relaxed text-text-dim">
+        {privacyNote}{' '}
+        <a class="underline underline-offset-2 hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
+      </p>
+    </div>
+  </div>
+</section>
