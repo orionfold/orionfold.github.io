@@ -44,6 +44,16 @@ export const cols: MatrixCol[] = [
   { key: 'deepseek', label: 'DeepSeek-R1', sub: 'base', ours: false },
 ];
 
+// Proven = the product appears as one of our own (ours:true) columns in the
+// matrix above, i.e. it earned a star anyone can rerun. Drives the Proof CTA
+// band on its detail page (A4). Books are never part of the proof story.
+export function isProvenProduct(type: 'software' | 'model' | 'book', slug: string): boolean {
+  if (type === 'book') return false;
+  const base = type === 'software' ? 'software' : 'models';
+  const path = `/${base}/${slug}/`;
+  return cols.some((c) => c.ours && c.href === path);
+}
+
 // How to read a mark:
 //   star   = we proved it on a locked test, and you can rerun it
 //   strong = yes, strong
