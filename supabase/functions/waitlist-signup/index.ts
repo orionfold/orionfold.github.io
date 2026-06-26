@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { isHoneypotTripped, parseLeadInput } from "../_shared/lead-input.ts";
 
 const ALLOWED_ORIGINS = [
   "https://orionfold.com",
@@ -27,7 +28,6 @@ function jsonResponse(
   });
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RATE_LIMIT = 5; // max signups per IP per hour
 
 Deno.serve(async (req) => {
@@ -42,36 +42,31 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const body = await req.json();
-    const { email, website } = body;
+    const body = await req.json().catch(() => null);
 
-    // Honeypot — bots fill hidden fields
-    if (website) {
+    // Honeypot — bots fill hidden fields. Pretend success.
+    if (isHoneypotTripped(body)) {
       return jsonResponse({ success: true }, corsHeaders);
     }
 
-    if (!email || typeof email !== "string" || !EMAIL_RE.test(email.trim())) {
-      return jsonResponse({ error: "Please enter a valid email address." }, corsHeaders, 400);
+    const parsed = parseLeadInput(body, req.headers);
+    if (!parsed.ok) {
+      return jsonResponse({ error: parsed.error }, corsHeaders, 400);
     }
-
-    const cleanEmail = email.trim().toLowerCase();
+    const { columns, metadata } = parsed;
+    const cleanEmail = columns.email;
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("cf-connecting-ip") ||
-      "unknown";
-
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
     const { count } = await supabase
       .from("waitlist")
       .select("*", { count: "exact", head: true })
-      .eq("ip_address", ip)
+      .eq("ip_address", columns.ip_address)
       .gte("created_at", oneHourAgo);
 
     if (count !== null && count >= RATE_LIMIT) {
@@ -99,7 +94,18 @@ Deno.serve(async (req) => {
       const newToken = crypto.randomUUID();
       await supabase
         .from("waitlist")
-        .update({ confirm_token: newToken })
+        .update({
+          confirm_token: newToken,
+          offer: columns.offer,
+          utm_source: columns.utm_source,
+          utm_medium: columns.utm_medium,
+          utm_campaign: columns.utm_campaign,
+          utm_term: columns.utm_term,
+          utm_content: columns.utm_content,
+          referrer: columns.referrer,
+          consent_text: columns.consent_text,
+          metadata,
+        })
         .eq("email", cleanEmail);
 
       await sendConfirmationEmail(cleanEmail, newToken);
@@ -111,14 +117,21 @@ Deno.serve(async (req) => {
     }
 
     const confirmToken = crypto.randomUUID();
-    const userAgent = req.headers.get("user-agent") || "";
-
     const { error: insertError } = await supabase.from("waitlist").insert({
       email: cleanEmail,
       confirmed: false,
       confirm_token: confirmToken,
-      ip_address: ip,
-      user_agent: userAgent,
+      ip_address: columns.ip_address,
+      user_agent: columns.user_agent,
+      offer: columns.offer,
+      utm_source: columns.utm_source,
+      utm_medium: columns.utm_medium,
+      utm_campaign: columns.utm_campaign,
+      utm_term: columns.utm_term,
+      utm_content: columns.utm_content,
+      referrer: columns.referrer,
+      consent_text: columns.consent_text,
+      metadata,
     });
 
     if (insertError) {
@@ -150,7 +163,7 @@ async function sendConfirmationEmail(email: string, token: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Orionfold Studio <manav@updates.orionfold.com>",
+      from: "Orionfold <manav@updates.orionfold.com>",
       reply_to: "manav@orionfold.com",
       to: [email],
       subject: "One click to get Orionfold stories",
