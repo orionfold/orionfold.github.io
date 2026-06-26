@@ -1,0 +1,37 @@
+---
+// Proof CTA band (A4). Closes the reciprocal link: the /proof/ matrix deep-links
+// OUT to product pages, this links each software/model detail page BACK to
+// /proof/. Honest gradient: a product that earned a star (isProvenProduct) gets
+// confident "rerun it" copy; everything else gets a softer "see the receipts"
+// line. Both land at /proof/ top for now (A11 will give receipts their own URLs).
+// Voice: grade 3-5, no em-dashes, no invented per-product claims (website-copy-style).
+import { isProvenProduct } from '../../data/proof.ts';
+
+interface Props {
+  type: 'software' | 'model' | 'book';
+  slug: string;
+}
+const { type, slug } = Astro.props;
+const proven = isProvenProduct(type, slug);
+
+const eyebrow = proven ? 'Proved on a locked test' : 'Every claim has a receipt';
+const line = proven
+  ? 'We proved this on a test anyone can rerun. See the receipt and run it yourself.'
+  : 'See how the models we trust earn it. Every claim on Proof comes with a test you can rerun.';
+const linkText = proven ? 'See it on Proof' : 'See the receipts';
+---
+<section class="border-y border-border bg-surface-raised px-6 py-10">
+  <div data-animate class="mx-auto flex max-w-3xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">{eyebrow}</p>
+      <p class="mt-2 max-w-xl text-text-muted">{line}</p>
+    </div>
+    <a
+      href="/proof/"
+      class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
+    >
+      {linkText}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+    </a>
+  </div>
+</section>
