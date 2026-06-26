@@ -16,9 +16,16 @@ import railDatasets from '../../assets/proof/rail-datasets.png';
 import railCandidates from '../../assets/proof/rail-candidates.png';
 import railReceipts from '../../assets/proof/rail-receipts.png';
 import flagshipResults from '../../assets/proof/flagship-results.png';
-// Animated GIF: imported as a URL so the animation survives (astro:assets Image
-// would flatten it to a still frame).
-import flagshipGif from '../../assets/proof/flagship-18of21.gif';
+// Animated GIF served straight from public/ so the animation survives and the file
+// is actually emitted. Importing a .gif through the asset pipeline rewrites the URL
+// to a hashed /_astro/ path but never copies the file into dist (Astro 5 / Vite
+// raw-asset gap) -> a 404 on the deployed page. public/ assets are copied verbatim
+// at a stable path. Intrinsic size kept inline (the source is 1568x763) to reserve
+// layout space without a JS import. astro:assets <Image> is intentionally NOT used
+// (it would flatten the animation to a still frame).
+const flagshipGifSrc = '/proof/flagship-18of21.gif';
+const flagshipGifW = 1568;
+const flagshipGifH = 763;
 
 const steps = [
   {
@@ -76,18 +83,26 @@ const rails = [
       minutes. Nothing phones home.
     </p>
 
-    <!-- Hero: the money shot -->
-    <figure data-animate class="mt-8 overflow-hidden rounded-2xl border border-border bg-surface-raised">
-      <Image
-        src={moneyShot}
-        alt="The Orionfold Proof cockpit after a run: the recommended winner, the leaderboard, and the failure cases all on one screen."
-        widths={[720, 1080, 1440]}
-        sizes="(min-width: 1024px) 1024px, 100vw"
-        loading="lazy"
-        decoding="async"
-        class="h-auto w-full"
-      />
-      <figcaption class="border-t border-border px-5 py-3 text-xs text-text-dim">
+    <!-- Hero: the money shot (DS .of-showcase + browser-frame chrome; natural height
+         so the ~1:1 cockpit shows in full — cover-cropping would hide the leaderboard) -->
+    <figure data-animate data-treatment="natural" class="of-showcase mt-8">
+      <div class="of-frame">
+        <div class="of-frame-bar">
+          <span class="of-frame-dots"><i></i><i></i><i></i></span>
+          <span class="of-frame-label">Orionfold Proof — cockpit</span>
+        </div>
+        <div class="of-shot">
+          <Image
+            src={moneyShot}
+            alt="The Orionfold Proof cockpit after a run: the recommended winner, the leaderboard, and the failure cases all on one screen."
+            widths={[720, 1080, 1440]}
+            sizes="(min-width: 1024px) 1024px, 100vw"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+      <figcaption class="of-showcase-cap">
         One screen, the whole proof: the recommended winner, the leaderboard with cost and speed, and
         every failure case.
       </figcaption>
@@ -160,17 +175,24 @@ const rails = [
         <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-primary">50c38b0b7439</code>.
       </p>
 
-      <figure data-animate class="mt-6 overflow-hidden rounded-2xl border border-border bg-surface">
-        <img
-          src={flagshipGif.src}
-          width={flagshipGif.width}
-          height={flagshipGif.height}
-          alt="The full Orionfold Proof workflow: configure the Advisor governance bench, run 21 rows locally, and reach an 18 of 21 result."
-          loading="lazy"
-          decoding="async"
-          class="h-auto w-full"
-        />
-        <figcaption class="border-t border-border px-5 py-3 text-xs text-text-dim">
+      <figure data-animate data-treatment="natural" class="of-showcase mt-6">
+        <div class="of-frame">
+          <div class="of-frame-bar">
+            <span class="of-frame-dots"><i></i><i></i><i></i></span>
+            <span class="of-frame-label">Orionfold Proof — the run, end to end</span>
+          </div>
+          <div class="of-shot">
+            <img
+              src={flagshipGifSrc}
+              width={flagshipGifW}
+              height={flagshipGifH}
+              alt="The full Orionfold Proof workflow: configure the Advisor governance bench, run 21 rows locally, and reach an 18 of 21 result."
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+        <figcaption class="of-showcase-cap">
           The whole run in one take: configure, generate all 21 rows locally, reach 18 of 21.
         </figcaption>
       </figure>
@@ -181,20 +203,26 @@ const rails = [
         trust.
       </p>
 
-      <!-- The full results page (a tall full-page capture): show it framed + scrollable -->
-      <figure data-animate class="mt-6">
-        <div class="max-h-[28rem] overflow-y-auto rounded-2xl border border-border bg-surface">
-          <Image
-            src={flagshipResults}
-            alt="The full Orionfold Proof results page: the recommended 18 of 21 verdict, the leaderboard with tokens per second and zero cost, the run cost ledger, and the three honest failure cases with per-check detail."
-            widths={[480, 720, 960]}
-            sizes="(min-width: 1024px) 960px, 100vw"
-            loading="lazy"
-            decoding="async"
-            class="h-auto w-full"
-          />
+      <!-- The full results page (a tall 1:2.2 full-page capture): DS .of-showcase[scroll]
+           — browser-frame chrome + scrolls in place + a soft "more below" fade, never an overlay -->
+      <figure data-animate data-treatment="scroll" class="of-showcase mt-6">
+        <div class="of-frame">
+          <div class="of-frame-bar">
+            <span class="of-frame-dots"><i></i><i></i><i></i></span>
+            <span class="of-frame-label">Orionfold Proof — full results</span>
+          </div>
+          <div class="of-shot">
+            <Image
+              src={flagshipResults}
+              alt="The full Orionfold Proof results page: the recommended 18 of 21 verdict, the leaderboard with tokens per second and zero cost, the run cost ledger, and the three honest failure cases with per-check detail."
+              widths={[480, 720, 960]}
+              sizes="(min-width: 1024px) 960px, 100vw"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
         </div>
-        <figcaption class="mt-2 text-xs text-text-dim">
+        <figcaption class="of-showcase-cap">
           The full results page: the recommended verdict, the leaderboard, the cost ledger, and the
           three honest misses laid out check by check. Scroll inside the frame to read it all.
         </figcaption>
