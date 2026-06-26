@@ -1,38 +1,15 @@
 ---
 // Post-confirmation landing UI. The confirm-email edge function redirects to
 // /?confirmed=1 (success) | =already | =error&error=... Two render paths:
-//   • success (=1)  -> a prominent full-width welcome BAR in normal flow that
-//     reflows the hero down, is session-persistent (survives the URL clean +
-//     reloads via sessionStorage), and drives the next action toward /proof/.
-//   • already/error -> the original small floating TOAST (one-shot ack).
-// Mounted once on the homepage (index.astro, between Nav and main), which is
-// where the confirm link lands. Capture itself lives on /story (StorySubscribe).
+//   • success (=1)  -> a prominent welcome BAR pinned inside the fixed nav-wrapper
+//     (the bar's MARKUP lives in Nav.astro so it joins the pinned overlay and the
+//     hero's nav-clearance adjusts for it). It's session-persistent (survives the
+//     URL clean + reloads via sessionStorage) and drives the next step to /proof/.
+//     This component owns the controller script that reveals/dismisses it by id.
+//   • already/error -> the small floating TOAST below (one-shot ack), rendered here.
+// Mounted once on the homepage (index.astro), which is where the confirm link lands.
+// Capture itself lives on /story (StorySubscribe).
 ---
-<!-- SUCCESS BAR (=1): normal flow, pushes page down, session-persistent -->
-<div id="confirm-bar" role="status" aria-live="polite" class="hidden border-b border-accent/30 bg-surface-raised">
-  <div class="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3 sm:px-6">
-    <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-accent text-accent-text" aria-hidden="true">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
-    </span>
-    <p class="flex-1 text-sm leading-snug text-text">
-      <span class="font-semibold">You're in.</span> Welcome to the real build log.
-    </p>
-    <a
-      id="confirm-bar-cta"
-      href="/proof/"
-      class="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-sm font-semibold text-accent-text transition-colors hover:bg-accent-hover"
-    >See the proof →</a>
-    <button
-      id="confirm-bar-close"
-      type="button"
-      aria-label="Dismiss"
-      class="-mr-1 shrink-0 cursor-pointer rounded p-1 text-text-dim transition-colors hover:text-text"
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
-    </button>
-  </div>
-</div>
-
 <!-- TOAST (already/error): floating, one-shot ack (unchanged behavior) -->
 <div
   id="confirm-toast"
