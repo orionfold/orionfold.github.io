@@ -1,66 +1,112 @@
 ---
-// Post-confirmation banner (H3). The confirm-email edge function redirects to
-// /?confirmed=1 (or =already / =error&error=...). H1 removed the homepage form
-// that used to surface that state (its watchConfirmed handler), so this small
-// standalone banner reads the query param, shows a short acknowledgment, cleans
-// the URL, then self-dismisses. It only renders when ?confirmed= is present, so
-// it never clutters a normal homepage visit. Capture itself lives on /story
-// (StorySubscribe); this is only the landing acknowledgment.
+// Post-confirmation landing UI. The confirm-email edge function redirects to
+// /?confirmed=1 (success) | =already | =error&error=... Two render paths:
+//   • success (=1)  -> a prominent full-width welcome BAR in normal flow that
+//     reflows the hero down, is session-persistent (survives the URL clean +
+//     reloads via sessionStorage), and drives the next action toward /proof/.
+//   • already/error -> the original small floating TOAST (one-shot ack).
+// Mounted once on the homepage (index.astro, between Nav and main), which is
+// where the confirm link lands. Capture itself lives on /story (StorySubscribe).
 ---
+<!-- SUCCESS BAR (=1): normal flow, pushes page down, session-persistent -->
+<div id="confirm-bar" role="status" aria-live="polite" class="hidden border-b border-accent/30 bg-surface-raised">
+  <div class="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3 sm:px-6">
+    <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-accent text-accent-text" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+    </span>
+    <p class="flex-1 text-sm leading-snug text-text">
+      <span class="font-semibold">You're in.</span> Welcome to the real build log.
+    </p>
+    <a
+      id="confirm-bar-cta"
+      href="/proof/"
+      class="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-sm font-semibold text-accent-text transition-colors hover:bg-accent-hover"
+    >See the proof →</a>
+    <button
+      id="confirm-bar-close"
+      type="button"
+      aria-label="Dismiss"
+      class="-mr-1 shrink-0 cursor-pointer rounded p-1 text-text-dim transition-colors hover:text-text"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+    </button>
+  </div>
+</div>
+
+<!-- TOAST (already/error): floating, one-shot ack (unchanged behavior) -->
 <div
-  id="confirm-banner"
+  id="confirm-toast"
   role="status"
   aria-live="polite"
   class="fixed inset-x-0 top-20 z-50 mx-auto hidden w-[calc(100%-2rem)] max-w-md px-0"
 >
   <div class="flex items-start gap-3 rounded-xl border border-primary/30 bg-surface-raised px-4 py-3 shadow-lg">
-    <span id="confirm-banner-dot" class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary"></span>
-    <p id="confirm-banner-text" class="flex-1 font-mono text-xs leading-relaxed text-text"></p>
+    <span id="confirm-toast-dot" class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary"></span>
+    <p id="confirm-toast-text" class="flex-1 font-mono text-xs leading-relaxed text-text"></p>
     <button
-      id="confirm-banner-close"
+      id="confirm-toast-close"
       type="button"
       aria-label="Dismiss"
       class="-mr-1 -mt-1 shrink-0 cursor-pointer rounded p-1 text-text-dim transition-colors hover:text-text"
     >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M18 6 6 18M6 6l12 12" />
-      </svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
     </button>
   </div>
 </div>
 
 <script>
   (function () {
-    const params = new URLSearchParams(location.search);
-    const state = params.get('confirmed');
-    if (!state) return;
+    var WELCOME = 'of-confirm-welcome';
+    var DISMISSED = 'of-confirm-welcome-dismissed';
+    var params = new URLSearchParams(location.search);
+    var state = params.get('confirmed');
 
-    const banner = document.getElementById('confirm-banner');
-    const text = document.getElementById('confirm-banner-text');
-    const dot = document.getElementById('confirm-banner-dot');
-    const close = document.getElementById('confirm-banner-close');
-    if (!banner || !text) return;
-
-    let msg = '';
-    let isError = false;
+    // --- Success bar: param OR persisted flag, unless dismissed this session ---
     if (state === '1') {
-      msg = "You're subscribed. New stories are on the way.";
-    } else if (state === 'already') {
-      msg = "You're already subscribed to our stories.";
-    } else if (state === 'error') {
-      msg = params.get('error') || "That link didn't work. Please try again.";
-      isError = true;
+      try { sessionStorage.setItem(WELCOME, '1'); } catch (e) {}
+      // Clean the URL so a reload/bookmark doesn't carry the param.
+      history.replaceState({}, '', location.pathname);
     }
-    if (!msg) return;
+    var welcome = false, dismissed = false;
+    try {
+      welcome = sessionStorage.getItem(WELCOME) === '1';
+      dismissed = sessionStorage.getItem(DISMISSED) === '1';
+    } catch (e) {}
 
-    text.textContent = msg;
-    if (isError && dot) dot.classList.replace('bg-primary', 'bg-red-500');
-    banner.classList.remove('hidden');
-    // Clean the URL so a reload doesn't re-show the banner.
-    history.replaceState({}, '', location.pathname);
+    if (welcome && !dismissed) {
+      var bar = document.getElementById('confirm-bar');
+      var barClose = document.getElementById('confirm-bar-close');
+      var barCta = document.getElementById('confirm-bar-cta');
+      if (bar) {
+        bar.classList.remove('hidden');
+        var markDismissed = function () { try { sessionStorage.setItem(DISMISSED, '1'); } catch (e) {} };
+        barClose && barClose.addEventListener('click', function () { markDismissed(); bar.classList.add('hidden'); });
+        // Taking the action also suppresses the bar on a same-session return.
+        barCta && barCta.addEventListener('click', markDismissed);
+      }
+    }
 
-    const dismiss = () => banner.classList.add('hidden');
-    close?.addEventListener('click', dismiss);
-    if (!isError) setTimeout(dismiss, 8000);
+    // --- Toast: one-shot ack for already/error (not persisted) ---
+    if (state === 'already' || state === 'error') {
+      var toast = document.getElementById('confirm-toast');
+      var text = document.getElementById('confirm-toast-text');
+      var dot = document.getElementById('confirm-toast-dot');
+      var toastClose = document.getElementById('confirm-toast-close');
+      if (toast && text) {
+        var msg = '', isError = false;
+        if (state === 'already') {
+          msg = "You're already subscribed to our stories.";
+        } else {
+          msg = params.get('error') || "That link didn't work. Please try again.";
+          isError = true;
+        }
+        text.textContent = msg;
+        if (isError && dot) dot.classList.replace('bg-primary', 'bg-red-500');
+        toast.classList.remove('hidden');
+        var hide = function () { toast.classList.add('hidden'); };
+        toastClose && toastClose.addEventListener('click', hide);
+        if (!isError) setTimeout(hide, 8000);
+      }
+    }
   })();
 </script>
