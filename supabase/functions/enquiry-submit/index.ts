@@ -183,7 +183,7 @@ Sent from https://orionfold.com/roadmap
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Orionfold Studio <manav@updates.orionfold.com>",
+      from: "Orionfold <manav@updates.orionfold.com>",
       reply_to: opts.email,
       to: ["manav@orionfold.com"],
       subject: `New enquiry: ${opts.name || opts.email}`,

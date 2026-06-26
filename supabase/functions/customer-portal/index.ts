@@ -54,7 +54,7 @@ async function emailPortalLink(email: string, url: string): Promise<void> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Orionfold Studio <manav@updates.orionfold.com>",
+      from: "Orionfold <manav@updates.orionfold.com>",
       reply_to: "manav@orionfold.com",
       to: [email],
       subject: "Manage your Orionfold sponsorship",

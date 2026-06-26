@@ -447,7 +447,7 @@ async function sendLicenseEmail(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Orionfold Studio <manav@updates.orionfold.com>",
+      from: "Orionfold <manav@updates.orionfold.com>",
       reply_to: "manav@orionfold.com",
       to: [email],
       subject: `Your ${productLabel} license (${licenseId})`,
@@ -634,7 +634,7 @@ async function sendBookEmail(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Orionfold Studio <manav@updates.orionfold.com>",
+      from: "Orionfold <manav@updates.orionfold.com>",
       reply_to: "manav@orionfold.com",
       to: [email],
       subject: `Your copy of ${bookLabel} is ready`,
