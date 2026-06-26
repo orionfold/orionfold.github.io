@@ -5,7 +5,10 @@
 // Two behaviours in one component:
 //   1. Submit  — POSTs { email, website (honeypot), source } to the live
 //      Supabase edge function that runs the Resend double-opt-in funnel.
-//      DO NOT change the endpoint or payload shape — the funnel is live.
+//      The payload is EVOLVABLE: the edge fn validates a known core (Zod) and
+//      routes unknown extra fields into a metadata JSONB column, so adding a new
+//      field here never breaks a deployed page and needs no fn redeploy.
+//      See docs/superpowers/specs/2026-06-26-a6-reusable-offer-slot-design.md.
 //   2. watchConfirmed — when true, the script reads the `?confirmed=` query
 //      param the confirm-email edge function redirects back to and surfaces
 //      the result in this form's own success/error slots, then cleans the URL.
@@ -21,6 +24,8 @@ interface Props {
   successMessage?: string;
   iconOnly?: boolean;
   watchConfirmed?: boolean;
+  offer?: string;
+  consentText?: string;
 }
 
 const {
@@ -31,6 +36,8 @@ const {
   successMessage = 'Check your inbox to confirm.',
   iconOnly = false,
   watchConfirmed = false,
+  offer = '',
+  consentText = '',
 } = Astro.props;
 const formId = `form-${id}`;
 const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
@@ -111,7 +118,7 @@ const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
   </div>
 </form>
 
-<script define:vars={{ formId, source, successMessage, watchConfirmed }}>
+<script define:vars={{ formId, source, successMessage, watchConfirmed, offer, consentText }}>
   (function () {
     const form = document.getElementById(formId);
     if (!form) return;
@@ -170,14 +177,25 @@ const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
       }
 
       try {
+        const params = new URLSearchParams(location.search);
+        const utm = {};
+        for (const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']) {
+          const v = params.get(k);
+          if (v) utm[k] = v;
+        }
+        const payload = {
+          email,
+          website: honeypot.value,
+          source,
+          referrer: document.referrer || undefined,
+          ...(offer ? { offer } : {}),
+          ...(consentText ? { consent_text: consentText } : {}),
+          ...utm,
+        };
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            website: honeypot.value,
-            source,
-          }),
+          body: JSON.stringify(payload),
         });
 
         const data = await res.json().catch(() => ({}));
