@@ -13,7 +13,7 @@ import ProofProduct from '../components/sections/ProofProduct.astro';
 import ProofBox from '../components/product/ProofBox.astro';
 import OfferSlot from '../components/ui/OfferSlot.astro';
 import { getCollection } from 'astro:content';
-import { receipts, myths } from '../data/proof';
+import { receipts, myths, receiptHref } from '../data/proof';
 import { SITE, PERSON } from '../data/seo';
 import { PROOF } from '../data/commerce';
 import { ogMeta } from '../data/og';
@@ -153,7 +153,7 @@ const proofStories = (await getCollection('story'))
         <p class="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The numbers that pop</p>
         <div class="grid gap-4 sm:grid-cols-2" data-animate-stagger>
           {receipts.map((r) => (
-            <a href={r.href} data-animate class="of-surface of-pressable group flex flex-col rounded-2xl p-6">
+            <a href={receiptHref(r.receipt) ?? r.href} data-animate class="of-surface of-pressable group flex flex-col rounded-2xl p-6">
               <div class="flex items-baseline justify-between gap-3">
                 <span class="font-display text-3xl leading-none text-primary">{r.metric}</span>
                 <span class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-text-dim">{r.label}</span>
