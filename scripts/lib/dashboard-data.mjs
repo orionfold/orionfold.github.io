@@ -7,8 +7,15 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { basename, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { METRICS_DIR } from './metrics.mjs';
+import { SITES, DEFAULT_SITE } from './sites.mjs';
 
-// ── load every snapshot, grouped by source, sorted oldest→newest ────────────
+// All known site keys — used to split an optional `-<site>` segment off the
+// filename. Our own tooling writes bare names for the default site (a bare file
+// resolves to the default site below), but the default key is included here too
+// so a hand-dropped `<source>-orionfold-<date>.json` still parses correctly.
+const SITE_KEYS = SITES.map((s) => s.key);
+
+// ── load every snapshot, grouped by source, tagged with site, oldest→newest ──
 function loadSnapshots() {
   let names = [];
   try {
@@ -16,23 +23,33 @@ function loadSnapshots() {
   } catch {
     return {};
   }
+  // Optional middle segment: only a KNOWN non-default site key splits off, so a
+  // hyphenated source name (e.g. `metrics-index`) is never mis-split.
+  const siteAlt = SITE_KEYS.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const re = new RegExp(`^(.+?)(?:-(${siteAlt}))?-(\\d{4}-\\d{2}-\\d{2})\\.json$`);
   const bySource = {};
   for (const name of names) {
-    const m = name.match(/^(.+)-(\d{4}-\d{2}-\d{2})\.json$/);
+    const m = name.match(re);
     if (!m) continue;
-    const [, source, date] = m;
+    const [, source, siteSeg, date] = m;
+    const site = siteSeg || DEFAULT_SITE.key;
     let data;
     try {
       data = JSON.parse(readFileSync(resolve(METRICS_DIR, name), 'utf8'));
     } catch {
       continue;
     }
-    (bySource[source] ||= []).push({ date, data });
+    (bySource[source] ||= []).push({ date, site, data });
   }
   for (const source of Object.keys(bySource)) {
     bySource[source].sort((a, b) => a.date.localeCompare(b.date));
   }
   return bySource;
+}
+
+// Test seam: lets the data self-check exercise the real loader.
+export function loadSnapshotsForTest() {
+  return loadSnapshots();
 }
 
 // ── CI / deploy status via gh CLI — cached 5 min so the 15s poll path stays
