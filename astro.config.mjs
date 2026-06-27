@@ -157,6 +157,14 @@ export default defineConfig({
         if (url === 'https://orionfold.com/proof/') {
           return { ...item, changefreq: 'weekly', priority: 0.9, lastmod };
         }
+        // Receipts (A11): the gallery hub sits just under /proof/; each receipt
+        // permalink is fresh, indexable evidence in its own right.
+        if (url === 'https://orionfold.com/receipts/') {
+          return { ...item, changefreq: 'weekly', priority: 0.8, lastmod };
+        }
+        if (url.startsWith('https://orionfold.com/receipts/')) {
+          return { ...item, changefreq: 'weekly', priority: 0.7, lastmod };
+        }
         if (url.includes('/story/')) {
           return { ...item, changefreq: 'weekly', priority: 0.7, lastmod };
         }
