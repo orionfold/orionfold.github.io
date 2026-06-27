@@ -27,6 +27,7 @@ import OfferSlot from '../components/ui/OfferSlot.astro';
 import ResourcesFooter from '../components/product/ResourcesFooter.astro';
 import { getCatalogItem, formatUsd, FIELD_EDITION } from '../data/commerce';
 import { ARENA_FIELD_EDITION_LIVE } from '../data/launch';
+import { receiptForProduct } from '../data/proof';
 import { SITE, PERSON, PUBLISHER } from '../data/seo';
 import { ogPath, productOgSlug } from '../data/og';
 import type { ProductView, RelatedItem } from '../lib/product/detail';
@@ -44,6 +45,10 @@ interface Props {
   hasCast?: boolean;
 }
 const { view, detail, hero, related, trustStats = [], hasBody, hasCast = false } = Astro.props;
+
+// A18: resolve a clean 1:1 receipt deep-link for this product. Returns undefined
+// when the product has zero or multiple distinct star receipts (falls back to /proof/).
+const receiptSlug = receiptForProduct(view.type, view.slug);
 
 // Book price (display only; CATALOG is the SSOT) for the hero + sticky CTA.
 const item = view.lookupKey ? getCatalogItem(view.lookupKey) : undefined;
@@ -289,7 +294,7 @@ const jsonLd = [productSchema, breadcrumbSchema, ...(fieldEditionSchema ? [field
     )}
 
     {(view.type === 'software' || view.type === 'model' || view.type === 'book') && (
-      <ProofCta type={view.type} slug={view.slug} />
+      <ProofCta type={view.type} slug={view.slug} receipt={receiptSlug} />
     )}
 
     <RelatedRail models={internalModels} book={internalBook} reading={internalReading} />

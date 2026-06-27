@@ -71,6 +71,28 @@ export function rowReceiptSlug(row: MatrixRow): string | undefined {
   return row.cells.find((c) => c.mark === 'star' && c.receipt)?.receipt;
 }
 
+// A18: the receipt a product's detail page deep-links to. Honest 1:1 only:
+// a product earns a deep-link when its matrix column has exactly ONE distinct
+// star receipt. Zero or many -> undefined (caller falls back to /proof/).
+// Computed from the matrix so it auto-corrects as columns are earned/changed;
+// never hand-asserted (receipt-honesty).
+export function receiptForProduct(
+  type: 'software' | 'model' | 'book',
+  slug: string,
+): string | undefined {
+  if (type === 'book') return undefined;
+  const base = type === 'software' ? 'software' : 'models';
+  const path = `/${base}/${slug}/`;
+  const idx = cols.findIndex((c) => c.ours && c.href === path);
+  if (idx === -1) return undefined;
+  const receipts = new Set<string>();
+  for (const row of matrix) {
+    const cell = row.cells[idx];
+    if (cell && cell.mark === 'star' && cell.receipt) receipts.add(cell.receipt);
+  }
+  return receipts.size === 1 ? [...receipts][0] : undefined;
+}
+
 // How to read a mark:
 //   star   = we proved it on a locked test, and you can rerun it
 //   strong = yes, strong
