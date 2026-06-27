@@ -6,18 +6,26 @@
 // proof catalog. The heavy 3D mini-hero (story/ProofCTA.astro) stays for
 // mid-article Proof-tagged placement; this is the lightweight universal close.
 // Voice: grade 3-5, no em-dashes, no invented claims (website-copy-style).
+import { receiptHref } from '../../data/proof.ts';
+
 interface Props {
   eyebrow?: string;
   line?: string;
   linkText?: string;
+  // A11: when a specific receipt fits this placement, deep-link to
+  // /receipts/<receipt>/ instead of /proof/ top. Absent -> /proof/ (default).
+  // receiptHref is a pure path helper, so this stays decoupled from the catalog.
+  receipt?: string;
   class?: string;
 }
 const {
   eyebrow = 'Every claim has a receipt',
   line = 'See how the models we trust earn it. Every claim on Proof comes with a test you can rerun.',
   linkText = 'See the receipts',
+  receipt,
   class: className,
 } = Astro.props;
+const proofTarget = receiptHref(receipt) ?? '/proof/';
 ---
 <section class:list={['border-y border-border bg-surface-raised px-6 py-10', className]}>
   <div data-animate class="mx-auto flex max-w-3xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -26,7 +34,7 @@ const {
       <p class="mt-2 max-w-xl text-text-muted">{line}</p>
     </div>
     <a
-      href="/proof/"
+      href={proofTarget}
       class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
     >
       {linkText}

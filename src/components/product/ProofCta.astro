@@ -5,14 +5,18 @@
 // confident "rerun it" copy; everything else gets a softer "see the receipts"
 // line. Both land at /proof/ top for now (A11 will give receipts their own URLs).
 // Voice: grade 3-5, no em-dashes, no invented per-product claims (website-copy-style).
-import { isProvenProduct } from '../../data/proof.ts';
+import { isProvenProduct, receiptHref } from '../../data/proof.ts';
 
 interface Props {
   type: 'software' | 'model' | 'book';
   slug: string;
+  // A11: when this product has a directly-relevant receipt, deep-link the band
+  // to /receipts/<receipt>/ instead of /proof/ top. Absent -> /proof/ (default).
+  receipt?: string;
 }
-const { type, slug } = Astro.props;
+const { type, slug, receipt } = Astro.props;
 const proven = isProvenProduct(type, slug);
+const proofTarget = receiptHref(receipt) ?? '/proof/';
 
 const eyebrow = proven ? 'Proved on a locked test' : 'Every claim has a receipt';
 const line = proven
@@ -27,7 +31,7 @@ const linkText = proven ? 'See it on Proof' : 'See the receipts';
       <p class="mt-2 max-w-xl text-text-muted">{line}</p>
     </div>
     <a
-      href="/proof/"
+      href={proofTarget}
       class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
     >
       {linkText}
