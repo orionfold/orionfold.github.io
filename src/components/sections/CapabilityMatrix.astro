@@ -67,11 +67,14 @@ const meaning: Record<Mark, string> = {
     <!-- Left: the matrix (left-aligned for readability). Right: the hover taster
          that fills the freed space. They sit side by side on wide screens; the
          taster drops below on small screens. -->
-    <div data-matrix-grid class="mt-4 flex flex-col gap-6 lg:items-start">
-      <!-- The matrix (DS .of-table.sticky-col.matrix). Scrolls sideways on small
-           screens; the capability column is sticky so the labels stay put. -->
-      <div class="min-w-0 lg:flex-1">
-        <table class="of-table sticky-col matrix" style="min-width:30rem;">
+    <div data-matrix-grid class="mt-4 flex flex-col gap-6 lg:flex-row lg:items-stretch lg:justify-between">
+      <!-- The matrix (DS .of-table.sticky-col.matrix). The wrapper shrink-wraps
+           to the table's content width, so it narrows in "ours" (3 cols) and
+           widens in "all" (6 cols); the taster beside it slides with that edge.
+           On small screens the table scrolls sideways inside its own box and the
+           sticky capability column keeps the labels put. -->
+      <div data-table-wrap class="min-w-0 max-w-full overflow-x-auto lg:overflow-visible">
+        <table class="of-table sticky-col matrix">
           <thead>
             <tr>
               <th scope="col">What it can do</th>
@@ -117,16 +120,15 @@ const meaning: Record<Mark, string> = {
             })}
           </tbody>
         </table>
-        <p class="mt-3 text-xs leading-relaxed text-text-dim">
-          Base-model marks (Qwen3, Llama, DeepSeek-R1) are general, vendor-documented capability, not our measurement. Only the <span class="mark mark-star">★</span> cells come with a frozen test anyone can rerun.
-        </p>
       </div>
 
-      <!-- The taster rail. Sticky on wide screens so it tracks as you scan rows.
-           Two faces, swapped by JS: the receipt preview (ours view) and the
-           vendor-claimed note (all view). The idle face invites the hover. -->
-      <aside data-taster class="lg:sticky lg:top-24">
-        <div class="of-surface rounded-2xl p-5 min-h-[11rem] flex flex-col justify-center">
+      <!-- The taster rail. Fixed width, height matched to the table (the flex row
+           stretches it), so it never changes size as you toggle views; only the
+           table changes width and the panel's left edge tracks the table's right
+           edge (eased, see CSS). Two faces, swapped by JS: receipt preview +
+           vendor-claimed note; the idle face invites the hover. -->
+      <aside data-taster class="lg:w-72 lg:shrink-0">
+        <div class="of-surface rounded-2xl p-5 h-full flex flex-col justify-center overflow-hidden">
           <!-- Idle -->
           <div data-taster-face="idle">
             <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-text-dim">The receipt</p>
@@ -151,6 +153,13 @@ const meaning: Record<Mark, string> = {
         </div>
       </aside>
     </div>
+
+    <!-- Caption sits below the whole grid (not inside the table wrapper) so the
+         wrapper's height equals the table's, and the taster stretches to exactly
+         the table height. -->
+    <p class="mt-3 text-xs leading-relaxed text-text-dim">
+      Base-model marks (Qwen3, Llama, DeepSeek-R1) are general, vendor-documented capability, not our measurement. Only the <span class="mark mark-star">★</span> cells come with a frozen test anyone can rerun.
+    </p>
 
     <!-- Speed: a model on your own desk, keeping pace with the big hosted ones -->
     <div class="mt-10 of-surface rounded-2xl p-6 sm:p-7">
@@ -209,21 +218,42 @@ const meaning: Record<Mark, string> = {
   }
   .mark-star { display: inline-block; transition: transform 150ms ease, filter 150ms ease; }
 
-  /* Progressive disclosure: hide the base-model columns until the reader asks. */
-  [data-matrix][data-view='ours'] [data-base] { display: none; }
-
-  /* Layout: in "ours" view (3 narrow columns) the table is compact, so the
-     taster sits beside it on the right and fills the freed space. In "all" view
-     (6 columns) the table needs the full width, so the taster drops below as a
-     full-width strip. Mobile always stacks. */
+  /* Layout: the table wrapper shrink-wraps to the table's content width (does
+     NOT stretch), so the table is narrow in "ours" (3 cols) and wide in "all"
+     (6 cols). The taster keeps a fixed width + height beside it, so its left
+     edge tracks the table's right edge — it "slides" as the table resizes. */
+  /* The invariant: (table content width) + (gap) + (panel 18rem) = the section's
+     max-w-6xl rail. The row is justify-between, so the panel is anchored flush to
+     the right edge (aligned with the legend/speed cards) and never moves or
+     resizes; the table shrink-wraps on the left. The free space between them is
+     the gap, which EASES open in "ours" (narrow table) and closed in "all" (wide
+     table, the columns animate in). The lg:gap-6 is the minimum gap in all view. */
   @media (min-width: 1024px) {
-    [data-matrix][data-view='ours'] [data-matrix-grid] { flex-direction: row; }
-    [data-matrix][data-view='ours'] [data-matrix-grid] > div:first-child { flex: 1 1 auto; min-width: 0; }
-    [data-matrix][data-view='ours'] [data-taster] { width: 18rem; flex: 0 0 18rem; }
+    [data-matrix] [data-table-wrap] { flex: 0 1 auto; width: max-content; min-width: 0; max-width: calc(100% - 18rem - 1.5rem); }
+    [data-matrix] [data-table-wrap] > .of-table.matrix { width: max-content; min-width: 0; }
+    [data-matrix] [data-taster] { flex: 0 0 18rem; }
+  }
 
-    [data-matrix][data-view='all'] [data-matrix-grid] { flex-direction: column; }
-    [data-matrix][data-view='all'] [data-taster] { position: static; width: 100%; }
-    [data-matrix][data-view='all'] [data-taster] .of-surface { min-height: 0; }
+  /* Progressive disclosure with an eased resize: instead of display:none (which
+     reflows instantly and makes the panel jump), the base-model columns animate
+     their width to 0 + fade out. The table's total width then changes smoothly,
+     and the taster beside it slides with it. content-visibility keeps the
+     collapsed cells out of the a11y/scroll flow once hidden. */
+  .of-table.matrix [data-base] {
+    transition: max-width 320ms ease, padding 320ms ease, opacity 200ms ease;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  [data-matrix][data-view='ours'] .of-table.matrix [data-base] {
+    max-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  [data-matrix][data-view='all'] .of-table.matrix [data-base] {
+    max-width: 8rem;
+    opacity: 1;
   }
 
   /* In "all" view the receipt-hover hint is less central (base cols have no
