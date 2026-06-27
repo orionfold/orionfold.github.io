@@ -105,6 +105,17 @@ const howToSchema = {
 const proofStories = (await getCollection('story'))
   .filter((s) => s.data.tags.includes('Proof'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Taster map for the capability matrix's hover panel: receipt slug -> the
+// metric + one-line claim shown in the right-side taster. Read here from the
+// receipts collection so CapabilityMatrix stays decoupled from the content
+// layer (it gets a plain map prop, no getCollection inside the component).
+const receiptTasters = Object.fromEntries(
+  (await getCollection('receipts')).map((r) => [
+    r.id,
+    { metric: r.data.metric, claim: r.data.claim },
+  ]),
+);
 ---
 <Layout
   title="Receipts · Orionfold"
@@ -142,7 +153,7 @@ const proofStories = (await getCollection('story'))
     />
 
     <!-- The signature WOW: the capability matrix + speed -->
-    <CapabilityMatrix />
+    <CapabilityMatrix tasters={receiptTasters} />
 
     <!-- What Orionfold Proof is: the product behind the receipts -->
     <ProofProduct />

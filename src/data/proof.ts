@@ -63,6 +63,14 @@ export function receiptHref(slug?: string): string | undefined {
   return slug ? `/receipts/${slug}/` : undefined;
 }
 
+// The receipt a whole row points at (UI: the row is clickable, the taster reads
+// off it). A row's star cells that share a frozen test already carry the SAME
+// receipt slug, so the first star with a receipt IS the row's receipt. A row
+// with no starred receipt returns undefined and renders inert (not clickable).
+export function rowReceiptSlug(row: MatrixRow): string | undefined {
+  return row.cells.find((c) => c.mark === 'star' && c.receipt)?.receipt;
+}
+
 // How to read a mark:
 //   star   = we proved it on a locked test, and you can rerun it
 //   strong = yes, strong
