@@ -50,6 +50,13 @@ const PROOF_CTA = {
     description: 'Every run writes a signed receipt with a config hash, so anyone can rerun it and confirm they ran the same thing. A benchmark you can hand over, not a screenshot.',
     ctaText: 'See the receipts',
   },
+  'the-fix-that-changed-the-leaderboard': {
+    thumb: proofPoster,
+    thumbAlt: POSTER_ALT,
+    title: 'Orionfold Proof',
+    description: 'The tool that found these two cost-and-leak bugs in its own scorer and reran the corrected bench. Point it at your own task, run any model local or cloud, and get a signed receipt that does not flatter anyone.',
+    ctaText: 'Run an honest bench',
+  },
 } as const;
 
 export async function getStaticPaths() {
