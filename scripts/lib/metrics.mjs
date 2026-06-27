@@ -6,6 +6,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { metricSiteSegment } from './sites.mjs';
 
 // Minimal .env.local loader: only fills keys not already in the environment, so
 // an ambient env var (e.g. one a CI runner injects) always wins. Quotes are
@@ -32,11 +33,14 @@ export function today() {
 
 export const METRICS_DIR = resolve(process.cwd(), 'audit-reports/metrics');
 
-// Write audit-reports/metrics/<source>-<date>.json (one snapshot per source per
-// day; reruns overwrite the same day's file). Returns the path written.
-export function writeMetric(source, data) {
+// Write audit-reports/metrics/<source>[-<site>]-<date>.json (one snapshot per
+// source per site per day; reruns overwrite the same day's file). The default
+// site (orionfold) gets the bare `<source>-<date>.json` name — no migration,
+// existing trends stay continuous. Returns the path written.
+export function writeMetric(source, data, siteKey) {
   mkdirSync(METRICS_DIR, { recursive: true });
-  const outPath = resolve(METRICS_DIR, `${source}-${today()}.json`);
+  const seg = siteKey ? metricSiteSegment(siteKey) : '';
+  const outPath = resolve(METRICS_DIR, `${source}${seg}-${today()}.json`);
   writeFileSync(outPath, JSON.stringify(data, null, 2) + '\n');
   return outPath;
 }
