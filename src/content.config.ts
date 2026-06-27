@@ -180,4 +180,40 @@ const letters = defineCollection({
     }),
 });
 
-export const collections = { story, productDetail, letters };
+// Receipts (A11) — the individually-URL'd evidence gallery. Each entry is one
+// checkable claim with a rich explainer body: the test we locked, the run, and
+// how anyone reruns it. Mirrors the `letters` glob-loader idiom; the filename
+// stem is the URL slug (4b-out-trusts-30b.md -> /receipts/4b-out-trusts-30b/).
+// src/data/proof.ts stays the source of truth for the /proof/ overview; a
+// receipt only ADDS a deep-link target via its slug. Voice: grade 3-5, no
+// em-dashes, honest caveats kept (website-copy-style + receipt-honesty).
+const receipts = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/receipts' }),
+  schema: ({ image }) =>
+    z.object({
+      // Page + card title, e.g. "A 4B model out-trusts a 30B".
+      title: z.string(),
+      // The number that pops, shown as the card's big metric, e.g. "4B beats 30B".
+      metric: z.string(),
+      // The one-line claim this receipt proves.
+      claim: z.string(),
+      // One-line standfirst, used as the meta description + card dek.
+      dek: z.string(),
+      date: z.coerce.date(),
+      tags: z.array(z.string()).default([]),
+      // Optional curated hero (src/assets/receipts/<id>/hero.* by convention so
+      // the OG endpoint can find it); absent -> seeded constellation OG.
+      hero: image().optional(),
+      heroAlt: z.string().optional(),
+      // Stable keys of the proof.ts entities this receipt backs (for back-links
+      // + a future sanity check): matrix cells as "matrix:<capability-slug>:<col>",
+      // headlines as "headline:<metric-slug>".
+      relatedTo: z.array(z.string()).default([]),
+      // Where the work lives: field-note story, model page, /dgx-spark/, etc.
+      source: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
+      // The rerun recipe: how a reader reproduces the result.
+      verify: z.string().optional(),
+    }),
+});
+
+export const collections = { story, productDetail, letters, receipts };
