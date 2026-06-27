@@ -169,6 +169,11 @@ export const storyOgSlug = (id: string) => `story-${id}`;
 // (slug 'letter') or any other route. The OG endpoint emits /og/letter-<id>.jpg.
 export const letterOgSlug = (id: string) => `letter-${id}`;
 
+// OG card slug for a single receipt (A11). Namespaced like story-<id> /
+// letter-<id> so a receipt card can't collide with the static '/receipts/'
+// index card or any other route. The OG endpoint emits /og/receipt-<id>.jpg.
+export const receiptOgSlug = (id: string) => `receipt-${id}`;
+
 // OG card slug for a product detail page (P8). Namespaced by type so a model
 // slug (slugify(title)) can't collide with a software/book slug, and so none of
 // these collide with the static-page slugs above or with story-<id>. The detail
