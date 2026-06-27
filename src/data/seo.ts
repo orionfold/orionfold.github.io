@@ -6,7 +6,7 @@ export const SITE = {
   name: 'Orionfold',
   url: 'https://orionfold.com',
   description:
-    'Orionfold gives small teams private AI they own: agents that do real work, models that know your field, and tests that prove it, all on hardware you control.',
+    'Run real AI on your own machine and check the receipts yourself. Prove which AI you can trust. Rerun it, never take our word for it.',
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:
