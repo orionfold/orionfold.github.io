@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { renderOgCard, type CardOptions } from '../../lib/og/card';
-import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug } from '../../data/og';
+import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug, receiptOgSlug } from '../../data/og';
 import { toProductView, coverKey } from '../../lib/product/detail';
 
 // Book detail OG cards frame the portrait cover on the left over the banner.
@@ -38,6 +38,15 @@ function heroBackground(id: string): string | undefined {
 function letterHeroBackground(id: string): string | undefined {
   for (const ext of ['png', 'jpg', 'jpeg']) {
     const p = path.join(process.cwd(), 'src/assets/letters', id, `hero.${ext}`);
+    if (fs.existsSync(p)) return p;
+  }
+  return undefined;
+}
+
+// Same convention for receipts: src/assets/receipts/<id>/hero.<ext>.
+function receiptHeroBackground(id: string): string | undefined {
+  for (const ext of ['png', 'jpg', 'jpeg']) {
+    const p = path.join(process.cwd(), 'src/assets/receipts', id, `hero.${ext}`);
     if (fs.existsSync(p)) return p;
   }
   return undefined;
@@ -90,6 +99,21 @@ export const getStaticPaths: GetStaticPaths = async () => {
     } satisfies CardOptions,
   }));
 
+  // Receipts (A11): one card per receipt, mirroring the letter cards. Background
+  // is the receipt's curated hero when present (src/assets/receipts/<id>/hero.*),
+  // otherwise the seeded constellation.
+  const receiptEntries = await getCollection('receipts');
+  const fromReceipts = receiptEntries.map((r: CollectionEntry<'receipts'>) => ({
+    params: { slug: receiptOgSlug(r.id) },
+    props: {
+      title: r.data.title,
+      eyebrow: 'Receipt',
+      seed: r.id,
+      meta: fmtDate(r.data.date),
+      backgroundPath: receiptHeroBackground(r.id),
+    } satisfies CardOptions,
+  }));
+
   // Product detail pages: each card now shows the product's own featured art.
   // Software posters + model covers are landscape, used full-bleed. Book covers are
   // portrait, so they are framed on the left over the brand banner instead.
@@ -122,7 +146,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
   });
 
-  return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts];
+  return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts, ...fromReceipts];
 };
 
 export const GET: APIRoute = async ({ props }) => {
