@@ -118,3 +118,15 @@ td .dot { margin-right: 8px }
 #tip .tip-line { font-variant-numeric: tabular-nums }
 footer { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--faint); font: 500 10.5px/1.6 var(--mono); letter-spacing: .05em; text-align: center }
 footer .mono { color: var(--mute) }
+
+/* per-site grouping (multi-site stats: orionfold + ainative) */
+.site-group { margin-bottom: 1.5rem; }
+.site-head {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin: 0.5rem 0 0.75rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}

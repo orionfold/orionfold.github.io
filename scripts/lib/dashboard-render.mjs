@@ -5,10 +5,21 @@
 
 export function renderBody(payload) {
   const snaps = payload.snaps;
-  const latest = (source) => {
-    const series = snaps[source];
-    return series && series.length ? series[series.length - 1] : null;
+  // every site that appears in any series; default site ('orionfold') first.
+  const siteSet = new Set();
+  for (const src of Object.keys(snaps)) for (const e of snaps[src]) siteSet.add(e.site || 'orionfold');
+  const siteList = [...siteSet].sort((a, b) => (a === 'orionfold' ? -1 : b === 'orionfold' ? 1 : a.localeCompare(b)));
+  if (!siteList.length) siteList.push('orionfold');
+  // latest snapshot for a source, optionally filtered to a site (default: any).
+  const latest = (source, site) => {
+    let series = snaps[source];
+    if (!series || !series.length) return null;
+    if (site) series = series.filter((s) => (s.site || 'orionfold') === site);
+    return series.length ? series[series.length - 1] : null;
   };
+  // a source's series for one site, oldest→newest (for sparkline trends).
+  const seriesFor = (source, site) =>
+    (snaps[source] || []).filter((s) => (s.site || 'orionfold') === site);
   const todayStr = payload.generatedAt.slice(0, 10);
   let sparkSeq = 0;
   let panelIndex = 0;
@@ -135,9 +146,9 @@ export function renderBody(payload) {
   }
 
   // ── Field CWV (Cloudflare RUM + CrUX) ───────────────────────────────────────
-  function fieldCwvPanel() {
-    const cf = latest('cloudflare');
-    const crux = latest('crux');
+  function fieldCwvPanel(site) {
+    const cf = latest('cloudflare', site);
+    const crux = latest('crux', site);
     // M-polish (b): while BOTH sources are known-unavailable (CrUX gates on
     // traffic volume, CF RUM is dashboard-only — not in token scope), collapse
     // the two notes into one compact row. Partial availability falls through
@@ -187,8 +198,8 @@ export function renderBody(payload) {
   }
 
   // ── Lighthouse trend (lab) ──────────────────────────────────────────────────
-  function lighthousePanel() {
-    const snap = latest('lighthouse');
+  function lighthousePanel(site) {
+    const snap = latest('lighthouse', site);
     if (!snap) return panel('Lighthouse (lab)', '', empty('No Lighthouse-CI summary yet.'), 'grey');
     const d = snap.data;
     // Freshness must track when LHCI actually MEASURED (runFetchTime), not when
@@ -201,7 +212,7 @@ export function renderBody(payload) {
     // perf trend across DISTINCT runs — snapshots that re-summarize the same
     // runFetchTime collapse to one point, so the trace never fakes stability.
     const seenRuns = new Set();
-    const runSeries = (snaps.lighthouse || []).filter((s) => {
+    const runSeries = seriesFor('lighthouse', site).filter((s) => {
       const key = s.data.runFetchTime || s.date;
       if (seenRuns.has(key)) return false;
       seenRuns.add(key);
@@ -242,8 +253,8 @@ export function renderBody(payload) {
   }
 
   // ── Cloudflare stats (edge traffic + cache) ─────────────────────────────────
-  function cloudflarePanel() {
-    const snap = latest('cloudflare');
+  function cloudflarePanel(site) {
+    const snap = latest('cloudflare', site);
     if (!snap) return panel('Cloudflare edge', '', empty('No Cloudflare snapshot yet.'), 'grey');
     const d = snap.data;
     const w = d.last24h;
@@ -349,9 +360,9 @@ export function renderBody(payload) {
   }
 
   // ── SEO / AEO health (manual GA4 + GSC drops) ───────────────────────────────
-  function seoPanel() {
-    const ga4 = latest('ga4');
-    const gsc = latest('gsc');
+  function seoPanel(site) {
+    const ga4 = latest('ga4', site);
+    const gsc = latest('gsc', site);
     if (!ga4 && !gsc) {
       return panel(
         'SEO / AEO health',
@@ -468,18 +479,32 @@ export function renderBody(payload) {
     .flatMap((s) => snaps[s].map((x) => x.date))
     .sort()
     .pop();
-  const freshnessHtml = sourcesList
-    .map((s) => {
-      const l = latest(s);
-      return `<span class="fr">${esc(s)} ${l ? ageNote(l.date) : '<span class="age stale">—</span>'}</span>`;
-    })
+  const freshnessHtml = siteList
+    .map((site) =>
+      sourcesList
+        .map((s) => {
+          // betterstack is orionfold-only; skip it for non-default sites.
+          if (s === 'betterstack' && site !== 'orionfold') return '';
+          const l = latest(s, site);
+          return `<span class="fr">${esc(site === 'orionfold' ? s : site + ':' + s)} ${l ? ageNote(l.date) : '<span class="age stale">—</span>'}</span>`;
+        })
+        .join(''),
+    )
     .join('');
   const genTs = payload.generatedAt.replace('T', ' ').slice(0, 16);
 
   return {
     metaHtml: `generated <b>${esc(genTs)}</b> utc<br>latest data <b>${esc(newestDate || 'none')}</b>`,
     freshnessHtml,
-    mainHtml: [lighthousePanel(), cloudflarePanel(), fieldCwvPanel()].join('\n      '),
-    sideHtml: [uptimePanel(), commercePanel(), ciPanel(), todosPanel(), seoPanel()].join('\n      '),
+    mainHtml: siteList
+      .map((site) => {
+        const domain = latest('cloudflare', site)?.data.domain || (site === 'orionfold' ? 'orionfold.com' : site);
+        return `<div class="site-group">
+      <h2 class="site-head">${esc(domain)}</h2>
+      ${[lighthousePanel(site), cloudflarePanel(site), fieldCwvPanel(site), seoPanel(site)].join('\n      ')}
+    </div>`;
+      })
+      .join('\n      '),
+    sideHtml: [uptimePanel(), commercePanel(), ciPanel(), todosPanel()].join('\n      '),
   };
 }
