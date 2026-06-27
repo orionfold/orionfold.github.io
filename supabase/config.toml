@@ -409,3 +409,9 @@ verify_jwt = false
 # (server-to-server, no browser caller → no CORS, verify_jwt off like ops-alert).
 [functions.admin-issue-license]
 verify_jwt = false
+
+# waitlist-export (A16): read-only CRM export for marketing's poller, gated by its
+# own WAITLIST_EXPORT_TOKEN shared credential (server-to-server, no browser caller).
+# verify_jwt off so our constant-time token check is the sole gate, like admin-issue-license.
+[functions.waitlist-export]
+verify_jwt = false
