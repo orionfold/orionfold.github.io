@@ -23,7 +23,7 @@ export const SITES = [
     key: 'ainative',
     domain: 'ainative.business',
     cfZoneId: '506ad3d8f352887fd33766b0858f41f6',
-    ga4: 'TBD-first-run', // read during the first seo-aeo-audit roundtrip, then fill in
+    ga4: 'a391868719p533699836', // account 391868719 · property 533699836 (read 2026-06-27)
     gsc: 'sc-domain:ainative.business',
     lighthouseUrl: 'https://ainative.business/',
   },
