@@ -23,6 +23,7 @@ import SponsorBlock from '../components/product/SponsorBlock.astro';
 import FieldEditionBox from '../components/product/FieldEditionBox.astro';
 import RelatedRail from '../components/product/RelatedRail.astro';
 import ProofCta from '../components/product/ProofCta.astro';
+import OfferSlot from '../components/ui/OfferSlot.astro';
 import ResourcesFooter from '../components/product/ResourcesFooter.astro';
 import { getCatalogItem, formatUsd, FIELD_EDITION } from '../data/commerce';
 import { ARENA_FIELD_EDITION_LIVE } from '../data/launch';
@@ -275,6 +276,17 @@ const jsonLd = [productSchema, breadcrumbSchema, ...(fieldEditionSchema ? [field
     {detail.fieldEdition
       ? <FieldEditionBox view={view} />
       : (view.cta === 'buy' ? <BuyBox view={view} /> : <SponsorBlock view={view} />)}
+
+    {(view.type === 'software' || view.type === 'model') && (
+      <OfferSlot
+        offer="proof-playbook"
+        label="Get the Proof playbook"
+        heading="Think a small local model can beat the frontier ones?"
+        dek="We proved it. Rerun it yourself, do not take our word for it."
+        source={`detail-${view.type}-${view.slug}`}
+        buttonText="Send me the playbook"
+      />
+    )}
 
     {(view.type === 'software' || view.type === 'model' || view.type === 'book') && (
       <ProofCta type={view.type} slug={view.slug} />

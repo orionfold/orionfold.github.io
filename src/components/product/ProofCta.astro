@@ -17,6 +17,8 @@ interface Props {
 const { type, slug, receipt } = Astro.props;
 const proven = isProvenProduct(type, slug);
 const proofTarget = receiptHref(receipt) ?? '/proof/';
+const utm = `utm_source=orionfold&utm_medium=cross-sell&utm_campaign=proof-bridge&utm_content=${type}-${slug}`;
+const proofHref = proofTarget.includes('?') ? `${proofTarget}&${utm}` : `${proofTarget}?${utm}`;
 
 const eyebrow = proven ? 'Proved on a locked test' : 'Every claim has a receipt';
 const line = proven
@@ -31,7 +33,7 @@ const linkText = proven ? 'See it on Proof' : 'See the receipts';
       <p class="mt-2 max-w-xl text-text-muted">{line}</p>
     </div>
     <a
-      href={proofTarget}
+      href={proofHref}
       class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
     >
       {linkText}
