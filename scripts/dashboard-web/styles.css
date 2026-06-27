@@ -23,7 +23,7 @@
 * { box-sizing: border-box }
 html { background: var(--canvas) }
 body { margin: 0; color: var(--ink); font: 14px/1.55 var(--sans); background: var(--canvas); -webkit-font-smoothing: antialiased }
-.wrap { max-width: 1280px; margin: 0 auto; padding: 32px 24px 64px }
+.wrap { max-width: 1600px; margin: 0 auto; padding: 32px 24px 64px }
 /* masthead */
 .top { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 12px 16px; margin: 0 -16px 16px; background: var(--surface); border-bottom: 1px solid var(--border); box-shadow: 0 4px 16px rgba(29,31,37,.08); border-radius: 0 0 12px 12px }
 .brand { display: flex; align-items: center; gap: 12px }
@@ -46,6 +46,15 @@ body { margin: 0; color: var(--ink); font: 14px/1.55 var(--sans); background: va
    min-content rows above, so panels self-size to their content. */
 .grid.packed { grid-auto-rows: 10px }
 .col { display: contents }   /* legacy wrappers become transparent to the grid */
+
+/* ── per-site masonry: orionfold left, ainative right (multi-site stats) ──
+   One dense grid. Site panels are PINNED to a half (.side-l → cols 1-6,
+   .side-r → cols 7-12); infra panels stay unpinned (span 6, auto-placed) so
+   grid-auto-flow:dense flows them up into the gap left by the shorter site
+   column — no whitespace seam. Headers span their half and force a new row so
+   each site's stack starts clean. */
+.panel.side-l { grid-column: 1 / 7 }
+.panel.side-r { grid-column: 7 / 13 }
 .panel { grid-column: span 6; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(29,31,37,.06) }
 .panel.wide { grid-column: span 12 }
 @media (max-width: 1100px) { .grid { display: flex; flex-direction: column } }
@@ -119,14 +128,20 @@ td .dot { margin-right: 8px }
 footer { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--faint); font: 500 10.5px/1.6 var(--mono); letter-spacing: .05em; text-align: center }
 footer .mono { color: var(--mute) }
 
-/* per-site grouping (multi-site stats: orionfold + ainative) */
-.site-group { margin-bottom: 1.5rem; }
+/* per-site column header band (multi-site stats: orionfold + ainative).
+   Pinned to the top grid row, one per half, so the two site titles sit level.
+   The bento packer only row-spans .panel, so a header in the 10px-row packed
+   grid is given an explicit short row-span here to clear its own height. */
 .site-head {
-  font-size: 0.95rem;
+  grid-row: 1;
+  margin: 0;
+  padding: 2px 2px 8px;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  margin: 0.5rem 0 0.75rem;
-  padding-bottom: 0.35rem;
   border-bottom: 1px solid var(--border);
   color: var(--ink);
 }
+.site-head.side-l { grid-column: 1 / 7 }
+.site-head.side-r { grid-column: 7 / 13 }
+.grid.packed .site-head { grid-row: 1 / span 2 } /* 2×10px + 14px gap = 34px: one title line, no slack */

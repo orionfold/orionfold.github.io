@@ -493,18 +493,38 @@ export function renderBody(payload) {
     .join('');
   const genTs = payload.generatedAt.replace('T', ' ').slice(0, 16);
 
+  // One column per site (orionfold left, ainative right): each is a flex stack
+  // of its own header + panels. The .sites flex row places them side by side and
+  // each .site-col stacks vertically — so panels never land in a foreign track
+  // ── single dense masonry, columns pinned by site ──
+  // One grid: orionfold panels pinned to the LEFT half (.side-l → grid cols 1-6),
+  // ainative to the RIGHT half (.side-r → cols 7-12). The infra panels stay
+  // UNPINNED so grid-auto-flow:dense flows them up into whichever column the
+  // shorter site left empty — no ragged seam / whitespace above the infra cards.
+  // Headers span their own half and force a column break (.site-head.side-l/-r).
+  const pin = (html, side) => html.replace('<section class="panel"', `<section class="panel side-${side}"`);
+  const headFor = (site, side) => {
+    const domain = latest('cloudflare', site)?.data.domain || (site === 'orionfold' ? 'orionfold.com' : site);
+    return `<h2 class="site-head side-${side}">${esc(domain)}</h2>`;
+  };
+  const sidePanels = (site, side) =>
+    [lighthousePanel(site), cloudflarePanel(site), fieldCwvPanel(site), seoPanel(site)]
+      .map((p) => pin(p, side))
+      .join('\n      ');
+
+  const leftSite = siteList[0]; // orionfold (default site is always first)
+  const rightSite = siteList[1]; // ainative (if present)
+  const mainParts = [headFor(leftSite, 'l'), sidePanels(leftSite, 'l')];
+  if (rightSite) mainParts.push(headFor(rightSite, 'r'), sidePanels(rightSite, 'r'));
+  // infra panels: unpinned → fill gaps left by the shorter site column.
+  mainParts.push(uptimePanel(), commercePanel(), ciPanel(), todosPanel());
+
   return {
     metaHtml: `generated <b>${esc(genTs)}</b> utc<br>latest data <b>${esc(newestDate || 'none')}</b>`,
     freshnessHtml,
-    mainHtml: siteList
-      .map((site) => {
-        const domain = latest('cloudflare', site)?.data.domain || (site === 'orionfold' ? 'orionfold.com' : site);
-        return `<div class="site-group">
-      <h2 class="site-head">${esc(domain)}</h2>
-      ${[lighthousePanel(site), cloudflarePanel(site), fieldCwvPanel(site), seoPanel(site)].join('\n      ')}
-    </div>`;
-      })
-      .join('\n      '),
-    sideHtml: [uptimePanel(), commercePanel(), ciPanel(), todosPanel()].join('\n      '),
+    // mainHtml = the whole masonry (site-pinned panels + gap-filling infra panels).
+    // sideHtml kept empty for back-compat with the shell's hidden #col-side mount.
+    mainHtml: mainParts.join('\n      '),
+    sideHtml: '',
   };
 }

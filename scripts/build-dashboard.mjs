@@ -28,13 +28,8 @@ const html = `<!doctype html>
     <div class="meta">${body.metaHtml}</div>
   </header>
   <div class="freshness">${body.freshnessHtml}</div>
-  <div class="grid">
-    <div class="col main">
-      ${body.mainHtml}
-    </div>
-    <div class="col side">
-      ${body.sideHtml}
-    </div>
+  <div class="grid sites-grid">
+    ${body.mainHtml}
   </div>
   <footer>local-only &middot; audit-reports/ is git-ignored &middot; refresh with <span class="mono">npm run metrics &amp;&amp; npm run dashboard</span></footer>
 </div></body></html>`;
