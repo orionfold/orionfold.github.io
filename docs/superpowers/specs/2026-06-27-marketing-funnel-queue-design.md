@@ -1,11 +1,11 @@
-# Marketing Funnel Work Queue — A16 + title-tag + A17 + A18
+# Marketing Funnel Work Queue, A16 + title-tag + A17 + A18
 
 Date: 2026-06-27
 Relay ask: Mac→Website 2026-06-27 ("Post-launch demand-gen assessment", `strategy/orionfold-website/_RELAY.md`), asks A16 / title-tag quick-win / A17 / A18.
 
 ## Context
 
-orionfold.com is traffic-positive post-launch (GA4 7d: +12.4% users; GSC 28d jumped to 19 clicks / 295 impressions / 6.4% CTR). But the capture middle is severed: the live opt-in form writes to Supabase and stops there — website-form leads never reach the marketing CRM (`marketing/leads/`, the single source of truth for every lead). This queue closes that seam (A16, the keystone) and tightens the on-page funnel (title-tag, A17, A18).
+orionfold.com is traffic-positive post-launch (GA4 7d: +12.4% users; GSC 28d jumped to 19 clicks / 295 impressions / 6.4% CTR). But the capture middle is severed: the live opt-in form writes to Supabase and stops there, website-form leads never reach the marketing CRM (`marketing/leads/`, the single source of truth for every lead). This queue closes that seam (A16, the keystone) and tightens the on-page funnel (title-tag, A17, A18).
 
 **Operator-ratified architecture (2026-06-27):** website demand-gen forms stay on Supabase. Do NOT reroute to beehiiv. The sinks split by channel: beehiiv = online-channel leads (Substack, Meta Ads); **Supabase = website demand-gen form leads**; both feed `leads/`. So A16 is an **ingestion seam, not a migration**.
 
@@ -20,7 +20,7 @@ orionfold.com is traffic-positive post-launch (GA4 7d: +12.4% users; GSC 28d jum
 
 ---
 
-## Item 1 — A16: `waitlist-export` cursor-poll edge fn  [P0 keystone]
+## Item 1, A16: `waitlist-export` cursor-poll edge fn  [P0 keystone]
 
 ### Problem
 
@@ -67,16 +67,16 @@ Query: `select(...).gt("created_at", since).order("created_at", asc).limit(limit
 - `double_optin` → `consent.double_optin`
 - fixed: `source.origin: website`, `consent.basis: website-optin`
 
-**Privacy.** Email (PII) leaves ONLY to the authenticated poller over TLS — same trust boundary as the beehiiv leg. The `metadata` JSONB overflow is NOT exported (keeps the surface tight; promote a field to a top-level column if it ever needs to ship). Never place PII in URL/query params (the `since` cursor is a timestamp, not PII).
+**Privacy.** Email (PII) leaves ONLY to the authenticated poller over TLS, same trust boundary as the beehiiv leg. The `metadata` JSONB overflow is NOT exported (keeps the surface tight; promote a field to a top-level column if it ever needs to ship). Never place PII in URL/query params (the `since` cursor is a timestamp, not PII).
 
 ### Components
 
-- `supabase/functions/waitlist-export/index.ts` — the fn.
-- `supabase/functions/waitlist-export/index.test.ts` — Deno tests: (1) 401 on missing/wrong token; (2) bootstrap (no `since`) returns rows + `next_cursor`; (3) cursor pagination advances correctly; (4) `double_optin` maps `confirmed` bool → string; (5) empty page returns `{rows:[], next_cursor:null}`; (6) `limit` cap enforced. Same `_shared`-seam discipline as `lead-input.test.ts`.
+- `supabase/functions/waitlist-export/index.ts`, the fn.
+- `supabase/functions/waitlist-export/index.test.ts`, Deno tests: (1) 401 on missing/wrong token; (2) bootstrap (no `since`) returns rows + `next_cursor`; (3) cursor pagination advances correctly; (4) `double_optin` maps `confirmed` bool → string; (5) empty page returns `{rows:[], next_cursor:null}`; (6) `limit` cap enforced. Same `_shared`-seam discipline as `lead-input.test.ts`.
 
 ### Isolation
 
-Fully independent — no UI, no other item depends on it. Build + test first. Deploy is operator-gated (`supabase functions deploy waitlist-export` + `supabase secrets set WAITLIST_EXPORT_TOKEN=…`).
+Fully independent, no UI, no other item depends on it. Build + test first. Deploy is operator-gated (`supabase functions deploy waitlist-export` + `supabase secrets set WAITLIST_EXPORT_TOKEN=…`).
 
 ### Verification
 
@@ -84,7 +84,7 @@ Deno tests green; local serve + curl with/without the token (401 path + a real p
 
 ---
 
-## Item 2 — Title-tag quick-win  [P1, trivial]
+## Item 2, Title-tag quick-win  [P1, trivial]
 
 ### Problem
 
@@ -93,11 +93,11 @@ The homepage `<title>` still reads the OLD positioning: `'Orionfold · private A
 ### Design
 
 Two one-line edits:
-- `src/layouts/Layout.astro:25` — default `title` → `'Orionfold · Prove which AI you can trust'`.
-- `src/data/seo.ts:13` — the default meta description → a Proof-led line, grade 3–5, **no em-dashes**, e.g.:
+- `src/layouts/Layout.astro:25`, default `title` → `'Orionfold · Prove which AI you can trust'`.
+- `src/data/seo.ts:13`, the default meta description → a Proof-led line, grade 3–5, **no em-dashes**, e.g.:
   > `Run real AI on your own machine and check the receipts yourself. Prove which AI you can trust. Rerun it, never take our word for it.`
 
-Only the homepage uses the *default* title/description; per-page titles are unaffected (verify this assumption holds — grep for pages that override vs inherit).
+Only the homepage uses the *default* title/description; per-page titles are unaffected (verify this assumption holds, grep for pages that override vs inherit).
 
 ### Verification
 
@@ -105,21 +105,21 @@ Build; confirm the homepage `<title>` and `<meta name="description">` render the
 
 ---
 
-## Item 3 — A17: OfferSlot opt-in + proof-bridge UTM on detail pages  [P1]
+## Item 3, A17: OfferSlot opt-in + proof-bridge UTM on detail pages  [P1]
 
 ### ⚠️ Scope correction (audit first)
 
-A4 (shipped `5447f85`) ALREADY added a `ProofCta` band linking to `/proof/` on every software + model detail page. A10 (`418783b`) added the A6 `OfferSlot` to letters/stories. So A17 is NOT "add a Proof CTA" — that exists. A17's real delta on model/software detail pages is:
+A4 (shipped `5447f85`) ALREADY added a `ProofCta` band linking to `/proof/` on every software + model detail page. A10 (`418783b`) added the A6 `OfferSlot` to letters/stories. So A17 is NOT "add a Proof CTA", that exists. A17's real delta on model/software detail pages is:
 
-1. **The A6 `OfferSlot` opt-in** (if not already present on these pages — AUDIT; books got the CTA in A10 but detail-page opt-in coverage must be checked, no duplicate capture cards).
+1. **The A6 `OfferSlot` opt-in** (if not already present on these pages, AUDIT; books got the CTA in A10 but detail-page opt-in coverage must be checked, no duplicate capture cards).
 2. **The `proof-bridge` UTM** on the existing `ProofCta` link (so cross-property attribution lines up with ainative.business's `proof-bridge` campaign).
 3. **Persona-matched CTA copy** in the P0 builder voice (the A4 band copy is honesty-gradient generic; A17 sharpens it for the local-AI builder).
 
-The executing session MUST audit each detail-page family first (read the `.astro` for software + model detail pages) and fill only real gaps — same discipline A10 used (it found the premise partly stale and filled only real gaps with no duplicated capture cards).
+The executing session MUST audit each detail-page family first (read the `.astro` for software + model detail pages) and fill only real gaps, same discipline A10 used (it found the premise partly stale and filled only real gaps with no duplicated capture cards).
 
 ### Design
 
-- **OfferSlot** on model + software detail pages, `offer="proof-playbook"` (reuses the existing offer-aware confirmation-email variant — no new email copy). Heading/dek/consent per the A6 `OfferSlot` props. Do NOT add a second opt-in where one already exists.
+- **OfferSlot** on model + software detail pages, `offer="proof-playbook"` (reuses the existing offer-aware confirmation-email variant, no new email copy). Heading/dek/consent per the A6 `OfferSlot` props. Do NOT add a second opt-in where one already exists.
 - **CTA copy** (no em-dashes): `Think a small local model can beat the frontier ones? We proved it. Rerun it yourself, do not take our word for it.`
 - **UTM** on the `/proof/` link: `utm_source=orionfold&utm_medium=cross-sell&utm_campaign=proof-bridge&utm_content=model-<slug>` (or `software-<slug>`).
 
@@ -129,11 +129,11 @@ Build clean both themes; each detail page has exactly one opt-in (no dup, `formC
 
 ---
 
-## Item 4 — A18: wire bands to specific receipts  [P2, depends on A17]
+## Item 4, A18: wire bands to specific receipts  [P2, depends on A17]
 
 ### Problem
 
-A11 gave `ProofCta.astro` / `ProofBand.astro` an optional `receipt` prop, but no caller passes it — every band falls back to `/proof/` top.
+A11 gave `ProofCta.astro` / `ProofBand.astro` an optional `receipt` prop, but no caller passes it, every band falls back to `/proof/` top.
 
 ### Design
 
@@ -153,9 +153,9 @@ The bands that map to a receipt emit `/receipts/<slug>/`; the rest still emit `/
 
 ## Build order (plan will detail)
 
-1. **A16** — independent, edge fn + tests. Build first.
-2. **Title-tag** — independent, trivial. Any time.
-3. **A17** — audit detail pages → fill gaps. After A16/title (no dep, just ordering).
-4. **A18** — after A17 (needs the wired bands).
+1. **A16**, independent, edge fn + tests. Build first.
+2. **Title-tag**, independent, trivial. Any time.
+3. **A17**, audit detail pages → fill gaps. After A16/title (no dep, just ordering).
+4. **A18**, after A17 (needs the wired bands).
 
 A16 deploy + secret are operator-gated. The rest ship on push. Relay handback to marketing on A16 (the field contract) so they build the ingestion leg.
