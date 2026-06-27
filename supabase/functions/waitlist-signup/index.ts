@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { isHoneypotTripped, parseLeadInput } from "../_shared/lead-input.ts";
+import { confirmationEmail } from "../_shared/confirmation-email.ts";
 
 const ALLOWED_ORIGINS = [
   "https://orionfold.com",
@@ -108,7 +109,7 @@ Deno.serve(async (req) => {
         })
         .eq("email", cleanEmail);
 
-      await sendConfirmationEmail(cleanEmail, newToken);
+      await sendConfirmationEmail(cleanEmail, newToken, columns.offer);
 
       return jsonResponse({
         success: true,
@@ -139,7 +140,7 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "Something went wrong. Please try again." }, corsHeaders, 500);
     }
 
-    await sendConfirmationEmail(cleanEmail, confirmToken);
+    await sendConfirmationEmail(cleanEmail, confirmToken, columns.offer);
 
     return jsonResponse({ success: true }, corsHeaders);
   } catch (err) {
@@ -148,13 +149,18 @@ Deno.serve(async (req) => {
   }
 });
 
-async function sendConfirmationEmail(email: string, token: string) {
+async function sendConfirmationEmail(
+  email: string,
+  token: string,
+  offer: string | null,
+) {
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
   if (!RESEND_API_KEY) {
     throw new Error("RESEND_API_KEY not configured");
   }
 
   const confirmUrl = `https://orionfold.supabase.co/functions/v1/confirm-email?token=${token}`;
+  const { subject, text } = confirmationEmail(confirmUrl, offer);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -166,8 +172,8 @@ async function sendConfirmationEmail(email: string, token: string) {
       from: "Orionfold <manav@updates.orionfold.com>",
       reply_to: "manav@orionfold.com",
       to: [email],
-      subject: "One click to get Orionfold stories",
-      text: confirmationEmailText(confirmUrl),
+      subject,
+      text,
     }),
   });
 
@@ -176,27 +182,4 @@ async function sendConfirmationEmail(email: string, token: string) {
     console.error("Resend error:", res.status, text);
     throw new Error(`Resend API error: ${res.status}`);
   }
-}
-
-function confirmationEmailText(confirmUrl: string): string {
-  return `Hi,
-
-You're almost in. Confirm your email and we'll send you
-our stories.
-
-Each one is a short, honest note from building Orionfold
-in public. What we shipped, what broke, and what we
-learned along the way. No spam, just the real build log.
-
-Confirm your email:
-
-${confirmUrl}
-
-This link expires in 7 days. If you didn't sign up, ignore
-this email.
-
---
-Orionfold
-https://orionfold.com
-`;
 }
