@@ -64,6 +64,13 @@ export const OG_PAGES: Record<string, OgPage> = {
     seed: 'workbench',
     alt: 'Orionfold Cockpit: Arena, Cortex, fieldkit, and tools for local AI work',
   },
+  '/receipts/': {
+    slug: 'receipts',
+    eyebrow: 'Receipts',
+    title: 'The proof, one receipt at a time.',
+    seed: 'receipts',
+    alt: 'Orionfold receipts: frozen tests you can rerun, each with its own page',
+  },
   '/learn/': {
     slug: 'learn',
     eyebrow: 'Learn',
