@@ -24,6 +24,8 @@ export interface MatrixCell {
   mark: Mark;
   /** A star cell links to the public page that carries its frozen test. */
   href?: string;
+  /** A11: when set, the cell deep-links to /receipts/<receipt>/ instead of href. */
+  receipt?: string;
 }
 
 export interface MatrixRow {
@@ -54,6 +56,13 @@ export function isProvenProduct(type: 'software' | 'model' | 'book', slug: strin
   return cols.some((c) => c.ours && c.href === path);
 }
 
+// A11: resolve a proof entity's optional receipt slug to its permalink. When a
+// receipt page exists for a star cell or headline card, the link points at the
+// specific receipt; otherwise the caller falls back to the entity's own href.
+export function receiptHref(slug?: string): string | undefined {
+  return slug ? `/receipts/${slug}/` : undefined;
+}
+
 // How to read a mark:
 //   star   = we proved it on a locked test, and you can rerun it
 //   strong = yes, strong
@@ -72,7 +81,7 @@ export const matrix: MatrixRow[] = [
   },
   {
     capability: 'Answers from your own documents',
-    cells: [{ mark: 'star', href: A }, { mark: 'none' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }],
+    cells: [{ mark: 'star', href: A, receipt: '4b-out-trusts-30b' }, { mark: 'none' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }],
   },
   {
     capability: 'Gives exact source citations',
@@ -80,7 +89,7 @@ export const matrix: MatrixRow[] = [
   },
   {
     capability: 'Refuses cleanly, no made-up answers',
-    cells: [{ mark: 'star', href: A }, { mark: 'none' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }],
+    cells: [{ mark: 'star', href: A, receipt: '4b-out-trusts-30b' }, { mark: 'none' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }],
   },
   {
     capability: 'Calls tools, takes actions',
@@ -127,6 +136,8 @@ export interface Receipt {
   label: string;
   body: string;
   href: string;
+  /** A11: when set, the headline card deep-links to /receipts/<receipt>/. */
+  receipt?: string;
 }
 
 export const receipts: Receipt[] = [
@@ -143,6 +154,7 @@ export const receipts: Receipt[] = [
     body:
       'On a hard locked test, our 4B Advisor scored 18 of 21. A model eight times bigger scored 8 of 21 and made up 3 fake answers. Advisor refused all 9 trick questions and leaked zero secrets.',
     href: '/software/advisor/',
+    receipt: '4b-out-trusts-30b',
   },
   {
     metric: '76% faster',
@@ -165,6 +177,8 @@ export const receipts: Receipt[] = [
 export interface Myth {
   claim: string;
   bust: string;
+  /** A11: when set, the myth can link out to /receipts/<receipt>/ for the proof. */
+  receipt?: string;
 }
 
 export const myths: Myth[] = [
