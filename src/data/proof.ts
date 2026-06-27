@@ -85,7 +85,7 @@ export const matrix: MatrixRow[] = [
   },
   {
     capability: 'Gives exact source citations',
-    cells: [{ mark: 'star', href: A }, { mark: 'none' }, { mark: 'star', href: P }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }],
+    cells: [{ mark: 'star', href: A, receipt: 'answers-with-exact-citations' }, { mark: 'none' }, { mark: 'star', href: P, receipt: 'answers-with-exact-citations' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }],
   },
   {
     capability: 'Refuses cleanly, no made-up answers',
@@ -97,15 +97,15 @@ export const matrix: MatrixRow[] = [
   },
   {
     capability: 'Shows step-by-step reasoning',
-    cells: [{ mark: 'none' }, { mark: 'star', href: K }, { mark: 'star', href: P }, { mark: 'maybe' }, { mark: 'none' }, { mark: 'strong' }],
+    cells: [{ mark: 'none' }, { mark: 'star', href: K, receipt: 'step-by-step-reasoning' }, { mark: 'star', href: P, receipt: 'step-by-step-reasoning' }, { mark: 'maybe' }, { mark: 'none' }, { mark: 'strong' }],
   },
   {
     capability: 'Returns one checkable number',
-    cells: [{ mark: 'none' }, { mark: 'star', href: K }, { mark: 'none' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }],
+    cells: [{ mark: 'none' }, { mark: 'star', href: K, receipt: 'one-checkable-number' }, { mark: 'none' }, { mark: 'maybe' }, { mark: 'maybe' }, { mark: 'maybe' }],
   },
   {
     capability: 'Checks its own memory quality',
-    cells: [{ mark: 'star', href: A }, { mark: 'none' }, { mark: 'none' }, { mark: 'none' }, { mark: 'none' }, { mark: 'none' }],
+    cells: [{ mark: 'star', href: A, receipt: 'checks-its-own-memory' }, { mark: 'none' }, { mark: 'none' }, { mark: 'none' }, { mark: 'none' }, { mark: 'none' }],
   },
 ];
 
@@ -147,6 +147,7 @@ export const receipts: Receipt[] = [
     body:
       'Our desk box ran 50 AI experiments by itself in 73 minutes, on about 2 cents of electricity. The same loop on rented cloud chips runs to dollars, plus a fee for every word. And ours never sends your data out.',
     href: '/dgx-spark/',
+    receipt: 'overnight-lab-2-cents',
   },
   {
     metric: '4B beats 30B',
@@ -162,6 +163,7 @@ export const receipts: Receipt[] = [
     body:
       'A special 4-bit mode made the same model run 76% faster, 38.8 words a second up from 22.1, on a fraction of the memory. Less memory means more room for everything else on the one box.',
     href: '/dgx-spark/',
+    receipt: '76-percent-faster-same-chip',
   },
   {
     metric: '$1 guards $1,679',
@@ -169,6 +171,7 @@ export const receipts: Receipt[] = [
     body:
       'Before booking a big cloud training run, we test the design on the desk first. A $1 test on the box gates about $1,679 of expected loss. One wrong booking it stops pays for the whole box.',
     href: '/dgx-spark/',
+    receipt: 'one-dollar-guards-1679',
   },
 ];
 
