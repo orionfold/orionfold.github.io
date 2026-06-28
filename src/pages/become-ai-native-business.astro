@@ -26,11 +26,43 @@ const insideBullets = [
   'Where this is all heading: world models, systems that build their own systems, and what an AI-native business looks like a few years out.',
 ];
 
+// Objection-as-header blocks (relay 2026-06-28 §5.3). These double as the
+// FAQPage schema below, so they are real AEO/citation surface as well as
+// conversion copy. Grade 3-5, no em-dashes.
+const objections = [
+  {
+    q: 'Is it really free?',
+    a: 'Yes. The full book sells for $20, and you get the same PDF and EPUB at no cost. We ask for your email so we can send the files and one short note a week. That is the whole deal.',
+  },
+  {
+    q: 'What do you do with my email?',
+    a: 'We send your book, then the AI For Everyone digest, one email a week, no more. We never sell or rent your address. You can leave any time with one click.',
+  },
+  {
+    q: 'Is this a sales pitch in disguise?',
+    a: 'No. The book stands on its own and you can read the whole thing free online too. If you later want our tools, they are there. But the book owes you nothing in return.',
+  },
+  {
+    q: 'Who is it for?',
+    a: 'Founders and operators who want their business to run on AI, not just chat with it. It is not a guide to building models. It is a guide to running a company that already thinks in AI.',
+  },
+];
+
 const title = 'Get the free AI Native Business book · Orionfold';
 const description =
-  'Read the AI Native Business book free. Enter your email and we send the PDF and EPUB, plus one short email a week on building with private AI.';
+  'Get the $20 AI Native Business book free. Enter your email and we send the PDF and EPUB, plus one short email a week on running a business that thinks in AI.';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: objections.map((o) => ({
+    '@type': 'Question',
+    name: o.q,
+    acceptedAnswer: { '@type': 'Answer', text: o.a },
+  })),
+};
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt}>
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={faqSchema}>
   <header class="px-6 py-5">
     <!-- Logo + wordmark, top-left, subtle and NON-LINKED (marketing 2026-06-28):
          brand presence for trust, but no escape hatch off the page so the only
@@ -47,13 +79,17 @@ const description =
     <div class="grid items-center gap-12 md:grid-cols-2">
       <!-- Left: the offer + capture -->
       <div>
-        <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Free book</p>
+        <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Free book · normally $20</p>
         <h1 class="mt-4 leading-tight" style="font-size: clamp(2rem, 5vw, 3rem);">
           Become an AI-native business.
         </h1>
         <p class="mt-5 max-w-md text-lg leading-relaxed text-text-muted">
-          The full book, free. Enter your email and we send you the PDF and the
-          EPUB, so you can read it on any device.
+          Not how to build AI models. How to run a business that already thinks
+          in AI.
+        </p>
+        <p class="mt-3 max-w-md leading-relaxed text-text-muted">
+          Get the $20 <span class="italic">AI Native Business</span> book free.
+          Just your email, and we send the PDF and EPUB to read on any device.
         </p>
 
         <div class="mt-8">
@@ -71,7 +107,7 @@ const description =
           </p>
         </div>
 
-        <p class="mt-8 text-sm text-text-dim">
+        <p class="mt-8 border-l-2 border-primary/40 pl-4 text-sm leading-relaxed text-text-muted">
           Built by one team running private AI on hardware they own: 15 tools, 7
           models, 3 books, and the open-source Orionfold Proof engine.
         </p>
@@ -102,5 +138,57 @@ const description =
         </div>
       </div>
     </div>
+
+    <!-- Objection blocks (relay §5.3). Header-as-question doubles as FAQPage
+         schema (jsonLd above) — AEO/citation surface as well as conversion. -->
+    <section class="mx-auto mt-24 max-w-2xl" aria-labelledby="faq-heading">
+      <h2 id="faq-heading" class="text-center text-2xl font-semibold">Questions, answered straight</h2>
+      <dl class="mt-10 space-y-8">
+        {objections.map((o) => (
+          <div>
+            <dt class="text-lg font-semibold text-text">{o.q}</dt>
+            <dd class="mt-2 leading-relaxed text-text-muted">{o.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <!-- Repeated CTA: convertible from any scroll depth (relay §5.5). -->
+    <section class="mx-auto mt-24 max-w-xl text-center" aria-labelledby="cta2-heading">
+      <h2 id="cta2-heading" class="leading-tight" style="font-size: clamp(1.6rem, 4vw, 2.2rem);">
+        Ready when you are.
+      </h2>
+      <p class="mx-auto mt-4 max-w-md leading-relaxed text-text-muted">
+        Get the $20 <span class="italic">AI Native Business</span> book free.
+        Enter your email and we send the PDF and EPUB.
+      </p>
+      <div class="mx-auto mt-8 max-w-md">
+        <WaitlistForm
+          id="magnet-ainb-2"
+          source="magnet-ai-native-business-footer"
+          offer="become-ai-native-business"
+          buttonText="Send me the book"
+          successMessage="Check your inbox to confirm, then your book is on the way."
+          consentText={consentText}
+        />
+        <p class="mx-auto mt-4 max-w-sm text-xs leading-relaxed text-text-dim">
+          {privacyNote}{' '}
+          <a class="underline underline-offset-2 hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
+        </p>
+      </div>
+    </section>
   </main>
+
+  <!-- Minimal footer (relay §5.6): CAN-SPAM needs an unsubscribe path + a
+       postal address in the EMAILS; on the page we surface the publisher,
+       unsubscribe note, and privacy link. -->
+  <footer class="mt-24 border-t border-border px-6 py-10 text-center text-xs leading-relaxed text-text-dim">
+    <p>Orionfold LLC · 2108 N St Ste N, Sacramento, CA 95816</p>
+    <p class="mt-1">One email a week, no more. Unsubscribe any time from any email we send.</p>
+    <p class="mt-2">
+      <a class="underline underline-offset-2 hover:text-text-muted" href="/privacy/">Privacy policy</a>
+      <span class="px-2">·</span>
+      <a class="underline underline-offset-2 hover:text-text-muted" href="mailto:manav@orionfold.com">manav@orionfold.com</a>
+    </p>
+  </footer>
 </Layout>
