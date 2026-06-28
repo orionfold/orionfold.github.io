@@ -3,7 +3,7 @@ title: The lab that shipped itself
 date: 2026-06-14
 summary: The paid edition of my AI lab launched this weekend, and the lab shipped itself. My plan said ten weeks. A team of AI agents I conduct did it in a day. Here is how, and what you get.
 hero: ../../assets/story/the-lab-that-shipped-itself/hero.jpeg
-heroAlt: "Four-panel painted comic. A builder studies a long project plan on the wall labeled 10 WEEKS that climbs like a staircase. He stands like a conductor waving a baton over blue light that loops between a laptop holding three glowing AI helpers and a small flat gold AI computer holding a fourth. Late at night the laptop and the gold box work together while a calendar crosses out 10 WEEKS and circles 1 DAY. He leans back happy beside a screen showing a first-boot receipt stamped VERIFIED with a tally of 14 tools, 6 models, 3 books, under a blue star constellation. A banner reads The lab that shipped itself."
+heroAlt: "Four-panel painted comic. A builder studies a long project plan on the wall labeled 10 WEEKS that climbs like a staircase. He stands like a conductor waving a baton over blue light that loops between a laptop holding three glowing AI helpers and a small flat gold AI computer holding a fourth. Late at night the laptop and the gold box work together while a calendar crosses out 10 WEEKS and circles 1 DAY. He leans back happy beside a screen showing a first-boot receipt stamped VERIFIED with a tally of the tools, models, and books shipped, under a blue star constellation. A banner reads The lab that shipped itself."
 tags:
   - Arena Field Edition
   - Building in public
@@ -45,7 +45,7 @@ The reason this is affordable is dull and important. The agents reread their own
 
 The pitch is simple. Get an AI team without hiring one, inside the DGX Spark you already own.
 
-The proof is the shelf this exact setup already built, solo on one Spark: 14 software tools, 6 open models, 3 books, a 54-article research library, and two production websites, this one and ainative.business. That is the velocity the box unlocks.
+The proof is the shelf this exact setup already built, solo on one Spark: 15 software tools, 7 open models, 3 books, a 54-article research library, and two production websites, this one and ainative.business. That is the velocity the box unlocks.
 
 The software stays free and open. You can run the free [Arena](/software/arena/) today, and there is a live demo you can [click through](/arena/demo/) without installing anything. What you buy with the [Arena Field Edition](/software/arena/#field-edition) is the assembled team, delivered turnkey: agents that do real work, models that know your field, and tests that prove it. Not seven free parts you wire together and babysit. One installer sets it up, it proves itself on first boot with that verifiable receipt, and it stays proven for a year, every update re-checked and re-receipted.
 
