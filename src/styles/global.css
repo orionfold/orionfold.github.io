@@ -923,23 +923,162 @@ section {
   font-style: italic;
 }
 
-/* Article data tables (the Proof field notes lean on leaderboards + failure
-   grids). Markdown emits a bare <table>; give it a card frame, a quiet header
-   band, comfortable cells, and horizontal scroll on narrow screens. Uses the
-   site tokens so it reads as part of the surface system, not a default table. */
-.story-prose table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  /* The frame + clipping live on the table itself so a future scroll wrapper is
-     optional; overflow-x lets a wide leaderboard scroll instead of squashing. */
+/* Receipt charts (cost-vs-quality + pass-rate). Each renders FULL article width
+   so its labels stay readable (the side-by-side two-up squeezed the text too
+   small). Quiet framed card. Scoped to .receipt-prose (NOT .story-prose) so it
+   never reframes story comics or letter heroes — only the receipt charts. The
+   italic caption that follows each chart (a markdown *emphasis* paragraph) gets
+   a smaller, dimmer, centered treatment so the two stacked charts read as
+   explained figures, not bare boxes. */
+.receipt-prose img {
   display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface-raised);
+  padding: 1rem;
+}
+/* A lone italic paragraph right after a chart is its caption. Uses
+   --color-text-muted (not --color-text-dim, which is ~2:1 on the light theme's
+   near-white bg — too faint for body text to pass WCAG AA). */
+.receipt-prose p > em:only-child {
+  display: block;
+  margin-top: 0.6em;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* Inlined Arena field-note diagrams (<figure class="fn-diagram"><svg>…). Unlike
+   the hand-authored <img> charts above, these are the AUTHOR'S OWN figures lifted
+   from the ainative field note and kept as raw HTML in the body, so they inherit
+   the page's CSS vars and render THEME-REACTIVE in both light and dark (an <img>
+   SVG can't). This is the flattened, static port of ainative's field-notes.css
+   .fn-diagram block: the upstream version starts every element at opacity:0 and
+   reveals it via a JS-added .fn-diagram--visible class + scroll observer. We have
+   no such JS on the receipts, so the resting state here is VISIBLE (no opacity:0,
+   no transform offset, no dash-offset) — a correct static render, reduced-motion
+   safe by construction. Same frame as .receipt-prose img so the two figure styles
+   read as one system. Scoped to .receipt-prose only. */
+.receipt-prose .fn-diagram {
+  display: block;
+  width: 100%;
+  /* top/bottom margin so the framed figure separates from the heading or body
+     text around it (margin:0 made the "What happened" h2 sit flush on the frame). */
+  margin: 1.75rem 0 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface-raised);
+  /* generous top pad so the figure's top label/annotation row never crowds the
+     frame edge; lighter at the sides + bottom. */
+  padding: 1.75rem 1rem 0.75rem;
+}
+.receipt-prose .fn-diagram > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.receipt-prose .fn-diagram > figcaption {
+  display: block;
+  text-align: center;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+  max-width: 60ch;
+  margin: 0.6em auto 0;
+  padding: 0 0.5rem 0.5rem;
+  line-height: 1.55;
+}
+/* Nodes / edges / labels — resting state visible (animation flattened). */
+.receipt-prose .fn-diagram__node {
+  fill: var(--color-surface-overlay, var(--color-surface));
+  stroke: var(--color-text-muted);
+  stroke-width: 1.25;
+}
+.receipt-prose .fn-diagram__node--accent {
+  fill: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  stroke: var(--color-text-muted);
+}
+.receipt-prose .fn-diagram__node--ink {
+  fill: var(--color-surface);
+  stroke: var(--color-text);
+}
+.receipt-prose .fn-diagram__node--ghost {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-dasharray: 4 3;
+}
+.receipt-prose .fn-diagram__edge {
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+}
+.receipt-prose .fn-diagram__edge--accent { stroke: var(--color-primary); stroke-width: 1.5; }
+.receipt-prose .fn-diagram__edge--dashed { stroke-dasharray: 5 4; }
+.receipt-prose .fn-diagram__edge--ghost { stroke: var(--color-border); stroke-width: 1; }
+.receipt-prose .fn-diagram__flow { fill: var(--color-primary); }
+.receipt-prose .fn-diagram__dot { fill: var(--color-text-muted); }
+.receipt-prose .fn-diagram__dot--accent { fill: var(--color-primary); }
+.receipt-prose .fn-diagram__dot--ghost { fill: var(--color-text-dim); }
+.receipt-prose .fn-diagram__bar { transform: none; }
+.receipt-prose .fn-diagram__icon {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.receipt-prose .fn-diagram__icon--accent { stroke: var(--color-primary); }
+.receipt-prose .fn-diagram__icon--muted { stroke: var(--color-text-muted); }
+.receipt-prose .fn-diagram__label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  fill: var(--color-text);
+}
+.receipt-prose .fn-diagram__label--mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  fill: var(--color-text-muted);
+}
+.receipt-prose .fn-diagram__label--accent {
+  font-family: var(--font-mono);
+  fill: var(--color-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 500;
+}
+.receipt-prose .fn-diagram__label--muted { fill: var(--color-text-dim); }
+.receipt-prose .fn-diagram__annotation {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  fill: var(--color-text-dim);
+}
+
+/* Article data tables (the Proof field notes lean on leaderboards + failure
+   grids). Markdown emits a bare <table>, which rehype-table-scroll wraps in
+   <div class="table-scroll">. The card frame + horizontal scroll live on that
+   WRAPPER (not the table) so a wide leaderboard scrolls instead of squashing
+   (the DS anti-collapse law), while the inner table stays a normal width:100%
+   table that fills the frame even when it has few short columns (no blank card
+   on the right). Uses the site tokens so it reads as part of the surface system. */
+.story-prose .table-scroll {
   overflow-x: auto;
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
   background: var(--color-surface-raised);
   -webkit-overflow-scrolling: touch;
+}
+.story-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 .story-prose thead {
   background: color-mix(in oklch, var(--color-primary) 8%, transparent);

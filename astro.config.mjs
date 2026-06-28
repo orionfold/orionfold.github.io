@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import remarkDirective from 'remark-directive';
 import remarkAsciinema from './src/lib/products/remark-asciinema.mjs';
 import remarkProofCta from './src/lib/products/remark-proof-cta.mjs';
+import rehypeTableScroll from './src/lib/products/rehype-table-scroll.mjs';
 
 // Build a `pathname -> YYYY-MM-DD` map for sitemap <lastmod>. lastmod is the one
 // sitemap field Google actually uses to schedule crawls, so every value here must
@@ -131,6 +132,7 @@ export default defineConfig({
   },
   markdown: {
     remarkPlugins: [remarkDirective, remarkAsciinema, remarkProofCta],
+    rehypePlugins: [rehypeTableScroll],
   },
   integrations: [
     sitemap({

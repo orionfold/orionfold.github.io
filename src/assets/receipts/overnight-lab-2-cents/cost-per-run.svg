@@ -1,0 +1,18 @@
+<svg viewBox="0 0 640 170" role="img" aria-label="Horizontal bar chart comparing the cost of the same 50-experiment loop. On the owned desk box it cost about 2 cents of electricity. The same loop on rented cloud chips runs to about 5 dollars. Less is better." xmlns="http://www.w3.org/2000/svg">
+<title>Cost of the same overnight loop, desk box vs rented cloud (less is better)</title>
+<!-- vertical gridlines at $1.25/2.50/3.75/5.00 of the plot area (plot x: 200..610, scale 0..5) -->
+<line x1="302.5" y1="24" x2="302.5" y2="134" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="405" y1="24" x2="405" y2="134" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="507.5" y1="24" x2="507.5" y2="134" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="610" y1="24" x2="610" y2="134" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<!-- y axis -->
+<line x1="200" y1="24" x2="200" y2="134" stroke="#9aa1ab" stroke-width="1.25"/>
+<!-- desk box (winner, costs least, cyan): $0.02 of 5 = 1.64px, shown as a 4px sliver so it is visible -->
+<rect x="200" y="40" width="4" height="34" rx="2" fill="#14c8c0"><title>Owned desk box — about $0.02 of electricity</title></rect>
+<text x="192" y="62" text-anchor="end" font-size="13" fill="#0e9e98" font-weight="600">Owned desk box</text>
+<text x="212" y="62" font-size="13" fill="#0e9e98" font-weight="600">about $0.02</text>
+<!-- rented cloud: ~$5 of 5 = 410px -->
+<rect x="200" y="88" width="410" height="34" rx="3" fill="#3fd55a"><title>Rented cloud chips — about $5 of compute, plus a per-word fee</title></rect>
+<text x="192" y="110" text-anchor="end" font-size="13" fill="#6b7280">Rented cloud</text>
+<text x="602" y="110" text-anchor="end" font-size="13" fill="#6b7280">about $5, plus per-word fees</text>
+</svg>

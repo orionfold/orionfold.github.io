@@ -1,0 +1,27 @@
+<svg viewBox="0 0 640 260" role="img" aria-label="Scatter plot of candidate cost against pass rate. The local Advisor sits top-left at high pass rate and near-zero cost; the expensive cloud model sits far right." xmlns="http://www.w3.org/2000/svg">
+<title>Cost vs. quality</title>
+<!-- gridlines -->
+<line x1="70" y1="40" x2="610" y2="40" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="70" y1="88" x2="610" y2="88" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="70" y1="136" x2="610" y2="136" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="70" y1="184" x2="610" y2="184" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="202" y1="32" x2="202" y2="212" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="334" y1="32" x2="334" y2="212" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="466" y1="32" x2="466" y2="212" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<line x1="598" y1="32" x2="598" y2="212" stroke="#9aa1ab" stroke-width="0.75" opacity="0.18"/>
+<!-- axes -->
+<line x1="70" y1="32" x2="70" y2="212" stroke="#9aa1ab" stroke-width="1.25"/>
+<line x1="70" y1="212" x2="610" y2="212" stroke="#9aa1ab" stroke-width="1.25"/>
+<!-- axis labels -->
+<text x="340" y="240" text-anchor="middle" font-size="14" fill="#6b7280">Cost per run (lower is better) →</text>
+<text x="22" y="122" text-anchor="middle" font-size="14" fill="#6b7280" transform="rotate(-90 22 122)">Pass rate →</text>
+<!-- points: Advisor (local, cyan, winner) top-left at near-zero cost -->
+<circle cx="74" cy="58" r="8" fill="#14c8c0"><title>Ollama · hf.co/Orionfold/Advisor-GGUF — 86%, $0.00</title></circle>
+<text x="88" y="52" text-anchor="start" font-size="13" fill="#0e9e98" font-weight="600">Advisor 4B (local) · 86% · $0.00</text>
+<!-- glm-4.6 cheap cloud, just below -->
+<circle cx="100" cy="74" r="7" fill="#3fd55a"><title>OpenRouter · z-ai/glm-4.6 — 81%, $0.02</title></circle>
+<text x="114" y="86" text-anchor="start" font-size="12" fill="#6b7280">glm-4.6 (cloud) · 81% · $0.02</text>
+<!-- claude expensive cloud, far right -->
+<circle cx="598" cy="90" r="7" fill="#3fd55a"><title>Anthropic · claude-opus-4-8 — 76%, $0.34</title></circle>
+<text x="586" y="84" text-anchor="end" font-size="12" fill="#6b7280">claude-opus-4-8 (cloud) · 76% · $0.34</text>
+</svg>
