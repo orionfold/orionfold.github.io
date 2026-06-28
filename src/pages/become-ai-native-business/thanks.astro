@@ -3,9 +3,16 @@
 // opt-in is confirmed and the book email is sent. noindex (post-confirm utility).
 // Single forward CTA to Orionfold Proof = the default funnel closure; this page
 // is also where the $55 founding-reader bundle slots in once that SKU lands.
+import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import BrandMark from '../../components/ui/BrandMark.astro';
 import { getCatalogItem, formatUsd } from '../../data/commerce';
+// The three real, finished book covers — fanned inside the bundle card so the
+// reader SEES the three products the "$110 value, half off" anchor refers to
+// (marketing review 2026-06-28: make the value tangible, on the card only).
+import coverBusiness from '../../assets/book/ai-native-business-book.jpg';
+import coverPlatform from '../../assets/book/ai-native-platform-book.jpg';
+import coverSpark from '../../assets/book/ai-research-dgx-spark-book.jpg';
 
 // The offer-ladder tripwire: the $55 founding-reader bundle (all three books'
 // PDF+EPUB, $110 list). Shown ONLY here, in the post-conversion welcome flow —
@@ -38,6 +45,36 @@ const bundlePrice = bundle ? formatUsd(bundle.amount) : undefined;
 
     {bundlePrice && (
       <div class="mt-12 rounded-2xl border border-accent/40 bg-surface-raised px-6 py-10 text-left shadow-lg shadow-accent/5">
+        <!-- The three real covers, fanned. Center cover upright; the two flanks
+             rotate out and tuck behind, so the reader SEES three finished products. -->
+        <div class="mb-8 flex justify-center" aria-hidden="false">
+          <div class="relative h-44 w-60 sm:h-52 sm:w-72">
+            <Image
+              src={coverBusiness}
+              alt="AI Native Business book cover"
+              width={300}
+              widths={[150, 300]}
+              sizes="150px"
+              class="absolute left-1/2 top-1/2 h-40 w-auto -translate-x-1/2 -translate-y-1/2 -rotate-[14deg] -ml-20 rounded-md shadow-xl ring-1 ring-black/20 sm:h-48"
+            />
+            <Image
+              src={coverPlatform}
+              alt="AI Native Platform book cover"
+              width={300}
+              widths={[150, 300]}
+              sizes="150px"
+              class="absolute left-1/2 top-1/2 h-40 w-auto -translate-x-1/2 -translate-y-1/2 rotate-[14deg] ml-20 rounded-md shadow-xl ring-1 ring-black/20 sm:h-48"
+            />
+            <Image
+              src={coverSpark}
+              alt="AI Research on NVIDIA DGX Spark book cover"
+              width={320}
+              widths={[160, 320]}
+              sizes="160px"
+              class="absolute left-1/2 top-1/2 h-44 w-auto -translate-x-1/2 -translate-y-1/2 rounded-md shadow-2xl ring-1 ring-black/30 sm:h-52"
+            />
+          </div>
+        </div>
         <p class="font-mono text-xs uppercase tracking-[0.18em] text-accent">Founding reader gift</p>
         <h2 class="mt-3 text-2xl font-bold">Get all three books for {bundlePrice}.</h2>
         <p class="mt-3 text-sm leading-relaxed text-text-muted">
@@ -64,7 +101,7 @@ const bundlePrice = bundle ? formatUsd(bundle.amount) : undefined;
         <p id="bundle-err" role="alert" hidden class="mt-3 font-mono text-xs text-red-500"></p>
         <p class="mt-4 text-xs leading-relaxed text-text-dim">
           A welcome gift for new readers, at half the list price. Not happy in the first
-          14 days? Email us and we refund you, no questions asked.
+          7 days? Email us and we refund you, no questions asked.
         </p>
       </div>
     )}
