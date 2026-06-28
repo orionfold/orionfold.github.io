@@ -32,12 +32,15 @@ const description =
 ---
 <Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt}>
   <header class="px-6 py-5">
-    <a href="/" class="group inline-flex items-center gap-1.5 text-text transition-colors hover:text-primary" aria-label="Orionfold home">
-      <BrandMark size={32} class="h-8 w-8" />
-      <span class="text-2xl font-semibold tracking-tight leading-none">
+    <!-- Logo + wordmark, top-left, subtle and NON-LINKED (marketing 2026-06-28):
+         brand presence for trust, but no escape hatch off the page so the only
+         action is the email form (max 1:1 attention ratio). -->
+    <div class="inline-flex items-center gap-1.5 opacity-80" aria-label="Orionfold">
+      <BrandMark size={28} class="h-7 w-7" />
+      <span class="text-xl font-semibold tracking-tight leading-none">
         <span class="text-text">Orion</span><span class="text-primary">fold</span>
       </span>
-    </a>
+    </div>
   </header>
 
   <main class="mx-auto max-w-5xl px-6 pb-24 pt-6">
