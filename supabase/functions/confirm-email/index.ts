@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendBookEmail, signBookFiles } from "../_shared/book-files.ts";
 
 const SITE = "https://orionfold.com";
 
@@ -29,7 +30,7 @@ Deno.serve(async (req) => {
 
     const { data: row, error: selectError } = await supabase
       .from("waitlist")
-      .select("id, email, confirmed")
+      .select("id, email, confirmed, offer")
       .eq("confirm_token", token)
       .maybeSingle();
 
@@ -60,6 +61,29 @@ Deno.serve(async (req) => {
     if (updateError) {
       console.error("Update error:", updateError);
       return redirect("confirmed=error&error=Something+went+wrong");
+    }
+
+    // Magnet delivery: the become-ai-native-business opt-in gates the free book.
+    // On confirm, sign the already-uploaded PDF+EPUB and email them, then land
+    // the subscriber on the magnet thank-you page. Delivery never blocks the
+    // confirm: a signing/email failure is logged, the subscriber stays
+    // confirmed, and they still reach the thanks page (the email is the channel;
+    // a missing file is an operator bucket fix). All other offers are unchanged.
+    if (row.offer === "become-ai-native-business") {
+      try {
+        const links = await signBookFiles(supabase, "book_ai_native_business");
+        if (links.length > 0) {
+          await sendBookEmail(row.email, "AI Native Business", links);
+        } else {
+          console.error("Magnet confirm: no files in book-files/book_ai_native_business");
+        }
+      } catch (deliverErr) {
+        console.error("Magnet confirm: book delivery failed:", deliverErr);
+      }
+      return new Response(null, {
+        status: 302,
+        headers: { Location: `${SITE}/become-ai-native-business/thanks/` },
+      });
     }
 
     return redirect("confirmed=1");
