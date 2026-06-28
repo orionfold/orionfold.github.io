@@ -1,17 +1,22 @@
 ---
 // /proof/ — "What Orionfold Proof does." The product section that sits right after
-// the capability matrix: shows the cockpit, the configure→run→decide loop, the
-// inside-the-cockpit rails, and the flagship 18/21 governance bench reproduced on
-// a Mac. Every number cites the receipt it came from (receipt-honesty); the clean
-// wins lead, the honest misses stay in. Voice grade 3-5, no em-dashes
-// (website-copy-style). Assets are website-owned copies of secret-free captures
-// from the orionfold-proof repo + the operator's flagship bench run (relay
-// orionfold-proof 2026-06-24).
+// the capability matrix: the cockpit hero, the configure→run→decide loop as an
+// animated flow (ProofLoopFlow, not screenshots), the inside-the-cockpit rails as
+// full-width showcases, and the flagship 18/21 governance bench reproduced on a Mac.
+// Every number cites the receipt it came from (receipt-honesty); the clean wins
+// lead, the honest misses stay in. Voice grade 3-5, no em-dashes (website-copy-style).
+// Assets are website-owned copies of secret-free captures from the orionfold-proof repo.
+//
+// All cockpit stills are the 0.2.0 Arena-shape redesign (relay orionfold-proof
+// 2026-06-27): top app bar (Prove · Datasets · Receipts · Settings) + always-on
+// telemetry rail + full-width canvas + tabbed L3 receipt detail. The hero + rail
+// stills are keyless mock runs; the flagship 18/21 GIF + full-results still are the
+// operator's REAL Advisor bench run re-captured in the new UI (config 552d0060f782,
+// 18/21, $0.00 local). Source: samples/screenshots in the orionfold-proof repo,
+// dark theme, no key material.
 import { Image } from 'astro:assets';
-import moneyShot from '../../assets/proof/cockpit-money-shot.png';
-import stepConfigure from '../../assets/proof/step-configure.png';
-import stepRun from '../../assets/proof/step-run.png';
-import stepDecide from '../../assets/proof/step-decide.png';
+import ProofLoopFlow from './ProofLoopFlow.astro';
+import moneyShot from '../../assets/proof/cockpit-results.png';
 import railDatasets from '../../assets/proof/rail-datasets.png';
 import railCandidates from '../../assets/proof/rail-candidates.png';
 import railReceipts from '../../assets/proof/rail-receipts.png';
@@ -20,55 +25,31 @@ import flagshipResults from '../../assets/proof/flagship-results.png';
 // is actually emitted. Importing a .gif through the asset pipeline rewrites the URL
 // to a hashed /_astro/ path but never copies the file into dist (Astro 5 / Vite
 // raw-asset gap) -> a 404 on the deployed page. public/ assets are copied verbatim
-// at a stable path. Intrinsic size kept inline (the source is 1568x763) to reserve
+// at a stable path. Intrinsic size kept inline (the source is 1568x718) to reserve
 // layout space without a JS import. astro:assets <Image> is intentionally NOT used
 // (it would flatten the animation to a still frame).
 const flagshipGifSrc = '/proof/flagship-18of21.gif';
 const flagshipGifW = 1568;
-const flagshipGifH = 763;
-
-const steps = [
-  {
-    n: '1',
-    title: 'Configure',
-    body: 'Point Proof at your own task. Pick the models or setups you are weighing, local or cloud, and the rubric to score them by.',
-    image: stepConfigure,
-    alt: 'The Configure stage: choosing candidates and a scoring rubric for a proof run.',
-  },
-  {
-    n: '2',
-    title: 'Run',
-    body: 'Proof runs every candidate on your machine, row by row, and streams the progress live. Nothing leaves your desk.',
-    image: stepRun,
-    alt: 'The Run stage: candidates generating answers row by row with live progress.',
-  },
-  {
-    n: '3',
-    title: 'Decide',
-    body: 'You get a clear winner, a leaderboard with cost and speed, the failures laid out, and a signed receipt you can rerun any time.',
-    image: stepDecide,
-    alt: 'The Decide stage: a recommended winner, leaderboard, and exportable receipt.',
-  },
-];
+const flagshipGifH = 718;
 
 const rails = [
   {
     title: 'Your datasets',
     body: 'Bring your own task rows. Proof scores against the answers you decide are right.',
     image: railDatasets,
-    alt: 'The datasets rail in the Proof cockpit.',
+    alt: 'The Datasets screen in the Proof cockpit: the frozen example sets, the governance bench, and the corpus.',
   },
   {
     title: 'Any candidate',
     body: 'Local models through Ollama or cloud models through their API, side by side in one run.',
     image: railCandidates,
-    alt: 'The candidates rail listing local and cloud models.',
+    alt: 'The candidate picker listing local models through Ollama and cloud models across providers, side by side.',
   },
   {
     title: 'Signed receipts',
     body: 'Every run exports a receipt as Markdown, HTML, or JSON. Same inputs, same receipt, every time.',
     image: railReceipts,
-    alt: 'The receipts rail showing exported proof receipts.',
+    alt: 'The Receipts screen: the bento masthead over the Runs table, each run exportable as Markdown, HTML, or JSON.',
   },
 ];
 ---
@@ -83,9 +64,11 @@ const rails = [
       minutes. Nothing phones home.
     </p>
 
-    <!-- Hero: the money shot (DS .of-showcase + browser-frame chrome; natural height
-         so the ~1:1 cockpit shows in full — cover-cropping would hide the leaderboard) -->
-    <figure data-animate data-treatment="natural" class="of-showcase mt-8">
+    <!-- Hero: the populated Prove page (DS .of-showcase + browser-frame chrome; natural
+         height so the full cockpit shows — cover-cropping would hide the leaderboard.
+         This is a tall full-page capture: verdict band + leaderboard + cost-vs-quality
+         scatter + run-cost ledger on one scrolling canvas) -->
+    <figure data-animate data-treatment="scroll" class="of-showcase proof-hero mt-12">
       <div class="of-frame">
         <div class="of-frame-bar">
           <span class="of-frame-dots"><i></i><i></i><i></i></span>
@@ -94,7 +77,7 @@ const rails = [
         <div class="of-shot">
           <Image
             src={moneyShot}
-            alt="The Orionfold Proof cockpit after a run: the recommended winner, the leaderboard, and the failure cases all on one screen."
+            alt="The Orionfold Proof cockpit after a run: the always-on telemetry rail across the top, the recommended winner, the leaderboard, the cost-vs-quality chart, and the failure cases on one scrolling canvas."
             widths={[720, 1080, 1440]}
             sizes="(min-width: 1024px) 1024px, 100vw"
             loading="lazy"
@@ -103,57 +86,51 @@ const rails = [
         </div>
       </div>
       <figcaption class="of-showcase-cap">
-        One screen, the whole proof: the recommended winner, the leaderboard with cost and speed, and
-        every failure case.
+        One canvas, the whole proof: the live telemetry rail up top, then the recommended winner, the
+        leaderboard with cost and speed, the cost-vs-quality chart, and every failure case. Scroll
+        inside the frame to read it all.
       </figcaption>
     </figure>
 
-    <!-- How it works: configure -> run -> decide -->
+    <!-- How it works: configure -> run -> decide, as one animated flow line
+         (ProofLoopFlow) instead of cramped screenshot thumbnails. Same metro-line
+         idiom as the homepage CapabilitySystemMap; the Run station streams rows and
+         the Decide station stamps a pass tick -- motion a static still can't show. -->
     <div class="mt-14">
       <p class="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">How it works</p>
-      <div class="grid gap-5 md:grid-cols-3" data-animate-stagger>
-        {steps.map((s) => (
-          <div data-animate class="of-surface flex flex-col rounded-2xl p-5">
-            <div class="overflow-hidden rounded-xl border border-border">
-              <Image
-                src={s.image}
-                alt={s.alt}
-                widths={[360, 540, 720]}
-                sizes="(min-width: 768px) 33vw, 100vw"
-                loading="lazy"
-                decoding="async"
-                class="h-auto w-full"
-              />
-            </div>
-            <div class="mt-4 flex items-baseline gap-2">
-              <span class="font-mono text-xs text-primary">{s.n}</span>
-              <span class="font-display text-lg">{s.title}</span>
-            </div>
-            <p class="mt-2 text-sm leading-relaxed text-text-muted">{s.body}</p>
-          </div>
-        ))}
-      </div>
+      <ProofLoopFlow />
     </div>
 
-    <!-- Inside the cockpit: the rails -->
+    <!-- Inside the cockpit: each rail as a full-width browser-frame showcase so the
+         real Arena UI is readable (the old 3-up thumbnails squished it). Image and
+         text alternate sides on desktop for rhythm. -->
     <div class="mt-14">
-      <p class="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Inside the cockpit</p>
-      <div class="grid gap-5 sm:grid-cols-3" data-animate-stagger>
-        {rails.map((r) => (
-          <div data-animate class="flex flex-col rounded-2xl border border-border/70 bg-surface/60 p-5">
-            <div class="overflow-hidden rounded-xl border border-border">
-              <Image
-                src={r.image}
-                alt={r.alt}
-                widths={[320, 480, 640]}
-                sizes="(min-width: 640px) 33vw, 100vw"
-                loading="lazy"
-                decoding="async"
-                class="h-auto w-full"
-              />
+      <p class="mb-8 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Inside the cockpit</p>
+      <div class="flex flex-col gap-10">
+        {rails.map((r, i) => (
+          <div data-animate class="grid items-center gap-6 lg:grid-cols-2 lg:gap-10">
+            <div class={`of-showcase ${i % 2 === 1 ? 'lg:order-2' : ''}`} data-treatment="natural">
+              <div class="of-frame">
+                <div class="of-frame-bar">
+                  <span class="of-frame-dots"><i></i><i></i><i></i></span>
+                  <span class="of-frame-label">Orionfold Proof — {r.title.toLowerCase()}</span>
+                </div>
+                <div class="of-shot">
+                  <Image
+                    src={r.image}
+                    alt={r.alt}
+                    widths={[640, 960, 1280]}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </div>
             </div>
-            <p class="mt-4 font-display text-base">{r.title}</p>
-            <p class="mt-1 text-sm leading-relaxed text-text-muted">{r.body}</p>
+            <div class={i % 2 === 1 ? 'lg:order-1' : ''}>
+              <p class="font-display text-xl leading-snug sm:text-2xl">{r.title}</p>
+              <p class="mt-3 max-w-md text-base leading-relaxed text-text-muted">{r.body}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -169,10 +146,9 @@ const rails = [
         We took our Advisor 4B model and ran its governance bench again, this time on an Apple M3 Max
         laptop instead of the lab box. It scored <strong class="text-text">18 of 21</strong>,
         matching the published baseline answer for answer: the same 9 of 9 refusals, and the same 3
-        misses. It cost <strong class="text-text">$0.00</strong> because it ran fully local, and it
-        decoded at <strong class="text-text">59 tokens a second</strong>, faster than the lab box's
-        published 42. Every line of that is in the receipt, down to the config hash
-        <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-primary">50c38b0b7439</code>.
+        misses. It cost <strong class="text-text">$0.00</strong> because it ran fully local. Every
+        line of that is in the receipt, down to the config hash
+        <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-primary">552d0060f782</code>.
       </p>
 
       <figure data-animate data-treatment="natural" class="of-showcase mt-6">
@@ -230,3 +206,14 @@ const rails = [
     </div>
   </div>
 </section>
+
+<style>
+  /* The hero capture (cockpit-arena-populated) starts with an empty grid band
+     above "Proof Run". The scroll-treatment frame clips overflow, so pull the
+     image up to crop that dead whitespace under the chrome bar. The negative
+     margin scales with the rendered width (% of the image's own width) so the
+     crop holds across breakpoints instead of clipping differently. */
+  .proof-hero :global(.of-shot) > :global(img) {
+    margin-top: -10.5%;
+  }
+</style>
