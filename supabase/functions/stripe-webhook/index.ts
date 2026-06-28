@@ -360,7 +360,8 @@ async function issueAndDeliverLicense(
 
   // Deliver: the install command (signed URL inlined) + the file as a backup copy.
   // The command + setup steps differ per product (Arena boots on the Spark via the
-  // getarena bootstrap; Proof unlocks a pack via `orionfold unlock`).
+  // getarena bootstrap; Proof installs from PyPI and runs the built-in Advisor pack
+  // immediately — the signed URL is for `orionfold unlock` of future, non-bundled packs).
   await sendLicenseEmail(ctx.email, ctx.item.label, licenseId, fileText, installUrl, ctx.descriptor.product);
 
   // Mark delivered on both planes.
@@ -495,7 +496,7 @@ function proofLicenseEmailText(productLabel: string, licenseId: string, installU
 Your license number is ${licenseId}. Your license file is also
 attached as a backup copy, so you always have it.
 
-First, install Orionfold Proof and open the cockpit:
+Install Orionfold Proof and open the cockpit:
 
 uv tool install orionfold-proof
 orionfold up
@@ -503,16 +504,19 @@ orionfold up
 That opens the proof cockpit at http://localhost:8787. It runs
 on your own machine and nothing leaves it.
 
-Owning Orionfold Proof unlocks every pack that ships with it.
-When you have a pack to add, run this. It checks your license
-over your own private link (it works for 7 days), then installs
-the pack so its dataset and reference receipt are ready to run:
+You can start right away. The Advisor governance pack is built
+in, so its dataset and a reference receipt are already there to
+run the moment the cockpit opens. Pick it and press Run.
+
+Later, when we ship a new pack you own, you add it with one
+command. It checks your license over your own private link (it
+works for 7 days), then installs the pack:
 
 orionfold unlock <pack> --license-url='${installUrl}'
 
-We will email you the pack download links to use in place of
-<pack>. If the link stops working before you unlock, just reply
-to this email and we will send you a fresh one.
+We will email you the download link for each new pack. If your
+private link stops working before you add one, just reply to
+this email and we will send you a fresh one.
 
 Your license keeps you up to date for 12 months.
 
