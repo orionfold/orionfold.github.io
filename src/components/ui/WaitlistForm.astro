@@ -37,7 +37,10 @@ const {
   iconOnly = false,
   watchConfirmed = false,
   offer = '',
-  consentText = '',
+  // Canonical funnel consent scope (one list, one promise). Every capture
+  // surface records this verbatim so a subscriber's recorded consent is
+  // identical no matter which page captured them. Sent on EVERY submit.
+  consentText = 'By subscribing you agree to receive the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.',
 } = Astro.props;
 const formId = `form-${id}`;
 const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
@@ -212,6 +215,12 @@ const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
           showSuccess(data.message);
         } else {
           showSuccess(successMessage);
+        }
+        // GA4 lead key event — only for named-offer captures (magnet, offer
+        // slots), so offer-less forms (homepage hero, footer) are unchanged.
+        // Uses the global gtag shim from Layout.astro (no-op if gtag absent).
+        if (offer && typeof window.gtag === 'function') {
+          window.gtag('event', 'generate_lead', { offer, source });
         }
       } catch {
         showError('Could not connect. Please try again.');
