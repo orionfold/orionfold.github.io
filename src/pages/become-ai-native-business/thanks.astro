@@ -1,0 +1,49 @@
+---
+// Magnet thank-you. confirm-email redirects here after a become-ai-native-business
+// opt-in is confirmed and the book email is sent. noindex (post-confirm utility).
+// Single forward CTA to Orionfold Proof = the default funnel closure; this page
+// is also where the $55 founding-reader bundle slots in once that SKU lands.
+import Layout from '../../layouts/Layout.astro';
+import BrandMark from '../../components/ui/BrandMark.astro';
+---
+<Layout title="Your book is on the way · Orionfold" description="Your free AI Native Business book is on its way to your inbox." noindex>
+  <header class="px-6 py-5">
+    <a href="/" class="group inline-flex items-center gap-1.5 text-text transition-colors hover:text-primary" aria-label="Orionfold home">
+      <BrandMark size={32} class="h-8 w-8" />
+      <span class="text-2xl font-semibold tracking-tight leading-none">
+        <span class="text-text">Orion</span><span class="text-primary">fold</span>
+      </span>
+    </a>
+  </header>
+
+  <main class="mx-auto max-w-xl px-6 py-20 text-center">
+    <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">You're in</p>
+    <h1 class="mt-4 leading-tight" style="font-size: clamp(1.8rem, 4.5vw, 2.6rem);">
+      Your book is on the way.
+    </h1>
+    <p class="mx-auto mt-5 max-w-md text-lg leading-relaxed text-text-muted">
+      Check your inbox for the PDF and EPUB. The links work for seven days, so
+      save the files once you grab them.
+    </p>
+
+    <div class="mt-12 rounded-2xl border border-primary/20 bg-primary/[0.04] px-6 py-10">
+      <h2 class="text-xl font-semibold">Want to prove which AI you can trust?</h2>
+      <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-text-muted">
+        Orionfold Proof runs the same tests we run, on your own machine, and
+        gives you a receipt you can check. See how a small local model can beat
+        the big paid ones at the task that matters to you.
+      </p>
+      <a
+        href="/proof/"
+        class="mt-6 inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-semibold text-surface transition-opacity hover:opacity-90"
+        data-astro-prefetch
+      >
+        See Orionfold Proof
+      </a>
+    </div>
+
+    <p class="mt-10 text-sm text-text-dim">
+      Didn't get the email? Check spam, or <a class="underline underline-offset-2 hover:text-text-muted" href="/become-ai-native-business/">request it again</a>.
+    </p>
+  </main>
+</Layout>
