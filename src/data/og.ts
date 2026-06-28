@@ -43,6 +43,14 @@ export const OG_PAGES: Record<string, OgPage> = {
     alt: 'Orionfold Advisor: a governed local AI advisor over the Orionfold corpus',
     background: 'src/assets/projects/advisor-poster.png',
   },
+  '/become-ai-native-business/': {
+    slug: 'become-ai-native-business',
+    eyebrow: 'Free book',
+    title: 'Become an AI-native business',
+    seed: 'ai-native-business',
+    alt: 'Get the AI Native Business book free, in PDF and EPUB, from Orionfold',
+    background: 'src/assets/book/ai-native-business-book.jpg',
+  },
   '/workflows/': {
     slug: 'workflows',
     eyebrow: 'Workflows',

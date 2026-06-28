@@ -1,0 +1,103 @@
+---
+// Lead magnet — gates the free AI Native Business book behind a double-opt-in
+// email capture. NO Stripe, NO checkout: a pure waitlist-signup opt-in with
+// offer=become-ai-native-business; the book is delivered by confirm-email on
+// confirm (see supabase/functions/confirm-email). Logo-only header + no footer
+// = a 1:1 attention ratio (one action: enter email). The web book stays open
+// and indexed; only the download is gated.
+import Layout from '../layouts/Layout.astro';
+import BrandMark from '../components/ui/BrandMark.astro';
+import WaitlistForm from '../components/ui/WaitlistForm.astro';
+import { Image } from 'astro:assets';
+import { ogMeta } from '../data/og';
+import bookCover from '../assets/book/ai-native-business-book.jpg';
+
+const og = ogMeta('/become-ai-native-business/');
+
+const consentText =
+  'By subscribing you agree to receive the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
+const privacyNote = consentText.replace(' See our privacy policy.', '');
+
+// What's in the book — marketing-finalized outcome bullets (relay 2026-06-28 §5.2).
+const insideBullets = [
+  'How an AI-native company is actually structured: the shift from a hierarchy of people to an organization that runs on intelligence.',
+  'Where AI does the work, not just the talking: how to refine your data, build your own tools, reuse what works, and put models to the test.',
+  'How the pieces hold together at scale: institutional memory so nothing is relearned, agents that coordinate, and a governance layer you can trust.',
+  'Where this is all heading: world models, systems that build their own systems, and what an AI-native business looks like a few years out.',
+];
+
+const title = 'Get the free AI Native Business book · Orionfold';
+const description =
+  'Read the AI Native Business book free. Enter your email and we send the PDF and EPUB, plus one short email a week on building with private AI.';
+---
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt}>
+  <header class="px-6 py-5">
+    <a href="/" class="group inline-flex items-center gap-1.5 text-text transition-colors hover:text-primary" aria-label="Orionfold home">
+      <BrandMark size={32} class="h-8 w-8" />
+      <span class="text-2xl font-semibold tracking-tight leading-none">
+        <span class="text-text">Orion</span><span class="text-primary">fold</span>
+      </span>
+    </a>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6 pb-24 pt-6">
+    <div class="grid items-center gap-12 md:grid-cols-2">
+      <!-- Left: the offer + capture -->
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Free book</p>
+        <h1 class="mt-4 leading-tight" style="font-size: clamp(2rem, 5vw, 3rem);">
+          Become an AI-native business.
+        </h1>
+        <p class="mt-5 max-w-md text-lg leading-relaxed text-text-muted">
+          The full book, free. Enter your email and we send you the PDF and the
+          EPUB, so you can read it on any device.
+        </p>
+
+        <div class="mt-8">
+          <WaitlistForm
+            id="magnet-ainb"
+            source="magnet-ai-native-business"
+            offer="become-ai-native-business"
+            buttonText="Send me the book"
+            successMessage="Check your inbox to confirm, then your book is on the way."
+            consentText={consentText}
+          />
+          <p class="mt-4 max-w-sm text-xs leading-relaxed text-text-dim">
+            {privacyNote}{' '}
+            <a class="underline underline-offset-2 hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
+          </p>
+        </div>
+
+        <p class="mt-8 text-sm text-text-dim">
+          Built by one team running private AI on hardware they own: 15 tools, 7
+          models, 3 books, and the open-source Orionfold Proof engine.
+        </p>
+      </div>
+
+      <!-- Right: the cover + what's inside -->
+      <div>
+        <Image
+          src={bookCover}
+          alt="AI Native Business book cover"
+          width={420}
+          height={560}
+          class="mx-auto w-full max-w-xs rounded-xl border border-border shadow-2xl"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <div class="mt-10">
+          <h2 class="text-lg font-semibold">What's in the book</h2>
+          <ul class="mt-4 space-y-3">
+            {insideBullets.map((b) => (
+              <li class="flex gap-3 text-sm leading-relaxed text-text-muted">
+                <svg class="mt-1 shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-4 text-sm text-text-dim">Written to be read in about two hours, then kept as a working reference.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
