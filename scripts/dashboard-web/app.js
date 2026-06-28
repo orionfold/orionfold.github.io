@@ -17,6 +17,8 @@ function render(payload) {
   const body = renderBody(payload);
   document.getElementById('meta').innerHTML = body.metaHtml;
   document.getElementById('freshness').innerHTML = body.freshnessHtml;
+  document.getElementById('analytics-bar').innerHTML = body.barHtml;
+  document.getElementById('insights').innerHTML = body.insightsHtml;
   document.getElementById('col-main').innerHTML = body.mainHtml;
   document.getElementById('col-side').innerHTML = body.sideHtml;
   bentoize();
@@ -98,3 +100,10 @@ function bentoize() {
 }
 let _resizeTimer;
 addEventListener('resize', () => { clearTimeout(_resizeTimer); _resizeTimer = setTimeout(bentoize, 100); });
+// Opening a <details> (top error paths, done todos…) grows a card's content but
+// not its frozen grid-row span → content bleeds over the next card. The `toggle`
+// event doesn't bubble, so listen in the CAPTURE phase and re-pack the grid so
+// the card expands and the rest reflow. rAF lets the layout settle first.
+addEventListener('toggle', (e) => {
+  if (e.target?.tagName === 'DETAILS') requestAnimationFrame(bentoize);
+}, true);

@@ -38,6 +38,44 @@ body { margin: 0; color: var(--ink); font: 14px/1.55 var(--sans); background: va
 .actions button:disabled { border-color: var(--border); background: var(--surface-2); color: var(--faint); cursor: wait }
 .freshness { display: flex; flex-wrap: wrap; gap: 14px; margin: 4px 0 18px; font: 600 10px/1 var(--mono); letter-spacing: .08em; color: var(--faint); text-transform: uppercase }
 .freshness .fr { display: flex; align-items: center; gap: 6px }
+
+/* ── top analytics bar: combined cross-property KPIs ─────────────────────────
+   A single full-width band above the grid that rolls every property's numbers
+   up into four metric groups. Reads as one masthead-level summary. */
+.analytics-bar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 1px 2px rgba(29,31,37,.06); padding: 14px 18px; margin: 0 0 14px }
+.bar-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 12px }
+.bar-title { font: 650 11px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--mute) }
+.bar-sub { font: 500 10.5px/1 var(--mono); letter-spacing: .04em; color: var(--faint) }
+.bar-groups { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px }
+.bar-group { border-left: 2px solid var(--border-soft); padding-left: 14px }
+.bar-group:first-child { border-left: 0; padding-left: 0 }
+.bar-group-title { display: block; font: 650 9px/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); margin-bottom: 9px }
+.bar-cells { display: flex; gap: 18px; flex-wrap: wrap }
+.bar-kpi { display: flex; flex-direction: column; gap: 4px }
+.bar-val { font: 650 19px/1 var(--mono); letter-spacing: -.01em; font-variant-numeric: tabular-nums; color: var(--ink) }
+.bar-val.accent { color: var(--blue-ink) }
+.bar-val.ok { color: var(--green-ink) } .bar-val.warn { color: var(--amber-ink) } .bar-val.bad { color: var(--red-ink) }
+.bar-lbl { font: 600 8.5px/1.3 var(--mono); color: var(--faint); text-transform: uppercase; letter-spacing: .08em }
+@media (max-width: 1100px) { .bar-groups { grid-template-columns: repeat(2, 1fr) } .bar-group:nth-child(odd) { border-left: 0; padding-left: 0 } }
+@media (max-width: 640px) { .bar-groups { grid-template-columns: 1fr } .bar-group { border-left: 0; padding-left: 0 } }
+
+/* ── growth insights: polished, prioritized actionable narrative ─────────────
+   A full-width card below the bar. Each insight = priority pill + headline +
+   the concrete action to take. Sorted P0 → P2; color-coded left rail. */
+.insights { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 1px 2px rgba(29,31,37,.06); padding: 16px 18px 8px; margin: 0 0 18px }
+.insights-head { margin-bottom: 12px }
+.insights-head h2 { margin: 0; font: 650 13px/1.2 var(--sans); letter-spacing: .04em; color: var(--ink) }
+.insights-head .sub { margin: 5px 0 0; color: var(--faint); font: 500 10.5px/1.5 var(--mono); letter-spacing: .02em }
+.insight-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px }
+.insight { border: 1px solid var(--border-soft); border-left: 3px solid var(--border); border-radius: 8px; padding: 11px 14px; background: var(--canvas) }
+.insight-P0 { border-left-color: var(--red) }
+.insight-P1 { border-left-color: var(--amber) }
+.insight-P2 { border-left-color: var(--faint) }
+.insight-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap }
+.insight-title { font: 650 13px/1.3 var(--sans); color: var(--ink) }
+.insight-scope { margin-left: auto; font: 600 9.5px/1 var(--mono); letter-spacing: .04em; color: var(--faint); text-transform: lowercase }
+.insight-action { margin: 6px 0 0; font: 13px/1.55 var(--sans); color: var(--mute) }
+.insight-action .mono { font-family: var(--mono); font-size: 12px }
 /* layout: 12-col dense bento (§5.6); app.js packer equalizes spans on the live
    page; the static page works from these CSS spans alone */
 .grid { display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: min-content; grid-auto-flow: dense; gap: 14px }
@@ -47,17 +85,23 @@ body { margin: 0; color: var(--ink); font: 14px/1.55 var(--sans); background: va
 .grid.packed { grid-auto-rows: 10px }
 .col { display: contents }   /* legacy wrappers become transparent to the grid */
 
-/* ── per-site masonry: orionfold left, ainative right (multi-site stats) ──
-   One dense grid. Site panels are PINNED to a half (.side-l → cols 1-6,
-   .side-r → cols 7-12); infra panels stay unpinned (span 6, auto-placed) so
-   grid-auto-flow:dense flows them up into the gap left by the shorter site
-   column — no whitespace seam. Headers span their half and force a new row so
-   each site's stack starts clean. */
-.panel.side-l { grid-column: 1 / 7 }
-.panel.side-r { grid-column: 7 / 13 }
+/* ── one masonry; orionfold is the page, ainative is a tagged minority ──
+   Most cards are orionfold → they flow naturally as span-6 panels. The few
+   ainative cards are TAGGED + tinted (.ainative) and PINNED top-right
+   (.pin-tr → cols 7-12, grid-row 1); grid-auto-flow:dense then flows the
+   orionfold cards around the pinned block. */
+.panel.pin-tr { grid-column: 7 / 13 }
+.panel.pin-tr:first-of-type { grid-row: 1 } /* anchor the ainative block to the top-right corner */
 .panel { grid-column: span 6; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(29,31,37,.06) }
 .panel.wide { grid-column: span 12 }
-@media (max-width: 1100px) { .grid { display: flex; flex-direction: column } }
+/* narrow: single flex column. The grid pins go inert here, so ainative cards
+   (first in DOM for the top-right pin) would otherwise lead — push them BELOW
+   orionfold with `order` so the primary site still reads first. */
+@media (max-width: 1100px) {
+  .grid { display: flex; flex-direction: column }
+  .panel { order: 1 }
+  .panel.ainative { order: 2 }
+}
 .panel header { margin-bottom: 12px }
 .phead { display: flex; align-items: center; gap: 9px }
 .pidx { font: 650 10px/1 var(--mono); color: var(--faint); letter-spacing: .1em }
@@ -74,9 +118,16 @@ body { margin: 0; color: var(--ink); font: 14px/1.55 var(--sans); background: va
 .kpi { display: flex; flex-direction: column; gap: 4px }
 .kpi .big { font: 650 22px/1 var(--mono); letter-spacing: -.01em; font-variant-numeric: tabular-nums; color: var(--ink) }
 .kpi .lbl { font: 600 9.5px/1.3 var(--mono); color: var(--faint); text-transform: uppercase; letter-spacing: .1em }
+/* secondary value inside a .big KPI (e.g. "42 / 14", "57 @ 66.9% eng") */
+.kpi .big .lbl-inline { font-size: 13px; font-weight: 600; color: var(--faint); letter-spacing: 0 }
 .kpi-row { padding: 8px 0; border-bottom: 1px solid var(--border-soft); font: 13px/1.5 var(--sans) }
 .kpi-row:last-child { border-bottom: 0 }
 .kpi-row strong { font: 650 10.5px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--blue-ink); margin-right: 6px }
+/* GA4 channel-mix: always-visible (expanded) block under the KPIs */
+.chanmix { margin: 4px 0 8px }
+.chanmix-head { margin: 0 0 4px }
+/* GSC indexing-reasons table heading */
+.reasons-head { margin: 10px 0 4px }
 /* tables */
 table { width: 100%; border-collapse: collapse; font: 12.5px/1.4 var(--sans); font-variant-numeric: tabular-nums }
 th { text-align: left; color: var(--faint); font: 650 10px/1 var(--mono); text-transform: uppercase; letter-spacing: .09em; padding: 6px 8px; border-bottom: 1px solid var(--border) }
@@ -128,20 +179,27 @@ td .dot { margin-right: 8px }
 footer { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--faint); font: 500 10.5px/1.6 var(--mono); letter-spacing: .05em; text-align: center }
 footer .mono { color: var(--mute) }
 
-/* per-site column header band (multi-site stats: orionfold + ainative).
-   Pinned to the top grid row, one per half, so the two site titles sit level.
-   The bento packer only row-spans .panel, so a header in the 10px-row packed
-   grid is given an explicit short row-span here to clear its own height. */
-.site-head {
-  grid-row: 1;
-  margin: 0;
-  padding: 2px 2px 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  border-bottom: 1px solid var(--border);
-  color: var(--ink);
+/* ── ainative (secondary site): tagged card ──
+   No background fill or edge color — ainative cards look like any other card;
+   the ONLY marker is the `.site-tag` chip in the header naming the domain. */
+.site-tag {
+  margin-left: auto;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--faint);
+  color: #fff;
+  font: 650 9px/1.4 var(--mono);
+  letter-spacing: .06em;
+  text-transform: lowercase;
 }
-.site-head.side-l { grid-column: 1 / 7 }
-.site-head.side-r { grid-column: 7 / 13 }
-.grid.packed .site-head { grid-row: 1 / span 2 } /* 2×10px + 14px gap = 34px: one title line, no slack */
+.panel.ainative .phead { width: 100% }
+.panel.ainative .phead h2 { flex: 1 } /* let the title row stretch so .site-tag pushes to the right edge */
+
+/* ── collapsed (empty) cards → title-only ──
+   A panel whose only body is an empty/placeholder note is stamped .collapsed
+   by the renderer: the body is dropped, leaving just the title + a one-line
+   "why empty" sub. The packer measures the shrunken height, so these settle to
+   a thin strip instead of a tall placeholder. */
+.panel.collapsed { opacity: .72 }
+.panel.collapsed header { margin-bottom: 0 }
+.panel.collapsed .sub { margin-top: 5px }

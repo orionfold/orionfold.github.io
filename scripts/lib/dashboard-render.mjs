@@ -74,19 +74,31 @@ export function renderBody(payload) {
     return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" ${tip}><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity="0.35"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><polygon points="${area}" fill="url(#${gid})"/><polyline fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${line}"/><circle cx="${x(pts.length - 1).toFixed(1)}" cy="${y(last).toFixed(1)}" r="3.2" fill="${color}"/></svg>`;
   }
 
+  // A panel whose body is ONLY an empty/placeholder note collapses to a
+  // title-only card (operator ask: "collapse empty cards to just titles").
+  // empty() tags its output with EMPTY_MARK; panel() detects a body that is
+  // nothing but one marked placeholder and stamps the card `.collapsed`.
+  const EMPTY_MARK = 'data-empty="1"';
   function panel(title, sub, bodyHtml, statusDot) {
     const dot = statusDot ? `<span class="dot ${statusDot}"></span>` : '';
     const idx = String(++panelIndex).padStart(2, '0');
-    return `<section class="panel">
+    const isEmpty = bodyHtml.includes(EMPTY_MARK);
+    const cls = isEmpty ? 'panel collapsed' : 'panel';
+    // collapsed cards drop the body entirely (title-only); the placeholder
+    // reason rides the header sub-line so the "why empty" is never lost.
+    const collapsedSub = isEmpty
+      ? (sub ? sub : 'no data yet')
+      : sub;
+    return `<section class="${cls}">
     <header>
       <div class="phead"><span class="pidx">${idx}</span><h2>${dot}${esc(title)}</h2></div>
-      ${sub ? `<p class="sub">${sub}</p>` : ''}
+      ${collapsedSub ? `<p class="sub">${collapsedSub}</p>` : ''}
     </header>
-    ${bodyHtml}
+    ${isEmpty ? '' : bodyHtml}
   </section>`;
   }
 
-  const empty = (msg) => `<p class="muted">${esc(msg)}</p>`;
+  const empty = (msg) => `<p class="muted" ${EMPTY_MARK}>${esc(msg)}</p>`;
 
   // ── Uptime panel (Better Stack) ─────────────────────────────────────────────
   function uptimePanel() {
@@ -159,8 +171,9 @@ export function renderBody(payload) {
     const cruxAvail = !!(cruxFf && Object.values(cruxFf).some((x) => x.available));
     if (cfF && cruxFf && !cfAvail && !cruxAvail) {
       const cruxReason = Object.values(cruxFf)[0]?.reason || 'no field data';
-      const body = `<div class="note"><p class="muted small"><strong>No field data yet</strong> — CF RUM: ${esc(cfF.reason)} · CrUX: ${esc(cruxReason)}</p></div>`;
-      return panel('Field CWV (real users)', 'Fills as traffic grows — both free sources gate on volume', body, 'amber');
+      // no field data on either free source → collapse to a title-only card.
+      const body = `<div class="note" ${EMPTY_MARK}><p class="muted small"><strong>No field data yet</strong> — CF RUM: ${esc(cfF.reason)} · CrUX: ${esc(cruxReason)}</p></div>`;
+      return panel('Field CWV (real users)', 'no field data — fills as traffic grows', body, 'amber');
     }
     const blocks = [];
     if (cf?.data.fieldCWV) {
@@ -359,48 +372,128 @@ export function renderBody(payload) {
     return panel('Cloudflare edge', sub, body, (w.serverErrors ?? 0) > 0 ? 'amber' : 'green');
   }
 
-  // ── SEO / AEO health (manual GA4 + GSC drops) ───────────────────────────────
+  // staleness in whole days for a manual snapshot (GA4/GSC rot the fastest).
+  const staleDays = (snap) =>
+    Math.round((Date.parse(`${todayStr}T00:00:00Z`) - Date.parse(`${snap.date}T00:00:00Z`)) / 86400000);
+
+  // ── Search (GSC) — the EARNED-DISCOVERY engine (indexing → impressions → clicks)
+  // Split out from the old combined SEO panel so search visibility is never
+  // conflated with GA4 traffic (which is paid-dominated). See the GA4 panel below.
   function seoPanel(site) {
-    const ga4 = latest('ga4', site);
     const gsc = latest('gsc', site);
-    if (!ga4 && !gsc) {
+    if (!gsc) {
       return panel(
-        'SEO / AEO health',
-        'manual capture (Workspace org blocks the GA4/GSC APIs)',
-        `<div class="note"><p class="muted small">No <span class="mono">ga4-&lt;date&gt;.json</span> / <span class="mono">gsc-&lt;date&gt;.json</span> dropped yet. Capture via Claude-in-Chrome and save into <span class="mono">audit-reports/metrics/</span>; this panel renders them on the next build. Tracked as "manual capture pending", never an error.</p></div>`,
+        'Search (GSC)',
+        'manual GSC capture pending',
+        `<div class="note" ${EMPTY_MARK}><p class="muted small">No <span class="mono">gsc-&lt;date&gt;.json</span> dropped yet. Capture via Claude-in-Chrome and save into <span class="mono">audit-reports/metrics/</span>; this panel renders it on the next build. Tracked as "manual capture pending", never an error.</p></div>`,
         'grey',
       );
     }
-    // every number carries its capture window — "clicks 0" over 3 days and over
-    // 3 months are different signals — and the staleness badge is computed
-    // (ageNote), never hardcoded fresh: manual captures are the likeliest to rot.
-    const staleDays = (snap) =>
-      Math.round((Date.parse(`${todayStr}T00:00:00Z`) - Date.parse(`${snap.date}T00:00:00Z`)) / 86400000);
-    const parts = [];
-    if (gsc) {
-      const g = gsc.data;
-      const idx = g.indexed ?? null;
-      const notIdx = g.notIndexed ?? null;
-      const idxStr =
-        idx != null && notIdx != null
-          ? `indexed <span class="${notIdx > idx ? 'warn' : 'ok'}">${esc(idx)}</span> / not ${esc(notIdx)}`
-          : `indexed ${esc(idx ?? '—')}`;
-      parts.push(`<div class="kpi-row"><strong>GSC</strong> — ${idxStr} · clicks ${esc(g.clicks ?? '—')} · impressions ${esc(g.impressions ?? '—')} · avg pos ${esc(g.avgPosition ?? '—')} ${ageNote(gsc.date)}${
-        g.window ? `<br><span class="muted small">window: ${esc(g.window)}</span>` : ''
-      }</div>`);
+    const g = gsc.data;
+    const idx = g.indexed ?? null;
+    const notIdx = g.notIndexed ?? null;
+    const indexingBehind = idx != null && notIdx != null && notIdx > idx;
+    // headline KPIs: the indexing ratio (the leading discovery signal — ainative's
+    // 20/201 vs orionfold's 42/14 is the whole story) + clicks/impressions/CTR.
+    const ctr = g.ctr != null ? pct(g.ctr) : '—';
+    const idxKpi =
+      idx != null && notIdx != null
+        ? `<div class="kpi"><span class="big ${indexingBehind ? 'bad' : 'ok'}">${esc(idx)}<span class="lbl-inline"> / ${esc(notIdx)}</span></span><span class="lbl">indexed / not indexed</span></div>`
+        : '';
+    const kpis = `<div class="kpis">
+      ${idxKpi}
+      <div class="kpi"><span class="big">${esc(g.clicks ?? '—')}</span><span class="lbl">clicks</span></div>
+      <div class="kpi"><span class="big">${esc(g.impressions ?? '—')}</span><span class="lbl">impressions</span></div>
+      <div class="kpi"><span class="big">${ctr}</span><span class="lbl">ctr</span></div>
+      <div class="kpi"><span class="big">${esc(g.avgPosition ?? '—')}</span><span class="lbl">avg position</span></div>
+    </div>`;
+    const win = g.window ? `<p class="muted small">window: ${esc(g.window)}</p>` : '';
+    const behindNote = indexingBehind
+      ? `<p class="muted small">More pages sit outside the index than in it — a content/links/freshness backlog, not an error. Sitemap <span class="mono">&lt;lastmod&gt;</span> + JSON-LD + internal links are the proven levers.</p>`
+      : '';
+    // top indexing-error reasons (why pages aren't indexed). The fix that drives
+    // indexing is a "Discovered/Crawled - currently not indexed" backlog (content/
+    // links/freshness); "Alternate canonical"/"noindex"/"redirect" are CORRECT
+    // exclusions, not errors — flag the actionable Google-systems reasons in amber.
+    const reasons = Array.isArray(g.notIndexedReasons) ? g.notIndexedReasons : null;
+    let reasonsBlock = '';
+    if (reasons && reasons.length) {
+      const isBacklog = (r) => /currently not indexed|server error|crawl/i.test(r.reason);
+      const rows = reasons
+        .filter((r) => (r.pages ?? 0) > 0)
+        .sort((a, b) => (b.pages ?? 0) - (a.pages ?? 0))
+        .map((r) => {
+          const warn = isBacklog(r) ? ' bad' : '';
+          return `<tr><td>${esc(r.reason)}</td><td class="mono small muted">${esc(r.source || '')}</td><td class="right mono${warn}">${num(r.pages ?? 0)}</td></tr>`;
+        })
+        .join('');
+      if (rows) {
+        reasonsBlock = `<p class="muted small reasons-head">top reasons pages aren't indexed</p>
+        <table class="small"><thead><tr><th>reason</th><th>source</th><th class="right">pages</th></tr></thead><tbody>${rows}</tbody></table>`;
+      }
     }
-    if (ga4) {
-      const a = ga4.data;
-      parts.push(`<div class="kpi-row"><strong>GA4</strong> — users ${esc(a.users ?? '—')} · sessions ${esc(a.sessions ?? '—')} · conversions ${esc(a.conversions ?? '—')} ${ageNote(ga4.date)}${
-        a.window ? `<br><span class="muted small">window: ${esc(a.window)}</span>` : ''
-      }</div>`);
+    const sub = `manual GSC capture · ${ageNote(gsc.date)}`;
+    return panel('Search (GSC)', sub, kpis + win + behindNote + reasonsBlock, staleDays(gsc) > 7 || indexingBehind ? 'amber' : 'green');
+  }
+
+  // ── Traffic (GA4) — earned vs total, NEVER conflated ─────────────────────────
+  // Promotes the high-signal metrics buried in the old combined panel to headline
+  // KPIs: Organic Search sessions (the earned-traffic engine) + engagement rate
+  // (traffic quality) + key events (leads) sit next to total sessions, so a paid
+  // spike can't masquerade as growth. Channel mix + users/conversions follow.
+  function ga4Panel(site) {
+    const ga4 = latest('ga4', site);
+    if (!ga4) {
+      return panel(
+        'Traffic (GA4)',
+        'manual GA4 capture pending',
+        `<div class="note" ${EMPTY_MARK}><p class="muted small">No <span class="mono">ga4-&lt;date&gt;.json</span> dropped yet. Capture via Claude-in-Chrome and save into <span class="mono">audit-reports/metrics/</span>; this panel renders it on the next build. Tracked as "manual capture pending", never an error.</p></div>`,
+        'grey',
+      );
     }
-    // honest dot: amber when a capture is over a week old or more pages sit
-    // outside the index than in it — neither is failure, both deserve attention.
-    const indexingBehind =
-      gsc?.data.indexed != null && gsc?.data.notIndexed != null && gsc.data.notIndexed > gsc.data.indexed;
-    const anyStale = [gsc, ga4].filter(Boolean).some((s) => staleDays(s) > 7);
-    return panel('SEO / AEO health', 'manual GA4/GSC capture', parts.join(''), anyStale || indexingBehind ? 'amber' : 'green');
+    const a = ga4.data;
+    const er = a.engagementRate != null ? pct(a.engagementRate) : '—';
+    const org = a.organicSearchSessions;
+    const orgEr = a.organicSearchEngagementRate != null ? ` <span class="lbl-inline">@ ${pct(a.organicSearchEngagementRate)} eng</span>` : '';
+    const keyEvents = a.keyEvents ?? a.conversions;
+    // earned-first KPI row: Organic Search leads (the engine that matters), then
+    // total sessions, engagement rate, key events. Organic uses the blue data hue
+    // (not status) to read as "the signal line", total stays neutral ink.
+    const kpis = `<div class="kpis">
+      ${
+        org != null
+          ? `<div class="kpi"><span class="big" style="color:var(--blue-ink)">${esc(org)}${orgEr}</span><span class="lbl">organic search sessions</span></div>`
+          : ''
+      }
+      <div class="kpi"><span class="big">${esc(a.sessions ?? '—')}</span><span class="lbl">total sessions</span></div>
+      <div class="kpi"><span class="big ${a.engagementRate >= 0.4 ? 'ok' : a.engagementRate >= 0.2 ? 'warn' : ''}">${er}</span><span class="lbl">engagement rate</span></div>
+      <div class="kpi"><span class="big ${keyEvents > 0 ? 'ok' : ''}">${esc(keyEvents ?? '—')}</span><span class="lbl">key events (leads)</span></div>
+    </div>`;
+    // channel mix: which engine the sessions came from. Paid vs organic at a glance.
+    const chans = a.sessionChannels && Object.keys(a.sessionChannels).length ? a.sessionChannels : null;
+    let chanBlock = '';
+    if (chans) {
+      const totalCh = Object.values(chans).reduce((x, y) => x + y, 0) || 1;
+      const isPaid = (k) => /paid/i.test(k);
+      const isOrganic = (k) => /organic|referral|email/i.test(k);
+      const rows = Object.entries(chans)
+        .sort((x, y) => y[1] - x[1])
+        .map(([k, v]) => {
+          const tag = isPaid(k) ? 'paid' : isOrganic(k) ? 'earned' : 'direct';
+          const cls = tag === 'paid' ? 'amber' : tag === 'earned' ? 'green' : 'grey';
+          return `<tr><td><span class="pill ${cls}">${tag}</span></td><td>${esc(k)}</td><td class="right mono">${esc(v)}</td><td class="right mono muted">${((v / totalCh) * 100).toFixed(0)}%</td></tr>`;
+        })
+        .join('');
+      chanBlock = `<div class="chanmix"><p class="muted small chanmix-head">channel mix (earned vs paid vs direct)</p>
+        <table class="small"><thead><tr><th>type</th><th>channel</th><th class="right">sessions</th><th class="right">share</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+    const detail = `<p class="muted small">users ${esc(a.users ?? '—')} · conversions ${esc(a.conversions ?? '—')}${
+      a.avgEngagementTimeSec != null ? ` · avg engagement ${esc(a.avgEngagementTimeSec)}s` : ''
+    }${a.window ? ` · window: ${esc(a.window)}` : ''}</p>`;
+    const note = `<p class="muted small">Total sessions are paid-dominated when a campaign runs — read the <strong>organic search</strong> line for the earned trend, not the total. Key events = configured leads/conversions; <span class="mono">0</span> with paid off (or no events wired) is expected, not a leak.</p>`;
+    // honest dot: amber if stale (>7d) or no engagement to speak of.
+    const lowEng = a.engagementRate != null && a.engagementRate < 0.2;
+    return panel('Traffic (GA4)', `manual GA4 capture · ${ageNote(ga4.date)}`, kpis + chanBlock + detail + note, staleDays(ga4) > 7 || lowEng ? 'amber' : 'green');
   }
 
   // ── CI / Deploy (gh, server-side cached — asOf is honest about it) ────────
@@ -440,40 +533,6 @@ export function renderBody(payload) {
     return panel('CI / Deploy', 'deploy.yml + lighthouse.yml', body, anyBad ? 'red' : 'green');
   }
 
-  // ── Todos (agency export ∪ local echo — the sync contract, rendered) ──────
-  function todosPanel() {
-    const t = payload.todos;
-    if (!t?.available) return panel('Todos', 'agency sync', empty(`no data — ${t?.reason || 'loader missing'}`), 'grey');
-    const order = { in_progress: 0, open: 1, blocked: 2, done: 3 };
-    // Memos (kind:"memo") are the operator's standing habits, not work items
-    // (sync contract, 2026-06-06): distinct accent pill, sorted after
-    // actionable todos, never status-advanced here and never status-bearing
-    // for the panel dot.
-    const rank = (x) => (x.kind === 'memo' ? 8 : (order[x.status] ?? 9));
-    const items = [...t.todos].sort((a, b) => rank(a) - rank(b) || (b.updated || '').localeCompare(a.updated || ''));
-    const active = items.filter((x) => x.status !== 'done');
-    const done = items.filter((x) => x.status === 'done');
-    const row = (x) => {
-      const pill =
-        x.kind === 'memo'
-          ? '<span class="pill memo">memo</span>'
-          : `<span class="pill ${
-              x.status === 'done' ? 'green' : x.status === 'blocked' ? 'red' : x.status === 'in_progress' ? 'amber' : 'grey'
-            }">${esc(x.status)}</span>`;
-      return `<tr>
-        <td>${pill}</td>
-        <td>${x.title != null ? esc(x.title) : '<span class="muted">—</span>'}${x.due ? ` <span class="muted small mono">due ${esc(x.due)}</span>` : ''}</td>
-        <td class="mono small">${esc(x.origin === 'agency' ? 'agency' : x.project || '')}</td>
-      </tr>`;
-    };
-    const body = `<table><thead><tr><th>State</th><th>Todo</th><th>Origin</th></tr></thead>
-      <tbody>${active.map(row).join('') || '<tr><td colspan="3" class="muted">none open</td></tr>'}</tbody></table>
-      ${done.length ? `<details class="errors"><summary class="muted small">done (${done.length})</summary><table><tbody>${done.map(row).join('')}</tbody></table></details>` : ''}
-      <p class="muted small">read-only merge of <span class="mono">../agency/_TODOS/_export.json</span> ∪ local <span class="mono">_TODOS.json</span> (last-writer-wins by updated). Intake stays a Claude-session job.</p>`;
-    const anyBlocked = active.some((x) => x.kind !== 'memo' && x.status === 'blocked');
-    return panel('Todos', `agency export ${t.generated ? esc(t.generated) + ' ' + ageNote(t.generated) : '—'}`, body, anyBlocked ? 'amber' : 'green');
-  }
-
   const sourcesList = ['betterstack', 'cloudflare', 'lighthouse', 'crux'];
   const newestDate = Object.keys(snaps)
     .flatMap((s) => snaps[s].map((x) => x.date))
@@ -493,37 +552,229 @@ export function renderBody(payload) {
     .join('');
   const genTs = payload.generatedAt.replace('T', ' ').slice(0, 16);
 
-  // One column per site (orionfold left, ainative right): each is a flex stack
-  // of its own header + panels. The .sites flex row places them side by side and
-  // each .site-col stacks vertically — so panels never land in a foreign track
-  // ── single dense masonry, columns pinned by site ──
-  // One grid: orionfold panels pinned to the LEFT half (.side-l → grid cols 1-6),
-  // ainative to the RIGHT half (.side-r → cols 7-12). The infra panels stay
-  // UNPINNED so grid-auto-flow:dense flows them up into whichever column the
-  // shorter site left empty — no ragged seam / whitespace above the infra cards.
-  // Headers span their own half and force a column break (.site-head.side-l/-r).
-  const pin = (html, side) => html.replace('<section class="panel"', `<section class="panel side-${side}"`);
-  const headFor = (site, side) => {
-    const domain = latest('cloudflare', site)?.data.domain || (site === 'orionfold' ? 'orionfold.com' : site);
-    return `<h2 class="site-head side-${side}">${esc(domain)}</h2>`;
-  };
-  const sidePanels = (site, side) =>
-    [lighthousePanel(site), cloudflarePanel(site), fieldCwvPanel(site), seoPanel(site)]
-      .map((p) => pin(p, side))
-      .join('\n      ');
+  // ════════════════════════════════════════════════════════════════════════════
+  // Combined cross-property analytics + actionable growth insights.
+  // Both are pure functions of the same snapshots the panels render — the bar
+  // rolls the per-site numbers up; the insights apply fixed rules to them so the
+  // narrative can never drift from the data (rule-based, recomputed every build).
+  // ════════════════════════════════════════════════════════════════════════════
 
+  // collect the latest GSC/GA4/Cloudflare/Better Stack reads per site, once.
+  const siteData = siteList.map((site) => ({
+    site,
+    domain: latest('cloudflare', site)?.data.domain || (site === 'orionfold' ? 'orionfold.com' : site),
+    gsc: latest('gsc', site)?.data || null,
+    ga4: latest('ga4', site)?.data || null,
+    cf: latest('cloudflare', site)?.data || null,
+  }));
+  const bs = latest('betterstack')?.data || null; // infra is orionfold-only
+  const sumBy = (fn) => siteData.reduce((a, s) => a + (fn(s) || 0), 0);
+
+  // ── top analytics bar: combined KPIs across all properties ──────────────────
+  function analyticsBar() {
+    // search & traffic (earned)
+    const clicks = sumBy((s) => s.gsc?.clicks);
+    const impressions = sumBy((s) => s.gsc?.impressions);
+    const organic = sumBy((s) => s.ga4?.organicSearchSessions);
+    const indexed = sumBy((s) => s.gsc?.indexed);
+    const notIndexed = sumBy((s) => s.gsc?.notIndexed);
+    // engagement & conversions
+    const sessions = sumBy((s) => s.ga4?.sessions);
+    const keyEvents = sumBy((s) => s.ga4?.keyEvents ?? s.ga4?.conversions);
+    // weighted overall engagement rate (engagedSessions / sessions across sites)
+    const engaged = sumBy((s) => s.ga4?.engagedSessions);
+    const engRate = sessions ? engaged / sessions : null;
+    // discovered-not-indexed backlog (the actionable SEO gap)
+    const backlog = siteData.reduce((a, s) => {
+      const reasons = Array.isArray(s.gsc?.notIndexedReasons) ? s.gsc.notIndexedReasons : [];
+      return a + reasons.filter((r) => /currently not indexed/i.test(r.reason)).reduce((x, r) => x + (r.pages || 0), 0);
+    }, 0);
+    // reliability & edge
+    const reqs = sumBy((s) => s.cf?.last24h?.sampledRequests);
+    const err4xx = sumBy((s) => s.cf?.last24h?.clientErrors);
+    const err5xx = sumBy((s) => s.cf?.last24h?.serverErrors);
+    const monUp = bs?.counts?.up ?? null;
+    const monTotal = bs?.total ?? null;
+
+    const cell = (value, label, cls = '') =>
+      `<div class="bar-kpi"><span class="bar-val ${cls}">${value}</span><span class="bar-lbl">${esc(label)}</span></div>`;
+    const grp = (title, cells) =>
+      `<div class="bar-group"><span class="bar-group-title">${esc(title)}</span><div class="bar-cells">${cells.join('')}</div></div>`;
+
+    const searchGrp = grp('Search & traffic', [
+      cell(num(clicks), 'gsc clicks'),
+      cell(num(impressions), 'impressions'),
+      cell(num(organic), 'organic sessions', 'accent'),
+    ]);
+    const engGrp = grp('Engagement', [
+      cell(num(sessions), 'total sessions'),
+      cell(engRate != null ? pct(engRate) : '—', 'engagement rate', engRate >= 0.4 ? 'ok' : engRate >= 0.2 ? 'warn' : ''),
+      cell(num(keyEvents), 'key events', keyEvents > 0 ? 'ok' : ''),
+    ]);
+    const idxGrp = grp('Indexing', [
+      cell(num(indexed), 'indexed', 'ok'),
+      cell(num(notIndexed), 'not indexed', notIndexed > indexed ? 'bad' : ''),
+      cell(num(backlog), 'discovered backlog', backlog > 0 ? 'bad' : 'ok'),
+    ]);
+    const relCells = [
+      cell(num(reqs), 'edge req / 24h'),
+      cell(num(err4xx), '4xx errors', err4xx > 0 ? 'warn' : 'ok'),
+      cell(num(err5xx), '5xx errors', err5xx > 0 ? 'bad' : 'ok'),
+    ];
+    if (monUp != null) relCells.unshift(cell(`${monUp}/${monTotal}`, 'monitors up', monUp === monTotal ? 'ok' : 'bad'));
+    const relGrp = grp('Reliability & edge', relCells);
+
+    return `<div class="analytics-bar">
+      <div class="bar-head"><span class="bar-title">Combined analytics</span><span class="bar-sub">${esc(siteData.length)} properties · ${siteData.map((s) => esc(s.domain)).join(' + ')}</span></div>
+      <div class="bar-groups">${searchGrp}${engGrp}${idxGrp}${relGrp}</div>
+    </div>`;
+  }
+
+  // ── actionable growth insights: fixed rules over the live numbers ────────────
+  // Each rule emits an insight only when the data triggers it, tagged by priority
+  // (P0 act-now / P1 high-leverage / P2 polish) and the property it concerns.
+  // The objective is GROWTH of the Orionfold properties — every insight names a
+  // concrete next action, not just an observation.
+  function growthInsights() {
+    const out = [];
+    const push = (priority, scope, title, action) => out.push({ priority, scope, title, action });
+
+    for (const s of siteData) {
+      const tag = s.domain;
+      // indexing backlog — the #1 earned-discovery lever (playbook-proven)
+      const reasons = Array.isArray(s.gsc?.notIndexedReasons) ? s.gsc.notIndexedReasons : [];
+      const disc = reasons.find((r) => /discovered - currently not indexed/i.test(r.reason));
+      const crawled = reasons.find((r) => /crawled - currently not indexed/i.test(r.reason));
+      const backlog = (disc?.pages || 0) + (crawled?.pages || 0);
+      if (backlog >= 20) {
+        push('P0', tag,
+          `${num(backlog)} pages discovered/crawled but not indexed`,
+          `Google found these pages but won't index them — the classic content/links/freshness gap. Add internal links from indexed hubs (footer directory, catalog doorways), set real <span class="mono">&lt;lastmod&gt;</span> in the sitemap, and confirm each page has complete JSON-LD. This is the proven lever that drove orionfold 5→42 indexed.`);
+      }
+      // indexing ratio inverted
+      if (s.gsc && s.gsc.notIndexed > s.gsc.indexed && backlog < 20) {
+        push('P1', tag,
+          `More pages excluded (${num(s.gsc.notIndexed)}) than indexed (${num(s.gsc.indexed)})`,
+          `Review the exclusion reasons — if they're canonical/noindex/redirect they're correct housekeeping, but a high count can hide thin or duplicate pages worth consolidating or linking.`);
+      }
+      // low CTR despite impressions — title/meta intent problem
+      if (s.gsc && s.gsc.impressions >= 200 && s.gsc.ctr != null && s.gsc.ctr < 0.02) {
+        push('P1', tag,
+          `High impressions (${num(s.gsc.impressions)}) but ${pct(s.gsc.ctr)} CTR`,
+          `Pages are surfacing in search but not earning the click. Rewrite the highest-impression pages' <span class="mono">&lt;title&gt;</span> + meta description toward the query intent; weak avg position (${esc(s.gsc.avgPosition ?? '—')}) says they also need depth + internal links to climb.`);
+      }
+      // earned vs paid — organic engagement strength worth doubling down on
+      if (s.ga4?.organicSearchEngagementRate != null && s.ga4.organicSearchEngagementRate >= 0.5 && (s.ga4.organicSearchSessions || 0) > 0) {
+        push('P1', tag,
+          `Organic search engages at ${pct(s.ga4.organicSearchEngagementRate)} — your best channel`,
+          `Organic visitors are far more engaged than paid/direct. Grow this channel: publish more answer-first content on the queries already ranking, and interlink it. Earned traffic compounds where paid stops the moment spend stops.`);
+      }
+      // no key events configured/firing — the funnel can't measure conversion
+      if (s.ga4 && (s.ga4.keyEvents ?? s.ga4.conversions ?? 0) === 0 && (s.ga4.sessions || 0) >= 100) {
+        push('P1', tag,
+          `${num(s.ga4.sessions)} sessions but 0 key events tracked`,
+          `Traffic is arriving with no conversion measurement. Wire a key event (waitlist signup, lead form, purchase) in GA4 so growth can be tied to outcomes — otherwise sessions are a vanity number.`);
+      }
+      // 5xx on the edge — reliability gate on growth
+      const w = s.cf?.last24h;
+      if (w && (w.serverErrors || 0) > 0) {
+        push('P0', tag,
+          `${num(w.serverErrors)} server error(s) (5xx) on the edge`,
+          `Real users (or crawlers) hit a broken response. Open the 5xx paths on the Cloudflare card and fix the origin — server errors suppress both rankings and conversions.`);
+      }
+    }
+    // cross-property: field CWV still absent everywhere (leading indicator note)
+    const anyFieldCwv = siteData.some((s) => s.cf?.fieldCWV?.available);
+    if (!anyFieldCwv) {
+      push('P2', 'all properties',
+        'No field Core Web Vitals yet (CrUX below threshold)',
+        'Real-user performance data appears only once traffic crosses Google\'s volume bar. Not a defect — watch for the first CrUX record as a leading indicator that a property is gaining real audience.');
+    }
+    // priority order for display
+    const rank = { P0: 0, P1: 1, P2: 2 };
+    out.sort((a, b) => rank[a.priority] - rank[b.priority]);
+    return out;
+  }
+
+  function insightsPanel() {
+    const insights = growthInsights();
+    const prClass = { P0: 'red', P1: 'amber', P2: 'grey' };
+    const rows = insights.length
+      ? insights
+          .map(
+            (i) => `<li class="insight insight-${i.priority}">
+        <div class="insight-top"><span class="pill ${prClass[i.priority]}">${i.priority}</span><span class="insight-title">${i.title}</span><span class="insight-scope">${esc(i.scope)}</span></div>
+        <p class="insight-action">${i.action}</p>
+      </li>`,
+          )
+          .join('')
+      : '<li class="insight"><p class="muted">No actionable issues detected from the current snapshots — keep shipping content and re-run the capture to refresh.</p></li>';
+    return `<section class="insights">
+      <header class="insights-head">
+        <h2>Growth insights</h2>
+        <p class="sub">Actionable, data-derived next steps to grow the Orionfold properties · ${insights.length} item${insights.length === 1 ? '' : 's'}</p>
+      </header>
+      <ol class="insight-list">${rows}</ol>
+    </section>`;
+  }
+
+  // ── one dense masonry; orionfold is the page, ainative is a tagged minority ──
+  // Most cards are orionfold (this site) → they flow naturally as plain panels.
+  // The few ainative cards are TAGGED + tinted (.ainative carries the chip + the
+  // distinct background in CSS) and PINNED top-right (.pin-tr → grid cols 7-12,
+  // grid-row:1) so the secondary site always sits in the top-right corner. The
+  // packer then flows orionfold's panels around the pinned block via dense flow.
   const leftSite = siteList[0]; // orionfold (default site is always first)
   const rightSite = siteList[1]; // ainative (if present)
-  const mainParts = [headFor(leftSite, 'l'), sidePanels(leftSite, 'l')];
-  if (rightSite) mainParts.push(headFor(rightSite, 'r'), sidePanels(rightSite, 'r'));
-  // infra panels: unpinned → fill gaps left by the shorter site column.
-  mainParts.push(uptimePanel(), commercePanel(), ciPanel(), todosPanel());
+
+  // tag + tint + pin a panel as belonging to the secondary (ainative) site.
+  const asAinative = (html, domain) =>
+    html.replace(
+      '<section class="panel',
+      `<section data-site="ainative" class="panel ainative pin-tr`,
+    ).replace(
+      /<h2>(.*?)<\/h2>/,
+      `<h2>$1<span class="site-tag">${esc(domain)}</span></h2>`,
+    );
+
+  // orionfold (this site): all data + infra panels flow as ordinary cards.
+  // Search (GSC) + Traffic (GA4) are split — earned discovery vs traffic, never
+  // conflated — and sit adjacent so the two engines read together.
+  const mainParts = [
+    lighthousePanel(leftSite),
+    cloudflarePanel(leftSite),
+    fieldCwvPanel(leftSite),
+    seoPanel(leftSite),
+    ga4Panel(leftSite),
+    uptimePanel(),
+    commercePanel(),
+    ciPanel(),
+  ];
+
+  // ainative (secondary): tagged + tinted + pinned top-right.
+  if (rightSite) {
+    const domain = latest('cloudflare', rightSite)?.data.domain || rightSite;
+    const aPanels = [
+      cloudflarePanel(rightSite),
+      seoPanel(rightSite),
+      ga4Panel(rightSite),
+      lighthousePanel(rightSite),
+      fieldCwvPanel(rightSite),
+    ].map((p) => asAinative(p, domain));
+    // pinned panels render first so grid-auto-flow:dense places them top-right.
+    mainParts.unshift(...aPanels);
+  }
 
   return {
     metaHtml: `generated <b>${esc(genTs)}</b> utc<br>latest data <b>${esc(newestDate || 'none')}</b>`,
     freshnessHtml,
-    // mainHtml = the whole masonry (site-pinned panels + gap-filling infra panels).
-    // sideHtml kept empty for back-compat with the shell's hidden #col-side mount.
+    // barHtml = combined cross-property KPI bar; insightsHtml = the growth
+    // narrative. Both mount above the masonry grid (shell + static build).
+    barHtml: analyticsBar(),
+    insightsHtml: insightsPanel(),
+    // mainHtml = the whole masonry: orionfold panels flow naturally; the tagged
+    // ainative panels pin to the top-right. sideHtml kept empty for back-compat
+    // with the shell's hidden #col-side mount.
     mainHtml: mainParts.join('\n      '),
     sideHtml: '',
   };

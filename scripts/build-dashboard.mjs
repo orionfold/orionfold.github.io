@@ -28,6 +28,8 @@ const html = `<!doctype html>
     <div class="meta">${body.metaHtml}</div>
   </header>
   <div class="freshness">${body.freshnessHtml}</div>
+  ${body.barHtml}
+  ${body.insightsHtml}
   <div class="grid sites-grid">
     ${body.mainHtml}
   </div>
