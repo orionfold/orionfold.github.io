@@ -415,3 +415,10 @@ verify_jwt = false
 # verify_jwt off so our constant-time token check is the sole gate, like admin-issue-license.
 [functions.waitlist-export]
 verify_jwt = false
+
+# purchases-export (offer-ladder Leg 1): read-only CRM export of completed purchases
+# for marketing's poller (the buyer twin of waitlist-export), gated by its own
+# PURCHASES_EXPORT_TOKEN shared credential (server-to-server, no browser caller).
+# verify_jwt off so our constant-time token check is the sole gate, like waitlist-export.
+[functions.purchases-export]
+verify_jwt = false
