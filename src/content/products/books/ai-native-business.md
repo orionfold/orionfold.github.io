@@ -121,3 +121,5 @@ shared memory. By the end you have seen a real business that helps build itself.
 Founders, builders, and small teams who want to use AI as more than a chat box.
 You can read the whole thing free online. If you want a copy to keep and read
 offline, the PDF and EPUB bundle is yours for a one time price.
+
+Want to read it first? You can [get the full book free](/become-ai-native-business/), in PDF and EPUB, and decide for yourself.
