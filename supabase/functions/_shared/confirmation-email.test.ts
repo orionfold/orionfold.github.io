@@ -36,8 +36,20 @@ Deno.test("founder-letter offer gets its own copy", () => {
   assert(!e.text.includes("our stories"));
 });
 
+Deno.test("become-ai-native-business offer names the AI For Everyone list + cadence", () => {
+  const e = confirmationEmail(URL, "become-ai-native-business");
+  assertEquals(e.subject, "One click for your free AI Native Business book");
+  assert(e.text.includes("AI Native Business"));
+  assert(e.text.includes("AI For Everyone"));
+  // Cadence promise — the plain-text email wraps "One email a\nweek", so assert
+  // on the parts that don't cross the wrap rather than the full phrase.
+  assert(e.text.includes("email a"));
+  assert(e.text.includes("week, no more"));
+  assert(!e.text.includes("our stories"));
+});
+
 Deno.test("every variant keeps the shared scaffold", () => {
-  for (const offer of [null, "proof-playbook", "founder-letter", "bogus"]) {
+  for (const offer of [null, "proof-playbook", "founder-letter", "become-ai-native-business", "bogus"]) {
     const e = confirmationEmail(URL, offer);
     assert(e.text.startsWith("Hi,"), `greeting missing for ${offer}`);
     assert(e.text.includes(URL), `confirm URL missing for ${offer}`);

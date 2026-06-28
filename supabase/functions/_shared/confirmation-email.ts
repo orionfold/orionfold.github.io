@@ -53,6 +53,16 @@ It's a monthly note from Manav on where AI is really
 heading and what it means for owning your own stack.
 One letter a month, no spam.`,
   },
+  "become-ai-native-business": {
+    subject: "One click for your free AI Native Business book",
+    pitch:
+      `You're almost in. Confirm your email and we'll send you
+the free AI Native Business book, in PDF and EPUB, so you
+can read it on any device.
+
+You'll also join the AI For Everyone digest. One email a
+week, no more, and you can leave any time.`,
+  },
 };
 
 function copyFor(offer: string | null | undefined): OfferCopy {
