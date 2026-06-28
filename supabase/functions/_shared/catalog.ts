@@ -59,6 +59,22 @@ export const CATALOG: Record<string, CatalogItem> = {
     label: "AI Native Platform",
     amount: 4000,
   },
+  // Founding-reader bundle — the offer-ladder tripwire (the paid first dollar after
+  // the free become-ai-native-business magnet). One SKU delivering ALL THREE books'
+  // PDF+EPUB: AI Native Business ($20) + AI Native Platform ($40) + AI Research on
+  // NVIDIA DGX Spark ($50) = $110 list, half off at $55. A plain book (one-time);
+  // fulfillment reuses fulfillBook → signBookFiles lists book-files/book_bundle_founding/
+  // and signs every PDF/EPUB it finds (all 6), so no webhook change. Offered ONLY in
+  // the post-conversion welcome flow (the magnet thanks page + a later welcome email),
+  // never browsable — that placement IS the new-subscriber scoping. "Founding" is a
+  // copy frame, not a server cap (the founding-cap logic is license-family-only).
+  book_bundle_founding: {
+    lookupKey: "book_bundle_founding",
+    kind: "book",
+    mode: "payment",
+    label: "Founding Reader Bundle (all three books)",
+    amount: 5500,
+  },
   // Arena Field Edition — the first net-new commercial product (the paid edition
   // of the free, open Orionfold Arena). "Free and open: the machine. Paid: the
   // evidence." A per-box, offline-tolerant key-file license for NVIDIA DGX Spark;
