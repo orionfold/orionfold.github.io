@@ -9,6 +9,8 @@
 // brandedUrl) stay testable without a server; signBookFiles takes the supabase
 // client so callers own client construction.
 
+import { EMAIL_FOOTER } from "./email-footer.ts";
+
 export const BOOK_FILES_BUCKET = "book-files";
 export const DOWNLOAD_TTL_SECONDS = 60 * 60 * 24 * 7; // 7-day signed download links
 
@@ -69,10 +71,7 @@ These links work for 7 days. Save the files to your device
 once you download them. Reply to this email if you hit any
 trouble and we will help.
 
---
-Orionfold
-https://orionfold.com
-`;
+${EMAIL_FOOTER}`;
 }
 
 export async function sendBookEmail(

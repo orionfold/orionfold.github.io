@@ -55,6 +55,9 @@ Deno.test("every variant keeps the shared scaffold", () => {
     assert(e.text.includes(URL), `confirm URL missing for ${offer}`);
     assert(e.text.includes("expires in 7 days"), `expiry missing for ${offer}`);
     assert(e.text.includes("https://orionfold.com"), `signature missing for ${offer}`);
+    // CAN-SPAM: every commercial email carries the LLC postal address + an opt-out.
+    assert(e.text.includes("Sacramento, CA 95816"), `postal address missing for ${offer}`);
+    assert(e.text.includes("Prefer not to hear from me"), `opt-out missing for ${offer}`);
     // website-copy-style: no em-dashes in customer-facing copy.
     assert(!e.text.includes("—"), `em-dash leaked for ${offer}`);
     assert(!e.subject.includes("—"), `em-dash in subject for ${offer}`);

@@ -32,6 +32,7 @@ import {
 } from "../_shared/license-payload.ts";
 import { sendMetaPurchase } from "../_shared/meta-capi.ts";
 import { BOOK_FILES_BUCKET, brandedUrl, sendBookEmail, signBookFiles } from "../_shared/book-files.ts";
+import { EMAIL_FOOTER } from "../_shared/email-footer.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
@@ -475,10 +476,7 @@ email and we will send you a fresh one.
 
 Your license keeps you up to date for 12 months.
 
---
-Orionfold
-https://orionfold.com
-`;
+${EMAIL_FOOTER}`;
 }
 
 function proofLicenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
@@ -511,10 +509,7 @@ this email and we will send you a fresh one.
 
 Your license keeps you up to date for 12 months.
 
---
-Orionfold
-https://orionfold.com
-`;
+${EMAIL_FOOTER}`;
 }
 
 async function fulfillBook(session: Stripe.Checkout.Session) {

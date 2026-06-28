@@ -9,6 +9,8 @@
 //   - Add a new offer by adding a row to OFFER_COPY; no other change needed.
 //   - Voice: humanize, grade 3-5, no em-dashes, no AI tells (website-copy-style).
 
+import { EMAIL_FOOTER } from "./email-footer.ts";
+
 export type ConfirmationEmail = { subject: string; text: string };
 
 type OfferCopy = {
@@ -86,9 +88,6 @@ ${confirmUrl}
 This link expires in 7 days. If you didn't sign up, ignore
 this email.
 
---
-Orionfold
-https://orionfold.com
-`;
+${EMAIL_FOOTER}`;
   return { subject, text };
 }
