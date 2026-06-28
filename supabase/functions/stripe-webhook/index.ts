@@ -31,6 +31,7 @@ import {
   LICENSE_SEATS,
 } from "../_shared/license-payload.ts";
 import { sendMetaPurchase } from "../_shared/meta-capi.ts";
+import { BOOK_FILES_BUCKET, brandedUrl, sendBookEmail, signBookFiles } from "../_shared/book-files.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
@@ -43,8 +44,9 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
 const cryptoProvider = Stripe.createSubtleCryptoProvider();
 
 const WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") ?? "";
-const BOOK_FILES_BUCKET = "book-files";
-const DOWNLOAD_TTL_SECONDS = 60 * 60 * 24 * 7; // 7-day signed download links
+// BOOK_FILES_BUCKET, DOWNLOAD_TTL_SECONDS, brandedUrl, signBookFiles,
+// bookEmailText and sendBookEmail now live in ../_shared/book-files.ts so the
+// free magnet rail (confirm-email) delivers through the same path.
 
 // Private bucket for issued license files (both Arena Field Edition and Orionfold
 // Proof — it's a generic, deny-all license store). The webhook uploads the signed
@@ -63,17 +65,6 @@ const LICENSE_URL_TTL_SECONDS = 60 * 60 * 24 * 7;
 // Set as a Supabase secret; pairs with the pubkey Spark embeds in TRUSTED_KEYS.
 // Absent in non-prod → fulfillLicense records the sale but does not issue.
 const LICENSE_SIGNING_SEED_ENV = "LICENSE_SIGNING_SEED_B64";
-
-// Buyer-facing download links use the branded vanity host, not the project-ref
-// host that supabase-js builds from SUPABASE_URL. The signed token signs the
-// object PATH (not the host), so the vanity domain serves the same file — same
-// idiom the live waitlist fn uses for its confirm links.
-const PUBLIC_SUPABASE_URL = "https://orionfold.supabase.co";
-
-function brandedUrl(signedUrl: string): string {
-  const internal = Deno.env.get("SUPABASE_URL");
-  return internal ? signedUrl.replace(internal, PUBLIC_SUPABASE_URL) : signedUrl;
-}
 
 function supabaseAdmin() {
   return createClient(
@@ -589,87 +580,6 @@ async function fulfillBook(session: Stripe.Checkout.Session) {
     fbc: session.metadata?.fbc ?? null,
     fbclid: session.metadata?.fbclid ?? null,
   });
-}
-
-/** List book-files/<lookupKey> and sign every PDF/EPUB found (filenames don't matter). */
-async function signBookFiles(
-  // deno-lint-ignore no-explicit-any
-  supabase: any,
-  lookupKey: string,
-): Promise<Array<{ format: string; url: string }>> {
-  const { data: files, error } = await supabase.storage
-    .from(BOOK_FILES_BUCKET)
-    .list(lookupKey);
-  if (error || !files) {
-    console.error("Storage list error:", error);
-    return [];
-  }
-
-  const links: Array<{ format: string; url: string }> = [];
-  for (const file of files as Array<{ name: string }>) {
-    const lower = file.name.toLowerCase();
-    const format = lower.endsWith(".pdf") ? "PDF" : lower.endsWith(".epub") ? "EPUB" : null;
-    if (!format) continue;
-
-    const { data: signed, error: signError } = await supabase.storage
-      .from(BOOK_FILES_BUCKET)
-      .createSignedUrl(`${lookupKey}/${file.name}`, DOWNLOAD_TTL_SECONDS);
-    if (signError || !signed?.signedUrl) {
-      console.error("Sign error for", file.name, signError);
-      continue;
-    }
-    links.push({ format, url: brandedUrl(signed.signedUrl) });
-  }
-  return links;
-}
-
-async function sendBookEmail(
-  email: string,
-  bookLabel: string,
-  links: Array<{ format: string; url: string }>,
-) {
-  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-  if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
-
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "Orionfold <manav@updates.orionfold.com>",
-      reply_to: "manav@orionfold.com",
-      to: [email],
-      subject: `Your copy of ${bookLabel} is ready`,
-      text: bookEmailText(bookLabel, links),
-    }),
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    console.error("Resend error:", res.status, text);
-    throw new Error(`Resend API error: ${res.status}`);
-  }
-}
-
-function bookEmailText(bookLabel: string, links: Array<{ format: string; url: string }>): string {
-  const downloads = links.map((l) => `${l.format}:\n${l.url}`).join("\n\n");
-  return `Thank you for buying ${bookLabel}.
-
-Here are your download links. You get both the PDF and the
-EPUB, so you can read on any device.
-
-${downloads}
-
-These links work for 7 days. Save the files to your device
-once you download them. Reply to this email if you hit any
-trouble and we will help.
-
---
-Orionfold
-https://orionfold.com
-`;
 }
 
 // ---------------------------------------------------------------------------
