@@ -422,3 +422,10 @@ verify_jwt = false
 # verify_jwt off so our constant-time token check is the sole gate, like waitlist-export.
 [functions.purchases-export]
 verify_jwt = false
+
+# resend-send (nurture pipe): server-to-server send seam for marketing's CRM
+# nurture leg, gated by its own RESEND_SEND_TOKEN shared credential. Relays a
+# ready-to-send email to Resend so the Resend key stays single-homed on this box.
+# verify_jwt off so our constant-time token check is the sole gate, like the exports.
+[functions.resend-send]
+verify_jwt = false
