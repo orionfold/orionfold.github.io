@@ -5,6 +5,7 @@
 // Renders only for books (a lookupKey is present).
 import { getCatalogItem, formatUsd } from '../../data/commerce';
 import type { ProductView } from '../../lib/product/detail';
+import { magnetHref } from '../../data/magnet.ts';
 
 interface Props {
   view: ProductView;
@@ -12,10 +13,31 @@ interface Props {
 const { view } = Astro.props;
 const item = view.lookupKey ? getCatalogItem(view.lookupKey) : undefined;
 const priceLabel = item ? formatUsd(item.amount) : undefined;
+// Magnet CTA (relay latest+21): the AI Native Business book is also the free
+// lead magnet, so on its buy box we offer the free PDF+EPUB ABOVE the buy option
+// and convert the reader to an owned contact before they bounce. Scoped to that
+// ONE book — the others have no free-via-email path.
+const showMagnet = view.slug === 'ai-native-business';
+const magnetBookHref = magnetHref('book-page-cta');
 ---
 {view.lookupKey && (
   <section id="buy" class="scroll-mt-24 px-6 py-12">
     <div data-animate class="mx-auto max-w-3xl rounded-2xl border border-primary/40 bg-surface-raised p-8 shadow-lg shadow-primary/5">
+      {showMagnet && (
+        <a
+          href={magnetBookHref}
+          class="group mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/[0.07] px-5 py-4 transition-colors hover:border-primary/50"
+        >
+          <span class="text-sm leading-snug">
+            <span class="font-semibold text-text">Want it free?</span>
+            <span class="text-text-muted"> Get the same PDF and EPUB free, just your email.</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-1.5 font-mono text-sm tracking-wider text-primary">
+            Get it free
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </span>
+        </a>
+      )}
       <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 class="font-display text-2xl font-bold">Get the full book</h2>

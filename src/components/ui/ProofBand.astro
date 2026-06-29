@@ -1,12 +1,19 @@
 ---
-// ProofBand (A10) — a slim, generic "next step to Proof" band for deep pages
-// that have no product behind them (e.g. story posts). Same markup + voice as
-// the unproven variant of product/ProofCta.astro, but with NO product coupling
-// (no type/slug, no proof-matrix import) so editorial pages don't depend on the
-// proof catalog. The heavy 3D mini-hero (story/ProofCTA.astro) stays for
-// mid-article Proof-tagged placement; this is the lightweight universal close.
+// ProofBand (A10; redesigned latest+23) — the universal "next step to Proof"
+// band for deep pages with no product behind them (e.g. story posts). No product
+// coupling (no type/slug, no proof-matrix import) so editorial pages do not
+// depend on the proof catalog; the heavy mid-article ProofCTA stays for
+// Proof-tagged placement, this is the lightweight universal close.
+//
+// Restyled to mirror, and stand apart from, its sibling MagnetBand: this one is
+// COOL (cyan / blueprint scanlines) with the Orionfold Proof poster floating as
+// a landscape thumbnail on the RIGHT (vs the book cover upright on the left). The
+// poster drifts on the same compositor-owned, reduced-motion-safe isometric
+// recipe as ProofCTA/Hero (desktop only; flat on mobile).
 // Voice: grade 3-5, no em-dashes, no invented claims (website-copy-style).
+import { Image } from 'astro:assets';
 import { receiptHref } from '../../data/proof.ts';
+import proofPoster from '../../assets/proof/orionfold-proof-poster.jpeg';
 
 interface Props {
   eyebrow?: string;
@@ -27,18 +34,93 @@ const {
 } = Astro.props;
 const proofTarget = receiptHref(receipt) ?? '/proof/';
 ---
-<section class:list={['border-y border-border bg-surface-raised px-6 py-10', className]}>
-  <div data-animate class="mx-auto flex max-w-3xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div>
+<section
+  class:list={['proof-band relative overflow-hidden border-y border-primary/25 px-6 py-12', className]}
+  aria-label="See the Proof receipts"
+>
+  <!-- Cool blueprint scanlines + the atmospheric cyan glow, both behind content.
+       This is the "technical / evidence" surface that sets the band apart from
+       the warm MagnetBand above. -->
+  <div class="proof-band__grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="absolute -right-[4%] top-1/2 h-[360px] w-[360px] -translate-y-1/2 rounded-full bg-primary/[0.14] blur-[130px]"></div>
+  </div>
+
+  <div class="mx-auto grid max-w-4xl items-center gap-7 sm:grid-cols-[1fr_auto] sm:gap-9">
+    <!-- LEFT: the pitch + CTA. -->
+    <div class="order-2 text-center sm:order-1 sm:text-left">
       <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">{eyebrow}</p>
-      <p class="mt-2 max-w-xl text-text-muted">{line}</p>
+      <p class="mt-2.5 max-w-xl text-lg leading-relaxed text-text">{line}</p>
+      <a
+        href={proofTarget}
+        class="mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
+      >
+        {linkText}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </a>
     </div>
-    <a
-      href={proofTarget}
-      class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
-    >
-      {linkText}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-    </a>
+
+    <!-- RIGHT: the Proof poster, landscape, drifting on the isometric plane. -->
+    <div class="proof3d-stage relative order-1 mx-auto w-56 shrink-0 self-center sm:order-2 sm:mx-0 sm:w-60">
+      <a href={proofTarget} tabindex="-1" aria-hidden="true" class="proof3d-plane block overflow-hidden rounded-xl ring-1 ring-primary/20 shadow-[0_22px_60px_-32px_oklch(0.18_0.08_260/0.7)]">
+        <Image
+          src={proofPoster}
+          alt="Orionfold Proof"
+          widths={[240, 480]}
+          sizes="15rem"
+          loading="lazy"
+          decoding="async"
+          data-no-zoom
+          class="block aspect-[16/9] w-full object-cover"
+        />
+      </a>
+    </div>
   </div>
 </section>
+
+<style>
+  /* Cool "blueprint" surface: a faint cyan wash + a fine line grid (vs the warm
+     paper dots on MagnetBand). Both themes tuned so the band reads as a distinct
+     technical/evidence panel. */
+  .proof-band {
+    background-color: oklch(0.97 0.012 200);
+  }
+  :global([data-theme='dark']) .proof-band {
+    background-color: oklch(0.20 0.022 235);
+  }
+  .proof-band__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 50%, black, transparent);
+    mask-image: radial-gradient(ellipse 80% 70% at 70% 50%, black, transparent);
+  }
+  :global([data-theme='dark']) .proof-band__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px);
+  }
+
+  /* Desktop-only isometric drift, same compositor-owned recipe as ProofCTA/Hero
+     (poster tilts like a screen). Mobile keeps the flat poster. */
+  @media (min-width: 1024px) {
+    .proof3d-stage { perspective: 1400px; }
+    .proof3d-plane {
+      /* The rotateX tilt foreshortens the poster's lower edge, pulling its visual
+         focal point (the title) upward; a small translateY seats it back on the
+         text column's optical center. Carried in BOTH keyframe states so the
+         drift never re-introduces the offset. */
+      transform: rotateX(15deg) rotateZ(3deg) scale(0.97) translateY(8px);
+      animation: proof3d-drift 14s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes proof3d-drift {
+      from { transform: rotateX(15deg) rotateZ(3deg) scale(0.97) translateY(8px); }
+      to   { transform: rotateX(20deg) rotateZ(-3deg) scale(1) translateY(4px); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .proof3d-plane { animation: none; }
+  }
+</style>

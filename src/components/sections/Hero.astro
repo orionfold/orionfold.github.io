@@ -5,6 +5,12 @@
 // newsletter form lives on the Story pages (H3).
 import { Image } from 'astro:assets';
 import heroImage from '../../assets/proof/orionfold-proof-poster.jpeg';
+import { magnetHref } from '../../data/magnet.ts';
+// Magnet secondary CTA (relay latest+21): a quieter free-book rung BELOW the two
+// Proof anchor CTAs, so the magnet sits under the anchor offer without competing
+// with it. The free book captures the email before the visitor weighs the paid
+// product.
+const magnetHeroHref = magnetHref('hero-secondary');
 ---
 <section class="relative overflow-x-clip">
   <!-- Soft atmospheric light, kept below the operational surfaces. -->
@@ -49,6 +55,13 @@ import heroImage from '../../assets/proof/orionfold-proof-poster.jpeg';
           class="of-secondary-action w-full justify-center !text-sm sm:!text-base"
         >
           See the receipts
+        </a>
+        <a
+          href={magnetHeroHref}
+          class="group mt-1 inline-flex items-center justify-center gap-1.5 self-center font-mono text-xs tracking-wider text-text-muted transition-colors hover:text-primary lg:self-start"
+        >
+          Or get the free AI Native Business book
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
         </a>
       </div>
 

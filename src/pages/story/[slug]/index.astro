@@ -13,6 +13,7 @@ import StorySubscribe from '../../../components/sections/StorySubscribe.astro';
 import StoryPrevNext from '../../../components/story/StoryPrevNext.astro';
 import ProofCTA from '../../../components/story/ProofCTA.astro';
 import ProofBand from '../../../components/ui/ProofBand.astro';
+import MagnetBand from '../../../components/ui/MagnetBand.astro';
 import { ogPath, storyOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 
@@ -215,6 +216,17 @@ const breadcrumbSchema = {
       )}
     </article>
   </main>
+
+  <!-- Magnet card (relay latest+21): the owned-audience next step. A reader who
+       finished a Story is warm, so the highest-intent on-site magnet placement is
+       here, right at the foot of the essay. It PAIRS with the /proof/ next step
+       below (ProofBand) rather than replacing it: free book = capture the email,
+       Proof = the paid anchor. Story-specific framing, value-first. -->
+  <MagnetBand
+    placement="story-footer"
+    eyebrow="Want the playbook?"
+    line="This is one entry in the build log. The whole AI Native Business book is free, in PDF and EPUB. Just your email."
+  />
 
   <!-- Read-next/prev within the arc; renders nothing at the ends if neither neighbor exists -->
   <StoryPrevNext current={post} posts={allStories} />

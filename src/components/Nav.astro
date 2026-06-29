@@ -13,6 +13,15 @@
 // Story (/story/) added after Books, behind its own divider, so the set reads
 // Proof · Arena │ Models · Books │ Story.
 import BrandMark from './ui/BrandMark.astro';
+import { magnetHref } from '../data/magnet.ts';
+// Persistent magnet sticky bar (2026-Q3 magnet-traffic, relay latest+21): a slim,
+// dismissible "free book" bar pinned ABOVE the nav, site-wide. It lives inside
+// #nav-wrapper (like #confirm-bar) so it joins the pinned overlay and the hero's
+// nav-clearance adjusts for it automatically. It is auto-suppressed on the magnet
+// page itself because that page (and /thanks/) render their own bare header, NOT
+// this Nav. The controller hides it once dismissed (localStorage, persists across
+// sessions) and yields to #confirm-bar for users who already converted.
+const magnetBarHref = magnetHref('nav-cta');
 // `divider: true` renders a separator immediately BEFORE that link.
 const links = [
   { href: '/proof/', label: 'Proof' },
@@ -23,6 +32,30 @@ const links = [
 ];
 ---
 <div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
+  <!-- Persistent magnet sticky bar (relay latest+21). Hidden by default; the
+       controller script reveals it unless dismissed (localStorage) or the
+       post-confirm welcome bar is active. Value-first, message-matched to the
+       magnet page's "$20 book free" copy. -->
+  <div id="magnet-bar" class="hidden border-b border-primary/20 bg-primary/[0.07] text-text">
+    <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-6 py-1.5">
+      <a
+        href={magnetBarHref}
+        class="group inline-flex items-center gap-2 text-center text-sm leading-tight transition-colors hover:text-primary"
+      >
+        <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span><span class="font-semibold">Get the $20 AI Native Business book free</span> <span class="text-text-muted">(PDF + EPUB)</span></span>
+        <span class="font-mono text-primary transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
+      </a>
+      <button
+        id="magnet-bar-close"
+        type="button"
+        aria-label="Dismiss"
+        class="-mr-1 shrink-0 cursor-pointer rounded p-0.5 text-text-dim transition-colors hover:text-text"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+    </div>
+  </div>
   <nav id="main-nav" aria-label="Main navigation" class="border-b border-transparent transition-[border-color] duration-300">
   <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
     <a
@@ -203,6 +236,28 @@ const links = [
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+
+    // Persistent magnet bar: reveal unless the user dismissed it (localStorage,
+    // persists across sessions) or the post-confirm welcome bar is showing (they
+    // already converted, so don't stack two bars). Dismissal is one click and
+    // sticky, so the bar never nags a returning visitor.
+    const magnetBar = document.getElementById('magnet-bar');
+    if (magnetBar) {
+      const DISMISSED = 'of-magnet-bar-dismissed';
+      let dismissed = false;
+      try { dismissed = localStorage.getItem(DISMISSED) === '1'; } catch (e) {}
+      const confirmShowing =
+        (() => { try { return sessionStorage.getItem('of-confirm-welcome') === '1'
+          && sessionStorage.getItem('of-confirm-welcome-dismissed') !== '1'; } catch (e) { return false; } })();
+      if (!dismissed && !confirmShowing) {
+        magnetBar.classList.remove('hidden');
+        const closeBtn = document.getElementById('magnet-bar-close');
+        closeBtn && closeBtn.addEventListener('click', () => {
+          try { localStorage.setItem(DISMISSED, '1'); } catch (e) {}
+          magnetBar.classList.add('hidden');
+        });
+      }
+    }
   }
 
   initNav();
