@@ -56,6 +56,17 @@ body { margin: 0; color: var(--ink); font: 14px/1.55 var(--sans); background: va
 .bar-val.accent { color: var(--blue-ink) }
 .bar-val.ok { color: var(--green-ink) } .bar-val.warn { color: var(--amber-ink) } .bar-val.bad { color: var(--red-ink) }
 .bar-lbl { font: 600 8.5px/1.3 var(--mono); color: var(--faint); text-transform: uppercase; letter-spacing: .08em }
+/* period-over-period delta badges (WoW / MoM) — arrow + signed change, colored
+   by whether the move is good. Reuses the palette tokens; CSP-safe (class only,
+   no inline styles). `.up`/`.down` already mean good/bad (set at render time),
+   so green/red here is direction-agnostic. */
+.bar-deltas, .kpi-deltas { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px }
+.kpi-deltas { margin-top: 5px }
+.delta { font: 650 8.5px/1 var(--mono); padding: 2px 5px; border-radius: 4px; letter-spacing: .03em; white-space: nowrap; font-variant-numeric: tabular-nums }
+.delta.up { background: var(--green-soft); color: var(--green-ink) }
+.delta.down { background: var(--red-soft); color: var(--red-ink) }
+.delta.flat { background: var(--canvas); color: var(--mute) }
+.delta.na { background: var(--canvas); color: var(--faint) }
 @media (max-width: 1100px) { .bar-groups { grid-template-columns: repeat(2, 1fr) } .bar-group:nth-child(odd) { border-left: 0; padding-left: 0 } }
 @media (max-width: 640px) { .bar-groups { grid-template-columns: 1fr } .bar-group { border-left: 0; padding-left: 0 } }
 

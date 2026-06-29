@@ -21,6 +21,68 @@ export function renderBody(payload) {
   const seriesFor = (source, site) =>
     (snaps[source] || []).filter((s) => (s.site || 'orionfold') === site);
   const todayStr = payload.generatedAt.slice(0, 10);
+
+  // ── period-over-period deltas (WoW / MoM) ───────────────────────────────────
+  // Snapshots are irregular (not daily), so for a target window we pick the
+  // NEWEST snapshot on-or-before (latestDate − window + slack). The slack lets a
+  // snapshot a couple days short still serve as a baseline; the real day-gap is
+  // labelled so a "WoW" off a 9-day-old snapshot is never silently misleading.
+  // Returns null when no snapshot falls in range (MoM has no baseline until the
+  // archive reaches back far enough — the badge then reads "n/a").
+  const dayGap = (a, b) =>
+    Math.round((Date.parse(`${a}T00:00:00Z`) - Date.parse(`${b}T00:00:00Z`)) / 86400000);
+  const WINDOWS = { WoW: { days: 7, slack: 2 }, MoM: { days: 30, slack: 5 } };
+  function priorSnap(series, latestDate, win) {
+    const { days, slack } = WINDOWS[win];
+    const target = Date.parse(`${latestDate}T00:00:00Z`) - days * 86400000;
+    const floor = target - slack * 86400000;
+    const ceil = target + slack * 86400000;
+    // newest snapshot whose date sits within [target−slack, target+slack] and is
+    // strictly older than the latest (never compare a snapshot to itself).
+    let best = null;
+    for (const s of series) {
+      if (s.date >= latestDate) continue;
+      const t = Date.parse(`${s.date}T00:00:00Z`);
+      if (t < floor || t > ceil) continue;
+      if (!best || s.date > best.date) best = s;
+    }
+    return best;
+  }
+  // Format one delta badge: arrow + signed change + window, colored by whether
+  // the change is good (▲ green when higher-is-better, etc.). `fmt` renders the
+  // magnitude (num by default; pass a pct/point formatter for rates). `prior`
+  // is null when no baseline exists → "n/a" badge (greyed, no arrow).
+  function deltaBadge(curr, prior, win, { lowerIsBetter = false, fmt = num, gapDays = null } = {}) {
+    if (prior == null || typeof curr !== 'number' || Number.isNaN(curr)) {
+      return `<span class="delta na" data-tip-head="${win}" data-tip-lines="${esc(JSON.stringify(['no baseline snapshot in range yet']))}">n/a ${win}</span>`;
+    }
+    const diff = curr - prior;
+    const gapNote = gapDays != null && Math.abs(gapDays - WINDOWS[win].days) > 0 ? ` (${gapDays}d)` : '';
+    if (diff === 0) {
+      return `<span class="delta flat">▬ 0 ${win}${gapNote}</span>`;
+    }
+    const up = diff > 0;
+    const good = lowerIsBetter ? !up : up;
+    const cls = good ? 'up' : 'down';
+    const arrow = up ? '▲' : '▼';
+    const mag = fmt(Math.abs(diff));
+    return `<span class="delta ${cls}" data-tip-head="${win} change" data-tip-lines="${esc(JSON.stringify([`now: ${fmt(curr)}`, `then: ${fmt(prior)}`, `baseline ${gapDays != null ? gapDays + 'd' : '~' + WINDOWS[win].days + 'd'} ago`]))}">${arrow} ${up ? '+' : '−'}${mag} ${win}</span>`;
+  }
+  // Both windows for one metric, as a single inline run of badges. `pickPrior`
+  // maps a prior snapshot's data → the comparable scalar (mirrors how `curr` was
+  // derived from the latest snapshot).
+  function deltas(series, latestDate, curr, pickPrior, opts = {}) {
+    return ['WoW', 'MoM']
+      .map((win) => {
+        const p = priorSnap(series, latestDate, win);
+        const priorVal = p ? pickPrior(p.data) : null;
+        return deltaBadge(curr, priorVal == null ? null : priorVal, win, {
+          ...opts,
+          gapDays: p ? dayGap(latestDate, p.date) : null,
+        });
+      })
+      .join(' ');
+  }
   let sparkSeq = 0;
   let panelIndex = 0;
 
@@ -236,6 +298,19 @@ export function renderBody(payload) {
       bad: 0.8,
       tipHead: 'perf trend',
     });
+    // WoW/MoM on the min-scores — compared against prior DISTINCT runs (same
+    // dedup as the trend), so a re-summary of today's run never fakes a delta.
+    // Re-key each run by the date it was MEASURED (runFetchTime), not the
+    // snapshot write date, so the window math lines up with the run timeline.
+    // Scores are 0–1 fractions; show the change in whole Lighthouse points.
+    const runByMeasureDate = runSeries.map((s) => ({
+      ...s,
+      date: s.data.runFetchTime?.slice(0, 10) || s.date,
+    }));
+    const lhScoreDelta = (curr, pick) =>
+      deltas(runByMeasureDate, runDate, curr, (data) => pick(data), {
+        fmt: (v) => String(Math.round(v * 100)),
+      });
     const rows = (d.pages || [])
       .map((p) => {
         const s = p.scores;
@@ -253,9 +328,9 @@ export function renderBody(payload) {
     const m = d.minScores || {};
     const body = `
     <div class="kpis">
-      <div class="kpi"><span class="big ${cat(m.performance)}">${Math.round((m.performance ?? 0) * 100)}</span><span class="lbl">min perf</span></div>
-      <div class="kpi"><span class="big ${cat(m.accessibility)}">${Math.round((m.accessibility ?? 0) * 100)}</span><span class="lbl">min a11y</span></div>
-      <div class="kpi"><span class="big ${cat(m.seo)}">${Math.round((m.seo ?? 0) * 100)}</span><span class="lbl">min SEO</span></div>
+      <div class="kpi"><span class="big ${cat(m.performance)}">${Math.round((m.performance ?? 0) * 100)}</span><span class="lbl">min perf</span><span class="kpi-deltas">${lhScoreDelta(m.performance ?? 0, (d) => d?.minScores?.performance)}</span></div>
+      <div class="kpi"><span class="big ${cat(m.accessibility)}">${Math.round((m.accessibility ?? 0) * 100)}</span><span class="lbl">min a11y</span><span class="kpi-deltas">${lhScoreDelta(m.accessibility ?? 0, (d) => d?.minScores?.accessibility)}</span></div>
+      <div class="kpi"><span class="big ${cat(m.seo)}">${Math.round((m.seo ?? 0) * 100)}</span><span class="lbl">min SEO</span><span class="kpi-deltas">${lhScoreDelta(m.seo ?? 0, (d) => d?.minScores?.seo)}</span></div>
       <div class="kpi"><span class="big">${perfTrend}</span><span class="lbl">perf trend</span></div>
     </div>
     <div class="tscroll"><table class="dense"><thead><tr><th class="rt">Route</th><th class="right">Perf</th><th class="right">A11y</th><th class="right">LCP</th><th class="right">CLS</th><th class="right">TBT</th></tr></thead>
@@ -570,6 +645,34 @@ export function renderBody(payload) {
   const bs = latest('betterstack')?.data || null; // infra is orionfold-only
   const sumBy = (fn) => siteData.reduce((a, s) => a + (fn(s) || 0), 0);
 
+  // Cross-property delta for a bar KPI: re-derive the same rollup off each site's
+  // prior snapshot (per window) and sum. A window counts as having a baseline if
+  // ANY contributing site has a prior snap in range; sites without one are simply
+  // omitted from that window's prior-sum (their `null` reads as absent, matching
+  // how `sumBy` already treats a missing latest value as 0). `source` is the
+  // snapshot kind that carries the field (gsc / ga4 / cloudflare).
+  const barDeltas = (source, curr, pick, opts = {}) =>
+    ['WoW', 'MoM']
+      .map((win) => {
+        let priorSum = 0;
+        let any = false;
+        let gap = null;
+        for (const sd of siteData) {
+          const series = seriesFor(source, sd.site);
+          const cur = latest(source, sd.site);
+          if (!cur) continue;
+          const p = priorSnap(series, cur.date, win);
+          if (!p) continue;
+          const v = pick(p.data);
+          if (typeof v !== 'number' || Number.isNaN(v)) continue;
+          priorSum += v;
+          any = true;
+          gap = gap == null ? dayGap(cur.date, p.date) : gap; // first site's gap is representative
+        }
+        return deltaBadge(curr, any ? priorSum : null, win, { ...opts, gapDays: gap });
+      })
+      .join(' ');
+
   // ── top analytics bar: combined KPIs across all properties ──────────────────
   function analyticsBar() {
     // search & traffic (earned)
@@ -596,30 +699,36 @@ export function renderBody(payload) {
     const monUp = bs?.counts?.up ?? null;
     const monTotal = bs?.total ?? null;
 
-    const cell = (value, label, cls = '') =>
-      `<div class="bar-kpi"><span class="bar-val ${cls}">${value}</span><span class="bar-lbl">${esc(label)}</span></div>`;
+    // per-site "currently not indexed" backlog picker (mirrors the rollup above)
+    const pickBacklog = (data) => {
+      const reasons = Array.isArray(data?.notIndexedReasons) ? data.notIndexedReasons : [];
+      return reasons.filter((r) => /currently not indexed/i.test(r.reason)).reduce((x, r) => x + (r.pages || 0), 0);
+    };
+
+    const cell = (value, label, cls = '', delta = '') =>
+      `<div class="bar-kpi"><span class="bar-val ${cls}">${value}</span><span class="bar-lbl">${esc(label)}</span>${delta ? `<span class="bar-deltas">${delta}</span>` : ''}</div>`;
     const grp = (title, cells) =>
       `<div class="bar-group"><span class="bar-group-title">${esc(title)}</span><div class="bar-cells">${cells.join('')}</div></div>`;
 
     const searchGrp = grp('Search & traffic', [
-      cell(num(clicks), 'gsc clicks'),
-      cell(num(impressions), 'impressions'),
-      cell(num(organic), 'organic sessions', 'accent'),
+      cell(num(clicks), 'gsc clicks', '', barDeltas('gsc', clicks, (d) => d?.clicks)),
+      cell(num(impressions), 'impressions', '', barDeltas('gsc', impressions, (d) => d?.impressions)),
+      cell(num(organic), 'organic sessions', 'accent', barDeltas('ga4', organic, (d) => d?.organicSearchSessions)),
     ]);
     const engGrp = grp('Engagement', [
-      cell(num(sessions), 'total sessions'),
+      cell(num(sessions), 'total sessions', '', barDeltas('ga4', sessions, (d) => d?.sessions)),
       cell(engRate != null ? pct(engRate) : '—', 'engagement rate', engRate >= 0.4 ? 'ok' : engRate >= 0.2 ? 'warn' : ''),
       cell(num(keyEvents), 'key events', keyEvents > 0 ? 'ok' : ''),
     ]);
     const idxGrp = grp('Indexing', [
-      cell(num(indexed), 'indexed', 'ok'),
-      cell(num(notIndexed), 'not indexed', notIndexed > indexed ? 'bad' : ''),
-      cell(num(backlog), 'discovered backlog', backlog > 0 ? 'bad' : 'ok'),
+      cell(num(indexed), 'indexed', 'ok', barDeltas('gsc', indexed, (d) => d?.indexed)),
+      cell(num(notIndexed), 'not indexed', notIndexed > indexed ? 'bad' : '', barDeltas('gsc', notIndexed, (d) => d?.notIndexed, { lowerIsBetter: true })),
+      cell(num(backlog), 'discovered backlog', backlog > 0 ? 'bad' : 'ok', barDeltas('gsc', backlog, pickBacklog, { lowerIsBetter: true })),
     ]);
     const relCells = [
-      cell(num(reqs), 'edge req / 24h'),
-      cell(num(err4xx), '4xx errors', err4xx > 0 ? 'warn' : 'ok'),
-      cell(num(err5xx), '5xx errors', err5xx > 0 ? 'bad' : 'ok'),
+      cell(num(reqs), 'edge req / 24h', '', barDeltas('cloudflare', reqs, (d) => d?.last24h?.sampledRequests)),
+      cell(num(err4xx), '4xx errors', err4xx > 0 ? 'warn' : 'ok', barDeltas('cloudflare', err4xx, (d) => d?.last24h?.clientErrors, { lowerIsBetter: true })),
+      cell(num(err5xx), '5xx errors', err5xx > 0 ? 'bad' : 'ok', barDeltas('cloudflare', err5xx, (d) => d?.last24h?.serverErrors, { lowerIsBetter: true })),
     ];
     if (monUp != null) relCells.unshift(cell(`${monUp}/${monTotal}`, 'monitors up', monUp === monTotal ? 'ok' : 'bad'));
     const relGrp = grp('Reliability & edge', relCells);
