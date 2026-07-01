@@ -7,6 +7,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import ReceiptArticle from '../../../components/receipts/ReceiptArticle.astro';
+import ProductBand from '../../../components/product/ProductBand.astro';
 import OfferSlot from '../../../components/ui/OfferSlot.astro';
 import { ogPath, receiptOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
@@ -23,6 +24,12 @@ const { title, metric, claim, dek, date, source, verify } = receipt.data;
 const dfmt = (d: Date) =>
   new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(d);
 const dateIso = date.toISOString().slice(0, 10);
+
+// Which product this receipt's band sells, by its source origin: a receipt
+// "Built with Orionfold Arena" (or sourcing /software/arena/) is an Arena
+// outcome; everything else is a Proof/Advisor outcome. Strong match either way.
+const sourceBlob = (source ?? []).map((s) => `${s.label} ${s.href}`).join(' ');
+const receiptProduct: 'arena' | 'proof' = /arena/i.test(sourceBlob) ? 'arena' : 'proof';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImageUrl = new URL(ogPath(receiptOgSlug(receipt.id)), Astro.site).href;
 
@@ -84,6 +91,11 @@ const breadcrumbSchema = {
       </ReceiptArticle>
     </div>
   </main>
+
+  <!-- Product band, flavored by the receipt's source (Arena outcome vs
+       Proof/Advisor outcome). Receipts are lower-intent evidence pages, so the
+       link mode routes to the product's landing page. -->
+  <ProductBand type="receipt" slug={receipt.id} receiptProduct={receiptProduct} />
 
   <OfferSlot
     offer="proof-playbook"

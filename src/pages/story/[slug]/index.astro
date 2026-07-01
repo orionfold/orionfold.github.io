@@ -12,7 +12,7 @@ import Footer from '../../../components/Footer.astro';
 import StorySubscribe from '../../../components/sections/StorySubscribe.astro';
 import StoryPrevNext from '../../../components/story/StoryPrevNext.astro';
 import ProofCTA from '../../../components/story/ProofCTA.astro';
-import ProofBand from '../../../components/ui/ProofBand.astro';
+import ProductBand from '../../../components/product/ProductBand.astro';
 import MagnetBand from '../../../components/ui/MagnetBand.astro';
 import { ogPath, storyOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
@@ -231,10 +231,13 @@ const breadcrumbSchema = {
   <!-- Read-next/prev within the arc; renders nothing at the ends if neither neighbor exists -->
   <StoryPrevNext current={post} posts={allStories} />
 
-  <!-- A10: a guaranteed next step to /proof/ on EVERY story (the bespoke
-       mid-article ProofCTA fires only on Proof-tagged posts; this universal
-       band closes the gap). Capture already lives in StorySubscribe below. -->
-  <ProofBand />
+  <!-- A guaranteed product next step on EVERY story. Which of the three products
+       it sells is picked by the story's tags (strong topical match, else a stable
+       hash to a roughly-even split) — see ProductBand + band-for-page. Story pages
+       are lower-intent, so this is the link mode (routes to the product's landing
+       page). The mid-article ProofCTA above stays Proof-specific for Proof-tagged
+       posts. Capture already lives in StorySubscribe below. -->
+  <ProductBand type="story" slug={post.id} tags={tags} />
 
   <!-- Subscribe to stories (H3): same capture block as the story index -->
   <StorySubscribe class="border-t border-border" />

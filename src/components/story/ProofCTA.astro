@@ -31,16 +31,18 @@ const {
 } = Astro.props;
 ---
 <aside
-  class="not-prose relative my-12 overflow-x-clip"
+  class="proof-cta not-prose relative my-12 overflow-hidden rounded-2xl border border-primary/25"
   aria-label="More about Orionfold Proof"
 >
-  <!-- Soft atmospheric light behind the card, same palette as the homepage hero. -->
+  <!-- Blueprint grid + soft atmospheric light behind the card, matching the
+       redesigned ProofBand / LicenseBand family (cool cyan technical surface). -->
+  <div class="proof-cta__grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <div class="pointer-events-none absolute inset-0 -z-10">
-    <div class="absolute right-[6%] top-1/2 h-[360px] w-[360px] -translate-y-1/2 rounded-full bg-primary/[0.10] blur-[130px]"></div>
-    <div class="absolute left-[10%] top-[20%] h-[220px] w-[220px] rounded-full bg-[oklch(0.70_0.14_82/0.12)] blur-[100px]"></div>
+    <div class="absolute right-[6%] top-1/2 h-[360px] w-[360px] -translate-y-1/2 rounded-full bg-primary/[0.12] blur-[130px]"></div>
+    <div class="absolute left-[10%] top-[20%] h-[220px] w-[220px] rounded-full bg-[oklch(0.70_0.14_82/0.10)] blur-[100px]"></div>
   </div>
 
-  <div class="of-surface grid grid-cols-1 items-center gap-6 rounded-2xl p-5 sm:p-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+  <div class="grid grid-cols-1 items-center gap-6 p-5 sm:p-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
     <!-- The pitch -->
     <div class="flex flex-col gap-2 lg:order-1">
       <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">The product behind this</span>
@@ -90,6 +92,29 @@ const {
   a[data-proof-cta-btn] {
     color: var(--color-surface);
     text-decoration: none;
+  }
+
+  /* Cool "blueprint" surface + a fine masked line grid, so this mid-article CTA
+     matches the redesigned ProofBand / LicenseBand family instead of a plain
+     glass card. Both themes tuned; the grid fades toward the poster side. */
+  .proof-cta {
+    background-color: oklch(0.97 0.012 200);
+  }
+  :global([data-theme='dark']) .proof-cta {
+    background-color: oklch(0.20 0.022 235);
+  }
+  .proof-cta__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 50%, black, transparent);
+    mask-image: radial-gradient(ellipse 80% 70% at 70% 50%, black, transparent);
+  }
+  :global([data-theme='dark']) .proof-cta__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px);
   }
 
   /* Desktop-only isometric drift, same recipe as the homepage Hero (one
