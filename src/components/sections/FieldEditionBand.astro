@@ -5,9 +5,9 @@
 // DGX Spark you already own"; velocity (one builder's output on this stack) is the
 // hero proof, the receipt is the reason-to-believe. A focused two-column band with
 // a primary border so it reads as the page's focal point. It is the HOOK, not the
-// checkout — it deep-links to the full
-// Field Edition block on /software/arena/#field-edition where the proof and the
-// buy buttons live, so there is one canonical buy surface.
+// checkout — it deep-links to the Field Edition buy block on the /arena/ landing
+// (#get-arena), the single canonical Arena buy surface since the /software/arena/
+// detail page was retired (2026-07-01).
 //
 // Flag-aware: while ARENA_FIELD_EDITION_LIVE is false the CTA says "launching
 // this weekend"; when it flips, the same band points at the live buy. Price comes
@@ -24,7 +24,7 @@ const founding = formatUsd(FIELD_EDITION.founding.amount);
 <section id="arena-field-edition" class="scroll-mt-24 px-6 py-12 sm:py-16">
   <div class="of-surface mx-auto grid max-w-6xl items-stretch overflow-hidden rounded-3xl border border-primary/40 shadow-lg shadow-primary/5 lg:grid-cols-2">
     <!-- Featured art (lazy; the Hero owns the homepage LCP) -->
-    <a href="/software/arena/" aria-label="Arena Field Edition for DGX Spark" class="block">
+    <a href="/arena/#get-arena" aria-label="Arena Field Edition for DGX Spark" class="block">
       <Image
         src={arenaPoster}
         alt="Movie-poster key art for Orionfold Arena, the eval cockpit you run on your own desktop."
@@ -58,7 +58,7 @@ const founding = formatUsd(FIELD_EDITION.founding.amount);
       </div>
 
       <div class="mt-7 flex flex-wrap items-center gap-4">
-        <a href="/software/arena/" class="of-primary-action">
+        <a href="/arena/#get-arena" class="of-primary-action">
           Get Arena Field Edition
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7" />

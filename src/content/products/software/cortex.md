@@ -77,7 +77,7 @@ gallery:
 relatedBook: ai-research-on-nvidia-dgx-spark
 relatedReading:
   - title: "Orionfold Arena: the cockpit Cortex lives in"
-    href: /software/arena/
+    href: /arena/
   - title: Keeping my data in the room
     href: /story/keeping-my-data-in-the-room/
   - title: The cockpit for my models
@@ -106,7 +106,7 @@ sources:
 ---
 
 Orionfold Cortex is a second brain for your own notes, running on your own desktop. It
-grew out of [Orionfold Arena](/software/arena/), where it started as the cockpit's memory
+grew out of [Orionfold Arena](/arena/), where it started as the cockpit's memory
 pane. Point it at a folder of notes and it builds an index: a fast lookup table that lets
 you ask questions in plain words and get back the right passages, with a citation for each
 one. All of it runs on the machine under your desk, and none of it leaves.

@@ -13,7 +13,7 @@ tags:
 
 The paid edition of my own AI lab launched this weekend. The strange part is how it got built. The lab shipped itself.
 
-That sounds like a riddle, so let me explain. [Arena](/software/arena/) is the free cockpit I use to run every model and test I make on one desktop, the NVIDIA DGX Spark. The Field Edition is the paid version: one installer that stands up the whole stack on a Spark you own, then proves it works. To launch it I needed a store, prices, a way to deliver a license, and the install itself. And the tool I used to do that work was the same Arena the launch was for.
+That sounds like a riddle, so let me explain. [Arena](/arena/) is the free cockpit I use to run every model and test I make on one desktop, the NVIDIA DGX Spark. The Field Edition is the paid version: one installer that stands up the whole stack on a Spark you own, then proves it works. To launch it I needed a store, prices, a way to deliver a license, and the install itself. And the tool I used to do that work was the same Arena the launch was for.
 
 ## The plan said ten weeks
 
@@ -47,6 +47,6 @@ The pitch is simple. Get an AI team without hiring one, inside the DGX Spark you
 
 The proof is the shelf this exact setup already built, solo on one Spark: 15 software tools, 7 open models, 3 books, a 54-article research library, and two production websites, this one and ainative.business. That is the velocity the box unlocks.
 
-The software stays free and open. You can run the free [Arena](/software/arena/) today, and there is a live demo you can [click through](/arena/demo/) without installing anything. What you buy with the [Arena Field Edition](/software/arena/#field-edition) is the assembled team, delivered turnkey: agents that do real work, models that know your field, and tests that prove it. Not seven free parts you wire together and babysit. One installer sets it up, it proves itself on first boot with that verifiable receipt, and it stays proven for a year, every update re-checked and re-receipted.
+The software stays free and open. You can run the free [Arena](/arena/) today, and there is a live demo you can [click through](/arena/demo/) without installing anything. What you buy with the [Arena Field Edition](/arena/#get-arena) is the assembled team, delivered turnkey: agents that do real work, models that know your field, and tests that prove it. Not seven free parts you wire together and babysit. One installer sets it up, it proves itself on first boot with that verifiable receipt, and it stays proven for a year, every update re-checked and re-receipted.
 
 It is $349 for the first 25 founding licenses, then $499 one time, with a $149 a year renewal after the first year if you want to keep getting fresh proof. The same team that shipped this in a day is the team you are buying. That is the whole offer.

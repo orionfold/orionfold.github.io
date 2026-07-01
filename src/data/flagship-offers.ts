@@ -41,7 +41,7 @@ export const flagshipOffers: FlagshipOffer[] = [
     buyer: 'Small teams that need a useful private agent before they have a full automation team.',
     status: 'Packaged from shipped parts',
     proof: [
-      { label: 'AI Native Platform', href: '/software/ai-native-platform/', note: 'Agent runtime, profiles, schedules, and cost ledger.' },
+      { label: 'Orionfold Relay', href: '/relay/', note: 'Agent runtime, profiles, schedules, and cost ledger.' },
       { label: 'AI Native API', href: '/software/ai-native-api/', note: 'Programmatic workflow control.' },
       { label: 'Sentinel', href: '/software/sentinel/', note: 'Behavior checks for agent runs.' },
     ],
@@ -69,7 +69,7 @@ export const flagshipOffers: FlagshipOffer[] = [
     buyer: 'Builders who need inspection, memory, telemetry, and repeatable model runs instead of one-off demos.',
     status: 'Arena and Cortex active',
     proof: [
-      { label: 'Orionfold Arena', href: '/software/arena/', note: 'The cockpit for model comparison and evals.' },
+      { label: 'Orionfold Arena', href: '/arena/', note: 'The cockpit for model comparison and evals.' },
       { label: 'Orionfold Cortex', href: '/software/cortex/', note: 'The local memory and provenance layer.' },
       { label: 'fieldkit', href: '/software/fieldkit/', note: 'Reusable Python patterns for local AI systems.' },
     ],

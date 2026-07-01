@@ -126,7 +126,14 @@ export function buildRoadmap(signals: RoadmapSignals): RoadmapItem[] {
     });
   });
 
+  // Proof + Relay are catalog/footer entries whose canonical surface is a
+  // hand-built landing page (their /software/<slug>/ detail pages don't exist and
+  // their posters live outside the roadmap's assets/projects/*.png glob). They are
+  // already represented on /proof/ + /relay/, so keep them off the generated
+  // roadmap rather than render a motif-only card. (Arena stays.)
+  const ROADMAP_SKIP = new Set(['proof', 'relay']);
   software.forEach((s, i) => {
+    if (ROADMAP_SKIP.has(s.slug)) return;
     items.push({
       id: `software:${s.slug}`,
       type: 'software',

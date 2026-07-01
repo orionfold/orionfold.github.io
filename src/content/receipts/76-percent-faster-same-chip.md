@@ -10,7 +10,7 @@ source:
   - label: "The desk box we measured on"
     href: "/dgx-spark/"
   - label: "Built with Orionfold Arena"
-    href: "/software/arena/"
+    href: "/arena/"
 verify: "Serve the same 8B model on the same desk box three ways: the convenient default, a compiled default at the same precision, and the 4-bit mode the chip runs in hardware. Send all three the same prompt, time the words a second, and read the memory each one holds while it answers."
 # --- provenance (not rendered by the receipts schema, tolerated) ---
 recommended: "TensorRT-LLM 1.1 · NVFP4 4-bit engine · trtllm-serve on a DGX Spark"
@@ -89,7 +89,7 @@ We will not oversell the middle row. Compiling the same precision into a tuned e
 
 A 4-bit mode also trims some precision to win the speed and the memory. For the work we run it on the trade held and the answers stayed good, but that is a thing to check on your own task, not assume. The point we stand behind is narrow and real: on this box, the same model went 76% faster and held a quarter of the memory, by changing only how it is stored.
 
-This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/software/arena/).
+This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/arena/).
 
 ## Why this can be trusted
 

@@ -138,7 +138,7 @@ Eighteen pieces now, and they cover the whole job, end to end:
 - **Publish.** Build a clean model card and ship the model to HuggingFace for others.
 - **Run an agent.** Install, set up, and protect an AI agent on your own machine, and
   route each kind of question to the right model for the job.
-- **Drive it all from one screen.** The parts behind [Orionfold Arena](/software/arena/):
+- **Drive it all from one screen.** The parts behind [Orionfold Arena](/arena/):
   the cockpit itself, a job queue, a spending brake, and a cost ledger. The cockpit can
   now start and stop the serving model too, with a memory check first and a confirm step
   before the old model is stopped.

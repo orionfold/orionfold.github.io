@@ -94,7 +94,7 @@ gallery:
 relatedBook: ai-research-on-nvidia-dgx-spark
 relatedReading:
   - title: "Orionfold Arena: the cockpit it runs in"
-    href: /software/arena/
+    href: /arena/
   - title: "Orionfold Cortex: the memory layer behind it"
     href: /software/cortex/
   - title: "fieldkit: the toolbox underneath"
@@ -129,7 +129,7 @@ Orionfold Advisor is a local AI advisor that answers from your own body of docum
 runs on one NVIDIA DGX Spark, a small AI desktop, and it is more than a model. It is a
 working unit: a small trained model, a search layer that finds the right sources, a
 rule-based router with a spending cap, a swappable pack of documents, and the
-[Orionfold Arena](/software/arena/) cockpit as its control room.
+[Orionfold Arena](/arena/) cockpit as its control room.
 
 Ask it a question and it answers from what it found, naming the exact source every claim
 came from. Ask it something its documents do not cover, or something about private
@@ -198,7 +198,7 @@ all driven on Claude Fable 5.
 
 The Advisor is a thin new layer over tools that already earned their keep. Search rides
 [Orionfold Cortex](/software/cortex/). The control room is [Orionfold
-Arena](/software/arena/), which gained the Advisor's proof cards, its replayable test
+Arena](/arena/), which gained the Advisor's proof cards, its replayable test
 drawer, and the guarded model-swap screen during this build. Training, shrinking, and
 publishing ride the [fieldkit](/software/fieldkit/) toolbox. The model is free on
 Hugging Face, the test set is published next to it, and every receipt quoted here is in

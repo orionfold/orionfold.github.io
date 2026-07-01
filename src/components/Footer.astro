@@ -25,9 +25,17 @@ const SW_GROUPS = [
   { key: 'intel', label: 'Intel' },
   { key: 'devtools', label: 'Devtools' },
 ] as const;
+// The three flagships (Proof, Arena, Relay) have no /software/<slug>/ detail page
+// — their canonical surface is a hand-built landing page. Link the footer to that
+// landing; every other software links to its detail page when one exists.
+const LANDING_HREF: Record<string, string> = {
+  proof: '/proof/',
+  arena: '/arena/',
+  relay: '/relay/',
+};
 const softwareLinks = software
-  .filter((s) => detailKeys.has(`software:${s.slug}`))
-  .map((s) => ({ href: `/software/${s.slug}/`, label: s.title, group: s.group }));
+  .filter((s) => LANDING_HREF[s.slug] || detailKeys.has(`software:${s.slug}`))
+  .map((s) => ({ href: LANDING_HREF[s.slug] ?? `/software/${s.slug}/`, label: s.title, group: s.group }));
 
 // Models: slug = slugify(title); dedupe build variants to one entry (first seen),
 // then gate to those with a detail page (drops the dataset, which has none).
@@ -51,16 +59,16 @@ const latestStories = (await getCollection('story'))
   .slice(0, 5)
   .map((p) => ({ href: `/story/${p.id}/`, label: p.data.title }));
 
-// Slim meta-row nav: the listing hubs now live as directory column headers, so
-// Explore keeps only the pages without a directory column. IA refocus 2026-06-13:
-// Arena (the /cockpit/ flagship, relabelled) leads; Advisor stays listed here for
-// SEO/AEO internal linking even though it left the top nav.
+// Slim meta-row nav: the listing hubs live as directory column headers, so Explore
+// keeps the pages WITHOUT a directory column. 2026-07-01 (three-flagship
+// consolidation): the flagship landings (/proof/, /arena/, /relay/) now sit in the
+// Software directory column above, so they are NOT duplicated here. /cockpit/ (the
+// legacy Arena page) + /advisor/ stay listed for SEO/AEO internal-link equity.
 const explore = [
-  { href: '/cockpit/', label: 'Arena' },
+  { href: '/cockpit/', label: 'Cockpit' },
   { href: '/workflows/', label: 'Workflows' },
   { href: '/experts/', label: 'Experts' },
   { href: '/advisor/', label: 'Advisor' },
-  { href: '/proof/', label: 'Receipts' },
   { href: '/learn/', label: 'Learn' },
   { href: '/dgx-spark/', label: 'DGX Spark' },
   { href: '/adoption/', label: 'Adoption' },

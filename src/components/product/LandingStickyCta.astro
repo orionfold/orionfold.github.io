@@ -1,0 +1,76 @@
+---
+// Sticky Buy bar for the flagship LANDING pages (/proof/, /arena/, /relay/).
+// A slim variant of product/StickyCtaBar.astro, decoupled from the ProductDetail
+// engine's ProductView: the landings are hand-built, so this takes plain props
+// straight from the commerce SSOT (PROOF / FIELD_EDITION / RELAY) instead.
+//
+// It renders the SAME founding-price buy button the page's Box renders, so the
+// price can never drift. The button carries data-checkout, so the page's global
+// wireCheckoutButtons() (a document-wide, idempotent scan) wires it with no extra
+// JS. When the product's launch flag is off, the bar shows a link to the in-page
+// buy anchor instead of a live button, so no one can pay before fulfillment.
+//
+// Reveal: hidden by default, fades in once #hero-cta-sentinel scrolls out of view
+// (an IntersectionObserver, reduced-motion snaps in). The host page MUST place a
+// <div id="hero-cta-sentinel"> near its hero CTA. Voice/UI mirrors StickyCtaBar.
+interface Props {
+  /** Product title shown on the left of the bar. */
+  title: string;
+  /** Catalog lookup key for the primary (founding) buy button. */
+  lookupKey: string;
+  /** Price label already formatted (e.g. "$349"). */
+  priceLabel: string;
+  /** Roadmap attribution id carried into Stripe metadata (data-item). */
+  itemId: string;
+  /** Live launch flag — false renders a link to the in-page buy anchor instead. */
+  live: boolean;
+  /** In-page anchor to scroll to (e.g. "#get-proof") when not live, or as the
+   *  bar's fallback target. */
+  anchor: string;
+}
+const { title, lookupKey, priceLabel, itemId, live, anchor } = Astro.props;
+---
+<div
+  id="sticky-cta"
+  class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-border bg-surface/95 backdrop-blur transition-transform duration-300 [&.is-visible]:translate-y-0 motion-reduce:transition-none"
+>
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
+    <p class="truncate font-display text-sm font-bold">{title}</p>
+    <div class="flex shrink-0 items-center gap-2">
+      {live ? (
+        <button
+          type="button"
+          data-checkout={lookupKey}
+          data-item={itemId}
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-accent px-4 py-2 font-mono text-xs tracking-wider text-accent-text transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Buy now · {priceLabel}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
+      ) : (
+        <a
+          href={anchor}
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-accent px-4 py-2 font-mono text-xs tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
+        >
+          See pricing · {priceLabel}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </a>
+      )}
+    </div>
+  </div>
+</div>
+
+<script>
+  function initStickyCta() {
+    const bar = document.getElementById('sticky-cta');
+    const sentinel = document.getElementById('hero-cta-sentinel');
+    if (!bar || !sentinel) return;
+    const io = new IntersectionObserver(
+      ([entry]) => bar.classList.toggle('is-visible', !entry.isIntersecting),
+      { rootMargin: '0px 0px -80% 0px' },
+    );
+    io.observe(sentinel);
+  }
+  initStickyCta();
+  document.addEventListener('astro:after-swap', initStickyCta);
+</script>

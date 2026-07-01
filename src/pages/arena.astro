@@ -1,8 +1,9 @@
 ---
-// /arena/ — Orionfold Arena, the eval cockpit. New flagship landing page, parallel
-// to /proof/ + /relay/. Nav "Arena" points here (2026-07-01, repointed from
-// /cockpit/). /cockpit/ stays live + footer-linked (SEO equity); /software/arena/
-// stays as the deep detail page; this is the flagship conversion surface.
+// /arena/ — Orionfold Arena, the eval cockpit. The single canonical flagship
+// landing + conversion surface, parallel to /proof/ + /relay/. Nav "Arena" points
+// here (2026-07-01, repointed from /cockpit/). /cockpit/ stays live + footer-
+// linked (SEO equity); the /software/arena/ detail page was retired the same day
+// and 301s here (its Field Edition buy block now lives at #get-arena below).
 //
 // Content sourced from the ainative Arena corpus (products/orionfold-arena/
 // product.md) + the FieldEditionBox positioning (capability/velocity-led). The
@@ -18,6 +19,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import ArenaBox from '../components/product/ArenaBox.astro';
+import LandingStickyCta from '../components/product/LandingStickyCta.astro';
 import LicenseBand from '../components/product/LicenseBand.astro';
 import OfferSlot from '../components/ui/OfferSlot.astro';
 import { ARENA_FIELD_EDITION_LIVE } from '../data/launch';
@@ -28,7 +30,7 @@ import arenaFrontier from '../assets/arena/03-efficiency-frontier.png';
 import arenaCompare from '../assets/arena/07-compare.png';
 import arenaEvalDrawer from '../assets/arena/08-eval-drawer.png';
 import { SITE, PERSON } from '../data/seo';
-import { FIELD_EDITION } from '../data/commerce';
+import { FIELD_EDITION, formatUsd } from '../data/commerce';
 import { ogMeta } from '../data/og';
 
 const og = ogMeta('/arena/');
@@ -137,6 +139,8 @@ const gallery = [
       title="See which AI wins, on your own desk."
       subtitle="Orionfold Arena is a single-screen cockpit to run, compare, score, and train local AI models on one NVIDIA DGX Spark. The model, the tests, the hardware, and the results all live in one place you control. Nothing leaves the box."
     />
+    <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view. -->
+    <div id="hero-cta-sentinel" aria-hidden="true"></div>
 
     <!-- Constellation: where Arena sits in the Orionfold line -->
     <section class="px-6 pt-4 pb-10">
@@ -311,19 +315,31 @@ const gallery = [
       buttonText="Send it"
     />
 
-    <!-- Close: hand the reader to the deep detail + the live demo -->
+    <!-- Close: hand the reader to the live demo + the buy block -->
     <section class="px-6 py-16">
       <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
         <p class="font-display text-2xl leading-snug">Drive the cockpit yourself.</p>
         <p class="mt-4 text-base leading-relaxed text-text-muted">
-          Try the live demo in your browser, or read the full walkthrough of every screen.
+          Click through every screen in the live demo, or get the Field Edition and run the whole
+          stack on your own Spark.
         </p>
         <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
           <a href="/arena/demo/" class="of-primary-action">Try the live demo</a>
-          <a href="/software/arena/" class="of-secondary-action">See every screen</a>
+          <a href="#get-arena" class="of-secondary-action">Get Arena Field Edition</a>
         </div>
       </div>
     </section>
+
+    <!-- Persistent Buy bar: one tap away once the hero scrolls past. Same
+         founding price + data-checkout wiring as ArenaBox (SSOT-driven). -->
+    <LandingStickyCta
+      title="Orionfold Arena Field Edition"
+      lookupKey={FIELD_EDITION.founding.lookupKey}
+      priceLabel={formatUsd(FIELD_EDITION.founding.amount)}
+      itemId="software:arena"
+      live={ARENA_FIELD_EDITION_LIVE}
+      anchor="#get-arena"
+    />
   </main>
   <Footer />
 </Layout>

@@ -23,13 +23,14 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import RelayBox from '../components/product/RelayBox.astro';
+import LandingStickyCta from '../components/product/LandingStickyCta.astro';
 import LicenseBand from '../components/product/LicenseBand.astro';
 import OfferSlot from '../components/ui/OfferSlot.astro';
 import { ORIONFOLD_RELAY_LIVE } from '../data/launch';
 import relayPoster from '../assets/projects/orionfold-relay-poster.jpeg';
 import relayBoardShot from '../assets/relay/home-list.png';
 import { SITE, PERSON } from '../data/seo';
-import { RELAY } from '../data/commerce';
+import { RELAY, formatUsd } from '../data/commerce';
 import { ogMeta } from '../data/og';
 
 const og = ogMeta('/relay/');
@@ -151,6 +152,8 @@ const gaps = [
       title="Run your agents from one place."
       subtitle="Orionfold Relay is the operations layer for AI builders and small services teams. It is the missing piece between running one agent and running real work for a room full of clients. Point it at your client work, run it across local and cloud models, send every result through your approval, and watch each client's cost add up on its own."
     />
+    <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view. -->
+    <div id="hero-cta-sentinel" aria-hidden="true"></div>
 
     <!-- Constellation: where Relay sits in the Orionfold line -->
     <section class="px-6 pt-4 pb-10">
@@ -344,6 +347,17 @@ const gaps = [
       dek="Get the AI Native Business book free, and a note when we ship a new Relay pack you can own."
       artifact="PDF + EPUB, plus new-pack notes"
       buttonText="Send it"
+    />
+
+    <!-- Persistent Buy bar: one tap away once the hero scrolls past. Same
+         founding price + data-checkout wiring as RelayBox (SSOT-driven). -->
+    <LandingStickyCta
+      title="Orionfold Relay"
+      lookupKey={RELAY.founding.lookupKey}
+      priceLabel={formatUsd(RELAY.founding.amount)}
+      itemId="software:orionfold-relay"
+      live={ORIONFOLD_RELAY_LIVE}
+      anchor="#get-relay"
     />
   </main>
   <Footer />

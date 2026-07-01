@@ -41,19 +41,34 @@ export interface SoftwareProduct extends RoadmapMeta {
 
 // Group headings + blurbs for the page sections (order = display order).
 export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }[] = [
-  { id: 'flagship', label: 'Flagship', blurb: 'Our lead products: the cockpit that runs, trains, and proves AI on your own desktop, a governed advisor over your own documents, and the memory it answers from.' },
-  { id: 'platform', label: 'The platform', blurb: 'The core: run AI on your own computer, and drive it with code.' },
+  { id: 'flagship', label: 'Flagship', blurb: 'Our lead products, the line you buy: prove which AI to trust, drive the shelf of models you own to find the one that wins, then put that winner to work. Advisor and Cortex round out the Arena stack.' },
+  { id: 'platform', label: 'The platform', blurb: 'The Arena stack and the core: a governed advisor over your documents, the memory it answers from, and the API to drive it all with code.' },
   { id: 'devtools', label: 'Developer tools', blurb: 'For builders: testing, terminals, and reusable patterns.' },
   { id: 'apps', label: 'Personal AI apps', blurb: 'Ready-to-use apps that keep your data on your machine.' },
   { id: 'intel', label: 'Intelligence & research', blurb: 'Tools that turn the fast-moving AI world into clear answers.' },
 ];
 
 export const software: SoftwareProduct[] = [
-  // ── Flagship (pole position: the products we commercialize) ──
-  // IA refocus 2026-06-13: Arena leads (it is the Arena Field Edition home, the
-  // site's primary commercial CTA). Order = Arena -> Advisor -> Cortex; this array
-  // order also drives the CatalogShelf door art + the /software/ section. Supersedes
-  // the 2026-06-11 Advisor-first pole position.
+  // ── Flagship (pole position: the three products we commercialize) ──
+  // Three-flagship consolidation 2026-07-01: Proof, Arena, Relay are the
+  // commercial line and lead the page + this array (array order also drives the
+  // CatalogShelf door art). Their cards link to the canonical landing pages
+  // (/proof/, /arena/, /relay/), not to /software/<slug>/ detail pages — the
+  // Arena + AI-Native-Platform detail pages were retired into those landings.
+  // Advisor + Cortex stay in the group below the three as the Arena stack.
+  {
+    slug: 'proof',
+    group: 'flagship',
+    eyebrow: 'Trust, proven',
+    title: 'Orionfold Proof',
+    body: 'The tool behind the receipts. It runs on your own machine, points at your own task, and tries each AI model or setup you are weighing. It scores them on a rubric you set and hands back a signed receipt: which one won, at what cost, with what failures. Rerun it any time.',
+    pills: ['Runs local', 'Signed receipts', 'Rerunnable', 'Private'],
+    href: '/proof/',
+    ctaText: 'See Proof',
+    coverType: 'poster',
+    cover: '@proof',
+    status: 'active',
+  },
   {
     slug: 'arena',
     group: 'flagship',
@@ -61,7 +76,7 @@ export const software: SoftwareProduct[] = [
     title: 'Orionfold Arena',
     body: 'One screen to run, compare, score, and now train the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, queue tests and training runs, and wake up to a morning report. Nothing you type leaves your machine.',
     pills: ['Runs local', 'Leaderboard', 'Trains + tests', 'Private'],
-    href: 'https://ainative.business/arena/',
+    href: '/arena/',
     ctaText: 'See Arena',
     // Demo mirrored under orionfold.com (public/arena/demo/) so buyers stay on-site.
     demoHref: '/arena/demo/',
@@ -71,11 +86,35 @@ export const software: SoftwareProduct[] = [
     status: 'active', // living tool, served by fieldkit; appears on the roadmap
   },
   {
+    // Orionfold Relay: the former open ainative-business engine, renamed. This
+    // card was the old "AI Native Platform" software entry (that detail page is
+    // retired); it now leads to the /relay/ landing. (The AI Native Platform
+    // *book* is a different product and keeps its own /books/ card.)
+    slug: 'relay',
+    group: 'flagship',
+    eyebrow: 'Operating layer',
+    title: 'Orionfold Relay',
+    body: 'The operations layer for AI builders and small services teams. Run your agents from one place, across local and cloud models, send every result through your approval, and watch each client’s cost add up on its own. The free engine installs with npm; a license unlocks the premium packs you own.',
+    pills: ['Runs local', 'Agents', 'Approvals', 'Cost per client'],
+    href: '/relay/',
+    ctaText: 'See Relay',
+    coverType: 'poster',
+    cover: '@relay',
+    status: 'active',
+  },
+
+  // ── The platform (+ the Arena stack: Advisor, Cortex) ──
+  // Three-flagship consolidation 2026-07-01: Advisor + Cortex moved out of the
+  // flagship group (now Proof/Arena/Relay) into the platform group — they are the
+  // Arena stack the flagship line rests on. The former "AI Native Platform"
+  // software card was renamed Orionfold Relay and promoted into flagship (its old
+  // /software/ detail page is retired → /relay/); the API card stays here too.
+  {
     // Graduated from the roadmap overlay 2026-06-10: the Advisor shipped
     // publicly (promoted fine-tuned 4B lane, Orionfold/Advisor-GGUF +
     // Advisor-bench on Hugging Face, receipts in the public repo).
     slug: 'advisor',
-    group: 'flagship',
+    group: 'platform',
     eyebrow: 'Governed advisor',
     title: 'Orionfold Advisor',
     body: 'A local AI advisor over your own body of documents. Every answer names the exact source it came from. If your documents cannot support an answer, it refuses instead of guessing. Every check it passed is a saved receipt you can re-run.',
@@ -87,7 +126,7 @@ export const software: SoftwareProduct[] = [
   },
   {
     slug: 'cortex',
-    group: 'flagship',
+    group: 'platform',
     eyebrow: 'Memory layer',
     title: 'Orionfold Cortex',
     body: 'A second brain that lives on your own desktop. It indexes your notes, stamps where every fact came from, and grades its own memory: a rebuild that would make recall worse is caught, not shipped. Your documents never leave your machine.',
@@ -99,20 +138,6 @@ export const software: SoftwareProduct[] = [
     coverType: 'poster',
     cover: 'cortex-poster.png',
     status: 'active', // living tool, the Arena memory layer; appears on the roadmap
-  },
-
-  // ── The platform ──
-  {
-    slug: 'ai-native-platform',
-    group: 'platform',
-    eyebrow: 'The platform',
-    title: 'AI Native Platform',
-    body: 'Run AI helpers on your own computer. Hand them tasks, build flows that run step by step, set schedules, and watch the work as it goes. It even tracks what each run costs. One place, no cloud needed.',
-    pills: ['Runs local', 'Agents', 'Workflows', 'Cost tracking'],
-    href: 'https://ainative.business/docs/',
-    ctaText: 'Read the docs',
-    coverType: 'poster',
-    cover: 'ai-native-platform-poster.png',
   },
   {
     slug: 'ai-native-api',

@@ -124,11 +124,19 @@ export default defineConfig({
     // so they get no redirect. At go-live, mirror this as a Cloudflare 301 rule
     // (this static redirect is a meta-refresh page, weaker than an edge 301).
     '/roadmap/': '/adoption/',
+    // Three-flagship consolidation (2026-07-01): the legacy /software/arena/ and
+    // /software/ai-native-platform/ detail pages were retired in favor of the
+    // canonical /arena/ and /relay/ landings (single buy surface per flagship).
+    // Both old URLs carry GSC history, so 301 them to their landing successor.
+    // (/software/ai-native-platform/ = the pre-rename Relay engine; the *book*
+    // /books/ai-native-platform/ is a different product and stays untouched.)
+    // Astro emits a meta-refresh 301; mirror as a Cloudflare edge 301 at go-live.
+    '/software/arena/': '/arena/',
+    '/software/ai-native-platform/': '/relay/',
     // Arena Field Edition (2026-06-13): marketing campaign links use the short
-    // vanity path /arena-field-edition/, but the product is an edition split on
-    // the existing Arena surface (not a new silo), so the path resolves to the
-    // Field Edition block. Mirror as a Cloudflare 301 at go-live.
-    '/arena-field-edition/': '/software/arena/',
+    // vanity path /arena-field-edition/. It pointed at the retired detail page;
+    // repoint to the /arena/ landing where the Field Edition buy block now lives.
+    '/arena-field-edition/': '/arena/',
   },
   markdown: {
     remarkPlugins: [remarkDirective, remarkAsciinema, remarkProofCta],

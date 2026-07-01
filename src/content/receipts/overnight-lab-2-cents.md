@@ -10,7 +10,7 @@ source:
   - label: "The desk box that ran it"
     href: "/dgx-spark/"
   - label: "Built with Orionfold Arena"
-    href: "/software/arena/"
+    href: "/arena/"
 verify: "Queue the same batch of experiments on the box overnight with no person watching. Read the wall-clock time off the run log and the power draw off the meter, work out the kilowatt-hours, and multiply by your electricity rate. Then price the same batch on rented cloud chips, paying per word in and out, and put the two numbers side by side."
 # --- provenance (not rendered by the receipts schema, tolerated) ---
 recommended: "Local NIM Llama 3.1 8B driving a config-search loop over a 354M model trainer on a DGX Spark"
@@ -42,7 +42,7 @@ Two cents is the power bill, not the price of the box. The point is not that thi
 
 We will also be straight about the result itself. A 0.93% gain over fifty tries is a small, useful signal, not a breakthrough, and each try was a short timing run rather than a full training. The win we are standing behind is the cost of asking the question, not the size of this one answer.
 
-This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/software/arena/).
+This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/arena/).
 
 ## Why this can be trusted
 

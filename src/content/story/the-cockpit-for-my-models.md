@@ -65,4 +65,4 @@ Nothing I type is uploaded. Nothing I compare phones home, unless I deliberately
 
 The tool is nice. But the method is the thing worth taking with you. A solo builder on one desktop, driving a capable AI agent over a toolbox that already does the hard parts, can go from an idea to a tested, fourteen-screen tool in a day. Point that same loop at your own shelf of models, and it works for you too.
 
-You can try the cockpit yourself in the [Arena](/software/arena/), and there is a live demo you can click through without installing anything. The models it drives came from the work in the [DGX Spark book](/books/ai-research-on-nvidia-dgx-spark/), if you want to see where the shelf came from.
+You can try the cockpit yourself in the [Arena](/arena/), and there is a live demo you can click through without installing anything. The models it drives came from the work in the [DGX Spark book](/books/ai-research-on-nvidia-dgx-spark/), if you want to see where the shelf came from.

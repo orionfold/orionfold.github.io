@@ -66,8 +66,8 @@ specs:
     value: Watch a task's logs stream as it runs
 
 relatedReading:
-  - title: AI Native Platform
-    href: /software/ai-native-platform/
+  - title: Orionfold Relay
+    href: /relay/
   - title: Building in public
     href: /story/building-in-public/
 relatedBook: ai-native-business

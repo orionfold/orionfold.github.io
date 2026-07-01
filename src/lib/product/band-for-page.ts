@@ -29,15 +29,15 @@ export type PageType = 'software' | 'model' | 'book' | 'story' | 'receipt' | 'pa
 // The proven products (ours:true columns in proof.ts) — strong Proof.
 const PROVEN_SLUGS = new Set(['advisor', 'kepler', 'patent-strategist', 'patent-strategist-bench']);
 
-// Software strong matches by slug (from the audit's signal map).
+// Software strong matches by slug (from the audit's signal map). Note: the
+// `arena` + `ai-native-platform` detail pages were retired (2026-07-01) in favor
+// of the canonical /arena/ + /relay/ landings, so those slugs are gone from here.
 const SOFTWARE_PRODUCT: Record<string, BandProduct> = {
-  arena: 'arena',
   fieldkit: 'arena',
   command: 'arena',
   advisor: 'proof',
   cortex: 'proof',
   sentinel: 'proof', // agent testing -> testing/trust
-  'ai-native-platform': 'relay',
   'ai-native-api': 'relay',
   trends: 'relay',
   moments: 'relay',

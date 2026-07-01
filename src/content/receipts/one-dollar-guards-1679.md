@@ -10,7 +10,7 @@ source:
   - label: "The desk box we test on first"
     href: "/dgx-spark/"
   - label: "Built with Orionfold Arena"
-    href: "/software/arena/"
+    href: "/arena/"
 verify: "Run the cheap desk sweep before your next big cloud booking: try many designs on the box, keep the few that look strong, and book only those. Track how often the sweep catches a design that would have failed in the cloud, and multiply that rate by the cost of the booking it stops."
 # --- provenance (not rendered by the receipts schema, tolerated) ---
 recommended: "A 100-design recipe sweep on a DGX Spark before an 8xH100 cloud training campaign"
@@ -75,7 +75,7 @@ The $1,679 is an expected figure, not a promise on every single run. Some design
 
 The desk check is also not the whole job. It cuts how often you pick wrong, but it does not drop it to zero. A few failure modes only show up at full cloud scale, so the honest move is to keep a short cloud sanity check at the front of the real run. The desk test lowers the risk a lot for a dollar. It does not erase it.
 
-This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/software/arena/).
+This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/arena/).
 
 ## Why this can be trusted
 

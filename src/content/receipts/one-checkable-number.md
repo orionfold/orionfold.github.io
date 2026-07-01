@@ -10,7 +10,7 @@ source:
   - label: "Kepler: space-math model"
     href: "/models/kepler/"
   - label: "Built with Orionfold Arena"
-    href: "/software/arena/"
+    href: "/arena/"
 verify: "Pose a space-math problem with a known answer. Have the model return one boxed number, then run a small checker that pulls out that number, fixes the units, and compares it to the known result within a tolerance. Score it pass or fail with no human judgment in the loop."
 # --- provenance (not rendered by the receipts schema, tolerated) ---
 recommended: "Kepler, a numeric astrodynamics reasoner, on a DGX Spark"
@@ -42,7 +42,7 @@ A clean number can still be the wrong number. Returning a checkable answer is no
 
 We will also name the soft spot in the method. A grader that accepts any number within a small tolerance is a surface check, and a surface check can be gamed or can pass a number that is right by luck. It deserves harder, adversarial testing before anyone leans on it as the only gate. The receipt here is narrow and real: the answers come in a form a program can grade, and on a locked test most of them held up.
 
-This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/software/arena/).
+This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/arena/).
 
 ## Why this can be trusted
 

@@ -12,7 +12,7 @@ source:
   - label: "Patent Strategist: cited legal reasoning"
     href: "/models/patent-strategist/"
   - label: "Built with Orionfold Arena"
-    href: "/software/arena/"
+    href: "/arena/"
 verify: "Give the model a multi-step patent question and read the steps it shows before the answer. Then run it three ways on the same set of questions: with no help, with a search step that pulls in source documents, and with the exact right passage handed to it. Score each run and check that the steps you can read line up with the answer it lands on."
 # --- provenance (not rendered by the receipts schema, tolerated) ---
 recommended: "Patent Strategist baseline (DeepSeek-R1 8B, Q5_K_M) on a DGX Spark"
@@ -44,7 +44,7 @@ Shown steps can still be wrong steps, and a clean climb in score is not the same
 
 We will be straight about one more thing. On the structured-argument questions the model scored full marks, but that score checks the shape of the answer, the ordered issue, rule, analysis, and conclusion, not whether the law it cites is actually the right law. That is a property of how the answer is laid out, not proof that the reasoning is correct. The receipt here is narrower and real: the model shows its work, and its score moves in a checkable way with the source you give it.
 
-This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/software/arena/).
+This ran on Orionfold Arena, the local-AI cockpit, on a desk box you can own. [See Arena](/arena/).
 
 ## Why this can be trusted
 
