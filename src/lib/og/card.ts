@@ -76,6 +76,13 @@ export interface CardOptions {
 }
 
 const WHITE = '#ffffff';
+// Brand primary on a dark ground (global.css dark --color-primary). The OG cards are
+// always dark, so this is the cyan used for "fold" in the wordmark and the brand mark.
+const CYAN = '#14c8c0';
+
+// Orionfold brand mark (BrandMark.astro): cyan disc + white 5-point star knockout,
+// rotated 45°. Rasterized once and reused as the wordmark's leading logo on art cards.
+const MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="${CYAN}"/><g transform="rotate(45 32 32)"><path fill="#ffffff" d="M32,9L37.41,24.56L53.88,24.89L40.75,34.84L45.52,50.61L32,41.2L18.48,50.61L23.25,34.84L10.12,24.89L26.59,24.56Z"/></g></svg>`;
 // Soft dark halo behind white text so it stays legible over bright, true-color art
 // without darkening the image. Layered: a crisp near shadow + two wider soft glows.
 const TEXT_GLOW = '0 0 5px rgba(0,0,0,0.95), 0 2px 7px rgba(0,0,0,0.92), 0 0 24px rgba(0,0,0,0.85), 0 0 54px rgba(0,0,0,0.6)';
@@ -120,15 +127,34 @@ function eyebrow(text: string): El {
 }
 
 /**
- * Bottom overlay strip for full-bleed art cards (story comics, software posters,
- * model covers, curated-hero landing pages). The art is busy and often carries its
- * own lettering, so instead of floating the title across the whole image we drop
- * eyebrow + title + footer into a semi-transparent dark band pinned to the bottom.
- * The band is a transparent->dark gradient (a designed scrim, not a hard bar) so the
- * creative still breathes above it. The starry brand-banner cards keep the airy
- * full-card layout — this strip is only for the photographic/art backgrounds.
+ * Brand wordmark for the art-card bar: the Orion mark + "orion" (white) "fold" (cyan)
+ * ".com", matching the site nav wordmark (Nav.astro splits "Orion" + primary "fold").
+ * The mark is the rasterized BrandMark SVG. Sits as a horizontal group so the bar can
+ * center it vertically and pin it to the left.
  */
-function bottomStrip(opts: CardOptions, titleSize: number): El {
+function brandLockup(): El {
+  const seg = (text: string, color: string): El =>
+    h('div', { style: { display: 'flex', color, fontSize: 32, fontWeight: 700, letterSpacing: -0.5, textShadow: TEXT_GLOW } }, text);
+  return h(
+    'div',
+    { style: { display: 'flex', alignItems: 'center', gap: 14 } },
+    [
+      h('img', { src: pngDataUri(MARK_SVG), width: 40, height: 40, style: { width: 40, height: 40 } }),
+      h('div', { style: { display: 'flex', alignItems: 'center' } }, [seg('orion', WHITE), seg('fold', CYAN), seg('.com', WHITE)]),
+    ],
+  );
+}
+
+/**
+ * Bottom brand bar for full-bleed art cards (story comics, software posters, model
+ * covers, curated-hero landing pages). The art carries its own title, so the bar
+ * only brands the card: a solid translucent strip pinned to the bottom holding the
+ * Orion mark + orionfold.com wordmark, vertically centered (equal top/bottom padding)
+ * and pinned left. No title/eyebrow/meta overlay — the creative speaks for itself.
+ * The starry brand-banner cards keep the airy full-card layout; this bar is only for
+ * the photographic/art backgrounds.
+ */
+function bottomStrip(_opts: CardOptions, _titleSize: number): El {
   return h(
     'div',
     {
@@ -139,59 +165,17 @@ function bottomStrip(opts: CardOptions, titleSize: number): El {
         bottom: 0,
         width: 1200,
         display: 'flex',
-        flexDirection: 'column',
-        gap: 16,
-        paddingLeft: 64,
-        paddingRight: 64,
-        paddingTop: 72,
-        paddingBottom: 48,
-        // Transparent at the top, near-opaque where the text sits.
-        backgroundImage:
-          'linear-gradient(to bottom, rgba(7,13,20,0) 0%, rgba(7,13,20,0.74) 40%, rgba(7,13,20,0.94) 100%)',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        // Equal top/bottom padding => the lockup is vertically centered in the bar.
+        paddingTop: 20,
+        paddingBottom: 20,
+        paddingLeft: 48,
+        paddingRight: 48,
+        backgroundColor: 'rgba(7,13,20,0.82)',
       },
     },
-    [
-      eyebrow(opts.eyebrow),
-      h(
-        'div',
-        {
-          style: {
-            display: 'flex',
-            color: WHITE,
-            fontSize: titleSize,
-            fontWeight: 700,
-            lineHeight: 1.06,
-            letterSpacing: -1,
-            maxWidth: 1072,
-            textShadow: TEXT_GLOW,
-          },
-        },
-        opts.title,
-      ),
-      h(
-        'div',
-        { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
-        [
-          wordmark(),
-          opts.meta
-            ? h(
-                'div',
-                {
-                  style: {
-                    display: 'flex',
-                    color: WHITE,
-                    fontSize: 20,
-                    fontWeight: 400,
-                    letterSpacing: 0.3,
-                    textShadow: TEXT_GLOW,
-                  },
-                },
-                opts.meta,
-              )
-            : h('div', { style: { display: 'flex' } }, ''),
-        ],
-      ),
-    ],
+    brandLockup(),
   );
 }
 

@@ -167,6 +167,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Run your agents from one place',
     seed: 'relay',
     alt: 'Orionfold Relay: the free, open engine for AI agents and workflows, with premium packs you own',
+    background: 'src/assets/projects/orionfold-relay-poster.jpeg',
   },
   '/arena/': {
     slug: 'arena',
