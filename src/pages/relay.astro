@@ -1,0 +1,200 @@
+---
+// /relay/ — Orionfold Relay, the free and open engine for AI agents and
+// workflows (the npm package `orionfold-relay`, the former open ainative-business
+// engine, renamed). The page states the free-vs-paid boundary plainly, shows the
+// premium packs a license unlocks, then the buy block. Built dark (buy buttons
+// gated by ORIONFOLD_RELAY_LIVE) while the live prices + fulfilment go live.
+//
+// Content note (relay ask orionfold-relay 2026-06-30): the copy here is sourced
+// from the Relay launch-readiness relay entry (npm distribution, `relay pack add`
+// verb, the relay-agency reference pack, engine-free / packs-licensed boundary).
+// The Relay peer owns publish-quality positioning; this page is refined from their
+// content pointers when they land (same pattern as Proof/Arena, where marketing
+// owns publish copy). No invented benchmarks or claims.
+// Voice: grade 3-5, jargon explained, no em-dashes (website-copy-style).
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import RelayBox from '../components/product/RelayBox.astro';
+import OfferSlot from '../components/ui/OfferSlot.astro';
+import { SITE, PERSON } from '../data/seo';
+import { RELAY } from '../data/commerce';
+import { ogMeta } from '../data/og';
+
+const og = ogMeta('/relay/');
+const relayUrl = `${SITE.url}/relay/`;
+const ogImageAbs = `${SITE.url}${og.image}`;
+
+// Merchant-listings completeness for the priced Offer below. Same honest values
+// as ProductDetail.astro / ProofBox: Orionfold Relay is an instant digital
+// license from a US LLC, so free "shipping" (nothing physical) + no returns (a
+// delivered, signed license file can't be returned).
+const digitalMerchantFields = {
+  hasMerchantReturnPolicy: {
+    '@type': 'MerchantReturnPolicy',
+    applicableCountry: 'US',
+    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+  },
+  shippingDetails: {
+    '@type': 'OfferShippingDetails',
+    shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'USD' },
+    shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
+  },
+};
+
+// SoftwareApplication + Offer so /relay/ reads as the buyable product for answer
+// engines. Price = the standard $499 (the durable price after the founding seats
+// sell out); the catalog SSOT is the source, never a hardcoded number.
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Orionfold Relay',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'macOS, Linux',
+  description:
+    'The free and open engine for AI agents and workflows. Install it with npm, run your agents from one place, and unlock premium packs you own with a license.',
+  url: relayUrl,
+  image: ogImageAbs,
+  author: PERSON,
+  brand: { '@type': 'Brand', name: 'Orionfold' },
+  offers: {
+    '@type': 'Offer',
+    price: (RELAY.primary.amount / 100).toFixed(2),
+    priceCurrency: 'USD',
+    availability: 'https://schema.org/InStock',
+    url: relayUrl,
+    category: 'Software license',
+    ...digitalMerchantFields,
+  },
+};
+
+// What you get free vs what a license unlocks. Stated plainly as a table so the
+// boundary can't be overclaimed (same free-vs-paid discipline as Proof).
+const freeVsPaid = [
+  { free: 'The Relay engine and CLI', paid: 'The premium packs you own' },
+  { free: 'Run your own agents and workflows', paid: 'The agency pack: profiles, blueprints, customers' },
+  { free: 'Add, list, and remove packs', paid: 'New packs and pack updates for 12 months' },
+  { free: 'Community support', paid: 'Your own private download link per pack' },
+];
+
+// The concrete premium pack that exists today (the relay-agency reference pack).
+// Kept honest: only what the Relay relay entry says shipped.
+const packs = [
+  {
+    name: 'Agency pack',
+    dek: 'A ready-made setup for agency work in real estate and nonprofits: 7 profiles, 8 blueprints, and a customer setup you drop in instead of wiring from scratch.',
+  },
+];
+---
+<Layout
+  title="Run your AI agents from one place · Orionfold Relay"
+  description="The free and open engine for AI agents and workflows. Install it with npm, run your agents from one place, and unlock premium packs you own with a license."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  jsonLd={[
+    softwareSchema,
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Relay', item: relayUrl },
+      ],
+    },
+  ]}
+>
+  <Nav />
+  <main>
+    <PageHeader
+      eyebrow="Operating layer"
+      title="Run your agents from one place."
+      subtitle="Orionfold Relay is the free and open engine that runs your AI agents and workflows. Install it with one command. Own a license and add premium packs that save you the setup."
+    />
+
+    <!-- What it is + install -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Free and open</p>
+        <p class="max-w-2xl text-base leading-relaxed text-text-muted">
+          The engine is open source and free to use. You install it with npm and it gives you one
+          place to run agents and workflows. Nothing is locked behind a paywall to get started.
+        </p>
+        <div class="mt-6 rounded-2xl border border-border/70 bg-surface/60 p-5">
+          <p class="font-mono text-xs uppercase tracking-wider text-text-dim">Install</p>
+          <pre class="mt-2 overflow-x-auto font-mono text-sm text-primary"><code>npm i -g orionfold-relay</code></pre>
+          <p class="mt-3 text-sm text-text-muted">
+            Or run it without installing: <span class="font-mono text-primary">npx orionfold-relay</span>.
+            Then <span class="font-mono text-primary">relay</span> is your command.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Free vs paid: the boundary, stated plainly -->
+    <section class="border-y border-border bg-surface-raised px-6 py-14">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What is free, what a license adds</p>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          The engine is free forever. A license unlocks the premium packs you own. Here is the line,
+          in plain terms.
+        </p>
+        <div class="grid gap-3">
+          <div class="grid grid-cols-2 gap-3 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-text-dim">
+            <span>Free with the engine</span>
+            <span>Unlocked by a license</span>
+          </div>
+          {freeVsPaid.map((row) => (
+            <div class="grid grid-cols-2 gap-3">
+              <p class="rounded-xl border border-border/70 bg-surface/60 p-4 text-sm text-text-muted">{row.free}</p>
+              <p class="rounded-xl border border-primary/30 bg-primary/5 p-4 text-sm text-text">{row.paid}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Premium packs a license unlocks -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Packs you can own</p>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          A pack is a ready-made setup you drop in with one command instead of building it yourself.
+          Your license adds it: run <span class="font-mono text-primary">relay pack add</span> with your
+          own private link and it installs.
+        </p>
+        <ul class="grid gap-3">
+          {packs.map((p) => (
+            <li class="rounded-2xl border border-border/70 bg-surface/60 p-5">
+              <p class="text-base font-medium text-text">{p.name}</p>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">{p.dek}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Soft opt-in: catch readers who aren't checkout-ready yet -->
+    <OfferSlot
+      offer="become-ai-native-business"
+      source="relay-page"
+      label="Not ready to buy?"
+      heading="Start with the free book."
+      dek="Get the AI Native Business book free, and a note when we ship a new Relay pack you can own."
+      artifact="PDF + EPUB, plus new-pack notes"
+      buttonText="Send it"
+    />
+
+    <!-- Own the premium packs -->
+    <RelayBox />
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  // Wire the Relay purchase buttons (data-checkout → create-checkout-session →
+  // Stripe). No-op when the buttons aren't rendered (ORIONFOLD_RELAY_LIVE off).
+  import { wireCheckoutButtons } from '../lib/checkout';
+  wireCheckoutButtons();
+  document.addEventListener('astro:after-swap', () => wireCheckoutButtons());
+</script>

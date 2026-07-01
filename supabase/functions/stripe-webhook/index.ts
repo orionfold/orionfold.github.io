@@ -67,6 +67,17 @@ const LICENSE_URL_TTL_SECONDS = 60 * 60 * 24 * 7;
 // Absent in non-prod → fulfillLicense records the sale but does not issue.
 const LICENSE_SIGNING_SEED_ENV = "LICENSE_SIGNING_SEED_B64";
 
+// Each licensed product draws license ids from its OWN Postgres sequence (via a
+// service_role-only SECURITY DEFINER rpc — supabase-js can't call nextval
+// directly). Keyed by the descriptor's `product` so adding a product is a data
+// change here, not another ternary arm; an unmapped product throws in
+// issueAndDeliverLicense rather than silently inheriting Arena's OF-FE- ids.
+const LICENSE_ID_RPC: Record<string, string> = {
+  "arena-field-edition": "next_fe_license_id",
+  "orionfold-proof": "next_proof_license_id",
+  "orionfold-relay": "next_relay_license_id",
+};
+
 function supabaseAdmin() {
   return createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -279,11 +290,15 @@ async function issueAndDeliverLicense(
   const seedB64 = Deno.env.get(LICENSE_SIGNING_SEED_ENV)!;
 
   // License id from the product's sequence — the only nextval path (supabase-js
-  // can't call nextval directly). Proof draws OF-PROOF-…, Arena draws OF-FE-….
-  // Drawn AFTER the purchase insert so retries don't burn ids.
-  const idRpc = ctx.descriptor.product === "orionfold-proof"
-    ? "next_proof_license_id"
-    : "next_fe_license_id";
+  // can't call nextval directly). Each product draws from its own sequence:
+  // Arena OF-FE-…, Proof OF-PROOF-…, Relay OF-RELAY-…. Keyed by product (not a
+  // Proof-or-else ternary) so a new product must map explicitly — an unmapped
+  // product throws here rather than silently minting Arena ids. Drawn AFTER the
+  // purchase insert so retries don't burn ids.
+  const idRpc = LICENSE_ID_RPC[ctx.descriptor.product];
+  if (!idRpc) {
+    throw new Error(`No license-id sequence mapped for product "${ctx.descriptor.product}"`);
+  }
   const { data: licenseId, error: idError } = await supabase.rpc(idRpc);
   if (idError || typeof licenseId !== "string") {
     throw idError ?? new Error(`${idRpc} returned no id`);
@@ -429,9 +444,12 @@ async function sendLicenseEmail(
   // file.
   const fileB64 = encodeBase64(new TextEncoder().encode(fileText));
 
-  const text = product === "orionfold-proof"
-    ? proofLicenseEmailText(productLabel, licenseId, installUrl)
-    : arenaLicenseEmailText(productLabel, licenseId, installUrl);
+  // Product-specific fulfilment copy (each has a different install/unlock verb).
+  // Keyed by product so a new product must supply its own template — an unmapped
+  // product falls back to Arena's copy only as a last resort (should never happen
+  // since fulfillLicense already gated on a known descriptor).
+  const emailFor = LICENSE_EMAIL_TEXT[product] ?? arenaLicenseEmailText;
+  const text = emailFor(productLabel, licenseId, installUrl);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -511,6 +529,45 @@ Your license keeps you up to date for 12 months.
 
 ${EMAIL_FOOTER}`;
 }
+
+function relayLicenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
+  return `Thank you for buying ${productLabel}.
+
+Your license number is ${licenseId}. Your license file is also
+attached as a backup copy, so you always have it.
+
+Install Orionfold Relay:
+
+npm i -g orionfold-relay
+
+The engine is free and open. Your license unlocks the premium
+packs you own.
+
+When you want to add a premium pack you own, run this one
+command. It checks your license over your own private link (it
+works for 7 days), then installs the pack:
+
+relay pack add <premium-pack> --license-url='${installUrl}'
+
+We will email you the download link for each new pack. If your
+private link stops working before you add one, just reply to
+this email and we will send you a fresh one.
+
+Your license keeps you up to date for 12 months.
+
+${EMAIL_FOOTER}`;
+}
+
+// Product → fulfilment-email template. Add a product here (not another ternary
+// arm) so the install/unlock verb stays product-correct.
+const LICENSE_EMAIL_TEXT: Record<
+  string,
+  (productLabel: string, licenseId: string, installUrl: string) => string
+> = {
+  "arena-field-edition": arenaLicenseEmailText,
+  "orionfold-proof": proofLicenseEmailText,
+  "orionfold-relay": relayLicenseEmailText,
+};
 
 async function fulfillBook(session: Stripe.Checkout.Session) {
   const lookupKey = session.metadata?.lookup_key ?? "";

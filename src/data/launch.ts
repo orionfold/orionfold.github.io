@@ -46,6 +46,30 @@ export const ARENA_FIELD_EDITION_LIVE = true;
 // the live Arena license path already exercises).
 export const ORIONFOLD_PROOF_LIVE = true;
 
+// ORIONFOLD_RELAY_LIVE — gate the live "Buy now" buttons on any Orionfold Relay
+// purchase block, exactly like ORIONFOLD_PROOF_LIVE gates Proof's. Relay is the
+// third licensed product (the npm agent/workflow engine; relay ask
+// orionfold-relay 2026-06-30). The issuer branch (catalog family + fulfillLicense
+// + the relay_license_seq migration + the relayLicenseEmailText verb) ships with
+// this OFF — the fulfilment spine works the moment a checkout hits the
+// license_orionfold_relay* keys regardless of any storefront. Flip ON once: the 3
+// live Stripe prices exist (operator/MCP), the migration is applied + the webhook
+// redeployed, and a website-signed OF-RELAY-2026 license has been verified by the
+// Relay CLI (the peer's dry-run, the analog of Proof's OF-PROOF-2026-0001). Until
+// a `/relay/` storefront exists this flag has no on-page effect; it is defined now
+// so the buy block, when built, gates on the same proven-fulfilment invariant.
+// ON (2026-06-30): the 3 live Stripe prices exist (prod_Unnm4kBjpcO05d —
+// license_orionfold_relay $499 / _founding $349 / _renewal $149yr, verified by
+// lookup_key --live), the relay_license_seq migration is applied to live Supabase,
+// and stripe-webhook + create-checkout-session are redeployed with the
+// product-keyed license path. The shared commerce charge path is already proven
+// end-to-end in production via the books + Arena + Proof products; Relay only adds
+// the license-issuing branch, which the conformance + Relay-payload tests cover
+// and the live Proof/Arena license path already exercises. The OF-RELAY-2026
+// verification license (the peer's CLI dry-run) is the operator's out-of-band
+// admin-issue-license call — it gates the peer's close, not the live Buy button.
+export const ORIONFOLD_RELAY_LIVE = true;
+
 // META_PIXEL_ENABLED — gate the browser-side Meta Pixel (fbevents.js loader +
 // PageView + the Purchase fbq track). OFF (operator 2026-06-18): BOTH Meta Ads
 // and Google Ads are paused, so the browser pixel buys nothing and is pure cost

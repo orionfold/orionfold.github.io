@@ -137,6 +137,37 @@ export const CATALOG: Record<string, CatalogItem> = {
     label: "Orionfold Proof kept-proven renewal",
     amount: 14900,
   },
+  // Orionfold Relay — the third licensed product (the npm agent/workflow
+  // operating-layer engine: `npm i -g orionfold-relay` / `npx orionfold-relay`,
+  // then `relay`; the former open `ainative-business` engine, renamed). Engine
+  // stays free + open (Apache-2.0); a license unlocks premium packs, which the
+  // Relay CLI gates on `owns_product()` at `relay pack add <premium-pack>
+  // --license-url='<signed-url>'`. Same THREE-SKU family + 12-month kept-proven
+  // window as Arena/Proof, resolved by lookup_key at runtime. The license a Relay
+  // purchase issues carries `product:orionfold-relay` (no pack id, so adding packs
+  // later needs no re-issue) — see licenseProductForLookupKey + stripe-webhook
+  // fulfillLicense. (Relay ask orionfold-relay 2026-06-30.)
+  license_orionfold_relay: {
+    lookupKey: "license_orionfold_relay",
+    kind: "license",
+    mode: "payment",
+    label: "Orionfold Relay",
+    amount: 49900,
+  },
+  license_orionfold_relay_founding: {
+    lookupKey: "license_orionfold_relay_founding",
+    kind: "license",
+    mode: "payment",
+    label: "Orionfold Relay (Founding)",
+    amount: 34900,
+  },
+  license_orionfold_relay_renewal: {
+    lookupKey: "license_orionfold_relay_renewal",
+    kind: "license",
+    mode: "subscription",
+    label: "Orionfold Relay kept-proven renewal",
+    amount: 14900,
+  },
   sponsor_bronze: {
     lookupKey: "sponsor_bronze",
     kind: "sponsor",
@@ -222,6 +253,13 @@ export const LICENSE_FAMILIES: Record<string, LicenseFamily> = {
     founding: "license_orionfold_proof_founding",
     standard: "license_orionfold_proof",
     renewal: "license_orionfold_proof_renewal",
+    foundingSeats: FOUNDING_SEATS,
+  },
+  "orionfold-relay": {
+    product: "orionfold-relay",
+    founding: "license_orionfold_relay_founding",
+    standard: "license_orionfold_relay",
+    renewal: "license_orionfold_relay_renewal",
     foundingSeats: FOUNDING_SEATS,
   },
 };
@@ -331,6 +369,16 @@ export function licenseProductForLookupKey(
         // The single entitlement the Proof CLI gates on (owns_product()).
         entitlements: ["product:orionfold-proof"],
         // No edition for Proof — omitted from the signed payload.
+      };
+    case "orionfold-relay":
+      return {
+        product: "orionfold-relay",
+        tier: "relay",
+        // The single entitlement the Relay CLI gates on (owns_product()) at
+        // `relay pack add`. No pack id here — adding premium packs later needs
+        // no license re-issue.
+        entitlements: ["product:orionfold-relay"],
+        // No edition for Relay — omitted from the signed payload.
       };
     default:
       return null;

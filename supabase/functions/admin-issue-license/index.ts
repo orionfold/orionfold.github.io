@@ -37,6 +37,21 @@ const LICENSE_FILES_BUCKET = "field-edition";
 const LICENSE_URL_TTL_SECONDS = 60 * 60 * 24 * 7; // 7-day signed URL, same as the webhook
 const PUBLIC_SUPABASE_URL = "https://orionfold.supabase.co";
 
+// Per-product license-id sequence rpc + throwaway-id prefix, mirroring
+// stripe-webhook. Keyed by product (not a Proof-or-else ternary) so a new
+// licensed product must map explicitly here — an unmapped product errors rather
+// than silently minting Arena ids/prefix.
+const LICENSE_ID_RPC: Record<string, string> = {
+  "arena-field-edition": "next_fe_license_id",
+  "orionfold-proof": "next_proof_license_id",
+  "orionfold-relay": "next_relay_license_id",
+};
+const LICENSE_ID_PREFIX: Record<string, string> = {
+  "arena-field-edition": "OF-FE",
+  "orionfold-proof": "OF-PROOF",
+  "orionfold-relay": "OF-RELAY",
+};
+
 function json(body: Record<string, unknown>, status: number): Response {
   return new Response(JSON.stringify(body, null, 2), {
     status,
@@ -124,16 +139,17 @@ Deno.serve(async (req) => {
   const supabase = supabaseAdmin();
   let licenseId: string;
   if (persist) {
-    const idRpc = descriptor.product === "orionfold-proof"
-      ? "next_proof_license_id"
-      : "next_fe_license_id";
+    const idRpc = LICENSE_ID_RPC[descriptor.product];
+    if (!idRpc) {
+      return json({ error: `No license-id sequence mapped for product "${descriptor.product}"` }, 500);
+    }
     const { data, error } = await supabase.rpc(idRpc);
     if (error || typeof data !== "string") {
       return json({ error: `${idRpc} failed`, detail: String(error?.message ?? error) }, 500);
     }
     licenseId = data;
   } else {
-    const prefix = descriptor.product === "orionfold-proof" ? "OF-PROOF" : "OF-FE";
+    const prefix = LICENSE_ID_PREFIX[descriptor.product] ?? "OF-FE";
     licenseId = `${prefix}-VERIFY-${term.issuedAt.slice(0, 10).replace(/-/g, "")}`;
   }
 

@@ -52,6 +52,18 @@ export const PROOF = {
   windowMonths: 12,
 } as const;
 
+// Orionfold Relay price family (display only; same SSOT/Stripe contract as the
+// two above). Any Relay buy box reads this so the price chips and buy buttons
+// can never drift from the catalog. Same 3-SKU shape + founding cap + 12-month
+// window as Arena/Proof. (Relay ask orionfold-relay 2026-06-30.)
+export const RELAY = {
+  primary: getCatalogItem("license_orionfold_relay")!,
+  founding: getCatalogItem("license_orionfold_relay_founding")!,
+  renewal: getCatalogItem("license_orionfold_relay_renewal")!,
+  foundingSeats: FOUNDING_SEATS,
+  windowMonths: 12,
+} as const;
+
 export interface SponsorTierDisplay {
   tier: SponsorTier;
   lookupKey: string;

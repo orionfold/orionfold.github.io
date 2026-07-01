@@ -97,6 +97,15 @@ Deno.test("licenseProductForLookupKey resolves Arena + Proof descriptors, null o
   assertEquals(proof?.edition, undefined);
   assertEquals(licenseProductForLookupKey("license_orionfold_proof_founding")?.product, "orionfold-proof");
 
+  // Relay keys → Relay descriptor (the single product:orionfold-relay entitlement, no edition).
+  const relay = licenseProductForLookupKey("license_orionfold_relay");
+  assertEquals(relay?.product, "orionfold-relay");
+  assertEquals(relay?.tier, "relay");
+  assertEquals(relay?.entitlements, ["product:orionfold-relay"]);
+  assertEquals(relay?.edition, undefined);
+  assertEquals(licenseProductForLookupKey("license_orionfold_relay_founding")?.product, "orionfold-relay");
+  assertEquals(licenseProductForLookupKey("license_orionfold_relay_renewal")?.product, "orionfold-relay");
+
   // Non-license keys → null.
   assertEquals(licenseProductForLookupKey("book_ai_native_business"), null);
   assertEquals(licenseProductForLookupKey("sponsor_gold"), null);
@@ -130,6 +139,35 @@ Deno.test("buildLicensePayload builds a Proof payload: product+entitlement, NO e
   const sig = await signLicense(payload, DEV_SEED_B64, LICENSE_KEY_ID);
   const pub = await publicKeyFromSeed(DEV_SEED_B64);
   assert(await verifyLicense(payload, sig.value, pub), "Proof self-verify must pass");
+});
+
+Deno.test("buildLicensePayload builds a Relay payload: product+entitlement, NO edition, signs+verifies", async () => {
+  const d = licenseProductForLookupKey("license_orionfold_relay")!;
+  const payload = buildLicensePayload({
+    licenseId: "OF-RELAY-2026-0001",
+    product: d.product,
+    tier: d.tier,
+    entitlements: d.entitlements,
+    edition: d.edition, // undefined → omitted
+    issuedTo: { email: "buyer@example.com", name: "Pat Buyer" },
+    issuedAt: "2026-06-30T00:00:00Z",
+    notBefore: "2026-06-30T00:00:00Z",
+    expiresAt: "2027-06-30T00:00:00Z",
+    provenance: { stripe_purchase_id: "pi_R", stripe_price_id: "price_R" },
+  });
+
+  // The relay's hard requirement: product + the single gating entitlement.
+  assertEquals(payload.product, "orionfold-relay");
+  assertEquals(payload.entitlements, ["product:orionfold-relay"]);
+  assertEquals(payload.schema, "orionfold.license/v1");
+  assertEquals(payload.tier, "relay");
+  // Relay has no edition — the key must be ABSENT, not null.
+  assert(!("edition" in payload), "Relay payload must omit the edition key entirely");
+
+  // The signed bytes still verify end-to-end with the dev seed.
+  const sig = await signLicense(payload, DEV_SEED_B64, LICENSE_KEY_ID);
+  const pub = await publicKeyFromSeed(DEV_SEED_B64);
+  assert(await verifyLicense(payload, sig.value, pub), "Relay self-verify must pass");
 });
 
 Deno.test("buildLicensePayload OMITS absent issued_to name/org (not null)", () => {

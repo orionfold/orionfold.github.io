@@ -161,6 +161,13 @@ export const OG_PAGES: Record<string, OgPage> = {
     // Orion stars) full-bleed as the social card, same pattern as advisor/dgx-spark.
     background: 'src/assets/proof/orionfold-proof-poster.jpeg',
   },
+  '/relay/': {
+    slug: 'relay',
+    eyebrow: 'Operating layer',
+    title: 'Run your agents from one place',
+    seed: 'relay',
+    alt: 'Orionfold Relay: the free, open engine for AI agents and workflows, with premium packs you own',
+  },
   '/terms/': {
     slug: 'terms',
     eyebrow: 'Legal',
