@@ -221,6 +221,23 @@ const gaps = [
     <!-- See it running: capability beats + one-board proof, dark peer shots -->
     <RelayShowcase />
 
+    <!-- Mid-page CTA: after the problem, solution, proof, and real screens, the
+         reader who is already sold can convert here without scrolling to the
+         bottom buy box. Same SSOT-priced, launch-flag-gated band. -->
+    <LicenseBand
+      family={RELAY}
+      live={ORIONFOLD_RELAY_LIVE}
+      itemId="software:orionfold-relay"
+      errId="relay-band-err"
+      fullBlockId="get-relay"
+      eyebrow="Own the premium packs"
+      heading="Skip the setup. Own the packs."
+      body="One license unlocks every premium pack you own, starting with the agency pack. The engine stays free; the license is the key that adds a pack with one command."
+      enquiryHref="/adoption/?item=software:orionfold-relay"
+      image={relayPoster}
+      imageAlt="Orionfold Relay poster: one operator at a wide command wall of glowing client panels, running a whole AI agency from one board."
+    />
+
     <!-- What it is + install -->
     <section class="px-6 py-12">
       <div class="mx-auto max-w-3xl">
@@ -371,21 +388,6 @@ const gaps = [
         </p>
       </div>
     </section>
-
-    <!-- Mid-page CTA: they now know what a license adds — catch the fast-decider -->
-    <LicenseBand
-      family={RELAY}
-      live={ORIONFOLD_RELAY_LIVE}
-      itemId="software:orionfold-relay"
-      errId="relay-band-err"
-      fullBlockId="get-relay"
-      eyebrow="Own the premium packs"
-      heading="Skip the setup. Own the packs."
-      body="One license unlocks every premium pack you own, starting with the agency pack. The engine stays free; the license is the key that adds a pack with one command."
-      enquiryHref="/adoption/?item=software:orionfold-relay"
-      image={relayPoster}
-      imageAlt="Orionfold Relay poster: one operator at a wide command wall of glowing client panels, running a whole AI agency from one board."
-    />
 
     <!-- Premium packs a license unlocks -->
     <section class="px-6 py-12">
