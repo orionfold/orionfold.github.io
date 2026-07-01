@@ -14,6 +14,9 @@
 // three products read Proof · Arena · Relay (the constellation order on the
 // pages). Story (/story/) stays after Books behind its own divider, so the set
 // reads Proof · Arena · Relay │ Models · Books │ Story.
+// 2026-07-01 (later): Arena repointed /cockpit/ -> /arena/ (the new flagship
+// landing page, parallel to /proof/ + /relay/). /cockpit/ stays live + footer-
+// linked (keeps its SEO equity); /software/arena/ stays as the deep detail page.
 import BrandMark from './ui/BrandMark.astro';
 import { magnetHref } from '../data/magnet.ts';
 // Persistent magnet sticky bar (2026-Q3 magnet-traffic, relay latest+21): a slim,
@@ -27,7 +30,7 @@ const magnetBarHref = magnetHref('nav-cta');
 // `divider: true` renders a separator immediately BEFORE that link.
 const links = [
   { href: '/proof/', label: 'Proof' },
-  { href: '/cockpit/', label: 'Arena' },
+  { href: '/arena/', label: 'Arena' },
   { href: '/relay/', label: 'Relay' },
   { href: '/experts/', label: 'Models', divider: true },
   { href: '/learn/', label: 'Books' },

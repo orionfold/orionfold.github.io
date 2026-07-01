@@ -109,6 +109,15 @@ const proofStories = (await getCollection('story'))
   .filter((s) => s.data.tags.includes('Proof'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
+// The constellation framing (shared with /arena/ + /relay/ for consistent
+// product-line navigation): where Proof sits in the line. Text-only cards, so
+// the three pages' constellation sections stay identical.
+const constellation = [
+  { name: 'Proof', q: 'Which AI can I trust?', href: null, self: true },
+  { name: 'Arena', q: 'Which build wins?', href: '/arena/' },
+  { name: 'Relay', q: 'Now make the trusted AI do the real work.', href: '/relay/' },
+];
+
 // Taster map for the capability matrix's hover panel: receipt slug -> the
 // metric + one-line claim shown in the right-side taster. Read here from the
 // receipts collection so CapabilityMatrix stays decoupled from the content
@@ -154,6 +163,32 @@ const receiptTasters = Object.fromEntries(
       title="The proof, not the pitch."
       subtitle="We do not ask you to trust us. We lock the test before we train, publish the receipts, and let you rerun them. Here is what one desk can prove."
     />
+
+    <!-- Constellation: where Proof sits in the Orionfold line -->
+    <section class="px-6 pt-4 pb-10">
+      <div class="mx-auto max-w-4xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The first product in the line</p>
+        <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
+          Proof is where you start: prove which AI you can trust. Arena is where you drive the models
+          you own and find the one that wins. Relay then puts the winner to work.
+        </p>
+        <div class="grid gap-3 sm:grid-cols-3">
+          {constellation.map((c) => (
+            c.self ? (
+              <div class="rounded-2xl border border-primary/40 bg-primary/5 p-5">
+                <p class="font-display text-lg font-bold text-primary">{c.name}</p>
+                <p class="mt-2 text-sm leading-relaxed text-text">{c.q}</p>
+              </div>
+            ) : (
+              <a href={c.href} class="of-surface of-pressable group block rounded-2xl p-5">
+                <p class="font-display text-lg font-bold text-text group-hover:text-primary">{c.name}</p>
+                <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.q}</p>
+              </a>
+            )
+          ))}
+        </div>
+      </div>
+    </section>
 
     <!-- The signature WOW: the capability matrix + speed -->
     <CapabilityMatrix tasters={receiptTasters} />

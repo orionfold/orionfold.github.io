@@ -168,6 +168,15 @@ export const OG_PAGES: Record<string, OgPage> = {
     seed: 'relay',
     alt: 'Orionfold Relay: the free, open engine for AI agents and workflows, with premium packs you own',
   },
+  '/arena/': {
+    slug: 'arena',
+    eyebrow: 'Eval cockpit',
+    title: 'See which AI wins, on your own desk',
+    seed: 'arena',
+    alt: 'Orionfold Arena: the eval cockpit that runs, compares, scores, and trains local AI models on one DGX Spark',
+    // The Arena poster full-bleed as the social card, same pattern as proof.
+    background: 'src/assets/projects/arena-poster.png',
+  },
   '/terms/': {
     slug: 'terms',
     eyebrow: 'Legal',

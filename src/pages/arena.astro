@@ -1,0 +1,337 @@
+---
+// /arena/ — Orionfold Arena, the eval cockpit. New flagship landing page, parallel
+// to /proof/ + /relay/. Nav "Arena" points here (2026-07-01, repointed from
+// /cockpit/). /cockpit/ stays live + footer-linked (SEO equity); /software/arena/
+// stays as the deep detail page; this is the flagship conversion surface.
+//
+// Content sourced from the ainative Arena corpus (products/orionfold-arena/
+// product.md) + the FieldEditionBox positioning (capability/velocity-led). The
+// paid Field Edition runs on an NVIDIA DGX Spark. Screenshots are the fresh dark
+// Orionfold-Arena-branded cockpit shots (vendored to src/assets/arena/), cropped
+// with object-top. Numbers use the newer counts (54 articles) and stay honest
+// (receipt is verifiable, never "all gates green"). Prices come from the catalog
+// SSOT (FIELD_EDITION) so they can't drift. Voice: grade 3-5, jargon explained,
+// no em-dashes (website-copy-style).
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import ArenaBox from '../components/product/ArenaBox.astro';
+import LicenseBand from '../components/product/LicenseBand.astro';
+import OfferSlot from '../components/ui/OfferSlot.astro';
+import { ARENA_FIELD_EDITION_LIVE } from '../data/launch';
+import arenaPoster from '../assets/projects/arena-poster.png';
+import arenaCockpit from '../assets/arena/01-cockpit.png';
+import arenaLeaderboard from '../assets/arena/02-leaderboard.png';
+import arenaFrontier from '../assets/arena/03-efficiency-frontier.png';
+import arenaCompare from '../assets/arena/07-compare.png';
+import arenaEvalDrawer from '../assets/arena/08-eval-drawer.png';
+import { SITE, PERSON } from '../data/seo';
+import { FIELD_EDITION } from '../data/commerce';
+import { ogMeta } from '../data/og';
+
+const og = ogMeta('/arena/');
+const arenaUrl = `${SITE.url}/arena/`;
+const ogImageAbs = `${SITE.url}${og.image}`;
+
+// Merchant-listings completeness for the priced Offer below (same honest values
+// as ProofBox/RelayBox: an instant digital license from a US LLC, so free
+// "shipping" and no returns).
+const digitalMerchantFields = {
+  hasMerchantReturnPolicy: {
+    '@type': 'MerchantReturnPolicy',
+    applicableCountry: 'US',
+    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+  },
+  shippingDetails: {
+    '@type': 'OfferShippingDetails',
+    shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'USD' },
+    shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
+  },
+};
+
+// SoftwareApplication + Offer so /arena/ reads as the buyable product for answer
+// engines. Price = the standard $499 (the durable price after the founding seats
+// sell out); the catalog SSOT is the source, never a hardcoded number.
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Orionfold Arena',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'NVIDIA DGX Spark',
+  description:
+    'A single-screen cockpit to run, compare, score, and train local AI models on one NVIDIA DGX Spark. Live GPU telemetry, an efficiency frontier, reference-based eval, and a leak-proof leaderboard over your own artifacts.',
+  url: arenaUrl,
+  image: ogImageAbs,
+  author: PERSON,
+  brand: { '@type': 'Brand', name: 'Orionfold' },
+  offers: {
+    '@type': 'Offer',
+    price: (FIELD_EDITION.primary.amount / 100).toFixed(2),
+    priceCurrency: 'USD',
+    availability: 'https://schema.org/InStock',
+    url: arenaUrl,
+    category: 'Software license',
+    ...digitalMerchantFields,
+  },
+};
+
+// The constellation framing (shared with /relay/): where Arena sits in the line.
+const constellation = [
+  { name: 'Proof', q: 'Which AI can I trust?', href: '/proof/' },
+  { name: 'Arena', q: 'Which build wins?', href: null, self: true },
+  { name: 'Relay', q: 'Now make the trusted AI do the real work.', href: '/relay/' },
+];
+
+// What it does: the four core moves, sourced from product.md. Each is a real
+// cockpit surface, not a claim.
+const capabilities = [
+  {
+    verb: 'Run',
+    line: 'Chat against the warm model on your own box. Live GPU telemetry, speed, and memory on one screen. Nothing you type leaves the machine.',
+  },
+  {
+    verb: 'Compare',
+    line: 'Set any two models duelling side by side. Quality, tokens a second, first-token time, and cost, each over a session sparkline.',
+  },
+  {
+    verb: 'Score',
+    line: 'Open the eval drawer, pick the bench, and send a real eval prompt from the chat. The gold answer sits beside the live one and a scorer grades it. Evaluation becomes a button.',
+  },
+  {
+    verb: 'Train',
+    line: 'Queue tests and training runs overnight and wake up to a morning report. Warm-start, reward, and a run gauge, all in the same board.',
+  },
+];
+
+// The dark cockpit gallery (fresh Orionfold-Arena-branded shots).
+const gallery = [
+  { img: arenaLeaderboard, alt: 'The Arena leaderboard: your own models ranked by score, built from your own results.', label: 'Leaderboard', crop: 'aspect-[16/9] object-top' },
+  { img: arenaFrontier, alt: 'The efficiency frontier: cost against quality, so you can see which quant earns its place.', label: 'Efficiency frontier', crop: 'aspect-[16/9] object-center' },
+  { img: arenaCompare, alt: 'Compare: any model against any other, side by side, with metric cards over a session sparkline.', label: 'Compare, any vs any', crop: 'aspect-[16/9] object-top' },
+  { img: arenaEvalDrawer, alt: 'The eval drawer: send a real eval prompt from the chat, gold answer beside the live one, graded instantly.', label: 'Eval drawer', crop: 'aspect-[16/9] object-top' },
+];
+---
+<Layout
+  title="See which AI wins, on your own desk · Orionfold Arena"
+  description="Orionfold Arena is a single-screen cockpit to run, compare, score, and train local AI models on one NVIDIA DGX Spark. Live telemetry, an efficiency frontier, and a leak-proof leaderboard over your own artifacts. Private by construction."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  jsonLd={[
+    softwareSchema,
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Arena', item: arenaUrl },
+      ],
+    },
+  ]}
+>
+  <Nav />
+  <main>
+    <PageHeader
+      eyebrow="Eval cockpit"
+      title="See which AI wins, on your own desk."
+      subtitle="Orionfold Arena is a single-screen cockpit to run, compare, score, and train local AI models on one NVIDIA DGX Spark. The model, the tests, the hardware, and the results all live in one place you control. Nothing leaves the box."
+    />
+
+    <!-- Constellation: where Arena sits in the Orionfold line -->
+    <section class="px-6 pt-4 pb-10">
+      <div class="mx-auto max-w-4xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The second product in the line</p>
+        <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
+          Proof tells you which AI to trust. Arena is where you drive the shelf of models you own and
+          find the one that wins. Relay then puts the winner to work.
+        </p>
+        <div class="grid gap-3 sm:grid-cols-3">
+          {constellation.map((c) => (
+            c.self ? (
+              <div class="rounded-2xl border border-primary/40 bg-primary/5 p-5">
+                <p class="font-display text-lg font-bold text-primary">{c.name}</p>
+                <p class="mt-2 text-sm leading-relaxed text-text">{c.q}</p>
+              </div>
+            ) : (
+              <a href={c.href} class="of-surface of-pressable group block rounded-2xl p-5">
+                <p class="font-display text-lg font-bold text-text group-hover:text-primary">{c.name}</p>
+                <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.q}</p>
+              </a>
+            )
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- The real cockpit: one dark shot so the visitor sees it early -->
+    <section class="px-6 pb-6">
+      <div class="mx-auto max-w-5xl">
+        <div class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
+          <Image
+            src={arenaCockpit}
+            alt="The Orionfold Arena cockpit: live GPU telemetry, your models, the benches, and a leaderboard built from your own results, all on one screen."
+            widths={[720, 1080, 1440]}
+            sizes="(min-width: 1024px) 64rem, 100vw"
+            loading="lazy"
+            decoding="async"
+            data-no-zoom
+            class="block aspect-[16/11] w-full object-cover object-top"
+          />
+        </div>
+        <p class="mt-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
+          One screen over the whole loop
+        </p>
+      </div>
+    </section>
+
+    <!-- What it does: the four core moves -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-4xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What it does</p>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          You have a shelf of local models and nowhere to drive them from. Arena is the instrument
+          panel that turns that shelf into something you can fly. Four moves, one screen.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {capabilities.map((c) => (
+            <div class="rounded-2xl border border-border/70 bg-surface/60 p-6">
+              <p class="font-display text-xl font-bold text-primary">{c.verb}</p>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.line}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- The leaderboard / efficiency-frontier mechanic: publishable, data stays yours -->
+    <section class="border-y border-border bg-surface-raised px-6 py-14">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">A board you can publish, data you keep</p>
+        <p class="max-w-2xl text-base leading-relaxed text-text-muted">
+          The leaderboard is built from your own results, and it is safe to share. A hardcoded
+          allowlist exports only scores and aggregates, never a prompt, a completion, or a reasoning
+          trace. The board is something you can publish; the data behind it stays yours.
+        </p>
+        <p class="mt-4 max-w-2xl text-base leading-relaxed text-text-muted">
+          The efficiency frontier plots cost against quality, so you can read at a glance which quant
+          earns its place. It is the closed loop a hosted endpoint never gives you: the model, its
+          eval data, the hardware, and the results, all in one place you control.
+        </p>
+      </div>
+    </section>
+
+    <!-- Mid-page CTA: they now know what Arena is — catch the fast-decider -->
+    <LicenseBand
+      family={FIELD_EDITION}
+      live={ARENA_FIELD_EDITION_LIVE}
+      itemId="software:arena"
+      errId="arena-band-err"
+      fullBlockId="get-arena"
+      eyebrow="Get an AI team without hiring one"
+      heading="Own the proven box, not the parts."
+      body="Arena Field Edition turns the Spark you own into a private AI lab, delivered turnkey. It installs in one pass, proves itself on first boot with a verifiable receipt, and stays proven for a year."
+      enquiryHref="/adoption/?item=software:arena"
+      image={arenaPoster}
+      imageAlt="Orionfold Arena poster: the eval cockpit you run on your own DGX Spark."
+    />
+
+    <!-- Gallery: a few dark cockpit views -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-5xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Inside the cockpit</p>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          A few of the surfaces you drive, all on the machine under your desk.
+        </p>
+        <div class="grid gap-5 sm:grid-cols-2">
+          {gallery.map((g) => (
+            <figure class="overflow-hidden rounded-2xl border border-border/70 bg-surface/60">
+              <Image
+                src={g.img}
+                alt={g.alt}
+                widths={[480, 720]}
+                sizes="(min-width: 640px) 30rem, 100vw"
+                loading="lazy"
+                decoding="async"
+                data-no-zoom
+                class:list={['block w-full object-cover', g.crop]}
+              />
+              <figcaption class="px-4 py-3 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-text-dim">
+                {g.label}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Build-velocity proof: honest, measured -->
+    <section class="border-y border-border bg-surface-raised px-6 py-14">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The velocity the box unlocks</p>
+        <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
+          The proof is what one builder already did with this exact stack. Solo, on a single Spark
+          running Arena: 15 software tools, 7 open models, 3 books, a 54-article research corpus, and
+          2 production sites.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
+            <p class="font-display text-2xl font-bold text-primary">~15 hours</p>
+            <p class="mt-1 text-xs leading-relaxed text-text-muted">Arena itself, built in about fifteen hours across one day and an overnight.</p>
+          </div>
+          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
+            <p class="font-display text-2xl font-bold text-primary">125 tests</p>
+            <p class="mt-1 text-xs leading-relaxed text-text-muted">Written alongside the features, over 12,733 lines of authored source.</p>
+          </div>
+          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
+            <p class="font-display text-2xl font-bold text-primary">Private by design</p>
+            <p class="mt-1 text-xs leading-relaxed text-text-muted">Nothing you type is uploaded. It is a tool you could run on a plane.</p>
+          </div>
+        </div>
+        <p class="mt-6 max-w-2xl text-sm leading-relaxed text-text-muted">
+          Every install runs an eval gate and writes a verifiable receipt you can read. The receipt
+          reports the real state of the box, and the 12-month window re-gates and re-receipts every
+          update. What you buy is the assembled, proven, kept-proven AI team, not a pile of parts you
+          wire together and babysit.
+        </p>
+      </div>
+    </section>
+
+    <!-- Own the box: lead with the buy block -->
+    <ArenaBox />
+
+    <!-- Soft opt-in below the buy: catch readers who aren't checkout-ready yet -->
+    <OfferSlot
+      offer="become-ai-native-business"
+      source="arena-page"
+      label="Not ready to buy?"
+      heading="Start with the free book."
+      dek="Get the AI Native Business book free, and a note when we ship new Arena proof."
+      artifact="PDF + EPUB, plus new-proof notes"
+      buttonText="Send it"
+    />
+
+    <!-- Close: hand the reader to the deep detail + the live demo -->
+    <section class="px-6 py-16">
+      <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
+        <p class="font-display text-2xl leading-snug">Drive the cockpit yourself.</p>
+        <p class="mt-4 text-base leading-relaxed text-text-muted">
+          Try the live demo in your browser, or read the full walkthrough of every screen.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <a href="/arena/demo/" class="of-primary-action">Try the live demo</a>
+          <a href="/software/arena/" class="of-secondary-action">See every screen</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  // Wire the Arena purchase buttons (data-checkout → create-checkout-session →
+  // Stripe). No-op when the buttons aren't rendered (ARENA_FIELD_EDITION_LIVE off).
+  import { wireCheckoutButtons } from '../lib/checkout';
+  wireCheckoutButtons();
+  document.addEventListener('astro:after-swap', () => wireCheckoutButtons());
+</script>

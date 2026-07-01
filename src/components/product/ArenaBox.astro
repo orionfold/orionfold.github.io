@@ -1,0 +1,154 @@
+---
+// Orionfold Arena Field Edition purchase block for the standalone /arena/ page.
+// Self-contained twin of FieldEditionBox.astro (which rides a ProductDetail
+// ProductView): /arena/ is a plain page, so the roadmap attribution id is a
+// literal here, exactly like ProofBox/RelayBox. Price + founding cap + window
+// come from the catalog SSOT (FIELD_EDITION in commerce.ts), so the chips and buy
+// buttons can never drift. Charging buttons render ONLY when
+// ARENA_FIELD_EDITION_LIVE is true.
+//
+// Copy is lifted verbatim from FieldEditionBox (capability/velocity-led, operator
+// 2026-06-13): lead with "get an AI team without hiring one", the one-builder
+// velocity proof as reason-to-believe, and the receipt-honesty rule — say
+// "verifiable receipt" / report=reality, NEVER "all gates green" (the launch
+// receipt is honest-partial). Voice: grade 3-5, no em-dashes (website-copy-style).
+import { Image } from 'astro:assets';
+import { FIELD_EDITION, formatUsd } from '../../data/commerce';
+import { ARENA_FIELD_EDITION_LIVE } from '../../data/launch';
+import arenaPoster from '../../assets/projects/arena-poster.png';
+
+const ROADMAP_ITEM_ID = 'software:arena';
+
+const primary = formatUsd(FIELD_EDITION.primary.amount);
+const founding = formatUsd(FIELD_EDITION.founding.amount);
+const renewal = formatUsd(FIELD_EDITION.renewal.amount);
+
+const enquiryHref = `/adoption/?item=${ROADMAP_ITEM_ID}`;
+---
+<section id="get-arena" class="scroll-mt-24 px-6 py-16">
+  <div class="mx-auto max-w-3xl">
+    <div data-animate class="overflow-hidden rounded-2xl border border-primary/40 bg-surface-raised shadow-lg shadow-primary/5">
+      <!-- Poster header: the same key art that drifts in the mid-page band, here as
+           a full-width banner so the block and band read as one product. -->
+      <div class="arena-poster relative overflow-hidden border-b border-primary/20">
+        <Image
+          src={arenaPoster}
+          alt="Orionfold Arena poster: the eval cockpit you run on your own DGX Spark."
+          widths={[640, 960]}
+          sizes="(min-width: 768px) 48rem, 100vw"
+          loading="lazy"
+          decoding="async"
+          data-no-zoom
+          class="arena-poster__img block aspect-[16/7] w-full object-cover object-top"
+        />
+      </div>
+
+      <div class="p-8">
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">
+        Get an AI team without hiring one, in the Spark you own
+      </p>
+
+      <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 class="font-display text-2xl font-bold sm:text-3xl">Arena Field Edition</h2>
+          <p class="mt-2 max-w-xl text-text-muted">
+            Arena Field Edition turns the Spark you own into a private AI lab with an AI research
+            teammate: agents that do real work, models that know your field, and tests that prove it.
+            You go from running demos to shipping AI research and engineering beyond your solo skills.
+          </p>
+        </div>
+        {!ARENA_FIELD_EDITION_LIVE && (
+          <span class="rounded-full border border-primary/40 px-3 py-1 font-mono text-xs tracking-wider text-primary">
+            Launching soon
+          </span>
+        )}
+      </div>
+
+      <p class="mt-5 text-sm text-text-muted">
+        The proof is what one builder already did with this exact stack. Solo, on a single Spark
+        running Arena: 15 software tools, 7 open models, 3 books, a 54-article research corpus, and 2
+        production sites. That is the velocity the box unlocks.
+      </p>
+      <p class="mt-3 text-sm text-text-muted">
+        It installs in one pass, proves itself on first boot with a verifiable receipt, and stays
+        proven for a year, every update re-gated and re-receipted. What you buy is the assembled,
+        proven, kept-proven AI team delivered turnkey, not a pile of parts you wire together and
+        babysit.
+      </p>
+
+      <!-- Price: lead with the founding hook, standard behind it -->
+      <div class="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-border/60 pt-6">
+        <p class="flex items-baseline gap-2">
+          <span class="font-display text-4xl font-bold text-primary">{founding}</span>
+          <span class="font-mono text-xs tracking-wider text-text-muted">
+            founding, first {FIELD_EDITION.foundingSeats} licenses
+          </span>
+        </p>
+        <p class="rounded-lg bg-primary/10 px-3 py-2 font-mono text-xs tracking-wider text-primary">
+          then {primary} one time, {FIELD_EDITION.windowMonths}-month window included
+        </p>
+      </div>
+
+      {ARENA_FIELD_EDITION_LIVE ? (
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            data-checkout={FIELD_EDITION.founding.lookupKey}
+            data-item={ROADMAP_ITEM_ID}
+            data-error-target="arena-err"
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Buy now, founding · {founding}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </button>
+          <button
+            type="button"
+            data-checkout={FIELD_EDITION.primary.lookupKey}
+            data-item={ROADMAP_ITEM_ID}
+            data-error-target="arena-err"
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary/40 px-5 py-3 font-mono text-sm tracking-wider text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Buy at {primary}
+          </button>
+        </div>
+      ) : (
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <a
+            href={enquiryHref}
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-3 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
+          >
+            Tell me when it launches
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+          <span class="font-mono text-xs tracking-wider text-text-muted">
+            Founding price holds for the first {FIELD_EDITION.foundingSeats} licenses.
+          </span>
+        </div>
+      )}
+      <p id="arena-err" role="alert" hidden class="mt-2 font-mono text-xs text-red-500"></p>
+      <p class="mt-4 text-sm text-text-muted">
+        After the first year, {renewal}/yr keeps it proven: the updates, the re-run gate, and a fresh
+        receipt. Skip it and your box keeps working, you just stop getting new proof.
+      </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* A slow ambient float on the poster banner (mirrors ProofBox/RelayBox so all
+     three product blocks read as a family). Desktop only, reduced-motion safe. */
+  @media (min-width: 1024px) {
+    .arena-poster__img {
+      animation: arena-poster-float 16s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes arena-poster-float {
+      from { transform: scale(1.02) translateY(0); }
+      to   { transform: scale(1.06) translateY(-6px); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .arena-poster__img { animation: none; }
+  }
+</style>
