@@ -1,0 +1,136 @@
+---
+/**
+ * Relay architecture-at-a-glance: 4 pillars in a single row, a lightweight
+ * summary of the full System Architecture diagram. Ported from the legacy
+ * ainative.business ArchitectureGlance.astro (the property now known as Orionfold
+ * Relay), 2026-07-01.
+ *
+ * The geometry is carried over verbatim: both repos share the same SVG-var
+ * contract (--svg-accent-blue/teal/purple/orange, --svg-stroke, --svg-bg-inner,
+ * --svg-text-dim, --svg-bg-inner-stroke) plus the svg-reveal / data-svg-animate
+ * reveal classes, so the diagram themes to Orionfold's palette and animates with
+ * no code change. Only the LABELS were refreshed to current Relay reality from
+ * the peer SSOT (~/orionfold/relay README + features/stats/snapshot.json,
+ * 2026-06-23):
+ *   - Orchestrate: "21+ Agent Profiles" -> "21 Agent Profiles"
+ *   - Automate: "6 Workflow Patterns" -> "15 Blueprints"
+ *   - Converse: the ainative-era "Slack · Telegram" + "Browser Automation" rows
+ *     were retuned to what Relay ships now: multi-vendor model switching and the
+ *     chat-driven app builder ("zero-code apps").
+ */
+---
+<svg
+  viewBox="0 0 722 160"
+  xmlns="http://www.w3.org/2000/svg"
+  class="mx-auto w-full"
+  data-svg-animate
+  role="img"
+  aria-label="Relay architecture at a glance: four pillars — Orchestrate (21 agent profiles, smart routing, episodic memory), Automate (15 blueprints, heartbeat scheduler, plain-language schedules), Govern (human-in-the-loop, cost metering, audit trail), Converse (multi-model chat, per-task model switching, chat-built apps)"
+>
+  <defs>
+    <linearGradient id="rag-orch-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-blue)" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="var(--svg-accent-blue)" stop-opacity="0.03" />
+    </linearGradient>
+    <linearGradient id="rag-auto-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-teal)" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="var(--svg-accent-teal)" stop-opacity="0.03" />
+    </linearGradient>
+    <linearGradient id="rag-gov-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-purple)" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="var(--svg-accent-purple)" stop-opacity="0.03" />
+    </linearGradient>
+    <linearGradient id="rag-conv-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-orange)" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="var(--svg-accent-orange)" stop-opacity="0.03" />
+    </linearGradient>
+  </defs>
+
+  <!-- ═══ PILLAR 1: ORCHESTRATE ═══ -->
+  <g class="svg-reveal">
+    <rect x="0" y="0" width="170" height="152" rx="8" fill="url(#rag-orch-grad)" stroke="var(--svg-stroke)" stroke-width="0.5" />
+    <rect x="10" y="12" width="150" height="30" rx="6" fill="var(--svg-accent-blue)" fill-opacity="0.2" stroke="var(--svg-accent-blue)" stroke-width="1" stroke-opacity="0.4" />
+    <g transform="translate(16, 17) scale(0.65)" fill="none" stroke="var(--svg-accent-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10" /><path d="M16 12H8M12 16V8" />
+    </g>
+    <text x="42" y="32" fill="var(--svg-accent-blue)" font-family="var(--font-mono)" font-size="10" font-weight="700" letter-spacing="1">ORCHESTRATE</text>
+
+    <rect x="10" y="54" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="10" y="54" width="3" height="24" rx="1.5" fill="var(--svg-accent-blue)" />
+    <text x="85" y="70" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">21 Agent Profiles</text>
+
+    <rect x="10" y="86" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="10" y="86" width="3" height="24" rx="1.5" fill="var(--svg-accent-blue)" />
+    <text x="85" y="102" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Smart Routing</text>
+
+    <rect x="10" y="118" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="10" y="118" width="3" height="24" rx="1.5" fill="var(--svg-accent-blue)" />
+    <text x="85" y="134" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Episodic Memory</text>
+  </g>
+
+  <!-- ═══ PILLAR 2: AUTOMATE ═══ -->
+  <g class="svg-reveal svg-reveal-d1">
+    <rect x="184" y="0" width="170" height="152" rx="8" fill="url(#rag-auto-grad)" stroke="var(--svg-stroke)" stroke-width="0.5" />
+    <rect x="194" y="12" width="150" height="30" rx="6" fill="var(--svg-accent-teal)" fill-opacity="0.2" stroke="var(--svg-accent-teal)" stroke-width="1" stroke-opacity="0.4" />
+    <g transform="translate(200, 17) scale(0.65)" fill="none" stroke="var(--svg-accent-teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+    </g>
+    <text x="228" y="32" fill="var(--svg-accent-teal)" font-family="var(--font-mono)" font-size="10" font-weight="700" letter-spacing="1">AUTOMATE</text>
+
+    <rect x="194" y="54" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="194" y="54" width="3" height="24" rx="1.5" fill="var(--svg-accent-teal)" />
+    <text x="269" y="70" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">15 Blueprints</text>
+
+    <rect x="194" y="86" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="194" y="86" width="3" height="24" rx="1.5" fill="var(--svg-accent-teal)" />
+    <text x="269" y="102" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Heartbeat Scheduler</text>
+
+    <rect x="194" y="118" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="194" y="118" width="3" height="24" rx="1.5" fill="var(--svg-accent-teal)" />
+    <text x="269" y="134" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Plain-Language Schedules</text>
+  </g>
+
+  <!-- ═══ PILLAR 3: GOVERN ═══ -->
+  <g class="svg-reveal svg-reveal-d2">
+    <rect x="368" y="0" width="170" height="152" rx="8" fill="url(#rag-gov-grad)" stroke="var(--svg-stroke)" stroke-width="0.5" />
+    <rect x="378" y="12" width="150" height="30" rx="6" fill="var(--svg-accent-purple)" fill-opacity="0.2" stroke="var(--svg-accent-purple)" stroke-width="1" stroke-opacity="0.4" />
+    <g transform="translate(384, 17) scale(0.65)" fill="none" stroke="var(--svg-accent-purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </g>
+    <text x="414" y="32" fill="var(--svg-accent-purple)" font-family="var(--font-mono)" font-size="10" font-weight="700" letter-spacing="1">GOVERN</text>
+
+    <rect x="378" y="54" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="378" y="54" width="3" height="24" rx="1.5" fill="var(--svg-accent-purple)" />
+    <text x="453" y="70" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Human-in-the-Loop</text>
+
+    <rect x="378" y="86" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="378" y="86" width="3" height="24" rx="1.5" fill="var(--svg-accent-purple)" />
+    <text x="453" y="102" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Cost Metering</text>
+
+    <rect x="378" y="118" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="378" y="118" width="3" height="24" rx="1.5" fill="var(--svg-accent-purple)" />
+    <text x="453" y="134" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Audit Trail</text>
+  </g>
+
+  <!-- ═══ PILLAR 4: CONVERSE ═══ -->
+  <g class="svg-reveal svg-reveal-d3">
+    <rect x="552" y="0" width="170" height="152" rx="8" fill="url(#rag-conv-grad)" stroke="var(--svg-stroke)" stroke-width="0.5" />
+    <rect x="562" y="12" width="150" height="30" rx="6" fill="var(--svg-accent-orange)" fill-opacity="0.2" stroke="var(--svg-accent-orange)" stroke-width="1" stroke-opacity="0.4" />
+    <g transform="translate(568, 17) scale(0.65)" fill="none" stroke="var(--svg-accent-orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    </g>
+    <text x="596" y="32" fill="var(--svg-accent-orange)" font-family="var(--font-mono)" font-size="10" font-weight="700" letter-spacing="1">CONVERSE</text>
+
+    <rect x="562" y="54" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="562" y="54" width="3" height="24" rx="1.5" fill="var(--svg-accent-orange)" />
+    <text x="637" y="70" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Multi-Model Chat</text>
+
+    <rect x="562" y="86" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="562" y="86" width="3" height="24" rx="1.5" fill="var(--svg-accent-orange)" />
+    <text x="637" y="102" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Per-Task Model Switch</text>
+
+    <rect x="562" y="118" width="150" height="24" rx="4" fill="var(--svg-bg-inner)" stroke="var(--svg-bg-inner-stroke)" stroke-width="0.5" />
+    <rect x="562" y="118" width="3" height="24" rx="1.5" fill="var(--svg-accent-orange)" />
+    <text x="637" y="134" fill="var(--svg-text-dim)" font-family="var(--font-body)" font-size="9.5" text-anchor="middle">Chat-Built Apps</text>
+  </g>
+</svg>

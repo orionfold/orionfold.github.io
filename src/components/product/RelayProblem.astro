@@ -1,0 +1,97 @@
+---
+// /relay/ "The Problem" section — ported from the legacy ainative.business
+// homepage Problem.astro (the property that is now Orionfold Relay), 2026-07-01.
+// It frames the gap Relay fills: models and agent frameworks exist, but nothing
+// sits between "run one agent" and "run my business." Three market stats size
+// the opportunity, then four capability gaps (the same four Relay is built on:
+// orchestration, visibility, governance, lifecycle) name what is missing.
+//
+// Transforms vs the source: the "ainative-business builds this" kicker is now
+// "Orionfold Relay"; the three stats were refreshed to current 2025-2026 primary
+// sources (the old figures were 2024-era) and each card cites its source so the
+// section holds up to answer engines. Re-idiomized to the /relay/ page's own
+// conventions (inline mono eyebrow + text-text-dim, no data-animate — that page
+// dropped the scroll-animation pattern). Voice: grade 3-5, jargon explained, no
+// em-dashes (website-copy-style).
+import SectionLabel from '../ui/SectionLabel.astro';
+
+// Refreshed opportunity stats. Each figure traces to a named 2025-2026 primary
+// source (research pass 2026-07-01), so the numbers can be defended, not just
+// quoted. Do not swap a number without swapping its source.
+const stats = [
+  { value: '$52.6B', label: 'AI agent market by 2030', source: 'MarketsandMarkets, 46% CAGR' },
+  { value: '36%', label: 'of 2025 startups are solo-founded', source: 'Carta, up from 31%' },
+  { value: '40%', label: 'of business apps will have task agents by 2026', source: 'Gartner, up from under 5%' },
+];
+
+// The four capability gaps. These are the four things Relay is built to give you,
+// so the same four names carry through to the operating-model and pillars below.
+const gaps = [
+  {
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 12H8M12 16V8"/></svg>`,
+    title: 'Working together',
+    description: 'Agents that hand work to each other, not stuck in their own silos.',
+  },
+  {
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>`,
+    title: 'One clear view',
+    description: 'See what is running, what it costs, and what needs your attention.',
+  },
+  {
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    title: 'You stay in charge',
+    description: 'Every client-facing result waits for your sign-off, with a full record.',
+  },
+  {
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>`,
+    title: 'The whole job',
+    description: 'Plan it, run it, watch the cost, keep it going, all in one place.',
+  },
+];
+---
+<section class="px-6 py-16">
+  <div class="mx-auto max-w-5xl">
+    <div class="mb-12 text-center">
+      <SectionLabel text="The Problem" />
+      <h2 class="mb-4 mt-4 text-3xl sm:text-4xl">The missing layer in your AI stack.</h2>
+      <p class="mx-auto max-w-2xl leading-relaxed text-text-muted">
+        AI models are strong. Agent tools are getting better. But between "run one agent" and
+        "run my whole business," there is a gap no one has filled.
+      </p>
+    </div>
+
+    <!-- Opportunity stats (cited) -->
+    <div class="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {stats.map(({ value, label, source }) => (
+        <div class="rounded-xl border border-primary/20 bg-primary/[0.04] p-6 text-center">
+          <div class="font-mono text-3xl font-bold text-primary md:text-4xl">{value}</div>
+          <div class="mt-2 text-sm text-text-muted">{label}</div>
+          <div class="mt-1 font-mono text-xs text-text-muted/60">{source}</div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Bridge -->
+    <p class="mx-auto mb-10 max-w-2xl text-center leading-relaxed text-text-muted">
+      The demand is real. But most builders still tape together 8 to 15 tools that do not talk to
+      each other: one for chat, one for scheduling, one for tracking cost. No shared memory, no
+      single sign-off, no one place to see what every agent is doing.
+    </p>
+
+    <!-- Capability gaps -->
+    <div class="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+      {gaps.map(({ icon, title, description }) => (
+        <div class="of-surface rounded-xl p-5 text-center">
+          <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary" set:html={icon} />
+          <div class="mb-1 text-sm font-semibold">{title}</div>
+          <p class="text-xs leading-relaxed text-text-muted">{description}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Transition -->
+    <p class="text-center text-sm font-semibold text-primary">
+      That is what <span class="font-mono">Orionfold Relay</span> builds.
+    </p>
+  </div>
+</section>

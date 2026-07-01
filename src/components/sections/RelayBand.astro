@@ -1,0 +1,78 @@
+---
+// Homepage Orionfold Relay band (three-flagship consolidation, 2026-07-01). The
+// third flagship band, sitting below the Arena Field Edition band and directly
+// above the book highlight, so the homepage shows Proof (hero) → Arena → Relay
+// as one deliberate set. Positioning (per /relay/ + the README constellation):
+// Proof and Arena help you pick the AI you can trust; Relay is where that trusted
+// AI does the real work. The free-and-open engine is the hook, the license (the
+// premium packs you own) is the ask.
+//
+// Layout: mirrors FieldEditionBand's two-column card contract (of-surface,
+// border-primary/40, shadow-primary/5) so the two flagship bands read as a pair,
+// but the poster flips to the RIGHT on desktop (lg:order-2) so the bands zig-zag.
+// On mobile it stacks poster-then-pitch, same reading order as the Arena band.
+//
+// Flag-aware: ORIONFOLD_RELAY_LIVE gates whether the CTA reads as a live buy. It
+// deep-links to the Relay buy block on the /relay/ landing (#get-relay), the
+// single canonical Relay buy surface. Price comes from the catalog SSOT (RELAY)
+// so it can never drift. The 3MB poster is lazy and NOT data-animate (the Hero
+// owns the homepage LCP — perf invariants hold). Copy is grade 3-5, no em-dashes
+// (website-copy-style).
+import { Image } from 'astro:assets';
+import relayPoster from '../../assets/projects/orionfold-relay-poster.jpeg';
+import { RELAY, formatUsd } from '../../data/commerce';
+
+const primary = formatUsd(RELAY.primary.amount);
+const founding = formatUsd(RELAY.founding.amount);
+---
+<section id="orionfold-relay" class="scroll-mt-24 px-6 py-12 sm:py-16">
+  <div class="of-surface mx-auto grid max-w-6xl items-stretch overflow-hidden rounded-3xl border border-primary/40 shadow-lg shadow-primary/5 lg:grid-cols-2">
+    <!-- Pitch (left on desktop; below the poster on mobile) -->
+    <div class="order-2 flex flex-col justify-center p-8 sm:p-10 lg:order-1 lg:p-12">
+      <p class="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-primary">
+        Orionfold Relay
+      </p>
+      <h2 class="mt-4 text-3xl leading-[1.1] sm:text-4xl">Now make the trusted AI do the real work.</h2>
+      <p class="mt-5 max-w-xl text-base leading-relaxed text-text-muted">
+        Relay is the free and open engine for AI agents and client work. Run one board for every
+        client, run it across local and cloud models, send every result through your approval, and
+        watch each client's cost add up on its own. Install it with npm. A license unlocks the
+        premium packs you own.
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span class="font-display text-3xl font-bold text-primary">{founding}</span>
+        <span class="rounded-full bg-primary/10 px-2.5 py-1 font-mono text-[0.65rem] tracking-wider text-primary">
+          Founding, first {RELAY.foundingSeats}
+        </span>
+        <span class="font-mono text-xs tracking-wider text-text-muted">then {primary} one time</span>
+      </div>
+
+      <div class="mt-7 flex flex-wrap items-center gap-4">
+        <a href="/relay/#get-relay" class="of-primary-action">
+          Get an Orionfold Relay license
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+        <a href="/relay/" class="of-secondary-action">
+          See what it does
+        </a>
+      </div>
+    </div>
+
+    <!-- Featured art (lazy; the Hero owns the homepage LCP). Right on desktop so
+         the Arena + Relay bands zig-zag; first in the mobile stack. -->
+    <a href="/relay/#get-relay" aria-label="Orionfold Relay license" class="order-1 block lg:order-2">
+      <Image
+        src={relayPoster}
+        alt="Movie-poster key art for Orionfold Relay: one operator at a wide command wall of glowing client panels, running a whole AI agency from one board."
+        widths={[480, 720, 960]}
+        sizes="(min-width: 1024px) 36rem, 100vw"
+        loading="lazy"
+        data-no-zoom
+        class="h-full min-h-[16rem] w-full object-cover"
+      />
+    </a>
+  </div>
+</section>

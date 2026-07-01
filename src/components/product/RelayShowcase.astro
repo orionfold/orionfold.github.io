@@ -1,0 +1,129 @@
+---
+// /relay/ product showcase — three capability beats (zero-code apps, multi-vendor,
+// customers) each with one dark, Relay-branded screenshot, then a two-shot
+// "one board" proof strip. Built 2026-07-01 from the relay-brochure
+// (~/orionfold/books/relay-brochure/relay-brochure.qmd) for the PROSE, with the
+// dark screenshots sourced from the peer (~/orionfold/relay/public/readme/) —
+// NOT the brochure's own shots, which are light-theme and one carries stale
+// "Ainative" text baked into the pixels. The peer shots are dark, correctly
+// branded "Orionfold Relay", and current.
+//
+// This fills the /relay/ page's known screenshot gap (the page comment noted a
+// fresh dark Relay-branded set was pending, relay later-14). Prose is retuned to
+// the site rule: grade 3-5, jargon explained, no em-dashes (website-copy-style).
+// Each capability is a shipped feature per the peer SSOT (README + snapshot.json,
+// 2026-06-23): the app composer, multi-vendor runtime registry, and first-class
+// customers with per-client cost rollup.
+import { Image } from 'astro:assets';
+import SectionLabel from '../ui/SectionLabel.astro';
+import appBuilderShot from '../../assets/relay/apps-starter-to-chat.png';
+import costUsageShot from '../../assets/relay/costs-list.png';
+import customersShot from '../../assets/relay/customers-list.png';
+import kanbanShot from '../../assets/relay/tasks-list.png';
+import inboxShot from '../../assets/relay/inbox-list.png';
+
+// Three capability beats. Alternate the image side per beat so the block reads
+// with rhythm (like the homepage flagship bands). Each shot is lazy (the Hero
+// owns the page LCP) and framed so a light-or-dark shot always sits in a border.
+const beats = [
+  {
+    label: 'Describe an app',
+    heading: 'Say what you want. Relay builds it.',
+    body: 'You describe a client task in plain words, like "turn a receipt photo into a bookkeeping entry." Relay builds it for you from its own parts: an agent, a workflow, a schedule, and a table or two. No code, no setup. The next client who needs the same thing reuses it in minutes.',
+    image: appBuilderShot,
+    alt: 'The Relay app builder: a plain-language prompt turns into a running app, with ready-made starter apps below.',
+    imageRight: true,
+  },
+  {
+    label: 'Multi-vendor, no lock-in',
+    heading: 'Switch models per task. No rewrites.',
+    body: 'Different work wants different models, and the best one changes every few months. Relay lets you pick the model per task, per schedule, or per step: reasoning on Claude, code on Codex, documents on Gemini, and low-stakes work on a free local model. One profile runs on any of them, so switching never means rebuilding an agent. The cost view shows the blended mix so you can prove the savings.',
+    image: costUsageShot,
+    alt: 'The Relay cost and usage view: spend pacing, the active provider mix, and per-project cost that maps to a client retainer.',
+    imageRight: false,
+  },
+  {
+    label: 'Customers, first-class',
+    heading: 'One customer, many projects, real cost.',
+    body: 'Each account you run work for is a real customer record, not just a label on a project. Link a customer to their projects and every agent run bills its cost back to them on its own. So per-client cost is a real total from the usage ledger, not a number you add up by hand. That is the base for seeing your margin against each retainer.',
+    image: customersShot,
+    alt: 'The Relay customer book: each account by type, with linked projects and a 30-day cost rollup per customer.',
+    imageRight: true,
+  },
+];
+---
+<section class="px-6 py-16">
+  <div class="mx-auto max-w-5xl">
+    <div class="mb-14 text-center">
+      <SectionLabel text="See it running" />
+      <h2 class="mb-4 mt-4 text-3xl sm:text-4xl">The cockpit, on real screens.</h2>
+      <p class="mx-auto max-w-2xl text-text-muted">
+        Not mockups. This is the running Relay board, the same one you get from one command.
+      </p>
+    </div>
+
+    <!-- Three capability beats, alternating image side -->
+    <div class="space-y-14">
+      {beats.map(({ label, heading, body, image, alt, imageRight }) => (
+        <div class="grid items-center gap-8 lg:grid-cols-2">
+          <div class:list={[imageRight ? 'lg:order-1' : 'lg:order-2']}>
+            <p class="font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">{label}</p>
+            <h3 class="mt-3 text-2xl leading-tight sm:text-3xl">{heading}</h3>
+            <p class="mt-4 text-base leading-relaxed text-text-muted">{body}</p>
+          </div>
+          <div class:list={['overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5', imageRight ? 'lg:order-2' : 'lg:order-1']}>
+            <Image
+              src={image}
+              alt={alt}
+              widths={[480, 720, 960]}
+              sizes="(min-width: 1024px) 32rem, 100vw"
+              loading="lazy"
+              decoding="async"
+              data-no-zoom
+              class="block w-full"
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- One-board proof strip: kanban + governance inbox, side by side -->
+    <div class="mt-16">
+      <p class="mb-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">
+        One board for every client, every result through your sign-off
+      </p>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <figure class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
+          <Image
+            src={kanbanShot}
+            alt="The Relay task board: multi-step, multi-client work across every status, each card carrying its client, workflow, and agent."
+            widths={[480, 720]}
+            sizes="(min-width: 640px) 24rem, 100vw"
+            loading="lazy"
+            decoding="async"
+            data-no-zoom
+            class="block w-full"
+          />
+          <figcaption class="px-4 py-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
+            One board, every client
+          </figcaption>
+        </figure>
+        <figure class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
+          <Image
+            src={inboxShot}
+            alt="The Relay inbox: approvals, agent questions, and a permission queue, so nothing reaches a client without your sign-off."
+            widths={[480, 720]}
+            sizes="(min-width: 640px) 24rem, 100vw"
+            loading="lazy"
+            decoding="async"
+            data-no-zoom
+            class="block w-full"
+          />
+          <figcaption class="px-4 py-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
+            Every result waits for you
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>

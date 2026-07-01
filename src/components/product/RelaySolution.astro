@@ -1,0 +1,111 @@
+---
+// /relay/ "The Solution" section — ported from the legacy ainative.business
+// homepage PersonaLanes.astro (the property now known as Orionfold Relay),
+// 2026-07-01. It shows Relay "in practice" as two lanes, then a chip row of the
+// shipped platform underneath.
+//
+// Transforms vs the source (operator decisions 2026-07-01):
+//  - AGENCY-FIRST: the PE Operating Partner lane was dropped (it was mostly
+//    roadmap and no longer matches shipped reality). Agency Owner leads and is
+//    highlighted; Solo Founder follows. This matches the peer README spine
+//    ("run a forward-deployed AI agency").
+//  - FEATURES REFRESHED from the peer relay SSOT (~/orionfold/relay:
+//    README.md + features/stats/snapshot.json, 2026-06-23) so every bullet and
+//    chip is a currently-shipped capability, not an ainative-era claim.
+//  - CTA BUTTONS REMOVED (operator 2026-07-01): the lanes are descriptive, not
+//    nav rows. The page's own CTAs (install block, License band, buy box, sticky
+//    bar) carry the calls to action, so the source's per-lane primary/secondary
+//    link rows were dropped along with their iconPaths.
+//  - "ainative-business" naming replaced with "Orionfold Relay" throughout.
+// Voice: grade 3-5, jargon explained, no em-dashes (website-copy-style).
+import SectionLabel from '../ui/SectionLabel.astro';
+
+const personas = [
+  {
+    title: 'Agency Owner',
+    tagline: 'Run AI operations for every client',
+    items: [
+      'One board for every client, each with its own notes the agents read on their own',
+      '21 ready-made agent profiles and 15 service blueprints you set up once and reuse',
+      'Per-client cost that rolls up on its own, so the retainer maps to real spend',
+      'Every client-facing result waits for your sign-off, with a full record',
+    ],
+    highlight: true,
+  },
+  {
+    title: 'Solo Founder',
+    tagline: 'Run your business with AI agents',
+    items: [
+      'Describe an app in plain words and Relay builds it, no code and no deploy',
+      'Switch models per task: Claude, Codex, Gemini, or a free local model',
+      'See everything on one board you own, with your data on your own machine',
+      'Schedules keep the work running: weekly digests, statements, deadline watches',
+    ],
+  },
+];
+
+// Shipped-platform chip row. Numbers from the peer relay SSOT
+// (features/stats/snapshot.json, 2026-06-23): 211 features shipped, 21 built-in
+// profiles, 15 blueprints, 5 runtimes. Do not edit a number without re-checking
+// the snapshot.
+const platformFeatures = [
+  '211 features shipped',
+  '21 agent profiles',
+  '15 workflow blueprints',
+  '5 model runtimes',
+  'human-in-the-loop',
+  'cost metering',
+  'free engine',
+];
+---
+<section class="px-6 py-16">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-14 text-center">
+      <SectionLabel text="The Solution" />
+      <h2 class="mb-4 mt-4 text-3xl sm:text-4xl">
+        <span class="font-mono text-[0.92em] text-primary">Orionfold Relay</span> in practice.
+      </h2>
+      <p class="mx-auto max-w-2xl text-text-muted">
+        Whether you run an agency or build solo, Relay gives you the operating layer that makes AI
+        agents do real work for your business.
+      </p>
+    </div>
+
+    <!-- Two lanes: agency-first, then solo. Agency is highlighted. -->
+    <div class="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2">
+      {personas.map(({ title, tagline, items, highlight }) => (
+        <div
+          class:list={[
+            'flex flex-col rounded-xl border p-6',
+            highlight ? 'border-primary/40 bg-primary/[0.03]' : 'border-border bg-surface-raised',
+          ]}
+        >
+          <div class="mb-4">
+            <h3 class="mb-1 text-lg font-semibold">{title}</h3>
+            <p class="font-mono text-sm text-primary">{tagline}</p>
+          </div>
+
+          <ul class="space-y-3">
+            {items.map((item) => (
+              <li class="flex items-start gap-2 text-sm text-text-muted">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0 text-primary">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <!-- Shared platform layer (shipped, SSOT-sourced) -->
+    <div class="flex flex-wrap items-center justify-center gap-3">
+      {platformFeatures.map((feature) => (
+        <span class="rounded-full border border-border px-3 py-1 font-mono text-[11px] tracking-wider text-text-muted">
+          {feature}
+        </span>
+      ))}
+    </div>
+  </div>
+</section>

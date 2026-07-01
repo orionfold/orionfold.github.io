@@ -1,0 +1,113 @@
+---
+// /relay/ "Under the hood" section — ported from the legacy ainative.business
+// homepage Proof.astro (the "Not Slideware. Shipped Software." section on the
+// property now known as Orionfold Relay), 2026-07-01.
+//
+// Transforms vs the source (operator decisions 2026-07-01):
+//  - RENAMED: the section label "Proof" collided with the Orionfold Proof
+//    flagship, so it is now "Under the hood" (the metrics + architecture read as
+//    build detail, not a second Proof product).
+//  - METRICS REFRESHED to the SSOT-backed shipped-capability set from the peer
+//    snapshot.json (~/orionfold/relay/features/stats/snapshot.json, 2026-06-23):
+//    211 features, 21 profiles, 15 blueprints, 5 runtimes, 99 chat tools. The
+//    old bar's unsourced "39 Operator Surfaces" was dropped.
+//  - ARCHITECTURE updated: RelayArchitectureGlance carries refreshed pillar
+//    labels (see that component). The "See full architecture" link target is
+//    wired to #relay-architecture (the full System Architecture diagram, ported
+//    in the next step from the ai-transformation field note).
+// Voice: grade 3-5, jargon explained, no em-dashes (website-copy-style).
+import SectionLabel from '../ui/SectionLabel.astro';
+import RelayArchitectureGlance from './RelayArchitectureGlance.astro';
+import RelaySystemArchitecture from './RelaySystemArchitecture.astro';
+
+// Metric bar — SSOT-backed (peer snapshot.json, 2026-06-23). Do not change a
+// number without re-checking the snapshot.
+const metrics = [
+  { value: '211', label: 'Features Shipped' },
+  { value: '21', label: 'Agent Profiles' },
+  { value: '15', label: 'Blueprints' },
+  { value: '5', label: 'Runtimes' },
+  { value: '99', label: 'Chat Tools' },
+];
+---
+<section class="bg-surface-raised/50 px-6 py-16">
+  <div class="mx-auto max-w-5xl">
+    <div class="mb-12 text-center">
+      <SectionLabel text="Under the hood" />
+      <h2 class="mb-4 mt-4 text-3xl sm:text-4xl">Not slideware. Shipped software.</h2>
+      <p class="text-text-muted">
+        Every number below is live in the free engine and open to read on GitHub.
+      </p>
+    </div>
+
+    <!-- Metric bar -->
+    <div class="mb-14 grid grid-cols-2 gap-4 sm:grid-cols-5">
+      {metrics.map(({ value, label }) => (
+        <div class="rounded-xl border border-primary/15 bg-primary/[0.04] p-5 text-center">
+          <div class="font-mono text-2xl font-bold text-primary md:text-3xl">{value}</div>
+          <div class="mt-1 font-mono text-xs uppercase tracking-wider text-text-muted">{label}</div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Architecture: compact glance by default, expands in place to the full
+         system diagram on click (inline progressive disclosure). Both SVGs are
+         inline markup, so revealing the full one costs no network hop; it keeps
+         its own data-svg-animate reveal, which fires fresh when it un-hides. -->
+    <div class="of-surface mb-14 rounded-xl p-6 md:p-8">
+      <div data-arch-glance>
+        <RelayArchitectureGlance />
+      </div>
+      <div data-arch-full hidden>
+        <RelaySystemArchitecture />
+      </div>
+      <div class="mt-4 text-center">
+        <button
+          type="button"
+          data-arch-toggle
+          aria-expanded="false"
+          class="inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary transition-colors hover:underline"
+        >
+          <span data-arch-label>See the full architecture</span>
+          <svg data-arch-caret width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Trust line -->
+    <p class="text-center font-mono text-xs text-text-muted/60">
+      Free engine under Apache 2.0 · Every line open to read on GitHub · Local-first: your data never leaves your machine
+    </p>
+  </div>
+</section>
+
+<script>
+  // Inline progressive disclosure: swap the compact glance for the full system
+  // diagram in place, and back. Scoped per-section so multiple instances (or an
+  // astro:after-swap re-render) each wire their own controls without leaking.
+  function wireArchToggles() {
+    document.querySelectorAll<HTMLButtonElement>('[data-arch-toggle]').forEach((btn) => {
+      if (btn.dataset.wired) return;
+      btn.dataset.wired = 'true';
+      const root = btn.closest('.of-surface');
+      if (!root) return;
+      const glance = root.querySelector<HTMLElement>('[data-arch-glance]');
+      const full = root.querySelector<HTMLElement>('[data-arch-full]');
+      const label = btn.querySelector<HTMLElement>('[data-arch-label]');
+      const caret = btn.querySelector<SVGElement>('[data-arch-caret]');
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        const next = !expanded;
+        btn.setAttribute('aria-expanded', String(next));
+        if (glance) glance.hidden = next;
+        if (full) full.hidden = !next;
+        if (label) label.textContent = next ? 'Show the summary' : 'See the full architecture';
+        if (caret) caret.style.transform = next ? 'rotate(180deg)' : '';
+      });
+    });
+  }
+  wireArchToggles();
+  document.addEventListener('astro:after-swap', wireArchToggles);
+</script>
