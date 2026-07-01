@@ -11,11 +11,14 @@ import PageHeader from '../components/ui/PageHeader.astro';
 import CapabilityMatrix from '../components/sections/CapabilityMatrix.astro';
 import ProofProduct from '../components/sections/ProofProduct.astro';
 import ProofBox from '../components/product/ProofBox.astro';
+import LicenseBand from '../components/product/LicenseBand.astro';
 import OfferSlot from '../components/ui/OfferSlot.astro';
+import proofPoster from '../assets/proof/orionfold-proof-poster.jpeg';
 import { getCollection } from 'astro:content';
 import { receipts, myths, receiptHref } from '../data/proof';
 import { SITE, PERSON } from '../data/seo';
 import { PROOF } from '../data/commerce';
+import { ORIONFOLD_PROOF_LIVE } from '../data/launch';
 import { ogMeta } from '../data/og';
 
 const og = ogMeta('/proof/');
@@ -158,6 +161,21 @@ const receiptTasters = Object.fromEntries(
     <!-- What Orionfold Proof is: the product behind the receipts -->
     <ProofProduct />
 
+    <!-- Mid-page CTA: they now know what Proof is — catch the fast-decider -->
+    <LicenseBand
+      family={PROOF}
+      live={ORIONFOLD_PROOF_LIVE}
+      itemId="software:orionfold-proof"
+      errId="proof-band-err"
+      fullBlockId="get-proof"
+      eyebrow="Prove it on your own machine"
+      heading="Own the tool behind these receipts."
+      body="Orionfold Proof runs on your own machine and hands back a signed receipt you can rerun. Owning it unlocks every pack it ships with, starting with the Advisor governance pack."
+      enquiryHref="/adoption/?item=software:orionfold-proof"
+      image={proofPoster}
+      imageAlt="Orionfold Proof poster: an art-deco receipt rising from a laptop into the Orion stars, the tool that proves which AI to trust."
+    />
+
     <!-- Headline receipts: our number next to the world it beats -->
     <section class="px-6 py-12">
       <div class="mx-auto max-w-6xl">
@@ -219,7 +237,10 @@ const receiptTasters = Object.fromEntries(
       </section>
     )}
 
-    <!-- Soft opt-in: catch receipt-readers who aren't checkout-ready yet -->
+    <!-- Own the tool behind the receipts: lead with the buy block -->
+    <ProofBox />
+
+    <!-- Soft opt-in below the buy: catch receipt-readers who aren't checkout-ready yet -->
     <OfferSlot
       offer="proof-playbook"
       source="proof-page"
@@ -229,9 +250,6 @@ const receiptTasters = Object.fromEntries(
       artifact="One-page PDF + new-proof notes"
       buttonText="Send it"
     />
-
-    <!-- Own the tool behind the receipts -->
-    <ProofBox />
 
     <!-- Close: hand the reader to the story and the catalog -->
     <section class="px-6 py-16">

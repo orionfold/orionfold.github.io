@@ -11,8 +11,10 @@
 // Self-contained: /relay/ is a plain page, so the roadmap attribution id is a
 // literal here. Voice: grade 3-5, jargon explained, no em-dashes
 // (website-copy-style).
+import { Image } from 'astro:assets';
 import { RELAY, formatUsd } from '../../data/commerce';
 import { ORIONFOLD_RELAY_LIVE } from '../../data/launch';
+import relayPoster from '../../assets/projects/orionfold-relay-poster.jpeg';
 
 const ROADMAP_ITEM_ID = 'software:orionfold-relay';
 
@@ -24,7 +26,23 @@ const enquiryHref = `/adoption/?item=${ROADMAP_ITEM_ID}`;
 ---
 <section id="get-relay" class="scroll-mt-24 px-6 py-16">
   <div class="mx-auto max-w-3xl">
-    <div data-animate class="rounded-2xl border border-primary/40 bg-surface-raised p-8 shadow-lg shadow-primary/5">
+    <div data-animate class="overflow-hidden rounded-2xl border border-primary/40 bg-surface-raised shadow-lg shadow-primary/5">
+      <!-- Poster header: the same sci-fi key art that drifts in the mid-page band,
+           here as a full-width banner so the block and band read as one product. -->
+      <div class="relay-poster relative overflow-hidden border-b border-primary/20">
+        <Image
+          src={relayPoster}
+          alt="Orionfold Relay poster: one operator at a wide command wall of glowing client panels, running a whole AI agency from one board."
+          widths={[640, 960]}
+          sizes="(min-width: 768px) 48rem, 100vw"
+          loading="lazy"
+          decoding="async"
+          data-no-zoom
+          class="relay-poster__img block aspect-[16/7] w-full object-cover object-top"
+        />
+      </div>
+
+      <div class="p-8">
       <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">
         Own the premium packs
       </p>
@@ -106,6 +124,26 @@ const enquiryHref = `/adoption/?item=${ROADMAP_ITEM_ID}`;
         After the first year, {renewal}/yr keeps it current: new packs and pack updates as we ship
         them. Skip it and your copy keeps working, you just stop getting new packs.
       </p>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* A slow ambient float on the poster banner (subtler than the band's isometric
+     tilt, since this is a flat full-width banner not a tilted thumbnail). Desktop
+     only, reduced-motion safe. */
+  @media (min-width: 1024px) {
+    .relay-poster__img {
+      animation: relay-poster-float 16s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes relay-poster-float {
+      from { transform: scale(1.02) translateY(0); }
+      to   { transform: scale(1.06) translateY(-6px); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .relay-poster__img { animation: none; }
+  }
+</style>

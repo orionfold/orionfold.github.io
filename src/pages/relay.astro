@@ -5,19 +5,29 @@
 // premium packs a license unlocks, then the buy block. Built dark (buy buttons
 // gated by ORIONFOLD_RELAY_LIVE) while the live prices + fulfilment go live.
 //
-// Content note (relay ask orionfold-relay 2026-06-30): the copy here is sourced
-// from the Relay launch-readiness relay entry (npm distribution, `relay pack add`
-// verb, the relay-agency reference pack, engine-free / packs-licensed boundary).
-// The Relay peer owns publish-quality positioning; this page is refined from their
-// content pointers when they land (same pattern as Proof/Arena, where marketing
-// owns publish copy). No invented benchmarks or claims.
-// Voice: grade 3-5, jargon explained, no em-dashes (website-copy-style).
+// Content source (relay later-10, 2026-06-30): mirrored from the peer's canonical
+// README (~/orionfold/relay/README.md, commit 1b0b1720) — the constellation
+// framing, the agency operating-model table, the five gaps, and the AWS
+// personal-project disclaimer (verbatim, it's compliance). Substance + structure
+// mirror the README; the voice is retuned to the site rule (grade 3-5, jargon
+// explained, em-dashes stripped — the README's polished-pro voice has both). The
+// free-vs-paid boundary is the one thing NOT in the README yet (it predates the
+// licensing work), sourced to the actual owns_product() gate per the peer's
+// later-10 §(a)(2) so page and package agree. Product screenshots for the in-page
+// proof sections are pending a fresh DARK-theme Relay-branded set (relay later-14;
+// the ones the README hotlinks are stale legacy "ainative" UI). Voice: grade 3-5,
+// jargon explained, no em-dashes (website-copy-style).
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import RelayBox from '../components/product/RelayBox.astro';
+import LicenseBand from '../components/product/LicenseBand.astro';
 import OfferSlot from '../components/ui/OfferSlot.astro';
+import { ORIONFOLD_RELAY_LIVE } from '../data/launch';
+import relayPoster from '../assets/projects/orionfold-relay-poster.jpeg';
+import relayBoardShot from '../assets/relay/home-list.png';
 import { SITE, PERSON } from '../data/seo';
 import { RELAY } from '../data/commerce';
 import { ogMeta } from '../data/og';
@@ -71,11 +81,14 @@ const softwareSchema = {
 
 // What you get free vs what a license unlocks. Stated plainly as a table so the
 // boundary can't be overclaimed (same free-vs-paid discipline as Proof).
+// Free-vs-paid, sourced to the real CLI gate (owns_product() → product:orionfold-relay,
+// relay later-10 §(a)(2)) so the page and the package agree. The engine is a complete,
+// free operations layer; a license adds premium packs + updates, not core function.
 const freeVsPaid = [
-  { free: 'The Relay engine and CLI', paid: 'The premium packs you own' },
-  { free: 'Run your own agents and workflows', paid: 'The agency pack: profiles, blueprints, customers' },
-  { free: 'Add, list, and remove packs', paid: 'New packs and pack updates for 12 months' },
-  { free: 'Community support', paid: 'Your own private download link per pack' },
+  { free: 'The full engine and command-line tool, forever', paid: 'Premium packs you own' },
+  { free: 'Run your own copy, your data stays on your machine', paid: 'One license unlocks every premium pack, not one at a time' },
+  { free: 'All 21 agent profiles and 15 service templates', paid: 'The agency pack: real-estate and nonprofit profiles, blueprints, and a customer setup' },
+  { free: 'Build apps, track per-client cost, add free and open packs', paid: 'New packs and pack updates for 12 months' },
 ];
 
 // The concrete premium pack that exists today (the relay-agency reference pack).
@@ -86,10 +99,37 @@ const packs = [
     dek: 'A ready-made setup for agency work in real estate and nonprofits: 7 profiles, 8 blueprints, and a customer setup you drop in instead of wiring from scratch.',
   },
 ];
+
+// The constellation framing (README): where Relay sits in the Orionfold line.
+const constellation = [
+  { name: 'Proof', q: 'Which AI can I trust?', href: '/proof/' },
+  { name: 'Arena', q: 'Which build wins?', href: '/arena/' },
+  { name: 'Relay', q: 'Now make the trusted AI do the real work.', href: null, self: true },
+];
+
+// The agency operating-model table (README "Built for an agency"): how the work
+// you already do maps to a Relay building block. Jargon spelled out in plain words.
+const operatingModel = [
+  { you: 'Clients', them: 'Projects', note: 'One workspace per client, with their own notes the agents read on their own.' },
+  { you: 'Kinds of work', them: 'Profiles', note: '21 ready-made agents, each tuned for a job like lease review or grant research.' },
+  { you: 'Services', them: 'Blueprints', note: '15 templates. A packaged service you set up once and run for each client.' },
+  { you: 'Deliverables', them: 'Schedules', note: 'Weekly digests, monthly statements, and deadline watches that run on their own.' },
+  { you: 'Billing', them: 'Cost and usage', note: 'Per-client spend you can see, so the retainer maps to real cost.' },
+  { you: 'Sign-off', them: 'Inbox', note: 'Every client-facing result goes through your approval, with a full record.' },
+];
+
+// The five gaps every AI agency hits (README), retuned to plain voice.
+const gaps = [
+  { title: 'Many steps, one run', body: 'Real client work is a chain: take it in, do it, check it, send it. Relay runs the whole sequence with checkpoints, so you are not gluing steps together by hand.' },
+  { title: 'Your words, the agent’s work', body: 'You think in clients, services, and deliverables. Agents think in prompts. Projects, profiles, and blueprints give both a shared language.' },
+  { title: 'The whole life of a job', body: 'A deliverable needs scheduling, retries, a way to pick up where it left off, cost tracking, and a record. Relay carries all of it.' },
+  { title: 'Trust and sign-off', body: 'Agents that read client files and draft client-facing work need guardrails. Relay routes every result through your approval and keeps the trail funders and stakeholders ask for.' },
+  { title: 'One command to start', body: 'Standing up a workspace should not mean cloning a repo and wiring a database. Relay is one command, no setup, and your data stays on your machine.' },
+];
 ---
 <Layout
   title="Run your AI agents from one place · Orionfold Relay"
-  description="The free and open engine for AI agents and workflows. Install it with npm, run your agents from one place, and unlock premium packs you own with a license."
+  description="Orionfold Relay is the free and open operations layer for AI agents and client work. Run one board for every client, route each result through your approval, and see per-client cost. Install with npm; own premium packs with a license."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
@@ -109,8 +149,55 @@ const packs = [
     <PageHeader
       eyebrow="Operating layer"
       title="Run your agents from one place."
-      subtitle="Orionfold Relay is the free and open engine that runs your AI agents and workflows. Install it with one command. Own a license and add premium packs that save you the setup."
+      subtitle="Orionfold Relay is the operations layer for AI builders and small services teams. It is the missing piece between running one agent and running real work for a room full of clients. Point it at your client work, run it across local and cloud models, send every result through your approval, and watch each client's cost add up on its own."
     />
+
+    <!-- Constellation: where Relay sits in the Orionfold line -->
+    <section class="px-6 pt-4 pb-10">
+      <div class="mx-auto max-w-4xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The third product in the line</p>
+        <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
+          Proof and Arena help you pick the AI you can trust. Relay is where that trusted AI does the
+          real work. It is the only one whose value grows after the testing stops.
+        </p>
+        <div class="grid gap-3 sm:grid-cols-3">
+          {constellation.map((c) => (
+            c.self ? (
+              <div class="rounded-2xl border border-primary/40 bg-primary/5 p-5">
+                <p class="font-display text-lg font-bold text-primary">{c.name}</p>
+                <p class="mt-2 text-sm leading-relaxed text-text">{c.q}</p>
+              </div>
+            ) : (
+              <a href={c.href} class="of-surface of-pressable group block rounded-2xl p-5">
+                <p class="font-display text-lg font-bold text-text group-hover:text-primary">{c.name}</p>
+                <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.q}</p>
+              </a>
+            )
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- The real product: one dark board shot so the visitor sees it early -->
+    <section class="px-6 pb-6">
+      <div class="mx-auto max-w-5xl">
+        <div class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
+          <Image
+            src={relayBoardShot}
+            alt="The Orionfold Relay board: active work, tasks that need attention, a live agent activity stream, recent client projects, and today's cost, all on one screen."
+            widths={[720, 1080, 1440]}
+            sizes="(min-width: 1024px) 64rem, 100vw"
+            loading="lazy"
+            decoding="async"
+            data-no-zoom
+            class="block w-full"
+          />
+        </div>
+        <p class="mt-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
+          One board for every client
+        </p>
+      </div>
+    </section>
 
     <!-- What it is + install -->
     <section class="px-6 py-12">
@@ -131,8 +218,59 @@ const packs = [
       </div>
     </section>
 
-    <!-- Free vs paid: the boundary, stated plainly -->
+    <!-- Built for an agency: the operating-model table (README spine) -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Built for an agency</p>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          The way you already run client work maps straight onto Relay. Each part of your day has a
+          building block, so you are not bending your work to fit a tool.
+        </p>
+        <div class="overflow-hidden rounded-2xl border border-border/70">
+          <div class="grid grid-cols-[1fr_1fr] gap-px bg-border/60 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-text-dim">
+            <span class="bg-surface px-4 py-3">How you work</span>
+            <span class="bg-surface px-4 py-3">Relay building block</span>
+          </div>
+          {operatingModel.map((row) => (
+            <div class="grid grid-cols-[1fr_1fr] gap-px border-t border-border/60 bg-border/60">
+              <div class="bg-surface/60 px-4 py-4">
+                <p class="text-sm font-medium text-text">{row.you}</p>
+                <p class="mt-1 text-xs leading-relaxed text-text-muted">{row.note}</p>
+              </div>
+              <div class="flex items-start bg-primary/5 px-4 py-4">
+                <p class="text-sm font-medium text-primary">{row.them}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- The five gaps every AI agency hits -->
     <section class="border-y border-border bg-surface-raised px-6 py-14">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The five gaps every AI agency hits</p>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          AI agents can already abstract a lease, research a grant, or sort a receipt. The hard part
+          is everything around that. For an agency, every gap gets bigger with each client you serve.
+          Relay is built to close all five.
+        </p>
+        <ol class="grid gap-4">
+          {gaps.map((g, i) => (
+            <li class="flex gap-4 rounded-2xl border border-border/70 bg-surface/60 p-5">
+              <span class="font-display text-2xl font-bold text-primary/70">{i + 1}</span>
+              <div>
+                <p class="text-base font-medium text-text">{g.title}</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-text-muted">{g.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- Free vs paid: the boundary, stated plainly -->
+    <section class="px-6 py-14">
       <div class="mx-auto max-w-3xl">
         <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What is free, what a license adds</p>
         <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
@@ -151,8 +289,28 @@ const packs = [
             </div>
           ))}
         </div>
+        <p class="mt-6 max-w-2xl text-sm leading-relaxed text-text-muted">
+          The free engine is not a trial or a crippled version. It is a complete operations layer you
+          can run for real. A license adds premium packs and their updates. It does not unlock core
+          features you would otherwise be missing.
+        </p>
       </div>
     </section>
+
+    <!-- Mid-page CTA: they now know what a license adds — catch the fast-decider -->
+    <LicenseBand
+      family={RELAY}
+      live={ORIONFOLD_RELAY_LIVE}
+      itemId="software:orionfold-relay"
+      errId="relay-band-err"
+      fullBlockId="get-relay"
+      eyebrow="Own the premium packs"
+      heading="Skip the setup. Own the packs."
+      body="One license unlocks every premium pack you own, starting with the agency pack. The engine stays free; the license is the key that adds a pack with one command."
+      enquiryHref="/adoption/?item=software:orionfold-relay"
+      image={relayPoster}
+      imageAlt="Orionfold Relay poster: one operator at a wide command wall of glowing client panels, running a whole AI agency from one board."
+    />
 
     <!-- Premium packs a license unlocks -->
     <section class="px-6 py-12">
@@ -174,7 +332,10 @@ const packs = [
       </div>
     </section>
 
-    <!-- Soft opt-in: catch readers who aren't checkout-ready yet -->
+    <!-- Own the premium packs: lead with the buy block -->
+    <RelayBox />
+
+    <!-- Soft opt-in below the buy: catch readers who aren't checkout-ready yet -->
     <OfferSlot
       offer="become-ai-native-business"
       source="relay-page"
@@ -184,9 +345,6 @@ const packs = [
       artifact="PDF + EPUB, plus new-pack notes"
       buttonText="Send it"
     />
-
-    <!-- Own the premium packs -->
-    <RelayBox />
   </main>
   <Footer />
 </Layout>

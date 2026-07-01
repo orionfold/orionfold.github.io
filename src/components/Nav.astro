@@ -9,9 +9,11 @@
 // retained), Models → /experts/, Books → /learn/. Workflows + Adoption dropped
 // from the top nav but stay footer-linked for SEO/AEO.
 // 2026-06-24: Advisor removed from the top nav (still reachable at /advisor/ and
-// footer-linked); the nav leads with the two flagship products, Proof + Arena.
-// Story (/story/) added after Books, behind its own divider, so the set reads
-// Proof · Arena │ Models · Books │ Story.
+// footer-linked); the nav leads with the flagship products.
+// 2026-07-01: Relay (/relay/) added as the third flagship, after Arena, so the
+// three products read Proof · Arena · Relay (the constellation order on the
+// pages). Story (/story/) stays after Books behind its own divider, so the set
+// reads Proof · Arena · Relay │ Models · Books │ Story.
 import BrandMark from './ui/BrandMark.astro';
 import { magnetHref } from '../data/magnet.ts';
 // Persistent magnet sticky bar (2026-Q3 magnet-traffic, relay latest+21): a slim,
@@ -26,6 +28,7 @@ const magnetBarHref = magnetHref('nav-cta');
 const links = [
   { href: '/proof/', label: 'Proof' },
   { href: '/cockpit/', label: 'Arena' },
+  { href: '/relay/', label: 'Relay' },
   { href: '/experts/', label: 'Models', divider: true },
   { href: '/learn/', label: 'Books' },
   { href: '/story/', label: 'Story', divider: true },

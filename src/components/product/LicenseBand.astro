@@ -1,0 +1,185 @@
+---
+// Compact mid-page license CTA band — the "you know enough now, here's the deal"
+// interception between the explain-what-it-is sections and the full buy block at
+// the foot of the page. Deliberately SHORTER + edge-to-edge (mirrors
+// sections/FieldEditionBand + ui/ProofBand), NOT the tall RelayBox/ProofBox
+// block, so a second appearance reads as a distinct moment, not a duplicate.
+// Unlike FieldEditionBand (a hook that deep-links), this carries its OWN live
+// founding + standard Buy buttons (operator 2026-07-01): a fast-decider converts
+// here without scrolling; the thorough reader still meets the full block below.
+//
+// Styling (operator 2026-07-01): a subtle on-brand blueprint grid + cyan glow
+// behind the content, and a product screenshot that drifts on the same
+// compositor-owned isometric plane as the Hero/ProofBand/ProofCTA (desktop only,
+// reduced-motion-safe). Same "technical / evidence" surface language as ProofBand.
+//
+// Two live checkout surfaces on one page are safe — wireCheckoutButtons() selects
+// every [data-checkout] globally and dedupes per button. The one collision to
+// avoid is the error target + its element id, so the band takes a REQUIRED unique
+// `errId` (e.g. "relay-band-err") distinct from the bottom block's "relay-err".
+// The roadmap `itemId` is shared with the bottom block on purpose (same product;
+// attribution keys the purchase by product, not by which block was clicked).
+//
+// Flag-aware: the caller passes `live`; while false the band shows the price + a
+// "tell me when it launches" link instead of charging buttons (same gate posture
+// as the bottom block). Price comes from the catalog SSOT so it can't drift.
+// The thumbnail is a local <Image>-processed asset (responsive webp), NOT a
+// remote URL, so it always emits to dist (avoids the raw-asset footgun). Copy is
+// grade 3-5, no em-dashes (website-copy-style).
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { formatUsd } from '../../data/commerce';
+import type { CatalogItem } from '../../data/commerce';
+
+interface Props {
+  /** The license family display object (RELAY / PROOF / FIELD_EDITION from commerce.ts). */
+  family: { primary: CatalogItem; founding: CatalogItem; renewal: CatalogItem; foundingSeats: number; windowMonths: number };
+  /** Whether the live charging buttons render (the product's launch flag). */
+  live: boolean;
+  /** Roadmap attribution id, shared with the bottom block (same product). */
+  itemId: string;
+  /** UNIQUE error-target element id for this band (must differ from the bottom block's). */
+  errId: string;
+  /** Anchor + scroll target of the full buy block below (e.g. "get-relay"). */
+  fullBlockId: string;
+  /** Small eyebrow label. */
+  eyebrow: string;
+  /** One-line headline (the "here's the deal" hook). */
+  heading: string;
+  /** One or two sentences of value. */
+  body: string;
+  /** Href for the not-live "tell me when it launches" fallback. */
+  enquiryHref: string;
+  /** The drifting product screenshot (imported asset, landscape). */
+  image: ImageMetadata;
+  /** Alt for the screenshot. */
+  imageAlt: string;
+}
+
+const { family, live, itemId, errId, fullBlockId, eyebrow, heading, body, enquiryHref, image, imageAlt } = Astro.props;
+
+const primary = formatUsd(family.primary.amount);
+const founding = formatUsd(family.founding.amount);
+---
+<section class="license-band relative scroll-mt-24 overflow-hidden border-y border-primary/25 px-6 py-12">
+  <!-- Blueprint grid + atmospheric cyan glow, both behind content (the "technical"
+       surface language shared with ProofBand). -->
+  <div class="license-band__grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="absolute -left-[6%] top-1/2 h-[380px] w-[380px] -translate-y-1/2 rounded-full bg-primary/[0.12] blur-[130px]"></div>
+  </div>
+
+  <div class="mx-auto grid max-w-5xl items-center gap-8 md:grid-cols-[1.1fr_auto] md:gap-10">
+    <!-- LEFT: pitch + price + live buy (or launch-soon fallback). -->
+    <div>
+      <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-primary">{eyebrow}</p>
+      <h2 class="mt-2 font-display text-2xl font-bold leading-tight sm:text-3xl">{heading}</h2>
+      <p class="mt-3 max-w-xl text-sm leading-relaxed text-text-muted">{body}</p>
+
+      <div class="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span class="font-display text-3xl font-bold text-primary">{founding}</span>
+        <span class="rounded-full bg-primary/10 px-2.5 py-1 font-mono text-[0.62rem] tracking-wider text-primary">
+          founding, first {family.foundingSeats}
+        </span>
+        <span class="font-mono text-xs tracking-wider text-text-muted">then {primary} one time</span>
+      </div>
+
+      {live ? (
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            data-checkout={family.founding.lookupKey}
+            data-item={itemId}
+            data-error-target={errId}
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-2.5 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Buy founding · {founding}
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </button>
+          <button
+            type="button"
+            data-checkout={family.primary.lookupKey}
+            data-item={itemId}
+            data-error-target={errId}
+            class="inline-flex items-center justify-center rounded-lg border border-primary/40 px-5 py-2.5 font-mono text-sm tracking-wider text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Buy at {primary}
+          </button>
+          <a href={`#${fullBlockId}`} class="font-mono text-[0.7rem] tracking-wider text-text-muted underline underline-offset-2 hover:text-primary">
+            or see the full details
+          </a>
+        </div>
+      ) : (
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <a
+            href={enquiryHref}
+            class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent px-5 py-2.5 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
+          >
+            Tell me when it launches
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
+        </div>
+      )}
+      <p id={errId} role="alert" hidden class="mt-2 font-mono text-xs text-red-500"></p>
+    </div>
+
+    <!-- RIGHT: the product screenshot, drifting on the isometric plane. -->
+    <div class="license3d-stage relative order-first mx-auto w-full max-w-sm shrink-0 self-center md:order-none md:w-[22rem]">
+      <div class="license3d-plane block overflow-hidden rounded-xl ring-1 ring-primary/20 shadow-[0_22px_60px_-32px_oklch(0.18_0.08_260/0.7)]">
+        <Image
+          src={image}
+          alt={imageAlt}
+          widths={[352, 704]}
+          sizes="22rem"
+          loading="lazy"
+          decoding="async"
+          data-no-zoom
+          class="block aspect-[16/9] w-full object-cover object-left-top"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Cool "blueprint" surface: a faint cyan wash + a fine masked line grid, both
+     themes tuned so the band reads as a distinct technical panel (mirrors
+     ProofBand, so the two stay a family). */
+  .license-band {
+    background-color: oklch(0.97 0.012 200);
+  }
+  :global([data-theme='dark']) .license-band {
+    background-color: oklch(0.20 0.022 235);
+  }
+  .license-band__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
+    mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
+  }
+  :global([data-theme='dark']) .license-band__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px);
+  }
+
+  /* Desktop-only isometric drift, same compositor-owned recipe as ProofBand/Hero
+     (the screenshot tilts like a screen). Mobile keeps it flat. */
+  @media (min-width: 1024px) {
+    .license3d-stage { perspective: 1400px; }
+    .license3d-plane {
+      transform: rotateX(14deg) rotateZ(-3deg) scale(0.97) translateY(6px);
+      animation: license3d-drift 15s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes license3d-drift {
+      from { transform: rotateX(14deg) rotateZ(-3deg) scale(0.97) translateY(6px); }
+      to   { transform: rotateX(19deg) rotateZ(3deg) scale(1) translateY(2px); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .license3d-plane { animation: none; }
+  }
+</style>

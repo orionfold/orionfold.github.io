@@ -11,8 +11,10 @@
 // Self-contained: unlike FieldEditionBox (which rides a ProductDetail ProductView),
 // /proof/ is a plain page, so the roadmap attribution id is a literal here.
 // Voice: grade 3-5, jargon explained, no em-dashes (website-copy-style).
+import { Image } from 'astro:assets';
 import { PROOF, formatUsd } from '../../data/commerce';
 import { ORIONFOLD_PROOF_LIVE } from '../../data/launch';
+import proofPoster from '../../assets/proof/orionfold-proof-poster.jpeg';
 
 const ROADMAP_ITEM_ID = 'software:orionfold-proof';
 
@@ -24,7 +26,23 @@ const enquiryHref = `/adoption/?item=${ROADMAP_ITEM_ID}`;
 ---
 <section id="get-proof" class="scroll-mt-24 px-6 py-16">
   <div class="mx-auto max-w-3xl">
-    <div data-animate class="rounded-2xl border border-primary/40 bg-surface-raised p-8 shadow-lg shadow-primary/5">
+    <div data-animate class="overflow-hidden rounded-2xl border border-primary/40 bg-surface-raised shadow-lg shadow-primary/5">
+      <!-- Poster header: the same key art that drifts in the mid-page band, here as
+           a full-width banner so the block and band read as one product. -->
+      <div class="proof-poster relative overflow-hidden border-b border-primary/20">
+        <Image
+          src={proofPoster}
+          alt="Orionfold Proof poster: an art-deco receipt rising from a laptop into the Orion stars, the tool that proves which AI to trust."
+          widths={[640, 960]}
+          sizes="(min-width: 768px) 48rem, 100vw"
+          loading="lazy"
+          decoding="async"
+          data-no-zoom
+          class="proof-poster__img block aspect-[16/7] w-full object-cover object-top"
+        />
+      </div>
+
+      <div class="p-8">
       <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">
         Prove it yourself, on your own machine
       </p>
@@ -107,6 +125,25 @@ const enquiryHref = `/adoption/?item=${ROADMAP_ITEM_ID}`;
         After the first year, {renewal}/yr keeps it proven: new packs, new checks, and a fresh
         receipt. Skip it and your copy keeps working, you just stop getting new proof.
       </p>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* A slow ambient float on the poster banner (mirrors RelayBox so both product
+     blocks read as a family). Desktop only, reduced-motion safe. */
+  @media (min-width: 1024px) {
+    .proof-poster__img {
+      animation: proof-poster-float 16s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes proof-poster-float {
+      from { transform: scale(1.02) translateY(0); }
+      to   { transform: scale(1.06) translateY(-6px); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .proof-poster__img { animation: none; }
+  }
+</style>
