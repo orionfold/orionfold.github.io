@@ -1,0 +1,20 @@
+# Daily T-30 Relay renewal reminder. POSTs to the token-guarded renewal-reminder edge fn;
+# the fn itself selects due licenses and sends. Manual dispatch allowed for a smoke run.
+# Secrets: RENEWAL_REMINDER_URL (deployed fn endpoint), RENEWAL_REMINDER_TOKEN (bearer).
+name: renewal-reminder
+on:
+  schedule:
+    - cron: "0 15 * * *" # 15:00 UTC daily (mid-morning US)
+  workflow_dispatch: {}
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST to renewal-reminder edge function
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/body.json -w "%{http_code}" -X POST \
+            -H "Authorization: Bearer ${{ secrets.RENEWAL_REMINDER_TOKEN }}" \
+            "${{ secrets.RENEWAL_REMINDER_URL }}")
+          echo "HTTP $code"; cat /tmp/body.json
+          test "$code" = "200"
