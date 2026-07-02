@@ -429,3 +429,9 @@ verify_jwt = false
 # verify_jwt off so our constant-time token check is the sole gate, like the exports.
 [functions.resend-send]
 verify_jwt = false
+
+# renewal-reminder (PLG-4a): daily T-30 Relay renewal value-recap email, gated by its own
+# RENEWAL_REMINDER_TOKEN shared credential (server-to-server, no browser caller). verify_jwt
+# off so our constant-time token check is the sole gate, like the exports.
+[functions.renewal-reminder]
+verify_jwt = false
