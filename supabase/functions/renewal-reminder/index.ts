@@ -3,7 +3,8 @@
 // days from expiry that have not been reminded, send the recap email, and stamp
 // renewal_reminded_at so each license year is reminded exactly once.
 //
-// No phone-home: we CANNOT see customer installs. The email recaps what the license year
+// Relay never sends your data to Orionfold (the canonical promise, _RELAY later-12), so
+// we CANNOT see customer installs. The email recaps what the license year
 // SHIPPED (public release history), never what the customer did or didn't install. That
 // honesty constraint is load-bearing (_RELAY later-9). verify_jwt = false; the
 // constant-time RENEWAL_REMINDER_TOKEN check is the sole gate, like the exports.
