@@ -533,27 +533,27 @@ ${EMAIL_FOOTER}`;
 function relayLicenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
   return `Thank you for buying ${productLabel}.
 
-Your license number is ${licenseId}. Your license file is also
-attached as a backup copy, so you always have it.
+Your license number is ${licenseId}. Keep the license file
+attached to this email. Your private link below works for 7
+days, but the attached file lasts, and you can add it any time
+on any machine with:
+
+relay license add <your-license-file>
 
 Install Orionfold Relay:
 
 npm i -g orionfold-relay
 
-The engine is free and open. Your license unlocks the premium
-packs you own.
+Then add the agency pack with this one command. It checks your
+license over your own private link and installs the pack:
 
-When you want to add a premium pack you own, run this one
-command. It checks your license over your own private link (it
-works for 7 days), then installs the pack:
+relay pack add relay-agency-pro --license-url='${installUrl}'
 
-relay pack add <premium-pack> --license-url='${installUrl}'
+Your packs are yours forever. Renewal gets you the year's new
+and updated packs and priority support.
 
-We will email you the download link for each new pack. If your
-private link stops working before you add one, just reply to
-this email and we will send you a fresh one.
-
-Your license keeps you up to date for 12 months.
+If your private link stops working before you add the pack, just
+reply to this email and we will send you a fresh one.
 
 ${EMAIL_FOOTER}`;
 }

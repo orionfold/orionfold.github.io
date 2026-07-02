@@ -178,6 +178,13 @@ export const OG_PAGES: Record<string, OgPage> = {
     // The Arena poster full-bleed as the social card, same pattern as proof.
     background: 'src/assets/projects/arena-poster.png',
   },
+  '/promise/': {
+    slug: 'promise',
+    eyebrow: 'Our promise',
+    title: 'What you pay for, and what you never lose',
+    seed: 'promise',
+    alt: 'The Orionfold promise: every capability ships free, paid packs sell maintained content, and nothing that shipped free ever regresses to paid',
+  },
   '/terms/': {
     slug: 'terms',
     eyebrow: 'Legal',
