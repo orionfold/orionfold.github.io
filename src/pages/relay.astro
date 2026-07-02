@@ -134,6 +134,39 @@ const gaps = [
   { title: 'Trust and sign-off', body: 'Agents that read client files and draft client-facing work need guardrails. Relay routes every result through your approval and keeps the trail funders and stakeholders ask for.' },
   { title: 'One command to start', body: 'Standing up a workspace should not mean cloning a repo and wiring a database. Relay is one command, no setup, and your data stays on your machine.' },
 ];
+
+// Security and trust (relay later-4 FYI + issue #17 / security-packet.md). Turns
+// the four questions a security review asks into plain answers, each linking the
+// canonical trust doc in the Relay repo (link, do not mirror: one source, no
+// drift, same rule as the license-terms link). Marketing-facing rewrite of the
+// evaluator-facing source: grade 3-5, jargon spelled out, hard proof one click
+// away. `href` is the repo doc that backs the claim.
+const trust = [
+  {
+    q: 'Does it phone home?',
+    a: 'No. Relay runs on your own machine. On a plain install the only call it makes is a one-time, checked download of the app itself from GitHub. There is no tracking, no usage reporting, and no calls back to us. Anything that can leave your machine, like the AI models you pick, is listed in full with an off switch.',
+    label: 'See every network call',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/data-flow.md',
+  },
+  {
+    q: 'What data do you hold about us?',
+    a: 'Only your purchase record. Everything the product touches, your projects, tasks, documents, and history, lives in a file on your own machine. AI work runs through your own model accounts, not ours. We run no service in the middle, so there is nothing for us to hold and no data agreement to chase.',
+    label: 'Read the security packet',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/security-packet.md',
+  },
+  {
+    q: 'Can we trust what we install?',
+    a: 'Yes, and you can check it before you run it. Every release is published straight from our build with a signed record of where it came from, and ships a full parts list of what is inside. The download is checked against a fingerprint before it opens. Nothing updates itself, so the version you reviewed stays the version you run.',
+    label: 'See the supply chain',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/supply-chain.md',
+  },
+  {
+    q: 'What if you disappear?',
+    a: 'You keep everything. The engine is open source, your data is on your machine, and your license works offline forever. If Orionfold went away tomorrow, your setup keeps running. The honest edge cases are written down too.',
+    label: 'Read the continuity note',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/continuity.md',
+  },
+];
 ---
 <Layout
   title="Run your AI agents from one place · Orionfold Relay"
@@ -407,6 +440,42 @@ const gaps = [
             </li>
           ))}
         </ul>
+      </div>
+    </section>
+
+    <!-- Security and trust: the last objection to clear before the price. Four
+         plain answers to what a security review asks, each linking the canonical
+         trust doc in the Relay repo. -->
+    <section class="border-y border-border bg-surface-raised px-6 py-14">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Security and trust</p>
+        <h2 class="mb-4 text-3xl sm:text-4xl">Built to pass a security review.</h2>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          Relay runs on your own machine, holds none of your data, and keeps working even if we
+          do not. Here are the four questions a careful buyer asks, answered in plain words, each
+          backed by a page that links the code that proves it.
+        </p>
+        <ul class="grid gap-4">
+          {trust.map((t) => (
+            <li class="rounded-2xl border border-border/70 bg-surface/60 p-6">
+              <p class="text-base font-semibold text-text">{t.q}</p>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">{t.a}</p>
+              <a
+                href={t.href}
+                target="_blank"
+                rel="noopener"
+                class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary transition-colors hover:text-primary/80"
+              >
+                {t.label}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-6 max-w-2xl text-sm leading-relaxed text-text-muted">
+          Found a security problem? Report it privately and we reply within three days:
+          <a href="https://github.com/orionfold/relay/security/advisories/new" target="_blank" rel="noopener" class="text-primary hover:text-primary/80 transition-colors">open a private advisory</a>.
+        </p>
       </div>
     </section>
 
