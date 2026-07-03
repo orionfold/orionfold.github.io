@@ -31,7 +31,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     slug: 'home',
     eyebrow: 'Orionfold',
-    title: 'Private AI capability for small teams',
+    title: 'Get an AI team without hiring one',
     seed: 'home',
     alt: 'Orionfold: private agents, domain models, benchmarks, and playbooks for small teams',
   },

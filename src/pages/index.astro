@@ -17,16 +17,27 @@ import { ogMeta } from '../data/og';
 
 const og = ogMeta('/');
 ---
-<Layout ogImage={og.image} ogImageAlt={og.alt}>
+<Layout
+  title="Orionfold · Get an AI team without hiring one"
+  description="Orionfold takes the AI scattered across your work and runs it through one path you own, see, test, and approve. Agents that do the work, models that know your field, and tests that prove it, all on your own machine."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+>
   <Nav />
   <!-- Surfaces the ?confirmed= state the confirm-email funnel redirects here with (H3) -->
   <ConfirmBanner />
+  <!-- Relay-led suite router (homepage CRO rebuild, 2026-07-03). The page routes
+       to the product that matches each visitor's question rather than selling
+       Proof: hero sets the company promise, the thesis diagram is the suite
+       thesis, the trust trio sets the ethos, then the product bands lead with
+       Relay (the $10K paid-test target) then Arena. Founder letter demoted below
+       the routing; book/catalog/stories are the credibility tail. -->
   <main>
     <Hero />
-    <FromTheFounder />
-    <FieldEditionBand />
     <CapabilitySystemMap />
     <RelayBand />
+    <FieldEditionBand />
+    <FromTheFounder />
     <Highlights />
     <CatalogShelf />
     <StoriesCarousel />
