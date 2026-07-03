@@ -1,8 +1,10 @@
 ---
-// Homepage hero ("split + constellation"). Left: the capability-ownership pitch
-// and offer CTAs. Right: a quieter enterprise mission panel that turns the
-// constellation motif into trust, control, and evaluation signals. The homepage
-// newsletter form lives on the Story pages (H3).
+// Homepage hero (company-router rebuild, 2026-07-03). Left: the company promise
+// ("Get an AI team without hiring one") + a plain company paragraph + a Relay-led
+// CTA row (Relay primary, Proof secondary, free-book tertiary). Right: the hero
+// art on the drifting isometric plane. The homepage no longer sells Proof from
+// the hero; it routes to the product that matches each visitor's question, with
+// Relay led for the $10K paid-test window. The newsletter form lives on Story (H3).
 import { Image } from 'astro:assets';
 import heroImage from '../../assets/proof/orionfold-proof-poster.jpeg';
 import { magnetHref } from '../../data/magnet.ts';
@@ -29,23 +31,23 @@ const magnetHeroHref = magnetHref('hero-secondary');
          Painting the pitch immediately is the bigger UX win than the stagger polish. -->
     <div class="relative z-10 text-center lg:text-left">
       <p class="mx-auto mb-6 max-w-[18rem] text-wrap font-mono text-[11px] uppercase leading-relaxed tracking-[0.18em] text-text-muted lg:mx-0 lg:max-w-none lg:text-xs">
-        Prove it yourself, on your own machine
+        Private AI you own, on your own machine
       </p>
 
       <h1 class="hero-gradient-text mx-auto max-w-[21rem] text-balance font-display text-[2.45rem] font-bold leading-[1.08] sm:max-w-2xl sm:text-6xl lg:mx-0 lg:max-w-none lg:text-[clamp(2.9rem,4.2vw,4.2rem)]">
-        Prove which AI you can trust.
+        Get an AI team without hiring one.
       </h1>
 
       <p class="mx-auto mt-6 max-w-[22rem] text-balance text-base leading-relaxed text-text-muted sm:max-w-xl sm:text-lg lg:mx-0">
-        Orionfold Proof runs on your own machine. Point it at your own task, run the AI models or setups you are weighing, and get a signed receipt: which one won, at what cost, with what failures. Nothing phones home, and you can rerun the proof any time.
+        Orionfold takes the AI scattered across your work and runs it through one path you own, see, test, and approve. Agents that do the real work, models that know your field, and tests that prove it. All on your own machine.
       </p>
 
       <div class="mx-auto mt-9 flex w-full max-w-[24rem] flex-col items-stretch gap-3 lg:mx-0">
         <a
-          href="/proof/#get-proof"
+          href="/relay/"
           class="of-primary-action group w-full justify-center !text-sm sm:!text-base"
         >
-          Get Orionfold Proof
+          Run real client work with Orionfold Relay
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
@@ -54,7 +56,7 @@ const magnetHeroHref = magnetHref('hero-secondary');
           href="/proof/"
           class="of-secondary-action w-full justify-center !text-sm sm:!text-base"
         >
-          See the receipts
+          See the receipts on Orionfold Proof
         </a>
         <a
           href={magnetHeroHref}
@@ -88,10 +90,10 @@ const magnetHeroHref = magnetHref('hero-secondary');
         <!-- The chip clicks through to the Orionfold Proof product page (the
              single CTA the hero drives toward). -->
         <a
-          href="/proof/#get-proof"
+          href="/relay/"
           class="group absolute bottom-5 left-5 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-[oklch(0.18_0.06_260/0.62)] px-3.5 py-1.5 font-mono text-xs tracking-[0.04em] text-white backdrop-blur-md transition-colors duration-300 hover:border-white/40 hover:bg-[oklch(0.22_0.07_260/0.75)]"
         >
-          Get Orionfold Proof
+          Get Orionfold Relay
           <span class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
         </a>
       </div>
