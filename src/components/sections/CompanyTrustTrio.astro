@@ -1,0 +1,52 @@
+---
+// Homepage company trust trio (homepage CRO rebuild, 2026-07-03). The /relay/
+// own-it trio (relay.astro trustTrio) lifted from product scope to COMPANY
+// scope: the three durable buyer benefits that hold across the whole suite.
+// Sits right after the thesis diagram, before the product bands, so the ethos
+// is set before any pitch. Each tile links the canonical docs/trust/ page (one
+// source, no drift). Copy grade 5, no em-dashes (website-copy-style).
+const trio = [
+  {
+    title: 'You own it forever',
+    body: 'The engines are open source and your licenses work offline. If Orionfold vanished tomorrow, your setup keeps running.',
+    icon: '<path d="M12 2 4 5v6c0 5.5 3.8 9.5 8 11 4.2-1.5 8-5.5 8-11V5Z"/>',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/continuity.md',
+  },
+  {
+    title: 'Runs on your own machine',
+    body: 'Everything runs on your own computer. No tracking, no usage reports, no check-ins home.',
+    icon: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/data-flow.md',
+  },
+  {
+    title: 'Verify every call yourself',
+    body: 'Anything that could leave your machine is listed in full, with an off switch. Check it before you run it.',
+    icon: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/supply-chain.md',
+  },
+];
+---
+<section class="px-6 py-12 sm:py-16">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-7">
+      <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Why teams trust it</p>
+      <h2 class="mt-2 text-3xl sm:text-4xl">Yours to own, run, and check.</h2>
+    </div>
+    <div data-animate-stagger class="grid gap-4 sm:grid-cols-3">
+      {trio.map((t) => (
+        <a
+          href={t.href}
+          data-animate
+          class="of-surface of-pressable block rounded-2xl p-6"
+        >
+          <span class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={t.icon} />
+          </span>
+          <span class="block text-lg leading-tight text-text">{t.title}</span>
+          <span class="mt-2 block text-sm leading-relaxed text-text-muted">{t.body}</span>
+          <span class="of-text-action of-compact mt-4 inline-block text-xs">See how →</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
