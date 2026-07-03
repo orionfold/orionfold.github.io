@@ -36,21 +36,34 @@ import heroImage from '../../assets/home/ai-team-hero.jpg';
         Orionfold takes the AI scattered across your work and runs it through one path you own, see, test, and approve. Agents that do the real work, models that know your field, and tests that prove it. All on your own machine.
       </p>
 
+      <!-- Two-line stacked CTAs: a small all-caps intent line over a larger
+           product line. Square button with rounded corners (rounded-xl) instead
+           of the default full pill, per operator review. Primary = Relay (solid
+           cyan), secondary = Proof (ghost). -->
       <div class="mx-auto mt-9 flex w-full max-w-[24rem] flex-col items-stretch gap-3 lg:mx-0">
         <a
           href="/relay/"
-          class="of-primary-action group w-full justify-center whitespace-nowrap !text-sm sm:!text-base"
+          class="of-primary-action group w-full flex-col !items-start justify-center gap-0.5 !rounded-xl !py-3.5"
         >
-          Control AI team on Orionfold Relay
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+          <span class="font-mono text-[0.62rem] uppercase tracking-[0.18em] opacity-80">Control AI team</span>
+          <span class="flex items-center gap-1.5 font-display text-lg font-bold tracking-normal normal-case">
+            Get Orionfold Relay
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </span>
         </a>
         <a
           href="/proof/"
-          class="of-secondary-action w-full justify-center whitespace-nowrap !text-sm sm:!text-base"
+          class="of-secondary-action group w-full flex-col !items-start justify-center gap-0.5 !rounded-xl !py-3.5"
         >
-          Choose better AI with Orionfold Proof
+          <span class="font-mono text-[0.62rem] uppercase tracking-[0.18em] opacity-70">Choose better AI</span>
+          <span class="flex items-center gap-1.5 font-display text-lg font-bold tracking-normal normal-case">
+            Get Orionfold Proof
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </span>
         </a>
       </div>
 
