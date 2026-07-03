@@ -10,14 +10,15 @@
 // from the top nav but stay footer-linked for SEO/AEO.
 // 2026-06-24: Advisor removed from the top nav (still reachable at /advisor/ and
 // footer-linked); the nav leads with the flagship products.
-// 2026-07-01: Relay (/relay/) added as the third flagship, after Arena, so the
-// three products read Proof · Arena · Relay (the constellation order on the
-// pages). Story (/story/) stays after Books behind its own divider, so the set
-// reads Proof · Arena · Relay │ Models · Books │ Story.
+// 2026-07-01: Relay (/relay/) added as the third flagship. Story (/story/) stays
+// after Books behind its own divider. Flagship order was Proof · Arena · Relay
+// until the 2026-07-03 Relay-led reorder below.
 // 2026-07-01 (later): Arena repointed /cockpit/ -> /arena/ (the new flagship
 // landing page, parallel to /proof/ + /relay/). /cockpit/ stays live + footer-
 // linked (keeps its SEO equity); the /software/arena/ detail page was retired the
 // same day and 301s to /arena/ (the single canonical Arena surface).
+// 2026-07-03: nav reordered Proof·Arena·Relay -> Relay·Proof·Arena so the nav
+// hierarchy matches the Relay-led homepage suite router.
 import BrandMark from './ui/BrandMark.astro';
 import { magnetHref } from '../data/magnet.ts';
 // Persistent magnet sticky bar (2026-Q3 magnet-traffic, relay latest+21): a slim,
@@ -30,9 +31,9 @@ import { magnetHref } from '../data/magnet.ts';
 const magnetBarHref = magnetHref('nav-cta');
 // `divider: true` renders a separator immediately BEFORE that link.
 const links = [
+  { href: '/relay/', label: 'Relay' },
   { href: '/proof/', label: 'Proof' },
   { href: '/arena/', label: 'Arena' },
-  { href: '/relay/', label: 'Relay' },
   { href: '/experts/', label: 'Models', divider: true },
   { href: '/learn/', label: 'Books' },
   { href: '/story/', label: 'Story', divider: true },
