@@ -7,12 +7,6 @@
 // Relay led for the $10K paid-test window. The newsletter form lives on Story (H3).
 import { Image } from 'astro:assets';
 import heroImage from '../../assets/home/ai-team-hero.jpg';
-import { magnetHref } from '../../data/magnet.ts';
-// Magnet secondary CTA (relay latest+21): a quieter free-book rung BELOW the two
-// Proof anchor CTAs, so the magnet sits under the anchor offer without competing
-// with it. The free book captures the email before the visitor weighs the paid
-// product.
-const magnetHeroHref = magnetHref('hero-secondary');
 ---
 <section class="relative overflow-x-clip">
   <!-- Soft atmospheric light, kept below the operational surfaces. -->
@@ -34,8 +28,8 @@ const magnetHeroHref = magnetHref('hero-secondary');
         Private AI you own, on your own machine
       </p>
 
-      <h1 class="hero-gradient-text mx-auto max-w-[21rem] text-balance font-display text-[2.45rem] font-bold leading-[1.08] sm:max-w-2xl sm:text-6xl lg:mx-0 lg:max-w-none lg:text-[clamp(2.9rem,4.2vw,4.2rem)]">
-        Get an AI team without hiring one.
+      <h1 class="hero-gradient-text mx-auto max-w-[21rem] font-display text-[2.45rem] font-bold leading-[1.08] sm:max-w-2xl sm:text-6xl lg:mx-0 lg:max-w-none lg:text-[clamp(2.6rem,3.7vw,3.7rem)]">
+        <span class="sm:whitespace-nowrap">Get an AI team</span><br /><span class="sm:whitespace-nowrap">without hiring one.</span>
       </h1>
 
       <p class="mx-auto mt-6 max-w-[22rem] text-balance text-base leading-relaxed text-text-muted sm:max-w-xl sm:text-lg lg:mx-0">
@@ -45,25 +39,18 @@ const magnetHeroHref = magnetHref('hero-secondary');
       <div class="mx-auto mt-9 flex w-full max-w-[24rem] flex-col items-stretch gap-3 lg:mx-0">
         <a
           href="/relay/"
-          class="of-primary-action group w-full justify-center !text-sm sm:!text-base"
+          class="of-primary-action group w-full justify-center whitespace-nowrap !text-sm sm:!text-base"
         >
-          Run real client work with Orionfold Relay
+          Control AI team on Orionfold Relay
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </a>
         <a
           href="/proof/"
-          class="of-secondary-action w-full justify-center !text-sm sm:!text-base"
+          class="of-secondary-action w-full justify-center whitespace-nowrap !text-sm sm:!text-base"
         >
-          See the receipts on Orionfold Proof
-        </a>
-        <a
-          href={magnetHeroHref}
-          class="group mt-1 inline-flex items-center justify-center gap-1.5 self-center font-mono text-xs tracking-wider text-text-muted transition-colors hover:text-primary lg:self-start"
-        >
-          Or get the free AI Native Business book
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          Choose better AI with Orionfold Proof
         </a>
       </div>
 
