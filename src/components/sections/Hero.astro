@@ -6,7 +6,7 @@
 // the hero; it routes to the product that matches each visitor's question, with
 // Relay led for the $10K paid-test window. The newsletter form lives on Story (H3).
 import { Image } from 'astro:assets';
-import heroImage from '../../assets/proof/orionfold-proof-poster.jpeg';
+import heroImage from '../../assets/home/ai-team-hero.jpg';
 import { magnetHref } from '../../data/magnet.ts';
 // Magnet secondary CTA (relay latest+21): a quieter free-book rung BELOW the two
 // Proof anchor CTAs, so the magnet sits under the anchor offer without competing
@@ -69,16 +69,17 @@ const magnetHeroHref = magnetHref('hero-secondary');
 
     </div>
 
-    <!-- Right: the Orionfold Proof poster, optimized through Astro. On desktop
-         it floats on the slowly drifting isometric plane carried over from
-         HeroConstellation3D (753bbc6), softened (21° vs 26°) so the art stays
-         readable; mobile gets the flat card. The poster is the LCP image
-         (eager + fetchpriority), so the swap keeps the hero's paint timing. -->
+    <!-- Right: the company-router hero art (folding stars to desk), optimized
+         through Astro. On desktop it floats on the slowly drifting isometric
+         plane carried over from HeroConstellation3D (753bbc6), softened (21° vs
+         26°) so the art stays readable; mobile gets the flat card. The art is the
+         LCP image (eager + fetchpriority), so the swap keeps the hero's paint
+         timing. -->
     <div class="hero3d-stage relative lg:pl-2">
       <div class="hero3d-plane of-surface relative overflow-hidden rounded-3xl p-2 shadow-[0_32px_90px_-58px_oklch(0.18_0.08_260/0.62)]">
         <Image
           src={heroImage}
-          alt="Orionfold Proof poster: a signed receipt rising from a MacBook on a working desk into the Orion constellation."
+          alt="A builder at a night desk runs a small AI computer, with folding stars rising into the Orion sky above."
           widths={[640, 960, 1280]}
           sizes="(min-width: 1024px) 54vw, calc(100vw - 3rem)"
           loading="eager"
