@@ -33,6 +33,7 @@ import OfferSlot from '../components/ui/OfferSlot.astro';
 import { ORIONFOLD_RELAY_LIVE } from '../data/launch';
 import relayPoster from '../assets/projects/orionfold-relay-poster.jpeg';
 import relayBoardShot from '../assets/relay/home-list.png';
+import relayCostReceipt from '../assets/relay/customers-detail.png';
 import { SITE, PERSON } from '../data/seo';
 import { RELAY, formatUsd } from '../data/commerce';
 import { ogMeta } from '../data/og';
@@ -96,13 +97,72 @@ const freeVsPaid = [
   { free: 'Build apps, track per-client cost, add free and open packs', paid: 'New packs and pack updates for 12 months' },
 ];
 
-// The concrete premium pack that exists today (the relay-agency reference pack).
-// Kept honest: only what the Relay relay entry says shipped.
-const packs = [
+// Proof-band stat tiles. Each carries its Lucide icon inner-paths TWICE: once as
+// the small chip (removed in favour of the embossed treatment) and as the large
+// faded watermark glyph placed top-right (peer field-notes ArticleCard technique:
+// a big low-opacity mark behind a z-indexed body, so the card gains vibrancy +
+// identity without gaining height). `accent` flags the emphasis tile.
+const statTiles = [
   {
-    name: 'Agency pack',
-    dek: 'A ready-made setup for agency work in real estate and nonprofits: 7 profiles, 8 blueprints, and a customer setup you drop in instead of wiring from scratch.',
+    label: 'AI spend, 30 days',
+    value: '$0.05',
+    sub: '6 runs · 32,150 tokens',
+    icon: '<line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+    accent: false,
   },
+  {
+    label: 'Retainer (illustrative)',
+    value: '~$500<span class="text-lg text-text-muted">/mo</span>',
+    sub: 'Property-management client',
+    icon: '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>',
+    accent: false,
+  },
+  {
+    label: 'What you see',
+    value: 'Real margin',
+    sub: 'Tallied per client, per run',
+    icon: '<path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>',
+    accent: true,
+  },
+];
+
+// The own-it trust trio (Gap #4): Relay's most durable, repo-backed claim, said as
+// three plain buyer benefits right under the proof band. This is the "rerun it,
+// never trust us" brand applied to operations, and every line is backable to a
+// docs/trust/ page (same canonical source the deeper trust Q&A links, no drift).
+const trustTrio = [
+  {
+    title: 'Nothing leaves your machine',
+    body: 'Relay runs on your own computer. No tracking, no usage reports, no check-ins home.',
+    icon: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/data-flow.md',
+  },
+  {
+    title: 'You own it forever',
+    body: 'The engine is open source and your license works offline. If we vanished tomorrow, your setup keeps running.',
+    icon: '<path d="M12 2 4 5v6c0 5.5 3.8 9.5 8 11 4.2-1.5 8-5.5 8-11V5Z"/>',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/continuity.md',
+  },
+  {
+    title: 'Verify every network call yourself',
+    body: 'Anything that could leave your machine is listed in full, with an off switch. Check it before you run it.',
+    icon: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/supply-chain.md',
+  },
+];
+
+// The concrete premium pack that exists today plus the named roadmap packs, shown
+// as breadth (Gap #6). Only the agency pack has SHIPPED (relay entry); the rest are
+// honestly tagged "Planned" so the vertical-pack rail is visible without overclaiming.
+const shippedPack = {
+  name: 'Agency pack',
+  job: 'Run a client agency',
+  dek: 'A ready-made setup for agency work in real estate and nonprofits: 7 profiles, 8 blueprints, and a customer setup you drop in instead of wiring from scratch.',
+};
+const plannedPacks = [
+  { name: 'Marketer pack', job: 'Run marketing work' },
+  { name: 'Investor pack', job: 'Run investor updates' },
+  { name: 'Operations pack', job: 'Run back-office ops' },
 ];
 
 // The constellation framing (README): where Relay sits in the Orionfold line.
@@ -169,8 +229,8 @@ const trust = [
 ];
 ---
 <Layout
-  title="Run your AI agents from one place · Orionfold Relay"
-  description="Orionfold Relay is the free and open operations layer for AI agents and client work. Run one board for every client, route each result through your approval, and see per-client cost. Install with npm; own premium packs with a license."
+  title="Orionfold Relay · Run AI client work and see what each client costs"
+  description="Orionfold Relay runs your AI agents for real client work, all on your own machine. Nothing leaves it. See what each client costs, approve every result before it ships, and own it forever. Free and open; own premium packs with a license."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
@@ -188,43 +248,160 @@ const trust = [
   <Nav />
   <main>
     <PageHeader
-      eyebrow="Operating layer"
-      title="Run your agents from one place."
-      subtitle="Orionfold Relay is the operations layer for AI builders and small services teams. It is the missing piece between running one agent and running real work for a room full of clients. Point it at your client work, run it across local and cloud models, send every result through your approval, and watch each client's cost add up on its own."
-    />
-    <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view. -->
-    <div id="hero-cta-sentinel" aria-hidden="true"></div>
+      eyebrow="Own it · Run it yourself"
+      title="Run AI agents for real client work. See what each client costs."
+      subtitle="Orionfold Relay runs on your own machine. Nothing leaves it. Point it at your client work, run it across local and cloud models, approve every result before it ships, and watch each client's cost add up on its own. Built for solo founders and small teams doing real work for real clients."
+    >
+      <!-- Above-fold primary action: Relay's OWN buy CTA, so a cold visitor's
+           first action is toward this product, not a sibling. It's a live
+           data-checkout button (ONE step straight to Stripe, wired by the page
+           script when ORIONFOLD_RELAY_LIVE) rather than a scroll-to-buy-box
+           anchor — shortest path from intent to checkout (CRO). When the flag is
+           off it falls back to a scroll anchor so no one can pay pre-fulfilment.
+           Secondary = the runnable install verb ("own it, run it yourself"). -->
+      <div class="mb-4 mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+        {ORIONFOLD_RELAY_LIVE ? (
+          <button
+            type="button"
+            data-checkout={RELAY.founding.lookupKey}
+            data-item="software:orionfold-relay"
+            data-error-target="hero-cta-err"
+            class="of-primary-action text-base font-semibold"
+          >
+            Get Orionfold Relay
+            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(RELAY.founding.amount)} founding</span>
+          </button>
+        ) : (
+          <a
+            href="#get-relay"
+            class="of-primary-action text-base font-semibold"
+          >
+            Get Orionfold Relay
+            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(RELAY.founding.amount)} founding</span>
+          </a>
+        )}
+        <div class="inline-flex items-center gap-2 rounded-xl border border-border/70 bg-surface/60 px-4 py-3">
+          <span class="font-mono text-[0.65rem] uppercase tracking-wider text-text-dim">Install</span>
+          <code class="font-mono text-sm text-primary">npx orionfold-relay</code>
+        </div>
+      </div>
+      <p id="hero-cta-err" class="mt-3 hidden text-sm text-red-400" role="alert"></p>
+    </PageHeader>
+    <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view.
+         mt-10 gives the hero real breathing room before the proof band (the
+         shared PageHeader closes with only pb-3). -->
+    <div id="hero-cta-sentinel" class="mt-10" aria-hidden="true"></div>
 
-    <!-- Constellation: where Relay sits in the Orionfold line -->
-    <section class="px-6 pt-4 pb-10">
-      <div class="mx-auto max-w-4xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The third product in the line</p>
-        <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
-          Proof and Arena help you pick the AI you can trust. Relay is where that trusted AI does the
-          real work. It is the only one whose value grows after the testing stops.
-        </p>
-        <div class="grid gap-3 sm:grid-cols-3">
-          {constellation.map((c) => (
-            c.self ? (
-              <div class="rounded-2xl border border-primary/40 bg-primary/5 p-5">
-                <p class="font-display text-lg font-bold text-primary">{c.name}</p>
-                <p class="mt-2 text-sm leading-relaxed text-text">{c.q}</p>
+    <!-- ============================================================
+         THE PROOF BAND — the single most differentiated shipped asset,
+         given its own full-width band so it doesn't get lost between
+         sections. Blueprint-grid background (CSS gradient, theme-aware,
+         no image), big infographic stat tiles, then the receipt shot
+         framed inside (aspect-cropped to its meaningful top so the
+         baked-in whitespace below the fold is clipped). This is Relay's
+         analog of Proof's quantified receipt: a concrete number a buyer
+         can trust, near the top, in the product's own boldest voice.
+         ============================================================ -->
+    <section class="relay-proof-band relative overflow-hidden border-y border-primary/20 px-6 py-16 sm:py-20">
+      <!-- blueprint grid, drawn in CSS so it themes + costs nothing -->
+      <div class="relay-blueprint-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/[0.04] via-transparent to-primary/[0.04]" aria-hidden="true"></div>
+
+      <div class="relative mx-auto max-w-5xl">
+        <div class="mb-2 flex items-center gap-2">
+          <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-primary/15 text-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </span>
+          <p class="font-mono text-xs uppercase tracking-[0.28em] text-primary">The proof, on one client</p>
+        </div>
+        <h2 class="max-w-3xl text-balance text-2xl leading-tight sm:text-3xl">
+          <span class="font-semibold text-text">$0.05</span> of AI cost against a
+          <span class="font-semibold text-text">~$500/mo</span> retainer.
+          <span class="text-text-muted">Per-client margin you can <span class="whitespace-nowrap">actually see.</span></span>
+        </h2>
+
+        <!-- Infographic stat tiles. Each carries a LARGE faded embossed icon
+             top-right (peer ArticleCard watermark technique) so the card reads
+             vibrant + identifiable at a shorter height. The icon is absolutely
+             positioned + clipped, so it adds zero layout height. -->
+        <dl class="mt-8 grid gap-3 sm:grid-cols-3">
+          {statTiles.map((t) => (
+            <div class={`relative overflow-hidden rounded-2xl border p-5 backdrop-blur-sm ${t.accent ? 'border-primary/30 bg-primary/[0.07]' : 'border-border/60 bg-surface/50'}`}>
+              <!-- Embossed watermark icon: big, faint, primary, top-right -->
+              <svg
+                class={`pointer-events-none absolute -right-4 -top-4 h-28 w-28 ${t.accent ? 'text-primary/[0.14]' : 'text-primary/[0.09]'}`}
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true" set:html={t.icon}
+              />
+              <div class="relative z-10">
+                <dt class={`font-mono text-[0.65rem] uppercase tracking-wider ${t.accent ? 'text-primary/80' : 'text-text-dim'}`}>{t.label}</dt>
+                <dd class={`mt-1.5 font-display text-3xl font-bold ${t.accent ? 'text-primary' : 'text-text'}`} set:html={t.value} />
+                <dd class="mt-1 text-xs text-text-muted">{t.sub}</dd>
               </div>
-            ) : (
-              <a href={c.href} class="of-surface of-pressable group block rounded-2xl p-5">
-                <p class="font-display text-lg font-bold text-text group-hover:text-primary">{c.name}</p>
-                <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.q}</p>
-              </a>
-            )
+            </div>
+          ))}
+        </dl>
+
+        <!-- The receipt shot, framed + aspect-cropped to its meaningful top -->
+        <figure class="mt-8 overflow-hidden rounded-2xl border border-primary/25 shadow-xl shadow-primary/10">
+          <div class="aspect-[16/9] w-full overflow-hidden sm:aspect-[16/8]">
+            <Image
+              src={relayCostReceipt}
+              alt="An Orionfold Relay customer page for Parkview Property Management: AI spend over 30 days reads $0.05 across 6 runs and 32,150 tokens, beside 1 linked project and an active status, with a note showing a roughly $500 a month retainer."
+              widths={[720, 1080, 1440]}
+              sizes="(min-width: 1024px) 64rem, 100vw"
+              loading="lazy"
+              decoding="async"
+              data-no-zoom
+              class="block w-full object-cover object-top"
+            />
+          </div>
+          <figcaption class="border-t border-primary/15 bg-surface/40 px-5 py-3 text-center text-sm text-text-muted">
+            Live per-client cost attribution, tallied from real runs. Not a hardcoded billing line.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         OWN-IT TRUST TRIO (Gap #4) — Relay's most durable claim as three
+         plain buyer benefits, placed high (right under the proof band) so
+         the "own it, nothing leaves your machine" axis reinforces the
+         margin receipt before the reader scrolls. Each tile links the
+         docs/trust/ page that backs it. The deeper 4-question trust
+         section stays lower as the evaluator-facing detail.
+         ============================================================ -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-5xl">
+        <p class="mb-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Yours, not ours</p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          {trustTrio.map((t) => (
+            <a
+              href={t.href}
+              target="_blank"
+              rel="noopener"
+              class="group of-surface flex flex-col rounded-2xl border border-border/70 p-6 transition-colors hover:border-primary/40"
+            >
+              <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={t.icon} />
+              </span>
+              <p class="text-base font-semibold text-text">{t.title}</p>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{t.body}</p>
+              <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary/80 transition-colors group-hover:text-primary">
+                See how
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              </span>
+            </a>
           ))}
         </div>
       </div>
     </section>
 
-    <!-- The real product: one dark board shot so the visitor sees it early -->
-    <section class="px-6 pb-6">
+    <!-- The board overview: the "one board for every client" shot, now its own
+         calmer moment after the proof band. -->
+    <section class="px-6 py-12">
       <div class="mx-auto max-w-5xl">
-        <div class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
+        <div class="aspect-[16/9] overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
           <Image
             src={relayBoardShot}
             alt="The Orionfold Relay board: active work, tasks that need attention, a live agent activity stream, recent client projects, and today's cost, all on one screen."
@@ -233,12 +410,37 @@ const trust = [
             loading="lazy"
             decoding="async"
             data-no-zoom
-            class="block w-full"
+            class="block w-full object-cover object-top"
           />
         </div>
         <p class="mt-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
           One board for every client
         </p>
+      </div>
+    </section>
+
+    <!-- Constellation: where Relay sits in the Orionfold line. Demoted below the
+         proof band + shrunk to a quiet one-line row so it gives suite context and
+         an internal link WITHOUT pulling cold traffic to a sibling product above
+         the buy decision. -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-4xl">
+        <p class="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The third product in the line</p>
+        <div class="flex flex-col gap-2 rounded-2xl border border-border/60 bg-surface/40 p-2 sm:flex-row">
+          {constellation.map((c) => (
+            c.self ? (
+              <div class="flex flex-1 items-center gap-3 rounded-xl bg-primary/5 px-4 py-3">
+                <span class="font-display text-sm font-bold text-primary">{c.name}</span>
+                <span class="text-sm text-text-muted">{c.q}</span>
+              </div>
+            ) : (
+              <a href={c.href} class="group flex flex-1 items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-surface">
+                <span class="font-display text-sm font-bold text-text group-hover:text-primary">{c.name}</span>
+                <span class="text-sm text-text-muted">{c.q}</span>
+              </a>
+            )
+          ))}
+        </div>
       </div>
     </section>
 
@@ -293,7 +495,7 @@ const trust = [
     <!-- Built for an agency: the operating-model mapping as transformation cards.
          Each card reads "your term -> Relay block" with a per-row icon and a
          bridging arrow, so "maps straight onto Relay" is shown, not just told. -->
-    <section class="px-6 py-14">
+    <section class="px-6 py-12">
       <div class="mx-auto max-w-5xl">
         <div class="mb-10 text-center">
           <p class="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Built for an agency</p>
@@ -330,9 +532,9 @@ const trust = [
       <div class="mx-auto max-w-3xl">
         <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The five gaps every AI agency hits</p>
         <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-          AI agents can already abstract a lease, research a grant, or sort a receipt. The hard part
-          is everything around that. For an agency, every gap gets bigger with each client you serve.
-          Relay is built to close all five.
+          AI agents can already sum up a lease, research a grant, or sort a receipt. The hard part
+          is everything around that. The more clients you serve, the bigger each gap gets.
+          Orionfold Relay is built to close all five.
         </p>
         <ol class="grid gap-4">
           {gaps.map((g, i) => (
@@ -352,7 +554,7 @@ const trust = [
          beside License-adds (primary-accented, plus icons), with a "+" bridge
          between them so the boundary reads as "everything free, and a license
          adds on top" rather than two disconnected columns. -->
-    <section class="px-6 py-14">
+    <section class="px-6 py-12">
       <div class="mx-auto max-w-5xl">
         <div class="mb-10 text-center">
           <p class="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">What is free, what a license adds</p>
@@ -423,20 +625,45 @@ const trust = [
       </div>
     </section>
 
-    <!-- Premium packs a license unlocks -->
+    <!-- ============================================================
+         PACKS BY JOB (Gap #6) — the vertical-pack rail, Relay's sticky
+         growth engine, shown as jobs-to-be-done. The Agency pack is a
+         full working card (SHIPPED); the roadmap packs are named as
+         breadth with an honest "Planned" tag, so the rail is visible
+         without overclaiming what exists today.
+         ============================================================ -->
     <section class="px-6 py-12">
-      <div class="mx-auto max-w-3xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Packs you can own</p>
+      <div class="mx-auto max-w-5xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Packs by job</p>
         <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
           A pack is a ready-made setup you drop in with one command instead of building it yourself.
           Your license adds it: run <span class="font-mono text-primary">relay pack add</span> with your
-          own private link and it installs.
+          own private link and it installs. Packs are grouped by the job you are doing, not the title you hold.
         </p>
-        <ul class="grid gap-3">
-          {packs.map((p) => (
-            <li class="rounded-2xl border border-border/70 bg-surface/60 p-5">
-              <p class="text-base font-medium text-text">{p.name}</p>
-              <p class="mt-2 text-sm leading-relaxed text-text-muted">{p.dek}</p>
+
+        <!-- Shipped: the agency pack, full working card -->
+        <div class="rounded-2xl border border-primary/40 bg-primary/[0.06] p-6 shadow-lg shadow-primary/5 sm:p-8">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="font-mono text-[0.65rem] uppercase tracking-wider text-primary/70">{shippedPack.job}</span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2.5 py-0.5 font-mono text-[0.65rem] font-medium uppercase tracking-wider text-primary">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Shipped
+            </span>
+          </div>
+          <p class="mt-2 text-lg font-semibold text-text">{shippedPack.name}</p>
+          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-text-muted">{shippedPack.dek}</p>
+        </div>
+
+        <!-- Planned: named roadmap packs as breadth, honestly tagged -->
+        <p class="mb-4 mt-8 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">More packs on the way</p>
+        <ul class="grid gap-3 sm:grid-cols-3">
+          {plannedPacks.map((p) => (
+            <li class="rounded-2xl border border-dashed border-border/70 bg-surface/40 p-5">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-mono text-[0.65rem] uppercase tracking-wider text-text-dim">{p.job}</span>
+                <span class="rounded-full border border-border/70 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-wider text-text-dim">Planned</span>
+              </div>
+              <p class="mt-2 text-base font-medium text-text-muted">{p.name}</p>
             </li>
           ))}
         </ul>
@@ -506,6 +733,25 @@ const trust = [
   </main>
   <Footer />
 </Layout>
+
+<style>
+  /* Blueprint-grid backdrop for the proof band: two layered gradients (fine 24px
+     cells + a heavier 120px major line) drawn from the theme's primary color via
+     color-mix, so it themes light/dark for free and ships zero image weight.
+     Masked to fade at the edges so it reads as texture, not a hard grid. */
+  .relay-blueprint-grid {
+    --bp-line: color-mix(in oklch, var(--color-primary) 12%, transparent);
+    --bp-major: color-mix(in oklch, var(--color-primary) 20%, transparent);
+    background-image:
+      linear-gradient(to right, var(--bp-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--bp-line) 1px, transparent 1px),
+      linear-gradient(to right, var(--bp-major) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--bp-major) 1px, transparent 1px);
+    background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, black 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, black 40%, transparent 100%);
+  }
+</style>
 
 <script>
   // Wire the Relay purchase buttons (data-checkout → create-checkout-session →

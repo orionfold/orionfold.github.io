@@ -163,8 +163,8 @@ export const OG_PAGES: Record<string, OgPage> = {
   },
   '/relay/': {
     slug: 'relay',
-    eyebrow: 'Operating layer',
-    title: 'Run your agents from one place',
+    eyebrow: 'Orionfold Relay · Own it',
+    title: 'Run AI client work, see what each client costs',
     seed: 'relay',
     alt: 'Orionfold Relay: the free, open engine for AI agents and workflows, with premium packs you own',
     background: 'src/assets/projects/orionfold-relay-poster.jpeg',
