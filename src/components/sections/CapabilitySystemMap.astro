@@ -1,11 +1,15 @@
 ---
 // CapabilitySystemMap — "the metro line". One animated line carries the whole
-// argument: scattered AI (dashed pills straddling the line) enters one
-// controlled path (four icon stations ON the line, an approval gate between
-// Eval and Output), and the line terminates at a raised proof card whose last
-// element is the section CTA. Desktop draws the line horizontally; mobile
-// rotates it vertical. Design decided in a live browser session, see
-// _SPECS/2026-06-09-capability-map-metro-line.md.
+// argument: scattered AI (dashed red-tinted pills straddling the line, the
+// problem state) enters one controlled path — the Orionfold product suite as
+// three stations, Arena (train) -> Proof (prove) -> Relay (run) — with a green
+// approval gate before Relay, and the line terminates at a raised suite card
+// whose last element is the section CTA (Get Relay). Desktop draws the line
+// horizontally; mobile rotates it vertical.
+// Redesigned 2026-07-03 (operator review): the generic Data/Agent/Eval/Output
+// stations became the real end-to-end suite flow; scattered badges retinted to
+// the theme danger color; approval gate retinted to the theme success color;
+// stations spaced wider so the gate never crowds a station.
 //
 // Sprawl jitter (rotate/shift) is hand-placed static offsets, the same idiom
 // as the old hero constellation's hand-placed stars — no runtime PRNG.
@@ -18,41 +22,45 @@ const sprawl = [
   { label: 'Manual review', detail: 'slow approval', r: 1, x: -4 },
 ];
 
-// Stations sit ON the line at hand-placed x positions (% of the stations
-// zone); labels alternate above/below so neighbors never collide.
+// Stations sit ON the line at hand-placed x positions (% of the stations zone).
+// The three suite products ARE the controlled path: Arena trains the models,
+// Proof proves which one fits the use case, Relay runs it for real. Spread wide
+// (14 / 50 / 86) so the green approval gate between Proof and Relay never
+// crowds a station. Labels alternate above/below so neighbors never collide.
 const stages = [
-  { label: 'Data', detail: 'boundary', icon: 'data', x: 8, above: true },
-  { label: 'Agent', detail: 'tools + gate', icon: 'agent', x: 36, above: false },
-  { label: 'Eval', detail: 'benchmark', icon: 'eval', x: 64, above: true },
-  { label: 'Output', detail: 'runbook', icon: 'output', x: 92, above: false },
+  { label: 'Arena', detail: 'train models', icon: 'arena', x: 14, above: true },
+  { label: 'Proof', detail: 'prove the fit', icon: 'proof', x: 50, above: false },
+  { label: 'Relay', detail: 'run for real', icon: 'relay', x: 86, above: true },
 ];
 
+// The terminus card = the product suite, in flow order.
 const proof = [
-  { label: 'Advisor', value: 'Governed answers' },
-  { label: 'Arena', value: 'Model comparison' },
-  { label: 'Cortex', value: 'Local memory' },
-  { label: 'fieldkit', value: 'Reusable runs' },
+  { label: 'Arena', value: 'Train + compare' },
+  { label: 'Proof', value: 'Prove the fit' },
+  { label: 'Relay', value: 'Run the work' },
 ];
 
 const icons: Record<string, string> = {
-  data: 'M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3Z M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6 M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6',
-  agent: 'M12 3v4 M12 17v4 M4.9 4.9l2.8 2.8 M16.3 16.3l2.8 2.8 M3 12h4 M17 12h4 M4.9 19.1l2.8-2.8 M16.3 7.7l2.8-2.8 M9 9h6v6H9z',
-  eval: 'M5 12l4 4 10-10 M5 20h14 M5 4h14',
-  output: 'M5 4h14v16H5z M8 8h8 M8 12h8 M8 16h5',
+  // Arena — training / dumbbell-on-target (models trained in the arena)
+  arena: 'M6.5 6.5l11 11 M17.5 6.5l-11 11 M4 9v6 M20 9v6 M2 11v2 M22 11v2',
+  // Proof — check-badge (proven / verified fit)
+  proof: 'M12 2l2.4 1.8 3 .1 1 2.8 2.4 1.8-.9 2.9.9 2.9-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.5l.9-2.9-.9-2.9 2.4-1.8 1-2.8 3-.1Z M9 12l2 2 4-4',
+  // Relay — play / run the work
+  relay: 'M5 3v18l15-9L5 3Z',
 };
 ---
 <section class="px-6 pb-12 pt-4 sm:pb-16">
   <div class="mx-auto max-w-6xl">
     <div class="mb-7 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">From AI sprawl to operating system</p>
+        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">From AI sprawl to one clear flow</p>
         <!-- Explicit break: the hook may only wrap at the sentence boundary. -->
         <h2 class="mt-2 font-display text-[2.2rem] font-extrabold leading-[1.05] text-text sm:text-5xl">
           AI everywhere.<br />Control nowhere.
         </h2>
       </div>
       <p class="max-w-md text-[0.95rem] leading-relaxed text-text-muted">
-        Sound familiar? Orionfold takes the AI scattered across your team and runs it through one path you can see, test, and approve.
+        Sound familiar? Orionfold turns the scatter into one flow. Train your models in Arena, prove which one fits your job in Proof, then run it for real in Relay. You approve before it ships.
       </p>
     </div>
 
@@ -84,8 +92,8 @@ const icons: Record<string, string> = {
 
         <!-- The controlled path: stations on the line, approval gate before output -->
         <div class="flow-stations">
-          <p class="flow-zone-label flow-zone-label-center text-primary">One controlled path</p>
-          <ol aria-label="The Orionfold controlled path: data, agent, eval, approval, output">
+          <p class="flow-zone-label flow-zone-label-center text-primary">One clear flow</p>
+          <ol aria-label="The Orionfold suite flow: Arena trains, Proof proves, you approve, Relay runs">
             {stages.map((s) => (
               <li class:list={['station', s.above ? 'station-above' : 'station-below']} style={`--sx:${s.x}%;`}>
                 <span class="station-dot">
@@ -100,14 +108,14 @@ const icons: Record<string, string> = {
           </ol>
           <span class="approval-gate">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6" /></svg>
-            Approval
+            Approve
           </span>
         </div>
 
-        <!-- Terminus: proof, then the one CTA the line has been building to -->
+        <!-- Terminus: the product suite in flow order, then the one CTA -->
         <div class="flow-proof">
-          <p class="flow-zone-label">Yours · open it yourself</p>
-          <ul aria-label="Proof tools you can open">
+          <p class="flow-zone-label">One suite you own</p>
+          <ul aria-label="The Orionfold product suite">
             {proof.map((item) => (
               <li>
                 <span class="proof-label">{item.label}</span>
@@ -115,7 +123,7 @@ const icons: Record<string, string> = {
               </li>
             ))}
           </ul>
-          <a href="/cockpit/" class="of-primary-action flow-cta">Open the Cockpit →</a>
+          <a href="/relay/" class="of-primary-action flow-cta">Get Orionfold Relay →</a>
         </div>
       </div>
     </div>
@@ -168,22 +176,24 @@ const icons: Record<string, string> = {
     padding: 0;
     list-style: none;
   }
+  /* Scattered = the problem state, tinted with the theme danger color so the
+     "before" mess reads as red against the calm cyan of the controlled flow. */
   .flow-sprawl li {
     display: inline-flex;
     align-items: baseline;
     gap: 0.45rem;
     transform: rotate(var(--r)) translateX(var(--x));
-    border: 1px dashed color-mix(in oklch, var(--color-border) 75%, var(--color-text) 25%);
+    border: 1px dashed color-mix(in oklch, var(--color-danger) 45%, var(--color-border));
     border-radius: 999px;
-    background: color-mix(in oklch, var(--color-surface-raised) 72%, var(--color-surface) 28%);
+    background: color-mix(in oklch, var(--color-danger) 10%, var(--color-surface-raised));
     padding: 0.32rem 0.75rem;
-    opacity: 0.8;
+    opacity: 0.9;
   }
   .sprawl-label {
     font-family: var(--font-display);
     font-size: 0.82rem;
     font-weight: 700;
-    color: var(--color-text);
+    color: color-mix(in oklch, var(--color-danger) 55%, var(--color-text));
     white-space: nowrap;
   }
   .sprawl-detail {
@@ -230,20 +240,23 @@ const icons: Record<string, string> = {
     text-transform: uppercase;
     color: var(--color-text-muted);
   }
+  /* The approval gate is the human-in-the-loop step, tinted with the theme
+     success color (green) so "you approve" reads as the go signal before Relay
+     runs the work for real. */
   .approval-gate {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    border: 1px solid color-mix(in oklch, var(--color-primary) 30%, var(--color-border));
+    border: 1px solid color-mix(in oklch, var(--color-success) 45%, var(--color-border));
     border-radius: 999px;
-    background: color-mix(in oklch, var(--color-surface-raised) 92%, var(--color-surface) 8%);
+    background: var(--color-success-dim);
     padding: 0.4rem 0.8rem;
     font-family: var(--font-mono);
     font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-primary);
+    color: var(--color-success);
     white-space: nowrap;
   }
   .approval-gate svg {
@@ -422,10 +435,25 @@ const icons: Record<string, string> = {
     .station-below .station-text { top: calc(100% + 0.55rem); }
     .approval-gate {
       position: absolute;
-      left: 78%;
-      top: 50%;
+      /* centered in the Proof(50%)->Relay(86%) gap so it never crowds a station,
+         and lifted ABOVE the animating pipeline (with padding) so it floats off
+         the line as the human-in-the-loop step rather than sitting on it */
+      left: 68%;
+      top: calc(50% - 2.4rem);
       transform: translate(-50%, -50%);
       margin: 0;
+    }
+    /* thin connector pointing the floating gate toward the pipeline it gates;
+       it stops just short of the line (a small gap) rather than crossing it */
+    .approval-gate::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      width: 2px;
+      height: 0.95rem;
+      transform: translateX(-50%);
+      background: color-mix(in oklch, var(--color-success) 55%, transparent);
     }
     .flow-proof { align-self: center; }
   }
