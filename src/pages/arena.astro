@@ -63,7 +63,7 @@ const softwareSchema = {
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'NVIDIA DGX Spark',
   description:
-    'A single-screen cockpit to run, compare, score, and train local AI models on one NVIDIA DGX Spark. Live GPU telemetry, an efficiency frontier, reference-based eval, and a leak-proof leaderboard over your own artifacts.',
+    'One screen to run, compare, score, and train local AI models on one NVIDIA DGX Spark. Live GPU readouts, a cost-against-quality view, reference-based scoring, and a leak-proof leaderboard built from your own results.',
   url: arenaUrl,
   image: ogImageAbs,
   author: PERSON,
@@ -91,33 +91,91 @@ const constellation = [
 const capabilities = [
   {
     verb: 'Run',
-    line: 'Chat against the warm model on your own box. Live GPU telemetry, speed, and memory on one screen. Nothing you type leaves the machine.',
+    line: 'Chat with a loaded model on your own box. Live GPU load, speed, and memory on one screen. Nothing you type leaves the machine.',
   },
   {
     verb: 'Compare',
-    line: 'Set any two models duelling side by side. Quality, tokens a second, first-token time, and cost, each over a session sparkline.',
+    line: 'Put any two models side by side. Quality, speed, how fast the first word lands, and cost, each drawn over the run so you can see the difference, not guess it.',
   },
   {
     verb: 'Score',
-    line: 'Open the eval drawer, pick the bench, and send a real eval prompt from the chat. The gold answer sits beside the live one and a scorer grades it. Evaluation becomes a button.',
+    line: 'Pick a test, send a real prompt from the chat, and the right answer sits beside the model’s answer while a grader scores it. Testing becomes one button.',
   },
   {
     verb: 'Train',
-    line: 'Queue tests and training runs overnight and wake up to a morning report. Warm-start, reward, and a run gauge, all in the same board.',
+    line: 'Queue tests and training runs overnight and wake up to a morning report. Start from where you left off, reward the good runs, and watch progress fill on one board.',
+  },
+];
+
+// Own-it trust trio (reference-build gap D4-③c): Arena's two uncontested axes,
+// own-it + private-on-your-own-hardware, said as three plain buyer benefits, each
+// linking the docs/trust/ page that backs it (link, not mirror, so no drift).
+// These claims are scattered through the prose today; the trio pulls them up.
+const trustTrio = [
+  {
+    title: 'Nothing leaves the box',
+    body: 'Arena runs on the Spark under your desk. Your prompts, your models, and your results stay there. No account, no uploads, no check-ins home.',
+    icon: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+    href: '/trust/data-flow/',
+  },
+  {
+    title: 'You own it forever',
+    body: 'You buy the box you already own turned into a proven AI lab. Your license works offline. If we vanished tomorrow, your setup keeps running.',
+    icon: '<path d="M12 2 4 5v6c0 5.5 3.8 9.5 8 11 4.2-1.5 8-5.5 8-11V5Z"/>',
+    href: '/trust/continuity/',
+  },
+  {
+    title: 'Verify it yourself',
+    body: 'Every install writes a receipt you can read, and the leaderboard exports only scores, never your data. Check what the box did before you trust it.',
+    icon: '<path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+    href: '/trust/supply-chain/',
+  },
+];
+
+// Objection-as-header security block (reference-build gap D4-③c): the questions
+// an Arena buyer (a hardware owner) asks before the price, each answered plainly
+// and each linking the on-site /trust/ page that proves it. Same four-question
+// pattern the shipped /relay/ page uses, adapted for the box owner. The
+// publish-safety question is half-answered by the allowlist copy above; here it
+// is promoted to a header.
+const trust = [
+  {
+    q: 'Does Arena send our evals to you?',
+    a: 'No. Arena runs on your own Spark. Your test prompts, your model answers, and your scores stay on the box. We run no service in the middle, so there is nothing for us to see and nothing for us to hold.',
+    label: 'See every network call',
+    href: '/trust/data-flow/',
+  },
+  {
+    q: 'Can I publish the leaderboard safely?',
+    a: 'Yes. The board exports only the scores and the totals, through a locked-down list. A prompt, an answer, or the model’s working never leaves with it. You can share the board and keep the data behind it.',
+    label: 'Read the security packet',
+    href: '/trust/security-packet/',
+  },
+  {
+    q: 'What if you disappear?',
+    a: 'You keep everything. The box is yours, your data is on it, and your license works offline. If Orionfold went away tomorrow, your lab keeps running. The honest edge cases are written down too.',
+    label: 'Read the continuity note',
+    href: '/trust/continuity/',
+  },
+  {
+    q: 'Can I trust what gets installed?',
+    a: 'Yes, and you can check it. Every release ships with a signed record of where it came from and a full parts list, and the install is checked against a fingerprint before it runs. The receipt on first boot reports the real state of the box.',
+    label: 'See the supply chain',
+    href: '/trust/supply-chain/',
   },
 ];
 
 // The dark cockpit gallery (fresh Orionfold-Arena-branded shots).
 const gallery = [
   { img: arenaLeaderboard, alt: 'The Arena leaderboard: your own models ranked by score, built from your own results.', label: 'Leaderboard', crop: 'aspect-[16/9] object-top' },
-  { img: arenaFrontier, alt: 'The efficiency frontier: cost against quality, so you can see which quant earns its place.', label: 'Efficiency frontier', crop: 'aspect-[16/9] object-center' },
+  { img: arenaFrontier, alt: 'Cost against quality, plotted, so you can see which smaller model earns its place.', label: 'Cost vs. quality', crop: 'aspect-[16/9] object-center' },
   { img: arenaCompare, alt: 'Compare: any model against any other, side by side, with metric cards over a session sparkline.', label: 'Compare, any vs any', crop: 'aspect-[16/9] object-top' },
   { img: arenaEvalDrawer, alt: 'The eval drawer: send a real eval prompt from the chat, gold answer beside the live one, graded instantly.', label: 'Eval drawer', crop: 'aspect-[16/9] object-top' },
 ];
 ---
 <Layout
   title="See which AI wins, on your own desk · Orionfold Arena"
-  description="Orionfold Arena is a single-screen cockpit to run, compare, score, and train local AI models on one NVIDIA DGX Spark. Live telemetry, an efficiency frontier, and a leak-proof leaderboard over your own artifacts. Private by construction."
+  description="Orionfold Arena puts every move on one screen: run, compare, score, and train local AI models on one NVIDIA DGX Spark. Live readouts, a cost-against-quality view, and a leaderboard built from your own results. Nothing leaves the box."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
@@ -135,9 +193,9 @@ const gallery = [
   <Nav />
   <main>
     <PageHeader
-      eyebrow="Eval cockpit"
+      eyebrow="Run · Compare · Score · Train"
       title="See which AI wins, on your own desk."
-      subtitle="Orionfold Arena is a single-screen cockpit to run, compare, score, and train local AI models on one NVIDIA DGX Spark. The model, the tests, the hardware, and the results all live in one place you control. Nothing leaves the box."
+      subtitle="Orionfold Arena puts every move on one screen: run, compare, score, and train local AI models on one NVIDIA DGX Spark. The model, the tests, the hardware, and the results all live in one place you control. Nothing leaves the box."
     />
     <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view. -->
     <div id="hero-cta-sentinel" aria-hidden="true"></div>
@@ -174,7 +232,7 @@ const gallery = [
         <div class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
           <Image
             src={arenaCockpit}
-            alt="The Orionfold Arena cockpit: live GPU telemetry, your models, the benches, and a leaderboard built from your own results, all on one screen."
+            alt="The Orionfold Arena screen: live GPU readouts, your models, the tests, and a leaderboard built from your own results, all in one place."
             widths={[720, 1080, 1440]}
             sizes="(min-width: 1024px) 64rem, 100vw"
             loading="lazy"
@@ -213,14 +271,14 @@ const gallery = [
       <div class="mx-auto max-w-3xl">
         <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">A board you can publish, data you keep</p>
         <p class="max-w-2xl text-base leading-relaxed text-text-muted">
-          The leaderboard is built from your own results, and it is safe to share. A hardcoded
-          allowlist exports only scores and aggregates, never a prompt, a completion, or a reasoning
-          trace. The board is something you can publish; the data behind it stays yours.
+          The leaderboard is built from your own results, and it is safe to share. A locked-down list
+          exports only the scores and the totals, never a prompt, an answer, or the model's working.
+          The board is something you can publish; the data behind it stays yours.
         </p>
         <p class="mt-4 max-w-2xl text-base leading-relaxed text-text-muted">
-          The efficiency frontier plots cost against quality, so you can read at a glance which quant
-          earns its place. It is the closed loop a hosted endpoint never gives you: the model, its
-          eval data, the hardware, and the results, all in one place you control.
+          Arena plots cost against quality, so you can read at a glance which smaller model earns its
+          place. It is the full loop a rented AI service never gives you: the model, its test data,
+          the hardware, and the results, all in one place you control.
         </p>
       </div>
     </section>
@@ -237,13 +295,13 @@ const gallery = [
       body="Arena Field Edition turns the Spark you own into a private AI lab, delivered turnkey. It installs in one pass, proves itself on first boot with a verifiable receipt, and stays proven for a year."
       enquiryHref="/adoption/?item=software:arena"
       image={arenaPoster}
-      imageAlt="Orionfold Arena poster: the eval cockpit you run on your own DGX Spark."
+      imageAlt="Orionfold Arena poster: the private AI lab you run on your own DGX Spark."
     />
 
     <!-- Gallery: a few dark cockpit views -->
     <section class="px-6 py-12">
       <div class="mx-auto max-w-5xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Inside the cockpit</p>
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Inside the screen</p>
         <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
           A few of the surfaces you drive, all on the machine under your desk.
         </p>
@@ -269,13 +327,15 @@ const gallery = [
       </div>
     </section>
 
-    <!-- Build-velocity proof: honest, measured -->
+    <!-- Build-speed proof: honest, measured. This proves the BUILDER is prolific
+         (what one person shipped with the stack); the buyer-outcome band below it
+         proves what the BUYER gets (a small model they own beating a big one). -->
     <section class="border-y border-border bg-surface-raised px-6 py-14">
       <div class="mx-auto max-w-3xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The velocity the box unlocks</p>
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What one builder shipped on it</p>
         <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
           The proof is what one builder already did with this exact stack. Solo, on a single Spark
-          running Arena: 15 software tools, 7 open models, 3 books, a 54-article research corpus, and
+          running Arena: 14 software tools, 6 open models, 3 books, a 54-article research corpus, and
           2 production sites.
         </p>
         <div class="grid gap-4 sm:grid-cols-3">
@@ -301,6 +361,114 @@ const gallery = [
       </div>
     </section>
 
+    <!-- ============================================================
+         BUYER-OUTCOME ARTIFACT (gap D4-③b) — the velocity band proves the
+         builder is prolific; this proves what the BUYER gets. The real result
+         from driving models through this exact compare-and-score loop: a small
+         model the buyer owns beat a model eight times its size, on a locked
+         test, for nothing to run. Honest caption: it is the Advisor governance
+         bench (config 552d0060f782), the same receipt Proof publishes, found by
+         the loop Arena is built for. The number is a shown artifact, not an
+         adjective; the honest losses stay in.
+         ============================================================ -->
+    <section class="px-6 py-14">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">What you get out of it</p>
+        <h2 class="mb-4 text-balance text-2xl leading-tight sm:text-3xl">
+          A model you own, beating one <span class="whitespace-nowrap">eight times bigger.</span>
+        </h2>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          This is the payoff of the run-compare-score loop, on a locked governance test. The
+          winner is a small model you can run on your own box, for nothing per run. The receipt is
+          public and you can rerun it.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div class="rounded-2xl border border-primary/30 bg-primary/[0.06] p-5 shadow-lg shadow-primary/5">
+            <p class="font-display text-2xl font-bold text-primary">18 of 21</p>
+            <p class="mt-1 text-xs leading-relaxed text-text-muted">A 4B model you own, scored on the locked test. It refused all 9 trick questions and made up nothing.</p>
+          </div>
+          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
+            <p class="font-display text-2xl font-bold text-text">8 of 21</p>
+            <p class="mt-1 text-xs leading-relaxed text-text-muted">A model eight times bigger, on the same test. It made up 3 answers the small one did not.</p>
+          </div>
+          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
+            <p class="font-display text-2xl font-bold text-text">$0.00</p>
+            <p class="mt-1 text-xs leading-relaxed text-text-muted">Cost to run the winner, on the Spark under your desk. No account, no per-word bill.</p>
+          </div>
+        </div>
+        <p class="mt-6 max-w-2xl text-sm leading-relaxed text-text-muted">
+          The full receipt, config hash
+          <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-primary">552d0060f782</code>,
+          is on the <a href="/proof/" class="text-primary underline underline-offset-2 hover:text-primary/80">receipts page</a>,
+          with the three honest misses and the exact test, so you can rerun it yourself.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         OWN-IT TRUST TRIO (gap D4-③c) — Arena's own-it + private-on-your-own-
+         hardware axes as three plain buyer benefits, each linking the docs/trust/
+         page that backs it. Same trio the shipped /relay/ and /proof/ pages use,
+         so the suite reads as one system.
+         ============================================================ -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-5xl">
+        <p class="mb-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Yours, not ours</p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          {trustTrio.map((t) => (
+            <a
+              href={t.href}
+              class="group of-surface flex flex-col rounded-2xl border border-border/70 p-6 transition-colors hover:border-primary/40"
+            >
+              <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={t.icon} />
+              </span>
+              <p class="text-base font-semibold text-text">{t.title}</p>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{t.body}</p>
+              <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary/80 transition-colors group-hover:text-primary">
+                See how
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         OBJECTION-AS-HEADER SECURITY BLOCK (gap D4-③c) — Arena had no
+         security section at all. The questions a box owner asks before the
+         price, each answered plainly, each linking the on-site /trust/ page.
+         The publish-safety question (half-answered by the allowlist copy
+         above) is promoted to a header here. Same pattern as /relay/ + /proof/.
+         ============================================================ -->
+    <section class="border-y border-border bg-surface-raised px-6 py-14">
+      <div class="mx-auto max-w-3xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Before you buy</p>
+        <h2 class="mb-4 text-3xl sm:text-4xl">The questions a box owner asks.</h2>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          Arena runs on your own Spark, holds none of your data, and keeps working even if we do not.
+          Here are the questions a careful buyer asks, answered in plain words, each backed by a page
+          that links the code that proves it.
+        </p>
+        <ul class="grid gap-4">
+          {trust.map((t) => (
+            <li class="rounded-2xl border border-border/70 bg-surface/60 p-6">
+              <p class="text-base font-semibold text-text">{t.q}</p>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">{t.a}</p>
+              <a
+                href={t.href}
+                class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary transition-colors hover:text-primary/80"
+              >
+                {t.label}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
     <!-- Own the box: lead with the buy block -->
     <ArenaBox />
 
@@ -318,7 +486,7 @@ const gallery = [
     <!-- Close: hand the reader to the live demo + the buy block -->
     <section class="px-6 py-16">
       <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
-        <p class="font-display text-2xl leading-snug">Drive the cockpit yourself.</p>
+        <p class="font-display text-2xl leading-snug">Drive every screen yourself.</p>
         <p class="mt-4 text-base leading-relaxed text-text-muted">
           Click through every screen in the live demo, or get the Field Edition and run the whole
           stack on your own Spark.

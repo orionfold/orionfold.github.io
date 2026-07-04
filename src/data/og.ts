@@ -171,10 +171,10 @@ export const OG_PAGES: Record<string, OgPage> = {
   },
   '/arena/': {
     slug: 'arena',
-    eyebrow: 'Eval cockpit',
+    eyebrow: 'Run · Compare · Score · Train',
     title: 'See which AI wins, on your own desk',
     seed: 'arena',
-    alt: 'Orionfold Arena: the eval cockpit that runs, compares, scores, and trains local AI models on one DGX Spark',
+    alt: 'Orionfold Arena: run, compare, score, and train local AI models on one screen, all on one DGX Spark',
     // The Arena poster full-bleed as the social card, same pattern as proof.
     background: 'src/assets/projects/arena-poster.png',
   },
