@@ -113,7 +113,7 @@ export const TRUST_PAGES: Record<string, TrustPageData> = {
     eyebrow: 'You own it forever',
     title: 'Continuity: what happens if Orionfold disappears',
     summary:
-      'Vendor risk is a fair question to ask of a small company. Relay answers it in the architecture, not a contract: our disappearance cannot take your workflows, your data, or your purchased content with it.',
+      'Vendor risk is fair to ask of a small company. Relay answers it in the architecture, not a contract: our disappearance cannot take your workflows, data, or purchased content with it.',
     shortVersion:
       'The engine is open source, your data is a local file you already hold, and your license verifies offline forever. What you would lose if Orionfold wound down: future pack updates and support. What you keep: everything you have.',
     lastUpdated: '2026-07-01',
@@ -148,7 +148,7 @@ export const TRUST_PAGES: Record<string, TrustPageData> = {
     eyebrow: 'Verify every call yourself',
     title: 'Supply-chain verification',
     summary:
-      'How to verify that the Relay you install is exactly what the repository CI built, before you run it. Everything here is checkable from your side with standard npm and GitHub tools. None of it asks you to trust a claim we make.',
+      'Verify that the Relay you install is exactly what the repository CI built, before you run it. Checkable from your side with standard npm and GitHub tools, trusting no claim we make.',
     shortVersion:
       'Publishing happens only through npm trusted publishing from a committed workflow, with no tokens to steal. Every release carries a provenance attestation and an SBOM you can audit, and the server build is checksum-verified before it runs. Versions are pinnable and never self-update.',
     lastUpdated: '2026-07-01',

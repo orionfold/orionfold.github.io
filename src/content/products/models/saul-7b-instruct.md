@@ -9,7 +9,7 @@
 # jargon glossed; the conversion point is the inline Sponsor tiers.
 type: model
 slug: saul-7b-instruct
-valueProp: An open AI model tuned for legal text and built to follow instructions. It runs fully offline on a small desktop, so client matters and case files never leave the room.
+valueProp: Open legal AI model. Reads contracts, filings, and case files fully offline on one desktop, so client matters never leave the room. Free, MIT-licensed.
 
 chips:
   - label: Field

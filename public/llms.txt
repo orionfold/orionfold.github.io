@@ -8,18 +8,21 @@
 > NVIDIA Inception.
 
 ## Buy
-- [Arena Field Edition](https://orionfold.com/software/arena/): The paid edition of the free Orionfold Arena. One installer turns an NVIDIA DGX Spark into a private AI lab with an AI research teammate (agents, domain models, and tests). It proves itself on first boot with a verifiable receipt and stays proven for a year, every update re-gated and re-receipted. The software stays free and open; what you buy is the assembled, proven team delivered turnkey. $349 founding for the first 25 licenses, then $499 one time with a 12-month kept-proven window; $149/yr renewal after year one.
+- [Arena Field Edition](https://orionfold.com/arena/): The paid edition of the free Orionfold Arena. One installer turns an NVIDIA DGX Spark into a private AI lab with an AI research teammate (agents, domain models, and tests). It proves itself on first boot with a verifiable receipt and stays proven for a year, every update re-gated and re-receipted. The software stays free and open; what you buy is the assembled, proven team delivered turnkey. $349 founding for the first 25 licenses, then $499 one time with a 12-month kept-proven window; $149/yr renewal after year one.
+- [Relay](https://orionfold.com/relay/): A licensed product that runs your AI agents for real client work, all on your own machine. It shows what each client costs you, and none of your data leaves your computer. $349 founding for the first 25 licenses, then $499 one time; $149/yr renewal after year one.
 
 ## Flagship paths
-- [Arena](https://orionfold.com/cockpit/): Orionfold Arena is the cockpit for local AI: run, compare, score, and train models on your own desktop. Arena Field Edition delivers the whole stack on an NVIDIA DGX Spark as a turnkey, proven lab; Cortex memory and the fieldkit toolkit are the stack around it.
+- [Arena](https://orionfold.com/arena/): Orionfold Arena is the cockpit for local AI: run, compare, score, and train models on your own desktop. Arena Field Edition delivers the whole stack on an NVIDIA DGX Spark as a turnkey, proven lab; Cortex memory and the fieldkit toolkit are the stack around it.
 - [Workflows](https://orionfold.com/workflows/): Private Agent Starter Kits. One local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail.
 - [Experts](https://orionfold.com/experts/): Offline domain models with benchmarks and playbooks for sensitive work. Patent Strategist is the live flagship pack.
 - [Advisor](https://orionfold.com/advisor/): A governed local AI advisor over your own documents: every answer names its exact source, unsupported questions get a refusal, and every check it passed is a receipt you can re-run. Live; the trained model is free on Hugging Face.
 - [Learn](https://orionfold.com/learn/): Books, field notes, the DGX Spark Field Lab, and build stories that teach the operating model.
+- [Become AI Native](https://orionfold.com/become-ai-native-business/): The starting point. Get the AI Native Business book free, then follow the path from the book to running your own private AI team. The simplest way in for a team that is trying to buy AI capabilities it could own instead.
 
 ## Proof libraries
 - [Proof](https://orionfold.com/proof/): The receipts wall. Every capability claim links to a test you can run yourself and get the same result. It shows where the small local models already win, and where the big cloud models still lead.
 - [Receipts](https://orionfold.com/receipts/): Every receipt on its own page: a frozen test you can rerun, the run itself, and what we found. The proof, not the pitch.
+- [Trust](https://orionfold.com/trust/): How Orionfold products are built to be trusted: where your data flows (and where it does not), the license terms, the supply chain behind the software, and how you stay covered over time. Plain answers to the questions a careful buyer asks.
 - [Software](https://orionfold.com/software/): Open software to run private AI workflows. Orionfold Arena, Advisor, and Cortex lead the catalog, with the AI Native Platform and API, apps, and developer tools behind them.
 - [Models](https://orionfold.com/models/): Open-weight AI models tuned for patents, security, law, finance, medicine, and space math. Free to download and run offline.
 - [DGX Spark](https://orionfold.com/dgx-spark/): Built on the NVIDIA stack. The book, open models, and tools all proven on the NVIDIA DGX Spark, a small AI supercomputer that runs on one desk with no cloud.
