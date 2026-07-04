@@ -135,19 +135,19 @@ const trustTrio = [
     title: 'Nothing leaves your machine',
     body: 'Relay runs on your own computer. No tracking, no usage reports, no check-ins home.',
     icon: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
-    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/data-flow.md',
+    href: '/trust/data-flow/',
   },
   {
     title: 'You own it forever',
     body: 'The engine is open source and your license works offline. If we vanished tomorrow, your setup keeps running.',
     icon: '<path d="M12 2 4 5v6c0 5.5 3.8 9.5 8 11 4.2-1.5 8-5.5 8-11V5Z"/>',
-    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/continuity.md',
+    href: '/trust/continuity/',
   },
   {
     title: 'Verify every network call yourself',
     body: 'Anything that could leave your machine is listed in full, with an off switch. Check it before you run it.',
     icon: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
-    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/supply-chain.md',
+    href: '/trust/supply-chain/',
   },
 ];
 
@@ -197,34 +197,34 @@ const gaps = [
 
 // Security and trust (relay later-4 FYI + issue #17 / security-packet.md). Turns
 // the four questions a security review asks into plain answers, each linking the
-// canonical trust doc in the Relay repo (link, do not mirror: one source, no
-// drift, same rule as the license-terms link). Marketing-facing rewrite of the
-// evaluator-facing source: grade 3-5, jargon spelled out, hard proof one click
-// away. `href` is the repo doc that backs the claim.
+// on-site /trust/ page (which mirrors the canonical Relay repo doc; re-sync in
+// src/data/trust-pages.ts when the repo docs change). Marketing-facing rewrite of
+// the evaluator-facing source: grade 3-5, jargon spelled out, hard proof one
+// click away. `href` is the on-site trust page that backs the claim.
 const trust = [
   {
     q: 'Does Relay send our data to you?',
     a: 'No. Relay never sends your data to Orionfold. It runs on your own machine, with no tracking, no usage reporting, and no license check-ins. When it reaches out at all, it only reads public sources, like the one-time, checked download of the app itself from GitHub. Anything that can leave your machine, like the AI models you pick, is listed in full with an off switch.',
     label: 'See every network call',
-    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/data-flow.md',
+    href: '/trust/data-flow/',
   },
   {
     q: 'What data do you hold about us?',
     a: 'Only your purchase record. Everything the product touches, your projects, tasks, documents, and history, lives in a file on your own machine. AI work runs through your own model accounts, not ours. We run no service in the middle, so there is nothing for us to hold and no data agreement to chase.',
     label: 'Read the security packet',
-    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/security-packet.md',
+    href: '/trust/security-packet/',
   },
   {
     q: 'Can we trust what we install?',
     a: 'Yes, and you can check it before you run it. Every release is published straight from our build with a signed record of where it came from, and ships a full parts list of what is inside. The download is checked against a fingerprint before it opens. Nothing updates itself, so the version you reviewed stays the version you run.',
     label: 'See the supply chain',
-    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/supply-chain.md',
+    href: '/trust/supply-chain/',
   },
   {
     q: 'What if you disappear?',
     a: 'You keep everything. The engine is open source, your data is on your machine, and your license works offline forever. If Orionfold went away tomorrow, your setup keeps running. The honest edge cases are written down too.',
     label: 'Read the continuity note',
-    href: 'https://github.com/orionfold/relay/blob/main/docs/trust/continuity.md',
+    href: '/trust/continuity/',
   },
 ];
 ---
@@ -378,8 +378,6 @@ const trust = [
           {trustTrio.map((t) => (
             <a
               href={t.href}
-              target="_blank"
-              rel="noopener"
               class="group of-surface flex flex-col rounded-2xl border border-border/70 p-6 transition-colors hover:border-primary/40"
             >
               <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -689,8 +687,6 @@ const trust = [
               <p class="mt-2 text-sm leading-relaxed text-text-muted">{t.a}</p>
               <a
                 href={t.href}
-                target="_blank"
-                rel="noopener"
                 class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary transition-colors hover:text-primary/80"
               >
                 {t.label}

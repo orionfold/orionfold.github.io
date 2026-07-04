@@ -1,0 +1,85 @@
+---
+// /trust/ — the trust hub (2026-07-03). Lists the on-site trust pages that back
+// the homepage "Why teams trust it" trio and the /relay/ trust section. These
+// used to link to raw GitHub markdown; now they live on-site with real design,
+// with the Relay repo as the canonical source each page mirrors.
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import SectionLabel from '../../components/ui/SectionLabel.astro';
+import { SITE, PUBLISHER } from '../../data/seo';
+import { trustPagesInOrder } from '../../data/trust-pages';
+
+const pages = trustPagesInOrder();
+---
+<Layout
+  title="Trust: own it, run it local, verify every call · Orionfold"
+  description="How Orionfold Relay earns trust: it runs on your own machine, you own it forever, and you can verify every network call yourself. Data flow, continuity, supply chain, license terms, and a security packet, each backed by open-source code."
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Trust · Orionfold',
+      url: `${SITE.url}/trust/`,
+      inLanguage: 'en',
+      publisher: PUBLISHER,
+      description:
+        'How Orionfold Relay earns trust: it runs on your own machine, you own it forever, and you can verify every network call yourself.',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Trust', item: `${SITE.url}/trust/` },
+      ],
+    },
+  ]}
+>
+  <Nav />
+  <main>
+    <section class="relative overflow-hidden px-6 pt-32 pb-14">
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute left-1/2 top-14 h-[26rem] w-[26rem] -translate-x-1/2 rounded-full bg-primary/[0.10] blur-[150px]"></div>
+        <div class="absolute inset-x-0 bottom-0 h-40" style="background: linear-gradient(to bottom, transparent, var(--color-surface-raised));"></div>
+      </div>
+
+      <div class="relative z-10 mx-auto max-w-5xl">
+        <div data-animate>
+          <SectionLabel text="Trust" />
+        </div>
+        <h1 data-animate class="mt-5 font-display text-[clamp(2.2rem,6vw,4.2rem)] leading-[1.02]" style="transition-delay: 80ms">
+          Yours to own, run, and check.
+        </h1>
+        <p data-animate class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted" style="transition-delay: 160ms">
+          Orionfold Relay runs on your own machine, you own it forever, and you can verify every network call yourself. These pages spell out how, each one backed by open-source code you can read. Nothing here asks you to trust a claim we make.
+        </p>
+      </div>
+    </section>
+
+    <section class="px-6 py-16">
+      <div class="mx-auto grid max-w-6xl gap-4 md:grid-cols-2">
+        {pages.map((p) => (
+          <a
+            href={`/trust/${p.slug}/`}
+            class="of-surface of-pressable group flex flex-col rounded-2xl p-6 sm:p-7"
+          >
+            <p class="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-primary">{p.eyebrow}</p>
+            <span class="mt-3 text-xl leading-tight text-text">{p.title}</span>
+            <span class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{p.summary}</span>
+            <span class="of-text-action of-compact mt-5 inline-flex text-xs">Read it →</span>
+          </a>
+        ))}
+      </div>
+
+      <div class="mx-auto mt-6 max-w-6xl">
+        <div class="rounded-2xl border border-primary/30 bg-primary/[0.06] p-6 sm:p-8">
+          <p class="text-base leading-relaxed text-text">
+            Ready to run it? <a href="/relay/" class="text-primary transition-colors hover:text-primary/80">Get Orionfold Relay</a>. The engine is free and open; a license only adds the premium packs you own.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>

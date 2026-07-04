@@ -1,0 +1,7 @@
+---
+// /trust/supply-chain/ — thin route; content + layout live in the data module
+// and the shared TrustPage renderer.
+import TrustPage from '../../components/trust/TrustPage.astro';
+import { TRUST_PAGES } from '../../data/trust-pages';
+---
+<TrustPage page={TRUST_PAGES['supply-chain']} />
