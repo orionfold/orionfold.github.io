@@ -18,6 +18,7 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
+import ConstellationCover from '../components/ui/ConstellationCover.astro';
 import ArenaBox from '../components/product/ArenaBox.astro';
 import LandingStickyCta from '../components/product/LandingStickyCta.astro';
 import LicenseBand from '../components/product/LicenseBand.astro';
@@ -172,6 +173,23 @@ const gallery = [
   { img: arenaCompare, alt: 'Compare: any model against any other, side by side, with metric cards over a session sparkline.', label: 'Compare, any vs any', crop: 'aspect-[16/9] object-top' },
   { img: arenaEvalDrawer, alt: 'The eval drawer: send a real eval prompt from the chat, gold answer beside the live one, graded instantly.', label: 'Eval drawer', crop: 'aspect-[16/9] object-top' },
 ];
+
+// Credibility evidence band, same shape as the /relay/ proof band. Every number
+// is a live count from the public ainative.business field-notes "At a glance"
+// (verified 2026-07-03 against the live page + the source project-stats.json,
+// which agree): a real, growing research log produced on this exact stack. The
+// stat is a SHOWN artifact (D2: proof is never an adjective), cited openly to
+// the source site, and rerunnable by the reader. `accent` flags the headline
+// throughput tile. The starry backdrop is drawn by ConstellationCover (seeded,
+// zero image weight), the site's signature motif.
+const evidence = [
+  { value: '56', sub: '+13 in the works', label: 'Field notes published' },
+  { value: '176,597', sub: 'across the whole log', label: 'Words written' },
+  { value: '63,840', sub: 'Python, CLI, tests', label: 'Lines of fieldkit code' },
+  { value: '8', sub: 'run and scored locally', label: 'Open models' },
+  { value: '11', sub: 'used across the notes', label: 'NVIDIA products' },
+  { value: '100', unit: 'tok/s', sub: 'a local brain, on one Spark', label: 'Throughput', accent: true },
+];
 ---
 <Layout
   title="See which AI wins, on your own desk · Orionfold Arena"
@@ -298,6 +316,83 @@ const gallery = [
             </div>
           ))}
         </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CREDIBILITY EVIDENCE BAND — same shape as the /relay/ proof band
+         (mono eyebrow, headline, infographic stat tiles, honest caption,
+         a real product shot framed inside), but the backdrop is a starry
+         ConstellationCover (seeded, zero image weight) instead of the
+         blueprint grid. Every number is a live count from the public
+         ainative.business field-notes "At a glance" (verified 2026-07-03),
+         cited openly and rerunnable by the reader — proof as a shown
+         artifact, not an adjective. A dark overlay over the deep-blue cover
+         keeps the tiles + text legible in both themes.
+         ============================================================ -->
+    <section class="relative overflow-hidden border-y border-primary/20 px-6 py-16 sm:py-20">
+      <!-- Starry night backdrop: the site's signature constellation motif,
+           seeded so it draws a distinct field. Dimmed by an overlay so the
+           content reads on top. -->
+      <ConstellationCover
+        seed="arena-field-notes-evidence"
+        rounded="rounded-none"
+        class="!absolute inset-0 !aspect-auto h-full w-full"
+      />
+      <div class="pointer-events-none absolute inset-0 bg-bg/70" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-bg/30 via-transparent to-bg/60" aria-hidden="true"></div>
+
+      <div class="relative mx-auto max-w-5xl">
+        <div class="mb-2 flex items-center gap-2">
+          <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-primary/15 text-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </span>
+          <p class="font-mono text-xs uppercase tracking-[0.28em] text-primary">Proven on the same stack</p>
+        </div>
+        <h2 class="max-w-3xl text-balance text-2xl leading-tight sm:text-3xl">
+          The field notes are the receipts.
+          <span class="text-text-muted">One builder, one Spark, a public research log anyone can read and <span class="whitespace-nowrap">rerun.</span></span>
+        </h2>
+
+        <!-- Infographic stat tiles: the six "At a glance" KPIs. The throughput
+             tile is accented as the headline performance number. -->
+        <dl class="mt-8 grid gap-3 sm:grid-cols-3">
+          {evidence.map((t) => (
+            <div class={`relative overflow-hidden rounded-2xl border p-5 backdrop-blur-sm ${t.accent ? 'border-primary/40 bg-primary/[0.1]' : 'border-border/60 bg-surface/70'}`}>
+              <dt class={`font-mono text-[0.65rem] uppercase tracking-wider ${t.accent ? 'text-primary/80' : 'text-text-dim'}`}>{t.label}</dt>
+              <dd class={`mt-1.5 font-display text-3xl font-bold ${t.accent ? 'text-primary' : 'text-text'}`}>
+                {t.value}{t.unit && <span class="ml-1 text-lg font-semibold text-text-muted">{t.unit}</span>}
+              </dd>
+              <dd class="mt-1 text-xs text-text-muted">{t.sub}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <!-- The leaderboard shot, framed like /relay/ frames its receipt: real
+             results, aspect-cropped to its meaningful top. -->
+        <figure class="mt-8 overflow-hidden rounded-2xl border border-primary/25 shadow-xl shadow-primary/10">
+          <div class="aspect-[16/9] w-full overflow-hidden sm:aspect-[16/8]">
+            <Image
+              src={arenaLeaderboard}
+              alt="The Orionfold Arena leaderboard: local open models ranked by score, built from the builder's own runs on one DGX Spark."
+              widths={[720, 1080, 1440]}
+              sizes="(min-width: 1024px) 64rem, 100vw"
+              loading="lazy"
+              decoding="async"
+              data-no-zoom
+              class="block w-full object-cover object-top"
+            />
+          </div>
+          <figcaption class="border-t border-primary/15 bg-surface/60 px-5 py-3 text-center text-sm text-text-muted">
+            Real models, ranked from real runs on one Spark. Not a marketing chart.
+          </figcaption>
+        </figure>
+
+        <p class="mx-auto mt-6 max-w-2xl text-center text-sm leading-relaxed text-text-muted">
+          Every number is a live count from the public research log,
+          <a href="https://ainative.business/field-notes/" target="_blank" rel="noopener" class="text-primary underline underline-offset-2 transition-colors hover:text-primary/80">the ainative field notes</a>.
+          Read the notes, then rerun them yourself.
+        </p>
       </div>
     </section>
 
