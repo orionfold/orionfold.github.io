@@ -196,7 +196,42 @@ const gallery = [
       eyebrow="Run · Compare · Score · Train"
       title="See which AI wins, on your own desk."
       subtitle="Orionfold Arena puts every move on one screen: run, compare, score, and train local AI models on one NVIDIA DGX Spark. The model, the tests, the hardware, and the results all live in one place you control. Nothing leaves the box."
-    />
+    >
+      <!-- Above-fold hero action, same pattern as the shipped /relay/ hero:
+           Arena's OWN buy CTA so a cold visitor's first action is toward this
+           product. Live data-checkout button (ONE step to Stripe, wired by the
+           page script when ARENA_FIELD_EDITION_LIVE) when the flag is on; falls
+           back to a #get-arena scroll anchor when off, so no one can pay
+           pre-fulfilment. Beside it, the runnable install verb as a single-line
+           chip: `pip install fieldkit[arena]`. -->
+      <div class="mb-4 mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+        {ARENA_FIELD_EDITION_LIVE ? (
+          <button
+            type="button"
+            data-checkout={FIELD_EDITION.founding.lookupKey}
+            data-item="software:arena"
+            data-error-target="hero-cta-err"
+            class="of-primary-action text-base font-semibold"
+          >
+            Get Arena Field Edition
+            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(FIELD_EDITION.founding.amount)} founding</span>
+          </button>
+        ) : (
+          <a
+            href="#get-arena"
+            class="of-primary-action text-base font-semibold"
+          >
+            Get Arena Field Edition
+            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(FIELD_EDITION.founding.amount)} founding</span>
+          </a>
+        )}
+        <div class="inline-flex items-center gap-2 rounded-xl border border-border/70 bg-surface/60 px-4 py-3">
+          <span class="font-mono text-[0.65rem] uppercase tracking-wider text-text-dim">Install</span>
+          <code class="font-mono text-sm text-primary">pip install fieldkit[arena]</code>
+        </div>
+      </div>
+      <p id="hero-cta-err" class="mt-3 hidden text-sm text-red-400" role="alert"></p>
+    </PageHeader>
     <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view. -->
     <div id="hero-cta-sentinel" aria-hidden="true"></div>
 
