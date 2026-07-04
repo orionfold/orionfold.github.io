@@ -53,12 +53,12 @@ const doors = [
   <div class="mx-auto max-w-6xl">
     <div class="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">The full catalog</p>
-        <h2 class="mt-2 text-3xl sm:text-4xl">Browse everything we have shipped.</h2>
+        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">The depth behind the suite</p>
+        <h2 class="mt-2 text-3xl sm:text-4xl">Built on real shipped work.</h2>
       </div>
       <p class="max-w-md text-sm leading-relaxed text-text-muted">
-        The featured products above are a sample. Every app, model, and book lives in the open
-        catalog, free to inspect.
+        Relay, Proof, and Arena stand on a body of open software, tuned models, and books, all shipped
+        and all inspectable. This is the substance the suite runs on.
       </p>
     </div>
     <div data-animate-stagger class="grid gap-4 lg:grid-cols-3">
@@ -92,5 +92,13 @@ const doors = [
         </a>
       ))}
     </div>
+
+    <!-- Closing rung: the catalog is the depth-proof in the tail, but it must
+         point back at the router's lead product rather than dead-ending in three
+         free-browse links (CRO: no sideways leak into the free path at the end). -->
+    <p class="mt-8 text-center text-sm leading-relaxed text-text-muted">
+      All of it runs through one path you own.
+      <a href="/relay/" class="text-primary transition-colors hover:text-primary/80">Get Orionfold Relay →</a>
+    </p>
   </div>
 </section>
