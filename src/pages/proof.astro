@@ -247,7 +247,7 @@ const receiptTasters = Object.fromEntries(
     <PageHeader
       eyebrow="Receipts"
       title="The proof, not the pitch."
-      subtitle="We do not ask you to trust us. We lock the test before we train, publish the receipts, and let you rerun them. Here is what one desk can prove."
+      subtitle="We do not ask you to trust us. We lock the test before we train, publish the receipts, and let you rerun them. Here is what one desk can prove. Open source, offline, and it runs on the machine in front of you. Rerun anything on this page yourself."
     >
       <!-- Runnable install command on the hero (gap D4-②b): the brand is "rerun
            it, never trust us," so the single most on-brand move is to SHOW the
@@ -256,10 +256,23 @@ const receiptTasters = Object.fromEntries(
            `orionfold up` (PyPI package orionfold-proof, CLI command `orionfold`).
            Same install-chip shape as the shipped /relay/ hero. -->
       <div class="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-        <a href="#get-proof" class="of-primary-action text-base font-semibold">
-          Own the receipts tool
-          <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(PROOF.founding.amount)} founding</span>
-        </a>
+        {ORIONFOLD_PROOF_LIVE ? (
+          <button
+            type="button"
+            data-checkout={PROOF.founding.lookupKey}
+            data-item="software:orionfold-proof"
+            data-error-target="hero-cta-err"
+            class="of-primary-action text-base font-semibold"
+          >
+            Get Orionfold Proof
+            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(PROOF.founding.amount)} founding</span>
+          </button>
+        ) : (
+          <a href="#get-proof" class="of-primary-action text-base font-semibold">
+            Get Orionfold Proof
+            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(PROOF.founding.amount)} founding</span>
+          </a>
+        )}
         <div class="inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-border/70 bg-surface/60 px-4 py-3">
           <span class="font-mono text-[0.65rem] uppercase tracking-wider text-text-dim">Install</span>
           <code class="font-mono text-sm text-primary">pip install orionfold-proof</code>
@@ -267,12 +280,17 @@ const receiptTasters = Object.fromEntries(
           <code class="font-mono text-sm text-primary">orionfold up</code>
         </div>
       </div>
-      <p class="mt-3 text-sm text-text-muted">Open source, offline, and it runs on the machine in front of you. Rerun anything on this page yourself.</p>
+      <p id="hero-cta-err" class="mt-3 hidden text-sm text-red-400" role="alert"></p>
     </PageHeader>
     <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view. -->
     <div id="hero-cta-sentinel" aria-hidden="true"></div>
 
-    <!-- Constellation: where Proof sits in the Orionfold line -->
+    <!-- The signature WOW: the capability matrix + speed -->
+    <CapabilityMatrix tasters={receiptTasters} />
+
+    <!-- Constellation: where Proof sits in the Orionfold line. Placed right
+         before "What Orionfold Proof does" — after the WOW matrix, so the
+         product-line context frames the product intro that follows. -->
     <section class="px-6 pt-4 pb-10">
       <div class="mx-auto max-w-4xl">
         <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The first product in the line</p>
@@ -298,11 +316,14 @@ const receiptTasters = Object.fromEntries(
       </div>
     </section>
 
+    <!-- What Orionfold Proof is: the product behind the receipts -->
+    <ProofProduct />
+
     <!-- ============================================================
          DUAL-ICP COLUMNS (gap D4-②a) — one tool, two buyers. The builder
          wants a fast local benchmark; the regulated-enterprise buyer wants
-         an audit-ready receipt a risk team can rerun. Same hero, two paths,
-         so each reader sees their own outcome without a second page.
+         an audit-ready receipt a risk team can rerun. Placed after "What Proof
+         does" so the reader knows the product before choosing their path.
          ============================================================ -->
     <section class="px-6 py-12">
       <div class="mx-auto max-w-5xl">
@@ -332,42 +353,6 @@ const receiptTasters = Object.fromEntries(
         </div>
       </div>
     </section>
-
-    <!-- ============================================================
-         OWN-IT TRUST TRIO (gap D4-②c) — open source reframed as three plain
-         buyer benefits, each linking the docs/trust/ page that backs it
-         (link, not mirror, so no drift). Proof's axes are local/offline +
-         reproducible; the trio says them without jargon.
-         ============================================================ -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-5xl">
-        <p class="mb-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Yours, not ours</p>
-        <div class="grid gap-4 sm:grid-cols-3">
-          {trustTrio.map((t) => (
-            <a
-              href={t.href}
-              class="group of-surface flex flex-col rounded-2xl border border-border/70 p-6 transition-colors hover:border-primary/40"
-            >
-              <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={t.icon} />
-              </span>
-              <p class="text-base font-semibold text-text">{t.title}</p>
-              <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{t.body}</p>
-              <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary/80 transition-colors group-hover:text-primary">
-                See how
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-              </span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- The signature WOW: the capability matrix + speed -->
-    <CapabilityMatrix tasters={receiptTasters} />
-
-    <!-- What Orionfold Proof is: the product behind the receipts -->
-    <ProofProduct />
 
     <!-- Mid-page CTA: they now know what Proof is — catch the fast-decider -->
     <LicenseBand
@@ -444,6 +429,38 @@ const receiptTasters = Object.fromEntries(
         </div>
       </section>
     )}
+
+    <!-- ============================================================
+         OWN-IT TRUST TRIO (gap D4-②c) — open source reframed as three plain
+         buyer benefits, each linking the docs/trust/ page that backs it
+         (link, not mirror, so no drift). Placed low, right before the
+         objection block + buy box, so the own-it reassurance lands just as
+         the reader nears the price. Proof's axes are local/offline +
+         reproducible; the trio says them without jargon.
+         ============================================================ -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-5xl">
+        <p class="mb-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Yours, not ours</p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          {trustTrio.map((t) => (
+            <a
+              href={t.href}
+              class="group of-surface flex flex-col rounded-2xl border border-border/70 p-6 transition-colors hover:border-primary/40"
+            >
+              <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={t.icon} />
+              </span>
+              <p class="text-base font-semibold text-text">{t.title}</p>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{t.body}</p>
+              <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary/80 transition-colors group-hover:text-primary">
+                See how
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <!-- ============================================================
          OBJECTION-AS-HEADER SECURITY BLOCK (gap D4-②d) — the last gate to
