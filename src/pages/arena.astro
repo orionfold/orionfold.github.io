@@ -108,28 +108,40 @@ const capabilities = [
   },
 ];
 
-// Own-it trust trio (reference-build gap D4-③c): Arena's two uncontested axes,
-// own-it + private-on-your-own-hardware, said as three plain buyer benefits, each
-// linking the docs/trust/ page that backs it (link, not mirror, so no drift).
-// These claims are scattered through the prose today; the trio pulls them up.
-const trustTrio = [
+// "What the loop earns" trio — replaces the ported own-it trust cards (which
+// sold a TRUST story Arena already covers in its objection block) with three
+// wins the Spark-owner ICP actually buys the box for: the eval->train->re-eval
+// loop makes a model they own win, improves itself overnight, and costs almost
+// nothing because it is their hardware. Each card is a SHOWN, cited field-note
+// outcome (D2: proof is an artifact, never an adjective), deep-linking the note
+// that backs it on ainative.business. Numbers verified 2026-07-03 against the
+// article source. Deliberately distinct from the 18/21 buyer-outcome band below
+// (no repeat): this trio leads with the overnight loop, the speed win, and the
+// economics.
+const loopWins = [
   {
-    title: 'Nothing leaves the box',
-    body: 'Arena runs on the Spark under your desk. Your prompts, your models, and your results stay there. No account, no uploads, no check-ins home.',
-    icon: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
-    href: '/trust/data-flow/',
+    metric: '0 → 154/158',
+    title: 'It improves itself overnight',
+    body: '34 self-play steps on one Spark took an agent from finishing nothing to finishing almost every task. No cloud, no learned reward model, just the loop running while you sleep.',
+    icon: '<path d="M21 12a9 9 0 1 1-6.219-8.56"/><path d="M12 7v5l3 3"/>',
+    source: 'ClawGym on Spark, with self-play',
+    href: 'https://ainative.business/field-notes/clawgym-on-spark-grpo/',
   },
   {
-    title: 'You own it forever',
-    body: 'You buy the box you already own turned into a proven AI lab. Your license works offline. If we vanished tomorrow, your setup keeps running.',
-    icon: '<path d="M12 2 4 5v6c0 5.5 3.8 9.5 8 11 4.2-1.5 8-5.5 8-11V5Z"/>',
-    href: '/trust/continuity/',
+    metric: '76% faster',
+    title: 'Faster on your own metal',
+    body: 'Dropping to the Blackwell-native 4-bit kernel the Spark runs in hardware decoded 76% faster than the stock server, on a smaller model file. You get speed the rented endpoint never exposes.',
+    icon: '<path d="m13 2-3 7h6l-3 7"/><path d="M12 2v2"/><path d="M12 20v2"/>',
+    source: 'TensorRT-LLM on Spark',
+    href: 'https://ainative.business/field-notes/trtllm-and-triton-on-spark/',
   },
   {
-    title: 'Verify it yourself',
-    body: 'Every install writes a receipt you can read, and the leaderboard exports only scores, never your data. Check what the box did before you trust it.',
-    icon: '<path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
-    href: '/trust/supply-chain/',
+    metric: '$0.02',
+    title: 'Because it is your box',
+    body: 'A 50-run overnight research loop cost two cents of electricity. On a rented cloud the same loop bills per token and per GPU-second, so you plan carefully. On your Spark, running it is free enough to be rigorous.',
+    icon: '<path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+    source: 'Auto-research agent loop',
+    href: 'https://ainative.business/field-notes/autoresearch-agent-loop/',
   },
 ];
 
@@ -253,76 +265,12 @@ const evidence = [
     <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view. -->
     <div id="hero-cta-sentinel" aria-hidden="true"></div>
 
-    <!-- Constellation: where Arena sits in the Orionfold line -->
-    <section class="px-6 pt-4 pb-10">
-      <div class="mx-auto max-w-4xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The second product in the line</p>
-        <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
-          Proof tells you which AI to trust. Arena is where you drive the shelf of models you own and
-          find the one that wins. Relay then puts the winner to work.
-        </p>
-        <div class="grid gap-3 sm:grid-cols-3">
-          {constellation.map((c) => (
-            c.self ? (
-              <div class="rounded-2xl border border-primary/40 bg-primary/5 p-5">
-                <p class="font-display text-lg font-bold text-primary">{c.name}</p>
-                <p class="mt-2 text-sm leading-relaxed text-text">{c.q}</p>
-              </div>
-            ) : (
-              <a href={c.href} class="of-surface of-pressable group block rounded-2xl p-5">
-                <p class="font-display text-lg font-bold text-text group-hover:text-primary">{c.name}</p>
-                <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.q}</p>
-              </a>
-            )
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- The real cockpit: one dark shot so the visitor sees it early -->
-    <section class="px-6 pb-6">
-      <div class="mx-auto max-w-5xl">
-        <div class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
-          <Image
-            src={arenaCockpit}
-            alt="The Orionfold Arena screen: live GPU readouts, your models, the tests, and a leaderboard built from your own results, all in one place."
-            widths={[720, 1080, 1440]}
-            sizes="(min-width: 1024px) 64rem, 100vw"
-            loading="lazy"
-            decoding="async"
-            data-no-zoom
-            class="block aspect-[16/11] w-full object-cover object-top"
-          />
-        </div>
-        <p class="mt-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
-          One screen over the whole loop
-        </p>
-      </div>
-    </section>
-
-    <!-- What it does: the four core moves -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-4xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What it does</p>
-        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-          You have a shelf of local models and nowhere to drive them from. Arena is the instrument
-          panel that turns that shelf into something you can fly. Four moves, one screen.
-        </p>
-        <div class="grid gap-4 sm:grid-cols-2">
-          {capabilities.map((c) => (
-            <div class="rounded-2xl border border-border/70 bg-surface/60 p-6">
-              <p class="font-display text-xl font-bold text-primary">{c.verb}</p>
-              <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.line}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
     <!-- ============================================================
-         CREDIBILITY EVIDENCE BAND — same shape as the /relay/ proof band
-         (mono eyebrow, headline, infographic stat tiles, honest caption,
-         a real product shot framed inside), but the backdrop is a starry
+         CREDIBILITY EVIDENCE BAND — placed right after the hero to match the
+         shipped /relay/ sequence (hero -> proof band -> trust trio ->
+         constellation demoted). Same shape as the /relay/ proof band (mono
+         eyebrow, headline, infographic stat tiles, honest caption, a real
+         product shot framed inside), but the backdrop is a starry
          ConstellationCover (seeded, zero image weight) instead of the
          blueprint grid. Every number is a live count from the public
          ainative.business field-notes "At a glance" (verified 2026-07-03),
@@ -393,6 +341,116 @@ const evidence = [
           <a href="https://ainative.business/field-notes/" target="_blank" rel="noopener" class="text-primary underline underline-offset-2 transition-colors hover:text-primary/80">the ainative field notes</a>.
           Read the notes, then rerun them yourself.
         </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHAT THE LOOP EARNS — replaces the ported own-it trust cards with
+         three wins the Spark-owner ICP buys the box for: overnight self-
+         improvement, speed on their own metal, and near-zero cost because it
+         is their hardware. Placed right under the evidence band to match the
+         /relay/ sequence (proof band -> value cards). Each card leads with a
+         real, cited field-note metric and deep-links the note that backs it
+         (proof shown + rerunnable, not asserted). Distinct from the 18/21
+         buyer-outcome band below (no repeat). The own-it TRUST story is
+         carried by the objection-as-header block lower down.
+         ============================================================ -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-5xl">
+        <p class="mb-2 text-center font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">What the loop earns</p>
+        <p class="mx-auto mb-6 max-w-2xl text-center text-sm leading-relaxed text-text-muted">
+          Run, compare, score, train, repeat. Here is what that loop already produced on this exact
+          stack, each a field note you can open and rerun.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-3">
+          {loopWins.map((w) => (
+            <a
+              href={w.href}
+              target="_blank"
+              rel="noopener"
+              class="group of-surface flex flex-col rounded-2xl border border-border/70 p-6 transition-colors hover:border-primary/40"
+            >
+              <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={w.icon} />
+              </span>
+              <p class="font-display text-2xl font-bold text-primary">{w.metric}</p>
+              <p class="mt-1 text-base font-semibold text-text">{w.title}</p>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{w.body}</p>
+              <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary/80 transition-colors group-hover:text-primary">
+                {w.source}
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Constellation: where Arena sits in the Orionfold line. Demoted below the
+         evidence band + trust trio (matching /relay/) so it gives suite context
+         without pulling cold traffic to a sibling above the proof. -->
+    <section class="px-6 pt-4 pb-10">
+      <div class="mx-auto max-w-4xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The second product in the line</p>
+        <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
+          Proof tells you which AI to trust. Arena is where you drive the shelf of models you own and
+          find the one that wins. Relay then puts the winner to work.
+        </p>
+        <div class="grid gap-3 sm:grid-cols-3">
+          {constellation.map((c) => (
+            c.self ? (
+              <div class="rounded-2xl border border-primary/40 bg-primary/5 p-5">
+                <p class="font-display text-lg font-bold text-primary">{c.name}</p>
+                <p class="mt-2 text-sm leading-relaxed text-text">{c.q}</p>
+              </div>
+            ) : (
+              <a href={c.href} class="of-surface of-pressable group block rounded-2xl p-5">
+                <p class="font-display text-lg font-bold text-text group-hover:text-primary">{c.name}</p>
+                <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.q}</p>
+              </a>
+            )
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- The real cockpit: one dark shot so the visitor sees it early -->
+    <section class="px-6 pb-6">
+      <div class="mx-auto max-w-5xl">
+        <div class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
+          <Image
+            src={arenaCockpit}
+            alt="The Orionfold Arena screen: live GPU readouts, your models, the tests, and a leaderboard built from your own results, all in one place."
+            widths={[720, 1080, 1440]}
+            sizes="(min-width: 1024px) 64rem, 100vw"
+            loading="lazy"
+            decoding="async"
+            data-no-zoom
+            class="block aspect-[16/11] w-full object-cover object-top"
+          />
+        </div>
+        <p class="mt-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
+          One screen over the whole loop
+        </p>
+      </div>
+    </section>
+
+    <!-- What it does: the four core moves -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-4xl">
+        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What it does</p>
+        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
+          You have a shelf of local models and nowhere to drive them from. Arena is the instrument
+          panel that turns that shelf into something you can fly. Four moves, one screen.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {capabilities.map((c) => (
+            <div class="rounded-2xl border border-border/70 bg-surface/60 p-6">
+              <p class="font-display text-xl font-bold text-primary">{c.verb}</p>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.line}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -532,36 +590,6 @@ const evidence = [
           is on the <a href="/proof/" class="text-primary underline underline-offset-2 hover:text-primary/80">receipts page</a>,
           with the three honest misses and the exact test, so you can rerun it yourself.
         </p>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         OWN-IT TRUST TRIO (gap D4-③c) — Arena's own-it + private-on-your-own-
-         hardware axes as three plain buyer benefits, each linking the docs/trust/
-         page that backs it. Same trio the shipped /relay/ and /proof/ pages use,
-         so the suite reads as one system.
-         ============================================================ -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-5xl">
-        <p class="mb-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Yours, not ours</p>
-        <div class="grid gap-4 sm:grid-cols-3">
-          {trustTrio.map((t) => (
-            <a
-              href={t.href}
-              class="group of-surface flex flex-col rounded-2xl border border-border/70 p-6 transition-colors hover:border-primary/40"
-            >
-              <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={t.icon} />
-              </span>
-              <p class="text-base font-semibold text-text">{t.title}</p>
-              <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{t.body}</p>
-              <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary/80 transition-colors group-hover:text-primary">
-                See how
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-              </span>
-            </a>
-          ))}
-        </div>
       </div>
     </section>
 
