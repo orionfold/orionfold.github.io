@@ -114,9 +114,9 @@ const proofStories = (await getCollection('story'))
 // product-line navigation): where Proof sits in the line. Text-only cards, so
 // the three pages' constellation sections stay identical.
 const constellation = [
+  { name: 'Relay', q: 'Now make the trusted AI do the real work.', href: '/relay/' },
   { name: 'Proof', q: 'Which AI can I trust?', href: null, self: true },
   { name: 'Arena', q: 'Which build wins?', href: '/arena/' },
-  { name: 'Relay', q: 'Now make the trusted AI do the real work.', href: '/relay/' },
 ];
 
 // Dual-ICP columns (reference-build gap D4-②a): Proof serves two buyers with one
@@ -288,27 +288,25 @@ const receiptTasters = Object.fromEntries(
     <!-- The signature WOW: the capability matrix + speed -->
     <CapabilityMatrix tasters={receiptTasters} />
 
-    <!-- Constellation: where Proof sits in the Orionfold line. Placed right
-         before "What Orionfold Proof does" — after the WOW matrix, so the
-         product-line context frames the product intro that follows. -->
+    <!-- The Orionfold line: the compact one-row strip (same as /relay/), so all
+         three product pages carry an identical, equal-height suite-context row.
+         Sequence is fixed Relay -> Proof -> Arena to match the top nav; the page
+         self-highlights its own cell. Placed right before "What Orionfold Proof
+         does" so the product-line context frames the product intro. -->
     <section class="px-6 pt-4 pb-10">
       <div class="mx-auto max-w-4xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The first product in the line</p>
-        <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
-          Proof is where you start: prove which AI you can trust. Arena is where you drive the models
-          you own and find the one that wins. Relay then puts the winner to work.
-        </p>
-        <div class="grid gap-3 sm:grid-cols-3">
+        <p class="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The Orionfold line · Relay leads</p>
+        <div class="flex flex-col gap-2 rounded-2xl border border-border/60 bg-surface/40 p-2 sm:flex-row">
           {constellation.map((c) => (
             c.self ? (
-              <div class="rounded-2xl border border-primary/40 bg-primary/5 p-5">
-                <p class="font-display text-lg font-bold text-primary">{c.name}</p>
-                <p class="mt-2 text-sm leading-relaxed text-text">{c.q}</p>
+              <div class="flex flex-1 items-center gap-3 rounded-xl bg-primary/5 px-4 py-3">
+                <span class="font-display text-sm font-bold text-primary">{c.name}</span>
+                <span class="text-sm text-text-muted">{c.q}</span>
               </div>
             ) : (
-              <a href={c.href} class="of-surface of-pressable group block rounded-2xl p-5">
-                <p class="font-display text-lg font-bold text-text group-hover:text-primary">{c.name}</p>
-                <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.q}</p>
+              <a href={c.href} class="group flex flex-1 items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-surface">
+                <span class="font-display text-sm font-bold text-text group-hover:text-primary">{c.name}</span>
+                <span class="text-sm text-text-muted">{c.q}</span>
               </a>
             )
           ))}
