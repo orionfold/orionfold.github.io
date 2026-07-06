@@ -41,7 +41,7 @@ export const flagshipOffers: FlagshipOffer[] = [
     buyer: 'Small teams that need a useful private agent before they have a full automation team.',
     status: 'Packaged from shipped parts',
     proof: [
-      { label: 'Orionfold Relay', href: '/relay/', note: 'Agent runtime, profiles, schedules, and cost ledger.' },
+      { label: 'Orionfold Relay', href: '/relay/', note: 'Agents, runtime, schedules, and cost ledger.' },
       { label: 'AI Native API', href: '/software/ai-native-api/', note: 'Programmatic workflow control.' },
       { label: 'Sentinel', href: '/software/sentinel/', note: 'Behavior checks for agent runs.' },
     ],

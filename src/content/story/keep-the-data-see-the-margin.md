@@ -33,7 +33,7 @@ Nothing leaves your machine. You own it forever. And because it runs where you c
 
 ## Every result waits for you
 
-Here is the part I like most. An agent does not get to act on its own. Every result it produces waits at an approval gate until you say yes. You give each client profile its own tool permissions. You set a budget it cannot cross. There is an audit trail of what ran and what it cost. Nothing reaches a client until you release it.
+Here is the part I like most. An agent does not get to act on its own. Every result it produces waits at an approval gate until you say yes. You give each agent its own tool permissions. You set a budget it cannot cross. There is an audit trail of what ran and what it cost. Nothing reaches a client until you release it.
 
 That is the difference between an agent that helps you and an agent that speaks for you without asking. I wanted the first one.
 

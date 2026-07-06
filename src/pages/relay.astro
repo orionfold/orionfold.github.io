@@ -93,7 +93,7 @@ const softwareSchema = {
 const freeVsPaid = [
   { free: 'The full engine and command-line tool, forever', paid: 'Premium packs you own' },
   { free: 'Run your own copy, your data stays on your machine', paid: 'One license unlocks every premium pack, not one at a time' },
-  { free: 'All 21 agent profiles and 15 service templates', paid: 'The agency pack: real-estate and nonprofit profiles, blueprints, and a customer setup' },
+  { free: 'All 21 agents and 15 service templates', paid: 'The agency pack: real-estate and nonprofit agents, blueprints, and a customer setup' },
   { free: 'Build apps, track per-client cost, add free and open packs', paid: 'New packs and pack updates for 12 months' },
 ];
 
@@ -157,7 +157,7 @@ const trustTrio = [
 const shippedPack = {
   name: 'Agency pack',
   job: 'Run a client agency',
-  dek: 'A ready-made setup for agency work in real estate and nonprofits: 7 profiles, 8 blueprints, and a customer setup you drop in instead of wiring from scratch.',
+  dek: 'A ready-made setup for agency work in real estate and nonprofits: 7 agents, 8 blueprints, and a customer setup you drop in instead of wiring from scratch.',
 };
 const plannedPacks = [
   { name: 'Marketer pack', job: 'Run marketing work' },
@@ -179,7 +179,7 @@ const constellation = [
 // glyph; jargon spelled out in plain words.
 const operatingModel = [
   { you: 'Clients', them: 'Projects', note: 'One workspace per client, with their own notes the agents read on their own.', icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
-  { you: 'Kinds of work', them: 'Profiles', note: '21 ready-made agents, each tuned for a job like lease review or grant research.', icon: '<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>' },
+  { you: 'Kinds of work', them: 'Agents', note: '21 ready-made agents, each tuned for a job like lease review or grant research.', icon: '<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>' },
   { you: 'Services', them: 'Blueprints', note: '15 templates. A packaged service you set up once and run for each client.', icon: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>' },
   { you: 'Deliverables', them: 'Schedules', note: 'Weekly digests, monthly statements, and deadline watches that run on their own.', icon: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>' },
   { you: 'Billing', them: 'Cost and usage', note: 'Per-client spend you can see, so the retainer maps to real cost.', icon: '<line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>' },
@@ -189,7 +189,7 @@ const operatingModel = [
 // The five gaps every AI agency hits (README), retuned to plain voice.
 const gaps = [
   { title: 'Many steps, one run', body: 'Real client work is a chain: take it in, do it, check it, send it. Relay runs the whole sequence with checkpoints, so you are not gluing steps together by hand.' },
-  { title: 'Your words, the agent’s work', body: 'You think in clients, services, and deliverables. Agents think in prompts. Projects, profiles, and blueprints give both a shared language.' },
+  { title: 'Your words, the agent’s work', body: 'You think in clients, services, and deliverables. Agents think in prompts. Projects, agents, and blueprints give both a shared language.' },
   { title: 'The whole life of a job', body: 'A deliverable needs scheduling, retries, a way to pick up where it left off, cost tracking, and a record. Relay carries all of it.' },
   { title: 'Trust and sign-off', body: 'Agents that read client files and draft client-facing work need guardrails. Relay routes every result through your approval and keeps the trail funders and stakeholders ask for.' },
   { title: 'One command to start', body: 'Standing up a workspace should not mean cloning a repo and wiring a database. Relay is one command, no setup, and your data stays on your machine.' },
