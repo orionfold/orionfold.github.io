@@ -80,9 +80,14 @@ const WHITE = '#ffffff';
 // always dark, so this is the cyan used for "fold" in the wordmark and the brand mark.
 const CYAN = '#14c8c0';
 
-// Orionfold brand mark (BrandMark.astro): cyan disc + white 5-point star knockout,
-// rotated 45°. Rasterized once and reused as the wordmark's leading logo on art cards.
-const MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="${CYAN}"/><g transform="rotate(45 32 32)"><path fill="#ffffff" d="M32,9L37.41,24.56L53.88,24.89L40.75,34.84L45.52,50.61L32,41.2L18.48,50.61L23.25,34.84L10.12,24.89L26.59,24.56Z"/></g></svg>`;
+// Orionfold brand mark — 3D variant B (design-system logo-3d, 2026-07-05): a matte
+// white origami paper star on a filled teal disc, matching BrandMark.astro after the
+// full logo swap. This is a photographic PNG (no vector form), read + base64-encoded
+// once and reused as the wordmark's leading logo on art cards. Replaces the former
+// inline flat SC-01f SVG (cyan disc + white star knockout). Rendered at 40px in the
+// lockup; we feed the DS exact-size 48px mark (nearest exact >= 40) so resvg only
+// downscales slightly rather than resampling a large master.
+const MARK_URI = `data:image/png;base64,${fs.readFileSync(path.join(ROOT, 'public/logos/orionfold-mark-3d-48.png')).toString('base64')}`;
 // Soft dark halo behind white text so it stays legible over bright, true-color art
 // without darkening the image. Layered: a crisp near shadow + two wider soft glows.
 const TEXT_GLOW = '0 0 5px rgba(0,0,0,0.95), 0 2px 7px rgba(0,0,0,0.92), 0 0 24px rgba(0,0,0,0.85), 0 0 54px rgba(0,0,0,0.6)';
@@ -139,7 +144,7 @@ function brandLockup(): El {
     'div',
     { style: { display: 'flex', alignItems: 'center', gap: 14 } },
     [
-      h('img', { src: pngDataUri(MARK_SVG), width: 40, height: 40, style: { width: 40, height: 40 } }),
+      h('img', { src: MARK_URI, width: 40, height: 40, style: { width: 40, height: 40 } }),
       h('div', { style: { display: 'flex', alignItems: 'center' } }, [seg('orion', WHITE), seg('fold', CYAN), seg('.com', WHITE)]),
     ],
   );
