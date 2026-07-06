@@ -1,22 +1,24 @@
 #!/usr/bin/env node
-// Regenerate src/lib/og/banner.png — the 1200x630 OG social brand plate used as
-// the background for landing/home/listing/book share cards (card.ts BANNER_URI,
-// `banner: true`). 2026-07-05: adopted the design-system og-banner text template
-// (disc-left + "Orionfold" wordmark + "we say rerun it" tagline) and dropped in
-// the 3D origami mark (variant B) in place of the flat SC-01f disc.
+// Regenerate the two OG brand plates from re-themeable sources + the 3D origami mark.
+// 2026-07-05: swapped the flat SC-01f disc for the 3D origami mark (variant B).
 //
-// Why a script, not a baked-only PNG: the DS README warns a flat OG raster is a
-// build-input the token swap can't reach — on the last palette change every
-// link-preview card kept the OLD mark. So the banner is kept re-themeable:
-//   - banner.src.svg      : the text + starfield + radial-glow template, with the
-//                           disc REMOVED (the 3D mark has no vector form, so it is
-//                           composited as a raster, not drawn in the SVG). Edit the
-//                           palette / wordmark / tagline here.
-//   - banner-mark-3d.png  : the 3D origami disc (264px, 2x the 132px render size).
-// Re-theme = edit banner.src.svg (+ swap the mark png) and rerun this script.
+// TWO outputs, OPPOSITE needs (see the logo-3d-origami-swap memory):
+//   1. src/lib/og/banner.png  — the CARD BACKGROUND (card.ts BANNER_URI, `banner: true`).
+//      card.ts overlays its OWN title + eyebrow + wordmark on top, so this plate must be
+//      TEXT-FREE with the disc on the RIGHT (title sits left). It must also carry NO extra
+//      glow behind the disc — only the disc's own baked shadow — or a leftover halo stacks
+//      with it into a "double drop shadow" (the bug fixed 2026-07-05). Source:
+//        - banner-cardbg.src.svg : clean radial-gradient ground + sparse stars, NO disc, NO text.
+//   2. public/og-image.png    — the RAW social default (SITE.ogImage), served WITHOUT any
+//      overlay, so it carries the full brand lockup: disc-LEFT + wordmark + tagline. Source:
+//        - banner.src.svg : the DS text template (gradient + stars + wordmark + tagline), disc removed.
 //
-// Requires: rsvg-convert (librsvg) + magick (ImageMagick), same as the DS pipeline.
-// Run:  node src/lib/og/regen-banner.mjs   (from the repo root)
+// Both composite the SAME raster mark (banner-mark-3d.png, 264px) — the 3D render has no
+// vector form, so it is dropped in as a raster, never drawn in the SVG. Re-theme = edit the
+// relevant .src.svg (+ swap the mark png) and rerun. NB og-image.png lives in public/, not here.
+//
+// Requires: rsvg-convert (librsvg) + magick (ImageMagick). Run from the repo root:
+//   node src/lib/og/regen-banner.mjs
 
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -24,24 +26,31 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 const HERE = path.dirname(new URL(import.meta.url).pathname);
-const SRC_SVG = path.join(HERE, 'banner.src.svg');
+const ROOT = path.resolve(HERE, '../../..');
 const MARK = path.join(HERE, 'banner-mark-3d.png');
-const OUT = path.join(HERE, 'banner.png');
-
-// The DS template places the mark at translate(96,222) scale(2.0625) on a 64-unit
-// circle => 132px disc, top-left (96,222). We composite the 3D disc at that exact box.
-const MARK_SIZE = 132;
-const MARK_X = 96;
-const MARK_Y = 222;
 
 const tmp = mkdtempSync(path.join(tmpdir(), 'of-banner-'));
+function renderBg(srcSvg, out) {
+  execFileSync('rsvg-convert', ['-w', '1200', '-h', '630', srcSvg, '-o', out]);
+}
+function composite(bg, size, x, y, out) {
+  const disc = path.join(tmp, `disc-${size}.png`);
+  execFileSync('magick', [MARK, '-filter', 'Lanczos', '-resize', `${size}x${size}`, disc]);
+  execFileSync('magick', [bg, disc, '-geometry', `+${x}+${y}`, '-compose', 'over', '-composite', out]);
+}
+
 try {
-  const bg = path.join(tmp, 'bg.png');
-  const disc = path.join(tmp, 'disc.png');
-  execFileSync('rsvg-convert', ['-w', '1200', '-h', '630', SRC_SVG, '-o', bg]);
-  execFileSync('magick', [MARK, '-filter', 'Lanczos', '-resize', `${MARK_SIZE}x${MARK_SIZE}`, disc]);
-  execFileSync('magick', [bg, disc, '-geometry', `+${MARK_X}+${MARK_Y}`, '-compose', 'over', '-composite', OUT]);
-  console.log('wrote', OUT);
+  // 1. banner.png — card background: clean bg, disc RIGHT (300px, centered ~905,300 => top-left 755,150).
+  const cardBg = path.join(tmp, 'cardbg.png');
+  renderBg(path.join(HERE, 'banner-cardbg.src.svg'), cardBg);
+  composite(cardBg, 300, 755, 150, path.join(HERE, 'banner.png'));
+  console.log('wrote', path.join(HERE, 'banner.png'), '(card bg, text-free, disc-right)');
+
+  // 2. og-image.png — raw default: text template, disc LEFT (132px at the DS lockup box 96,222).
+  const textBg = path.join(tmp, 'textbg.png');
+  renderBg(path.join(HERE, 'banner.src.svg'), textBg);
+  composite(textBg, 132, 96, 222, path.join(ROOT, 'public/og-image.png'));
+  console.log('wrote', path.join(ROOT, 'public/og-image.png'), '(raw default, wordmark + tagline, disc-left)');
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }
