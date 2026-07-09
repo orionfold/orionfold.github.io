@@ -70,15 +70,6 @@ export const ORIONFOLD_PROOF_LIVE = true;
 // admin-issue-license call — it gates the peer's close, not the live Buy button.
 export const ORIONFOLD_RELAY_LIVE = true;
 
-// RELAY_PRODUCT_HUNT_* — static-site launch placement for the Product Hunt
-// window. /relay/ is the traffic hub for PH, social pre-warm, newsletter, and
-// organic launch-story visitors, so this stays as an adjacent support module
-// near the hero conversion CTA. It counts down before launch, then reveals the
-// Product Hunt support CTA after the UTC instant; the official badge embed can
-// replace the placeholder slot when the embed code is available.
-export const RELAY_PRODUCT_HUNT_URL = 'https://www.producthunt.com/posts/orionfold-relay';
-export const RELAY_PRODUCT_HUNT_LAUNCH_AT = '2026-07-07T07:01:00Z';
-
 // META_PIXEL_ENABLED — gate the browser-side Meta Pixel (fbevents.js loader +
 // PageView + the Purchase fbq track). OFF (operator 2026-06-18): BOTH Meta Ads
 // and Google Ads are paused, so the browser pixel buys nothing and is pure cost
