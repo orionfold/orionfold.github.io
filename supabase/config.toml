@@ -441,3 +441,9 @@ verify_jwt = false
 # is the sole gate, so verify_jwt off like the other public callback fns.
 [functions.unsubscribe]
 verify_jwt = false
+
+# resend-webhook (Phase-1 compliance, relay #9): Resend bounce/complaint callback.
+# Svix-signature verified against RESEND_WEBHOOK_SECRET (the sole gate), so
+# verify_jwt off like the stripe-webhook callback.
+[functions.resend-webhook]
+verify_jwt = false
