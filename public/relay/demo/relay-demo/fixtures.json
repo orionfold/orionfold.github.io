@@ -1,0 +1,1329 @@
+{
+  "schema_version": 2,
+  "seed_version": "2026-07-08.demo-seed-v1",
+  "disclosure": "This is a static demo with synthetic data. Nothing you do here touches a real workspace. Install real Relay with npx orionfold-relay.",
+  "buy": {
+    "live": false,
+    "note": "Demo — buy opens at launch."
+  },
+  "workflows": [
+    {
+      "id": "demo_workflow_client_status",
+      "name": "Weekly Client Status Digest",
+      "projectId": "demo_project_agency_ops",
+      "definition": "{\"pattern\":\"sequence\",\"steps\":[{\"id\":\"collect\",\"name\":\"Collect client signals\",\"prompt\":\"Read active client tables, open tasks, approvals, and usage ledger entries.\"},{\"id\":\"summarize\",\"name\":\"Draft account summaries\",\"prompt\":\"Summarize risk, next action, margin posture, and delivery status for each client.\"},{\"id\":\"approve\",\"name\":\"Operator approval\",\"prompt\":\"Pause for operator review before sending client-facing notes.\",\"requiresApproval\":true}]}",
+      "status": "completed",
+      "runNumber": 12,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z",
+      "taskCount": 0,
+      "liveTaskCount": 0,
+      "outputDocCount": 0
+    },
+    {
+      "id": "demo_workflow_cre_renewal",
+      "name": "CRE Renewal Decision Engine",
+      "projectId": "demo_project_harbor_cre",
+      "definition": "{\"pattern\":\"checkpoint\",\"steps\":[{\"id\":\"abstract\",\"name\":\"Abstract lease economics\",\"prompt\":\"Extract critical dates, options, escalations, and CAM economics.\"},{\"id\":\"compare\",\"name\":\"Compare renewal scenarios\",\"prompt\":\"Compare renew, relocate, and renegotiate scenarios with do-nothing cost.\"},{\"id\":\"loi\",\"name\":\"Draft LOI package\",\"prompt\":\"Draft LOI and owner-ready recommendation.\",\"requiresApproval\":true}]}",
+      "status": "active",
+      "runNumber": 4,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z",
+      "taskCount": 0,
+      "liveTaskCount": 0,
+      "outputDocCount": 0
+    },
+    {
+      "id": "demo_workflow_grant_screen",
+      "name": "Grant Fit and Compliance Screen",
+      "projectId": "demo_project_civic_grants",
+      "definition": "{\"pattern\":\"planner-executor\",\"steps\":[{\"id\":\"plan\",\"name\":\"Plan grant screen\",\"prompt\":\"Plan data needed to decide fit and compliance risk.\"},{\"id\":\"score\",\"name\":\"Score fit\",\"prompt\":\"Score mission fit, reporting burden, match requirement, and deadline risk.\"},{\"id\":\"draft\",\"name\":\"Draft recommendation\",\"prompt\":\"Draft go/no-go recommendation with required source citations.\"}]}",
+      "status": "completed",
+      "runNumber": 7,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z",
+      "taskCount": 0,
+      "liveTaskCount": 0,
+      "outputDocCount": 0
+    },
+    {
+      "id": "demo_workflow_support_triage",
+      "name": "Support Row Triage",
+      "projectId": "demo_project_brightline_support",
+      "definition": "{\"pattern\":\"sequence\",\"steps\":[{\"id\":\"classify\",\"name\":\"Classify incoming ticket\",\"prompt\":\"Read the new support row and classify priority, sentiment, and issue type.\"},{\"id\":\"draft\",\"name\":\"Draft reply\",\"prompt\":\"Draft an on-brand customer reply with one clear next step.\",\"requiresApproval\":true},{\"id\":\"update\",\"name\":\"Update support table\",\"prompt\":\"Write classification and reply draft back to the table.\"}]}",
+      "status": "active",
+      "runNumber": 19,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z",
+      "taskCount": 0,
+      "liveTaskCount": 0,
+      "outputDocCount": 0
+    },
+    {
+      "id": "demo_workflow_solo_launch",
+      "name": "Solo Launch Weekly Loop",
+      "projectId": "demo_project_solo_launch",
+      "definition": "{\"pattern\":\"loop\",\"steps\":[{\"id\":\"review\",\"name\":\"Review launch tasks\",\"prompt\":\"Find blocked work and summarize the next highest-leverage action.\"},{\"id\":\"update\",\"name\":\"Update launch tracker\",\"prompt\":\"Update the table and create follow-up tasks if needed.\"}]}",
+      "status": "paused",
+      "runNumber": 5,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z",
+      "taskCount": 0,
+      "liveTaskCount": 0,
+      "outputDocCount": 0
+    },
+    {
+      "id": "demo_workflow_web_publish",
+      "name": "Website Section Draft",
+      "projectId": "demo_project_studio_site",
+      "definition": "{\"pattern\":\"sequence\",\"steps\":[{\"id\":\"asset\",\"name\":\"Read selected assets\",\"prompt\":\"Read active web assets and choose proof for the landing page.\"},{\"id\":\"sections\",\"name\":\"Draft page sections\",\"prompt\":\"Create ordered rows for hero, proof, offer, process, CTA.\"},{\"id\":\"preview\",\"name\":\"Prepare preview notes\",\"prompt\":\"Summarize what changed and what the operator should inspect.\"}]}",
+      "status": "completed",
+      "runNumber": 3,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z",
+      "taskCount": 0,
+      "liveTaskCount": 0,
+      "outputDocCount": 0
+    },
+    {
+      "id": "demo_workflow_trust_review",
+      "name": "Trust Packet Review",
+      "projectId": "demo_project_admin_trust",
+      "definition": "{\"pattern\":\"checkpoint\",\"steps\":[{\"id\":\"dataflow\",\"name\":\"Review data-flow disclosure\",\"prompt\":\"Read data-flow docs and summarize outbound network triggers.\"},{\"id\":\"supply\",\"name\":\"Verify supply-chain path\",\"prompt\":\"Check package provenance, checksums, and production bundle behavior.\"},{\"id\":\"signoff\",\"name\":\"Approval signoff\",\"prompt\":\"Pause for operator signoff before client trial.\",\"requiresApproval\":true}]}",
+      "status": "draft",
+      "runNumber": 0,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z",
+      "taskCount": 0,
+      "liveTaskCount": 0,
+      "outputDocCount": 0
+    },
+    {
+      "id": "demo_workflow_failed_budget",
+      "name": "High-Cost Research Sweep",
+      "projectId": "demo_project_agency_ops",
+      "definition": "{\"pattern\":\"parallel\",\"steps\":[{\"id\":\"branch-a\",\"name\":\"Market branch\",\"prompt\":\"Research market signals.\"},{\"id\":\"branch-b\",\"name\":\"Competitor branch\",\"prompt\":\"Research competitors.\"},{\"id\":\"join\",\"name\":\"Synthesize\",\"prompt\":\"Join findings and produce one brief.\"}]}",
+      "status": "failed",
+      "runNumber": 2,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z",
+      "taskCount": 0,
+      "liveTaskCount": 0,
+      "outputDocCount": 0
+    }
+  ],
+  "tasks": [
+    {
+      "id": "demo_task_agency_digest_done",
+      "title": "Draft weekly client digest",
+      "description": "Summarize client delivery status, margin, approvals, and blockers for Monday review.",
+      "status": "completed",
+      "priority": 1,
+      "assignedAgent": null,
+      "agentProfile": "relay-agency--account-manager",
+      "projectId": "demo_project_agency_ops",
+      "workflowId": "demo_workflow_client_status",
+      "scheduleId": null,
+      "sourceType": "workflow",
+      "result": "Drafted five client summaries. Harbor renewal and Brightline support need operator review before client send.",
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "claude-code",
+      "effectiveModelId": "claude-sonnet-4",
+      "turnCount": 7,
+      "tokenCount": 18420,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    {
+      "id": "demo_task_cre_running",
+      "title": "Normalize renewal economics for Harbor portfolio",
+      "description": "Compare renewal options and draft owner recommendation for two expiring leases.",
+      "status": "running",
+      "priority": 1,
+      "assignedAgent": null,
+      "agentProfile": "relay-cre--cre-renewal-analyst",
+      "projectId": "demo_project_harbor_cre",
+      "workflowId": "demo_workflow_cre_renewal",
+      "scheduleId": null,
+      "sourceType": "workflow",
+      "result": null,
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "claude-code",
+      "effectiveModelId": "claude-sonnet-4",
+      "turnCount": 4,
+      "tokenCount": 9200,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    {
+      "id": "demo_task_grant_done",
+      "title": "Screen state resilience grant",
+      "description": "Score opportunity fit and reporting burden for CivicSpring Foundation.",
+      "status": "completed",
+      "priority": 2,
+      "assignedAgent": null,
+      "agentProfile": "relay-nonprofit--grant-researcher",
+      "projectId": "demo_project_civic_grants",
+      "workflowId": "demo_workflow_grant_screen",
+      "scheduleId": null,
+      "sourceType": "workflow",
+      "result": "Recommended pursue with a reporting-risk note. Draft LOI needs updated beneficiary count.",
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "openai-direct",
+      "effectiveModelId": "gpt-5-mini",
+      "turnCount": 5,
+      "tokenCount": 12640,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    {
+      "id": "demo_task_support_waiting",
+      "title": "Approve refund-policy reply for order #BL-1048",
+      "description": "Agent drafted a reply for a high-frustration support ticket; operator approval required.",
+      "status": "queued",
+      "priority": 1,
+      "assignedAgent": null,
+      "agentProfile": "customer-support-agent",
+      "projectId": "demo_project_brightline_support",
+      "workflowId": "demo_workflow_support_triage",
+      "scheduleId": null,
+      "sourceType": "workflow",
+      "result": null,
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "anthropic-direct",
+      "effectiveModelId": "claude-3-5-sonnet",
+      "turnCount": 3,
+      "tokenCount": 6400,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    {
+      "id": "demo_task_solo_local_done",
+      "title": "Plan next launch block",
+      "description": "Use local model to choose the next 90-minute launch sprint.",
+      "status": "completed",
+      "priority": 2,
+      "assignedAgent": null,
+      "agentProfile": "project-manager",
+      "projectId": "demo_project_solo_launch",
+      "workflowId": "demo_workflow_solo_launch",
+      "scheduleId": null,
+      "sourceType": "manual",
+      "result": "Next sprint: publish comparison page, then queue two distribution posts.",
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "ollama",
+      "effectiveModelId": "llama3.1:8b",
+      "turnCount": 2,
+      "tokenCount": 3100,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    {
+      "id": "demo_task_web_preview_done",
+      "title": "Generate Studio Vale preview",
+      "description": "Create a local preview artifact from published page-section rows.",
+      "status": "completed",
+      "priority": 2,
+      "assignedAgent": null,
+      "agentProfile": "relay-web-publisher--site-editor",
+      "projectId": "demo_project_studio_site",
+      "workflowId": "demo_workflow_web_publish",
+      "scheduleId": null,
+      "sourceType": "workflow",
+      "result": "Preview artifact generated. Hero, proof, process, CTA, and footer sections are ready for review.",
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "claude-code",
+      "effectiveModelId": "claude-sonnet-4",
+      "turnCount": 4,
+      "tokenCount": 7800,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    {
+      "id": "demo_task_trust_planned",
+      "title": "Verify data-flow claims before buyer demo",
+      "description": "Review trust docs and capture screenshots for local-first setup.",
+      "status": "planned",
+      "priority": 2,
+      "assignedAgent": null,
+      "agentProfile": "security-reviewer",
+      "projectId": "demo_project_admin_trust",
+      "workflowId": "demo_workflow_trust_review",
+      "scheduleId": null,
+      "sourceType": "manual",
+      "result": null,
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "claude-code",
+      "effectiveModelId": "claude-sonnet-4",
+      "turnCount": 0,
+      "tokenCount": 0,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    {
+      "id": "demo_task_budget_failed",
+      "title": "Run market research sweep",
+      "description": "Parallel research exceeded the configured demo budget and stopped visibly.",
+      "status": "failed",
+      "priority": 3,
+      "assignedAgent": null,
+      "agentProfile": "researcher",
+      "projectId": "demo_project_agency_ops",
+      "workflowId": "demo_workflow_failed_budget",
+      "scheduleId": null,
+      "sourceType": "workflow",
+      "result": "Stopped before synthesis: demo budget threshold exceeded.",
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "openai-direct",
+      "effectiveModelId": "gpt-5",
+      "turnCount": 9,
+      "tokenCount": 52200,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    {
+      "id": "demo_task_app_builder",
+      "title": "Turn launch checklist into reusable app",
+      "description": "Compose a tracker kit surface with launch tasks, channel rows, and a weekly review schedule.",
+      "status": "completed",
+      "priority": 2,
+      "assignedAgent": null,
+      "agentProfile": "app-builder",
+      "projectId": "demo_project_solo_launch",
+      "workflowId": null,
+      "scheduleId": null,
+      "sourceType": "manual",
+      "result": "Created demo Launch Ops app manifest and linked launch tracker table.",
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "claude-code",
+      "effectiveModelId": "claude-sonnet-4",
+      "turnCount": 6,
+      "tokenCount": 11800,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    {
+      "id": "demo_task_pack_update",
+      "title": "Review Agency Pro update notes",
+      "description": "Confirm the new pack version preserves edits and only gates new updates on license status.",
+      "status": "completed",
+      "priority": 3,
+      "assignedAgent": null,
+      "agentProfile": "relay-agency--governance-officer",
+      "projectId": "demo_project_agency_ops",
+      "workflowId": null,
+      "scheduleId": null,
+      "sourceType": "manual",
+      "result": "Update notes summarized. Backup path and never-re-lock copy ready for screenshot.",
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "claude-code",
+      "effectiveModelId": "claude-sonnet-4",
+      "turnCount": 3,
+      "tokenCount": 5200,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "demo_notification_support_approval",
+      "taskId": "demo_task_support_waiting",
+      "type": "permission_required",
+      "title": "Approve drafted support reply",
+      "body": "Brightline ticket #BL-1048 includes a refund exception. Review the drafted reply before it is sent.",
+      "read": false,
+      "toolName": "send_customer_reply",
+      "toolInput": {
+        "ticket": "BL-1048",
+        "risk": "refund-policy-exception"
+      }
+    },
+    {
+      "id": "demo_notification_cre_question",
+      "taskId": "demo_task_cre_running",
+      "type": "agent_message",
+      "title": "Renewal engine needs operator input",
+      "body": "Harbor lease option has two conflicting notice dates. Choose which counsel-reviewed date to use.",
+      "read": false,
+      "toolName": null,
+      "toolInput": null
+    },
+    {
+      "id": "demo_notification_budget_alert",
+      "taskId": "demo_task_budget_failed",
+      "type": "budget_alert",
+      "title": "Research sweep stopped at budget cap",
+      "body": "The parallel research sweep stopped before synthesis after reaching the demo budget threshold.",
+      "read": false,
+      "toolName": null,
+      "toolInput": null
+    },
+    {
+      "id": "demo_notification_pack_update",
+      "taskId": "demo_task_pack_update",
+      "type": "task_completed",
+      "title": "Agency Pro update notes ready",
+      "body": "Update recap and backup-path note are ready for review.",
+      "read": true,
+      "toolName": null,
+      "toolInput": null
+    }
+  ],
+  "usageLedger": [
+    {
+      "id": "demo_usage_agency_digest",
+      "taskId": "demo_task_agency_digest_done",
+      "workflowId": "demo_workflow_client_status",
+      "projectId": "demo_project_agency_ops",
+      "customerId": "demo_customer_northstar",
+      "activityType": "workflow_step",
+      "runtimeId": "claude-code",
+      "providerId": "anthropic",
+      "modelId": "claude-sonnet-4",
+      "status": "completed",
+      "inputTokens": 14200,
+      "outputTokens": 4220,
+      "costMicros": 186000
+    },
+    {
+      "id": "demo_usage_cre_running",
+      "taskId": "demo_task_cre_running",
+      "workflowId": "demo_workflow_cre_renewal",
+      "projectId": "demo_project_harbor_cre",
+      "customerId": "demo_customer_harbor_field",
+      "activityType": "workflow_step",
+      "runtimeId": "claude-code",
+      "providerId": "anthropic",
+      "modelId": "claude-sonnet-4",
+      "status": "completed",
+      "inputTokens": 8100,
+      "outputTokens": 1100,
+      "costMicros": 91000
+    },
+    {
+      "id": "demo_usage_grant",
+      "taskId": "demo_task_grant_done",
+      "workflowId": "demo_workflow_grant_screen",
+      "projectId": "demo_project_civic_grants",
+      "customerId": "demo_customer_civicspring",
+      "activityType": "workflow_step",
+      "runtimeId": "openai-direct",
+      "providerId": "openai",
+      "modelId": "gpt-5-mini",
+      "status": "completed",
+      "inputTokens": 9600,
+      "outputTokens": 3040,
+      "costMicros": 74000
+    },
+    {
+      "id": "demo_usage_support",
+      "taskId": "demo_task_support_waiting",
+      "workflowId": "demo_workflow_support_triage",
+      "projectId": "demo_project_brightline_support",
+      "customerId": "demo_customer_brightline",
+      "activityType": "workflow_step",
+      "runtimeId": "anthropic-direct",
+      "providerId": "anthropic",
+      "modelId": "claude-3-5-sonnet",
+      "status": "blocked",
+      "inputTokens": 4900,
+      "outputTokens": 1500,
+      "costMicros": 52000
+    },
+    {
+      "id": "demo_usage_solo_local",
+      "taskId": "demo_task_solo_local_done",
+      "workflowId": "demo_workflow_solo_launch",
+      "projectId": "demo_project_solo_launch",
+      "customerId": null,
+      "activityType": "task_run",
+      "runtimeId": "ollama",
+      "providerId": "local",
+      "modelId": "llama3.1:8b",
+      "status": "completed",
+      "inputTokens": 2300,
+      "outputTokens": 800,
+      "costMicros": 0
+    },
+    {
+      "id": "demo_usage_web",
+      "taskId": "demo_task_web_preview_done",
+      "workflowId": "demo_workflow_web_publish",
+      "projectId": "demo_project_studio_site",
+      "customerId": "demo_customer_studio_vale",
+      "activityType": "workflow_step",
+      "runtimeId": "claude-code",
+      "providerId": "anthropic",
+      "modelId": "claude-sonnet-4",
+      "status": "completed",
+      "inputTokens": 6100,
+      "outputTokens": 1700,
+      "costMicros": 88000
+    },
+    {
+      "id": "demo_usage_budget_failed",
+      "taskId": "demo_task_budget_failed",
+      "workflowId": "demo_workflow_failed_budget",
+      "projectId": "demo_project_agency_ops",
+      "customerId": "demo_customer_northstar",
+      "activityType": "workflow_step",
+      "runtimeId": "openai-direct",
+      "providerId": "openai",
+      "modelId": "gpt-5",
+      "status": "failed",
+      "inputTokens": 41000,
+      "outputTokens": 11200,
+      "costMicros": 1480000
+    }
+  ],
+  "streams": {
+    "logs": [
+      {
+        "t": 0,
+        "id": "demo_log_1",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "trigger_fired",
+        "payload": "Support row trigger fired for ticket #BL-1048",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      },
+      {
+        "t": 1200,
+        "id": "demo_log_2",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "classified",
+        "payload": "Classified: refund-policy exception, high frustration",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      },
+      {
+        "t": 2400,
+        "id": "demo_log_3",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "approval_requested",
+        "payload": "Approval requested — drafted reply held for human review",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      },
+      {
+        "t": 3600,
+        "id": "demo_log_4",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "approved",
+        "payload": "Reply approved — writing classification back to table",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      },
+      {
+        "t": 4200,
+        "id": "demo_log_5",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "completed",
+        "payload": "Support Row Triage run #19 completed",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      }
+    ]
+  },
+  "machines": {
+    "support_triage": {
+      "kind": "support_triage",
+      "workflowId": "demo_workflow_support_triage",
+      "workflowName": "Support Row Triage",
+      "projectId": "demo_project_brightline_support",
+      "taskId": "demo_task_support_waiting",
+      "childTask": {
+        "id": "demo_task_support_waiting",
+        "title": "Approve refund-policy reply for order #BL-1048",
+        "description": "Agent drafted a reply for a high-frustration support ticket; operator approval required.",
+        "status": "running",
+        "priority": 1,
+        "assignedAgent": null,
+        "agentProfile": "customer-support-agent",
+        "projectId": "demo_project_brightline_support",
+        "workflowId": "demo_workflow_support_triage",
+        "scheduleId": null,
+        "sourceType": "workflow",
+        "result": null,
+        "sessionId": null,
+        "resumeCount": 0,
+        "effectiveRuntimeId": "anthropic-direct",
+        "effectiveModelId": "claude-3-5-sonnet",
+        "turnCount": 3,
+        "tokenCount": 6400,
+        "createdAt": "2026-07-08T17:00:00.000Z",
+        "updatedAt": "2026-07-08T17:00:00.000Z"
+      },
+      "approval": {
+        "channel": "in_app",
+        "notificationId": "demo_notification_support_approval",
+        "taskId": "demo_task_support_waiting",
+        "workflowId": "demo_workflow_support_triage",
+        "toolName": "send_customer_reply",
+        "permissionLabel": "Send customer reply",
+        "compactSummary": "Send drafted refund-policy reply for ticket #BL-1048",
+        "deepLink": "/tasks/demo_task_support_waiting",
+        "supportedActionIds": [
+          "allow_once",
+          "always_allow",
+          "deny",
+          "open_inbox"
+        ],
+        "title": "Approve drafted support reply",
+        "body": "Brightline ticket #BL-1048 includes a refund exception. Review the drafted reply before it is sent.",
+        "taskTitle": "Approve refund-policy reply for order #BL-1048",
+        "workflowName": "Support Row Triage",
+        "toolInput": {
+          "ticket": "BL-1048",
+          "risk": "refund-policy-exception"
+        },
+        "createdAt": "2026-07-08T17:00:00.000Z",
+        "read": false,
+        "notificationType": "permission_required"
+      },
+      "approve": {
+        "url": "/api/tasks/demo_task_support_waiting/respond",
+        "behavior": "allow",
+        "notificationId": "demo_notification_support_approval"
+      },
+      "ledgerRow": {
+        "id": "demo_usage_support_triage_run",
+        "label": "Support Row Triage run #19",
+        "workflowId": "demo_workflow_support_triage",
+        "taskId": "demo_task_support_waiting",
+        "runtimeId": "anthropic-direct",
+        "modelId": "claude-3-5-sonnet",
+        "costMicros": 420000,
+        "tokenCount": 6400
+      },
+      "monitorEvents": [
+        {
+          "t": 0,
+          "id": "demo_log_1",
+          "taskId": "demo_task_support_waiting",
+          "agentType": "anthropic-direct",
+          "event": "trigger_fired",
+          "payload": "Support row trigger fired for ticket #BL-1048",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 1200,
+          "id": "demo_log_2",
+          "taskId": "demo_task_support_waiting",
+          "agentType": "anthropic-direct",
+          "event": "classified",
+          "payload": "Classified: refund-policy exception, high frustration",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 2400,
+          "id": "demo_log_3",
+          "taskId": "demo_task_support_waiting",
+          "agentType": "anthropic-direct",
+          "event": "approval_requested",
+          "payload": "Approval requested — drafted reply held for human review",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 3600,
+          "id": "demo_log_4",
+          "taskId": "demo_task_support_waiting",
+          "agentType": "anthropic-direct",
+          "event": "approved",
+          "payload": "Reply approved — writing classification back to table",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 4200,
+          "id": "demo_log_5",
+          "taskId": "demo_task_support_waiting",
+          "agentType": "anthropic-direct",
+          "event": "completed",
+          "payload": "Support Row Triage run #19 completed",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        }
+      ],
+      "coach": [
+        {
+          "page": "workflows",
+          "state": "",
+          "step": "Step 1 of 3",
+          "title": "Support Row Triage",
+          "body": "A support ticket came in. This workflow classified it and drafted a reply — now it needs your sign-off. Open Inbox to review it.",
+          "targetLabel": "run"
+        },
+        {
+          "page": "inbox",
+          "state": "",
+          "step": "Step 2 of 3",
+          "title": "Your approval, in the loop",
+          "body": "The agent drafted a refund-policy reply for ticket #BL-1048. Click Allow Once to approve and send it.",
+          "targetLabel": "allow once"
+        },
+        {
+          "page": "monitor",
+          "state": "",
+          "step": "Live",
+          "title": "Watch it work",
+          "body": "Every agent action streams here as it happens. Run the Support Row Triage lane to see it fill in.",
+          "targetLabel": null
+        },
+        {
+          "page": "inbox",
+          "state": "completed",
+          "step": "Done",
+          "title": "Reply approved",
+          "body": "The agent sent the drafted reply and closed the ticket. Open Monitor to replay the run, or Cost & Usage to see what it cost.",
+          "targetLabel": null
+        },
+        {
+          "page": "workflows",
+          "state": "completed",
+          "step": "Done",
+          "title": "Reply approved",
+          "body": "The agent sent the drafted reply and closed the ticket. Open Monitor to replay the run, or Cost & Usage to see what it cost.",
+          "targetLabel": null
+        },
+        {
+          "page": "monitor",
+          "state": "completed",
+          "step": "Done",
+          "title": "The full run, replayed",
+          "body": "Every step the agent took — trigger, classify, approval, send — streamed live. This is the real Monitor view.",
+          "targetLabel": null
+        }
+      ]
+    },
+    "web_publish": {
+      "kind": "web_publish",
+      "appId": "demo-web-designer",
+      "appName": "Demo Web Designer",
+      "workflowId": "demo_workflow_web_publish",
+      "workflowName": "Website Section Draft",
+      "targetId": "demo_publish_target_studio_pages",
+      "siteTitle": "Studio Vale AI Operations",
+      "generatorConfig": {
+        "theme": "relay",
+        "density": "balanced",
+        "heroLayout": "stacked",
+        "accent": "teal",
+        "templateId": "studio-service"
+      },
+      "preview": {
+        "result": {
+          "artifactId": "demo_preview_artifact_001",
+          "url": "/api/apps/demo/previews/demo_preview_artifact_001",
+          "hash": "demo-preview-hash-201",
+          "createdAt": "2026-07-08T17:00:00.000Z",
+          "expiresAt": "2026-07-08T17:00:00.000Z",
+          "stale": false
+        }
+      },
+      "newDeployment": {
+        "id": "demo_deployment_studio_live",
+        "appId": "demo-web-designer",
+        "targetId": "demo_publish_target_studio_pages",
+        "status": "pending",
+        "url": "https://studio-vale-demo.github.io/landing-page/",
+        "finalUrl": "https://studio-vale-demo.github.io/landing-page/",
+        "commit": "demolive5678",
+        "artifactHash": "demo-artifact-hash-002",
+        "generatorConfig": {
+          "theme": "relay",
+          "density": "balanced",
+          "heroLayout": "stacked",
+          "accent": "teal",
+          "templateId": "studio-service"
+        },
+        "pageSlug": "home",
+        "startedAt": "2026-07-08T17:00:00.000Z",
+        "finishedAt": null,
+        "error": null
+      },
+      "initialDeployments": [
+        {
+          "id": "demo_deployment_studio_success",
+          "appId": "demo-web-designer",
+          "targetId": "demo_publish_target_studio_pages",
+          "status": "success",
+          "url": "https://studio-vale-demo.github.io/landing-page/",
+          "finalUrl": "https://studio-vale-demo.github.io/landing-page/",
+          "commit": "demoabc1234",
+          "artifactHash": "demo-artifact-hash-001",
+          "generatorConfig": {
+            "theme": "relay",
+            "density": "balanced",
+            "heroLayout": "stacked",
+            "accent": "teal",
+            "templateId": "studio-service"
+          },
+          "pageSlug": "home",
+          "startedAt": "2026-07-08T17:00:00.000Z",
+          "finishedAt": "2026-07-08T17:00:00.000Z",
+          "error": null
+        },
+        {
+          "id": "demo_deployment_studio_failed",
+          "appId": "demo-web-designer",
+          "targetId": "demo_publish_target_studio_pages",
+          "status": "failed",
+          "url": null,
+          "finalUrl": null,
+          "commit": null,
+          "artifactHash": "demo-artifact-hash-000",
+          "generatorConfig": {
+            "theme": "relay",
+            "density": "compact",
+            "heroLayout": "split",
+            "accent": "amber",
+            "templateId": "studio-service"
+          },
+          "pageSlug": "services",
+          "startedAt": "2026-07-08T17:00:00.000Z",
+          "finishedAt": "2026-07-08T17:00:00.000Z",
+          "error": "Demo failure: GitHub token missing write permission."
+        }
+      ],
+      "ledgerRow": {
+        "id": "demo_usage_web_publish_run",
+        "label": "Website Section Draft run #3",
+        "workflowId": "demo_workflow_web_publish",
+        "taskId": null,
+        "runtimeId": "claude-code",
+        "modelId": null,
+        "costMicros": 180000,
+        "tokenCount": 2800
+      },
+      "monitorEvents": [
+        {
+          "t": 0,
+          "id": "demo_pub_log_1",
+          "taskId": null,
+          "agentType": "static-site",
+          "event": "preview_built",
+          "payload": "Preview built from Web Sections — hero, proof, offer, CTA",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 1200,
+          "id": "demo_pub_log_2",
+          "taskId": null,
+          "agentType": "static-site",
+          "event": "publishing",
+          "payload": "Publishing to GitHub Pages (studio-vale-demo/landing-page)",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 2600,
+          "id": "demo_pub_log_3",
+          "taskId": null,
+          "agentType": "static-site",
+          "event": "deployed",
+          "payload": "Deployment succeeded — site live at studio-vale-demo.github.io/landing-page",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        }
+      ],
+      "coach": [
+        {
+          "page": "apps",
+          "state": "",
+          "step": "Step 1 of 2",
+          "title": "Publish a real site",
+          "body": "This Web Designer app turns your content rows into a static site. Click Preview to build one, then Publish to ship it to GitHub Pages.",
+          "targetLabel": "preview"
+        },
+        {
+          "page": "apps",
+          "state": "previewed",
+          "step": "Step 2 of 2",
+          "title": "Preview ready — ship it",
+          "body": "The preview is built from your Web Sections. Click Publish to deploy it. A new deployment row will appear and go live.",
+          "targetLabel": "publish"
+        },
+        {
+          "page": "apps",
+          "state": "completed",
+          "step": "Done",
+          "title": "Site published",
+          "body": "The deployment reached success and the site is live. Deployment history keeps every publish with its commit and status.",
+          "targetLabel": null
+        }
+      ]
+    },
+    "row_trigger": {
+      "kind": "row_trigger",
+      "tableId": "demo_table_support_queue",
+      "tableName": "Support Queue",
+      "projectId": "demo_project_brightline_support",
+      "columns": [
+        {
+          "name": "ticket",
+          "displayName": "Ticket",
+          "dataType": "text",
+          "required": true,
+          "config": null
+        },
+        {
+          "name": "customer",
+          "displayName": "Customer",
+          "dataType": "text",
+          "required": false,
+          "config": null
+        },
+        {
+          "name": "issue_type",
+          "displayName": "Issue",
+          "dataType": "select",
+          "required": false,
+          "config": {
+            "options": [
+              "Refund",
+              "Shipping",
+              "Product question",
+              "Damaged item"
+            ]
+          }
+        },
+        {
+          "name": "sentiment",
+          "displayName": "Sentiment",
+          "dataType": "select",
+          "required": false,
+          "config": {
+            "options": [
+              "Calm",
+              "Frustrated",
+              "Angry",
+              "Delighted"
+            ]
+          }
+        },
+        {
+          "name": "priority",
+          "displayName": "Priority",
+          "dataType": "select",
+          "required": false,
+          "config": {
+            "options": [
+              "Low",
+              "Medium",
+              "High"
+            ]
+          }
+        },
+        {
+          "name": "status",
+          "displayName": "Status",
+          "dataType": "select",
+          "required": false,
+          "config": {
+            "options": [
+              "New",
+              "Drafted",
+              "Waiting approval",
+              "Sent"
+            ]
+          }
+        },
+        {
+          "name": "draft_reply",
+          "displayName": "Draft reply",
+          "dataType": "text",
+          "required": false,
+          "config": null
+        }
+      ],
+      "seededRows": [
+        {
+          "id": "demo_row_support_seed_1",
+          "tableId": "demo_table_support_queue",
+          "data": "{\"ticket\":\"BL-1048\",\"customer\":\"Maya Chen\",\"issue_type\":\"Refund\",\"sentiment\":\"Angry\",\"priority\":\"High\",\"status\":\"Waiting approval\",\"draft_reply\":\"Offer a one-time refund exception and explain the updated policy clearly.\"}",
+          "position": 0,
+          "createdBy": "agent",
+          "createdAt": "2026-07-08T17:00:00.000Z",
+          "updatedAt": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "id": "demo_row_support_seed_2",
+          "tableId": "demo_table_support_queue",
+          "data": "{\"ticket\":\"BL-1049\",\"customer\":\"Owen Patel\",\"issue_type\":\"Shipping\",\"sentiment\":\"Frustrated\",\"priority\":\"Medium\",\"status\":\"Drafted\",\"draft_reply\":\"Apologize for delay, provide tracking update, offer free expedited replacement if not delivered by Friday.\"}",
+          "position": 1,
+          "createdBy": "agent",
+          "createdAt": "2026-07-08T17:00:00.000Z",
+          "updatedAt": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "id": "demo_row_support_seed_3",
+          "tableId": "demo_table_support_queue",
+          "data": "{\"ticket\":\"BL-1050\",\"customer\":\"Sofia Reyes\",\"issue_type\":\"Product question\",\"sentiment\":\"Calm\",\"priority\":\"Low\",\"status\":\"New\",\"draft_reply\":\"\"}",
+          "position": 2,
+          "createdBy": "agent",
+          "createdAt": "2026-07-08T17:00:00.000Z",
+          "updatedAt": "2026-07-08T17:00:00.000Z"
+        }
+      ],
+      "newRow": {
+        "id": "demo_row_support_new",
+        "tableId": "demo_table_support_queue",
+        "data": "{\"ticket\":\"BL-1051\",\"customer\":\"Devin Ross\",\"issue_type\":\"Damaged item\",\"sentiment\":\"Frustrated\",\"priority\":\"High\",\"status\":\"New\",\"draft_reply\":\"\"}",
+        "position": 3,
+        "createdBy": "user",
+        "createdAt": "2026-07-08T17:00:00.000Z",
+        "updatedAt": "2026-07-08T17:00:00.000Z"
+      },
+      "addRowsResult": {
+        "ids": [
+          "demo_row_support_new"
+        ],
+        "skipped": 0
+      },
+      "trigger": {
+        "id": "demo_trigger_support_row_added",
+        "name": "Classify new support row",
+        "triggerEvent": "row_added",
+        "actionType": "run_workflow",
+        "workflowId": "demo_workflow_support_triage",
+        "workflowName": "Support Row Triage",
+        "status": "active",
+        "fireCount": 19
+      },
+      "ledgerRow": {
+        "id": "demo_usage_row_trigger_run",
+        "label": "Support Row Triage run (row trigger)",
+        "workflowId": "demo_workflow_support_triage",
+        "taskId": null,
+        "runtimeId": "anthropic-direct",
+        "modelId": null,
+        "costMicros": 90000,
+        "tokenCount": 1400
+      },
+      "monitorEvents": [
+        {
+          "t": 0,
+          "id": "demo_rowtrig_log_1",
+          "taskId": null,
+          "agentType": "table-trigger",
+          "event": "row_added",
+          "payload": "Row added to Support Queue — ticket #BL-1051 (Devin Ross)",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 1100,
+          "id": "demo_rowtrig_log_2",
+          "taskId": null,
+          "agentType": "table-trigger",
+          "event": "trigger_fired",
+          "payload": "Trigger \"Classify new support row\" fired → launching Support Row Triage",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 2300,
+          "id": "demo_rowtrig_log_3",
+          "taskId": null,
+          "agentType": "table-trigger",
+          "event": "run_started",
+          "payload": "Support Row Triage started — classifying the new ticket",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        }
+      ],
+      "coach": [
+        {
+          "page": "tables",
+          "state": "",
+          "step": "Step 1 of 2",
+          "title": "One row starts a run",
+          "body": "This Support Queue table has a row trigger. Add a new ticket row and the classification workflow fires automatically. Click Add row.",
+          "targetLabel": "add row"
+        },
+        {
+          "page": "tables",
+          "state": "fired",
+          "step": "Step 2 of 2",
+          "title": "The trigger fired",
+          "body": "Adding the row launched the Support Row Triage workflow. It is classifying the ticket now and will hold the drafted reply for your approval. Open Inbox to sign off.",
+          "targetLabel": null
+        }
+      ]
+    },
+    "license_pack": {
+      "kind": "license_pack",
+      "packId": "relay-crm",
+      "packName": "Relay CRM",
+      "entitlement": "product:orionfold-relay",
+      "price": {
+        "intro": "$349/year",
+        "list": "$499/year",
+        "note": "One license unlocks every paid Relay pack."
+      },
+      "purchaseUrl": "https://orionfold.com/relay/",
+      "gate": {
+        "status": 402,
+        "body": {
+          "error": "This pack requires a license (product:orionfold-relay). Redeem yours once with: relay license add <path-or-url to your .license.json> — or pass --license-url=<path-or-url> for this install.",
+          "code": "license_required"
+        }
+      },
+      "licenseInfo": {
+        "licenseId": "demo_license_orionfold_relay",
+        "filePath": "~/.relay/licenses/demo.license.json",
+        "valid": true,
+        "issuedTo": {
+          "name": "Vale Studio",
+          "org": "Vale Studio"
+        },
+        "issuedAt": "2026-07-08T17:00:00.000Z",
+        "expiresAt": "2027-07-08T17:00:00.000Z",
+        "seats": 1,
+        "entitlements": [
+          "product:orionfold-relay"
+        ]
+      },
+      "identityLicensed": {
+        "kind": "licensed",
+        "label": "Vale Studio"
+      },
+      "identityCommunity": {
+        "kind": "community"
+      },
+      "installResult": {
+        "ok": true,
+        "packId": "relay-crm",
+        "installed": true,
+        "summary": "Relay CRM installed"
+      },
+      "monitorEvents": [
+        {
+          "t": 0,
+          "id": "demo_lic_log_1",
+          "taskId": null,
+          "agentType": "pack-install",
+          "event": "license_required",
+          "payload": "Relay CRM needs a license — install blocked (402)",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 1100,
+          "id": "demo_lic_log_2",
+          "taskId": null,
+          "agentType": "pack-install",
+          "event": "license_activated",
+          "payload": "License activated — entitlement product:orionfold-relay granted",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        },
+        {
+          "t": 2300,
+          "id": "demo_lic_log_3",
+          "taskId": null,
+          "agentType": "pack-install",
+          "event": "installed",
+          "payload": "Relay CRM installed — every paid pack now unlocked",
+          "timestamp": "2026-07-08T17:00:00.000Z"
+        }
+      ],
+      "coach": [
+        {
+          "page": "packs",
+          "state": "",
+          "step": "Step 1 of 2",
+          "title": "Paid packs need a license",
+          "body": "Relay CRM is a paid pack. Click Install and Relay will check your license first. Without one, the install is blocked — one license unlocks every paid pack.",
+          "targetLabel": "install"
+        },
+        {
+          "page": "packs",
+          "state": "gated",
+          "step": "Step 2 of 2",
+          "title": "Activate to unlock",
+          "body": "The install hit the license gate (402 license_required). Activate a license to unlock every paid pack, then the install completes.",
+          "targetLabel": "activate"
+        },
+        {
+          "page": "packs",
+          "state": "licensed",
+          "step": "Done",
+          "title": "Unlocked and installed",
+          "body": "Relay CRM installed and every paid pack is now unlocked. Your license is local — Relay never sends your data to Orionfold.",
+          "targetLabel": null
+        }
+      ]
+    }
+  },
+  "machine": {
+    "kind": "support_triage",
+    "workflowId": "demo_workflow_support_triage",
+    "workflowName": "Support Row Triage",
+    "projectId": "demo_project_brightline_support",
+    "taskId": "demo_task_support_waiting",
+    "childTask": {
+      "id": "demo_task_support_waiting",
+      "title": "Approve refund-policy reply for order #BL-1048",
+      "description": "Agent drafted a reply for a high-frustration support ticket; operator approval required.",
+      "status": "running",
+      "priority": 1,
+      "assignedAgent": null,
+      "agentProfile": "customer-support-agent",
+      "projectId": "demo_project_brightline_support",
+      "workflowId": "demo_workflow_support_triage",
+      "scheduleId": null,
+      "sourceType": "workflow",
+      "result": null,
+      "sessionId": null,
+      "resumeCount": 0,
+      "effectiveRuntimeId": "anthropic-direct",
+      "effectiveModelId": "claude-3-5-sonnet",
+      "turnCount": 3,
+      "tokenCount": 6400,
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "updatedAt": "2026-07-08T17:00:00.000Z"
+    },
+    "approval": {
+      "channel": "in_app",
+      "notificationId": "demo_notification_support_approval",
+      "taskId": "demo_task_support_waiting",
+      "workflowId": "demo_workflow_support_triage",
+      "toolName": "send_customer_reply",
+      "permissionLabel": "Send customer reply",
+      "compactSummary": "Send drafted refund-policy reply for ticket #BL-1048",
+      "deepLink": "/tasks/demo_task_support_waiting",
+      "supportedActionIds": [
+        "allow_once",
+        "always_allow",
+        "deny",
+        "open_inbox"
+      ],
+      "title": "Approve drafted support reply",
+      "body": "Brightline ticket #BL-1048 includes a refund exception. Review the drafted reply before it is sent.",
+      "taskTitle": "Approve refund-policy reply for order #BL-1048",
+      "workflowName": "Support Row Triage",
+      "toolInput": {
+        "ticket": "BL-1048",
+        "risk": "refund-policy-exception"
+      },
+      "createdAt": "2026-07-08T17:00:00.000Z",
+      "read": false,
+      "notificationType": "permission_required"
+    },
+    "approve": {
+      "url": "/api/tasks/demo_task_support_waiting/respond",
+      "behavior": "allow",
+      "notificationId": "demo_notification_support_approval"
+    },
+    "ledgerRow": {
+      "id": "demo_usage_support_triage_run",
+      "label": "Support Row Triage run #19",
+      "workflowId": "demo_workflow_support_triage",
+      "taskId": "demo_task_support_waiting",
+      "runtimeId": "anthropic-direct",
+      "modelId": "claude-3-5-sonnet",
+      "costMicros": 420000,
+      "tokenCount": 6400
+    },
+    "monitorEvents": [
+      {
+        "t": 0,
+        "id": "demo_log_1",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "trigger_fired",
+        "payload": "Support row trigger fired for ticket #BL-1048",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      },
+      {
+        "t": 1200,
+        "id": "demo_log_2",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "classified",
+        "payload": "Classified: refund-policy exception, high frustration",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      },
+      {
+        "t": 2400,
+        "id": "demo_log_3",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "approval_requested",
+        "payload": "Approval requested — drafted reply held for human review",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      },
+      {
+        "t": 3600,
+        "id": "demo_log_4",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "approved",
+        "payload": "Reply approved — writing classification back to table",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      },
+      {
+        "t": 4200,
+        "id": "demo_log_5",
+        "taskId": "demo_task_support_waiting",
+        "agentType": "anthropic-direct",
+        "event": "completed",
+        "payload": "Support Row Triage run #19 completed",
+        "timestamp": "2026-07-08T17:00:00.000Z"
+      }
+    ],
+    "coach": [
+      {
+        "page": "workflows",
+        "state": "",
+        "step": "Step 1 of 3",
+        "title": "Support Row Triage",
+        "body": "A support ticket came in. This workflow classified it and drafted a reply — now it needs your sign-off. Open Inbox to review it.",
+        "targetLabel": "run"
+      },
+      {
+        "page": "inbox",
+        "state": "",
+        "step": "Step 2 of 3",
+        "title": "Your approval, in the loop",
+        "body": "The agent drafted a refund-policy reply for ticket #BL-1048. Click Allow Once to approve and send it.",
+        "targetLabel": "allow once"
+      },
+      {
+        "page": "monitor",
+        "state": "",
+        "step": "Live",
+        "title": "Watch it work",
+        "body": "Every agent action streams here as it happens. Run the Support Row Triage lane to see it fill in.",
+        "targetLabel": null
+      },
+      {
+        "page": "inbox",
+        "state": "completed",
+        "step": "Done",
+        "title": "Reply approved",
+        "body": "The agent sent the drafted reply and closed the ticket. Open Monitor to replay the run, or Cost & Usage to see what it cost.",
+        "targetLabel": null
+      },
+      {
+        "page": "workflows",
+        "state": "completed",
+        "step": "Done",
+        "title": "Reply approved",
+        "body": "The agent sent the drafted reply and closed the ticket. Open Monitor to replay the run, or Cost & Usage to see what it cost.",
+        "targetLabel": null
+      },
+      {
+        "page": "monitor",
+        "state": "completed",
+        "step": "Done",
+        "title": "The full run, replayed",
+        "body": "Every step the agent took — trigger, classify, approval, send — streamed live. This is the real Monitor view.",
+        "targetLabel": null
+      }
+    ]
+  }
+}

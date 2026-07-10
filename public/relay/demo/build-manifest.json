@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "basePath": "/relay/demo/",
+  "routes": [
+    "/",
+    "/apps/demo-web-designer/",
+    "/inbox/",
+    "/monitor/",
+    "/packs/",
+    "/tables/demo_table_support_queue/",
+    "/tasks/",
+    "/workflows/"
+  ],
+  "assets": 45,
+  "generatedFrom": {
+    "captured": "captured",
+    "public": "relay-demo"
+  },
+  "note": "Option C: real captured Relay UI + boot.js network shim."
+}
