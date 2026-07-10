@@ -1,0 +1,168 @@
+---
+// /relay/memos/<slug>/ — one Relay Packs memo (Rail B publish, _RELAY #17).
+// Renders the verbatim markdown body; the inline <figure class="fn-diagram">
+// SVG flows through untouched (theme-reactive via the global --svg-* tokens),
+// and the mid-essay CTA is mounted into the [data-memo-interstitial-slot] div
+// that rehype-memo-interstitial auto-inserts at the section boundary. The hero
+// signature.svg is inlined (not <img>) so its tokens theme-swap too. Prev/next
+// walk the series order (pillar first). Footer CTA is the website's, hardcoded
+// (contract: chrome is ours, Relay ships content only). Mirrors the
+// /relay/docs/<slug>/ idiom, plus the story-page interstitial mount mechanism.
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '../../../../layouts/Layout.astro';
+import Nav from '../../../../components/Nav.astro';
+import Footer from '../../../../components/Footer.astro';
+import RelaySubNav from '../../../../components/relay/RelaySubNav.astro';
+import RelayDocsCta from '../../../../components/relay/RelayDocsCta.astro';
+import RelayMemoInterstitial from '../../../../components/relay/RelayMemoInterstitial.astro';
+import { ogMeta } from '../../../../data/og';
+import { SITE, PERSON, PUBLISHER } from '../../../../data/seo';
+import { orderedMemos, memoSignatureHtml } from '../../../../lib/relay/memos.mjs';
+
+export async function getStaticPaths() {
+  const memos = orderedMemos(await getCollection('memos'));
+  return memos.map((memo, i) => ({
+    params: { slug: memo.id },
+    props: {
+      memo,
+      prev: i > 0 ? memos[i - 1] : null,
+      next: i < memos.length - 1 ? memos[i + 1] : null,
+    },
+  }));
+}
+
+type Entry = CollectionEntry<'memos'>;
+const { memo, prev, next } = Astro.props as { memo: Entry; prev: Entry | null; next: Entry | null };
+const { Content } = await render(memo);
+const { title, summary, series, date, status, difficulty } = memo.data;
+
+// The hero SVG lives next to the article (signature.svg); read it raw and inline
+// it so its --svg-* tokens resolve against the site theme (an <img> would
+// sandbox the CSS vars). Absent -> no hero, page still renders.
+const heroSvg = memoSignatureHtml(memo);
+const isDraft = status !== 'published';
+
+const og = ogMeta('/relay/');
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: summary,
+  datePublished: date.toISOString().slice(0, 10),
+  author: { ...PERSON, url: `${SITE.url}/about/` },
+  publisher: PUBLISHER,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  url: canonical,
+  inLanguage: 'en',
+  articleSection: series,
+  isPartOf: { '@type': 'Blog', name: series, url: `${SITE.url}/relay/memos/` },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Relay', item: `${SITE.url}/relay/` },
+    { '@type': 'ListItem', position: 3, name: 'Memos', item: `${SITE.url}/relay/memos/` },
+    { '@type': 'ListItem', position: 4, name: title, item: canonical },
+  ],
+};
+---
+<Layout
+  title={`${title} · Relay Packs · Orionfold`}
+  description={summary}
+  ogImage={og.image}
+  ogImageAlt={`${title} · Orionfold Relay Packs`}
+  jsonLd={[articleSchema, breadcrumbSchema]}
+  noindex={isDraft ? 'follow' : false}
+>
+  <Nav />
+  <RelaySubNav active="memos" />
+  <main class="px-6 pt-10 pb-24">
+    <div class="mx-auto max-w-2xl">
+      <a href="/relay/memos/" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+        {series}
+      </a>
+
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <p class="font-mono text-sm text-primary">{series}</p>
+        {isDraft && (
+          <span class="rounded border border-border px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim" title="Editorial review pending">
+            Draft
+          </span>
+        )}
+      </div>
+      <h1 class="mt-2 text-3xl leading-tight sm:text-4xl">{title}</h1>
+      <p class="mt-4 text-base leading-relaxed text-text-muted">{summary}</p>
+
+      {heroSvg && (
+        <figure class="memo-hero mt-8 overflow-hidden rounded-2xl border border-border/70 bg-surface/40" set:html={heroSvg} />
+      )}
+
+      <article class="story-prose mt-10 border-t border-border pt-10">
+        <Content />
+      </article>
+
+      {/* The mid-essay interstitial: server-rendered hidden, then an inline
+          script relocates it into the [data-memo-interstitial-slot] the rehype
+          plugin auto-inserted at the section boundary. Hidden-until-placed = no
+          flash; JS-off falls back to right after the body. Contract: ONE mid
+          CTA + the footer CTA, no sticky. */}
+      <div id="memo-interstitial-source" hidden>
+        <RelayMemoInterstitial />
+      </div>
+      <script is:inline>
+        (() => {
+          const src = document.getElementById('memo-interstitial-source');
+          if (!src) return;
+          const card = src.firstElementChild;
+          const slot = document.querySelector('[data-memo-interstitial-slot]');
+          if (!card) { src.remove(); return; }
+          if (slot) {
+            slot.replaceWith(card);
+          } else {
+            src.parentElement.insertBefore(card, src);
+          }
+          src.remove();
+        })();
+      </script>
+
+      {difficulty && (
+        <p class="mt-12 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-text-dim">
+          Reading level: {difficulty}
+        </p>
+      )}
+
+      <nav class="mt-8 flex flex-col gap-3 border-t border-border pt-8 sm:flex-row sm:justify-between" aria-label="Memo navigation">
+        {prev ? (
+          <a href={`/relay/memos/${prev.id}/`} class="group max-w-[48%] text-sm text-text-muted transition-colors hover:text-primary">
+            <span class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim">&larr; Previous</span>
+            <span class="mt-1 block leading-snug group-hover:text-primary">{prev.data.title}</span>
+          </a>
+        ) : <span />}
+        {next ? (
+          <a href={`/relay/memos/${next.id}/`} class="group max-w-[48%] text-right text-sm text-text-muted transition-colors hover:text-primary sm:ml-auto">
+            <span class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim">Next &rarr;</span>
+            <span class="mt-1 block leading-snug group-hover:text-primary">{next.data.title}</span>
+          </a>
+        ) : <span />}
+      </nav>
+    </div>
+  </main>
+
+  <RelayDocsCta kicker="Own the packs in this series." />
+  <Footer />
+</Layout>
+
+<style>
+  /* The inlined hero SVG scales to the card width, keeping its 16:9 box. */
+  .memo-hero :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

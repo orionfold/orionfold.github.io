@@ -1,0 +1,76 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five alternatives sit as small disconnected chips — MCP a connector, Skills agent know-how, plugins a host extension, GPTs one hosted assistant, frameworks a code toolkit — each a single capability. On the right, a Relay Pack rises as one glowing bound column of four owned primitive layers, agents over workflows over tables over schedules, fused into a single running application.">
+  <defs>
+    <linearGradient id="wp-col" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.06"/>
+    </linearGradient>
+    <radialGradient id="wp-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wp-layer-a" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-teal)" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="var(--svg-accent-teal)" stop-opacity="0.14"/>
+    </linearGradient>
+    <linearGradient id="wp-layer-b" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-blue)" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="var(--svg-accent-blue)" stop-opacity="0.14"/>
+    </linearGradient>
+    <linearGradient id="wp-layer-c" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-green)" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="var(--svg-accent-green)" stop-opacity="0.14"/>
+    </linearGradient>
+    <linearGradient id="wp-layer-d" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-purple)" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="var(--svg-accent-purple)" stop-opacity="0.14"/>
+    </linearGradient>
+  </defs>
+
+  <!-- atmosphere: soft glow behind the pack column -->
+  <ellipse cx="470" cy="196" rx="200" ry="180" fill="url(#wp-glow)"/>
+
+  <!-- title block, top-left anchored (editorial) — heading, paints first, overlaps nothing -->
+  <g class="fn-diagram__title">
+    <text x="40" y="52" font-size="27" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">A different layer.</text>
+    <text x="40" y="82" font-size="27" font-weight="600" fill="var(--color-primary)" font-family="var(--font-mono)">Not a better one.</text>
+  </g>
+
+  <!-- LEFT: five dim, disconnected single-capability chips -->
+  <g class="fn-diagram__nodes">
+    <rect x="40"  y="150" width="86" height="26" rx="5" fill="var(--svg-accent-blue)" fill-opacity="0.08" stroke="var(--svg-stroke)" stroke-width="1"/>
+    <rect x="40"  y="188" width="86" height="26" rx="5" fill="var(--svg-accent-blue)" fill-opacity="0.08" stroke="var(--svg-stroke)" stroke-width="1"/>
+    <rect x="40"  y="226" width="86" height="26" rx="5" fill="var(--svg-accent-blue)" fill-opacity="0.08" stroke="var(--svg-stroke)" stroke-width="1"/>
+    <rect x="136" y="150" width="86" height="26" rx="5" fill="var(--svg-accent-blue)" fill-opacity="0.08" stroke="var(--svg-stroke)" stroke-width="1"/>
+    <rect x="136" y="188" width="86" height="26" rx="5" fill="var(--svg-accent-blue)" fill-opacity="0.08" stroke="var(--svg-stroke)" stroke-width="1"/>
+  </g>
+  <g class="fn-diagram__labels">
+    <text x="83"  y="167" text-anchor="middle" font-size="11" fill="var(--svg-text-dim)" font-family="var(--font-mono)">MCP</text>
+    <text x="83"  y="205" text-anchor="middle" font-size="11" fill="var(--svg-text-dim)" font-family="var(--font-mono)">SKILL</text>
+    <text x="83"  y="243" text-anchor="middle" font-size="11" fill="var(--svg-text-dim)" font-family="var(--font-mono)">PLUGIN</text>
+    <text x="179" y="167" text-anchor="middle" font-size="11" fill="var(--svg-text-dim)" font-family="var(--font-mono)">GPT</text>
+    <text x="179" y="205" text-anchor="middle" font-size="11" fill="var(--svg-text-dim)" font-family="var(--font-mono)">FRAMEWORK</text>
+    <text x="40"  y="292" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">five tools · one capability each</text>
+  </g>
+
+  <!-- vs seam -->
+  <g class="fn-diagram__labels">
+    <text x="300" y="202" text-anchor="middle" font-size="15" fill="var(--svg-text-faint)" font-family="var(--font-mono)">vs</text>
+  </g>
+
+  <!-- RIGHT: the Pack — one bound column, four fused owned layers -->
+  <g class="fn-diagram__nodes">
+    <rect x="360" y="120" width="220" height="166" rx="10" fill="url(#wp-col)" stroke="var(--color-primary)" stroke-width="1.5"/>
+    <rect x="374" y="134" width="192" height="30" rx="5" fill="url(#wp-layer-a)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
+    <rect x="374" y="170" width="192" height="30" rx="5" fill="url(#wp-layer-b)" stroke="var(--svg-accent-blue)" stroke-width="1"/>
+    <rect x="374" y="206" width="192" height="30" rx="5" fill="url(#wp-layer-c)" stroke="var(--svg-accent-green)" stroke-width="1"/>
+    <rect x="374" y="242" width="192" height="30" rx="5" fill="url(#wp-layer-d)" stroke="var(--svg-accent-purple)" stroke-width="1"/>
+  </g>
+  <g class="fn-diagram__labels">
+    <text x="470" y="154" text-anchor="middle" font-size="12" fill="var(--svg-text-bright)" font-family="var(--font-mono)">agent profiles</text>
+    <text x="470" y="190" text-anchor="middle" font-size="12" fill="var(--svg-text-bright)" font-family="var(--font-mono)">workflow blueprints</text>
+    <text x="470" y="226" text-anchor="middle" font-size="12" fill="var(--svg-text-bright)" font-family="var(--font-mono)">data tables</text>
+    <text x="470" y="262" text-anchor="middle" font-size="12" fill="var(--svg-text-bright)" font-family="var(--font-mono)">schedules</text>
+    <text x="470" y="108" text-anchor="middle" font-size="13" font-weight="600" fill="var(--color-primary)" font-family="var(--font-mono)">ONE RELAY PACK</text>
+    <text x="470" y="306" text-anchor="middle" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">four primitives · one owned app</text>
+  </g>
+</svg>

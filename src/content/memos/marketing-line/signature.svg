@@ -1,0 +1,62 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two funnels face each other and fuse at a central seam. The left funnel is the CRM lead flow narrowing toward the join; the right funnel is the Social campaign flow narrowing toward the same join. At the seam, a lead's source_campaign matching a campaign's utm_campaign is the single load-bearing joint that binds the two function packs into one attributed marketing system.">
+  <defs>
+    <linearGradient id="ml-sig-crm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="ml-sig-social" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-blue)" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="var(--svg-accent-blue)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="ml-sig-seam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-green)" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="var(--svg-accent-green)" stop-opacity="0.10"/>
+    </linearGradient>
+    <radialGradient id="ml-sig-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="var(--svg-accent-green)" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="var(--svg-accent-green)" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="320" cy="230" rx="140" ry="130" fill="url(#ml-sig-glow)"/>
+
+  <g class="fn-diagram__title">
+    <text x="40" y="50" font-size="24" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Two funnels.</text>
+    <text x="40" y="78" font-size="24" font-weight="600" fill="var(--color-primary)" font-family="var(--font-mono)">One join key.</text>
+  </g>
+
+  <g class="fn-diagram__edges">
+    <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 236 230 L 296 230" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+    <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 404 230 L 344 230" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <g class="fn-diagram__flow">
+    <circle class="fn-diagram__flow" cx="236" cy="230" r="4" fill="var(--svg-accent-green)">
+      <animateMotion begin="1.6s" dur="2.4s" repeatCount="indefinite" path="M 0 0 L 60 0"/>
+    </circle>
+    <circle class="fn-diagram__flow" cx="404" cy="230" r="4" fill="var(--svg-accent-green)">
+      <animateMotion begin="2.0s" dur="2.4s" repeatCount="indefinite" path="M 0 0 L -60 0"/>
+    </circle>
+  </g>
+
+  <g class="fn-diagram__nodes">
+    <path d="M 56 150 L 236 194 L 236 266 L 56 310 Z" fill="url(#ml-sig-crm)" stroke="var(--color-primary)" stroke-width="1.5"/>
+    <path d="M 584 150 L 404 194 L 404 266 L 584 310 Z" fill="url(#ml-sig-social)" stroke="var(--svg-accent-blue)" stroke-width="1"/>
+    <rect x="296" y="196" width="48" height="68" rx="8" fill="url(#ml-sig-seam)" stroke="var(--svg-accent-green)" stroke-width="1.5"/>
+  </g>
+
+  <g class="fn-diagram__labels">
+    <text x="96" y="176" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)" letter-spacing="0.06em">CRM</text>
+    <text x="96" y="230" font-size="12" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">lead flow</text>
+    <text x="96" y="250" font-size="9.5" fill="var(--color-primary)" font-family="var(--font-mono)">source_campaign</text>
+
+    <text x="544" y="176" text-anchor="end" font-size="10" fill="var(--svg-accent-blue)" font-family="var(--font-mono)" letter-spacing="0.06em">SOCIAL</text>
+    <text x="544" y="230" text-anchor="end" font-size="12" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">campaign flow</text>
+    <text x="544" y="250" text-anchor="end" font-size="9.5" fill="var(--svg-accent-blue)" font-family="var(--font-mono)">utm_campaign</text>
+
+    <text x="320" y="188" text-anchor="middle" font-size="8.5" fill="var(--svg-accent-green)" font-family="var(--font-mono)" letter-spacing="0.06em">SEAM</text>
+    <text x="320" y="236" text-anchor="middle" font-size="11" font-weight="600" fill="var(--svg-accent-green)" font-family="var(--font-mono)">==</text>
+
+    <text x="320" y="344" text-anchor="middle" font-size="10" fill="var(--svg-accent-green)" font-family="var(--font-mono)">the match is the whole attribution — dormant apart, live bundled</text>
+  </g>
+</svg>

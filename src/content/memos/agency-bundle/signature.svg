@@ -1,0 +1,64 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One free Agency spine runs down the center of the frame. Two industry sleeves, CRE and Nonprofit, click onto the same backbone from the right. The spine is unchanged in both compositions; only the sleeve that snaps on differs, so a single reusable operating system becomes two different industry apps.">
+  <defs>
+    <linearGradient id="ab-sig-spine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="ab-sig-cre" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-teal)" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="var(--svg-accent-teal)" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="ab-sig-np" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-purple)" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="var(--svg-accent-purple)" stop-opacity="0.05"/>
+    </linearGradient>
+    <radialGradient id="ab-sig-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="250" cy="220" rx="150" ry="150" fill="url(#ab-sig-glow)"/>
+
+  <g class="fn-diagram__title">
+    <text x="40" y="50" font-size="24" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">One free spine.</text>
+    <text x="40" y="78" font-size="24" font-weight="600" fill="var(--color-primary)" font-family="var(--font-mono)">Any industry clicks on.</text>
+  </g>
+
+  <g class="fn-diagram__edges">
+    <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 250 156 L 400 130" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+    <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 250 260 L 400 286" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <g class="fn-diagram__flow">
+    <circle class="fn-diagram__flow" cx="250" cy="156" r="4" fill="var(--color-primary)">
+      <animateMotion begin="1.6s" dur="2.6s" repeatCount="indefinite" path="M 0 0 L 150 -26"/>
+    </circle>
+    <circle class="fn-diagram__flow" cx="250" cy="260" r="4" fill="var(--color-primary)">
+      <animateMotion begin="2.0s" dur="2.6s" repeatCount="indefinite" path="M 0 0 L 150 26"/>
+    </circle>
+  </g>
+
+  <g class="fn-diagram__nodes">
+    <rect x="140" y="118" width="110" height="180" rx="12" fill="url(#ab-sig-spine)" stroke="var(--color-primary)" stroke-width="1.5"/>
+    <rect x="400" y="104" width="200" height="66" rx="10" fill="url(#ab-sig-cre)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
+    <rect x="400" y="248" width="200" height="66" rx="10" fill="url(#ab-sig-np)" stroke="var(--svg-accent-purple)" stroke-width="1"/>
+  </g>
+
+  <g class="fn-diagram__labels">
+    <text x="195" y="150" text-anchor="middle" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)" letter-spacing="0.06em">FREE</text>
+    <text x="195" y="200" text-anchor="middle" font-size="12" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Agency</text>
+    <text x="195" y="218" text-anchor="middle" font-size="12" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">spine</text>
+    <text x="195" y="250" text-anchor="middle" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)">clients</text>
+    <text x="195" y="264" text-anchor="middle" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)">engagements</text>
+    <text x="195" y="278" text-anchor="middle" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)">intake · pipeline</text>
+
+    <text x="416" y="126" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">SLEEVE · CRE</text>
+    <text x="416" y="148" font-size="13" font-weight="600" fill="var(--svg-accent-teal)" font-family="var(--font-mono)">rent roll · renewals</text>
+
+    <text x="416" y="270" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">SLEEVE · NONPROFIT</text>
+    <text x="416" y="292" font-size="13" font-weight="600" fill="var(--svg-accent-purple)" font-family="var(--font-mono)">grants · compliance</text>
+
+    <text x="325" y="340" text-anchor="middle" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)">same spine, different sleeve — one bundle install</text>
+  </g>
+</svg>

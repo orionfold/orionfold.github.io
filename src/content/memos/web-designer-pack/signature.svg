@@ -1,0 +1,74 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Web Designer publish pipeline as one left-to-right flow: rows in a web_sections table pass through a deterministic static-site generator into a single self-contained index.html artifact, all offline. Only on an explicit publish press does the exact artifact cross a boundary to a GitHub Pages repository the user owns.">
+  <defs>
+    <linearGradient id="wd-table" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-teal)" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="var(--svg-accent-teal)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="wd-gen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-blue)" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="var(--svg-accent-blue)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="wd-artifact" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-green)" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="var(--svg-accent-green)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="wd-owned" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.08"/>
+    </linearGradient>
+    <radialGradient id="wd-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="548" cy="196" rx="150" ry="150" fill="url(#wd-glow)"/>
+
+  <g class="fn-diagram__title">
+    <text x="40" y="50" font-size="24" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">A table becomes</text>
+    <text x="40" y="78" font-size="24" font-weight="600" fill="var(--color-primary)" font-family="var(--font-mono)">a page you own.</text>
+  </g>
+
+  <!-- OFFLINE zone -->
+  <rect x="32" y="128" width="404" height="150" rx="12" fill="var(--svg-accent-blue)" fill-opacity="0.03" stroke="var(--svg-stroke)" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="44" y="150" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.1em">OFFLINE · ON YOUR MACHINE</text>
+
+  <g class="fn-diagram__edges">
+    <path class="fn-diagram__edge" pathLength="100" d="M 146 204 L 202 204" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+    <path class="fn-diagram__edge" pathLength="100" d="M 288 204 L 344 204" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+    <path id="wd-publish-path" class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 430 204 L 500 204" stroke="var(--color-primary)" stroke-width="2" fill="none"/>
+  </g>
+
+  <g class="fn-diagram__flow">
+    <circle class="fn-diagram__flow" cx="430" cy="204" r="4" fill="var(--color-primary)">
+      <animateMotion begin="1.6s" dur="2.4s" repeatCount="indefinite" path="M 0 0 L 70 0"/>
+    </circle>
+  </g>
+
+  <g class="fn-diagram__nodes">
+    <rect x="60" y="176" width="86" height="56" rx="8" fill="url(#wd-table)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
+    <rect x="202" y="176" width="86" height="56" rx="8" fill="url(#wd-gen)" stroke="var(--svg-accent-blue)" stroke-width="1"/>
+    <rect x="344" y="176" width="86" height="56" rx="8" fill="url(#wd-artifact)" stroke="var(--svg-accent-green)" stroke-width="1"/>
+    <rect x="500" y="164" width="100" height="80" rx="10" fill="url(#wd-owned)" stroke="var(--color-primary)" stroke-width="1.5"/>
+  </g>
+
+  <g class="fn-diagram__labels">
+    <text x="103" y="200" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">web_</text>
+    <text x="103" y="214" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">sections</text>
+    <text x="103" y="250" text-anchor="middle" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)">rows</text>
+
+    <text x="245" y="200" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">static-site</text>
+    <text x="245" y="214" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">generator</text>
+    <text x="245" y="250" text-anchor="middle" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)">deterministic</text>
+
+    <text x="387" y="200" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">index</text>
+    <text x="387" y="214" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">.html</text>
+    <text x="387" y="250" text-anchor="middle" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)">artifact</text>
+
+    <text x="550" y="198" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">GitHub Pages</text>
+    <text x="550" y="214" text-anchor="middle" font-size="11" fill="var(--color-primary)" font-family="var(--font-mono)">your repo</text>
+    <text x="550" y="152" text-anchor="middle" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">YOU PRESS PUBLISH</text>
+
+    <text x="465" y="290" text-anchor="middle" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)">the exact artifact crosses — only on your press</text>
+  </g>
+</svg>

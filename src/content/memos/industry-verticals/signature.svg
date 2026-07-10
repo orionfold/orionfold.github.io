@@ -1,0 +1,73 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The same vertical machine, drawn twice. A single pipeline shape runs from an empty domain queue through a row-insert trigger to a domain deliverable. The top instance wears CRE labels: a rent roll and a lease abstraction. The bottom instance wears Nonprofit labels: a grants queue and a grant pipeline. The skeleton is identical in both; only the domain fields change, proving a vertical is a repeatable machine, not a coat of paint.">
+  <defs>
+    <linearGradient id="iv-sig-queue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-text-muted)" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="var(--svg-text-muted)" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="iv-sig-cre" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-teal)" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="var(--svg-accent-teal)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="iv-sig-np" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-purple)" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="var(--svg-accent-purple)" stop-opacity="0.08"/>
+    </linearGradient>
+    <radialGradient id="iv-sig-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="500" cy="240" rx="150" ry="140" fill="url(#iv-sig-glow)"/>
+
+  <g class="fn-diagram__title">
+    <text x="40" y="50" font-size="24" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Same machine.</text>
+    <text x="40" y="78" font-size="24" font-weight="600" fill="var(--color-primary)" font-family="var(--font-mono)">Two domains.</text>
+  </g>
+
+  <g class="fn-diagram__edges">
+    <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 178 162 L 246 162" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+    <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 372 162 L 440 162" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+    <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 178 288 L 246 288" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+    <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 372 288 L 440 288" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <g class="fn-diagram__flow">
+    <circle class="fn-diagram__flow" cx="178" cy="162" r="4" fill="var(--svg-accent-teal)">
+      <animateMotion begin="1.6s" dur="3.6s" repeatCount="indefinite" path="M 0 0 L 68 0 L 262 0"/>
+    </circle>
+    <circle class="fn-diagram__flow" cx="178" cy="288" r="4" fill="var(--svg-accent-purple)">
+      <animateMotion begin="2.2s" dur="3.6s" repeatCount="indefinite" path="M 0 0 L 68 0 L 262 0"/>
+    </circle>
+  </g>
+
+  <g class="fn-diagram__nodes">
+    <rect x="44" y="136" width="134" height="52" rx="8" fill="url(#iv-sig-queue)" stroke="var(--svg-stroke)" stroke-width="1" stroke-dasharray="4 4"/>
+    <rect x="246" y="136" width="126" height="52" rx="8" fill="url(#iv-sig-cre)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
+    <rect x="440" y="136" width="126" height="52" rx="8" fill="url(#iv-sig-cre)" stroke="var(--svg-accent-teal)" stroke-width="1.5"/>
+
+    <rect x="44" y="262" width="134" height="52" rx="8" fill="url(#iv-sig-queue)" stroke="var(--svg-stroke)" stroke-width="1" stroke-dasharray="4 4"/>
+    <rect x="246" y="262" width="126" height="52" rx="8" fill="url(#iv-sig-np)" stroke="var(--svg-accent-purple)" stroke-width="1"/>
+    <rect x="440" y="262" width="126" height="52" rx="8" fill="url(#iv-sig-np)" stroke="var(--svg-accent-purple)" stroke-width="1.5"/>
+  </g>
+
+  <g class="fn-diagram__labels">
+    <text x="52" y="128" font-size="9" fill="var(--svg-accent-teal)" font-family="var(--font-mono)" letter-spacing="0.08em">CRE</text>
+    <text x="111" y="160" text-anchor="middle" font-size="11" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">rent_roll</text>
+    <text x="111" y="176" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">empty queue</text>
+    <text x="309" y="160" text-anchor="middle" font-size="10.5" fill="var(--svg-text-bright)" font-family="var(--font-mono)">row-insert</text>
+    <text x="309" y="176" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">lease-abstraction</text>
+    <text x="503" y="160" text-anchor="middle" font-size="10.5" fill="var(--svg-accent-teal)" font-family="var(--font-mono)">abstract + LOI</text>
+    <text x="503" y="176" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">deliverable</text>
+
+    <text x="52" y="254" font-size="9" fill="var(--svg-accent-purple)" font-family="var(--font-mono)" letter-spacing="0.08em">NONPROFIT</text>
+    <text x="111" y="286" text-anchor="middle" font-size="11" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">grants</text>
+    <text x="111" y="302" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">empty queue</text>
+    <text x="309" y="286" text-anchor="middle" font-size="10.5" fill="var(--svg-text-bright)" font-family="var(--font-mono)">row-insert</text>
+    <text x="309" y="302" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">grant-pipeline</text>
+    <text x="503" y="286" text-anchor="middle" font-size="10.5" fill="var(--svg-accent-purple)" font-family="var(--font-mono)">application</text>
+    <text x="503" y="302" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">deliverable</text>
+
+    <text x="305" y="344" text-anchor="middle" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)">add a row, the work starts — same skeleton, different fields</text>
+  </g>
+</svg>

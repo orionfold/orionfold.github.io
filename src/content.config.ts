@@ -241,4 +241,51 @@ const relayDocs = defineCollection({
     }),
 });
 
-export const collections = { story, productDetail, letters, receipts, relayDocs };
+// Relay memos (Rail B publish, _RELAY #17) — the "Relay Packs" editorial series,
+// a long-form building-in-public arc (one pillar + four domain memos) on the pack
+// architecture. Copied verbatim from the strategy-owned _ASSETS/memos corpus (same
+// one-direction publish contract as relayDocs: website consumes, never writes
+// back; fidelity is enforced at the Relay source gate). The filename-folder stem
+// is the URL slug (why-relay-packs/article.md -> /relay/memos/why-relay-packs/).
+// Each memo body carries exactly one inline <figure class="fn-diagram"><svg>…</svg>
+// (token-only, theme-reactive via the global --svg-* set) and pairs with a
+// signature.svg hero the route inlines. This mirrors the `relayDocs` shape plus
+// the memo-specific fields Relay ships: `series` (groups the 5), `signature` (hero
+// SVG ref), `stage`/`status` (editorial lifecycle), `difficulty`, `date`.
+// Conversion chrome is the website's (1 mid-essay interstitial + footer CTA, no
+// sticky — an editorial read gets the story treatment); Relay ships content only.
+const memos = defineCollection({
+  // Nested per-slug folders (why-relay-packs/article.md); the folder name is the
+  // slug, so key on the folder, not the bare `article` filename (which would
+  // collide across all five). Same generateId idiom as productDetail.
+  loader: glob({
+    pattern: '**/article.md',
+    base: './src/content/memos',
+    generateId: ({ entry }) => entry.replace(/\/article\.md$/, ''),
+  }),
+  schema: () =>
+    z.object({
+      title: z.string(),
+      date: z.coerce.date(),
+      // The editorial thread that groups the series on the index.
+      series: z.string(),
+      // One-line blurb (Relay gate caps at 300): meta description + card/
+      // interstitial dek.
+      summary: z.string(),
+      tags: z.array(z.string()).default([]),
+      difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
+      // Relative ref to the per-memo hero SVG in the same folder (signature.svg).
+      // The route reads the file and inlines it so its --svg-* tokens theme-swap.
+      signature: z.string().optional(),
+      // Editorial lifecycle (Relay-owned): draft -> review -> published. `stage`
+      // and `status` are the same lifecycle in the source; both accepted so the
+      // verbatim frontmatter validates. `status` is the publish discriminator —
+      // gating the surface on status === 'published' is a one-line filter change
+      // in the routes when the operator wants that (drafts render today, _RELAY
+      // #17, operator decision 2026-07-09).
+      stage: z.enum(['draft', 'review', 'published']).optional(),
+      status: z.enum(['draft', 'review', 'published']).default('draft'),
+    }),
+});
+
+export const collections = { story, productDetail, letters, receipts, relayDocs, memos };
