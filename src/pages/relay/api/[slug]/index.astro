@@ -1,0 +1,130 @@
+---
+// /relay/api/<slug>/ — one Relay API reference chapter (Rail B publish, _RELAY
+// #23). Renders the verbatim markdown body; inline ![alt](relay-shot:<id>)
+// markers are rewritten to themed shots by the global rehype bridge, and the
+// endpoint tables render through the same story-prose + .of-table path as docs.
+// The chapter body carries NO H1 (frontmatter `title` is the SSOT, #23 note #2),
+// so the route renders the title. Prev/next walk the numeric id prefix. Footer
+// CTA is the website's, hardcoded (footer-only, shared with docs). Mirrors the
+// /relay/docs/<slug>/ idiom.
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '../../../../layouts/Layout.astro';
+import Nav from '../../../../components/Nav.astro';
+import Footer from '../../../../components/Footer.astro';
+import RelaySubNav from '../../../../components/relay/RelaySubNav.astro';
+import RelayDocsCta from '../../../../components/relay/RelayDocsCta.astro';
+import { ogMeta } from '../../../../data/og';
+import { SITE, PERSON, PUBLISHER } from '../../../../data/seo';
+
+const chapterOrder = (id: string) => {
+  const m = id.match(/^(\d+)/);
+  return m ? parseInt(m[1], 10) : 999;
+};
+
+export async function getStaticPaths() {
+  const chapters = (await getCollection('relayApi')).sort(
+    (a, b) => chapterOrder(a.id) - chapterOrder(b.id),
+  );
+  return chapters.map((chapter, i) => ({
+    params: { slug: chapter.id },
+    props: {
+      chapter,
+      order: i + 1,
+      prev: i > 0 ? chapters[i - 1] : null,
+      next: i < chapters.length - 1 ? chapters[i + 1] : null,
+    },
+  }));
+}
+
+type Entry = CollectionEntry<'relayApi'>;
+const { chapter, order, prev, next } = Astro.props as {
+  chapter: Entry;
+  order: number;
+  prev: Entry | null;
+  next: Entry | null;
+};
+const { Content } = await render(chapter);
+const { title, stability, families } = chapter.data;
+
+// Derived meta description (the chapter body has no summary field): stability +
+// families read as a faithful one-liner for search + OG without editing the
+// verbatim chapter.
+const description = `Relay local API reference: ${title.toLowerCase()}. Endpoint families ${families.join(', ')}. Stability: ${stability}. Real request, response, and error shapes with worked curl examples.`;
+
+const og = ogMeta('/relay/');
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const techArticleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: title,
+  description,
+  author: { ...PERSON, url: `${SITE.url}/about/` },
+  publisher: PUBLISHER,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  url: canonical,
+  inLanguage: 'en',
+  articleSection: 'Relay API Reference',
+  isPartOf: { '@type': 'CollectionPage', name: 'Relay API Reference', url: `${SITE.url}/relay/api/` },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Relay', item: `${SITE.url}/relay/` },
+    { '@type': 'ListItem', position: 3, name: 'API', item: `${SITE.url}/relay/api/` },
+    { '@type': 'ListItem', position: 4, name: title, item: canonical },
+  ],
+};
+---
+<Layout
+  title={`${title} · Relay API Reference · Orionfold`}
+  description={description}
+  ogImage={og.image}
+  ogImageAlt={`${title} · Orionfold Relay API reference`}
+  jsonLd={[techArticleSchema, breadcrumbSchema]}
+>
+  <Nav />
+  <RelaySubNav active="api" />
+  <main class="px-6 pt-10 pb-24">
+    <div class="mx-auto max-w-2xl">
+      <a href="/relay/api/" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+        API reference
+      </a>
+
+      <p class="mt-8 font-mono text-sm text-primary">Reference {String(order).padStart(2, '0')}</p>
+      <h1 class="mt-2 text-3xl leading-tight sm:text-4xl">{title}</h1>
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <span class="of-chip">{stability}</span>
+        {families.map((f) => (
+          <span class="of-chip">{f}</span>
+        ))}
+      </div>
+
+      <article class="story-prose mt-10 border-t border-border pt-10">
+        <Content />
+      </article>
+
+      <nav class="mt-16 flex flex-col gap-3 border-t border-border pt-8 sm:flex-row sm:justify-between" aria-label="Reference navigation">
+        {prev ? (
+          <a href={`/relay/api/${prev.id}/`} class="group max-w-[48%] text-sm text-text-muted transition-colors hover:text-primary">
+            <span class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim">&larr; Previous</span>
+            <span class="mt-1 block leading-snug group-hover:text-primary">{prev.data.title}</span>
+          </a>
+        ) : <span />}
+        {next ? (
+          <a href={`/relay/api/${next.id}/`} class="group max-w-[48%] text-right text-sm text-text-muted transition-colors hover:text-primary sm:ml-auto">
+            <span class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim">Next &rarr;</span>
+            <span class="mt-1 block leading-snug group-hover:text-primary">{next.data.title}</span>
+          </a>
+        ) : <span />}
+      </nav>
+    </div>
+  </main>
+
+  <RelayDocsCta />
+  <Footer />
+</Layout>

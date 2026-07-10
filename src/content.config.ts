@@ -288,4 +288,39 @@ const memos = defineCollection({
     }),
 });
 
-export const collections = { story, productDetail, letters, receipts, relayDocs, memos };
+// Relay API reference (Rail B publish, _RELAY #23) — the developer API guide,
+// authored chapter-by-chapter at the strategy-owned _ASSETS/api/reference corpus
+// (same one-direction publish contract as relayDocs/memos: website consumes,
+// never writes back; prose-green is enforced at the Relay source gate). #23 is a
+// single-chapter pilot: only 01-overview-local-api.md is prose-green and shipped;
+// 02-08 stay reserved at source until authored. The filename stem is the URL slug
+// (01-overview-local-api.md -> /relay/api/01-overview-local-api/). Inline
+// screenshots use the same portable ![alt](relay-shot:<id>) marker the global
+// rehype bridge rewrites into themed shots; the chapter body carries NO H1
+// (frontmatter `title` is the SSOT, #23 note #2). Frontmatter is Relay's shape
+// (id/title/status/stability/families) — display copy (order, meta description)
+// is derived in the route from the filename + families, never by editing the
+// verbatim chapter. CTA chrome is the website's (footer-CTA only, shared
+// RelayDocsCta), same as docs. Mirrors the `relayDocs` glob-loader idiom.
+const relayApi = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/relay-api' }),
+  schema: () =>
+    z.object({
+      // Stable chapter id from the source (e.g. "01-overview-local-api"); also
+      // the URL slug via the filename stem.
+      id: z.string(),
+      title: z.string(),
+      // Editorial lifecycle carried verbatim from the source frontmatter; the
+      // pilot ships as `draft` (publish/go-live is the operator + website call,
+      // not the status field — same rule as memos).
+      status: z.enum(['draft', 'review', 'published']).default('draft'),
+      // Stability contract for the whole endpoint group (platform | app-internal
+      // | ...); shown as an operator-facing chip.
+      stability: z.string(),
+      // The endpoint families this chapter documents (context/workspace/...);
+      // rendered as chips and folded into the derived meta description.
+      families: z.array(z.string()).default([]),
+    }),
+});
+
+export const collections = { story, productDetail, letters, receipts, relayDocs, memos, relayApi };

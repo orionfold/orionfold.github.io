@@ -1,0 +1,124 @@
+---
+// /relay/api/ — the Relay developer API reference index (Rail B publish, _RELAY
+// #23). This is the single-chapter PILOT: only chapter 01 is prose-green and
+// live; 02-08 are reserved at source. The index lists the shipped chapter(s)
+// with their endpoint-family + stability chips and a short derived overview, so
+// the IA reads like a real reference section even at one chapter. Chapters are
+// copied verbatim from the strategy-owned _ASSETS/api corpus; this page owns the
+// chrome (footer CTA only, shared RelayDocsCta). Mirrors the /relay/docs/ idiom.
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import RelaySubNav from '../../../components/relay/RelaySubNav.astro';
+import RelayDocsCta from '../../../components/relay/RelayDocsCta.astro';
+import { ogMeta } from '../../../data/og';
+import { SITE } from '../../../data/seo';
+
+// Order chapters by their numeric filename prefix (01-..., 02-...). Display copy
+// (order + the overview blurb) is derived here, never by editing the verbatim
+// chapter files: `order` from the id prefix, the overview from a slug-keyed map.
+const chapterOrder = (id: string) => {
+  const m = id.match(/^(\d+)/);
+  return m ? parseInt(m[1], 10) : 999;
+};
+const chapters = (await getCollection('relayApi')).sort(
+  (a, b) => chapterOrder(a.id) - chapterOrder(b.id),
+);
+
+// Scannable overview per chapter, written from the chapter's own opener (grade
+// 3-5, no em-dashes, website-copy-style). Keyed by slug so it stays aligned with
+// the verbatim-copied file without editing it. Absent -> falls back to families.
+const OVERVIEW: Record<string, string> = {
+  '01-overview-local-api':
+    'Start here if you are standing up or automating a local Relay instance. This group covers the routes that report where Relay is running, discover and import nearby projects, repair a cloned instance data directory, and feed the command palette. Each endpoint is documented with its real request, response, and error shapes, plus worked curl examples.',
+};
+
+const og = ogMeta('/relay/');
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Relay API Reference',
+  description:
+    'The Orionfold Relay developer API reference: the local HTTP routes your Relay instance exposes, documented from source with real request, response, and error shapes.',
+  url: `${SITE.url}/relay/api/`,
+  hasPart: chapters.map((c) => ({
+    '@type': 'TechArticle',
+    headline: c.data.title,
+    description: OVERVIEW[c.id] ?? c.data.families.join(', '),
+    url: `${SITE.url}/relay/api/${c.id}/`,
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Relay', item: `${SITE.url}/relay/` },
+    { '@type': 'ListItem', position: 3, name: 'API', item: `${SITE.url}/relay/api/` },
+  ],
+};
+---
+<Layout
+  title="Relay API Reference · Orionfold"
+  description="The Orionfold Relay developer API reference: the local HTTP routes your Relay instance exposes, documented from source with real request, response, and error shapes."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  jsonLd={[collectionSchema, breadcrumbSchema]}
+>
+  <Nav />
+  <RelaySubNav active="api" />
+  {/* The sub-nav already clears the fixed Nav; pull the PageHeader's own
+      nav-clearance (pt-28) back up so the masthead sits just under the rail. */}
+  <main class="-mt-20 sm:-mt-24">
+    <PageHeader
+      eyebrow="Relay · API reference"
+      title="The local API your Relay instance exposes."
+      subtitle="Relay runs on your own machine and serves its own HTTP API. This reference documents those routes from the source that implements them: real request bodies, response shapes, error cases, and worked curl examples. It grows one endpoint group at a time."
+    />
+
+    <section class="px-6 pt-10 pb-8">
+      <div class="mx-auto max-w-3xl space-y-6" data-animate-stagger>
+        {chapters.map((c) => {
+          const href = `/relay/api/${c.id}/`;
+          return (
+            <a
+              href={href}
+              data-animate
+              class="group block rounded-2xl border border-border/70 p-6 shadow-sm transition-shadow hover:shadow-primary/15 sm:p-8"
+            >
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="of-chip">{c.data.stability}</span>
+                {c.data.families.map((f) => (
+                  <span class="of-chip">{f}</span>
+                ))}
+              </div>
+              <h2 class="mt-4 text-2xl leading-tight transition-colors group-hover:text-primary sm:text-3xl">
+                {c.data.title}
+              </h2>
+              <p class="mt-3 text-base leading-relaxed text-text-muted">
+                {OVERVIEW[c.id] ?? c.data.families.join(', ')}
+              </p>
+              <span class="mt-5 inline-flex items-center gap-1.5 font-mono text-sm text-primary">
+                Read the reference
+                <span class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
+              </span>
+            </a>
+          );
+        })}
+      </div>
+
+      <p class="mx-auto mt-8 max-w-3xl font-mono text-xs leading-relaxed text-text-dim">
+        More endpoint groups are on the way: core records, agents and runtimes,
+        workflows, packs and publishing, settings and license, files and
+        observability, webhooks and channels.
+      </p>
+    </section>
+
+    <RelayDocsCta kicker="Run your own local Relay." class="mt-8" />
+  </main>
+  <Footer />
+</Layout>
