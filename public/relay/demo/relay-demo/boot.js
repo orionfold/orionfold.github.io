@@ -445,7 +445,7 @@
     // (push approval + approval-requested log) and re-emit both streams.
     if (/\/api\/workflows\/[^/]+\/execute$/.test(pathOf(url)) && method === 'POST' && state.ran && !state._waitScheduled) {
       state._waitScheduled = true;
-      setTimeout(function () { advanceToWaiting(state); emitApprovals(); emitLogs(); refreshCoach(); }, WAIT_MS);
+      setTimeout(function () { advanceToWaiting(state); emitApprovals(); emitLogs(); }, WAIT_MS);
     }
     // Post-resolve time-driven effect for publish (poll-driven, NO SSE): the pending
     // deployment row walks pending → publishing → success, exactly as the real background
@@ -454,14 +454,13 @@
     if (r.emit === 'publish' && !state._publishScheduled) {
       state._publishScheduled = true;
       setTimeout(function () { advancePublish(state, 'publishing'); }, 900);
-      setTimeout(function () { advancePublish(state, 'success'); refreshCoach(); }, WAIT_MS);
+      setTimeout(function () { advancePublish(state, 'success'); }, WAIT_MS);
     }
     if (r.emit === 'logs') emitLogs();
-    if (r.emit === 'approvals') { emitApprovals(); emitLogs(); refreshCoach(); }
+    if (r.emit === 'approvals') { emitApprovals(); emitLogs(); }
     // Row Trigger + License lanes are poll-free (ticker + coach only): the shim already
     // mutated lane state in resolveFetch; just re-render the coach so it advances a step.
     if (r.emit === 'row_trigger' || r.emit === 'license_gate' || r.emit === 'license_activated') {
-      refreshCoach();
     }
 
     if (r.contentType) {
@@ -522,152 +521,61 @@
     (document.body || document.documentElement).appendChild(el);
   }
 
-  // ---- buy strip (live-gated per the publish contract) ---------------------
-  function buyStrip() {
-    var buy = (state.fixtures && state.fixtures.buy) || { live: false };
-    if (document.getElementById('relay-demo-buy')) return;
-    var el = document.createElement('div');
-    el.id = 'relay-demo-buy';
-    el.setAttribute('role', 'complementary');
-    el.style.cssText = 'position:fixed;right:16px;bottom:44px;z-index:2147483000;max-width:320px;' +
-      'background:#12343b;color:#e7f2ef;border:1px solid #1d4a53;border-radius:10px;padding:12px 14px;' +
-      'font:500 13px/1.5 ui-sans-serif,system-ui,-apple-system,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.35)';
-    if (buy.live && buy.url) {
-      el.innerHTML = '<div style="margin-bottom:6px">Ready to run this for real?</div>' +
-        '<a href="' + String(buy.url).replace(/"/g, '') + '" style="color:#8fe3d0;font-weight:600">Get Relay &#8599;</a>';
-    } else {
-      el.innerHTML = '<div style="margin-bottom:4px;font-weight:600">Relay opens at launch</div>' +
-        '<div style="opacity:.85">' + (buy.note || 'Demo — buy opens at launch.') + '</div>';
-    }
-    (document.body || document.documentElement).appendChild(el);
-  }
-
-  // ---- theme switcher (light/dark toggle in the demo chrome) ---------------
-  // A boot.js-owned control that flips the whole demo via applyDemoTheme(). It
-  // operates on <html>, so every captured route re-themes consistently. The
-  // button label + pressed state seed from the current resolved theme.
-  function themeSwitcher() {
-    if (document.getElementById('relay-demo-theme')) return;
-    var current = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-    var btn = document.createElement('button');
-    btn.id = 'relay-demo-theme';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Toggle light or dark theme');
-    // Sits above the ribbon, left of the buy strip; matches the dark chrome palette.
-    btn.style.cssText = 'position:fixed;right:16px;bottom:calc(44px + 96px);z-index:2147483001;' +
-      'width:40px;height:40px;border-radius:999px;border:1px solid #1d4a53;background:#12343b;' +
-      'color:#e7f2ef;font-size:18px;line-height:1;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.35);' +
-      'display:flex;align-items:center;justify-content:center';
-    function paint(theme) {
-      btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-      btn.title = theme === 'dark' ? 'Dark theme (click for light)' : 'Light theme (click for dark)';
-      btn.textContent = theme === 'dark' ? '☽' : '☀'; // moon / sun
-    }
-    paint(current);
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      var next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-      applyDemoTheme(next);
-      paint(next);
-    });
-    (document.body || document.documentElement).appendChild(btn);
-  }
-
-  // ---- self-guiding coach: glow-guide + explainer callout ------------------
-  // Dense product screens overwhelm a first-time visitor. The coach cuts through: a
-  // pulsing "glow-guide" ring on the ONE next action, plus a floating explainer callout
-  // that narrates what this screen is and what to do. Both are boot.js-owned so they work
-  // without React hydration.
-  function coachStyle() {
-    if (document.getElementById('relay-demo-coach-style')) return;
+  // ---- "Get Orionfold Relay" CTA (top menu bar, centered, subtle pulsing glow) --
+  // A conversion anchor pinned to the top bar, horizontally centered, linking to the
+  // marketing hub /relay/. The href is intentionally root-absolute (/relay/) — it escapes
+  // the demo bundle to the parent site's marketing page (orionfold.com/relay/), NOT a demo
+  // route, so it must NOT be base-prefixed. The glow is a self-contained keyframe (the coach
+  // pulse was removed); it is subtle + honors prefers-reduced-motion.
+  function getRelayCta() {
+    if (document.getElementById('relay-demo-cta')) return;
     var s = document.createElement('style');
-    s.id = 'relay-demo-coach-style';
+    s.id = 'relay-demo-cta-style';
     s.textContent =
-      '@keyframes relay-coach-ping{0%{box-shadow:0 0 0 0 rgba(20,128,74,.55),0 0 0 2px rgba(20,128,74,.95)}' +
-      '70%{box-shadow:0 0 0 14px rgba(20,128,74,0),0 0 0 2px rgba(20,128,74,.95)}' +
-      '100%{box-shadow:0 0 0 0 rgba(20,128,74,0),0 0 0 2px rgba(20,128,74,.95)}}' +
-      '.relay-demo-coach{animation:relay-coach-ping 1.5s ease-out infinite;border-radius:8px;position:relative;z-index:2}' +
-      '#relay-demo-callout{position:fixed;z-index:2147482999;max-width:300px;background:#0d2229;color:#e7f2ef;' +
-      'border:1px solid #1d4a53;border-radius:10px;padding:12px 30px 12px 14px;' + // pad-right for ✕
-      'font:500 13px/1.5 ui-sans-serif,system-ui,-apple-system,sans-serif;box-shadow:0 14px 44px rgba(0,0,0,.42);' +
-      'transition:top .25s,left .25s,opacity .25s}' +
-      '#relay-demo-callout .rc-dismiss{position:absolute;top:6px;right:6px;width:20px;height:20px;padding:0;' +
-      'border:0;border-radius:6px;background:transparent;color:#8fe3d0;font-size:16px;line-height:20px;' +
-      'cursor:pointer;opacity:.7;transition:opacity .15s,background .15s}' +
-      '#relay-demo-callout .rc-dismiss:hover{opacity:1;background:rgba(143,227,208,.14)}' +
-      '#relay-demo-callout .rc-step{font:600 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#8fe3d0;margin-bottom:5px}' +
-      '#relay-demo-callout .rc-title{font-weight:600;margin-bottom:3px}' +
-      '#relay-demo-callout .rc-body{opacity:.9}' +
-      '@keyframes relay-demo-rowin{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:translateY(0)}}' +
-      '@media (prefers-reduced-motion:reduce){.relay-demo-coach{animation:none;outline:3px solid rgba(20,128,74,.95);outline-offset:2px}#relay-demo-callout{transition:none}tr[data-relay-demo-row]{animation:none}}';
+      '@keyframes relay-cta-glow{0%,100%{box-shadow:0 0 0 0 rgba(20,128,74,.0),0 6px 20px rgba(0,0,0,.28)}' +
+      '50%{box-shadow:0 0 14px 2px rgba(20,128,74,.55),0 6px 20px rgba(0,0,0,.28)}}' +
+      '#relay-demo-cta{position:fixed;top:9px;left:50%;transform:translateX(-50%);z-index:2147483002;' +
+      'display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:999px;' +
+      'background:linear-gradient(180deg,#16a34a,#14804a);color:#fff;text-decoration:none;' +
+      'font:600 13px/1 ui-sans-serif,system-ui,-apple-system,sans-serif;letter-spacing:.01em;' +
+      'border:1px solid rgba(255,255,255,.18);animation:relay-cta-glow 2.6s ease-in-out infinite;' +
+      'white-space:nowrap;transition:transform .15s ease}' +
+      '#relay-demo-cta:hover{transform:translateX(-50%) translateY(-1px)}' +
+      '#relay-demo-cta .rc-spark{font-size:14px;line-height:1}' +
+      '@media (prefers-reduced-motion:reduce){#relay-demo-cta{animation:none;box-shadow:0 0 10px 1px rgba(20,128,74,.45),0 6px 20px rgba(0,0,0,.28)}}';
+    var a = document.createElement('a');
+    a.id = 'relay-demo-cta';
+    a.href = '/relay/'; // marketing hub on the parent site — deliberately NOT base-prefixed
+    a.setAttribute('aria-label', 'Get Orionfold Relay');
+    a.innerHTML = 'Get Orionfold Relay<span class="rc-spark" aria-hidden="true">&#8594;</span>';
     document.head.appendChild(s);
+    (document.body || document.documentElement).appendChild(a);
   }
 
-  // Resolve the LANE whose coach owns the current route. Support Triage owns
-  // /workflows,/inbox,/monitor; Web Publish owns /apps/*. Returns { machine, pageKey }.
-  function activeLane() {
-    var path = (location.pathname || '').replace(/\/+$/, '');
-    var machines = state.machines || {};
-    // Web Publish claims any /apps/* route (the installed app instance).
-    if (/\/apps(\/|$)/.test(path) && machines.web_publish) {
-      return { machine: machines.web_publish, key: 'web_publish', pageKey: 'apps' };
-    }
-    // Row Trigger claims any /tables/* route (the Support Queue table instance).
-    if (/\/tables(\/|$)/.test(path) && machines.row_trigger) {
-      return { machine: machines.row_trigger, key: 'row_trigger', pageKey: 'tables' };
-    }
-    // License/Pack claims the /packs gallery.
-    if (/\/packs(\/|$)/.test(path) && machines.license_pack) {
-      return { machine: machines.license_pack, key: 'license_pack', pageKey: 'packs' };
-    }
-    // Support Triage claims its three product surfaces.
-    var support = machines.support_triage;
-    if (support) {
-      var seg = (path.split('/').pop() || '').toLowerCase();
-      if (seg === 'workflows' || seg === 'inbox' || seg === 'monitor') {
-        return { machine: support, key: 'support_triage', pageKey: seg };
-      }
-    }
-    return null;
+  // ---- real theme control (wire the captured top-right Toggle-theme button) -
+  // Fix #6: the demo drives theming from Relay's OWN header control, not a
+  // synthetic bottom-right toggle. On the static build React never hydrates, so
+  // the captured button[aria-label="Toggle theme"] is inert; boot.js attaches a
+  // capture-phase click handler that flips the theme via applyDemoTheme() and
+  // wins before the (inert) React handler. No custom chrome button is added —
+  // the real UI element does the job as expected.
+  function wireThemeButton() {
+    var btns = [].slice.call(document.querySelectorAll('button[aria-label="Toggle theme"]'));
+    btns.forEach(function (btn) {
+      if (btn.__relayDemoThemeWired) return;
+      btn.__relayDemoThemeWired = true;
+      btn.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+        applyDemoTheme(next);
+      }, true); // capture phase — beat the inert React onClick
+    });
   }
 
-  // The per-lane progress STATE string a coach step matches on ("", "previewed", "completed").
-  function laneState(key) {
-    if (key === 'support_triage') return state.completed ? 'completed' : '';
-    if (key === 'web_publish') {
-      var wp = state.lanes.web_publish;
-      return wp.published ? 'completed' : (wp.previewed ? 'previewed' : '');
-    }
-    if (key === 'row_trigger') {
-      return state.lanes.row_trigger.fired ? 'fired' : '';
-    }
-    if (key === 'license_pack') {
-      var lpn = state.lanes.license_pack;
-      return lpn.licensed ? 'licensed' : (lpn.gated ? 'gated' : '');
-    }
-    return '';
-  }
-
-  // Data-driven coach: pick the machine's coach[] row matching {page,state}, resolve its
-  // targetLabel to a real button element. Copy lives in fixtures.json, not here.
-  function coachScript() {
-    var lane = activeLane();
-    if (!lane) return null;
-    var st = laneState(lane.key);
-    var steps = lane.machine.coach || [];
-    var chosen = null;
-    for (var i = 0; i < steps.length; i++) {
-      if (steps[i].page === lane.pageKey && (steps[i].state || '') === st) { chosen = steps[i]; break; }
-    }
-    if (!chosen) return null;
-    return {
-      step: chosen.step,
-      title: chosen.title,
-      body: chosen.body,
-      target: chosen.targetLabel ? findButton(chosen.targetLabel) : null
-    };
-  }
-  // Find a button/link whose visible text matches a label (exact for "run", contains otherwise).
+  // ---- findButton (retained; the License lane re-labels the Install button) --
+  // Find a button/link whose visible text matches a label (exact for "run",
+  // contains otherwise). The self-guiding coach was removed; the License lane's
+  // driveActivate() still needs this to relabel the gated Install button.
   function findButton(label) {
     var want = String(label || '').toLowerCase();
     var btns = [].slice.call(document.querySelectorAll('button, a'));
@@ -678,149 +586,64 @@
     return null;
   }
 
-  var coachEl = null, calloutEl = null;
-  // The coach callouts help a first-time visitor once, but must be dismissable and
-  // stay dismissed across routes/visits. The visitor clicks the ✕ → we persist a flag
-  // and suppress ALL callouts + glow-guides for the rest of the session and future visits.
-  var COACH_DISMISS_KEY = 'relay-demo-coach-dismissed';
-  function coachDismissed() {
-    try { return localStorage.getItem(COACH_DISMISS_KEY) === '1'; } catch (e) { return false; }
+  // ---- permission popup gating (Fix #2) ------------------------------------
+  // The captured dashboard froze with the "Permission required · #BL-1048" approval
+  // toast (section[aria-label="Pending approval request"], .fixed.bottom-6.right-6)
+  // pre-opened on EVERY route. Desired: hidden on load; shown only on the /inbox
+  // route (or an Inbox nav-click); once closed it stays closed for the session.
+  var POPUP_CLOSED_KEY = 'relay-demo-approval-closed';
+  function approvalPopups() {
+    return [].slice.call(document.querySelectorAll('section[aria-label="Pending approval request"]'));
   }
-  function dismissCoach() {
-    try { localStorage.setItem(COACH_DISMISS_KEY, '1'); } catch (e) {}
-    clearCoach();
-    if (calloutEl) { calloutEl.style.opacity = '0'; calloutEl.style.pointerEvents = 'none'; }
+  function popupClosed() {
+    try { return sessionStorage.getItem(POPUP_CLOSED_KEY) === '1'; } catch (e) { return false; }
   }
-  function clearCoach() {
-    if (coachEl) { coachEl.classList.remove('relay-demo-coach'); coachEl = null; }
+  function onInboxRoute() {
+    return /\/inbox\/?$/.test(location.pathname || '');
   }
-  function ensureCallout() {
-    if (calloutEl) return calloutEl;
-    calloutEl = document.createElement('div');
-    calloutEl.id = 'relay-demo-callout';
-    calloutEl.setAttribute('role', 'note');
-    // Delegated ✕-dismiss: the callout innerHTML is rewritten each refresh, so wire the
-    // handler on the container once (it survives innerHTML swaps).
-    calloutEl.addEventListener('click', function (e) {
-      var x = e.target && e.target.closest ? e.target.closest('.rc-dismiss') : null;
-      if (x) { e.preventDefault(); e.stopPropagation(); dismissCoach(); }
-    });
-    (document.body || document.documentElement).appendChild(calloutEl);
-    return calloutEl;
-  }
-  function positionCallout(target) {
-    var c = ensureCallout();
-    if (target && target.getBoundingClientRect) {
-      var r = target.getBoundingClientRect();
-      var top = Math.min(window.innerHeight - 140, Math.max(12, r.bottom + 10));
-      var left = Math.min(window.innerWidth - 316, Math.max(12, r.left));
-      c.style.top = top + 'px'; c.style.left = left + 'px';
-    } else {
-      // no target → park top-right, clear of the bottom-right buy strip + approval popup
-      c.style.top = '86px';
-      c.style.left = (window.innerWidth - 332) + 'px';
-    }
-  }
-  function refreshCoach() {
-    clearCoach();
-    if (coachDismissed()) { if (calloutEl) calloutEl.style.opacity = '0'; return; }
-    var script = coachScript();
-    if (!script) { if (calloutEl) calloutEl.style.opacity = '0'; return; }
-    var c = ensureCallout();
-    c.style.opacity = '1';
-    c.style.pointerEvents = ''; // re-arm in case a prior state cleared it
-    c.innerHTML =
-      '<button type="button" class="rc-dismiss" aria-label="Dismiss tip">&#215;</button>' +
-      '<div class="rc-step">' + esc(script.step) + '</div>' +
-      '<div class="rc-title">' + esc(script.title) + '</div>' +
-      '<div class="rc-body">' + esc(script.body) + '</div>';
-    if (script.target) {
-      coachEl = script.target;
-      script.target.classList.add('relay-demo-coach');
-    }
-    positionCallout(script.target);
-  }
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+  // Show the approval popup only when appropriate: on /inbox and not session-closed.
+  function syncApprovalPopup() {
+    var show = onInboxRoute() && !popupClosed();
+    approvalPopups().forEach(function (el) {
+      el.style.display = show ? '' : 'none';
     });
   }
+  function gatePermissionPopup() {
+    // Wire a Close/dismiss inside the toast to persist the session-closed choice, then
+    // hide it. The captured toast has a Deny/close affordance; we also treat Deny as close.
+    approvalPopups().forEach(function (el) {
+      if (el.__relayDemoPopupWired) return;
+      el.__relayDemoPopupWired = true;
+      el.addEventListener('click', function (e) {
+        var btn = e.target && (e.target.closest ? e.target.closest('button, a') : null);
+        if (!btn) return;
+        var label = (btn.textContent || '').trim().toLowerCase();
+        // Deny / close / dismiss → close it for the session (Approve is handled elsewhere).
+        if (/^(deny|close|dismiss)$/.test(label) || btn.getAttribute('aria-label') === 'Close') {
+          try { sessionStorage.setItem(POPUP_CLOSED_KEY, '1'); } catch (x) {}
+          setTimeout(syncApprovalPopup, 0);
+        }
+      }, true);
+    });
+    syncApprovalPopup();
+  }
 
-  // ---- streaming activity ticker (Arena-style replay, no LLM call) ---------
-  // The Arena demo fakes "live streaming" by replaying recorded events on their original
-  // cadence (tokenize text, emit each unit N ms apart). We do the same for the run's agent
-  // log: a floating "Live activity" panel types each monitor event line-by-line, then streams
-  // the drafted reply token-by-token — the "watch the agent work" feel, 100% offline, no model.
-  var tickerEl = null, tickerLog = null, tickerTimers = [];
-  var DRAFT_REPLY =
-    "Hi Priya — thanks for flagging the delay on order #BL-1048. I've reviewed our refund " +
-    "policy and you're covered: I've approved a full refund, which will land in 3-5 business " +
-    "days. Sorry for the hassle, and thanks for your patience.";
-
-  function ensureTicker() {
-    if (tickerEl) return tickerEl;
-    tickerEl = document.createElement('div');
-    tickerEl.id = 'relay-demo-ticker';
-    tickerEl.setAttribute('role', 'log');
-    tickerEl.setAttribute('aria-live', 'polite');
-    tickerEl.style.cssText = 'position:fixed;left:16px;bottom:44px;z-index:2147482998;width:min(380px,calc(100vw - 32px));' +
-      'background:#0b1a1f;color:#cfe6df;border:1px solid #1d4a53;border-radius:10px;overflow:hidden;' +
-      'font:500 12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;box-shadow:0 14px 44px rgba(0,0,0,.45)';
-    var head = document.createElement('div');
-    head.style.cssText = 'display:flex;align-items:center;gap:7px;padding:8px 12px;background:#0d2229;border-bottom:1px solid #1d4a53;' +
-      'font:600 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8fe3d0';
-    head.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#14804a;box-shadow:0 0 0 0 rgba(20,128,74,.6);animation:relay-coach-ping 1.5s infinite"></span>Live activity';
-    tickerLog = document.createElement('div');
-    tickerLog.style.cssText = 'padding:10px 12px;max-height:180px;overflow:auto;white-space:pre-wrap';
-    tickerEl.appendChild(head); tickerEl.appendChild(tickerLog);
-    (document.body || document.documentElement).appendChild(tickerEl);
-    return tickerEl;
-  }
-  function tickerLine(text, cls) {
-    ensureTicker();
-    var line = document.createElement('div');
-    line.style.cssText = 'margin:2px 0' + (cls === 'muted' ? ';opacity:.6' : cls === 'ok' ? ';color:#7fe3c0' : '');
-    line.textContent = text;
-    tickerLog.appendChild(line);
-    tickerLog.scrollTop = tickerLog.scrollHeight;
-    return line;
-  }
-  function clearTicker() {
-    tickerTimers.forEach(function (t) { clearTimeout(t); });
-    tickerTimers = [];
-    if (tickerEl) { try { tickerEl.remove(); } catch (e) {} tickerEl = null; tickerLog = null; }
-  }
-  // Type a string token-by-token into a line (Arena's tokenize-and-emit trick).
-  function streamInto(line, text, unitMs, done) {
-    var units = text.match(/\s+|\S+/g) || [];
-    var i = 0;
-    (function step() {
-      if (i >= units.length) { if (done) done(); return; }
-      line.textContent += units[i++];
-      tickerLog.scrollTop = tickerLog.scrollHeight;
-      tickerTimers.push(setTimeout(step, unitMs));
-    })();
-  }
-  // Replay the run's monitor events on their recorded `t` cadence, then stream the reply.
-  function streamRun(events) {
-    clearTicker(); ensureTicker();
-    var evs = (events && events.length) ? events : (((state.fixtures || {}).machine || {}).monitorEvents || []);
-    evs.forEach(function (ev, idx) {
-      tickerTimers.push(setTimeout(function () {
-        var pending = tickerLine('› ' + ev.payload, 'muted');
-        // resolve the "…" to a ✓ shortly after, for a working feel
-        tickerTimers.push(setTimeout(function () {
-          pending.style.opacity = '1';
-          pending.textContent = (ev.event === 'completed' ? '✓ ' : '• ') + ev.payload;
-          if (ev.event === 'completed') pending.style.color = '#7fe3c0';
-          // after "approval_requested", stream the drafted reply as tokens
-          if (ev.event === 'approval_requested') {
-            var draft = tickerLine('', 'ok');
-            draft.textContent = '  ↳ drafting reply: ';
-            streamInto(draft, DRAFT_REPLY, 26);
-          }
-        }, 500));
-      }, Math.max(idx * 300, ev.t || idx * 300)));
+  // ---- gray out non-clickable menus (Fix #8) -------------------------------
+  // The builder tags every nav link to an un-emitted route with data-relay-demo-dead="1"
+  // (it owns the emitted-route set — Fix #1). boot.js just styles those into plain gray
+  // text: no href, no pointer cursor, dimmed, non-clickable — so a visitor never clicks
+  // into a dead end. Single source of truth = the builder; boot.js is pure presentation.
+  function grayOutDeadMenus() {
+    var links = [].slice.call(document.querySelectorAll('a[data-relay-demo-dead="1"]'));
+    links.forEach(function (a) {
+      if (a.__relayDemoDeadStyled) return;
+      a.__relayDemoDeadStyled = true;
+      a.removeAttribute('href');       // not a link anymore — plain text
+      a.setAttribute('aria-disabled', 'true');
+      a.style.cursor = 'default';      // no pointer on non-clickable menus
+      a.style.opacity = '0.45';        // grayed out
+      a.style.pointerEvents = 'none';
+      a.title = 'Not part of this demo';
     });
   }
 
@@ -904,13 +727,9 @@
     setCardBadge(card, 'running');
     setButtonLabel(card, /^run$/i, 'Stop');
     toast('Support Row Triage started');
-    // start the streaming activity ticker (agent working, no LLM call)
-    var machine = state.fixtures.machine || {};
-    streamRun((machine.monitorEvents || []).slice(0, 3)); // up to the approval-requested step
     setTimeout(function () {
       setCardBadge(card, 'waiting');
       toast('Waiting for human approval in Inbox');
-      refreshCoach();
     }, WAIT_MS);
   }
 
@@ -936,15 +755,6 @@
     // reflect completion on the workflows card if present, and mark the machine done
     var wfCard = cardByTitle(MACHINE_NAME);
     setCardBadge(wfCard, 'completed');
-    // finish the streaming ticker: send the reply + completion line
-    ensureTicker();
-    var sent = tickerLine('› sending approved reply…', 'muted');
-    tickerTimers.push(setTimeout(function () {
-      sent.style.opacity = '1'; sent.textContent = '✓ reply sent to customer';
-      var doneEv = ((state.fixtures.machine || {}).monitorEvents || []).slice(-1)[0];
-      tickerLine('✓ ' + (doneEv ? doneEv.payload : 'run completed'), 'ok');
-    }, 700));
-    refreshCoach();
   }
 
   // ---- Web Publish lane (DOM-driving) --------------------------------------
@@ -957,12 +767,10 @@
     toast('Preview built from Web Sections');
     // stamp the preview action so a click visibly changes something
     if (clickedBtn) { setButtonLabel(clickedBtn.closest ? (clickedBtn.closest('button') ? clickedBtn : clickedBtn) : clickedBtn, /preview/i, 'Preview ✓'); }
-    streamRun((wp.monitorEvents || []).slice(0, 1)); // "preview built" ticker line
-    refreshCoach();
   }
 
   // Publish → POST /publish (202). The shim's fetch effect owns the deployment-status walk
-  // (pending → publishing → success); this function owns the DOM presentation + ticker only.
+  // (pending → publishing → success); this function owns the DOM presentation only.
   function drivePublish(clickedBtn) {
     var wp = (state.machines || {}).web_publish; if (!wp) return;
     var appId = webPublishAppId();
@@ -973,7 +781,6 @@
     state.lanes.web_publish.published = true;
     if (clickedBtn) setButtonLabel(clickedBtn, /publish/i, 'Publishing…');
     toast('Publishing to GitHub Pages…');
-    streamRun((wp.monitorEvents || []).slice(1)); // ticker: publishing, deployed lines
     setTimeout(function () { refreshDeploymentCard('publishing'); }, 900);
     setTimeout(function () {
       if (clickedBtn) setButtonLabel(clickedBtn, /publishing…|publish/i, 'Published ✓');
@@ -996,8 +803,8 @@
 
   // ---- Row Trigger lane (DOM-driving) --------------------------------------
   // Add row → POST /rows (201) fires the row_added trigger → the shared triage workflow runs.
-  // The demo appends a visible row to the captured table and streams the trigger-fire ticker,
-  // then the coach hands the visitor toward Inbox (the run this fires is Support Triage's).
+  // The demo appends a visible row to the captured table, then the coach hands the visitor
+  // toward Inbox (the run this fires is Support Triage's).
   function driveAddRow(clickedBtn) {
     var rt = (state.machines || {}).row_trigger; if (!rt) return;
     fetch('/api/tables/' + rt.tableId + '/rows', {
@@ -1008,8 +815,6 @@
     appendDemoTableRow(rt.newRow);
     if (clickedBtn) setButtonLabel(clickedBtn, /add row/i, 'Row added ✓');
     toast('Row added — trigger fired');
-    streamRun((rt.monitorEvents || [])); // row_added, trigger_fired, run_started
-    refreshCoach();
   }
 
   // Append a visible row to the captured table body so the add is tangible. Best-effort: find
@@ -1020,7 +825,7 @@
     try { data = JSON.parse(row.data); } catch (e) { data = {}; }
     var table = document.querySelector('table');
     var tbody = table && (table.querySelector('tbody') || table);
-    if (!tbody) return; // grid layout — the toast + ticker already confirm it
+    if (!tbody) return; // grid layout — the toast already confirms it
     var headers = [].slice.call(table.querySelectorAll('thead th, thead td'))
       .map(function (th) { return (th.textContent || '').trim().toLowerCase(); });
     var rt = (state.machines || {}).row_trigger;
@@ -1058,16 +863,12 @@
       state.lanes.license_pack.licensed = true;
       if (clickedBtn) setButtonLabel(clickedBtn, /install/i, 'Installed ✓');
       toast(lp.packName + ' installed');
-      streamRun((lp.monitorEvents || []).slice(2));
-      refreshCoach();
       return;
     }
     state.lanes.license_pack.gated = true;
     if (clickedBtn) setButtonLabel(clickedBtn, /install/i, 'License required');
     toast('Install blocked — license required (402)');
-    streamRun((lp.monitorEvents || []).slice(0, 1)); // license_required line
     ensureActivateControl(clickedBtn);
-    refreshCoach();
   }
 
   // Surface a demo "Activate license" control next to the gated Install button (the real 402
@@ -1101,11 +902,9 @@
     state.lanes.license_pack.licensed = true;
     if (activateBtn) { activateBtn.textContent = 'Licensed ✓'; activateBtn.disabled = true; activateBtn.style.opacity = '0.7'; }
     toast('License activated — every paid pack unlocked');
-    streamRun((lp.monitorEvents || []).slice(1)); // license_activated, installed
     // auto-complete the install now that we are licensed (reflect on the gated Install button)
     var installBtn = findButton('license required') || findButton('install');
     if (installBtn) setButtonLabel(installBtn, /license required|install/i, 'Installed ✓');
-    refreshCoach();
   }
 
   // Captured guided controls are frozen in the product's INITIAL state, where some are
@@ -1203,57 +1002,14 @@
     }, true); // capture phase so we win before any (inert) React handler
   }
 
-  // The captured "Permission required" approval toast (SECTION.fixed pinned bottom-right)
-  // renders on EVERY page because that was the captured DOM state. Landing on the dashboard
-  // with an approval modal already open reads as a stuck state, so we gate it: hidden on load;
-  // shown when the visitor clicks the top-nav "Inbox" (approvals live there) OR is on the
-  // /inbox route; hidden again on ANY other UI click; once an outside click closes it, it
-  // STAYS closed (an Inbox click won't re-open it) — the close is a deliberate dismiss and
-  // persists for the session (survives the full-page nav between static routes).
-  var APPROVAL_CLOSED_KEY = 'relay-demo-approval-closed';
-  function approvalIsClosed() {
-    try { return sessionStorage.getItem(APPROVAL_CLOSED_KEY) === '1'; } catch (e) { return false; }
-  }
-  function markApprovalClosed() {
-    try { sessionStorage.setItem(APPROVAL_CLOSED_KEY, '1'); } catch (e) {}
-  }
-  function approvalPopup() {
-    var secs = document.querySelectorAll('section.fixed');
-    for (var i = 0; i < secs.length; i++) {
-      if (/Permission required/i.test(secs[i].textContent || '')) return secs[i];
-    }
-    return null;
-  }
-  function setApprovalPopup(show) {
-    var el = approvalPopup();
-    if (el) el.style.display = show ? '' : 'none';
-  }
-  function initApprovalGate() {
-    // hide on load unless we're already on the Inbox route AND not stickily closed
-    setApprovalPopup(/\/inbox\/?$/.test(location.pathname || '') && !approvalIsClosed());
-    document.addEventListener('click', function (e) {
-      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-      var toInbox = a && /\/inbox\/?$/.test(a.getAttribute('href') || '');
-      var pop = approvalPopup();
-      // a click INSIDE the popup itself (Allow/Deny) is not an outside click.
-      var insidePopup = pop && e.target && e.target.closest && e.target.closest('section.fixed') === pop;
-      if (toInbox) { if (!approvalIsClosed()) setApprovalPopup(true); return; }
-      if (insidePopup) return;
-      markApprovalClosed();
-      setApprovalPopup(false);
-    }, true);
-  }
-
   function onReady() {
-    ribbon(); buyStrip(); themeSwitcher(); coachStyle(); installInteractionLayer();
-    initApprovalGate(); // gate the captured permission popup: hidden on load, Inbox-only
-    enableLaneControls(); // make the app route's guided Preview/Publish controls actionable
-    setTimeout(refreshCoach, 900);
-    // On /monitor, auto-replay the run's activity so the "watch it work" streaming is visible
-    // even if the visitor lands here directly.
-    if (/\/monitor\/?$/.test(location.pathname || '')) {
-      setTimeout(function () { streamRun(); }, 1100);
-    }
+    ribbon();                 // DEMO banner (Fix #5: buy strip removed)
+    getRelayCta();            // centered top-bar "Get Orionfold Relay" CTA → /relay/
+    wireThemeButton();        // Fix #6: real top-right Toggle-theme button drives applyDemoTheme
+    gatePermissionPopup();    // Fix #2: approval toast hidden unless on /inbox + not closed
+    grayOutDeadMenus();       // Fix #8: non-emitted nav links become plain gray text
+    installInteractionLayer();
+    enableLaneControls();     // make the app route's guided Preview/Publish controls actionable
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady, { once: true });
   else onReady();
@@ -1275,7 +1031,6 @@
         state.lanes = fresh.lanes;             // per-lane progress flags
         window.__RELAY_DEMO_FIXTURES__ = d;
         enableLaneControls(); // machines now loaded — enable the app route's guided controls
-        refreshCoach();
       }
     })
     .catch(function (e) { try { console.warn('[relay demo] fixtures load failed', e); } catch (x) {} });

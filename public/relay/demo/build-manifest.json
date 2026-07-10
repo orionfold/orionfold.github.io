@@ -3,15 +3,31 @@
   "basePath": "/relay/demo/",
   "routes": [
     "/",
+    "/agents/",
+    "/apps/",
+    "/apps/demo-agency-ops/",
+    "/apps/demo-launch-ops/",
     "/apps/demo-web-designer/",
+    "/blueprints/",
+    "/chat/",
+    "/costs/",
+    "/customers/",
+    "/customers/demo_customer_brightline/",
     "/inbox/",
     "/monitor/",
     "/packs/",
+    "/projects/",
+    "/projects/demo_project_admin_trust/",
+    "/schedules/",
+    "/schemas/",
+    "/settings/",
+    "/tables/",
     "/tables/demo_table_support_queue/",
     "/tasks/",
-    "/workflows/"
+    "/workflows/",
+    "/workflows/demo_workflow_client_status/"
   ],
-  "assets": 45,
+  "assets": 67,
   "generatedFrom": {
     "captured": "captured",
     "public": "relay-demo"
