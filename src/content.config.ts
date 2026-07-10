@@ -291,9 +291,9 @@ const memos = defineCollection({
 // Relay API reference (Rail B publish, _RELAY #23) — the developer API guide,
 // authored chapter-by-chapter at the strategy-owned _ASSETS/api/reference corpus
 // (same one-direction publish contract as relayDocs/memos: website consumes,
-// never writes back; prose-green is enforced at the Relay source gate). #23 is a
-// single-chapter pilot: only 01-overview-local-api.md is prose-green and shipped;
-// 02-08 stay reserved at source until authored. The filename stem is the URL slug
+// never writes back; prose-green is enforced at the Relay source gate). The full
+// 8-chapter reference (01-08) is landed: Ch 01 was the #23 pilot; 02-04 (#32) and
+// 05-08 (#33) followed in the same verbatim shape. The filename stem is the URL slug
 // (01-overview-local-api.md -> /relay/api/01-overview-local-api/). Inline
 // screenshots use the same portable ![alt](relay-shot:<id>) marker the global
 // rehype bridge rewrites into themed shots; the chapter body carries NO H1

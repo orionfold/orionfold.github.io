@@ -33,6 +33,20 @@ const chapters = (await getCollection('relayApi')).sort(
 const OVERVIEW: Record<string, string> = {
   '01-overview-local-api':
     'Start here if you are standing up or automating a local Relay instance. This group covers the routes that report where Relay is running, discover and import nearby projects, repair a cloned instance data directory, and feed the command palette. Each endpoint is documented with its real request, response, and error shapes, plus worked curl examples.',
+  '02-core-records':
+    'The records that organize work inside a local Relay instance: customers, projects, tasks, documents, handoffs between agents, and per-agent memory. Read this if you are scripting task creation and execution, wiring documents into a project, moving work between agent profiles, or inspecting a task log, output, and provenance.',
+  '03-agents-chat-runtimes':
+    'The agents that do the work, the chat surface that talks to them, and the runtimes that back them. It covers agent profiles and importing them from GitHub, chat conversations with their streaming responses and branching, per-conversation skill composition, and runtime discovery for local Ollama and model routing.',
+  '04-workflows-automation':
+    'Automating multi-step work: workflows and how they run, resume, and stop; blueprints that turn a template into a workflow; schedules that fire tasks on a cron; the notifications that carry approvals and alerts; and the permission rules that govern what agents may do without asking.',
+  '05-packs-apps-tables-publishing':
+    "Relay's composable building blocks: installing and updating packs, inspecting and deleting the apps a pack installs, building and querying user tables (the spreadsheet-like data store), enriching table rows with agent work, and publishing a generated site to a target you own.",
+  '06-settings-license-instance':
+    'Configuring and inspecting a local Relay instance: reading and writing settings (auth, models, routing, budgets, chat, snapshots, browser tools), activating and removing licenses, checking instance identity and upgrade state, scanning the local environment, and tracking onboarding progress.',
+  '07-files-observability-maintenance':
+    'Running and maintaining a local Relay instance: uploading and serving files, taking and restoring full-state snapshots, loading and scaffolding plugins, reading live telemetry and stream diagnostics, and seeding or clearing data in a staging build. Several routes here are destructive or gated, and each such gate is called out on the route.',
+  '08-webhooks-and-channels':
+    'Connecting a local Relay instance to an outside messaging surface: Slack, Telegram, or a generic outbound webhook. It covers creating and managing channel configurations, live-testing a connection, and the two inbound endpoints that receive third-party events and turn them into chat turns. Those two are the only genuinely externally facing routes in the whole API, and the chapter documents them with that trust boundary in mind.',
 };
 
 const og = ogMeta('/relay/');
