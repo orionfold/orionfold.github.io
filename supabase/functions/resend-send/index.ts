@@ -27,15 +27,18 @@
 // Send identity is OWNED HERE, not by the caller:
 //   from      "Orionfold <manav@updates.orionfold.com>" (the one verified domain)
 //   reply_to  manav@orionfold.com
-//   footer    EMAIL_FOOTER (CAN-SPAM postal address + opt-out) appended to BOTH
-//             text and html server-side, so a nurture send can never ship without
-//             the legal footer and the address can never drift from the other
-//             customer emails. Marketing passes the body; we guarantee the footer.
+//   footer    the recipient-tokenized one-click footer (footerFor) is appended to
+//             BOTH text and html server-side, so a nurture send can never ship
+//             without the CAN-SPAM address + a working one-click unsubscribe link,
+//             and neither can drift from the other customer emails. We also set
+//             List-Unsubscribe + List-Unsubscribe-Post (RFC 8058) with the same tok.
 //
 // Welcome ownership: the magnet confirm + book-delivery email stays the website's
 // (confirm-email / book-files). Marketing nurture starts AFTER that, so there is
 // no double-welcome. This fn sends only what marketing hands it.
-import { EMAIL_FOOTER } from "../_shared/email-footer.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { footerFor, UNSUB_BASE } from "../_shared/email-footer.ts";
+import { getOrMintToken } from "../_shared/email-tokens.ts";
 
 const AUTH_PREFIX = "Bearer ";
 const FROM = "Orionfold <manav@updates.orionfold.com>";
@@ -96,16 +99,24 @@ export function validate(body: unknown): { ok: true; input: SendInput } | { ok: 
   };
 }
 
-// Append the CAN-SPAM footer to whichever bodies are present. text always exists
-// (required); html only if the caller sent one. The footer is plain text; for the
-// html body it is wrapped in <pre> so the address + opt-out render literally.
-export function withFooter(input: SendInput): { text: string; html?: string } {
-  const text = `${input.text}\n\n${EMAIL_FOOTER}`;
+// Append the given (already recipient-tokenized) footer to whichever bodies are
+// present. text always exists (required); html only if the caller sent one.
+export function withFooter(input: SendInput, footer: string): { text: string; html?: string } {
+  const text = `${input.text}\n\n${footer}`;
   const html =
     input.html === undefined
       ? undefined
-      : `${input.html}\n<pre style="font:inherit;white-space:pre-wrap">${EMAIL_FOOTER}</pre>`;
+      : `${input.html}\n<pre style="font:inherit;white-space:pre-wrap">${footer}</pre>`;
   return { text, html };
+}
+
+// RFC 8058 one-click headers so Gmail/Apple render a native Unsubscribe control
+// that POSTs to our fn. Same tok as the footer link.
+export function listUnsubHeaders(tok: string): Record<string, string> {
+  return {
+    "List-Unsubscribe": `<${UNSUB_BASE}?t=${tok}>`,
+    "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+  };
 }
 
 function json(body: Record<string, unknown>, status = 200): Response {
@@ -135,13 +146,20 @@ if (import.meta.main) {
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) return json({ error: "RESEND_API_KEY not configured" }, 500);
 
-    const { text, html } = withFooter(v.input);
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    const tok = await getOrMintToken(supabase, v.input.to);
+
+    const { text, html } = withFooter(v.input, footerFor(tok));
     const payload: Record<string, unknown> = {
       from: FROM,
       reply_to: REPLY_TO,
       to: [v.input.to],
       subject: v.input.subject,
       text,
+      headers: listUnsubHeaders(tok),
     };
     if (html !== undefined) payload.html = html;
     if (v.input.tags) payload.tags = v.input.tags;

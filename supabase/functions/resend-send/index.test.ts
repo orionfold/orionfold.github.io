@@ -6,8 +6,8 @@
 //
 // Run: deno test supabase/functions/resend-send/index.test.ts
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { EMAIL_FOOTER } from "../_shared/email-footer.ts";
-import { authorized, validate, withFooter } from "./index.ts";
+import { footerFor } from "../_shared/email-footer.ts";
+import { authorized, listUnsubHeaders, validate, withFooter } from "./index.ts";
 
 function authHeader(v: string): Headers {
   return new Headers({ Authorization: "Bearer " + v });
@@ -84,15 +84,24 @@ Deno.test("validate rejects non-object bodies", () => {
   assert(!validate(42).ok);
 });
 
-Deno.test("withFooter appends the CAN-SPAM footer to text only when no html", () => {
-  const out = withFooter({ to: GOOD.to, subject: GOOD.subject, text: "body" });
-  assertEquals(out.text, `body\n\n${EMAIL_FOOTER}`);
+Deno.test("withFooter appends the given footer to text only when no html", () => {
+  const footer = footerFor("tok-9");
+  const out = withFooter({ to: GOOD.to, subject: GOOD.subject, text: "body" }, footer);
+  assertEquals(out.text, `body\n\n${footer}`);
   assertEquals(out.html, undefined);
 });
 
 Deno.test("withFooter appends the footer to BOTH bodies when html present", () => {
-  const out = withFooter({ to: GOOD.to, subject: GOOD.subject, text: "body", html: "<p>body</p>" });
-  assert(out.text.endsWith(EMAIL_FOOTER));
-  assert(out.html!.includes(EMAIL_FOOTER));
-  assert(out.html!.includes("2108 N St Ste N")); // the postal address actually rides along
+  const footer = footerFor("tok-9");
+  const out = withFooter({ to: GOOD.to, subject: GOOD.subject, text: "body", html: "<p>body</p>" }, footer);
+  assert(out.text.endsWith(footer));
+  assert(out.html!.includes(footer));
+  assert(out.html!.includes("2108 N St Ste N")); // postal address rides along
+  assert(out.html!.includes("/unsubscribe?t=tok-9")); // one-click link rides along
+});
+
+Deno.test("listUnsubHeaders builds the RFC 8058 one-click headers", () => {
+  const h = listUnsubHeaders("tok-9");
+  assertEquals(h["List-Unsubscribe"], "<https://orionfold.com/unsubscribe?t=tok-9>");
+  assertEquals(h["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click");
 });
