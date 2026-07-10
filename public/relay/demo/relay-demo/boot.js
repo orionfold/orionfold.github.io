@@ -515,7 +515,7 @@
       '#relay-demo-ribbon a{color:#8fe3d0;text-decoration:underline}';
     var el = document.createElement('div');
     el.id = 'relay-demo-ribbon'; el.setAttribute('role', 'note');
-    el.innerHTML = '<strong>DEMO</strong> Synthetic data, static build — nothing here touches a real workspace. ' +
+    el.innerHTML = '<strong>DEMO</strong> Synthetic data, static build. Nothing here touches a real workspace. ' +
       'Install real Relay: <code>npx orionfold-relay</code>';
     document.head.appendChild(s);
     (document.body || document.documentElement).appendChild(el);
