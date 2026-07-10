@@ -216,4 +216,29 @@ const receipts = defineCollection({
     }),
 });
 
-export const collections = { story, productDetail, letters, receipts };
+// Relay docs (Rail B publish, _RELAY #15) — the 9-chapter SMB user guide,
+// copied verbatim from the strategy-owned _ASSETS/docs/guides corpus (one-
+// direction publish contract: website consumes, never writes back). Each file
+// is a green chapter; the filename stem is the URL slug
+// (get-started-with-relay.md -> /relay/docs/get-started-with-relay/). Inline
+// screenshots use the portable ![alt](relay-shot:<id>) marker, which the global
+// rehype bridge (src/lib/relay/rehype-relay-shots.mjs) rewrites into themed
+// shots. `order` drives the chapter list + prev/next; the CTA chrome is the
+// website's (footer-CTA only, hardcoded per the publish contract — Relay ships
+// content only, never CTA HTML). Mirrors the `receipts` glob-loader idiom.
+const relayDocs = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/relay-docs' }),
+  schema: () =>
+    z.object({
+      title: z.string(),
+      // 1-based chapter position; drives the guide list order + prev/next links.
+      order: z.number(),
+      // One-line dek: the chapter's "what this helps you do" opener. Used as the
+      // meta description, the card sub-line, and the OG alt.
+      summary: z.string(),
+      // Feature coverage carried from the source chapter (operator-facing chips).
+      features: z.array(z.string()).default([]),
+    }),
+});
+
+export const collections = { story, productDetail, letters, receipts, relayDocs };

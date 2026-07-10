@@ -1,10 +1,10 @@
 {
-  "home-cockpit": {
-    "light": "/relay/shots/home-cockpit/light.5bbe288e.webp",
-    "dark": "/relay/shots/home-cockpit/dark.96f1730b.webp",
+  "agents-list": {
+    "light": "/relay/shots/agents-list/light.5ca2895f.webp",
+    "dark": "/relay/shots/agents-list/dark.4ee0571d.webp",
     "ratio": "1440 / 1100",
-    "alt": "Home cockpit",
-    "area": "home"
+    "alt": "Agents list",
+    "area": "agents"
   },
   "apps-list": {
     "light": "/relay/shots/apps-list/light.0205d0bb.webp",
@@ -12,6 +12,20 @@
     "ratio": "1440 / 1100",
     "alt": "Installed apps list",
     "area": "apps"
+  },
+  "blueprints-gallery": {
+    "light": "/relay/shots/blueprints-gallery/light.2da8cab8.webp",
+    "dark": "/relay/shots/blueprints-gallery/dark.c37c4545.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Blueprint gallery",
+    "area": "workflows"
+  },
+  "chat-workspace": {
+    "light": "/relay/shots/chat-workspace/light.e001e654.webp",
+    "dark": "/relay/shots/chat-workspace/dark.fa347843.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Chat workspace",
+    "area": "chat"
   },
   "costs": {
     "light": "/relay/shots/costs/light.487e901b.webp",
@@ -27,12 +41,12 @@
     "alt": "Customer book",
     "area": "customers"
   },
-  "tasks-board": {
-    "light": "/relay/shots/tasks-board/light.a10a95dd.webp",
-    "dark": "/relay/shots/tasks-board/dark.d82d16e4.webp",
+  "home-cockpit": {
+    "light": "/relay/shots/home-cockpit/light.5bbe288e.webp",
+    "dark": "/relay/shots/home-cockpit/dark.96f1730b.webp",
     "ratio": "1440 / 1100",
-    "alt": "Tasks board and table",
-    "area": "tasks"
+    "alt": "Home cockpit",
+    "area": "home"
   },
   "inbox-approvals": {
     "light": "/relay/shots/inbox-approvals/light.2d430330.webp",
@@ -40,5 +54,96 @@
     "ratio": "1440 / 1100",
     "alt": "Inbox approvals",
     "area": "inbox"
+  },
+  "monitor": {
+    "light": "/relay/shots/monitor/light.cfa2907d.webp",
+    "dark": "/relay/shots/monitor/dark.560589e0.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Monitor",
+    "area": "monitor"
+  },
+  "packs-gallery": {
+    "light": "/relay/shots/packs-gallery/light.bc07c6d7.webp",
+    "dark": "/relay/shots/packs-gallery/dark.aa721c5b.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Packs gallery",
+    "area": "packs"
+  },
+  "projects-list": {
+    "light": "/relay/shots/projects-list/light.a5307460.webp",
+    "dark": "/relay/shots/projects-list/dark.ae7e9845.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Projects list",
+    "area": "projects"
+  },
+  "schedules-list": {
+    "light": "/relay/shots/schedules-list/light.3a692333.webp",
+    "dark": "/relay/shots/schedules-list/dark.d98a1130.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Schedules list",
+    "area": "schedules"
+  },
+  "schemas-list": {
+    "light": "/relay/shots/schemas-list/light.3cc7e936.webp",
+    "dark": "/relay/shots/schemas-list/dark.74f5f907.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Schemas list",
+    "area": "schemas"
+  },
+  "settings-license": {
+    "light": "/relay/shots/settings-license/light.7208a4b2.webp",
+    "dark": "/relay/shots/settings-license/dark.643966ed.webp",
+    "ratio": "1440 / 1100",
+    "alt": "License settings",
+    "area": "settings"
+  },
+  "settings-runtime": {
+    "light": "/relay/shots/settings-runtime/light.5677130d.webp",
+    "dark": "/relay/shots/settings-runtime/dark.643966ed.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Runtime settings",
+    "area": "settings"
+  },
+  "settings-summary": {
+    "light": "/relay/shots/settings-summary/light.41912cbf.webp",
+    "dark": "/relay/shots/settings-summary/dark.b516d757.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Settings summary",
+    "area": "settings"
+  },
+  "support-queue-table": {
+    "light": "/relay/shots/support-queue-table/light.51fae6f3.webp",
+    "dark": "/relay/shots/support-queue-table/dark.44ee1815.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Support Queue table",
+    "area": "tables"
+  },
+  "tables-list": {
+    "light": "/relay/shots/tables-list/light.394c911e.webp",
+    "dark": "/relay/shots/tables-list/dark.26b92339.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Tables list",
+    "area": "tables"
+  },
+  "tasks-board": {
+    "light": "/relay/shots/tasks-board/light.a10a95dd.webp",
+    "dark": "/relay/shots/tasks-board/dark.d82d16e4.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Tasks board and table",
+    "area": "tasks"
+  },
+  "web-designer-app": {
+    "light": "/relay/shots/web-designer-app/light.60d7fbd6.webp",
+    "dark": "/relay/shots/web-designer-app/dark.9ea4d568.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Web Designer app",
+    "area": "publisher"
+  },
+  "workflows-list": {
+    "light": "/relay/shots/workflows-list/light.59775f2a.webp",
+    "dark": "/relay/shots/workflows-list/dark.d190dbdb.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Workflow list",
+    "area": "workflows"
   }
 }

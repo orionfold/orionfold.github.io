@@ -1,0 +1,37 @@
+---
+// src/components/relay/RelayDocsCta.astro
+// Footer CTA for the Relay Rail-B surfaces (docs / api / memos). The publish
+// contract says these are task-focused reads: ONE footer CTA, don't interrupt,
+// and the website owns the chrome hardcoded per-collection (Relay ships content
+// only, never CTA HTML). So this is a plain, always-Relay band that routes to
+// /relay/ where the canonical buy block lives — NOT the hash-picked ProductBand
+// (that's for loose evidence pages). Restraint rule: one conversion mechanism,
+// no sticky, no stacking.
+import { RELAY, formatUsd } from '../../data/commerce';
+
+interface Props {
+  // Light contextual line above the CTA, tuned per surface.
+  kicker?: string;
+  class?: string;
+}
+const { kicker = 'Run your AI team from one place.', class: className } = Astro.props;
+const price = formatUsd(RELAY.founding.amount);
+---
+<section class:list={['relay-docs-cta border-t border-border px-6 py-16 sm:py-20', className]}>
+  <div class="mx-auto flex max-w-3xl flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+    <div class="min-w-0">
+      <p class="font-mono text-[0.7rem] uppercase tracking-[0.16em] text-text-dim">Orionfold Relay</p>
+      <h2 class="mt-2 text-2xl leading-tight sm:text-3xl">{kicker}</h2>
+      <p class="mt-3 max-w-md text-sm leading-relaxed text-text-muted">
+        The engine is free and open. A license unlocks the premium packs you own and keeps them yours, offline. Founding seats from {price}.
+      </p>
+    </div>
+    <a
+      href="/relay/#get-relay"
+      class="of-primary-action shrink-0"
+    >
+      See pricing &amp; get Relay
+      <span class="font-mono" aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</section>

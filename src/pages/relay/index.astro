@@ -18,25 +18,26 @@
 // the ones the README hotlinks are stale legacy "ainative" UI). Voice: grade 3-5,
 // jargon explained, no em-dashes (website-copy-style).
 import { Image } from 'astro:assets';
-import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
-import PageHeader from '../components/ui/PageHeader.astro';
-import RelayBox from '../components/product/RelayBox.astro';
-import RelayProblem from '../components/product/RelayProblem.astro';
-import RelaySolution from '../components/product/RelaySolution.astro';
-import RelayUnderTheHood from '../components/product/RelayUnderTheHood.astro';
-import RelayShowcase from '../components/product/RelayShowcase.astro';
-import LandingStickyCta from '../components/product/LandingStickyCta.astro';
-import LicenseBand from '../components/product/LicenseBand.astro';
-import OfferSlot from '../components/ui/OfferSlot.astro';
-import { ORIONFOLD_RELAY_LIVE } from '../data/launch';
-import relayPoster from '../assets/projects/orionfold-relay-poster.jpeg';
-import relayBoardShot from '../assets/relay/home-list.png';
-import relayCostReceipt from '../assets/relay/customers-detail.png';
-import { SITE, PERSON } from '../data/seo';
-import { RELAY, formatUsd } from '../data/commerce';
-import { ogMeta } from '../data/og';
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import PageHeader from '../../components/ui/PageHeader.astro';
+import RelayBox from '../../components/product/RelayBox.astro';
+import RelayProblem from '../../components/product/RelayProblem.astro';
+import RelaySolution from '../../components/product/RelaySolution.astro';
+import RelayUnderTheHood from '../../components/product/RelayUnderTheHood.astro';
+import RelayShowcase from '../../components/product/RelayShowcase.astro';
+import LandingStickyCta from '../../components/product/LandingStickyCta.astro';
+import LicenseBand from '../../components/product/LicenseBand.astro';
+import RelaySubNav from '../../components/relay/RelaySubNav.astro';
+import OfferSlot from '../../components/ui/OfferSlot.astro';
+import { ORIONFOLD_RELAY_LIVE } from '../../data/launch';
+import relayPoster from '../../assets/projects/orionfold-relay-poster.jpeg';
+import relayBoardShot from '../../assets/relay/home-list.png';
+import relayCostReceipt from '../../assets/relay/customers-detail.png';
+import { SITE, PERSON } from '../../data/seo';
+import { RELAY, formatUsd } from '../../data/commerce';
+import { ogMeta } from '../../data/og';
 
 const og = ogMeta('/relay/');
 const relayUrl = `${SITE.url}/relay/`;
@@ -246,7 +247,10 @@ const trust = [
   ]}
 >
   <Nav />
-  <main>
+  <RelaySubNav active="overview" />
+  {/* The sub-nav already clears the fixed Nav; pull the PageHeader's own
+      nav-clearance (pt-28) back up so the masthead sits just under the rail. */}
+  <main class="-mt-20 sm:-mt-24">
     <PageHeader
       eyebrow="Own it · Run it yourself"
       title="Run AI agents for real client work. See what each client costs."
@@ -752,7 +756,7 @@ const trust = [
 <script>
   // Wire the Relay purchase buttons (data-checkout → create-checkout-session →
   // Stripe). No-op when the buttons aren't rendered (ORIONFOLD_RELAY_LIVE off).
-  import { wireCheckoutButtons } from '../lib/checkout';
+  import { wireCheckoutButtons } from '../../lib/checkout';
 
   wireCheckoutButtons();
   document.addEventListener('astro:after-swap', () => {

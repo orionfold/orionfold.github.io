@@ -1,8 +1,23 @@
 [
-  "home-cockpit",
+  "agents-list",
   "apps-list",
+  "blueprints-gallery",
+  "chat-workspace",
   "costs",
   "customers-list",
+  "home-cockpit",
+  "inbox-approvals",
+  "monitor",
+  "packs-gallery",
+  "projects-list",
+  "schedules-list",
+  "schemas-list",
+  "settings-license",
+  "settings-runtime",
+  "settings-summary",
+  "support-queue-table",
+  "tables-list",
   "tasks-board",
-  "inbox-approvals"
+  "web-designer-app",
+  "workflows-list"
 ]

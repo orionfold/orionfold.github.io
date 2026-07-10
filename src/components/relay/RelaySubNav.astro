@@ -1,0 +1,132 @@
+---
+// src/components/relay/RelaySubNav.astro
+// The /relay/ sub-menu (_RELAY #15): a slim tab row reserving all four child
+// surfaces in the contract order — Demo · Docs · API · Memos. /relay/ itself
+// stays the hub ("Overview"); these are its children. Only surfaces that have
+// shipped green content are live links; the rest render as reserved, disabled
+// slots with a "Soon" tag (the slot exists so the IA reads complete, but a
+// disabled slot can't be clicked into an empty page). `active` marks the
+// current surface for aria-current + the active underline.
+//
+// Live/reserved state is data-driven — as each surface lands (API, Memos,
+// Demo), flip its `live: true` and the slot becomes a real link. No layout
+// change needed. Uses plain nav-link styling (the site's tab idiom), NOT
+// .of-chip: .of-chip is a non-pressable metadata tag by design and would fight
+// the DS if used for navigation.
+interface Props {
+  // Which slot is the current page: 'overview' (the /relay/ hub) | 'docs' | ...
+  active?: 'overview' | 'demo' | 'docs' | 'api' | 'memos';
+  class?: string;
+}
+const { active = 'overview', class: className } = Astro.props;
+
+// Order = the publish-contract order (Demo → Docs → API → Memos), with Overview
+// first as the hub anchor. `live` gates whether the slot is a clickable link.
+const slots = [
+  { key: 'overview', label: 'Overview', href: '/relay/', live: true },
+  { key: 'demo', label: 'Demo', href: '/relay/demo/', live: false },
+  { key: 'docs', label: 'Docs', href: '/relay/docs/', live: true },
+  { key: 'api', label: 'API', href: '/relay/api/', live: false },
+  { key: 'memos', label: 'Memos', href: '/relay/memos/', live: false },
+] as const;
+---
+<nav aria-label="Relay sections" class:list={['relay-subnav', className]}>
+  <ul class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6">
+    {slots.map((slot) => {
+      const isActive = slot.key === active;
+      if (!slot.live) {
+        return (
+          <li>
+            <span
+              class="relay-subnav__link relay-subnav__link--soon"
+              aria-disabled="true"
+              title="Coming soon"
+            >
+              {slot.label}
+              <span class="relay-subnav__soon" aria-hidden="true">Soon</span>
+            </span>
+          </li>
+        );
+      }
+      return (
+        <li>
+          <a
+            href={slot.href}
+            aria-current={isActive ? 'page' : undefined}
+            class:list={['relay-subnav__link', isActive && 'is-active']}
+          >
+            {slot.label}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
+
+<style>
+  .relay-subnav {
+    /* Sits under the fixed Nav, above the page masthead: a quiet section rail.
+       The site's Nav is a fixed overlay (~117px incl. the promo strip) that
+       takes no document-flow space, so — like every first `section` on the
+       site (pt-28/sm:pt-32) — this rail must reserve that clearance itself.
+       We use margin-top (not padding) so it can't collide with the rail's own
+       vertical breathing room below. */
+    margin-top: 7rem; /* clears the fixed Nav; matches the site's pt-28 idiom */
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+    /* The following <main> carries a negative top margin (-mt-20/-24) to pull
+       the masthead up snug under this rail; without a stacking context that
+       in-flow content would paint OVER the rail and swallow its link clicks.
+       relative + z-index keeps the rail (and its links) on top. */
+    position: relative;
+    z-index: 1;
+  }
+  @media (min-width: 640px) {
+    .relay-subnav {
+      margin-top: 8rem; /* sm: matches sm:pt-32 */
+    }
+  }
+  .relay-subnav__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+    padding-block: 0.15rem;
+  }
+  a.relay-subnav__link:hover {
+    color: var(--color-primary);
+  }
+  .relay-subnav__link.is-active {
+    color: var(--color-primary);
+  }
+  /* Active underline: a short accent rule under the current section. */
+  .relay-subnav__link.is-active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.85rem;
+    height: 2px;
+    background: var(--color-primary);
+  }
+  .relay-subnav__link--soon {
+    color: var(--color-text-dim);
+    cursor: default;
+  }
+  .relay-subnav__soon {
+    font-size: 0.55rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-faint, var(--color-text-dim));
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    padding: 0.05rem 0.28rem;
+  }
+</style>
