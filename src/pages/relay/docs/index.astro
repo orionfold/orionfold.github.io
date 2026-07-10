@@ -1,9 +1,14 @@
 ---
-// /relay/docs/ — the Relay user guide index (Rail B publish, _RELAY #15). Lists
-// the 9 green SMB chapters copied verbatim from the strategy-owned _ASSETS docs
-// corpus, in `order`. A child of the /relay/ hub (the sub-nav marks Docs
-// active); the footer CTA is the website's, hardcoded (contract: task-focused,
-// footer CTA only). Mirrors the /receipts/ index idiom.
+// /relay/docs/ — the Relay user guide index (Rail B publish, _RELAY #15/#16).
+// Redesigned as a scannable, landing-page-style tour: a fuller product overview
+// up top, then one alternating image/text section per chapter (mirrors the
+// /relay/ hub's RelayShowcase rhythm) so a reader gets a "1000-foot" picture of
+// the product from the screenshots alone. Each section leads with that chapter's
+// first product ThemedShot (theme-aware, lazy, zero-CLS) and a 2-3 sentence
+// blurb written from the chapter's own operator story (grade 3-5, no em-dashes,
+// website-copy-style). Chapters copied verbatim from the strategy-owned _ASSETS
+// corpus; this page owns the chrome. Chapter numbering is kept because the guide
+// IS a real sequence (first launch -> trust controls).
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
@@ -11,11 +16,73 @@ import Footer from '../../../components/Footer.astro';
 import PageHeader from '../../../components/ui/PageHeader.astro';
 import RelaySubNav from '../../../components/relay/RelaySubNav.astro';
 import RelayDocsCta from '../../../components/relay/RelayDocsCta.astro';
+import ThemedShot from '../../../components/relay/ThemedShot.astro';
 import { ogMeta } from '../../../data/og';
 import { SITE } from '../../../data/seo';
 
 const chapters = (await getCollection('relayDocs')).sort((a, b) => a.data.order - b.data.order);
 const og = ogMeta('/relay/');
+
+// Per-chapter tour copy: the lead screenshot (that chapter's first product shot)
+// + a scannable overview blurb written from the chapter's real operator story.
+// Keyed by slug so it stays aligned with the verbatim-copied chapter files
+// without editing them. `alt` describes the shot for a11y + OG.
+const TOUR: Record<string, { lead: string; alt: string; overview: string }> = {
+  'get-started-with-relay': {
+    lead: 'home-cockpit',
+    alt: 'The Relay home cockpit: running work, active workflows, a pending review, and a failed task, all on one local screen.',
+    overview:
+      'Relay opens as a local cockpit, not an empty chat box. The first screen shows what is running, what is waiting for you, and what already failed, so you read the state of your business before you touch anything. This chapter teaches the opening habit: read Home, then check Settings.',
+  },
+  'use-packs-and-licenses': {
+    lead: 'packs-gallery',
+    alt: 'The Relay packs gallery: bundled packs you can install, each turning a service into a reusable workflow, table, and agent set.',
+    overview:
+      'A pack turns a service you sell into something you can reuse. Instead of building each renewal desk or support loop by hand, you install a pack and get the workflow, tables, schedule, and agents together. This chapter shows how to read the gallery and how a license unlocks the premium packs you own.',
+  },
+  'organize-customers-projects-and-tasks': {
+    lead: 'customers-list',
+    alt: 'The Relay customer book: each account as a real record, with linked projects and a cost rollup per customer.',
+    overview:
+      'Work lives as customers, projects, and tasks, not as loose chat messages. Each account you serve is a real customer record you can link to its projects, so every job has an owner and a place. This chapter maps that structure, which is also what makes per-client cost a real total later.',
+  },
+  'plan-work-with-chat-agents-and-runtimes': {
+    lead: 'agents-list',
+    alt: 'The Relay agents list: named agents with their instructions and tool permissions, ready to run planned work.',
+    overview:
+      'You do not decide from scratch every morning which model to use or which tools an agent may touch. Relay gives you named agents with set instructions and permissions, and a runtime choice per task. This chapter shows how to plan work in chat, pick the right agent, and keep approvals in view.',
+  },
+  'run-workflows-with-human-checkpoints': {
+    lead: 'workflows-list',
+    alt: 'The Relay workflows list: multi-step runs that pause at a human checkpoint before anything reaches a client.',
+    overview:
+      'Some steps an agent can do alone. Some, like a refund reply, need a person to approve them first. A Relay workflow runs the same way every time: do the work, pause at a checkpoint, and continue only after you answer. This chapter covers starting a run, reading its state, and recovering when one stalls.',
+  },
+  'use-tables-triggers-and-schedules': {
+    lead: 'tables-list',
+    alt: 'The Relay tables view: structured local records where a row can trigger a workflow or run on a schedule.',
+    overview:
+      'Tables are the backbone of repeatable work. A row can be just a record, or it can trigger a workflow, or it can run on a schedule without waiting for you to remember. This chapter shows how tables, schemas, row triggers, and schedules turn one-off tasks into operations that run on their own.',
+  },
+  'watch-runs-costs-and-budget-signals': {
+    lead: 'monitor',
+    alt: 'The Relay monitor and cost view: what ran, what it cost, and where a step failed or hit a budget signal.',
+    overview:
+      'When a run fails or a step hits a budget, you do not have to guess. The monitor shows what ran, what it cost, and where it stopped, so you can inspect the real cause instead of rerunning and hoping. This chapter is how you audit spend and tune your runtime choices with evidence.',
+  },
+  'build-and-publish-a-small-website': {
+    lead: 'apps-list',
+    alt: 'The Relay apps view including Web Designer and Publisher, which build a small static site from table data.',
+    overview:
+      'Your content already has structure: services, proof points, and sections that fit in rows. Web Designer and Publisher turn that table data into a small static website, with a preview that matches what gets published. This chapter walks the build, so you do not hand-copy content into a separate site builder.',
+  },
+  'set-trust-runtime-and-local-controls': {
+    lead: 'settings-summary',
+    alt: 'The Relay settings summary: local instance, runtime, saved license state, and where approvals appear.',
+    overview:
+      'Before real client work enters the app, you do one admin pass. You confirm Relay is running locally, which runtime carries model work, what license is saved, and where approvals will show up. This chapter is that final trust check, plus where to inspect cost and failures after a run.',
+  },
+};
 
 const collectionSchema = {
   '@context': 'https://schema.org',
@@ -44,7 +111,7 @@ const breadcrumbSchema = {
 ---
 <Layout
   title="Relay User Guide · Orionfold"
-  description="The Orionfold Relay user guide: run your AI team from one local cockpit. Nine chapters, from first launch to workflows, tables, and trust controls."
+  description="See the whole Relay cockpit at a glance: nine chapters from first launch to workflows, tables, costs, and trust controls, each with the real screen it runs on."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[collectionSchema, breadcrumbSchema]}
@@ -56,31 +123,55 @@ const breadcrumbSchema = {
   <main class="-mt-20 sm:-mt-24">
     <PageHeader
       eyebrow="Relay · User guide"
-      title="Run Relay like an operator."
-      subtitle="Nine short chapters, written for a small-business operator. Start it, read the first screen, then work through packs, customers, workflows, tables, and trust controls."
+      title="See the whole cockpit at a glance."
+      subtitle="Relay runs your AI client work from one local app: customers, tasks, workflows, tables, and costs, all on your own machine. This guide walks the whole product, one real screen at a time, from your first launch to the trust controls you set before client work enters the app."
     />
 
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-3xl">
-        <ol class="grid gap-3" data-animate-stagger>
-          {chapters.map((c) => (
-            <li data-animate>
-              <a href={`/relay/docs/${c.id}/`} class="of-surface of-pressable group block rounded-2xl p-6">
-                <div class="flex items-baseline gap-3">
-                  <span class="font-mono text-sm text-primary">{String(c.data.order).padStart(2, '0')}</span>
-                  <span class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-text-dim">Chapter</span>
-                </div>
-                <p class="mt-3 text-lg font-medium leading-snug text-text group-hover:text-primary">{c.data.title}</p>
-                <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.data.summary}</p>
-                <span class="mt-4 inline-block text-sm text-primary transition-colors group-hover:text-primary/80">Read the chapter &rarr;</span>
+    {/* The scannable tour: one alternating image/text beat per chapter, in
+        order, so the screenshots alone give a 1000-foot view of the product. */}
+    <section class="px-6 pt-10 pb-8">
+      <div class="mx-auto max-w-5xl space-y-16 sm:space-y-20" data-animate-stagger>
+        {chapters.map((c, i) => {
+          const tour = TOUR[c.id];
+          const imageRight = i % 2 === 0; // 01 image right, 02 left, alternating
+          const href = `/relay/docs/${c.id}/`;
+          return (
+            <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-12" data-animate>
+              <div class:list={[imageRight ? 'lg:order-1' : 'lg:order-2']}>
+                <p class="font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">
+                  Chapter {String(c.data.order).padStart(2, '0')}
+                </p>
+                <h2 class="mt-3 text-2xl leading-tight sm:text-3xl">{c.data.title}</h2>
+                <p class="mt-4 text-base leading-relaxed text-text-muted">
+                  {tour?.overview ?? c.data.summary}
+                </p>
+                <a
+                  href={href}
+                  class="group mt-5 inline-flex items-center gap-1.5 font-mono text-sm text-primary transition-colors hover:text-primary/80"
+                >
+                  Read the chapter
+                  <span class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
+                </a>
+              </div>
+              <a
+                href={href}
+                aria-label={`Read chapter ${c.data.order}: ${c.data.title}`}
+                class:list={[
+                  'block overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5 transition-shadow hover:shadow-primary/15',
+                  imageRight ? 'lg:order-2' : 'lg:order-1',
+                ]}
+              >
+                {tour ? (
+                  <ThemedShot id={tour.lead} alt={tour.alt} class="block w-full" />
+                ) : null}
               </a>
-            </li>
-          ))}
-        </ol>
+            </div>
+          );
+        })}
       </div>
     </section>
 
-    <RelayDocsCta kicker="Ready to run it yourself?" />
+    <RelayDocsCta kicker="Ready to run it yourself?" class="mt-8" />
   </main>
   <Footer />
 </Layout>
