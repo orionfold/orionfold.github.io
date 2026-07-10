@@ -6,38 +6,42 @@
 // Run: deno test supabase/functions/_shared/confirmation-email.test.ts
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { confirmationEmail } from "./confirmation-email.ts";
+import { footerFor } from "./email-footer.ts";
 
 const URL = "https://orionfold.supabase.co/functions/v1/confirm-email?token=abc";
+// Use the real tokenized footer as the fixture so the CAN-SPAM assertions below
+// (postal address + opt-out) exercise the actual footer content that ships.
+const FOOTER = footerFor("tok");
 
 Deno.test("null offer -> story subscription default", () => {
-  const e = confirmationEmail(URL, null);
+  const e = confirmationEmail(URL, null, FOOTER);
   assertEquals(e.subject, "One click to get Orionfold stories");
   assert(e.text.includes("our stories"));
   assert(e.text.includes("the real build log"));
 });
 
 Deno.test("unknown offer falls back to default (fail-safe)", () => {
-  const e = confirmationEmail(URL, "some-future-offer-not-mapped-yet");
+  const e = confirmationEmail(URL, "some-future-offer-not-mapped-yet", FOOTER);
   assertEquals(e.subject, "One click to get Orionfold stories");
   assert(e.text.includes("our stories"));
 });
 
 Deno.test("proof-playbook offer gets its own copy", () => {
-  const e = confirmationEmail(URL, "proof-playbook");
+  const e = confirmationEmail(URL, "proof-playbook", FOOTER);
   assertEquals(e.subject, "One click to get the Proof playbook");
   assert(e.text.includes("the Proof playbook"));
   assert(!e.text.includes("our stories"));
 });
 
 Deno.test("founder-letter offer gets its own copy", () => {
-  const e = confirmationEmail(URL, "founder-letter");
+  const e = confirmationEmail(URL, "founder-letter", FOOTER);
   assertEquals(e.subject, "One click to get the founder letter");
   assert(e.text.includes("founder letter"));
   assert(!e.text.includes("our stories"));
 });
 
 Deno.test("become-ai-native-business offer names the AI For Everyone list + cadence", () => {
-  const e = confirmationEmail(URL, "become-ai-native-business");
+  const e = confirmationEmail(URL, "become-ai-native-business", FOOTER);
   assertEquals(e.subject, "One click for your free AI Native Business book");
   assert(e.text.includes("AI Native Business"));
   assert(e.text.includes("AI For Everyone"));
@@ -50,7 +54,7 @@ Deno.test("become-ai-native-business offer names the AI For Everyone list + cade
 
 Deno.test("every variant keeps the shared scaffold", () => {
   for (const offer of [null, "proof-playbook", "founder-letter", "become-ai-native-business", "bogus"]) {
-    const e = confirmationEmail(URL, offer);
+    const e = confirmationEmail(URL, offer, FOOTER);
     assert(e.text.startsWith("Hi,"), `greeting missing for ${offer}`);
     assert(e.text.includes(URL), `confirm URL missing for ${offer}`);
     assert(e.text.includes("expires in 7 days"), `expiry missing for ${offer}`);

@@ -9,7 +9,8 @@
 // brandedUrl) stay testable without a server; signBookFiles takes the supabase
 // client so callers own client construction.
 
-import { EMAIL_FOOTER } from "./email-footer.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { footerForEmail } from "./email-footer.ts";
 
 export const BOOK_FILES_BUCKET = "book-files";
 export const DOWNLOAD_TTL_SECONDS = 60 * 60 * 24 * 7; // 7-day signed download links
@@ -58,7 +59,7 @@ export async function signBookFiles(
   return links;
 }
 
-export function bookEmailText(bookLabel: string, links: BookLink[]): string {
+export function bookEmailText(bookLabel: string, links: BookLink[], footer: string): string {
   const downloads = links.map((l) => `${l.format}:\n${l.url}`).join("\n\n");
   return `Thank you for buying ${bookLabel}.
 
@@ -71,7 +72,7 @@ These links work for 7 days. Save the files to your device
 once you download them. Reply to this email if you hit any
 trouble and we will help.
 
-${EMAIL_FOOTER}`;
+${footer}`;
 }
 
 export async function sendBookEmail(
@@ -81,6 +82,13 @@ export async function sendBookEmail(
 ): Promise<void> {
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
   if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
+
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  );
+  const footer = await footerForEmail(supabase, email);
+  const bodyText = bookEmailText(bookLabel, links, footer);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -93,7 +101,7 @@ export async function sendBookEmail(
       reply_to: "manav@orionfold.com",
       to: [email],
       subject: `Your copy of ${bookLabel} is ready`,
-      text: bookEmailText(bookLabel, links),
+      text: bodyText,
     }),
   });
 

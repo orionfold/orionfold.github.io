@@ -1,5 +1,10 @@
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { authorized, selectDue, renewalEmailText, containsThreat, type EntRow } from "./index.ts";
+import { footerFor } from "../_shared/email-footer.ts";
+
+// Real tokenized footer as the fixture so the copy assertions exercise a body
+// shaped exactly like what ships (footer included).
+const FOOTER = footerFor("tok");
 
 const NOW = new Date("2026-07-02T00:00:00Z");
 function row(p: Partial<EntRow>): EntRow {
@@ -35,14 +40,14 @@ Deno.test("selectDue: excludes already-reminded, non-active, non-relay", () => {
 });
 
 Deno.test("renewalEmailText: carries the D4 sentence verbatim and the renewal CTA", () => {
-  const t = renewalEmailText();
+  const t = renewalEmailText(FOOTER);
   assert(t.includes("Your packs are yours forever. Renewal gets you the year's new and updated packs and priority support."));
   assert(t.includes("https://orionfold.com/relay/"));
   assert(t.includes("relay pack update relay-agency-pro"));
 });
 
 Deno.test("renewalEmailText: contains NO threat language", () => {
-  assert(!containsThreat(renewalEmailText()));
+  assert(!containsThreat(renewalEmailText(FOOTER)));
 });
 
 Deno.test("containsThreat: catches forbidden phrases", () => {

@@ -9,7 +9,6 @@
 //   - Add a new offer by adding a row to OFFER_COPY; no other change needed.
 //   - Voice: humanize, grade 3-5, no em-dashes, no AI tells (website-copy-style).
 
-import { EMAIL_FOOTER } from "./email-footer.ts";
 
 export type ConfirmationEmail = { subject: string; text: string };
 
@@ -75,6 +74,7 @@ function copyFor(offer: string | null | undefined): OfferCopy {
 export function confirmationEmail(
   confirmUrl: string,
   offer: string | null | undefined,
+  footer: string,
 ): ConfirmationEmail {
   const { subject, pitch } = copyFor(offer);
   const text = `Hi,
@@ -88,6 +88,6 @@ ${confirmUrl}
 This link expires in 7 days. If you didn't sign up, ignore
 this email.
 
-${EMAIL_FOOTER}`;
+${footer}`;
   return { subject, text };
 }

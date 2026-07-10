@@ -1,6 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { isHoneypotTripped, parseLeadInput } from "../_shared/lead-input.ts";
 import { confirmationEmail } from "../_shared/confirmation-email.ts";
+import { footerForEmail } from "../_shared/email-footer.ts";
 
 const ALLOWED_ORIGINS = [
   "https://orionfold.com",
@@ -160,7 +161,12 @@ async function sendConfirmationEmail(
   }
 
   const confirmUrl = `https://orionfold.supabase.co/functions/v1/confirm-email?token=${token}`;
-  const { subject, text } = confirmationEmail(confirmUrl, offer);
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  );
+  const footer = await footerForEmail(supabase, email);
+  const { subject, text } = confirmationEmail(confirmUrl, offer, footer);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",

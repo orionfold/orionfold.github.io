@@ -54,9 +54,10 @@ Deno.test("bookEmailText includes both links and is em-dash free", () => {
   const text = bookEmailText("AI Native Business", [
     { format: "PDF", url: "https://x/p.pdf" },
     { format: "EPUB", url: "https://x/e.epub" },
-  ]);
+  ], "FIXTURE-FOOTER");
   assert(text.includes("AI Native Business"));
   assert(text.includes("https://x/p.pdf"));
   assert(text.includes("https://x/e.epub"));
+  assert(text.includes("FIXTURE-FOOTER"));
   assert(!text.includes("—"));
 });

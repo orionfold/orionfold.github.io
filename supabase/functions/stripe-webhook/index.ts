@@ -32,7 +32,7 @@ import {
 } from "../_shared/license-payload.ts";
 import { sendMetaPurchase } from "../_shared/meta-capi.ts";
 import { BOOK_FILES_BUCKET, brandedUrl, sendBookEmail, signBookFiles } from "../_shared/book-files.ts";
-import { EMAIL_FOOTER } from "../_shared/email-footer.ts";
+import { footerForEmail } from "../_shared/email-footer.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
@@ -448,8 +448,10 @@ async function sendLicenseEmail(
   // Keyed by product so a new product must supply its own template — an unmapped
   // product falls back to Arena's copy only as a last resort (should never happen
   // since fulfillLicense already gated on a known descriptor).
+  const supabase = supabaseAdmin();
+  const footer = await footerForEmail(supabase, email);
   const emailFor = LICENSE_EMAIL_TEXT[product] ?? arenaLicenseEmailText;
-  const text = emailFor(productLabel, licenseId, installUrl);
+  const text = emailFor(productLabel, licenseId, installUrl, footer);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -474,7 +476,7 @@ async function sendLicenseEmail(
   }
 }
 
-function arenaLicenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
+function arenaLicenseEmailText(productLabel: string, licenseId: string, installUrl: string, footer: string): string {
   return `Thank you for buying ${productLabel}.
 
 Your license number is ${licenseId}. Your license file is also
@@ -494,10 +496,10 @@ email and we will send you a fresh one.
 
 Your license keeps you up to date for 12 months.
 
-${EMAIL_FOOTER}`;
+${footer}`;
 }
 
-function proofLicenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
+function proofLicenseEmailText(productLabel: string, licenseId: string, installUrl: string, footer: string): string {
   return `Thank you for buying ${productLabel}.
 
 Your license number is ${licenseId}. Your license file is also
@@ -527,10 +529,10 @@ this email and we will send you a fresh one.
 
 Your license keeps you up to date for 12 months.
 
-${EMAIL_FOOTER}`;
+${footer}`;
 }
 
-function relayLicenseEmailText(productLabel: string, licenseId: string, installUrl: string): string {
+function relayLicenseEmailText(productLabel: string, licenseId: string, installUrl: string, footer: string): string {
   return `Thank you for buying ${productLabel}.
 
 Your license number is ${licenseId}. Keep the license file
@@ -555,14 +557,14 @@ and updated packs and priority support.
 If your private link stops working before you add the pack, just
 reply to this email and we will send you a fresh one.
 
-${EMAIL_FOOTER}`;
+${footer}`;
 }
 
 // Product → fulfilment-email template. Add a product here (not another ternary
 // arm) so the install/unlock verb stays product-correct.
 const LICENSE_EMAIL_TEXT: Record<
   string,
-  (productLabel: string, licenseId: string, installUrl: string) => string
+  (productLabel: string, licenseId: string, installUrl: string, footer: string) => string
 > = {
   "arena-field-edition": arenaLicenseEmailText,
   "orionfold-proof": proofLicenseEmailText,

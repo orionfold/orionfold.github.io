@@ -9,7 +9,7 @@
 // honesty constraint is load-bearing (_RELAY later-9). verify_jwt = false; the
 // constant-time RENEWAL_REMINDER_TOKEN check is the sole gate, like the exports.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { EMAIL_FOOTER } from "../_shared/email-footer.ts";
+import { footerForEmail } from "../_shared/email-footer.ts";
 
 const AUTH_PREFIX = "Bearer ";
 const FROM = "Orionfold <manav@updates.orionfold.com>";
@@ -68,7 +68,7 @@ const YEAR_EVIDENCE =
   "pipeline that takes every opportunity from a scored go or no-go, through the letter " +
   "of intent and the full application, to post-award compliance with a reporting calendar.";
 
-export function renewalEmailText(): string {
+export function renewalEmailText(footer: string): string {
   return `Your Orionfold Relay license renews in about 30 days.
 
 First, the promise, so there is no worry:
@@ -91,7 +91,7 @@ https://orionfold.com/relay/
 
 If you have any questions, just reply to this email.
 
-${EMAIL_FOOTER}`;
+${footer}`;
 }
 
 // Guardrail: the copy must never imply packs stop working. Tested against the live copy.
@@ -114,10 +114,11 @@ function supabaseAdmin() {
 async function sendRenewalEmail(to: string): Promise<void> {
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
   if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
+  const footer = await footerForEmail(supabaseAdmin(), to);
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM, reply_to: REPLY_TO, to: [to], subject: SUBJECT, text: renewalEmailText() }),
+    body: JSON.stringify({ from: FROM, reply_to: REPLY_TO, to: [to], subject: SUBJECT, text: renewalEmailText(footer) }),
   });
   if (!res.ok) {
     const detail = await res.text();
