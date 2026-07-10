@@ -435,3 +435,9 @@ verify_jwt = false
 # off so our constant-time token check is the sole gate, like the exports.
 [functions.renewal-reminder]
 verify_jwt = false
+
+# unsubscribe (Phase-1 compliance, relay #9): tokenized one-click unsubscribe.
+# Public GET (link click) + POST (RFC 8058). No browser apikey; the opaque token
+# is the sole gate, so verify_jwt off like the other public callback fns.
+[functions.unsubscribe]
+verify_jwt = false
