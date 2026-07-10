@@ -628,25 +628,6 @@
     syncApprovalPopup();
   }
 
-  // ---- gray out non-clickable menus (Fix #8) -------------------------------
-  // The builder tags every nav link to an un-emitted route with data-relay-demo-dead="1"
-  // (it owns the emitted-route set — Fix #1). boot.js just styles those into plain gray
-  // text: no href, no pointer cursor, dimmed, non-clickable — so a visitor never clicks
-  // into a dead end. Single source of truth = the builder; boot.js is pure presentation.
-  function grayOutDeadMenus() {
-    var links = [].slice.call(document.querySelectorAll('a[data-relay-demo-dead="1"]'));
-    links.forEach(function (a) {
-      if (a.__relayDemoDeadStyled) return;
-      a.__relayDemoDeadStyled = true;
-      a.removeAttribute('href');       // not a link anymore — plain text
-      a.setAttribute('aria-disabled', 'true');
-      a.style.cursor = 'default';      // no pointer on non-clickable menus
-      a.style.opacity = '0.45';        // grayed out
-      a.style.pointerEvents = 'none';
-      a.title = 'Not part of this demo';
-    });
-  }
-
   // ---- interaction layer (DOM-driving) -------------------------------------
   // Relay's force-dynamic App Router pages embed an RSC flight payload that needs a running
   // `next start` server to complete hydration. Served statically (GitHub Pages) React never
@@ -939,6 +920,60 @@
     }
   }
 
+  // ---- un-fade captured disabled buttons -----------------------------------
+  // The capture froze the product in its INITIAL state, where a few action buttons carry the
+  // native `disabled` attribute until a precondition exists (e.g. "Activate" until a license is
+  // pasted, Ollama "Pull" until a model is typed, "Save target" until a deploy target is edited).
+  // `disabled:opacity-50` then renders them at half opacity, so the static demo reads as if those
+  // features are faded/off. Since the demo is a look-alike (clicks are inert anyway), clear the
+  // frozen disabled state on every button so the whole UI looks like a normal, in-use product.
+  // Buttons only — switch/toggle components model their off-state differently and are left alone.
+  function unfadeDisabledControls() {
+    var btns = [].slice.call(document.querySelectorAll('button[disabled], button[aria-disabled="true"]'));
+    btns.forEach(function (b) {
+      if (b.__relayDemoUnfaded) return;
+      b.__relayDemoUnfaded = true;
+      b.disabled = false;
+      b.removeAttribute('disabled');
+      b.removeAttribute('aria-disabled');
+      // The fade came from the `disabled:opacity-50` class, which no longer matches once the
+      // attribute is gone; clear any inline opacity/pointer just in case a capture set one.
+      if (b.style && b.style.opacity && parseFloat(b.style.opacity) < 1) b.style.opacity = '';
+      if (b.style && b.style.pointerEvents === 'none') b.style.pointerEvents = '';
+    });
+  }
+
+  // ---- strip the "Demo " prefix from the seeded demo-app name --------------
+  // The one remaining synthetic app is seeded as "Demo Web Designer" (the other two demo apps
+  // were replaced by the real relay-marketing / relay-agency-pro packs, which already carry
+  // real names). That "Demo " prefix shows in the app list, cross-refs, and title/aria-label
+  // tooltips. For the marketing demo it should read as a plain product app, so strip the
+  // leading "Demo " wherever that name appears — in text nodes and title/aria-label attributes.
+  // Scoped to the exact name so the "DEMO" ribbon and real content ("Demo failure: …") are safe.
+  // Fresh regex per use — a shared /g/ RegExp keeps lastIndex across .test()/.replace() and
+  // would skip matches. `hasDemoName` tests, `stripDemoName` replaces, each with its own object.
+  function hasDemoName(s) { return /\bDemo (?:Web Designer)\b/.test(s); }
+  function stripDemoName(s) { return s.replace(/\bDemo (Web Designer)\b/g, '$1'); }
+  function stripDemoAppNamePrefix() {
+    // 1. attributes (title / aria-label carry the same name on the app links)
+    [].slice.call(document.querySelectorAll('[title],[aria-label]')).forEach(function (el) {
+      ['title', 'aria-label'].forEach(function (attr) {
+        var v = el.getAttribute(attr);
+        if (v && hasDemoName(v)) el.setAttribute(attr, stripDemoName(v));
+      });
+    });
+    // 2. visible text nodes
+    var walker = document.createTreeWalker(document.body || document.documentElement, NodeFilter.SHOW_TEXT, null);
+    var textNodes = [];
+    var n;
+    while ((n = walker.nextNode())) {
+      if (n.nodeValue && hasDemoName(n.nodeValue)) textNodes.push(n);
+    }
+    textNodes.forEach(function (node) {
+      node.nodeValue = stripDemoName(node.nodeValue);
+    });
+  }
+
   function installInteractionLayer() {
     document.addEventListener('click', function (e) {
       var btn = e.target && (e.target.closest ? e.target.closest('button, a') : null);
@@ -1007,9 +1042,10 @@
     getRelayCta();            // centered top-bar "Get Orionfold Relay" CTA → /relay/
     wireThemeButton();        // Fix #6: real top-right Toggle-theme button drives applyDemoTheme
     gatePermissionPopup();    // Fix #2: approval toast hidden unless on /inbox + not closed
-    grayOutDeadMenus();       // Fix #8: non-emitted nav links become plain gray text
     installInteractionLayer();
     enableLaneControls();     // make the app route's guided Preview/Publish controls actionable
+    unfadeDisabledControls(); // captured disabled buttons (Activate/Pull/Save target) look normal
+    stripDemoAppNamePrefix(); // seeded "Demo <App>" names read as plain product apps
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady, { once: true });
   else onReady();

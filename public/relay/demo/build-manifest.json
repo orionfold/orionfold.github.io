@@ -5,9 +5,9 @@
     "/",
     "/agents/",
     "/apps/",
-    "/apps/demo-agency-ops/",
-    "/apps/demo-launch-ops/",
     "/apps/demo-web-designer/",
+    "/apps/relay-agency-pro/",
+    "/apps/relay-marketing/",
     "/blueprints/",
     "/chat/",
     "/costs/",
@@ -16,8 +16,9 @@
     "/inbox/",
     "/monitor/",
     "/packs/",
+    "/presets/",
     "/projects/",
-    "/projects/demo_project_admin_trust/",
+    "/projects/relay-marketing/",
     "/schedules/",
     "/schemas/",
     "/settings/",
@@ -27,7 +28,7 @@
     "/workflows/",
     "/workflows/demo_workflow_client_status/"
   ],
-  "assets": 67,
+  "assets": 68,
   "generatedFrom": {
     "captured": "captured",
     "public": "relay-demo"
