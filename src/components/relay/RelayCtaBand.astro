@@ -1,0 +1,169 @@
+---
+// src/components/relay/RelayCtaBand.astro
+// The reusable edge-to-edge Relay conversion stripe for the Rail-B surfaces
+// (memos / docs / api — _RELAY #17/#18/#19). One band for the mid-essay
+// interstitial AND the footer CTA across all three surfaces — same treatment,
+// different hook messaging via props. Full-bleed blueprint stripe (cool cyan
+// technical grid + soft atmospheric glow) with the Orionfold Relay poster
+// drifting on the same compositor-owned isometric plane as ProofCTA / the
+// homepage Hero (desktop only, reduced-motion safe). Routes to the /relay/ hub
+// (NOT the #get-relay Stripe anchor — operator 2026-07-09: the band sends readers
+// to the product page, which owns the buy flow); price from the catalog SSOT so
+// it never drifts. Restraint rule (contract): one conversion mechanism, no sticky.
+// The website owns this chrome; Relay ships content + intent only.
+//
+// NB: named RelayCtaBand (not RelayBand) — the homepage RelayBand
+// (src/components/sections/RelayBand.astro) already owns that name; this is the
+// Rail-B CTA family, distinct from the homepage flagship card.
+//
+// Two placement contexts:
+//  - `variant="interstitial"` — mounted MID-ESSAY inside the max-w-2xl reading
+//    column, so the section itself breaks out to full-bleed (100vw) via the
+//    left-1/2 / w-screen idiom. `not-prose` keeps .story-prose rules off it.
+//  - `variant="footer"` — placed AFTER </main>, already full width, so no
+//    break-out is needed.
+import { Image } from 'astro:assets';
+import relayPoster from '../../assets/projects/orionfold-relay-poster.jpeg';
+import { RELAY, formatUsd } from '../../data/commerce';
+
+interface Props {
+  variant?: 'interstitial' | 'footer';
+  eyebrow?: string;
+  kicker?: string;
+  line?: string;
+  class?: string;
+}
+const {
+  variant = 'footer',
+  eyebrow = 'Orionfold Relay',
+  kicker = 'Run your AI team from one place.',
+  line,
+  class: className,
+} = Astro.props;
+
+const price = formatUsd(RELAY.founding.amount);
+const defaultLine = `The engine is free and open. A license unlocks the premium packs you own and keeps them yours, offline. Founding seats from ${price}.`;
+const body = line ?? defaultLine;
+
+// The interstitial lives inside the reading column, so it must break out to the
+// full viewport width. Full-bleed via symmetric negative viewport margins
+// (`mx-[calc(50%-50vw)]`) + `w-screen`; `body { overflow-x: hidden }` (global.css)
+// clips the scrollbar-gutter sliver so there is never a usable horizontal
+// scroll. The footer is already full width, so no break-out.
+const breakout =
+  variant === 'interstitial'
+    ? 'not-prose relative mx-[calc(50%-50vw)] w-screen my-14 sm:my-16'
+    : '';
+---
+<section
+  class:list={['relay-cta-band relative overflow-hidden border-y border-primary/25 px-6 py-14 sm:py-16', breakout, className]}
+  aria-label="Get Orionfold Relay"
+>
+  <!-- Blueprint grid + soft atmospheric light behind the content, matching the
+       ProofBand / LicenseBand / ProofCTA cool-cyan family. Grid fades toward the
+       poster side so the text stays crisp. -->
+  <div class="relay-cta-band__grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="absolute right-[8%] top-1/2 h-[380px] w-[380px] -translate-y-1/2 rounded-full bg-primary/[0.12] blur-[130px]"></div>
+    <div class="absolute left-[12%] top-[18%] h-[220px] w-[220px] rounded-full bg-[oklch(0.70_0.14_82/0.10)] blur-[100px]"></div>
+  </div>
+
+  <div class="mx-auto grid max-w-5xl grid-cols-1 items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+    <!-- The pitch -->
+    <div class="lg:order-1">
+      <p class="font-mono text-[0.65rem] uppercase tracking-[0.22em] text-primary">{eyebrow}</p>
+      <h2 class="mt-3 text-2xl leading-tight sm:text-3xl">{kicker}</h2>
+      <p class="mt-3 max-w-xl text-sm leading-relaxed text-text-muted sm:text-base">{body}</p>
+      <a href="/relay/" data-relay-cta-btn class="of-primary-action mt-6">
+        Explore Orionfold Relay
+        <span class="font-mono" aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    <!-- The Relay poster on the drifting isometric plane (desktop); flat on
+         mobile. aria-hidden + tabindex=-1 so it is not a duplicate stop — the
+         labelled CTA above is the a11y path. The poster is lazy + mid/late page
+         (never the LCP), so the drift loop is perf-safe. -->
+    <div class="relaycta3d-stage relative lg:order-2">
+      <a
+        href="/relay/"
+        tabindex="-1"
+        aria-hidden="true"
+        class="relaycta3d-plane of-surface block overflow-hidden rounded-2xl p-1.5 shadow-[0_24px_70px_-48px_oklch(0.18_0.08_260/0.6)] transition-shadow duration-300 hover:shadow-[0_28px_80px_-44px_oklch(0.18_0.08_260/0.7)]"
+      >
+        <Image
+          src={relayPoster}
+          alt="The Orionfold Relay poster"
+          widths={[400, 640, 960]}
+          sizes="(min-width: 1024px) 40vw, calc(100vw - 3rem)"
+          loading="lazy"
+          decoding="async"
+          data-no-zoom
+          class="block aspect-[16/9] w-full rounded-[0.9rem] object-cover"
+        />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* When the interstitial band is mounted INTO .story-prose (mid-essay), this
+     site's prose block is a plain CSS rule (not the Tailwind typography plugin),
+     so `not-prose` does NOT neutralise `.story-prose a { color: var(--color-
+     primary); text-decoration: underline }`. That rule would paint the CTA's
+     text the same teal as its accent background (invisible) and underline it.
+     Force the button back to its on-accent color + no underline. Same fix family
+     as ProofCTA's a[data-proof-cta-btn] override. */
+  a[data-relay-cta-btn],
+  :global(.story-prose) a[data-relay-cta-btn] {
+    color: var(--color-accent-text);
+    text-decoration: none;
+  }
+
+  /* Cool "blueprint" surface + a fine masked line grid, so the band reads as the
+     technical ProofBand / LicenseBand family instead of a plain slab. Both
+     themes tuned; the grid fades toward the poster side. */
+  .relay-cta-band {
+    background-color: oklch(0.97 0.012 200);
+  }
+  :global([data-theme='dark']) .relay-cta-band {
+    background-color: oklch(0.20 0.022 235);
+  }
+  .relay-cta-band__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 50%, black, transparent);
+    mask-image: radial-gradient(ellipse 80% 70% at 70% 50%, black, transparent);
+  }
+  :global([data-theme='dark']) .relay-cta-band__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px);
+  }
+
+  /* Desktop-only isometric drift, same recipe as ProofCTA / the homepage Hero
+     (one transformed element so the compositor owns the loop; LCP-irrelevant
+     here since the poster is lazy + mid/late page). Mobile keeps the flat
+     poster. */
+  @media (min-width: 1024px) {
+    .relaycta3d-stage {
+      perspective: 1400px;
+    }
+    .relaycta3d-plane {
+      transform: rotateX(16deg) rotateZ(-3deg) scale(0.96);
+      animation: relaycta3d-drift 14s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @keyframes relaycta3d-drift {
+      from { transform: rotateX(16deg) rotateZ(-3deg) scale(0.96); }
+      to   { transform: rotateX(21deg) rotateZ(3deg) scale(1); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .relaycta3d-plane {
+      animation: none;
+    }
+  }
+</style>

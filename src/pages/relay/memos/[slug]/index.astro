@@ -13,8 +13,7 @@ import Layout from '../../../../layouts/Layout.astro';
 import Nav from '../../../../components/Nav.astro';
 import Footer from '../../../../components/Footer.astro';
 import RelaySubNav from '../../../../components/relay/RelaySubNav.astro';
-import RelayDocsCta from '../../../../components/relay/RelayDocsCta.astro';
-import RelayMemoInterstitial from '../../../../components/relay/RelayMemoInterstitial.astro';
+import RelayCtaBand from '../../../../components/relay/RelayCtaBand.astro';
 import { ogMeta } from '../../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../../data/seo';
 import { orderedMemos, memoSignatureHtml } from '../../../../lib/relay/memos.mjs';
@@ -34,13 +33,12 @@ export async function getStaticPaths() {
 type Entry = CollectionEntry<'memos'>;
 const { memo, prev, next } = Astro.props as { memo: Entry; prev: Entry | null; next: Entry | null };
 const { Content } = await render(memo);
-const { title, summary, series, date, status, difficulty } = memo.data;
+const { title, summary, series, date, difficulty } = memo.data;
 
 // The hero SVG lives next to the article (signature.svg); read it raw and inline
 // it so its --svg-* tokens resolve against the site theme (an <img> would
 // sandbox the CSS vars). Absent -> no hero, page still renders.
 const heroSvg = memoSignatureHtml(memo);
-const isDraft = status !== 'published';
 
 const og = ogMeta('/relay/');
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -77,7 +75,6 @@ const breadcrumbSchema = {
   ogImage={og.image}
   ogImageAlt={`${title} · Orionfold Relay Packs`}
   jsonLd={[articleSchema, breadcrumbSchema]}
-  noindex={isDraft ? 'follow' : false}
 >
   <Nav />
   <RelaySubNav active="memos" />
@@ -88,14 +85,7 @@ const breadcrumbSchema = {
         {series}
       </a>
 
-      <div class="mt-8 flex flex-wrap items-center gap-3">
-        <p class="font-mono text-sm text-primary">{series}</p>
-        {isDraft && (
-          <span class="rounded border border-border px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim" title="Editorial review pending">
-            Draft
-          </span>
-        )}
-      </div>
+      <p class="mt-8 font-mono text-sm text-primary">{series}</p>
       <h1 class="mt-2 text-3xl leading-tight sm:text-4xl">{title}</h1>
       <p class="mt-4 text-base leading-relaxed text-text-muted">{summary}</p>
 
@@ -108,12 +98,18 @@ const breadcrumbSchema = {
       </article>
 
       {/* The mid-essay interstitial: server-rendered hidden, then an inline
-          script relocates it into the [data-memo-interstitial-slot] the rehype
-          plugin auto-inserted at the section boundary. Hidden-until-placed = no
-          flash; JS-off falls back to right after the body. Contract: ONE mid
-          CTA + the footer CTA, no sticky. */}
+          script relocates the full-bleed Relay band into the
+          [data-memo-interstitial-slot] the rehype plugin auto-inserted at the
+          section boundary. Hidden-until-placed = no flash; JS-off falls back to
+          right after the body. The band breaks out of this reading column to
+          full viewport width (variant="interstitial"). Contract: ONE mid CTA +
+          the footer band, no sticky. */}
       <div id="memo-interstitial-source" hidden>
-        <RelayMemoInterstitial />
+        <RelayCtaBand
+          variant="interstitial"
+          kicker="Own the packs in this series."
+          line="Every pack you read about here is one you install and run offline, on your own machine. The engine is free and open. A license unlocks the premium packs and keeps them yours."
+        />
       </div>
       <script is:inline>
         (() => {
@@ -154,7 +150,7 @@ const breadcrumbSchema = {
     </div>
   </main>
 
-  <RelayDocsCta kicker="Own the packs in this series." />
+  <RelayCtaBand variant="footer" kicker="Run your AI team from one place." />
   <Footer />
 </Layout>
 
