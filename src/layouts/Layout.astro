@@ -291,5 +291,54 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
       document.addEventListener('astro:after-swap', initScrollReveal);
     </script>
 
+    <!-- Copy-code for prose code blocks (.of-code, injected by
+         rehype-code-block). One document-level delegated listener, so it covers
+         blocks that arrive via astro:after-swap navigation with no re-init.
+         Reads the sibling <pre> text at click time; flips the label to "Copied"
+         for 1.5s on success. Prefers the async Clipboard API and falls back to
+         execCommand('copy') via a hidden textarea when the API rejects (e.g. the
+         document isn't focused or the permission is denied) so a real click
+         always gives feedback. Same restraint as the product CodeTabs button. -->
+    <script is:inline>
+      document.addEventListener('click', function (e) {
+        var btn = e.target && e.target.closest ? e.target.closest('.of-code__copy') : null;
+        if (!btn) return;
+        var fig = btn.closest('.of-code');
+        var pre = fig && fig.querySelector('pre.astro-code');
+        if (!pre) return;
+        var label = btn.querySelector('.of-code__copy-label');
+        var text = pre.innerText;
+        var done = function () {
+          btn.classList.add('is-copied');
+          if (label) label.textContent = 'Copied';
+          setTimeout(function () {
+            btn.classList.remove('is-copied');
+            if (label) label.textContent = 'Copy';
+          }, 1500);
+        };
+        var legacyCopy = function () {
+          try {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.top = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            var ok = document.execCommand('copy');
+            document.body.removeChild(ta);
+            if (ok) done();
+          } catch (err) {
+            /* clipboard genuinely unavailable — leave the label alone */
+          }
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(legacyCopy);
+        } else {
+          legacyCopy();
+        }
+      });
+    </script>
+
   </body>
 </html>

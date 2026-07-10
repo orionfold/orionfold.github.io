@@ -2,14 +2,15 @@
 // /relay/docs/<slug>/ — one Relay user-guide chapter (Rail B publish, _RELAY
 // #15). Renders the verbatim markdown body; inline ![alt](relay-shot:<id>)
 // markers are rewritten to themed shots by the global rehype bridge. Prev/next
-// walk the `order`. Footer CTA is the website's, hardcoded (contract:
-// footer-only, don't interrupt). Mirrors the /receipts/<slug>/ idiom.
+// walk the `order`. Footer CTA is the website's edge-to-edge RelayCtaBand
+// (contract: footer-only, don't interrupt), matching the Memos + API surfaces.
+// Mirrors the /receipts/<slug>/ idiom.
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Layout from '../../../../layouts/Layout.astro';
 import Nav from '../../../../components/Nav.astro';
 import Footer from '../../../../components/Footer.astro';
 import RelaySubNav from '../../../../components/relay/RelaySubNav.astro';
-import RelayDocsCta from '../../../../components/relay/RelayDocsCta.astro';
+import RelayCtaBand from '../../../../components/relay/RelayCtaBand.astro';
 import { ogMeta } from '../../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../../data/seo';
 
@@ -98,6 +99,6 @@ const breadcrumbSchema = {
     </div>
   </main>
 
-  <RelayDocsCta />
+  <RelayCtaBand variant="footer" />
   <Footer />
 </Layout>

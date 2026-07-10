@@ -1135,3 +1135,105 @@ section {
 .story-prose td strong {
   color: var(--color-primary);
 }
+
+/* ── Prose code blocks (.of-code) ── */
+/* The rehype-code-block plugin wraps every shiki <pre class="astro-code"> in a
+   <figure class="of-code"> with a title bar (language label or authored title),
+   a right-aligned copy button, and an optional caption bar. These classes are
+   rehype-injected, so they MUST live in global.css — a scoped .astro <style>
+   can't reach them ([[rehype-markup-needs-global-css]]). The shiki <pre> keeps
+   its own dark syntax theme (github-dark) in BOTH site themes by design; only
+   the surrounding chrome (bars, borders) is theme-reactive. */
+
+/* The card: rounded corners + outer breathing room so surrounding prose never
+   touches it (point 5). The prose stack rule (`> * + *`) already spaces it when
+   it sits between blocks; the explicit margin covers first/last-child cases. */
+.of-code {
+  margin: 1.6em 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  overflow: hidden; /* clip the <pre> corners to the card radius */
+  background: var(--color-surface-raised);
+}
+
+/* Title bar: language/authored title on the left, copy button on the right. */
+.of-code__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.9rem;
+  background: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border);
+}
+.of-code__title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Copy button: icon + label, right-aligned in the bar. Wired by the global
+   copy script (base Layout). Label swaps to "Copied" on success. */
+.of-code__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+.of-code__copy:hover {
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+.of-code__copy.is-copied {
+  color: var(--color-success, var(--color-primary));
+  border-color: color-mix(in oklch, var(--color-success, var(--color-primary)) 40%, transparent);
+}
+.of-code__copy-icon {
+  flex: none;
+}
+
+/* Caption bar: renders only when the author set caption="..." (no empty bars). */
+.of-code__caption {
+  padding: 0.55rem 0.9rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  background: color-mix(in oklch, var(--color-surface-raised) 70%, var(--color-bg));
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* The shiki <pre>: internal padding so code doesn't touch the edges (point 3),
+   and SMART WRAP instead of horizontal scroll (point 4) — soft-wrap on
+   whitespace, break long unbreakable tokens, with overflow-x:auto kept as a
+   safety net for a truly unbreakable block (e.g. a long base64 string). The
+   !important overrides shiki's inline `overflow-x: auto` + default nowrap. */
+.of-code > pre.astro-code {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border-radius: 0;
+  white-space: pre-wrap !important;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  overflow-x: auto; /* fallback: unbreakable tokens still scroll, never overflow */
+  tab-size: 2;
+}
+.of-code > pre.astro-code code {
+  /* shiki lines are spans; keep them flowing so pre-wrap can break them. */
+  font-size: 0.85rem;
+  line-height: 1.6;
+}

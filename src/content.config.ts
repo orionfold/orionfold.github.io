@@ -300,8 +300,8 @@ const memos = defineCollection({
 // (frontmatter `title` is the SSOT, #23 note #2). Frontmatter is Relay's shape
 // (id/title/status/stability/families) — display copy (order, meta description)
 // is derived in the route from the filename + families, never by editing the
-// verbatim chapter. CTA chrome is the website's (footer-CTA only, shared
-// RelayDocsCta), same as docs. Mirrors the `relayDocs` glob-loader idiom.
+// verbatim chapter. CTA chrome is the website's (footer-CTA only, the edge-to-
+// edge RelayCtaBand), same as docs + memos. Mirrors the `relayDocs` glob-loader idiom.
 const relayApi = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/relay-api' }),
   schema: () =>

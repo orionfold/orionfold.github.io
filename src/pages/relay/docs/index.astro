@@ -15,7 +15,7 @@ import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PageHeader from '../../../components/ui/PageHeader.astro';
 import RelaySubNav from '../../../components/relay/RelaySubNav.astro';
-import RelayDocsCta from '../../../components/relay/RelayDocsCta.astro';
+import RelayCtaBand from '../../../components/relay/RelayCtaBand.astro';
 import ThemedShot from '../../../components/relay/ThemedShot.astro';
 import { ogMeta } from '../../../data/og';
 import { SITE } from '../../../data/seo';
@@ -171,7 +171,7 @@ const breadcrumbSchema = {
       </div>
     </section>
 
-    <RelayDocsCta kicker="Ready to run it yourself?" class="mt-8" />
+    <RelayCtaBand variant="footer" kicker="Ready to run it yourself?" class="mt-8" />
   </main>
   <Footer />
 </Layout>
