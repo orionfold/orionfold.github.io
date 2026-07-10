@@ -588,10 +588,9 @@
       '100%{box-shadow:0 0 0 0 rgba(20,128,74,0),0 0 0 2px rgba(20,128,74,.95)}}' +
       '.relay-demo-coach{animation:relay-coach-ping 1.5s ease-out infinite;border-radius:8px;position:relative;z-index:2}' +
       '#relay-demo-callout{position:fixed;z-index:2147482999;max-width:300px;background:#0d2229;color:#e7f2ef;' +
-      'border:1px solid #1d4a53;border-radius:10px;padding:12px 30px 12px 14px;' + // [OF-LOCAL] pad-right for ✕
+      'border:1px solid #1d4a53;border-radius:10px;padding:12px 30px 12px 14px;' + // pad-right for ✕
       'font:500 13px/1.5 ui-sans-serif,system-ui,-apple-system,sans-serif;box-shadow:0 14px 44px rgba(0,0,0,.42);' +
       'transition:top .25s,left .25s,opacity .25s}' +
-      // [OF-LOCAL] ✕ dismiss button in the callout corner
       '#relay-demo-callout .rc-dismiss{position:absolute;top:6px;right:6px;width:20px;height:20px;padding:0;' +
       'border:0;border-radius:6px;background:transparent;color:#8fe3d0;font-size:16px;line-height:20px;' +
       'cursor:pointer;opacity:.7;transition:opacity .15s,background .15s}' +
@@ -680,10 +679,9 @@
   }
 
   var coachEl = null, calloutEl = null;
-  // [OF-LOCAL] Explainer-tip dismissal (website feedback #5, 2026-07-10): the
-  // coach callouts are helpful once but should be dismissable, and stay dismissed
-  // across routes/visits. A visitor clicks the ✕ → we persist a flag and suppress
-  // ALL callouts + glow-guides for the rest of the session and future visits.
+  // The coach callouts help a first-time visitor once, but must be dismissable and
+  // stay dismissed across routes/visits. The visitor clicks the ✕ → we persist a flag
+  // and suppress ALL callouts + glow-guides for the rest of the session and future visits.
   var COACH_DISMISS_KEY = 'relay-demo-coach-dismissed';
   function coachDismissed() {
     try { return localStorage.getItem(COACH_DISMISS_KEY) === '1'; } catch (e) { return false; }
@@ -701,8 +699,8 @@
     calloutEl = document.createElement('div');
     calloutEl.id = 'relay-demo-callout';
     calloutEl.setAttribute('role', 'note');
-    // [OF-LOCAL] delegated ✕-dismiss: the callout innerHTML is rewritten each
-    // refresh, so wire the handler on the container once (survives innerHTML swaps).
+    // Delegated ✕-dismiss: the callout innerHTML is rewritten each refresh, so wire the
+    // handler on the container once (it survives innerHTML swaps).
     calloutEl.addEventListener('click', function (e) {
       var x = e.target && e.target.closest ? e.target.closest('.rc-dismiss') : null;
       if (x) { e.preventDefault(); e.stopPropagation(); dismissCoach(); }
@@ -725,14 +723,13 @@
   }
   function refreshCoach() {
     clearCoach();
-    if (coachDismissed()) { if (calloutEl) calloutEl.style.opacity = '0'; return; } // [OF-LOCAL]
+    if (coachDismissed()) { if (calloutEl) calloutEl.style.opacity = '0'; return; }
     var script = coachScript();
     if (!script) { if (calloutEl) calloutEl.style.opacity = '0'; return; }
     var c = ensureCallout();
     c.style.opacity = '1';
-    c.style.pointerEvents = ''; // [OF-LOCAL] re-arm in case a prior state cleared it
+    c.style.pointerEvents = ''; // re-arm in case a prior state cleared it
     c.innerHTML =
-      // [OF-LOCAL] ✕ dismiss button (top-right of the callout)
       '<button type="button" class="rc-dismiss" aria-label="Dismiss tip">&#215;</button>' +
       '<div class="rc-step">' + esc(script.step) + '</div>' +
       '<div class="rc-title">' + esc(script.title) + '</div>' +
@@ -1206,18 +1203,13 @@
     }, true); // capture phase so we win before any (inert) React handler
   }
 
-  // [OF-LOCAL] Permission-popup gating (website feedback #4, 2026-07-10).
-  // The captured "Permission required" approval popup (SECTION.fixed.z-50 pinned
-  // bottom-6 right-6) renders on EVERY page because that was the captured state.
-  // Landing with a permission modal already open is confusing. Desired behavior:
-  //   - hidden on load;
-  //   - shown when the visitor clicks the top-nav "Inbox" (approvals live there)
-  //     OR is on the /inbox route;
-  //   - hidden again on ANY other UI click; once an outside click closes it, it
-  //     STAYS closed (an Inbox click won't re-open it) — treat outside-click as a
-  //     deliberate dismiss.
-  // sticky-closed persists for the session so a full-page nav to /inbox won't
-  // re-open a popup the visitor deliberately clicked away (operator: "stays closed").
+  // The captured "Permission required" approval toast (SECTION.fixed pinned bottom-right)
+  // renders on EVERY page because that was the captured DOM state. Landing on the dashboard
+  // with an approval modal already open reads as a stuck state, so we gate it: hidden on load;
+  // shown when the visitor clicks the top-nav "Inbox" (approvals live there) OR is on the
+  // /inbox route; hidden again on ANY other UI click; once an outside click closes it, it
+  // STAYS closed (an Inbox click won't re-open it) — the close is a deliberate dismiss and
+  // persists for the session (survives the full-page nav between static routes).
   var APPROVAL_CLOSED_KEY = 'relay-demo-approval-closed';
   function approvalIsClosed() {
     try { return sessionStorage.getItem(APPROVAL_CLOSED_KEY) === '1'; } catch (e) { return false; }
@@ -1226,7 +1218,6 @@
     try { sessionStorage.setItem(APPROVAL_CLOSED_KEY, '1'); } catch (e) {}
   }
   function approvalPopup() {
-    // the captured approval toast: fixed, pinned bottom-right, carrying the label.
     var secs = document.querySelectorAll('section.fixed');
     for (var i = 0; i < secs.length; i++) {
       if (/Permission required/i.test(secs[i].textContent || '')) return secs[i];
@@ -1235,30 +1226,19 @@
   }
   function setApprovalPopup(show) {
     var el = approvalPopup();
-    if (!el) return;
-    el.style.display = show ? '' : 'none';
-  }
-  function isInboxRoute() {
-    return /\/inbox\/?$/.test(location.pathname || '');
+    if (el) el.style.display = show ? '' : 'none';
   }
   function initApprovalGate() {
     // hide on load unless we're already on the Inbox route AND not stickily closed
-    if (isInboxRoute() && !approvalIsClosed()) { setApprovalPopup(true); }
-    else { setApprovalPopup(false); }
-    // delegated click: an Inbox nav-link click shows it (unless stickily closed);
-    // a click anywhere else closes it (and makes that closure sticky for the session).
+    setApprovalPopup(/\/inbox\/?$/.test(location.pathname || '') && !approvalIsClosed());
     document.addEventListener('click', function (e) {
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
       var toInbox = a && /\/inbox\/?$/.test(a.getAttribute('href') || '');
-      // Clicking INSIDE the popup itself (Allow/Deny) must not count as an outside click.
       var pop = approvalPopup();
+      // a click INSIDE the popup itself (Allow/Deny) is not an outside click.
       var insidePopup = pop && e.target && e.target.closest && e.target.closest('section.fixed') === pop;
-      if (toInbox) {
-        if (!approvalIsClosed()) setApprovalPopup(true);
-        return;
-      }
+      if (toInbox) { if (!approvalIsClosed()) setApprovalPopup(true); return; }
       if (insidePopup) return;
-      // any other UI click: close it, stickily for the session.
       markApprovalClosed();
       setApprovalPopup(false);
     }, true);
@@ -1266,7 +1246,7 @@
 
   function onReady() {
     ribbon(); buyStrip(); themeSwitcher(); coachStyle(); installInteractionLayer();
-    initApprovalGate(); // [OF-LOCAL] gate the captured permission popup (feedback #4)
+    initApprovalGate(); // gate the captured permission popup: hidden on load, Inbox-only
     enableLaneControls(); // make the app route's guided Preview/Publish controls actionable
     setTimeout(refreshCoach, 900);
     // On /monitor, auto-replay the run's activity so the "watch it work" streaming is visible
