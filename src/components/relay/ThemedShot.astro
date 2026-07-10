@@ -1,0 +1,40 @@
+---
+// src/components/relay/ThemedShot.astro
+// Theme-aware Relay screenshot. Zero JS: a CSS background-image swaps on the
+// site's [data-theme] attribute (stamped pre-paint by the no-FOUC script), so
+// only the ACTIVE variant is ever fetched. aspect-ratio (from the corpus
+// manifest via the sync index) reserves layout => zero CLS. ALWAYS lazy /
+// below-the-fold by contract: never use this for an above-fold LCP hero
+// (that stays an eager single-theme <Image>). See
+// docs/superpowers/specs/2026-07-09-relay-themed-screenshot-component-design.md
+import index from '../../data/relay-shots.json';
+import { themedShotProps } from './themed-shot.logic.mjs';
+
+interface Props {
+  id: string;
+  alt?: string;
+  class?: string;
+}
+const { id, alt, class: className } = Astro.props;
+const { style, role, ariaLabel } = themedShotProps(index, { id, alt });
+---
+
+<div class:list={['relay-shot', className]} style={style} role={role} aria-label={ariaLabel}></div>
+
+<style>
+  .relay-shot {
+    /* var(--shot-light) is the CSS BASE declaration, not "what loads first":
+       the browser resolves the winning cascade rule before paint and fetches
+       only that image. A default (dark) visitor has [data-theme='dark']
+       stamped pre-paint, so only the dark WebP is requested. */
+    background-image: var(--shot-light);
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
+    width: 100%;
+    display: block;
+  }
+  :global([data-theme='dark']) .relay-shot {
+    background-image: var(--shot-dark);
+  }
+</style>
