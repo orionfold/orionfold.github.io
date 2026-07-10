@@ -1,26 +1,19 @@
 ---
 // /relay/ product showcase — three capability beats (zero-code apps, multi-vendor,
-// customers) each with one dark, Relay-branded screenshot, then a two-shot
-// "one board" proof strip. Built 2026-07-01 from the relay-brochure
-// (~/orionfold/books/relay-brochure/relay-brochure.qmd) for the PROSE, with the
-// dark screenshots sourced from the peer (~/orionfold/relay/public/readme/) —
-// NOT the brochure's own shots, which are light-theme and one carries stale
-// "Ainative" text baked into the pixels. The peer shots are dark, correctly
-// branded "Orionfold Relay", and current.
+// customers) each with one Relay-branded screenshot, then a two-shot "one board"
+// proof strip. Built 2026-07-01 from the relay-brochure
+// (~/orionfold/books/relay-brochure/relay-brochure.qmd) for the PROSE.
 //
-// This fills the /relay/ page's known screenshot gap (the page comment noted a
-// fresh dark Relay-branded set was pending, relay later-14). Prose is retuned to
-// the site rule: grade 3-5, jargon explained, no em-dashes (website-copy-style).
-// Each capability is a shipped feature per the peer SSOT (README + snapshot.json,
-// 2026-06-23): the app composer, multi-vendor runtime registry, and first-class
-// customers with per-client cost rollup.
-import { Image } from 'astro:assets';
+// Shots are now THEME-AWARE (2026-07-09): each <ThemedShot id> renders the
+// light or dark capture matching the reader's data-theme, sourced from the
+// Relay _ASSETS/screenshots corpus via `npm run sync:relay-shots`. See
+// docs/superpowers/specs/2026-07-09-relay-themed-screenshot-component-design.md.
+// Prose follows the site rule: grade 3-5, jargon explained, no em-dashes
+// (website-copy-style). Each capability is a shipped feature per the peer SSOT
+// (README + snapshot.json): the app composer, multi-vendor runtime registry, and
+// first-class customers with per-client cost rollup.
 import SectionLabel from '../ui/SectionLabel.astro';
-import appBuilderShot from '../../assets/relay/apps-starter-to-chat.png';
-import costUsageShot from '../../assets/relay/costs-list.png';
-import customersShot from '../../assets/relay/customers-list.png';
-import kanbanShot from '../../assets/relay/tasks-list.png';
-import inboxShot from '../../assets/relay/inbox-list.png';
+import ThemedShot from '../relay/ThemedShot.astro';
 
 // Three capability beats. Alternate the image side per beat so the block reads
 // with rhythm (like the homepage flagship bands). Each shot is lazy (the Hero
@@ -30,7 +23,7 @@ const beats = [
     label: 'Describe an app',
     heading: 'Say what you want. Relay builds it.',
     body: 'You describe a client task in plain words, like "turn a receipt photo into a bookkeeping entry." Relay builds it for you from its own parts: an agent, a workflow, a schedule, and a table or two. No code, no setup. The next client who needs the same thing reuses it in minutes.',
-    image: appBuilderShot,
+    shotId: 'apps-list',
     alt: 'The Relay app builder: a plain-language prompt turns into a running app, with ready-made starter apps below.',
     imageRight: true,
   },
@@ -38,7 +31,7 @@ const beats = [
     label: 'Multi-vendor, no lock-in',
     heading: 'Switch models per task. No rewrites.',
     body: 'Different work wants different models, and the best one changes every few months. Relay lets you pick the model per task, per schedule, or per step: reasoning on Claude, code on Codex, documents on Gemini, and low-stakes work on a free local model. One agent runs on any of them, so switching never means rebuilding it. The cost view shows the blended mix so you can prove the savings.',
-    image: costUsageShot,
+    shotId: 'costs',
     alt: 'The Relay cost and usage view: spend pacing, the active provider mix, and per-project cost that maps to a client retainer.',
     imageRight: false,
   },
@@ -46,7 +39,7 @@ const beats = [
     label: 'Customers, first-class',
     heading: 'One customer, many projects, real cost.',
     body: 'Each account you run work for is a real customer record, not just a label on a project. Link a customer to their projects and every agent run bills its cost back to them on its own. So per-client cost is a real total from the usage ledger, not a number you add up by hand. That is the base for seeing your margin against each retainer.',
-    image: customersShot,
+    shotId: 'customers-list',
     alt: 'The Relay customer book: each account by type, with linked projects and a 30-day cost rollup per customer.',
     imageRight: true,
   },
@@ -64,7 +57,7 @@ const beats = [
 
     <!-- Three capability beats, alternating image side -->
     <div class="space-y-14">
-      {beats.map(({ label, heading, body, image, alt, imageRight }) => (
+      {beats.map(({ label, heading, body, shotId, alt, imageRight }) => (
         <div class="grid items-center gap-8 lg:grid-cols-2">
           <div class:list={[imageRight ? 'lg:order-1' : 'lg:order-2']}>
             <p class="font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">{label}</p>
@@ -72,16 +65,7 @@ const beats = [
             <p class="mt-4 text-base leading-relaxed text-text-muted">{body}</p>
           </div>
           <div class:list={['overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5', imageRight ? 'lg:order-2' : 'lg:order-1']}>
-            <Image
-              src={image}
-              alt={alt}
-              widths={[480, 720, 960]}
-              sizes="(min-width: 1024px) 32rem, 100vw"
-              loading="lazy"
-              decoding="async"
-              data-no-zoom
-              class="block w-full"
-            />
+            <ThemedShot id={shotId} alt={alt} class="block w-full" />
           </div>
         </div>
       ))}
@@ -94,14 +78,9 @@ const beats = [
       </p>
       <div class="grid gap-4 sm:grid-cols-2">
         <figure class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
-          <Image
-            src={kanbanShot}
+          <ThemedShot
+            id="tasks-board"
             alt="The Relay task board: multi-step, multi-client work across every status, each card carrying its client, workflow, and agent."
-            widths={[480, 720]}
-            sizes="(min-width: 640px) 24rem, 100vw"
-            loading="lazy"
-            decoding="async"
-            data-no-zoom
             class="block w-full"
           />
           <figcaption class="px-4 py-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
@@ -109,14 +88,9 @@ const beats = [
           </figcaption>
         </figure>
         <figure class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
-          <Image
-            src={inboxShot}
+          <ThemedShot
+            id="inbox-approvals"
             alt="The Relay inbox: approvals, agent questions, and a permission queue, so nothing reaches a client without your sign-off."
-            widths={[480, 720]}
-            sizes="(min-width: 640px) 24rem, 100vw"
-            loading="lazy"
-            decoding="async"
-            data-no-zoom
             class="block w-full"
           />
           <figcaption class="px-4 py-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
