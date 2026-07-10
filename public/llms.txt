@@ -19,6 +19,12 @@
 - [Learn](https://orionfold.com/learn/): Books, field notes, the DGX Spark Field Lab, and build stories that teach the operating model.
 - [Become AI Native](https://orionfold.com/become-ai-native-business/): The starting point. Get the AI Native Business book free, then follow the path from the book to running your own private AI team. The simplest way in for a team that is trying to buy AI capabilities it could own instead.
 
+## Relay resources
+- [Relay Guide](https://orionfold.com/relay/docs/): Step-by-step docs for using Relay: getting started, organizing customers and projects, planning work with chat agents, running workflows with human checkpoints, using packs and licenses, and watching runs and costs.
+- [Relay API](https://orionfold.com/relay/api/): The developer reference for the local HTTP API your Relay instance exposes. Every route is documented from the source that implements it, with real request bodies, response shapes, error cases, and worked examples.
+- [Relay Packs](https://orionfold.com/relay/memos/): The Relay Packs series. How Relay turns into a working business function through installable packs, with a pack for marketing, an agency bundle, a web designer pack, and industry verticals.
+- [Relay Demo](https://orionfold.com/relay/demo/): A hands-on demo of the Relay cockpit with sample data. Nothing in it touches a real workspace.
+
 ## Proof libraries
 - [Proof](https://orionfold.com/proof/): The receipts wall. Every capability claim links to a test you can run yourself and get the same result. It shows where the small local models already win, and where the big cloud models still lead.
 - [Receipts](https://orionfold.com/receipts/): Every receipt on its own page: a frozen test you can rerun, the run itself, and what we found. The proof, not the pitch.

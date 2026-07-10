@@ -1,4 +1,5 @@
 import { readFileSync, readdirSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
@@ -51,6 +52,55 @@ function buildLastmodMap() {
       if (dates.length) map[`/${type}/${f.replace(/\.md$/, '')}/`] = dates.at(-1);
     }
   }
+  // Relay surfaces (Rail B publish): docs/api/memos chapters are copied VERBATIM
+  // from the strategy peer, so they carry no `date:` frontmatter of their own. The
+  // honest freshness signal is each file's git commit date — it is literally when
+  // the content last changed, and it self-maintains: the next re-copy + commit
+  // moves it forward with no manual bookkeeping. Runs at config-eval on the
+  // Actions runner (full history checked out); if git is unavailable the date is
+  // simply omitted (lastmod is optional per-URL), so a bare checkout never breaks
+  // the build. Slug = filename stem for docs/api, parent dir for memos (article.md).
+  const gitDate = (relPath) => {
+    try {
+      // execFileSync (no shell) — relPath is build-controlled, but the arg-array
+      // form keeps it shell-safe regardless. %cs = committer date, YYYY-MM-DD.
+      const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', relPath], {
+        cwd: new URL('.', import.meta.url),
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim();
+      return /^\d{4}-\d{2}-\d{2}$/.test(out) ? out : null;
+    } catch {
+      return null;
+    }
+  };
+  const relayFlat = [
+    ['relay-docs', '/relay/docs/'],
+    ['relay-api', '/relay/api/'],
+  ];
+  for (const [dir, urlBase] of relayFlat) {
+    let files;
+    try {
+      files = readdirSync(new URL(`${dir}/`, CONTENT));
+    } catch {
+      continue;
+    }
+    for (const f of files) {
+      if (!f.endsWith('.md')) continue;
+      const d = gitDate(`src/content/${dir}/${f}`);
+      if (d) map[`${urlBase}${f.replace(/\.md$/, '')}/`] = d;
+    }
+  }
+  // Memos are folder-per-slug (<slug>/article.md -> /relay/memos/<slug>/).
+  try {
+    for (const slug of readdirSync(new URL('memos/', CONTENT))) {
+      const d = gitDate(`src/content/memos/${slug}/article.md`);
+      if (d) map[`/relay/memos/${slug}/`] = d;
+    }
+  } catch {
+    /* no memos dir -> skip */
+  }
+
   // Listing hubs inherit the freshest date among their children.
   const freshestUnder = (prefix) =>
     Object.entries(map)
@@ -58,10 +108,14 @@ function buildLastmodMap() {
       .map(([, v]) => v)
       .sort()
       .at(-1);
-  for (const hub of ['/story/', '/software/', '/models/', '/books/']) {
+  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/']) {
     const d = freshestUnder(hub);
     if (d) map[hub] = d;
   }
+  // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
+  // so it tracks the freshest date across all of them.
+  const relayFreshest = freshestUnder('/relay/');
+  if (relayFreshest) map['/relay/'] = relayFreshest;
   // Home page surfaces the newest content anywhere, so it tracks the freshest date.
   const newest = Object.values(map).sort().at(-1);
   if (newest) map['/'] = newest;
@@ -177,6 +231,34 @@ export default defineConfig({
         }
         if (url.startsWith('https://orionfold.com/receipts/')) {
           return { ...item, changefreq: 'weekly', priority: 0.7, lastmod };
+        }
+        // Relay cluster (the licensed flagship + its docs/api/memos surfaces).
+        // /relay/ is the ranking target and cluster hub — lift it to the Proof
+        // band (0.9, weekly). The sub-hubs (docs/api/memos index) gain a card
+        // whenever a chapter lands, so weekly is honest. Chapters differ by real
+        // cadence: memos is a growing editorial series (weekly); docs + api are
+        // reference that changes when the product does (monthly is the honest
+        // signal — a fake weekly stamp gets discounted). lastmod carries the real
+        // per-page change date either way. Order: hub-exact before chapter-prefix,
+        // memos before the docs/api catch.
+        if (url === 'https://orionfold.com/relay/') {
+          return { ...item, changefreq: 'weekly', priority: 0.9, lastmod };
+        }
+        if (
+          url === 'https://orionfold.com/relay/docs/' ||
+          url === 'https://orionfold.com/relay/api/' ||
+          url === 'https://orionfold.com/relay/memos/'
+        ) {
+          return { ...item, changefreq: 'weekly', priority: 0.8, lastmod };
+        }
+        if (url.startsWith('https://orionfold.com/relay/memos/')) {
+          return { ...item, changefreq: 'weekly', priority: 0.7, lastmod };
+        }
+        if (
+          url.startsWith('https://orionfold.com/relay/docs/') ||
+          url.startsWith('https://orionfold.com/relay/api/')
+        ) {
+          return { ...item, changefreq: 'monthly', priority: 0.7, lastmod };
         }
         if (url.includes('/story/')) {
           return { ...item, changefreq: 'weekly', priority: 0.7, lastmod };
