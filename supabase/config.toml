@@ -447,3 +447,9 @@ verify_jwt = false
 # verify_jwt off like the stripe-webhook callback.
 [functions.resend-webhook]
 verify_jwt = false
+
+# suppressions-export (Phase-1 compliance, relay #9): read-only cursor drain of the
+# suppression table for marketing's poller. Server-to-server, constant-time token
+# check the sole gate, like waitlist-export / purchases-export.
+[functions.suppressions-export]
+verify_jwt = false
