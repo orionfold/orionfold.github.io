@@ -7,8 +7,56 @@
 // themed-pair target and never appears here (demo captures are single-theme).
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
+import { mkdirSync, rmSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
+import sharp from 'sharp';
 
 const DEFAULT_CORPUS = new URL('file:///Users/manavsehgal/orionfold/relay/_ASSETS/screenshots/');
+
+const MAX_WIDTH = 1280; // shots render <= 32rem (~512 CSS px) -> 1024 @2x; 1280 gives headroom
+const WEBP_QUALITY = 82;
+const PUBLIC_DIR = new URL('../public/relay/shots/', import.meta.url);
+
+export function webpName(theme, buffer) {
+  const hash = createHash('sha256').update(buffer).digest('hex').slice(0, 8);
+  return `${theme}.${hash}.webp`;
+}
+
+/** Optimize one source PNG to a downscaled WebP buffer. */
+async function toWebp(absPngUrl) {
+  return sharp(fileURLToPath(absPngUrl))
+    .resize({ width: MAX_WIDTH, withoutEnlargement: true })
+    .webp({ quality: WEBP_QUALITY })
+    .toBuffer();
+}
+
+/** Write both variants for one pair; return the index entry. */
+async function syncPair(pair, corpus) {
+  const dir = new URL(`${pair.id}/`, PUBLIC_DIR);
+  rmSync(dir, { recursive: true, force: true }); // clean stale hashes for this id
+  mkdirSync(dir, { recursive: true });
+  const out = {};
+  for (const theme of ['light', 'dark']) {
+    const buf = await toWebp(new URL(pair[theme].path, corpus));
+    const name = webpName(theme, buf);
+    writeFileSync(new URL(name, dir), buf);
+    out[theme] = `/relay/shots/${pair.id}/${name}`;
+  }
+  return { light: out.light, dark: out.dark, ratio: pair.ratio, alt: pair.alt, area: pair.area };
+}
+
+/** Remove public/relay/shots/<id> dirs not in the kept set. */
+function pruneOrphans(keptIds) {
+  if (!existsSync(PUBLIC_DIR)) return [];
+  const removed = [];
+  for (const name of readdirSync(PUBLIC_DIR, { withFileTypes: true })) {
+    if (name.isDirectory() && !keptIds.has(name.name)) {
+      rmSync(new URL(`${name.name}/`, PUBLIC_DIR), { recursive: true, force: true });
+      removed.push(name.name);
+    }
+  }
+  return removed;
+}
 
 /** Group manifest entries by id, keep desktop, resolve matched light+dark pairs. */
 export function resolvePairs(manifest, allowList) {
@@ -34,7 +82,6 @@ export function resolvePairs(manifest, allowList) {
   return { pairs, errors };
 }
 
-// CLI path is completed in Task 2 (adds WebP optimization + file writes).
 async function main() {
   const corpus = process.argv.includes('--corpus')
     ? new URL(`file://${process.argv[process.argv.indexOf('--corpus') + 1]}/`)
@@ -43,7 +90,16 @@ async function main() {
   const allow = JSON.parse(readFileSync(new URL('../src/data/relay-shots.allow.json', import.meta.url), 'utf8'));
   const { pairs, errors } = resolvePairs(manifest, allow);
   if (errors.length) { for (const e of errors) console.error(`[sync-relay-shots] ERROR: ${e}`); process.exit(1); }
-  console.log(`[sync-relay-shots] resolved ${pairs.length} matched pairs (image optimization added in Task 2)`);
+
+  mkdirSync(PUBLIC_DIR, { recursive: true });
+  const index = {};
+  for (const pair of pairs) {
+    index[pair.id] = await syncPair(pair, corpus);
+  }
+  const removed = pruneOrphans(new Set(pairs.map((p) => p.id)));
+  writeFileSync(new URL('../src/data/relay-shots.json', import.meta.url), JSON.stringify(index, null, 2) + '\n');
+  console.log(`[sync-relay-shots] wrote ${pairs.length} pairs to public/relay/shots/ + src/data/relay-shots.json`);
+  if (removed.length) console.log(`[sync-relay-shots] pruned orphans: ${removed.join(', ')}`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();

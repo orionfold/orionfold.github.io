@@ -1,0 +1,44 @@
+{
+  "home-cockpit": {
+    "light": "/relay/shots/home-cockpit/light.5bbe288e.webp",
+    "dark": "/relay/shots/home-cockpit/dark.96f1730b.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Home cockpit",
+    "area": "home"
+  },
+  "apps-list": {
+    "light": "/relay/shots/apps-list/light.0205d0bb.webp",
+    "dark": "/relay/shots/apps-list/dark.a07e0df5.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Installed apps list",
+    "area": "apps"
+  },
+  "costs": {
+    "light": "/relay/shots/costs/light.487e901b.webp",
+    "dark": "/relay/shots/costs/dark.13b375a8.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Cost and Usage",
+    "area": "costs"
+  },
+  "customers-list": {
+    "light": "/relay/shots/customers-list/light.721d687c.webp",
+    "dark": "/relay/shots/customers-list/dark.57f64b06.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Customer book",
+    "area": "customers"
+  },
+  "tasks-board": {
+    "light": "/relay/shots/tasks-board/light.a10a95dd.webp",
+    "dark": "/relay/shots/tasks-board/dark.d82d16e4.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Tasks board and table",
+    "area": "tasks"
+  },
+  "inbox-approvals": {
+    "light": "/relay/shots/inbox-approvals/light.2d430330.webp",
+    "dark": "/relay/shots/inbox-approvals/dark.783d4298.webp",
+    "ratio": "1440 / 1100",
+    "alt": "Inbox approvals",
+    "area": "inbox"
+  }
+}
