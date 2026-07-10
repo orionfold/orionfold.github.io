@@ -12,7 +12,7 @@ function authHeader(value: string): Headers {
   return new Headers({ Authorization: "Bearer " + value });
 }
 
-Deno.test("mapRow maps a purchase row to the export shape", () => {
+Deno.test("mapRow maps a purchase row to the export shape (incl. attribution)", () => {
   const out = mapRow({
     email: "buyer@example.com",
     lookup_key: "book_bundle_founding",
@@ -22,6 +22,12 @@ Deno.test("mapRow maps a purchase row to the export shape", () => {
     created_at: "2026-06-28T10:00:00.000Z",
     delivered: true,
     delivered_at: "2026-06-28T10:00:05.000Z",
+    utm_source: "google",
+    utm_medium: "paid",
+    utm_campaign: "ads-relay-2026-07",
+    utm_term: "local ai team",
+    utm_content: "variant-b",
+    gclid: "Cj0KCQ_abc",
   });
   assertEquals(out, {
     email: "buyer@example.com",
@@ -32,7 +38,33 @@ Deno.test("mapRow maps a purchase row to the export shape", () => {
     created_at: "2026-06-28T10:00:00.000Z",
     delivered: true,
     delivered_at: "2026-06-28T10:00:05.000Z",
+    utm_source: "google",
+    utm_medium: "paid",
+    utm_campaign: "ads-relay-2026-07",
+    utm_term: "local ai team",
+    utm_content: "variant-b",
+    gclid: "Cj0KCQ_abc",
   });
+});
+
+Deno.test("mapRow nulls every attribution field on an organic purchase", () => {
+  const out = mapRow({
+    email: "organic@example.com",
+    lookup_key: "book_ai_native_business",
+    amount_total: 2000,
+    currency: "usd",
+    stripe_session_id: "cs_live_organic",
+    created_at: "2026-07-09T00:00:00.000Z",
+    delivered: true,
+    delivered_at: "2026-07-09T00:00:01.000Z",
+    // no utm_* / gclid columns at all
+  });
+  assertEquals(out.utm_source, null);
+  assertEquals(out.utm_medium, null);
+  assertEquals(out.utm_campaign, null);
+  assertEquals(out.utm_term, null);
+  assertEquals(out.utm_content, null);
+  assertEquals(out.gclid, null);
 });
 
 Deno.test("mapRow coerces delivered and nulls undelivered timestamp", () => {

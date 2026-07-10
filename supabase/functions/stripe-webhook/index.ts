@@ -94,6 +94,31 @@ function asId(ref: unknown): string | null {
   return null;
 }
 
+// WS#16-P1: the ad UTMs (+ gclid) that create-checkout-session stamped onto the
+// Checkout Session metadata (from the landing-page capture) round-trip here into
+// the `purchases` row, so a paid SALE attributes back to its ad tranche via the
+// marketing purchases-export poller (relay #13). Each is nullable — organic
+// purchases carry none. Meta cookies (fbp/fbc/fbclid) are NOT persisted; they
+// flow to CAPI off session.metadata directly.
+const PURCHASE_ATTRIBUTION_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+  "gclid",
+] as const;
+
+function attributionColumns(
+  metadata: Stripe.Metadata | null | undefined,
+): Record<string, string | null> {
+  const out: Record<string, string | null> = {};
+  for (const key of PURCHASE_ATTRIBUTION_KEYS) {
+    out[key] = metadata?.[key] ?? null;
+  }
+  return out;
+}
+
 /** API 2026-04-22 moved the subscription ref onto invoice.parent; fall back to legacy. */
 function invoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
   // deno-lint-ignore no-explicit-any
@@ -235,6 +260,7 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
     amount_total: session.amount_total,
     currency: session.currency,
     roadmap_item: session.metadata?.roadmap_item ?? null,
+    ...attributionColumns(session.metadata),
   });
 
   if (insertError) {
@@ -596,6 +622,7 @@ async function fulfillBook(session: Stripe.Checkout.Session) {
     amount_total: session.amount_total,
     currency: session.currency,
     roadmap_item: session.metadata?.roadmap_item ?? null,
+    ...attributionColumns(session.metadata),
   });
 
   if (insertError) {

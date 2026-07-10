@@ -19,6 +19,10 @@
 //   stripe_session_id -> the poller's dedupe key (UNIQUE per purchase)
 //   created_at        -> relative-time in the ## Pipeline entry (house rule) + cursor
 //   delivered/_at     -> fulfilment-completed signal (informational)
+//   utm_* / gclid     -> source.campaign attribution (WS#16-P1, relay #13): which
+//                        ad tranche drove the SALE. Nullable — organic buys carry
+//                        none. utm_medium=paid + utm_campaign=<ads-file-id> +
+//                        utm_content=<variant> is the paid-conversion join key.
 //   fixed on drain: stage: customer, consent.basis: stripe-purchase
 //     - existing mailable:true contact -> promote stage ONLY, never downgrade mailable
 //     - no-prior-contact buyer -> CREATE at stage: customer, mailable: false
@@ -36,10 +40,18 @@ export interface ExportRow {
   created_at: string;
   delivered: boolean;
   delivered_at: string | null;
+  // WS#16-P1 ad attribution (relay #13) — nullable; organic buys carry none.
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_term: string | null;
+  utm_content: string | null;
+  gclid: string | null;
 }
 
 const FIELDS =
-  "email, lookup_key, amount_total, currency, stripe_session_id, created_at, delivered, delivered_at";
+  "email, lookup_key, amount_total, currency, stripe_session_id, created_at, delivered, delivered_at, " +
+  "utm_source, utm_medium, utm_campaign, utm_term, utm_content, gclid";
 
 export function mapRow(r: Record<string, unknown>): ExportRow {
   return {
@@ -51,6 +63,12 @@ export function mapRow(r: Record<string, unknown>): ExportRow {
     created_at: r.created_at as string,
     delivered: Boolean(r.delivered),
     delivered_at: (r.delivered_at ?? null) as string | null,
+    utm_source: (r.utm_source ?? null) as string | null,
+    utm_medium: (r.utm_medium ?? null) as string | null,
+    utm_campaign: (r.utm_campaign ?? null) as string | null,
+    utm_term: (r.utm_term ?? null) as string | null,
+    utm_content: (r.utm_content ?? null) as string | null,
+    gclid: (r.gclid ?? null) as string | null,
   };
 }
 
@@ -110,7 +128,9 @@ if (import.meta.main) {
     const { data, error } = await q;
     if (error) return json({ error: error.message }, 500);
 
-    const rows = (data ?? []).map((r) => mapRow(r as Record<string, unknown>));
+    // supabase-js infers a `GenericStringError` union for wider select() strings;
+    // cast through `unknown` (the compiler's own hint) — mapRow re-validates shape.
+    const rows = (data ?? []).map((r) => mapRow(r as unknown as Record<string, unknown>));
     const next_cursor = rows.length ? rows[rows.length - 1].created_at : null;
     return json({ rows, next_cursor });
   });
