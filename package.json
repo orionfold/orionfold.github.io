@@ -11,6 +11,7 @@
     "export:catalog": "node --experimental-strip-types scripts/export-catalog.ts",
     "export:content": "node --experimental-strip-types scripts/export-content.ts",
     "lhci": "npx --yes @lhci/cli@0.15.1 collect && npx --yes @lhci/cli@0.15.1 upload && npx --yes @lhci/cli@0.15.1 assert",
+    "prepare:relay-demo": "node scripts/prepare-relay-demo.mjs",
     "sync:relay-shots": "node scripts/sync-relay-shots.mjs",
     "metrics": "node scripts/fetch-metrics.mjs",
     "dashboard": "node scripts/build-dashboard.mjs",

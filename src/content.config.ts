@@ -50,6 +50,9 @@ const productDetail = defineCollection({
       type: z.enum(['software', 'model', 'book']),
       slug: z.string(), // matches the .ts record: software/book .slug, model = slugify(title)
       valueProp: z.string(), // the hero one-liner (grade 3-5, website-copy-style)
+      // Optional search-only title. Keeps canonical product names and slugs
+      // stable while allowing an evidence-backed SERP intent test.
+      seoTitle: z.string().optional(),
 
       // Hero override. By convention the hero reuses the listing poster/cover the
       // route resolves from the SSOT; set this only to point at a different image.

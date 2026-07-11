@@ -9,6 +9,7 @@
 # jargon glossed; the conversion point is the inline Sponsor tiers.
 type: model
 slug: saul-7b-instruct
+seoTitle: 'Saul 7B Instruct: offline legal AI model · Orionfold'
 valueProp: Open legal AI model. Reads contracts, filings, and case files fully offline on one desktop, so client matters never leave the room. Free, MIT-licensed.
 
 chips:

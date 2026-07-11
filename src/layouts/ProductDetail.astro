@@ -239,7 +239,7 @@ const fieldEditionSchema = detail.fieldEdition
 const jsonLd = [productSchema, breadcrumbSchema, ...(fieldEditionSchema ? [fieldEditionSchema] : [])];
 ---
 <Layout
-  title={`${view.title} · Orionfold`}
+  title={detail.seoTitle ?? `${view.title} · Orionfold`}
   description={view.valueProp}
   ogImage={ogImageRel}
   ogImageAlt={detail.heroAlt ?? view.valueProp}

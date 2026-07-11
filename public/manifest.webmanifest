@@ -1,0 +1,22 @@
+{
+  "name": "Orionfold Relay",
+  "short_name": "Relay",
+  "description": "Run AI client work locally and see what each client costs.",
+  "start_url": "/relay/demo/",
+  "scope": "/relay/demo/",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#151923",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
