@@ -1,5 +1,5 @@
 // M7 — data assembly for the health dashboard (spec
-// specs/2026-06-06-live-admin-dashboard.md §4a). Shared by the static build
+// _SPECS/2026-06-06-144656-01_live-admin-dashboard.md §4a). Shared by the static build
 // (build-dashboard.mjs) and the live server (dashboard-server.mjs).
 // Stateless: every assemble() re-reads audit-reports/metrics/ fresh — files
 // are the truth, so there is no cache to invalidate (peer-dashboard rule).

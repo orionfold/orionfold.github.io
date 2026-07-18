@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// M7 — live admin dashboard server (spec specs/2026-06-06-live-admin-dashboard.md §4b).
+// M7 — live admin dashboard server (spec _SPECS/2026-06-06-144656-01_live-admin-dashboard.md §4b).
 //
 //   node scripts/dashboard-server.mjs [--port 8789] [--open] [--no-token]
 //

@@ -4,7 +4,7 @@
 // matching file. Keeping both sides on one map means the /og/<slug>.png
 // convention can't drift. Story posts are NOT listed here — they come from the
 // `story` content collection and use storyOgSlug(). See
-// specs/2026-05-25-og-and-featured-image-pipeline.md.
+// _SPECS/2026-05-25-125727_og-and-featured-image-pipeline.md.
 
 export interface OgPage {
   /** Output file is /og/<slug>.jpg */

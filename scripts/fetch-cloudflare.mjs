@@ -1,6 +1,6 @@
 // Snapshot Cloudflare edge analytics into audit-reports/metrics/ (git-ignored)
 // for the dashboard "Cloudflare stats" panel — now PER SITE (spec
-// specs/2026-06-27-multi-site-stats-tracking-design.md).
+// _SPECS/2026-06-27-150745_multi-site-stats-tracking-design.md).
 //
 //   node scripts/fetch-cloudflare.mjs
 //

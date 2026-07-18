@@ -4,7 +4,7 @@ _Design doc. 2026-07-09. Status: approved, ready for `writing-plans`._
 
 ## Why
 
-Marketing is re-architecting demand-gen sends onto a single Orionfold-owned Resend pipe and retiring beehiiv (spec SSOT: `marketing/_SPECS/2026-07-09-marketing-owned-send-infrastructure-design.md`, Phase 1). beehiiv's daily pull-back used to flip both unsubscribes and hard bounces to `mailable:false`; once beehiiv is gone, the website must host the domain-tied compliance surface that replaces it. **Nothing broadcasts on Resend until this ships** (spec §Phasing P1).
+Marketing is re-architecting demand-gen sends onto a single Orionfold-owned Resend pipe and retiring beehiiv (spec SSOT: `../../../../marketing/_SPECS/2026-07-09-152819_marketing-owned-send-infrastructure-design.md`, Phase 1). beehiiv's daily pull-back used to flip both unsubscribes and hard bounces to `mailable:false`; once beehiiv is gone, the website must host the domain-tied compliance surface that replaces it. **Nothing broadcasts on Resend until this ships** (spec §Phasing P1).
 
 Marketing has already built + tested the drain leg (`pull_suppressions.py`, 14 tests green, wired into `run_pipeline.sh`). It consumes ONE contract; this design builds the website half to match it exactly. Requested via `strategy/orionfold-website/_RELAY.md` #9 (2026-07-09).
 

@@ -94,7 +94,7 @@ Expected: FAIL — `Cannot find module './sites.mjs'` (or a thrown assertion onc
 // orionfold is the DEFAULT site: its snapshot files keep the bare
 // `<source>-<date>.json` name (no migration, unbroken trends). Non-default sites
 // get a `-<key>` segment via metricSiteSegment(). Verified identifiers live in
-// the multi-site-stats spec (specs/2026-06-27-multi-site-stats-tracking-design.md).
+// the multi-site-stats spec (_SPECS/2026-06-27-150745_multi-site-stats-tracking-design.md).
 
 export const SITES = [
   {
@@ -360,7 +360,7 @@ Replace `scripts/fetch-cloudflare.mjs` entirely. The GraphQL queries and the res
 ```js
 // Snapshot Cloudflare edge analytics into audit-reports/metrics/ (git-ignored)
 // for the dashboard "Cloudflare stats" panel — now PER SITE (spec
-// specs/2026-06-27-multi-site-stats-tracking-design.md).
+// _SPECS/2026-06-27-150745_multi-site-stats-tracking-design.md).
 //
 //   node scripts/fetch-cloudflare.mjs
 //

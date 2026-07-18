@@ -21,7 +21,7 @@ const story = defineCollection({
       // Optional curated hero image (I-series). Shown atop the post and used as
       // the card cover. By convention the source lives at
       // src/assets/story/<slug>/hero.png so the OG endpoint can find it too
-      // (see specs/2026-05-25-og-and-featured-image-pipeline.md).
+      // (see _SPECS/2026-05-25-125727_og-and-featured-image-pipeline.md).
       hero: image().optional(),
       heroAlt: z.string().optional(),
     }),

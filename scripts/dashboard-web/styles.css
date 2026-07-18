@@ -1,5 +1,5 @@
 /* M7 — shared peer design system (Airtable-derived light theme).
-   Source standard: self-health _SPECS/2026-06-06-design-system.md.
+   Source standard: ../../../self-health/_SPECS/2026-06-06-design-system.md.
    §3 semantic token names are a cross-project contract — do not rename. */
 :root {
   color-scheme: light;

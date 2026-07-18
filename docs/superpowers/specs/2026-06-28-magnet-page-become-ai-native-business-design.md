@@ -2,7 +2,7 @@
 
 Date: 2026-06-28
 Status: approved (design), magnet-first scope this session
-Spec SSOT: `strategy/orionfold-website/_RELAY.md`, 2026-06-28 "NEW ASK: build the offer ladder" (byte-identical to the marketing `_SPECS/2026-06-28-magnet-page-become-ai-native-business.md` §9 payload — that file does not sync to the strategy channel by design).
+Spec SSOT: `strategy/orionfold-website/_RELAY.md`, 2026-06-28 "NEW ASK: build the offer ladder" (byte-identical to `../../../../marketing/_SPECS/2026-06-28-235739_magnet-page-become-ai-native-business.md` §9 — that file does not sync to the strategy channel by design).
 
 ## Goal
 

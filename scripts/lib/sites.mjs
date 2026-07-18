@@ -7,7 +7,7 @@
 // orionfold is the DEFAULT site: its snapshot files keep the bare
 // `<source>-<date>.json` name (no migration, unbroken trends). Non-default sites
 // get a `-<key>` segment via metricSiteSegment(). Verified identifiers live in
-// the multi-site-stats spec (specs/2026-06-27-multi-site-stats-tracking-design.md).
+// the multi-site-stats spec (_SPECS/2026-06-27-150745_multi-site-stats-tracking-design.md).
 
 export const SITES = [
   {

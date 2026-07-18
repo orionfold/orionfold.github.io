@@ -3,7 +3,7 @@
 //   resvg PNG  ->  sharp JPG. Satori does the typography (real Geist shaping +
 //   flexbox wrapping); resvg rasterizes; sharp re-encodes to JPG so detailed
 //   photographic hero backgrounds stay well under the social-card weight budget
-//   (spec §8 targets ~100-300KB). See specs/2026-05-25-og-and-featured-image-pipeline.md.
+//   (spec §8 targets ~100-300KB). See _SPECS/2026-05-25-125727_og-and-featured-image-pipeline.md.
 //
 // Satori cannot read the site's .woff2 fonts, so we load the TTFs converted from
 // the exact same Geist weights (src/lib/og/fonts/, a committed build input).
