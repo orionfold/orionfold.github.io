@@ -44,8 +44,8 @@ jobs:
         # Direct lhci (runner Chrome; no wrapper action — treosh never ran our
         # rc's filesystem upload, so audit-reports/lhci/ was absent from every
         # artifact). Order is collect → upload → assert so the manifest+reports
-        # that scripts/pull-lhci-artifact.mjs consumes exist even when a budget
-        # assertion reds the run. The rc (.lighthouserc.cjs) is auto-discovered.
+        # remain available as artifacts even when a budget assertion reds the
+        # run. The rc (.lighthouserc.cjs) is auto-discovered.
         run: |
           npx --yes @lhci/cli@0.15.1 collect
           npx --yes @lhci/cli@0.15.1 upload
@@ -68,8 +68,8 @@ jobs:
           name: lighthouse-reports
           # BOTH paths are load-bearing: upload-artifact roots the artifact at
           # the least-common-ancestor of all search paths (= repo root), which
-          # preserves the audit-reports/lhci/manifest.json prefix that
-          # scripts/pull-lhci-artifact.mjs expects. include-hidden-files because
+          # preserves the audit-reports/lhci/manifest.json prefix for downloaded
+          # report analysis. include-hidden-files because
           # .lighthouseci is a dot-dir — upload-artifact silently skips hidden
           # files by default (the original "empty artifact" footgun; default
           # unchanged through v7).

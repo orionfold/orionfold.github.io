@@ -15,15 +15,13 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { loadEnvLocal } from './lib/metrics.mjs';
-
 const OPS_ALERT_URL = 'https://lgnmmcxvwdnusvfpguvf.supabase.co/functions/v1/ops-alert';
 const MAX_LINES = 100; // ops-alert rejects > 100 lines; truncate below the cap
 
 const file = resolve(process.cwd(), process.argv[2] ?? '.lighthouseci/assertion-results.json');
 
 // LHCI serves pages on an ephemeral localhost port; map back to site routes
-// (same mapping as scripts/summarize-lighthouse.mjs). /foo/index.html → /foo/
+// Normalize LHCI's local URLs back to Website routes. /foo/index.html → /foo/
 function routeOf(url) {
   try {
     const p = new URL(url).pathname.replace(/index\.html$/, '');
@@ -36,6 +34,22 @@ function routeOf(url) {
 // categories:performance arrives as auditId="categories" + auditProperty.
 function assertionId(r) {
   return r.auditProperty ? `${r.auditId}:${r.auditProperty}` : (r.auditId ?? r.name);
+}
+
+// CI injects OPS_ALERT_TOKEN directly. Local dry-runs/sends may use the
+// Website-owned .env.local without importing any private dashboard module.
+function loadEnvLocal() {
+  try {
+    const text = readFileSync(resolve(process.cwd(), '.env.local'), 'utf8');
+    for (const line of text.split('\n')) {
+      const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+      if (match && process.env[match[1]] === undefined) {
+        process.env[match[1]] = match[2].replace(/^["']|["']$/g, '');
+      }
+    }
+  } catch {
+    // Missing local env is valid; the caller reports a missing token cleanly.
+  }
 }
 
 async function main() {
