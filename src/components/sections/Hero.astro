@@ -1,7 +1,7 @@
 ---
 // Homepage hero (company-router rebuild, 2026-07-03). Left: the company promise
 // ("Get an AI team without hiring one") + a plain company paragraph + a Relay-led
-// CTA row (Relay primary, Proof secondary, free-book tertiary). Right: the hero
+// CTA stack (Relay primary, demo text link). Right: the hero
 // art on the drifting isometric plane. The homepage no longer sells Proof from
 // the hero; it routes to the product that matches each visitor's question, with
 // Relay led for the $10K paid-test window. The newsletter form lives on Story (H3).
@@ -36,10 +36,8 @@ import heroImage from '../../assets/home/ai-team-hero.jpg';
         Orionfold takes the AI scattered across your work and runs it through one path you own, see, test, and approve. Agents that do the real work, models that know your field, and tests that prove it. All on your own machine.
       </p>
 
-      <!-- Two-line stacked CTAs: a small all-caps intent line over a larger
-           product line. Square button with rounded corners (rounded-xl) instead
-           of the default full pill, per operator review. Primary = Relay (solid
-           cyan), secondary = Proof (ghost). -->
+      <!-- Relay stays the single button CTA. The demo is deliberately a quieter
+           text link beneath it so the hero has one dominant conversion action. -->
       <div class="mx-auto mt-9 flex w-full max-w-[24rem] flex-col items-stretch gap-3 lg:mx-0">
         <a
           href="/relay/"
@@ -54,16 +52,11 @@ import heroImage from '../../assets/home/ai-team-hero.jpg';
           </span>
         </a>
         <a
-          href="/proof/"
-          class="of-secondary-action group w-full flex-col !items-start justify-center gap-0.5 !rounded-xl !py-3.5"
+          href="/relay/demo/"
+          class="group mx-auto inline-flex items-center gap-1.5 font-mono text-sm font-semibold tracking-wide text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:text-primary/80 lg:mx-0"
         >
-          <span class="font-mono text-[0.62rem] uppercase tracking-[0.18em] opacity-70">Choose better AI</span>
-          <span class="flex items-center gap-1.5 font-display text-lg font-bold tracking-normal normal-case">
-            Get Orionfold Proof
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100" aria-hidden="true">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </span>
+          Try the demo
+          <span class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
         </a>
       </div>
 
