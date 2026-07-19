@@ -481,10 +481,6 @@ section {
   main img:hover {
     transform: none;
   }
-  .book-float {
-    animation: none;
-  }
-
   html {
     scroll-behavior: auto;
   }
@@ -498,6 +494,13 @@ section {
 .book-float {
   animation: bookFloat 6s ease-in-out infinite;
   will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Keep this override after the normal declaration. When it lived in the
+     earlier shared reduced-motion block, source order re-enabled bookFloat. */
+  .book-float {
+    animation: none;
+  }
 }
 
 /* ── Theme toggle — sun/moon icon swap is pure CSS off data-theme ── */
