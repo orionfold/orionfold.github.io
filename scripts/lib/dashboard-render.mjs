@@ -527,6 +527,28 @@ export function renderBody(payload) {
       );
     }
     const a = ga4.data;
+    const productionScope = a.productionHostScope;
+    const isOrionfold = site === 'orionfold';
+    const isProductionScoped = !isOrionfold || (
+      productionScope?.status === 'filtered'
+      && productionScope?.dimension === 'Hostname'
+      && productionScope?.matchType === 'exactly matches'
+      && productionScope?.value === 'orionfold.com'
+    );
+    const scopeBlock = isOrionfold
+      ? isProductionScoped
+        ? `<div class="note"><strong>production host only</strong><p class="muted small"><span class="mono">Hostname exactly matches orionfold.com</span> · captured totals exclude localhost, preview and CI hosts.</p></div>`
+        : `<div class="note alertnote"><strong>production-host scope missing</strong><p class="muted small">This snapshot is not confirmed production-only. Do not use its total, Direct share or aggregate engagement as real-user KPIs; the next authenticated capture must apply <span class="mono">Hostname exactly matches orionfold.com</span>.</p></div>`
+      : '';
+    const contamination = a.historicalContamination || (isOrionfold ? {
+      window: '2026-06-21 → 2026-07-18',
+      syntheticSessions: 1049,
+      cohort: 'localhost Lighthouse / Moto G Power (2022)',
+      disposition: 'annotated, not rewritten',
+    } : null);
+    const contaminationBlock = contamination
+      ? `<div class="note"><strong>historical contamination · ${esc(contamination.window)}</strong><p class="muted small">${num(contamination.syntheticSessions)} synthetic sessions from ${esc(contamination.cohort)} · ${esc(contamination.disposition)}. Historical paid presence and Organic Search direction remain readable; historical total/Direct engagement does not.</p></div>`
+      : '';
     const er = a.engagementRate != null ? pct(a.engagementRate) : '—';
     const org = a.organicSearchSessions;
     const orgEr = a.organicSearchEngagementRate != null ? ` <span class="lbl-inline">@ ${pct(a.organicSearchEngagementRate)} eng</span>` : '';
@@ -568,7 +590,7 @@ export function renderBody(payload) {
     const note = `<p class="muted small">Total sessions are paid-dominated when a campaign runs — read the <strong>organic search</strong> line for the earned trend, not the total. Key events = configured leads/conversions; <span class="mono">0</span> with paid off (or no events wired) is expected, not a leak.</p>`;
     // honest dot: amber if stale (>7d) or no engagement to speak of.
     const lowEng = a.engagementRate != null && a.engagementRate < 0.2;
-    return panel('Traffic (GA4)', `manual GA4 capture · ${ageNote(ga4.date)}`, kpis + chanBlock + detail + note, staleDays(ga4) > 7 || lowEng ? 'amber' : 'green');
+    return panel('Traffic (GA4)', `manual GA4 capture · ${ageNote(ga4.date)}`, scopeBlock + contaminationBlock + kpis + chanBlock + detail + note, staleDays(ga4) > 7 || lowEng || !isProductionScoped ? 'amber' : 'green');
   }
 
   // ── CI / Deploy (gh, server-side cached — asOf is honest about it) ────────

@@ -77,36 +77,47 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          google-analytics.com). -->
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
     <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
-    <!-- Google tag queue for Orionfold GA4 + Ads. Keep the queue/config inline
-         and synchronous so page views and conversion calls preserve their
-         ordering. Fetch gtag.js only AFTER the document's own load event: a
-         parser-discovered async script does not block paint, but a degraded
-         route to Google still holds document load completion open. That was the
-         measured 6s mobile processing tail (G-043). The queued calls flush when
-         the library arrives; on the normal path the fetch starts ~50–75ms after
-         navigation rather than competing with page completion. -->
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-04PH843W2C');
-      // Google Ads (AW) shares the one gtag.js load. Drives the native
-      // "Purchase" conversion fired on /thanks (MARKETING-HANDOFF.md, src/data/ads.ts).
-      gtag('config', 'AW-18188052159');
+    <!-- Google tag queue for Orionfold GA4 + Ads. The runtime hostname check is
+         the primary analytics boundary: Astro's production build also powers
+         localhost Lighthouse, previews and CI, so build mode cannot distinguish
+         real production traffic. Only the canonical apex gets a dataLayer,
+         gtag shim, configuration calls or network loader; existing conversion
+         callers already no-op when window.gtag is absent (G-042).
 
-      (function () {
-        var loaded = false;
-        function loadGoogleTag() {
-          if (loaded) return;
-          loaded = true;
-          var tag = document.createElement('script');
-          tag.async = true;
-          tag.src = 'https://www.googletagmanager.com/gtag/js?id=G-04PH843W2C';
-          document.head.appendChild(tag);
-        }
-        if (document.readyState === 'complete') loadGoogleTag();
-        else window.addEventListener('load', loadGoogleTag, { once: true });
-      })();
+         On the canonical host, keep the queue/config inline and synchronous so
+         page views and conversion calls preserve their ordering. Fetch gtag.js
+         only AFTER the document's own load event: a parser-discovered async
+         script does not block paint, but a degraded route to Google still holds
+         document load completion open. That was the measured 6s mobile
+         processing tail (G-043). The queued calls flush when the library arrives;
+         on the normal path the fetch starts ~50–75ms after navigation rather
+         than competing with page completion. -->
+    <script is:inline>
+      /* G-042 canonical analytics gate. */
+      if (window.location.hostname === 'orionfold.com') {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function gtag(){window.dataLayer.push(arguments);};
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-04PH843W2C');
+        // Google Ads (AW) shares the one gtag.js load. Drives the native
+        // "Purchase" conversion fired on /thanks (MARKETING-HANDOFF.md, src/data/ads.ts).
+        window.gtag('config', 'AW-18188052159');
+
+        (function () {
+          var loaded = false;
+          function loadGoogleTag() {
+            if (loaded) return;
+            loaded = true;
+            var tag = document.createElement('script');
+            tag.async = true;
+            tag.src = 'https://www.googletagmanager.com/gtag/js?id=G-04PH843W2C';
+            document.head.appendChild(tag);
+          }
+          if (document.readyState === 'complete') loadGoogleTag();
+          else window.addEventListener('load', loadGoogleTag, { once: true });
+        })();
+      }
+      /* G-042 canonical analytics gate end. */
     </script>
     <!-- Meta Pixel (fbq) for the 2026-Q2 Meta Ads book test. Renders only once
          META_PIXEL_ID is set in src/data/meta.ts, so the site deploys safely

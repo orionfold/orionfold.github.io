@@ -32,6 +32,16 @@ module.exports = {
         formFactor: 'mobile',
         throttlingMethod: 'devtools',
         onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
+        // G-042 defense in depth. The runtime hostname gate is the primary
+        // control and prevents localhost/CI from creating analytics state at
+        // all. These patterns keep Lighthouse independent of Google endpoints
+        // even if a future source regression attempts a request.
+        blockedUrlPatterns: [
+          '*googletagmanager.com/*',
+          '*google-analytics.com/*',
+          '*googleadservices.com/*',
+          '*doubleclick.net/*',
+        ],
       },
     },
     assert: {
