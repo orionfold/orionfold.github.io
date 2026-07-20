@@ -8,6 +8,11 @@ const source = readFileSync(
 
 assert.match(source, /id: 'agents-list'/, 'homepage hero uses the Relay Agents product shot');
 assert.match(source, /src=\{relayHeroShot\.dark\.src\}/, 'product shot uses the dark cinematic variant');
+assert.match(source, /data-relay-shot/, 'hero screenshot participates in resolved theme switching');
+assert.match(source, /data-shot-light-src=\{relayHeroShot\.light\.src\}/, 'light mode uses the light Agents capture');
+assert.match(source, /data-shot-dark-src=\{relayHeroShot\.dark\.src\}/, 'dark mode keeps the dark Agents capture');
+assert.match(source, /--hero-bg: #eff9f8/, 'hero defines a light blueprint surface by default');
+assert.match(source, /:global\(html\[data-theme='dark'\]\) \.home-hero/, 'hero defines a scoped dark-theme override');
 assert.match(source, /home-hero__blueprint/, 'homepage hero reuses the Relay Host blueprint field');
 assert.match(source, /home-hero__glow--cta/, 'primary CTA has a localized glow');
 assert.match(source, /home-hero__glow--shot/, 'Agents screenshot has a localized glow');

@@ -45,32 +45,31 @@ scope result: passed
 
 - Source visual truth:
   - `/Users/manavsehgal/orionfold/website/src/components/product/RelayHostBox.astro`
+  - `/Users/manavsehgal/orionfold/website/public/relay/shots/agents-list/light-1600.4207cac7.webp`
   - `/Users/manavsehgal/orionfold/website/public/relay/shots/agents-list/dark-1600.a5e04613.webp`
 - Implementation route: `http://127.0.0.1:4321/`
 - Intended viewports: desktop 1440 × 1000; mobile 390 × 844
 - Intended states: light, dark, reduced motion, and keyboard focus
-- Browser-rendered implementation screenshot: unavailable; the in-app Browser rejected the local-page refresh and subsequent inspection under its URL safety policy.
-- Full-view comparison evidence: blocked because the implementation capture is unavailable.
-- Focused-region comparison evidence: blocked for the same reason.
+- Browser-rendered implementation evidence: captured 2026-07-20 in the in-app Browser at 1440 × 1000 dark and 390 × 844 light.
+- Full-view comparison evidence: both rendered states preserve the approved blueprint field, product-shot dominance, CTA hierarchy and quiet demo link.
+- Focused-region comparison evidence: the resolved theme swaps both the complete visual token set and the responsive Agents screenshot source.
 
 ## Findings
 
-- [P1] Final rendered hierarchy is unverified.
-  - Location: homepage hero.
-  - Evidence: source images were opened and inspected; the implementation passed its source contract, responsive asset byte ceilings, `git diff --check`, and the 125-page production build, but browser capture was denied.
-  - Impact: code and asset correctness do not prove the Kanban crop, overlay position, responsive scale, or theme switch look right in the actual page.
-  - Fix: refresh the already-open local homepage in the in-app Browser, then capture desktop/mobile and light/dark states and compare them with the source product shots.
+- No open visual finding remains. The earlier light-mode defect is resolved and verified in the rendered page.
 
 ## Required fidelity surfaces
 
-- Fonts and typography: the existing pitch hierarchy is preserved, with the Relay Host section's white/cyan emphasis and compact mono chrome. Browser verification pending.
-- Spacing and layout rhythm: one action remains in the pitch column; the grid shifts to a 0.72/1.28 split and the Agents shot uses its full 1.31:1 source ratio. Browser verification pending.
-- Colors and visual tokens: the Relay Host blueprint field, dark cinematic surface, localized cyan glows, frame chrome and glass-chip treatment are reused. Browser verification pending.
-- Image quality and asset fidelity: source WebPs are the current optimized 720/1280/1600 Relay screenshot variants and pass byte ceilings. Rendered sharpness and crop pending.
+- Fonts and typography: the pitch hierarchy is preserved; text resolves to dark ink/cyan in light mode and white/cyan in dark mode, while retaining compact mono chrome. Verified.
+- Spacing and layout rhythm: one action remains in the pitch column; the grid shifts to a 0.72/1.28 split and the Agents shot uses its full 1.31:1 source ratio. Verified at desktop and mobile.
+- Colors and visual tokens: the hero has a pale blueprint canvas, darker cyan action color, light window chrome and restrained shadows by default, plus a scoped dark override that preserves the approved cinematic treatment. Verified.
+- Image quality and asset fidelity: the hero retains its eager responsive dark source for the default-theme LCP path and participates in the existing resolved-theme observer to swap to the optimized light Agents capture. Browser readback confirmed the light and dark 1280 variants, correct frame surfaces and no horizontal overflow.
 - Copy and content: the Agents library directly supports “Get an AI team”; the whole framed screenshot and the quiet bottom-right “View the interactive demo” label route to `/relay/demo/`, with no “live” claim.
 
 ## Comparison history
 
-- No visual iteration completed because the first implementation capture was blocked. No screenshot-based issue has been falsely marked resolved.
+1. Operator finding — light mode left the whole hero dark because its surface, text, frame chrome, demo link and image source were hard-coded.
+2. Fix — replaced those values with a light-default hero token set plus a scoped `html[data-theme='dark']` override; connected the eager Agents image to the existing theme observer with both responsive variants.
+3. Post-fix evidence — compiled CSS contains both resolved theme rule sets, built HTML contains both screenshot sources, focused tests and the production build pass, and the in-app Browser shows the light 390 px and dark 1440 px variants with the correct responsive source, no overflow and no console warnings/errors.
 
-final result: blocked
+final result: passed
