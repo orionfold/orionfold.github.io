@@ -1,0 +1,35 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A single Host frame contains several separate customer Cells, while an administrator key spans the Host boundary to show that every same-Host Cell trusts the Host administrator.">
+  <defs>
+    <linearGradient id="tc-host" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-green)" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="var(--svg-accent-green)" stop-opacity="0.03"/>
+    </linearGradient>
+    <linearGradient id="tc-key" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+  <g class="fn-diagram__edges">
+    <path d="M 522 80 L 522 270" fill="none" stroke="var(--color-primary)" stroke-width="1.5" stroke-dasharray="6 5"/>
+  </g>
+  <g class="fn-diagram__nodes">
+    <rect x="42" y="76" width="520" height="214" rx="18" fill="url(#tc-host)" stroke="var(--svg-accent-green)" stroke-width="1.5"/>
+    <rect x="70" y="128" width="126" height="112" rx="12" fill="var(--svg-surface)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
+    <rect x="216" y="128" width="126" height="112" rx="12" fill="var(--svg-surface)" stroke="var(--svg-accent-blue)" stroke-width="1"/>
+    <rect x="362" y="128" width="126" height="112" rx="12" fill="var(--svg-surface)" stroke="var(--svg-accent-purple)" stroke-width="1"/>
+    <circle cx="552" cy="80" r="20" fill="url(#tc-key)" stroke="var(--color-primary)" stroke-width="1.5"/>
+    <rect x="517" y="72" width="35" height="16" rx="6" fill="url(#tc-key)" stroke="var(--color-primary)" stroke-width="1"/>
+  </g>
+  <g class="fn-diagram__labels">
+    <text x="42" y="38" font-size="25" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Separate Cells. Shared trust.</text>
+    <text x="66" y="106" font-size="11" fill="var(--svg-accent-green)" font-family="var(--font-mono)">ONE HOST</text>
+    <text x="133" y="180" text-anchor="middle" font-size="13" fill="var(--svg-text-bright)" font-family="var(--font-mono)">CUSTOMER A</text>
+    <text x="133" y="204" text-anchor="middle" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)">OWN STATE</text>
+    <text x="279" y="180" text-anchor="middle" font-size="13" fill="var(--svg-text-bright)" font-family="var(--font-mono)">CUSTOMER B</text>
+    <text x="279" y="204" text-anchor="middle" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)">OWN STATE</text>
+    <text x="425" y="180" text-anchor="middle" font-size="13" fill="var(--svg-text-bright)" font-family="var(--font-mono)">CUSTOMER C</text>
+    <text x="425" y="204" text-anchor="middle" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)">OWN STATE</text>
+    <text x="552" y="312" text-anchor="middle" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)">HOST ADMIN</text>
+    <text x="302" y="330" text-anchor="middle" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">operational isolation is not hostile-admin isolation</text>
+  </g>
+</svg>

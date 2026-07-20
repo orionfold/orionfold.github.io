@@ -23,6 +23,7 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import PageHeader from '../../components/ui/PageHeader.astro';
 import RelayBox from '../../components/product/RelayBox.astro';
+import RelayHostBox from '../../components/product/RelayHostBox.astro';
 import RelayProblem from '../../components/product/RelayProblem.astro';
 import RelaySolution from '../../components/product/RelaySolution.astro';
 import RelayUnderTheHood from '../../components/product/RelayUnderTheHood.astro';
@@ -36,7 +37,8 @@ import relayPoster from '../../assets/projects/orionfold-relay-poster.jpeg';
 import relayBoardShot from '../../assets/relay/home-list.png';
 import relayCostReceipt from '../../assets/relay/customers-detail.png';
 import { SITE, PERSON } from '../../data/seo';
-import { RELAY, formatUsd } from '../../data/commerce';
+import { RELAY, RELAY_HOST, formatUsd } from '../../data/commerce';
+import { RELAY_HOST_LIVE } from '../../data/launch';
 import { ogMeta } from '../../data/og';
 
 const og = ogMeta('/relay/');
@@ -83,6 +85,36 @@ const softwareSchema = {
     url: relayUrl,
     category: 'Software license',
     ...digitalMerchantFields,
+  },
+};
+
+const relayHostSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'Orionfold Relay Host',
+  description:
+    'An annual offline-verifiable right to run one Relay Host with up to ten managed customer Cells. Premium Packs are separate.',
+  url: `${relayUrl}#get-relay-host`,
+  brand: { '@type': 'Brand', name: 'Orionfold' },
+  offers: {
+    '@type': 'Offer',
+    price: (RELAY_HOST.amount / 100).toFixed(2),
+    priceCurrency: 'USD',
+    availability: RELAY_HOST_LIVE
+      ? 'https://schema.org/InStock'
+      : 'https://schema.org/OutOfStock',
+    url: `${relayUrl}#get-relay-host`,
+    category: 'Annual software license',
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy',
+      applicableCountry: 'US',
+      returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+      merchantReturnDays: RELAY_HOST.refundDays,
+      returnMethod: 'https://schema.org/KeepProduct',
+      returnFees: 'https://schema.org/FreeReturn',
+      refundType: 'https://schema.org/FullRefund',
+    },
+    shippingDetails: digitalMerchantFields.shippingDetails,
   },
 };
 
@@ -236,6 +268,7 @@ const trust = [
   ogImageAlt={og.alt}
   jsonLd={[
     softwareSchema,
+    relayHostSchema,
     {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -560,10 +593,10 @@ const trust = [
       <div class="mx-auto max-w-5xl">
         <div class="mb-10 text-center">
           <p class="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">What is free, what a license adds</p>
-          <h2 class="mb-4 text-3xl sm:text-4xl">Free forever, license optional.</h2>
+          <h2 class="mb-4 text-3xl sm:text-4xl">Free forever. Paid rights stay distinct.</h2>
           <p class="mx-auto max-w-2xl text-sm leading-relaxed text-text-muted">
-            The engine is free forever. A license unlocks the premium packs you own. Here is the
-            line, in plain terms.
+            Relay Core and direct Cells are free forever. A Pack license adds maintained content.
+            Relay Host separately covers managed customer Cells.
           </p>
         </div>
 
@@ -603,7 +636,7 @@ const trust = [
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21.4 8 14 2 9.4h7.6z"/></svg>
               </span>
               <div>
-                <p class="text-lg font-semibold text-primary">A license adds</p>
+                <p class="text-lg font-semibold text-primary">A Pack license adds</p>
                 <p class="font-mono text-[0.65rem] uppercase tracking-wider text-primary/70">On top of everything free</p>
               </div>
             </div>
@@ -620,8 +653,9 @@ const trust = [
 
         <p class="mx-auto mt-8 max-w-2xl text-center text-sm leading-relaxed text-text-muted">
           The free engine is not a trial or a cut-down version. It is a complete operations layer you
-          can run for real. A license adds premium packs and their updates. It does not unlock core
-          features you would otherwise be missing. This is a promise we hold every product to: read
+          can run for real. A Pack license adds premium packs and their updates. Relay Host is shown
+          separately below because it covers managed customer operations, not image access or a hidden
+          core feature. This is a promise we hold every product to: read
           <a href="/promise/" class="text-primary hover:text-primary/80 transition-colors">how our gating works</a>.
         </p>
       </div>
@@ -707,6 +741,7 @@ const trust = [
     </section>
 
     <!-- Own the premium packs: lead with the buy block -->
+    <RelayHostBox />
     <RelayBox />
 
     <!-- Soft opt-in below the buy: catch readers who aren't checkout-ready yet -->
@@ -723,12 +758,13 @@ const trust = [
     <!-- Persistent Buy bar: one tap away once the hero scrolls past. Same
          founding price + data-checkout wiring as RelayBox (SSOT-driven). -->
     <LandingStickyCta
-      title="Orionfold Relay"
+      title="Relay premium Packs"
       lookupKey={RELAY.founding.lookupKey}
       priceLabel={formatUsd(RELAY.founding.amount)}
       itemId="software:orionfold-relay"
       live={ORIONFOLD_RELAY_LIVE}
       anchor="#get-relay"
+      hideWhile="#get-relay-host"
     />
   </main>
   <Footer />

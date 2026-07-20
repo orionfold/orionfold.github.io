@@ -97,7 +97,8 @@
       lanes: {
         web_publish: { previewed: false, published: false },
         row_trigger: { fired: false },
-        license_pack: { gated: false, licensed: false }
+        license_pack: { gated: false, licensed: false },
+        operator_workshop: { preflighted: false, previewed: false, completed: false }
       }
     };
   }
@@ -179,6 +180,31 @@
     }
     if (/^\/api\/settings/.test(path)) {
       return json({ demo: true });
+    }
+
+    var workshop = (state.machines || {}).operator_workshop;
+    if (workshop) {
+      if (path === '/api/workshop/preflight' && m === 'GET') {
+        state.lanes.operator_workshop.preflighted = true;
+        return json(workshop.preflight.ready);
+      }
+      if (path === '/api/workshop/sample/capstone' && m === 'GET') {
+        state.lanes.operator_workshop.previewed = true;
+        return json(workshop.capstone);
+      }
+      if (path === '/api/workshop/sample/rehearse' && m === 'POST') {
+        state.lanes.operator_workshop.completed = true;
+        return json({
+          verdict: 'passed',
+          simulated: true,
+          fallbackUsed: true,
+          retained: workshop.capstone.retained
+        });
+      }
+      if (path === '/api/workshop/sample/reset' && m === 'POST') {
+        state.lanes.operator_workshop = { preflighted: false, previewed: false, completed: false };
+        return json({ reset: true });
+      }
     }
 
     // ---- B. Slice data GETs (read-only, off the derived seed) ----
@@ -515,7 +541,7 @@
       '#relay-demo-ribbon a{color:#8fe3d0;text-decoration:underline}';
     var el = document.createElement('div');
     el.id = 'relay-demo-ribbon'; el.setAttribute('role', 'note');
-    el.innerHTML = '<strong>DEMO</strong> Synthetic data, static build. Nothing here touches a real workspace. ' +
+    el.innerHTML = '<strong>DEMO</strong> Synthetic data on a static build. Nothing here touches a real workspace. ' +
       'Install real Relay: <code>npx orionfold-relay</code>';
     document.head.appendChild(s);
     (document.body || document.documentElement).appendChild(el);
@@ -865,7 +891,7 @@
     btn.style.cssText =
       'display:inline-flex;align-items:center;gap:6px;margin-left:8px;padding:6px 12px;' +
       'border-radius:8px;border:1px solid var(--color-primary,#14804a);background:var(--color-primary,#14804a);' +
-      'color:#fff;font:600 13px ui-sans-serif,system-ui,sans-serif;cursor:pointer';
+      'color:#fff;font:600 13px ui-sans-serif,system-ui,sans-serif';
     btn.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); driveActivate(btn); }, true);
     var anchor = (nearBtn && nearBtn.parentNode) ? nearBtn.parentNode : document.body;
     if (nearBtn && nearBtn.nextSibling) anchor.insertBefore(btn, nearBtn.nextSibling);
@@ -915,7 +941,6 @@
         btns[i].setAttribute('aria-disabled', 'false');
         btns[i].style.pointerEvents = 'auto';
         btns[i].style.opacity = '';
-        btns[i].style.cursor = 'pointer';
       }
     }
   }
@@ -1037,6 +1062,73 @@
     }, true); // capture phase so we win before any (inert) React handler
   }
 
+  function workshopSamplePanel() {
+    var path = (location.pathname || '').replace(/\/+$/, '');
+    var demoRoot = String(window.__RELAY_DEMO_BASEPATH__ || '/relay/demo/')
+      .replace(/\/+$/, '');
+    if (path && path !== demoRoot && !/\/index$/.test(path)) return;
+    if (document.getElementById('relay-demo-workshop-sample')) return;
+    var machine = (state.machines || {}).operator_workshop;
+    if (!machine) return;
+    var main = document.querySelector('main');
+    if (!main) return;
+    var panel = document.createElement('section');
+    panel.id = 'relay-demo-workshop-sample';
+    panel.setAttribute('aria-label', 'Relay Operator Workshop sample');
+    panel.style.cssText =
+      'position:relative;margin:0 auto 20px;max-width:96rem;padding:16px;border:1px solid var(--border);' +
+      'border-radius:12px;background:var(--surface-1);color:var(--foreground);font:14px ui-sans-serif,system-ui,sans-serif';
+    panel.innerHTML =
+      '<div style="display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">' +
+        '<div style="max-width:680px"><div style="font-weight:700;font-size:16px">Relay Operator Workshop sample</div>' +
+        '<p style="margin:4px 0;color:var(--muted-foreground,#6b7280)">One memo → governed workflow. Check readiness, inspect the capstone and run one useful simulated rehearsal.</p>' +
+        '<p data-workshop-status style="margin:8px 0 0;font-size:12px;color:var(--muted-foreground,#6b7280)">' + machine.disclosure + '</p></div>' +
+        '<div data-workshop-actions style="display:flex;gap:8px;flex-wrap:wrap"></div>' +
+      '</div>' +
+      '<div data-workshop-preview style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div>';
+    var actions = panel.querySelector('[data-workshop-actions]');
+    var status = panel.querySelector('[data-workshop-status]');
+    var preview = panel.querySelector('[data-workshop-preview]');
+
+    function button(label, action) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.style.cssText =
+        'padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);' +
+        'color:var(--foreground);font:600 12px ui-sans-serif,system-ui,sans-serif';
+      btn.addEventListener('click', action);
+      actions.appendChild(btn);
+    }
+
+    button('Check readiness', function () {
+      resolveFetch('/api/workshop/preflight', 'GET', {}, state);
+      status.textContent = 'Ready for the sample · compatible Relay · verified Marketing Line fixture · no install required.';
+    });
+    button('Preview capstone', function () {
+      resolveFetch('/api/workshop/sample/capstone', 'GET', {}, state);
+      preview.style.display = 'block';
+      preview.innerHTML =
+        '<strong>' + machine.capstone.title + '</strong><p style="margin:4px 0 8px;color:var(--muted-foreground,#6b7280)">' +
+        machine.capstone.abstract + '</p><div style="font-size:12px">Retained: ' + machine.capstone.retained.join(' · ') + '</div>';
+    });
+    button('Run rehearsal', function () {
+      resolveFetch('/api/workshop/sample/rehearse', 'POST', {}, state);
+      status.textContent = 'Sample complete · simulated passed receipt · deterministic fallback · no model call.';
+      preview.style.display = 'block';
+      preview.innerHTML =
+        '<strong>Completion preview</strong><p style="margin:4px 0;color:var(--muted-foreground,#6b7280)">A passed simulated receipt, selected output and user-owned app Pack are ready to retain.</p>';
+    });
+    button('Restart sample', function () {
+      resolveFetch('/api/workshop/sample/reset', 'POST', {}, state);
+      status.textContent = machine.disclosure;
+      preview.style.display = 'none';
+      preview.textContent = '';
+    });
+
+    main.insertBefore(panel, main.firstChild);
+  }
+
   function onReady() {
     ribbon();                 // DEMO banner (Fix #5: buy strip removed)
     getRelayCta();            // centered top-bar "Get Orionfold Relay" CTA → /relay/
@@ -1046,6 +1138,7 @@
     enableLaneControls();     // make the app route's guided Preview/Publish controls actionable
     unfadeDisabledControls(); // captured disabled buttons (Activate/Pull/Save target) look normal
     stripDemoAppNamePrefix(); // seeded "Demo <App>" names read as plain product apps
+    workshopSamplePanel();    // free, restartable Workshop preview on Home
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady, { once: true });
   else onReady();
@@ -1067,6 +1160,7 @@
         state.lanes = fresh.lanes;             // per-lane progress flags
         window.__RELAY_DEMO_FIXTURES__ = d;
         enableLaneControls(); // machines now loaded — enable the app route's guided controls
+        workshopSamplePanel(); // fixtures now loaded — render the restartable Home sample
       }
     })
     .catch(function (e) { try { console.warn('[relay demo] fixtures load failed', e); } catch (x) {} });

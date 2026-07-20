@@ -1,22 +1,34 @@
 // Shared CORS + JSON helpers for the commerce edge functions (C2/C3/C4).
 // Mirrors the proven idiom in `waitlist-signup` (kept separate so the live
-// funnel is never touched). The allowlist is the production origin only —
-// checkout is started from orionfold.com; localhost will CORS-fail by design
-// (test the deployed function server-to-server, as with the waitlist funnel).
+// funnel is never touched). Production defaults to orionfold.com only. An
+// isolated staging deployment may set CORS_ALLOWED_ORIGINS to an explicit,
+// comma-separated local/staging list; no wildcard is accepted.
 
-const ALLOWED_ORIGINS = [
-  "https://orionfold.com",
-];
+const DEFAULT_ALLOWED_ORIGINS = ["https://orionfold.com"];
+
+export function parseAllowedOrigins(value?: string | null): string[] {
+  const configured = (value ?? "")
+    .split(",")
+    .map((origin) => origin.trim().replace(/\/$/, ""))
+    .filter(Boolean);
+  return configured.length ? [...new Set(configured)] : DEFAULT_ALLOWED_ORIGINS;
+}
+
+function allowedOrigins(): string[] {
+  return parseAllowedOrigins(Deno.env.get("CORS_ALLOWED_ORIGINS"));
+}
 
 export function getCorsHeaders(req: Request): Record<string, string> {
   const origin = req.headers.get("Origin") || "";
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin)
+  const origins = allowedOrigins();
+  const allowedOrigin = origins.includes(origin)
     ? origin
-    : ALLOWED_ORIGINS[0];
+    : origins[0];
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
+    "Vary": "Origin",
   };
 }
 

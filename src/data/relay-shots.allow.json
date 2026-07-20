@@ -13,6 +13,8 @@
   "schedules-list",
   "schemas-list",
   "settings-license",
+  "settings-cell-boundary",
+  "settings-host-deployment",
   "settings-runtime",
   "settings-summary",
   "support-queue-table",

@@ -209,15 +209,15 @@ export const TRUST_PAGES: Record<string, TrustPageData> = {
     eyebrow: 'License terms, in plain language',
     title: 'License terms, in plain language',
     summary:
-      'What buying a premium pack license actually gets you, in the words we intend them. The engine is free and open. A license only unlocks premium packs: maintained content installed on top.',
+      'What Pack and Relay Host licenses get you, in the words we intend them. Relay Core and direct Cells remain free; Packs and managed Host rights stay distinct.',
     shortVersion:
-      'A license is a small signed file you keep, verified offline. It unlocks premium packs and keeps them current. Installed packs never re-lock, not at expiry, not ever. What is free stays free.',
-    lastUpdated: '2026-07-01',
+      'A license is a small signed file you keep, verified offline. Pack licenses unlock maintained content. Relay Host covers managed customer Cells. What is free stays free, and lapse never stops already-running work.',
+    lastUpdated: '2026-07-18',
     order: 4,
     sections: [
       {
         title: 'What a license is',
-        lead: 'The engine is not licensed. It is free. Everything that makes Relay run is Apache-2.0 open source. A license only unlocks premium packs.',
+        lead: 'The engine is not licensed. It is free. Everything that makes Relay run is Apache-2.0 open source. Pack licenses add maintained content; Host licenses cover managed customer operations.',
         paragraphs: [
           'A license is a small signed file, a payload and signature JSON envelope, issued to you at purchase and attached to your fulfilment email. Relay verifies it entirely offline with an Ed25519 signature check against public keys embedded in the open-source verifier. There is no activation server and no periodic re-validation. Relay never sends your data to Orionfold. Keep the file. It is the durable proof of purchase: the download link in the email expires, the file never does.',
         ],
@@ -235,24 +235,41 @@ export const TRUST_PAGES: Record<string, TrustPageData> = {
         note: 'There is no mechanism in the codebase that can disable installed content. The license check happens at pack install time and nowhere else. This is shipped behavior, not just policy.',
       },
       {
-        title: 'Seats: defined by trust, audited by you',
+        title: 'Pack seats: defined by trust, audited by you',
         paragraphs: [
           'A seat is one person in your organization who uses premium packs. Your license records how many seats you bought.',
           'We deliberately do not enforce seats technically. No device counting, no user registry, no lockouts. The verifier checks the signature, the term, and the product entitlement. The seat count is your side of the deal. The license status command is the self-audit surface: it shows what you are licensed for so your admin can check compliance locally, without asking us and without Relay telling us.',
         ],
       },
       {
-        title: 'Transfer and machines',
+        title: 'Pack transfer and machines',
         paragraphs: [
-          'The license file is portable. Redeem it on a new machine any time. Moving between machines, reinstalling, or running air-gapped are all fine within your seat count. Transferring a license to a different organization requires reissue: email manav@orionfold.com.',
+          'A Pack license file is portable. Redeem it on a new machine any time. Moving between machines, reinstalling, or running air-gapped are all fine within your seat count. Transferring a Pack license to a different organization requires reissue: email manav@orionfold.com. Relay Host is stricter: same-licensee replacement only, with no customer transfer.',
         ],
       },
       {
         title: 'The boundary will not move under you',
         paragraphs: [
-          'What is free stays free. Capabilities never migrate from the free engine into paid packs. Paid packs are new content, not repossessed features. The things we have ruled out permanently: license state in the database, upsell banners in the CLI, online re-validation, and expiry that disables installed packs.',
+          'What is free stays free. Capabilities never migrate from the free engine into paid packs. Paid packs are new content, not repossessed features. The things we have ruled out permanently in the product runtime: Orionfold-hosted license state, upsell banners in the CLI, online re-validation, and expiry that disables installed packs or running Cells.',
         ],
         note: 'This page states intent in plain language and links the enforcing code. If a storefront page and this page ever disagree, tell us. The stricter reading in your favor applies while we fix it.',
+      },
+      {
+        title: 'Relay Host is a separate managed-use right',
+        paragraphs: [
+          'Relay Core and direct Cells remain free and open. The public Relay Cell image also remains public and needs no purchase token. Orionfold Relay Host is the separate annual right to operate one Host with up to ten managed customer Cells. Pulling the image is not proof of that right.',
+          'Relay Host costs $1,499 per year. Premium Packs are separate and no Pack is silently bundled. The annual term includes forward Host updates and email support without a response-time SLA. Compatible critical-security fixes remain included.',
+        ],
+      },
+      {
+        title: 'Host lapse, refund and replacement',
+        bullets: [
+          'If the term ends, Cells already running keep running. Export, recovery and an authorized rollback remain available.',
+          'New managed capacity, forward paid updates and license re-download stop after lapse or refund.',
+          'A Host purchase has a 14-day refund window. The continuity rule above still applies after refund.',
+          'A license may be reissued for a replacement within the same private licensee identity. It cannot be transferred to another customer and does not include reseller rights.',
+        ],
+        note: 'The signed Host envelope is verified offline. It carries an opaque licensee reference, not the buyer email as its ownership identifier, and contains no registry credential, pull token, online activation or metering state.',
       },
     ],
   },

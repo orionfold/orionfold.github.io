@@ -70,6 +70,23 @@ export const ORIONFOLD_PROOF_LIVE = true;
 // admin-issue-license call — it gates the peer's close, not the live Buy button.
 export const ORIONFOLD_RELAY_LIVE = true;
 
+// RELAY_HOST_LIVE — managed Host is a separate annual commercial right from
+// premium Relay Packs. Keep OFF until G-041 proves the customer-identical path
+// and the operator separately approves live Stripe/Supabase/signing/deployment.
+export const RELAY_HOST_LIVE = false;
+
+// RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED — the first Training product reuses
+// the accepted G-034 guest Checkout/access/refund lifecycle. Production stays
+// launch-dark until G-036. An isolated local/staging build opts in explicitly;
+// there is no source edit or accidental live default to flip.
+const publicBuildEnv = (
+  import.meta as ImportMeta & {
+    env?: Record<string, string | undefined>;
+  }
+).env;
+export const RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED =
+  publicBuildEnv?.PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT === "true";
+
 // META_PIXEL_ENABLED — gate the browser-side Meta Pixel (fbevents.js loader +
 // PageView + the Purchase fbq track). OFF (operator 2026-06-18): BOTH Meta Ads
 // and Google Ads are paused, so the browser pixel buys nothing and is pure cost

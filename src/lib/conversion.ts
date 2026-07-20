@@ -69,7 +69,7 @@ export interface PurchaseConversion {
   /** Buyer email for Enhanced Conversions (hashed before send; never sent raw). */
   email: string | null;
   /** Catalog kind — gates which ad-platform conversions fire (see reportPurchase). */
-  kind: 'book' | 'sponsor' | 'license';
+  kind: 'book' | 'sponsor' | 'license' | 'workshop';
 }
 
 /**
@@ -85,7 +85,7 @@ export async function reportPurchase(c: PurchaseConversion): Promise<void> {
 
   // Books and licenses are value-based purchases that feed the ad platforms;
   // sponsors are recurring support and stay GA4-only.
-  const fireAdConversions = c.kind === 'book' || c.kind === 'license';
+  const fireAdConversions = c.kind === 'book' || c.kind === 'license' || c.kind === 'workshop';
 
   // Task 3 — GA4 purchase (marked as a key event in GA4; powers audiences and
   // the GA4↔Ads assisted-conversion link the operator wires).

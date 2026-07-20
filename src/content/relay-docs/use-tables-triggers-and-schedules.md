@@ -50,6 +50,12 @@ Open a working table, such as the support queue. Read the columns before you add
 
 This figure shows why row shape matters. A row-triggered workflow can only use values that exist in the row or defaults supplied by the blueprint. If a required variable has no matching column and no default, the trigger should fail visibly during setup or dispatch. Silent trigger failure is the worst outcome because the operator thinks work started when it did not.
 
+Use the **Render** and **Row** switch in the table toolbar for two different jobs. Row is the default on the Tables detail screen because it keeps columns dense and makes editing, sorting, selection, import, export, and enrichment easy to reach. Render turns each record into a larger, type-aware item for scanning.
+
+Render mode chooses one short-text field as the title and can place a description or abstract below it. Safe image URLs can appear as thumbnails. Select fields and category-like columns become stable colored pills. Numeric fields show their value with a Low, Mid, High, or No range indicator based on the visible values or an explicit number domain. Dates, booleans, email addresses, web links, and other metadata use formats that match their type.
+
+Column display roles are additive. A Pack, schema, or composed table definition can explicitly mark the title, description, image, category, metric, date, link, boolean, or metadata role. When no role is set, Relay uses the column type and familiar names such as title, summary, image, status, or amount. Unsafe image URLs, including URLs with embedded credentials, do not become thumbnails. Generic table surfaces inside apps can open in Render mode, while the Tables detail screen stays in Row mode until you switch it.
+
 Open **Schemas** when you need to inspect reusable table structure.
 
 ![Schemas list for reusable table shapes](relay-shot:schemas-list)
@@ -86,13 +92,15 @@ If a schedule does not run, open the schedule and check its state before changin
 
 If an app view looks stale after table edits, reload the app surface and confirm the table update saved. Table mutations should invalidate affected app-runtime cache.
 
+If Render mode chooses the wrong title or treats a field as the wrong kind of content, switch back to Row so you can see every column at once. If you own the Pack, schema, or composed definition, give that column an explicit display role. The current table-column form does not expose display-role editing for an existing operator-created table.
+
 If a schema does not match the table you expected, do not force the workflow forward. Fix the table shape first.
 
 If a row trigger starts too much work, review the trigger contract. Row inserts are convenient, but they should still match the business event you intend.
 
 ## What This Changes In Daily Work
 
-The daily habit is to put repeated work into structured records. A table row is easier to audit than a loose chat message. A schedule is easier to review than a calendar reminder. A schema is easier to reuse than a copied column list.
+The daily habit is to put repeated work into structured records. A table row is easier to audit than a loose chat message. Render mode helps an operator understand the record, while Row mode helps an editor work across columns. A schedule is easier to review than a calendar reminder. A schema is easier to reuse than a copied column list.
 
 For an SMB operations lead, this means support, leads, grants, renewals, and content can each have a clear local data source. For an app builder, it means pack-backed screens can be composed from known parts. For a solo founder, it means small routines do not disappear into memory.
 

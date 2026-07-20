@@ -1,0 +1,36 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A Host boundary contains three independent Relay Cells, while customer folders sit inside one Cell and a future Fleet Controller remains outside the Host.">
+  <defs>
+    <linearGradient id="hc-host" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.24"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.04"/>
+    </linearGradient>
+    <linearGradient id="hc-cell" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-teal)" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="var(--svg-accent-blue)" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+  <g class="fn-diagram__edges">
+    <path d="M 134 98 L 206 98" fill="none" stroke="var(--svg-stroke)" stroke-width="1" stroke-dasharray="4 5"/>
+  </g>
+  <g class="fn-diagram__nodes">
+    <rect x="206" y="76" width="390" height="224" rx="18" fill="url(#hc-host)" stroke="var(--color-primary)" stroke-width="1.5"/>
+    <rect x="32" y="68" width="102" height="60" rx="10" fill="var(--svg-surface)" stroke="var(--svg-stroke)" stroke-width="1"/>
+    <rect x="232" y="126" width="150" height="136" rx="12" fill="url(#hc-cell)" stroke="var(--svg-accent-teal)" stroke-width="1.5"/>
+    <rect x="402" y="126" width="80" height="136" rx="12" fill="url(#hc-cell)" stroke="var(--svg-accent-blue)" stroke-width="1"/>
+    <rect x="498" y="126" width="72" height="136" rx="12" fill="url(#hc-cell)" stroke="var(--svg-accent-blue)" stroke-width="1"/>
+    <rect x="250" y="174" width="114" height="24" rx="5" fill="var(--svg-surface)" stroke="var(--svg-stroke)" stroke-width="1"/>
+    <rect x="250" y="210" width="114" height="24" rx="5" fill="var(--svg-surface)" stroke="var(--svg-stroke)" stroke-width="1"/>
+  </g>
+  <g class="fn-diagram__labels">
+    <text x="32" y="38" font-size="25" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">A folder is not a tenant.</text>
+    <text x="83" y="92" text-anchor="middle" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)">FUTURE</text>
+    <text x="83" y="111" text-anchor="middle" font-size="12" fill="var(--svg-text-bright)" font-family="var(--font-mono)">FLEET</text>
+    <text x="230" y="104" font-size="12" font-weight="600" fill="var(--color-primary)" font-family="var(--font-mono)">ONE HOST · LOCAL SUPERVISOR</text>
+    <text x="307" y="154" text-anchor="middle" font-size="13" fill="var(--svg-text-bright)" font-family="var(--font-mono)">CELL A</text>
+    <text x="307" y="191" text-anchor="middle" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)">CUSTOMER FOLDER</text>
+    <text x="307" y="227" text-anchor="middle" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)">PROJECT FOLDER</text>
+    <text x="442" y="194" text-anchor="middle" font-size="12" fill="var(--svg-text-bright)" font-family="var(--font-mono)">CELL B</text>
+    <text x="534" y="194" text-anchor="middle" font-size="12" fill="var(--svg-text-bright)" font-family="var(--font-mono)">CELL C</text>
+    <text x="320" y="328" text-anchor="middle" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">organization lives inside · isolation begins at the Cell</text>
+  </g>
+</svg>

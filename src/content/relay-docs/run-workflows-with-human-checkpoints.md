@@ -6,6 +6,7 @@ features:
   - "Workflow patterns"
   - "Workflow execution controls"
   - "Human-in-the-loop workflow questions"
+  - "Relay Operator Workshop"
   - "Tool permissions and approvals"
   - "Inbox"
   - "Monitor"
@@ -46,6 +47,17 @@ What you should notice:
 
 This screen is a control surface. Read state before you click. A draft workflow is not the same as a failed workflow. A running workflow should expose Stop when stopping is valid. A completed workflow may offer Re-run. A waiting workflow should point you to the human action that blocks it.
 
+When a workflow belongs to a project, its detail header names that project and
+links back to it. The same Project choice is available when you create or edit
+the workflow. Choosing **None** clears the link; leaving a workflow unlinked is
+valid for intentionally global work.
+
+The **Input Documents** picker follows that project context. Ready files can be
+selected as workflow context. Files that are uploaded, processing, or in error
+remain visible with their real state, but Relay disables selection until they
+are ready. This keeps "not ready yet" separate from "missing." To bring a new
+file into the pool, upload it from Documents with the same project selected.
+
 If you do not have the right workflow yet, open **Blueprints**. A blueprint is a reusable workflow pattern.
 
 ![Blueprint gallery for reusable workflow patterns](relay-shot:blueprints-gallery)
@@ -79,6 +91,14 @@ Open **Monitor** when you need the run trail.
 
 Monitor is the audit screen. Use it when a workflow fails, stalls, or behaves in a way you do not understand. A good failure path should give you enough context to decide the next move.
 
+When you want to practice this control loop before using customer work, open the **Relay Operator Workshop**. Its preflight is read-only. It checks the Relay version, data-directory access, built-in fixture integrity, and configured run options without installing the starter or calling a model provider.
+
+If preflight is ready, choose **Install isolated starter**. Relay creates an idempotent local starter with a table, app, project, and governed workflow. The capstone tracks five checkpoints: inspect the starter, add a learner-owned process row, confirm the human and success boundary, produce a terminal Operations Receipt, and retain the result.
+
+The workshop gives you two honest run paths. You can run the workflow through a configured runtime, or use **Run deterministic rehearsal** when a model provider is unavailable. The rehearsal is labeled in the interface and in exported evidence. It does not pretend that a model call occurred.
+
+After a terminal receipt exists, choose **Download completion bundle**. Relay builds a redacted archive containing the learner-owned app Pack, the Operations Receipt, selected outputs, hashes, and a limitations file. Credentials, absolute local paths, unrelated workspace data, and unselected transcripts are excluded. An active workshop also appears as a progress module on Home when that module is enabled.
+
 ## What To Do When The State Looks Wrong
 
 If a workflow says waiting, check Inbox before you click Run again. Starting another run may duplicate the process.
@@ -87,11 +107,18 @@ If a workflow says stalled, open Monitor and read the last visible run state. St
 
 If a workflow failed, keep the error text. Relay should show the failure path so you can decide what to fix.
 
+If a workflow shows the wrong project after an edit, stop before running it and
+save the intended Project again. A successful save should retain a set, changed,
+or cleared project link. If Relay cannot save the workflow's document context,
+it reports that failure instead of navigating away with a success message.
+
 If a blueprint run creates a draft instead of running, open the draft. That may be the safer path when variables or configuration need review.
 
 If a Stop action appears, use it only when you understand the effect. Stopping a workflow may leave child tasks or approvals that still need review.
 
 If the same workflow keeps asking for the same approval, do not assume the approver made a mistake. Check the run state. A repeated prompt can mean the workflow retried, the browser refreshed during a stream, or the previous answer did not reach the waiting step. The safest next move is to inspect Inbox and Monitor together.
+
+If Workshop preflight fails, use the named recovery beside the failed check. Do not force installation into an incompatible version or unwritable data directory. If the starter conflicts with an existing app or project, move to an isolated workspace or resolve the named conflict. Relay will not overwrite the existing item.
 
 ## What This Changes In Daily Work
 

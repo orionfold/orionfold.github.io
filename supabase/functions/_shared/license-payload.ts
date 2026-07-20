@@ -52,6 +52,35 @@ export interface LicenseProvenance {
   stripe_price_id: string | null;
 }
 
+export interface RelayHostLicensee {
+  kind: "organization" | "individual";
+  ref: string;
+}
+
+export interface RelayHostLimits {
+  hosts: number;
+  managed_cells: number;
+}
+
+export interface RelayHostGrant {
+  schema: "orionfold.relay-host/v1";
+  sku: string;
+  licensee: RelayHostLicensee;
+  limits: RelayHostLimits;
+  updates_until: string;
+  rights: {
+    managed_customer_cells: true;
+    packs: "separate";
+    reseller: false;
+    transfer: "same-licensee-replacement";
+    critical_security_updates: "included";
+  };
+}
+
+export type LicenseGrants = Record<string, unknown> & {
+  "product:relay-host"?: RelayHostGrant;
+};
+
 export interface LicensePayloadInput {
   licenseId: string; // OF-FE-2026-NNNN (Arena) or OF-PROOF-2026-NNNN (Proof)
   /**
@@ -62,6 +91,13 @@ export interface LicensePayloadInput {
   product?: string;
   tier?: string;
   entitlements?: string[];
+  /**
+   * Existing Arena/Proof/Packs licenses default to one seat. Relay Host's
+   * accepted envelope omits `seats`, so callers may pass null to suppress it.
+   */
+  seats?: number | null;
+  /** Versioned product-specific grants carried inside the shared envelope. */
+  grants?: LicenseGrants;
   /**
    * Arena's founding-25/standard edition badge (soft known-set). OPTIONAL: a
    * product without an edition concept (Proof) omits it and the key is left out of
@@ -77,6 +113,66 @@ export interface LicensePayloadInput {
 
 // deno-lint-ignore no-explicit-any
 export type LicensePayload = Record<string, any>;
+
+export interface RelayHostGrantInput {
+  sku: string;
+  licensee: RelayHostLicensee;
+  limits: RelayHostLimits;
+  updatesUntil: string;
+}
+
+export interface RelayHostLicensePayloadInput extends
+  Omit<
+    LicensePayloadInput,
+    "product" | "tier" | "entitlements" | "seats" | "grants"
+  > {
+  offer: "host" | "operator-bundle";
+  hostGrant: RelayHostGrantInput;
+}
+
+/**
+ * Build Relay's accepted placement-neutral Host grant. Rights are constants,
+ * not catalog copy: Website consumes Relay's contract and cannot widen it.
+ */
+export function buildRelayHostGrant(
+  input: RelayHostGrantInput,
+): RelayHostGrant {
+  return {
+    schema: "orionfold.relay-host/v1",
+    sku: input.sku,
+    licensee: input.licensee,
+    limits: input.limits,
+    updates_until: input.updatesUntil,
+    rights: {
+      managed_customer_cells: true,
+      packs: "separate",
+      reseller: false,
+      transfer: "same-licensee-replacement",
+      critical_security_updates: "included",
+    },
+  };
+}
+
+/**
+ * Build a Host-only or operator-bundle payload using Relay's checked-in v1
+ * semantics. Commercial lookup keys and buyer→licensee identity mapping stay
+ * outside this adapter and must be approved before checkout issuance is wired.
+ */
+export function buildRelayHostLicensePayload(
+  input: RelayHostLicensePayloadInput,
+): LicensePayload {
+  const bundle = input.offer === "operator-bundle";
+  return buildLicensePayload({
+    ...input,
+    product: bundle ? "orionfold-relay-operator" : "orionfold-relay-host",
+    tier: bundle ? "operator-bundle" : "host",
+    entitlements: bundle
+      ? ["product:orionfold-relay", "product:relay-host"]
+      : ["product:relay-host"],
+    seats: null,
+    grants: { "product:relay-host": buildRelayHostGrant(input.hostGrant) },
+  });
+}
 
 /**
  * Format a Date as second-precision UTC ISO ("2026-06-14T00:00:00Z") — the exact
@@ -122,7 +218,9 @@ export function licenseTerm(createdEpochSeconds: number): {
  * absent rather than emitted as null — Checkout does not collect an org, and a
  * missing name should not bloat the signed claim.
  */
-export function buildLicensePayload(input: LicensePayloadInput): LicensePayload {
+export function buildLicensePayload(
+  input: LicensePayloadInput,
+): LicensePayload {
   const issuedTo: Record<string, string> = { email: input.issuedTo.email };
   if (input.issuedTo.name) issuedTo.name = input.issuedTo.name;
   if (input.issuedTo.org) issuedTo.org = input.issuedTo.org;
@@ -136,7 +234,6 @@ export function buildLicensePayload(input: LicensePayloadInput): LicensePayload 
     issued_at: input.issuedAt,
     not_before: input.notBefore,
     expires_at: input.expiresAt,
-    seats: LICENSE_SEATS,
     entitlements: input.entitlements ?? [...LICENSE_ENTITLEMENTS],
     // NO `registry` block (A-hybrid, token-less).
     provenance: {
@@ -144,6 +241,9 @@ export function buildLicensePayload(input: LicensePayloadInput): LicensePayload 
       stripe_price_id: input.provenance.stripe_price_id,
     },
   };
+
+  if (input.seats !== null) payload.seats = input.seats ?? LICENSE_SEATS;
+  if (input.grants) payload.grants = input.grants;
 
   // `edition` is OMITTED when absent (Proof has no edition) rather than emitted as
   // null — the signer covers whatever keys are present, and the verifier ignores

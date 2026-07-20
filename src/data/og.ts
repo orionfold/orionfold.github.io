@@ -169,6 +169,14 @@ export const OG_PAGES: Record<string, OgPage> = {
     alt: 'Orionfold Relay: the free, open engine for AI agents and workflows, with premium packs you own',
     background: 'src/assets/projects/orionfold-relay-poster.jpeg',
   },
+  '/relay/host/': {
+    slug: 'relay-host',
+    eyebrow: 'Relay Host · Customer-owned',
+    title: 'One Host. A clean Relay Cell for every customer.',
+    seed: 'relay-host',
+    alt: 'Relay Host: one customer-owned Host with up to ten isolated Relay Cells',
+    screenshot: 'public/relay/shots/settings-host-deployment/dark.cbee1b0a.webp',
+  },
   '/arena/': {
     slug: 'arena',
     eyebrow: 'Run · Compare · Score · Train',

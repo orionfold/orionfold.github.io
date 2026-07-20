@@ -68,15 +68,19 @@ Before the one-at-a-time walk, here is the whole stack at a glance. The five alt
         <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
       </radialGradient>
     </defs>
+
     <ellipse cx="380" cy="50" rx="360" ry="70" fill="url(#wp-stack-glow)"/>
+
     <g class="fn-diagram__edges">
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 40 50 L 40 250" stroke="var(--color-primary)" stroke-width="1.5" fill="none" stroke-opacity="0.55"/>
     </g>
+
     <g class="fn-diagram__flow">
       <circle class="fn-diagram__flow" cx="40" cy="50" r="4" fill="var(--color-primary)">
         <animateMotion begin="1.4s" dur="3.6s" repeatCount="indefinite" path="M 0 0 L 0 200"/>
       </circle>
     </g>
+
     <g class="fn-diagram__nodes">
       <rect x="56" y="33" width="648" height="34" rx="6" fill="url(#wp-stack-accent)" stroke="var(--color-primary)" stroke-width="1.5"/>
       <rect x="56" y="83" width="648" height="34" rx="6" fill="url(#wp-stack-purple)" stroke="var(--svg-accent-purple)" stroke-width="1"/>
@@ -84,19 +88,24 @@ Before the one-at-a-time walk, here is the whole stack at a glance. The five alt
       <rect x="56" y="183" width="648" height="34" rx="6" fill="url(#wp-stack-blue)" stroke="var(--svg-accent-blue)" stroke-width="1"/>
       <rect x="56" y="233" width="648" height="34" rx="6" fill="url(#wp-stack-teal)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
     </g>
+
     <g class="fn-diagram__labels">
       <text x="74" y="46" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)" letter-spacing="0.08em">APPLICATION · OS</text>
       <text x="74" y="59" font-size="13" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Relay Pack</text>
       <text x="688" y="54" text-anchor="end" font-size="12" fill="var(--svg-text-dim)" font-family="var(--font-mono)">owned, multi-primitive app</text>
+
       <text x="74" y="96" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">ORCHESTRATION</text>
       <text x="74" y="109" font-size="13" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Agent frameworks</text>
       <text x="688" y="104" text-anchor="end" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">build &amp; operate it yourself</text>
+
       <text x="74" y="146" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">HOST EXTENSION</text>
       <text x="74" y="159" font-size="13" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Plugins · GPTs</text>
       <text x="688" y="154" text-anchor="end" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">live inside someone's app</text>
+
       <text x="74" y="196" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">AGENT KNOW-HOW</text>
       <text x="74" y="209" font-size="13" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Skills</text>
       <text x="688" y="204" text-anchor="end" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">instructions for one agent</text>
+
       <text x="74" y="246" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">CONNECTIVITY</text>
       <text x="74" y="259" font-size="13" fill="var(--svg-text-bright)" font-family="var(--font-mono)">MCP</text>
       <text x="688" y="254" text-anchor="end" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">the port, not the appliance</text>

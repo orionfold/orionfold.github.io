@@ -3,12 +3,12 @@ id: "04-workflows-automation"
 title: "Workflows And Automation API"
 status: "draft"
 stability: "app-internal"
-families: ["workflows","blueprints","schedules","notifications","permissions"]
+families: ["workflows","blueprints","schedules","notifications","permissions","workshop"]
 ---
 
 ## Who This Is For
 
-This group is for a developer automating multi-step work in a local Relay instance. It covers workflows and the way they run, resume, and stop; blueprints that turn a template into a workflow; schedules that fire tasks on a cron; the notifications that carry approvals and alerts; and the permission rules that govern what agents may do without asking. Read this if you are launching workflow runs, scripting scheduled tasks, polling for pending approvals, or managing an agent's permission allow-list.
+This group is for a developer automating multi-step work in a local Relay instance. It covers workflows and the way they run, resume, and stop; blueprints that turn a template into a workflow; schedules that fire tasks on a cron; the notifications that carry approvals and alerts; the permission rules that govern what agents may do without asking; and the built-in Operator Workshop run lifecycle. Read this if you are launching workflow runs, scripting scheduled tasks, polling for pending approvals, managing an agent's permission allow-list, or integrating the local workshop experience.
 
 ## Stability
 
@@ -39,6 +39,7 @@ These behaviors hold across the routes below, so they are stated once here rathe
 - `schedules`
 - `notifications`
 - `permissions`
+- `workshop`
 
 ## Endpoints
 
@@ -51,10 +52,11 @@ These behaviors hold across the routes below, so they are stated once here rathe
 | `GET`, `POST` | `/api/workflows` | `app-internal` | `src/app/api/workflows/route.ts` |
 | `DELETE`, `PATCH` | `/api/workflows/{id}` | `app-internal` | `src/app/api/workflows/[id]/route.ts` |
 | `GET` | `/api/workflows/{id}/debug` | `app-internal` | `src/app/api/workflows/[id]/debug/route.ts` |
-| `DELETE`, `GET`, `POST` | `/api/workflows/{id}/documents` | `app-internal` | `src/app/api/workflows/[id]/documents/route.ts` |
+| `DELETE`, `GET`, `POST`, `PUT` | `/api/workflows/{id}/documents` | `app-internal` | `src/app/api/workflows/[id]/documents/route.ts` |
 | `POST` | `/api/workflows/{id}/execute` | `app-internal` | `src/app/api/workflows/[id]/execute/route.ts` |
 | `POST` | `/api/workflows/{id}/resume` | `app-internal` | `src/app/api/workflows/[id]/resume/route.ts` |
 | `GET` | `/api/workflows/{id}/status` | `app-internal` | `src/app/api/workflows/[id]/status/route.ts` |
+| `GET` | `/api/workflows/{id}/target` | `app-internal` | `src/app/api/workflows/[id]/target/route.ts` |
 | `POST` | `/api/workflows/{id}/steps/{stepId}/retry` | `app-internal` | `src/app/api/workflows/[id]/steps/[stepId]/retry/route.ts` |
 | `POST` | `/api/workflows/{id}/stop` | `app-internal` | `src/app/api/workflows/[id]/stop/route.ts` |
 | `POST` | `/api/workflows/from-assist` | `app-internal` | `src/app/api/workflows/from-assist/route.ts` |
@@ -68,9 +70,16 @@ These behaviors hold across the routes below, so they are stated once here rathe
 | `DELETE`, `GET`, `POST` | `/api/permissions/presets` | `app-internal` | `src/app/api/permissions/presets/route.ts` |
 | `GET`, `POST` | `/api/schedules` | `app-internal` | `src/app/api/schedules/route.ts` |
 | `DELETE`, `GET`, `PATCH` | `/api/schedules/{id}` | `app-internal` | `src/app/api/schedules/[id]/route.ts` |
+| `DELETE`, `GET`, `PUT` | `/api/schedules/{id}/budget` | `app-internal` | `src/app/api/schedules/[id]/budget/route.ts` |
 | `POST` | `/api/schedules/{id}/execute` | `app-internal` | `src/app/api/schedules/[id]/execute/route.ts` |
 | `GET` | `/api/schedules/{id}/heartbeat-history` | `app-internal` | `src/app/api/schedules/[id]/heartbeat-history/route.ts` |
 | `POST` | `/api/schedules/parse` | `app-internal` | `src/app/api/schedules/parse/route.ts` |
+| `GET`, `POST` | `/api/workshop/{id}` | `app-internal` | `src/app/api/workshop/[id]/route.ts` |
+| `GET` | `/api/workshop/{id}/export` | `app-internal` | `src/app/api/workshop/[id]/export/route.ts` |
+| `POST` | `/api/workshop/{id}/fallback` | `app-internal` | `src/app/api/workshop/[id]/fallback/route.ts` |
+| `GET` | `/api/workshop/handoff` | `app-internal` | `src/app/api/workshop/handoff/route.ts` |
+| `GET` | `/api/workshop/preflight` | `app-internal` | `src/app/api/workshop/preflight/route.ts` |
+| `POST` | `/api/workshop/start` | `app-internal` | `src/app/api/workshop/start/route.ts` |
 
 ## Endpoint Reference
 
@@ -214,7 +223,7 @@ Creates a workflow in `draft` status from a name and a definition.
 |---|---|---|---|
 | `name` | `string` | yes | Non-empty. |
 | `definition` | object | yes | A workflow definition with a `pattern` and at least one step. |
-| `projectId` | `string` | no | |
+| `projectId` | `string \| null` | no | Must resolve to an existing project when non-null. |
 
   The `pattern` is one of `sequence`, `planner-executor`, `checkpoint`, `loop`, `parallel`, `swarm`, each with its own step-shape rules.
 - **Response** `201`: the created workflow row (`status` is `draft`, `runNumber` is 0).
@@ -222,11 +231,12 @@ Creates a workflow in `draft` status from a name and a definition.
   - `400` when `name` is missing: `{ "error": "Name is required" }`.
   - `400` when the definition is invalid: `{ "error": "Definition must include pattern and at least one step" }`, or a specific validation message.
   - `400` when a step's runtime and profile are incompatible: `{ "error": "<message>" }`.
+  - `404` when `projectId` does not resolve: `{ "error": "Project not found: <id>" }`.
 - **Side effects**: inserts one workflow row. It does not create tasks or start a run.
 
 ### PATCH /api/workflows/{id}
 
-Edits a workflow's name or definition, or pauses it. Editing is allowed only for `draft`, `completed`, or `failed` workflows.
+Edits a workflow's name, definition, project, or success criteria, or pauses it. Editing is allowed only for `draft`, `completed`, or `failed` workflows.
 
 - **Request** body (JSON):
 
@@ -234,13 +244,16 @@ Edits a workflow's name or definition, or pauses it. Editing is allowed only for
 |---|---|---|
 | `name` | `string` | Edit mode. Non-empty. |
 | `definition` | object | Edit mode. Re-validated. |
+| `projectId` | `string \| null` | Edit mode. A non-null id must resolve; `null` clears the link; omission leaves it unchanged. |
+| `successCriteria` | array | Edit mode. Replaces the workflow's run criteria. |
 | `status` | `string` | Transition mode. Only `paused` is a real transition. |
 
 - **Response** `200`: in edit mode, the updated workflow row; in pause mode, `{ "id": "string", "status": "paused" }`.
 - **Errors**:
   - `404` when not found: `{ "error": "Workflow not found" }`.
+  - `404` when `projectId` does not resolve: `{ "error": "Project not found: <id>" }`.
   - `409` when editing an active or paused workflow: `{ "error": "Cannot edit active or paused workflows" }`.
-  - `400` when nothing to change: `{ "error": "status, name, or definition is required" }`.
+  - `400` when nothing to change: `{ "error": "status, name, projectId, definition, or successCriteria is required" }`.
   - `409` when pausing a non-active workflow: `{ "error": "Can only pause an active workflow" }`.
   - `400` when asked to set `active`: `{ "error": "Use POST /api/workflows/[id]/execute to resume a workflow" }`.
   - `400` on an unsupported transition: `{ "error": "Invalid status transition: <status>" }`.
@@ -310,6 +323,7 @@ Attaches existing documents to a workflow, optionally scoped to a step.
 
 - **Response** `201`: `{ "attached": 0, "workflowId": "string", "stepId": "string | null" }`. `attached` is the number of ids requested; duplicates are skipped.
 - **Errors**:
+  - `400` when the request body is not valid JSON: `{ "error": "Invalid JSON body" }`.
   - `400` when `documentIds` is empty: `{ "error": "documentIds must be a non-empty array" }`.
   - `404` when the workflow is not found: `{ "error": "Workflow not found" }`.
   - `404` when a document is not found: `{ "error": "Documents not found: <ids>" }`.
@@ -330,6 +344,28 @@ Removes document bindings from a workflow. With no body, removes all of them.
 - **Response** `200`: `{ "ok": true }`.
 - **Errors**: `500` on failure: `{ "error": "Failed to remove document bindings" }`. A workflow that does not exist still returns `{ "ok": true }`.
 - **Side effects**: removes the matching bindings, or all bindings when no ids are given.
+
+### PUT /api/workflows/{id}/documents
+
+Atomically replaces the workflow-level document context while retaining any
+step-scoped bindings. This is the save contract used by the workflow form.
+
+- **Request** body (JSON):
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `documentIds` | `string[]` | yes | Full replacement set. An empty array clears workflow-level bindings. |
+
+- **Response** `200`: `{ "updated": 0, "workflowId": "string" }`.
+- **Errors**:
+  - `400` when the request body is not valid JSON: `{ "error": "Invalid JSON body" }`.
+  - `400` when the body is invalid or includes `stepId`: `{ "error": "documentIds must be an array; stepId is not accepted for replacement" }`.
+  - `404` when the workflow does not exist.
+  - `404` when any document does not exist: `{ "error": "Documents not found: <ids>" }`.
+  - `500` on transaction failure: `{ "error": "Failed to replace workflow documents" }`.
+- **Side effects**: validates every document first, then deletes and recreates
+  workflow-level bindings in one SQLite transaction. Failed validation preserves
+  the previous set.
 
 ### POST /api/workflows/{id}/execute
 
@@ -359,17 +395,20 @@ Resumes a delay-paused workflow now, rather than waiting for its `resumeAt`. Thi
 Returns a workflow's full status: its per-step state, run history, and document lists. The shape depends on the workflow pattern.
 
 - **Request**: none.
-- **Response** `200`: an object keyed on `pattern`. Common fields include `id`, `name`, `status`, `projectId`, `definition`, `liveTaskCount`, `runNumber`, `runHistory`, `stepDocuments`, and `parentDocuments`. The non-loop patterns add a `resumeAt` (epoch milliseconds or `null`), per-step `state`, and a `workflowState`; the loop pattern adds `loopState` and `loopConfig`. `runHistory` entries are `{ runNumber, taskCount, completedCount, failedCount }`.
+- **Response** `200`: an object keyed on `pattern`. Common fields include `id`, `name`, `status`, `projectId`, `projectName`, `definition`, `liveTaskCount`, `runNumber`, `runHistory`, `stepDocuments`, and `parentDocuments`. `projectName` is the current linked name or `null`. The non-loop patterns add a `resumeAt` (epoch milliseconds or `null`), per-step `state`, and a `workflowState`; the loop pattern adds `loopState` and `loopConfig`. `runHistory` entries are `{ runNumber, taskCount, completedCount, failedCount }`.
 - **Errors**: `404` when not found: `{ "error": "Workflow not found" }`.
 - **Side effects**: reads only.
 
 ### POST /api/workflows/{id}/steps/{stepId}/retry
 
-Retries a single failed step, dispatched in the background. This route returns `202` before it validates anything, so it does not report step-level errors over HTTP.
+Retries a single failed step after validating the workflow and step state, then dispatches the continued run in the background.
 
 - **Request**: none.
 - **Response** `202`: `{ "status": "retry_started", "workflowId": "string", "stepId": "string" }`.
-- **Errors**: none returned to the caller. A missing workflow, a step that is not failed, or an active workflow all cause the retry to fail in the background, not in the response.
+- **Errors**:
+  - `404` when the workflow or step is not found.
+  - `409` when the workflow is active or the step is not failed.
+  - `500` for an unclassified retry failure.
 - **Side effects**: when the step is failed and the workflow is not active, resets the step, moves the workflow to `active`, and re-runs the step in the background.
 
 ### POST /api/workflows/{id}/stop
@@ -383,6 +422,17 @@ Stops a running workflow. It cancels the workflow's live tasks and marks the wor
   - `409` when the workflow is not running: `{ "error": "Workflow is not running (current status: <status>)" }`.
   - `500` when the workflow state cannot be parsed: `{ "error": "Failed to parse workflow state" }`.
 - **Side effects**: cancels each live task, marks running and waiting steps failed, and sets the workflow status to `failed`. There is no `stopped` status.
+
+### GET /api/workflows/{id}/target
+
+Previews every effective execution target Relay would use for the workflow without starting it.
+
+- **Request**: none.
+- **Response** `200`: `{ "kind": "workflow", "ready": true, "targets": [ ], "context": { ... }, "error": null }`, with one target per executable step. `context.cell` contains only `vocabularyVersion` and `instanceId`; the context also identifies the workflow project's effective working directory (or launch-workspace fallback). Data-directory and database paths remain restricted to the Settings instance response. Neither field creates another customer data or credential boundary.
+- **Errors**:
+  - `404` when not found: `{ "error": "Workflow not found" }`.
+  - `409` when any target cannot be resolved: `{ "kind": "workflow", "ready": false, "targets": [], "context": { ... } | null, "error": { } }`.
+- **Side effects**: reads workflow, profile, routing, and runtime configuration only.
 
 ### POST /api/workflows/from-assist
 
@@ -747,6 +797,33 @@ Returns recent heartbeat evaluation entries and summary stats for a heartbeat sc
   - `400` when the schedule is not a heartbeat: `{ "error": "Not a heartbeat schedule" }`.
 - **Side effects**: reads only.
 
+### GET /api/schedules/{id}/budget
+
+Returns the schedule's usage-budget policy and current usage snapshot.
+
+- **Request**: none.
+- **Response** `200`: the schedule budget snapshot.
+- **Errors**: `404` when the schedule is not found; `500` for snapshot failures.
+- **Side effects**: reads the schedule, budget policy, and usage records only.
+
+### PUT /api/schedules/{id}/budget
+
+Creates or replaces the schedule's usage-budget policy.
+
+- **Request**: a budget policy accepted by Relay's usage-budget schema.
+- **Response** `200`: the updated schedule budget snapshot.
+- **Errors**: `400` with `issues` for an invalid policy, `404` when the schedule is not found, and `400` for other policy errors.
+- **Side effects**: writes the policy for this schedule.
+
+### DELETE /api/schedules/{id}/budget
+
+Removes the schedule's explicit usage-budget policy.
+
+- **Request**: none.
+- **Response** `200`: `{ "success": true, "removed": true | false }`.
+- **Errors**: none returned explicitly.
+- **Side effects**: removes the matching policy when present.
+
 ### POST /api/schedules/parse
 
 Parses a natural-language or cron interval into a cron expression, a description, the next fire times, and a confidence score. It creates nothing.
@@ -770,6 +847,73 @@ Parses a natural-language or cron interval into a cron expression, a description
 - **Errors**:
   - `400` when `expression` is missing: `{ "error": "Expression is required" }`.
   - `400` when it cannot be parsed: `{ "error": "Could not parse \"<input>\". Try expressions like \"every weekday at 9am\", \"hourly\", \"5m\", or a cron expression." }`.
+- **Side effects**: reads only.
+
+### GET /api/workshop/preflight
+
+Checks whether the built-in Relay Operator Workshop can start in the current local instance.
+
+- **Request**: none.
+- **Response** `200`: a preflight object with `ready`, edition identity and hash, Relay version compatibility, data-directory writability, configured runtimes, deterministic-fallback availability, fixture integrity, and a `failures` array. Each failure includes `code`, `message`, and `recovery`.
+- **Errors**: `500` with the standard workshop error payload when preflight fails unexpectedly.
+- **Side effects**: reads local release, data-directory, runtime, and built-in fixture state.
+
+### POST /api/workshop/start
+
+Installs or reuses the content-addressed built-in workshop starter.
+
+- **Request** body (JSON), strict: `{ "editionId": "relay-operator-workshop", "confirmInstall": true }`.
+- **Response** `201`: a workshop run view containing edition identity, run status, linked project, app, workflow, and receipt ids, fallback state, checkpoint results, completion counts, errors, and timestamps.
+- **Errors**:
+  - `400` when explicit installation confirmation is missing or invalid.
+  - `409` on an installation conflict.
+  - `412` when the workshop edition is incompatible with the Relay version.
+  - `422` for another named workshop failure.
+- **Side effects**: creates the local workshop app, table, project, governed workflow, and persisted workshop run. The operation is idempotent for the built-in edition and does not overwrite conflicting user work.
+
+### GET /api/workshop/{id}
+
+Returns the current evaluated state for one workshop run.
+
+- **Request**: none.
+- **Response** `200`: the workshop run view, including five checkpoint results. Each checkpoint includes its source route, status, detail, and optional recovery.
+- **Errors**: `404` with `{ "error", "code", "recovery" }` when the run does not exist.
+- **Side effects**: reads the run and evaluates its linked app, table, workflow, and Operations Receipt.
+
+### POST /api/workshop/{id}
+
+Re-evaluates checkpoint state and clears a recoverable stored workshop error.
+
+- **Request**: none.
+- **Response** `200`: the refreshed workshop run view.
+- **Errors**: `422` with the standard workshop error payload.
+- **Side effects**: updates the run status, error fields, and timestamp after evaluating current evidence.
+
+### POST /api/workshop/{id}/fallback
+
+Runs the explicitly selected deterministic workshop rehearsal without a model or provider call.
+
+- **Request**: none.
+- **Response** `200`: the updated workshop run view. Repeated calls return the existing terminal evidence when a receipt is already present.
+- **Errors**: `422` with a named workshop error and recovery instruction.
+- **Side effects**: creates deterministic task and document evidence, completes the governed workflow, composes an Operations Receipt, and marks the run as having used fallback.
+
+### GET /api/workshop/{id}/export
+
+Builds and downloads the redacted workshop completion bundle.
+
+- **Request**: none.
+- **Response** `200`: a ZIP attachment named `relay-workshop-completion-<id>.zip`, with `Cache-Control: no-store`.
+- **Errors**: `422` when terminal evidence is missing, redaction fails, or another named workshop export error occurs.
+- **Side effects**: builds the learner-owned app Pack and selected completion evidence, then marks the retain checkpoint passed after successful bundle construction.
+
+### GET /api/workshop/handoff
+
+Downloads the versioned production handoff used by Relay, Website, and Motion workshop surfaces.
+
+- **Request**: none.
+- **Response** `200`: a JSON attachment named `relay-operator-workshop-production-handoff.json`, with `Cache-Control: no-store`.
+- **Errors**: none returned explicitly.
 - **Side effects**: reads only.
 
 ## Examples
@@ -812,7 +956,7 @@ curl -X POST http://127.0.0.1:3000/api/schedules/parse \
 - `execute`, `resume`, and step `retry` return `202` before the work runs. A `202` means the run was claimed and dispatched, not that it succeeded. Poll the status route.
 - `POST /api/workflows/{id}/steps/{stepId}/retry` returns `202` before it validates anything, so an invalid retry looks identical to a valid one over HTTP. Confirm the outcome by polling the status route.
 - `GET /api/workflows/{id}/debug` returns `500`, not `404`, for a workflow that does not exist, because the analysis throws on a missing workflow.
-- `GET` and `DELETE` on `/api/workflows/{id}/documents` do not check that the workflow exists; a missing workflow yields an empty list or a success. Only `POST` validates the workflow.
+- `GET` and `DELETE` on `/api/workflows/{id}/documents` do not check that the workflow exists; a missing workflow yields an empty list or a success. `POST` and replace-all `PUT` validate the workflow.
 - Pausing a workflow through `PATCH /api/workflows/{id}` flips the status but does not stop tasks that are already running. Use `POST /api/workflows/{id}/stop` to cancel live tasks.
 - The `POST /api/schedules/{id}/execute` not-found body is `{ "error": "schedule_not_found" }`, while the other schedule routes use `{ "error": "Schedule not found" }`. Do not match on one spelling across all schedule routes.
 - Permission mutations return only `{ "success": true }`; they do not echo the resulting allow-list. Re-read `GET /api/permissions` to observe the new state.

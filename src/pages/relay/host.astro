@@ -1,0 +1,369 @@
+---
+// /relay/host/ is the dedicated decision surface for the paid Host right.
+// It deliberately does not duplicate /relay/'s Core and premium-Pack sales job.
+// Content authority, reconciled 2026-07-19:
+// - Relay _ASSETS/docs guide 09 (Host/Cell boundary and seven-step journey)
+// - Relay screenshots captured 2026-07-19 (boundary, deployment, license)
+// - Relay docs: relay-host-{fulfillment,supervisor,access}.md
+// - first five review-stage Relay Host & Cells memos
+// The DigitalOcean capstone remains draft until Relay G-085. Do not turn its
+// direction into provider success, cost, capacity or availability claims here.
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import PageHeader from '../../components/ui/PageHeader.astro';
+import RelaySubNav from '../../components/relay/RelaySubNav.astro';
+import ThemedShot from '../../components/relay/ThemedShot.astro';
+import RelayHostOffer from '../../components/product/RelayHostOffer.astro';
+import { RELAY_HOST, formatUsd } from '../../data/commerce';
+import { RELAY_HOST_LIVE } from '../../data/launch';
+import { SITE } from '../../data/seo';
+import { ogMeta } from '../../data/og';
+
+const og = ogMeta('/relay/host/');
+const hostUrl = `${SITE.url}/relay/host/`;
+const price = formatUsd(RELAY_HOST.amount);
+
+const proofFacts = [
+  { value: '1', label: 'customer-owned Host', note: 'One machine or VM under the operator’s control' },
+  { value: '10', label: 'managed Relay Cells', note: 'Running, stopped and retained Cells count' },
+  { value: '3', label: 'independent proofs', note: 'License, image authenticity and registry access' },
+];
+
+const boundaries = [
+  {
+    title: 'A Cell is not a folder',
+    body: 'Each managed Cell is a complete Relay instance with its own database, files, identity, secrets, logs, limits and recovery lineage. Projects and customer records organize work inside a Cell. They do not isolate it.',
+  },
+  {
+    title: 'The Host administrator is trusted',
+    body: 'Cells on one Host have separate application state, but they share the machine and its administrator. Put a customer on a separate VM or machine when that administrator must not have access.',
+  },
+  {
+    title: 'The supervisor stays local',
+    body: 'One Host Supervisor controls only the Cells on its own machine. It is not a Fleet Controller and it does not reach into remote Hosts.',
+  },
+];
+
+const proofs = [
+  {
+    n: '01',
+    title: 'Commercial license',
+    q: 'May this operator use managed Host actions?',
+    a: 'A signed offline license carries the Host grant, term, owner and capacity. It is not a login session or a Docker password.',
+  },
+  {
+    n: '02',
+    title: 'Cell image authenticity',
+    q: 'Did Orionfold build these exact bytes?',
+    a: 'The Host pulls the public Cell image by immutable digest and verifies the signed release identity, attestation and software inventory.',
+  },
+  {
+    n: '03',
+    title: 'Registry access',
+    q: 'May this machine download the image?',
+    a: 'The primary GHCR image is public, so it needs no purchase token. A customer mirror can use its own scoped registry credential.',
+  },
+];
+
+const journey = [
+  ['Choose placement', 'Use a local device today. The customer-owned DigitalOcean path stays closed until its real provider proof passes.'],
+  ['Configure the Host', 'Set Host identity, machine shape, managed Cell count, exposure, model runtime and recovery posture.'],
+  ['Review the estimate', 'Relay calculates a dated resource and provider range. Any material change clears stale approval.'],
+  ['Authorize the exact plan', 'A signed Host license and explicit operator confirmation are required before a managed mutation.'],
+  ['Install and verify', 'npm supplies Relay and Host control. The Host pulls and verifies the compatible public Cell image by digest.'],
+  ['Create customer Cells', 'Each opaque Cell id gets its own data root, private network, loopback port, limits and lifecycle receipts.'],
+  ['Handoff and recover', 'Keep encrypted recovery outside the Host. Export, verify and restore without depending on Orionfold infrastructure.'],
+];
+
+const faq = [
+  ['Is Relay Host hosted by Orionfold?', 'No. The Host runs on infrastructure you or your customer controls. Orionfold sells the signed managed-use right and Host updates, not a hosted service or uptime promise.'],
+  ['Do I pay to download Relay or the Cell image?', 'No. Relay Core, direct use and the public signed Cell image remain free. The paid right is managed Host lifecycle within signed capacity.'],
+  ['Are ten Cells ten hostile tenants?', 'No. Each Cell has independent application state and lifecycle, but same-Host Cells still trust the Host administrator and share the machine failure boundary.'],
+  ['What happens when the annual term ends?', 'Existing Cells keep running and remain startable, stoppable, exportable, recoverable and purgeable. New managed capacity and forward paid updates stop. Compatible critical-security fixes remain included.'],
+  ['Are premium Packs included?', 'No. Packs are maintained application content and remain a separate license. Relay Host covers Host authority and managed Cell capacity.'],
+  ['Is DigitalOcean deployment available now?', 'Not yet. The product and local managed journey are proven. The customer-owned DigitalOcean path remains a named launch gate until Relay completes provider, security, recovery, cleanup and bill reconciliation evidence.'],
+];
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'Orionfold Relay Host',
+  description: 'The annual offline-verifiable right to operate one customer-owned Relay Host with up to ten managed Relay Cells. Premium Packs are separate.',
+  url: hostUrl,
+  brand: { '@type': 'Brand', name: 'Orionfold' },
+  offers: {
+    '@type': 'Offer',
+    price: (RELAY_HOST.amount / 100).toFixed(2),
+    priceCurrency: 'USD',
+    availability: RELAY_HOST_LIVE ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+    url: `${hostUrl}#get-relay-host`,
+    category: 'Annual software license',
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy',
+      applicableCountry: 'US',
+      returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+      merchantReturnDays: RELAY_HOST.refundDays,
+      returnMethod: 'https://schema.org/KeepProduct',
+      returnFees: 'https://schema.org/FreeReturn',
+      refundType: 'https://schema.org/FullRefund',
+    },
+    shippingDetails: {
+      '@type': 'OfferShippingDetails',
+      shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'USD' },
+      shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
+    },
+  },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(([question, answer]) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: { '@type': 'Answer', text: answer },
+  })),
+};
+---
+
+<Layout
+  title="Relay Host · One Host, a clean Relay Cell for every customer"
+  description="Run one customer-owned Relay Host with up to ten managed Relay Cells. Signed offline licensing, public verified Cell images, explicit recovery, and honest same-Host trust boundaries."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  jsonLd={[
+    productSchema,
+    faqSchema,
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Relay', item: `${SITE.url}/relay/` },
+        { '@type': 'ListItem', position: 3, name: 'Host', item: hostUrl },
+      ],
+    },
+  ]}
+>
+  <Nav />
+  <RelaySubNav active="host" />
+  <main class="-mt-20 sm:-mt-24">
+    <PageHeader
+      eyebrow="Relay Host · Customer-owned infrastructure"
+      title="One Host. A clean Relay Cell for every customer."
+      subtitle="Operate up to ten complete Relay instances on one machine you control. Each Cell keeps its own state and recovery lineage. You keep the infrastructure, data, keys and bill."
+    >
+      <div class="mb-4 mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+        {RELAY_HOST_LIVE ? (
+          <button
+            type="button"
+            data-checkout={RELAY_HOST.primary.lookupKey}
+            data-item="software:orionfold-relay-host"
+            data-error-target="relay-host-hero-error"
+            class="of-primary-action text-base font-semibold"
+          >Buy Relay Host <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs">{price}/yr</span></button>
+        ) : (
+          <span class="inline-flex min-h-11 items-center rounded-full border border-primary/30 bg-primary/[0.07] px-5 py-3 font-mono text-xs font-semibold uppercase tracking-wider text-primary">
+            Launch waits for DigitalOcean proof
+          </span>
+        )}
+        <a href="#proof" class="of-secondary-action">See what is already proven</a>
+      </div>
+      <p id="relay-host-hero-error" role="alert" hidden class="mt-2 text-sm text-red-500"></p>
+    </PageHeader>
+
+    <section class="px-6 pb-12 pt-8 sm:pt-12">
+      <div class="mx-auto grid max-w-5xl gap-3 sm:grid-cols-3">
+        {proofFacts.map((fact) => (
+          <div class="of-surface overflow-hidden rounded-2xl p-5">
+            <p class="font-display text-4xl font-bold text-primary">{fact.value}</p>
+            <p class="mt-1 text-sm font-semibold text-text">{fact.label}</p>
+            <p class="mt-2 text-xs leading-relaxed text-text-muted">{fact.note}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section id="proof" class="managed-proof relative overflow-hidden border-y border-primary/20 px-6 py-16 sm:py-20">
+      <div class="managed-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-6xl">
+        <div class="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
+          <div>
+            <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">The managed journey</p>
+            <h2 class="mt-3 text-balance text-3xl font-bold sm:text-4xl">Placement to handoff, with every gate visible.</h2>
+            <p class="mt-5 leading-relaxed text-text-muted">
+              Relay turns managed deployment into seven named steps: placement, configuration, estimate,
+              authorization, install, verification and handoff. The local path is proven. The cloud choice stays
+              labeled as a preview until the real DigitalOcean receipt exists.
+            </p>
+            <a href="/relay/docs/set-trust-runtime-and-local-controls/" class="of-text-action mt-5">Read the operator guide →</a>
+          </div>
+          <figure class="overflow-hidden rounded-2xl border border-primary/25 bg-surface shadow-2xl shadow-primary/10">
+            <ThemedShot
+              id="settings-host-deployment"
+              alt="Relay Settings showing the seven-step Host deployment journey, local device placement, cloud server preview, Host administrator trust warning, license gate and Host configuration fields."
+              class="managed-shot"
+            />
+            <figcaption class="border-t border-border/70 px-5 py-3 text-center text-xs leading-relaxed text-text-muted">
+              Real Relay 0.44.3 product capture · local Host available · cloud server visibly gated
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-16 sm:py-20">
+      <div class="mx-auto max-w-5xl">
+        <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">The boundary you are buying</p>
+        <h2 class="mt-3 max-w-3xl text-balance text-3xl font-bold sm:text-4xl">A folder organizes work. A Cell carries its own operational life.</h2>
+        <div class="mt-9 grid gap-4 lg:grid-cols-3">
+          {boundaries.map((boundary, index) => (
+            <article class="of-surface rounded-2xl p-6">
+              <span class="font-mono text-xs text-primary">0{index + 1}</span>
+              <h3 class="mt-4 text-xl font-semibold">{boundary.title}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-text-muted">{boundary.body}</p>
+            </article>
+          ))}
+        </div>
+        <figure class="mt-9 overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-lg">
+          <ThemedShot
+            id="settings-cell-boundary"
+            alt="Relay Settings showing that one Cell has its own identity, data directory, database and workspace, with a clear Host administrator trust boundary."
+            class="managed-boundary-shot"
+          />
+          <figcaption class="border-t border-border/70 px-5 py-3 text-center text-xs text-text-muted">
+            Relay reports the Cell id, data root, database and Host-administrator boundary as facts, not marketing labels.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="border-y border-border/70 bg-surface/35 px-6 py-16 sm:py-20">
+      <div class="mx-auto max-w-5xl">
+        <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Three proofs, never conflated</p>
+        <h2 class="mt-3 max-w-3xl text-balance text-3xl font-bold sm:text-4xl">Paying, downloading and trusting the bytes are separate decisions.</h2>
+        <div class="mt-9 grid gap-4 lg:grid-cols-3">
+          {proofs.map((proof) => (
+            <article class="rounded-2xl border border-border/70 bg-surface p-6">
+              <span class="font-mono text-xs text-primary">{proof.n}</span>
+              <h3 class="mt-4 text-xl font-semibold">{proof.title}</h3>
+              <p class="mt-2 font-mono text-[0.68rem] uppercase tracking-wider text-text-dim">{proof.q}</p>
+              <p class="mt-4 text-sm leading-relaxed text-text-muted">{proof.a}</p>
+            </article>
+          ))}
+        </div>
+        <p class="mt-7 max-w-3xl text-sm leading-relaxed text-text-muted">
+          Relay Core and the public Cell image remain free. Relay Host is the signed authority to create and operate Cells through the Host Supervisor within the limits you bought. Premium Packs remain a separate right.
+        </p>
+      </div>
+    </section>
+
+    <section class="px-6 py-16 sm:py-20">
+      <div class="mx-auto max-w-5xl">
+        <div class="grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
+          <div>
+            <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">The operator path</p>
+            <h2 class="mt-3 text-balance text-3xl font-bold sm:text-4xl">From one machine to ten named customer Cells.</h2>
+            <p class="mt-5 text-sm leading-relaxed text-text-muted">
+              Admission happens before Relay allocates a port, path, volume, network or customer state. At capacity, the eleventh Cell is refused without disturbing the first ten.
+            </p>
+          </div>
+          <ol class="space-y-3">
+            {journey.map(([title, body], index) => (
+              <li class="grid gap-3 rounded-2xl border border-border/70 bg-surface/60 p-5 sm:grid-cols-[2.5rem_1fr]">
+                <span class="font-mono text-sm font-semibold text-primary">{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3 class="font-semibold text-text">{title}</h3>
+                  <p class="mt-1 text-sm leading-relaxed text-text-muted">{body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-16 sm:py-20">
+      <div class="mx-auto max-w-5xl rounded-3xl border border-amber-500/30 bg-amber-500/[0.055] p-7 sm:p-10">
+        <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-amber-600 dark:text-amber-400">The honest cloud gate</p>
+        <div class="mt-4 grid gap-8 lg:grid-cols-[1fr_0.8fr]">
+          <div>
+            <h2 class="text-balance text-3xl font-bold sm:text-4xl">Customer-owned cloud is the direction. DigitalOcean proof comes before the claim.</h2>
+            <p class="mt-5 leading-relaxed text-text-muted">
+              Relay already proves the same Host and Cell model on a local machine. Before this page opens checkout,
+              Relay will provision one clean DigitalOcean VM and verify authenticated ingress, one- and multi-Cell
+              operation, capacity refusal, backup, Host-loss restore, upgrade, rollback, bill reconciliation and zero-orphan cleanup.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-amber-500/25 bg-surface/65 p-6">
+            <p class="font-mono text-xs uppercase tracking-wider text-text-dim">Not claimed yet</p>
+            <ul class="mt-4 space-y-3 text-sm leading-relaxed text-text-muted">
+              <li>Provider-specific success or availability</li>
+              <li>A universal machine size or provider cost</li>
+              <li>Hostile-administrator isolation</li>
+              <li>Multi-Host Fleet control</li>
+              <li>Uptime, recovery-time or service-level promises</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <RelayHostOffer />
+
+    <section class="px-6 pb-20 pt-8">
+      <div class="mx-auto max-w-4xl">
+        <p class="text-center font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Questions before you choose</p>
+        <h2 class="mt-3 text-center text-balance text-3xl font-bold sm:text-4xl">The plain answers.</h2>
+        <div class="mt-8 divide-y divide-border/70 rounded-2xl border border-border/70 bg-surface/45 px-5 sm:px-7">
+          {faq.map(([question, answer]) => (
+            <details class="group py-5">
+              <summary class="cursor-pointer list-none pr-8 font-semibold text-text marker:hidden">{question}</summary>
+              <p class="mt-3 max-w-3xl text-sm leading-relaxed text-text-muted">{answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .managed-proof {
+    background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 5%, var(--color-bg)), var(--color-bg));
+  }
+  .managed-grid {
+    --line: color-mix(in oklch, var(--color-primary) 13%, transparent);
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    -webkit-mask-image: radial-gradient(ellipse 85% 80% at 60% 45%, black 35%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 80% at 60% 45%, black 35%, transparent 100%);
+  }
+  :global(.managed-shot) {
+    min-height: 30rem;
+    background-size: cover;
+    background-position: top center;
+  }
+  :global(.managed-boundary-shot) {
+    min-height: 34rem;
+    background-size: cover;
+    background-position: top center;
+  }
+  @media (max-width: 767px) {
+    :global(.managed-shot),
+    :global(.managed-boundary-shot) {
+      min-height: 20rem;
+    }
+  }
+</style>
+
+<script>
+  import { wireCheckoutButtons } from '../../lib/checkout';
+
+  wireCheckoutButtons();
+  document.addEventListener('astro:after-swap', wireCheckoutButtons);
+</script>

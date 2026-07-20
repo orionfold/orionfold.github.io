@@ -24,7 +24,7 @@ import { CATALOG } from '../supabase/functions/_shared/catalog.ts';
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(SCRIPT_DIR, '..');
 
-type ProductType = 'software' | 'model' | 'dataset' | 'book' | 'sponsor' | 'license';
+type ProductType = 'software' | 'model' | 'dataset' | 'book' | 'sponsor' | 'license' | 'workshop';
 
 interface Commerce {
   lookupKey: string;
@@ -143,6 +143,25 @@ for (const item of Object.values(CATALOG)) {
     monetized: true,
     commerce: { lookupKey: item.lookupKey, kind: item.kind, mode: item.mode, amount_cents: item.amount, tier: item.tier ?? null },
     detail_page: null,
+    raw: item,
+  });
+}
+
+// Training workshops — one catalog row per independently purchasable edition.
+for (const item of Object.values(CATALOG)) {
+  if (item.kind !== 'workshop') continue;
+  products.push({
+    id: 'workshop/relay-operator-workshop',
+    type: 'workshop',
+    slug: 'relay-operator-workshop',
+    group: 'training',
+    title: item.label,
+    summary: 'Build one governed Relay workflow with a human checkpoint and retained completion evidence.',
+    href: 'https://orionfold.com/training/relay-operator-workshop/',
+    status: 'planned',
+    monetized: true,
+    commerce: { lookupKey: item.lookupKey, kind: item.kind, mode: item.mode, amount_cents: item.amount, tier: null },
+    detail_page: 'src/pages/training/relay-operator-workshop/index.astro',
     raw: item,
   });
 }

@@ -27,11 +27,15 @@ interface Props {
   /** In-page anchor to scroll to (e.g. "#get-proof") when not live, or as the
    *  bar's fallback target. */
   anchor: string;
+  /** Optional selector for a competing offer. The sticky bar yields whenever
+   *  that section enters the viewport so two purchase paths never overlap. */
+  hideWhile?: string;
 }
-const { title, lookupKey, priceLabel, itemId, live, anchor } = Astro.props;
+const { title, lookupKey, priceLabel, itemId, live, anchor, hideWhile } = Astro.props;
 ---
 <div
   id="sticky-cta"
+  data-hide-while={hideWhile}
   class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-border bg-surface/95 backdrop-blur transition-transform duration-300 [&.is-visible]:translate-y-0 motion-reduce:transition-none"
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
@@ -64,12 +68,31 @@ const { title, lookupKey, priceLabel, itemId, live, anchor } = Astro.props;
   function initStickyCta() {
     const bar = document.getElementById('sticky-cta');
     const sentinel = document.getElementById('hero-cta-sentinel');
-    if (!bar || !sentinel) return;
-    const io = new IntersectionObserver(
-      ([entry]) => bar.classList.toggle('is-visible', !entry.isIntersecting),
+    if (!bar || !sentinel || bar.dataset.bound === 'true') return;
+    bar.dataset.bound = 'true';
+
+    let heroPassed = false;
+    let competingOfferVisible = false;
+    const sync = () => bar.classList.toggle('is-visible', heroPassed && !competingOfferVisible);
+
+    const heroObserver = new IntersectionObserver(
+      ([entry]) => {
+        heroPassed = !entry.isIntersecting;
+        sync();
+      },
       { rootMargin: '0px 0px -80% 0px' },
     );
-    io.observe(sentinel);
+    heroObserver.observe(sentinel);
+
+    const hideSelector = bar.dataset.hideWhile;
+    if (!hideSelector) return;
+    const competingOffer = document.querySelector(hideSelector);
+    if (!competingOffer) return;
+    const offerObserver = new IntersectionObserver(([entry]) => {
+      competingOfferVisible = entry.isIntersecting;
+      sync();
+    });
+    offerObserver.observe(competingOffer);
   }
   initStickyCta();
   document.addEventListener('astro:after-swap', initStickyCta);

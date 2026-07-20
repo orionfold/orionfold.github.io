@@ -244,9 +244,10 @@ const relayDocs = defineCollection({
     }),
 });
 
-// Relay memos (Rail B publish, _RELAY #17) — the "Relay Packs" editorial series,
-// a long-form building-in-public arc (one pillar + four domain memos) on the pack
-// architecture. Copied verbatim from the strategy-owned _ASSETS/memos corpus (same
+// Relay memos (Rail B publish) — source-verified editorial arcs covering Relay
+// Packs (one pillar + four domain memos) and Relay Host & Cells (one pillar,
+// four operational memos and one gated cloud capstone). Copied verbatim from
+// the strategy-owned _ASSETS/memos corpus (same
 // one-direction publish contract as relayDocs: website consumes, never writes
 // back; fidelity is enforced at the Relay source gate). The filename-folder stem
 // is the URL slug (why-relay-packs/article.md -> /relay/memos/why-relay-packs/).
@@ -260,7 +261,7 @@ const relayDocs = defineCollection({
 const memos = defineCollection({
   // Nested per-slug folders (why-relay-packs/article.md); the folder name is the
   // slug, so key on the folder, not the bare `article` filename (which would
-  // collide across all five). Same generateId idiom as productDetail.
+  // collide across every memo). Same generateId idiom as productDetail.
   loader: glob({
     pattern: '**/article.md',
     base: './src/content/memos',
@@ -284,8 +285,8 @@ const memos = defineCollection({
       // and `status` are the same lifecycle in the source; both accepted so the
       // verbatim frontmatter validates. `status` is the publish discriminator —
       // gating the surface on status === 'published' is a one-line filter change
-      // in the routes when the operator wants that (drafts render today, _RELAY
-      // #17, operator decision 2026-07-09).
+      // in the routes when the operator wants that. Draft/review content renders
+      // today with an honest status label for local operator review.
       stage: z.enum(['draft', 'review', 'published']).optional(),
       status: z.enum(['draft', 'review', 'published']).default('draft'),
     }),

@@ -54,12 +54,14 @@ These behaviors hold across the routes below, so they are stated once here rathe
 | `DELETE`, `GET`, `PATCH` | `/api/tasks/{id}` | `app-internal` | `src/app/api/tasks/[id]/route.ts` |
 | `POST` | `/api/tasks/{id}/cancel` | `app-internal` | `src/app/api/tasks/[id]/cancel/route.ts` |
 | `POST` | `/api/tasks/{id}/execute` | `app-internal` | `src/app/api/tasks/[id]/execute/route.ts` |
+| `GET` | `/api/tasks/{id}/history` | `app-internal` | `src/app/api/tasks/[id]/history/route.ts` |
 | `GET` | `/api/tasks/{id}/logs` | `app-internal` | `src/app/api/tasks/[id]/logs/route.ts` |
 | `GET` | `/api/tasks/{id}/output` | `app-internal` | `src/app/api/tasks/[id]/output/route.ts` |
 | `GET` | `/api/tasks/{id}/provenance` | `app-internal` | `src/app/api/tasks/[id]/provenance/route.ts` |
 | `POST` | `/api/tasks/{id}/respond` | `app-internal` | `src/app/api/tasks/[id]/respond/route.ts` |
 | `POST` | `/api/tasks/{id}/resume` | `app-internal` | `src/app/api/tasks/[id]/resume/route.ts` |
 | `GET` | `/api/tasks/{id}/siblings` | `app-internal` | `src/app/api/tasks/[id]/siblings/route.ts` |
+| `GET` | `/api/tasks/{id}/target` | `app-internal` | `src/app/api/tasks/[id]/target/route.ts` |
 | `POST` | `/api/tasks/assist` | `app-internal` | `src/app/api/tasks/assist/route.ts` |
 | `GET`, `POST` | `/api/documents` | `app-internal` | `src/app/api/documents/route.ts` |
 | `DELETE`, `GET`, `PATCH` | `/api/documents/{id}` | `app-internal` | `src/app/api/documents/[id]/route.ts` |
@@ -194,10 +196,13 @@ Creates a project. When `workingDirectory` is set, the route also scans that dir
 | `name` | `string` | yes | 1 to 100 characters. |
 | `description` | `string` | no | Up to 500 characters. |
 | `workingDirectory` | `string` | no | Up to 500 characters. Triggers an environment scan. |
-| `customerId` | `string \| null` | no | Links the project to a customer. |
+| `customerId` | `string \| null` | no | Links the project to an existing customer. |
 
 - **Response** `201`: the project row (`id`, `name`, `description`, `workingDirectory`, `customerId`, `status`, `createdAt`, `updatedAt`). `status` is `active` on creation.
-- **Errors**: `400` on validation failure: `{ "error": <zod flatten object> }`.
+- **Errors**:
+  - `400` when the request body is not valid JSON: `{ "error": "Invalid JSON body" }`.
+  - `400` on validation failure: `{ "error": <zod flatten object> }`.
+  - `404` when `customerId` does not resolve: `{ "error": "Customer not found: <id>" }`.
 - **Side effects**: inserts one project row. When `workingDirectory` is set, scans and records the project's environment (best-effort).
 
 ### GET /api/projects/{id}
@@ -226,9 +231,13 @@ Updates project fields and optionally replaces the project's default document bi
 
 - **Response** `200`: the updated project row. `updatedAt` is always advanced.
 - **Errors**:
+  - `400` when the request body is not valid JSON: `{ "error": "Invalid JSON body" }`.
+  - `400` when the body is not a JSON object: `{ "error": "Invalid request body" }`.
   - `400` on validation failure: `{ "error": <zod flatten object> }`.
   - `404` when not found: `{ "error": "Not found" }`.
-- **Side effects**: updates the project row. When `documentIds` is present, replaces the project's default-document bindings. A binding failure is logged and does not fail the update.
+  - `404` when `customerId` does not resolve: `{ "error": "Customer not found: <id>" }`.
+  - `404` when any `documentIds` value does not resolve: `{ "error": "Documents not found: <ids>" }`.
+- **Side effects**: updates the project row. When `documentIds` is present, Relay validates the full set and replaces the project's default-document bindings in the same transaction. An empty array clears the defaults; failed validation leaves the project and bindings unchanged.
 
 ### DELETE /api/projects/{id}
 
@@ -553,6 +562,7 @@ Lists documents with joined task, project, and workflow metadata, filterable and
 
 | Parameter | Type | Notes |
 |---|---|---|
+| `id` | `string` | Exact document id match. |
 | `taskId` | `string` | Exact match. |
 | `projectId` | `string` | Exact match. |
 | `status` | `string` | One of `uploaded`, `processing`, `ready`, `error`. |
@@ -600,8 +610,8 @@ Registers a document by copying an existing server-local file into Relay's uploa
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `file_path` | `string` | yes | Path to a file on the server host. Must be under the home directory or `/tmp`, and outside restricted system and secret directories. |
-| `taskId` | `string` | no | |
-| `projectId` | `string` | no | |
+| `taskId` | `string` | no | Must resolve to an existing task. |
+| `projectId` | `string` | no | Must resolve to an existing project. |
 | `direction` | `"input" \| "output"` | no | Defaults to `output`. |
 
 - **Response** `201`:
@@ -622,6 +632,8 @@ Registers a document by copying an existing server-local file into Relay's uploa
   - `403` when the path is outside home and `/tmp`: `{ "error": "Access denied: path must be under the user's home directory or /tmp" }`.
   - `400` when the file does not exist: `{ "error": "File not found: <file_path>" }`.
   - `400` when the path is not a regular file: `{ "error": "Not a file: <file_path>" }`.
+  - `404` when `taskId` does not resolve: `{ "error": "Task not found: <id>" }`.
+  - `404` when `projectId` does not resolve: `{ "error": "Project not found: <id>" }`.
 - **Side effects**: copies the source file into the uploads directory, inserts a document row at `version` 1 with status `uploaded`, and preprocesses it in the background. Preprocessing sets the status to `ready` or `error`.
 
 ### GET /api/documents/{id}
@@ -649,8 +661,11 @@ Updates a document's task and project links, its category, and optionally re-run
 
 - **Response** `200`: the full updated document row.
 - **Errors**:
+  - `400` when the request body is not valid JSON: `{ "error": "Invalid JSON body" }`.
   - `400` on validation failure: `{ "error": "Invalid request body", "details": [ ... ] }`.
   - `404` when not found: `{ "error": "Document not found" }`.
+  - `404` when a non-null `taskId` does not resolve: `{ "error": "Task not found: <id>" }`.
+  - `404` when a non-null `projectId` does not resolve: `{ "error": "Project not found: <id>" }`.
 - **Side effects**: updates the document row. When `reprocess` is `true`, preprocesses the document again in the background.
 
 ### GET /api/documents/{id}/file
@@ -880,6 +895,26 @@ Archives a memory entry by setting its status to `archived`. This is a soft dele
   - `400` when `id` is missing: `{ "error": "id is required" }`.
   - `400` on any other failure: `{ "error": "<message>" }`, or `{ "error": "Failed to archive memory" }`.
 - **Side effects**: sets the memory's status to `archived`. A non-existent id is a no-op that still returns `200`.
+
+### GET /api/tasks/{id}/history
+
+Returns the task's bounded run history, including each run's status, timing, output summary, error, and retained log events.
+
+- **Request**: none.
+- **Response** `200`: `{ "taskId": "string", "currentRun": { }, "runs": [ ] }`. Up to 20 runs are returned newest first. `currentRun` is the current task state normalized to the same run shape.
+- **Errors**: `404` when not found: `{ "error": "Task not found" }`.
+- **Side effects**: reads task state, output versions, and task events only.
+
+### GET /api/tasks/{id}/target
+
+Previews the effective execution target Relay would use for a task without starting it.
+
+- **Request**: none.
+- **Response** `200`: `{ "kind": "task", "ready": true, "targets": [ ], "context": { ... }, "error": null }`. The single target includes the resolved runtime, model, profile, and readiness details. `context.cell` contains only `vocabularyVersion` and `instanceId`; the context also carries `projectId`, `projectName`, the effective `workingDirectory`, and `workingDirectorySource` (`project` or `launch`). Data-directory and database paths remain restricted to the Settings instance response. Runtime and working directory describe where the task executes; they are not a separate customer data or credential boundary.
+- **Errors**:
+  - `404` when not found: `{ "error": "Task not found" }`.
+  - `409` when the requested target cannot be resolved: `{ "kind": "task", "ready": false, "targets": [], "context": { ... } | null, "error": { } }`. Context remains available when it resolved before the runtime failure.
+- **Side effects**: reads task, profile, routing, and runtime configuration only.
 
 ## Examples
 

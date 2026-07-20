@@ -72,6 +72,10 @@ Open a content table or another structured example to inspect row shape before p
 
 This example is a support queue, not a website table, but it shows the same principle. Rows carry fields. Fields become inputs. If the data shape is wrong, the generated output will be wrong. Fix the rows before blaming the generator.
 
+Use **Render** when you need to scan site records as content. Relay can turn title-like text into a heading, description-like text into an abstract, safe image URLs into thumbnails, categories into pills, and numbers into Low, Mid, or High indicators. Use **Row** when you need dense column editing. The Tables detail screen starts in Row mode, while a generic table hero inside an app can start in Render mode.
+
+If Relay infers the wrong content role, switch to Row for editing. A Pack, schema, or composed table definition can declare an explicit role instead of renaming business data only to influence presentation. The current table-column form does not expose that authoring control for an existing operator-created table. Unsafe image URLs, including URLs with embedded credentials, do not render as thumbnails. That safety rule applies before the row reaches the generated site path.
+
 When the data is ready, return to Web Designer. Set the site controls. Choose the template and visual controls you want. Preview the site before you publish.
 
 Use **Packs** if the web pack family is not installed yet.
@@ -95,6 +99,8 @@ If a gallery thumbnail is empty, check whether the app has a safe thumbnail. Emp
 If publish targets point to the wrong place, stop. A user-owned GitHub Pages target is still a real destination. Confirm ownership before publishing.
 
 If the generated site looks correct but the data source looks wrong, fix the data source first. A site generated from stale rows will keep reproducing stale content. The strength of this path is repeatability, so the source rows need the same care as the visual controls.
+
+If Render mode hides a field you need for editing, switch to Row. Render is an operator reading view, not a replacement for the full table grid.
 
 ## What This Changes In Daily Work
 

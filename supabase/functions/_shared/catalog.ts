@@ -14,7 +14,7 @@
 /** Pinned Stripe API version — construct every SDK client with this. */
 export const STRIPE_API_VERSION = "2026-04-22.dahlia";
 
-export type OfferingKind = "book" | "sponsor" | "license";
+export type OfferingKind = "book" | "sponsor" | "license" | "workshop";
 export type CheckoutMode = "payment" | "subscription";
 export type SponsorTier = "bronze" | "silver" | "gold" | "platinum";
 
@@ -35,6 +35,12 @@ export interface CatalogItem {
    */
   amount: number;
 }
+
+export const RELAY_HOST_LOOKUP_KEY = "license_relay_host_annual";
+export const RELAY_HOST_AMOUNT = 149900;
+export const RELAY_HOSTS = 1;
+export const RELAY_HOST_MANAGED_CELLS = 10;
+export const RELAY_HOST_SKU = "relay-host-10-annual";
 
 /** Keyed by `lookup_key`. This object is the server-side allowlist. */
 export const CATALOG: Record<string, CatalogItem> = {
@@ -168,6 +174,20 @@ export const CATALOG: Record<string, CatalogItem> = {
     label: "Orionfold Relay kept-proven renewal",
     amount: 14900,
   },
+  [RELAY_HOST_LOOKUP_KEY]: {
+    lookupKey: RELAY_HOST_LOOKUP_KEY,
+    kind: "license",
+    mode: "subscription",
+    label: "Orionfold Relay Host",
+    amount: RELAY_HOST_AMOUNT,
+  },
+  workshop_relay_operator_founding: {
+    lookupKey: "workshop_relay_operator_founding",
+    kind: "workshop",
+    mode: "payment",
+    label: "Relay Operator Workshop — Founding Edition",
+    amount: 9900,
+  },
   sponsor_bronze: {
     lookupKey: "sponsor_bronze",
     kind: "sponsor",
@@ -208,6 +228,7 @@ export const LOOKUP_KEYS = Object.keys(CATALOG);
 export const BOOK_LOOKUP_KEYS = LOOKUP_KEYS.filter((k) => CATALOG[k].kind === "book");
 export const SPONSOR_LOOKUP_KEYS = LOOKUP_KEYS.filter((k) => CATALOG[k].kind === "sponsor");
 export const LICENSE_LOOKUP_KEYS = LOOKUP_KEYS.filter((k) => CATALOG[k].kind === "license");
+export const WORKSHOP_LOOKUP_KEYS = LOOKUP_KEYS.filter((k) => CATALOG[k].kind === "workshop");
 
 /** Sponsor tiers cheapest → priciest (display order). */
 export const SPONSOR_TIERS: SponsorTier[] = ["bronze", "silver", "gold", "platinum"];
@@ -345,11 +366,28 @@ export interface LicenseProductDescriptor {
   tier: string;
   entitlements: string[];
   edition?: LicenseEdition;
+  relayHost?: {
+    offer: "host";
+    sku: string;
+    limits: { hosts: number; managed_cells: number };
+  };
 }
 
 export function licenseProductForLookupKey(
   lookupKey: string,
 ): LicenseProductDescriptor | null {
+  if (lookupKey === RELAY_HOST_LOOKUP_KEY) {
+    return {
+      product: "orionfold-relay-host",
+      tier: "host",
+      entitlements: ["product:relay-host"],
+      relayHost: {
+        offer: "host",
+        sku: RELAY_HOST_SKU,
+        limits: { hosts: RELAY_HOSTS, managed_cells: RELAY_HOST_MANAGED_CELLS },
+      },
+    };
+  }
   const family = licenseFamilyForLookupKey(lookupKey);
   if (!family) return null;
 

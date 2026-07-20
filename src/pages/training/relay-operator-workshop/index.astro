@@ -1,0 +1,284 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import ThemedShot from '../../../components/relay/ThemedShot.astro';
+import { RELAY_OPERATOR_WORKSHOP, formatUsd } from '../../../data/commerce';
+import { RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED } from '../../../data/launch';
+import { WORKSHOP_MEDIA_BASE } from '../../../lib/commerce-config';
+import { SITE } from '../../../data/seo';
+
+const workshop = RELAY_OPERATOR_WORKSHOP;
+const price = formatUsd(workshop.primary.amount);
+const pageUrl = `${SITE.url}/training/relay-operator-workshop/`;
+const media = WORKSHOP_MEDIA_BASE ? {
+  trailer: `${WORKSHOP_MEDIA_BASE}/media/relay-operator-workshop-landing-trailer.mp4`,
+  trailerCaptions: `${WORKSHOP_MEDIA_BASE}/captions/relay-operator-workshop-landing-trailer.vtt`,
+  trailerTranscript: `${WORKSHOP_MEDIA_BASE}/transcripts/relay-operator-workshop-landing-trailer.md`,
+  fieldLesson: `${WORKSHOP_MEDIA_BASE}/media/relay-operator-workshop-field-lesson.mp4`,
+  fieldLessonCaptions: `${WORKSHOP_MEDIA_BASE}/captions/relay-operator-workshop-field-lesson.vtt`,
+  fieldLessonTranscript: `${WORKSHOP_MEDIA_BASE}/transcripts/relay-operator-workshop-field-lesson.md`,
+  poster: `${WORKSHOP_MEDIA_BASE}/posters/poster-promise.png`,
+} : null;
+
+const syllabus = [
+  ['Inspect', 'Open the source-hashed Marketing Line example. Name its owned inputs, workflow boundary, human checkpoint, and retained evidence.'],
+  ['Adapt', 'Replace the example with one bounded process and inputs you are authorized to use.'],
+  ['Govern', 'Put a person and a visible cost or trust boundary before consequential action.'],
+  ['Run + recover', 'Use a configured runtime or the labeled deterministic rehearsal. Inspect failed evidence, retry, and use the known-good fallback.'],
+  ['Retain', 'Export the learner-owned app Pack, Operations Receipt, selected outputs, hashes, and limitations.'],
+];
+
+const facts = [
+  ['90–150 min', 'Designed working time, not a completion guarantee'],
+  ['Relay ≥0.42.2 <0.45.0', 'Compatible free core; paid Relay is not required'],
+  ['No account', 'Guest purchase and inbox-possession access'],
+  ['14 days', 'Full no-judgment refund window'],
+];
+
+const faq = [
+  ['Is this a live class?', 'No. It is a self-serve working session with no cohort, calendar, sales call, grading, or required founder meeting.'],
+  ['Do I need a paid Relay plan?', 'No. The accepted founding edition runs on compatible Relay free core.'],
+  ['Do I need a model provider?', 'No. A configured provider is optional because Relay includes a clearly labeled deterministic rehearsal and known-good fallback.'],
+  ['What do I keep?', 'Your downloaded workshop files and learner-created Relay workflows, apps, packs, outputs, and receipts remain your files.'],
+  ['How does access work?', 'Checkout uses your email for a seven-day private link. If it expires, the same inbox can request a fresh rotating link without creating an account.'],
+  ['What happens after a refund?', 'Access stays active while Stripe processes the request. A successful refund closes future private access and re-download; files already downloaded and your Relay work remain yours.'],
+];
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: workshop.primary.label,
+  description: 'A focused self-serve workshop for building one governed Relay workflow with a human checkpoint and retained completion evidence.',
+  sku: workshop.editionId,
+  url: pageUrl,
+  brand: { '@type': 'Brand', name: 'Orionfold' },
+  offers: {
+    '@type': 'Offer',
+    price: (workshop.primary.amount / 100).toFixed(2),
+    priceCurrency: 'USD',
+    availability: RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+    url: `${pageUrl}#start`,
+    category: 'Training workshop',
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy',
+      applicableCountry: 'US',
+      returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+      merchantReturnDays: workshop.refundDays,
+      returnMethod: 'https://schema.org/KeepProduct',
+      returnFees: 'https://schema.org/FreeReturn',
+      refundType: 'https://schema.org/FullRefund',
+    },
+  },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(([question, answer]) => ({
+    '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer },
+  })),
+};
+---
+
+<Layout
+  title="Relay Operator Workshop · Build one governed workflow"
+  description="Bring one real operating process. Leave with a governed Relay workflow you can run, inspect, and improve—without scheduling Orionfold."
+  jsonLd={[productSchema, faqSchema]}
+>
+  <Nav />
+  <main>
+    <section class="workshop-hero relative overflow-hidden px-6 pb-20 pt-36 sm:pb-28 sm:pt-44">
+      <div class="workshop-grid absolute inset-0" aria-hidden="true"></div>
+      <div class="relative mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.94fr_1.06fr] lg:items-center">
+        <div>
+          <a href="/training/" class="font-mono text-xs uppercase tracking-[0.2em] text-primary hover:underline">Orionfold Training · Founding edition</a>
+          <h1 class="mt-6 text-balance text-5xl font-bold leading-[0.96] sm:text-7xl">Build one governed workflow.</h1>
+          <p class="mt-7 max-w-xl text-lg leading-relaxed text-text-muted">
+            Bring one real operating process. Leave with a governed Relay workflow you can run, inspect, and improve—without scheduling Orionfold.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-2 font-mono text-[0.68rem] uppercase tracking-wider text-text-muted">
+            <span class="rounded-full border border-border px-3 py-1.5">90–150 minutes</span>
+            <span class="rounded-full border border-border px-3 py-1.5">No account</span>
+            <span class="rounded-full border border-border px-3 py-1.5">Provider optional</span>
+          </div>
+          <div id="start" class="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            {RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? (
+              <button
+                type="button"
+                class="of-primary-action text-base font-semibold"
+                data-checkout={workshop.primary.lookupKey}
+                data-item="workshop:relay-operator-workshop"
+                data-error-target="workshop-checkout-error"
+              >Start the Relay Operator Workshop <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs">{price} founding</span></button>
+            ) : (
+              <span class="inline-flex min-h-11 items-center rounded-full border border-primary/30 bg-primary/[0.07] px-5 py-3 font-mono text-xs font-semibold uppercase tracking-wider text-primary">Checkout opens at launch</span>
+            )}
+            <a href="#free-lesson" class="of-secondary-action">Watch the free field lesson</a>
+          </div>
+          <p id="workshop-checkout-error" role="alert" hidden class="mt-3 text-sm text-red-500"></p>
+          <p class="mt-4 text-xs leading-relaxed text-text-dim">
+            One-time USD payment · 14-day full no-judgment refund · no recurring charge · {RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? 'isolated Sandbox checkout in this build' : 'production purchase remains disabled'}
+          </p>
+        </div>
+
+        <div class="workshop-proof relative">
+          <div class="workshop-proof__glow absolute inset-[8%] rounded-full bg-primary/20 blur-3xl" aria-hidden="true"></div>
+          <div class="workshop-proof__frame relative overflow-hidden rounded-3xl border border-primary/25 bg-surface-raised p-3 shadow-2xl shadow-primary/10">
+            <div class="flex items-center justify-between px-3 py-2 font-mono text-[0.62rem] uppercase tracking-wider text-text-dim">
+              <span>Governed support workflow</span><span class="text-primary">Checkpoint 03 / 05</span>
+            </div>
+            <div class="overflow-hidden rounded-2xl border border-border/70 bg-surface">
+              <ThemedShot id="inbox-approvals" alt="Relay Inbox showing the human approval checkpoint in a governed workflow." class="w-full" />
+            </div>
+            <div class="mt-3 grid grid-cols-3 gap-2 text-center font-mono text-[0.6rem] uppercase tracking-wider">
+              <span class="rounded-lg border border-border bg-surface px-2 py-3 text-text-muted">Inputs owned</span>
+              <span class="rounded-lg border border-primary/35 bg-primary/[0.08] px-2 py-3 text-primary">Human decides</span>
+              <span class="rounded-lg border border-border bg-surface px-2 py-3 text-text-muted">Receipt retained</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-border/70 bg-surface/35 px-6 py-7">
+      <div class="mx-auto grid max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {facts.map(([value, label]) => <div><p class="font-mono text-sm font-semibold text-primary">{value}</p><p class="mt-1 text-xs leading-relaxed text-text-muted">{label}</p></div>)}
+      </div>
+    </section>
+
+    <section class="px-6 py-20 sm:py-28">
+      <div class="mx-auto max-w-6xl">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">The outcome</p>
+        <div class="mt-4 grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+          <div>
+            <h2 class="text-balance text-4xl font-bold sm:text-5xl">A working system, with the judgment left visible.</h2>
+            <p class="mt-6 leading-relaxed text-text-muted">You start from a labeled synthetic Marketing Line example, then replace it with one bounded process you own. Relay keeps the human checkpoint, state, cost or trust boundary, recovery path, and completion evidence inspectable.</p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <article class="of-surface rounded-2xl p-6"><p class="font-mono text-xs text-primary">Build</p><h3 class="mt-3 text-xl font-semibold">Your governed workflow</h3><p class="mt-3 text-sm leading-relaxed text-text-muted">Owned inputs, explicit steps, one consequential pause, and a visible completion boundary.</p></article>
+            <article class="of-surface rounded-2xl p-6"><p class="font-mono text-xs text-primary">Retain</p><h3 class="mt-3 text-xl font-semibold">Your completion bundle</h3><p class="mt-3 text-sm leading-relaxed text-text-muted">Learner-owned app Pack, Operations Receipt, selected outputs, hashes, and honest limitations.</p></article>
+            <article class="of-surface rounded-2xl p-6"><p class="font-mono text-xs text-primary">Recover</p><h3 class="mt-3 text-xl font-semibold">A known-good fallback</h3><p class="mt-3 text-sm leading-relaxed text-text-muted">Named preflight failures, retry actions, and a provider-free rehearsal that never pretends a model call happened.</p></article>
+            <article class="of-surface rounded-2xl p-6"><p class="font-mono text-xs text-primary">Own</p><h3 class="mt-3 text-xl font-semibold">Files that stay yours</h3><p class="mt-3 text-sm leading-relaxed text-text-muted">Downloaded materials and the workflows, apps, packs, outputs, and receipts you create remain your files.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="free-lesson" class="border-y border-border/70 bg-surface-raised px-6 py-20 sm:py-28">
+      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+        <div class="overflow-hidden rounded-3xl border border-border bg-black shadow-2xl">
+          {media ? (
+            <video class="aspect-video w-full" controls playsinline preload="metadata" poster={media.poster}>
+              <source src={media.fieldLesson} type="video/mp4" />
+              <track kind="captions" src={media.fieldLessonCaptions} srclang="en" label="English" default />
+              Your browser cannot play this video. Use the transcript link beside it.
+            </video>
+          ) : (
+            <div class="bg-surface"><ThemedShot id="workflows-list" alt="Relay Workflows list showing visible run state and actions." class="w-full" /></div>
+          )}
+        </div>
+        <div>
+          <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Free · Complete field lesson</p>
+          <h2 class="mt-4 text-balance text-3xl font-bold sm:text-4xl">See the source, join, checkpoint, and proof before you buy.</h2>
+          <p class="mt-5 leading-relaxed text-text-muted">The public lesson uses synthetic Marketing Line data to show how a lead, campaign, workflow, human decision, and retained evidence connect. It makes no model call and writes nothing to your Relay workspace.</p>
+          <div class="mt-7 flex flex-wrap gap-4">
+            {media ? <a class="of-secondary-action" href={media.fieldLessonTranscript}>Read the field-lesson transcript</a> : <span class="text-sm text-text-dim">Media delivery base is not configured in this build; the source-grounded poster and lesson description remain available.</span>}
+            <a class="of-text-action" href="/relay/demo/">Explore the synthetic Relay demo →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-20 sm:py-28">
+      <div class="mx-auto max-w-5xl">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Five checkpoints</p>
+        <h2 class="mt-4 text-balance text-4xl font-bold">One path from inspection to retained proof.</h2>
+        <ol class="mt-10 grid gap-4">
+          {syllabus.map(([title, body], index) => (
+            <li class="grid gap-4 rounded-2xl border border-border/70 bg-surface p-6 sm:grid-cols-[4rem_1fr] sm:items-start">
+              <span class="font-mono text-sm text-primary">0{index + 1}</span>
+              <div><h3 class="text-xl font-semibold">{title}</h3><p class="mt-2 text-sm leading-relaxed text-text-muted">{body}</p></div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="border-y border-border/70 bg-surface/35 px-6 py-20 sm:py-28">
+      <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-2">
+        <div>
+          <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Good fit</p>
+          <h2 class="mt-4 text-3xl font-bold">You own a repeated process and want it governed.</h2>
+          <ul class="mt-6 grid gap-3 text-sm leading-relaxed text-text-muted"><li>✓ You already use AI and can follow a local software workflow.</li><li>✓ You can bring one bounded process and authorized inputs.</li><li>✓ You want human judgment visible before a consequential step.</li><li>✓ You value rerunnable evidence over a completion badge.</li></ul>
+        </div>
+        <div>
+          <p class="font-mono text-xs uppercase tracking-[0.2em] text-text-dim">Do not buy if</p>
+          <h2 class="mt-4 text-3xl font-bold">You need consulting, a cohort, or a guaranteed business result.</h2>
+          <ul class="mt-6 grid gap-3 text-sm leading-relaxed text-text-muted"><li>× You want Orionfold to design or operate the process for you.</li><li>× You need live teaching, grading, office hours, or a response-time promise.</li><li>× You cannot run a compatible local Relay installation.</li><li>× You need a guaranteed completion time, revenue result, or professional certification.</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-20 sm:py-28">
+      <div class="mx-auto max-w-5xl">
+        <div class="grid gap-10 lg:grid-cols-[0.78fr_1.22fr]">
+          <div><p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Source-grounded</p><h2 class="mt-4 text-3xl font-bold">Current Relay truth stays upstream.</h2><p class="mt-5 text-sm leading-relaxed text-text-muted">Training curates the learning path. Relay owns product behavior, documentation, runtime, validation, and export. Motion produces the audiovisual renditions. Website owns the offer, payment, access, and refund shell.</p></div>
+          <div class="grid gap-3">
+            <a class="of-surface rounded-2xl p-5 hover:border-primary/40" href="/relay/docs/run-workflows-with-human-checkpoints/"><span class="font-mono text-xs text-primary">Guide</span><p class="mt-2 font-semibold">Run Workflows With Human Checkpoints</p></a>
+            <a class="of-surface rounded-2xl p-5 hover:border-primary/40" href="/relay/api/04-workflows-automation/"><span class="font-mono text-xs text-primary">API</span><p class="mt-2 font-semibold">Workflows, approvals, Workshop lifecycle, fallback and export</p></a>
+            <a class="of-surface rounded-2xl p-5 hover:border-primary/40" href="/relay/memos/marketing-line/"><span class="font-mono text-xs text-primary">Operating memo</span><p class="mt-2 font-semibold">Marketing Line: the canonical synthetic example</p></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-border/70 bg-surface-raised px-6 py-20 sm:py-28">
+      <div class="mx-auto max-w-5xl">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Questions answered plainly</p>
+        <div class="mt-8 divide-y divide-border/70 border-y border-border/70">
+          {faq.map(([question, answer]) => <details class="group py-5"><summary class="cursor-pointer list-none pr-8 text-lg font-semibold">{question}</summary><p class="mt-3 max-w-3xl text-sm leading-relaxed text-text-muted">{answer}</p></details>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-24 sm:py-32">
+      <div class="mx-auto max-w-4xl rounded-3xl border border-primary/30 bg-primary/[0.06] p-8 text-center shadow-2xl shadow-primary/[0.08] sm:p-14">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Relay Operator Workshop · 2026.07 founding</p>
+        <h2 class="mt-5 text-balance text-4xl font-bold sm:text-5xl">Bring the process. Keep the working system.</h2>
+        <p class="mx-auto mt-5 max-w-2xl leading-relaxed text-text-muted">One-time {price}. No account, cohort, sales call, premium Relay requirement, or recurring charge.</p>
+        <div class="mt-8 flex justify-center">
+          {RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? (
+            <button type="button" class="of-primary-action" data-checkout={workshop.primary.lookupKey} data-item="workshop:relay-operator-workshop" data-error-target="workshop-bottom-error">Start the workshop · {price} founding</button>
+          ) : (
+            <span class="inline-flex rounded-full border border-primary/30 px-5 py-3 font-mono text-xs uppercase tracking-wider text-primary">Checkout opens at launch</span>
+          )}
+        </div>
+        <p id="workshop-bottom-error" role="alert" hidden class="mt-3 text-sm text-red-500"></p>
+        <a class="mt-6 inline-flex font-mono text-xs text-text-muted hover:text-primary" href="/training/relay-operator-workshop/access/">Already purchased? Open or recover access →</a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { wireCheckoutButtons } from '../../../lib/checkout';
+  wireCheckoutButtons();
+  document.addEventListener('astro:after-swap', () => wireCheckoutButtons());
+</script>
+
+<style>
+  .workshop-grid {
+    background-image: linear-gradient(rgba(55, 208, 255, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(55, 208, 255, .07) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: radial-gradient(ellipse 80% 75% at 70% 45%, black, transparent);
+  }
+  .workshop-hero::after { content: ''; position: absolute; inset: auto 0 0; height: 7rem; background: linear-gradient(transparent, var(--color-surface)); pointer-events: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .workshop-proof__frame { animation: proof-float 9s ease-in-out infinite; }
+    .workshop-proof__glow { animation: proof-glow 7s ease-in-out infinite alternate; }
+  }
+  @keyframes proof-float { 50% { transform: translateY(-8px) rotate(.2deg); } }
+  @keyframes proof-glow { to { opacity: .55; transform: scale(1.08); } }
+</style>

@@ -10,6 +10,8 @@ import remarkCodeBlock from './src/lib/prose/remark-code-block.mjs';
 import rehypeTableScroll from './src/lib/products/rehype-table-scroll.mjs';
 import rehypeRelayShots from './src/lib/relay/rehype-relay-shots.mjs';
 import rehypeMemoInterstitial from './src/lib/relay/rehype-memo-interstitial.mjs';
+import rehypeRelayMemoLinks from './src/lib/relay/rehype-relay-memo-links.mjs';
+import staticDemoDirIndexDev from './src/lib/static-demo-dir-index.mjs';
 
 // Build a `pathname -> YYYY-MM-DD` map for sitemap <lastmod>. lastmod is the one
 // sitemap field Google actually uses to schedule crawls, so every value here must
@@ -112,6 +114,10 @@ function buildLastmodMap() {
     const d = freshestUnder(hub);
     if (d) map[hub] = d;
   }
+  // Training is a hand-authored product catalog rather than an Astro content
+  // collection. Its founding edition source revision is dated 2026-07-19.
+  map['/training/'] = '2026-07-19';
+  map['/training/relay-operator-workshop/'] = '2026-07-19';
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
   // so it tracks the freshest date across all of them.
   const relayFreshest = freshestUnder('/relay/');
@@ -122,34 +128,6 @@ function buildLastmodMap() {
   return map;
 }
 const LASTMOD = buildLastmodMap();
-
-// Dev-only fix: Astro's dev server (Vite) does not resolve directory index.html
-// for public/ subfolders, so the committed Arena demo (public/arena/demo/ — a
-// static multi-page app with clean /arena/demo/<tab>/ URLs, mirrored from
-// ainative.business) 404s at /arena/demo/ and every sub-route under `astro dev`.
-// This middleware rewrites those directory requests to their index.html BEFORE
-// Vite's static handler, so the demo is fully navigable locally with the SAME
-// clean URLs production uses. `apply: 'serve'` scopes it to dev; the build +
-// GitHub Pages already serve directory indexes, so production is untouched.
-function arenaDemoDirIndexDev() {
-  return {
-    name: 'arena-demo-dir-index-dev',
-    apply: 'serve',
-    configureServer(server) {
-      server.middlewares.use((req, _res, next) => {
-        if (req.url) {
-          const qi = req.url.indexOf('?');
-          const path = qi === -1 ? req.url : req.url.slice(0, qi);
-          const query = qi === -1 ? '' : req.url.slice(qi);
-          if (path.startsWith('/arena/demo/') && path.endsWith('/')) {
-            req.url = `${path}index.html${query}`;
-          }
-        }
-        next();
-      });
-    },
-  };
-}
 
 // https://astro.build/config
 export default defineConfig({
@@ -197,7 +175,7 @@ export default defineConfig({
   },
   markdown: {
     remarkPlugins: [remarkDirective, remarkAsciinema, remarkProofCta, remarkCodeBlock],
-    rehypePlugins: [rehypeTableScroll, rehypeRelayShots, rehypeMemoInterstitial],
+    rehypePlugins: [rehypeTableScroll, rehypeRelayShots, rehypeMemoInterstitial, rehypeRelayMemoLinks],
   },
   integrations: [
     sitemap({
@@ -207,7 +185,9 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/og/') &&
         !page.endsWith('/thanks/') &&
-        !page.endsWith('/sponsor/thanks/'),
+        !page.endsWith('/sponsor/thanks/') &&
+        !page.endsWith('/training/relay-operator-workshop/access/') &&
+        !page.endsWith('/training/relay-operator-workshop/refund/'),
       // Priority + changefreq hints. Search engines treat these as signals, not
       // directives, but they nudge crawl scheduling toward the pages that change.
       // lastmod (added below from real content dates) is the one Google weighs.
@@ -223,6 +203,12 @@ export default defineConfig({
         // (0.9) and crawl it weekly so the receipts wall stays fresh in the index.
         if (url === 'https://orionfold.com/proof/') {
           return { ...item, changefreq: 'weekly', priority: 0.9, lastmod };
+        }
+        if (url === 'https://orionfold.com/training/') {
+          return { ...item, changefreq: 'monthly', priority: 0.8, lastmod };
+        }
+        if (url.startsWith('https://orionfold.com/training/')) {
+          return { ...item, changefreq: 'monthly', priority: 0.8, lastmod };
         }
         // Receipts (A11): the gallery hub sits just under /proof/; each receipt
         // permalink is fresh, indexable evidence in its own right.
@@ -274,6 +260,9 @@ export default defineConfig({
     }),
   ],
   vite: {
-    plugins: [tailwindcss(), arenaDemoDirIndexDev()],
+    // Astro/Vite does not serve directory index.html files from public/ during
+    // development. Bridge both committed static demos to their production-clean
+    // URLs locally; GitHub Pages already handles these paths in production.
+    plugins: [tailwindcss(), staticDemoDirIndexDev()],
   },
 });

@@ -74,6 +74,10 @@ Runtime settings are the upstream control. If a run used the wrong path, the fix
 
 A careful review links three screens. Monitor tells you what happened. Tasks or Workflows tell you what business item changed. Costs tells you what usage was recorded. If those three screens disagree, treat that as a signal. Do not hide it in a report.
 
+Home can shorten the first pass. Needs attention surfaces failed, waiting, queued, and active work. Autonomous activity summarizes recent events without exposing raw provider payloads. Recent outputs points to retained results. The card links take you to Tasks, Monitor, and Documents for the full evidence.
+
+Dashboard Settings controls whether pricing coverage and provider readiness appear on Home. These modules start hidden, so turn them on when missing prices or runtime configuration are part of your regular review. Smart ordering can promote failures, urgency, recent activity, and recency, but the default Needs attention, Autonomous activity, and Recent outputs cards remain a stable top row while they are visible. If an urgent item exists inside a hidden module, Home shows a notice rather than silently losing the signal.
+
 ## What To Do When The State Looks Wrong
 
 If a run is missing from Monitor, check the task or workflow detail first. The work may have been created but not started.
@@ -87,6 +91,8 @@ If a task failed, keep the error text. A named failure can be fixed. A vague mem
 If costs look high, do not raise a budget immediately. First ask which customer, project, runtime, and workflow produced the spend.
 
 If a cost row shows blocked or failed work, read it as part of the story. A failed run can still have usage. A blocked run can still teach you that a limit worked. The point of Costs is not only to count success. It is to show the cost of attempts, stops, and retries too.
+
+If a Home module you rely on disappears, check Dashboard Settings before assuming the underlying records are gone. Confirm its visibility and then open the named destination screen. Home is a summary, while Monitor, Costs, Tasks, Workflows, and Documents remain the evidence surfaces.
 
 ## What This Changes In Daily Work
 

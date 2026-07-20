@@ -399,6 +399,18 @@ verify_jwt = false
 [functions.order-status]
 verify_jwt = false
 
+[functions.workshop-request]
+verify_jwt = false
+
+[functions.workshop-access]
+verify_jwt = false
+
+[functions.workshop-refund]
+verify_jwt = false
+
+[functions.relay-host-request]
+verify_jwt = false
+
 [functions.enquiry-submit]
 verify_jwt = false
 

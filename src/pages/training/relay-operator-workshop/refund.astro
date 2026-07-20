@@ -1,0 +1,39 @@
+---
+import PrivateLayout from '../../../layouts/PrivateLayout.astro';
+---
+<PrivateLayout title="Confirm workshop refund · Orionfold" description="Confirm and track your Relay Operator Workshop refund.">
+  <main class="grid min-h-screen place-items-center px-5 py-12">
+    <section class="w-full max-w-xl rounded-xl border border-border bg-surface-raised p-7 shadow-of sm:p-10">
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">14-day refund</p>
+      <h1 class="mt-4 text-3xl">Refund confirmation</h1>
+      <div id="refund-status" class="mt-6 rounded-lg border border-border bg-surface p-5 leading-relaxed text-text-muted" role="status" aria-live="polite">
+        Confirming your request…
+      </div>
+      <p class="mt-5 text-sm leading-relaxed text-text-dim">Access stays active while Stripe processes the refund. Only a successful Stripe refund revokes future playback and re-download.</p>
+      <a href="/training/relay-operator-workshop/access/" class="mt-7 inline-flex font-mono text-sm text-primary hover:underline">Return to access</a>
+    </section>
+  </main>
+</PrivateLayout>
+
+<script>
+  import { confirmWorkshopRefund, takeFragmentToken } from '../../../lib/workshop';
+  const token = takeFragmentToken();
+  const status = document.getElementById('refund-status');
+  const copy: Record<string, string> = {
+    pending: 'Your refund is processing. Your access remains active until Stripe confirms success.',
+    succeeded: 'Your refund succeeded. Future private playback and re-download are now closed.',
+    failed: 'The refund failed. Your workshop access remains active.',
+    canceled: 'The refund was canceled. Your workshop access remains active.',
+    late_review: 'This request arrived after the 14-day automatic window. No refund was submitted automatically.',
+    retryable: 'The refund could not be submitted yet. Your access remains active; retry this confirmation link.',
+    invalid: 'This confirmation link is invalid or expired. Start a new request from the access page.',
+  };
+  if (!token) {
+    if (status) status.textContent = copy.invalid;
+  } else {
+    confirmWorkshopRefund(token).then(({ data }) => {
+      const state = typeof data.state === 'string' ? data.state : 'retryable';
+      if (status) status.textContent = copy[state] || copy.retryable;
+    });
+  }
+</script>

@@ -1,0 +1,120 @@
+---
+import { RELAY_HOST, formatUsd } from '../../data/commerce';
+import { RELAY_HOST_LIVE } from '../../data/launch';
+
+const price = formatUsd(RELAY_HOST.amount);
+---
+
+<section id="get-relay-host" class="scroll-mt-24 px-6 py-16 sm:py-20">
+  <div class="managed-offer mx-auto max-w-5xl overflow-hidden rounded-3xl border border-primary/35 bg-primary/[0.05] shadow-xl shadow-primary/5">
+    <div class="grid lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div class="p-7 sm:p-10">
+        <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Relay Host license</p>
+        <h2 class="mt-3 text-balance text-3xl font-bold sm:text-4xl">One Host. Ten managed customer Cells.</h2>
+        <p class="mt-4 max-w-2xl leading-relaxed text-text-muted">
+          Buy the signed, offline-verifiable right to create and operate customer Cells through the
+          Relay Host Supervisor. Relay Core and the public Cell image remain free. Premium Packs stay separate.
+        </p>
+
+        <dl class="mt-7 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-xl border border-border/70 bg-surface/65 p-4">
+            <dt class="font-mono text-[0.62rem] uppercase tracking-wider text-text-dim">Capacity</dt>
+            <dd class="mt-2 text-sm font-medium text-text">{RELAY_HOST.hosts} Host · {RELAY_HOST.managedCells} managed Cells</dd>
+          </div>
+          <div class="rounded-xl border border-border/70 bg-surface/65 p-4">
+            <dt class="font-mono text-[0.62rem] uppercase tracking-wider text-text-dim">Delivery</dt>
+            <dd class="mt-2 text-sm font-medium text-text">Signed license by email · offline verification</dd>
+          </div>
+          <div class="rounded-xl border border-border/70 bg-surface/65 p-4">
+            <dt class="font-mono text-[0.62rem] uppercase tracking-wider text-text-dim">Updates and support</dt>
+            <dd class="mt-2 text-sm font-medium text-text">Forward Host updates · email support · no response-time SLA</dd>
+          </div>
+          <div class="rounded-xl border border-border/70 bg-surface/65 p-4">
+            <dt class="font-mono text-[0.62rem] uppercase tracking-wider text-text-dim">Refund</dt>
+            <dd class="mt-2 text-sm font-medium text-text">14 days · same-licensee replacement only</dd>
+          </div>
+        </dl>
+      </div>
+
+      <aside class="border-t border-primary/20 bg-surface/80 p-7 sm:p-10 lg:border-l lg:border-t-0">
+        <p class="font-display text-5xl font-bold text-primary">{price}</p>
+        <p class="mt-1 font-mono text-xs uppercase tracking-[0.18em] text-text-dim">per year</p>
+        <p class="mt-5 text-sm leading-relaxed text-text-muted">
+          Customer-owned infrastructure. No Orionfold hosting fee. Provider, model, storage and operator costs are separate.
+        </p>
+
+        {RELAY_HOST_LIVE ? (
+          <button
+            type="button"
+            data-checkout={RELAY_HOST.primary.lookupKey}
+            data-item="software:orionfold-relay-host"
+            data-error-target="relay-host-error"
+            class="of-primary-action mt-6 w-full justify-center text-center"
+          >Buy Relay Host · {price}/yr</button>
+        ) : (
+          <div class="mt-6 rounded-xl border border-primary/25 bg-primary/[0.06] p-4">
+            <p class="font-mono text-xs font-semibold uppercase tracking-wider text-primary">Launch gate in progress</p>
+            <p class="mt-2 text-sm leading-relaxed text-text-muted">
+              Checkout stays closed until Relay completes its customer-owned DigitalOcean deployment proof and publishes the Host release.
+            </p>
+          </div>
+        )}
+        <p id="relay-host-error" role="alert" hidden class="mt-2 font-mono text-xs text-red-500"></p>
+
+        <ul class="mt-6 space-y-2 text-sm text-text-muted">
+          <li>✓ Running Cells continue after lapse</li>
+          <li>✓ Export and recovery remain available</li>
+          <li>✓ Compatible critical-security fixes remain included</li>
+          <li>✓ New capacity and forward paid updates stop</li>
+        </ul>
+      </aside>
+    </div>
+
+    <details class="border-t border-border/70 px-7 py-6 sm:px-10">
+      <summary class="cursor-pointer text-sm font-medium text-primary">Already purchased? Email a fresh license link</summary>
+      <form id="relay-host-request" class="mt-4 flex max-w-xl flex-col gap-3 sm:flex-row">
+        <label class="sr-only" for="relay-host-email">Purchase email</label>
+        <input id="relay-host-email" name="email" type="email" required autocomplete="email" placeholder="Purchase email" class="min-w-0 flex-1 rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text" />
+        <input name="company" type="text" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+        <button type="submit" class="rounded-full border border-primary/40 px-5 py-3 font-mono text-xs font-semibold tracking-wider text-primary hover:bg-primary/10 disabled:opacity-60">Email a fresh link</button>
+      </form>
+      <p id="relay-host-request-status" class="mt-3 text-sm text-text-muted" role="status"></p>
+    </details>
+  </div>
+</section>
+
+<script>
+  const bindRelayHostRequest = () => {
+    const form = document.querySelector<HTMLFormElement>('#relay-host-request');
+    if (!form || form.dataset.bound === 'true') return;
+    form.dataset.bound = 'true';
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const status = document.querySelector<HTMLElement>('#relay-host-request-status');
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const data = new FormData(form);
+      if (button) button.disabled = true;
+      if (status) status.textContent = 'Sending…';
+      try {
+        await fetch('https://orionfold.supabase.co/functions/v1/relay-host-request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: data.get('email'),
+            company: data.get('company'),
+            requestId: crypto.randomUUID(),
+          }),
+        });
+        if (status) status.textContent = 'If an eligible license exists, a fresh link is on its way.';
+        form.reset();
+      } catch {
+        if (status) status.textContent = 'Could not connect. Please try again.';
+      } finally {
+        if (button) button.disabled = false;
+      }
+    });
+  };
+
+  bindRelayHostRequest();
+  document.addEventListener('astro:after-swap', bindRelayHostRequest);
+</script>

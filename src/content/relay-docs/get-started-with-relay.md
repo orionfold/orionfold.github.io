@@ -60,14 +60,17 @@ What you should notice:
 
 ![Relay Home screen with seeded work, tasks, and operating panels](relay-shot:home-cockpit)
 
-This figure is the opening operating picture. The top rail shows host and runtime state. The dashboard message says there is running work, active workflows, pending review, and a failed task. The left panel names work that needs attention. The right panel shows recent agent activity. A careful operator reads those states before starting anything new.
+This figure is the opening operating picture. The dashboard puts Needs attention, Autonomous activity, and Recent outputs in a stable top row. The cards below use a responsive masonry layout so shorter modules do not leave large empty gaps on wider screens. Each card action names the screen it opens, such as Tasks, Monitor, or Documents.
 
-The details matter. "High-Cost Research Sweep" is failed. "CRE Renewal Decision Engine" is active. "Approve refund-policy reply" is queued. These labels tell you that Relay is tracking business work with state. If you ignore the labels and start another run, you may add noise instead of solving the next problem.
+Read the content, not only the card count. Needs attention ranks failed, active, queued, paused, and draft work so the next operator decision stays visible. Autonomous activity turns recent events into readable summaries instead of exposing raw provider payloads. Recent outputs points to retained documents and task results. Recently launched provides direct links to new capabilities such as the Operator Workshop and semantic table views.
+
+The remaining modules depend on local state and your settings. Installed Packs and apps, project progress, provider readiness, pricing coverage, activation progress, and an active workshop can appear when relevant and enabled. Smart ordering uses deterministic local signals such as urgency, recent activity, failures, and recency. It does not ask a model to rearrange the page.
 
 Use the Home screen to answer four questions:
 
 - What needs attention?
 - Which tasks or workflows are active?
+- Which retained outputs or recent launches deserve review?
 - Where can I jump next?
 - Does anything look stale or blocked?
 
@@ -82,11 +85,14 @@ What you should see:
 - Settings summary gives a quick account of the local instance.
 - License shows saved license state and pack access.
 - Runtime shows which model paths Relay can use.
+- Dashboard lets you show or hide Home modules, control smart ordering, and restore defaults.
 - Anchors and panels should move you to the right setting without losing context.
 
 ![Settings summary with local instance controls](relay-shot:settings-summary)
 
 The Settings summary changes the question from "what is happening" to "what rules apply?" In a real workspace, this is where you check dev mode, license state, runtime configuration, budget controls, permissions, and other local setup signals.
+
+Open the Dashboard section when Home is too busy or when a module you need is missing. Turning off a card hides the card, not the underlying work. If a hidden module contains unresolved urgent items, Home shows a notice and links you back to Dashboard Settings. Keep Needs attention visible unless you have another reliable review habit.
 
 Next, open Runtime. Runtime choice can affect chat, task execution, workflow steps, and AI-assist work unless a more specific setting overrides it.
 

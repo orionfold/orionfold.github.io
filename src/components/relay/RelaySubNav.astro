@@ -15,7 +15,7 @@
 // the DS if used for navigation.
 interface Props {
   // Which slot is the current page: 'overview' (the /relay/ hub) | 'docs' | ...
-  active?: 'overview' | 'demo' | 'docs' | 'api' | 'memos';
+  active?: 'overview' | 'host' | 'demo' | 'docs' | 'api' | 'memos';
   class?: string;
 }
 const { active = 'overview', class: className } = Astro.props;
@@ -24,6 +24,7 @@ const { active = 'overview', class: className } = Astro.props;
 // first as the hub anchor. `live` gates whether the slot is a clickable link.
 const slots = [
   { key: 'overview', label: 'Overview', href: '/relay/', live: true },
+  { key: 'host', label: 'Host', href: '/relay/host/', live: true },
   { key: 'demo', label: 'Demo', href: '/relay/demo/', live: true },
   { key: 'docs', label: 'Docs', href: '/relay/docs/', live: true },
   { key: 'api', label: 'API', href: '/relay/api/', live: true },

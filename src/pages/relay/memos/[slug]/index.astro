@@ -1,5 +1,5 @@
 ---
-// /relay/memos/<slug>/ — one Relay Packs memo (Rail B publish, _RELAY #17).
+// /relay/memos/<slug>/ — one source-owned Relay memo.
 // Renders the verbatim markdown body; the inline <figure class="fn-diagram">
 // SVG flows through untouched (theme-reactive via the global --svg-* tokens),
 // and the mid-essay CTA is mounted into the [data-memo-interstitial-slot] div
@@ -16,22 +16,22 @@ import RelaySubNav from '../../../../components/relay/RelaySubNav.astro';
 import RelayCtaBand from '../../../../components/relay/RelayCtaBand.astro';
 import { ogMeta } from '../../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../../data/seo';
-import { orderedMemos, memoSignatureHtml } from '../../../../lib/relay/memos.mjs';
+import { memoNeighbors, memoSignatureHtml, orderedMemos } from '../../../../lib/relay/memos.mjs';
 
 export async function getStaticPaths() {
   const memos = orderedMemos(await getCollection('memos'));
-  return memos.map((memo, i) => ({
-    params: { slug: memo.id },
-    props: {
-      memo,
-      prev: i > 0 ? memos[i - 1] : null,
-      next: i < memos.length - 1 ? memos[i + 1] : null,
-    },
-  }));
+  return memos.map((memo) => {
+    const { prev, next } = memoNeighbors(memos, memo.id);
+    return { params: { slug: memo.id }, props: { memo, prev, next } };
+  });
 }
 
 type Entry = CollectionEntry<'memos'>;
-const { memo, prev, next } = Astro.props as { memo: Entry; prev: Entry | null; next: Entry | null };
+const { memo, prev, next } = Astro.props as {
+  memo: Entry;
+  prev: Entry | null;
+  next: Entry | null;
+};
 const { Content } = await render(memo);
 const { title, summary, series, date, difficulty } = memo.data;
 
@@ -42,6 +42,20 @@ const heroSvg = memoSignatureHtml(memo);
 
 const og = ogMeta('/relay/');
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const isHostSeries = series === 'Relay Host & Cells';
+const cta = isHostSeries
+  ? {
+      kicker: 'One Host. Independent Cells. Honest boundaries.',
+      line: 'Relay Core and the public Cell image stay free. Relay Host adds managed lifecycle authority within signed capacity, and remains launch-dark while provider conformance finishes.',
+      href: '/relay/host/',
+      label: 'Explore Relay Host',
+    }
+  : {
+      kicker: 'Own the packs in this series.',
+      line: undefined,
+      href: '/relay/',
+      label: 'Explore Orionfold Relay',
+    };
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -70,10 +84,10 @@ const breadcrumbSchema = {
 };
 ---
 <Layout
-  title={`${title} · Relay Packs · Orionfold`}
+  title={`${title} · ${series} · Orionfold`}
   description={summary}
   ogImage={og.image}
-  ogImageAlt={`${title} · Orionfold Relay Packs`}
+  ogImageAlt={`${title} · Orionfold ${series}`}
   jsonLd={[articleSchema, breadcrumbSchema]}
 >
   <Nav />
@@ -88,6 +102,11 @@ const breadcrumbSchema = {
       <p class="mt-8 font-mono text-sm text-primary">{series}</p>
       <h1 class="mt-2 text-3xl leading-tight sm:text-4xl">{title}</h1>
       <p class="mt-4 text-base leading-relaxed text-text-muted">{summary}</p>
+      {memo.data.status !== 'published' && (
+        <p class="mt-4 inline-flex rounded-full border border-border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-text-dim">
+          Editorial status · {memo.data.status}
+        </p>
+      )}
 
       {heroSvg && (
         <figure class="memo-hero mt-8 overflow-hidden rounded-2xl border border-border/70 bg-surface/40" set:html={heroSvg} />
@@ -107,8 +126,10 @@ const breadcrumbSchema = {
       <div id="memo-interstitial-source" hidden>
         <RelayCtaBand
           variant="interstitial"
-          kicker="Own the packs in this series."
-          line="Every pack you read about here is one you install and run offline, on your own machine. The engine is free and open. A license unlocks the premium packs and keeps them yours."
+          kicker={cta.kicker}
+          line={cta.line}
+          href={cta.href}
+          label={cta.label}
         />
       </div>
       <script is:inline>
@@ -150,7 +171,13 @@ const breadcrumbSchema = {
     </div>
   </main>
 
-  <RelayCtaBand variant="footer" kicker="Run your AI team from one place." />
+  <RelayCtaBand
+    variant="footer"
+    kicker={cta.kicker}
+    line={cta.line}
+    href={cta.href}
+    label={cta.label}
+  />
   <Footer />
 </Layout>
 

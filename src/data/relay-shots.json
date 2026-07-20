@@ -1,148 +1,346 @@
 {
   "agents-list": {
-    "light": "/relay/shots/agents-list/light.5ca2895f.webp",
-    "dark": "/relay/shots/agents-list/dark.4ee0571d.webp",
+    "light": {
+      "src": "/relay/shots/agents-list/light-1280.8f958562.webp",
+      "srcset": "/relay/shots/agents-list/light-720.edb2f0f0.webp 720w, /relay/shots/agents-list/light-1280.8f958562.webp 1280w, /relay/shots/agents-list/light-1600.4207cac7.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/agents-list/dark-1280.c492ddaf.webp",
+      "srcset": "/relay/shots/agents-list/dark-720.c6154f29.webp 720w, /relay/shots/agents-list/dark-1280.c492ddaf.webp 1280w, /relay/shots/agents-list/dark-1600.a5e04613.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Agents list",
     "area": "agents"
   },
   "apps-list": {
-    "light": "/relay/shots/apps-list/light.0205d0bb.webp",
-    "dark": "/relay/shots/apps-list/dark.a07e0df5.webp",
+    "light": {
+      "src": "/relay/shots/apps-list/light-1280.6aa96593.webp",
+      "srcset": "/relay/shots/apps-list/light-720.2b092dc0.webp 720w, /relay/shots/apps-list/light-1280.6aa96593.webp 1280w, /relay/shots/apps-list/light-1600.673d1c3c.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/apps-list/dark-1280.58121715.webp",
+      "srcset": "/relay/shots/apps-list/dark-720.470861d5.webp 720w, /relay/shots/apps-list/dark-1280.58121715.webp 1280w, /relay/shots/apps-list/dark-1600.4f58425f.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Installed apps list",
     "area": "apps"
   },
   "blueprints-gallery": {
-    "light": "/relay/shots/blueprints-gallery/light.2da8cab8.webp",
-    "dark": "/relay/shots/blueprints-gallery/dark.c37c4545.webp",
+    "light": {
+      "src": "/relay/shots/blueprints-gallery/light-1280.83c26494.webp",
+      "srcset": "/relay/shots/blueprints-gallery/light-720.d668e1bd.webp 720w, /relay/shots/blueprints-gallery/light-1280.83c26494.webp 1280w, /relay/shots/blueprints-gallery/light-1600.f21b464e.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/blueprints-gallery/dark-1280.bd962155.webp",
+      "srcset": "/relay/shots/blueprints-gallery/dark-720.6ba189d7.webp 720w, /relay/shots/blueprints-gallery/dark-1280.bd962155.webp 1280w, /relay/shots/blueprints-gallery/dark-1600.46bedfe0.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Blueprint gallery",
     "area": "workflows"
   },
   "chat-workspace": {
-    "light": "/relay/shots/chat-workspace/light.e001e654.webp",
-    "dark": "/relay/shots/chat-workspace/dark.fa347843.webp",
+    "light": {
+      "src": "/relay/shots/chat-workspace/light-1280.056adef9.webp",
+      "srcset": "/relay/shots/chat-workspace/light-720.ec11525b.webp 720w, /relay/shots/chat-workspace/light-1280.056adef9.webp 1280w, /relay/shots/chat-workspace/light-1600.93830790.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/chat-workspace/dark-1280.b3bd6a12.webp",
+      "srcset": "/relay/shots/chat-workspace/dark-720.17cef6a1.webp 720w, /relay/shots/chat-workspace/dark-1280.b3bd6a12.webp 1280w, /relay/shots/chat-workspace/dark-1600.a002a01e.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Chat workspace",
     "area": "chat"
   },
   "costs": {
-    "light": "/relay/shots/costs/light.487e901b.webp",
-    "dark": "/relay/shots/costs/dark.13b375a8.webp",
+    "light": {
+      "src": "/relay/shots/costs/light-1280.cf48a877.webp",
+      "srcset": "/relay/shots/costs/light-720.3618ec4a.webp 720w, /relay/shots/costs/light-1280.cf48a877.webp 1280w, /relay/shots/costs/light-1600.c67fea57.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/costs/dark-1280.3de807fb.webp",
+      "srcset": "/relay/shots/costs/dark-720.993d8409.webp 720w, /relay/shots/costs/dark-1280.3de807fb.webp 1280w, /relay/shots/costs/dark-1600.ba95ed2a.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Cost and Usage",
     "area": "costs"
   },
   "customers-list": {
-    "light": "/relay/shots/customers-list/light.721d687c.webp",
-    "dark": "/relay/shots/customers-list/dark.57f64b06.webp",
+    "light": {
+      "src": "/relay/shots/customers-list/light-1280.596392ee.webp",
+      "srcset": "/relay/shots/customers-list/light-720.0a1efa57.webp 720w, /relay/shots/customers-list/light-1280.596392ee.webp 1280w, /relay/shots/customers-list/light-1600.51a4d3ae.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/customers-list/dark-1280.f134c4fc.webp",
+      "srcset": "/relay/shots/customers-list/dark-720.bd2c23c9.webp 720w, /relay/shots/customers-list/dark-1280.f134c4fc.webp 1280w, /relay/shots/customers-list/dark-1600.5106f819.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Customer book",
     "area": "customers"
   },
   "home-cockpit": {
-    "light": "/relay/shots/home-cockpit/light.5bbe288e.webp",
-    "dark": "/relay/shots/home-cockpit/dark.96f1730b.webp",
+    "light": {
+      "src": "/relay/shots/home-cockpit/light-1280.2a69a450.webp",
+      "srcset": "/relay/shots/home-cockpit/light-720.b4974680.webp 720w, /relay/shots/home-cockpit/light-1280.2a69a450.webp 1280w, /relay/shots/home-cockpit/light-1600.c09eba29.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/home-cockpit/dark-1280.706519ce.webp",
+      "srcset": "/relay/shots/home-cockpit/dark-720.ecb1be99.webp 720w, /relay/shots/home-cockpit/dark-1280.706519ce.webp 1280w, /relay/shots/home-cockpit/dark-1600.96a24339.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Home cockpit",
     "area": "home"
   },
   "inbox-approvals": {
-    "light": "/relay/shots/inbox-approvals/light.2d430330.webp",
-    "dark": "/relay/shots/inbox-approvals/dark.783d4298.webp",
+    "light": {
+      "src": "/relay/shots/inbox-approvals/light-1280.7fb294a1.webp",
+      "srcset": "/relay/shots/inbox-approvals/light-720.af9d6468.webp 720w, /relay/shots/inbox-approvals/light-1280.7fb294a1.webp 1280w, /relay/shots/inbox-approvals/light-1600.ddf9667a.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/inbox-approvals/dark-1280.bec836ff.webp",
+      "srcset": "/relay/shots/inbox-approvals/dark-720.6ac96dab.webp 720w, /relay/shots/inbox-approvals/dark-1280.bec836ff.webp 1280w, /relay/shots/inbox-approvals/dark-1600.345ac1fb.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Inbox approvals",
     "area": "inbox"
   },
   "monitor": {
-    "light": "/relay/shots/monitor/light.cfa2907d.webp",
-    "dark": "/relay/shots/monitor/dark.560589e0.webp",
+    "light": {
+      "src": "/relay/shots/monitor/light-1280.121ab721.webp",
+      "srcset": "/relay/shots/monitor/light-720.e5f0da20.webp 720w, /relay/shots/monitor/light-1280.121ab721.webp 1280w, /relay/shots/monitor/light-1600.d3c54293.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/monitor/dark-1280.e9530ade.webp",
+      "srcset": "/relay/shots/monitor/dark-720.cc5685f4.webp 720w, /relay/shots/monitor/dark-1280.e9530ade.webp 1280w, /relay/shots/monitor/dark-1600.39971be9.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Monitor",
     "area": "monitor"
   },
   "packs-gallery": {
-    "light": "/relay/shots/packs-gallery/light.bc07c6d7.webp",
-    "dark": "/relay/shots/packs-gallery/dark.aa721c5b.webp",
+    "light": {
+      "src": "/relay/shots/packs-gallery/light-1280.28c83a9e.webp",
+      "srcset": "/relay/shots/packs-gallery/light-720.69ded9fb.webp 720w, /relay/shots/packs-gallery/light-1280.28c83a9e.webp 1280w, /relay/shots/packs-gallery/light-1600.9c3a3964.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/packs-gallery/dark-1280.7f92fd03.webp",
+      "srcset": "/relay/shots/packs-gallery/dark-720.3e07a4a2.webp 720w, /relay/shots/packs-gallery/dark-1280.7f92fd03.webp 1280w, /relay/shots/packs-gallery/dark-1600.f4211df6.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Packs gallery",
     "area": "packs"
   },
   "projects-list": {
-    "light": "/relay/shots/projects-list/light.a5307460.webp",
-    "dark": "/relay/shots/projects-list/dark.ae7e9845.webp",
+    "light": {
+      "src": "/relay/shots/projects-list/light-1280.c663d860.webp",
+      "srcset": "/relay/shots/projects-list/light-720.ca04222d.webp 720w, /relay/shots/projects-list/light-1280.c663d860.webp 1280w, /relay/shots/projects-list/light-1600.da588065.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/projects-list/dark-1280.97cb17df.webp",
+      "srcset": "/relay/shots/projects-list/dark-720.2164881b.webp 720w, /relay/shots/projects-list/dark-1280.97cb17df.webp 1280w, /relay/shots/projects-list/dark-1600.a28a5ea5.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Projects list",
     "area": "projects"
   },
   "schedules-list": {
-    "light": "/relay/shots/schedules-list/light.3a692333.webp",
-    "dark": "/relay/shots/schedules-list/dark.d98a1130.webp",
+    "light": {
+      "src": "/relay/shots/schedules-list/light-1280.0e3e2414.webp",
+      "srcset": "/relay/shots/schedules-list/light-720.ac131c56.webp 720w, /relay/shots/schedules-list/light-1280.0e3e2414.webp 1280w, /relay/shots/schedules-list/light-1600.14438821.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/schedules-list/dark-1280.936cd9c1.webp",
+      "srcset": "/relay/shots/schedules-list/dark-720.6c180e39.webp 720w, /relay/shots/schedules-list/dark-1280.936cd9c1.webp 1280w, /relay/shots/schedules-list/dark-1600.7a5af184.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Schedules list",
     "area": "schedules"
   },
   "schemas-list": {
-    "light": "/relay/shots/schemas-list/light.3cc7e936.webp",
-    "dark": "/relay/shots/schemas-list/dark.74f5f907.webp",
+    "light": {
+      "src": "/relay/shots/schemas-list/light-1280.6d474891.webp",
+      "srcset": "/relay/shots/schemas-list/light-720.c8e4e8e0.webp 720w, /relay/shots/schemas-list/light-1280.6d474891.webp 1280w, /relay/shots/schemas-list/light-1600.a96ba47a.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/schemas-list/dark-1280.de949ff2.webp",
+      "srcset": "/relay/shots/schemas-list/dark-720.e7d90b08.webp 720w, /relay/shots/schemas-list/dark-1280.de949ff2.webp 1280w, /relay/shots/schemas-list/dark-1600.dc52685f.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Schemas list",
     "area": "schemas"
   },
   "settings-license": {
-    "light": "/relay/shots/settings-license/light.7208a4b2.webp",
-    "dark": "/relay/shots/settings-license/dark.643966ed.webp",
+    "light": {
+      "src": "/relay/shots/settings-license/light-1280.86ec45bc.webp",
+      "srcset": "/relay/shots/settings-license/light-720.73dd386e.webp 720w, /relay/shots/settings-license/light-1280.86ec45bc.webp 1280w, /relay/shots/settings-license/light-1600.c36cea20.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/settings-license/dark-1280.8e08f0d4.webp",
+      "srcset": "/relay/shots/settings-license/dark-720.af9c11f7.webp 720w, /relay/shots/settings-license/dark-1280.8e08f0d4.webp 1280w, /relay/shots/settings-license/dark-1600.792d2531.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "License settings",
     "area": "settings"
   },
-  "settings-runtime": {
-    "light": "/relay/shots/settings-runtime/light.5677130d.webp",
-    "dark": "/relay/shots/settings-runtime/dark.643966ed.webp",
+  "settings-cell-boundary": {
+    "light": {
+      "src": "/relay/shots/settings-cell-boundary/light-1280.cf46b354.webp",
+      "srcset": "/relay/shots/settings-cell-boundary/light-720.434d7845.webp 720w, /relay/shots/settings-cell-boundary/light-1280.cf46b354.webp 1280w, /relay/shots/settings-cell-boundary/light-1600.89e9f6e5.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/settings-cell-boundary/dark-1280.626b3d6f.webp",
+      "srcset": "/relay/shots/settings-cell-boundary/dark-720.a9b0682a.webp 720w, /relay/shots/settings-cell-boundary/dark-1280.626b3d6f.webp 1280w, /relay/shots/settings-cell-boundary/dark-1600.46c0768c.webp 1600w"
+    },
     "ratio": "1440 / 1100",
-    "alt": "Runtime settings",
+    "width": 1440,
+    "height": 1100,
+    "alt": "Relay Cell boundary",
+    "area": "settings"
+  },
+  "settings-host-deployment": {
+    "light": {
+      "src": "/relay/shots/settings-host-deployment/light-1280.d39d4278.webp",
+      "srcset": "/relay/shots/settings-host-deployment/light-720.105c7b85.webp 720w, /relay/shots/settings-host-deployment/light-1280.d39d4278.webp 1280w, /relay/shots/settings-host-deployment/light-1600.5b0e13df.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/settings-host-deployment/dark-1280.39e11a7b.webp",
+      "srcset": "/relay/shots/settings-host-deployment/dark-720.fcd93663.webp 720w, /relay/shots/settings-host-deployment/dark-1280.39e11a7b.webp 1280w, /relay/shots/settings-host-deployment/dark-1600.15ff4301.webp 1600w"
+    },
+    "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
+    "alt": "Relay Host deployment",
+    "area": "settings"
+  },
+  "settings-runtime": {
+    "light": {
+      "src": "/relay/shots/settings-runtime/light-1280.f01a36da.webp",
+      "srcset": "/relay/shots/settings-runtime/light-720.7f9ee06e.webp 720w, /relay/shots/settings-runtime/light-1280.f01a36da.webp 1280w, /relay/shots/settings-runtime/light-1600.b2528218.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/settings-runtime/dark-1280.8a6144f4.webp",
+      "srcset": "/relay/shots/settings-runtime/dark-720.ac633284.webp 720w, /relay/shots/settings-runtime/dark-1280.8a6144f4.webp 1280w, /relay/shots/settings-runtime/dark-1600.8e73c10d.webp 1600w"
+    },
+    "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
+    "alt": "Providers and runtimes settings",
     "area": "settings"
   },
   "settings-summary": {
-    "light": "/relay/shots/settings-summary/light.41912cbf.webp",
-    "dark": "/relay/shots/settings-summary/dark.b516d757.webp",
+    "light": {
+      "src": "/relay/shots/settings-summary/light-1280.977e67c0.webp",
+      "srcset": "/relay/shots/settings-summary/light-720.302eea6e.webp 720w, /relay/shots/settings-summary/light-1280.977e67c0.webp 1280w, /relay/shots/settings-summary/light-1600.cbba733b.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/settings-summary/dark-1280.abfc3d78.webp",
+      "srcset": "/relay/shots/settings-summary/dark-720.cb191383.webp 720w, /relay/shots/settings-summary/dark-1280.abfc3d78.webp 1280w, /relay/shots/settings-summary/dark-1600.2a0120f8.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Settings summary",
     "area": "settings"
   },
   "support-queue-table": {
-    "light": "/relay/shots/support-queue-table/light.51fae6f3.webp",
-    "dark": "/relay/shots/support-queue-table/dark.44ee1815.webp",
+    "light": {
+      "src": "/relay/shots/support-queue-table/light-1280.3e578b1c.webp",
+      "srcset": "/relay/shots/support-queue-table/light-720.e7e27b0f.webp 720w, /relay/shots/support-queue-table/light-1280.3e578b1c.webp 1280w, /relay/shots/support-queue-table/light-1600.fc2476f7.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/support-queue-table/dark-1280.29398551.webp",
+      "srcset": "/relay/shots/support-queue-table/dark-720.342f0385.webp 720w, /relay/shots/support-queue-table/dark-1280.29398551.webp 1280w, /relay/shots/support-queue-table/dark-1600.8b9643d8.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Support Queue table",
     "area": "tables"
   },
   "tables-list": {
-    "light": "/relay/shots/tables-list/light.394c911e.webp",
-    "dark": "/relay/shots/tables-list/dark.26b92339.webp",
+    "light": {
+      "src": "/relay/shots/tables-list/light-1280.f09d1532.webp",
+      "srcset": "/relay/shots/tables-list/light-720.52fc6b3d.webp 720w, /relay/shots/tables-list/light-1280.f09d1532.webp 1280w, /relay/shots/tables-list/light-1600.f8ba098e.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/tables-list/dark-1280.f1d75098.webp",
+      "srcset": "/relay/shots/tables-list/dark-720.9b2ae13c.webp 720w, /relay/shots/tables-list/dark-1280.f1d75098.webp 1280w, /relay/shots/tables-list/dark-1600.b94eb02a.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Tables list",
     "area": "tables"
   },
   "tasks-board": {
-    "light": "/relay/shots/tasks-board/light.a10a95dd.webp",
-    "dark": "/relay/shots/tasks-board/dark.d82d16e4.webp",
+    "light": {
+      "src": "/relay/shots/tasks-board/light-1280.3cdbfece.webp",
+      "srcset": "/relay/shots/tasks-board/light-720.1a8e90d9.webp 720w, /relay/shots/tasks-board/light-1280.3cdbfece.webp 1280w, /relay/shots/tasks-board/light-1600.339383d3.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/tasks-board/dark-1280.cc925f6d.webp",
+      "srcset": "/relay/shots/tasks-board/dark-720.6574e7ba.webp 720w, /relay/shots/tasks-board/dark-1280.cc925f6d.webp 1280w, /relay/shots/tasks-board/dark-1600.384e4f22.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Tasks board and table",
     "area": "tasks"
   },
   "web-designer-app": {
-    "light": "/relay/shots/web-designer-app/light.60d7fbd6.webp",
-    "dark": "/relay/shots/web-designer-app/dark.9ea4d568.webp",
+    "light": {
+      "src": "/relay/shots/web-designer-app/light-1280.bf33905c.webp",
+      "srcset": "/relay/shots/web-designer-app/light-720.011d322b.webp 720w, /relay/shots/web-designer-app/light-1280.bf33905c.webp 1280w, /relay/shots/web-designer-app/light-1600.93086751.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/web-designer-app/dark-1280.998db288.webp",
+      "srcset": "/relay/shots/web-designer-app/dark-720.88ebafe9.webp 720w, /relay/shots/web-designer-app/dark-1280.998db288.webp 1280w, /relay/shots/web-designer-app/dark-1600.19b702bb.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Web Designer app",
     "area": "publisher"
   },
   "workflows-list": {
-    "light": "/relay/shots/workflows-list/light.59775f2a.webp",
-    "dark": "/relay/shots/workflows-list/dark.d190dbdb.webp",
+    "light": {
+      "src": "/relay/shots/workflows-list/light-1280.19a44fac.webp",
+      "srcset": "/relay/shots/workflows-list/light-720.f446dc02.webp 720w, /relay/shots/workflows-list/light-1280.19a44fac.webp 1280w, /relay/shots/workflows-list/light-1600.526eb69e.webp 1600w"
+    },
+    "dark": {
+      "src": "/relay/shots/workflows-list/dark-1280.efbefc2c.webp",
+      "srcset": "/relay/shots/workflows-list/dark-720.145c4c14.webp 720w, /relay/shots/workflows-list/dark-1280.efbefc2c.webp 1280w, /relay/shots/workflows-list/dark-1600.a7e077eb.webp 1600w"
+    },
     "ratio": "1440 / 1100",
+    "width": 1440,
+    "height": 1100,
     "alt": "Workflow list",
     "area": "workflows"
   }

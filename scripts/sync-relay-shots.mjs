@@ -1,8 +1,8 @@
 // scripts/sync-relay-shots.mjs
 // Manifest-driven selective sync of Relay light/dark screenshot pairs.
 // Reads the strategy-owned _ASSETS/screenshots corpus READ-ONLY, resolves an
-// allow-list of ids to matched pairs, and (in the CLI path) optimizes each to
-// WebP + emits src/data/relay-shots.json. Fails loud on a half-pair or an
+// allow-list of ids to matched pairs, emits responsive text-tuned WebPs, and
+// writes src/data/relay-shots.json. Fails loud on a half-pair or an
 // allow-listed id missing from the manifest. The /relay/demo/ bundle is NOT a
 // themed-pair target and never appears here (demo captures are single-theme).
 import { readFileSync } from 'node:fs';
@@ -13,20 +13,30 @@ import sharp from 'sharp';
 
 const DEFAULT_CORPUS = new URL('file:///Users/manavsehgal/orionfold/relay/_ASSETS/screenshots/');
 
-const MAX_WIDTH = 1280; // shots render <= 32rem (~512 CSS px) -> 1024 @2x; 1280 gives headroom
-const WEBP_QUALITY = 82;
+// 720 serves a 390px phone at ~2x; 1280 covers normal 1x desktop cards; 1600
+// preserves a true ~2x text edge in the 48rem guide column. Responsive srcset
+// plus native loading="lazy" means the sharper desktop asset does not become a
+// mobile or initial-page penalty.
+const WIDTHS = [720, 1280, 1600];
+const FALLBACK_WIDTH = 1280;
+const WEBP_QUALITY = 86;
 const PUBLIC_DIR = new URL('../public/relay/shots/', import.meta.url);
 
-export function webpName(theme, buffer) {
+export function webpName(theme, width, buffer) {
   const hash = createHash('sha256').update(buffer).digest('hex').slice(0, 8);
-  return `${theme}.${hash}.webp`;
+  return `${theme}-${width}.${hash}.webp`;
 }
 
-/** Optimize one source PNG to a downscaled WebP buffer. */
-async function toWebp(absPngUrl) {
+/** Optimize one source PNG for crisp UI text at one responsive width. */
+async function toWebp(absPngUrl, width) {
   return sharp(fileURLToPath(absPngUrl))
-    .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-    .webp({ quality: WEBP_QUALITY })
+    .resize({ width, withoutEnlargement: true, kernel: 'lanczos3' })
+    .webp({
+      quality: WEBP_QUALITY,
+      preset: 'text',
+      smartSubsample: true,
+      effort: 6,
+    })
     .toBuffer();
 }
 
@@ -37,12 +47,28 @@ async function syncPair(pair, corpus) {
   mkdirSync(dir, { recursive: true });
   const out = {};
   for (const theme of ['light', 'dark']) {
-    const buf = await toWebp(new URL(pair[theme].path, corpus));
-    const name = webpName(theme, buf);
-    writeFileSync(new URL(name, dir), buf);
-    out[theme] = `/relay/shots/${pair.id}/${name}`;
+    const variants = [];
+    for (const width of WIDTHS) {
+      const buf = await toWebp(new URL(pair[theme].path, corpus), width);
+      const name = webpName(theme, width, buf);
+      writeFileSync(new URL(name, dir), buf);
+      variants.push({ width, src: `/relay/shots/${pair.id}/${name}` });
+    }
+    const fallback = variants.find((variant) => variant.width === FALLBACK_WIDTH) ?? variants.at(-1);
+    out[theme] = {
+      src: fallback.src,
+      srcset: variants.map((variant) => `${variant.src} ${variant.width}w`).join(', '),
+    };
   }
-  return { light: out.light, dark: out.dark, ratio: pair.ratio, alt: pair.alt, area: pair.area };
+  return {
+    light: out.light,
+    dark: out.dark,
+    ratio: pair.ratio,
+    width: pair.width,
+    height: pair.height,
+    alt: pair.alt,
+    area: pair.area,
+  };
 }
 
 /** Remove public/relay/shots/<id> dirs not in the kept set. */
@@ -77,7 +103,16 @@ export function resolvePairs(manifest, allowList) {
       continue;
     }
     const vs = rec.viewportSize || { width: 16, height: 10 };
-    pairs.push({ id, area: rec.area, alt: rec.alt, ratio: `${vs.width} / ${vs.height}`, light: rec.themes.light, dark: rec.themes.dark });
+    pairs.push({
+      id,
+      area: rec.area,
+      alt: rec.alt,
+      ratio: `${vs.width} / ${vs.height}`,
+      width: vs.width,
+      height: vs.height,
+      light: rec.themes.light,
+      dark: rec.themes.dark,
+    });
   }
   return { pairs, errors };
 }

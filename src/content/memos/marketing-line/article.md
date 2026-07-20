@@ -62,11 +62,14 @@ This memo is the cross-domain composition proof of the *Relay Packs* series. The
         <stop offset="100%" stop-color="var(--svg-accent-green)" stop-opacity="0"/>
       </radialGradient>
     </defs>
+
     <ellipse cx="380" cy="150" rx="120" ry="130" fill="url(#ml-glow)"/>
+
     <g class="fn-diagram__edges">
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 250 150 L 344 150" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 416 150 L 510 150" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
     </g>
+
     <g class="fn-diagram__flow">
       <circle class="fn-diagram__flow" cx="250" cy="150" r="4" fill="var(--svg-accent-green)">
         <animateMotion begin="1.5s" dur="2.4s" repeatCount="indefinite" path="M 0 0 L 94 0"/>
@@ -75,25 +78,30 @@ This memo is the cross-domain composition proof of the *Relay Packs* series. The
         <animateMotion begin="1.9s" dur="2.4s" repeatCount="indefinite" path="M 0 0 L -94 0"/>
       </circle>
     </g>
+
     <g class="fn-diagram__nodes">
       <rect x="40" y="96" width="210" height="108" rx="10" fill="url(#ml-crm)" stroke="var(--color-primary)" stroke-width="1.5"/>
       <rect x="510" y="96" width="210" height="108" rx="10" fill="url(#ml-social)" stroke="var(--svg-accent-blue)" stroke-width="1"/>
       <rect x="344" y="112" width="72" height="76" rx="9" fill="url(#ml-seam)" stroke="var(--svg-accent-green)" stroke-width="1.5"/>
     </g>
+
     <g class="fn-diagram__labels">
       <text x="58" y="118" font-size="9" fill="var(--color-primary)" font-family="var(--font-mono)" letter-spacing="0.08em">FIRST CHILD · relay-crm</text>
       <text x="58" y="138" font-size="13" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">leads</text>
       <text x="58" y="160" font-size="10.5" fill="var(--svg-text-dim)" font-family="var(--font-mono)">stage + direct_status</text>
       <text x="58" y="178" font-size="10.5" fill="var(--color-primary)" font-family="var(--font-mono)">source_campaign</text>
       <text x="58" y="194" font-size="9.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">wins the funnel view</text>
+
       <text x="380" y="106" text-anchor="middle" font-size="8.5" fill="var(--svg-accent-green)" font-family="var(--font-mono)" letter-spacing="0.06em">JOIN KEY</text>
       <text x="380" y="146" text-anchor="middle" font-size="11" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">match</text>
       <text x="380" y="164" text-anchor="middle" font-size="9" fill="var(--svg-accent-green)" font-family="var(--font-mono)">= attributed</text>
+
       <text x="528" y="118" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">SECOND CHILD · relay-social</text>
       <text x="528" y="138" font-size="13" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">campaigns</text>
       <text x="528" y="160" font-size="10.5" fill="var(--svg-text-dim)" font-family="var(--font-mono)">funnel_stage · status</text>
       <text x="528" y="178" font-size="10.5" fill="var(--svg-accent-blue)" font-family="var(--font-mono)">utm_campaign</text>
       <text x="528" y="194" font-size="9.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">adds cross-child bindings</text>
+
       <text x="380" y="238" text-anchor="middle" font-size="10" fill="var(--svg-accent-green)" font-family="var(--font-mono)">source_campaign == utm_campaign — dormant apart, live after flatten</text>
     </g>
   </svg>

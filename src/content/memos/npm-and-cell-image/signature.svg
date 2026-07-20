@@ -1,0 +1,33 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One Relay release branches into an npm package for direct use and Host control, and a sealed OCI image for managed Cells; both reconnect at one verified release contract.">
+  <defs>
+    <linearGradient id="ni-release" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-purple)" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="ni-oci" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-blue)" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="var(--svg-accent-blue)" stop-opacity="0.06"/>
+    </linearGradient>
+  </defs>
+  <g class="fn-diagram__edges">
+    <path d="M 320 110 C 320 140 176 140 176 178" fill="none" stroke="var(--svg-accent-purple)" stroke-width="1.5"/>
+    <path d="M 320 110 C 320 140 464 140 464 178" fill="none" stroke="var(--svg-accent-blue)" stroke-width="1.5"/>
+    <path d="M 176 260 C 176 286 320 286 320 310" fill="none" stroke="var(--svg-stroke)" stroke-width="1" stroke-dasharray="5 5"/>
+    <path d="M 464 260 C 464 286 320 286 320 310" fill="none" stroke="var(--svg-stroke)" stroke-width="1" stroke-dasharray="5 5"/>
+  </g>
+  <g class="fn-diagram__nodes">
+    <rect x="194" y="58" width="252" height="52" rx="10" fill="url(#ni-release)" stroke="var(--color-primary)" stroke-width="1.5"/>
+    <rect x="62" y="178" width="228" height="82" rx="14" fill="var(--svg-surface)" stroke="var(--svg-accent-purple)" stroke-width="1.5"/>
+    <rect x="350" y="178" width="228" height="82" rx="14" fill="url(#ni-oci)" stroke="var(--svg-accent-blue)" stroke-width="1.5"/>
+    <rect x="226" y="310" width="188" height="28" rx="7" fill="var(--svg-surface)" stroke="var(--svg-stroke)" stroke-width="1"/>
+  </g>
+  <g class="fn-diagram__labels">
+    <text x="32" y="34" font-size="25" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">One Relay. Two delivery shapes.</text>
+    <text x="320" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="var(--color-primary)" font-family="var(--font-mono)">SAME RELEASE</text>
+    <text x="176" y="209" text-anchor="middle" font-size="16" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">npm</text>
+    <text x="176" y="234" text-anchor="middle" font-size="11" fill="var(--svg-text-muted)" font-family="var(--font-mono)">DIRECT CELL · HOST CONTROL</text>
+    <text x="464" y="209" text-anchor="middle" font-size="16" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">OCI</text>
+    <text x="464" y="234" text-anchor="middle" font-size="11" fill="var(--svg-text-muted)" font-family="var(--font-mono)">SEALED MANAGED CELL</text>
+    <text x="320" y="329" text-anchor="middle" font-size="10" fill="var(--svg-text-muted)" font-family="var(--font-mono)">DIGEST-BOUND CONTRACT</text>
+  </g>
+</svg>

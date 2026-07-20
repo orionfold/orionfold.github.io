@@ -1,9 +1,9 @@
 ---
 // /promise/ — the Orionfold gating philosophy (Relay D5 ask, 2026-07-01). A
 // product-neutral, top-level page that publishes the standing promise the whole
-// catalog is held to: buyer-based gating + never-regress. Capabilities ship free
-// for everyone; paid packs sell maintained content; nothing that ever shipped
-// free regresses to paid.
+// catalog is held to: buyer-based gating + never-regress. Core/direct use stays
+// free; paid Packs sell maintained content; paid Host covers managed customer
+// operations; nothing that ever shipped free regresses to paid.
 //
 // Content source: strategy relay `strategy/relay/_RELAY.md` entry
 // "2026-07-01 (later-2) — Relay→Website" ask D5. The promise text is owned by
@@ -24,8 +24,8 @@ const og = ogMeta('/promise/');
 // The three ideas that make up the promise, stated plainly up top.
 const summaryCards = [
   {
-    title: 'Capabilities are free',
-    body: 'The engine, the installers, the schedulers, and the license machinery itself ship free for everyone. You never pay to run Orionfold software or to use what makes it work.',
+    title: 'Core and direct use are free',
+    body: 'The engine, direct Cells, installers, schedulers, and public Cell image ship free for everyone. A managed Host right is separate and never makes the free path a trial.',
   },
   {
     title: 'You pay for content',
@@ -43,7 +43,7 @@ const sections = [
     title: 'Buyer-based gating, not feature-based',
     paragraphs: [
       'Most software decides what you can do by which plan you are on. We decide it by whether you bought a specific pack. That is the whole gate: one thing you own, checked once, and then the pack is yours.',
-      'There is no tier that unlocks a hidden feature. The features are all there, for free. A license adds packs of maintained content on top. If you never buy a pack, you still have a complete, working tool.',
+      'There is no tier that turns the free engine into a working product. Direct use is complete and free. A Pack license adds maintained content. A Relay Host license separately covers managed customer Cells. Neither takes the free path away.',
     ],
   },
   {
@@ -56,8 +56,9 @@ const sections = [
   {
     title: 'What a license actually gates',
     paragraphs: [
-      'A license unlocks the premium packs you own and keeps them current. That is it. It does not switch on core features, and it does not reach into what you already have.',
+      'A Pack license unlocks the premium packs you own and keeps them current. A Relay Host license proves the separate right to run managed customer Cells within its signed capacity. Neither switches on Relay Core or direct Cells, and the public Cell image needs no license token.',
       'Your packs are yours forever. If a license lapses, everything you installed keeps working exactly as it did. Renewal is only about getting the year’s new and updated packs and priority support, never about keeping what you already own.',
+      'If a Host term ends, Cells already running keep running and export and recovery remain available. New managed capacity, forward paid updates and re-download stop. Compatible critical-security fixes remain included.',
     ],
   },
   {
@@ -76,7 +77,7 @@ const sections = [
 ---
 <Layout
   title="Our promise: what you pay for, and what you never lose · Orionfold"
-  description="The Orionfold promise: every capability ships free for everyone, paid packs sell maintained content, and nothing that ever shipped free regresses to paid. Your packs are yours forever."
+  description="The Orionfold promise: Relay Core and direct use stay free, premium Packs and managed Host rights stay distinct, and nothing that shipped free regresses to paid."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
@@ -88,7 +89,7 @@ const sections = [
       inLanguage: 'en',
       publisher: PUBLISHER,
       description:
-        'The Orionfold promise: every capability ships free for everyone, paid packs sell maintained content, and nothing that ever shipped free regresses to paid.',
+        'The Orionfold promise: Relay Core and direct use stay free, premium Packs and managed Host rights stay distinct, and nothing that shipped free regresses to paid.',
     },
     {
       '@context': 'https://schema.org',
@@ -118,14 +119,14 @@ const sections = [
               What you pay for, and what you never lose.
             </h1>
             <p data-animate class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted" style="transition-delay: 160ms">
-              Orionfold software is free for everyone. When you pay, you are buying maintained content on top, never the ability to run it. And anything that ships free stays free. This page is the standing promise we hold every product to.
+              Relay Core and direct use are free for everyone. Premium Packs sell maintained content. Relay Host covers managed customer operations. Anything that ships free stays free. This page is the standing promise we hold every product to.
             </p>
           </div>
 
           <div data-animate class="rounded-2xl border border-primary/30 bg-primary/[0.06] p-5 shadow-[0_20px_80px_-40px_rgba(0,0,0,0.75)]" style="transition-delay: 220ms">
             <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-primary/70">The short version</p>
             <p class="mt-3 text-base leading-relaxed text-text">
-              Capabilities are free. Packs are paid. Nothing free ever becomes paid.
+              Core and direct use stay free. Packs and managed Host rights are separate. Nothing free becomes paid.
             </p>
           </div>
         </div>

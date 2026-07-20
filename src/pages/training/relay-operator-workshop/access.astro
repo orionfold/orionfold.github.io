@@ -1,0 +1,64 @@
+---
+import PrivateLayout from '../../../layouts/PrivateLayout.astro';
+---
+<PrivateLayout title="Workshop access · Orionfold" description="Open or recover your Relay Operator Workshop access.">
+  <main class="grid min-h-screen place-items-center px-5 py-12">
+    <section class="w-full max-w-2xl rounded-xl border border-border bg-surface-raised p-7 shadow-of sm:p-10">
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Private edition access</p>
+      <h1 class="mt-4 text-3xl">Relay Operator Workshop</h1>
+      <div id="access-status" class="mt-6 rounded-lg border border-border bg-surface p-5 leading-relaxed text-text-muted" role="status" aria-live="polite">
+        Checking your private access link…
+      </div>
+      <a id="manifest-link" hidden class="mt-6 inline-flex rounded-lg bg-primary px-5 py-3 font-medium text-accent-text" rel="noreferrer">Open the private workshop manifest</a>
+
+      <form id="recovery-form" class="mt-10 border-t border-border pt-8">
+        <h2 class="text-xl">Need a fresh link or refund?</h2>
+        <label class="mt-5 block text-sm font-medium" for="email">Purchase email</label>
+        <input class="mt-2 w-full rounded-lg border border-border-strong bg-surface px-4 py-3 text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" id="email" name="email" type="email" autocomplete="email" required maxlength="254" />
+        <input class="hidden" name="company" tabindex="-1" autocomplete="off" />
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button class="rounded-lg bg-primary px-5 py-3 font-medium text-accent-text disabled:opacity-50" type="submit" data-action="reaccess">Email a fresh access link</button>
+          <button class="rounded-lg border border-border-strong px-5 py-3 text-text-muted disabled:opacity-50" type="submit" data-action="refund">Request a refund</button>
+        </div>
+        <p id="request-status" class="mt-4 text-sm text-text-muted" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+</PrivateLayout>
+
+<script>
+  import { exchangeWorkshopAccess, requestWorkshopLink, takeFragmentToken } from '../../../lib/workshop';
+  const token = takeFragmentToken();
+  const accessStatus = document.getElementById('access-status');
+  const manifestLink = document.getElementById('manifest-link') as HTMLAnchorElement | null;
+  if (!token) {
+    if (accessStatus) accessStatus.textContent = 'Paste-free access starts from the private link in your inbox. Request a fresh link below if needed.';
+  } else {
+    exchangeWorkshopAccess(token).then(({ ok, data }) => {
+      if (ok && typeof data.manifestUrl === 'string') {
+        if (accessStatus) accessStatus.textContent = 'Access verified. This edition manifest link is ready for 15 minutes.';
+        if (manifestLink) { manifestLink.href = data.manifestUrl; manifestLink.hidden = false; }
+      } else if (accessStatus) {
+        accessStatus.textContent = data.retryable
+          ? 'The private workspace is temporarily unavailable. Retry this page shortly or request a fresh link.'
+          : 'This access link is expired or has been replaced. Request a fresh link below.';
+      }
+    });
+  }
+
+  const form = document.getElementById('recovery-form') as HTMLFormElement | null;
+  form?.addEventListener('click', (event) => {
+    const button = (event.target as Element).closest<HTMLButtonElement>('button[data-action]');
+    if (button) form.dataset.action = button.dataset.action;
+  });
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = String(new FormData(form).get('email') || '');
+    const action = form.dataset.action === 'refund' ? 'refund' : 'reaccess';
+    const status = document.getElementById('request-status');
+    form.querySelectorAll('button').forEach((button) => button.disabled = true);
+    const result = await requestWorkshopLink(action, email);
+    if (status) status.textContent = result.data.message as string || 'If that inbox owns this edition, the requested link is on its way.';
+    form.querySelectorAll('button').forEach((button) => button.disabled = false);
+  });
+</script>

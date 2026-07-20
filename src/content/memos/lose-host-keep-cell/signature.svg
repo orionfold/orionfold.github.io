@@ -1,0 +1,36 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A failed old Host connects through an encrypted customer-owned recovery bundle and separate key to a rebuilt Cell on a new Host.">
+  <defs>
+    <linearGradient id="lr-bundle" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-purple)" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="lr-new" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-green)" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="var(--svg-accent-green)" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+  <g class="fn-diagram__edges">
+    <path d="M 190 188 L 260 188" fill="none" stroke="var(--svg-stroke)" stroke-width="1.5"/>
+    <path d="M 380 188 L 450 188" fill="none" stroke="var(--svg-accent-green)" stroke-width="1.5"/>
+    <path d="M 320 106 L 320 146" fill="none" stroke="var(--color-primary)" stroke-width="1" stroke-dasharray="4 4"/>
+  </g>
+  <g class="fn-diagram__nodes">
+    <rect x="42" y="126" width="148" height="124" rx="14" fill="var(--svg-surface)" stroke="var(--svg-text-faint)" stroke-width="1.5"/>
+    <path d="M 58 142 L 174 234 M 174 142 L 58 234" fill="none" stroke="var(--svg-text-faint)" stroke-width="2"/>
+    <rect x="260" y="146" width="120" height="84" rx="12" fill="url(#lr-bundle)" stroke="var(--svg-accent-purple)" stroke-width="1.5"/>
+    <circle cx="320" cy="86" r="20" fill="var(--svg-surface)" stroke="var(--color-primary)" stroke-width="1.5"/>
+    <rect x="320" y="80" width="42" height="12" rx="5" fill="var(--color-primary)" fill-opacity="0.22" stroke="var(--color-primary)" stroke-width="1"/>
+    <rect x="450" y="112" width="150" height="152" rx="16" fill="url(#lr-new)" stroke="var(--svg-accent-green)" stroke-width="1.5"/>
+    <rect x="478" y="158" width="94" height="70" rx="10" fill="var(--svg-surface)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
+  </g>
+  <g class="fn-diagram__labels">
+    <text x="42" y="38" font-size="25" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Lose the Host. Keep the Cell.</text>
+    <text x="116" y="278" text-anchor="middle" font-size="11" fill="var(--svg-text-muted)" font-family="var(--font-mono)">LOST HOST</text>
+    <text x="320" y="178" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">ENCRYPTED</text>
+    <text x="320" y="199" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">BUNDLE</text>
+    <text x="320" y="61" text-anchor="middle" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)">CUSTOMER KEY</text>
+    <text x="525" y="140" text-anchor="middle" font-size="11" fill="var(--svg-accent-green)" font-family="var(--font-mono)">NEW HOST</text>
+    <text x="525" y="190" text-anchor="middle" font-size="13" fill="var(--svg-text-bright)" font-family="var(--font-mono)">SAME CELL</text>
+    <text x="320" y="326" text-anchor="middle" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">create · verify · drill · restore</text>
+  </g>
+</svg>

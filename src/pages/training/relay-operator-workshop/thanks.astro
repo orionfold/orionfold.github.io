@@ -1,0 +1,48 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+---
+<Layout title="Workshop purchase confirmed · Orionfold" description="Your Relay Operator Workshop purchase is confirmed." noindex>
+  <Nav />
+  <main class="px-6 pb-28 pt-40">
+    <section class="mx-auto max-w-2xl rounded-xl border border-border bg-surface-raised p-8 shadow-of sm:p-12">
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Relay Operator Workshop</p>
+      <h1 id="heading" class="mt-5 text-4xl">Your workshop is confirmed</h1>
+      <p id="status" class="mt-5 text-lg leading-relaxed text-text-muted" aria-live="polite">
+        Payment confirmation is loading. Your private access link is delivered transactionally by email—not by this redirect.
+      </p>
+      <div class="mt-8 rounded-lg border border-border bg-surface p-5 text-sm leading-relaxed text-text-muted">
+        The link works for seven days. If it expires, request a fresh one automatically; no account or founder reply is required.
+      </div>
+      <a class="mt-8 inline-flex rounded-lg border border-primary/40 px-5 py-3 font-mono text-sm text-primary hover:bg-primary/5" href="/training/relay-operator-workshop/access/">Request access or a refund</a>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { fetchOrderStatus } from '../../../lib/checkout';
+  import { reportPurchase } from '../../../lib/conversion';
+  async function confirm() {
+    const sessionId = new URLSearchParams(location.search).get('session_id');
+    const statusEl = document.getElementById('status');
+    if (!sessionId || !statusEl) return;
+    const status = await fetchOrderStatus(sessionId);
+    if (!status?.paid || status.kind !== 'workshop') {
+      statusEl.textContent = 'We could not confirm this redirect. If you paid, the webhook still delivers access to your checkout inbox.';
+      return;
+    }
+    statusEl.textContent = `Payment confirmed${status.email ? ` for ${status.email}` : ''}. Your private seven-day access link is on its way.`;
+    await reportPurchase({
+      transactionId: sessionId,
+      value: typeof status.amount === 'number' ? status.amount / 100 : null,
+      currency: status.currency?.toUpperCase() ?? 'USD',
+      itemId: status.lookupKey,
+      itemName: status.label,
+      email: status.email,
+      kind: status.kind,
+    });
+  }
+  confirm();
+</script>

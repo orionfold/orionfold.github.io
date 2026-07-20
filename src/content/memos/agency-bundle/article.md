@@ -62,11 +62,14 @@ This memo is the composition proof of the *Relay Packs* series. The pillar argue
         <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
       </radialGradient>
     </defs>
+
     <ellipse cx="160" cy="160" rx="150" ry="140" fill="url(#ab-glow)"/>
+
     <g class="fn-diagram__edges">
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 300 130 L 470 90" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 300 190 L 470 230" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
     </g>
+
     <g class="fn-diagram__flow">
       <circle class="fn-diagram__flow" cx="300" cy="130" r="4" fill="var(--color-primary)">
         <animateMotion begin="1.4s" dur="2.6s" repeatCount="indefinite" path="M 0 0 L 170 -40"/>
@@ -75,11 +78,13 @@ This memo is the composition proof of the *Relay Packs* series. The pillar argue
         <animateMotion begin="1.8s" dur="2.6s" repeatCount="indefinite" path="M 0 0 L 170 40"/>
       </circle>
     </g>
+
     <g class="fn-diagram__nodes">
       <rect x="44" y="80" width="256" height="160" rx="12" fill="url(#ab-spine)" stroke="var(--color-primary)" stroke-width="1.5"/>
       <rect x="470" y="42" width="256" height="96" rx="10" fill="url(#ab-cre)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
       <rect x="470" y="182" width="256" height="96" rx="10" fill="url(#ab-np)" stroke="var(--svg-accent-purple)" stroke-width="1"/>
     </g>
+
     <g class="fn-diagram__labels">
       <text x="62" y="104" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)" letter-spacing="0.08em">FREE PERSONA SPINE</text>
       <text x="62" y="124" font-size="14" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">relay-agency</text>
@@ -88,10 +93,12 @@ This memo is the composition proof of the *Relay Packs* series. The pillar argue
       <text x="62" y="196" font-size="10.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">clients · engagements</text>
       <text x="62" y="212" font-size="10.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">intake · pipeline</text>
       <text x="62" y="230" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)">merges first — owns the hero</text>
+
       <text x="488" y="64" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">BUNDLE · relay-agency-cre</text>
       <text x="488" y="84" font-size="13" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">+ CRE vertical</text>
       <text x="488" y="104" font-size="10.5" fill="var(--svg-text-dim)" font-family="var(--font-mono)">3 profiles · 3 blueprints</text>
       <text x="488" y="122" font-size="10.5" fill="var(--svg-accent-teal)" font-family="var(--font-mono)">rent_roll · renewal engine</text>
+
       <text x="488" y="204" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">BUNDLE · relay-agency-nonprofit</text>
       <text x="488" y="224" font-size="13" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">+ Nonprofit vertical</text>
       <text x="488" y="244" font-size="10.5" fill="var(--svg-text-dim)" font-family="var(--font-mono)">3 profiles · 4 blueprints</text>

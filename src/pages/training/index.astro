@@ -1,0 +1,114 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ThemedShot from '../../components/relay/ThemedShot.astro';
+import { RELAY_OPERATOR_WORKSHOP, formatUsd } from '../../data/commerce';
+import { RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED } from '../../data/launch';
+import { SITE } from '../../data/seo';
+
+const workshop = RELAY_OPERATOR_WORKSHOP;
+const price = formatUsd(workshop.primary.amount);
+const catalogUrl = `${SITE.url}/training/`;
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Orionfold Training Workshops',
+  description: 'Self-serve working sessions that end in working software and retained evidence.',
+  url: catalogUrl,
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: 1,
+    itemListElement: [{
+      '@type': 'ListItem',
+      position: 1,
+      url: `${SITE.url}/training/relay-operator-workshop/`,
+      name: workshop.primary.label,
+    }],
+  },
+};
+---
+
+<Layout
+  title="Training Workshops · Build working AI systems"
+  description="Focused, self-serve Orionfold workshops that help you build one working system, verify it, and keep the result."
+  jsonLd={collectionSchema}
+>
+  <Nav />
+  <main class="px-6 pb-28 pt-36 sm:pt-44">
+    <header class="mx-auto max-w-5xl">
+      <p class="font-mono text-xs uppercase tracking-[0.22em] text-primary">Orionfold Training</p>
+      <h1 class="mt-5 max-w-4xl text-balance text-5xl font-bold leading-[0.98] sm:text-7xl">Working sessions, not watched courses.</h1>
+      <p class="mt-7 max-w-2xl text-lg leading-relaxed text-text-muted">
+        Bring a real operating problem. Follow a bounded, source-grounded path. Leave with working software and evidence you can inspect, rerun, and keep.
+      </p>
+    </header>
+
+    <section class="mx-auto mt-16 max-w-5xl" aria-labelledby="available-workshops">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="font-mono text-xs uppercase tracking-[0.18em] text-text-dim">Founding catalog · 01</p>
+          <h2 id="available-workshops" class="mt-2 text-3xl font-bold">Available workshops</h2>
+        </div>
+        <a class="of-text-action" href="/training/pricing.json">Machine-readable pricing →</a>
+      </div>
+
+      <article class="training-card mt-7 overflow-hidden rounded-3xl border border-primary/25 bg-surface-raised shadow-2xl shadow-primary/[0.08]">
+        <div class="grid lg:grid-cols-[1.05fr_0.95fr]">
+          <div class="p-7 sm:p-10 lg:p-12">
+            <div class="flex flex-wrap gap-2 font-mono text-[0.68rem] uppercase tracking-wider">
+              <span class="rounded-full border border-primary/25 bg-primary/[0.07] px-3 py-1.5 text-primary">Relay · Founding edition</span>
+              <span class="rounded-full border border-border px-3 py-1.5 text-text-muted">90–150 minutes</span>
+              <span class="rounded-full border border-border px-3 py-1.5 text-text-muted">No account</span>
+            </div>
+            <h3 class="mt-7 text-balance text-3xl font-bold sm:text-4xl">Build one governed workflow.</h3>
+            <p class="mt-5 leading-relaxed text-text-muted">
+              Turn one bounded operating process into a Relay workflow with owned inputs, a human checkpoint, a visible cost or trust boundary, and a retained completion receipt.
+            </p>
+            <ul class="mt-7 grid gap-3 text-sm text-text-muted sm:grid-cols-2">
+              <li>✓ Compatible Relay free core</li>
+              <li>✓ Provider-free rehearsal</li>
+              <li>✓ Source-hashed starter</li>
+              <li>✓ 14-day full refund</li>
+            </ul>
+            <div class="mt-9 flex flex-wrap items-center gap-4">
+              <a class="of-primary-action" href="/training/relay-operator-workshop/">Explore the workshop <span class="font-mono text-xs">{price}</span></a>
+              <span class="text-xs text-text-dim">{RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? 'Sandbox checkout enabled in this build' : 'Production checkout remains launch-dark'}</span>
+            </div>
+          </div>
+          <div class="training-card__visual relative min-h-[22rem] overflow-hidden border-t border-border/70 bg-surface p-5 lg:border-l lg:border-t-0">
+            <div class="absolute inset-0 opacity-50" aria-hidden="true"></div>
+            <div class="relative flex h-full items-center">
+              <div class="w-full overflow-hidden rounded-2xl border border-border/80 bg-surface shadow-2xl">
+                <ThemedShot id="inbox-approvals" alt="Relay Inbox showing a human approval checkpoint waiting for an operator decision." class="w-full" />
+                <div class="flex items-center justify-between border-t border-border/70 px-4 py-3 font-mono text-[0.62rem] uppercase tracking-wider text-text-dim">
+                  <span>Human checkpoint</span><span class="text-primary">Waiting for judgment</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="mx-auto mt-20 grid max-w-5xl gap-5 border-t border-border/70 pt-12 md:grid-cols-3">
+      <div><p class="font-mono text-xs text-primary">01 · Build</p><p class="mt-3 text-sm leading-relaxed text-text-muted">The outcome is a working system in Relay, not a decorative certificate.</p></div>
+      <div><p class="font-mono text-xs text-primary">02 · Verify</p><p class="mt-3 text-sm leading-relaxed text-text-muted">Visible checkpoints, truthful state, failure evidence, retry, and a known-good fallback.</p></div>
+      <div><p class="font-mono text-xs text-primary">03 · Keep</p><p class="mt-3 text-sm leading-relaxed text-text-muted">Your workflow, files, outputs, portable bundle, and completion receipt remain yours.</p></div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .training-card__visual > div:first-child {
+    background-image: linear-gradient(rgba(55, 208, 255, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(55, 208, 255, .08) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(to bottom, black, transparent 92%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .training-card :global(.relay-shot) { animation: workshop-float 8s ease-in-out infinite; }
+  }
+  @keyframes workshop-float { 50% { transform: translateY(-7px); } }
+</style>

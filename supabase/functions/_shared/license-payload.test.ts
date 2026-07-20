@@ -4,19 +4,52 @@
 // the term math, issued_to trimming, and a real sign→verify round-trip.
 //
 // Run: deno test supabase/functions/_shared/license-payload.test.ts
-import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import {
+  assert,
+  assertEquals,
+  assertRejects,
+} from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
   addMonthsUTC,
   buildLicensePayload,
+  buildRelayHostLicensePayload,
   isoSecondUTC,
   licenseTerm,
   LICENSE_KEY_ID,
 } from "./license-payload.ts";
-import { editionForLookupKey, licenseProductForLookupKey } from "./catalog.ts";
-import { publicKeyFromSeed, signLicense, verifyLicense } from "./license.ts";
+import {
+  editionForLookupKey,
+  getCatalogItem,
+  licenseProductForLookupKey,
+  RELAY_HOST_LOOKUP_KEY,
+} from "./catalog.ts";
+import {
+  assertLicenseSigningIdentity,
+  publicKeyFromSeed,
+  signLicense,
+  verifyLicense,
+} from "./license.ts";
 
 // The published throwaway dev seed (bytes(range(32))) from the conformance vector.
 const DEV_SEED_B64 = "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=";
+const DEV_KEY_ID = "of-license-dev-2026-06";
+
+Deno.test("issuer accepts the Relay dev identity and rejects mislabeled or unknown keys", async () => {
+  assertEquals(
+    await assertLicenseSigningIdentity(DEV_SEED_B64, DEV_KEY_ID),
+    "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=",
+  );
+  await assertRejects(
+    () => assertLicenseSigningIdentity(DEV_SEED_B64, LICENSE_KEY_ID),
+    Error,
+    "does not match trusted key id",
+  );
+  await assertRejects(
+    () => assertLicenseSigningIdentity(DEV_SEED_B64, "of-license-unknown"),
+    Error,
+    "Untrusted license signing key id",
+  );
+});
 
 Deno.test("isoSecondUTC strips milliseconds to the spec-sample shape", () => {
   assertEquals(isoSecondUTC(new Date("2026-06-14T00:00:00.123Z")), "2026-06-14T00:00:00Z");
@@ -106,6 +139,27 @@ Deno.test("licenseProductForLookupKey resolves Arena + Proof descriptors, null o
   assertEquals(licenseProductForLookupKey("license_orionfold_relay_founding")?.product, "orionfold-relay");
   assertEquals(licenseProductForLookupKey("license_orionfold_relay_renewal")?.product, "orionfold-relay");
 
+  const host = licenseProductForLookupKey(RELAY_HOST_LOOKUP_KEY);
+  assertEquals(getCatalogItem(RELAY_HOST_LOOKUP_KEY), {
+    lookupKey: RELAY_HOST_LOOKUP_KEY,
+    kind: "license",
+    mode: "subscription",
+    label: "Orionfold Relay Host",
+    amount: 149900,
+  });
+  assertEquals(host?.product, "orionfold-relay-host");
+  assertEquals(host?.tier, "host");
+  assertEquals(host?.entitlements, ["product:relay-host"]);
+  assertEquals(host?.relayHost, {
+    offer: "host",
+    sku: "relay-host-10-annual",
+    limits: { hosts: 1, managed_cells: 10 },
+  });
+  assertEquals(getCatalogItem("license_relay_operator_bundle_annual"), undefined);
+  assertEquals(getCatalogItem("license_relay_host_capacity_annual"), undefined);
+  assertEquals(getCatalogItem("license_relay_host_founding"), undefined);
+  assertEquals(licenseProductForLookupKey("license_relay_operator_bundle_annual"), null);
+
   // Non-license keys → null.
   assertEquals(licenseProductForLookupKey("book_ai_native_business"), null);
   assertEquals(licenseProductForLookupKey("sponsor_gold"), null);
@@ -168,6 +222,57 @@ Deno.test("buildLicensePayload builds a Relay payload: product+entitlement, NO e
   const sig = await signLicense(payload, DEV_SEED_B64, LICENSE_KEY_ID);
   const pub = await publicKeyFromSeed(DEV_SEED_B64);
   assert(await verifyLicense(payload, sig.value, pub), "Relay self-verify must pass");
+});
+
+Deno.test("buildRelayHostLicensePayload reproduces the accepted Host and bundle claim boundary", async () => {
+  const common = {
+    licenseId: "OF-RELAY-HOST-TEST-LOCAL",
+    issuedTo: { email: "manav@orionfold.com", org: "Orionfold" },
+    issuedAt: "2026-07-17T00:00:00Z",
+    notBefore: "2026-07-17T00:00:00Z",
+    expiresAt: "2027-07-17T00:00:00Z",
+    provenance: { stripe_purchase_id: "pi_TEST", stripe_price_id: "price_TEST" },
+    hostGrant: {
+      sku: "relay-host-10-annual",
+      licensee: { kind: "organization" as const, ref: "org_orionfold" },
+      limits: { hosts: 1, managed_cells: 10 },
+      updatesUntil: "2027-07-17T00:00:00Z",
+    },
+  };
+
+  const host = buildRelayHostLicensePayload({ ...common, offer: "host" });
+  assertEquals(host.product, "orionfold-relay-host");
+  assertEquals(host.tier, "host");
+  assertEquals(host.entitlements, ["product:relay-host"]);
+  assert(!("seats" in host), "Relay Host envelope must omit the generic seats claim");
+  assert(!("registry" in host), "Relay Host envelope must not carry registry credentials");
+  assert(!JSON.stringify(host).includes("pull_token"), "Relay Host envelope must not carry a pull token");
+  assertEquals(host.grants, {
+    "product:relay-host": {
+      schema: "orionfold.relay-host/v1",
+      sku: "relay-host-10-annual",
+      licensee: { kind: "organization", ref: "org_orionfold" },
+      limits: { hosts: 1, managed_cells: 10 },
+      updates_until: "2027-07-17T00:00:00Z",
+      rights: {
+        managed_customer_cells: true,
+        packs: "separate",
+        reseller: false,
+        transfer: "same-licensee-replacement",
+        critical_security_updates: "included",
+      },
+    },
+  });
+
+  const bundle = buildRelayHostLicensePayload({ ...common, offer: "operator-bundle" });
+  assertEquals(bundle.product, "orionfold-relay-operator");
+  assertEquals(bundle.tier, "operator-bundle");
+  assertEquals(bundle.entitlements, ["product:orionfold-relay", "product:relay-host"]);
+  assertEquals(bundle.grants, host.grants);
+
+  const sig = await signLicense(host, DEV_SEED_B64, LICENSE_KEY_ID);
+  const pub = await publicKeyFromSeed(DEV_SEED_B64);
+  assert(await verifyLicense(host, sig.value, pub), "Host envelope self-verify must pass");
 });
 
 Deno.test("buildLicensePayload OMITS absent issued_to name/org (not null)", () => {

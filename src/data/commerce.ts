@@ -9,11 +9,15 @@
 import {
   CATALOG,
   FOUNDING_SEATS,
+  RELAY_HOST_AMOUNT,
+  RELAY_HOST_LOOKUP_KEY,
+  RELAY_HOST_MANAGED_CELLS,
+  RELAY_HOSTS,
   SPONSOR_TIERS,
   getCatalogItem,
   sponsorLookupKey,
-} from "../../supabase/functions/_shared/catalog";
-import type { SponsorTier } from "../../supabase/functions/_shared/catalog";
+} from "../../supabase/functions/_shared/catalog.ts";
+import type { SponsorTier } from "../../supabase/functions/_shared/catalog.ts";
 
 export { CATALOG, SPONSOR_TIERS, getCatalogItem, sponsorLookupKey };
 export type { SponsorTier };
@@ -21,7 +25,12 @@ export type { SponsorTier };
 /** Cents → a clean "$10" / "$2.50" string. */
 export function formatUsd(cents: number): string {
   const dollars = cents / 100;
-  return Number.isInteger(dollars) ? `$${dollars}` : `$${dollars.toFixed(2)}`;
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: Number.isInteger(dollars) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(dollars);
 }
 
 // Arena Field Edition price family (display only; CATALOG is the SSOT, Stripe is
@@ -62,6 +71,25 @@ export const RELAY = {
   renewal: getCatalogItem("license_orionfold_relay_renewal")!,
   foundingSeats: FOUNDING_SEATS,
   windowMonths: 12,
+} as const;
+
+export const RELAY_HOST = {
+  primary: getCatalogItem(RELAY_HOST_LOOKUP_KEY)!,
+  amount: RELAY_HOST_AMOUNT,
+  hosts: RELAY_HOSTS,
+  managedCells: RELAY_HOST_MANAGED_CELLS,
+  termMonths: 12,
+  refundDays: 14,
+} as const;
+
+export const RELAY_OPERATOR_WORKSHOP = {
+  primary: getCatalogItem("workshop_relay_operator_founding")!,
+  offeringId: "relay-operator-workshop",
+  editionId: "relay-operator-workshop-2026-07-founding",
+  editionVersion: "2026.07",
+  designedMinutes: { minimum: 90, maximum: 150 },
+  accessDays: 7,
+  refundDays: 14,
 } as const;
 
 export interface SponsorTierDisplay {

@@ -667,28 +667,24 @@ section {
   }
 }
 
-/* ── Themed Relay screenshot .relay-shot (global, for the rehype path) ── */
-/* The <ThemedShot> Astro component carries this same rule in a scoped <style>,
-   but the rehype bridge (src/lib/relay/rehype-relay-shots.mjs) emits a raw
-   <div class="relay-shot"> inside rendered markdown (Relay docs/api chapters),
-   which never passes through Astro's scoper — so its themed swap must live here,
-   globally, exactly like .of-table's rehype-table-scroll sibling. Zero-JS: the
-   inline --shot-light/--shot-dark custom props (set per element by rehype) feed
-   a background-image that swaps on the site's pre-paint [data-theme] attribute,
-   so only the active variant is ever fetched; aspect-ratio (also inline) reserves
-   layout for zero CLS. Keep byte-parity with ThemedShot.astro's scoped block. */
+/* ── Responsive themed Relay screenshot (Astro + rehype paths) ── */
+/* The head bootstrap assigns only the resolved theme's src/srcset to the first
+   image. That gives these real <img>s native lazy loading and responsive source
+   selection while preserving the site's explicit light/dark toggle. */
 .relay-shot {
-  background-image: var(--shot-light);
-  background-size: cover;
-  background-position: top center;
-  background-repeat: no-repeat;
+  position: relative;
   width: 100%;
   display: block;
   border-radius: var(--radius-of-lg);
   overflow: hidden;
+  background: var(--color-surface-raised);
 }
-[data-theme='dark'] .relay-shot {
-  background-image: var(--shot-dark);
+.relay-shot__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
 }
 
 /* ── Data table .of-table (DS v6.2) ── */
@@ -943,6 +939,12 @@ section {
   text-underline-offset: 2px;
 }
 .story-prose strong { color: var(--color-text); font-weight: 600; }
+.story-prose p > code,
+.story-prose li > code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
 .story-prose blockquote {
   border-left: 3px solid var(--color-primary);
   padding-left: 1.1em;

@@ -15,14 +15,21 @@ import { footerForEmail } from "./email-footer.ts";
 export const BOOK_FILES_BUCKET = "book-files";
 export const DOWNLOAD_TTL_SECONDS = 60 * 60 * 24 * 7; // 7-day signed download links
 
-// Buyer-facing links use the branded vanity host, not the project-ref host that
-// supabase-js builds from SUPABASE_URL. The signed token signs the object PATH
-// (not the host), so the vanity domain serves the same file.
+// Buyer-facing production links use the branded vanity host, not the project-ref
+// host that supabase-js builds from SUPABASE_URL. Staging must keep its own host:
+// its signed token belongs to a different project and fails against production.
+// The signed token covers the object path, so production's vanity domain can
+// safely serve the same production object.
 const PUBLIC_SUPABASE_URL = "https://orionfold.supabase.co";
+const PRODUCTION_SUPABASE_URL = "https://lgnmmcxvwdnusvfpguvf.supabase.co";
 
-export function brandedUrl(signedUrl: string): string {
-  const internal = Deno.env.get("SUPABASE_URL");
-  return internal ? signedUrl.replace(internal, PUBLIC_SUPABASE_URL) : signedUrl;
+export function brandedUrl(
+  signedUrl: string,
+  internal = Deno.env.get("SUPABASE_URL"),
+): string {
+  return internal === PRODUCTION_SUPABASE_URL
+    ? signedUrl.replace(internal, PUBLIC_SUPABASE_URL)
+    : signedUrl;
 }
 
 export type BookLink = { format: string; url: string };

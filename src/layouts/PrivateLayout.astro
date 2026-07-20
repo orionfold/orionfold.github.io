@@ -1,0 +1,38 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem('of-theme');
+          var mode = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'dark';
+          var resolved = mode === 'system'
+            ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+            : mode;
+          document.documentElement.setAttribute('data-theme-mode', mode);
+          document.documentElement.setAttribute('data-theme', resolved);
+        } catch (_) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-surface text-text antialiased">
+    <slot />
+  </body>
+</html>

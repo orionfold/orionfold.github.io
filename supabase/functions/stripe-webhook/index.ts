@@ -20,12 +20,20 @@ import {
   getCatalogItem,
   licenseFamilyForLookupKey,
   licenseProductForLookupKey,
+  RELAY_HOST_LOOKUP_KEY,
   STRIPE_API_VERSION,
 } from "../_shared/catalog.ts";
 import type { LicenseProductDescriptor } from "../_shared/catalog.ts";
-import { publicKeyFromSeed, signLicense, verifyLicense } from "../_shared/license.ts";
+import {
+  assertLicenseSigningIdentity,
+  signLicense,
+  verifyLicense,
+} from "../_shared/license.ts";
 import {
   buildLicensePayload,
+  buildRelayHostLicensePayload,
+  addMonthsUTC,
+  isoSecondUTC,
   licenseTerm,
   LICENSE_KEY_ID,
   LICENSE_SEATS,
@@ -33,6 +41,21 @@ import {
 import { sendMetaPurchase } from "../_shared/meta-capi.ts";
 import { BOOK_FILES_BUCKET, brandedUrl, sendBookEmail, signBookFiles } from "../_shared/book-files.ts";
 import { footerForEmail } from "../_shared/email-footer.ts";
+import {
+  refundDeadline,
+  WORKSHOP_ACCESS_TTL_SECONDS,
+  WORKSHOP_EDITION_HASH,
+  WORKSHOP_EDITION_ID,
+  WORKSHOP_EDITION_VERSION,
+  WORKSHOP_LOOKUP_KEY,
+  WORKSHOP_OFFERING_ID,
+} from "../_shared/workshop-contract.ts";
+import { sendWorkshopEmail } from "../_shared/workshop-email.ts";
+import {
+  relayHostLifecycleStatus,
+  shouldIssueRelayHostRenewal,
+} from "../_shared/relay-host-delivery.ts";
+import { deriveWorkshopToken, hashWorkshopToken, normalizeWorkshopEmail } from "../_shared/workshop-token.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
@@ -66,6 +89,7 @@ const LICENSE_URL_TTL_SECONDS = 60 * 60 * 24 * 7;
 // Set as a Supabase secret; pairs with the pubkey Spark embeds in TRUSTED_KEYS.
 // Absent in non-prod → fulfillLicense records the sale but does not issue.
 const LICENSE_SIGNING_SEED_ENV = "LICENSE_SIGNING_SEED_B64";
+const LICENSE_SIGNING_KEY_ID_ENV = "LICENSE_SIGNING_KEY_ID";
 
 // Each licensed product draws license ids from its OWN Postgres sequence (via a
 // service_role-only SECURITY DEFINER rpc — supabase-js can't call nextval
@@ -76,6 +100,7 @@ const LICENSE_ID_RPC: Record<string, string> = {
   "arena-field-edition": "next_fe_license_id",
   "orionfold-proof": "next_proof_license_id",
   "orionfold-relay": "next_relay_license_id",
+  "orionfold-relay-host": "next_relay_host_license_id",
 };
 
 function supabaseAdmin() {
@@ -92,6 +117,12 @@ function asId(ref: unknown): string | null {
     return String((ref as { id: unknown }).id);
   }
   return null;
+}
+
+function checkoutCustomField(session: Stripe.Checkout.Session, key: string): string | null {
+  // deno-lint-ignore no-explicit-any
+  const field = (session.custom_fields ?? []).find((candidate: any) => candidate.key === key) as any;
+  return field?.text?.value ?? field?.dropdown?.value ?? null;
 }
 
 // WS#16-P1: the ad UTMs (+ gclid) that create-checkout-session stamped onto the
@@ -170,6 +201,14 @@ Deno.serve(async (req) => {
       case "checkout.session.completed":
         await onCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
         break;
+      case "checkout.session.async_payment_succeeded":
+        await onCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        break;
+      case "refund.created":
+      case "refund.updated":
+      case "refund.failed":
+        await onRefundChanged(event.data.object as Stripe.Refund);
+        break;
       case "invoice.paid":
         await onInvoicePaid(event.data.object as Stripe.Invoice);
         break;
@@ -210,9 +249,193 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
   if (kind === "sponsor") {
     await fulfillSponsor(session);
   } else if (kind === "license") {
-    await fulfillLicense(session);
-  } else {
+    if (session.payment_status === "paid") await fulfillLicense(session);
+  } else if (kind === "workshop") {
+    if (session.payment_status === "paid") await fulfillWorkshop(session);
+  } else if (kind === "book") {
     await fulfillBook(session);
+  } else {
+    console.error("Checkout fulfillment skipped — unknown catalog kind", session.id);
+  }
+}
+
+async function fulfillWorkshop(session: Stripe.Checkout.Session) {
+  const lookupKey = session.metadata?.lookup_key ?? "";
+  const email = normalizeWorkshopEmail(session.customer_details?.email ?? session.customer_email);
+  const paymentIntentId = asId(session.payment_intent);
+  if (
+    lookupKey !== WORKSHOP_LOOKUP_KEY || !email || !paymentIntentId ||
+    session.metadata?.offering_id !== WORKSHOP_OFFERING_ID ||
+    session.metadata?.edition_id !== WORKSHOP_EDITION_ID ||
+    session.metadata?.edition_version !== WORKSHOP_EDITION_VERSION ||
+    session.metadata?.edition_hash !== WORKSHOP_EDITION_HASH
+  ) {
+    throw new Error("workshop checkout contract is incomplete");
+  }
+  const db = supabaseAdmin();
+  const purchaseValues = {
+    stripe_session_id: session.id,
+    stripe_customer_id: asId(session.customer),
+    lookup_key: lookupKey,
+    email,
+    amount_total: session.amount_total,
+    currency: session.currency,
+    roadmap_item: session.metadata?.roadmap_item ?? null,
+    ...attributionColumns(session.metadata),
+  };
+  const insertedPurchase = await db.from("purchases").upsert(purchaseValues, {
+    onConflict: "stripe_session_id",
+    ignoreDuplicates: true,
+  }).select("id,delivered").maybeSingle();
+  if (insertedPurchase.error) throw insertedPurchase.error;
+  const purchase = insertedPurchase.data ?? (await db.from("purchases")
+    .select("id,delivered").eq("stripe_session_id", session.id).single()).data;
+  if (!purchase) throw new Error("workshop purchase row unavailable");
+
+  const paidAt = new Date(session.created * 1000);
+  const entitlementValues = {
+    purchase_id: purchase.id,
+    stripe_session_id: session.id,
+    stripe_payment_intent_id: paymentIntentId,
+    stripe_customer_id: asId(session.customer),
+    lookup_key: lookupKey,
+    offering_id: WORKSHOP_OFFERING_ID,
+    edition_id: WORKSHOP_EDITION_ID,
+    edition_version: WORKSHOP_EDITION_VERSION,
+    edition_hash: WORKSHOP_EDITION_HASH,
+    email,
+    amount_total: session.amount_total ?? 0,
+    currency: (session.currency ?? "usd").toLowerCase(),
+    paid_at: paidAt.toISOString(),
+    refund_deadline: refundDeadline(paidAt).toISOString(),
+  };
+  const insertedEntitlement = await db.from("workshop_entitlements").upsert(entitlementValues, {
+    onConflict: "stripe_session_id",
+    ignoreDuplicates: true,
+  }).select("id,state,access_generation,delivered_at").maybeSingle();
+  if (insertedEntitlement.error) throw insertedEntitlement.error;
+  const entitlement = insertedEntitlement.data ?? (await db.from("workshop_entitlements")
+    .select("id,state,access_generation,delivered_at").eq("stripe_session_id", session.id).single()).data;
+  if (!entitlement) throw new Error("workshop entitlement unavailable");
+  if (entitlement.state === "refunded" || entitlement.delivered_at) return;
+
+  try {
+    let generation = Number(entitlement.access_generation);
+    if (generation === 0) {
+      const rawNext = await deriveWorkshopToken(
+        Deno.env.get("WORKSHOP_TOKEN_SECRET") ?? "",
+        entitlement.id,
+        "access",
+        1,
+      );
+      const rotation = await db.rpc("rotate_workshop_access", {
+        p_entitlement_id: entitlement.id,
+        p_expected_generation: 0,
+        p_token_sha256: await hashWorkshopToken(rawNext),
+        p_expires_at: new Date(Date.now() + WORKSHOP_ACCESS_TTL_SECONDS * 1000).toISOString(),
+      });
+      const result = Array.isArray(rotation.data) ? rotation.data[0] : rotation.data;
+      if (rotation.error || !result?.applied) throw rotation.error ?? new Error("initial access rotation failed");
+      generation = 1;
+    }
+    const raw = await deriveWorkshopToken(
+      Deno.env.get("WORKSHOP_TOKEN_SECRET") ?? "",
+      entitlement.id,
+      "access",
+      generation,
+    );
+    const siteUrl = (Deno.env.get("SITE_URL") ?? "https://orionfold.com").replace(/\/$/, "");
+    await sendWorkshopEmail({
+      apiKey: Deno.env.get("RESEND_API_KEY") ?? "",
+      apiUrl: Deno.env.get("RESEND_API_URL") ?? "https://api.resend.com/emails",
+      from: Deno.env.get("RESEND_FROM") ?? "Orionfold <manav@orionfold.com>",
+      to: email,
+      kind: "initial",
+      link: `${siteUrl}/training/relay-operator-workshop/access/#t=${raw}`,
+      idempotencyKey: `workshop-initial-${entitlement.id}-${generation}`,
+    });
+    const now = new Date().toISOString();
+    const [entitlementUpdate, purchaseUpdate] = await Promise.all([
+      db.from("workshop_entitlements").update({
+        state: "active", delivered_at: now, last_delivery_error_code: null,
+        next_retry_at: null, updated_at: now,
+      }).eq("id", entitlement.id),
+      db.from("purchases").update({ delivered: true, delivered_at: now }).eq("id", purchase.id),
+    ]);
+    if (entitlementUpdate.error || purchaseUpdate.error) {
+      throw entitlementUpdate.error ?? purchaseUpdate.error;
+    }
+  } catch (error) {
+    await db.from("workshop_entitlements").update({
+      state: "delivery_retrying",
+      last_delivery_error_code: "transactional_delivery_failed",
+      next_retry_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+      updated_at: new Date().toISOString(),
+    }).eq("id", entitlement.id);
+    throw error;
+  }
+
+  await sendMetaPurchase({
+    eventId: session.id, email, amountCents: session.amount_total,
+    currency: session.currency, lookupKey,
+    fbp: session.metadata?.fbp ?? null, fbc: session.metadata?.fbc ?? null,
+    fbclid: session.metadata?.fbclid ?? null,
+  });
+}
+
+async function onRefundChanged(refund: Stripe.Refund) {
+  let paymentIntentId = asId((refund as unknown as { payment_intent?: unknown }).payment_intent);
+  let fullyRefunded = false;
+  const chargeId = asId(refund.charge);
+  if (chargeId) {
+    // Some Refund payloads omit the expanded PaymentIntent. Recover it from the
+    // Charge before asking Stripe's Invoice Payments mapping for exact lineage.
+    const charge = await stripe.charges.retrieve(chargeId);
+    paymentIntentId ??= asId(charge.payment_intent);
+    fullyRefunded = charge.amount_refunded >= charge.amount;
+  }
+  const invoicePayment = paymentIntentId
+    ? await stripe.invoicePayments.list({
+        payment: { type: "payment_intent", payment_intent: paymentIntentId },
+        status: "paid",
+        limit: 1,
+      })
+    : null;
+  const invoiceId = asId(invoicePayment?.data[0]?.invoice);
+  const status = refund.status ?? "pending";
+  const db = supabaseAdmin();
+  if (paymentIntentId) {
+    const result = await db.rpc("apply_workshop_refund_result", {
+      p_payment_intent_id: paymentIntentId,
+      p_refund_id: refund.id,
+      p_status: status,
+    });
+    if (result.error) throw result.error;
+  }
+  if (invoiceId && status === "succeeded" && fullyRefunded) {
+    const now = new Date().toISOString();
+    const result = await db.from("fe_entitlements").update({
+      status: "revoked",
+      refunded_at: now,
+      updated_at: now,
+    })
+      .eq("product", "orionfold-relay-host")
+      .eq("stripe_invoice_id", invoiceId)
+      .select("stripe_subscription_id")
+      .maybeSingle();
+    if (result.error) throw result.error;
+
+    // A full Host refund ends the annual commercial right, not merely the
+    // current envelope. Cancel its subscription immediately so Stripe cannot
+    // rebill and issue a fresh annual envelope after a refunded term. Replays
+    // remain safe because an already-canceled subscription is left alone.
+    const subscriptionId = result.data?.stripe_subscription_id;
+    if (subscriptionId) {
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      if (subscription.status !== "canceled") {
+        await stripe.subscriptions.cancel(subscriptionId);
+      }
+    }
   }
 }
 
@@ -265,7 +488,11 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
 
   if (insertError) {
     if (insertError.code === "23505") {
-      console.log("Duplicate license checkout.session.completed, already recorded:", session.id);
+      if (descriptor.relayHost) {
+        await recoverRelayHostDelivery(supabase, session, { lookupKey, descriptor, email, item });
+      } else {
+        console.log("Duplicate license checkout.session.completed, already recorded:", session.id);
+      }
       return;
     }
     throw insertError;
@@ -279,11 +506,13 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
   const seedB64 = Deno.env.get(LICENSE_SIGNING_SEED_ENV);
   if (!seedB64) {
     console.error("LICENSE_SIGNING_SEED_B64 unset — license recorded, NOT issued:", session.id, lookupKey);
+    if (descriptor.relayHost) throw new Error("Relay Host signing seed is not configured");
   } else {
     try {
       await issueAndDeliverLicense(supabase, session, { lookupKey, descriptor, email, item });
     } catch (err) {
       console.error("License issuance/delivery failed (recorded, delivered=false):", session.id, err);
+      if (descriptor.relayHost) throw err;
     }
   }
 
@@ -300,6 +529,62 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
   });
 }
 
+async function recoverRelayHostDelivery(
+  // deno-lint-ignore no-explicit-any
+  supabase: any,
+  session: Stripe.Checkout.Session,
+  ctx: {
+    lookupKey: string;
+    descriptor: LicenseProductDescriptor;
+    email: string;
+    item: { label: string };
+  },
+) {
+  const existing = await supabase.from("fe_entitlements")
+    .select("license_id,delivered")
+    .eq("stripe_session_id", session.id)
+    .maybeSingle();
+  if (existing.error) throw existing.error;
+  if (existing.data?.delivered) return;
+
+  if (existing.data?.license_id) {
+    const path = `licenses/${existing.data.license_id}.json`;
+    const stored = await supabase.storage.from(LICENSE_FILES_BUCKET).download(path);
+    if (!stored.error && stored.data) {
+      const fileText = await stored.data.text();
+      const signed = await supabase.storage.from(LICENSE_FILES_BUCKET)
+        .createSignedUrl(path, LICENSE_URL_TTL_SECONDS);
+      if (signed.error || !signed.data?.signedUrl) {
+        throw signed.error ?? new Error("Relay Host recovery signed URL missing");
+      }
+      await sendLicenseEmail(
+        ctx.email,
+        ctx.item.label,
+        existing.data.license_id,
+        fileText,
+        brandedUrl(signed.data.signedUrl),
+        ctx.descriptor.product,
+      );
+      const now = new Date().toISOString();
+      const entitlementUpdate = await supabase.from("fe_entitlements")
+        .update({ delivered: true, delivered_at: now, updated_at: now })
+        .eq("stripe_session_id", session.id);
+      const purchaseUpdate = await supabase.from("purchases")
+        .update({ delivered: true, delivered_at: now })
+        .eq("stripe_session_id", session.id);
+      if (entitlementUpdate.error || purchaseUpdate.error) {
+        throw entitlementUpdate.error ?? purchaseUpdate.error;
+      }
+      return;
+    }
+  }
+
+  if (!Deno.env.get(LICENSE_SIGNING_SEED_ENV)) {
+    throw new Error("Relay Host signing seed is not configured");
+  }
+  await issueAndDeliverLicense(supabase, session, ctx);
+}
+
 // Build → sign → self-verify → persist → deliver → mark delivered. Throws on any
 // failure; the caller records the sale first and swallows the throw (see above).
 async function issueAndDeliverLicense(
@@ -311,9 +596,17 @@ async function issueAndDeliverLicense(
     descriptor: LicenseProductDescriptor;
     email: string;
     item: { label: string };
+    priceId?: string | null;
+    purchaseId?: string | null;
+    invoiceId?: string | null;
+    replacesLicenseId?: string | null;
+    term?: { issuedAt: string; notBefore: string; expiresAt: string };
+    hostIdentity?: { ref: string; kind: "organization" | "individual"; displayName: string };
   },
 ) {
   const seedB64 = Deno.env.get(LICENSE_SIGNING_SEED_ENV)!;
+  const signingKeyId = Deno.env.get(LICENSE_SIGNING_KEY_ID_ENV)?.trim() ||
+    LICENSE_KEY_ID;
 
   // License id from the product's sequence — the only nextval path (supabase-js
   // can't call nextval directly). Each product draws from its own sequence:
@@ -331,29 +624,72 @@ async function issueAndDeliverLicense(
   }
 
   // Term from the sale moment; provenance from the line item + the charge.
-  const term = licenseTerm(session.created);
-  const priceId = await sessionPriceId(session);
-  const purchaseId = asId(session.payment_intent) ?? asId(session.subscription);
-  const name = session.customer_details?.name ?? null;
+  const term = ctx.term ?? licenseTerm(session.created);
+  const priceId = ctx.priceId === undefined ? await sessionPriceId(session) : ctx.priceId;
+  const purchaseId = ctx.purchaseId === undefined
+    ? asId(session.payment_intent) ?? asId(session.subscription)
+    : ctx.purchaseId;
+  const checkoutName = session.customer_details?.name ?? null;
+  let hostIdentity = ctx.hostIdentity;
+  if (ctx.descriptor.relayHost && !hostIdentity) {
+    const requestedKind = checkoutCustomField(session, "licensee_kind");
+    const kind = requestedKind === "individual" ? "individual" : "organization";
+    const displayName = checkoutCustomField(session, "licensee_name") ?? checkoutName ?? ctx.email;
+    const resolved = await supabase.rpc("resolve_relay_host_licensee", {
+      p_email: ctx.email.trim().toLowerCase(),
+      p_kind: kind,
+      p_display_name: displayName,
+    });
+    const row = Array.isArray(resolved.data) ? resolved.data[0] : resolved.data;
+    if (resolved.error || !row?.licensee_ref) {
+      throw resolved.error ?? new Error("Relay Host licensee identity was not resolved");
+    }
+    hostIdentity = {
+      ref: row.licensee_ref,
+      kind: row.kind,
+      displayName: row.display_name,
+    };
+  }
 
-  const payload = buildLicensePayload({
-    licenseId,
-    product: ctx.descriptor.product,
-    tier: ctx.descriptor.tier,
-    entitlements: ctx.descriptor.entitlements,
-    edition: ctx.descriptor.edition, // undefined for Proof → omitted from payload
-    issuedTo: { email: ctx.email, name },
-    issuedAt: term.issuedAt,
-    notBefore: term.notBefore,
-    expiresAt: term.expiresAt,
-    provenance: { stripe_purchase_id: purchaseId, stripe_price_id: priceId },
-  });
+  const issuedTo = hostIdentity
+    ? hostIdentity.kind === "organization"
+      ? { email: ctx.email, org: hostIdentity.displayName }
+      : { email: ctx.email, name: hostIdentity.displayName }
+    : { email: ctx.email, name: checkoutName };
+  const payload = ctx.descriptor.relayHost && hostIdentity
+    ? buildRelayHostLicensePayload({
+        licenseId,
+        offer: ctx.descriptor.relayHost.offer,
+        hostGrant: {
+          sku: ctx.descriptor.relayHost.sku,
+          licensee: { kind: hostIdentity.kind, ref: hostIdentity.ref },
+          limits: ctx.descriptor.relayHost.limits,
+          updatesUntil: term.expiresAt,
+        },
+        issuedTo,
+        issuedAt: term.issuedAt,
+        notBefore: term.notBefore,
+        expiresAt: term.expiresAt,
+        provenance: { stripe_purchase_id: purchaseId, stripe_price_id: priceId },
+      })
+    : buildLicensePayload({
+        licenseId,
+        product: ctx.descriptor.product,
+        tier: ctx.descriptor.tier,
+        entitlements: ctx.descriptor.entitlements,
+        edition: ctx.descriptor.edition,
+        issuedTo,
+        issuedAt: term.issuedAt,
+        notBefore: term.notBefore,
+        expiresAt: term.expiresAt,
+        provenance: { stripe_purchase_id: purchaseId, stripe_price_id: priceId },
+      });
 
   // Sign with the prod seed, then self-verify against the seed's OWN public key
   // before delivery — a corrupted/misconfigured seed must never ship a license
   // that silently fails on the customer's box.
-  const signature = await signLicense(payload, seedB64, LICENSE_KEY_ID);
-  const pub = await publicKeyFromSeed(seedB64);
+  const pub = await assertLicenseSigningIdentity(seedB64, signingKeyId);
+  const signature = await signLicense(payload, seedB64, signingKeyId);
   if (!(await verifyLicense(payload, signature.value, pub))) {
     throw new Error(`License self-verify FAILED for ${licenseId} — refusing to deliver`);
   }
@@ -369,23 +705,32 @@ async function issueAndDeliverLicense(
   const { error: entError } = await supabase.from("fe_entitlements").upsert(
     {
       license_id: licenseId,
-      key_id: LICENSE_KEY_ID,
+      key_id: signingKeyId,
       product: ctx.descriptor.product,
       edition: ctx.descriptor.edition ?? null, // null for Proof (column now nullable)
       tier: ctx.descriptor.tier,
       seats: LICENSE_SEATS,
       email: ctx.email,
-      issued_to_name: name,
-      issued_to_org: null,
+      issued_to_name: issuedTo.name ?? null,
+      issued_to_org: issuedTo.org ?? null,
       stripe_session_id: session.id,
       stripe_customer_id: asId(session.customer),
       stripe_subscription_id: asId(session.subscription),
       stripe_price_id: priceId,
+      stripe_invoice_id: ctx.invoiceId ?? asId((session as unknown as { invoice?: unknown }).invoice),
       status: "active",
       issued_at: term.issuedAt,
       not_before: term.notBefore,
       expires_at: term.expiresAt,
       token_ref: null,
+      licensee_ref: hostIdentity?.ref ?? null,
+      licensee_kind: hostIdentity?.kind ?? null,
+      host_grant: payload.grants?.["product:relay-host"] ?? null,
+      updates_until: ctx.descriptor.relayHost ? term.expiresAt : null,
+      replaces_license_id: ctx.replacesLicenseId ?? null,
+      refund_deadline: ctx.descriptor.relayHost
+        ? new Date(Date.parse(term.issuedAt) + 14 * 24 * 60 * 60 * 1000).toISOString()
+        : null,
     },
     { onConflict: "stripe_session_id" },
   );
@@ -484,6 +829,7 @@ async function sendLicenseEmail(
     headers: {
       Authorization: `Bearer ${RESEND_API_KEY}`,
       "Content-Type": "application/json",
+      "Idempotency-Key": `license-delivery-${licenseId}`,
     },
     body: JSON.stringify({
       from: "Orionfold <manav@updates.orionfold.com>",
@@ -586,6 +932,39 @@ reply to this email and we will send you a fresh one.
 ${footer}`;
 }
 
+function relayHostLicenseEmailText(productLabel: string, licenseId: string, installUrl: string, footer: string): string {
+  return `Thank you for buying ${productLabel}.
+
+Your license number is ${licenseId}. Keep the attached signed license file. Your
+private re-download link below works for 7 days:
+
+${installUrl}
+
+Install Relay Host:
+
+npm i -g orionfold-relay
+relay license add <your-license-file>
+
+Your annual Host right covers one Host and ten managed Cells. Premium Packs are
+separate. Pull the public Cell image by its accepted digest, with no registry
+token or Orionfold credential:
+
+docker pull ghcr.io/orionfold/relay-cell@sha256:b0dbee1535a2da9d963814591c8f0307d719b0d1ee43baebd2cbedf5f1d22c73
+
+If the annual term or a refund ends forward access, Cells already running keep
+running and export and recovery remain available. New capacity, forward paid
+updates, and re-download stop. Compatible critical-security fixes remain
+included. Email support has no response-time SLA.
+
+For a fresh link, use the re-download form at:
+
+https://orionfold.com/relay/#get-relay-host
+
+For a same-licensee replacement, reply to this email.
+
+${footer}`;
+}
+
 // Product → fulfilment-email template. Add a product here (not another ternary
 // arm) so the install/unlock verb stays product-correct.
 const LICENSE_EMAIL_TEXT: Record<
@@ -595,6 +974,7 @@ const LICENSE_EMAIL_TEXT: Record<
   "arena-field-edition": arenaLicenseEmailText,
   "orionfold-proof": proofLicenseEmailText,
   "orionfold-relay": relayLicenseEmailText,
+  "orionfold-relay-host": relayHostLicenseEmailText,
 };
 
 async function fulfillBook(session: Stripe.Checkout.Session) {
@@ -699,11 +1079,96 @@ async function fulfillSponsor(session: Stripe.Checkout.Session) {
 async function onInvoicePaid(invoice: Stripe.Invoice) {
   const subscriptionId = invoiceSubscriptionId(invoice);
   if (!subscriptionId) return; // not a subscription invoice
-  const { error } = await supabaseAdmin()
+  const db = supabaseAdmin();
+  const { error } = await db
     .from("sponsors")
     .update({ status: "active", active: true, updated_at: new Date().toISOString() })
     .eq("stripe_subscription_id", subscriptionId);
   if (error) throw error;
+
+  // Initial subscription invoices race with checkout.session.completed, which
+  // owns first issuance. Only a later paid cycle mints the replacement envelope.
+  // deno-lint-ignore no-explicit-any
+  const line = (invoice.lines?.data?.[0] ?? null) as any;
+  const linePriceRef = line?.pricing?.price_details?.price ?? line?.price;
+  const linePriceId = asId(linePriceRef);
+  const expandedLookupKey = typeof linePriceRef === "object"
+    ? linePriceRef?.lookup_key
+    : null;
+  const lookupKey = expandedLookupKey ??
+    (linePriceId ? (await stripe.prices.retrieve(linePriceId)).lookup_key : null);
+  if (!shouldIssueRelayHostRenewal(invoice.billing_reason, lookupKey, RELAY_HOST_LOOKUP_KEY)) return;
+
+  const current = await db.from("fe_entitlements")
+    .select("license_id,email,licensee_ref,licensee_kind,issued_to_name,issued_to_org")
+    .eq("product", "orionfold-relay-host")
+    .eq("stripe_subscription_id", subscriptionId)
+    .neq("stripe_invoice_id", invoice.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (current.error) throw current.error;
+  if (!current.data?.licensee_ref || !current.data?.licensee_kind) return;
+
+  const alreadyIssued = await db.from("fe_entitlements")
+    .select("id,delivered")
+    .eq("stripe_invoice_id", invoice.id)
+    .maybeSingle();
+  if (alreadyIssued.error) throw alreadyIssued.error;
+  if (alreadyIssued.data?.delivered) return;
+
+  const invoiceKey = `invoice:${invoice.id}`;
+  const purchase = await db.from("purchases").upsert({
+    stripe_session_id: invoiceKey,
+    stripe_customer_id: asId(invoice.customer),
+    lookup_key: RELAY_HOST_LOOKUP_KEY,
+    email: current.data.email,
+    amount_total: invoice.amount_paid,
+    currency: invoice.currency,
+  }, { onConflict: "stripe_session_id", ignoreDuplicates: true });
+  if (purchase.error) throw purchase.error;
+
+  const startEpoch = line?.period?.start ?? invoice.created;
+  const endEpoch = line?.period?.end ?? Math.floor(addMonthsUTC(new Date(startEpoch * 1000), 12).getTime() / 1000);
+  const descriptor = licenseProductForLookupKey(RELAY_HOST_LOOKUP_KEY)!;
+  const syntheticSession = {
+    id: invoiceKey,
+    created: startEpoch,
+    customer: invoice.customer,
+    subscription: subscriptionId,
+    amount_total: invoice.amount_paid,
+    currency: invoice.currency,
+    metadata: { lookup_key: RELAY_HOST_LOOKUP_KEY, kind: "license" },
+    customer_email: current.data.email,
+    customer_details: null,
+    invoice: invoice.id,
+  } as unknown as Stripe.Checkout.Session;
+
+  const deliveryContext = {
+    lookupKey: RELAY_HOST_LOOKUP_KEY,
+    descriptor,
+    email: current.data.email,
+    item: { label: getCatalogItem(RELAY_HOST_LOOKUP_KEY)!.label },
+    priceId: linePriceId,
+    purchaseId: invoice.id,
+    invoiceId: invoice.id,
+    replacesLicenseId: current.data.license_id,
+    term: {
+      issuedAt: isoSecondUTC(new Date(startEpoch * 1000)),
+      notBefore: isoSecondUTC(new Date(startEpoch * 1000)),
+      expiresAt: isoSecondUTC(new Date(endEpoch * 1000)),
+    },
+    hostIdentity: {
+      ref: current.data.licensee_ref,
+      kind: current.data.licensee_kind,
+      displayName: current.data.issued_to_org ?? current.data.issued_to_name ?? current.data.email,
+    },
+  };
+  if (alreadyIssued.data) {
+    await recoverRelayHostDelivery(db, syntheticSession, deliveryContext);
+  } else {
+    await issueAndDeliverLicense(db, syntheticSession, deliveryContext);
+  }
 }
 
 async function onInvoicePaymentFailed(invoice: Stripe.Invoice) {
@@ -716,6 +1181,28 @@ async function onInvoicePaymentFailed(invoice: Stripe.Invoice) {
     .update({ status: "past_due", updated_at: new Date().toISOString() })
     .eq("stripe_subscription_id", subscriptionId);
   if (error) throw error;
+  await updateLatestRelayHostSubscriptionStatus(subscriptionId, "past_due");
+}
+
+async function updateLatestRelayHostSubscriptionStatus(
+  subscriptionId: string,
+  status: string,
+) {
+  const db = supabaseAdmin();
+  const latest = await db.from("fe_entitlements")
+    .select("id")
+    .eq("product", "orionfold-relay-host")
+    .eq("stripe_subscription_id", subscriptionId)
+    .is("refunded_at", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (latest.error) throw latest.error;
+  if (!latest.data) return;
+  const updated = await db.from("fe_entitlements")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", latest.data.id);
+  if (updated.error) throw updated.error;
 }
 
 async function onSubscriptionUpdated(sub: Stripe.Subscription) {
@@ -735,6 +1222,8 @@ async function onSubscriptionUpdated(sub: Stripe.Subscription) {
     })
     .eq("stripe_subscription_id", sub.id);
   if (error) throw error;
+  const hostStatus = relayHostLifecycleStatus(sub.status);
+  await updateLatestRelayHostSubscriptionStatus(sub.id, hostStatus);
 }
 
 async function onSubscriptionDeleted(sub: Stripe.Subscription) {
@@ -743,4 +1232,5 @@ async function onSubscriptionDeleted(sub: Stripe.Subscription) {
     .update({ status: "canceled", active: false, updated_at: new Date().toISOString() })
     .eq("stripe_subscription_id", sub.id);
   if (error) throw error;
+  await updateLatestRelayHostSubscriptionStatus(sub.id, "canceled");
 }

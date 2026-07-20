@@ -52,6 +52,11 @@ These behaviors hold across the routes below, so they are stated once here rathe
 | `DELETE`, `GET` | `/api/apps/{id}` | `app-internal` | `src/app/api/apps/[id]/route.ts` |
 | `GET` | `/api/apps/{id}/deployments` | `app-internal` | `src/app/api/apps/[id]/deployments/route.ts` |
 | `GET` | `/api/apps/{id}/deployments/{deploymentId}` | `app-internal` | `src/app/api/apps/[id]/deployments/[deploymentId]/route.ts` |
+| `DELETE`, `GET`, `PUT` | `/api/apps/{id}/budgets` | `app-internal` | `src/app/api/apps/[id]/budgets/route.ts` |
+| `POST` | `/api/apps/{id}/pack/community-submission` | `app-internal` | `src/app/api/apps/[id]/pack/community-submission/route.ts` |
+| `POST` | `/api/apps/{id}/pack/export` | `app-internal` | `src/app/api/apps/[id]/pack/export/route.ts` |
+| `POST` | `/api/apps/{id}/pack/inspect` | `app-internal` | `src/app/api/apps/[id]/pack/inspect/route.ts` |
+| `POST` | `/api/apps/{id}/pack/publish` | `app-internal` | `src/app/api/apps/[id]/pack/publish/route.ts` |
 | `GET`, `POST` | `/api/apps/{id}/preview` | `app-internal` | `src/app/api/apps/[id]/preview/route.ts` |
 | `GET` | `/api/apps/{id}/previews/{artifactId}/{path*}` | `app-internal` | `src/app/api/apps/[id]/previews/[artifactId]/[[...path]]/route.ts` |
 | `POST` | `/api/apps/{id}/publish` | `app-internal` | `src/app/api/apps/[id]/publish/route.ts` |
@@ -177,15 +182,15 @@ Returns one app's full detail: the summary plus its parsed manifest.
 
 ### DELETE /api/apps/{id}
 
-Cascade-deletes an app: its manifest directory, its project, its namespaced profiles and blueprints, and its schedule rows.
+Removes an installed Pack while retaining the durable business data and reusable primitives it introduced. This is Pack removal, not Relay Cell removal or purge.
 
 - **Request**: none.
-- **Response** `200`: `{ "success": true, "filesRemoved": true, "projectRemoved": true, "profilesRemoved": 0, "blueprintsRemoved": 0 }`.
+- **Response** `200`: `{ "success": true, "manifestRemoved": true, "schedulesRemoved": 2, "retained": { "tables": 2, "profiles": 2, "blueprints": 2, "customersAndAttribution": true } }`.
 - **Errors**:
   - `400` when the id is empty: `{ "error": "Pack id is required" }`.
-  - `404` when nothing was removed: `{ "error": "Pack not found" }`.
-  - `500` on failure: `{ "error": "Failed to delete pack" }`.
-- **Side effects**: deletes the app directory, the project (cascade), the app's profile directories and blueprint files, and its schedule rows, then invalidates the apps cache.
+  - `404` when the Pack is not installed: `{ "error": "Pack not found" }`.
+  - `500` on failure: `{ "error": "Failed to remove pack" }`.
+- **Side effects**: deletes the installed-Pack directory and Pack-owned schedule rows, then invalidates the Apps cache. It retains the project, tables and rows, reusable agents/profiles and blueprints, customers, and customer cost attribution; operators delete retained data separately from its owning surface.
 
 ### GET /api/apps/{id}/deployments
 
@@ -232,6 +237,34 @@ Returns a single deployment row.
   - `404` when the app is not found: `{ "error": "App not found", "code": "APP_NOT_FOUND" }`.
   - `500` on failure: `{ "error": "Failed to read deployment" }`.
 - **Side effects**: reads only.
+
+### GET /api/apps/{id}/budgets
+
+Returns the app's combined app-level and schedule-level budget snapshot. A missing app returns `404`; other snapshot failures return `500`.
+
+### PUT /api/apps/{id}/budgets
+
+Creates or replaces an app or app-schedule budget policy. The body is `{ "scopeType": "app | schedule", "scopeId": "string", "policy": { } }`. Relay returns `400` when the scope does not belong to this app or the policy is invalid, and `404` when the target is missing.
+
+### DELETE /api/apps/{id}/budgets
+
+Deletes an app or app-schedule budget policy. The body identifies `scopeType` and `scopeId`; the `200` response is `{ "success": true, "removed": true | false }`.
+
+### POST /api/apps/{id}/pack/inspect
+
+Builds an in-memory pack preview without publishing it. The optional body accepts `includeSampleData` and `author`. The `200` response includes `packId`, `version`, a SHA-256 `hash`, `sampleRowsIncluded`, and file path/byte metadata without file contents.
+
+### POST /api/apps/{id}/pack/export
+
+Exports the app as a gzip tar archive containing `pack.yaml` and `base`. The optional body accepts `includeSampleData` and `author`. Validation and export errors return `400`, a missing app returns `404`, and an unexpected failure returns `500`.
+
+### POST /api/apps/{id}/pack/publish
+
+Starts an asynchronous pack deployment. The strict body requires `targetId`, `confirm: true`, and the 64-character `expectedHash`; `includeSampleData` and `author` are optional. A successful claim returns `202` with deployment data. Inspect first and pass its hash to prevent publishing a changed artifact.
+
+### POST /api/apps/{id}/pack/community-submission
+
+Prepares a community-pack submission for a configured target. The body requires `targetId` and the 64-character `expectedHash`. The response describes the prepared submission; named target, hash, and connection failures retain their mapped status codes.
 
 ### POST /api/apps/{id}/preview
 

@@ -3,12 +3,12 @@ id: "07-files-observability-maintenance"
 title: "Files, Observability, And Maintenance API"
 status: "draft"
 stability: "app-internal"
-families: ["uploads","snapshots","plugins","telemetry","diagnostics","data"]
+families: ["uploads","snapshots","recovery","plugins","health","telemetry","diagnostics","data"]
 ---
 
 ## Who This Is For
 
-This group is for a developer running and maintaining a local Relay instance: uploading and serving files, taking and restoring full-state snapshots, loading and scaffolding plugins, reading live telemetry and stream diagnostics, and seeding or clearing data in a staging build. Read this if you are building a backup workflow, wiring an upload flow into a task, polling a live log stream, or standing up a disposable staging instance with realistic sample data.
+This group is for a developer running and maintaining a local Relay instance: uploading and serving files, taking and restoring full-state snapshots, loading and scaffolding plugins, checking liveness/readiness, reading live telemetry and stream diagnostics, and seeding or clearing data in a staging build. Read this if you are building a backup workflow, wiring an upload flow into a task, polling a live log stream, or standing up a disposable staging instance with realistic sample data.
 
 Several routes here are destructive or gated. Restore overwrites the live database; data seed and clear only run on a staging build; diagnostics is disabled in production. Each such gate is called out on the route.
 
@@ -39,7 +39,9 @@ These behaviors hold across the routes below, so they are stated once here rathe
 
 - `uploads`
 - `snapshots`
+- `recovery`
 - `plugins`
+- `health`
 - `telemetry`
 - `diagnostics`
 - `data`
@@ -51,10 +53,15 @@ These behaviors hold across the routes below, so they are stated once here rathe
 | `POST` | `/api/data/clear` | `app-internal` | `src/app/api/data/clear/route.ts` |
 | `POST` | `/api/data/seed` | `app-internal` | `src/app/api/data/seed/route.ts` |
 | `GET` | `/api/diagnostics/chat-streams` | `app-internal` | `src/app/api/diagnostics/chat-streams/route.ts` |
+| `GET` | `/api/health/live` | `app-internal` | `src/app/api/health/live/route.ts` |
+| `GET` | `/api/health/ready` | `app-internal` | `src/app/api/health/ready/route.ts` |
 | `GET` | `/api/logs/stream` | `app-internal` | `src/app/api/logs/stream/route.ts` |
 | `GET` | `/api/plugins` | `app-internal` | `src/app/api/plugins/route.ts` |
 | `POST` | `/api/plugins/reload` | `app-internal` | `src/app/api/plugins/reload/route.ts` |
 | `POST` | `/api/plugins/scaffold` | `app-internal` | `src/app/api/plugins/scaffold/route.ts` |
+| `GET`, `POST` | `/api/recovery` | `app-internal` | `src/app/api/recovery/route.ts` |
+| `POST` | `/api/recovery/drill` | `app-internal` | `src/app/api/recovery/drill/route.ts` |
+| `POST` | `/api/recovery/verify` | `app-internal` | `src/app/api/recovery/verify/route.ts` |
 | `GET`, `POST` | `/api/snapshots` | `app-internal` | `src/app/api/snapshots/route.ts` |
 | `DELETE`, `GET` | `/api/snapshots/{id}` | `app-internal` | `src/app/api/snapshots/[id]/route.ts` |
 | `POST` | `/api/snapshots/{id}/restore` | `app-internal` | `src/app/api/snapshots/[id]/restore/route.ts` |
@@ -66,6 +73,32 @@ These behaviors hold across the routes below, so they are stated once here rathe
 
 ## Endpoint Reference
 
+### GET /api/health/live
+
+Reports that the Relay process can answer HTTP. It deliberately does not touch
+the database or other storage.
+
+- **Request**: none.
+- **Response** `200`: `{ "status": "live", "contractVersion": 1 }`.
+- **Errors**: none returned explicitly. A failed process or network path cannot
+  return the response.
+- **Side effects**: none. The response sets `Cache-Control: no-store`.
+
+### GET /api/health/ready
+
+Reports whether the active Relay Cell has a valid Cell id and can query SQLite.
+
+- **Request**: none.
+- **Response** `200`: `{ "status": "ready", "cellId": "<DNS label>",
+  "relayVersion": "<version>", "schema": { "contractVersion": 1, "min": 1,
+  "max": 1 } }`. When `RELAY_CELL_ID` is absent, local mode reports `local`.
+- **Errors**: `503` with `{ "status": "not_ready", "reason":
+  "CELL_ID_INVALID", "contractVersion": 1 }` for an invalid Cell id, or the
+  same shape with `reason: "SQLITE_UNAVAILABLE"` when the database probe fails.
+- **Side effects**: performs `SELECT 1` against SQLite and sets
+  `Cache-Control: no-store`; it returns no data paths, credentials, or customer
+  content.
+
 ### POST /api/uploads
 
 Accepts a file upload, writes it to disk, records a document row, and starts background processing.
@@ -75,7 +108,8 @@ Accepts a file upload, writes it to disk, records a document row, and starts bac
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `file` | File | yes | Maximum 50 MB. |
-| `taskId` | `string` | no | Associates the upload with a task. |
+| `taskId` | `string` | no | Associates the upload with an existing task. |
+| `projectId` | `string` | no | Associates the upload with an existing project before processing starts. |
 
 - **Response** `201`:
   ```json
@@ -85,14 +119,18 @@ Accepts a file upload, writes it to disk, records a document row, and starts bac
     "originalName": "string",
     "size": 12345,
     "type": "application/pdf",
-    "taskId": "string"
+    "taskId": "string | null",
+    "projectId": "string | null"
   }
   ```
   `filename` is a generated `<uuid>.<ext>`. `taskId` is null when not supplied.
 - **Errors**:
+  - `400` when the multipart body cannot be parsed: `{ "error": "Invalid multipart form data" }`.
   - `400` when no file is present: `{ "error": "No file provided" }`.
   - `400` when the file is over the limit: `{ "error": "File too large (max 50MB)" }`.
-- **Side effects**: writes the file to the uploads directory, inserts a `documents` row with `status` `uploaded`, and starts background text extraction. If extraction fails, the row is updated to `status` `error`.
+  - `404` when `taskId` does not resolve: `{ "error": "Task not found: <id>" }`.
+  - `404` when `projectId` does not resolve: `{ "error": "Project not found: <id>" }`.
+- **Side effects**: writes the file to the uploads directory, inserts a `documents` row with `status` `uploaded` and the requested task/project association, and starts background text extraction. If extraction fails, the row is updated to `status` `error`.
 
 ### GET /api/uploads/{id}
 
@@ -122,6 +160,68 @@ Deletes orphaned upload files: files older than 24 hours with no matching docume
 - **Response** `200`: `{ "deleted": ["string"], "errors": ["string"] }`. `deleted` lists removed filenames; `errors` lists `"<filename>: <message>"` strings for files that could not be removed.
 - **Errors**: none returned at the HTTP layer; a directory-read failure is logged and the route still returns `200` with whatever was collected.
 - **Side effects**: removes orphaned files from disk.
+
+### GET /api/recovery
+
+Returns the encrypted-recovery configuration posture and recent content-free
+receipts. It never returns a raw destination path, key path, or key bytes.
+
+- **Request**: none.
+- **Response** `200`: `{ "destinationConfigured": true, "keyConfigured": true,
+  "destinationSource": "environment", "keySource": "environment", "latest":
+  { ...receipt } | null, "receipts": [ ... ] }`. Sources are `environment` or
+  `none`. Receipts include the operation, status, stable reason code, bundle
+  basename, integrity outcomes, timestamps, duration, Cell/snapshot identity,
+  content hash, and a non-secret key fingerprint.
+- **Errors**: `500` with `{ "error": "RECOVERY_RECEIPT_INVALID", "detail":
+  "..." }` when stored recovery evidence is corrupt; it is never silently
+  omitted.
+- **Side effects**: reads only and sets `Cache-Control: no-store`.
+
+### POST /api/recovery
+
+Creates a live-safe snapshot and customer-owned AES-256-GCM recovery bundle
+using server-side environment configuration. The bundle is promoted to its
+final name only after authenticated decryption, manifest/checksum validation,
+and SQLite integrity checks pass.
+
+- **Request**: no body. The server must define `RELAY_RECOVERY_DESTINATION` and
+  `RELAY_RECOVERY_KEY_FILE` outside the Cell data root.
+- **Response** `201`: `{ "receipt": { ... } }` with status `ready` and reason
+  `RECOVERY_READY`. Paths and key bytes are omitted.
+- **Errors**: named `{ "error", "detail" }` failures; `409` when configuration
+  is absent or another recovery operation is active; `400` for key, identity,
+  integrity, or containment failures; `500` for an internal failure.
+- **Side effects**: creates a snapshot, encrypted bundle, local receipt, and
+  bundle-sidecar receipt. Partial/candidate artifacts are removed on failure.
+
+### POST /api/recovery/verify
+
+Authenticates and validates one completed bundle without changing live state.
+
+- **Request** JSON: `{ "bundleFile": "<basename>.relay-recovery" }`. Only a
+  basename inside the configured destination is accepted.
+- **Response** `200`: `{ "receipt": { ... } }` with status `verified`, reason
+  `RECOVERY_VERIFIED`, and database/access integrity results.
+- **Errors**: `400` for invalid JSON/name, wrong key/Cell, damage, unsafe archive
+  content, or failed integrity; `404` when the bundle is absent; `409` while
+  another recovery operation runs.
+- **Side effects**: decrypts into a private temporary directory, writes a
+  content-free receipt, and removes plaintext staging.
+
+### POST /api/recovery/drill
+
+Runs verify plus an isolated extraction of the Cell file archive. It never
+overwrites the live Cell. Destructive restore is deliberately CLI-only and
+accepts only a missing or empty target data root.
+
+- **Request** JSON: `{ "bundleFile": "<basename>.relay-recovery" }`.
+- **Response** `200`: `{ "receipt": { ... } }` with status `verified`, reason
+  `RECOVERY_DRILL_VERIFIED`, and `restoredFileCount`.
+- **Errors**: the same named failures as verify, plus
+  `RECOVERY_FILE_ARCHIVE_INVALID` when isolated extraction fails.
+- **Side effects**: writes a content-free drill receipt and removes all
+  temporary plaintext.
 
 ### GET /api/snapshots
 
@@ -294,7 +394,7 @@ Scaffolds a new MCP (chat-tools) plugin directory from a validated spec. It does
 Aggregates a live telemetry snapshot: task, project, and workflow counts, cost windows, runtime info, trend sparklines, and host metrics.
 
 - **Request**: none.
-- **Response** `200`: a snapshot object with, among others, `tasksRunning`, `tasksFailed`, `completedToday`, `activeProjects`, `activeWorkflows`, `reviewPending`, `costTodayMicros`, `costToDateMicros`, `budgetMonthlyCapMicros`, `runtimeLabel`, `providerId`, `runtimeSdkVersion`, a `trends` block (`agentActivity24h`, `completions7d`, `failures7d`), and a `host` block (`cwd`, `folderName`, `branch`, `cpuLoadPct`, `memUsedPct`). Costs are integer micro-dollars. `cpuLoadPct` and `memUsedPct` are null on a platform that does not report them.
+- **Response** `200`: a snapshot object with, among others, `tasksRunning`, `tasksFailed`, `completedToday`, `activeProjects`, `activeWorkflows`, `reviewPending`, `costTodayMicros`, `costToDateMicros`, `budgetMonthlyCapMicros`, `planPricedMonthlyMicros`, `runtimeLabel`, `providerId`, `runtimeSdkVersion`, a `trends` block (`agentActivity24h`, `completions7d`, `failures7d`), and a `host` block (`cwd`, `folderName`, `branch`, `cpuLoadPct`, `memUsedPct`). Costs are integer micro-dollars. `providerId` can identify Anthropic, OpenAI, Ollama, LiteLLM, or LM Studio; `runtimeSdkVersion` is null when the active provider has no first-party SDK package to report. Host percentages are null on a platform that does not report them.
 - **Errors**: `500` on failure: `{ "error": "TelemetrySnapshotError", "message": "<message>" }`.
 - **Side effects**: reads only. The route is not cached.
 

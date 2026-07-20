@@ -19,12 +19,16 @@ const p = tree.children[0];
 const swapped = p.children[0];
 const normal = p.children[1];
 
-assert.equal(swapped.tagName, 'div', 'relay-shot img becomes a div');
+assert.equal(swapped.tagName, 'div', 'relay-shot marker becomes a responsive figure wrapper');
 assert.deepEqual(swapped.properties.className, ['relay-shot']);
-assert.match(swapped.properties.style, /--shot-dark:url\(/, 'carries the dark var');
 assert.match(swapped.properties.style, /aspect-ratio:1440 \/ 1100/, 'carries aspect-ratio');
-assert.equal(swapped.properties.role, 'img');
-assert.equal(swapped.properties['aria-label'], 'The home cockpit', 'markdown alt wins');
+const activeImage = swapped.children[0];
+assert.equal(activeImage.tagName, 'img');
+assert.equal(activeImage.properties.alt, 'The home cockpit', 'markdown alt wins');
+assert.equal(activeImage.properties.loading, 'lazy');
+assert.match(activeImage.properties['data-shot-light-srcset'], /720w/, 'carries responsive light sources');
+assert.match(activeImage.properties['data-shot-dark-srcset'], /1600w/, 'carries responsive dark sources');
+assert.equal(swapped.children[1].tagName, 'noscript', 'includes a no-JS fallback');
 assert.equal(normal.tagName, 'img', 'a normal img is left untouched');
 
 // idempotent: a second pass changes nothing (no relay-shot: src remains)

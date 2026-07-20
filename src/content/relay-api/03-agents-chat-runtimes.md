@@ -29,7 +29,7 @@ These behaviors hold across the routes below, so they are stated once here rathe
 - **Agent profiles are files, not rows.** A profile lives on disk as an `agent.yaml` config plus a `SKILL.md` body, under the local skills directory. Creating, updating, or deleting a profile writes or removes those files; it does not touch a database table. Built-in profiles ship with Relay and are read-only. Learned context, test results, and repo-import records do use the database.
 - **Timestamps.** `createdAt`, `updatedAt`, and similar fields serialize to ISO date strings on the wire.
 - **Malformed request bodies.** Most write routes read the JSON body without a guard. A malformed or empty body throws before validation and surfaces as an unhandled `500`, not a structured `400`. The exceptions are noted per route (for example, skill activation returns a `400` for invalid JSON).
-- **Runtime ids.** Where a route names a runtime, the value is one of `claude-code`, `openai-codex-app-server`, `anthropic-direct`, `openai-direct`, `ollama`. Chat conversation creation accepts a narrower set, noted at that route.
+- **Runtime ids.** Where a route names a runtime, the value is one of `claude-code`, `openai-codex-app-server`, `anthropic-direct`, `openai-direct`, `ollama`, `litellm`, or `lmstudio`. Chat conversation creation accepts a narrower set, noted at that route.
 
 ## Endpoint Families
 
@@ -71,6 +71,7 @@ These behaviors hold across the routes below, so they are stated once here rathe
 | `GET` | `/api/chat/models` | `app-internal` | `src/app/api/chat/models/route.ts` |
 | `GET` | `/api/chat/suggested-prompts` | `app-internal` | `src/app/api/chat/suggested-prompts/route.ts` |
 | `GET`, `POST` | `/api/runtimes/ollama` | `app-internal` | `src/app/api/runtimes/ollama/route.ts` |
+| `GET`, `POST` | `/api/runtimes/openai-compatible/{runtimeId}` | `app-internal` | `src/app/api/runtimes/openai-compatible/[runtimeId]/route.ts` |
 | `POST` | `/api/runtimes/suggest` | `app-internal` | `src/app/api/runtimes/suggest/route.ts` |
 
 ## Endpoint Reference
@@ -849,14 +850,15 @@ Returns context-aware suggested-prompt categories for the chat composer.
 
 ### GET /api/runtimes/ollama
 
-Proxies the local Ollama server's model list. The response is whatever the local Ollama server returns for its tags endpoint.
+Tests the configured Ollama endpoint and returns normalized model details from its tags response.
 
 - **Request**: none.
-- **Response** `200`: the Ollama server's model-list JSON, passed through unchanged.
+- **Response** `200`: `{ "runtimeId": "ollama", "models": [ ... ] }`. Each model can include `id`, `name`, `provider`, `family`, `format`, `parameterSize`, `quantization`, `sizeBytes`, and `modifiedAt`; missing upstream metadata is returned as null.
 - **Errors**:
-  - `502` when Ollama responds with a non-success status: `{ "error": "Ollama responded with status <status>" }`.
-  - `502` on a connection failure or timeout: `{ "error": "<message>", "hint": "Make sure Ollama is running (ollama serve)." }`.
-- **Side effects**: reads the local Ollama base URL setting and calls the local Ollama server. No database writes.
+  - `502` when Ollama responds with a non-success status: `{ "phase": "connection", "error": "Ollama request failed (<status>): <bounded detail>" }`.
+  - `502` when the tags response is malformed: `{ "phase": "discovery", "error": "Ollama returned invalid model discovery data" }`.
+  - `502` on a connection failure or timeout: `{ "phase": "connection", "error": "<message>", "hint": "Make sure the configured Ollama server is reachable from Relay." }`.
+- **Side effects**: calls the configured Ollama server. Raw API keys and provider-echoed credential fingerprints are not returned.
 
 ### POST /api/runtimes/ollama
 
@@ -869,33 +871,58 @@ Pulls a model on the local Ollama server. This blocks until the pull finishes.
 | `action` | `string` | yes | Must be `pull`. |
 | `model` | `string` | yes | The model to pull. |
 
-- **Response** `200`: `{ "status": "ok", "model": "string" }`, merged with the fields Ollama returns for the pull.
+- **Response** `200`: `{ "runtimeId": "ollama", "action": "pull", "model": "string", "status": "completed", ... }`, merged with non-conflicting fields from Ollama's response.
 - **Errors**:
-  - `400` on an unknown action: `{ "error": "Unknown action: <action>" }`.
-  - `400` when `model` is missing: `{ "error": "model is required" }`.
-  - `502` when the Ollama pull responds with a non-success status: `{ "error": "Ollama pull failed (<status>): <text>" }`.
-  - `502` on any other failure: `{ "error": "<message>" }`, or `{ "error": "Pull failed" }`.
-- **Side effects**: instructs the local Ollama server to download the model.
+  - `400` when the strict `{ action: "pull", model }` body is invalid: `{ "phase": "acquisition", "error": "<validation message>" }`.
+  - `502` when the Ollama pull responds with a non-success status: `{ "phase": "acquisition", "error": "Ollama pull failed (<status>): <bounded detail>" }`.
+  - `502` on any other failure: `{ "phase": "acquisition", "error": "<message>" }`.
+- **Side effects**: instructs the configured Ollama server to download the model, then invalidates Relay's model-discovery cache.
 
 ### POST /api/runtimes/suggest
 
-Recommends the best runtime for a task, given its title and description, your routing preference, and which runtimes are configured.
+Returns an advisory runtime order for a task under the saved routing policy and eligible-runtime pool.
 
 - **Request** body (JSON):
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `title` | `string` | yes | Used for keyword scoring. |
-| `description` | `string` | no | Combined with the title for scoring. |
-| `profileId` | `string` | no | When the profile prefers an available runtime, that runtime wins. |
+| `title` | `string` | yes | Non-empty task title. Exact runtime-name signals can affect affinity. |
+| `description` | `string \| null` | no | Combined with the title for affinity signals. |
+| `profileId` | `string \| null` | no | An eligible profile-preferred runtime wins when present. |
 
 - **Response** `200`:
   ```json
-  { "runtimeId": "claude-code", "reason": "string" }
+  { "runtimeId": "claude-code", "orderedRuntimeIds": ["claude-code"], "reason": "string", "evidence": "pool-order", "advisory": true }
   ```
-  `runtimeId` is one of the five runtime ids.
-- **Errors**: `400` when `title` is missing: `{ "error": "title is required" }`.
-- **Side effects**: reads only. Reads the routing preference and which runtimes are configured; the scoring itself runs in memory.
+  Manual policy returns its strict default as the only ordered runtime. Automatic policies consider only configured members of the saved eligible pool; comparable configured-model cost is used only when known, while unknown cost, latency, and quality retain saved pool order.
+- **Errors**:
+  - `400` when the strict request body is invalid: `{ "error": "A non-empty title and valid suggestion payload are required" }`.
+  - `409` when no configured runtime is eligible for automatic routing.
+- **Side effects**: reads routing, runtime setup, profile, and pricing metadata only. It does not probe health or persist a selection.
+
+### GET /api/runtimes/openai-compatible/{runtimeId}
+
+Discovers models from a configured LiteLLM or LM Studio endpoint, or reads one LM Studio download job when `downloadJobId` is supplied.
+
+- **Request**: `runtimeId` must be `litellm` or `lmstudio`. Optional query: `downloadJobId=<id>`; this is valid only for LM Studio.
+- **Response** `200`: model discovery returns `{ "runtimeId": "litellm | lmstudio", "models": [ ... ] }` with normalized provider-reported details. A download-status request returns `{ "runtimeId": "lmstudio", "action": "download", ... }`.
+- **Errors**:
+  - `404` for any other runtime id: `{ "error": "runtimeId must be litellm or lmstudio" }`.
+  - `400` when LiteLLM receives a download-status query because LiteLLM artifacts are managed by its administrator.
+  - `502` when configuration, connection, discovery, or status lookup fails: `{ "phase": "discovery", "error": "<message>" }`.
+- **Side effects**: calls the configured compatible endpoint and reads settings only.
+
+### POST /api/runtimes/openai-compatible/{runtimeId}
+
+Starts an LM Studio model download. LiteLLM does not expose this operation through Relay.
+
+- **Request** body (JSON): `{ "action": "download", "model": "<model id>", "quantization": "<optional variant>" }`.
+- **Response** `200`: `{ "runtimeId": "lmstudio", "action": "download", "model": "string", ... }` with LM Studio's normalized job status.
+- **Errors**:
+  - `404` for an unknown runtime id.
+  - `400` for LiteLLM or an invalid strict request body.
+  - `502` when LM Studio rejects or cannot start the download.
+- **Side effects**: asks the configured LM Studio server to download the selected model artifact.
 
 ## Examples
 
@@ -948,6 +975,6 @@ curl http://127.0.0.1:3000/api/chat/models
 - The chat message stream reports in-turn failures as `error` events after a `200` has already been sent. Do not treat the `200` as proof the turn succeeded; watch for the `done` event and handle `error` events.
 - A `permission_request` or `question` event pauses the turn until you answer it through the respond route. A turn can stall indefinitely if you never answer.
 - The branching routes (`branches`, `redo`, `rewind`) return `404` with `{ "error": "Not found" }` when chat branching is disabled. This is indistinguishable from a genuinely missing conversation on that first check; confirm the feature is enabled before relying on them.
-- `POST /api/chat/conversations` restricts `runtimeId` to `claude-code`, `openai-codex-app-server`, and `ollama`, but `PATCH /api/chat/conversations/{id}` does not re-check it. Do not assume a patched runtime was validated.
-- The `GET /api/runtimes/ollama` and `POST /api/runtimes/ollama` success bodies are passed through from the local Ollama server. Their exact fields are defined by Ollama, not by Relay, and can change with the Ollama version.
+- Conversation creation validates `runtimeId` against Relay's current runtime catalog, which includes direct providers and configured OpenAI-compatible runtimes. Treat the catalog as extensible instead of hardcoding a fixed list.
+- Runtime model discovery responses are normalized by Relay, but optional model metadata still depends on what the configured Ollama, LiteLLM, or LM Studio server reports. Treat optional fields as nullable and additive.
 - A test report is stored only by the full-suite `POST /api/agents/{id}/test`. The single-test route runs live but stores nothing, so a later `GET /api/agents/{id}/test-results` will not reflect single-test runs.

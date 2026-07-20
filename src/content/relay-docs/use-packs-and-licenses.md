@@ -6,6 +6,7 @@ features:
   - "Packs gallery"
   - "Pack install"
   - "Pack update"
+  - "Pack removal retention"
   - "Offline license lifecycle"
   - "Premium-pack value recap"
   - "Current bundled pack families"
@@ -89,6 +90,17 @@ Open **Schedules** if the pack includes recurring work. A schedule means Relay c
 
 Schedules are where pack installs can become ongoing operations. Before you trust one, check its state, cadence, and source. Pack updates should preserve schedule state. If an update would replace user-edited files, Relay should back them up rather than overwrite without a trace.
 
+When you no longer want a Pack installed, open **Apps** and choose **Remove
+pack**, or use `relay pack remove <pack-id>`. Read the confirmation as a data
+retention receipt. Relay removes the installed Pack files and its schedules. It
+keeps tables and their rows, reusable agents and blueprints, durable customers,
+and customer cost attribution. Delete those retained records separately from
+their owning screen only when that is your intent.
+
+Removing a Pack is not the same as removing or purging a Relay Cell. A Cell is
+the complete isolated Relay runtime and data root. Pack removal changes what is
+installed inside one Cell; it does not delete that Cell.
+
 Finally, open **Settings** and review License. This is the place to confirm premium access before a pack update matters.
 
 ![License panel used for premium pack access](relay-shot:settings-license)
@@ -106,6 +118,10 @@ If a pack installs but a screen looks empty, open Apps first. Some pack parts li
 If a CLI install succeeds but the running app does not reflect the change, refresh the app. The current product is designed to pick up CLI-installed bundled packs without a full restart, but a refresh is still the simplest first check.
 
 If a pack update mentions backups, read the backup path before you continue. Backups matter when someone has edited pack files locally.
+
+If you removed a Pack and still see its tables, agents, blueprints, customers,
+or attributed costs, that is expected retention rather than a failed removal.
+Use the owning view to review and delete retained data separately.
 
 ## What This Changes In Daily Work
 

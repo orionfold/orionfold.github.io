@@ -13,9 +13,15 @@ import {
   getCatalogItem,
   isAllowedLookupKey,
   licenseFamilyForLookupKey,
+  RELAY_HOST_LOOKUP_KEY,
   STRIPE_API_VERSION,
 } from "../_shared/catalog.ts";
 import { getCorsHeaders, jsonResponse } from "../_shared/cors.ts";
+import {
+  workshopCheckoutMetadata,
+  workshopCheckoutRoutes,
+} from "../_shared/workshop-contract.ts";
+import { relayHostPriceMatches } from "../_shared/relay-host-delivery.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
@@ -100,6 +106,7 @@ function humanizeItemId(id: string): string {
 // Where a cancelled license checkout returns the buyer: each licensed product's
 // own purchase block. Proof → /proof/#get-proof, Arena → /software/arena/#field-edition.
 function licenseCancelPath(lookupKey: string): string {
+  if (lookupKey === RELAY_HOST_LOOKUP_KEY) return "/relay/#get-relay-host";
   const family = licenseFamilyForLookupKey(lookupKey);
   return family?.product === "orionfold-proof"
     ? "/proof/#get-proof"
@@ -164,12 +171,28 @@ Deno.serve(async (req) => {
       console.error("No active price for lookup key:", effectiveKey);
       return jsonResponse({ error: "This item isn't available right now." }, corsHeaders, 409);
     }
+    if (
+      effectiveKey === RELAY_HOST_LOOKUP_KEY &&
+      !relayHostPriceMatches(price, item.amount)
+    ) {
+      console.error("Relay Host price contract mismatch:", {
+        lookupKey: effectiveKey,
+        amount: price.unit_amount,
+        currency: price.currency,
+        type: price.type,
+        interval: price.recurring?.interval,
+        intervalCount: price.recurring?.interval_count,
+      });
+      return jsonResponse({ error: "This item isn't available right now." }, corsHeaders, 409);
+    }
 
     const isSponsor = item.kind === "sponsor";
+    const isRelayHost = effectiveKey === RELAY_HOST_LOOKUP_KEY;
     const metadata: Record<string, string> = {
       lookup_key: effectiveKey,
       kind: item.kind,
     };
+    if (item.kind === "workshop") Object.assign(metadata, workshopCheckoutMetadata());
     if (item.tier) metadata.tier = item.tier;
     Object.assign(metadata, attribution);
     // roadmap_item = the single/primary item (the deployed C3 webhook persists this
@@ -200,26 +223,56 @@ Deno.serve(async (req) => {
           }
         : {};
 
+    const hostIdentity = isRelayHost
+      ? {
+          custom_fields: [
+            {
+              key: "licensee_kind",
+              label: { type: "custom" as const, custom: "License held by" },
+              type: "dropdown" as const,
+              dropdown: {
+                options: [
+                  { label: "An organization", value: "organization" },
+                  { label: "An individual", value: "individual" },
+                ],
+              },
+            },
+            {
+              key: "licensee_name",
+              label: { type: "custom" as const, custom: "Organization or individual name" },
+              type: "text" as const,
+              text: { minimum_length: 2, maximum_length: 100 },
+            },
+          ],
+        }
+      : {};
+
+    const workshopRoutes = workshopCheckoutRoutes(SITE_URL);
     const session = await stripe.checkout.sessions.create({
       mode: item.mode, // 'payment' for books, 'subscription' for sponsors
       line_items: [{ price: price.id, quantity: 1 }],
       // NOTE: never set payment_method_types — dynamic payment methods stay on.
-      success_url: `${SITE_URL}${isSponsor ? "/sponsor/thanks/" : "/thanks/"}?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: item.kind === "workshop"
+        ? workshopRoutes.successUrl
+        : `${SITE_URL}${isSponsor ? "/sponsor/thanks/" : "/thanks/"}?session_id={CHECKOUT_SESSION_ID}`,
       // Cancel returns the buyer where they started: sponsors to /sponsor/, a
       // license to its product's purchase block, books to /books/.
-      cancel_url: `${SITE_URL}${
-        isSponsor ? "/sponsor/" : item.kind === "license" ? licenseCancelPath(effectiveKey) : "/books/"
-      }`,
+      cancel_url: item.kind === "workshop"
+        ? workshopRoutes.cancelUrl
+        : `${SITE_URL}${
+          isSponsor ? "/sponsor/" : item.kind === "license" ? licenseCancelPath(effectiveKey) : "/books/"
+        }`,
       // Show the promo-code box on book checkouts so the per-channel code
       // (e.g. DGX-GOOGLE) works — the zero-engineering attribution backstop
       // (MARKETING-HANDOFF.md Task 5). The coupon is product-restricted, so
       // sponsorships keep a clean, code-free checkout.
       ...(isSponsor ? {} : { allow_promotion_codes: true }),
       ...customText,
+      ...hostIdentity,
       metadata,
       // Mirror the tier/item onto the subscription so C3's lifecycle webhooks
       // (invoice.paid, customer.subscription.updated/deleted) can read it too.
-      ...(isSponsor ? { subscription_data: { metadata } } : {}),
+      ...(item.mode === "subscription" ? { subscription_data: { metadata } } : {}),
     });
 
     return jsonResponse({ url: session.url }, corsHeaders);

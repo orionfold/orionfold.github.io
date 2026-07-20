@@ -214,8 +214,8 @@ Import two discovered projects and read the progress stream:
 curl -N -X POST http://127.0.0.1:3000/api/workspace/import \
   -H "Content-Type: application/json" \
   -d '{ "projects": [
-        { "path": "/Users/me/projects/acme", "name": "Acme" },
-        { "path": "/Users/me/projects/beta", "name": "Beta" }
+        { "path": "/workspace/acme", "name": "Acme" },
+        { "path": "/workspace/beta", "name": "Beta" }
       ] }'
 ```
 

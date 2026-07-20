@@ -1156,6 +1156,124 @@
           "targetLabel": null
         }
       ]
+    },
+    "operator_workshop": {
+      "kind": "operator_workshop",
+      "editionId": "relay-operator-workshop",
+      "editionVersion": "2026.07",
+      "fixtureFamily": "marketing-line",
+      "disclosure": "Static simulated workshop sample. No model call or workspace write occurs.",
+      "preflight": {
+        "ready": {
+          "ready": true,
+          "relay": {
+            "version": "0.42.2",
+            "range": ">=0.42.2 <0.43.0",
+            "compatible": true
+          },
+          "dataDirectory": {
+            "pathLabel": "preview only",
+            "writable": true
+          },
+          "runtime": {
+            "configured": [
+              {
+                "id": "demo-runtime",
+                "label": "Demo runtime"
+              }
+            ],
+            "deterministicFallback": true
+          },
+          "fixture": {
+            "family": "marketing-line",
+            "intact": true
+          },
+          "failures": []
+        },
+        "incompatible": {
+          "ready": false,
+          "relay": {
+            "version": "0.41.0",
+            "range": ">=0.42.2 <0.43.0",
+            "compatible": false
+          },
+          "dataDirectory": {
+            "pathLabel": "preview only",
+            "writable": true
+          },
+          "runtime": {
+            "configured": [],
+            "deterministicFallback": true
+          },
+          "fixture": {
+            "family": "marketing-line",
+            "intact": true
+          },
+          "failures": [
+            {
+              "code": "relay_version_incompatible",
+              "message": "This previewed Relay version does not match the workshop edition.",
+              "recovery": "Use the edition built for your Relay release."
+            }
+          ]
+        },
+        "offline": {
+          "ready": true,
+          "relay": {
+            "version": "0.42.2",
+            "range": ">=0.42.2 <0.43.0",
+            "compatible": true
+          },
+          "dataDirectory": {
+            "pathLabel": "preview only",
+            "writable": true
+          },
+          "runtime": {
+            "configured": [],
+            "deterministicFallback": true
+          },
+          "fixture": {
+            "family": "marketing-line",
+            "intact": true
+          },
+          "failures": []
+        }
+      },
+      "capstone": {
+        "title": "One memo → governed workflow",
+        "abstract": "Adapt one Marketing Line process, keep a human checkpoint and trust boundary, then retain a redacted evidence bundle.",
+        "checkpoints": [
+          "Inspect the final governed workflow",
+          "Adapt one process record",
+          "Confirm human and trust boundaries",
+          "Run a clearly labeled deterministic rehearsal",
+          "Preview the portable completion bundle"
+        ],
+        "retained": [
+          "Operations Receipt",
+          "selected output document",
+          "user-owned app Pack",
+          "edition and artifact hashes"
+        ]
+      },
+      "coach": [
+        {
+          "page": "index",
+          "state": "",
+          "step": "Free workshop sample",
+          "title": "See the outcome before buying",
+          "body": "Check whether the workshop path fits, inspect the capstone, and run one useful simulated rehearsal. No identity or install required.",
+          "targetLabel": null
+        },
+        {
+          "page": "index",
+          "state": "completed",
+          "step": "Sample complete",
+          "title": "A governed result you can retain",
+          "body": "The rehearsal produced a truthful preview of the receipt, output and user-owned app bundle. Restart the sample or install Relay when ready.",
+          "targetLabel": null
+        }
+      ]
     }
   },
   "machine": {

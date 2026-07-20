@@ -6,14 +6,15 @@
 //
 // These are imported into Astro `<script>` blocks (bundled to the client).
 //
-// Dev gotcha: the edge functions' CORS allowlist is https://orionfold.com only
-// (same as the live waitlist). So every call here CORS-FAILS on localhost — the
-// UI + wiring verify locally, but the real checkout/portal test is a live-domain
-// step (L1, in Stripe TEST mode). A localhost network error is expected, not a bug.
+// Production defaults to the canonical functions base and origin allowlist.
+// An isolated local/staging build may inject PUBLIC_SUPABASE_FUNCTIONS_BASE and
+// its staging function may explicitly allow that local origin. No wildcard or
+// live fallback is used for the workshop rehearsal.
 
 import { getAttribution } from "./attribution";
+import { COMMERCE_FUNCTIONS_BASE } from "./commerce-config";
 
-const FUNCTIONS_BASE = "https://orionfold.supabase.co/functions/v1";
+const FUNCTIONS_BASE = COMMERCE_FUNCTIONS_BASE;
 
 interface PostResult {
   ok: boolean;
@@ -87,7 +88,7 @@ export interface OrderStatus {
   ok: boolean;
   paid: boolean;
   mode: "payment" | "subscription";
-  kind: "book" | "sponsor" | "license";
+  kind: "book" | "sponsor" | "license" | "workshop";
   label: string | null;
   tier: string | null;
   email: string | null;

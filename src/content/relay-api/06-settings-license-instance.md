@@ -3,7 +3,7 @@ id: "06-settings-license-instance"
 title: "Settings, License, And Instance API"
 status: "draft"
 stability: "app-internal"
-families: ["settings","license","instance","environment","onboarding"]
+families: ["settings","license","instance","environment","onboarding","auth","host-deployment"]
 ---
 
 ## Who This Is For
@@ -20,7 +20,11 @@ These routes power the Relay Settings and onboarding screens. Their request and 
 
 Relay API routes run inside the local Relay app. Use `http://127.0.0.1:<port>` in examples, where `<port>` is the port your instance is bound to (3000 by default).
 
-Do not expose these routes on a public network without your own access controls. These routes read and write settings and license files, run git operations for the upgrade flow, scan the local filesystem, and can spawn subprocesses to test provider connections.
+In `trusted-local`, use loopback as before. In an authenticated exposure profile,
+the Relay Proxy protects these routes with a live administrator session and
+exact-origin checks for mutations. Do not bypass that boundary or expose the
+Next.js listener around the configured ingress. Remote-authenticated v1 binds
+loopback and rejects requests without the configured ingress credential.
 
 ## Conventions For This Group
 
@@ -40,13 +44,23 @@ These behaviors hold across the routes below, so they are stated once here rathe
 - `instance`
 - `environment`
 - `onboarding`
+- `auth`
+- `host-deployment`
 
 ## Endpoints
 
 | Method(s) | Path | Stability | Source |
 |---|---|---|---|
+| `POST` | `/api/auth/bootstrap` | `app-internal` | `src/app/api/auth/bootstrap/route.ts` |
+| `GET` | `/api/auth/events` | `app-internal` | `src/app/api/auth/events/route.ts` |
+| `POST` | `/api/auth/login` | `app-internal` | `src/app/api/auth/login/route.ts` |
+| `POST` | `/api/auth/logout` | `app-internal` | `src/app/api/auth/logout/route.ts` |
+| `POST` | `/api/auth/recovery` | `app-internal` | `src/app/api/auth/recovery/route.ts` |
+| `DELETE`, `GET` | `/api/auth/sessions` | `app-internal` | `src/app/api/auth/sessions/route.ts` |
+| `GET` | `/api/auth/status` | `app-internal` | `src/app/api/auth/status/route.ts` |
 | `POST` | `/api/environment/rescan-if-stale` | `app-internal` | `src/app/api/environment/rescan-if-stale/route.ts` |
 | `GET` | `/api/environment/skills` | `app-internal` | `src/app/api/environment/skills/route.ts` |
+| `GET`, `POST` | `/api/host-deployment` | `admin-local` | `src/app/api/host-deployment/route.ts` |
 | `GET` | `/api/instance/config` | `app-internal` | `src/app/api/instance/config/route.ts` |
 | `GET` | `/api/instance/identity` | `app-internal` | `src/app/api/instance/identity/route.ts` |
 | `POST` | `/api/instance/init` | `app-internal` | `src/app/api/instance/init/route.ts` |
@@ -57,27 +71,129 @@ These behaviors hold across the routes below, so they are stated once here rathe
 | `DELETE` | `/api/license/{id}` | `app-internal` | `src/app/api/license/[id]/route.ts` |
 | `GET` | `/api/onboarding/progress` | `app-internal` | `src/app/api/onboarding/progress/route.ts` |
 | `GET`, `POST` | `/api/settings` | `app-internal` | `src/app/api/settings/route.ts` |
+| `GET`, `POST` | `/api/settings/apps` | `app-internal` | `src/app/api/settings/apps/route.ts` |
 | `GET` | `/api/settings/author-default` | `app-internal` | `src/app/api/settings/author-default/route.ts` |
 | `GET`, `POST` | `/api/settings/browser-tools` | `app-internal` | `src/app/api/settings/browser-tools/route.ts` |
 | `GET`, `POST` | `/api/settings/budgets` | `app-internal` | `src/app/api/settings/budgets/route.ts` |
 | `GET`, `PUT` | `/api/settings/chat` | `app-internal` | `src/app/api/settings/chat/route.ts` |
+| `POST` | `/api/settings/chat/model-prompt-impression` | `app-internal` | `src/app/api/settings/chat/model-prompt-impression/route.ts` |
 | `GET`, `PUT` | `/api/settings/chat/pins` | `app-internal` | `src/app/api/settings/chat/pins/route.ts` |
 | `GET`, `PUT` | `/api/settings/chat/saved-searches` | `app-internal` | `src/app/api/settings/chat/saved-searches/route.ts` |
+| `DELETE`, `GET`, `POST` | `/api/settings/dashboard` | `app-internal` | `src/app/api/settings/dashboard/route.ts` |
 | `GET`, `POST` | `/api/settings/environment` | `app-internal` | `src/app/api/settings/environment/route.ts` |
 | `GET` | `/api/settings/glance` | `app-internal` | `src/app/api/settings/glance/route.ts` |
+| `DELETE`, `GET`, `POST` | `/api/settings/github` | `app-internal` | `src/app/api/settings/github/route.ts` |
+| `GET` | `/api/settings/github/repositories` | `app-internal` | `src/app/api/settings/github/repositories/route.ts` |
 | `GET`, `POST` | `/api/settings/learning` | `app-internal` | `src/app/api/settings/learning/route.ts` |
-| `GET`, `POST` | `/api/settings/ollama` | `app-internal` | `src/app/api/settings/ollama/route.ts` |
+| `GET`, `POST`, `PUT` | `/api/settings/ollama` | `app-internal` | `src/app/api/settings/ollama/route.ts` |
 | `GET`, `POST` | `/api/settings/openai` | `app-internal` | `src/app/api/settings/openai/route.ts` |
 | `DELETE`, `GET`, `POST` | `/api/settings/openai/login` | `app-internal` | `src/app/api/settings/openai/login/route.ts` |
 | `POST` | `/api/settings/openai/logout` | `app-internal` | `src/app/api/settings/openai/logout/route.ts` |
+| `DELETE`, `GET`, `PUT` | `/api/settings/openai-compatible/{runtimeId}` | `app-internal` | `src/app/api/settings/openai-compatible/[runtimeId]/route.ts` |
 | `GET`, `POST` | `/api/settings/pricing` | `app-internal` | `src/app/api/settings/pricing/route.ts` |
 | `GET` | `/api/settings/providers` | `app-internal` | `src/app/api/settings/providers/route.ts` |
-| `GET`, `POST` | `/api/settings/routing` | `app-internal` | `src/app/api/settings/routing/route.ts` |
+| `GET`, `POST`, `PUT` | `/api/settings/routing` | `app-internal` | `src/app/api/settings/routing/route.ts` |
 | `GET`, `POST` | `/api/settings/runtime` | `app-internal` | `src/app/api/settings/runtime/route.ts` |
 | `POST` | `/api/settings/test` | `app-internal` | `src/app/api/settings/test/route.ts` |
 | `GET`, `POST` | `/api/settings/web-search` | `app-internal` | `src/app/api/settings/web-search/route.ts` |
 
 ## Endpoint Reference
+
+### GET /api/host-deployment
+
+Returns the content-free Relay Host deployment view used by Settings. The
+response includes the saved journey and provisional estimate, a redacted Host
+license summary, runtime mode, Host capacity, managed Cell inventory, and up to
+20 lifecycle receipts. It never returns the signed license envelope, provider
+credentials, filesystem paths, runtime resource references, prompts, or Cell
+content. The response uses `Cache-Control: no-store`.
+
+Named store or registry failures return an error object with a stable `code`.
+Internal failures use generic recovery guidance rather than exposing local
+diagnostic detail.
+
+### POST /api/host-deployment
+
+Runs one strict, discriminated Host deployment mutation and returns the same
+redacted view as `GET`. Supported actions are `save_draft`, `estimate`,
+`preflight`, `authorize`, `install`, `create_cell`, and `cell_action`. Cell
+actions accept `start`, `stop`, `restart`, `retain`, or `purge`. Lifecycle
+requests require a client-generated UUID operation ID; purge also requires the
+exact Cell ID as confirmation.
+
+Malformed JSON, unknown fields, and invalid action shapes return `400` with
+`HOST_DEPLOYMENT_REQUEST_INVALID`. Missing, invalid, or lapsed paid Host rights
+return `403`; busy or replay conflicts return `409`; domain precondition and
+validation failures return `422`; internal or unavailable dependencies return
+`500`. The route accepts no provider token or raw path. The configured Relay
+proxy/session and exact-origin boundary protects remote mutations.
+
+### GET /api/auth/status
+
+Public status exchange. Returns the exposure profile, configured and
+authenticated booleans, Cell id, and current session summary. It returns no
+credential or password state.
+
+### POST /api/auth/bootstrap
+
+Public first-admin exchange with strict body `{ token, password, deviceName }`.
+The password must contain at least 12 characters. A successful atomic exchange
+sets an HttpOnly session cookie and returns eight recovery codes once. Exact
+configured `Origin` is required. Invalid, expired, replayed, or rate-limited
+attempts return stable named errors.
+
+### POST /api/auth/login
+
+Public password exchange with `{ password, deviceName }`. A successful request
+approves a fresh named 12-hour session and sets a new HttpOnly cookie. Exact
+configured `Origin` is required. Invalid credentials use `LOGIN_INVALID`; the
+persistent client bucket uses `AUTH_RATE_LIMITED`.
+
+### POST /api/auth/logout
+
+Public idempotent exchange that revokes the presented session when valid and
+expires the cookie. Exact configured `Origin` is required.
+
+### POST /api/auth/recovery
+
+Public recovery exchange with `{ recoveryCode, newPassword, deviceName }`.
+Success consumes the code, changes the password, revokes all old sessions,
+rotates every recovery code, returns the new eight codes once, and issues a new
+session. Exact configured `Origin` is required.
+
+### GET /api/auth/sessions
+
+Requires a live administrator session. Returns active named sessions with
+created, last-seen, and expiry timestamps plus a `current` marker. It never
+returns session tokens.
+
+### DELETE /api/auth/sessions
+
+Requires a live administrator session and strict `{ sessionId }`. Revokes the
+named active session and returns `{ ok: true | false }`.
+
+### GET /api/auth/events
+
+Requires a live administrator session. Optional `limit` is bounded to 1 through
+100. Returns content-free event and reason codes, session ids, timestamps, and
+hashed client fingerprints. It never returns raw credentials, IP addresses,
+user agents, prompts, or customer content.
+
+### POST /api/settings/chat/model-prompt-impression
+
+Atomically claims permission for at most one browser session to show the
+automatic default-model prompt for the active Relay data directory.
+
+- **Request**: none.
+- **Response** `200`: `{ "claimed": true | false }`. `true` means this caller
+  won the one-time claim; `false` means another or earlier session already
+  claimed it or the instance was previously configured.
+- **Errors**: `500` with `{ "error":
+  "MODEL_PREFERENCE_PROMPT_IMPRESSION_WRITE_FAILED", "message": "<recovery
+  guidance>" }` when Relay cannot persist the claim.
+- **Side effects**: atomically writes the instance-local prompt-impression
+  marker before any browser displays the prompt. It does not choose or change a
+  model.
 
 ### GET /api/settings
 
@@ -102,7 +218,15 @@ Updates the Anthropic auth settings.
 
 - **Response** `200`: the re-read auth settings (same shape as `GET`, no secret).
 - **Errors**: `400` on validation failure: `{ "error": <flattened Zod error> }`.
-- **Side effects**: writes the auth method; encrypts and stores a supplied key; switching to `oauth` deletes any stored key.
+- **Side effects**: writes the auth method; encrypts and stores a supplied key; switching to `oauth` deletes any stored key; invalidates cached runtime health.
+
+### GET /api/settings/apps
+
+Returns `{ "showInferenceDiagnostics": true | false }` for app-shell diagnostics.
+
+### POST /api/settings/apps
+
+Stores the strict body `{ "showInferenceDiagnostics": true | false }` and returns the updated setting. Invalid input returns `400` with validation issues.
 
 ### GET /api/settings/author-default
 
@@ -210,6 +334,33 @@ Replaces the entire saved-search list.
   - `400` on schema failure: `{ "error": "invalid searches payload", "issues": [ ... ] }`.
 - **Side effects**: writes the saved-search list.
 
+### GET /api/settings/dashboard
+
+Returns the local dashboard module preferences.
+
+- **Request**: none.
+- **Response** `200`: `{ "version": 1, "smartOrdering": true, "visible": { "<moduleId>": true } }`. Supported module ids are `attention`, `activity`, `packs`, `projects`, `documents`, `features`, `costs`, `health`, `quickActions`, and `workshop`. Missing visibility entries use the module default.
+- **Errors**: none returned explicitly. Invalid stored JSON is logged and degrades to the default preferences.
+- **Side effects**: reads only.
+
+### POST /api/settings/dashboard
+
+Replaces the local dashboard module preferences.
+
+- **Request** body (JSON), strict: `{ "version": 1, "smartOrdering": <boolean>, "visible": { "<supportedModuleId>": <boolean> } }`. Visibility entries are optional, but unknown keys are rejected.
+- **Response** `200`: the stored preference object.
+- **Errors**: `400` with `{ "error": "Invalid dashboard preferences", "issues": [ ... ] }` on schema failure.
+- **Side effects**: persists the complete dashboard preference object.
+
+### DELETE /api/settings/dashboard
+
+Resets dashboard preferences to Relay defaults.
+
+- **Request**: none.
+- **Response** `200`: the default preference object with smart ordering enabled and no explicit visibility overrides.
+- **Errors**: none returned explicitly.
+- **Side effects**: deletes the persisted dashboard preference.
+
 ### GET /api/settings/environment
 
 Returns the auto-promote-skills flag.
@@ -237,6 +388,22 @@ Returns a consolidated settings-at-a-glance summary. Every field is independentl
 - **Errors**: `500` on total failure: `{ "error": "<message>" }`.
 - **Side effects**: reads only. No secret values are included.
 
+### GET /api/settings/github
+
+Returns the current GitHub connection and GitHub CLI availability without exposing a token.
+
+### POST /api/settings/github
+
+Connects using `{ "token": "..." }` or `{ "method": "github-cli" }`, or verifies the current connection with `{ "verify": true }`. Invalid bodies return `400`; named connection failures retain their mapped status codes.
+
+### DELETE /api/settings/github
+
+Disconnects GitHub and returns the resulting connection and CLI status. The raw credential is never returned.
+
+### GET /api/settings/github/repositories
+
+Lists repositories visible to the current GitHub connection. Connection failures retain their mapped status codes; unexpected failures return `500`.
+
 ### GET /api/settings/learning
 
 Returns the learning-context character limit.
@@ -257,21 +424,27 @@ Updates the learning-context character limit.
 
 ### GET /api/settings/ollama
 
-Returns the Ollama base URL and default model.
+Returns the redacted Ollama runtime configuration.
 
 - **Request**: none.
-- **Response** `200`: `{ "baseUrl": "http://localhost:11434", "defaultModel": "string" }`.
-- **Errors**: none returned explicitly.
+- **Response** `200`: `{ "runtimeId": "ollama", "label": "Ollama", "configured": true, "baseUrl": "http://localhost:11434", "defaultModel": "string", "allowInsecureRemote": false, "hasApiKey": false, "apiKeySource": "unknown" }`. The raw key is never returned.
+- **Errors**: `400` when the effective stored or environment configuration is invalid.
 - **Side effects**: reads only.
 
 ### POST /api/settings/ollama
 
-Updates the Ollama settings.
+Compatibility alias for `PUT /api/settings/ollama`; the request and response contracts are identical.
 
-- **Request** body (JSON), all optional: `baseUrl`, `defaultModel`.
-- **Response** `200`: `{ "ok": true }`. It does not echo the updated values.
-- **Errors**: none returned explicitly.
-- **Side effects**: writes the provided Ollama settings.
+### PUT /api/settings/ollama
+
+Atomically validates and updates Ollama connection and model defaults.
+
+- **Request** body (JSON), all optional: `baseUrl` (non-empty URL), `apiKey` (non-empty), `clearApiKey` (boolean), `defaultModel` (blank clears), and `allowInsecureRemote` (boolean). `apiKey` and `clearApiKey` are mutually exclusive. A non-loopback `http://` URL requires `allowInsecureRemote: true`; HTTPS is otherwise required.
+- **Response** `200`: `{ "ok": true, ...redactedConfiguration }`, using the same redacted fields as `GET`.
+- **Errors**:
+  - `400` for malformed or invalid strict input, unsafe or invalid base URLs, or an invalid effective configuration.
+  - `500` when persistence fails: `{ "error": "Failed to save Ollama settings: <message>" }`.
+- **Side effects**: applies the settings patch atomically, invalidates model discovery, and invalidates cached runtime health.
 
 ### GET /api/settings/openai
 
@@ -296,7 +469,7 @@ Updates the OpenAI auth settings.
 
 - **Response** `200`: the re-read OpenAI auth settings (no secret).
 - **Errors**: `400` on validation failure: `{ "error": <flattened Zod error> }`.
-- **Side effects**: writes the method; encrypts and stores a supplied key; writes the model.
+- **Side effects**: writes the method; encrypts and stores a supplied key; writes the model; invalidates cached runtime health.
 
 ### GET /api/settings/openai/login
 
@@ -334,6 +507,18 @@ Logs out of OpenAI Codex.
 - **Errors**: none returned explicitly.
 - **Side effects**: sends a logout to the Codex client and removes the isolated Codex credential file.
 
+### GET /api/settings/openai-compatible/{runtimeId}
+
+Returns the LiteLLM or LM Studio configuration summary, including `runtimeId`, `label`, `configured`, `baseUrl`, `defaultModel`, `allowInsecureRemote`, `hasApiKey`, and `apiKeySource`. It never returns the API key. Unknown runtime ids return `404`; invalid effective configuration returns `400`.
+
+### PUT /api/settings/openai-compatible/{runtimeId}
+
+Updates `baseUrl`, `apiKey`, `clearApiKey`, `defaultModel`, or `allowInsecureRemote` for `litellm` or `lmstudio`. Relay validates the effective URL before writing any field, applies the patch atomically, and returns the redacted effective configuration. Invalid or unsafe configuration returns `400`. A successful write invalidates model discovery and cached runtime health.
+
+### DELETE /api/settings/openai-compatible/{runtimeId}
+
+Removes stored compatible-runtime settings and invalidates model discovery plus cached runtime health. All three methods return `404` for runtime ids other than `litellm` and `lmstudio`.
+
 ### GET /api/settings/pricing
 
 Returns the pricing registry snapshot.
@@ -354,30 +539,36 @@ Forces a refresh of pricing from the official provider pages.
 
 ### GET /api/settings/providers
 
-Returns a consolidated provider configuration and auth overview across Anthropic, OpenAI, and Ollama. It never returns raw API keys.
+Returns a consolidated provider, runtime, routing-policy, and health overview. It never returns raw API keys or provider credentials.
 
-- **Request**: none.
-- **Response** `200`: a `providers` object (each with `configured`, `authMethod`, `hasKey`, `apiKeySource`, per-runtime states, and provider-specific fields such as OpenAI's `oauthConnected`, `account`, and `login`), an `ollama` block (`configured`, `connected`, `baseUrl`, `defaultModel`), `chatDefaultModel`, `routingPreference`, and `configuredProviderCount`.
+- **Request** optional query: `refreshRuntimeHealth=1` bypasses the 15-second runtime-health cache for this request.
+- **Response** `200`: a `providers` object (each with auth and per-runtime state plus provider-specific OAuth fields), a redacted `ollama` block, `compatibleRuntimes` for LiteLLM and LM Studio, `chatDefaultModel`, the legacy `routingPreference`, the complete versioned `routing` snapshot, `runtimeRoutingStatuses` for all registered runtimes, and `configuredProviderCount`. Each status names configuration, health, selected model, comparable cost when known, capability summary, capability limits, and a bounded reason.
 - **Errors**: none returned explicitly.
-- **Side effects**: probes the Ollama connection (cached briefly) and may refresh live OpenAI OAuth state.
+- **Side effects**: may refresh live OpenAI OAuth state and probes every configured runtime through a bounded, all-settled health snapshot. Probe failures remain per-runtime states instead of failing the aggregate response.
 
 ### GET /api/settings/routing
 
-Returns the routing preference.
+Returns the routing preference and versioned eligible-runtime policy.
 
 - **Request**: none.
-- **Response** `200`: `{ "preference": "cost" }`. One of `cost`, `latency`, `quality`, `manual`.
+- **Response** `200`: `{ "preference": "latency", "policy": { "version": 1, "eligibleRuntimeIds": [ ... ], "manualDefaultRuntimeId": "claude-code", "automaticFallback": true }, "source": "stored", "needsPersistence": false, "repairReason": null }`. A missing policy returns the safe v1 default; corrupt or future values return a conservative repaired policy with a visible reason and fallback disabled.
 - **Errors**: none returned explicitly.
 - **Side effects**: reads only.
 
 ### POST /api/settings/routing
 
-Sets the routing preference.
+Compatibility alias for `PUT /api/settings/routing`; preference-only bodies are rejected so they cannot discard pool edits.
 
-- **Request** body (JSON): `{ "preference": "cost" }`.
-- **Response** `200`: `{ "preference": "cost" }`.
-- **Errors**: `400` on an invalid value: `{ "error": "preference must be one of: cost, latency, quality, manual" }`.
-- **Side effects**: writes the preference.
+### PUT /api/settings/routing
+
+Atomically replaces the routing preference and v1 policy.
+
+- **Request** strict body: `{ "preference": "cost | latency | quality | manual", "policy": { "version": 1, "eligibleRuntimeIds": ["<unique registered runtime ids>"], "manualDefaultRuntimeId": "<registered runtime id>", "automaticFallback": true } }`.
+- **Response** `200`: the normalized stored snapshot, with the same shape as `GET`.
+- **Errors**:
+  - `400` for malformed JSON, unknown fields, duplicate or unknown runtime ids, an invalid preference or default, or the wrong policy version.
+  - `500` when atomic persistence fails.
+- **Side effects**: writes preference and policy together. It does not mutate provider authentication, provider models, compatible-runtime settings, or the Chat default.
 
 ### GET /api/settings/runtime
 
@@ -470,12 +661,13 @@ Returns the six onboarding milestones, computed from database counts.
 
 ### GET /api/instance/config
 
-Returns the full instance state: config, guardrails, and upgrade state in one payload. Timestamps here are numeric epoch values.
+Returns the active Relay cell boundary plus the instance bootstrap, guardrail,
+and upgrade state in one payload. Timestamps here are numeric epoch values.
 
 - **Request**: none.
-- **Response** `200`: one of three shapes. In dev mode, `{ "devMode": true, "config": null, "guardrails": null, "upgrade": null }`. With no git directory, `{ "devMode": false, "skippedReason": "no_git", "config": null, "guardrails": null, "upgrade": null }`. Otherwise `{ "devMode": false, "config": { ... }, "guardrails": { ... }, "upgrade": { ... } }`, where `config` carries `instanceId`, `branchName`, `isPrivateInstance`, and a numeric `createdAt`; `guardrails` carries the pre-push hook state and `consentStatus`; and `upgrade` carries the poll and upgrade-availability state.
-- **Errors**: `500` on failure: `{ "error": "<message>" }`.
-- **Side effects**: reads only.
+- **Response** `200`: every successful shape includes `boundary`: `{ "vocabularyVersion": "relay-host-cell-v1", "instanceId": "string | null", "dataDirectory": "string", "databasePath": "string", "launchWorkingDirectory": "string", "dataDirectorySource": "default | override" }`. Dev mode returns `{ "devMode": true, "boundary": { ... }, "config": null, "guardrails": null, "upgrade": null }`. With no git directory, the same boundary facts accompany `skippedReason: "no_git"`. A validated managed `RELAY_CELL_ID` is authoritative and appears in the compatible `boundary.instanceId` field even in a no-git OCI Cell. Otherwise `config` carries `instanceId`, `branchName`, `isPrivateInstance`, and a numeric `createdAt`; `guardrails` carries the pre-push hook state and `consentStatus`; and `upgrade` carries the poll and upgrade-availability state. Direct dev and no-git npx modes without a managed identity report `boundary.instanceId: null` rather than surfacing stale or invented bootstrap identity.
+- **Errors**: `503` with `{ "error": "<message>", "code": "CELL_ID_INVALID" }` when a configured managed Cell id is invalid. Other failures return `500` with `{ "error": "<message>", "code": "INSTANCE_CONFIG_FAILED" }`.
+- **Side effects**: reads only. The boundary object contains local administrative paths but no credentials, customer content, raw logs, Host name, port, network, container id, or inferred isolation-strength claim.
 
 ### GET /api/instance/identity
 

@@ -62,7 +62,9 @@ This memo closes the *Relay Packs* series arc. The pillar made the argument, Web
         <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
       </radialGradient>
     </defs>
+
     <ellipse cx="620" cy="160" rx="170" ry="150" fill="url(#iv-glow)"/>
+
     <g class="fn-diagram__edges">
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 186 96 L 246 96" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 386 96 L 446 96" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
@@ -71,6 +73,7 @@ This memo closes the *Relay Packs* series arc. The pillar made the argument, Web
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 386 224 L 446 224" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 586 224 L 646 224" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
     </g>
+
     <g class="fn-diagram__flow">
       <circle class="fn-diagram__flow" cx="186" cy="96" r="4" fill="var(--svg-accent-teal)">
         <animateMotion begin="1.5s" dur="4.4s" repeatCount="indefinite" path="M 0 0 L 60 0 L 260 0 L 460 0"/>
@@ -79,16 +82,19 @@ This memo closes the *Relay Packs* series arc. The pillar made the argument, Web
         <animateMotion begin="2.1s" dur="4.4s" repeatCount="indefinite" path="M 0 0 L 60 0 L 260 0 L 460 0"/>
       </circle>
     </g>
+
     <g class="fn-diagram__nodes">
       <rect x="40" y="70" width="146" height="52" rx="8" fill="url(#iv-queue)" stroke="var(--svg-stroke)" stroke-width="1" stroke-dasharray="4 4"/>
       <rect x="246" y="70" width="140" height="52" rx="8" fill="url(#iv-cre)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
       <rect x="446" y="70" width="140" height="52" rx="8" fill="url(#iv-cre)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
       <rect x="646" y="70" width="90" height="52" rx="8" fill="url(#iv-cre)" stroke="var(--svg-accent-teal)" stroke-width="1.5"/>
+
       <rect x="40" y="198" width="146" height="52" rx="8" fill="url(#iv-queue)" stroke="var(--svg-stroke)" stroke-width="1" stroke-dasharray="4 4"/>
       <rect x="246" y="198" width="140" height="52" rx="8" fill="url(#iv-np)" stroke="var(--svg-accent-purple)" stroke-width="1"/>
       <rect x="446" y="198" width="140" height="52" rx="8" fill="url(#iv-np)" stroke="var(--svg-accent-purple)" stroke-width="1"/>
       <rect x="646" y="198" width="90" height="52" rx="8" fill="url(#iv-np)" stroke="var(--svg-accent-purple)" stroke-width="1.5"/>
     </g>
+
     <g class="fn-diagram__labels">
       <text x="52" y="60" font-size="9" fill="var(--svg-accent-teal)" font-family="var(--font-mono)" letter-spacing="0.08em">CRE</text>
       <text x="113" y="92" text-anchor="middle" font-size="11" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">rent_roll</text>
@@ -99,6 +105,7 @@ This memo closes the *Relay Packs* series arc. The pillar made the argument, Web
       <text x="516" y="108" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">renewal engine</text>
       <text x="691" y="92" text-anchor="middle" font-size="10.5" fill="var(--svg-accent-teal)" font-family="var(--font-mono)">abstract</text>
       <text x="691" y="108" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">+ LOI</text>
+
       <text x="52" y="188" font-size="9" fill="var(--svg-accent-purple)" font-family="var(--font-mono)" letter-spacing="0.08em">NONPROFIT</text>
       <text x="113" y="220" text-anchor="middle" font-size="11" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">grants</text>
       <text x="113" y="236" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">empty queue</text>
@@ -108,6 +115,7 @@ This memo closes the *Relay Packs* series arc. The pillar made the argument, Web
       <text x="516" y="236" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">application</text>
       <text x="691" y="220" text-anchor="middle" font-size="10.5" fill="var(--svg-accent-purple)" font-family="var(--font-mono)">package</text>
       <text x="691" y="236" text-anchor="middle" font-size="8.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">+ compliance</text>
+
       <text x="388" y="300" text-anchor="middle" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)">same machine — queue, trigger, checkpoints, deliverable — two domains</text>
     </g>
   </svg>

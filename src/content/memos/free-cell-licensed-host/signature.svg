@@ -1,0 +1,32 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A free Relay Cell runtime sits inside a licensed Host authority ring, while a separate Pack tile remains outside to show that runtime, managed rights, and content entitlements are distinct.">
+  <defs>
+    <linearGradient id="fl-free" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-teal)" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="var(--svg-accent-blue)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="fl-paid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.03"/>
+    </linearGradient>
+  </defs>
+  <g class="fn-diagram__edges">
+    <path d="M 126 254 L 514 254" fill="none" stroke="var(--svg-stroke)" stroke-width="1" stroke-dasharray="5 5"/>
+  </g>
+  <g class="fn-diagram__nodes">
+    <circle cx="254" cy="184" r="112" fill="url(#fl-paid)" stroke="var(--color-primary)" stroke-width="1.5"/>
+    <rect x="182" y="132" width="144" height="104" rx="14" fill="url(#fl-free)" stroke="var(--svg-accent-teal)" stroke-width="1.5"/>
+    <rect x="426" y="132" width="140" height="104" rx="14" fill="var(--svg-surface)" stroke="var(--svg-accent-purple)" stroke-width="1.5"/>
+    <circle cx="126" cy="254" r="7" fill="var(--svg-accent-teal)"/>
+    <circle cx="254" cy="254" r="7" fill="var(--color-primary)"/>
+    <circle cx="514" cy="254" r="7" fill="var(--svg-accent-purple)"/>
+  </g>
+  <g class="fn-diagram__labels">
+    <text x="38" y="38" font-size="25" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Free runtime. Licensed authority.</text>
+    <text x="254" y="106" text-anchor="middle" font-size="11" fill="var(--color-primary)" font-family="var(--font-mono)">MANAGED HOST RIGHTS</text>
+    <text x="254" y="176" text-anchor="middle" font-size="16" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">RELAY CELL</text>
+    <text x="254" y="202" text-anchor="middle" font-size="11" fill="var(--svg-accent-teal)" font-family="var(--font-mono)">FREE RUNTIME</text>
+    <text x="496" y="176" text-anchor="middle" font-size="16" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">PACKS</text>
+    <text x="496" y="202" text-anchor="middle" font-size="11" fill="var(--svg-accent-purple)" font-family="var(--font-mono)">SEPARATE CONTENT</text>
+    <text x="320" y="314" text-anchor="middle" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">authentic bytes · commercial rights · content rights</text>
+  </g>
+</svg>

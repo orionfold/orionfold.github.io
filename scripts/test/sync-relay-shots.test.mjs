@@ -17,6 +17,8 @@ const manifest = {
   assert.equal(pairs.length, 1);
   assert.equal(pairs[0].id, 'home-cockpit');
   assert.equal(pairs[0].ratio, '1440 / 1100');
+  assert.equal(pairs[0].width, 1440);
+  assert.equal(pairs[0].height, 1100);
   assert.equal(pairs[0].alt, 'Home cockpit', 'falls back to label when manifest has no alt');
   assert.equal(pairs[0].light.path, 'light/home/home-cockpit__desktop.png');
   assert.equal(pairs[0].dark.path, 'dark/home/home-cockpit__desktop.png');

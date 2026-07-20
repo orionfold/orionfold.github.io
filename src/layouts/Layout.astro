@@ -71,6 +71,37 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
         }
       })();
     </script>
+    <!-- Relay screenshots start without a network URL. Assign only the active
+         theme's responsive srcset as each node enters the parsed DOM; native
+         loading="lazy" then defers below-fold figures. Watching data-theme keeps
+         the site's explicit light/dark/system control authoritative. -->
+    <script is:inline>
+      (function () {
+        function applyShot(img) {
+          var theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+          if (img.getAttribute('data-shot-theme') === theme) return;
+          var prefix = theme === 'light' ? 'data-shot-light-' : 'data-shot-dark-';
+          var src = img.getAttribute(prefix + 'src');
+          var srcset = img.getAttribute(prefix + 'srcset');
+          if (!src || !srcset) return;
+          img.setAttribute('srcset', srcset);
+          img.setAttribute('src', src);
+          img.setAttribute('data-shot-theme', theme);
+        }
+        function applyWithin(root) {
+          if (root.nodeType !== 1) return;
+          if (root.matches && root.matches('img[data-relay-shot]')) applyShot(root);
+          if (root.querySelectorAll) root.querySelectorAll('img[data-relay-shot]').forEach(applyShot);
+        }
+        applyWithin(document.documentElement);
+        new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            if (mutation.type === 'attributes') applyWithin(document.documentElement);
+            else mutation.addedNodes.forEach(applyWithin);
+          });
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'], childList: true, subtree: true });
+      })();
+    </script>
     <!-- Warm DNS+TLS for the analytics origins so the post-load gtag.js fetch +
          beacons land quickly (Google Ads pulls a second tagmanager script when
          AW-... is configured below; the GA collect endpoint lives on

@@ -14,7 +14,7 @@
 //
 // Production signing uses the prod seed from the LICENSE_SIGNING_SEED_B64
 // Supabase secret (key_id "of-license-prod-2026"). The dev key in the vector is
-// a published throwaway and is used ONLY by the conformance test.
+// a published throwaway used only by isolated staging and conformance receipts.
 import * as ed from "https://esm.sh/@noble/ed25519@2?target=deno";
 
 // Canonical signing input — a verbatim port of Spark's recipe. Rules that keep
@@ -76,6 +76,18 @@ export interface LicenseSignature {
   value: string; // standard base64 (padded) of the 64-byte signature
 }
 
+/**
+ * Public keys accepted by the shipped Relay verifier. The production key stays
+ * the default issuer identity; the committed throwaway dev key exists only for
+ * isolated conformance/staging receipts. Keeping both public halves here lets
+ * the issuer reject a seed/key-id mismatch before it labels and delivers a
+ * license that Relay would refuse.
+ */
+export const TRUSTED_LICENSE_PUBLIC_KEYS: Readonly<Record<string, string>> = {
+  "of-license-prod-2026": "LQVkEw+cetZGkstWJSdKoxOF/kuCrCgmGADaFi/yyDc=",
+  "of-license-dev-2026-06": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg=",
+};
+
 // Sign a payload with a 32-byte Ed25519 seed (base64). Returns the signature
 // block that rides at license.signature. Async path uses Deno's WebCrypto
 // SHA-512 — no extra hashing wiring needed.
@@ -98,6 +110,19 @@ export async function signLicense(
 export async function publicKeyFromSeed(seedB64: string): Promise<string> {
   const pub = await ed.getPublicKeyAsync(b64decode(seedB64));
   return b64encode(pub);
+}
+
+export async function assertLicenseSigningIdentity(
+  seedB64: string,
+  keyId: string,
+): Promise<string> {
+  const expected = TRUSTED_LICENSE_PUBLIC_KEYS[keyId];
+  if (!expected) throw new Error(`Untrusted license signing key id: ${keyId}`);
+  const actual = await publicKeyFromSeed(seedB64);
+  if (actual !== expected) {
+    throw new Error(`License signing seed does not match trusted key id: ${keyId}`);
+  }
+  return actual;
 }
 
 // Verify a signature (base64) against a 32-byte raw Ed25519 public key (base64).

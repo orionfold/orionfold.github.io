@@ -1,0 +1,35 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The same complete Relay Host contract moves from a laptop address to a customer-owned cloud server, with a proof gate before the cloud destination.">
+  <defs>
+    <linearGradient id="sa-path" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="var(--svg-accent-teal)" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="sa-cloud" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--svg-accent-blue)" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="var(--svg-accent-blue)" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+  <g class="fn-diagram__edges">
+    <path d="M 190 190 C 240 190 246 190 276 190" fill="none" stroke="url(#sa-path)" stroke-width="2"/>
+    <path d="M 364 190 C 402 190 410 190 450 190" fill="none" stroke="url(#sa-path)" stroke-width="2" stroke-dasharray="6 5"/>
+  </g>
+  <g class="fn-diagram__nodes">
+    <rect x="48" y="126" width="142" height="128" rx="14" fill="var(--svg-surface)" stroke="var(--svg-accent-teal)" stroke-width="1.5"/>
+    <rect x="70" y="150" width="98" height="68" rx="8" fill="var(--svg-accent-teal)" fill-opacity="0.12" stroke="var(--svg-accent-teal)" stroke-width="1"/>
+    <rect x="276" y="146" width="88" height="88" rx="44" fill="var(--svg-surface)" stroke="var(--color-primary)" stroke-width="1.5"/>
+    <path d="M 298 190 L 313 205 L 344 172" fill="none" stroke="var(--color-primary)" stroke-width="2"/>
+    <rect x="450" y="104" width="150" height="172" rx="16" fill="url(#sa-cloud)" stroke="var(--svg-accent-blue)" stroke-width="1.5"/>
+    <rect x="476" y="140" width="98" height="94" rx="10" fill="var(--svg-surface)" stroke="var(--svg-accent-blue)" stroke-width="1"/>
+    <rect x="490" y="156" width="70" height="22" rx="5" fill="var(--svg-accent-blue)" fill-opacity="0.15" stroke="var(--svg-accent-blue)" stroke-width="1"/>
+    <rect x="490" y="192" width="70" height="22" rx="5" fill="var(--svg-accent-blue)" fill-opacity="0.15" stroke="var(--svg-accent-blue)" stroke-width="1"/>
+  </g>
+  <g class="fn-diagram__labels">
+    <text x="40" y="38" font-size="25" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">Same Host. New address.</text>
+    <text x="119" y="245" text-anchor="middle" font-size="10" fill="var(--svg-accent-teal)" font-family="var(--font-mono)">LAPTOP / LOCAL</text>
+    <text x="320" y="256" text-anchor="middle" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)">CONFORMANCE GATE</text>
+    <text x="525" y="128" text-anchor="middle" font-size="10" fill="var(--svg-accent-blue)" font-family="var(--font-mono)">CUSTOMER-OWNED CLOUD</text>
+    <text x="525" y="171" text-anchor="middle" font-size="10" fill="var(--svg-text-bright)" font-family="var(--font-mono)">HOST</text>
+    <text x="525" y="207" text-anchor="middle" font-size="10" fill="var(--svg-text-bright)" font-family="var(--font-mono)">CELLS</text>
+    <text x="320" y="326" text-anchor="middle" font-size="12" fill="var(--svg-text-muted)" font-family="var(--font-mono)">move the operating contract before adding platform layers</text>
+  </g>
+</svg>

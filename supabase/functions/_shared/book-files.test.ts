@@ -3,7 +3,7 @@
 // Run: deno test --allow-env supabase/functions/_shared/book-files.test.ts
 // (--allow-env: brandedUrl reads SUPABASE_URL to swap in the branded host.)
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { bookEmailText, signBookFiles } from "./book-files.ts";
+import { bookEmailText, brandedUrl, signBookFiles } from "./book-files.ts";
 
 // Fake Storage client: .from(bucket).list(prefix) and .createSignedUrl(path, ttl).
 function fakeSupabase(files: Array<{ name: string }>) {
@@ -60,4 +60,22 @@ Deno.test("bookEmailText includes both links and is em-dash free", () => {
   assert(text.includes("https://x/e.epub"));
   assert(text.includes("FIXTURE-FOOTER"));
   assert(!text.includes("—"));
+});
+
+Deno.test("brandedUrl rewrites only the production Supabase project", () => {
+  const path = "/storage/v1/object/sign/field-edition/licenses/license.json?token=x";
+  assertEquals(
+    brandedUrl(
+      `https://lgnmmcxvwdnusvfpguvf.supabase.co${path}`,
+      "https://lgnmmcxvwdnusvfpguvf.supabase.co",
+    ),
+    `https://orionfold.supabase.co${path}`,
+  );
+  assertEquals(
+    brandedUrl(
+      `https://ypdqknwtgcvulfmouzjp.supabase.co${path}`,
+      "https://ypdqknwtgcvulfmouzjp.supabase.co",
+    ),
+    `https://ypdqknwtgcvulfmouzjp.supabase.co${path}`,
+  );
 });
