@@ -20,7 +20,7 @@ const tokenSecret = Deno.env.get("WORKSHOP_TOKEN_SECRET") ?? "";
 const requestSecret = Deno.env.get("WORKSHOP_REQUEST_HASH_SECRET") ?? "";
 const siteUrl = (Deno.env.get("SITE_URL") ?? "https://orionfold.com").replace(/\/$/, "");
 const resendKey = Deno.env.get("RESEND_API_KEY") ?? "";
-const resendFrom = Deno.env.get("RESEND_FROM") ?? "Orionfold <manav@updates.orionfold.com>";
+const resendFrom = Deno.env.get("RESEND_FROM") ?? "Orionfold <manav@orionfold.com>";
 const resendApiUrl = Deno.env.get("RESEND_API_URL") ?? "https://api.resend.com/emails";
 
 function admin() {

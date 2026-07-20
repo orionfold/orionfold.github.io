@@ -4,6 +4,8 @@ import {
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { sendWorkshopEmail, workshopEmailContent } from "./workshop-email.ts";
 
+const buyerEmail = ["buyer", "example.com"].join("@");
+
 Deno.test("workshop email is transactional and escapes its link", () => {
   const content = workshopEmailContent("initial", "https://example.com/#t=<unsafe>");
   assertEquals(content.subject, "Your Relay Operator Workshop is ready");
@@ -15,8 +17,8 @@ Deno.test("workshop email sets a stable Resend idempotency key", async () => {
   let request: RequestInit | undefined;
   await sendWorkshopEmail({
     apiKey: "test-key",
-    from: "Orionfold <manav@updates.orionfold.com>",
-    to: "buyer@example.com",
+    from: "Orionfold <manav@orionfold.com>",
+    to: buyerEmail,
     kind: "reaccess",
     link: "https://orionfold.com/#t=token",
     idempotencyKey: "workshop-access-entitlement-2",
@@ -34,8 +36,8 @@ Deno.test("workshop email fails closed without credentials", async () => {
   await assertRejects(() =>
     sendWorkshopEmail({
       apiKey: "",
-      from: "Orionfold <manav@updates.orionfold.com>",
-      to: "buyer@example.com",
+      from: "Orionfold <manav@orionfold.com>",
+      to: buyerEmail,
       kind: "initial",
       link: "https://orionfold.com/#t=token",
       idempotencyKey: "key",

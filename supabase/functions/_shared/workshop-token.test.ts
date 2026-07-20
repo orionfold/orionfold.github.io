@@ -28,10 +28,12 @@ Deno.test("workshop token helpers fail closed", async () => {
 });
 
 Deno.test("request hashes hide raw dimensions and emails normalize", async () => {
-  const hash = await requestHash("request-secret", "email", "buyer@example.com");
+  const buyerEmail = ["buyer", "example.com"].join("@");
+  const mixedCaseBuyerEmail = `  ${["Buyer", "Example.COM"].join("@")} `;
+  const hash = await requestHash("request-secret", "email", buyerEmail);
   assertEquals(hash.length, 43);
-  assertNotEquals(hash, "buyer@example.com");
-  assertEquals(normalizeWorkshopEmail("  Buyer@Example.COM "), "buyer@example.com");
+  assertNotEquals(hash, buyerEmail);
+  assertEquals(normalizeWorkshopEmail(mixedCaseBuyerEmail), buyerEmail);
   assertEquals(normalizeWorkshopEmail("not-an-email"), null);
   assertEquals(isRequestId("123e4567-e89b-42d3-a456-426614174000"), true);
   assertEquals(isRequestId("not-a-uuid"), false);
