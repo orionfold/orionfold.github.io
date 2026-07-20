@@ -226,12 +226,12 @@
   },
   "settings-host-deployment": {
     "light": {
-      "src": "/relay/shots/settings-host-deployment/light-1280.d39d4278.webp",
-      "srcset": "/relay/shots/settings-host-deployment/light-720.105c7b85.webp 720w, /relay/shots/settings-host-deployment/light-1280.d39d4278.webp 1280w, /relay/shots/settings-host-deployment/light-1600.5b0e13df.webp 1600w"
+      "src": "/relay/shots/settings-host-deployment/light-1280.1c7adc84.webp",
+      "srcset": "/relay/shots/settings-host-deployment/light-720.e35712c7.webp 720w, /relay/shots/settings-host-deployment/light-1280.1c7adc84.webp 1280w, /relay/shots/settings-host-deployment/light-1600.ea6fe2ea.webp 1600w"
     },
     "dark": {
-      "src": "/relay/shots/settings-host-deployment/dark-1280.39e11a7b.webp",
-      "srcset": "/relay/shots/settings-host-deployment/dark-720.fcd93663.webp 720w, /relay/shots/settings-host-deployment/dark-1280.39e11a7b.webp 1280w, /relay/shots/settings-host-deployment/dark-1600.15ff4301.webp 1600w"
+      "src": "/relay/shots/settings-host-deployment/dark-1280.8fe76bfa.webp",
+      "srcset": "/relay/shots/settings-host-deployment/dark-720.8ac91c8e.webp 720w, /relay/shots/settings-host-deployment/dark-1280.8fe76bfa.webp 1280w, /relay/shots/settings-host-deployment/dark-1600.97122a07.webp 1600w"
     },
     "ratio": "1440 / 1100",
     "width": 1440,

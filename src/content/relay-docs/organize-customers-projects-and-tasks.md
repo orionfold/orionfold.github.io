@@ -142,8 +142,11 @@ or machines. The local `relay host` CLI and licensed **Settings → Relay Host
 deployment** journey enforce local Cell roots, ports, networks, resource
 reservations, signed managed-Cell capacity, and content-free lifecycle receipts
 on one Host. Cloud Server Preview is a deterministic simulation and creates no
-provider resources. Upgrade, rollback, transfer, and Fleet control are outside
-the current local Host lifecycle surface.
+provider resources. The separate **DigitalOcean guided beta** explains how to
+run that same local Host surface on a customer-owned Ubuntu Droplet. Relay does
+not request a DigitalOcean token or create the server; the customer owns the
+account, bill, DNS, keys, backups, and administration. Upgrade, rollback,
+transfer, and Fleet control are outside the current Host lifecycle surface.
 
 ## What This Changes In Daily Work
 

@@ -18,7 +18,7 @@
     "/packs/",
     "/presets/",
     "/projects/",
-    "/projects/relay-marketing/",
+    "/projects/relay-agency-pro/",
     "/schedules/",
     "/schemas/",
     "/settings/",
@@ -28,7 +28,7 @@
     "/workflows/",
     "/workflows/demo_workflow_client_status/"
   ],
-  "assets": 68,
+  "assets": 71,
   "generatedFrom": {
     "captured": "captured",
     "public": "relay-demo"

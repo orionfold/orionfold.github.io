@@ -65,8 +65,10 @@ A complete Cell includes its process or container, private network, route, data
 directory, database, files, identity, secrets, license, logs, resource budget,
 backups, and runtime policy. Settings reports facts Relay can prove today.
 **Relay Host deployment** adds a browser journey for one local Host. It also
-offers a clearly labeled Cloud Server Preview. Remote multi-Host management is
-outside this surface.
+offers a clearly labeled Cloud Server Preview and a separate DigitalOcean
+guided beta link. Preview is simulation. The guided beta is a tested manual
+install on a customer-owned server; it is not in-app cloud provisioning.
+Remote multi-Host management is outside this surface.
 
 ![Relay Cell boundary with local identity and data-root facts](relay-shot:settings-cell-boundary)
 
@@ -117,11 +119,13 @@ journey uses the same supervisor contracts. Relay does not start privileged
 Host control from a Cell. The supervisor keeps a dedicated
 `~/.relay-host/host.db` registry. It stores opaque ownership, resource, state,
 and receipt facts. It does not store prompts, documents, credentials, or Cell
-database content. Production create operations require Docker, Cosign, GitHub
-CLI proof, a signed Host license, and an immutable
-`ghcr.io/orionfold/relay-cell@sha256:...` reference. The public `v0.44.3` image
+database content. Production create operations require Docker, Cosign, a signed
+Host license, and an immutable `ghcr.io/orionfold/relay-cell@sha256:...`
+reference. Cosign checks the public image signature and SLSA provenance
+anonymously; GitHub CLI login is not required for a managed Host. The public
+`v0.44.9` image
 is available at index digest
-`sha256:b0dbee1535a2da9d963814591c8f0307d719b0d1ee43baebd2cbedf5f1d22c73`.
+`sha256:42bea7a0a65bf799ddbbc4a078667f256400c5cca0fe682c07ab68f2bf5c3cd5`.
 The Settings lifecycle journey is implemented and documented as a current
 surface. Host mutations require a signed Host license. Cloud Server Preview is
 a deterministic simulation rather than a purchased or running VM.
@@ -133,6 +137,22 @@ model usage, and recovery storage remain yours. **Cloud server preview** shows
 a dated cost range and runs the journey against a fixed simulation. It stores
 no provider token. It creates no VM, DNS record, firewall rule, or provider
 charge.
+
+The separate **DigitalOcean guided beta** card links to the customer guide. Its
+validated baseline is one Ubuntu 24.04 x64 Droplet with 2 vCPU, 4 GiB RAM and
+80 GiB disk, with Relay bound to loopback behind authenticated HTTPS. The
+customer creates and administers the server, firewall, hostname, TLS, backups,
+recovery keys, and model credentials. Relay does not request a provider token
+or create the Droplet. Inside Relay on that server, choose **Local device**
+because the Droplet is the local Host. Use Cloud Server Preview only to compare
+a dated planning simulation.
+
+The baseline proves Relay and lightweight managed Cells. It is not a production
+sizing promise for a local LLM. Use BYOK hosted inference or size a separate
+private Ollama, LM Studio, or LiteLLM server for its own workload. Follow
+[Run a Relay Host on DigitalOcean](https://github.com/orionfold/relay/blob/main/docs/digitalocean-relay-host.md) for
+the firewall, service, first-admin, license, Cell, recovery, update, and complete
+teardown sequence.
 
 ![Relay Host deployment placement and license boundary](relay-shot:settings-host-deployment)
 
@@ -157,7 +177,7 @@ the needed packages, and supplies the operating system and native libraries.
 The Cell image includes a pinned Linux runtime so the same managed Cell can run
 the same way on every supported Host.
 
-The final accepted `0.44.3` npm package is about 2.92 MB compressed and 10.62 MB
+The `0.44.3` npm package used for the original size comparison is about 2.92 MB compressed and 10.62 MB
 unpacked. The arm64 Cell image is about 130.14 MB. This is not a fair installed-size
 comparison: the npm number leaves out Node, installed packages, and host
 runtime requirements that are already on the machine or downloaded during

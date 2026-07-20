@@ -1,13 +1,13 @@
 ---
 // /relay/host/ is the dedicated decision surface for the paid Host right.
 // It deliberately does not duplicate /relay/'s Core and premium-Pack sales job.
-// Content authority, reconciled 2026-07-19:
+// Content authority, reconciled 2026-07-20:
 // - Relay _ASSETS/docs guide 09 (Host/Cell boundary and seven-step journey)
 // - Relay screenshots captured 2026-07-19 (boundary, deployment, license)
 // - Relay docs: relay-host-{fulfillment,supervisor,access}.md
 // - first five review-stage Relay Host & Cells memos
-// The DigitalOcean capstone remains draft until Relay G-085. Do not turn its
-// direction into provider success, cost, capacity or availability claims here.
+// - accepted Relay G-104/G-105 DigitalOcean guided-beta receipt on Relay 0.44.9
+// Keep the provider claim bounded to that one manual customer-owned topology.
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
@@ -27,7 +27,7 @@ const price = formatUsd(RELAY_HOST.amount);
 const proofFacts = [
   { value: '1', label: 'customer-owned Host', note: 'One machine or VM under the operator’s control' },
   { value: '10', label: 'managed Relay Cells', note: 'Running, stopped and retained Cells count' },
-  { value: '3', label: 'independent proofs', note: 'License, image authenticity and registry access' },
+  { value: '0.44.9', label: 'public accepted release', note: 'npm Host and signed multi-architecture Cell image' },
 ];
 
 const boundaries = [
@@ -67,7 +67,7 @@ const proofs = [
 ];
 
 const journey = [
-  ['Choose placement', 'Use a local device today. The customer-owned DigitalOcean path stays closed until its real provider proof passes.'],
+  ['Choose placement', 'Run locally or follow the manual DigitalOcean guided beta on a customer-owned Ubuntu server. Relay never asks for your provider token.'],
   ['Configure the Host', 'Set Host identity, machine shape, managed Cell count, exposure, model runtime and recovery posture.'],
   ['Review the estimate', 'Relay calculates a dated resource and provider range. Any material change clears stale approval.'],
   ['Authorize the exact plan', 'A signed Host license and explicit operator confirmation are required before a managed mutation.'],
@@ -82,7 +82,7 @@ const faq = [
   ['Are ten Cells ten hostile tenants?', 'No. Each Cell has independent application state and lifecycle, but same-Host Cells still trust the Host administrator and share the machine failure boundary.'],
   ['What happens when the annual term ends?', 'Existing Cells keep running and remain startable, stoppable, exportable, recoverable and purgeable. New managed capacity and forward paid updates stop. Compatible critical-security fixes remain included.'],
   ['Are premium Packs included?', 'No. Packs are maintained application content and remain a separate license. Relay Host covers Host authority and managed Cell capacity.'],
-  ['Is DigitalOcean deployment available now?', 'Not yet. The product and local managed journey are proven. The customer-owned DigitalOcean path remains a named launch gate until Relay completes provider, security, recovery, cleanup and bill reconciliation evidence.'],
+  ['Is DigitalOcean deployment available now?', 'Yes, as a guided manual beta on a customer-owned Ubuntu server. You create and administer the server, firewall, DNS, TLS, backups, recovery keys and bill. Relay does not provision or operate it for you.'],
 ];
 
 const productSchema = {
@@ -165,7 +165,7 @@ const faqSchema = {
           >Buy Relay Host <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs">{price}/yr</span></button>
         ) : (
           <span class="inline-flex min-h-11 items-center rounded-full border border-primary/30 bg-primary/[0.07] px-5 py-3 font-mono text-xs font-semibold uppercase tracking-wider text-primary">
-            Launch waits for DigitalOcean proof
+            Relay Host launch is being prepared
           </span>
         )}
         <a href="#proof" class="of-secondary-action">See what is already proven</a>
@@ -194,8 +194,8 @@ const faqSchema = {
             <h2 class="mt-3 text-balance text-3xl font-bold sm:text-4xl">Placement to handoff, with every gate visible.</h2>
             <p class="mt-5 leading-relaxed text-text-muted">
               Relay turns managed deployment into seven named steps: placement, configuration, estimate,
-              authorization, install, verification and handoff. The local path is proven. The cloud choice stays
-              labeled as a preview until the real DigitalOcean receipt exists.
+              authorization, install, verification and handoff. The local path and one customer-owned DigitalOcean
+              guided beta are proven. Relay's in-app Cloud Server Preview remains a planning simulation, not provisioning.
             </p>
             <a href="/relay/docs/set-trust-runtime-and-local-controls/" class="of-text-action mt-5">Read the operator guide →</a>
           </div>
@@ -206,7 +206,7 @@ const faqSchema = {
               class="managed-shot"
             />
             <figcaption class="border-t border-border/70 px-5 py-3 text-center text-xs leading-relaxed text-text-muted">
-              Real Relay 0.44.3 product capture · local Host available · cloud server visibly gated
+              Host deployment capture from the accepted beta train · current public release: Relay 0.44.9
             </figcaption>
           </figure>
         </div>
@@ -285,25 +285,34 @@ const faqSchema = {
     </section>
 
     <section class="px-6 py-16 sm:py-20">
-      <div class="mx-auto max-w-5xl rounded-3xl border border-amber-500/30 bg-amber-500/[0.055] p-7 sm:p-10">
-        <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-amber-600 dark:text-amber-400">The honest cloud gate</p>
-        <div class="mt-4 grid gap-8 lg:grid-cols-[1fr_0.8fr]">
+      <div class="mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-primary/[0.055] p-7 sm:p-10">
+        <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Accepted customer-owned cloud proof</p>
+        <div class="mt-4 grid gap-8 lg:grid-cols-[1fr_0.9fr]">
           <div>
-            <h2 class="text-balance text-3xl font-bold sm:text-4xl">Customer-owned cloud is the direction. DigitalOcean proof comes before the claim.</h2>
+            <h2 class="text-balance text-3xl font-bold sm:text-4xl">One DigitalOcean Host is proven. The claim stays that narrow.</h2>
             <p class="mt-5 leading-relaxed text-text-muted">
-              Relay already proves the same Host and Cell model on a local machine. Before this page opens checkout,
-              Relay will provision one clean DigitalOcean VM and verify authenticated ingress, one- and multi-Cell
-              operation, capacity refusal, backup, Host-loss restore, upgrade, rollback, bill reconciliation and zero-orphan cleanup.
+              Relay 0.44.9 passed a fresh guided-beta run on one customer-owned Ubuntu 24.04 x64 SFO3 Droplet with
+              2 vCPU, 4 GiB RAM and 80 GiB disk. Authenticated HTTPS, first-admin setup, ten managed Cells, eleventh-Cell
+              refusal, same-Host isolation, a private model runtime, encrypted recovery, restart, rollback and export all passed.
             </p>
+            <p class="mt-4 text-sm leading-relaxed text-text-muted">
+              The run lasted about 18 minutes at a $0.03571/hour compute rate and remained conservatively below $0.05,
+              subject to provider billing lag. Cleanup removed the Droplet, volume, reserved IP, firewall, disposable SSH
+              key, provider token and local credentials; final provider inventory was empty. This is a proof-run cost, not
+              a monthly sizing or operating-cost promise.
+            </p>
+            <a href="https://github.com/orionfold/relay/blob/v0.44.9/docs/digitalocean-relay-host.md" class="of-text-action mt-5">Run the DigitalOcean guided beta →</a>
           </div>
-          <div class="rounded-2xl border border-amber-500/25 bg-surface/65 p-6">
-            <p class="font-mono text-xs uppercase tracking-wider text-text-dim">Not claimed yet</p>
+          <div class="rounded-2xl border border-primary/25 bg-surface/65 p-6">
+            <p class="font-mono text-xs uppercase tracking-wider text-text-dim">Still not claimed</p>
             <ul class="mt-4 space-y-3 text-sm leading-relaxed text-text-muted">
-              <li>Provider-specific success or availability</li>
-              <li>A universal machine size or provider cost</li>
+              <li>One-click or in-app infrastructure provisioning</li>
+              <li>Portability beyond the tested DigitalOcean topology</li>
+              <li>A universal machine size, monthly cost or local-model throughput</li>
               <li>Hostile-administrator isolation</li>
               <li>Multi-Host Fleet control</li>
               <li>Uptime, recovery-time or service-level promises</li>
+              <li>Managed Orionfold infrastructure</li>
             </ul>
           </div>
         </div>

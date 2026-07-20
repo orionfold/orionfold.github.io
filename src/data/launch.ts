@@ -71,9 +71,13 @@ export const ORIONFOLD_PROOF_LIVE = true;
 export const ORIONFOLD_RELAY_LIVE = true;
 
 // RELAY_HOST_LIVE — managed Host is a separate annual commercial right from
-// premium Relay Packs. Keep OFF until G-041 proves the customer-identical path
-// and the operator separately approves live Stripe/Supabase/signing/deployment.
-export const RELAY_HOST_LIVE = false;
+// premium Relay Packs. ON (operator 2026-07-20): G-041 proved the isolated
+// purchase, signed-license delivery, re-download, replay and refund gates;
+// production Stripe/Supabase/Resend were prepared; and Relay G-104/G-105
+// accepted the customer-owned DigitalOcean guided beta on public Relay 0.44.9
+// plus its signed multi-architecture Cell image. A real purchase was explicitly
+// not required. Keep the public claim bounded to that manual guided-beta shape.
+export const RELAY_HOST_LIVE = true;
 
 // RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED — the first Training product reuses
 // the accepted G-034 guest Checkout/access/refund lifecycle. Production stays
