@@ -82,7 +82,22 @@ export function normalizeMemoSource(source) {
   return source;
 }
 
-export function syncRelayContent({ assetsRoot = DEFAULT_ASSETS_ROOT, check = false } = {}) {
+export function validateMemoSource(source, slug = 'memo') {
+  const openFigures = (source.match(/<figure\b/gi) ?? []).length;
+  const closeFigures = (source.match(/<\/figure>/gi) ?? []).length;
+  if (openFigures !== closeFigures) {
+    throw new Error(`${slug}: unbalanced inline figure tags (${openFigures} opening, ${closeFigures} closing)`);
+  }
+
+  for (const match of source.matchAll(/<figure\b[\s\S]*?<\/figure>/gi)) {
+    const blank = /\n[\t ]*\n/.exec(match[0]);
+    if (!blank) continue;
+    const line = source.slice(0, match.index + blank.index).split('\n').length;
+    throw new Error(`${slug}: blank line inside inline figure at line ${line}; refusing a source handoff that CommonMark would split into plaintext`);
+  }
+}
+
+export function syncRelayContent({ assetsRoot = DEFAULT_ASSETS_ROOT, check = false, repoRoot = REPO_ROOT } = {}) {
   const manifest = JSON.parse(readFileSync(join(assetsRoot, 'screenshots/metadata/manifest.json'), 'utf8'));
   const screenshotIds = new Set(manifest.entries.map((entry) => entry.id));
   const guidesDir = join(assetsRoot, 'docs/guides');
@@ -96,29 +111,43 @@ export function syncRelayContent({ assetsRoot = DEFAULT_ASSETS_ROOT, check = fal
     .sort();
   const changed = [];
 
+  // Preflight the complete memo corpus before writing docs, API, or memo files.
+  // Relay owns _ASSETS; Website never normalizes it. A malformed handoff fails
+  // closed and leaves the last-known-good destination tree untouched.
+  const memoSources = new Map();
+  for (const name of memoNames) {
+    const articlePath = join(memosDir, name, 'article.md');
+    const signaturePath = join(memosDir, name, 'signature.svg');
+    if (!existsSync(signaturePath)) throw new Error(`${name}: missing signature.svg`);
+    const article = readFileSync(articlePath, 'utf8');
+    validateMemoSource(article, name);
+    memoSources.set(name, {
+      'article.md': article,
+      'signature.svg': readFileSync(signaturePath, 'utf8'),
+    });
+  }
+
   guideNames.forEach((name, index) => {
     const outputName = name.replace(/^\d{2}-/, '');
     const output = transformGuide(readFileSync(join(guidesDir, name), 'utf8'), {
       order: index + 1,
       screenshotIds,
     });
-    const outputPath = join(REPO_ROOT, 'src/content/relay-docs', outputName);
+    const outputPath = join(repoRoot, 'src/content/relay-docs', outputName);
     if (writeIfChanged(outputPath, output, check)) changed.push(`docs/${outputName}`);
   });
 
   apiNames.forEach((name) => {
     const output = `${readFileSync(join(apiDir, name), 'utf8').trimEnd()}\n`;
-    const outputPath = join(REPO_ROOT, 'src/content/relay-api', name);
+    const outputPath = join(repoRoot, 'src/content/relay-api', name);
     if (writeIfChanged(outputPath, output, check)) changed.push(`api/${name}`);
   });
 
   memoNames.forEach((name) => {
-    const outputDir = join(REPO_ROOT, 'src/content/memos', name);
+    const outputDir = join(repoRoot, 'src/content/memos', name);
     if (!check) mkdirSync(outputDir, { recursive: true });
     for (const file of ['article.md', 'signature.svg']) {
-      const sourcePath = join(memosDir, name, file);
-      if (!existsSync(sourcePath)) throw new Error(`${name}: missing ${file}`);
-      const output = normalizeMemoSource(readFileSync(sourcePath, 'utf8'));
+      const output = normalizeMemoSource(memoSources.get(name)[file]);
       const outputPath = join(outputDir, file);
       if (writeIfChanged(outputPath, output, check)) changed.push(`memos/${name}/${file}`);
     }

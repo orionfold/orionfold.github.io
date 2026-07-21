@@ -16,6 +16,8 @@ for (const series of MEMO_SERIES) {
 
     const html = readFileSync(join(dist, `relay/memos/${slug}/index.html`), 'utf8');
     assert.doesNotMatch(html, /href=["'][^"']*article\.md/, `${slug} has no source-only article links`);
+    assert.doesNotMatch(html, /Editorial status ·/i, `${slug} does not expose source workflow status`);
+    assert.doesNotMatch(html, /<pre\b[^>]*class=["'][^"']*astro-code/i, `${slug} has no reader-facing code block leaked from inline SVG`);
     const ctaCount = (html.match(/<a href=["'][^"']+["'] data-relay-cta-btn/g) ?? []).length;
     assert.equal(ctaCount, 2, `${slug} renders one interstitial and one footer CTA`);
 
@@ -27,7 +29,7 @@ for (const series of MEMO_SERIES) {
 
 const hostPillar = readFileSync(join(dist, 'relay/memos/why-relay-host-cells/index.html'), 'utf8');
 assert.doesNotMatch(hostPillar, /aria-label="Memo navigation"[\s\S]*industry-verticals/, 'Host navigation does not cross from Packs');
-const cloudCapstone = readFileSync(join(dist, 'relay/memos/same-host-new-address/index.html'), 'utf8');
-assert.match(cloudCapstone, /Editorial status · draft/, 'cloud capstone keeps its source draft gate');
+const diagramMemo = readFileSync(join(dist, 'relay/memos/why-relay-packs/index.html'), 'utf8');
+assert.match(diagramMemo, /<figure class="fn-diagram"[\s\S]*?<svg\b[\s\S]*?<ellipse\b[\s\S]*?<\/svg>[\s\S]*?<figcaption>/, 'diagram-bearing memo retains complete SVG geometry and caption');
 
-console.log('relay-memo-surface: 11 memo routes pass series, link, status, and CTA checks');
+console.log('relay-memo-surface: 11 memo routes pass series, render fidelity, link, status, and CTA checks');

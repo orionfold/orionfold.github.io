@@ -58,41 +58,33 @@ Relay ships thirteen packs. They fall into kinds: **industry** delivery packs (C
         <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0"/>
       </radialGradient>
     </defs>
-
     <ellipse cx="600" cy="150" rx="170" ry="150" fill="url(#wd-mglow)"/>
-
     <g class="fn-diagram__edges">
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 280 92 L 440 150" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
       <path class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 280 208 L 440 150" stroke="var(--svg-connector)" stroke-width="1.5" fill="none"/>
       <path id="wd-merge-path" class="fn-diagram__edge fn-diagram__edge--accent" pathLength="100" d="M 440 150 L 470 150" stroke="var(--color-primary)" stroke-width="2" fill="none"/>
     </g>
-
     <g class="fn-diagram__flow">
       <circle class="fn-diagram__flow" cx="440" cy="150" r="4" fill="var(--color-primary)">
         <animateMotion begin="1.5s" dur="2.2s" repeatCount="indefinite" path="M 0 0 L 30 0"/>
       </circle>
     </g>
-
     <g class="fn-diagram__nodes">
       <rect x="30" y="44" width="250" height="96" rx="9" fill="url(#wd-childa)" stroke="var(--color-primary)" stroke-width="1.5"/>
       <rect x="30" y="160" width="250" height="96" rx="9" fill="url(#wd-childb)" stroke="var(--svg-accent-teal)" stroke-width="1"/>
       <rect x="470" y="60" width="260" height="180" rx="11" fill="url(#wd-merged)" stroke="var(--color-primary)" stroke-width="1.5"/>
     </g>
-
     <g class="fn-diagram__labels">
       <text x="46" y="62" font-size="9" fill="var(--color-primary)" font-family="var(--font-mono)" letter-spacing="0.08em">FIRST CHILD · WINS THE VIEW</text>
       <text x="46" y="80" font-size="13" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">relay-web-publisher</text>
       <text x="46" y="99" font-size="10.5" fill="var(--svg-text-dim)" font-family="var(--font-mono)">site-editor · section-draft</text>
       <text x="46" y="114" font-size="10.5" fill="var(--svg-text-dim)" font-family="var(--font-mono)">web_sections · web_pages</text>
       <text x="46" y="129" font-size="10.5" fill="var(--color-primary)" font-family="var(--font-mono)">+ generate + publish arms</text>
-
       <text x="46" y="182" font-size="9" fill="var(--svg-text-muted)" font-family="var(--font-mono)" letter-spacing="0.08em">SECOND CHILD · CONCATENATES</text>
       <text x="46" y="200" font-size="13" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">relay-web-assets</text>
       <text x="46" y="220" font-size="10.5" fill="var(--svg-text-dim)" font-family="var(--font-mono)">asset-curator · asset-intake</text>
       <text x="46" y="236" font-size="10.5" fill="var(--svg-text-dim)" font-family="var(--font-mono)">web_assets · asset-gallery</text>
-
       <text x="340" y="153" text-anchor="middle" font-size="9.5" fill="var(--svg-text-muted)" font-family="var(--font-mono)">mergeBundle</text>
-
       <text x="600" y="88" text-anchor="middle" font-size="10" fill="var(--color-primary)" font-family="var(--font-mono)" letter-spacing="0.08em">ONE FLATTENED APP</text>
       <text x="600" y="110" text-anchor="middle" font-size="14" font-weight="600" fill="var(--svg-text-bright)" font-family="var(--font-mono)">relay-web-designer</text>
       <text x="600" y="140" text-anchor="middle" font-size="11" fill="var(--svg-text-bright)" font-family="var(--font-mono)">3 tables · 2 profiles · 2 blueprints</text>

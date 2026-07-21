@@ -8,6 +8,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "test": "npm run test:deno && npm run test:regression",
+    "test:node": "node --test scripts/test/*.test.mjs",
+    "test:deno": "deno test -A supabase/functions",
+    "test:e2e": "playwright test",
+    "test:regression": "npm run build && npm run test:node && npm run test:e2e",
     "export:catalog": "node --experimental-strip-types scripts/export-catalog.ts",
     "export:content": "node --experimental-strip-types scripts/export-content.ts",
     "lhci": "npx --yes @lhci/cli@0.15.1 collect && npx --yes @lhci/cli@0.15.1 upload && npx --yes @lhci/cli@0.15.1 assert",
@@ -25,5 +30,8 @@
     "remark-directive": "^4.0.0",
     "satori": "^0.26.0",
     "tailwindcss": "^4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
   }
 }

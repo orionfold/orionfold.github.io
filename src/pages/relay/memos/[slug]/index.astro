@@ -102,12 +102,6 @@ const breadcrumbSchema = {
       <p class="mt-8 font-mono text-sm text-primary">{series}</p>
       <h1 class="mt-2 text-3xl leading-tight sm:text-4xl">{title}</h1>
       <p class="mt-4 text-base leading-relaxed text-text-muted">{summary}</p>
-      {memo.data.status !== 'published' && (
-        <p class="mt-4 inline-flex rounded-full border border-border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-text-dim">
-          Editorial status · {memo.data.status}
-        </p>
-      )}
-
       {heroSvg && (
         <figure class="memo-hero mt-8 overflow-hidden rounded-2xl border border-border/70 bg-surface/40" set:html={heroSvg} />
       )}
