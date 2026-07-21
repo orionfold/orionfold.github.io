@@ -8,6 +8,8 @@ const source = readFileSync(
 const home = readFileSync(new URL('../../src/pages/index.astro', import.meta.url), 'utf8');
 const seo = readFileSync(new URL('../../src/data/seo.ts', import.meta.url), 'utf8');
 const og = readFileSync(new URL('../../src/data/og.ts', import.meta.url), 'utf8');
+const positioningDescription =
+  'Orionfold lets you choose open or frontier AI models, local or cloud delivery, solo or multi-user operation, and optimize for cost or intelligence.';
 
 assert.match(source, /id: 'blueprints-gallery'/, 'homepage hero uses the Relay Blueprint Gallery product shot');
 assert.match(source, /src=\{relayHeroShot\.dark\.src\}/, 'product shot uses the dark cinematic variant');
@@ -37,11 +39,13 @@ assert.match(source, /prefers-reduced-motion: reduce[\s\S]*animation: none/, 'he
 assert.match(source, /Get proven[\s\S]*AI-native[\s\S]*business in a box\./, 'homepage hero uses the approved company promise');
 assert.match(source, /hero-gradient-text/, 'the complete company promise uses the prior gradient fill');
 assert.doesNotMatch(source, /home-hero__title-accent/, 'gradient applies to the complete promise rather than one phrase');
+assert.match(source, /Open or frontier · local or cloud/, 'hero eyebrow supports the full delivery positioning');
 assert.match(source, /open or frontier AI models, local or cloud delivery, solo or multi-user operation/, 'hero states the approved optionality dimensions');
 assert.match(source, /Run AI-native business[\s\S]*Get Orionfold Relay/, 'CTA connects the positioning promise to Relay');
-assert.match(home, /title="Orionfold · Proven AI-native business in a box"/, 'homepage title follows the new promise');
-assert.match(home, /optimized for cost or intelligence/, 'homepage meta description carries the optionality promise');
-assert.match(seo, /open or frontier AI models, local or cloud delivery/, 'organization metadata follows the homepage positioning');
+assert.match(home, /title="Proven AI-native business in a box · Orionfold"/, 'homepage title front-loads the new promise');
+assert.ok(source.includes(positioningDescription), 'hero uses the approved positioning description');
+assert.ok(home.includes(`description="${positioningDescription}"`), 'homepage metadata uses the approved positioning description');
+assert.ok(seo.includes(`'${positioningDescription}'`), 'organization metadata uses the approved positioning description');
 assert.match(og, /title: 'Get proven AI-native business in a box\.'/ , 'homepage social card follows the new promise');
 
 console.log('home hero product shot: placement, performance, and motion contracts pass');
