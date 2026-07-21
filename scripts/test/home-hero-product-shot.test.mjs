@@ -37,7 +37,7 @@ assert.match(source, /prefers-reduced-motion: reduce[\s\S]*animation: none/, 'he
 assert.match(source, /Get proven[\s\S]*AI-native[\s\S]*business in a box\./, 'homepage hero uses the approved company promise');
 assert.match(source, /hero-gradient-text/, 'the complete company promise uses the prior gradient fill');
 assert.doesNotMatch(source, /home-hero__title-accent/, 'gradient applies to the complete promise rather than one phrase');
-assert.match(source, /open or frontier AI models, local or cloud delivery, single- or multi-user operation/, 'hero states the approved optionality dimensions');
+assert.match(source, /open or frontier AI models, local or cloud delivery, solo or multi-user operation/, 'hero states the approved optionality dimensions');
 assert.match(source, /Run AI-native business[\s\S]*Get Orionfold Relay/, 'CTA connects the positioning promise to Relay');
 assert.match(home, /title="Orionfold · Proven AI-native business in a box"/, 'homepage title follows the new promise');
 assert.match(home, /optimized for cost or intelligence/, 'homepage meta description carries the optionality promise');
