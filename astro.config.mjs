@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { defineConfig } from 'astro/config';
+import { RELAY_HOST_PORTABLE_LIVE, RELAY_HOST_PORTABLE_ROUTE } from './src/data/relay-host-portable.ts';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import remarkDirective from 'remark-directive';
@@ -185,6 +186,7 @@ export default defineConfig({
       // don't belong in the sitemap either (C4).
       filter: (page) =>
         !page.includes('/og/') &&
+        (RELAY_HOST_PORTABLE_LIVE || !page.endsWith(RELAY_HOST_PORTABLE_ROUTE)) &&
         !page.endsWith('/thanks/') &&
         !page.endsWith('/sponsor/thanks/') &&
         !page.endsWith('/training/relay-operator-workshop/access/') &&

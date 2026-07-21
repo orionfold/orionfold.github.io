@@ -17,17 +17,28 @@ import ThemedShot from '../../components/relay/ThemedShot.astro';
 import RelayHostOffer from '../../components/product/RelayHostOffer.astro';
 import { RELAY_HOST, formatUsd } from '../../data/commerce';
 import { RELAY_HOST_LIVE } from '../../data/launch';
+import {
+  RELAY_HOST_PORTABLE_LIVE,
+  RELAY_HOST_PORTABLE_ROUTE,
+} from '../../data/relay-host-portable';
 import { SITE } from '../../data/seo';
 import { ogMeta } from '../../data/og';
 
 const og = ogMeta('/relay/host/');
 const hostUrl = `${SITE.url}/relay/host/`;
 const price = formatUsd(RELAY_HOST.amount);
+const showPortablePlaybook = import.meta.env.DEV || RELAY_HOST_PORTABLE_LIVE;
+const hostPageTitle = showPortablePlaybook
+  ? 'Relay Host · Run it in your cloud account'
+  : 'Relay Host · One Host, a clean Relay Cell for every customer';
+const hostPageDescription = showPortablePlaybook
+  ? 'Run one customer-owned Relay Host with up to ten managed Cells on a compatible Linux VM in your cloud account. DigitalOcean is the first provider-verified reference path.'
+  : 'Run one customer-owned Relay Host with up to ten managed Relay Cells. Signed offline licensing, public verified Cell images, explicit recovery, and honest same-Host trust boundaries.';
 
 const proofFacts = [
   { value: '1', label: 'customer-owned Host', note: 'One machine or VM under the operator’s control' },
   { value: '10', label: 'managed Relay Cells', note: 'Running, stopped and retained Cells count' },
-  { value: '0.44.9', label: 'public accepted release', note: 'npm Host and signed multi-architecture Cell image' },
+  { value: '0.45.2', label: 'portable Host release', note: 'npm Host, checked playbook and signed Cell image' },
 ];
 
 const boundaries = [
@@ -221,7 +232,9 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'Orionfold Relay Host',
-  description: 'The annual offline-verifiable right to operate one customer-owned Relay Host with up to ten managed Relay Cells. Premium Packs are separate.',
+  description: showPortablePlaybook
+    ? 'The annual offline-verifiable right to operate one customer-owned Relay Host with up to ten managed Relay Cells on a compatible Linux VM in the customer’s cloud account. Premium Packs are separate.'
+    : 'The annual offline-verifiable right to operate one customer-owned Relay Host with up to ten managed Relay Cells. Premium Packs are separate.',
   url: hostUrl,
   brand: { '@type': 'Brand', name: 'Orionfold' },
   offers: {
@@ -267,8 +280,8 @@ const faqSchema = {
 ---
 
 <Layout
-  title="Relay Host · One Host, a clean Relay Cell for every customer"
-  description="Run one customer-owned Relay Host with up to ten managed Relay Cells. Signed offline licensing, public verified Cell images, explicit recovery, and honest same-Host trust boundaries."
+  title={hostPageTitle}
+  description={hostPageDescription}
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
@@ -323,6 +336,57 @@ const faqSchema = {
         ))}
       </div>
     </section>
+
+    {showPortablePlaybook && (
+      <section id="portable-linux-vm" class="scroll-mt-36 border-y border-border/70 bg-surface/35 px-6 py-16 sm:py-20">
+        <div class="mx-auto max-w-5xl">
+          <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Choose the infrastructure you control</p>
+          <h2 class="mt-3 max-w-4xl text-balance text-3xl font-bold sm:text-4xl">Run Relay Host in your cloud account.</h2>
+          <p class="mt-5 max-w-3xl leading-relaxed text-text-muted">
+            Relay Host is not tied to DigitalOcean. Bring a compatible Linux VM from your preferred hyperscaler,
+            neocloud or private infrastructure, subject to the documented machine contract. If you want the
+            lowest-ambiguity starting point, use the first provider-specific path Orionfold has reproduced end to end.
+          </p>
+
+          <div class="mt-9 grid gap-4 lg:grid-cols-2">
+            <article class="rounded-2xl border border-primary/30 bg-primary/[0.055] p-7">
+              <p class="font-mono text-xs uppercase tracking-wider text-primary">Portable contract</p>
+              <h3 class="mt-4 text-2xl font-semibold text-text">Bring a compatible Linux VM</h3>
+              <p class="mt-4 text-sm leading-relaxed text-text-muted">
+                Keep your provider account, bill, DNS, TLS and credentials. Relay supplies checked,
+                release-matched preparation and a receipt path without putting product secrets into cloud user-data.
+              </p>
+              <a href={RELAY_HOST_PORTABLE_ROUTE} class="of-primary-action mt-6">Check the portable VM contract</a>
+            </article>
+
+            <article class="rounded-2xl border border-border/70 bg-surface p-7">
+              <div class="flex flex-wrap items-center gap-2">
+                <p class="font-mono text-xs uppercase tracking-wider text-primary">Provider-verified</p>
+                <span class="rounded-full border border-primary/25 bg-primary/[0.07] px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-wider text-primary">Relay 0.44.9 receipt</span>
+              </div>
+              <h3 class="mt-4 text-2xl font-semibold text-text">Follow the DigitalOcean reference path</h3>
+              <p class="mt-4 text-sm leading-relaxed text-text-muted">
+                Use the current reproduced Ubuntu topology when you value a dated provider receipt over adapting
+                the portable contract to infrastructure your organization already prefers.
+              </p>
+              <a href="https://github.com/orionfold/relay/blob/v0.44.9/docs/digitalocean-relay-host.md" class="of-secondary-action mt-6">Read the verified guide</a>
+            </article>
+          </div>
+
+          <div class="mt-6 grid gap-3 text-sm leading-relaxed text-text-muted md:grid-cols-3">
+            <p class="rounded-xl border border-border/70 bg-surface/65 p-4"><strong class="text-text">Portable:</strong> a compatible VM can be evaluated against one release-matched machine contract.</p>
+            <p class="rounded-xl border border-border/70 bg-surface/65 p-4"><strong class="text-text">Provider-verified:</strong> Orionfold has a dated receipt for an exact provider topology.</p>
+            <p class="rounded-xl border border-border/70 bg-surface/65 p-4"><strong class="text-text">Not yet provider-verified:</strong> no provider-specific promise until its own receipt passes.</p>
+          </div>
+
+          {!RELAY_HOST_PORTABLE_LIVE && (
+            <p class="mt-5 rounded-xl border border-primary/20 bg-primary/[0.06] px-4 py-3 font-mono text-[0.66rem] leading-relaxed text-primary">
+              Preview · the portable contract publishes with the next supported Relay release.
+            </p>
+          )}
+        </div>
+      </section>
+    )}
 
     <section id="proof" class="managed-proof relative overflow-hidden border-y border-primary/20 px-6 py-16 sm:py-20">
       <div class="managed-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
@@ -483,7 +547,7 @@ const faqSchema = {
             <p class="font-mono text-xs uppercase tracking-wider text-text-dim">Still not claimed</p>
             <ul class="mt-4 space-y-3 text-sm leading-relaxed text-text-muted">
               <li>One-click or in-app infrastructure provisioning</li>
-              <li>Portability beyond the tested DigitalOcean topology</li>
+              <li>Equivalent live receipts on providers beyond the tested DigitalOcean topology</li>
               <li>A universal machine size, monthly cost or local-model throughput</li>
               <li>Hostile-administrator isolation</li>
               <li>Multi-Host Fleet control</li>

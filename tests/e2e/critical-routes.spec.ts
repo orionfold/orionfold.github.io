@@ -4,6 +4,7 @@ const criticalRoutes = [
   '/',
   '/relay/',
   '/relay/host/',
+  '/relay/host/linux-vm/',
   '/relay/memos/',
   '/training/',
   '/training/relay-operator-workshop/',
@@ -42,7 +43,7 @@ for (const theme of ['light', 'dark'] as const) {
   }
 }
 
-for (const route of ['/', '/relay/', '/relay/host/', '/training/relay-operator-workshop/', '/proposal/'] as const) {
+for (const route of ['/', '/relay/', '/relay/host/', '/relay/host/linux-vm/', '/training/relay-operator-workshop/', '/proposal/'] as const) {
   test(`${route} has no document-level overflow at 390px`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.addInitScript(() => localStorage.setItem('of-theme', 'light'));

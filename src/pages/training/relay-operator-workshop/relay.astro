@@ -2,7 +2,7 @@
 import PrivateLayout from '../../../layouts/PrivateLayout.astro';
 ---
 
-<PrivateLayout title="Connect Relay · Relay Operator Workshop" description="Check and open the learner's local Relay Workshop surface without losing Website progress.">
+<PrivateLayout title="Connect Relay · Relay Operator Workshop" description="Check and open the learner's local Relay Workshop surface without losing lesson progress.">
   <main class="min-h-screen px-5 py-10 sm:px-8 sm:py-16">
     <div class="mx-auto max-w-5xl">
       <button class="font-mono text-xs uppercase tracking-[0.18em] text-text-dim hover:text-primary" type="button" data-return>← Return to the lesson</button>
@@ -141,7 +141,7 @@ import PrivateLayout from '../../../layouts/PrivateLayout.astro';
       setStatus('ready', 'Relay answered at this address.', 'Open the Workshop in a new tab, complete the Relay action, then return to this lesson.');
       if (startHelp) startHelp.open = false;
     } catch {
-      setStatus('unavailable', 'Relay did not answer yet.', 'Start Relay, confirm its address, and retry. Your Website lesson progress is preserved.');
+      setStatus('unavailable', 'Relay did not answer yet.', 'Start Relay, confirm its address, and retry. Your lesson progress is preserved.');
       if (startHelp) startHelp.open = true;
     } finally {
       window.clearTimeout(timeout);

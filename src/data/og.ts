@@ -7,6 +7,9 @@
 // _SPECS/2026-05-25-125727_og-and-featured-image-pipeline.md.
 
 import { SITE } from './seo';
+import { RELAY_HOST_PORTABLE_LIVE } from './relay-host-portable';
+
+const relayHostPortablePositioning = import.meta.env.DEV || RELAY_HOST_PORTABLE_LIVE;
 
 export interface OgPage {
   /** Output file is /og/<slug>.jpg */
@@ -174,9 +177,13 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/relay/host/': {
     slug: 'relay-host',
     eyebrow: 'Relay Host · Customer-owned',
-    title: 'One Host. A clean Relay Cell for every customer.',
+    title: relayHostPortablePositioning
+      ? 'Your Relay Host. Your cloud account.'
+      : 'One Host. A clean Relay Cell for every customer.',
     seed: 'relay-host',
-    alt: 'Relay Host: one customer-owned Host with up to ten isolated Relay Cells',
+    alt: relayHostPortablePositioning
+      ? 'Relay Host: run up to ten managed Cells on a compatible Linux VM in your cloud account'
+      : 'Relay Host: one customer-owned Host with up to ten isolated Relay Cells',
     screenshot: 'public/relay/shots/settings-host-deployment/dark.cbee1b0a.webp',
   },
   '/arena/': {

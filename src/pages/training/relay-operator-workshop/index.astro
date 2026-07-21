@@ -50,7 +50,7 @@ const workshopExperience = [
     id: 'adapt',
     eyebrow: '02 · Adapt',
     title: 'Replace the example with one bounded process you own.',
-    body: 'The Website lesson explains the checkpoint, then hands the action to Relay. Your progress here never pretends the Relay checkpoint passed; the local bench keeps the execution truth.',
+    body: 'The lesson explains the checkpoint, then hands the action to Relay. Your progress advances only after Relay confirms the checkpoint; the local bench keeps the execution truth.',
     alt: 'Relay Operator Workshop Adapt screen showing the second checkpoint and Relay action handoff.',
   },
   {
@@ -172,7 +172,7 @@ const faqSchema = {
           </div>
           <p id="workshop-checkout-error" role="alert" hidden class="mt-3 text-sm text-red-500"></p>
           <p class="mt-4 text-xs leading-relaxed text-text-dim">
-            One-time USD payment · 14-day full no-judgment refund · no recurring charge · {RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? 'isolated Sandbox checkout in this build' : 'production purchase remains disabled'}
+            One-time USD payment · 14-day full no-judgment refund · no recurring charge · {RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? 'preview checkout available' : 'enrollment opens with the first workshop release'}
           </p>
           {operatorPreview && (
             <a class="mt-4 inline-flex font-mono text-xs text-text-dim underline decoration-border-strong underline-offset-4 hover:text-primary" href="/training/relay-operator-workshop/thanks/?preview=paid">
@@ -242,7 +242,7 @@ const faqSchema = {
           <h2 class="mt-4 text-balance text-3xl font-bold sm:text-4xl">See the source, join, checkpoint, and proof before you buy.</h2>
           <p class="mt-5 leading-relaxed text-text-muted">The public lesson uses synthetic Marketing Line data to show how a lead, campaign, workflow, human decision, and retained evidence connect. It makes no model call and writes nothing to your Relay workspace.</p>
           <div class="mt-7 flex flex-wrap gap-4">
-            {media ? <a class="of-secondary-action" href={media.fieldLessonTranscript}>Read the field-lesson transcript</a> : <span class="text-sm text-text-dim">Media delivery base is not configured in this build; the source-grounded poster and lesson description remain available.</span>}
+            {media ? <a class="of-secondary-action" href={media.fieldLessonTranscript}>Read the field-lesson transcript</a> : <span class="text-sm text-text-dim">The complete field lesson is being prepared; the source-grounded poster and lesson description remain available.</span>}
             <a class="of-text-action" href="/relay/demo/">Explore the synthetic Relay demo →</a>
           </div>
         </div>
@@ -316,7 +316,7 @@ const faqSchema = {
     <section class="px-6 py-20 sm:py-28">
       <div class="mx-auto max-w-5xl">
         <div class="grid gap-10 lg:grid-cols-[0.78fr_1.22fr]">
-          <div><p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Source-grounded</p><h2 class="mt-4 text-3xl font-bold">Current Relay truth stays upstream.</h2><p class="mt-5 text-sm leading-relaxed text-text-muted">Training curates the learning path. Relay owns product behavior, documentation, runtime, validation, and export. Motion produces the audiovisual renditions. Website owns the offer, payment, access, and refund shell.</p></div>
+          <div><p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Source-grounded</p><h2 class="mt-4 text-3xl font-bold">Built around current Relay behavior.</h2><p class="mt-5 text-sm leading-relaxed text-text-muted">The learning path stays aligned with current Relay behavior, documentation, runtime, validation, and export. Orionfold connects those product facts to the lesson, payment, access, and refund experience.</p></div>
           <div class="grid gap-3">
             <a class="of-surface rounded-2xl p-5 hover:border-primary/40" href="/relay/docs/run-workflows-with-human-checkpoints/"><span class="font-mono text-xs text-primary">Guide</span><p class="mt-2 font-semibold">Run Workflows With Human Checkpoints</p></a>
             <a class="of-surface rounded-2xl p-5 hover:border-primary/40" href="/relay/api/04-workflows-automation/"><span class="font-mono text-xs text-primary">API</span><p class="mt-2 font-semibold">Workflows, approvals, Workshop lifecycle, fallback and export</p></a>

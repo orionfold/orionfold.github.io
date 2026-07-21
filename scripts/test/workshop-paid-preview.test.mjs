@@ -47,7 +47,7 @@ test('landing page presents every real workshop screen as a theme-aware alternat
   assert.match(shot, /fetchpriority="low"/);
 });
 
-test('operator paid preview is dev-gated and keeps private media out of Website', async () => {
+test('operator paid preview is dev-gated and keeps private media out of the public site bundle', async () => {
   const [product, thanks, access, refund, workspace] = await Promise.all([
     read('src/pages/training/relay-operator-workshop/index.astro'),
     read('src/pages/training/relay-operator-workshop/thanks.astro'),
@@ -60,7 +60,7 @@ test('operator paid preview is dev-gated and keeps private media out of Website'
   }
   assert.match(workspace, /PUBLIC_WORKSHOP_REVIEW_MEDIA_BASE/);
   assert.doesNotMatch(workspace, /\/Users\/|296acd31|revision-03-review/);
-  assert.match(workspace, /Website guidance never substitutes for Relay evidence/);
+  assert.match(workspace, /Workshop guidance never substitutes for Relay evidence/);
   assert.match(workspace, /does not mark the Relay checkpoint passed/);
 });
 

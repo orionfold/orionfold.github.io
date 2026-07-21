@@ -212,7 +212,7 @@ const serviceSchema = {
               <label class="field-label">Business email<input name="businessEmail" type="email" autocomplete="email" maxlength="320" required /></label>
               <label class="field-label sm:col-span-2">Company name<input name="companyName" autocomplete="organization" maxlength="200" required /></label>
               <label class="field-label sm:col-span-2">What outcome do you want?<textarea name="description" rows="7" minlength="20" maxlength="4000" required placeholder="Describe the workflow, where it breaks today, the owner on your side, and what a successful handoff should leave under your control."></textarea></label>
-              <label class="honeypot" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off" /></label>
+              <label class="honeypot" aria-hidden="true">Site<input name="website" tabindex="-1" autocomplete="off" /></label>
             </div>
             <div id="form-message" class="mt-5 hidden rounded-xl border p-4 text-sm leading-relaxed" role="status" aria-live="polite"></div>
             <div class="mt-6 flex flex-wrap items-center gap-4">
@@ -482,15 +482,15 @@ const serviceSchema = {
       submittedPayload = payload;
       submittedReceipt = result;
       render(result.snapshot);
-      text('summary-state', result.localPreview ? 'Local preview · not submitted' : 'Submitted · pending Orionfold review');
-      text('document-state', result.localPreview ? 'Local preview · not submitted' : 'Submitted · pending Orionfold review');
+      text('summary-state', result.localPreview ? 'Preview · not submitted' : 'Submitted · pending Orionfold review');
+      text('document-state', result.localPreview ? 'Preview · not submitted' : 'Submitted · pending Orionfold review');
       text('document-number', result.proposalNumber);
       text('document-version', String(result.proposalVersion));
       form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea').forEach((control) => { control.disabled = true; });
       message.className = 'mt-5 rounded-xl border border-success/40 bg-success/10 p-4 text-sm leading-relaxed text-text';
       const customerConfirmationDelayed = result.customerConfirmationStatus === 'delayed';
       message.textContent = result.localPreview
-        ? 'Local preview only: no data or email was sent. The formal document below shows the server-calculated receipt shape for review.'
+        ? 'Preview only: no data or email was sent. The formal document below shows the server-calculated receipt shape for review.'
         : customerConfirmationDelayed
           ? `Proposal ${result.proposalNumber} was stored, but your confirmation email was delayed. Keep or print the proposal below, then retry the email. This does not mean the request is accepted or scheduled.`
         : result.notificationStatus === 'delayed'

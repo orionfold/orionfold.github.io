@@ -79,6 +79,17 @@ export const ORIONFOLD_RELAY_LIVE = true;
 // not required. Keep the public claim bounded to that manual guided-beta shape.
 export const RELAY_HOST_LIVE = true;
 
+// RELAY_HOST_PORTABLE_* — provider-neutral customer-owned Linux VM guidance.
+// ON (operator 2026-07-21): public Relay 0.45.2 contains the checked command,
+// deployment assets and release-pinned guide. Host discovery, indexing and SEO
+// all derive from that one immutable release contract.
+export {
+  RELAY_HOST_PORTABLE_GUIDE_URL,
+  RELAY_HOST_PORTABLE_LIVE,
+  RELAY_HOST_PORTABLE_RELEASE,
+  RELAY_HOST_PORTABLE_ROUTE,
+} from './relay-host-portable';
+
 // RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED — the first Training product reuses
 // the accepted G-034 guest Checkout/access/refund lifecycle. Production stays
 // launch-dark until G-036. An isolated local/staging build opts in explicitly;

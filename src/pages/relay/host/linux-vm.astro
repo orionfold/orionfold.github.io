@@ -1,0 +1,263 @@
+---
+// Customer-facing adaptation of Relay G-108. The canonical bootstrap remains in
+// Relay's release-pinned guide; this page explains the decision, boundaries and
+// lifecycle without copying commands that could drift from supported artifacts.
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import PageHeader from '../../../components/ui/PageHeader.astro';
+import RelaySubNav from '../../../components/relay/RelaySubNav.astro';
+import { RELAY_HOST, formatUsd } from '../../../data/commerce';
+import {
+  RELAY_HOST_PORTABLE_GUIDE_URL,
+  RELAY_HOST_PORTABLE_LIVE,
+  RELAY_HOST_PORTABLE_RELEASE,
+  RELAY_HOST_PORTABLE_ROUTE,
+} from '../../../data/relay-host-portable';
+import { SITE } from '../../../data/seo';
+import { ogMeta } from '../../../data/og';
+
+const localPreview = import.meta.env.DEV;
+const showPlaybook = localPreview || RELAY_HOST_PORTABLE_LIVE;
+const og = ogMeta('/relay/host/');
+const pageUrl = `${SITE.url}${RELAY_HOST_PORTABLE_ROUTE}`;
+const hostPrice = formatUsd(RELAY_HOST.amount);
+
+const reassurance = [
+  {
+    title: 'Customer-owned',
+    body: 'You choose the compatible Linux VM, own the provider account and bill, and administer DNS, TLS, firewall, backups and recovery.',
+  },
+  {
+    title: 'Secret-free setup',
+    body: 'Cloud user-data prepares the machine only. Model keys, Relay Host licenses and customer credentials are added after bootstrap.',
+  },
+  {
+    title: 'Receipt-driven',
+    body: 'The playbook verifies the release, writes a preparation receipt and keeps the exact configuration available for review and recovery.',
+  },
+];
+
+const verificationLevels = [
+  ['Portable contract', 'A compatible Linux VM can be evaluated against the checked, release-matched machine contract.'],
+  ['Provider-verified', 'Orionfold has a dated receipt for an exact provider topology. DigitalOcean is the first.'],
+  ['Not yet provider-verified', 'A provider may satisfy the portable contract, but Orionfold does not make a provider-specific promise before its own receipt passes.'],
+];
+
+const lifecycle = [
+  ['Choose a compatible VM', 'Start with Ubuntu 24.04 x64 and at least 2 vCPU, 4 GB RAM and 80 GB disk. This baseline prepares Relay Host; local-model workloads may require materially more memory or GPU capacity.'],
+  ['Pin the Relay release', 'Use the exact supported release named by the guide. The playbook and deployment assets move together, so a floating branch cannot silently change the machine contract.'],
+  ['Prepare without product secrets', 'Run the checked cloud-init preparation with no cloud-provider token, model API key, Relay license, customer credential or recovery secret embedded in user-data.'],
+  ['Verify the preparation receipt', 'Confirm the prepared state and its release identity before adding a Host license, model runtime or customer data. A receipt is evidence of preparation, not an uptime promise.'],
+  ['Configure Host authority', 'Free Relay Core can operate directly and one unmanaged Cell. The paid Relay Host right authorizes managed multi-Cell lifecycle within the signed capacity you bought.'],
+  ['Add secrets after bootstrap', 'Transfer the Host license, model credentials and recovery material over an authenticated operator channel, then keep encrypted recovery outside the Host.'],
+  ['Operate, update and recover', 'Use the release-matched guide for installation, access, updates, export and recovery. Existing managed Cells continue if the annual license lapses; new managed Cell creation and forward paid updates stop.'],
+];
+
+const faq = [
+  ['Is this hosted by Orionfold?', 'No. Relay Host runs in infrastructure you or your customer controls. Orionfold does not own the provider account, operate the VM or promise its uptime.'],
+  ['Does Orionfold need my cloud API key?', 'No. You create the VM in your provider account. The portable playbook prepares that machine and deliberately excludes provider credentials and product secrets from cloud user-data.'],
+  ['Does this mean every cloud provider is verified?', 'No. The portable contract targets a compatible Linux VM. DigitalOcean is the only named provider with a current accepted live receipt; other providers need their own dated proof before Orionfold names them as verified.'],
+  ['What is free and what requires Relay Host?', 'Relay Core, direct use and one unmanaged Cell remain free. The paid Relay Host license covers managed multi-Cell lifecycle for one Host with up to ten managed Cells. Premium Packs remain separate.'],
+  ['What happens if my Relay Host license ends?', 'Existing managed Cells remain startable, stoppable, exportable, recoverable and purgeable. New managed Cell creation and forward paid updates stop; compatible critical-security fixes remain included.'],
+  ['Can I use an existing server?', 'Yes, if it meets the documented Linux, architecture, storage, networking and administration prerequisites. Review it as carefully as a new VM because the playbook does not erase unrelated services or make an unsafe host trustworthy.'],
+  ['Is the minimum VM enough for a local model?', 'Not necessarily. The 2 vCPU, 4 GB RAM and 80 GB disk baseline is for Relay Host preparation and lightweight operation. Size local models separately for their memory, accelerator and throughput needs.'],
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Relay', item: `${SITE.url}/relay/` },
+    { '@type': 'ListItem', position: 3, name: 'Relay Host', item: `${SITE.url}/relay/host/` },
+    { '@type': 'ListItem', position: 4, name: 'Portable Linux VM playbook', item: pageUrl },
+  ],
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(([question, answer]) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: { '@type': 'Answer', text: answer },
+  })),
+};
+---
+
+<Layout
+  title="Relay Host portable Linux VM playbook"
+  description="Prepare Relay Host on a compatible customer-owned Linux VM with a release-matched, secret-safe and receipt-driven playbook."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  noindex={!RELAY_HOST_PORTABLE_LIVE ? 'follow' : false}
+  jsonLd={showPlaybook ? [breadcrumbSchema, faqSchema] : breadcrumbSchema}
+>
+  <Nav />
+  <RelaySubNav active="host" />
+  <main class="-mt-20 sm:-mt-24">
+    {showPlaybook ? (
+      <>
+        <PageHeader
+          eyebrow="Relay Host · Portable Linux VM playbook"
+          title="Your Relay Host. Your cloud account."
+          subtitle="Run Relay Host on a compatible Linux VM in the cloud account you choose, with checked release-matched assets, no cloud credentials handed to Orionfold and no product secrets placed in cloud user-data."
+        >
+          <div class="mb-4 mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            {RELAY_HOST_PORTABLE_GUIDE_URL ? (
+              <a href={RELAY_HOST_PORTABLE_GUIDE_URL} class="of-primary-action">Read the portable VM guide</a>
+            ) : (
+              <span class="inline-flex min-h-11 items-center rounded-full border border-primary/30 bg-primary/[0.07] px-5 py-3 font-mono text-xs font-semibold uppercase tracking-wider text-primary">
+                Guide publishes with the next supported Relay release
+              </span>
+            )}
+            <a href="/relay/host/#get-relay-host" class="of-secondary-action">Choose Relay Host capacity</a>
+          </div>
+          {!RELAY_HOST_PORTABLE_LIVE && (
+            <p class="mt-2 max-w-2xl font-mono text-[0.68rem] leading-relaxed text-text-dim">
+              Preview · this guide will name the exact supported Relay release before publication.
+            </p>
+          )}
+        </PageHeader>
+
+        <section class="px-6 pb-16 pt-8 sm:pt-12">
+          <div class="mx-auto grid max-w-5xl gap-4 md:grid-cols-3">
+            {reassurance.map((item, index) => (
+              <article class="of-surface rounded-2xl p-6">
+                <span class="font-mono text-xs text-primary">0{index + 1}</span>
+                <h2 class="mt-4 text-xl font-semibold text-text">{item.title}</h2>
+                <p class="mt-3 text-sm leading-relaxed text-text-muted">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="portable-boundary relative overflow-hidden border-y border-primary/20 px-6 py-16 sm:py-20">
+          <div class="portable-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+          <div class="relative mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
+            <div>
+              <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Portable, not provider-managed</p>
+              <h2 class="mt-3 text-balance text-3xl font-bold sm:text-4xl">A repeatable machine contract. Not a cloud service.</h2>
+              <p class="mt-5 leading-relaxed text-text-muted">
+                The playbook prepares a compatible Linux VM and records what it did. It does not create your cloud account,
+                choose a provider for you, configure every provider-specific firewall or operate the server after handoff.
+                You retain the infrastructure bill, administrator responsibility and failure boundary.
+              </p>
+              <p class="mt-4 text-sm leading-relaxed text-text-muted">
+                DigitalOcean is the current named live-verified path. A portable Linux contract makes other compatible VMs
+                reviewable; it does not turn untested providers into verified promises.
+              </p>
+            </div>
+            <aside class="rounded-2xl border border-primary/25 bg-surface/80 p-6 shadow-xl shadow-primary/5">
+              <p class="font-mono text-xs uppercase tracking-wider text-text-dim">Preparation baseline</p>
+              <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-5 gap-y-4 text-sm">
+                <dt class="font-mono text-primary">OS</dt><dd class="text-text-muted">Ubuntu 24.04 x64</dd>
+                <dt class="font-mono text-primary">CPU</dt><dd class="text-text-muted">2 vCPU minimum</dd>
+                <dt class="font-mono text-primary">RAM</dt><dd class="text-text-muted">4 GB minimum</dd>
+                <dt class="font-mono text-primary">Disk</dt><dd class="text-text-muted">80 GB minimum</dd>
+                <dt class="font-mono text-primary">Release</dt><dd class="text-text-muted">{RELAY_HOST_PORTABLE_RELEASE ? `Relay ${RELAY_HOST_PORTABLE_RELEASE}` : 'Exact supported release required'}</dd>
+              </dl>
+              <p class="mt-5 border-t border-border/70 pt-5 text-xs leading-relaxed text-text-dim">
+                This baseline is not a local-model sizing promise. Add memory, GPU and storage for the models and customer workload you choose.
+              </p>
+            </aside>
+          </div>
+          <div class="relative mx-auto mt-10 grid max-w-5xl gap-3 md:grid-cols-3">
+            {verificationLevels.map(([title, body]) => (
+              <article class="rounded-xl border border-border/70 bg-surface/75 p-5">
+                <h3 class="font-mono text-xs uppercase tracking-wider text-primary">{title}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-text-muted">{body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="px-6 py-16 sm:py-20">
+          <div class="mx-auto max-w-5xl">
+            <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">From VM to governed Host</p>
+            <h2 class="mt-3 max-w-3xl text-balance text-3xl font-bold sm:text-4xl">Seven checks keep preparation, authority and operation separate.</h2>
+            <ol class="mt-9 grid gap-4 lg:grid-cols-2">
+              {lifecycle.map(([title, body], index) => (
+                <li class:list={['rounded-2xl border border-border/70 bg-surface/60 p-6', index === lifecycle.length - 1 && 'lg:col-span-2']}>
+                  <div class="flex items-start gap-4">
+                    <span class="font-mono text-sm font-semibold text-primary">{String(index + 1).padStart(2, '0')}</span>
+                    <div>
+                      <h3 class="font-semibold text-text">{title}</h3>
+                      <p class="mt-2 text-sm leading-relaxed text-text-muted">{body}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section class="border-y border-border/70 bg-surface/35 px-6 py-16 sm:py-20">
+          <div class="mx-auto grid max-w-5xl gap-8 lg:grid-cols-2">
+            <article class="rounded-2xl border border-border/70 bg-surface p-7">
+              <p class="font-mono text-xs uppercase tracking-wider text-primary">Free operating path</p>
+              <h2 class="mt-4 text-2xl font-semibold">Relay Core + one unmanaged Cell</h2>
+              <p class="mt-4 text-sm leading-relaxed text-text-muted">
+                Use Relay directly and operate one unmanaged Cell without buying Relay Host. You still own the machine, credentials, data and operating work.
+              </p>
+            </article>
+            <article class="rounded-2xl border border-primary/30 bg-primary/[0.055] p-7">
+              <p class="font-mono text-xs uppercase tracking-wider text-primary">Paid managed authority</p>
+              <h2 class="mt-4 text-2xl font-semibold">One Host · up to ten managed Cells</h2>
+              <p class="mt-4 text-sm leading-relaxed text-text-muted">
+                Relay Host adds signed managed lifecycle authority, capacity enforcement, forward Host updates and support for <strong class="text-text">{hostPrice}/year</strong>. Premium Packs remain separate.
+              </p>
+              <a href="/relay/host/#get-relay-host" class="of-text-action mt-5">Review Relay Host pricing and terms →</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="px-6 py-16 sm:py-20">
+          <div class="mx-auto max-w-4xl">
+            <p class="text-center font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Portable playbook FAQ</p>
+            <h2 class="mt-3 text-center text-balance text-3xl font-bold sm:text-4xl">Ownership stays explicit.</h2>
+            <div class="mt-8 divide-y divide-border/70 rounded-2xl border border-border/70 bg-surface/45 px-5 sm:px-7">
+              {faq.map(([question, answer]) => (
+                <details class="group py-5">
+                  <summary class="cursor-pointer list-none pr-10 font-semibold text-text marker:hidden">
+                    {question}
+                    <span aria-hidden="true" class="float-right -mr-7 font-mono text-primary transition-transform group-open:rotate-45">+</span>
+                  </summary>
+                  <p class="mt-3 max-w-3xl text-sm leading-relaxed text-text-muted">{answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      </>
+    ) : (
+      <PageHeader
+        eyebrow="Relay Host · Portable Linux VM playbook"
+        title="The release-matched guide is being prepared."
+        subtitle="This guide will open when a supported public Relay release includes the matching command and deployment assets."
+      >
+        <div class="mb-4 mt-7 flex flex-col items-start gap-3 sm:flex-row">
+          <a href="/relay/host/" class="of-primary-action">Return to Relay Host</a>
+          <a href="https://github.com/orionfold/relay/releases" class="of-secondary-action">See Relay releases</a>
+        </div>
+      </PageHeader>
+    )}
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .portable-boundary {
+    background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 5%, var(--color-bg)), var(--color-bg));
+  }
+  .portable-grid {
+    --line: color-mix(in oklch, var(--color-primary) 13%, transparent);
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    -webkit-mask-image: radial-gradient(ellipse 85% 80% at 58% 45%, black 35%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 80% at 58% 45%, black 35%, transparent 100%);
+  }
+</style>
