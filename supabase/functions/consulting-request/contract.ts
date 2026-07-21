@@ -6,7 +6,8 @@ import {
 } from "../_shared/consulting-proposal.ts";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export interface ConsultingRequestInput {
   requestId: string;
@@ -19,6 +20,8 @@ export interface ConsultingRequestInput {
   website: string;
 }
 
+export type ConsultingDeliveryStatus = "pending" | "sent" | "failed";
+
 export interface ConsultingRequestRecord {
   request_id: string;
   proposal_number: string;
@@ -30,7 +33,8 @@ export interface ConsultingRequestRecord {
   snapshot: ProposalSnapshot;
   binding_status: "non_binding_request";
   request_state: "received";
-  notification_status: "pending";
+  notification_status: ConsultingDeliveryStatus;
+  customer_confirmation_status: ConsultingDeliveryStatus;
   request_fingerprint: string;
   user_agent: string;
 }
@@ -40,9 +44,12 @@ function clean(value: unknown, max: number): string {
 }
 
 export function parseConsultingRequest(body: unknown): ConsultingRequestInput {
-  const source = body && typeof body === "object" ? body as Record<string, unknown> : {};
+  const source = body && typeof body === "object"
+    ? body as Record<string, unknown>
+    : {};
   const selectedOfferIds = Array.isArray(source.selectedOfferIds)
-    ? source.selectedOfferIds.slice(0, 20).map((value) => clean(value, 120)).filter(Boolean)
+    ? source.selectedOfferIds.slice(0, 20).map((value) => clean(value, 120))
+      .filter(Boolean)
     : [];
   return {
     requestId: clean(source.requestId, 36),
@@ -63,16 +70,22 @@ export function validateConsultingRequest(
   if (input.website) return null;
   if (!UUID_RE.test(input.requestId)) return "Refresh the page and try again.";
   if (!input.fullName) return "Enter your full name.";
-  if (!EMAIL_RE.test(input.businessEmail)) return "Enter a valid business email.";
+  if (!EMAIL_RE.test(input.businessEmail)) {
+    return "Enter a valid business email.";
+  }
   if (!input.companyName) return "Enter your company name.";
-  if (input.description.length < 20) return "Describe the outcome you want in at least 20 characters.";
+  if (input.description.length < 20) {
+    return "Describe the outcome you want in at least 20 characters.";
+  }
   try {
     buildProposalSnapshot({
       consultingHours: input.consultingHours,
       selectedOfferIds: input.selectedOfferIds,
     }, publishedWorkshopKeys);
   } catch (error) {
-    return error instanceof Error ? error.message : "Review your proposal selections.";
+    return error instanceof Error
+      ? error.message
+      : "Review your proposal selections.";
   }
   return null;
 }
@@ -81,7 +94,10 @@ export function publishedWorkshopKeysFromEnv(value?: string | null): string[] {
   return (value ?? "").split(",").map((key) => key.trim()).filter(Boolean);
 }
 
-export function createProposalNumber(now = new Date(), random = crypto.randomUUID()): string {
+export function createProposalNumber(
+  now = new Date(),
+  random = crypto.randomUUID(),
+): string {
   const date = now.toISOString().slice(0, 10).replaceAll("-", "");
   return `OFP-${date}-${random.replaceAll("-", "").slice(0, 8).toUpperCase()}`;
 }
@@ -109,6 +125,7 @@ export function createRequestRecord(options: {
     binding_status: "non_binding_request",
     request_state: "received",
     notification_status: "pending",
+    customer_confirmation_status: "pending",
     request_fingerprint: options.requestFingerprint,
     user_agent: options.userAgent.slice(0, 500),
   };
@@ -117,7 +134,9 @@ export function createRequestRecord(options: {
 export function notificationText(record: ConsultingRequestRecord): string {
   const { snapshot } = record;
   const lines = snapshot.lines.map((line) =>
-    `- ${line.label}\n  ${line.term}\n  ${formatUsd(line.amountCents)}\n  ${line.includes}`
+    `- ${line.label}\n  ${line.term}\n  ${
+      formatUsd(line.amountCents)
+    }\n  ${line.includes}`
   ).join("\n\n");
   return `NON-BINDING PROPOSAL REQUEST
 SUBMITTED · PENDING ORIONFOLD REVIEW
@@ -134,8 +153,10 @@ Itemized request:
 ${lines}
 
 List subtotal: ${formatUsd(snapshot.listSubtotalCents)}
-Estimated bank-transfer savings (${formatEffectiveSavings(snapshot.effectiveSavingsBasisPoints)}): -${formatUsd(snapshot.savingsCents)}
-Estimated final pre-tax subtotal: ${formatUsd(snapshot.estimatedFinalSubtotalCents)}
+Estimated bank-transfer savings (${
+    formatEffectiveSavings(snapshot.effectiveSavingsBasisPoints)
+  }): -${formatUsd(snapshot.savingsCents)}
+Estimated final subtotal: ${formatUsd(snapshot.estimatedFinalSubtotalCents)}
 
 Terms: ${snapshot.termsVersion}
 Savings formula: ${snapshot.savingsFormulaVersion}
@@ -144,7 +165,59 @@ This request is not accepted, scheduled, invoiced, due, or paid. Review scope an
 `;
 }
 
-export function publicReceipt(record: Pick<ConsultingRequestRecord, "proposal_number" | "proposal_version" | "snapshot">) {
+export function customerConfirmationText(
+  record: ConsultingRequestRecord,
+): string {
+  const { snapshot } = record;
+  const lines = snapshot.lines.map((line) =>
+    `- ${line.label}\n  ${line.term}\n  ${
+      formatUsd(line.amountCents)
+    }\n  ${line.includes}`
+  ).join("\n\n");
+  return `ORIONFOLD
+WE RECEIVED YOUR NON-BINDING PROPOSAL REQUEST
+
+Hello ${record.full_name},
+
+This email is your copy of the proposal request submitted to Orionfold.
+
+Proposal: ${record.proposal_number} · version ${record.proposal_version}
+Company: ${record.company_name}
+Status: Submitted · pending Orionfold review
+
+Requested outcome:
+${record.request_description}
+
+Itemized request:
+${lines}
+
+List subtotal: ${formatUsd(snapshot.listSubtotalCents)}
+Estimated bank-transfer savings (${
+    formatEffectiveSavings(snapshot.effectiveSavingsBasisPoints)
+  }): -${formatUsd(snapshot.savingsCents)}
+Estimated final subtotal: ${formatUsd(snapshot.estimatedFinalSubtotalCents)}
+
+What happens next:
+- Orionfold will review the request and respond within 24 hours.
+- Submission does not mean the request is accepted, scheduled, invoiced, due, or paid.
+- Founder availability, final scope, product lines, consulting cap, terms, and any invoice require separate written acceptance.
+- Reply to this email if you need to correct or clarify the request.
+
+Terms version: ${snapshot.termsVersion}
+Savings formula: ${snapshot.savingsFormulaVersion}
+
+${snapshot.legalIdentity.name}
+${snapshot.legalIdentity.postalAddress}
+${snapshot.legalIdentity.email}
+`;
+}
+
+export function publicReceipt(
+  record: Pick<
+    ConsultingRequestRecord,
+    "proposal_number" | "proposal_version" | "snapshot"
+  >,
+) {
   return {
     proposalNumber: record.proposal_number,
     proposalVersion: record.proposal_version,

@@ -1,5 +1,42 @@
 import { expect, test, type Page } from '@playwright/test';
 
+const consultingRequestEndpoint = 'https://orionfold.supabase.co/functions/v1/consulting-request';
+
+const proposalSnapshot = {
+  lines: [{
+    id: 'consulting-10',
+    label: 'Founder-led consulting · up to 10 hours',
+    term: 'Requested initial cap · $350/hour',
+    amountCents: 350000,
+    includes: 'Remote training, application guidance, and deployment support.',
+  }],
+  listSubtotalCents: 350000,
+  savingsCents: 10180,
+  estimatedFinalSubtotalCents: 339820,
+  effectiveSavingsBasisPoints: 291,
+  termsVersion: 'consulting-request-2026-07-20-r2',
+  savingsFormulaVersion: 'domestic-ach-wire-2026-07-20-r1',
+  legalIdentity: {
+    name: 'Orionfold LLC',
+    postalAddress: '2108 N St Ste N, Sacramento, CA 95816',
+    email: 'manav@orionfold.com',
+  },
+};
+
+async function completeProposalForm(page: Page) {
+  await page.locator('.cap-card').filter({ hasText: '10 hours' }).click();
+  await page.getByLabel('Full name').fill('Website Test');
+  await page.getByLabel('Business email').fill('manav@orionfold.com');
+  await page.getByLabel('Company name').fill('Orionfold LLC');
+  await page.getByLabel('What outcome do you want?').fill('Validate the customer proposal confirmation and recovery flow.');
+}
+
+async function enableMockedProductionSubmission(page: Page) {
+  await page.locator('#consulting-builder').evaluate((element) => {
+    (element as HTMLElement).dataset.localPreview = 'false';
+  });
+}
+
 function collectRuntimeErrors(page: Page) {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -67,4 +104,69 @@ test('proposal sticky summary remains on-screen at mobile width', async ({ page 
   expect(box!.y).toBeGreaterThanOrEqual(0);
   expect(box!.y + box!.height).toBeLessThanOrEqual(844);
   await expect(page.locator('#sticky-final')).not.toHaveText('$0.00');
+});
+
+test('successful proposal submission confirms the customer copy was emailed', async ({ page }) => {
+  await page.route(consultingRequestEndpoint, async (route) => {
+    await route.fulfill({
+      status: 201,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        success: true,
+        proposalNumber: 'OFP-20260721-TEST0001',
+        proposalVersion: 1,
+        requestState: 'pending_review',
+        bindingStatus: 'non_binding_request',
+        notificationStatus: 'sent',
+        customerConfirmationStatus: 'sent',
+        snapshot: proposalSnapshot,
+      }),
+    });
+  });
+  await page.goto('/proposal/');
+  await enableMockedProductionSubmission(page);
+  await completeProposalForm(page);
+  await page.getByRole('button', { name: 'Submit proposal request' }).click();
+
+  await expect(page.locator('#form-message')).toContainText('confirmation copy was emailed to manav@orionfold.com');
+  await expect(page.locator('#form-message')).toContainText('does not mean the request is accepted or scheduled');
+  await expect(page.getByRole('button', { name: 'Request stored' })).toBeDisabled();
+});
+
+test('delayed customer confirmation retries the exact request without duplicating identity', async ({ page }) => {
+  const requestBodies: unknown[] = [];
+  let attempt = 0;
+  await page.route(consultingRequestEndpoint, async (route) => {
+    requestBodies.push(route.request().postDataJSON());
+    attempt += 1;
+    await route.fulfill({
+      status: attempt === 1 ? 201 : 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        success: true,
+        replay: attempt > 1,
+        proposalNumber: 'OFP-20260721-TEST0002',
+        proposalVersion: 1,
+        requestState: 'pending_review',
+        bindingStatus: 'non_binding_request',
+        notificationStatus: 'sent',
+        customerConfirmationStatus: attempt === 1 ? 'delayed' : 'sent',
+        snapshot: proposalSnapshot,
+      }),
+    });
+  });
+  await page.goto('/proposal/');
+  await enableMockedProductionSubmission(page);
+  await completeProposalForm(page);
+  await page.getByRole('button', { name: 'Submit proposal request' }).click();
+
+  const retry = page.getByRole('button', { name: 'Retry confirmation email' });
+  await expect(page.locator('#form-message')).toContainText('confirmation email was delayed');
+  await expect(retry).toBeEnabled();
+  await retry.click();
+
+  await expect(page.locator('#form-message')).toContainText('confirmation copy was emailed to manav@orionfold.com');
+  await expect(page.getByRole('button', { name: 'Request stored' })).toBeDisabled();
+  expect(requestBodies).toHaveLength(2);
+  expect(requestBodies[1]).toEqual(requestBodies[0]);
 });

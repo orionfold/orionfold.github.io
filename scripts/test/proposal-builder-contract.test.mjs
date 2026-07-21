@@ -12,11 +12,15 @@ const pagePath = new URL('../../src/pages/proposal.astro', import.meta.url);
 const oldPagePath = new URL('../../src/pages/consulting.astro', import.meta.url);
 const navPath = new URL('../../src/components/Nav.astro', import.meta.url);
 const functionPath = new URL('../../supabase/functions/consulting-request/index.ts', import.meta.url);
+const deliveryPath = new URL('../../supabase/functions/consulting-request/delivery.ts', import.meta.url);
 const migrationPath = new URL('../../supabase/migrations/20260720010000_create_consulting_proposals.sql', import.meta.url);
+const customerConfirmationMigrationPath = new URL('../../supabase/migrations/20260721173000_add_consulting_customer_confirmation.sql', import.meta.url);
 const page = readFileSync(pagePath, 'utf8');
 const nav = readFileSync(navPath, 'utf8');
 const fn = readFileSync(functionPath, 'utf8');
+const delivery = readFileSync(deliveryPath, 'utf8');
 const migration = readFileSync(migrationPath, 'utf8');
+const customerConfirmationMigration = readFileSync(customerConfirmationMigrationPath, 'utf8');
 
 test('/proposal/ is canonical and the former page does not ship', () => {
   assert.equal(existsSync(pagePath), true);
@@ -86,10 +90,21 @@ test('product-only draft estimates update before a consulting cap is selected', 
   assert.match(page, /buildProposalEstimate\(\{ consultingHours: 0, selectedOfferIds \}/);
 });
 
-test('server stores before Resend and migration protects the immutable snapshot', () => {
-  assert.ok(fn.indexOf('.from("consulting_proposals").insert(record)') < fn.indexOf('fetch("https://api.resend.com/emails"'));
+test('server stores before independent idempotent emails and migration protects the immutable snapshot', () => {
+  const insertAt = fn.indexOf('.from("consulting_proposals").insert(record)');
+  const storedRecordAt = fn.indexOf('const storedRecord');
+  const deliveryAt = fn.indexOf('deliverProposalEmails(', storedRecordAt);
+  assert.ok(insertAt >= 0 && insertAt < storedRecordAt && storedRecordAt < deliveryAt);
+  assert.match(delivery, /consulting-operator-\$\{record\.request_id\}/);
+  assert.match(delivery, /consulting-customer-\$\{record\.request_id\}/);
+  assert.match(delivery, /customerConfirmationStatus/);
+  assert.match(delivery, /status === "sent"/);
   assert.match(migration, /enable row level security/i);
   assert.match(migration, /revoke all .* from anon, authenticated/i);
   assert.match(migration, /protect_consulting_proposal_snapshot/);
   assert.match(migration, /request_id uuid not null unique/);
+  assert.match(customerConfirmationMigration, /customer_confirmation_status/);
+  assert.match(customerConfirmationMigration, /customer_confirmation_sent_at/);
+  assert.match(page, /Retry confirmation email/);
+  assert.match(page, /confirmation copy was emailed to/);
 });

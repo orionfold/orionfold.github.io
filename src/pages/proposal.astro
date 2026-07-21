@@ -332,6 +332,7 @@ const serviceSchema = {
   const offerById = new Map(offers.map((offer) => [offer.id, offer]));
   const publishedWorkshopKeys: string[] = JSON.parse(root.dataset.publishedWorkshops || '[]');
   let submittedReceipt: any = null;
+  let submittedPayload: any = null;
   let requestId = crypto.randomUUID();
 
   const text = (id: string, value: string) => { const node = document.getElementById(id); if (node) node.textContent = value; };
@@ -429,15 +430,30 @@ const serviceSchema = {
     event.preventDefault();
     const message = document.getElementById('form-message')!;
     const submit = document.getElementById('submit-proposal') as HTMLButtonElement;
-    if (!hours()) {
+    const retryingConfirmation = Boolean(submittedReceipt && submittedPayload);
+    if (!retryingConfirmation && !hours()) {
       message.className = 'mt-5 rounded-xl border border-danger/40 bg-danger/10 p-4 text-sm text-danger';
       message.textContent = 'Choose a 10, 15, or 20 hour consulting cap.';
       form.querySelector<HTMLInputElement>('input[name="consultingHours"]')?.focus();
       return;
     }
-    if (!form.reportValidity()) return;
-    const customer = customerData();
-    if (customer.description.length < 20) return;
+    if (!retryingConfirmation && !form.reportValidity()) return;
+    const customer = retryingConfirmation
+      ? {
+          fullName: submittedPayload.fullName,
+          businessEmail: submittedPayload.businessEmail,
+          companyName: submittedPayload.companyName,
+          description: submittedPayload.description,
+          website: submittedPayload.website,
+        }
+      : customerData();
+    if (!retryingConfirmation && customer.description.length < 20) return;
+    const payload = submittedPayload ?? {
+      requestId,
+      ...customer,
+      consultingHours: hours(),
+      selectedOfferIds: selectedIds(),
+    };
     submit.disabled = true;
     submit.textContent = 'Saving request…';
     message.className = 'mt-5 rounded-xl border border-border bg-surface-raised p-4 text-sm text-text-muted';
@@ -458,11 +474,12 @@ const serviceSchema = {
         const response = await fetch(root.dataset.endpoint!, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ requestId, ...customer, consultingHours: hours(), selectedOfferIds: selectedIds() }),
+          body: JSON.stringify(payload),
         });
         result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || 'We could not save the proposal request.');
       }
+      submittedPayload = payload;
       submittedReceipt = result;
       render(result.snapshot);
       text('summary-state', result.localPreview ? 'Local preview · not submitted' : 'Submitted · pending Orionfold review');
@@ -471,12 +488,16 @@ const serviceSchema = {
       text('document-version', String(result.proposalVersion));
       form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea').forEach((control) => { control.disabled = true; });
       message.className = 'mt-5 rounded-xl border border-success/40 bg-success/10 p-4 text-sm leading-relaxed text-text';
+      const customerConfirmationDelayed = result.customerConfirmationStatus === 'delayed';
       message.textContent = result.localPreview
         ? 'Local preview only: no data or email was sent. The formal document below shows the server-calculated receipt shape for review.'
+        : customerConfirmationDelayed
+          ? `Proposal ${result.proposalNumber} was stored, but your confirmation email was delayed. Keep or print the proposal below, then retry the email. This does not mean the request is accepted or scheduled.`
         : result.notificationStatus === 'delayed'
-          ? `Proposal ${result.proposalNumber} was stored, but the automatic notification was delayed. If you do not hear within 24 hours, email manav@orionfold.com with this proposal number. This does not mean the request is accepted or scheduled.`
-          : `Proposal ${result.proposalNumber} was stored. Orionfold will respond within 24 hours. This does not mean the request is accepted or scheduled.`;
-      submit.textContent = 'Request stored';
+          ? `Proposal ${result.proposalNumber} was stored and your confirmation copy was emailed to ${customer.businessEmail}. Orionfold's internal notification was delayed; if you do not hear within 24 hours, reply to that email. This does not mean the request is accepted or scheduled.`
+          : `Proposal ${result.proposalNumber} was stored and a confirmation copy was emailed to ${customer.businessEmail}. Orionfold will respond within 24 hours. This does not mean the request is accepted or scheduled.`;
+      submit.disabled = !customerConfirmationDelayed;
+      submit.textContent = customerConfirmationDelayed ? 'Retry confirmation email' : 'Request stored';
       document.getElementById('print-proposal')?.focus();
     } catch (error) {
       message.className = 'mt-5 rounded-xl border border-danger/40 bg-danger/10 p-4 text-sm text-danger';
