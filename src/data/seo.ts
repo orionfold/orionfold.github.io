@@ -6,7 +6,7 @@ export const SITE = {
   name: 'Orionfold',
   url: 'https://orionfold.com',
   description:
-    'Orionfold gives you open or frontier AI models, local or cloud delivery, single- or multi-user operation, optimized for cost or intelligence.',
+    'Orionfold lets you choose open or frontier AI models, local or cloud delivery, solo or multi-user operation, and optimize for cost or intelligence.',
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:
