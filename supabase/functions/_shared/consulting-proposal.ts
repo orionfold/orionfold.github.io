@@ -177,12 +177,12 @@ export interface ProposalLine {
   kind: CatalogItem["kind"] | "consulting";
 }
 
-export interface ProposalSnapshot {
+export interface ProposalEstimateSnapshot {
   bindingStatus: typeof CONSULTING_BINDING_STATUS;
   catalogVersion: string;
   termsVersion: string;
   savingsFormulaVersion: string;
-  consultingHours: ConsultingHourCap;
+  consultingHours: ConsultingHourCap | 0;
   consultingRateCents: number;
   lines: ProposalLine[];
   listSubtotalCents: number;
@@ -190,6 +190,10 @@ export interface ProposalSnapshot {
   effectiveSavingsBasisPoints: number;
   estimatedFinalSubtotalCents: number;
   legalIdentity: typeof ORIONFOLD_LEGAL_IDENTITY;
+}
+
+export interface ProposalSnapshot extends ProposalEstimateSnapshot {
+  consultingHours: ConsultingHourCap;
 }
 
 export function isConsultingHourCap(value: number): value is ConsultingHourCap {
@@ -201,11 +205,11 @@ export function calculateBankTransferSavings(subtotalCents: number): number {
   return Math.min(subtotalCents, Math.round(subtotalCents * 0.029 + 30));
 }
 
-export function buildProposalSnapshot(
+export function buildProposalEstimate(
   input: ProposalInput,
   publishedWorkshopKeys: readonly string[] = [],
-): ProposalSnapshot {
-  if (!isConsultingHourCap(input.consultingHours)) {
+): ProposalEstimateSnapshot {
+  if (input.consultingHours !== 0 && !isConsultingHourCap(input.consultingHours)) {
     throw new Error("Choose a 10, 15, or 20 hour consulting cap.");
   }
   const selectedIds = Array.isArray(input.selectedOfferIds) ? input.selectedOfferIds : [];
@@ -229,19 +233,18 @@ export function buildProposalSnapshot(
       kind: offer.kind,
     } satisfies ProposalLine;
   });
-  const consultingAmount = input.consultingHours * CONSULTING_RATE_CENTS;
-  const consultingLine: ProposalLine = {
+  const consultingLine: ProposalLine[] = input.consultingHours === 0 ? [] : [{
     id: `consulting-${input.consultingHours}-hour-cap`,
     lookupKey: "consulting_orionfold_founder_led",
     label: `Founder-led Orionfold consulting · ${input.consultingHours}-hour requested cap`,
     term: "$350/hour · remote · first 5 hours invoiced in advance; additional time invoiced monthly in arrears",
     includes: "Training, AI-native application guidance, and white-glove product deployment support within the written scope.",
     reasonToChoose: "Choose a cap that bounds the initial engagement. Five hours are invoiced in advance to begin; additional time worked is invoiced at month-end.",
-    amountCents: consultingAmount,
+    amountCents: input.consultingHours * CONSULTING_RATE_CENTS,
     mode: "estimate",
     kind: "consulting",
-  };
-  const lines = [...productLines, consultingLine];
+  }];
+  const lines = [...productLines, ...consultingLine];
   const listSubtotalCents = lines.reduce((sum, line) => sum + line.amountCents, 0);
   const savingsCents = calculateBankTransferSavings(listSubtotalCents);
   return {
@@ -254,10 +257,22 @@ export function buildProposalSnapshot(
     lines,
     listSubtotalCents,
     savingsCents,
-    effectiveSavingsBasisPoints: Math.round((savingsCents / listSubtotalCents) * 10_000),
+    effectiveSavingsBasisPoints: listSubtotalCents > 0
+      ? Math.round((savingsCents / listSubtotalCents) * 10_000)
+      : 0,
     estimatedFinalSubtotalCents: listSubtotalCents - savingsCents,
     legalIdentity: ORIONFOLD_LEGAL_IDENTITY,
   };
+}
+
+export function buildProposalSnapshot(
+  input: ProposalInput,
+  publishedWorkshopKeys: readonly string[] = [],
+): ProposalSnapshot {
+  if (!isConsultingHourCap(input.consultingHours)) {
+    throw new Error("Choose a 10, 15, or 20 hour consulting cap.");
+  }
+  return buildProposalEstimate(input, publishedWorkshopKeys) as ProposalSnapshot;
 }
 
 export function formatUsd(cents: number): string {

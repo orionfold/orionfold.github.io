@@ -1,9 +1,18 @@
 import {
+  buildProposalEstimate,
   buildProposalSnapshot,
   calculateBankTransferSavings,
   CONSULTING_HOUR_CAPS,
   getConsultingOffers,
 } from "./consulting-proposal.ts";
+
+Deno.test("a product-only browser estimate works before consulting is selected", () => {
+  const offer = getConsultingOffers()[0];
+  const estimate = buildProposalEstimate({ consultingHours: 0, selectedOfferIds: [offer.id] });
+  assert(estimate.consultingHours === 0, "draft estimate should not invent consulting hours");
+  assert(estimate.lines.length === 1 && estimate.lines[0].id === offer.id, "draft estimate should include the selected product");
+  assert(estimate.listSubtotalCents === offer.amountCents, "draft estimate should use the catalog price");
+});
 
 function assert(condition: unknown, message: string) {
   if (!condition) throw new Error(message);

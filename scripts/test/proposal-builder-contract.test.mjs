@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import test from 'node:test';
 import {
+  buildProposalEstimate,
   buildProposalSnapshot,
   CONSULTING_HOUR_CAPS,
   getConsultingOffers,
@@ -44,6 +45,17 @@ test('navigation and sticky summary keep the proposal action visible', () => {
   assert.match(page, /id="sticky-savings"/);
   assert.match(page, /id="sticky-final"/);
   assert.match(page, /stickyBar\.classList\.add\('is-visible'\)/);
+  assert.doesNotMatch(page, /stickyBar\.classList\.remove\('is-visible'\)/);
+});
+
+test('product cards toggle through a full-card native checkbox label while preserving the details link', () => {
+  assert.match(page, /class="offer-card relative/);
+  assert.match(page, /class="offer-checkbox peer sr-only"/);
+  assert.match(page, /class="offer-hit-area absolute inset-0 z-10 cursor-pointer rounded-2xl"/);
+  assert.match(page, /for=\{`offer-\$\{offer\.id\}`\}/);
+  assert.match(page, /class="relative z-20 text-sm text-primary hover:underline" href=\{offer\.href\}/);
+  assert.match(page, /\.offer-card:has\(\.offer-checkbox:checked\)/);
+  assert.doesNotMatch(page, /card\.classList\.toggle\('is-selected'/);
 });
 
 test('all eligible offers and cap fixtures build from the shared catalog', () => {
@@ -62,6 +74,16 @@ test('all eligible offers and cap fixtures build from the shared catalog', () =>
     assert.equal(snapshot.lines.length, offers.length + 1);
     assert.ok(snapshot.estimatedFinalSubtotalCents < snapshot.listSubtotalCents);
   }
+});
+
+test('product-only draft estimates update before a consulting cap is selected', () => {
+  const offer = getConsultingOffers()[0];
+  const estimate = buildProposalEstimate({ consultingHours: 0, selectedOfferIds: [offer.id] });
+  assert.equal(estimate.consultingHours, 0);
+  assert.deepEqual(estimate.lines.map((line) => line.id), [offer.id]);
+  assert.equal(estimate.listSubtotalCents, offer.amountCents);
+  assert.ok(estimate.estimatedFinalSubtotalCents < estimate.listSubtotalCents);
+  assert.match(page, /buildProposalEstimate\(\{ consultingHours: 0, selectedOfferIds \}/);
 });
 
 test('server stores before Resend and migration protects the immutable snapshot', () => {

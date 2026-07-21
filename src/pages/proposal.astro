@@ -148,15 +148,29 @@ const serviceSchema = {
                 <h3 id={`family-${family.toLowerCase()}`} class="font-mono text-sm uppercase tracking-[0.2em] text-text-dim">{family}</h3>
                 <div class="mt-4 grid gap-5 xl:grid-cols-2">
                   {familyOffers.map((offer) => (
-                    <article class="offer-card rounded-2xl border border-border bg-surface p-6 shadow-of transition" data-offer-card={offer.id}>
-                      <div class="flex items-start justify-between gap-5">
+                    <article class="offer-card relative rounded-2xl border border-border bg-surface p-6 shadow-of transition hover:border-primary/60" data-offer-card={offer.id}>
+                      <input
+                        id={`offer-${offer.id}`}
+                        type="checkbox"
+                        name="selectedOffers"
+                        value={offer.id}
+                        class="offer-checkbox peer sr-only"
+                        aria-label={`Add ${offer.label} to proposal`}
+                      />
+                      <label
+                        for={`offer-${offer.id}`}
+                        class="offer-hit-area absolute inset-0 z-10 cursor-pointer rounded-2xl"
+                        aria-hidden="true"
+                      ></label>
+                      <div class="pointer-events-none relative z-20 flex items-start justify-between gap-5">
                         <div>
                           <p class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-primary">{offer.term}</p>
                           <h4 class="mt-2 text-2xl font-semibold text-text">{offer.label}</h4>
                         </div>
-                        <label class="offer-select inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-full border border-border bg-surface-raised px-3 py-2 text-sm font-medium text-text transition hover:border-primary/60">
-                          <input type="checkbox" name="selectedOffers" value={offer.id} class="h-4 w-4 accent-[var(--color-primary)]" />
-                          Add
+                        <label for={`offer-${offer.id}`} class="offer-select pointer-events-auto inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-full border border-border bg-surface-raised px-3 py-2 text-sm font-medium text-text transition hover:border-primary/60">
+                          <span class="offer-check inline-grid h-4 w-4 place-items-center rounded border border-border bg-surface text-[0.65rem] font-bold text-white" aria-hidden="true"></span>
+                          <span class="offer-select-copy">Add</span>
+                          <span class="offer-selected-copy hidden">Selected</span>
                         </label>
                       </div>
                       <dl class="mt-6 grid gap-4 text-sm leading-relaxed sm:grid-cols-2">
@@ -169,7 +183,7 @@ const serviceSchema = {
                       </dl>
                       {offer.freeBoundary && <p class="mt-5 rounded-xl border border-primary/20 bg-primary/[0.06] p-3 text-sm leading-relaxed text-text-muted">{offer.freeBoundary}</p>}
                       <div class="mt-6 flex items-end justify-between gap-4 border-t border-border pt-5">
-                        <a class="text-sm text-primary hover:underline" href={offer.href}>Review product details</a>
+                        <a class="relative z-20 text-sm text-primary hover:underline" href={offer.href}>Review product details</a>
                         <p class="text-right text-xl font-semibold text-text">{formatUsd(offer.amountCents)}{offer.mode === 'subscription' && <span class="block text-xs font-normal text-text-muted">per year</span>}</p>
                       </div>
                     </article>
@@ -217,7 +231,7 @@ const serviceSchema = {
               <div class="flex justify-between gap-4"><dt class="text-text-muted">Bank-transfer savings <span id="summary-rate"></span></dt><dd id="summary-savings" class="font-medium text-success">—</dd></div>
               <div class="flex justify-between gap-4 border-t border-border pt-3"><dt class="font-medium text-text">Estimated final subtotal</dt><dd id="summary-final" class="text-xl font-semibold text-text">—</dd></div>
             </dl>
-            <p class="mt-5 text-xs leading-relaxed text-text-dim">Pre-tax estimate for domestic USD ACH/wire. Based on avoided 2.9% + $0.30 card processing; no bank instructions appear here. Final written proposal and invoice control.</p>
+            <p class="mt-5 text-xs leading-relaxed text-text-dim">Estimate for domestic USD ACH/wire. Based on avoided 2.9% + $0.30 card processing; no bank instructions appear here. Final written proposal and invoice control.</p>
           </aside>
         </div>
       </section>
@@ -257,7 +271,7 @@ const serviceSchema = {
             <dl class="document-totals">
               <div><dt>List subtotal</dt><dd id="document-subtotal">—</dd></div>
               <div><dt>Estimated domestic bank-transfer savings <span id="document-rate"></span></dt><dd id="document-savings">—</dd></div>
-              <div><dt>Estimated final pre-tax subtotal</dt><dd id="document-final">—</dd></div>
+              <div><dt>Estimated final subtotal</dt><dd id="document-final">—</dd></div>
             </dl>
           </section>
           <section class="document-terms">
@@ -267,8 +281,8 @@ const serviceSchema = {
               <li>Consulting is remote over email and online meetings. Travel, 24/7 coverage, managed operations, service levels, and guaranteed outcomes are excluded.</li>
               <li>The selected hours are a requested initial cap, not a fixed fee. Following written acceptance, Orionfold invoices the first five consulting hours in advance. Cleared payment of that invoice is required before work begins and is applied to the first five hours worked.</li>
               <li>Additional time worked within the agreed cap is billed at $350/hour, aggregated by day, rounded once to 15-minute increments, and invoiced monthly in arrears at the end of each calendar month.</li>
-              <li>Founder availability, scope fit, and a written agreement are required. Taxes, hosting, cloud/model usage, and third-party costs are excluded unless itemized later.</li>
-              <li>Estimated savings applies to the pre-tax eligible subtotal for domestic USD ACH/wire and uses the avoided-card-cost formula shown above. The final written proposal and invoice control.</li>
+              <li>Founder availability, scope fit, and a written agreement are required. Hosting, cloud/model usage, and third-party costs are excluded unless itemized later.</li>
+              <li>Estimated savings applies to the eligible subtotal for domestic USD ACH/wire and uses the avoided-card-cost formula shown above. The final written proposal and invoice control.</li>
             </ul>
             <p class="mt-4 text-xs">Terms version: {CONSULTING_TERMS_VERSION} · <span class="document-url">orionfold.com/terms/</span> · <span class="document-url">orionfold.com/privacy/</span></p>
           </section>
@@ -305,6 +319,7 @@ const serviceSchema = {
 
 <script>
   import {
+    buildProposalEstimate,
     buildProposalSnapshot,
     formatEffectiveSavings,
     formatUsd,
@@ -344,13 +359,13 @@ const serviceSchema = {
       : 'Customer details pending');
     text('document-description', customer.description || 'Complete the request form with the operating outcome, current constraint, responsible owner, and expected handoff.');
     if (!snapshot) {
-      stickyBar.classList.remove('is-visible');
-      text('sticky-selection-summary', 'Select a consulting block');
-      text('sticky-savings', '—');
-      text('sticky-final', '—');
-      linesHost.innerHTML = '<p class="text-sm text-text-muted">Choose a consulting cap to begin.</p>';
-      documentLines.innerHTML = '<p>Choose a consulting cap to build the estimate.</p>';
-      for (const id of ['summary-subtotal','summary-savings','summary-final','document-subtotal','document-savings','document-final']) text(id, '—');
+      stickyBar.classList.add('is-visible');
+      text('sticky-selection-summary', 'Select a consulting block or product');
+      text('sticky-savings', '$0.00');
+      text('sticky-final', '$0.00');
+      linesHost.innerHTML = '<p class="text-sm text-text-muted">Choose a consulting cap or product to begin.</p>';
+      documentLines.innerHTML = '<p>Choose a consulting cap or product to build the estimate.</p>';
+      for (const id of ['summary-subtotal','summary-savings','summary-final','document-subtotal','document-savings','document-final']) text(id, '$0.00');
       text('summary-rate', ''); text('document-rate', '');
       return;
     }
@@ -389,19 +404,19 @@ const serviceSchema = {
 
   function currentSnapshot() {
     if (submittedReceipt) return submittedReceipt.snapshot;
-    if (!hours()) return undefined;
-    try { return buildProposalSnapshot({ consultingHours: hours(), selectedOfferIds: selectedIds() }, publishedWorkshopKeys); }
+    const consultingHours = hours();
+    const selectedOfferIds = selectedIds();
+    if (!consultingHours && !selectedOfferIds.length) return undefined;
+    try {
+      return consultingHours
+        ? buildProposalSnapshot({ consultingHours, selectedOfferIds }, publishedWorkshopKeys)
+        : buildProposalEstimate({ consultingHours: 0, selectedOfferIds }, publishedWorkshopKeys);
+    }
     catch { return undefined; }
   }
 
   form.addEventListener('input', () => {
     if (submittedReceipt) return;
-    document.querySelectorAll<HTMLElement>('[data-offer-card]').forEach((card) => {
-      const id = card.dataset.offerCard!;
-      card.classList.toggle('is-selected', selectedIds().includes(id));
-      const label = card.querySelector('.offer-select');
-      if (label) label.lastChild!.textContent = selectedIds().includes(id) ? ' Selected' : ' Add';
-    });
     render(currentSnapshot());
   });
 
@@ -476,12 +491,16 @@ const serviceSchema = {
 
 <style>
   .consulting-grid { background-image: linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(to bottom, black, transparent 88%); }
-  .cap-card:has(input:checked), .offer-card.is-selected { border-color: color-mix(in oklch, var(--color-primary) 70%, var(--color-border)); box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-primary) 35%, transparent), 0 20px 60px -42px var(--color-primary); }
+  .cap-card:has(input:checked), .offer-card:has(.offer-checkbox:checked) { border-color: color-mix(in oklch, var(--color-primary) 70%, var(--color-border)); box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-primary) 35%, transparent), 0 20px 60px -42px var(--color-primary); }
   .cap-card:has(input:checked) .cap-check { border-color: var(--color-primary); background: var(--color-primary); }
   .cap-card:has(input:checked) .cap-check::after { content: '✓'; }
   .cap-card:has(input:checked) .cap-select-copy { display: none; }
   .cap-card:has(input:checked) .cap-selected-copy { display: inline; color: var(--color-primary); }
-  .cap-card:has(input:focus-visible), .offer-select:has(input:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+  .offer-card:has(.offer-checkbox:checked) .offer-check { border-color: var(--color-primary); background: var(--color-primary); }
+  .offer-card:has(.offer-checkbox:checked) .offer-check::after { content: '✓'; }
+  .offer-card:has(.offer-checkbox:checked) .offer-select-copy { display: none; }
+  .offer-card:has(.offer-checkbox:checked) .offer-selected-copy { display: inline; color: var(--color-primary); }
+  .cap-card:has(input:focus-visible), .offer-card:has(.offer-checkbox:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 3px; }
   .offer-card dt { margin-bottom: .3rem; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-dim); }
   .offer-card dd { color: var(--color-text-muted); }
   .field-label { display: flex; flex-direction: column; gap: .55rem; color: var(--color-text); font-size: .85rem; font-weight: 600; }
