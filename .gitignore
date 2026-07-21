@@ -44,6 +44,9 @@ node_modules
 dist/
 .astro/
 checks/
+# Raw browser captures are local working material. Publishable, optimized
+# derivatives belong under public/images/.
+output/
 .DS_Store
 .todos-sync-state.json
 _TODOS.json

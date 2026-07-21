@@ -53,6 +53,12 @@ const bookLinks = books
   .filter((b) => detailKeys.has(`book:${b.slug}`))
   .map((b) => ({ href: `/books/${b.slug}/`, label: b.title }));
 
+const trainingLinks = [
+  { href: '/training/relay-operator-workshop/', label: 'Latest · Relay Operator Workshop' },
+  { href: '/training/', label: 'Workshop catalog' },
+  { href: '/training/refunds/', label: 'Workshop refunds' },
+];
+
 // The 5 newest stories (same sort as the /story index).
 const latestStories = (await getCollection('story'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
@@ -70,9 +76,9 @@ const explore = [
   { href: '/experts/', label: 'Experts' },
   { href: '/advisor/', label: 'Advisor' },
   { href: '/learn/', label: 'Learn' },
-  { href: '/training/', label: 'Training' },
   { href: '/dgx-spark/', label: 'DGX Spark' },
   { href: '/adoption/', label: 'Adoption' },
+  { href: '/proposal/', label: 'Build a proposal' },
   { href: '/letter/', label: 'Letters' },
   { href: '/about/', label: 'About' },
   { href: '/sponsor/', label: 'Sponsor' },
@@ -120,6 +126,14 @@ const year = new Date().getFullYear();
           <a href="/books/" class="block py-1 -my-0.5 text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Books</a>
           {bookLinks.map((b) => (
             <a href={b.href} class="block py-1 -my-0.5 hover:text-primary transition-colors">{b.label}</a>
+          ))}
+        </div>
+
+        <!-- Training -->
+        <div class="flex flex-col gap-2">
+          <span class="block py-1 -my-0.5 text-[0.65rem] uppercase tracking-[0.12em] text-text-dim">Training</span>
+          {trainingLinks.map((item) => (
+            <a href={item.href} class="block py-1 -my-0.5 hover:text-primary transition-colors">{item.label}</a>
           ))}
         </div>
 

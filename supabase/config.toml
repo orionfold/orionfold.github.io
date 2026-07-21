@@ -414,6 +414,9 @@ verify_jwt = false
 [functions.enquiry-submit]
 verify_jwt = false
 
+[functions.consulting-request]
+verify_jwt = false
+
 [functions.ops-alert]
 verify_jwt = false
 

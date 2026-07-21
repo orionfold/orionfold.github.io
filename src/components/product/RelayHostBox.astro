@@ -1,8 +1,8 @@
 ---
-import { Image } from 'astro:assets';
 import { RELAY_HOST, formatUsd } from '../../data/commerce';
 import relayHostTopology from '../../assets/relay/relay-host-topology.svg';
-import relayHostDeployment from '../../assets/relay/relay-host-deployment.webp';
+import relayShots from '../../data/relay-shots.json';
+import { themedShotProps } from '../relay/themed-shot.logic.mjs';
 
 interface Props {
   placement?: 'home' | 'relay';
@@ -13,6 +13,10 @@ const isHome = placement === 'home';
 const price = formatUsd(RELAY_HOST.amount);
 const sectionId = isHome ? 'relay-host' : 'get-relay-host';
 const headingId = `${sectionId}-heading`;
+const deploymentShot = themedShotProps(relayShots, {
+  id: 'settings-host-deployment',
+  alt: 'Relay Host deployment screen showing local and cloud placement, administrator trust, managed automation licensing and Host configuration',
+});
 ---
 
 <section id={sectionId} aria-labelledby={headingId} class="relay-host-feature scroll-mt-24 px-6 py-12 sm:py-16">
@@ -20,14 +24,14 @@ const headingId = `${sectionId}-heading`;
     <div class="relay-host-feature__glow" aria-hidden="true"></div>
     <div class="relative z-10 grid items-center gap-9 p-7 sm:p-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-12 lg:p-12">
       <div class="relay-host-feature__copy">
-        <p class="font-mono text-[0.62rem] uppercase tracking-[0.25em] text-[#57e9e5]">
+        <p class="relay-host-feature__eyebrow font-mono text-[0.62rem] uppercase tracking-[0.25em]">
           Managed customer operations
         </p>
-        <h2 id={headingId} class="mt-3 text-balance font-display text-[clamp(2.65rem,5.4vw,5.35rem)] font-bold leading-[0.94] tracking-[-0.045em] text-white">
-          Relay <span class="text-[#21d3d0]">Host</span>
+        <h2 id={headingId} class="relay-host-feature__title mt-3 text-balance font-display text-[clamp(2.65rem,5.4vw,5.35rem)] font-bold leading-[0.94] tracking-[-0.045em]">
+          Relay <span class="relay-host-feature__title-accent">Host</span>
         </h2>
-        <p class="mt-5 text-balance font-display text-[clamp(1.15rem,2vw,1.65rem)] leading-tight text-white/90">
-          One Host. <span class="text-[#38e2de]">Ten managed Cells.</span>
+        <p class="relay-host-feature__tagline mt-5 text-balance font-display text-[clamp(1.15rem,2vw,1.65rem)] leading-tight">
+          One Host. <span class="relay-host-feature__tagline-accent">Ten managed Cells.</span>
         </p>
 
         <img
@@ -37,11 +41,11 @@ const headingId = `${sectionId}-heading`;
           height="300"
           loading="lazy"
           decoding="async"
-          class="mt-6 h-auto w-full max-w-[31rem]"
+          class="relay-host-feature__topology mt-6 h-auto w-full max-w-[31rem]"
           data-no-zoom
         />
 
-        <p class="mt-5 max-w-lg text-sm leading-relaxed text-white/65 sm:text-base">
+        <p class="relay-host-feature__description mt-5 max-w-lg text-sm leading-relaxed sm:text-base">
           {isHome
             ? 'Run customer work through one Host while each customer keeps a complete, isolated Relay Cell.'
             : 'Run one licensed Host for managed customer work while every customer keeps a complete, isolated Relay Cell.'}
@@ -54,7 +58,7 @@ const headingId = `${sectionId}-heading`;
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </a>
-          <p class="font-mono text-xs uppercase tracking-[0.15em] text-white/55">{price}/year</p>
+          <p class="relay-host-feature__price font-mono text-xs uppercase tracking-[0.15em]">{price}/year</p>
         </div>
       </div>
 
@@ -68,18 +72,35 @@ const headingId = `${sectionId}-heading`;
             <span class="relay-host-shot__live"><span class="relay-host-shot__livedot"></span>HOST</span>
           </div>
           <div class="relay-host-shot__view">
-            <Image
-              src={relayHostDeployment}
-              alt="Relay Host deployment screen showing local and cloud placement, administrator trust, managed automation licensing and Host configuration"
-              widths={[560, 760, 960, 1280]}
-              sizes="(min-width: 1024px) 650px, calc(100vw - 5rem)"
-              format="webp"
-              quality={78}
+            <img
+              width={deploymentShot.width}
+              height={deploymentShot.height}
+              alt={deploymentShot.alt}
+              sizes={deploymentShot.sizes}
               loading="lazy"
               decoding="async"
               class="h-full w-full object-cover object-top"
+              data-relay-shot
+              data-shot-light-src={deploymentShot.light.src}
+              data-shot-light-srcset={deploymentShot.light.srcset}
+              data-shot-dark-src={deploymentShot.dark.src}
+              data-shot-dark-srcset={deploymentShot.dark.srcset}
               data-no-zoom
             />
+            <noscript>
+              <img
+                src={deploymentShot.light.src}
+                srcset={deploymentShot.light.srcset}
+                sizes={deploymentShot.sizes}
+                width={deploymentShot.width}
+                height={deploymentShot.height}
+                alt={deploymentShot.alt}
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover object-top"
+                data-no-zoom
+              />
+            </noscript>
             <span class="relay-host-shot__sheen" aria-hidden="true"></span>
           </div>
         </div>
@@ -90,16 +111,78 @@ const headingId = `${sectionId}-heading`;
 
 <style>
   .relay-host-feature__canvas {
+    --host-canvas-border: rgb(14 158 152 / 0.28);
+    --host-grid-line: rgb(14 158 152 / 0.08);
+    --host-canvas-radial: rgb(14 158 152 / 0.13);
+    --host-canvas-bg: #eff9f8;
+    --host-canvas-shadow: 0 34px 82px -42px rgb(24 74 78 / 0.38), 0 0 0 1px rgb(14 158 152 / 0.08);
+    --host-glow: rgb(14 158 152 / 0.14);
+    --host-eyebrow: #087c77;
+    --host-title: #142126;
+    --host-title-accent: #0b8d87;
+    --host-tagline: #34484e;
+    --host-tagline-accent: #0b8d87;
+    --host-description: #53666c;
+    --host-price: #65777c;
+    --host-cta-bg: #0e9e98;
+    --host-cta-hover: #0b8b86;
+    --host-cta-text: #ffffff;
+    --host-cta-ring: rgb(14 158 152 / 0.12);
+    --host-focus: #0e9e98;
+    --host-shot-glow: rgb(14 158 152 / 0.14);
+    --host-frame-border: rgb(14 158 152 / 0.34);
+    --host-frame-bg: #ffffff;
+    --host-frame-shadow: 0 34px 70px -32px rgb(24 74 78 / 0.45), 0 0 0 1px rgb(14 158 152 / 0.08);
+    --host-frame-hover-shadow: 0 42px 82px -32px rgb(24 74 78 / 0.5), 0 0 0 1px rgb(14 158 152 / 0.28);
+    --host-bar-border: rgb(87 132 137 / 0.24);
+    --host-bar-bg: #f5fafa;
+    --host-tab: rgb(60 83 88 / 0.68);
+    --host-live: #0b8d87;
+    --host-live-dot: #0e9e98;
+    --host-sheen: rgb(255 255 255 / 0.3);
     position: relative;
     isolation: isolate;
-    border: 1px solid rgb(77 222 219 / 0.32);
+    border: 1px solid var(--host-canvas-border);
     background:
-      linear-gradient(rgb(39 213 210 / 0.055) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(39 213 210 / 0.055) 1px, transparent 1px),
-      radial-gradient(circle at 82% 18%, rgb(28 203 199 / 0.12), transparent 38%),
-      #061117;
+      linear-gradient(var(--host-grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--host-grid-line) 1px, transparent 1px),
+      radial-gradient(circle at 82% 18%, var(--host-canvas-radial), transparent 38%),
+      var(--host-canvas-bg);
     background-size: 42px 42px, 42px 42px, auto, auto;
-    box-shadow: 0 34px 90px -42px rgb(0 0 0 / 0.85), 0 0 0 1px rgb(20 200 192 / 0.07);
+    box-shadow: var(--host-canvas-shadow);
+    transition: background-color 180ms ease, border-color 180ms ease;
+  }
+
+  :global(html[data-theme='dark']) .relay-host-feature__canvas {
+    --host-canvas-border: rgb(77 222 219 / 0.32);
+    --host-grid-line: rgb(39 213 210 / 0.055);
+    --host-canvas-radial: rgb(28 203 199 / 0.12);
+    --host-canvas-bg: #061117;
+    --host-canvas-shadow: 0 34px 90px -42px rgb(0 0 0 / 0.85), 0 0 0 1px rgb(20 200 192 / 0.07);
+    --host-glow: rgb(23 210 205 / 0.13);
+    --host-eyebrow: #57e9e5;
+    --host-title: #ffffff;
+    --host-title-accent: #21d3d0;
+    --host-tagline: rgb(255 255 255 / 0.9);
+    --host-tagline-accent: #38e2de;
+    --host-description: rgb(255 255 255 / 0.65);
+    --host-price: rgb(255 255 255 / 0.55);
+    --host-cta-bg: #2ad6d2;
+    --host-cta-hover: #4ce3df;
+    --host-cta-text: #03201f;
+    --host-cta-ring: rgb(42 214 210 / 0.15);
+    --host-focus: #6ff0ed;
+    --host-shot-glow: rgb(33 211 208 / 0.19);
+    --host-frame-border: rgb(96 221 219 / 0.48);
+    --host-frame-bg: #071219;
+    --host-frame-shadow: 0 34px 70px -28px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(66 232 228 / 0.12);
+    --host-frame-hover-shadow: 0 46px 86px -28px rgb(0 0 0 / 0.95), 0 0 0 1px rgb(74 238 234 / 0.45);
+    --host-bar-border: rgb(71 112 120 / 0.42);
+    --host-bar-bg: #09171e;
+    --host-tab: rgb(220 239 241 / 0.58);
+    --host-live: #4de7e3;
+    --host-live-dot: #32dcd8;
+    --host-sheen: rgb(202 255 253 / 0.11);
   }
 
   .relay-host-feature__glow {
@@ -107,7 +190,7 @@ const headingId = `${sectionId}-heading`;
     inset: auto -8rem -11rem 35%;
     height: 28rem;
     border-radius: 999px;
-    background: rgb(23 210 205 / 0.13);
+    background: var(--host-glow);
     filter: blur(100px);
     pointer-events: none;
   }
@@ -117,32 +200,48 @@ const headingId = `${sectionId}-heading`;
     min-width: 0;
   }
 
+  .relay-host-feature__eyebrow { color: var(--host-eyebrow); }
+  .relay-host-feature__title { color: var(--host-title); }
+  .relay-host-feature__title-accent { color: var(--host-title-accent); }
+  .relay-host-feature__tagline { color: var(--host-tagline); }
+  .relay-host-feature__tagline-accent { color: var(--host-tagline-accent); }
+  .relay-host-feature__description { color: var(--host-description); }
+  .relay-host-feature__price { color: var(--host-price); }
+
+  .relay-host-feature__topology {
+    filter: drop-shadow(0 16px 28px rgb(14 88 86 / 0.12));
+  }
+
+  :global(html[data-theme='dark']) .relay-host-feature__topology {
+    filter: none;
+  }
+
   .relay-host-feature__cta {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.55rem;
     border-radius: 0.5rem;
-    background: #2ad6d2;
+    background: var(--host-cta-bg);
     padding: 0.78rem 1.05rem;
     font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #03201f;
+    color: var(--host-cta-text);
     transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
   }
 
   .relay-host-feature__cta:hover {
     transform: translateY(-2px);
-    background: #4ce3df;
-    box-shadow: 0 0 0 4px rgb(42 214 210 / 0.15);
+    background: var(--host-cta-hover);
+    box-shadow: 0 0 0 4px var(--host-cta-ring);
   }
 
   .relay-host-feature__cta:focus-visible,
   .relay-host-shot:focus-visible {
-    outline: 2px solid #6ff0ed;
+    outline: 2px solid var(--host-focus);
     outline-offset: 4px;
   }
 
@@ -157,23 +256,23 @@ const headingId = `${sectionId}-heading`;
     position: absolute;
     inset: -3.5rem;
     z-index: -1;
-    background: radial-gradient(ellipse at center, rgb(33 211 208 / 0.19), transparent 68%);
+    background: radial-gradient(ellipse at center, var(--host-shot-glow), transparent 68%);
     pointer-events: none;
   }
 
   .relay-host-shot__frame {
     overflow: hidden;
-    border: 1px solid rgb(96 221 219 / 0.48);
+    border: 1px solid var(--host-frame-border);
     border-radius: 0.85rem;
-    background: #071219;
-    box-shadow: 0 34px 70px -28px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(66 232 228 / 0.12);
+    background: var(--host-frame-bg);
+    box-shadow: var(--host-frame-shadow);
     transform: perspective(1200px) rotateY(-2deg) rotateX(1deg);
     transition: transform 400ms ease, box-shadow 400ms ease;
   }
 
   .relay-host-shot:hover .relay-host-shot__frame {
     transform: perspective(1200px) rotateY(0) rotateX(0) translateY(-4px);
-    box-shadow: 0 46px 86px -28px rgb(0 0 0 / 0.95), 0 0 0 1px rgb(74 238 234 / 0.45);
+    box-shadow: var(--host-frame-hover-shadow);
   }
 
   .relay-host-shot__bar {
@@ -181,8 +280,8 @@ const headingId = `${sectionId}-heading`;
     align-items: center;
     gap: 0.38rem;
     min-width: 0;
-    border-bottom: 1px solid rgb(71 112 120 / 0.42);
-    background: #09171e;
+    border-bottom: 1px solid var(--host-bar-border);
+    background: var(--host-bar-bg);
     padding: 0.62rem 0.8rem;
   }
 
@@ -197,7 +296,7 @@ const headingId = `${sectionId}-heading`;
     min-width: 0;
     overflow: hidden;
     margin-left: 0.45rem;
-    color: rgb(220 239 241 / 0.58);
+    color: var(--host-tab);
     font-family: var(--font-mono);
     font-size: 0.58rem;
     letter-spacing: 0.06em;
@@ -211,7 +310,7 @@ const headingId = `${sectionId}-heading`;
     align-items: center;
     gap: 0.35rem;
     margin-left: auto;
-    color: #4de7e3;
+    color: var(--host-live);
     font-family: var(--font-mono);
     font-size: 0.55rem;
     letter-spacing: 0.15em;
@@ -221,7 +320,7 @@ const headingId = `${sectionId}-heading`;
     width: 0.38rem;
     height: 0.38rem;
     border-radius: 999px;
-    background: #32dcd8;
+    background: var(--host-live-dot);
     animation: relay-host-live 2.2s ease-in-out infinite;
   }
 
@@ -234,7 +333,7 @@ const headingId = `${sectionId}-heading`;
   .relay-host-shot__sheen {
     position: absolute;
     inset: 0;
-    background: linear-gradient(115deg, transparent 38%, rgb(202 255 253 / 0.11) 50%, transparent 62%);
+    background: linear-gradient(115deg, transparent 38%, var(--host-sheen) 50%, transparent 62%);
     transform: translateX(-130%);
     animation: relay-host-sheen 9s ease-in-out 2s infinite;
     pointer-events: none;

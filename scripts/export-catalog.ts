@@ -156,7 +156,7 @@ for (const item of Object.values(CATALOG)) {
     slug: 'relay-operator-workshop',
     group: 'training',
     title: item.label,
-    summary: 'Build one governed Relay workflow with a human checkpoint and retained completion evidence.',
+    summary: 'Build and run one AI-assisted workflow with human approval, cost controls, and a reusable blueprint.',
     href: 'https://orionfold.com/training/relay-operator-workshop/',
     status: 'planned',
     monetized: true,

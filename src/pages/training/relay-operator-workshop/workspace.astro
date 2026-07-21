@@ -1,0 +1,525 @@
+---
+import PrivateLayout from '../../../layouts/PrivateLayout.astro';
+
+const operatorPreviewEnabled = import.meta.env.DEV;
+const reviewMediaBase = operatorPreviewEnabled
+  ? String(import.meta.env.PUBLIC_WORKSHOP_REVIEW_MEDIA_BASE || '').replace(/\/$/, '')
+  : '';
+
+const relayHandoff = (stage: string) => `/training/relay-operator-workshop/relay/?stage=${stage}`;
+
+const stages = [
+  {
+    id: 'start',
+    eyebrow: 'Start here',
+    title: 'See the result. Check the bench.',
+    summary: 'Understand the governed workflow you are building, then confirm Relay and the supplied fixture are ready before changing anything.',
+  },
+  {
+    id: 'inspect',
+    eyebrow: 'Checkpoint 01',
+    title: 'Inspect the supplied workflow',
+    summary: 'Name the owned input, exact join, human checkpoint, trust boundary, and retained evidence in the synthetic Marketing Line example.',
+    action: 'Open the supplied demonstration in Relay. Trace one item from source to human approval to retained receipt.',
+  },
+  {
+    id: 'adapt',
+    eyebrow: 'Checkpoint 02',
+    title: 'Adapt one process you own',
+    summary: 'Replace the demonstration with one bounded recurring process and inputs you are authorized to use.',
+    action: 'Clone the governed starter. Change the process and owned inputs while preserving the explicit workflow boundary.',
+  },
+  {
+    id: 'govern',
+    eyebrow: 'Checkpoint 03',
+    title: 'Put judgment before consequence',
+    summary: 'Add human approval and make the cost or trust boundary visible before the workflow can take a consequential action.',
+    action: 'Add one human checkpoint in Relay. Make the reviewer, decision, and visible cost or trust signal unambiguous.',
+  },
+  {
+    id: 'run',
+    eyebrow: 'Checkpoint 04',
+    title: 'Run, diagnose, and recover',
+    summary: 'Watch truthful workflow state, inspect failed evidence, retry from the correct boundary, and use the known-good fallback when needed.',
+    action: 'Run the workflow. If your configured runtime is unavailable, use Relay\'s labeled deterministic rehearsal; do not present it as a model call.',
+  },
+  {
+    id: 'retain',
+    eyebrow: 'Checkpoint 05',
+    title: 'Keep the working system',
+    summary: 'Retain the workflow, portable blueprint, selected outputs, limitations, hashes, and rerunnable completion receipt as your files.',
+    action: 'Review Relay\'s completion verdict, then export the redacted completion bundle and keep it with the workflow you built.',
+  },
+  {
+    id: 'finish',
+    eyebrow: 'Finish',
+    title: 'A working workflow, not a watch badge',
+    summary: 'Relay remains the source of completion truth. The workshop ends with a rerunnable system and evidence you can inspect again later.',
+  },
+] as const;
+
+const moduleStages = stages.filter((stage) => !['start', 'finish'].includes(stage.id));
+const moduleMedia = (id: string) => reviewMediaBase
+  ? `${reviewMediaBase}/media/relay-operator-workshop-module-${id}.mp4`
+  : '';
+const moduleCaptions = (id: string) => reviewMediaBase
+  ? `${reviewMediaBase}/captions/relay-operator-workshop-module-${id}.vtt`
+  : '';
+const moduleTranscript = (id: string) => reviewMediaBase
+  ? `${reviewMediaBase}/transcripts/relay-operator-workshop-module-${id}.md`
+  : '';
+const proofMedia = reviewMediaBase ? `${reviewMediaBase}/media/relay-operator-workshop-proof-cut.mp4` : '';
+const proofCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-operator-workshop-proof-cut.vtt` : '';
+const proofTranscript = reviewMediaBase ? `${reviewMediaBase}/transcripts/relay-operator-workshop-proof-cut.md` : '';
+const updateMedia = reviewMediaBase ? `${reviewMediaBase}/media/relay-operator-workshop-edition-update.mp4` : '';
+const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-operator-workshop-edition-update.vtt` : '';
+---
+
+<PrivateLayout title="Relay Operator Workshop workspace · Orionfold" description="A guided private Relay Operator Workshop workspace.">
+  <main id="workshop-root" class="min-h-screen bg-surface" data-preview-enabled={String(operatorPreviewEnabled)} data-unlocked="false">
+    <section class="workshop-lock grid min-h-screen place-items-center px-5 py-12">
+      <div class="w-full max-w-xl rounded-2xl border border-border bg-surface-raised p-8 shadow-of sm:p-10">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Private workshop workspace</p>
+        <h1 class="mt-4 text-3xl font-bold">Open this workspace from your access link.</h1>
+        <p class="mt-5 leading-relaxed text-text-muted">The guided edition is unlocked after a verified purchase. If your seven-day link expired, request a fresh rotating link without creating an account.</p>
+        <a class="mt-7 inline-flex rounded-lg border border-primary/40 px-5 py-3 font-mono text-sm text-primary hover:bg-primary/5" href="/training/relay-operator-workshop/access/">Recover workshop access</a>
+      </div>
+    </section>
+
+    <div class="workshop-shell mx-auto min-h-screen w-full max-w-[1500px] lg:grid-cols-[20rem_1fr]">
+      <aside class="min-w-0 border-b border-border bg-surface-raised px-5 py-6 lg:sticky lg:top-0 lg:h-screen lg:border-b-0 lg:border-r lg:px-7 lg:py-8">
+        {operatorPreviewEnabled && (
+          <div class="operator-preview-badge rounded-full border border-primary/30 bg-primary/[0.08] px-3 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.17em] text-primary">
+            Operator preview · simulated paid access
+          </div>
+        )}
+        <a class="mt-6 block font-mono text-xs uppercase tracking-[0.2em] text-text-dim hover:text-primary" href="/training/relay-operator-workshop/">Orionfold Training</a>
+        <h1 class="mt-3 text-2xl font-bold">Relay Operator Workshop</h1>
+        <p class="mt-3 text-sm leading-relaxed text-text-muted">Build and run one AI-assisted workflow with human approval, cost controls, and a reusable blueprint.</p>
+
+        <div class="mt-6 rounded-xl border border-border bg-surface p-4">
+          <div class="flex items-center justify-between gap-3 text-xs">
+            <span id="progress-label" class="font-mono uppercase tracking-wider text-primary">Start</span>
+            <span id="progress-count" class="text-text-dim">0 / 5 checkpoints</span>
+          </div>
+          <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-border" aria-hidden="true"><div id="progress-bar" class="h-full w-0 rounded-full bg-primary transition-[width] duration-300"></div></div>
+        </div>
+
+        <nav class="mt-6 overflow-x-auto pb-2 lg:overflow-visible" aria-label="Workshop steps">
+          <ol class="flex min-w-max gap-2 lg:grid lg:min-w-0 lg:gap-1.5">
+            {stages.map((stage, index) => (
+              <li>
+                <button
+                  type="button"
+                  class="workshop-stage-control flex w-full items-center gap-3 rounded-lg border border-transparent px-3 py-2.5 text-left text-sm text-text-muted hover:border-border hover:bg-surface hover:text-text"
+                  data-stage-target={stage.id}
+                  aria-current={index === 0 ? 'step' : undefined}
+                >
+                  <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-border font-mono text-[0.65rem] text-text-dim">{String(index).padStart(2, '0')}</span>
+                  <span>{stage.id === 'start' ? 'Start here' : stage.id === 'finish' ? 'Finish + keep' : stage.title}</span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <p class="mt-5 text-xs leading-relaxed text-text-dim">Website guidance never substitutes for Relay evidence. Relay decides whether each checkpoint and the final completion receipt pass.</p>
+      </aside>
+
+      <div class="min-w-0 px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-14 xl:px-16">
+        <p id="stage-announcement" class="sr-only" role="status" aria-live="polite"></p>
+
+        <section class="workshop-stage" data-stage="start">
+          <div class="mx-auto max-w-5xl">
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Start here · about 5 minutes</p>
+            <h2 class="mt-4 max-w-4xl text-balance text-4xl font-bold sm:text-5xl">See the result. Check the bench.</h2>
+            <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">Before instruction begins, you should know what you will operate and what you will keep: one governed workflow, one explicit human decision, one visible cost or trust boundary, and one reusable blueprint.</p>
+
+            <div class="mt-9 grid gap-4 md:grid-cols-3">
+              <article class="rounded-2xl border border-border bg-surface-raised p-6"><p class="font-mono text-xs text-primary">Human approval</p><h3 class="mt-3 text-lg font-semibold">Judgment stays visible</h3><p class="mt-2 text-sm leading-relaxed text-text-muted">The consequential step waits for a named person and records the decision.</p></article>
+              <article class="rounded-2xl border border-border bg-surface-raised p-6"><p class="font-mono text-xs text-primary">Cost controls</p><h3 class="mt-3 text-lg font-semibold">The boundary is inspectable</h3><p class="mt-2 text-sm leading-relaxed text-text-muted">Runtime, budget, or trust limits are visible before work proceeds.</p></article>
+              <article class="rounded-2xl border border-border bg-surface-raised p-6"><p class="font-mono text-xs text-primary">Reusable blueprint</p><h3 class="mt-3 text-lg font-semibold">The system remains yours</h3><p class="mt-2 text-sm leading-relaxed text-text-muted">Export the workflow, selected outputs, hashes, limitations, and receipt.</p></article>
+            </div>
+
+            <div class="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+              <div class="rounded-2xl border border-primary/25 bg-primary/[0.06] p-6 sm:p-7">
+                <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Relay preflight</p>
+                <h3 class="mt-3 text-2xl font-semibold">Confirm the local bench before you install the starter.</h3>
+                <ul class="mt-5 grid gap-3 text-sm leading-relaxed text-text-muted">
+                  <li>Relay is within the compatible free-core range.</li>
+                  <li>Your local data directory and built-in fixture are available.</li>
+                  <li>A configured runtime is optional; the labeled deterministic rehearsal is available.</li>
+                  <li>Preflight is read-only until you explicitly start the workshop.</li>
+                </ul>
+                <a class="mt-7 inline-flex rounded-lg bg-primary px-5 py-3 font-semibold text-accent-text" href={relayHandoff('start')}>Connect Relay preflight</a>
+              </div>
+              <div class="rounded-2xl border border-border bg-surface-raised p-6 sm:p-7">
+                <p class="font-mono text-xs uppercase tracking-[0.18em] text-text-dim">How the workshop works</p>
+                <ol class="mt-5 grid gap-3 text-sm leading-relaxed text-text-muted">
+                  <li><strong class="text-text">Watch one concise module.</strong> Each explains one checkpoint.</li>
+                  <li><strong class="text-text">Do the work in Relay.</strong> The instruction hands off to the local bench.</li>
+                  <li><strong class="text-text">Read the evidence.</strong> Diagnose and retry without waiting for Orionfold.</li>
+                  <li><strong class="text-text">Keep the result.</strong> Relay exports the working system and receipt.</li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="mt-10 flex justify-end"><button type="button" class="rounded-lg bg-primary px-6 py-3 font-semibold text-accent-text" data-next-stage="inspect">Begin with Inspect</button></div>
+          </div>
+        </section>
+
+        {moduleStages.map((stage, index) => (
+          <section class="workshop-stage" data-stage={stage.id} hidden>
+            <div class="mx-auto max-w-5xl">
+              <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">{stage.eyebrow} · 5–8 minute module + Relay action</p>
+              <h2 class="mt-4 max-w-4xl text-balance text-4xl font-bold sm:text-5xl">{stage.title}</h2>
+              <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">{stage.summary}</p>
+
+              <div class="mt-8 overflow-hidden rounded-2xl border border-border bg-black shadow-2xl shadow-primary/[0.08]">
+                {reviewMediaBase ? (
+                  <video class="aspect-video w-full" controls playsinline preload="metadata" crossorigin="anonymous" data-stage-media>
+                    <source data-src={moduleMedia(stage.id)} type="video/mp4" />
+                    <track kind="captions" data-src={moduleCaptions(stage.id)} srclang="en" label="English" default />
+                    Your browser cannot play this video. Use the transcript link below.
+                  </video>
+                ) : (
+                  <div class="grid aspect-video place-items-center bg-surface px-8 text-center text-sm text-text-muted">Review media is not connected in this local build. The guided action and progression remain available for shell review.</div>
+                )}
+              </div>
+              {reviewMediaBase && (
+                <details
+                  class="workshop-transcript mt-4 overflow-hidden rounded-2xl border border-border bg-surface-raised"
+                  data-workshop-transcript
+                  data-transcript-stage={stage.id}
+                  data-transcript-url={moduleTranscript(stage.id)}
+                >
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono text-xs uppercase tracking-[0.16em] text-text-muted hover:text-primary sm:px-6">
+                    <span>Read transcript + sources</span>
+                    <span class="workshop-transcript-state text-primary" data-transcript-state>Expand</span>
+                  </summary>
+                  <div class="border-t border-border px-5 py-6 sm:px-7 sm:py-7" data-transcript-content aria-live="polite">
+                    <p class="text-sm text-text-muted">The private transcript loads only when you open this section.</p>
+                  </div>
+                </details>
+              )}
+
+              <div class="mt-8 rounded-2xl border border-primary/30 bg-primary/[0.06] p-6 sm:p-7">
+                <div class="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+                  <div><p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Now do this in Relay</p><p class="mt-3 max-w-3xl leading-relaxed text-text">{stage.action}</p></div>
+                  <a class="inline-flex justify-center rounded-lg border border-primary/45 bg-surface px-5 py-3 font-semibold text-primary hover:bg-primary/[0.08]" href={relayHandoff(stage.id)}>Connect Relay bench</a>
+                </div>
+              </div>
+
+              <p class="mt-5 text-xs leading-relaxed text-text-dim">Continue here when you are ready for the next instruction. This does not mark the Relay checkpoint passed.</p>
+              <div class="mt-8 flex flex-wrap items-center justify-between gap-3">
+                <button type="button" class="rounded-lg border border-border-strong px-5 py-3 text-sm text-text-muted hover:text-text" data-next-stage={index === 0 ? 'start' : moduleStages[index - 1].id}>Previous</button>
+                <button type="button" class="rounded-lg bg-primary px-6 py-3 font-semibold text-accent-text" data-next-stage={index === moduleStages.length - 1 ? 'finish' : moduleStages[index + 1].id}>{index === moduleStages.length - 1 ? 'Finish and keep the result' : `Continue to ${moduleStages[index + 1].title}`}</button>
+              </div>
+            </div>
+          </section>
+        ))}
+
+        <section class="workshop-stage" data-stage="finish" hidden>
+          <div class="mx-auto max-w-5xl">
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Finish · retain the system</p>
+            <h2 class="mt-4 max-w-4xl text-balance text-4xl font-bold sm:text-5xl">A working workflow, not a watch badge.</h2>
+            <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">Relay's verdict and completion bundle are the proof. The videos guided the work; they do not certify it.</p>
+
+            <div class="mt-8 overflow-hidden rounded-2xl border border-border bg-black shadow-2xl shadow-primary/[0.08]">
+              {proofMedia ? (
+                <video class="aspect-video w-full" controls playsinline preload="metadata" crossorigin="anonymous" data-stage-media>
+                  <source data-src={proofMedia} type="video/mp4" />
+                  <track kind="captions" data-src={proofCaptions} srclang="en" label="English" default />
+                  Your browser cannot play this video. Use the transcript link below.
+                </video>
+              ) : (
+                <div class="grid aspect-video place-items-center bg-surface px-8 text-center text-sm text-text-muted">The proof walkthrough is available after the accepted private media bundle is connected.</div>
+              )}
+            </div>
+            {proofTranscript && (
+              <details
+                class="workshop-transcript mt-4 overflow-hidden rounded-2xl border border-border bg-surface-raised"
+                data-workshop-transcript
+                data-transcript-stage="proof"
+                data-transcript-url={proofTranscript}
+              >
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono text-xs uppercase tracking-[0.16em] text-text-muted hover:text-primary sm:px-6">
+                  <span>Read proof transcript + sources</span>
+                  <span class="workshop-transcript-state text-primary" data-transcript-state>Expand</span>
+                </summary>
+                <div class="border-t border-border px-5 py-6 sm:px-7 sm:py-7" data-transcript-content aria-live="polite">
+                  <p class="text-sm text-text-muted">The private transcript loads only when you open this section.</p>
+                </div>
+              </details>
+            )}
+
+            <div class="mt-9 grid gap-4 md:grid-cols-3">
+              <article class="rounded-2xl border border-border bg-surface-raised p-6"><p class="font-mono text-xs text-primary">01</p><h3 class="mt-3 text-lg font-semibold">Working workflow</h3><p class="mt-2 text-sm leading-relaxed text-text-muted">The adapted app, workflow steps, human checkpoint, and visible boundary.</p></article>
+              <article class="rounded-2xl border border-border bg-surface-raised p-6"><p class="font-mono text-xs text-primary">02</p><h3 class="mt-3 text-lg font-semibold">Portable files</h3><p class="mt-2 text-sm leading-relaxed text-text-muted">App Pack, selected outputs, source identities, hashes, and honest limitations.</p></article>
+              <article class="rounded-2xl border border-border bg-surface-raised p-6"><p class="font-mono text-xs text-primary">03</p><h3 class="mt-3 text-lg font-semibold">Rerunnable receipt</h3><p class="mt-2 text-sm leading-relaxed text-text-muted">Passed, at risk, or needs work—with deterministic evidence and bounded rubric detail.</p></article>
+            </div>
+
+            <div class="mt-9 rounded-2xl border border-primary/30 bg-primary/[0.06] p-6 sm:p-8">
+              <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Your next action</p>
+              <h3 class="mt-3 text-2xl font-semibold">Export the completion bundle from Relay.</h3>
+              <p class="mt-3 max-w-3xl leading-relaxed text-text-muted">Keep the files locally. Reopen this purchased edition later for included 2026.07 correctness, safety, accessibility, and compatibility updates.</p>
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a class="inline-flex rounded-lg bg-primary px-5 py-3 font-semibold text-accent-text" href={relayHandoff('finish')}>Connect Relay and export</a>
+              </div>
+            </div>
+
+            {updateMedia && (
+              <details class="mt-9 rounded-2xl border border-border bg-surface-raised p-6">
+                <summary class="cursor-pointer font-semibold">Edition update · what changed in 2026.07</summary>
+                <p class="mt-3 text-sm leading-relaxed text-text-muted">Supporting media stays outside the five-checkpoint progression so it does not look like another required lesson.</p>
+                <video class="mt-5 aspect-video w-full rounded-xl bg-black" controls playsinline preload="none" crossorigin="anonymous" data-support-media>
+                  <source data-src={updateMedia} type="video/mp4" />
+                  <track kind="captions" data-src={updateCaptions} srclang="en" label="English" default />
+                </video>
+              </details>
+            )}
+
+            <div class="mt-8"><button type="button" class="rounded-lg border border-border-strong px-5 py-3 text-sm text-text-muted hover:text-text" data-next-stage="retain">Back to Retain</button></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</PrivateLayout>
+
+<script>
+  import { parseWorkshopTranscript, workshopTranscriptSources } from '../../../lib/training/workshop-transcript.mjs';
+
+  const root = document.getElementById('workshop-root');
+  const viewParams = new URLSearchParams(location.search);
+  const preview = root?.dataset.previewEnabled === 'true' && viewParams.get('preview') === 'operator';
+  if (root && preview) root.dataset.unlocked = 'true';
+  const productCapture = Boolean(root && preview && viewParams.get('capture') === 'product');
+  if (root && productCapture) {
+    root.dataset.productCapture = 'true';
+    const captureTheme = viewParams.get('theme');
+    if (captureTheme === 'light' || captureTheme === 'dark') document.documentElement.setAttribute('data-theme', captureTheme);
+  }
+
+  const stages = Array.from(document.querySelectorAll<HTMLElement>('[data-stage]'));
+  const controls = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-stage-target]'));
+  const stageIds = stages.map((stage) => stage.dataset.stage || '').filter(Boolean);
+  const checkpointIndex: Record<string, number> = { start: 0, inspect: 1, adapt: 2, govern: 3, run: 4, retain: 5, finish: 5 };
+
+  function loadVideo(video: HTMLVideoElement | null) {
+    if (!video || video.dataset.loaded === 'true') return;
+    video.querySelectorAll<HTMLSourceElement | HTMLTrackElement>('[data-src]').forEach((asset) => {
+      const source = asset.dataset.src;
+      if (source) asset.src = source;
+    });
+    video.dataset.loaded = 'true';
+    video.load();
+  }
+
+  const createTextElement = (tag: string, className: string, text: string) => {
+    const element = document.createElement(tag);
+    element.className = className;
+    element.textContent = text;
+    return element;
+  };
+
+  function renderTranscript(details: HTMLDetailsElement, markdown: string) {
+    const content = details.querySelector<HTMLElement>('[data-transcript-content]');
+    if (!content) return;
+    const transcript = parseWorkshopTranscript(markdown);
+    const stage = details.dataset.transcriptStage || 'lesson';
+    content.replaceChildren();
+
+    const intro = document.createElement('div');
+    intro.className = 'grid gap-4 border-b border-border pb-6 lg:grid-cols-[1fr_auto] lg:items-start';
+    const introCopy = document.createElement('div');
+    introCopy.append(
+      createTextElement('p', 'font-mono text-[0.68rem] uppercase tracking-[0.18em] text-primary', 'Private lesson transcript'),
+      createTextElement('h3', 'mt-2 text-xl font-semibold text-text', transcript.title),
+    );
+    const chapterNav = document.createElement('nav');
+    chapterNav.className = 'flex max-w-xl flex-wrap gap-2';
+    chapterNav.setAttribute('aria-label', 'Transcript chapters');
+    transcript.sections.forEach((section, index) => {
+      const link = document.createElement('a');
+      link.className = 'rounded-full border border-border px-3 py-1.5 text-xs text-text-muted hover:border-primary/45 hover:text-primary';
+      link.href = `#transcript-${stage}-${index + 1}`;
+      link.textContent = `${index + 1}. ${section.title}`;
+      chapterNav.append(link);
+    });
+    intro.append(introCopy, chapterNav);
+    content.append(intro);
+
+    const chapters = document.createElement('div');
+    chapters.className = 'divide-y divide-border';
+    transcript.sections.forEach((section, index) => {
+      const article = document.createElement('article');
+      article.id = `transcript-${stage}-${index + 1}`;
+      article.className = 'scroll-mt-6 py-7 first:pt-6';
+      const headingRow = document.createElement('div');
+      headingRow.className = 'grid gap-2 sm:grid-cols-[auto_1fr] sm:items-baseline sm:gap-4';
+      headingRow.append(
+        createTextElement('span', 'font-mono text-xs text-primary', String(index + 1).padStart(2, '0')),
+        createTextElement('h4', 'text-lg font-semibold text-text', section.title),
+      );
+      article.append(headingRow);
+      if (section.time) article.append(createTextElement('p', 'mt-2 font-mono text-[0.68rem] text-text-dim', section.time));
+      section.paragraphs.forEach((paragraph) => article.append(createTextElement('p', 'mt-4 max-w-4xl leading-7 text-text-muted', paragraph)));
+
+      if (section.sources.length) {
+        const sources = document.createElement('div');
+        sources.className = 'mt-5 flex flex-wrap items-center gap-2';
+        sources.append(createTextElement('span', 'mr-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-text-dim', 'Sources'));
+        const seenSourceHrefs = new Set<string>();
+        section.sources.forEach((sourceId) => {
+          const source = workshopTranscriptSources[sourceId as keyof typeof workshopTranscriptSources];
+          if (!source) {
+            sources.append(createTextElement('span', 'rounded-full border border-border px-3 py-1.5 text-xs text-text-dim', sourceId.replace(/^source:/, '')));
+            return;
+          }
+          if (seenSourceHrefs.has(source.href)) return;
+          seenSourceHrefs.add(source.href);
+          const link = document.createElement('a');
+          link.className = 'group inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs text-text-muted hover:border-primary/45 hover:text-primary';
+          link.href = source.href;
+          link.target = '_blank';
+          link.rel = 'noreferrer';
+          const kind = createTextElement('span', 'font-mono text-[0.62rem] uppercase tracking-wider text-primary', source.kind);
+          link.append(kind, document.createTextNode(source.label));
+          sources.append(link);
+        });
+        article.append(sources);
+      }
+      chapters.append(article);
+    });
+    content.append(chapters);
+
+    if (transcript.disclosures.length) {
+      const disclosure = document.createElement('details');
+      disclosure.className = 'mt-2 rounded-xl border border-border bg-surface p-4';
+      const summary = createTextElement('summary', 'cursor-pointer font-mono text-xs uppercase tracking-[0.16em] text-text-dim hover:text-primary', 'Production disclosures');
+      const list = document.createElement('ul');
+      list.className = 'mt-4 grid gap-2 text-sm leading-relaxed text-text-muted';
+      transcript.disclosures.forEach((item) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = item;
+        list.append(listItem);
+      });
+      disclosure.append(summary, list);
+      content.append(disclosure);
+    }
+  }
+
+  async function loadTranscript(details: HTMLDetailsElement) {
+    if (details.dataset.transcriptLoaded === 'true' || details.dataset.transcriptLoading === 'true') return;
+    const content = details.querySelector<HTMLElement>('[data-transcript-content]');
+    const state = details.querySelector<HTMLElement>('[data-transcript-state]');
+    const url = details.dataset.transcriptUrl;
+    if (!content || !url) return;
+    details.dataset.transcriptLoading = 'true';
+    if (state) state.textContent = 'Loading';
+    content.replaceChildren(createTextElement('p', 'text-sm text-text-muted', 'Loading the private transcript…'));
+    try {
+      const response = await fetch(url, { credentials: 'omit' });
+      if (!response.ok) throw new Error(`Transcript request returned ${response.status}.`);
+      renderTranscript(details, await response.text());
+      details.dataset.transcriptLoaded = 'true';
+      if (state) state.textContent = 'Loaded';
+    } catch (error) {
+      const message = createTextElement('p', 'text-sm text-danger', 'The transcript could not be loaded. Confirm the private media service is available, then retry.');
+      const retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'mt-4 rounded-lg border border-border-strong px-4 py-2 text-sm text-text-muted hover:text-text';
+      retry.textContent = 'Retry transcript';
+      retry.addEventListener('click', () => {
+        delete details.dataset.transcriptLoading;
+        void loadTranscript(details);
+      }, { once: true });
+      content.replaceChildren(message, retry);
+      if (state) state.textContent = 'Retry';
+      console.warn('[workshop-transcript] load failed', error);
+    } finally {
+      delete details.dataset.transcriptLoading;
+    }
+  }
+
+  function showStage(id: string, focusHeading = true) {
+    if (!stageIds.includes(id)) return;
+    stages.forEach((stage) => { stage.hidden = stage.dataset.stage !== id; });
+    controls.forEach((control) => {
+      if (control.dataset.stageTarget === id) control.setAttribute('aria-current', 'step');
+      else control.removeAttribute('aria-current');
+    });
+    const completed = checkpointIndex[id] ?? 0;
+    const progressLabel = document.getElementById('progress-label');
+    const progressCount = document.getElementById('progress-count');
+    const progressBar = document.getElementById('progress-bar') as HTMLElement | null;
+    const announcement = document.getElementById('stage-announcement');
+    const current = stages.find((stage) => stage.dataset.stage === id);
+    const heading = current?.querySelector<HTMLElement>('h2');
+    loadVideo(current?.querySelector<HTMLVideoElement>('video[data-stage-media]') || null);
+    if (progressLabel) progressLabel.textContent = id === 'finish' ? 'Finish' : id === 'start' ? 'Start' : id;
+    if (progressCount) progressCount.textContent = `${completed} / 5 checkpoints`;
+    if (progressBar) progressBar.style.width = `${completed * 20}%`;
+    if (announcement) announcement.textContent = `Workshop step: ${heading?.textContent || id}`;
+    try { sessionStorage.setItem('of-workshop-guidance-step', id); } catch {}
+    if (focusHeading && heading) {
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+      window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    }
+  }
+
+  controls.forEach((control) => control.addEventListener('click', () => showStage(control.dataset.stageTarget || 'start')));
+  document.querySelectorAll<HTMLButtonElement>('[data-next-stage]').forEach((button) => button.addEventListener('click', () => showStage(button.dataset.nextStage || 'start')));
+  document.querySelectorAll<HTMLDetailsElement>('details').forEach((details) => details.addEventListener('toggle', () => {
+    if (details.open) loadVideo(details.querySelector<HTMLVideoElement>('video[data-support-media]'));
+  }));
+  document.querySelectorAll<HTMLDetailsElement>('[data-workshop-transcript]').forEach((details) => details.addEventListener('toggle', () => {
+    const state = details.querySelector<HTMLElement>('[data-transcript-state]');
+    if (!details.open) {
+      if (state && details.dataset.transcriptLoaded !== 'true') state.textContent = 'Expand';
+      return;
+    }
+    void loadTranscript(details);
+  }));
+
+  if (preview) {
+    let stored = 'start';
+    try { stored = sessionStorage.getItem('of-workshop-guidance-step') || 'start'; } catch {}
+    const captureStage = productCapture ? viewParams.get('stage') : null;
+    const initialStage = captureStage && stageIds.includes(captureStage) ? captureStage : stageIds.includes(stored) ? stored : 'start';
+    showStage(initialStage, false);
+    if (productCapture && viewParams.get('transcript') === 'open') {
+      const transcript = document.querySelector<HTMLDetailsElement>(`[data-stage="${initialStage}"] [data-workshop-transcript]`);
+      if (transcript) transcript.open = true;
+    }
+  }
+</script>
+
+<style>
+  .workshop-shell { display: none; }
+  #workshop-root[data-unlocked='true'] .workshop-lock { display: none; }
+  #workshop-root[data-unlocked='true'] .workshop-shell { display: block; }
+  #workshop-root[data-product-capture='true'] .operator-preview-badge { display: none; }
+  .workshop-stage-control[aria-current='step'] {
+    border-color: color-mix(in srgb, var(--color-primary) 42%, transparent);
+    background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface));
+    color: var(--color-text);
+  }
+  .workshop-stage-control[aria-current='step'] span:first-child {
+    border-color: color-mix(in srgb, var(--color-primary) 65%, transparent);
+    color: var(--color-primary);
+  }
+  .workshop-stage h2[tabindex='-1']:focus { outline: none; }
+  .workshop-transcript > summary::-webkit-details-marker { display: none; }
+  .workshop-transcript[open] > summary { color: var(--color-primary); }
+  .workshop-transcript[open] .workshop-transcript-state::before { content: '− '; }
+  .workshop-transcript:not([open]) .workshop-transcript-state::before { content: '+ '; }
+  @media (min-width: 64rem) {
+    #workshop-root[data-unlocked='true'] .workshop-shell { display: grid; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #progress-bar { transition: none; }
+  }
+</style>

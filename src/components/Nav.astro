@@ -96,6 +96,11 @@ const links = [
 
     <!-- Right cluster: theme toggle (all sizes) + mobile hamburger -->
     <div class="flex items-center gap-4">
+      <a
+        href="/proposal/"
+        class="hidden lg:inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 font-mono text-[0.68rem] font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90"
+        data-astro-prefetch
+      >Get Proposal</a>
       <button
         id="theme-toggle"
         type="button"
@@ -142,6 +147,7 @@ const links = [
           <a href={link.href} class="font-mono text-sm text-text-muted hover:text-primary transition-colors py-2" data-astro-prefetch>{link.label}</a>
         </Fragment>
       ))}
+      <a href="/proposal/" class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch>Get Proposal</a>
     </div>
   </div>
 </nav>

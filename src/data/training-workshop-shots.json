@@ -1,0 +1,261 @@
+{
+  "start": {
+    "ratio": "1274 / 717",
+    "width": 1274,
+    "height": 717,
+    "light": {
+      "src": "/images/training/relay-operator-workshop/start-light-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/start-light-720.webp 720w, /images/training/relay-operator-workshop/start-light-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/start-light-720.webp",
+          "bytes": 25368
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/start-light-1274.webp",
+          "bytes": 50462
+        }
+      ]
+    },
+    "dark": {
+      "src": "/images/training/relay-operator-workshop/start-dark-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/start-dark-720.webp 720w, /images/training/relay-operator-workshop/start-dark-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/start-dark-720.webp",
+          "bytes": 24068
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/start-dark-1274.webp",
+          "bytes": 48746
+        }
+      ]
+    }
+  },
+  "inspect": {
+    "ratio": "1274 / 717",
+    "width": 1274,
+    "height": 717,
+    "light": {
+      "src": "/images/training/relay-operator-workshop/inspect-light-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/inspect-light-720.webp 720w, /images/training/relay-operator-workshop/inspect-light-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/inspect-light-720.webp",
+          "bytes": 17230
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/inspect-light-1274.webp",
+          "bytes": 37760
+        }
+      ]
+    },
+    "dark": {
+      "src": "/images/training/relay-operator-workshop/inspect-dark-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/inspect-dark-720.webp 720w, /images/training/relay-operator-workshop/inspect-dark-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/inspect-dark-720.webp",
+          "bytes": 15678
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/inspect-dark-1274.webp",
+          "bytes": 35370
+        }
+      ]
+    }
+  },
+  "adapt": {
+    "ratio": "1274 / 717",
+    "width": 1274,
+    "height": 717,
+    "light": {
+      "src": "/images/training/relay-operator-workshop/adapt-light-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/adapt-light-720.webp 720w, /images/training/relay-operator-workshop/adapt-light-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/adapt-light-720.webp",
+          "bytes": 16096
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/adapt-light-1274.webp",
+          "bytes": 33456
+        }
+      ]
+    },
+    "dark": {
+      "src": "/images/training/relay-operator-workshop/adapt-dark-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/adapt-dark-720.webp 720w, /images/training/relay-operator-workshop/adapt-dark-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/adapt-dark-720.webp",
+          "bytes": 15780
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/adapt-dark-1274.webp",
+          "bytes": 33324
+        }
+      ]
+    }
+  },
+  "govern": {
+    "ratio": "1274 / 717",
+    "width": 1274,
+    "height": 717,
+    "light": {
+      "src": "/images/training/relay-operator-workshop/govern-light-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/govern-light-720.webp 720w, /images/training/relay-operator-workshop/govern-light-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/govern-light-720.webp",
+          "bytes": 17474
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/govern-light-1274.webp",
+          "bytes": 34900
+        }
+      ]
+    },
+    "dark": {
+      "src": "/images/training/relay-operator-workshop/govern-dark-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/govern-dark-720.webp 720w, /images/training/relay-operator-workshop/govern-dark-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/govern-dark-720.webp",
+          "bytes": 17046
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/govern-dark-1274.webp",
+          "bytes": 34596
+        }
+      ]
+    }
+  },
+  "run": {
+    "ratio": "1274 / 717",
+    "width": 1274,
+    "height": 717,
+    "light": {
+      "src": "/images/training/relay-operator-workshop/run-light-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/run-light-720.webp 720w, /images/training/relay-operator-workshop/run-light-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/run-light-720.webp",
+          "bytes": 16730
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/run-light-1274.webp",
+          "bytes": 34944
+        }
+      ]
+    },
+    "dark": {
+      "src": "/images/training/relay-operator-workshop/run-dark-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/run-dark-720.webp 720w, /images/training/relay-operator-workshop/run-dark-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/run-dark-720.webp",
+          "bytes": 16354
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/run-dark-1274.webp",
+          "bytes": 34276
+        }
+      ]
+    }
+  },
+  "retain": {
+    "ratio": "1274 / 717",
+    "width": 1274,
+    "height": 717,
+    "light": {
+      "src": "/images/training/relay-operator-workshop/retain-light-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/retain-light-720.webp 720w, /images/training/relay-operator-workshop/retain-light-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/retain-light-720.webp",
+          "bytes": 16334
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/retain-light-1274.webp",
+          "bytes": 33758
+        }
+      ]
+    },
+    "dark": {
+      "src": "/images/training/relay-operator-workshop/retain-dark-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/retain-dark-720.webp 720w, /images/training/relay-operator-workshop/retain-dark-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/retain-dark-720.webp",
+          "bytes": 15780
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/retain-dark-1274.webp",
+          "bytes": 33252
+        }
+      ]
+    }
+  },
+  "finish": {
+    "ratio": "1274 / 717",
+    "width": 1274,
+    "height": 717,
+    "light": {
+      "src": "/images/training/relay-operator-workshop/finish-light-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/finish-light-720.webp 720w, /images/training/relay-operator-workshop/finish-light-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/finish-light-720.webp",
+          "bytes": 16754
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/finish-light-1274.webp",
+          "bytes": 33674
+        }
+      ]
+    },
+    "dark": {
+      "src": "/images/training/relay-operator-workshop/finish-dark-1274.webp",
+      "srcset": "/images/training/relay-operator-workshop/finish-dark-720.webp 720w, /images/training/relay-operator-workshop/finish-dark-1274.webp 1274w",
+      "variants": [
+        {
+          "width": 720,
+          "src": "/images/training/relay-operator-workshop/finish-dark-720.webp",
+          "bytes": 16340
+        },
+        {
+          "width": 1274,
+          "src": "/images/training/relay-operator-workshop/finish-dark-1274.webp",
+          "bytes": 32818
+        }
+      ]
+    }
+  }
+}

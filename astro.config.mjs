@@ -118,6 +118,7 @@ function buildLastmodMap() {
   // collection. Its founding edition source revision is dated 2026-07-19.
   map['/training/'] = '2026-07-19';
   map['/training/relay-operator-workshop/'] = '2026-07-19';
+  map['/proposal/'] = '2026-07-20';
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
   // so it tracks the freshest date across all of them.
   const relayFreshest = freshestUnder('/relay/');
@@ -187,6 +188,8 @@ export default defineConfig({
         !page.endsWith('/thanks/') &&
         !page.endsWith('/sponsor/thanks/') &&
         !page.endsWith('/training/relay-operator-workshop/access/') &&
+        !page.endsWith('/training/relay-operator-workshop/relay/') &&
+        !page.endsWith('/training/relay-operator-workshop/workspace/') &&
         !page.endsWith('/training/relay-operator-workshop/refund/'),
       // Priority + changefreq hints. Search engines treat these as signals, not
       // directives, but they nudge crawl scheduling toward the pages that change.

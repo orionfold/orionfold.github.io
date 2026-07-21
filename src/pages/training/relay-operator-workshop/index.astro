@@ -3,6 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import ThemedShot from '../../../components/relay/ThemedShot.astro';
+import WorkshopShot from '../../../components/training/WorkshopShot.astro';
 import { RELAY_OPERATOR_WORKSHOP, formatUsd } from '../../../data/commerce';
 import { RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED } from '../../../data/launch';
 import { WORKSHOP_MEDIA_BASE } from '../../../lib/commerce-config';
@@ -11,6 +12,7 @@ import { SITE } from '../../../data/seo';
 const workshop = RELAY_OPERATOR_WORKSHOP;
 const price = formatUsd(workshop.primary.amount);
 const pageUrl = `${SITE.url}/training/relay-operator-workshop/`;
+const operatorPreview = import.meta.env.DEV;
 const media = WORKSHOP_MEDIA_BASE ? {
   trailer: `${WORKSHOP_MEDIA_BASE}/media/relay-operator-workshop-landing-trailer.mp4`,
   trailerCaptions: `${WORKSHOP_MEDIA_BASE}/captions/relay-operator-workshop-landing-trailer.vtt`,
@@ -28,6 +30,58 @@ const syllabus = [
   ['Run + recover', 'Use a configured runtime or the labeled deterministic rehearsal. Inspect failed evidence, retry, and use the known-good fallback.'],
   ['Retain', 'Export the learner-owned app Pack, Operations Receipt, selected outputs, hashes, and limitations.'],
 ];
+
+const workshopExperience = [
+  {
+    id: 'start',
+    eyebrow: '00 · Orient',
+    title: 'See the result before you touch the starter.',
+    body: 'The opening screen names the governed workflow, human decision, visible boundary, and reusable blueprint you are working toward. The Relay check is read-only, so orientation does not mutate your workspace.',
+    alt: 'Relay Operator Workshop start screen showing the target result, progress rail, and read-only Relay preflight.',
+  },
+  {
+    id: 'inspect',
+    eyebrow: '01 · Inspect',
+    title: 'Read the lesson and its source trail in one place.',
+    body: 'Each private module keeps its formatted transcript directly below the video. Jump between chapters and open the exact Relay guide, API chapter, operating memo, or synthetic demo behind a claim without leaving the lesson context.',
+    alt: 'Relay Operator Workshop Inspect screen with the in-place transcript expanded and chapter navigation visible.',
+  },
+  {
+    id: 'adapt',
+    eyebrow: '02 · Adapt',
+    title: 'Replace the example with one bounded process you own.',
+    body: 'The Website lesson explains the checkpoint, then hands the action to Relay. Your progress here never pretends the Relay checkpoint passed; the local bench keeps the execution truth.',
+    alt: 'Relay Operator Workshop Adapt screen showing the second checkpoint and Relay action handoff.',
+  },
+  {
+    id: 'govern',
+    eyebrow: '03 · Govern',
+    title: 'Put named judgment before consequence.',
+    body: 'You identify who decides, what evidence they need, and which cost or trust boundary must remain visible before the workflow continues.',
+    alt: 'Relay Operator Workshop Govern screen showing the human-judgment checkpoint and visible progress.',
+  },
+  {
+    id: 'run',
+    eyebrow: '04 · Run + recover',
+    title: 'Treat failure evidence as part of the lesson.',
+    body: 'Run with a configured provider or the labeled deterministic rehearsal. Inspect the named failure, retry from the right boundary, and use the known-good fallback without disguising what happened.',
+    alt: 'Relay Operator Workshop Run screen showing the diagnosis and recovery checkpoint.',
+  },
+  {
+    id: 'retain',
+    eyebrow: '05 · Retain',
+    title: 'Keep the workflow and the evidence that explains it.',
+    body: 'Review Relay’s verdict, selected outputs, source identities, hashes, limitations, and portable completion files before you export the system you built.',
+    alt: 'Relay Operator Workshop Retain screen showing the fifth checkpoint and completion progress.',
+  },
+  {
+    id: 'finish',
+    eyebrow: '06 · Finish',
+    title: 'Close on an export, not a watch badge.',
+    body: 'The final screen returns you to Relay for the completion bundle. The proof is a rerunnable workflow and receipt; the paid lesson does not turn video playback into certification.',
+    alt: 'Relay Operator Workshop finish screen showing the completed progress rail and retained-system outcome.',
+  },
+] as const;
 
 const facts = [
   ['90–150 min', 'Designed working time, not a completion guarantee'],
@@ -49,7 +103,7 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: workshop.primary.label,
-  description: 'A focused self-serve workshop for building one governed Relay workflow with a human checkpoint and retained completion evidence.',
+  description: 'A focused self-serve workshop for building and running one AI-assisted workflow with human approval, cost controls, and a reusable blueprint.',
   sku: workshop.editionId,
   url: pageUrl,
   brand: { '@type': 'Brand', name: 'Orionfold' },
@@ -82,7 +136,7 @@ const faqSchema = {
 ---
 
 <Layout
-  title="Relay Operator Workshop · Build one governed workflow"
+  title="Relay Operator Workshop · Build and run one AI-assisted workflow"
   description="Bring one real operating process. Leave with a governed Relay workflow you can run, inspect, and improve—without scheduling Orionfold."
   jsonLd={[productSchema, faqSchema]}
 >
@@ -93,9 +147,9 @@ const faqSchema = {
       <div class="relative mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.94fr_1.06fr] lg:items-center">
         <div>
           <a href="/training/" class="font-mono text-xs uppercase tracking-[0.2em] text-primary hover:underline">Orionfold Training · Founding edition</a>
-          <h1 class="mt-6 text-balance text-5xl font-bold leading-[0.96] sm:text-7xl">Build one governed workflow.</h1>
+          <h1 class="mt-6 text-balance text-5xl font-bold leading-[0.96] sm:text-7xl">Build and run one AI-assisted workflow.</h1>
           <p class="mt-7 max-w-xl text-lg leading-relaxed text-text-muted">
-            Bring one real operating process. Leave with a governed Relay workflow you can run, inspect, and improve—without scheduling Orionfold.
+            Add human approval, visible cost controls, and a reusable blueprint. Bring one real operating process; leave with a governed Relay workflow you can run, inspect, and improve—without scheduling Orionfold.
           </p>
           <div class="mt-8 flex flex-wrap gap-2 font-mono text-[0.68rem] uppercase tracking-wider text-text-muted">
             <span class="rounded-full border border-border px-3 py-1.5">90–150 minutes</span>
@@ -120,6 +174,11 @@ const faqSchema = {
           <p class="mt-4 text-xs leading-relaxed text-text-dim">
             One-time USD payment · 14-day full no-judgment refund · no recurring charge · {RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? 'isolated Sandbox checkout in this build' : 'production purchase remains disabled'}
           </p>
+          {operatorPreview && (
+            <a class="mt-4 inline-flex font-mono text-xs text-text-dim underline decoration-border-strong underline-offset-4 hover:text-primary" href="/training/relay-operator-workshop/thanks/?preview=paid">
+              Operator review · walk the simulated paid experience →
+            </a>
+          )}
         </div>
 
         <div class="workshop-proof relative">
@@ -169,7 +228,7 @@ const faqSchema = {
       <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
         <div class="overflow-hidden rounded-3xl border border-border bg-black shadow-2xl">
           {media ? (
-            <video class="aspect-video w-full" controls playsinline preload="metadata" poster={media.poster}>
+            <video class="aspect-video w-full" controls playsinline preload="metadata" poster={media.poster} crossorigin="anonymous">
               <source src={media.fieldLesson} type="video/mp4" />
               <track kind="captions" src={media.fieldLessonCaptions} srclang="en" label="English" default />
               Your browser cannot play this video. Use the transcript link beside it.
@@ -186,6 +245,40 @@ const faqSchema = {
             {media ? <a class="of-secondary-action" href={media.fieldLessonTranscript}>Read the field-lesson transcript</a> : <span class="text-sm text-text-dim">Media delivery base is not configured in this build; the source-grounded poster and lesson description remain available.</span>}
             <a class="of-text-action" href="/relay/demo/">Explore the synthetic Relay demo →</a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="inside-workshop" class="overflow-hidden px-6 py-20 sm:py-28">
+      <div class="mx-auto max-w-6xl">
+        <header class="max-w-3xl">
+          <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Inside the paid workspace</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">One calm screen at a time, from orientation to retained proof.</h2>
+          <p class="mt-6 text-lg leading-relaxed text-text-muted">These are the actual guided-workspace screens. They follow the site’s light or dark theme, while private video remains available only after purchase.</p>
+        </header>
+
+        <div class="mt-14 border-y border-border/70">
+          {workshopExperience.map((step, index) => (
+            <article id={`workshop-screen-${step.id}`} class:list={[
+              'scroll-mt-28 grid gap-8 border-b border-border/70 py-12 last:border-b-0 sm:py-16 lg:items-center lg:gap-12',
+              index % 2 === 1 ? 'lg:grid-cols-[1.22fr_0.78fr]' : 'lg:grid-cols-[0.78fr_1.22fr]',
+            ]}>
+              <div class:list={[index % 2 === 1 && 'lg:order-2']}>
+                <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">{step.eyebrow}</p>
+                <h3 class="mt-4 text-balance text-3xl font-bold sm:text-4xl">{step.title}</h3>
+                <p class="mt-5 leading-relaxed text-text-muted">{step.body}</p>
+              </div>
+              <figure class:list={['workshop-screen relative', index % 2 === 1 && 'lg:order-1']}>
+                <div class="workshop-screen__glow absolute inset-[8%] rounded-full bg-primary/15 blur-3xl" aria-hidden="true"></div>
+                <div class="relative overflow-hidden rounded-2xl border border-primary/25 bg-surface-raised p-2 shadow-2xl shadow-primary/[0.08] sm:rounded-3xl sm:p-3">
+                  <div class="overflow-hidden rounded-xl border border-border/70 bg-surface sm:rounded-2xl">
+                    <WorkshopShot id={step.id} alt={step.alt} class="w-full" />
+                  </div>
+                </div>
+                <figcaption class="mt-3 text-center font-mono text-[0.62rem] uppercase tracking-[0.14em] text-text-dim">Actual guided workspace · theme-matched · synthetic example</figcaption>
+              </figure>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -278,6 +371,7 @@ const faqSchema = {
   @media (prefers-reduced-motion: no-preference) {
     .workshop-proof__frame { animation: proof-float 9s ease-in-out infinite; }
     .workshop-proof__glow { animation: proof-glow 7s ease-in-out infinite alternate; }
+    .workshop-screen__glow { animation: proof-glow 9s ease-in-out infinite alternate; }
   }
   @keyframes proof-float { 50% { transform: translateY(-8px) rotate(.2deg); } }
   @keyframes proof-glow { to { opacity: .55; transform: scale(1.08); } }

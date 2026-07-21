@@ -1,6 +1,6 @@
 ---
 // Homepage hero (company-router rebuild, 2026-07-03). Left: the company promise
-// ("Get an AI team without hiring one") + a plain company paragraph + a Relay-led
+// ("Get proven AI-native business in a box") + a plain company paragraph + a Relay-led
 // CTA stack (Relay primary, demo text link). Right: the hero
 // product UI on a restrained floating plane. The homepage no longer sells Proof
 // from the hero; it routes to the product that matches each visitor's question,
@@ -10,8 +10,8 @@ import relayShots from '../../data/relay-shots.json';
 import { themedShotProps } from '../relay/themed-shot.logic.mjs';
 
 const relayHeroShot = themedShotProps(relayShots, {
-  id: 'agents-list',
-  alt: 'Orionfold Relay Agents library showing the AI teammates available to run specialized work.',
+  id: 'blueprints-gallery',
+  alt: 'Orionfold Relay Blueprint Gallery showing reusable AI workflows ready to adapt and run.',
 });
 ---
 <section class="home-hero relative overflow-x-clip">
@@ -35,12 +35,12 @@ const relayHeroShot = themedShotProps(relayShots, {
         Private AI you own, on your own machine
       </p>
 
-      <h1 class="home-hero__title mx-auto max-w-[21rem] font-display text-[2.45rem] font-bold leading-[1.08] tracking-[-0.035em] sm:max-w-2xl sm:text-6xl lg:mx-0 lg:max-w-none lg:text-[clamp(2.75rem,4vw,4.15rem)]">
-        <span class="sm:whitespace-nowrap">Get an <span class="home-hero__title-accent">AI team</span></span><br /><span class="sm:whitespace-nowrap">without hiring one.</span>
+      <h1 class="hero-gradient-text mx-auto max-w-[22rem] text-balance font-display text-[2.45rem] font-bold leading-[1.08] tracking-[-0.035em] sm:max-w-2xl sm:text-6xl lg:mx-0 lg:max-w-none lg:text-[clamp(2.75rem,4vw,4.15rem)]">
+        Get proven <span class="whitespace-nowrap">AI-native</span> business in a box.
       </h1>
 
       <p class="home-hero__description mx-auto mt-6 max-w-[22rem] text-balance text-base leading-relaxed sm:max-w-xl sm:text-lg lg:mx-0">
-        Orionfold takes the AI scattered across your work and runs it through one path you own, see, test, and approve. Agents that do the real work, models that know your field, and tests that prove it. All on your own machine.
+        Orionfold delivers optionality across open or frontier AI models, local or cloud delivery, single- or multi-user operation, and optimization for cost or intelligence.
       </p>
 
       <!-- Relay stays the single action in the pitch column. The demo moves onto
@@ -51,7 +51,7 @@ const relayHeroShot = themedShotProps(relayShots, {
           href="/relay/"
           class="home-hero__cta of-primary-action group w-full flex-col !items-start justify-center gap-0.5 !rounded-xl !py-3.5"
         >
-          <span class="font-mono text-[0.62rem] uppercase tracking-[0.18em] opacity-80">Control AI team</span>
+          <span class="font-mono text-[0.62rem] uppercase tracking-[0.18em] opacity-80">Run AI-native business</span>
           <span class="flex items-center gap-1.5 font-display text-lg font-bold tracking-normal normal-case">
             Get Orionfold Relay
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">
@@ -63,7 +63,7 @@ const relayHeroShot = themedShotProps(relayShots, {
 
     </div>
 
-    <!-- Right: the current Agents library gets the larger cinematic product frame
+    <!-- Right: the current Blueprint Gallery gets the larger cinematic product frame
          already proven by Relay Host. The frame chrome and screenshot follow the
          resolved site theme while preserving one blueprint-and-cyan visual scene. -->
     <a
@@ -76,7 +76,7 @@ const relayHeroShot = themedShotProps(relayShots, {
           <span class="home-hero-shot__dot bg-[#ff5f57]"></span>
           <span class="home-hero-shot__dot bg-[#febc2e]"></span>
           <span class="home-hero-shot__dot bg-[#28c840]"></span>
-          <span class="home-hero-shot__tab">orionfold relay · agents</span>
+          <span class="home-hero-shot__tab">orionfold relay · blueprints</span>
           <span class="home-hero-shot__live"><span class="home-hero-shot__livedot"></span>RELAY</span>
         </div>
         <div class="home-hero-shot__view">
@@ -118,8 +118,6 @@ const relayHeroShot = themedShotProps(relayShots, {
     --hero-grid-line: rgb(14 158 152 / 0.075);
     --hero-glow: rgb(14 158 152 / 0.14);
     --hero-eyebrow: #087c77;
-    --hero-title: #142126;
-    --hero-title-accent: #0b8d87;
     --hero-description: #53666c;
     --hero-cta: #0e9e98;
     --hero-cta-hover: #0b8b86;
@@ -152,8 +150,6 @@ const relayHeroShot = themedShotProps(relayShots, {
     --hero-grid-line: rgb(39 213 210 / 0.055);
     --hero-glow: rgb(23 210 205 / 0.12);
     --hero-eyebrow: rgb(121 232 228 / 0.8);
-    --hero-title: #ffffff;
-    --hero-title-accent: #38e2de;
     --hero-description: rgb(255 255 255 / 0.65);
     --hero-cta: #2ad6d2;
     --hero-cta-hover: #4ce3df;
@@ -218,14 +214,6 @@ const relayHeroShot = themedShotProps(relayShots, {
 
   .home-hero__eyebrow {
     color: var(--hero-eyebrow);
-  }
-
-  .home-hero__title {
-    color: var(--hero-title);
-  }
-
-  .home-hero__title-accent {
-    color: var(--hero-title-accent);
   }
 
   .home-hero__description {

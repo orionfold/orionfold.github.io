@@ -31,9 +31,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     slug: 'home',
     eyebrow: 'Orionfold',
-    title: 'Get an AI team without hiring one',
+    title: 'Get proven AI-native business in a box.',
     seed: 'home',
-    alt: 'Orionfold: private agents, domain models, benchmarks, and playbooks for small teams',
+    alt: 'Orionfold: proven AI-native business with open or frontier models, local or cloud delivery, and cost or intelligence optimization',
   },
   '/advisor/': {
     slug: 'advisor',
@@ -192,6 +192,13 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'What you pay for, and what you never lose',
     seed: 'promise',
     alt: 'The Orionfold promise: every capability ships free, paid packs sell maintained content, and nothing that shipped free ever regresses to paid',
+  },
+  '/proposal/': {
+    slug: 'proposal',
+    eyebrow: 'Founder-led · remote consulting',
+    title: 'Build the Orionfold system your business needs',
+    seed: 'consulting',
+    alt: 'Build a non-binding proposal for Orionfold products and founder-led remote consulting',
   },
   '/terms/': {
     slug: 'terms',

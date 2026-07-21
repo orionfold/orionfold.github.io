@@ -1,0 +1,36 @@
+---
+import shots from '../../data/training-workshop-shots.json';
+
+interface Props {
+  id: keyof typeof shots;
+  alt: string;
+  class?: string;
+}
+
+const { id, alt, class: className } = Astro.props;
+const shot = shots[id];
+if (!shot) throw new Error(`WorkshopShot: unknown screenshot id "${id}".`);
+const sizes = '(min-width: 1280px) 680px, (min-width: 768px) calc(100vw - 8rem), calc(100vw - 3rem)';
+---
+
+<div class:list={['relay-shot', className]} style={`aspect-ratio:${shot.ratio};`}>
+  <img
+    class="relay-shot__image"
+    width={shot.width}
+    height={shot.height}
+    alt={alt}
+    loading="lazy"
+    decoding="async"
+    fetchpriority="low"
+    sizes={sizes}
+    data-relay-shot
+    data-shot-light-src={shot.light.src}
+    data-shot-light-srcset={shot.light.srcset}
+    data-shot-dark-src={shot.dark.src}
+    data-shot-dark-srcset={shot.dark.srcset}
+    data-no-zoom
+  />
+  <noscript>
+    <img class="relay-shot__image" src={shot.light.src} srcset={shot.light.srcset} sizes={sizes} width={shot.width} height={shot.height} alt={alt} loading="lazy" decoding="async" data-no-zoom />
+  </noscript>
+</div>

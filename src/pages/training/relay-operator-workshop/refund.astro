@@ -1,9 +1,11 @@
 ---
 import PrivateLayout from '../../../layouts/PrivateLayout.astro';
+const operatorPreviewEnabled = import.meta.env.DEV;
 ---
 <PrivateLayout title="Confirm workshop refund · Orionfold" description="Confirm and track your Relay Operator Workshop refund.">
   <main class="grid min-h-screen place-items-center px-5 py-12">
     <section class="w-full max-w-xl rounded-xl border border-border bg-surface-raised p-7 shadow-of sm:p-10">
+      {operatorPreviewEnabled && <p id="preview-badge" hidden class="mb-5 w-fit rounded-full border border-primary/30 bg-primary/[0.08] px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-primary">Operator preview · refund state</p>}
       <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">14-day refund</p>
       <h1 class="mt-4 text-3xl">Refund confirmation</h1>
       <div id="refund-status" class="mt-6 rounded-lg border border-border bg-surface p-5 leading-relaxed text-text-muted" role="status" aria-live="polite">
@@ -28,7 +30,12 @@ import PrivateLayout from '../../../layouts/PrivateLayout.astro';
     retryable: 'The refund could not be submitted yet. Your access remains active; retry this confirmation link.',
     invalid: 'This confirmation link is invalid or expired. Start a new request from the access page.',
   };
-  if (!token) {
+  const previewState = import.meta.env.DEV ? new URLSearchParams(location.search).get('preview') : null;
+  if (previewState && copy[previewState]) {
+    const badge = document.getElementById('preview-badge');
+    if (badge) badge.hidden = false;
+    if (status) status.textContent = copy[previewState];
+  } else if (!token) {
     if (status) status.textContent = copy.invalid;
   } else {
     confirmWorkshopRefund(token).then(({ data }) => {

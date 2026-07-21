@@ -2,11 +2,13 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
+const operatorPreviewEnabled = import.meta.env.DEV;
 ---
 <Layout title="Workshop purchase confirmed · Orionfold" description="Your Relay Operator Workshop purchase is confirmed." noindex>
   <Nav />
   <main class="px-6 pb-28 pt-40">
     <section class="mx-auto max-w-2xl rounded-xl border border-border bg-surface-raised p-8 shadow-of sm:p-12">
+      {operatorPreviewEnabled && <p id="preview-badge" hidden class="mb-5 w-fit rounded-full border border-primary/30 bg-primary/[0.08] px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-primary">Operator preview · simulated payment</p>}
       <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Relay Operator Workshop</p>
       <h1 id="heading" class="mt-5 text-4xl">Your workshop is confirmed</h1>
       <p id="status" class="mt-5 text-lg leading-relaxed text-text-muted" aria-live="polite">
@@ -15,7 +17,7 @@ import Footer from '../../../components/Footer.astro';
       <div class="mt-8 rounded-lg border border-border bg-surface p-5 text-sm leading-relaxed text-text-muted">
         The link works for seven days. If it expires, request a fresh one automatically; no account or founder reply is required.
       </div>
-      <a class="mt-8 inline-flex rounded-lg border border-primary/40 px-5 py-3 font-mono text-sm text-primary hover:bg-primary/5" href="/training/relay-operator-workshop/access/">Request access or a refund</a>
+      <a id="next-link" class="mt-8 inline-flex rounded-lg border border-primary/40 px-5 py-3 font-mono text-sm text-primary hover:bg-primary/5" href="/training/relay-operator-workshop/access/">Request access or a refund</a>
     </section>
   </main>
   <Footer />
@@ -25,8 +27,22 @@ import Footer from '../../../components/Footer.astro';
   import { fetchOrderStatus } from '../../../lib/checkout';
   import { reportPurchase } from '../../../lib/conversion';
   async function confirm() {
+    const preview = import.meta.env.DEV && new URLSearchParams(location.search).get('preview') === 'paid';
     const sessionId = new URLSearchParams(location.search).get('session_id');
     const statusEl = document.getElementById('status');
+    const headingEl = document.getElementById('heading');
+    const badgeEl = document.getElementById('preview-badge');
+    const nextLink = document.getElementById('next-link') as HTMLAnchorElement | null;
+    if (preview) {
+      if (badgeEl) badgeEl.hidden = false;
+      if (headingEl) headingEl.textContent = 'Your paid workshop is ready';
+      if (statusEl) statusEl.textContent = 'Payment confirmed. In the real path, the private seven-day access link arrives transactionally in the purchase inbox.';
+      if (nextLink) {
+        nextLink.href = '/training/relay-operator-workshop/access/?preview=paid';
+        nextLink.textContent = 'Open the private access link';
+      }
+      return;
+    }
     if (!sessionId || !statusEl) return;
     const status = await fetchOrderStatus(sessionId);
     if (!status?.paid || status.kind !== 'workshop') {

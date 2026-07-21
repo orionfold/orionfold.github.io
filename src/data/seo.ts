@@ -6,11 +6,11 @@ export const SITE = {
   name: 'Orionfold',
   url: 'https://orionfold.com',
   description:
-    'Run real AI on your own machine and check the receipts yourself. Prove which AI you can trust. Rerun it, never take our word for it.',
+    'Orionfold gives you open or frontier AI models, local or cloud delivery, single- or multi-user operation, optimized for cost or intelligence.',
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:
-    'Orionfold: private AI capability for small teams.',
+    'Orionfold: proven AI-native business with open or frontier models, local or cloud delivery, and cost or intelligence optimization.',
   // Single light theme: address-bar tint matches the manifest background.
   themeColor: '#f6f9fc',
   license: 'Apache-2.0',
