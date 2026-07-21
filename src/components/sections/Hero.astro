@@ -1,6 +1,6 @@
 ---
 // Homepage hero (company-router rebuild, 2026-07-03). Left: the company promise
-// ("Get proven AI-native business in a box") + a plain company paragraph + a Relay-led
+// ("Proven AI-native business in a box") + a plain company paragraph + a Relay-led
 // CTA stack (Relay primary, demo text link). Right: the hero
 // product UI on a restrained floating plane. The homepage no longer sells Proof
 // from the hero; it routes to the product that matches each visitor's question,
@@ -36,7 +36,7 @@ const relayHeroShot = themedShotProps(relayShots, {
       </p>
 
       <h1 class="hero-gradient-text mx-auto max-w-[22rem] text-balance font-display text-[2.45rem] font-bold leading-[1.08] tracking-[-0.035em] sm:max-w-2xl sm:text-6xl lg:mx-0 lg:max-w-none lg:text-[clamp(2.75rem,4vw,4.15rem)]">
-        Get proven <span class="whitespace-nowrap">AI-native</span> business in a box.
+        Proven <span class="whitespace-nowrap">AI-native</span> business in a box
       </h1>
 
       <p class="home-hero__description mx-auto mt-6 max-w-[22rem] text-balance text-base leading-relaxed sm:max-w-xl sm:text-lg lg:mx-0">
@@ -64,24 +64,17 @@ const relayHeroShot = themedShotProps(relayShots, {
     </div>
 
     <!-- Right: the current Blueprint Gallery gets the larger cinematic product frame
-         already proven by Relay Host. The frame chrome and screenshot follow the
-         resolved site theme while preserving one blueprint-and-cyan visual scene. -->
+         already proven by Relay Host. The screenshot follows the resolved site theme
+         and is cropped after the third complete card row to keep the hero compact. -->
     <a
       href="/relay/demo/"
       class="home-hero-shot group relative block min-w-0"
       aria-label="View the interactive Orionfold Relay demo"
     >
       <div class="home-hero-shot__frame">
-        <div class="home-hero-shot__bar" aria-hidden="true">
-          <span class="home-hero-shot__dot bg-[#ff5f57]"></span>
-          <span class="home-hero-shot__dot bg-[#febc2e]"></span>
-          <span class="home-hero-shot__dot bg-[#28c840]"></span>
-          <span class="home-hero-shot__tab">orionfold relay · blueprints</span>
-          <span class="home-hero-shot__live"><span class="home-hero-shot__livedot"></span>RELAY</span>
-        </div>
         <div class="home-hero-shot__view">
           <img
-            class="absolute inset-0 block h-full w-full object-cover object-top"
+            class="absolute inset-x-0 top-0 block h-auto w-full"
             width={relayHeroShot.width}
             height={relayHeroShot.height}
             alt={relayHeroShot.alt}
@@ -129,11 +122,6 @@ const relayHeroShot = themedShotProps(relayShots, {
     --hero-frame-border: rgb(14 158 152 / 0.34);
     --hero-frame-shadow: 0 34px 74px -36px rgb(24 74 78 / 0.42), 0 0 0 1px rgb(14 158 152 / 0.08);
     --hero-frame-hover-shadow: 0 42px 82px -34px rgb(24 74 78 / 0.48), 0 0 0 1px rgb(14 158 152 / 0.28);
-    --hero-bar-bg: #f5fafa;
-    --hero-bar-border: rgb(87 132 137 / 0.24);
-    --hero-tab: rgb(60 83 88 / 0.68);
-    --hero-status: #0b8d87;
-    --hero-status-dot: #0e9e98;
     --hero-sheen: rgb(255 255 255 / 0.3);
     --hero-demo-link: #087c77;
     --hero-demo-link-hover: #075f5c;
@@ -161,11 +149,6 @@ const relayHeroShot = themedShotProps(relayShots, {
     --hero-frame-border: rgb(96 221 219 / 0.48);
     --hero-frame-shadow: 0 38px 82px -30px rgb(0 0 0 / 0.92), 0 0 0 1px rgb(66 232 228 / 0.12);
     --hero-frame-hover-shadow: 0 48px 92px -30px rgb(0 0 0 / 0.96), 0 0 0 1px rgb(74 238 234 / 0.42);
-    --hero-bar-bg: #09171e;
-    --hero-bar-border: rgb(71 112 120 / 0.42);
-    --hero-tab: rgb(220 239 241 / 0.58);
-    --hero-status: #4de7e3;
-    --hero-status-dot: #32dcd8;
     --hero-sheen: rgb(202 255 253 / 0.1);
     --hero-demo-link: rgb(121 232 228 / 0.8);
     --hero-demo-link-hover: #79e8e4;
@@ -257,58 +240,11 @@ const relayHeroShot = themedShotProps(relayShots, {
     outline-offset: 4px;
   }
 
-  .home-hero-shot__bar {
-    display: flex;
-    align-items: center;
-    gap: 0.38rem;
-    min-width: 0;
-    border-bottom: 1px solid var(--hero-bar-border);
-    background: var(--hero-bar-bg);
-    padding: 0.62rem 0.8rem;
-  }
-
-  .home-hero-shot__dot {
-    width: 0.55rem;
-    height: 0.55rem;
-    flex: none;
-    border-radius: 999px;
-  }
-
-  .home-hero-shot__tab {
-    min-width: 0;
-    overflow: hidden;
-    margin-left: 0.45rem;
-    color: var(--hero-tab);
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.06em;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .home-hero-shot__live {
-    display: inline-flex;
-    flex: none;
-    align-items: center;
-    gap: 0.35rem;
-    margin-left: auto;
-    color: var(--hero-status);
-    font-family: var(--font-mono);
-    font-size: 0.55rem;
-    letter-spacing: 0.15em;
-  }
-
-  .home-hero-shot__livedot {
-    width: 0.38rem;
-    height: 0.38rem;
-    border-radius: 999px;
-    background: var(--hero-status-dot);
-    animation: home-hero-live 2.2s ease-in-out infinite;
-  }
-
   .home-hero-shot__view {
     position: relative;
-    aspect-ratio: 1.31 / 1;
+    /* The source is 1600px wide. At this ratio the crop lands in the clean
+       gutter immediately below card row three, before row four begins. */
+    aspect-ratio: 1.74 / 1;
     overflow: hidden;
   }
 
@@ -334,11 +270,6 @@ const relayHeroShot = themedShotProps(relayShots, {
     50% { transform: translateY(-9px); }
   }
 
-  @keyframes home-hero-live {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgb(50 220 216 / 0.28); }
-    50% { opacity: 0.45; box-shadow: 0 0 0 4px transparent; }
-  }
-
   @keyframes home-hero-sheen {
     0% { transform: translateX(-130%); }
     28%, 100% { transform: translateX(130%); }
@@ -352,7 +283,6 @@ const relayHeroShot = themedShotProps(relayShots, {
 
   @media (prefers-reduced-motion: reduce) {
     .home-hero-shot,
-    .home-hero-shot__livedot,
     .home-hero-shot__sheen {
       animation: none;
     }

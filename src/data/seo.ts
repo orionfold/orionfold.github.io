@@ -5,6 +5,7 @@
 export const SITE = {
   name: 'Orionfold',
   url: 'https://orionfold.com',
+  tagline: 'Proven AI-native business in a box',
   description:
     'Orionfold lets you choose open or frontier AI models, local or cloud delivery, solo or multi-user operation, and optimize for cost or intelligence.',
   logo: 'https://orionfold.com/orionfold-128.png',
@@ -38,6 +39,7 @@ export const ORGANIZATION = {
   name: 'Orionfold LLC',
   url: SITE.url,
   logo: SITE.logo,
+  slogan: SITE.tagline,
   description: SITE.description,
   founder: PERSON,
   foundingDate: '2026',

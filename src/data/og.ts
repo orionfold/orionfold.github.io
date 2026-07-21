@@ -6,6 +6,8 @@
 // `story` content collection and use storyOgSlug(). See
 // _SPECS/2026-05-25-125727_og-and-featured-image-pipeline.md.
 
+import { SITE } from './seo';
+
 export interface OgPage {
   /** Output file is /og/<slug>.jpg */
   slug: string;
@@ -31,7 +33,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     slug: 'home',
     eyebrow: 'Orionfold',
-    title: 'Get proven AI-native business in a box.',
+    title: SITE.tagline,
     seed: 'home',
     alt: 'Orionfold: proven AI-native business with open or frontier models, local or cloud delivery, and cost or intelligence optimization',
   },
