@@ -85,6 +85,138 @@ const faq = [
   ['Is DigitalOcean deployment available now?', 'Yes, as a guided manual beta on a customer-owned Ubuntu server. You create and administer the server, firewall, DNS, TLS, backups, recovery keys and bill. Relay does not provision or operate it for you.'],
 ];
 
+type AccessFaq = {
+  question: string;
+  paragraphs: string[];
+  bullets?: string[];
+  afterBullets?: string[];
+  links?: { href: string; label: string }[];
+};
+
+const accessFaq: AccessFaq[] = [
+  {
+    question: 'Can I give each of my customers their own Relay workspace?',
+    paragraphs: [
+      'Yes. Create a separate managed Relay Cell for each customer. A Cell is a complete Relay instance with its own database, files, identity, secrets, settings, logs, limits, authenticated browser access, backups and recovery lineage. It is more than a customer record or folder inside a shared Relay application.',
+    ],
+  },
+  {
+    question: 'How does my customer open their Cell?',
+    paragraphs: [
+      'Give the Cell a dedicated HTTPS address, such as customer-name.relay.example.com, or an equivalently isolated path configured by the Host administrator. The public route must map only to that Cell’s loopback-only service port through an authenticated TLS ingress. Cell ports, Docker, databases and model-runtime ports must not be exposed directly.',
+      'The current DigitalOcean guided beta leaves hostname, DNS, TLS, firewall and reverse-proxy configuration with the Host operator. Relay does not ask for your provider token or create those resources for you.',
+    ],
+  },
+  {
+    question: 'How does the customer create their login?',
+    paragraphs: [
+      'The Host operator generates a single-use bootstrap credential for that Cell. It is valid for 15 minutes and should be transferred to the intended customer through a separate trusted channel. The customer opens the Cell’s HTTPS address, enters the credential, creates the first administrator password and saves the eight recovery codes shown once.',
+      'Relay stores digests rather than the clear bootstrap credential, password, session tokens or recovery codes.',
+    ],
+  },
+  {
+    question: 'Does the customer need to install Relay?',
+    paragraphs: [
+      'No. A customer using a managed Cell normally opens it in a web browser. The Relay Host operator installs, updates, monitors, backs up and recovers the Host and its resident Cells.',
+    ],
+  },
+  {
+    question: 'Can more than one person use the same customer Cell?',
+    paragraphs: [
+      'The current access model has one built-in administrator credential per Cell. That administrator can sign in from multiple named browser sessions. Sessions last 12 hours, are independently visible and can be revoked.',
+      'Relay does not yet provide separate named users, role-based permissions, customer invitations, SSO or organization membership inside one Cell. Multiple browser sessions are not multiple user accounts.',
+    ],
+  },
+  {
+    question: 'Can one customer see another customer’s Cell?',
+    paragraphs: [
+      'Not through Relay’s normal application or ingress routing. Each managed Cell has its own application state, data root, secret root, private network, loopback port, identity, authentication store and recovery chain. Relay also rejects browser-supplied customer, Cell, session and forwarded-identity headers; a caller cannot select another Cell by changing a header or URL.',
+      'This is operational isolation, not protection from the Host administrator or the shared machine’s failure boundary.',
+    ],
+  },
+  {
+    question: 'Can I, as the Host administrator, access a customer’s Cell?',
+    paragraphs: [
+      'Yes. The Host administrator remains trusted. They control the machine and runtime, can inspect resident Cell storage, create the initial first-administrator bootstrap credential before access is configured and operate infrastructure recovery. Containers do not make the Host administrator unable to access customer data. Relay refuses a second bootstrap after the Cell administrator has been configured.',
+      'Make this trust relationship clear before onboarding a customer. Relay Host is customer-owned managed infrastructure, not a hostile-tenant SaaS boundary.',
+    ],
+  },
+  {
+    question: 'When should a customer receive a separate Host instead of a Cell on mine?',
+    paragraphs: [
+      'Use a separate Host, VM or customer-controlled server when the customer:',
+    ],
+    bullets: [
+      'must not trust your Host administrator;',
+      'requires a separate infrastructure or legal-administration boundary;',
+      'cannot share the physical failure domain with another customer; or',
+      'needs a security or compliance promise beyond the supported same-Host model.',
+    ],
+    afterBullets: [
+      'Changing folders, ports or container labels does not solve an administrator-trust requirement. Change the Host boundary.',
+    ],
+  },
+  {
+    question: 'Is customer onboarding automatic?',
+    paragraphs: [
+      'Not yet. In the guided beta, onboarding is a guided manual setup. The Host operator:',
+    ],
+    bullets: [
+      'creates and starts the managed Cell;',
+      'assigns a stable HTTPS hostname or path;',
+      'configures the TLS reverse proxy to map that route only to the Cell’s loopback port;',
+      'generates the Cell’s short-lived first-administrator credential;',
+      'hands the credential to the customer through a trusted channel; and',
+      'confirms login, recovery-code custody, session visibility and backup policy.',
+    ],
+    afterBullets: [
+      'Relay’s current Settings and Host Supervisor manage Cell lifecycle and capacity, but they do not yet automate DNS, TLS routes, invitation delivery or the complete customer-access handoff.',
+    ],
+  },
+  {
+    question: 'What happens if a customer loses their password?',
+    paragraphs: [
+      'The customer can use one of the Cell’s recovery codes. Recovery changes the password, rotates all remaining recovery codes and revokes every existing browser session. If the customer loses every recovery code, Relay does not allow the Host administrator to issue another first-administrator bootstrap credential over the configured account. Recovery must instead use the customer-owned encrypted Cell recovery material or a separately supported operator recovery procedure; do not delete or edit the authentication database to bypass this boundary.',
+      'Browser recovery codes are not Cell disaster-recovery keys. The operator must separately configure encrypted Cell backup and Host-loss recovery.',
+    ],
+  },
+  {
+    question: 'What happens when I stop managing a customer?',
+    paragraphs: [
+      'Stopping or retaining a managed Cell does not release its licensed capacity. Before ending service, create and verify an encrypted recovery export. Then either:',
+    ],
+    bullets: [
+      'export and release the Cell, preserving the verified recovery artifact and freeing the managed-Cell slot; or',
+      'permanently purge the Cell after explicit confirmation when retention is no longer required.',
+    ],
+    afterBullets: [
+      'Existing Cells and recovery remain available if a Host license lapses, but the operator cannot create additional managed Cells without valid capacity.',
+    ],
+  },
+  {
+    question: 'How many customers can one Relay Host serve?',
+    paragraphs: [
+      'The launch Relay Host entitlement covers one Host with up to ten managed Cells. Running, stopped and retained managed Cells count toward that limit. Exported-and-released and permanently purged Cells do not. A Cell should map to one customer organization unless that organization intentionally shares one administrator and operational boundary.',
+    ],
+  },
+  {
+    question: 'Is this the same as Orionfold hosting Relay for my customers?',
+    paragraphs: [
+      'No. Relay Host runs on infrastructure owned or controlled by you or your customer. You own the server account, infrastructure bill, DNS, TLS, firewall, model credentials, backups, recovery keys and administration. Orionfold supplies Relay software, the signed Cell image, the licensed managed-Host authority, updates and support within the documented topology.',
+    ],
+  },
+  {
+    question: 'Where can I find the setup instructions?',
+    paragraphs: [
+      'Use the guide that matches your installed Relay release. For the current guided-beta release, use these version-matched Relay 0.44.9 guides. Do not substitute an unversioned or third-party routing recipe for the release-matched trust and ingress contract.',
+    ],
+    links: [
+      { href: 'https://github.com/orionfold/relay/blob/v0.44.9/docs/digitalocean-relay-host.md', label: 'Run a Relay Host on DigitalOcean' },
+      { href: 'https://github.com/orionfold/relay/blob/v0.44.9/docs/relay-host-access.md', label: 'Relay Host ingress and administrator access' },
+    ],
+  },
+];
+
 const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
@@ -119,11 +251,18 @@ const productSchema = {
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faq.map(([question, answer]) => ({
-    '@type': 'Question',
-    name: question,
-    acceptedAnswer: { '@type': 'Answer', text: answer },
-  })),
+  mainEntity: [
+    ...accessFaq.map(({ question, paragraphs, bullets = [], afterBullets = [] }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: [...paragraphs, ...bullets, ...afterBullets].join(' ') },
+    })),
+    ...faq.map(([question, answer]) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })),
+  ],
 };
 ---
 
@@ -256,6 +395,43 @@ const faqSchema = {
         <p class="mt-7 max-w-3xl text-sm leading-relaxed text-text-muted">
           Relay Core and the public Cell image remain free. Relay Host is the signed authority to create and operate Cells through the Host Supervisor within the limits you bought. Premium Packs remain a separate right.
         </p>
+      </div>
+    </section>
+
+    <section id="customer-cell-access" class="scroll-mt-36 border-y border-border/70 bg-surface/35 px-6 py-16 sm:py-20">
+      <div class="mx-auto max-w-5xl">
+        <div class="max-w-3xl">
+          <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Customer Cell access · Guided beta</p>
+          <h2 class="mt-3 text-balance text-3xl font-bold sm:text-4xl">Give every customer a separate Cell—with the trust boundary stated plainly.</h2>
+          <p class="mt-5 leading-relaxed text-text-muted">
+            Per-customer authenticated browser access is available now through operator-configured access. One-click invitations,
+            automatic DNS or reverse-proxy setup, multiple user roles and SSO are not. Same-Host Cells trust the Host administrator.
+          </p>
+        </div>
+        <div class="mt-9 divide-y divide-border/70 rounded-2xl border border-border/70 bg-surface/70 px-5 sm:px-7">
+          {accessFaq.map(({ question, paragraphs, bullets, afterBullets, links }) => (
+            <details class="group py-5">
+              <summary class="cursor-pointer list-none pr-10 text-lg font-semibold text-text marker:hidden">
+                {question}
+                <span aria-hidden="true" class="float-right -mr-7 font-mono text-primary transition-transform group-open:rotate-45">+</span>
+              </summary>
+              <div class="mt-4 max-w-4xl space-y-3 text-sm leading-relaxed text-text-muted">
+                {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+                {bullets && (
+                  <ul class="list-disc space-y-2 pl-5">
+                    {bullets.map((bullet) => <li>{bullet}</li>)}
+                  </ul>
+                )}
+                {afterBullets?.map((paragraph) => <p>{paragraph}</p>)}
+                {links && (
+                  <div class="flex flex-col items-start gap-2 pt-1">
+                    {links.map((link) => <a href={link.href} class="of-text-action">{link.label} →</a>)}
+                  </div>
+                )}
+              </div>
+            </details>
+          ))}
+        </div>
       </div>
     </section>
 
