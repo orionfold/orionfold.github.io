@@ -17,10 +17,8 @@ const validBody = {
   fullName: "Ada Lovelace",
   businessEmail: "MANAV@ORIONFOLD.COM",
   companyName: "Analytical Engines",
-  description:
-    "Deploy a governed client research workflow with a clear operator handoff.",
-  consultingHours: 10,
-  selectedOfferIds: ["relay-founding"],
+  purchaseNote: "",
+  selectedOffers: [{ id: "relay-founding", quantity: 3 }],
 };
 
 Deno.test("request parser accepts only trusted selection inputs and ignores invented totals", () => {
@@ -40,8 +38,8 @@ Deno.test("request parser accepts only trusted selection inputs and ignores inve
     "email did not normalize",
   );
   assert(
-    record.snapshot.listSubtotalCents === 384_900,
-    "server did not recompute catalog and consulting total",
+    record.snapshot.listSubtotalCents === 104_700,
+    "server did not recompute catalog unit price and quantity",
   );
   assert(
     record.snapshot.savingsCents !== 999_999,
@@ -49,7 +47,7 @@ Deno.test("request parser accepts only trusted selection inputs and ignores inve
   );
 });
 
-Deno.test("required fields, description, email, and UUID are validated", () => {
+Deno.test("identity, email, UUID, and product selection are required while purchase note is optional", () => {
   assert(
     validateConsultingRequest(parseConsultingRequest(validBody)) === null,
     "valid request rejected",
@@ -60,7 +58,6 @@ Deno.test("required fields, description, email, and UUID are validated", () => {
       { companyName: "" },
       { businessEmail: "bad" },
       { requestId: "guessable" },
-      { description: "too short" },
     ]
   ) {
     assert(
@@ -70,6 +67,33 @@ Deno.test("required fields, description, email, and UUID are validated", () => {
       JSON.stringify(patch),
     );
   }
+  assert(
+    validateConsultingRequest(parseConsultingRequest({
+      ...validBody,
+      purchaseNote: "PO-42",
+    })) === null,
+    "short optional purchase note was rejected",
+  );
+});
+
+Deno.test("legacy consulting-shaped requests remain accepted for backend-first rollout safety", () => {
+  const legacy = parseConsultingRequest({
+    ...validBody,
+    selectedOffers: undefined,
+    description:
+      "Deploy a governed client research workflow with a clear operator handoff.",
+    consultingHours: 10,
+    selectedOfferIds: ["relay-founding"],
+  });
+  assert(legacy.proposalSchema === "legacy_consulting", "legacy request shape was not detected");
+  assert(validateConsultingRequest(legacy) === null, "legacy request was rejected");
+  const record = createRequestRecord({
+    input: legacy,
+    requestFingerprint: "hash",
+    userAgent: "test",
+    proposalNumber: "OFP-LEGACY",
+  });
+  assert(record.snapshot.lines.some((line) => line.kind === "consulting"), "legacy consulting line was lost");
 });
 
 Deno.test("honeypot is silently recognizable and rate limit is deterministic", () => {
@@ -102,14 +126,9 @@ Deno.test("operator notification, customer copy, and receipt preserve the non-bi
     email.includes("PENDING ORIONFOLD REVIEW"),
     "email request state missing",
   );
-  assert(
-    email.includes("first 5 hours invoiced in advance"),
-    "email advance invoice term missing",
-  );
-  assert(
-    email.includes("monthly in arrears"),
-    "email month-end billing term missing",
-  );
+  assert(email.includes("Quantity: 3 licenses"), "email quantity missing");
+  assert(email.includes("Unit price: $349.00"), "email unit price missing");
+  assert(email.includes("Line total: $1,047.00"), "email line total missing");
   assert(
     !/status:\s*accepted|\bapproved\b|\binvoice is due\b|\bpayment received\b/i
       .test(email) && email.includes("This request is not accepted"),

@@ -1,27 +1,30 @@
 import {
+  buildLegacyConsultingProposalSnapshot,
   buildProposalEstimate,
   buildProposalSnapshot,
   calculateBankTransferSavings,
   CONSULTING_HOUR_CAPS,
   getConsultingOffers,
+  MAX_PROPOSAL_QUANTITY,
 } from "./consulting-proposal.ts";
 
-Deno.test("a product-only browser estimate works before consulting is selected", () => {
+Deno.test("a product-only browser estimate multiplies catalog price by quantity", () => {
   const offer = getConsultingOffers()[0];
-  const estimate = buildProposalEstimate({ consultingHours: 0, selectedOfferIds: [offer.id] });
-  assert(estimate.consultingHours === 0, "draft estimate should not invent consulting hours");
+  const estimate = buildProposalEstimate({ selectedOffers: [{ id: offer.id, quantity: 3 }] });
   assert(estimate.lines.length === 1 && estimate.lines[0].id === offer.id, "draft estimate should include the selected product");
-  assert(estimate.listSubtotalCents === offer.amountCents, "draft estimate should use the catalog price");
+  assert(estimate.lines[0].quantity === 3, "requested quantity was lost");
+  assert(estimate.lines[0].unitAmountCents === offer.amountCents, "catalog unit price drifted");
+  assert(estimate.listSubtotalCents === offer.amountCents * 3, "quantity was not applied");
 });
 
 function assert(condition: unknown, message: string) {
   if (!condition) throw new Error(message);
 }
 
-Deno.test("consulting caps and avoided-card-cost fixtures are exact integer cents", () => {
+Deno.test("legacy consulting requests remain valid during a backend-first rollout", () => {
   assert(JSON.stringify(CONSULTING_HOUR_CAPS) === JSON.stringify([10, 15, 20]), "consulting cap set drifted");
   for (const hours of CONSULTING_HOUR_CAPS) {
-    const proposal = buildProposalSnapshot({ consultingHours: hours, selectedOfferIds: [] });
+    const proposal = buildLegacyConsultingProposalSnapshot({ consultingHours: hours, selectedOfferIds: [] });
     const subtotal = hours * 35_000;
     assert(proposal.listSubtotalCents === subtotal, `${hours} hour subtotal drifted`);
     assert(proposal.savingsCents === Math.round(subtotal * 0.029 + 30), `${hours} hour savings drifted`);
@@ -29,27 +32,29 @@ Deno.test("consulting caps and avoided-card-cost fixtures are exact integer cent
   }
 });
 
-Deno.test("five hours is an advance billing term, not a selectable cap", () => {
+Deno.test("legacy five-hour consulting requests remain rejected", () => {
   let rejected = false;
   try {
-    buildProposalSnapshot({ consultingHours: 5 as never, selectedOfferIds: [] });
+    buildLegacyConsultingProposalSnapshot({ consultingHours: 5 as never, selectedOfferIds: [] });
   } catch {
     rejected = true;
   }
   assert(rejected, "five-hour cap should be rejected");
-  const proposal = buildProposalSnapshot({ consultingHours: 10, selectedOfferIds: [] });
+  const proposal = buildLegacyConsultingProposalSnapshot({ consultingHours: 10, selectedOfferIds: [] });
   const consulting = proposal.lines.find((line) => line.kind === "consulting")!;
   assert(consulting.term.includes("first 5 hours invoiced in advance"), "advance invoice term missing");
   assert(consulting.term.includes("monthly in arrears"), "month-end billing term missing");
   assert(proposal.termsVersion === "consulting-request-2026-07-20-r2", "terms version drifted");
 });
 
-Deno.test("every product amount is derived from the shared catalog and recurring terms survive", () => {
+Deno.test("every product amount is catalog-derived, quantity-aware, and preserves recurring terms", () => {
   const offers = getConsultingOffers();
   for (const offer of offers) {
-    const proposal = buildProposalSnapshot({ consultingHours: 10, selectedOfferIds: [offer.id] });
+    const proposal = buildProposalSnapshot({ selectedOffers: [{ id: offer.id, quantity: 2 }] });
     const line = proposal.lines.find((item) => item.id === offer.id)!;
-    assert(line.amountCents === offer.amountCents, `${offer.id} amount drifted`);
+    assert(line.unitAmountCents === offer.amountCents, `${offer.id} unit amount drifted`);
+    assert(line.amountCents === offer.amountCents * 2, `${offer.id} quantity total drifted`);
+    assert(line.unitLabel === offer.unitLabel, `${offer.id} unit label drifted`);
     assert(line.term === offer.term, `${offer.id} term drifted`);
   }
   const host = offers.find((offer) => offer.id === "relay-host-annual")!;
@@ -63,15 +68,40 @@ Deno.test("launch-dark workshop is excluded unless its exact key is enabled", ()
 });
 
 Deno.test("stale, duplicate, or client-invented offers fail closed", () => {
-  for (const selectedOfferIds of [["missing"], ["relay-founding", "relay-founding"]]) {
+  for (
+    const selectedOffers of [
+      [{ id: "missing", quantity: 1 }],
+      [{ id: "relay-founding", quantity: 1 }, { id: "relay-founding", quantity: 2 }],
+    ]
+  ) {
     let failed = false;
     try {
-      buildProposalSnapshot({ consultingHours: 10, selectedOfferIds });
+      buildProposalSnapshot({ selectedOffers });
     } catch {
       failed = true;
     }
-    assert(failed, `selection should fail: ${selectedOfferIds.join(",")}`);
+    assert(failed, `selection should fail: ${JSON.stringify(selectedOffers)}`);
   }
+});
+
+Deno.test("empty, fractional, zero, negative, or abusive quantities fail closed", () => {
+  const id = getConsultingOffers()[0].id;
+  for (const quantity of [0, -1, 1.5, MAX_PROPOSAL_QUANTITY + 1]) {
+    let failed = false;
+    try {
+      buildProposalSnapshot({ selectedOffers: [{ id, quantity }] });
+    } catch {
+      failed = true;
+    }
+    assert(failed, `quantity should fail: ${quantity}`);
+  }
+  let emptyFailed = false;
+  try {
+    buildProposalSnapshot({ selectedOffers: [] });
+  } catch {
+    emptyFailed = true;
+  }
+  assert(emptyFailed, "submitted proposal must contain a product");
 });
 
 Deno.test("savings never exceeds the eligible subtotal", () => {

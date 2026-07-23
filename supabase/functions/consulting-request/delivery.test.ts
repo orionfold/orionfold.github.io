@@ -25,10 +25,8 @@ function record(
         fullName: "Website Test",
         businessEmail: "manav@orionfold.com",
         companyName: "Orionfold LLC",
-        description:
-          "Verify independent proposal email delivery and recovery behavior.",
-        consultingHours: 10,
-        selectedOfferIds: [],
+        purchaseNote: "",
+        selectedOffers: [{ id: "relay-founding", quantity: 2 }],
       }),
       requestFingerprint: "test",
       userAgent: "test",

@@ -4,8 +4,8 @@ import test from 'node:test';
 import {
   buildProposalEstimate,
   buildProposalSnapshot,
-  CONSULTING_HOUR_CAPS,
   getConsultingOffers,
+  PROPOSAL_TERMS_VERSION,
 } from '../../supabase/functions/_shared/consulting-proposal.ts';
 
 const pagePath = new URL('../../src/pages/proposal.astro', import.meta.url);
@@ -33,12 +33,12 @@ test('page keeps non-binding status and omits payment instructions', () => {
   assert.ok((page.match(/Non-binding proposal request/gi) ?? []).length >= 4);
   assert.match(page, /Draft · not submitted/);
   assert.match(page, /Submitted · pending Orionfold review/);
-  assert.match(page, /Select one consulting block\./);
-  assert.match(page, /first five hours are invoiced in advance/i);
-  assert.match(page, /invoiced monthly in arrears/i);
-  assert.doesNotMatch(page, />5 hours</);
-  assert.match(page, /class="cap-check/);
-  assert.match(page, /type="radio" name="consultingHours"/);
+  assert.match(page, /Choose at least one Orionfold product/);
+  assert.match(page, /Catalog price × quantity/);
+  assert.match(page, /Purchase note or PO reference/);
+  assert.match(page, /name="purchaseNote"[\s\S]*maxlength="500"/);
+  assert.doesNotMatch(page, /name="purchaseNote"[^>]*required/);
+  assert.doesNotMatch(page, /consulting cap|consultingHours|\$350|hourly rate|founder-led/i);
   assert.doesNotMatch(page, /routing number|account number|sign here|pay now/i);
 });
 
@@ -62,7 +62,16 @@ test('product cards toggle through a full-card native checkbox label while prese
   assert.doesNotMatch(page, /card\.classList\.toggle\('is-selected'/);
 });
 
-test('all eligible offers and cap fixtures build from the shared catalog', () => {
+test('every product card exposes a server-bounded license or seat quantity', () => {
+  assert.match(page, /data-offer-quantity=\{offer\.id\}/);
+  assert.match(page, /Number of \$\{offer\.unitLabel\} for \$\{offer\.label\}/);
+  assert.match(page, /min="1"/);
+  assert.match(page, /max=\{MAX_PROPOSAL_QUANTITY\}/);
+  assert.match(page, /Catalog price × quantity/);
+  assert.match(page, /line\.quantity.*line\.unitLabel/s);
+});
+
+test('all eligible offers and quantity fixtures build from the shared catalog', () => {
   const offers = getConsultingOffers();
   assert.deepEqual(offers.map((offer) => offer.id), [
     'proof-founding',
@@ -73,21 +82,24 @@ test('all eligible offers and cap fixtures build from the shared catalog', () =>
     'book-ai-native-platform',
     'book-ai-research-dgx-spark',
   ]);
-  for (const consultingHours of CONSULTING_HOUR_CAPS) {
-    const snapshot = buildProposalSnapshot({ consultingHours, selectedOfferIds: offers.map((offer) => offer.id) });
-    assert.equal(snapshot.lines.length, offers.length + 1);
-    assert.ok(snapshot.estimatedFinalSubtotalCents < snapshot.listSubtotalCents);
-  }
+  const selectedOffers = offers.map((offer, index) => ({ id: offer.id, quantity: index + 1 }));
+  const snapshot = buildProposalSnapshot({ selectedOffers });
+  assert.equal(snapshot.lines.length, offers.length);
+  assert.equal(snapshot.termsVersion, PROPOSAL_TERMS_VERSION);
+  assert.equal(
+    snapshot.listSubtotalCents,
+    offers.reduce((sum, offer, index) => sum + offer.amountCents * (index + 1), 0),
+  );
+  assert.ok(snapshot.estimatedFinalSubtotalCents < snapshot.listSubtotalCents);
 });
 
-test('product-only draft estimates update before a consulting cap is selected', () => {
+test('product-only draft estimates update from quantities', () => {
   const offer = getConsultingOffers()[0];
-  const estimate = buildProposalEstimate({ consultingHours: 0, selectedOfferIds: [offer.id] });
-  assert.equal(estimate.consultingHours, 0);
+  const estimate = buildProposalEstimate({ selectedOffers: [{ id: offer.id, quantity: 4 }] });
   assert.deepEqual(estimate.lines.map((line) => line.id), [offer.id]);
-  assert.equal(estimate.listSubtotalCents, offer.amountCents);
+  assert.equal(estimate.listSubtotalCents, offer.amountCents * 4);
   assert.ok(estimate.estimatedFinalSubtotalCents < estimate.listSubtotalCents);
-  assert.match(page, /buildProposalEstimate\(\{ consultingHours: 0, selectedOfferIds \}/);
+  assert.match(page, /buildProposalEstimate\(\{ selectedOffers: selections \}/);
 });
 
 test('server stores before independent idempotent emails and migration protects the immutable snapshot', () => {

@@ -21,7 +21,7 @@ import SectionLabel from '../components/ui/SectionLabel.astro';
 import { SITE, PUBLISHER } from '../data/seo';
 import { ogMeta } from '../data/og';
 
-const lastUpdated = 'July 20, 2026';
+const lastUpdated = 'July 23, 2026';
 const og = ogMeta('/privacy/');
 
 const summaryCards = [
@@ -57,7 +57,7 @@ const sections = [
       'Ad measurement information. When we run ads, the site uses Google Ads conversion tracking and the Meta (Facebook) Pixel to learn whether an ad click led to a purchase. These tools set cookies (Meta uses _fbp and _fbc) and read ad click ids from the page address. When you buy a book, we also report that purchase to Google and Meta from our server, using a hashed (scrambled, one-way) version of your email so the ad platforms can match it. We never send them your plain email address.',
       'Purchase information. If you buy a book, payment is handled by Stripe. Orionfold LLC receives your email address, the item you bought, and the amount paid, and uses them to deliver your files and keep purchase records. We never receive or store your card number.',
       'Newsletter information. If you subscribe, Orionfold LLC collects your email address and operational metadata used for confirmation, abuse prevention, and delivery, such as confirmation status, timestamps, IP address, and user-agent data.',
-      'Proposal request information. If you build and submit a consulting proposal, Orionfold LLC collects your full name, business email, company, request description, selected products, requested consulting cap, server-calculated estimate, timestamps, and abuse-prevention metadata. Draft details stay in your browser until you submit.',
+      'Proposal request information. If you build and submit a product proposal, Orionfold LLC collects your full name, business email, company, selected products, requested license or seat quantities, server-calculated estimate, timestamps, and abuse-prevention metadata. If you add an optional purchase note or PO reference, Orionfold LLC also stores that text. Draft details stay in your browser until you submit.',
       'Communications. If you email Orionfold LLC or open an issue, Orionfold LLC will receive the information you include in that message.',
       'Local software data. Orionfold software is intended to run locally by default, so workflow data, prompts, documents, and project state are generally stored on your own systems unless you intentionally connect external services.',
       'Connected provider data. If you configure model providers, APIs, or other integrations, your data may be sent directly to those providers based on your configuration.',
@@ -72,7 +72,7 @@ const sections = [
       'Provide and maintain the site, downloads, models, and newsletter.',
       'Confirm newsletter subscriptions and send release, product, and operational updates.',
       'Deliver purchased books and keep records of purchases.',
-      'Review non-binding consulting proposal requests, respond about fit and scope, and preserve the exact estimate that was submitted.',
+      'Review non-binding product proposal requests, respond about product fit, quantities, availability, and fulfillment terms, and preserve the exact estimate that was submitted.',
       'Measure whether our ads on Google and Meta lead to purchases, so we can decide where advertising is worth running.',
       'Detect abuse, spam, fraud, misuse, and security incidents.',
       'Understand aggregate usage patterns and improve the website and documentation.',
@@ -92,7 +92,7 @@ const sections = [
     ],
     bullets: [
       'Service providers such as Google Analytics, Supabase, Resend, and hosting or infrastructure vendors that help run the website and newsletter.',
-      'Supabase stores submitted proposal requests and Resend sends the details to Orionfold so the founder can respond. Proposal details are not sent to advertising platforms or included in public URLs.',
+      'Supabase stores submitted proposal requests and Resend sends the details to Orionfold so Orionfold can respond. Proposal details are not sent to advertising platforms or included in public URLs.',
       'Payment processing by Stripe, which collects your payment details under its own privacy policy when you buy a book.',
       'Ad platforms, namely Google and Meta (Facebook), which receive purchase conversion events that include the order value and a hashed version of your email, never the plain address. Meta explains how it uses this data at facebook.com/privacy/policy.',
       'Code, model, and file distribution providers such as GitHub and Hugging Face when you download releases, models, or interact with project repositories.',

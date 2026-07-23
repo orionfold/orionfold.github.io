@@ -204,10 +204,10 @@ export const OG_PAGES: Record<string, OgPage> = {
   },
   '/proposal/': {
     slug: 'proposal',
-    eyebrow: 'Founder-led · remote consulting',
+    eyebrow: 'Product proposal · self-serve',
     title: 'Build the Orionfold system your business needs',
-    seed: 'consulting',
-    alt: 'Build a non-binding proposal for Orionfold products and founder-led remote consulting',
+    seed: 'proposal',
+    alt: 'Build a non-binding Orionfold product proposal with license or seat quantities',
   },
   '/terms/': {
     slug: 'terms',

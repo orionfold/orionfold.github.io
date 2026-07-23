@@ -1,7 +1,9 @@
 import {
+  buildLegacyConsultingProposalSnapshot,
   buildProposalSnapshot,
   formatEffectiveSavings,
   formatUsd,
+  type ProposalSelection,
   type ProposalSnapshot,
 } from "../_shared/consulting-proposal.ts";
 
@@ -15,6 +17,8 @@ export interface ConsultingRequestInput {
   businessEmail: string;
   companyName: string;
   description: string;
+  proposalSchema: "product_quantity" | "legacy_consulting";
+  selectedOffers: ProposalSelection[];
   consultingHours: number;
   selectedOfferIds: string[];
   website: string;
@@ -47,16 +51,35 @@ export function parseConsultingRequest(body: unknown): ConsultingRequestInput {
   const source = body && typeof body === "object"
     ? body as Record<string, unknown>
     : {};
+  const productQuantityProposal = Array.isArray(source.selectedOffers);
   const selectedOfferIds = Array.isArray(source.selectedOfferIds)
     ? source.selectedOfferIds.slice(0, 20).map((value) => clean(value, 120))
       .filter(Boolean)
+    : [];
+  const selectedOffers = Array.isArray(source.selectedOffers)
+    ? source.selectedOffers.slice(0, 20).map((value) => {
+      const selection = value && typeof value === "object"
+        ? value as Record<string, unknown>
+        : {};
+      return {
+        id: clean(selection.id, 120),
+        quantity: Number(selection.quantity),
+      };
+    }).filter((selection) => selection.id)
     : [];
   return {
     requestId: clean(source.requestId, 36),
     fullName: clean(source.fullName, 160),
     businessEmail: clean(source.businessEmail, 320).toLowerCase(),
     companyName: clean(source.companyName, 200),
-    description: clean(source.description, 4_000),
+    description: clean(
+      productQuantityProposal ? source.purchaseNote : source.description,
+      productQuantityProposal ? 500 : 4_000,
+    ),
+    proposalSchema: productQuantityProposal
+      ? "product_quantity"
+      : "legacy_consulting",
+    selectedOffers,
     consultingHours: Number(source.consultingHours),
     selectedOfferIds,
     website: clean(source.website, 200),
@@ -74,14 +97,21 @@ export function validateConsultingRequest(
     return "Enter a valid business email.";
   }
   if (!input.companyName) return "Enter your company name.";
-  if (input.description.length < 20) {
+  if (
+    input.proposalSchema === "legacy_consulting" &&
+    input.description.length < 20
+  ) {
     return "Describe the outcome you want in at least 20 characters.";
   }
   try {
-    buildProposalSnapshot({
-      consultingHours: input.consultingHours,
-      selectedOfferIds: input.selectedOfferIds,
-    }, publishedWorkshopKeys);
+    if (input.proposalSchema === "legacy_consulting") {
+      buildLegacyConsultingProposalSnapshot({
+        consultingHours: input.consultingHours,
+        selectedOfferIds: input.selectedOfferIds,
+      }, publishedWorkshopKeys);
+    } else {
+      buildProposalSnapshot({ selectedOffers: input.selectedOffers }, publishedWorkshopKeys);
+    }
   } catch (error) {
     return error instanceof Error
       ? error.message
@@ -109,10 +139,14 @@ export function createRequestRecord(options: {
   publishedWorkshopKeys?: readonly string[];
   proposalNumber?: string;
 }): ConsultingRequestRecord {
-  const snapshot = buildProposalSnapshot({
-    consultingHours: options.input.consultingHours,
-    selectedOfferIds: options.input.selectedOfferIds,
-  }, options.publishedWorkshopKeys);
+  const snapshot = options.input.proposalSchema === "legacy_consulting"
+    ? buildLegacyConsultingProposalSnapshot({
+      consultingHours: options.input.consultingHours,
+      selectedOfferIds: options.input.selectedOfferIds,
+    }, options.publishedWorkshopKeys)
+    : buildProposalSnapshot({
+      selectedOffers: options.input.selectedOffers,
+    }, options.publishedWorkshopKeys);
   return {
     request_id: options.input.requestId,
     proposal_number: options.proposalNumber ?? createProposalNumber(),
@@ -133,11 +167,10 @@ export function createRequestRecord(options: {
 
 export function notificationText(record: ConsultingRequestRecord): string {
   const { snapshot } = record;
-  const lines = snapshot.lines.map((line) =>
-    `- ${line.label}\n  ${line.term}\n  ${
-      formatUsd(line.amountCents)
-    }\n  ${line.includes}`
-  ).join("\n\n");
+  const lines = snapshot.lines.map(formatProposalLine).join("\n\n");
+  const purchaseNote = record.request_description
+    ? `Purchase note or PO reference:\n${record.request_description}\n\n`
+    : "";
   return `NON-BINDING PROPOSAL REQUEST
 SUBMITTED · PENDING ORIONFOLD REVIEW
 
@@ -146,10 +179,7 @@ Name: ${record.full_name}
 Company: ${record.company_name}
 Business email: ${record.business_email}
 
-Requested outcome:
-${record.request_description}
-
-Itemized request:
+${purchaseNote}Itemized request:
 ${lines}
 
 List subtotal: ${formatUsd(snapshot.listSubtotalCents)}
@@ -161,7 +191,7 @@ Estimated final subtotal: ${formatUsd(snapshot.estimatedFinalSubtotalCents)}
 Terms: ${snapshot.termsVersion}
 Savings formula: ${snapshot.savingsFormulaVersion}
 
-This request is not accepted, scheduled, invoiced, due, or paid. Review scope and founder availability before responding. Orionfold promises a response within 24 hours, not acceptance or delivery.
+This request is not accepted, invoiced, due, or paid. Review product fit, quantities, availability, and fulfillment terms before responding. Orionfold promises a response within 24 hours, not acceptance or delivery.
 `;
 }
 
@@ -169,11 +199,10 @@ export function customerConfirmationText(
   record: ConsultingRequestRecord,
 ): string {
   const { snapshot } = record;
-  const lines = snapshot.lines.map((line) =>
-    `- ${line.label}\n  ${line.term}\n  ${
-      formatUsd(line.amountCents)
-    }\n  ${line.includes}`
-  ).join("\n\n");
+  const lines = snapshot.lines.map(formatProposalLine).join("\n\n");
+  const purchaseNote = record.request_description
+    ? `Purchase note or PO reference:\n${record.request_description}\n\n`
+    : "";
   return `ORIONFOLD
 WE RECEIVED YOUR NON-BINDING PROPOSAL REQUEST
 
@@ -185,10 +214,7 @@ Proposal: ${record.proposal_number} · version ${record.proposal_version}
 Company: ${record.company_name}
 Status: Submitted · pending Orionfold review
 
-Requested outcome:
-${record.request_description}
-
-Itemized request:
+${purchaseNote}Itemized request:
 ${lines}
 
 List subtotal: ${formatUsd(snapshot.listSubtotalCents)}
@@ -199,8 +225,8 @@ Estimated final subtotal: ${formatUsd(snapshot.estimatedFinalSubtotalCents)}
 
 What happens next:
 - Orionfold will review the request and respond within 24 hours.
-- Submission does not mean the request is accepted, scheduled, invoiced, due, or paid.
-- Founder availability, final scope, product lines, consulting cap, terms, and any invoice require separate written acceptance.
+- Submission does not mean the request is accepted, invoiced, due, or paid.
+- Product availability, final quantities, fulfillment terms, and any invoice require separate written acceptance.
 - Reply to this email if you need to correct or clarify the request.
 
 Terms version: ${snapshot.termsVersion}
@@ -210,6 +236,19 @@ ${snapshot.legalIdentity.name}
 ${snapshot.legalIdentity.postalAddress}
 ${snapshot.legalIdentity.email}
 `;
+}
+
+function formatProposalLine(line: ProposalSnapshot["lines"][number]): string {
+  const quantity = Number.isSafeInteger(line.quantity) && line.quantity > 0
+    ? line.quantity
+    : 1;
+  const unitAmount = Number.isSafeInteger(line.unitAmountCents)
+    ? line.unitAmountCents
+    : line.amountCents;
+  const unitLabel = line.unitLabel || "license";
+  return `- ${line.label}\n  Quantity: ${quantity} ${unitLabel}\n  Unit price: ${
+    formatUsd(unitAmount)
+  }\n  Line total: ${formatUsd(line.amountCents)}\n  ${line.term}\n  ${line.includes}`;
 }
 
 export function publicReceipt(

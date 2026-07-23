@@ -8,9 +8,8 @@ import { SITE } from '../data/seo';
 import { ogMeta } from '../data/og';
 import { RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED } from '../data/launch';
 import {
-  CONSULTING_HOUR_CAPS,
-  CONSULTING_RATE_CENTS,
-  CONSULTING_TERMS_VERSION,
+  MAX_PROPOSAL_QUANTITY,
+  PROPOSAL_TERMS_VERSION,
   formatUsd,
   getConsultingOffers,
 } from '../../supabase/functions/_shared/consulting-proposal';
@@ -24,39 +23,42 @@ const families = ['Prove', 'Operate', 'Learn', 'Train'] as const;
 const og = ogMeta('/proposal/');
 const localPreview = import.meta.env.DEV;
 const endpoint = 'https://orionfold.supabase.co/functions/v1/consulting-request';
-const offerJson = JSON.stringify(offers).replaceAll('<', '\\u003c');
 
-const serviceSchema = {
+const proposalSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Service',
-  name: 'Orionfold founder-led consulting',
-  description: 'Remote founder-led training, AI-native business guidance, and white-glove deployment support for Orionfold products.',
-  provider: { '@type': 'Organization', name: ORIONFOLD_LEGAL_IDENTITY.name, url: SITE.url },
-  areaServed: 'Worldwide',
-  availableChannel: { '@type': 'ServiceChannel', serviceUrl: `${SITE.url}/proposal/`, serviceLocation: { '@type': 'VirtualLocation', url: `${SITE.url}/proposal/` } },
-  offers: {
-    '@type': 'Offer',
-    priceCurrency: 'USD',
-    price: '350',
-    unitCode: 'HUR',
-    description: 'Standard hourly rate. A submitted proposal request is non-binding and subject to written acceptance and founder availability.',
+  '@type': 'WebPage',
+  name: 'Build a non-binding Orionfold product proposal',
+  description: 'Select Orionfold products, choose license or seat quantities, and print an itemized non-binding proposal request.',
+  url: `${SITE.url}/proposal/`,
+  mainEntity: {
+    '@type': 'OfferCatalog',
+    name: 'Orionfold product catalog',
+    itemListElement: offers.map((offer, index) => ({
+      '@type': 'Offer',
+      position: index + 1,
+      name: offer.label,
+      priceCurrency: 'USD',
+      price: (offer.amountCents / 100).toFixed(2),
+      url: `${SITE.url}${offer.href}`,
+      description: offer.includes,
+    })),
   },
 };
 ---
 <Layout
-  title="Build a non-binding Orionfold proposal · Consulting"
-  description="Build and print an itemized, non-binding proposal request for Orionfold products and remote founder-led consulting at $350 per hour."
+  title="Build a non-binding Orionfold product proposal"
+  description="Choose Orionfold products, set license or seat quantities, and print an itemized non-binding proposal request."
   ogImage={og.image}
   ogImageAlt={og.alt}
-  jsonLd={serviceSchema}
+  jsonLd={proposalSchema}
 >
   <Nav />
-  <main id="consulting-builder" data-local-preview={localPreview ? 'true' : 'false'} data-endpoint={endpoint} data-published-workshops={JSON.stringify(publishedWorkshopKeys)} data-offers={offerJson}>
-    <section class="consulting-hero relative overflow-hidden px-6 pb-20 pt-32">
-      <div class="consulting-grid absolute inset-0 pointer-events-none"></div>
+  <main id="proposal-builder" data-local-preview={localPreview ? 'true' : 'false'} data-endpoint={endpoint} data-published-workshops={JSON.stringify(publishedWorkshopKeys)}>
+    <section class="proposal-hero relative overflow-hidden px-6 pb-20 pt-32">
+      <div class="proposal-grid absolute inset-0 pointer-events-none"></div>
       <div class="absolute left-[12%] top-20 h-80 w-80 rounded-full bg-primary/[0.12] blur-[140px] pointer-events-none"></div>
       <div class="relative mx-auto max-w-6xl">
-        <div data-animate><SectionLabel text="Founder-led · remote consulting" /></div>
+        <div data-animate><SectionLabel text="Product proposal · self-serve" /></div>
         <div class="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1.18fr)_23rem] lg:items-end">
           <div>
             <p class="inline-flex rounded-full border border-primary/35 bg-primary/[0.08] px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-primary">
@@ -66,16 +68,16 @@ const serviceSchema = {
               Build the Orionfold system your business needs.
             </h1>
             <p class="mt-7 max-w-3xl text-lg leading-relaxed text-text-muted sm:text-xl" data-animate>
-              Choose a bounded founder-led consulting cap, then add only the products that solve distinct parts of your operating problem. See the exact estimate, print a formal proposal, and ask Orionfold to review it within 24 hours.
+              Need to procure through an invoice or purchase order? Select the products and quantities you need, generate a formal proposal, and send it to Orionfold for review.
             </p>
           </div>
           <aside class="rounded-2xl border border-border bg-surface-raised/85 p-6 shadow-of-pop backdrop-blur" data-animate>
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-text-dim">Standard rate</p>
-            <p class="mt-3 text-4xl font-semibold text-text">{formatUsd(CONSULTING_RATE_CENTS)}<span class="text-base font-normal text-text-muted"> / hour</span></p>
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-text-dim">Product-only proposal</p>
+            <p class="mt-3 text-3xl font-semibold text-text">Catalog price × quantity</p>
             <ul class="mt-5 space-y-3 text-sm leading-relaxed text-text-muted">
-              <li>Remote over email and online meetings</li>
-              <li>Training, application guidance, and deployment support</li>
-              <li>Customer-approved cap; no travel or hidden product costs</li>
+              <li>Select individual Orionfold products</li>
+              <li>Set the required licenses or workshop seats</li>
+              <li>Review list price and estimated bank-transfer savings</li>
             </ul>
           </aside>
         </div>
@@ -92,46 +94,17 @@ const serviceSchema = {
         <article class="rounded-2xl border border-border bg-surface p-5">
           <p class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-primary">2 · Review</p>
           <h2 class="mt-3 text-xl">See one itemized estimate</h2>
-          <p class="mt-2 text-sm leading-relaxed text-text-muted">Catalog prices, consulting cap, and estimated domestic bank-transfer savings stay visible and separate.</p>
+          <p class="mt-2 text-sm leading-relaxed text-text-muted">Unit price, quantity, line total, and estimated domestic bank-transfer savings remain visible and separate.</p>
         </article>
         <article class="rounded-2xl border border-border bg-surface p-5">
           <p class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-primary">3 · Request</p>
           <h2 class="mt-3 text-xl">Orionfold reviews fit</h2>
-          <p class="mt-2 text-sm leading-relaxed text-text-muted">Submission is not acceptance. Scope, founder availability, agreement, invoice, and cleared payment come later.</p>
+          <p class="mt-2 text-sm leading-relaxed text-text-muted">Submission is not acceptance. Product availability, final quantities, invoice, and cleared payment come later.</p>
         </article>
       </div>
     </section>
 
     <form id="proposal-form" novalidate>
-      <section class="px-6 py-20" aria-labelledby="cap-heading">
-        <div class="mx-auto max-w-6xl">
-          <div class="max-w-3xl">
-            <p class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-primary">Requested consulting cap</p>
-            <h2 id="cap-heading" class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Bound the initial engagement.</h2>
-            <p class="mt-5 text-lg leading-relaxed text-text-muted">This is a good-faith budget ceiling, not a fixed fee. After written acceptance, the first five hours are invoiced in advance and must be paid before work begins. Additional time worked within the agreed cap is invoiced monthly in arrears.</p>
-            <p id="cap-instruction" class="mt-5 text-sm font-medium text-text"><span class="text-primary">Select one consulting block.</span> Choose a 10-, 15-, or 20-hour cap; the initial five-hour advance is applied to time worked.</p>
-          </div>
-          <fieldset class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-describedby="cap-instruction">
-            <legend class="sr-only">Choose a consulting hour cap</legend>
-            {CONSULTING_HOUR_CAPS.map((hours) => (
-              <label class="cap-card cursor-pointer rounded-2xl border border-border bg-surface-raised p-5 transition hover:border-primary/60">
-                <input class="peer sr-only" type="radio" name="consultingHours" value={hours} required />
-                <span class="flex items-center justify-between gap-3">
-                  <span class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-text-dim">Up to</span>
-                  <span class="cap-choice inline-flex items-center gap-2 text-xs font-medium text-text-muted" aria-hidden="true">
-                    <span class="cap-check inline-grid h-5 w-5 place-items-center rounded border border-border bg-surface text-[0.75rem] font-bold text-white"></span>
-                    <span class="cap-select-copy">Select</span>
-                    <span class="cap-selected-copy hidden">Selected</span>
-                  </span>
-                </span>
-                <span class="mt-2 block text-3xl font-semibold text-text">{hours} hours</span>
-                <span class="mt-3 block text-sm text-text-muted">{formatUsd(hours * CONSULTING_RATE_CENTS)} requested cap</span>
-              </label>
-            ))}
-          </fieldset>
-        </div>
-      </section>
-
       <section class="border-y border-border bg-surface-raised px-6 py-20" aria-labelledby="matrix-heading">
         <div class="mx-auto max-w-6xl">
           <div class="max-w-4xl">
@@ -182,9 +155,29 @@ const serviceSchema = {
                         <div><dt>Included</dt><dd>{offer.includes}</dd></div>
                       </dl>
                       {offer.freeBoundary && <p class="mt-5 rounded-xl border border-primary/20 bg-primary/[0.06] p-3 text-sm leading-relaxed text-text-muted">{offer.freeBoundary}</p>}
-                      <div class="mt-6 flex items-end justify-between gap-4 border-t border-border pt-5">
+                      <div class="relative z-20 mt-6 grid gap-4 border-t border-border pt-5 sm:grid-cols-[1fr_auto] sm:items-end">
                         <a class="relative z-20 text-sm text-primary hover:underline" href={offer.href}>Review product details</a>
-                        <p class="text-right text-xl font-semibold text-text">{formatUsd(offer.amountCents)}{offer.mode === 'subscription' && <span class="block text-xs font-normal text-text-muted">per year</span>}</p>
+                        <div class="flex flex-wrap items-end justify-between gap-4 sm:justify-end">
+                          <label class="quantity-control">
+                            <span>Quantity · {offer.unitLabel}</span>
+                            <input
+                              type="number"
+                              name={`quantity-${offer.id}`}
+                              data-offer-quantity={offer.id}
+                              value="1"
+                              min="1"
+                              max={MAX_PROPOSAL_QUANTITY}
+                              step="1"
+                              inputmode="numeric"
+                              disabled
+                              aria-label={`Number of ${offer.unitLabel} for ${offer.label}`}
+                            />
+                          </label>
+                          <p class="min-w-28 text-right text-xl font-semibold text-text">
+                            {formatUsd(offer.amountCents)}
+                            <span class="block text-xs font-normal text-text-muted">each{offer.mode === 'subscription' ? ' · per year' : ''}</span>
+                          </p>
+                        </div>
                       </div>
                     </article>
                   ))}
@@ -204,14 +197,14 @@ const serviceSchema = {
         <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_25rem] lg:items-start">
           <div>
             <p class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-primary">Your request</p>
-            <h2 id="summary-heading" class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Tell us what success should leave under your control.</h2>
-            <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">A complete request lets Orionfold assess product fit, scope boundaries, and founder availability. We respond within 24 hours; that response may ask questions, decline, or propose a written scope.</p>
+            <h2 id="summary-heading" class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Tell us who the products are for.</h2>
+            <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">Your selections, quantities, and business contact are enough for Orionfold to review. We respond within 24 hours; that response may ask questions, decline, or issue a written product proposal.</p>
 
             <div class="mt-9 grid gap-5 sm:grid-cols-2">
               <label class="field-label">Full name<input name="fullName" autocomplete="name" maxlength="160" required /></label>
               <label class="field-label">Business email<input name="businessEmail" type="email" autocomplete="email" maxlength="320" required /></label>
               <label class="field-label sm:col-span-2">Company name<input name="companyName" autocomplete="organization" maxlength="200" required /></label>
-              <label class="field-label sm:col-span-2">What outcome do you want?<textarea name="description" rows="7" minlength="20" maxlength="4000" required placeholder="Describe the workflow, where it breaks today, the owner on your side, and what a successful handoff should leave under your control."></textarea></label>
+              <label class="field-label sm:col-span-2">Purchase note or PO reference <span class="normal-case tracking-normal text-text-dim">(optional)</span><textarea name="purchaseNote" rows="3" maxlength="500" placeholder="Add a PO reference or a short invoicing or fulfillment note, if needed."></textarea></label>
               <label class="honeypot" aria-hidden="true">Site<input name="website" tabindex="-1" autocomplete="off" /></label>
             </div>
             <div id="form-message" class="mt-5 hidden rounded-xl border p-4 text-sm leading-relaxed" role="status" aria-live="polite"></div>
@@ -219,13 +212,13 @@ const serviceSchema = {
               <button id="submit-proposal" class="rounded-full bg-primary px-6 py-3.5 font-semibold text-accent-text transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50" type="submit">Submit proposal request</button>
               <button id="print-proposal" class="rounded-full border border-border bg-surface-raised px-6 py-3.5 font-semibold text-text transition hover:border-primary/60" type="button">Print proposal</button>
             </div>
-            <p class="mt-5 max-w-3xl text-xs leading-relaxed text-text-dim">By submitting, you ask Orionfold to review a non-binding proposal request. No work is accepted, scheduled, invoiced, due, or paid. See the <a href="/terms/" class="text-primary hover:underline">Terms</a> and <a href="/privacy/" class="text-primary hover:underline">Privacy Policy</a>.</p>
+            <p class="mt-5 max-w-3xl text-xs leading-relaxed text-text-dim">By submitting, you ask Orionfold to review a non-binding product proposal request. No product order is accepted, invoiced, due, paid, or fulfilled. See the <a href="/terms/" class="text-primary hover:underline">Terms</a> and <a href="/privacy/" class="text-primary hover:underline">Privacy Policy</a>.</p>
           </div>
 
           <aside class="proposal-summary rounded-2xl border border-border bg-surface-raised p-6 shadow-of-pop lg:sticky lg:top-28" aria-label="Proposal estimate">
             <p class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-primary">Non-binding proposal request</p>
             <p id="summary-state" class="mt-2 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-text-dim">Draft · not submitted</p>
-            <div id="summary-lines" class="mt-6 space-y-4"><p class="text-sm text-text-muted">Choose a consulting cap to begin.</p></div>
+            <div id="summary-lines" class="mt-6 space-y-4"><p class="text-sm text-text-muted">Choose at least one product to begin.</p></div>
             <dl class="mt-6 space-y-3 border-t border-border pt-5 text-sm">
               <div class="flex justify-between gap-4"><dt class="text-text-muted">List subtotal</dt><dd id="summary-subtotal" class="font-medium text-text">—</dd></div>
               <div class="flex justify-between gap-4"><dt class="text-text-muted">Bank-transfer savings <span id="summary-rate"></span></dt><dd id="summary-savings" class="font-medium text-success">—</dd></div>
@@ -258,16 +251,16 @@ const serviceSchema = {
           </div>
           <div class="document-title">
             <p class="font-mono text-xs uppercase tracking-[0.16em] text-text-dim">Proposal <span id="document-number">Not assigned</span> · version <span id="document-version">Draft</span></p>
-            <h2>Orionfold products and founder-led consulting</h2>
+            <h2>Orionfold product proposal</h2>
             <p>Prepared <span id="document-date"></span> for <strong id="document-customer">Customer details pending</strong></p>
           </div>
           <section>
-            <h3>Requested outcome</h3>
-            <p id="document-description">Complete the request form with the operating outcome, current constraint, responsible owner, and expected handoff.</p>
+            <h3>Purchase note or PO reference</h3>
+            <p id="document-purchase-note">None provided.</p>
           </section>
           <section>
             <h3>Itemized estimate</h3>
-            <div id="document-lines"><p>Choose a consulting cap to build the estimate.</p></div>
+            <div id="document-lines"><p>Choose at least one product to build the estimate.</p></div>
             <dl class="document-totals">
               <div><dt>List subtotal</dt><dd id="document-subtotal">—</dd></div>
               <div><dt>Estimated domestic bank-transfer savings <span id="document-rate"></span></dt><dd id="document-savings">—</dd></div>
@@ -277,14 +270,13 @@ const serviceSchema = {
           <section class="document-terms">
             <h3>Proposal terms and boundaries</h3>
             <ul>
-              <li>This is a non-binding proposal request, not acceptance, a statement of work, an invoice, payment instructions, or a promise that work is scheduled.</li>
-              <li>Consulting is remote over email and online meetings. Travel, 24/7 coverage, managed operations, service levels, and guaranteed outcomes are excluded.</li>
-              <li>The selected hours are a requested initial cap, not a fixed fee. Following written acceptance, Orionfold invoices the first five consulting hours in advance. Cleared payment of that invoice is required before work begins and is applied to the first five hours worked.</li>
-              <li>Additional time worked within the agreed cap is billed at $350/hour, aggregated by day, rounded once to 15-minute increments, and invoiced monthly in arrears at the end of each calendar month.</li>
-              <li>Founder availability, scope fit, and a written agreement are required. Hosting, cloud/model usage, and third-party costs are excluded unless itemized later.</li>
+              <li>This is a non-binding product proposal request, not acceptance, an order, an invoice, payment instructions, or a promise of availability or fulfillment.</li>
+              <li>Every line is catalog unit price multiplied by the requested license or seat quantity. Prices, availability, and product terms may change before written acceptance.</li>
+              <li>Each selected quantity is a request only. Orionfold may confirm, decline, or propose different quantities and fulfillment terms in writing.</li>
+              <li>Hosting, cloud/model usage, deployment, consulting, and other third-party costs are excluded unless itemized in a later written agreement.</li>
               <li>Estimated savings applies to the eligible subtotal for domestic USD ACH/wire and uses the avoided-card-cost formula shown above. The final written proposal and invoice control.</li>
             </ul>
-            <p class="mt-4 text-xs">Terms version: {CONSULTING_TERMS_VERSION} · <span class="document-url">orionfold.com/terms/</span> · <span class="document-url">orionfold.com/privacy/</span></p>
+            <p class="mt-4 text-xs">Terms version: {PROPOSAL_TERMS_VERSION} · <span class="document-url">orionfold.com/terms/</span> · <span class="document-url">orionfold.com/privacy/</span></p>
           </section>
           <footer class="document-footer"><span>{ORIONFOLD_LEGAL_IDENTITY.name} · {ORIONFOLD_LEGAL_IDENTITY.email}</span><span>Non-binding proposal request</span></footer>
         </article>
@@ -301,7 +293,7 @@ const serviceSchema = {
       <div class="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 px-4 py-3 sm:gap-6 sm:px-6">
         <div class="min-w-0">
           <p class="font-mono text-[0.56rem] uppercase tracking-[0.15em] text-primary sm:text-[0.62rem]">Your proposal</p>
-          <p id="sticky-selection-summary" class="mt-0.5 truncate text-xs font-medium text-text sm:text-sm">Select a consulting block</p>
+          <p id="sticky-selection-summary" class="mt-0.5 truncate text-xs font-medium text-text sm:text-sm">Select a product</p>
         </div>
         <div class="text-right">
           <p class="font-mono text-[0.5rem] uppercase tracking-[0.1em] text-text-dim sm:text-[0.58rem]">You save</p>
@@ -325,26 +317,25 @@ const serviceSchema = {
     formatUsd,
   } from '../../supabase/functions/_shared/consulting-proposal';
 
-  type Offer = { id: string; label: string };
-  const root = document.getElementById('consulting-builder') as HTMLElement;
+  const root = document.getElementById('proposal-builder') as HTMLElement;
   const form = document.getElementById('proposal-form') as HTMLFormElement;
-  const offers: Offer[] = JSON.parse(root.dataset.offers || '[]');
-  const offerById = new Map(offers.map((offer) => [offer.id, offer]));
   const publishedWorkshopKeys: string[] = JSON.parse(root.dataset.publishedWorkshops || '[]');
   let submittedReceipt: any = null;
   let submittedPayload: any = null;
   let requestId = crypto.randomUUID();
 
   const text = (id: string, value: string) => { const node = document.getElementById(id); if (node) node.textContent = value; };
-  const selectedIds = () => Array.from(form.querySelectorAll<HTMLInputElement>('input[name="selectedOffers"]:checked')).map((input) => input.value);
-  const hours = () => Number(form.querySelector<HTMLInputElement>('input[name="consultingHours"]:checked')?.value || 0);
+  const selectedOffers = () => Array.from(form.querySelectorAll<HTMLInputElement>('input[name="selectedOffers"]:checked')).map((input) => ({
+    id: input.value,
+    quantity: Number(form.querySelector<HTMLInputElement>(`[data-offer-quantity="${CSS.escape(input.value)}"]`)?.value || 1),
+  }));
   const customerData = () => {
     const data = new FormData(form);
     return {
       fullName: String(data.get('fullName') || '').trim(),
       businessEmail: String(data.get('businessEmail') || '').trim(),
       companyName: String(data.get('companyName') || '').trim(),
-      description: String(data.get('description') || '').trim(),
+      purchaseNote: String(data.get('purchaseNote') || '').trim(),
       website: String(data.get('website') || ''),
     };
   };
@@ -358,21 +349,21 @@ const serviceSchema = {
     text('document-customer', customer.fullName
       ? `${customer.fullName}${customer.companyName ? ` · ${customer.companyName}` : ''}${customer.businessEmail ? ` · ${customer.businessEmail}` : ''}`
       : 'Customer details pending');
-    text('document-description', customer.description || 'Complete the request form with the operating outcome, current constraint, responsible owner, and expected handoff.');
+    text('document-purchase-note', customer.purchaseNote || 'None provided.');
     if (!snapshot) {
       stickyBar.classList.add('is-visible');
-      text('sticky-selection-summary', 'Select a consulting block or product');
+      text('sticky-selection-summary', 'Select a product');
       text('sticky-savings', '$0.00');
       text('sticky-final', '$0.00');
-      linesHost.innerHTML = '<p class="text-sm text-text-muted">Choose a consulting cap or product to begin.</p>';
-      documentLines.innerHTML = '<p>Choose a consulting cap or product to build the estimate.</p>';
+      linesHost.innerHTML = '<p class="text-sm text-text-muted">Choose at least one product to begin.</p>';
+      documentLines.innerHTML = '<p>Choose at least one product to build the estimate.</p>';
       for (const id of ['summary-subtotal','summary-savings','summary-final','document-subtotal','document-savings','document-final']) text(id, '$0.00');
       text('summary-rate', ''); text('document-rate', '');
       return;
     }
     linesHost.replaceChildren(...snapshot.lines.map((line: any) => {
       const row = document.createElement('div'); row.className = 'flex justify-between gap-4 text-sm';
-      const label = document.createElement('span'); label.className = 'text-text-muted'; label.textContent = line.label;
+      const label = document.createElement('span'); label.className = 'text-text-muted'; label.textContent = `${line.label} · ${line.quantity} ${line.unitLabel}`;
       const amount = document.createElement('strong'); amount.className = 'shrink-0 text-text'; amount.textContent = formatUsd(line.amountCents);
       row.append(label, amount); return row;
     }));
@@ -380,14 +371,15 @@ const serviceSchema = {
       const row = document.createElement('div'); row.className = 'document-line';
       const copy = document.createElement('div');
       const title = document.createElement('h4'); title.textContent = line.label;
+      const quantity = document.createElement('p'); quantity.textContent = `${line.quantity} ${line.unitLabel} × ${formatUsd(line.unitAmountCents)} each`;
       const term = document.createElement('p'); term.textContent = line.term;
       const include = document.createElement('p'); include.textContent = line.includes;
-      copy.append(title, term, include);
+      copy.append(title, quantity, term, include);
       const amount = document.createElement('strong'); amount.textContent = formatUsd(line.amountCents);
       row.append(copy, amount); return row;
     }));
     const rate = formatEffectiveSavings(snapshot.effectiveSavingsBasisPoints);
-    const selectionSummary = snapshot.lines.map((line: any) => line.label).join(' + ');
+    const selectionSummary = snapshot.lines.map((line: any) => `${line.label} × ${line.quantity}`).join(' + ');
     text('sticky-selection-summary', selectionSummary);
     document.getElementById('sticky-selection-summary')?.setAttribute('title', selectionSummary);
     text('sticky-savings', `−${formatUsd(snapshot.savingsCents)}`);
@@ -405,19 +397,24 @@ const serviceSchema = {
 
   function currentSnapshot() {
     if (submittedReceipt) return submittedReceipt.snapshot;
-    const consultingHours = hours();
-    const selectedOfferIds = selectedIds();
-    if (!consultingHours && !selectedOfferIds.length) return undefined;
+    const selections = selectedOffers();
+    if (!selections.length) return undefined;
     try {
-      return consultingHours
-        ? buildProposalSnapshot({ consultingHours, selectedOfferIds }, publishedWorkshopKeys)
-        : buildProposalEstimate({ consultingHours: 0, selectedOfferIds }, publishedWorkshopKeys);
+      return buildProposalEstimate({ selectedOffers: selections }, publishedWorkshopKeys);
     }
     catch { return undefined; }
   }
 
-  form.addEventListener('input', () => {
+  form.addEventListener('input', (event) => {
     if (submittedReceipt) return;
+    const target = event.target as HTMLInputElement;
+    if (target.matches('input[name="selectedOffers"]')) {
+      const quantity = form.querySelector<HTMLInputElement>(`[data-offer-quantity="${CSS.escape(target.value)}"]`);
+      if (quantity) {
+        quantity.disabled = !target.checked;
+        if (target.checked && (!quantity.value || Number(quantity.value) < 1)) quantity.value = '1';
+      }
+    }
     render(currentSnapshot());
   });
 
@@ -431,10 +428,10 @@ const serviceSchema = {
     const message = document.getElementById('form-message')!;
     const submit = document.getElementById('submit-proposal') as HTMLButtonElement;
     const retryingConfirmation = Boolean(submittedReceipt && submittedPayload);
-    if (!retryingConfirmation && !hours()) {
+    if (!retryingConfirmation && !selectedOffers().length) {
       message.className = 'mt-5 rounded-xl border border-danger/40 bg-danger/10 p-4 text-sm text-danger';
-      message.textContent = 'Choose a 10, 15, or 20 hour consulting cap.';
-      form.querySelector<HTMLInputElement>('input[name="consultingHours"]')?.focus();
+      message.textContent = 'Choose at least one Orionfold product.';
+      form.querySelector<HTMLInputElement>('input[name="selectedOffers"]')?.focus();
       return;
     }
     if (!retryingConfirmation && !form.reportValidity()) return;
@@ -443,16 +440,14 @@ const serviceSchema = {
           fullName: submittedPayload.fullName,
           businessEmail: submittedPayload.businessEmail,
           companyName: submittedPayload.companyName,
-          description: submittedPayload.description,
+          purchaseNote: submittedPayload.purchaseNote,
           website: submittedPayload.website,
         }
       : customerData();
-    if (!retryingConfirmation && customer.description.length < 20) return;
     const payload = submittedPayload ?? {
       requestId,
       ...customer,
-      consultingHours: hours(),
-      selectedOfferIds: selectedIds(),
+      selectedOffers: selectedOffers(),
     };
     submit.disabled = true;
     submit.textContent = 'Saving request…';
@@ -468,7 +463,7 @@ const serviceSchema = {
           proposalVersion: 1,
           requestState: 'pending_review',
           bindingStatus: 'non_binding_request',
-          snapshot: buildProposalSnapshot({ consultingHours: hours(), selectedOfferIds: selectedIds() }, publishedWorkshopKeys),
+          snapshot: buildProposalSnapshot({ selectedOffers: selectedOffers() }, publishedWorkshopKeys),
         };
       } else {
         const response = await fetch(root.dataset.endpoint!, {
@@ -492,10 +487,10 @@ const serviceSchema = {
       message.textContent = result.localPreview
         ? 'Preview only: no data or email was sent. The formal document below shows the server-calculated receipt shape for review.'
         : customerConfirmationDelayed
-          ? `Proposal ${result.proposalNumber} was stored, but your confirmation email was delayed. Keep or print the proposal below, then retry the email. This does not mean the request is accepted or scheduled.`
+          ? `Proposal ${result.proposalNumber} was stored, but your confirmation email was delayed. Keep or print the proposal below, then retry the email. This does not mean the product request is accepted or fulfilled.`
         : result.notificationStatus === 'delayed'
-          ? `Proposal ${result.proposalNumber} was stored and your confirmation copy was emailed to ${customer.businessEmail}. Orionfold's internal notification was delayed; if you do not hear within 24 hours, reply to that email. This does not mean the request is accepted or scheduled.`
-          : `Proposal ${result.proposalNumber} was stored and a confirmation copy was emailed to ${customer.businessEmail}. Orionfold will respond within 24 hours. This does not mean the request is accepted or scheduled.`;
+          ? `Proposal ${result.proposalNumber} was stored and your confirmation copy was emailed to ${customer.businessEmail}. Orionfold's internal notification was delayed; if you do not hear within 24 hours, reply to that email. This does not mean the product request is accepted or fulfilled.`
+          : `Proposal ${result.proposalNumber} was stored and a confirmation copy was emailed to ${customer.businessEmail}. Orionfold will respond within 24 hours. This does not mean the product request is accepted or fulfilled.`;
       submit.disabled = !customerConfirmationDelayed;
       submit.textContent = customerConfirmationDelayed ? 'Retry confirmation email' : 'Request stored';
       document.getElementById('print-proposal')?.focus();
@@ -511,19 +506,19 @@ const serviceSchema = {
 </script>
 
 <style>
-  .consulting-grid { background-image: linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(to bottom, black, transparent 88%); }
-  .cap-card:has(input:checked), .offer-card:has(.offer-checkbox:checked) { border-color: color-mix(in oklch, var(--color-primary) 70%, var(--color-border)); box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-primary) 35%, transparent), 0 20px 60px -42px var(--color-primary); }
-  .cap-card:has(input:checked) .cap-check { border-color: var(--color-primary); background: var(--color-primary); }
-  .cap-card:has(input:checked) .cap-check::after { content: '✓'; }
-  .cap-card:has(input:checked) .cap-select-copy { display: none; }
-  .cap-card:has(input:checked) .cap-selected-copy { display: inline; color: var(--color-primary); }
+  .proposal-grid { background-image: linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(to bottom, black, transparent 88%); }
+  .offer-card:has(.offer-checkbox:checked) { border-color: color-mix(in oklch, var(--color-primary) 70%, var(--color-border)); box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-primary) 35%, transparent), 0 20px 60px -42px var(--color-primary); }
   .offer-card:has(.offer-checkbox:checked) .offer-check { border-color: var(--color-primary); background: var(--color-primary); }
   .offer-card:has(.offer-checkbox:checked) .offer-check::after { content: '✓'; }
   .offer-card:has(.offer-checkbox:checked) .offer-select-copy { display: none; }
   .offer-card:has(.offer-checkbox:checked) .offer-selected-copy { display: inline; color: var(--color-primary); }
-  .cap-card:has(input:focus-visible), .offer-card:has(.offer-checkbox:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+  .offer-card:has(.offer-checkbox:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 3px; }
   .offer-card dt { margin-bottom: .3rem; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-dim); }
   .offer-card dd { color: var(--color-text-muted); }
+  .quantity-control { display: grid; gap: .35rem; font-family: var(--font-mono); font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-dim); }
+  .quantity-control input { width: 5.5rem; border: 1px solid var(--color-border); border-radius: .65rem; background: var(--color-surface-raised); padding: .55rem .65rem; color: var(--color-text); font-family: var(--font-sans); font-size: .95rem; font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .quantity-control input:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; border-color: transparent; }
+  .quantity-control input:disabled { cursor: not-allowed; opacity: .45; }
   .field-label { display: flex; flex-direction: column; gap: .55rem; color: var(--color-text); font-size: .85rem; font-weight: 600; }
   .field-label input, .field-label textarea { width: 100%; border: 1px solid var(--color-border); border-radius: .75rem; background: var(--color-surface-raised); padding: .85rem 1rem; color: var(--color-text); font: inherit; font-weight: 400; }
   .field-label input:focus, .field-label textarea:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; border-color: transparent; }
@@ -550,12 +545,12 @@ const serviceSchema = {
   @media (max-width: 640px) { .document-header, .document-status, .document-footer { flex-direction: column; } .document-header > div:last-child { text-align: left; } .document-line { gap: 1rem; } }
   @media print {
     @page { size: auto; margin: 15mm; }
-    :global(#nav-wrapper), :global(body > footer), #proposal-form, #proposal-sticky-summary, .consulting-hero, main > section:nth-of-type(2), .proposal-preview-intro { display: none !important; }
+    :global(#nav-wrapper), :global(body > footer), #proposal-form, #proposal-sticky-summary, .proposal-hero, main > section:nth-of-type(2), .proposal-preview-intro { display: none !important; }
     :global(body) { background: #fff !important; }
     .proposal-preview-wrap { border: 0 !important; background: #fff !important; padding: 0 !important; }
     .proposal-document { border: 0; border-radius: 0; box-shadow: none; padding: 0; }
     .document-url { text-decoration: none; }
     .document-footer { position: running(document-footer); }
   }
-  @media (prefers-reduced-motion: reduce) { .cap-card, .offer-card { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .offer-card { transition: none; } }
 </style>

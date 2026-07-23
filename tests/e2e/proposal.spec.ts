@@ -4,17 +4,21 @@ const consultingRequestEndpoint = 'https://orionfold.supabase.co/functions/v1/co
 
 const proposalSnapshot = {
   lines: [{
-    id: 'consulting-10',
-    label: 'Founder-led consulting · up to 10 hours',
-    term: 'Requested initial cap · $350/hour',
-    amountCents: 350000,
-    includes: 'Remote training, application guidance, and deployment support.',
+    id: 'relay-founding',
+    lookupKey: 'license_orionfold_relay_founding',
+    label: 'Orionfold Relay',
+    term: 'Founding premium-Pack license · 12-month update window',
+    quantity: 2,
+    unitLabel: 'licenses',
+    unitAmountCents: 34900,
+    amountCents: 69800,
+    includes: 'Founding premium-Pack license with a 12-month update window.',
   }],
-  listSubtotalCents: 350000,
-  savingsCents: 10180,
-  estimatedFinalSubtotalCents: 339820,
-  effectiveSavingsBasisPoints: 291,
-  termsVersion: 'consulting-request-2026-07-20-r2',
+  listSubtotalCents: 69800,
+  savingsCents: 2054,
+  estimatedFinalSubtotalCents: 67746,
+  effectiveSavingsBasisPoints: 294,
+  termsVersion: 'product-proposal-2026-07-23-r1',
   savingsFormulaVersion: 'domestic-ach-wire-2026-07-20-r1',
   legalIdentity: {
     name: 'Orionfold LLC',
@@ -24,15 +28,16 @@ const proposalSnapshot = {
 };
 
 async function completeProposalForm(page: Page) {
-  await page.locator('.cap-card').filter({ hasText: '10 hours' }).click();
+  const relayCard = page.locator('[data-offer-card="relay-founding"]');
+  await relayCard.click({ position: { x: 16, y: 16 } });
+  await relayCard.getByLabel(/Number of licenses/).fill('2');
   await page.getByLabel('Full name').fill('Website Test');
   await page.getByLabel('Business email').fill('manav@orionfold.com');
   await page.getByLabel('Company name').fill('Orionfold LLC');
-  await page.getByLabel('What outcome do you want?').fill('Validate the customer proposal confirmation and recovery flow.');
 }
 
 async function enableMockedProductionSubmission(page: Page) {
-  await page.locator('#consulting-builder').evaluate((element) => {
+  await page.locator('#proposal-builder').evaluate((element) => {
     (element as HTMLElement).dataset.localPreview = 'false';
   });
 }
@@ -70,16 +75,19 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(page.locator('#sticky-final')).not.toHaveText('$0.00');
     const productOnlyTotal = await page.locator('#sticky-final').textContent();
 
-    const tenHourCard = page.locator('.cap-card').filter({ hasText: '10 hours' });
-    await tenHourCard.click();
-    await expect(tenHourCard.locator('input[name="consultingHours"]')).toBeChecked();
-    await expect(page.locator('#summary-lines > div')).toHaveCount(2);
+    const quantity = productCard.getByLabel(/Number of licenses/);
+    await expect(quantity).toBeEnabled();
+    await quantity.fill('3');
+    await expect(page.locator('#summary-lines > div')).toHaveCount(1);
     await expect(page.locator('#sticky-final')).not.toHaveText(productOnlyTotal ?? '');
+    await expect(page.locator('#summary-lines')).toContainText('3 licenses');
+    await expect(page.locator('#document-lines')).toContainText('3 licenses ×');
 
     await productCard.click({ position: { x: 16, y: 16 } });
     await expect(productCheckbox).not.toBeChecked();
-    await expect(page.locator('#summary-lines > div')).toHaveCount(1);
-    await expect(page.locator('#sticky-selection-summary')).toContainText(/10-hour/);
+    await expect(quantity).toBeDisabled();
+    await expect(page.locator('#summary-lines > div')).toHaveCount(0);
+    await expect(page.locator('#sticky-selection-summary')).toHaveText('Select a product');
 
     expect(runtimeErrors).toEqual([]);
   });
@@ -107,7 +115,9 @@ test('proposal sticky summary remains on-screen at mobile width', async ({ page 
 });
 
 test('successful proposal submission confirms the customer copy was emailed', async ({ page }) => {
+  let submittedBody: any;
   await page.route(consultingRequestEndpoint, async (route) => {
+    submittedBody = route.request().postDataJSON();
     await route.fulfill({
       status: 201,
       contentType: 'application/json',
@@ -128,8 +138,13 @@ test('successful proposal submission confirms the customer copy was emailed', as
   await completeProposalForm(page);
   await page.getByRole('button', { name: 'Submit proposal request' }).click();
 
+  expect(submittedBody.selectedOffers).toEqual([{ id: 'relay-founding', quantity: 2 }]);
+  expect(submittedBody.purchaseNote).toBe('');
+  expect(submittedBody).not.toHaveProperty('description');
+  expect(submittedBody).not.toHaveProperty('consultingHours');
+  expect(submittedBody).not.toHaveProperty('selectedOfferIds');
   await expect(page.locator('#form-message')).toContainText('confirmation copy was emailed to manav@orionfold.com');
-  await expect(page.locator('#form-message')).toContainText('does not mean the request is accepted or scheduled');
+  await expect(page.locator('#form-message')).toContainText('does not mean the product request is accepted or fulfilled');
   await expect(page.getByRole('button', { name: 'Request stored' })).toBeDisabled();
 });
 
