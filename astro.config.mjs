@@ -116,9 +116,9 @@ function buildLastmodMap() {
     if (d) map[hub] = d;
   }
   // Training is a hand-authored product catalog rather than an Astro content
-  // collection. Its founding edition source revision is dated 2026-07-19.
-  map['/training/'] = '2026-07-19';
-  map['/training/relay-operator-workshop/'] = '2026-07-19';
+  // collection. Track its latest material public release explicitly.
+  map['/training/'] = '2026-07-23';
+  map['/training/relay-operator-workshop/'] = '2026-07-23';
   map['/proposal/'] = '2026-07-20';
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
   // so it tracks the freshest date across all of them.
