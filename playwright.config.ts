@@ -14,7 +14,10 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: 'npm run preview -- --host 127.0.0.1 --port 4325',
+    // Exercise the generated Pages artifact as a static directory tree.
+    // Astro preview returns 404 for trailing-slash directory routes even when
+    // dist/<route>/index.html exists, which makes it unlike GitHub Pages.
+    command: 'python3 -m http.server 4325 --bind 127.0.0.1 --directory dist',
     url: 'http://127.0.0.1:4325/',
     reuseExistingServer: !process.env.CI,
     timeout: 30_000,

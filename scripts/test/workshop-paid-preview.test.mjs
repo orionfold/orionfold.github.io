@@ -15,10 +15,12 @@ import {
 const read = (path) => readFile(new URL(`../../${path}`, import.meta.url), 'utf8');
 
 test('revised workshop promise stays aligned across catalog and product surfaces', async () => {
-  const [catalog, hub, product] = await Promise.all([
+  const [catalog, hub, product, commerceConfig, mediaMigration] = await Promise.all([
     read('scripts/export-catalog.ts'),
     read('src/pages/training/index.astro'),
     read('src/pages/training/relay-operator-workshop/index.astro'),
+    read('src/lib/commerce-config.ts'),
+    read('supabase/migrations/20260723223000_expand_workshop_public_media_limit.sql'),
   ]);
   const promise = 'Build and run one AI-assisted workflow';
   assert.match(catalog, new RegExp(promise));
@@ -26,6 +28,17 @@ test('revised workshop promise stays aligned across catalog and product surfaces
   assert.match(product, new RegExp(promise));
   assert.match(product, /human approval, visible cost controls, and a reusable blueprint/i);
   assert.match(product, /<video[^>]+crossorigin="anonymous"/);
+  assert.match(product, /media\/the-marketing-line-master\.mp4/);
+  assert.match(product, /captions\/the-marketing-line-master\.vtt/);
+  assert.match(product, /transcripts\/the-marketing-line-master\.md/);
+  assert.match(product, /posters\/the-marketing-line-master-poster\.png/);
+  assert.match(product, /Free · 15-minute workshop showcase/);
+  assert.match(product, /Watch the free workshop showcase/);
+  assert.doesNotMatch(product, /Watch the free field lesson/);
+  assert.match(product, /href="\/relay\/memos\/marketing-line\/"/);
+  assert.match(commerceConfig, /orionfold\.supabase\.co\/storage\/v1\/object\/public\/workshop-public/);
+  assert.match(mediaMigration, /file_size_limit = 157286400/);
+  assert.match(mediaMigration, /'video\/mp4'/);
 });
 
 test('landing page presents every real workshop screen as a theme-aware alternating story', async () => {

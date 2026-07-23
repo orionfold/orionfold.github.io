@@ -13,15 +13,15 @@ const workshop = RELAY_OPERATOR_WORKSHOP;
 const price = formatUsd(workshop.primary.amount);
 const pageUrl = `${SITE.url}/training/relay-operator-workshop/`;
 const operatorPreview = import.meta.env.DEV;
-const media = WORKSHOP_MEDIA_BASE ? {
-  trailer: `${WORKSHOP_MEDIA_BASE}/media/relay-operator-workshop-landing-trailer.mp4`,
-  trailerCaptions: `${WORKSHOP_MEDIA_BASE}/captions/relay-operator-workshop-landing-trailer.vtt`,
-  trailerTranscript: `${WORKSHOP_MEDIA_BASE}/transcripts/relay-operator-workshop-landing-trailer.md`,
+const media = {
+  showcase: `${WORKSHOP_MEDIA_BASE}/media/the-marketing-line-master.mp4`,
+  showcaseCaptions: `${WORKSHOP_MEDIA_BASE}/captions/the-marketing-line-master.vtt`,
+  showcaseTranscript: `${WORKSHOP_MEDIA_BASE}/transcripts/the-marketing-line-master.md`,
+  showcasePoster: `${WORKSHOP_MEDIA_BASE}/posters/the-marketing-line-master-poster.png`,
   fieldLesson: `${WORKSHOP_MEDIA_BASE}/media/relay-operator-workshop-field-lesson.mp4`,
   fieldLessonCaptions: `${WORKSHOP_MEDIA_BASE}/captions/relay-operator-workshop-field-lesson.vtt`,
   fieldLessonTranscript: `${WORKSHOP_MEDIA_BASE}/transcripts/relay-operator-workshop-field-lesson.md`,
-  poster: `${WORKSHOP_MEDIA_BASE}/posters/poster-promise.png`,
-} : null;
+};
 
 const syllabus = [
   ['Inspect', 'Open the source-hashed Marketing Line example. Name its owned inputs, workflow boundary, human checkpoint, and retained evidence.'],
@@ -168,7 +168,7 @@ const faqSchema = {
             ) : (
               <span class="inline-flex min-h-11 items-center rounded-full border border-primary/30 bg-primary/[0.07] px-5 py-3 font-mono text-xs font-semibold uppercase tracking-wider text-primary">Checkout opens at launch</span>
             )}
-            <a href="#free-lesson" class="of-secondary-action">Watch the free field lesson</a>
+            <a href="#free-lesson" class="of-secondary-action">Watch the free workshop showcase</a>
           </div>
           <p id="workshop-checkout-error" role="alert" hidden class="mt-3 text-sm text-red-500"></p>
           <p class="mt-4 text-xs leading-relaxed text-text-dim">
@@ -227,22 +227,19 @@ const faqSchema = {
     <section id="free-lesson" class="border-y border-border/70 bg-surface-raised px-6 py-20 sm:py-28">
       <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
         <div class="overflow-hidden rounded-3xl border border-border bg-black shadow-2xl">
-          {media ? (
-            <video class="aspect-video w-full" controls playsinline preload="metadata" poster={media.poster} crossorigin="anonymous">
-              <source src={media.fieldLesson} type="video/mp4" />
-              <track kind="captions" src={media.fieldLessonCaptions} srclang="en" label="English" default />
-              Your browser cannot play this video. Use the transcript link beside it.
-            </video>
-          ) : (
-            <div class="bg-surface"><ThemedShot id="workflows-list" alt="Relay Workflows list showing visible run state and actions." class="w-full" /></div>
-          )}
+          <video class="aspect-video w-full" controls playsinline preload="metadata" poster={media.showcasePoster} crossorigin="anonymous">
+            <source src={media.showcase} type="video/mp4" />
+            <track kind="captions" src={media.showcaseCaptions} srclang="en" label="English" default />
+            Your browser cannot play this video. Use the transcript link beside it.
+          </video>
         </div>
         <div>
-          <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Free · Complete field lesson</p>
-          <h2 class="mt-4 text-balance text-3xl font-bold sm:text-4xl">See the source, join, checkpoint, and proof before you buy.</h2>
-          <p class="mt-5 leading-relaxed text-text-muted">The public lesson uses synthetic Marketing Line data to show how a lead, campaign, workflow, human decision, and retained evidence connect. It makes no model call and writes nothing to your Relay workspace.</p>
+          <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Free · 15-minute workshop showcase</p>
+          <h2 class="mt-4 text-balance text-3xl font-bold sm:text-4xl">Follow the Marketing Line from operating memo to retained proof.</h2>
+          <p class="mt-5 leading-relaxed text-text-muted">This complete public showcase uses synthetic Marketing Line data to inspect the source, isolate the join, shape the workflow, place human judgment before consequence, and keep a deterministic receipt. It makes no model call and writes nothing to your Relay workspace.</p>
           <div class="mt-7 flex flex-wrap gap-4">
-            {media ? <a class="of-secondary-action" href={media.fieldLessonTranscript}>Read the field-lesson transcript</a> : <span class="text-sm text-text-dim">The complete field lesson is being prepared; the source-grounded poster and lesson description remain available.</span>}
+            <a class="of-secondary-action" href={media.showcaseTranscript}>Read the chaptered transcript</a>
+            <a class="of-text-action" href="/relay/memos/marketing-line/">Read the operating memo →</a>
             <a class="of-text-action" href="/relay/demo/">Explore the synthetic Relay demo →</a>
           </div>
         </div>
