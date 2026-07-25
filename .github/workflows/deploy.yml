@@ -20,6 +20,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # G-036: production Stripe, Supabase, Resend and private media are active
+      # and passed the no-charge release rehearsal. Keep the public build's
+      # commercial state explicit at the deployment boundary.
+      PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v6

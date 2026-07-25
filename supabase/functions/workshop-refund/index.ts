@@ -2,7 +2,7 @@ import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { STRIPE_API_VERSION } from "../_shared/catalog.ts";
 import { getCorsHeaders, jsonResponse } from "../_shared/cors.ts";
-import { hashWorkshopToken } from "../_shared/workshop-token.ts";
+import { hashWorkshopToken, isWorkshopToken } from "../_shared/workshop-token.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return jsonResponse({ error: "Method not allowed" }, cors, 405);
   try {
     const body = await req.json().catch(() => ({}));
-    if (typeof body.token !== "string") return jsonResponse({ ok: false, state: "invalid" }, cors, 404);
+    if (!isWorkshopToken(body.token)) return jsonResponse({ ok: false, state: "invalid" }, cors, 404);
     const tokenHash = await hashWorkshopToken(body.token);
     const db = admin();
     const tokenResult = await db.from("workshop_tokens")

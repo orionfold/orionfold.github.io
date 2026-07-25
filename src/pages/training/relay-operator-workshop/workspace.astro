@@ -81,7 +81,7 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
       <div class="w-full max-w-xl rounded-2xl border border-border bg-surface-raised p-8 shadow-of sm:p-10">
         <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Private workshop workspace</p>
         <h1 class="mt-4 text-3xl font-bold">Open this workspace from your access link.</h1>
-        <p class="mt-5 leading-relaxed text-text-muted">The guided edition is unlocked after a verified purchase. If your seven-day link expired, request a fresh rotating link without creating an account.</p>
+        <p id="workspace-lock-message" class="mt-5 leading-relaxed text-text-muted">The guided edition is unlocked after a verified purchase. If your seven-day link expired, request a fresh rotating link without creating an account.</p>
         <a class="mt-7 inline-flex rounded-lg border border-primary/40 px-5 py-3 font-mono text-sm text-primary hover:bg-primary/5" href="/training/relay-operator-workshop/access/">Recover workshop access</a>
       </div>
     </section>
@@ -176,32 +176,28 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
               <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">{stage.summary}</p>
 
               <div class="mt-8 overflow-hidden rounded-2xl border border-border bg-black shadow-2xl shadow-primary/[0.08]">
-                {reviewMediaBase ? (
-                  <video class="aspect-video w-full" controls playsinline preload="metadata" crossorigin="anonymous" data-stage-media>
-                    <source data-src={moduleMedia(stage.id)} type="video/mp4" />
-                    <track kind="captions" data-src={moduleCaptions(stage.id)} srclang="en" label="English" default />
-                    Your browser cannot play this video. Use the transcript link below.
-                  </video>
-                ) : (
-                  <div class="grid aspect-video place-items-center bg-surface px-8 text-center text-sm text-text-muted">Review media is not connected in this local build. The guided action and progression remain available for shell review.</div>
-                )}
+                <video class:list={['aspect-video w-full', !reviewMediaBase && 'hidden']} controls playsinline preload="metadata" crossorigin="anonymous" data-stage-media data-private-stage={stage.id}>
+                  <source data-asset-role="media" data-src={moduleMedia(stage.id) || undefined} type="video/mp4" />
+                  <track kind="captions" data-asset-role="captions" data-src={moduleCaptions(stage.id) || undefined} srclang="en" label="English" default />
+                  Your browser cannot play this video. Use the transcript below.
+                </video>
+                {!reviewMediaBase && <div class="grid aspect-video place-items-center bg-surface px-8 text-center text-sm text-text-muted" data-media-pending data-private-stage={stage.id}>Preparing this private lesson…</div>}
               </div>
-              {reviewMediaBase && (
-                <details
-                  class="workshop-transcript mt-4 overflow-hidden rounded-2xl border border-border bg-surface-raised"
-                  data-workshop-transcript
-                  data-transcript-stage={stage.id}
-                  data-transcript-url={moduleTranscript(stage.id)}
-                >
-                  <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono text-xs uppercase tracking-[0.16em] text-text-muted hover:text-primary sm:px-6">
-                    <span>Read transcript + sources</span>
-                    <span class="workshop-transcript-state text-primary" data-transcript-state>Expand</span>
-                  </summary>
-                  <div class="border-t border-border px-5 py-6 sm:px-7 sm:py-7" data-transcript-content aria-live="polite">
-                    <p class="text-sm text-text-muted">The private transcript loads only when you open this section.</p>
-                  </div>
-                </details>
-              )}
+              <details
+                class="workshop-transcript mt-4 overflow-hidden rounded-2xl border border-border bg-surface-raised"
+                data-workshop-transcript
+                data-private-stage={stage.id}
+                data-transcript-stage={stage.id}
+                data-transcript-url={moduleTranscript(stage.id) || undefined}
+              >
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono text-xs uppercase tracking-[0.16em] text-text-muted hover:text-primary sm:px-6">
+                  <span>Read transcript + sources</span>
+                  <span class="workshop-transcript-state text-primary" data-transcript-state>Expand</span>
+                </summary>
+                <div class="border-t border-border px-5 py-6 sm:px-7 sm:py-7" data-transcript-content aria-live="polite">
+                  <p class="text-sm text-text-muted">The private transcript loads only when you open this section.</p>
+                </div>
+              </details>
 
               <div class="mt-8 rounded-2xl border border-primary/30 bg-primary/[0.06] p-6 sm:p-7">
                 <div class="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
@@ -226,32 +222,28 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
             <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">Relay's verdict and completion bundle are the proof. The videos guided the work; they do not certify it.</p>
 
             <div class="mt-8 overflow-hidden rounded-2xl border border-border bg-black shadow-2xl shadow-primary/[0.08]">
-              {proofMedia ? (
-                <video class="aspect-video w-full" controls playsinline preload="metadata" crossorigin="anonymous" data-stage-media>
-                  <source data-src={proofMedia} type="video/mp4" />
-                  <track kind="captions" data-src={proofCaptions} srclang="en" label="English" default />
-                  Your browser cannot play this video. Use the transcript link below.
-                </video>
-              ) : (
-                <div class="grid aspect-video place-items-center bg-surface px-8 text-center text-sm text-text-muted">The proof walkthrough is available after the accepted private media bundle is connected.</div>
-              )}
+              <video class:list={['aspect-video w-full', !reviewMediaBase && 'hidden']} controls playsinline preload="metadata" crossorigin="anonymous" data-stage-media data-private-stage="proof">
+                <source data-asset-role="media" data-src={proofMedia || undefined} type="video/mp4" />
+                <track kind="captions" data-asset-role="captions" data-src={proofCaptions || undefined} srclang="en" label="English" default />
+                Your browser cannot play this video. Use the transcript below.
+              </video>
+              {!reviewMediaBase && <div class="grid aspect-video place-items-center bg-surface px-8 text-center text-sm text-text-muted" data-media-pending data-private-stage="proof">Preparing the private proof walkthrough…</div>}
             </div>
-            {proofTranscript && (
-              <details
-                class="workshop-transcript mt-4 overflow-hidden rounded-2xl border border-border bg-surface-raised"
-                data-workshop-transcript
-                data-transcript-stage="proof"
-                data-transcript-url={proofTranscript}
-              >
-                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono text-xs uppercase tracking-[0.16em] text-text-muted hover:text-primary sm:px-6">
-                  <span>Read proof transcript + sources</span>
-                  <span class="workshop-transcript-state text-primary" data-transcript-state>Expand</span>
-                </summary>
-                <div class="border-t border-border px-5 py-6 sm:px-7 sm:py-7" data-transcript-content aria-live="polite">
-                  <p class="text-sm text-text-muted">The private transcript loads only when you open this section.</p>
-                </div>
-              </details>
-            )}
+            <details
+              class="workshop-transcript mt-4 overflow-hidden rounded-2xl border border-border bg-surface-raised"
+              data-workshop-transcript
+              data-private-stage="proof"
+              data-transcript-stage="proof"
+              data-transcript-url={proofTranscript || undefined}
+            >
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-mono text-xs uppercase tracking-[0.16em] text-text-muted hover:text-primary sm:px-6">
+                <span>Read proof transcript + sources</span>
+                <span class="workshop-transcript-state text-primary" data-transcript-state>Expand</span>
+              </summary>
+              <div class="border-t border-border px-5 py-6 sm:px-7 sm:py-7" data-transcript-content aria-live="polite">
+                <p class="text-sm text-text-muted">The private transcript loads only when you open this section.</p>
+              </div>
+            </details>
 
             <div class="mt-9 grid gap-4 md:grid-cols-3">
               <article class="rounded-2xl border border-border bg-surface-raised p-6"><p class="font-mono text-xs text-primary">01</p><h3 class="mt-3 text-lg font-semibold">Working workflow</h3><p class="mt-2 text-sm leading-relaxed text-text-muted">The adapted app, workflow steps, human checkpoint, and visible boundary.</p></article>
@@ -268,16 +260,15 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
               </div>
             </div>
 
-            {updateMedia && (
-              <details class="mt-9 rounded-2xl border border-border bg-surface-raised p-6">
-                <summary class="cursor-pointer font-semibold">Edition update · what changed in 2026.07</summary>
-                <p class="mt-3 text-sm leading-relaxed text-text-muted">Supporting media stays outside the five-checkpoint progression so it does not look like another required lesson.</p>
-                <video class="mt-5 aspect-video w-full rounded-xl bg-black" controls playsinline preload="none" crossorigin="anonymous" data-support-media>
-                  <source data-src={updateMedia} type="video/mp4" />
-                  <track kind="captions" data-src={updateCaptions} srclang="en" label="English" default />
-                </video>
-              </details>
-            )}
+            <details class="mt-9 rounded-2xl border border-border bg-surface-raised p-6" data-private-stage="update">
+              <summary class="cursor-pointer font-semibold">Edition update · what changed in 2026.07</summary>
+              <p class="mt-3 text-sm leading-relaxed text-text-muted">Supporting media stays outside the five-checkpoint progression so it does not look like another required lesson.</p>
+              <video class:list={['mt-5 aspect-video w-full rounded-xl bg-black', !reviewMediaBase && 'hidden']} controls playsinline preload="none" crossorigin="anonymous" data-support-media data-private-stage="update">
+                <source data-asset-role="media" data-src={updateMedia || undefined} type="video/mp4" />
+                <track kind="captions" data-asset-role="captions" data-src={updateCaptions || undefined} srclang="en" label="English" default />
+              </video>
+              {!reviewMediaBase && <p class="mt-5 text-sm text-text-muted" data-media-pending data-private-stage="update">Open this section to prepare the private edition update.</p>}
+            </details>
 
             <div class="mt-8"><button type="button" class="rounded-lg border border-border-strong px-5 py-3 text-sm text-text-muted hover:text-text" data-next-stage="retain">Back to Retain</button></div>
           </div>
@@ -289,11 +280,20 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
 
 <script>
   import { parseWorkshopTranscript, workshopTranscriptSources } from '../../../lib/training/workshop-transcript.mjs';
+  import {
+    clearWorkshopAccessToken,
+    exchangeWorkshopAccess,
+    readWorkshopAccessToken,
+    storeWorkshopAccessToken,
+    takeFragmentToken,
+  } from '../../../lib/workshop';
 
   const root = document.getElementById('workshop-root');
   const viewParams = new URLSearchParams(location.search);
   const preview = root?.dataset.previewEnabled === 'true' && viewParams.get('preview') === 'operator';
   if (root && preview) root.dataset.unlocked = 'true';
+  const incomingAccessToken = preview ? null : takeFragmentToken();
+  const productionAccessToken = preview ? null : incomingAccessToken || readWorkshopAccessToken();
   const productCapture = Boolean(root && preview && viewParams.get('capture') === 'product');
   if (root && productCapture) {
     root.dataset.productCapture = 'true';
@@ -305,9 +305,58 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
   const controls = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-stage-target]'));
   const stageIds = stages.map((stage) => stage.dataset.stage || '').filter(Boolean);
   const checkpointIndex: Record<string, number> = { start: 0, inspect: 1, adapt: 2, govern: 3, run: 4, retain: 5, finish: 5 };
+  const privateAssetPromises = new Map<string, Promise<void>>();
 
-  function loadVideo(video: HTMLVideoElement | null) {
+  function privateStageElements(stage: string) {
+    return Array.from(document.querySelectorAll<HTMLElement>('[data-private-stage]'))
+      .filter((element) => element.dataset.privateStage === stage);
+  }
+
+  async function ensurePrivateStage(stage: string) {
+    if (preview) return;
+    if (!productionAccessToken) throw new Error('Private workshop access is missing.');
+    const existing = privateAssetPromises.get(stage);
+    if (existing) return existing;
+    const request = exchangeWorkshopAccess(productionAccessToken, stage).then(({ ok, data }) => {
+      const assets = data.assets as Record<string, { url?: unknown }> | undefined;
+      const mediaUrl = assets?.media?.url;
+      const captionsUrl = assets?.captions?.url;
+      const transcriptUrl = assets?.transcript?.url;
+      if (!ok || typeof mediaUrl !== 'string' || typeof captionsUrl !== 'string' || typeof transcriptUrl !== 'string') {
+        throw new Error(String(data.error || 'Private workshop assets are unavailable.'));
+      }
+      const elements = privateStageElements(stage);
+      elements.forEach((element) => {
+        element.querySelectorAll<HTMLElement>('[data-asset-role]').forEach((asset) => {
+          if (asset.dataset.assetRole === 'media') asset.dataset.src = mediaUrl;
+          if (asset.dataset.assetRole === 'captions') asset.dataset.src = captionsUrl;
+        });
+        if (element.matches('[data-workshop-transcript]')) element.dataset.transcriptUrl = transcriptUrl;
+        if (element.matches('video')) element.classList.remove('hidden');
+        if (element.hasAttribute('data-media-pending')) element.remove();
+      });
+    }).catch((error) => {
+      privateAssetPromises.delete(stage);
+      throw error;
+    });
+    privateAssetPromises.set(stage, request);
+    return request;
+  }
+
+  async function loadVideo(video: HTMLVideoElement | null) {
     if (!video || video.dataset.loaded === 'true') return;
+    const stage = video.dataset.privateStage;
+    if (stage) {
+      try {
+        await ensurePrivateStage(stage);
+      } catch (error) {
+        privateStageElements(stage)
+          .filter((element) => element.hasAttribute('data-media-pending'))
+          .forEach((element) => { element.textContent = 'This private lesson could not be prepared. Select the step again to retry.'; });
+        console.warn('[workshop-private-media] load failed', error);
+        return;
+      }
+    }
     video.querySelectorAll<HTMLSourceElement | HTMLTrackElement>('[data-src]').forEach((asset) => {
       const source = asset.dataset.src;
       if (source) asset.src = source;
@@ -414,12 +463,15 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
     if (details.dataset.transcriptLoaded === 'true' || details.dataset.transcriptLoading === 'true') return;
     const content = details.querySelector<HTMLElement>('[data-transcript-content]');
     const state = details.querySelector<HTMLElement>('[data-transcript-state]');
-    const url = details.dataset.transcriptUrl;
-    if (!content || !url) return;
+    if (!content) return;
     details.dataset.transcriptLoading = 'true';
     if (state) state.textContent = 'Loading';
     content.replaceChildren(createTextElement('p', 'text-sm text-text-muted', 'Loading the private transcript…'));
     try {
+      const privateStage = details.dataset.privateStage;
+      if (privateStage) await ensurePrivateStage(privateStage);
+      const url = details.dataset.transcriptUrl;
+      if (!url) throw new Error('Private transcript URL is unavailable.');
       const response = await fetch(url, { credentials: 'omit' });
       if (!response.ok) throw new Error(`Transcript request returned ${response.status}.`);
       renderTranscript(details, await response.text());
@@ -443,7 +495,7 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
     }
   }
 
-  function showStage(id: string, focusHeading = true) {
+  async function showStage(id: string, focusHeading = true) {
     if (!stageIds.includes(id)) return;
     stages.forEach((stage) => { stage.hidden = stage.dataset.stage !== id; });
     controls.forEach((control) => {
@@ -457,7 +509,7 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
     const announcement = document.getElementById('stage-announcement');
     const current = stages.find((stage) => stage.dataset.stage === id);
     const heading = current?.querySelector<HTMLElement>('h2');
-    loadVideo(current?.querySelector<HTMLVideoElement>('video[data-stage-media]') || null);
+    await loadVideo(current?.querySelector<HTMLVideoElement>('video[data-stage-media]') || null);
     if (progressLabel) progressLabel.textContent = id === 'finish' ? 'Finish' : id === 'start' ? 'Start' : id;
     if (progressCount) progressCount.textContent = `${completed} / 5 checkpoints`;
     if (progressBar) progressBar.style.width = `${completed * 20}%`;
@@ -470,10 +522,10 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
     }
   }
 
-  controls.forEach((control) => control.addEventListener('click', () => showStage(control.dataset.stageTarget || 'start')));
-  document.querySelectorAll<HTMLButtonElement>('[data-next-stage]').forEach((button) => button.addEventListener('click', () => showStage(button.dataset.nextStage || 'start')));
+  controls.forEach((control) => control.addEventListener('click', () => { void showStage(control.dataset.stageTarget || 'start'); }));
+  document.querySelectorAll<HTMLButtonElement>('[data-next-stage]').forEach((button) => button.addEventListener('click', () => { void showStage(button.dataset.nextStage || 'start'); }));
   document.querySelectorAll<HTMLDetailsElement>('details').forEach((details) => details.addEventListener('toggle', () => {
-    if (details.open) loadVideo(details.querySelector<HTMLVideoElement>('video[data-support-media]'));
+    if (details.open) void loadVideo(details.querySelector<HTMLVideoElement>('video[data-support-media]'));
   }));
   document.querySelectorAll<HTMLDetailsElement>('[data-workshop-transcript]').forEach((details) => details.addEventListener('toggle', () => {
     const state = details.querySelector<HTMLElement>('[data-transcript-state]');
@@ -484,17 +536,37 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
     void loadTranscript(details);
   }));
 
-  if (preview) {
+  async function initializeWorkspace() {
+    if (!preview) {
+      const lockMessage = document.getElementById('workspace-lock-message');
+      if (!productionAccessToken) return;
+      if (lockMessage) lockMessage.textContent = 'Verifying this private workshop session…';
+      const { ok, data } = await exchangeWorkshopAccess(productionAccessToken);
+      if (!ok || typeof data.workspacePath !== 'string') {
+        clearWorkshopAccessToken();
+        if (lockMessage) {
+          lockMessage.textContent = data.retryable
+            ? 'The private workspace is temporarily unavailable. Retry from your access page or request a fresh link.'
+            : 'This access link is expired or has been replaced. Request a fresh link without creating an account.';
+        }
+        return;
+      }
+      storeWorkshopAccessToken(productionAccessToken);
+      if (root) root.dataset.unlocked = 'true';
+    }
+
     let stored = 'start';
     try { stored = sessionStorage.getItem('of-workshop-guidance-step') || 'start'; } catch {}
     const captureStage = productCapture ? viewParams.get('stage') : null;
     const initialStage = captureStage && stageIds.includes(captureStage) ? captureStage : stageIds.includes(stored) ? stored : 'start';
-    showStage(initialStage, false);
+    await showStage(initialStage, false);
     if (productCapture && viewParams.get('transcript') === 'open') {
       const transcript = document.querySelector<HTMLDetailsElement>(`[data-stage="${initialStage}"] [data-workshop-transcript]`);
       if (transcript) transcript.open = true;
     }
   }
+
+  void initializeWorkspace();
 </script>
 
 <style>

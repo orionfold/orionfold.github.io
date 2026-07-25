@@ -24,6 +24,9 @@ concurrency:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    env:
+      # Match the customer-visible GitHub Pages build.
+      PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v6

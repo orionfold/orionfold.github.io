@@ -172,7 +172,7 @@ const faqSchema = {
           </div>
           <p id="workshop-checkout-error" role="alert" hidden class="mt-3 text-sm text-red-500"></p>
           <p class="mt-4 text-xs leading-relaxed text-text-dim">
-            One-time USD payment · 14-day full no-judgment refund · no recurring charge · {RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? 'preview checkout available' : 'enrollment opens with the first workshop release'}
+            One-time USD payment · 14-day full no-judgment refund · no recurring charge · {RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? 'enrollment open' : 'enrollment opens with the first workshop release'}
           </p>
           {operatorPreview && (
             <a class="mt-4 inline-flex font-mono text-xs text-text-dim underline decoration-border-strong underline-offset-4 hover:text-primary" href="/training/relay-operator-workshop/thanks/?preview=paid">

@@ -1,6 +1,7 @@
 import { COMMERCE_FUNCTIONS_BASE } from "./commerce-config";
 
 const FUNCTIONS_BASE = COMMERCE_FUNCTIONS_BASE;
+const WORKSHOP_ACCESS_SESSION_KEY = "of-workshop-access-token";
 
 async function post(fn: string, body: Record<string, unknown>) {
   try {
@@ -27,8 +28,20 @@ export function takeFragmentToken(): string | null {
   return token;
 }
 
-export async function exchangeWorkshopAccess(token: string) {
-  return post("workshop-access", { token });
+export function storeWorkshopAccessToken(token: string) {
+  sessionStorage.setItem(WORKSHOP_ACCESS_SESSION_KEY, token);
+}
+
+export function readWorkshopAccessToken(): string | null {
+  return sessionStorage.getItem(WORKSHOP_ACCESS_SESSION_KEY);
+}
+
+export function clearWorkshopAccessToken() {
+  sessionStorage.removeItem(WORKSHOP_ACCESS_SESSION_KEY);
+}
+
+export async function exchangeWorkshopAccess(token: string, stage?: string) {
+  return post("workshop-access", stage ? { token, stage } : { token });
 }
 
 export async function confirmWorkshopRefund(token: string) {

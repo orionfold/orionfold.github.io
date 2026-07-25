@@ -20,6 +20,10 @@ async function hmac(secret: string, value: string): Promise<Uint8Array> {
 
 export type WorkshopTokenPurpose = "access" | "refund";
 
+export function isWorkshopToken(value: unknown): value is string {
+  return typeof value === "string" && /^[A-Za-z0-9_-]{43}$/.test(value);
+}
+
 export async function deriveWorkshopToken(
   secret: string,
   entitlementId: string,
@@ -35,7 +39,7 @@ export async function deriveWorkshopToken(
 }
 
 export async function hashWorkshopToken(rawToken: string): Promise<string> {
-  if (!/^[A-Za-z0-9_-]{43}$/.test(rawToken)) throw new Error("invalid workshop token");
+  if (!isWorkshopToken(rawToken)) throw new Error("invalid workshop token");
   const digest = await crypto.subtle.digest("SHA-256", encoder.encode(rawToken));
   return bytesToBase64Url(new Uint8Array(digest));
 }

@@ -91,9 +91,10 @@ export {
 } from './relay-host-portable';
 
 // RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED — the first Training product reuses
-// the accepted G-034 guest Checkout/access/refund lifecycle. Production stays
-// launch-dark until G-036. An isolated local/staging build opts in explicitly;
-// there is no source edit or accidental live default to flip.
+// the accepted G-034 guest Checkout/access/refund lifecycle. Production
+// dependencies passed G-036's no-charge rehearsal on 2026-07-25. GitHub Pages
+// opts in explicitly at the deployment workflow boundary; local builds remain
+// launch-dark unless they intentionally set the same public environment flag.
 const publicBuildEnv = (
   import.meta as ImportMeta & {
     env?: Record<string, string | undefined>;

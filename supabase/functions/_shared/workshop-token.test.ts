@@ -6,6 +6,7 @@ import {
 import {
   deriveWorkshopToken,
   hashWorkshopToken,
+  isWorkshopToken,
   isRequestId,
   normalizeWorkshopEmail,
   requestHash,
@@ -22,6 +23,8 @@ Deno.test("workshop tokens are deterministic, purpose- and generation-scoped", a
 });
 
 Deno.test("workshop token helpers fail closed", async () => {
+  assertEquals(isWorkshopToken("short"), false);
+  assertEquals(isWorkshopToken("a".repeat(43)), true);
   await assertRejects(() => deriveWorkshopToken("", "entitlement", "access", 1));
   await assertRejects(() => deriveWorkshopToken("secret", "", "access", 1));
   await assertRejects(() => hashWorkshopToken("raw-token"));

@@ -41,6 +41,23 @@ test('revised workshop promise stays aligned across catalog and product surfaces
   assert.match(mediaMigration, /'video\/mp4'/);
 });
 
+test('the production build explicitly enables live workshop enrollment', async () => {
+  const [launch, deploy, lighthouse, hub, product] = await Promise.all([
+    read('src/data/launch.ts'),
+    read('.github/workflows/deploy.yml'),
+    read('.github/workflows/lighthouse.yml'),
+    read('src/pages/training/index.astro'),
+    read('src/pages/training/relay-operator-workshop/index.astro'),
+  ]);
+  assert.match(launch, /PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT === "true"/);
+  assert.match(deploy, /PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: "true"/);
+  assert.match(lighthouse, /PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: "true"/);
+  assert.match(hub, /Enrollment open/);
+  assert.match(product, /enrollment open/);
+  assert.doesNotMatch(hub, /Preview checkout available/);
+  assert.doesNotMatch(product, /preview checkout available/);
+});
+
 test('landing page presents every real workshop screen as a theme-aware alternating story', async () => {
   const [product, shot] = await Promise.all([
     read('src/pages/training/relay-operator-workshop/index.astro'),
@@ -75,6 +92,29 @@ test('operator paid preview is dev-gated and keeps private media out of the publ
   assert.doesNotMatch(workspace, /\/Users\/|296acd31|revision-03-review/);
   assert.match(workspace, /Workshop guidance never substitutes for Relay evidence/);
   assert.match(workspace, /does not mark the Relay checkpoint passed/);
+});
+
+test('production access enters the guided workspace and signs private stages on demand', async () => {
+  const [access, workspace, client, edge] = await Promise.all([
+    read('src/pages/training/relay-operator-workshop/access.astro'),
+    read('src/pages/training/relay-operator-workshop/workspace.astro'),
+    read('src/lib/workshop.ts'),
+    read('supabase/functions/workshop-access/index.ts'),
+  ]);
+  assert.match(access, /storeWorkshopAccessToken\(token\)/);
+  assert.match(access, /data\.workspacePath/);
+  assert.doesNotMatch(access, /manifestLink\.href = data\.manifestUrl/);
+  assert.match(workspace, /readWorkshopAccessToken\(\)/);
+  assert.match(workspace, /exchangeWorkshopAccess\(productionAccessToken, stage\)/);
+  assert.match(workspace, /data-asset-role="media"/);
+  assert.match(workspace, /data-asset-role="captions"/);
+  assert.match(workspace, /data-unlocked='true'/);
+  assert.match(client, /sessionStorage\.setItem\(WORKSHOP_ACCESS_SESSION_KEY/);
+  assert.doesNotMatch(client, /localStorage/);
+  assert.match(edge, /parseWorkshopDeliveryManifest/);
+  assert.match(edge, /workshopStageFiles/);
+  assert.match(edge, /WORKSHOP_ASSET_TTL_SECONDS/);
+  assert.match(edge, /workspacePath: "\/training\/relay-operator-workshop\/workspace\/"/);
 });
 
 test('guided workspace has start, five checkpoints, finish, and no sitemap entry', async () => {

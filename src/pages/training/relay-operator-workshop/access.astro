@@ -11,7 +11,7 @@ const operatorPreviewEnabled = import.meta.env.DEV;
       <div id="access-status" class="mt-6 rounded-lg border border-border bg-surface p-5 leading-relaxed text-text-muted" role="status" aria-live="polite">
         Checking your private access link…
       </div>
-      <a id="manifest-link" hidden class="mt-6 inline-flex rounded-lg bg-primary px-5 py-3 font-medium text-accent-text" rel="noreferrer">Open the private workshop manifest</a>
+      <a id="manifest-link" hidden class="mt-6 inline-flex rounded-lg bg-primary px-5 py-3 font-medium text-accent-text" rel="noreferrer">Enter the guided workshop</a>
 
       <form id="recovery-form" class="mt-10 border-t border-border pt-8">
         <h2 class="text-xl">Need a fresh access link?</h2>
@@ -29,9 +29,16 @@ const operatorPreviewEnabled = import.meta.env.DEV;
 </PrivateLayout>
 
 <script>
-  import { exchangeWorkshopAccess, requestWorkshopLink, takeFragmentToken } from '../../../lib/workshop';
+  import {
+    clearWorkshopAccessToken,
+    exchangeWorkshopAccess,
+    readWorkshopAccessToken,
+    requestWorkshopLink,
+    storeWorkshopAccessToken,
+    takeFragmentToken,
+  } from '../../../lib/workshop';
   const preview = import.meta.env.DEV && new URLSearchParams(location.search).get('preview') === 'paid';
-  const token = takeFragmentToken();
+  const token = takeFragmentToken() || readWorkshopAccessToken();
   const accessStatus = document.getElementById('access-status');
   const manifestLink = document.getElementById('manifest-link') as HTMLAnchorElement | null;
   const previewBadge = document.getElementById('preview-badge');
@@ -47,10 +54,16 @@ const operatorPreviewEnabled = import.meta.env.DEV;
     if (accessStatus) accessStatus.textContent = 'Paste-free access starts from the private link in your inbox. Request a fresh link below if needed.';
   } else {
     exchangeWorkshopAccess(token).then(({ ok, data }) => {
-      if (ok && typeof data.manifestUrl === 'string') {
-        if (accessStatus) accessStatus.textContent = 'Access verified. This edition manifest link is ready for 15 minutes.';
-        if (manifestLink) { manifestLink.href = data.manifestUrl; manifestLink.hidden = false; }
+      if (ok && typeof data.workspacePath === 'string') {
+        storeWorkshopAccessToken(token);
+        if (accessStatus) accessStatus.textContent = 'Access verified. Your private guided workspace is ready.';
+        if (manifestLink) {
+          manifestLink.href = data.workspacePath;
+          manifestLink.textContent = 'Enter the guided workshop';
+          manifestLink.hidden = false;
+        }
       } else if (accessStatus) {
+        clearWorkshopAccessToken();
         accessStatus.textContent = data.retryable
           ? 'The private workspace is temporarily unavailable. Retry this page shortly or request a fresh link.'
           : 'This access link is expired or has been replaced. Request a fresh link below.';
