@@ -31,6 +31,7 @@ import RelayShowcase from '../../components/product/RelayShowcase.astro';
 import LandingStickyCta from '../../components/product/LandingStickyCta.astro';
 import LicenseBand from '../../components/product/LicenseBand.astro';
 import RelaySubNav from '../../components/relay/RelaySubNav.astro';
+import ProductLineRail from '../../components/product/ProductLineRail.astro';
 import OfferSlot from '../../components/ui/OfferSlot.astro';
 import { ORIONFOLD_RELAY_LIVE } from '../../data/launch';
 import relayPoster from '../../assets/projects/orionfold-relay-poster.jpeg';
@@ -196,13 +197,6 @@ const plannedPacks = [
   { name: 'Marketer pack', job: 'Run marketing work' },
   { name: 'Investor pack', job: 'Run investor updates' },
   { name: 'Operations pack', job: 'Run back-office ops' },
-];
-
-// The constellation framing (README): where Relay sits in the Orionfold line.
-const constellation = [
-  { name: 'Relay', q: 'Now make the trusted AI do the real work.', href: null, self: true },
-  { name: 'Proof', q: 'Which AI can I trust?', href: '/proof/' },
-  { name: 'Arena', q: 'Which build wins?', href: '/arena/' },
 ];
 
 // The agency operating-model mapping (README "Built for an agency"): how the work
@@ -454,30 +448,9 @@ const trust = [
       </div>
     </section>
 
-    <!-- Constellation: where Relay sits in the Orionfold line. Demoted below the
-         proof band + shrunk to a quiet one-line row so it gives suite context and
-         an internal link WITHOUT pulling cold traffic to a sibling product above
-         the buy decision. -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-4xl">
-        <p class="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The Orionfold line · Relay leads</p>
-        <div class="flex flex-col gap-2 rounded-2xl border border-border/60 bg-surface/40 p-2 sm:flex-row">
-          {constellation.map((c) => (
-            c.self ? (
-              <div class="flex flex-1 items-center gap-3 rounded-xl bg-primary/5 px-4 py-3">
-                <span class="font-display text-sm font-bold text-primary">{c.name}</span>
-                <span class="text-sm text-text-muted">{c.q}</span>
-              </div>
-            ) : (
-              <a href={c.href} class="group flex flex-1 items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-surface">
-                <span class="font-display text-sm font-bold text-text group-hover:text-primary">{c.name}</span>
-                <span class="text-sm text-text-muted">{c.q}</span>
-              </a>
-            )
-          ))}
-        </div>
-      </div>
-    </section>
+    <!-- The shared flagship rail stays below Relay's own evidence and keeps
+         sibling discovery consistent across every product page. -->
+    <ProductLineRail current="relay" />
 
     <!-- The Problem: the gap Relay fills, sized with cited market stats -->
     <RelayProblem />

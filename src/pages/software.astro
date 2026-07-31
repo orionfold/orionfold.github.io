@@ -1,8 +1,7 @@
 ---
-// Software showcase (S7; expanded V5). Fourteen products built from
+// Software showcase (S7; expanded V5). Products built from
 // src/data/software.ts, grouped into five clusters (flagship, platform, apps,
-// intel, devtools). The flagship cluster (Advisor, Arena, Cortex — the products
-// we commercialize, operator 2026-06-11) leads the page, so its featured card
+// intel, devtools). The Flow-led flagship cluster leads the page, so its featured card
 // is the LCP candidate. Each cluster is a SectionLabel + blurb over a
 // unified-cover grid of ProductCards (sm:2 lg:3). Covers resolve here: the two donor screenshots are
 // imported directly, the rest come from a glob over src/assets/projects/. A
@@ -28,11 +27,12 @@ const og = ogMeta('/software/');
 // Which software slugs have an on-site detail page: those cards link inward
 // (/software/<slug>/) instead of off-site (spec §3). Others keep their external link.
 const detailKeys = await detailKeySet();
-// The three flagships (Proof, Arena, Relay) have no /software/<slug>/ detail page
+// The three flagships (Flow, Relay, Arena) and Proof have no /software/<slug>/ detail page
 // — their canonical surface is a hand-built landing page. Their SSOT href is
 // already the on-site landing (/proof/, /arena/, /relay/), so route them through
 // the same inward-link path as a detail page (same-tab, no target=_blank).
 const LANDING_HREF: Record<string, string> = {
+  flow: '/flow/',
   proof: '/proof/',
   arena: '/arena/',
   relay: '/relay/',
@@ -57,8 +57,8 @@ function resolveCover(key?: string): ImageMetadata | undefined {
 }
 ---
 <Layout
-  title="Private AI software you control · Orionfold"
-  description="Orionfold Proof, Arena, and Relay lead the catalog: prove which AI to trust, drive the models you own, and put the winner to work. Plus Advisor, Cortex, the API, and example apps, all open."
+  title="AI software for work you own · Orionfold"
+  description="Orionfold Flow leads the catalog, with Relay and Arena beside it: keep knowledge work moving, run repeatable agent work, and see which local AI wins."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
@@ -67,8 +67,8 @@ function resolveCover(key?: string): ImageMetadata | undefined {
     <!-- Page header (slim masthead so the poster grid rises above the fold) -->
     <PageHeader
       eyebrow="Software"
-      title="Private AI you can prove, run, and put to work"
-      subtitle="Open software you control. Proof, Arena, and Relay lead: prove which AI to trust, drive the shelf of models you own, then put the winner to work. Advisor, Cortex, the API, and the apps carry the same rule: your data stays local."
+      title="Work that keeps moving, on terms you control"
+      subtitle="Flow leads the line: keep knowledge work moving in one document, run repeatable agent work in Relay, and see which local AI wins in Arena. Proof and the rest of the catalog carry the evidence and building blocks behind them."
     />
 
     <!-- Grouped product clusters -->

@@ -1,0 +1,89 @@
+---
+// Shared Flow conversion surface. Both placements use the same named offer,
+// consent, and live double-opt-in component; only the narrative context and
+// attribution source differ.
+import WaitlistForm from '../ui/WaitlistForm.astro';
+
+interface Props {
+  placement: 'home' | 'flow';
+  storyHref?: string;
+}
+
+const { placement, storyHref } = Astro.props;
+const isHome = placement === 'home';
+const formId = isHome ? 'home-flow-waitlist' : 'flow-page-waitlist';
+const source = formId;
+const consentText = 'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
+const privacyNote = consentText.replace(' See our privacy policy.', '');
+---
+<section
+  class:list={['flow-waitlist px-6 py-16 sm:py-24', isHome && 'flow-waitlist--home']}
+  aria-labelledby={`${formId}-heading`}
+>
+  <div class="flow-waitlist__panel mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-[2rem] border border-primary/25 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16 lg:px-14">
+    <div class="relative z-10 max-w-2xl">
+      <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">
+        {isHome ? 'Flow waitlist · In development' : 'Built for Mac · Flow waitlist'}
+      </p>
+      <h2 id={`${formId}-heading`} class="mt-4 text-balance text-4xl font-bold leading-[1.03] sm:text-5xl">
+        {isHome ? 'Join the Flow waitlist.' : 'A work system, not another pile of AI tools.'}
+      </h2>
+      <p class="mt-5 max-w-xl text-lg leading-relaxed text-text-muted">
+        Flow is in development as Orionfold's first closed-source commercial app, offered through a freemium subscription. Join for meaningful build updates and the launch note when Flow is ready.
+      </p>
+      <a href={isHome ? '/flow/' : storyHref} class="of-text-action mt-6 inline-flex items-center gap-2">
+        {isHome ? 'Explore Orionfold Flow' : 'Read the story'} <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="flow-waitlist__form relative z-10 rounded-2xl border border-border/80 bg-surface/85 p-5 backdrop-blur sm:p-7">
+      <p class="mb-5 flex items-center justify-between gap-4 font-mono text-[0.64rem] uppercase tracking-[0.16em] text-text-dim">
+        <span>Email only</span>
+        <span>Double opt-in</span>
+      </p>
+      <WaitlistForm
+        id={formId}
+        source={source}
+        offer="flow-waitlist"
+        buttonText="Join the waitlist"
+        successMessage="Check your inbox to confirm."
+        consentText={consentText}
+      />
+      <p class="mt-5 text-xs leading-relaxed text-text-dim">
+        {privacyNote}{' '}
+        <a class="underline underline-offset-2 transition-colors hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .flow-waitlist { position: relative; overflow: hidden; }
+  .flow-waitlist--home {
+    border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 14%, var(--color-border));
+    background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-raised));
+  }
+  .flow-waitlist__panel {
+    position: relative;
+    background:
+      linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 10%, var(--color-surface)) 0%, var(--color-surface-raised) 58%),
+      var(--color-surface-raised);
+    box-shadow: 0 32px 90px rgb(13 24 48 / 0.09);
+  }
+  .flow-waitlist__panel::before,
+  .flow-waitlist__panel::after {
+    content: '';
+    position: absolute;
+    border: 1px solid rgb(91 141 239 / 0.2);
+    border-radius: 999px;
+    pointer-events: none;
+  }
+  .flow-waitlist__panel::before { width: 24rem; height: 24rem; right: -10rem; top: -15rem; }
+  .flow-waitlist__panel::after { width: 8rem; height: 8rem; left: 46%; bottom: -6rem; }
+  .flow-waitlist__form { box-shadow: 0 20px 55px rgb(13 24 48 / 0.08); }
+  .flow-waitlist__form :global(form) { max-width: none; }
+  @media (max-width: 640px) {
+    .flow-waitlist__panel::before { width: 15rem; height: 15rem; right: -8rem; top: -9rem; }
+    .flow-waitlist__panel::after { display: none; }
+  }
+</style>

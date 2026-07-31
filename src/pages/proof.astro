@@ -14,6 +14,7 @@ import ProofBox from '../components/product/ProofBox.astro';
 import LandingStickyCta from '../components/product/LandingStickyCta.astro';
 import LicenseBand from '../components/product/LicenseBand.astro';
 import OfferSlot from '../components/ui/OfferSlot.astro';
+import ProductLineRail from '../components/product/ProductLineRail.astro';
 import proofPoster from '../assets/proof/orionfold-proof-poster.jpeg';
 import { getCollection } from 'astro:content';
 import { receipts, myths, receiptHref } from '../data/proof';
@@ -109,15 +110,6 @@ const howToSchema = {
 const proofStories = (await getCollection('story'))
   .filter((s) => s.data.tags.includes('Proof'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-
-// The constellation framing (shared with /arena/ + /relay/ for consistent
-// product-line navigation): where Proof sits in the line. Text-only cards, so
-// the three pages' constellation sections stay identical.
-const constellation = [
-  { name: 'Relay', q: 'Now make the trusted AI do the real work.', href: '/relay/' },
-  { name: 'Proof', q: 'Which AI can I trust?', href: null, self: true },
-  { name: 'Arena', q: 'Which build wins?', href: '/arena/' },
-];
 
 // Dual-ICP columns (reference-build gap D4-②a): Proof serves two buyers with one
 // tool. The builder wants a fast local benchmark; the regulated-enterprise buyer
@@ -288,31 +280,9 @@ const receiptTasters = Object.fromEntries(
     <!-- The signature WOW: the capability matrix + speed -->
     <CapabilityMatrix tasters={receiptTasters} />
 
-    <!-- The Orionfold line: the compact one-row strip (same as /relay/), so all
-         three product pages carry an identical, equal-height suite-context row.
-         Sequence is fixed Relay -> Proof -> Arena to match the top nav; the page
-         self-highlights its own cell. Placed right before "What Orionfold Proof
-         does" so the product-line context frames the product intro. -->
-    <section class="px-6 pt-4 pb-10">
-      <div class="mx-auto max-w-4xl">
-        <p class="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The Orionfold line · Relay leads</p>
-        <div class="flex flex-col gap-2 rounded-2xl border border-border/60 bg-surface/40 p-2 sm:flex-row">
-          {constellation.map((c) => (
-            c.self ? (
-              <div class="flex flex-1 items-center gap-3 rounded-xl bg-primary/5 px-4 py-3">
-                <span class="font-display text-sm font-bold text-primary">{c.name}</span>
-                <span class="text-sm text-text-muted">{c.q}</span>
-              </div>
-            ) : (
-              <a href={c.href} class="group flex flex-1 items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-surface">
-                <span class="font-display text-sm font-bold text-text group-hover:text-primary">{c.name}</span>
-                <span class="text-sm text-text-muted">{c.q}</span>
-              </a>
-            )
-          ))}
-        </div>
-      </div>
-    </section>
+    <!-- Proof stays an evidence product while the shared flagship rail now
+         associates Flow, Relay, and Arena. -->
+    <ProductLineRail class="pt-4 pb-10" />
 
     <!-- What Orionfold Proof is: the product behind the receipts -->
     <ProofProduct />

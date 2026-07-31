@@ -1,299 +1,56 @@
 ---
-// Homepage hero (company-router rebuild, 2026-07-03). Left: the company promise
-// ("Proven AI-native business in a box") + a plain company paragraph + a Relay-led
-// CTA stack (Relay primary, demo text link). Right: the hero
-// product UI on a restrained floating plane. The homepage no longer sells Proof
-// from the hero; it routes to the product that matches each visitor's question,
-// with Relay led for the $10K paid-test window. The newsletter form lives on
-// Story (H3).
-import relayShots from '../../data/relay-shots.json';
-import { themedShotProps } from '../relay/themed-shot.logic.mjs';
-
-const relayHeroShot = themedShotProps(relayShots, {
-  id: 'blueprints-gallery',
-  alt: 'Orionfold Relay Blueprint Gallery showing reusable AI workflows ready to adapt and run.',
-});
+// Flow-led homepage hero. The product is in development, so the visual reuses
+// the operator-supplied story creative rather than an unfinished product shot.
+import FlowHeroCreative from '../flow/FlowHeroCreative.astro';
 ---
-<section class="home-hero relative overflow-x-clip">
-  <!-- The Relay Host section's blueprint field becomes the homepage stage: one
-       technical surface, one cyan action color, and localized light around the
-       two things a visitor can act on. -->
-  <div class="home-hero__blueprint pointer-events-none absolute inset-0" aria-hidden="true"></div>
-  <div class="home-hero__glow home-hero__glow--cta" aria-hidden="true"></div>
-  <div class="home-hero__glow home-hero__glow--shot" aria-hidden="true"></div>
+<section class="home-flow relative overflow-x-clip">
+  <div class="home-flow__grid" aria-hidden="true"></div>
+  <div class="home-flow__glow home-flow__glow--copy" aria-hidden="true"></div>
+  <div class="home-flow__glow home-flow__glow--art" aria-hidden="true"></div>
 
-  <!-- Bottom gradient fade into the narrative -->
-  <div class="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-32" style="background: linear-gradient(to bottom, transparent, var(--color-surface));"></div>
-
-  <div class="relative z-20 mx-auto grid max-w-[90rem] items-center gap-12 px-6 pb-20 pt-24 sm:pt-28 lg:min-h-[calc(100dvh-120px)] lg:grid-cols-[0.72fr_1.28fr] lg:gap-10 lg:pb-20 lg:pt-28">
-    <!-- Left: the pitch. The pitch column used to stagger-reveal via [data-animate]
-         + IntersectionObserver, but that made the subtitle P the page's LCP element
-         at ~7.5s on mobile (Lighthouse won't count an opacity:0 element as painted).
-         Painting the pitch immediately is the bigger UX win than the stagger polish. -->
-    <div class="relative z-10 text-center lg:text-left">
-      <p class="home-hero__eyebrow mx-auto mb-6 max-w-[18rem] text-wrap font-mono text-[11px] uppercase leading-relaxed tracking-[0.18em] lg:mx-0 lg:max-w-none lg:text-xs">
-        Open or frontier · local or cloud
+  <div class="relative z-10 mx-auto grid max-w-[90rem] items-center gap-12 px-6 pb-20 pt-28 sm:pt-32 lg:min-h-[calc(100dvh-100px)] lg:grid-cols-[0.82fr_1.18fr] lg:gap-14 lg:pb-24 lg:pt-32">
+    <div class="text-center lg:text-left">
+      <p class="font-mono text-[0.68rem] uppercase leading-relaxed tracking-[0.22em] text-primary">
+        Flow leads the Orionfold line · In development
       </p>
-
-      <h1 class="hero-gradient-text mx-auto max-w-[22rem] text-balance font-display text-[2.45rem] font-bold leading-[1.08] tracking-[-0.035em] sm:max-w-2xl sm:text-6xl lg:mx-0 lg:max-w-none lg:text-[clamp(2.75rem,4vw,4.15rem)]">
-        Proven <span class="whitespace-nowrap">AI-native</span> business in a box
+      <h1 class="mx-auto mt-6 max-w-[12ch] text-balance font-display text-[clamp(3.25rem,6.5vw,6.6rem)] font-extrabold leading-[0.92] tracking-[-0.055em] text-text lg:mx-0">
+        Keep the work moving.
       </h1>
-
-      <p class="home-hero__description mx-auto mt-6 max-w-[22rem] text-balance text-base leading-relaxed sm:max-w-xl sm:text-lg lg:mx-0">
-        Orionfold lets you choose open or frontier AI models, local or cloud delivery, solo or multi-user operation, and optimize for cost or intelligence.
+      <p class="mx-auto mt-7 max-w-xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl lg:mx-0">
+        Orionfold Flow is a native Mac workspace where documents hold the context, agents carry work forward, and every result keeps its proof.
       </p>
-
-      <!-- Relay stays the single action in the pitch column. The demo moves onto
-           the product shot so it becomes a quiet fallback after the visitor has
-           considered the main CTA instead of competing with it. -->
-      <div class="mx-auto mt-9 flex w-full max-w-[24rem] flex-col items-stretch lg:mx-0">
-        <a
-          href="/relay/"
-          class="home-hero__cta of-primary-action group w-full flex-col !items-start justify-center gap-0.5 !rounded-xl !py-3.5"
-        >
-          <span class="font-mono text-[0.62rem] uppercase tracking-[0.18em] opacity-80">Run AI-native business</span>
-          <span class="flex items-center gap-1.5 font-display text-lg font-bold tracking-normal normal-case">
-            Get Orionfold Relay
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </span>
-        </a>
+      <div class="mt-7 flex flex-wrap justify-center gap-2 lg:justify-start">
+        <span class="home-flow__chip">Native Mac app</span>
+        <span class="home-flow__chip">One document, many modes</span>
+        <span class="home-flow__chip">Receipts built in</span>
       </div>
-
+      <div class="mt-9 flex flex-wrap justify-center gap-3 lg:justify-start">
+        <a href="/flow/" class="of-primary-action group">
+          Explore Orionfold Flow
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#orionfold-line" class="of-secondary-action">Meet the product line</a>
+      </div>
     </div>
 
-    <!-- Right: the current Blueprint Gallery gets the larger cinematic product frame
-         already proven by Relay Host. The screenshot follows the resolved site theme
-         and is cropped after the third complete card row to keep the hero compact. -->
-    <a
-      href="/relay/demo/"
-      class="home-hero-shot group relative block min-w-0"
-      aria-label="View the interactive Orionfold Relay demo"
-    >
-      <div class="home-hero-shot__frame">
-        <div class="home-hero-shot__view">
-          <img
-            class="absolute inset-x-0 top-0 block h-auto w-full"
-            width={relayHeroShot.width}
-            height={relayHeroShot.height}
-            alt={relayHeroShot.alt}
-            loading="eager"
-            decoding="async"
-            fetchpriority="high"
-            src={relayHeroShot.dark.src}
-            srcset={relayHeroShot.dark.srcset}
-            sizes="(min-width: 1280px) 850px, (min-width: 1024px) 61vw, calc(100vw - 3rem)"
-            data-relay-shot
-            data-shot-theme="dark"
-            data-shot-light-src={relayHeroShot.light.src}
-            data-shot-light-srcset={relayHeroShot.light.srcset}
-            data-shot-dark-src={relayHeroShot.dark.src}
-            data-shot-dark-srcset={relayHeroShot.dark.srcset}
-            data-no-zoom
-          />
-          <span class="home-hero-shot__sheen" aria-hidden="true"></span>
-        </div>
-
-      </div>
-      <span class="home-hero-shot__demo-link mt-4 flex items-center justify-end gap-1.5 font-mono text-xs font-semibold tracking-[0.04em] transition-colors">
-        View the interactive demo
-        <span class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
-      </span>
-    </a>
+    <FlowHeroCreative href="/flow/" />
   </div>
 </section>
 
 <style>
-  .home-hero {
-    --hero-bg: #eff9f8;
-    --hero-border: rgb(14 158 152 / 0.24);
-    --hero-grid-line: rgb(14 158 152 / 0.075);
-    --hero-glow: rgb(14 158 152 / 0.14);
-    --hero-eyebrow: #087c77;
-    --hero-description: #53666c;
-    --hero-cta: #0e9e98;
-    --hero-cta-hover: #0b8b86;
-    --hero-cta-text: #ffffff;
-    --hero-cta-shadow: 0 22px 52px -28px rgb(14 158 152 / 0.58), 0 0 0 1px rgb(14 158 152 / 0.16);
-    --hero-cta-hover-shadow: 0 26px 58px -28px rgb(14 158 152 / 0.7), 0 0 0 4px rgb(14 158 152 / 0.1);
-    --hero-shot-glow: rgb(14 158 152 / 0.14);
-    --hero-frame-bg: #ffffff;
-    --hero-frame-border: rgb(14 158 152 / 0.34);
-    --hero-frame-shadow: 0 34px 74px -36px rgb(24 74 78 / 0.42), 0 0 0 1px rgb(14 158 152 / 0.08);
-    --hero-frame-hover-shadow: 0 42px 82px -34px rgb(24 74 78 / 0.48), 0 0 0 1px rgb(14 158 152 / 0.28);
-    --hero-sheen: rgb(255 255 255 / 0.3);
-    --hero-demo-link: #087c77;
-    --hero-demo-link-hover: #075f5c;
-    --hero-focus: #0e9e98;
+  .home-flow {
     isolation: isolate;
-    border-bottom: 1px solid var(--hero-border);
-    background: var(--hero-bg);
-    transition: background-color 180ms ease, border-color 180ms ease;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 16%, var(--color-border));
+    background: linear-gradient(145deg, color-mix(in oklch, var(--color-primary) 5%, var(--color-surface)) 0%, var(--color-surface) 56%);
   }
-
-  :global(html[data-theme='dark']) .home-hero {
-    --hero-bg: #061117;
-    --hero-border: rgb(77 222 219 / 0.22);
-    --hero-grid-line: rgb(39 213 210 / 0.055);
-    --hero-glow: rgb(23 210 205 / 0.12);
-    --hero-eyebrow: rgb(121 232 228 / 0.8);
-    --hero-description: rgb(255 255 255 / 0.65);
-    --hero-cta: #2ad6d2;
-    --hero-cta-hover: #4ce3df;
-    --hero-cta-text: #03201f;
-    --hero-cta-shadow: 0 22px 52px -28px rgb(42 214 210 / 0.9), 0 0 0 1px rgb(101 241 237 / 0.18);
-    --hero-cta-hover-shadow: 0 26px 58px -28px rgb(42 214 210 / 1), 0 0 0 4px rgb(42 214 210 / 0.12);
-    --hero-shot-glow: rgb(33 211 208 / 0.18);
-    --hero-frame-bg: #071219;
-    --hero-frame-border: rgb(96 221 219 / 0.48);
-    --hero-frame-shadow: 0 38px 82px -30px rgb(0 0 0 / 0.92), 0 0 0 1px rgb(66 232 228 / 0.12);
-    --hero-frame-hover-shadow: 0 48px 92px -30px rgb(0 0 0 / 0.96), 0 0 0 1px rgb(74 238 234 / 0.42);
-    --hero-sheen: rgb(202 255 253 / 0.1);
-    --hero-demo-link: rgb(121 232 228 / 0.8);
-    --hero-demo-link-hover: #79e8e4;
-    --hero-focus: #6ff0ed;
+  .home-flow__grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgb(91 141 239 / 0.055) 1px, transparent 1px), linear-gradient(90deg, rgb(91 141 239 / 0.055) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(circle at 67% 48%, #000, transparent 78%);
   }
-
-  .home-hero__blueprint {
-    background:
-      linear-gradient(var(--hero-grid-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--hero-grid-line) 1px, transparent 1px);
-    background-size: 42px 42px;
-  }
-
-  .home-hero__glow {
-    position: absolute;
-    border-radius: 999px;
-    background: var(--hero-glow);
-    filter: blur(100px);
-    pointer-events: none;
-  }
-
-  .home-hero__glow--cta {
-    bottom: 8%;
-    left: -8rem;
-    width: 30rem;
-    height: 20rem;
-  }
-
-  .home-hero__glow--shot {
-    top: 12%;
-    right: -7rem;
-    width: 44rem;
-    height: 34rem;
-  }
-
-  .home-hero__cta {
-    background: var(--hero-cta);
-    color: var(--hero-cta-text);
-    box-shadow: var(--hero-cta-shadow);
-  }
-
-  .home-hero__cta:hover {
-    background: var(--hero-cta-hover);
-    box-shadow: var(--hero-cta-hover-shadow);
-  }
-
-  .home-hero__eyebrow {
-    color: var(--hero-eyebrow);
-  }
-
-  .home-hero__description {
-    color: var(--hero-description);
-  }
-
-  .home-hero-shot {
-    width: 100%;
-    animation: home-hero-shot-float 8s ease-in-out infinite;
-    will-change: transform;
-  }
-
-  .home-hero-shot::after {
-    content: '';
-    position: absolute;
-    inset: -3.5rem;
-    z-index: -1;
-    background: radial-gradient(ellipse at center, var(--hero-shot-glow), transparent 68%);
-    pointer-events: none;
-  }
-
-  .home-hero-shot__frame {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--hero-frame-border);
-    border-radius: 0.9rem;
-    background: var(--hero-frame-bg);
-    box-shadow: var(--hero-frame-shadow);
-    transform: perspective(1400px) rotateY(-1.6deg) rotateX(0.8deg);
-    transition: transform 400ms ease, box-shadow 400ms ease;
-  }
-
-  .home-hero-shot:hover .home-hero-shot__frame {
-    transform: perspective(1400px) rotateY(0) rotateX(0) translateY(-3px);
-    box-shadow: var(--hero-frame-hover-shadow);
-  }
-
-  .home-hero-shot:focus-visible {
-    border-radius: 0.9rem;
-    outline: 2px solid var(--hero-focus);
-    outline-offset: 4px;
-  }
-
-  .home-hero-shot__view {
-    position: relative;
-    /* The source is 1600px wide. At this ratio the crop lands in the clean
-       gutter immediately below card row three, before row four begins. */
-    aspect-ratio: 1.74 / 1;
-    overflow: hidden;
-  }
-
-  .home-hero-shot__sheen {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(115deg, transparent 38%, var(--hero-sheen) 50%, transparent 62%);
-    transform: translateX(-130%);
-    animation: home-hero-sheen 10s ease-in-out 2.5s infinite;
-    pointer-events: none;
-  }
-
-  .home-hero-shot__demo-link {
-    color: var(--hero-demo-link);
-  }
-
-  .home-hero-shot:hover .home-hero-shot__demo-link {
-    color: var(--hero-demo-link-hover);
-  }
-
-  @keyframes home-hero-shot-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-9px); }
-  }
-
-  @keyframes home-hero-sheen {
-    0% { transform: translateX(-130%); }
-    28%, 100% { transform: translateX(130%); }
-  }
-
-  @media (max-width: 639px) {
-    .home-hero-shot__frame {
-      transform: none;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .home-hero-shot,
-    .home-hero-shot__sheen {
-      animation: none;
-    }
-
-    .home-hero-shot__sheen {
-      display: none;
-    }
-
-    .home-hero__cta,
-    .home-hero-shot__frame {
-      transition: none;
-    }
-  }
+  .home-flow__glow { position: absolute; border-radius: 999px; background: rgb(91 141 239 / 0.11); filter: blur(110px); pointer-events: none; }
+  .home-flow__glow--copy { left: -12rem; bottom: -8rem; width: 35rem; height: 28rem; }
+  .home-flow__glow--art { right: -10rem; top: 6rem; width: 48rem; height: 42rem; }
+  .home-flow__chip { border: 1px solid color-mix(in oklch, var(--color-primary) 24%, var(--color-border)); border-radius: 999px; background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface)); padding: 0.5rem 0.78rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; color: var(--color-text-muted); }
 </style>

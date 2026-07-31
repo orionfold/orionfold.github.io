@@ -1,0 +1,46 @@
+---
+// Shared flagship rail. Flow leads the line; Proof remains a contextual
+// evidence product and is intentionally not part of this three-product peer set.
+type Product = 'flow' | 'relay' | 'arena';
+
+interface Props {
+  current?: Product;
+  class?: string;
+}
+
+const { current, class: className } = Astro.props;
+
+const products: Array<{ id: Product; name: string; job: string; href: string }> = [
+  { id: 'flow', name: 'Flow', job: 'Keep knowledge work moving.', href: '/flow/' },
+  { id: 'relay', name: 'Relay', job: 'Run repeatable agent work.', href: '/relay/' },
+  { id: 'arena', name: 'Arena', job: 'See which local AI wins.', href: '/arena/' },
+];
+---
+<section class:list={['px-6 py-12', className]} aria-label="The Orionfold product line">
+  <div class="mx-auto max-w-4xl">
+    <p class="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">
+      The Orionfold line · Flow leads
+    </p>
+    <div class="flex flex-col gap-2 rounded-2xl border border-border/60 bg-surface/40 p-2 sm:flex-row">
+      {products.map((product) => (
+        product.id === current ? (
+          <div
+            class="flex flex-1 items-center gap-3 rounded-xl border border-primary/15 bg-primary/[0.07] px-4 py-3"
+            aria-current="page"
+          >
+            <span class="font-display text-sm font-bold text-primary">{product.name}</span>
+            <span class="text-sm leading-snug text-text-muted">{product.job}</span>
+          </div>
+        ) : (
+          <a
+            href={product.href}
+            class="group flex flex-1 items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-surface"
+          >
+            <span class="font-display text-sm font-bold text-text transition-colors group-hover:text-primary">{product.name}</span>
+            <span class="text-sm leading-snug text-text-muted">{product.job}</span>
+          </a>
+        )
+      ))}
+    </div>
+  </div>
+</section>

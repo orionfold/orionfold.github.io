@@ -23,6 +23,7 @@ import ArenaBox from '../components/product/ArenaBox.astro';
 import LandingStickyCta from '../components/product/LandingStickyCta.astro';
 import LicenseBand from '../components/product/LicenseBand.astro';
 import OfferSlot from '../components/ui/OfferSlot.astro';
+import ProductLineRail from '../components/product/ProductLineRail.astro';
 import { ARENA_FIELD_EDITION_LIVE } from '../data/launch';
 import arenaPoster from '../assets/projects/arena-poster.png';
 import arenaCockpit from '../assets/arena/01-cockpit.png';
@@ -79,13 +80,6 @@ const softwareSchema = {
     ...digitalMerchantFields,
   },
 };
-
-// The constellation framing (shared with /relay/): where Arena sits in the line.
-const constellation = [
-  { name: 'Relay', q: 'Now make the trusted AI do the real work.', href: '/relay/' },
-  { name: 'Proof', q: 'Which AI can I trust?', href: '/proof/' },
-  { name: 'Arena', q: 'Which build wins?', href: null, self: true },
-];
 
 // What it does: the four core moves, sourced from product.md. Each is a real
 // cockpit surface, not a claim.
@@ -386,31 +380,8 @@ const evidence = [
       </div>
     </section>
 
-    <!-- The Orionfold line: the compact one-row strip (same as /relay/ + /proof/),
-         so all three product pages carry an identical, equal-height suite-context
-         row. Sequence is fixed Relay -> Proof -> Arena to match the top nav; the
-         page self-highlights its own cell. Demoted below the evidence band + value
-         trio so it gives suite context without pulling cold traffic above the proof. -->
-    <section class="px-6 pt-4 pb-10">
-      <div class="mx-auto max-w-4xl">
-        <p class="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The Orionfold line · Relay leads</p>
-        <div class="flex flex-col gap-2 rounded-2xl border border-border/60 bg-surface/40 p-2 sm:flex-row">
-          {constellation.map((c) => (
-            c.self ? (
-              <div class="flex flex-1 items-center gap-3 rounded-xl bg-primary/5 px-4 py-3">
-                <span class="font-display text-sm font-bold text-primary">{c.name}</span>
-                <span class="text-sm text-text-muted">{c.q}</span>
-              </div>
-            ) : (
-              <a href={c.href} class="group flex flex-1 items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-surface">
-                <span class="font-display text-sm font-bold text-text group-hover:text-primary">{c.name}</span>
-                <span class="text-sm text-text-muted">{c.q}</span>
-              </a>
-            )
-          ))}
-        </div>
-      </div>
-    </section>
+    <!-- Shared Flow-led product line, kept below Arena's own evidence. -->
+    <ProductLineRail current="arena" class="pt-4 pb-10" />
 
     <!-- The real cockpit: one dark shot so the visitor sees it early -->
     <section class="px-6 pb-6">

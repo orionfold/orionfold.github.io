@@ -64,6 +64,15 @@ can read it on any device.
 You'll also join the AI For Everyone digest. One email a
 week, no more, and you can leave any time.`,
   },
+  "flow-waitlist": {
+    subject: "One click to join the Orionfold Flow waitlist",
+    pitch:
+      `You're almost in. Confirm your email and we'll send you
+Flow development updates and the launch note when it is ready.
+
+You'll also join AI For Everyone. One email a week, no more,
+and you can leave any time.`,
+  },
 };
 
 function copyFor(offer: string | null | undefined): OfferCopy {

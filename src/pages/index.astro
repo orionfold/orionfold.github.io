@@ -4,6 +4,8 @@
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/sections/Hero.astro';
+import HomeFlowIntro from '../components/sections/HomeFlowIntro.astro';
+import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import FieldEditionBand from '../components/sections/FieldEditionBand.astro';
 import RelayBand from '../components/sections/RelayBand.astro';
 import RelayHostBox from '../components/product/RelayHostBox.astro';
@@ -22,22 +24,20 @@ const og = ogMeta('/');
 ---
 <Layout
   title={`${SITE.tagline} · Orionfold`}
-  description="Orionfold lets you choose open or frontier AI models, local or cloud delivery, solo or multi-user operation, and optimize for cost or intelligence."
+  description="Orionfold Flow keeps knowledge work moving in one document. Relay runs repeatable agent work. Arena shows which local AI wins."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
   <Nav />
   <!-- Surfaces the ?confirmed= state the confirm-email funnel redirects here with (H3) -->
   <ConfirmBanner />
-  <!-- Relay-led suite router (homepage CRO rebuild, 2026-07-03). The page routes
-       to the product that matches each visitor's question rather than selling
-       Proof: hero sets the company promise, the thesis diagram is the suite
-       thesis, the trust trio sets the ethos, then the product bands lead with
-       Relay (the $10K paid-test target) then Arena. Founder letter demoted below
-       the routing; book/catalog/stories are the credibility tail. -->
+  <!-- Flow leads the homepage. Relay and Arena retain their own commercial
+       bands below the shared three-product map. -->
   <main>
     <Hero />
-    <CapabilitySystemMap />
+    <HomeFlowIntro />
+    <FlowWaitlist placement="home" />
+    <div id="orionfold-line" class="scroll-mt-28"><CapabilitySystemMap /></div>
     <CompanyTrustTrio />
     <RelayBand />
     <RelayHostBox placement="home" />

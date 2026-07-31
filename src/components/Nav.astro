@@ -3,22 +3,19 @@
 // a product-led link set, mobile hamburger, and a scroll-triggered blur.
 // Ported from the donor Nav, minus ThemeToggle and the in-nav social icon
 // (social links live in the Footer per the spec).
-// IA refocus 2026-06-22: the top nav is product-led — Proof · Arena,
-// then a vertical divider, then the catalog entries Models · Books. Operator kept
-// the link targets unchanged while relabelling: Arena → /cockpit/ (SEO equity
-// retained), Models → /experts/, Books → /learn/. Workflows + Adoption dropped
-// from the top nav but stay footer-linked for SEO/AEO.
+// IA refocus 2026-06-22 made the top nav product-led. Models → /experts/ and
+// Books → /learn/ remain the customer-facing labels; Workflows + Adoption stay
+// footer-linked for SEO/AEO.
 // 2026-06-24: Advisor removed from the top nav (still reachable at /advisor/ and
 // footer-linked); the nav leads with the flagship products.
-// 2026-07-01: Relay (/relay/) added as the third flagship. Story (/story/) stays
-// after Books behind its own divider. Flagship order was Proof · Arena · Relay
-// until the 2026-07-03 Relay-led reorder below.
+// 2026-07-01: Relay (/relay/) joined the product nav. Story (/story/) stays after
+// Books behind its own divider.
 // 2026-07-01 (later): Arena repointed /cockpit/ -> /arena/ (the new flagship
 // landing page, parallel to /proof/ + /relay/). /cockpit/ stays live + footer-
 // linked (keeps its SEO equity); the /software/arena/ detail page was retired the
 // same day and 301s to /arena/ (the single canonical Arena surface).
-// 2026-07-03: nav reordered Proof·Arena·Relay -> Relay·Proof·Arena so the nav
-// hierarchy matches the Relay-led homepage suite router.
+// 2026-07-31: Flow becomes the lead flagship. Proof remains in the footer and
+// contextual evidence surfaces but leaves the top-level product set.
 import BrandMark from './ui/BrandMark.astro';
 import { magnetHref } from '../data/magnet.ts';
 // Persistent magnet sticky bar (2026-Q3 magnet-traffic, relay latest+21): a slim,
@@ -31,8 +28,8 @@ import { magnetHref } from '../data/magnet.ts';
 const magnetBarHref = magnetHref('nav-cta');
 // `divider: true` renders a separator immediately BEFORE that link.
 const links = [
+  { href: '/flow/', label: 'Flow' },
   { href: '/relay/', label: 'Relay' },
-  { href: '/proof/', label: 'Proof' },
   { href: '/arena/', label: 'Arena' },
   { href: '/experts/', label: 'Models', divider: true },
   { href: '/learn/', label: 'Books' },

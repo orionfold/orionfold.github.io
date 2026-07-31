@@ -1,0 +1,318 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import FlowHeroCreative from '../components/flow/FlowHeroCreative.astro';
+import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
+import ProductLineRail from '../components/product/ProductLineRail.astro';
+import StoryCard from '../components/ui/StoryCard.astro';
+import { SITE, PERSON } from '../data/seo';
+import { ogMeta } from '../data/og';
+
+const og = ogMeta('/flow/');
+const flowUrl = `${SITE.url}/flow/`;
+const flowStorySlug = 'limitless-without-the-pill';
+const flowStory = (await getCollection('story')).find((story) => story.id === flowStorySlug);
+const flowStoryHref = `/story/${flowStorySlug}/`;
+
+const continuity = [
+  { number: '01', title: 'Outcome', body: 'Start with the result you want, not a pile of notes.' },
+  { number: '02', title: 'Trusted context', body: 'The document keeps the files, sources, choices, and limits together.' },
+  { number: '03', title: 'Plan + execution', body: 'Specialists carry the work forward without breaking the thread.' },
+  { number: '04', title: 'Inspection', body: 'You see what changed, what it cost, and what still needs judgment.' },
+  { number: '05', title: 'Reusable artifact', body: 'The finished work becomes a better starting point next time.' },
+];
+
+const fold = [
+  { letter: 'F', title: 'Frame', body: 'Name the observable outcome.', icon: '<path d="M5 5h14v14H5z"/><path d="M9 9h6v6H9z"/>' },
+  { letter: 'O', title: 'Orchestrate', body: 'Route specialists around one work object.', icon: '<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/>' },
+  { letter: 'L', title: 'Lock', body: 'Keep sources, cost, tests, and approval with the work.', icon: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M9 15l2 2 4-4"/>' },
+  { letter: 'D', title: 'Distill', body: 'Turn the win into something you can reuse.', icon: '<path d="M4 4h16v5H4zM7 9v11h10V9M10 13h4"/>' },
+];
+
+const modes = [
+  { name: 'Write', body: 'Shape the document in the same place the work began.' },
+  { name: 'Research', body: 'Bring in sources without losing why they matter.' },
+  { name: 'Analyze', body: 'Compare evidence, routes, and tradeoffs in context.' },
+  { name: 'Act', body: 'Use tools only when the document and the person are ready.' },
+];
+
+const taxJourney = [
+  { step: 'Intent', title: 'Prepare my tax filing', body: 'The outcome is clear before the workspace fills up.' },
+  { step: 'Gather', title: 'Bring in local records', body: 'Choose folders with W-2s and statements. The source stays visible.' },
+  { step: 'Check', title: 'Test against guidance', body: 'The document tracks what is supported and what still needs review.' },
+  { step: 'Hand off', title: 'Export when ready', body: 'Send the prepared result to tax software, Excel, or a CPA.' },
+];
+
+const routingTiers = [
+  { tier: '0', label: 'On your device', detail: 'First', names: ['Apple Intelligence', 'Foundation Models', 'Writing Tools'] },
+  { tier: '1', label: 'Local runtimes', detail: 'Private', names: ['Ollama', 'LM Studio'] },
+  { tier: '2', label: 'Subscriptions you have', detail: 'Already paid', names: ['Claude Code', 'Codex'] },
+  { tier: '3', label: 'Standard configuration', detail: 'Detected', names: ['Environment keys', 'MCP tools'] },
+  { tier: '4', label: 'Bring your own key', detail: 'Only if needed', names: ['BYOK'] },
+];
+
+const principles = [
+  { title: 'Receipts travel with the work', body: 'Sources, models, cost, checks, and approvals belong in the document, not in a lost side log.' },
+  { title: 'Autonomy earns its way forward', body: 'Flow starts with the smallest useful loop and expands only when the result can be seen and trusted.' },
+  { title: 'Private never silently becomes remote', body: 'Moving work from an on-device route to an off-device one is a choice you make.' },
+];
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Orionfold Flow',
+  applicationCategory: 'ProductivityApplication',
+  operatingSystem: 'macOS',
+  description: 'A native Mac workspace where documents hold context, agents carry work forward, and every result keeps its proof.',
+  url: flowUrl,
+  image: `${SITE.url}${og.image}`,
+  author: PERSON,
+  brand: { '@type': 'Brand', name: 'Orionfold' },
+};
+---
+<Layout
+  title="The document that keeps the work moving · Orionfold Flow"
+  description="Orionfold Flow is a native Mac workspace where documents hold context, agents carry work forward, and every result keeps its proof. In development as a closed-source freemium subscription."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  jsonLd={[
+    softwareSchema,
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Flow', item: flowUrl },
+      ],
+    },
+  ]}
+>
+  <Nav />
+  <main class="flow-page overflow-x-clip">
+    <section class="flow-hero relative px-6 pb-20 pt-32 sm:pb-28 sm:pt-40">
+      <div class="flow-hero__grid" aria-hidden="true"></div>
+      <div class="flow-hero__glow" aria-hidden="true"></div>
+      <div class="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.84fr_1.16fr] lg:gap-16">
+        <div class="relative z-10 text-center lg:text-left">
+          <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Orionfold Flow · In development</p>
+          <h1 class="hero-gradient-text mt-6 text-balance font-display text-[clamp(1.5rem,3.5vw,3.4rem)] font-extrabold leading-[0.92] tracking-[-0.055em] text-text">
+            The document that keeps the work moving.
+          </h1>
+          <p class="mx-auto mt-7 max-w-2xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl lg:mx-0">
+            Flow is a native Mac workspace where your documents hold the context, agents carry the work forward, and every result keeps its proof.
+          </p>
+          <div class="mt-7 flex flex-wrap justify-center gap-2 lg:justify-start">
+            <span class="flow-chip">Native Mac app</span>
+            <span class="flow-chip">One document, many modes</span>
+            <span class="flow-chip">Receipts built in</span>
+          </div>
+          <div class="mt-9 flex flex-wrap justify-center gap-3 lg:justify-start">
+            <a href="#fold-loop" class="of-primary-action">See how Flow works <span aria-hidden="true">↓</span></a>
+            <a href={flowStoryHref} class="of-secondary-action">Read the story</a>
+          </div>
+        </div>
+        <FlowHeroCreative />
+      </div>
+    </section>
+
+    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
+      <div class="mx-auto max-w-7xl">
+        <div class="max-w-3xl">
+          <p class="flow-kicker">Continuity is the product</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Your brain should not reload the work every time the tool changes.</h2>
+          <p class="mt-5 max-w-2xl text-lg leading-relaxed text-text-muted">Flow makes continuity a document property. The context stays active outside your immediate attention, so writing, research, analysis, and execution remain one journey.</p>
+        </div>
+        <ol class="flow-continuity mt-12 grid gap-3 lg:grid-cols-5" aria-label="The Flow continuity journey">
+          {continuity.map((item) => (
+            <li class="flow-continuity__item">
+              <span class="flow-continuity__number">{item.number}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section id="fold-loop" class="scroll-mt-28 px-6 py-20 sm:py-28">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="flow-kicker">The FOLD loop</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Conduct the work. Keep the judgment.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">The document is the workspace, the quality check, and the artifact. You still own goals, truth, taste, risk, and final approval.</p>
+        </div>
+        <div class="flow-fold mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {fold.map((item) => (
+            <article class="flow-fold__card">
+              <div class="flex items-start justify-between gap-5">
+                <span class="flow-fold__letter">{item.letter}</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={item.icon}></svg>
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+        <div class="flow-approval mt-6">
+          <span class="flow-approval__line" aria-hidden="true"></span>
+          <span class="flow-approval__pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6" /></svg> You approve consequential steps</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-16 sm:py-24">
+      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <div>
+          <p class="flow-kicker">One document, many modes</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Switch how you think, not where the work lives.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">A discipline change should not become a context reset. Flow keeps the same sources, decisions, and outcome under every mode.</p>
+        </div>
+        <div class="flow-modes grid gap-3 sm:grid-cols-2">
+          {modes.map((mode, index) => (
+            <article class="flow-modes__card">
+              <span>0{index + 1}</span><h3>{mode.name}</h3><p>{mode.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-20 sm:py-28">
+      <div class="mx-auto max-w-6xl">
+        <div class="grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
+          <div>
+            <p class="flow-kicker">A concrete journey</p>
+            <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">One tax document, from intent to handoff.</h2>
+          </div>
+          <p class="max-w-2xl text-lg leading-relaxed text-text-muted">This is the product direction in one example. The same document can gather local records, check its work, and prepare the result without hiding where anything came from.</p>
+        </div>
+        <ol class="flow-tax mt-12 grid gap-4 lg:grid-cols-4">
+          {taxJourney.map((item) => (
+            <li>
+              <span class="flow-tax__step">{item.step}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="px-6 py-20 sm:py-28">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="flow-kicker">The routing direction</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Use the intelligence already on your Mac.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">Flow is designed to detect useful routes before asking you to configure a new one. It starts private, free, and already present, then expands only with your choice.</p>
+        </div>
+        <div class="flow-routing mt-14">
+          {routingTiers.map((tier) => (
+            <div class="flow-routing__row">
+              <div class="flow-routing__tier"><span>{tier.tier}</span><div><strong>{tier.label}</strong><small>{tier.detail}</small></div></div>
+              <div class="flow-routing__marks">
+                {tier.names.map((name) => <span>{name}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+        <p class="mx-auto mt-6 max-w-3xl text-center font-mono text-[0.66rem] uppercase leading-relaxed tracking-[0.14em] text-text-dim">Support arrives in measured increments. A name here shows routing direction, not that every connection ships today.</p>
+      </div>
+    </section>
+
+    <section class="px-6 pb-20 sm:pb-28">
+      <div class="mx-auto max-w-6xl">
+        <div class="grid gap-4 lg:grid-cols-3">
+          {principles.map((principle, index) => (
+            <article class="flow-principle">
+              <span>R0{index + 3}</span>
+              <h2>{principle.title}</h2>
+              <p>{principle.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {flowStory && (
+      <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-20 sm:py-24" aria-labelledby="flow-story-heading">
+        <div class="mx-auto max-w-6xl">
+          <div class="mb-10 max-w-3xl">
+            <p class="flow-kicker">From the build log</p>
+            <h2 id="flow-story-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">The story behind Flow.</h2>
+            <p class="mt-5 text-lg leading-relaxed text-text-muted">How AI-native work became less about doing more and more about keeping different modes of thought connected.</p>
+          </div>
+          <StoryCard
+            href={flowStoryHref}
+            title={flowStory.data.title}
+            date={flowStory.data.date}
+            tag={flowStory.data.tags[0]}
+            summary={flowStory.data.summary}
+            seed={flowStory.data.accent}
+            cover={flowStory.data.hero}
+            coverAlt={flowStory.data.heroAlt}
+            featured
+          />
+        </div>
+      </section>
+    )}
+
+    <ProductLineRail current="flow" />
+
+    <FlowWaitlist placement="flow" storyHref={flowStoryHref} />
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .flow-page { --flow-accent: #5b8def; }
+  .flow-hero { min-height: min(980px, 100svh); display: grid; align-items: center; }
+  .flow-hero__grid {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgb(91 141 239 / 0.055) 1px, transparent 1px), linear-gradient(90deg, rgb(91 141 239 / 0.055) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(circle at 70% 46%, #000 0%, transparent 76%);
+  }
+  .flow-hero__glow { position: absolute; right: -14rem; top: 9rem; width: 58rem; height: 50rem; border-radius: 999px; background: rgb(91 141 239 / 0.11); filter: blur(120px); pointer-events: none; }
+  .flow-chip { border: 1px solid color-mix(in oklch, var(--color-primary) 25%, var(--color-border)); border-radius: 999px; background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface)); padding: 0.5rem 0.8rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; color: var(--color-text-muted); }
+  .flow-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-primary); }
+  .flow-continuity__item { position: relative; min-height: 15rem; border: 1px solid var(--color-border); border-radius: 1.25rem; background: var(--color-surface); padding: 1.35rem; }
+  .flow-continuity__item:not(:last-child)::after { content: '→'; position: absolute; z-index: 2; right: -0.85rem; top: 2rem; display: none; width: 1.65rem; height: 1.65rem; place-items: center; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-surface-raised); color: var(--color-primary); }
+  .flow-continuity__number { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; color: var(--color-primary); }
+  .flow-continuity h3 { margin-top: 3.4rem; font-size: 1.18rem; font-weight: 700; }
+  .flow-continuity p { margin-top: 0.65rem; font-size: 0.9rem; line-height: 1.65; color: var(--color-text-muted); }
+  .flow-fold__card { border: 1px solid var(--color-border); border-radius: 1.5rem; background: linear-gradient(145deg, var(--color-surface-raised), var(--color-surface)); padding: 1.5rem; box-shadow: 0 22px 60px -50px rgb(91 141 239 / 0.55); }
+  .flow-fold__letter { font-family: var(--font-display); font-size: 3.5rem; font-weight: 800; line-height: 1; color: color-mix(in oklch, var(--color-primary) 82%, var(--color-text)); }
+  .flow-fold svg { width: 2rem; height: 2rem; fill: none; stroke: var(--color-primary); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0.75; }
+  .flow-fold h3 { margin-top: 2.2rem; font-size: 1.35rem; font-weight: 700; }
+  .flow-fold p { margin-top: 0.6rem; font-size: 0.92rem; line-height: 1.6; color: var(--color-text-muted); }
+  .flow-approval { position: relative; display: grid; place-items: center; min-height: 4rem; }
+  .flow-approval__line { position: absolute; left: 5%; right: 5%; height: 1px; background: linear-gradient(90deg, transparent, var(--color-primary), transparent); opacity: 0.35; }
+  .flow-approval__pill { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid color-mix(in oklch, var(--color-success) 42%, var(--color-border)); border-radius: 999px; background: var(--color-surface); padding: 0.6rem 0.9rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-success); }
+  .flow-approval__pill svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .flow-modes__card { border: 1px solid var(--color-border); border-radius: 1.25rem; background: var(--color-surface-raised); padding: 1.35rem; }
+  .flow-modes__card > span { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.15em; color: var(--color-primary); }
+  .flow-modes__card h3 { margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700; }
+  .flow-modes__card p { margin-top: 0.55rem; font-size: 0.9rem; line-height: 1.6; color: var(--color-text-muted); }
+  .flow-tax li { position: relative; border-top: 2px solid color-mix(in oklch, var(--color-primary) 45%, var(--color-border)); padding: 1.4rem 0.25rem 0; }
+  .flow-tax__step { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-primary); }
+  .flow-tax h3 { margin-top: 2rem; font-size: 1.2rem; font-weight: 700; }
+  .flow-tax p { margin-top: 0.6rem; font-size: 0.9rem; line-height: 1.65; color: var(--color-text-muted); }
+  .flow-routing { overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.5rem; background: var(--color-surface-raised); }
+  .flow-routing__row { display: grid; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--color-border); }
+  .flow-routing__row:last-child { border-bottom: 0; }
+  .flow-routing__tier { display: flex; align-items: center; gap: 0.85rem; }
+  .flow-routing__tier > span { display: grid; width: 2.15rem; height: 2.15rem; place-items: center; border-radius: 0.75rem; background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface)); font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-primary); }
+  .flow-routing__tier strong { display: block; font-size: 0.92rem; }
+  .flow-routing__tier small { display: block; margin-top: 0.15rem; font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-dim); }
+  .flow-routing__marks { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .flow-routing__marks span { border: 1px solid var(--color-border); border-radius: 0.75rem; background: var(--color-surface); padding: 0.62rem 0.8rem; font-family: var(--font-display); font-size: 0.82rem; font-weight: 650; color: var(--color-text-muted); }
+  .flow-principle { min-height: 18rem; border: 1px solid var(--color-border); border-radius: 1.5rem; background: linear-gradient(155deg, color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-raised)), var(--color-surface)); padding: 1.6rem; }
+  .flow-principle > span { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em; color: var(--color-primary); }
+  .flow-principle h2 { margin-top: 5rem; font-size: 1.55rem; font-weight: 700; line-height: 1.15; }
+  .flow-principle p { margin-top: 0.85rem; font-size: 0.94rem; line-height: 1.65; color: var(--color-text-muted); }
+  @media (min-width: 640px) { .flow-routing__row { grid-template-columns: minmax(13rem, 0.7fr) 1.3fr; align-items: center; padding: 1rem 1.2rem; } }
+  @media (min-width: 1024px) { .flow-continuity__item:not(:last-child)::after { display: grid; } }
+  @media (prefers-reduced-motion: reduce) { .flow-page *, .flow-page *::before, .flow-page *::after { scroll-behavior: auto !important; } }
+</style>

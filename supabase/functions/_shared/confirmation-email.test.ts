@@ -52,8 +52,18 @@ Deno.test("become-ai-native-business offer names the AI For Everyone list + cade
   assert(!e.text.includes("our stories"));
 });
 
+Deno.test("flow-waitlist offer names Flow, the digest, and the weekly cadence", () => {
+  const e = confirmationEmail(URL, "flow-waitlist", FOOTER);
+  assertEquals(e.subject, "One click to join the Orionfold Flow waitlist");
+  assert(e.text.includes("Flow development updates"));
+  assert(e.text.includes("launch note"));
+  assert(e.text.includes("AI For Everyone"));
+  assert(e.text.includes("One email a week, no more"));
+  assert(!e.text.includes("our stories"));
+});
+
 Deno.test("every variant keeps the shared scaffold", () => {
-  for (const offer of [null, "proof-playbook", "founder-letter", "become-ai-native-business", "bogus"]) {
+  for (const offer of [null, "proof-playbook", "founder-letter", "become-ai-native-business", "flow-waitlist", "bogus"]) {
     const e = confirmationEmail(URL, offer, FOOTER);
     assert(e.text.startsWith("Hi,"), `greeting missing for ${offer}`);
     assert(e.text.includes(URL), `confirm URL missing for ${offer}`);

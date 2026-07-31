@@ -5,13 +5,13 @@
 export const SITE = {
   name: 'Orionfold',
   url: 'https://orionfold.com',
-  tagline: 'Proven AI-native business in a box',
+  tagline: 'Work that keeps moving, on terms you control',
   description:
-    'Orionfold lets you choose open or frontier AI models, local or cloud delivery, solo or multi-user operation, and optimize for cost or intelligence.',
+    'Orionfold builds Flow, Relay, and Arena: keep knowledge work moving, run repeatable agent work, and see which local AI wins.',
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:
-    'Orionfold: proven AI-native business with open or frontier models, local or cloud delivery, and cost or intelligence optimization.',
+    'Orionfold Flow, Relay, and Arena: keep knowledge work moving, run repeatable agent work, and see which local AI wins.',
   // Single light theme: address-bar tint matches the manifest background.
   themeColor: '#f6f9fc',
   license: 'Apache-2.0',

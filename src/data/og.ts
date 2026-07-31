@@ -38,7 +38,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Orionfold',
     title: SITE.tagline,
     seed: 'home',
-    alt: 'Orionfold: proven AI-native business with open or frontier models, local or cloud delivery, and cost or intelligence optimization',
+    alt: 'Orionfold Flow, Relay, and Arena: keep knowledge work moving, run repeatable agent work, and see which local AI wins',
   },
   '/advisor/': {
     slug: 'advisor',
@@ -165,6 +165,13 @@ export const OG_PAGES: Record<string, OgPage> = {
     // The Orionfold Proof poster (art-deco receipt rising from a MacBook into the
     // Orion stars) full-bleed as the social card, same pattern as advisor/dgx-spark.
     background: 'src/assets/proof/orionfold-proof-poster.jpeg',
+  },
+  '/flow/': {
+    slug: 'flow',
+    eyebrow: 'Orionfold Flow · In development',
+    title: 'The document that keeps the work moving',
+    seed: 'flow',
+    alt: 'Orionfold Flow: a native Mac workspace where documents hold context, agents carry work forward, and every result keeps its proof',
   },
   '/relay/': {
     slug: 'relay',

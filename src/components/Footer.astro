@@ -25,10 +25,11 @@ const SW_GROUPS = [
   { key: 'intel', label: 'Intel' },
   { key: 'devtools', label: 'Devtools' },
 ] as const;
-// The three flagships (Proof, Arena, Relay) have no /software/<slug>/ detail page
+// The three flagships (Flow, Relay, Arena) and Proof have no /software/<slug>/ detail page
 // — their canonical surface is a hand-built landing page. Link the footer to that
 // landing; every other software links to its detail page when one exists.
 const LANDING_HREF: Record<string, string> = {
+  flow: '/flow/',
   proof: '/proof/',
   arena: '/arena/',
   relay: '/relay/',
@@ -224,7 +225,7 @@ const year = new Date().getFullYear();
     </div>
 
       <div class="pt-6 mt-8 border-t border-border text-center sm:text-left">
-        <span>&copy; {year} Orionfold LLC. Apache 2.0.</span>
+        <span>&copy; {year} Orionfold LLC. Site source: Apache 2.0.</span>
       </div>
     </div>
   </div>

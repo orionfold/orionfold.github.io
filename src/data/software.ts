@@ -41,55 +41,32 @@ export interface SoftwareProduct extends RoadmapMeta {
 
 // Group headings + blurbs for the page sections (order = display order).
 export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }[] = [
-  { id: 'flagship', label: 'Flagship', blurb: 'Our lead products, the line you buy: prove which AI to trust, drive the shelf of models you own to find the one that wins, then put that winner to work. Advisor and Cortex round out the Arena stack.' },
+  { id: 'flagship', label: 'Flagship', blurb: 'Flow leads the line: keep knowledge work moving in one document, run repeatable agent work in Relay, and find which local AI wins in Arena.' },
   { id: 'platform', label: 'The platform', blurb: 'The Arena stack and the core: a governed advisor over your documents, the memory it answers from, and the API to drive it all with code.' },
-  { id: 'devtools', label: 'Developer tools', blurb: 'For builders: testing, terminals, and reusable patterns.' },
+  { id: 'devtools', label: 'Developer tools', blurb: 'For builders: rerunnable proof, testing, terminals, and reusable patterns.' },
   { id: 'apps', label: 'Personal AI apps', blurb: 'Ready-to-use apps that keep your data on your machine.' },
   { id: 'intel', label: 'Intelligence & research', blurb: 'Tools that turn the fast-moving AI world into clear answers.' },
 ];
 
 export const software: SoftwareProduct[] = [
-  // ── Flagship (pole position: the three products we commercialize) ──
-  // Three-flagship consolidation 2026-07-01: Proof, Arena, Relay are the
-  // commercial line and lead the page + this array (array order also drives the
-  // CatalogShelf door art). Their cards link to the canonical landing pages
-  // (/proof/, /arena/, /relay/), not to /software/<slug>/ detail pages — the
-  // Arena + AI-Native-Platform detail pages were retired into those landings.
-  // Advisor + Cortex stay in the group below the three as the Arena stack.
+  // ── Flagship (Flow leads, followed by Relay and Arena) ──
+  // Flow is Orionfold's first closed-source commercial app. It is in
+  // development under a freemium-subscription model, so this card has no price,
+  // checkout, or launch-date claim. Relay and Arena retain their canonical
+  // commercial surfaces and existing offers.
   {
-    slug: 'proof',
+    slug: 'flow',
     group: 'flagship',
-    eyebrow: 'Trust, proven',
-    title: 'Orionfold Proof',
-    body: 'The tool behind the receipts. It runs on your own machine, points at your own task, and tries each AI model or setup you are weighing. It scores them on a rubric you set and hands back a signed receipt: which one won, at what cost, with what failures. Rerun it any time.',
-    pills: ['Runs local', 'Signed receipts', 'Rerunnable', 'Private'],
-    href: '/proof/',
-    ctaText: 'See Proof',
-    coverType: 'poster',
-    cover: '@proof',
-    status: 'active',
+    eyebrow: 'Lead flagship · In development',
+    title: 'Orionfold Flow',
+    body: 'A native Mac workspace where your documents hold the context, agents carry the work forward, and every result keeps its proof. Flow turns writing, research, analysis, and action into one continuous journey you direct.',
+    pills: ['Native Mac', 'Local documents', 'Human approval', 'Freemium'],
+    href: '/flow/',
+    ctaText: 'See Flow',
+    coverType: 'motif',
+    status: 'planned',
   },
   {
-    slug: 'arena',
-    group: 'flagship',
-    eyebrow: 'Eval cockpit',
-    title: 'Orionfold Arena',
-    body: 'One screen to run, compare, score, and now train the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, queue tests and training runs, and wake up to a morning report. Nothing you type leaves your machine.',
-    pills: ['Runs local', 'Leaderboard', 'Trains + tests', 'Private'],
-    href: '/arena/',
-    ctaText: 'See Arena',
-    // Demo mirrored under orionfold.com (public/arena/demo/) so buyers stay on-site.
-    demoHref: '/arena/demo/',
-    demoLabel: 'Try the live demo',
-    coverType: 'poster',
-    cover: 'arena-poster.png',
-    status: 'active', // living tool, served by fieldkit; appears on the roadmap
-  },
-  {
-    // Orionfold Relay: the former open ainative-business engine, renamed. This
-    // card was the old "AI Native Platform" software entry (that detail page is
-    // retired); it now leads to the /relay/ landing. (The AI Native Platform
-    // *book* is a different product and keeps its own /books/ card.)
     slug: 'relay',
     group: 'flagship',
     eyebrow: 'Operating layer',
@@ -102,13 +79,39 @@ export const software: SoftwareProduct[] = [
     cover: '@relay',
     status: 'active',
   },
+  {
+    slug: 'arena',
+    group: 'flagship',
+    eyebrow: 'Eval cockpit',
+    title: 'Orionfold Arena',
+    body: 'One screen to run, compare, score, and now train the AI models on your own desktop. Watch live speed and memory, rank models on a private leaderboard, queue tests and training runs, and wake up to a morning report. Nothing you type leaves your machine.',
+    pills: ['Runs local', 'Leaderboard', 'Trains + tests', 'Private'],
+    href: '/arena/',
+    ctaText: 'See Arena',
+    demoHref: '/arena/demo/',
+    demoLabel: 'Try the live demo',
+    coverType: 'poster',
+    cover: 'arena-poster.png',
+    status: 'active', // living tool, served by fieldkit; appears on the roadmap
+  },
+  // Proof remains a canonical product and the home of rerunnable evidence, but
+  // it is no longer part of the three-product flagship line.
+  {
+    slug: 'proof',
+    group: 'devtools',
+    eyebrow: 'Trust, proven',
+    title: 'Orionfold Proof',
+    body: 'The tool behind the receipts. It runs on your own machine, points at your own task, and tries each AI model or setup you are weighing. It scores them on a rubric you set and hands back a signed receipt: which one won, at what cost, with what failures. Rerun it any time.',
+    pills: ['Runs local', 'Signed receipts', 'Rerunnable', 'Private'],
+    href: '/proof/',
+    ctaText: 'See Proof',
+    coverType: 'poster',
+    cover: '@proof',
+    status: 'active',
+  },
 
   // ── The platform (+ the Arena stack: Advisor, Cortex) ──
-  // Three-flagship consolidation 2026-07-01: Advisor + Cortex moved out of the
-  // flagship group (now Proof/Arena/Relay) into the platform group — they are the
-  // Arena stack the flagship line rests on. The former "AI Native Platform"
-  // software card was renamed Orionfold Relay and promoted into flagship (its old
-  // /software/ detail page is retired → /relay/); the API card stays here too.
+  // Advisor + Cortex remain the Arena stack under the three lead products.
   {
     // Graduated from the roadmap overlay 2026-06-10: the Advisor shipped
     // publicly (promoted fine-tuned 4B lane, Orionfold/Advisor-GGUF +
