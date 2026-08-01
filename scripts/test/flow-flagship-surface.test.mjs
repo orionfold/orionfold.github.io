@@ -41,6 +41,36 @@ assert.doesNotMatch(flow, /FlowArtwork/);
 assert.match(flow, /<FlowWaitlist placement="flow" storyHref=\{flowStoryHref\} \/>/);
 assert.ok(flow.indexOf('<ProductLineRail current="flow"') < flow.indexOf('<FlowWaitlist placement="flow"'), 'Flow waitlist belongs after the full product story and line rail');
 
+assert.match(flow, /import FlowRoutingIcon from '\.\.\/components\/flow\/FlowRoutingIcon\.astro'/);
+for (const [label, icon] of [
+  ['Apple Intelligence', 'apple'],
+  ['Foundation Models', 'foundation'],
+  ['Writing Tools', 'writing'],
+  ['Ollama', 'ollama'],
+  ['LM Studio', 'lmstudio'],
+  ['Claude Code', 'claude'],
+  ['Codex', 'openai'],
+  ['Environment keys', 'environment'],
+  ['MCP tools', 'mcp'],
+  ['BYOK', 'key'],
+]) {
+  assert.match(flow, new RegExp(`label: '${label}', icon: '${icon}'`), `${label} must retain its intended routing mark`);
+}
+assert.equal((flow.match(/brand: true/g) ?? []).length, 6, 'six named products must use canonical brand marks');
+assert.match(flow, /data-brand-mark=\{route\.brand \? route\.icon : undefined\}/);
+assert.match(flow, /flow-routing__mark--mono/);
+assert.match(flow, /html\[data-theme='dark'\][\s\S]*?--mark-logo: #f7f8fa/);
+assert.match(flow, /\.flow-routing__mark \{[\s\S]*?white-space: nowrap;/);
+
+const flowRoutingIcon = read('src/components/flow/FlowRoutingIcon.astro');
+for (const mark of ['apple', 'claude', 'ollama', 'lmstudio', 'mcp', 'openai']) {
+  assert.match(flowRoutingIcon, new RegExp(`^  ${mark}: \\{`, 'm'), `${mark} canonical geometry must stay available`);
+}
+for (const concept of ['device', 'local', 'subscription', 'settings', 'key', 'foundation', 'writing', 'environment']) {
+  assert.match(flowRoutingIcon, new RegExp(`^  ${concept}: \\{`, 'm'), `${concept} semantic icon must stay available`);
+}
+assert.match(flowRoutingIcon, /data-flow-routing-icon=\{name\}/);
+
 const flowWaitlist = read('src/components/sections/FlowWaitlist.astro');
 for (const phrase of [
   "'home-flow-waitlist'",

@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import FlowHeroCreative from '../components/flow/FlowHeroCreative.astro';
+import FlowRoutingIcon from '../components/flow/FlowRoutingIcon.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import ProductLineRail from '../components/product/ProductLineRail.astro';
 import StoryCard from '../components/ui/StoryCard.astro';
@@ -45,12 +46,45 @@ const taxJourney = [
   { step: 'Hand off', title: 'Export when ready', body: 'Send the prepared result to tax software, Excel, or a CPA.' },
 ];
 
-const routingTiers = [
-  { tier: '0', label: 'On your device', detail: 'First', names: ['Apple Intelligence', 'Foundation Models', 'Writing Tools'] },
-  { tier: '1', label: 'Local runtimes', detail: 'Private', names: ['Ollama', 'LM Studio'] },
-  { tier: '2', label: 'Subscriptions you have', detail: 'Already paid', names: ['Claude Code', 'Codex'] },
-  { tier: '3', label: 'Standard configuration', detail: 'Detected', names: ['Environment keys', 'MCP tools'] },
-  { tier: '4', label: 'Bring your own key', detail: 'Only if needed', names: ['BYOK'] },
+type RoutingRoute = { label: string; icon: string; tone: string; brand?: boolean; mono?: boolean };
+type RoutingTier = { tier: string; icon: string; tone: string; label: string; detail: string; routes: RoutingRoute[] };
+
+const routingTiers: RoutingTier[] = [
+  {
+    tier: '0', icon: 'device', tone: 'violet', label: 'On your device', detail: 'First',
+    routes: [
+      { label: 'Apple Intelligence', icon: 'apple', tone: 'apple', brand: true, mono: true },
+      { label: 'Foundation Models', icon: 'foundation', tone: 'blue' },
+      { label: 'Writing Tools', icon: 'writing', tone: 'purple' },
+    ],
+  },
+  {
+    tier: '1', icon: 'local', tone: 'cyan', label: 'Local runtimes', detail: 'Private',
+    routes: [
+      { label: 'Ollama', icon: 'ollama', tone: 'ollama', brand: true, mono: true },
+      { label: 'LM Studio', icon: 'lmstudio', tone: 'lmstudio', brand: true, mono: true },
+    ],
+  },
+  {
+    tier: '2', icon: 'subscription', tone: 'coral', label: 'Subscriptions you have', detail: 'Already paid',
+    routes: [
+      { label: 'Claude Code', icon: 'claude', tone: 'claude', brand: true },
+      { label: 'Codex', icon: 'openai', tone: 'codex', brand: true, mono: true },
+    ],
+  },
+  {
+    tier: '3', icon: 'settings', tone: 'amber', label: 'Standard configuration', detail: 'Detected',
+    routes: [
+      { label: 'Environment keys', icon: 'environment', tone: 'amber' },
+      { label: 'MCP tools', icon: 'mcp', tone: 'mcp', brand: true, mono: true },
+    ],
+  },
+  {
+    tier: '4', icon: 'key', tone: 'green', label: 'Bring your own key', detail: 'Only if needed',
+    routes: [
+      { label: 'BYOK', icon: 'key', tone: 'green' },
+    ],
+  },
 ];
 
 const principles = [
@@ -210,10 +244,29 @@ const softwareSchema = {
         </div>
         <div class="flow-routing mt-14">
           {routingTiers.map((tier) => (
-            <div class="flow-routing__row">
-              <div class="flow-routing__tier"><span>{tier.tier}</span><div><strong>{tier.label}</strong><small>{tier.detail}</small></div></div>
+            <div class:list={['flow-routing__row', `flow-routing__row--${tier.tone}`]}>
+              <div class="flow-routing__tier">
+                <span class="flow-routing__tier-symbol">
+                  <FlowRoutingIcon name={tier.icon} />
+                  <span class="flow-routing__tier-number" aria-label={`Tier ${tier.tier}`}>{tier.tier}</span>
+                </span>
+                <div><strong>{tier.label}</strong><small>{tier.detail}</small></div>
+              </div>
               <div class="flow-routing__marks">
-                {tier.names.map((name) => <span>{name}</span>)}
+                {tier.routes.map((route) => (
+                  <span
+                    class:list={[
+                      'flow-routing__mark',
+                      `flow-routing__mark--${route.tone}`,
+                      route.brand && 'flow-routing__mark--brand',
+                      route.mono && 'flow-routing__mark--mono',
+                    ]}
+                    data-brand-mark={route.brand ? route.icon : undefined}
+                  >
+                    <span class="flow-routing__mark-icon"><FlowRoutingIcon name={route.icon} /></span>
+                    <span class="flow-routing__mark-label">{route.label}</span>
+                  </span>
+                ))}
               </div>
             </div>
           ))}
@@ -315,15 +368,38 @@ const softwareSchema = {
   .flow-tax__step { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-primary); }
   .flow-tax h3 { margin-top: 2rem; font-size: 1.2rem; font-weight: 700; }
   .flow-tax p { margin-top: 0.6rem; font-size: 0.9rem; line-height: 1.65; color: var(--color-text-muted); }
-  .flow-routing { overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.5rem; background: var(--color-surface-raised); }
-  .flow-routing__row { display: grid; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--color-border); }
+  .flow-routing { overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.5rem; background: var(--color-surface-raised); box-shadow: 0 30px 80px -66px rgb(70 101 180 / 0.55); }
+  .flow-routing__row { --tier-accent: #7770f5; position: relative; display: grid; gap: 1rem; padding: 1.05rem; border-bottom: 1px solid var(--color-border); background: linear-gradient(100deg, color-mix(in oklch, var(--tier-accent) 5%, var(--color-surface-raised)), transparent 44%); }
+  .flow-routing__row::before { position: absolute; inset: 0 auto 0 0; width: 2px; background: linear-gradient(180deg, transparent 8%, var(--tier-accent), transparent 92%); content: ''; opacity: 0.7; }
   .flow-routing__row:last-child { border-bottom: 0; }
+  .flow-routing__row--violet { --tier-accent: #7770f5; }
+  .flow-routing__row--cyan { --tier-accent: #1ea7b8; }
+  .flow-routing__row--coral { --tier-accent: #d97757; }
+  .flow-routing__row--amber { --tier-accent: #c68a22; }
+  .flow-routing__row--green { --tier-accent: #2b9d70; }
   .flow-routing__tier { display: flex; align-items: center; gap: 0.85rem; }
-  .flow-routing__tier > span { display: grid; width: 2.15rem; height: 2.15rem; place-items: center; border-radius: 0.75rem; background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface)); font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-primary); }
+  .flow-routing__tier-symbol { position: relative; display: grid; width: 2.85rem; height: 2.85rem; flex: 0 0 auto; place-items: center; border: 1px solid color-mix(in oklch, var(--tier-accent) 32%, var(--color-border)); border-radius: 0.9rem; background: color-mix(in oklch, var(--tier-accent) 12%, var(--color-surface)); color: var(--tier-accent); box-shadow: inset 0 1px rgb(255 255 255 / 0.28); }
+  .flow-routing__tier-symbol :global(.flow-routing-icon) { width: 1.35rem; height: 1.35rem; }
+  .flow-routing__tier-number { position: absolute; right: -0.22rem; bottom: -0.22rem; display: grid; width: 1.08rem; height: 1.08rem; place-items: center; border: 1px solid color-mix(in oklch, var(--tier-accent) 46%, var(--color-border)); border-radius: 999px; background: var(--color-surface-raised); font-family: var(--font-mono); font-size: 0.47rem; font-weight: 750; line-height: 1; color: var(--tier-accent); }
   .flow-routing__tier strong { display: block; font-size: 0.92rem; }
   .flow-routing__tier small { display: block; margin-top: 0.15rem; font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-dim); }
-  .flow-routing__marks { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .flow-routing__marks span { border: 1px solid var(--color-border); border-radius: 0.75rem; background: var(--color-surface); padding: 0.62rem 0.8rem; font-family: var(--font-display); font-size: 0.82rem; font-weight: 650; color: var(--color-text-muted); }
+  .flow-routing__marks { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .flow-routing__mark { --mark-accent: #6489ed; --mark-logo: var(--mark-accent); display: inline-flex; min-height: 2.9rem; align-items: center; gap: 0.62rem; border: 1px solid color-mix(in oklch, var(--mark-accent) 26%, var(--color-border)); border-radius: 0.9rem; background: linear-gradient(135deg, color-mix(in oklch, var(--mark-accent) 8%, var(--color-surface)), var(--color-surface)); padding: 0.4rem 0.78rem 0.4rem 0.42rem; box-shadow: inset 0 1px rgb(255 255 255 / 0.22); white-space: nowrap; }
+  .flow-routing__mark-icon { display: grid; width: 2rem; height: 2rem; flex: 0 0 auto; place-items: center; border: 1px solid color-mix(in oklch, var(--mark-accent) 28%, transparent); border-radius: 0.68rem; background: color-mix(in oklch, var(--mark-accent) 15%, var(--color-surface)); color: var(--mark-logo); }
+  .flow-routing__mark-icon :global(.flow-routing-icon) { width: 1.08rem; height: 1.08rem; }
+  .flow-routing__mark-label { font-family: var(--font-display); font-size: 0.82rem; font-weight: 670; color: var(--color-text); }
+  .flow-routing__mark--apple { --mark-accent: #706df2; }
+  .flow-routing__mark--blue { --mark-accent: #397ee8; }
+  .flow-routing__mark--purple { --mark-accent: #9a62df; }
+  .flow-routing__mark--ollama { --mark-accent: #7969d5; }
+  .flow-routing__mark--lmstudio { --mark-accent: #278acb; }
+  .flow-routing__mark--claude { --mark-accent: #d97757; --mark-logo: #d97757; }
+  .flow-routing__mark--codex { --mark-accent: #1b9a70; }
+  .flow-routing__mark--amber { --mark-accent: #c68a22; }
+  .flow-routing__mark--mcp { --mark-accent: #dd685c; }
+  .flow-routing__mark--green { --mark-accent: #2b9d70; }
+  .flow-routing__mark--mono { --mark-logo: #17191d; }
+  :global(html[data-theme='dark']) .flow-routing__mark--mono { --mark-logo: #f7f8fa; }
   .flow-principle { min-height: 18rem; border: 1px solid var(--color-border); border-radius: 1.5rem; background: linear-gradient(155deg, color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-raised)), var(--color-surface)); padding: 1.6rem; }
   .flow-principle > span { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em; color: var(--color-primary); }
   .flow-principle h2 { margin-top: 5rem; font-size: 1.55rem; font-weight: 700; line-height: 1.15; }
