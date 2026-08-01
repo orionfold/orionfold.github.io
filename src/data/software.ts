@@ -41,7 +41,7 @@ export interface SoftwareProduct extends RoadmapMeta {
 
 // Group headings + blurbs for the page sections (order = display order).
 export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }[] = [
-  { id: 'flagship', label: 'Flagship', blurb: 'Flow leads the line: keep knowledge work moving in one document, run repeatable agent work in Relay, and find which local AI wins in Arena.' },
+  { id: 'flagship', label: 'Flagship', blurb: 'Flow leads the line: conduct intelligent documents with AI agency, run repeatable agent work in Relay, and find which local AI wins in Arena.' },
   { id: 'platform', label: 'The platform', blurb: 'The Arena stack and the core: a governed advisor over your documents, the memory it answers from, and the API to drive it all with code.' },
   { id: 'devtools', label: 'Developer tools', blurb: 'For builders: rerunnable proof, testing, terminals, and reusable patterns.' },
   { id: 'apps', label: 'Personal AI apps', blurb: 'Ready-to-use apps that keep your data on your machine.' },
@@ -59,8 +59,8 @@ export const software: SoftwareProduct[] = [
     group: 'flagship',
     eyebrow: 'Lead flagship · In development',
     title: 'Orionfold Flow',
-    body: 'A native Mac workspace where your documents hold the context, agents carry the work forward, and every result keeps its proof. Flow turns writing, research, analysis, and action into one continuous journey you direct.',
-    pills: ['Native Mac', 'Local documents', 'Human approval', 'Freemium'],
+    body: 'Orionfold Flow creates beautiful documents with self-improving intelligence built in and AI agency enabled to get work done. The native Mac app keeps sources, decisions, approvals, and receipts in one living artifact you direct.',
+    pills: ['Native Mac', 'Self-improving', 'AI agency', 'Freemium'],
     href: '/flow/',
     ctaText: 'See Flow',
     coverType: 'motif',

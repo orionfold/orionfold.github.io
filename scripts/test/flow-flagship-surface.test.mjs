@@ -15,15 +15,31 @@ const rail = read('src/components/product/ProductLineRail.astro');
 const railNames = [...rail.matchAll(/name: '([^']+)'/g)].map((match) => match[1]);
 assert.deepEqual(railNames, ['Flow', 'Relay', 'Arena']);
 assert.match(rail, /The Orionfold line · Flow leads/);
+assert.match(rail, /Conduct documents with AI agency\./);
 assert.doesNotMatch(rail, /name: 'Proof'/);
 
 const flow = read('src/pages/flow.astro');
-for (const phrase of ['In development', 'closed-source', 'freemium subscription', 'The document that keeps the work moving.']) {
+for (const phrase of [
+  'In development',
+  'closed-source',
+  'freemium subscription',
+  'Conduct beautiful documents',
+  'with AI agency built in',
+  'self-improving intelligence built in',
+  'A beautiful document that gets better and gets work done.',
+  'Conduct the document. Let agency move the work.',
+  'One work system. Five very different documents.',
+  'Use the best intelligence for each part of the document.',
+]) {
   assert.match(flow, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
 }
+assert.doesNotMatch(flow, /The document that keeps the work moving|agents carry the work forward/);
+assert.doesNotMatch(flow, /—/, 'revised Flow landing-page copy must not use em dashes');
 assert.doesNotMatch(flow, /data-checkout=/, 'Flow must not expose checkout before commercial terms exist');
 assert.match(flow, /<ProductLineRail current="flow"/);
-assert.match(flow, /text-\[clamp\(1\.5rem,3\.5vw,3\.4rem\)\]/, 'Flow hero title stays at the operator-directed 50% scale');
+assert.match(flow, /text-\[clamp\(1\.4rem,2\.65vw,3\.25rem\)\]/, 'Flow hero title preserves the operator-directed compact scale');
+assert.match(flow, /leading-\[1\.16\]/, 'Flow hero title must preserve full descenders');
+assert.match(flow, /<span class="block whitespace-nowrap">Conduct beautiful documents<\/span>\s*<span class="mt-\[0\.02em\] block whitespace-nowrap">with AI agency built in<\/span>/);
 assert.doesNotMatch(flow, /text-\[clamp\(3rem,7vw,6\.8rem\)\]/, 'Flow hero title must not restore the prior scale');
 assert.match(flow, /<h1 class="hero-gradient-text /, 'Flow hero title uses the shared Orionfold gradient fill');
 assert.match(flow, /flowStorySlug = 'limitless-without-the-pill'/);
@@ -31,7 +47,7 @@ assert.equal((flow.match(/href=\{flowStoryHref\}/g) ?? []).length, 2, 'Flow hero
 assert.equal((flow.match(/Read the story/g) ?? []).length, 1, 'The hero action must name the story directly');
 assert.doesNotMatch(flow, /Follow the build/);
 assert.match(flow, /<StoryCard/);
-for (const benefit of ['Native Mac app', 'One document, many modes', 'Receipts built in']) {
+for (const benefit of ['Native Mac app', 'Self-improving intelligence', 'Agency with your approval']) {
   assert.match(flow, new RegExp(`<span class="flow-chip">${benefit}<\\/span>`));
 }
 assert.doesNotMatch(flow, /<span class="flow-chip">(?:Closed source|Freemium subscription)<\/span>/);
@@ -40,6 +56,23 @@ assert.match(flow, /<FlowHeroCreative \/>/);
 assert.doesNotMatch(flow, /FlowArtwork/);
 assert.match(flow, /<FlowWaitlist placement="flow" storyHref=\{flowStoryHref\} \/>/);
 assert.ok(flow.indexOf('<ProductLineRail current="flow"') < flow.indexOf('<FlowWaitlist placement="flow"'), 'Flow waitlist belongs after the full product story and line rail');
+
+const scenarioSource = flow.match(/const scenarios = \[([\s\S]*?)\n\];/)?.[1] ?? '';
+for (const title of [
+  'Portfolio dashboard document',
+  'Leads dataset',
+  'Earned media content post',
+  'Startup investor pitch presentation',
+  'Tax filing handoff',
+]) {
+  assert.match(scenarioSource, new RegExp(`title: '${title}'`), `${title} must remain in the Flow scenario gallery`);
+}
+assert.equal((scenarioSource.match(/icon: '/g) ?? []).length, 5, 'every Flow scenario needs its own icon');
+assert.equal((scenarioSource.match(/path: \[/g) ?? []).length, 5, 'every Flow scenario needs a compact workflow path');
+assert.match(flow, /aria-label="Example Flow documents"/);
+assert.match(flow, /set:html=\{scenario\.icon\}/);
+assert.match(flow, /scenario\.featured && 'flow-scenario--featured'/);
+assert.doesNotMatch(flow, /taxJourney|flow-tax/, 'the single tax timeline must stay replaced by the scenario grid');
 
 assert.match(flow, /import FlowRoutingIcon from '\.\.\/components\/flow\/FlowRoutingIcon\.astro'/);
 for (const [label, icon] of [
@@ -81,6 +114,8 @@ for (const phrase of [
   'AI For Everyone digest, one email a week, no more',
   'href="/privacy/"',
   'Read the story',
+  'Conduct your first document with Flow.',
+  'self-improving intelligence and AI agency move into the document',
 ]) {
   assert.match(flowWaitlist, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 }
@@ -104,7 +139,9 @@ assert.match(
 );
 const homeFlowIntro = read('src/components/sections/HomeFlowIntro.astro');
 assert.match(homeFlowIntro, /Introducing Orionfold Flow/);
-assert.match(homeFlowIntro, /One document\. Every mode of work\./);
+assert.match(homeFlowIntro, /Beautiful documents\. Intelligence and agency built in\./);
+assert.match(homeFlowIntro, /learns from context and feedback/);
+assert.match(homeFlowIntro, /built-in agency can research, analyze, and act/);
 assert.match(homeFlowIntro, /href="\/flow\/"/);
 assert.match(homeFlowIntro, /import FlowWorkbenchIllustration from '\.\.\/flow\/FlowWorkbenchIllustration\.astro'/);
 assert.match(homeFlowIntro, /<FlowWorkbenchIllustration \/>/);
@@ -120,7 +157,8 @@ assert.match(flowWorkbench, /data-shot-light-src=\{lightSrc\}/);
 assert.match(flowWorkbench, /data-shot-dark-src=\{darkSrc\}/);
 assert.match(flowWorkbench, /loading=\{priority \? 'eager' : 'lazy'\}/);
 assert.match(flowWorkbench, /fetchpriority=\{priority \? 'high' : 'low'\}/);
-assert.match(flowWorkbench, /aria-label="How Flow keeps work continuous:/);
+assert.match(flowWorkbench, /aria-label="How Flow connects an outcome, trusted context, self-improving intelligence, AI agency, and your judgment in one durable document\."/);
+assert.match(flowWorkbench, /alt="Flow's Living Workbench connects an outcome, trusted context, self-improving intelligence, AI agency, and your judgment in one durable document\."/);
 assert.doesNotMatch(flowWorkbench, /<svg\b/, 'the approved generated raster must replace the hand-drawn SVG');
 assert.match(flowWorkbench, /perspective: 1500px/);
 assert.match(flowWorkbench, /animation: flow-workbench-perspective-drift 14s ease-in-out infinite alternate/);
@@ -214,7 +252,7 @@ assert.doesNotMatch(terms, /Orionfold software is open source\./);
 const homeHero = read('src/components/sections/Hero.astro');
 assert.match(homeHero, /Flow leads the Orionfold line/);
 assert.match(homeHero, /href="\/flow\/"/);
-for (const benefit of ['Native Mac app', 'One document, many modes', 'Receipts built in']) {
+for (const benefit of ['Native Mac app', 'Self-improving intelligence', 'Agency with your approval']) {
   assert.match(homeHero, new RegExp(`<span class="home-flow__chip">${benefit}<\\/span>`));
 }
 assert.doesNotMatch(homeHero, /<span class="home-flow__chip">(?:Closed source|Freemium subscription)<\/span>/);
@@ -228,7 +266,13 @@ assert.match(homeFlowHeroCreative, /animation: home-flow-hero-perspective-drift 
 assert.doesNotMatch(homeHero, /FlowArtwork/);
 assert.doesNotMatch(homeHero, /data-checkout=/);
 
-assert.match(read('src/data/og.ts'), /'\/flow\/': \{/);
+const ogData = read('src/data/og.ts');
+assert.match(ogData, /'\/flow\/': \{/);
+assert.match(ogData, /title: 'Conduct beautiful documents with AI agency built in'/);
+assert.match(ogData, /alt: 'Orionfold Flow: conduct beautiful documents with self-improving intelligence and AI agency built in'/);
+const llms = read('public/llms.txt');
+assert.match(llms, /Flow creates\s*> beautiful documents with self-improving intelligence and AI agency built in\./);
+assert.match(llms, /Conduct beautiful documents with self-improving intelligence built in and AI agency enabled to get work done\./);
 assert.match(read('tests/e2e/critical-routes.spec.ts'), /'\/flow\/'/);
 assert.match(read('public/llms.txt'), /\[Flow\]\(https:\/\/orionfold\.com\/flow\/\)/);
 

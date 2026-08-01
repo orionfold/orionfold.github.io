@@ -18,32 +18,69 @@ const flowStory = (await getCollection('story')).find((story) => story.id === fl
 const flowStoryHref = `/story/${flowStorySlug}/`;
 
 const continuity = [
-  { number: '01', title: 'Outcome', body: 'Start with the result you want, not a pile of notes.' },
-  { number: '02', title: 'Trusted context', body: 'The document keeps the files, sources, choices, and limits together.' },
-  { number: '03', title: 'Plan + execution', body: 'Specialists carry the work forward without breaking the thread.' },
-  { number: '04', title: 'Inspection', body: 'You see what changed, what it cost, and what still needs judgment.' },
-  { number: '05', title: 'Reusable artifact', body: 'The finished work becomes a better starting point next time.' },
+  { number: '01', title: 'Outcome', body: 'Start with what the document needs to accomplish.' },
+  { number: '02', title: 'Trusted context', body: 'Keep sources, files, decisions, and boundaries with the document.' },
+  { number: '03', title: 'Intelligence', body: 'Use context, checks, and feedback to make the next version stronger.' },
+  { number: '04', title: 'Agency', body: 'Let specialists research, analyze, and act inside clear boundaries.' },
+  { number: '05', title: 'Durable receipt', body: 'See what changed, why it changed, and what still needs judgment.' },
 ];
 
 const fold = [
-  { letter: 'F', title: 'Frame', body: 'Name the observable outcome.', icon: '<path d="M5 5h14v14H5z"/><path d="M9 9h6v6H9z"/>' },
-  { letter: 'O', title: 'Orchestrate', body: 'Route specialists around one work object.', icon: '<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/>' },
-  { letter: 'L', title: 'Lock', body: 'Keep sources, cost, tests, and approval with the work.', icon: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M9 15l2 2 4-4"/>' },
-  { letter: 'D', title: 'Distill', body: 'Turn the win into something you can reuse.', icon: '<path d="M4 4h16v5H4zM7 9v11h10V9M10 13h4"/>' },
+  { letter: 'F', title: 'Frame', body: 'Define what the document must accomplish.', icon: '<path d="M5 5h14v14H5z"/><path d="M9 9h6v6H9z"/>' },
+  { letter: 'O', title: 'Orchestrate', body: 'Bring intelligence and specialists into the document.', icon: '<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/>' },
+  { letter: 'L', title: 'Lock', body: 'Keep sources, decisions, approvals, and receipts attached.', icon: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M9 15l2 2 4-4"/>' },
+  { letter: 'D', title: 'Distill', body: 'Turn the result and its feedback into a stronger next version.', icon: '<path d="M4 4h16v5H4zM7 9v11h10V9M10 13h4"/>' },
 ];
 
 const modes = [
-  { name: 'Write', body: 'Shape the document in the same place the work began.' },
-  { name: 'Research', body: 'Bring in sources without losing why they matter.' },
-  { name: 'Analyze', body: 'Compare evidence, routes, and tradeoffs in context.' },
-  { name: 'Act', body: 'Use tools only when the document and the person are ready.' },
+  { name: 'Write', body: 'Craft the document with its purpose, voice, and evidence in view.' },
+  { name: 'Research', body: 'Find and cite sources without losing why they matter.' },
+  { name: 'Analyze', body: 'Interrogate evidence, routes, and tradeoffs in context.' },
+  { name: 'Act', body: 'Let agents use tools when the document and you are ready.' },
 ];
 
-const taxJourney = [
-  { step: 'Intent', title: 'Prepare my tax filing', body: 'The outcome is clear before the workspace fills up.' },
-  { step: 'Gather', title: 'Bring in local records', body: 'Choose folders with W-2s and statements. The source stays visible.' },
-  { step: 'Check', title: 'Test against guidance', body: 'The document tracks what is supported and what still needs review.' },
-  { step: 'Hand off', title: 'Export when ready', body: 'Send the prepared result to tax software, Excel, or a CPA.' },
+const scenarios = [
+  {
+    audience: 'Retail investor',
+    title: 'Portfolio dashboard document',
+    body: 'A living view of holdings, thesis, market signals, risk, and the next decision, with every number tied back to its source.',
+    path: ['Gather holdings', 'Improve the thesis', 'Flag decisions'],
+    tone: 'violet',
+    featured: true,
+    icon: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 15l3-4 3 2 4-6M7 8h3M17 11v4"/>',
+  },
+  {
+    audience: 'Sales',
+    title: 'Leads dataset',
+    body: 'A source-linked dataset that researches accounts, cleans fields, scores fit, and prepares the next outreach step.',
+    path: ['Find accounts', 'Qualify fit', 'Prepare outreach'],
+    tone: 'cyan',
+    icon: '<circle cx="8" cy="8" r="3"/><path d="M3 19c0-3 2-5 5-5s5 2 5 5M15 7h6M15 11h6M16 16h5"/>',
+  },
+  {
+    audience: 'Communications',
+    title: 'Earned media content post',
+    body: 'A publishable story that turns research, coverage, quotes, and proof into a clear point of view with a defensible trail.',
+    path: ['Collect signals', 'Shape the angle', 'Publish with proof'],
+    tone: 'coral',
+    icon: '<path d="M4 10v4h4l9 4V6L8 10zM8 14l1.5 6h3L11 15M20 9v6"/>',
+  },
+  {
+    audience: 'Startup founder',
+    title: 'Startup investor pitch presentation',
+    body: 'A presentation that sharpens the company story, checks every claim, and keeps supporting evidence ready for diligence.',
+    path: ['Frame the story', 'Check the claims', 'Prepare the room'],
+    tone: 'amber',
+    icon: '<rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 13l3-3 2 2 3-5M12 17v4M8 21h8"/>',
+  },
+  {
+    audience: 'Personal admin',
+    title: 'Tax filing handoff',
+    body: 'A reviewable document that organizes local records, checks support, tracks corrections, and prepares a clean handoff.',
+    path: ['Gather records', 'Check guidance', 'Approve handoff'],
+    tone: 'green',
+    icon: '<path d="M6 2h9l4 4v16H6zM15 2v5h4M9 12h6M9 16h3"/><path d="M13 17l2 2 4-5"/>',
+  },
 ];
 
 type RoutingRoute = { label: string; icon: string; tone: string; brand?: boolean; mono?: boolean };
@@ -88,9 +125,9 @@ const routingTiers: RoutingTier[] = [
 ];
 
 const principles = [
-  { title: 'Receipts travel with the work', body: 'Sources, models, cost, checks, and approvals belong in the document, not in a lost side log.' },
-  { title: 'Autonomy earns its way forward', body: 'Flow starts with the smallest useful loop and expands only when the result can be seen and trusted.' },
-  { title: 'Private never silently becomes remote', body: 'Moving work from an on-device route to an off-device one is a choice you make.' },
+  { title: 'Beautiful results stay explainable', body: 'Sources, models, cost, checks, and approvals travel with the document instead of disappearing into a side log.' },
+  { title: 'Improvement stays inspectable', body: 'Feedback and decisions can strengthen the next version without hiding what changed or why.' },
+  { title: 'Agency respects your boundaries', body: 'Flow starts with the smallest useful action; consequential steps, including moving work off device, remain your choice.' },
 ];
 
 const softwareSchema = {
@@ -99,7 +136,7 @@ const softwareSchema = {
   name: 'Orionfold Flow',
   applicationCategory: 'ProductivityApplication',
   operatingSystem: 'macOS',
-  description: 'A native Mac workspace where documents hold context, agents carry work forward, and every result keeps its proof.',
+  description: 'Orionfold Flow creates documents with self-improving intelligence built in and AI agency enabled to get work done.',
   url: flowUrl,
   image: `${SITE.url}${og.image}`,
   author: PERSON,
@@ -107,8 +144,8 @@ const softwareSchema = {
 };
 ---
 <Layout
-  title="The document that keeps the work moving · Orionfold Flow"
-  description="Orionfold Flow is a native Mac workspace where documents hold context, agents carry work forward, and every result keeps its proof. In development as a closed-source freemium subscription."
+  title="Conduct beautiful documents with AI agency built in · Orionfold Flow"
+  description="Orionfold Flow creates documents with self-improving intelligence built in and AI agency enabled to get work done. In development as a native Mac, closed-source freemium subscription."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
@@ -132,16 +169,17 @@ const softwareSchema = {
       <div class="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.84fr_1.16fr] lg:gap-16">
         <div class="relative z-10 text-center lg:text-left">
           <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Orionfold Flow · In development</p>
-          <h1 class="hero-gradient-text mt-6 text-balance font-display text-[clamp(1.5rem,3.5vw,3.4rem)] font-extrabold leading-[0.92] tracking-[-0.055em] text-text">
-            The document that keeps the work moving.
+          <h1 class="hero-gradient-text mt-6 font-display text-[clamp(1.4rem,2.65vw,3.25rem)] font-extrabold leading-[1.16] tracking-[-0.055em] text-text">
+            <span class="block whitespace-nowrap">Conduct beautiful documents</span>
+            <span class="mt-[0.02em] block whitespace-nowrap">with AI agency built in</span>
           </h1>
           <p class="mx-auto mt-7 max-w-2xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl lg:mx-0">
-            Flow is a native Mac workspace where your documents hold the context, agents carry the work forward, and every result keeps its proof.
+            Orionfold Flow creates documents with self-improving intelligence built in and AI agency enabled to get work done.
           </p>
           <div class="mt-7 flex flex-wrap justify-center gap-2 lg:justify-start">
             <span class="flow-chip">Native Mac app</span>
-            <span class="flow-chip">One document, many modes</span>
-            <span class="flow-chip">Receipts built in</span>
+            <span class="flow-chip">Self-improving intelligence</span>
+            <span class="flow-chip">Agency with your approval</span>
           </div>
           <div class="mt-9 flex flex-wrap justify-center gap-3 lg:justify-start">
             <a href="#fold-loop" class="of-primary-action">See how Flow works <span aria-hidden="true">↓</span></a>
@@ -155,9 +193,9 @@ const softwareSchema = {
     <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
       <div class="mx-auto max-w-7xl">
         <div class="max-w-3xl">
-          <p class="flow-kicker">Continuity is the product</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Your brain should not reload the work every time the tool changes.</h2>
-          <p class="mt-5 max-w-2xl text-lg leading-relaxed text-text-muted">Flow makes continuity a document property. The context stays active outside your immediate attention, so writing, research, analysis, and execution remain one journey.</p>
+          <p class="flow-kicker">The document is the work system</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">A beautiful document that gets better and gets work done.</h2>
+          <p class="mt-5 max-w-2xl text-lg leading-relaxed text-text-muted">Flow keeps intent, sources, decisions, feedback, and action in one living artifact. Its intelligence improves with the work while agents help research, analyze, and act without leaving the document.</p>
         </div>
         <ol class="flow-continuity mt-12 grid gap-3 lg:grid-cols-5" aria-label="The Flow continuity journey">
           {continuity.map((item) => (
@@ -175,8 +213,8 @@ const softwareSchema = {
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
           <p class="flow-kicker">The FOLD loop</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Conduct the work. Keep the judgment.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">The document is the workspace, the quality check, and the artifact. You still own goals, truth, taste, risk, and final approval.</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Conduct the document. Let agency move the work.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">Frame the outcome, orchestrate intelligence, lock the evidence, and distill a stronger artifact. You still own goals, truth, taste, risk, and final approval.</p>
         </div>
         <div class="flow-fold mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {fold.map((item) => (
@@ -192,7 +230,7 @@ const softwareSchema = {
         </div>
         <div class="flow-approval mt-6">
           <span class="flow-approval__line" aria-hidden="true"></span>
-          <span class="flow-approval__pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6" /></svg> You approve consequential steps</span>
+          <span class="flow-approval__pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6" /></svg> You approve consequential actions</span>
         </div>
       </div>
     </section>
@@ -201,8 +239,8 @@ const softwareSchema = {
       <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
           <p class="flow-kicker">One document, many modes</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Switch how you think, not where the work lives.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">A discipline change should not become a context reset. Flow keeps the same sources, decisions, and outcome under every mode.</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Write beautifully. Research deeply. Analyze clearly. Act deliberately.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">Flow's intelligence and agency share one document, so every mode inherits the same outcome, sources, decisions, and feedback.</p>
         </div>
         <div class="flow-modes grid gap-3 sm:grid-cols-2">
           {modes.map((mode, index) => (
@@ -214,21 +252,36 @@ const softwareSchema = {
       </div>
     </section>
 
-    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-20 sm:py-28">
+    <section class="flow-scenario-section border-y border-border/70 bg-surface-raised/40 px-6 py-20 sm:py-28">
       <div class="mx-auto max-w-6xl">
-        <div class="grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
+        <div class="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
           <div>
-            <p class="flow-kicker">A concrete journey</p>
-            <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">One tax document, from intent to handoff.</h2>
+            <p class="flow-kicker">Concrete journeys</p>
+            <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">One work system. Five very different documents.</h2>
           </div>
-          <p class="max-w-2xl text-lg leading-relaxed text-text-muted">This is the product direction in one example. The same document can gather local records, check its work, and prepare the result without hiding where anything came from.</p>
+          <p class="max-w-2xl text-lg leading-relaxed text-text-muted">A Flow document can be a dashboard, dataset, post, presentation, or filing handoff. The artifact changes. The pattern stays consistent: gather trusted context, improve with feedback, and use agency to move the next step.</p>
         </div>
-        <ol class="flow-tax mt-12 grid gap-4 lg:grid-cols-4">
-          {taxJourney.map((item) => (
-            <li>
-              <span class="flow-tax__step">{item.step}</span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
+        <ol class="flow-scenarios mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Example Flow documents">
+          {scenarios.map((scenario) => (
+            <li
+              class:list={[
+                'flow-scenario',
+                `flow-scenario--${scenario.tone}`,
+                scenario.featured && 'flow-scenario--featured',
+              ]}
+              data-flow-scenario={scenario.title}
+            >
+              <div class="flow-scenario__top">
+                <span class="flow-scenario__icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" set:html={scenario.icon}></svg>
+                </span>
+                <span class="flow-scenario__audience">{scenario.audience}</span>
+              </div>
+              <h3>{scenario.title}</h3>
+              <p>{scenario.body}</p>
+              <ol class="flow-scenario__path" aria-label={`${scenario.title} workflow`}>
+                {scenario.path.map((step) => <li>{step}</li>)}
+              </ol>
             </li>
           ))}
         </ol>
@@ -239,8 +292,8 @@ const softwareSchema = {
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
           <p class="flow-kicker">The routing direction</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Use the intelligence already on your Mac.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">Flow is designed to detect useful routes before asking you to configure a new one. It starts private, free, and already present, then expands only with your choice.</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Use the best intelligence for each part of the document.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">Flow is designed to start with useful on-device routes before asking you to configure a new one. It begins private, free, and already present, then expands only with your choice.</p>
         </div>
         <div class="flow-routing mt-14">
           {routingTiers.map((tier) => (
@@ -294,8 +347,8 @@ const softwareSchema = {
         <div class="mx-auto max-w-6xl">
           <div class="mb-10 max-w-3xl">
             <p class="flow-kicker">From the build log</p>
-            <h2 id="flow-story-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">The story behind Flow.</h2>
-            <p class="mt-5 text-lg leading-relaxed text-text-muted">How AI-native work became less about doing more and more about keeping different modes of thought connected.</p>
+            <h2 id="flow-story-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Why I built documents that can think and act.</h2>
+            <p class="mt-5 text-lg leading-relaxed text-text-muted">How going AI-native turned the document from a static output into the place where intelligence improves and agency gets work done.</p>
           </div>
           <StoryCard
             href={flowStoryHref}
@@ -364,10 +417,28 @@ const softwareSchema = {
   .flow-modes__card > span { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.15em; color: var(--color-primary); }
   .flow-modes__card h3 { margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700; }
   .flow-modes__card p { margin-top: 0.55rem; font-size: 0.9rem; line-height: 1.6; color: var(--color-text-muted); }
-  .flow-tax li { position: relative; border-top: 2px solid color-mix(in oklch, var(--color-primary) 45%, var(--color-border)); padding: 1.4rem 0.25rem 0; }
-  .flow-tax__step { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-primary); }
-  .flow-tax h3 { margin-top: 2rem; font-size: 1.2rem; font-weight: 700; }
-  .flow-tax p { margin-top: 0.6rem; font-size: 0.9rem; line-height: 1.65; color: var(--color-text-muted); }
+  .flow-scenario-section { position: relative; overflow: hidden; }
+  .flow-scenario-section::before { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgb(91 141 239 / 0.035) 1px, transparent 1px), linear-gradient(90deg, rgb(91 141 239 / 0.035) 1px, transparent 1px); background-size: 36px 36px; content: ''; mask-image: radial-gradient(circle at 62% 58%, #000, transparent 78%); }
+  .flow-scenario-section > div { position: relative; }
+  .flow-scenario { --scenario-accent: #7770f5; position: relative; display: flex; min-height: 20rem; flex-direction: column; overflow: hidden; border: 1px solid color-mix(in oklch, var(--scenario-accent) 25%, var(--color-border)); border-radius: 1.5rem; background: linear-gradient(145deg, color-mix(in oklch, var(--scenario-accent) 8%, var(--color-surface)), var(--color-surface)); padding: 1.5rem; box-shadow: 0 28px 70px -58px color-mix(in oklch, var(--scenario-accent) 58%, transparent); }
+  .flow-scenario::before { position: absolute; inset: 0 0 auto; height: 2px; background: linear-gradient(90deg, transparent, var(--scenario-accent), transparent); content: ''; opacity: 0.8; }
+  .flow-scenario::after { position: absolute; right: -4.5rem; top: -5rem; width: 12rem; height: 12rem; border: 1px solid color-mix(in oklch, var(--scenario-accent) 18%, transparent); border-radius: 999px; content: ''; pointer-events: none; }
+  .flow-scenario--violet { --scenario-accent: #7770f5; }
+  .flow-scenario--cyan { --scenario-accent: #168da3; }
+  .flow-scenario--coral { --scenario-accent: #d06f56; }
+  .flow-scenario--amber { --scenario-accent: #b77a13; }
+  .flow-scenario--green { --scenario-accent: #208761; }
+  .flow-scenario__top { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .flow-scenario__icon { display: grid; width: 3.4rem; height: 3.4rem; flex: 0 0 auto; place-items: center; border: 1px solid color-mix(in oklch, var(--scenario-accent) 34%, var(--color-border)); border-radius: 1rem; background: color-mix(in oklch, var(--scenario-accent) 13%, var(--color-surface)); color: var(--scenario-accent); box-shadow: inset 0 1px rgb(255 255 255 / 0.3); }
+  .flow-scenario__icon svg { width: 1.65rem; height: 1.65rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .flow-scenario__audience { font-family: var(--font-mono); font-size: 0.59rem; letter-spacing: 0.14em; text-align: right; text-transform: uppercase; color: color-mix(in oklch, var(--scenario-accent) 78%, var(--color-text)); }
+  .flow-scenario h3 { position: relative; margin-top: 2.4rem; max-width: 18rem; font-size: 1.45rem; font-weight: 750; line-height: 1.13; }
+  .flow-scenario > p { position: relative; margin-top: 0.8rem; max-width: 35rem; font-size: 0.92rem; line-height: 1.65; color: var(--color-text-muted); }
+  .flow-scenario__path { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin-top: auto; padding-top: 1.5rem; list-style: none; }
+  .flow-scenario__path li { display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-dim); }
+  .flow-scenario__path li:not(:last-child)::after { color: var(--scenario-accent); content: '→'; }
+  @media (min-width: 640px) { .flow-scenario--featured { grid-column: span 2; } }
+  @media (min-width: 1024px) { .flow-scenario--featured { min-height: 21rem; } .flow-scenario--featured h3 { max-width: 28rem; font-size: 1.85rem; } .flow-scenario--featured > p { max-width: 38rem; font-size: 1rem; } }
   .flow-routing { overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.5rem; background: var(--color-surface-raised); box-shadow: 0 30px 80px -66px rgb(70 101 180 / 0.55); }
   .flow-routing__row { --tier-accent: #7770f5; position: relative; display: grid; gap: 1rem; padding: 1.05rem; border-bottom: 1px solid var(--color-border); background: linear-gradient(100deg, color-mix(in oklch, var(--tier-accent) 5%, var(--color-surface-raised)), transparent 44%); }
   .flow-routing__row::before { position: absolute; inset: 0 auto 0 0; width: 2px; background: linear-gradient(180deg, transparent 8%, var(--tier-accent), transparent 92%); content: ''; opacity: 0.7; }

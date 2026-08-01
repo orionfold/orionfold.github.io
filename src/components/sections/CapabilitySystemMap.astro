@@ -26,14 +26,14 @@ const sprawl = [
 // The three suite products are distinct controlled surfaces. Labels alternate
 // above/below so neighbors never collide.
 const stages = [
-  { label: 'Flow', detail: 'knowledge work', icon: 'flow', x: 14, above: true },
+  { label: 'Flow', detail: 'intelligent documents', icon: 'flow', x: 14, above: true },
   { label: 'Relay', detail: 'agent operations', icon: 'relay', x: 50, above: false },
   { label: 'Arena', detail: 'local models', icon: 'arena', x: 86, above: true },
 ];
 
 // The terminus card = the Flow-led product line.
 const proof = [
-  { label: 'Flow', value: 'Conduct work' },
+  { label: 'Flow', value: 'Conduct documents' },
   { label: 'Relay', value: 'Run workflows' },
   { label: 'Arena', value: 'Compare models' },
 ];
@@ -58,7 +58,7 @@ const icons: Record<string, string> = {
         </h2>
       </div>
       <p class="max-w-md text-[0.95rem] leading-relaxed text-text-muted">
-        Flow keeps knowledge work moving. Relay runs repeatable agent work. Arena shows which local AI wins. Start with the job you have, and keep control across all three.
+        Flow creates intelligent documents with agency built in. Relay runs repeatable agent work. Arena shows which local AI wins. Start with the job you have, and keep control across all three.
       </p>
     </div>
 
@@ -91,7 +91,7 @@ const icons: Record<string, string> = {
         <!-- The controlled path: stations on the line, approval gate before output -->
         <div class="flow-stations">
           <p class="flow-zone-label flow-zone-label-center text-primary">The Orionfold line</p>
-          <ol aria-label="The Orionfold product line: Flow for knowledge work, Relay for agent operations, Arena for local models">
+          <ol aria-label="The Orionfold product line: Flow for intelligent documents, Relay for agent operations, Arena for local models">
             {stages.map((s) => (
               <li class:list={['station', s.above ? 'station-above' : 'station-below']} style={`--sx:${s.x}%;`}>
                 <span class="station-dot">

@@ -169,9 +169,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/': {
     slug: 'flow',
     eyebrow: 'Orionfold Flow · In development',
-    title: 'The document that keeps the work moving',
+    title: 'Conduct beautiful documents with AI agency built in',
     seed: 'flow',
-    alt: 'Orionfold Flow: a native Mac workspace where documents hold context, agents carry work forward, and every result keeps its proof',
+    alt: 'Orionfold Flow: conduct beautiful documents with self-improving intelligence and AI agency built in',
   },
   '/relay/': {
     slug: 'relay',
