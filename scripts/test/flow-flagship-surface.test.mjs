@@ -36,7 +36,7 @@ for (const phrase of [
 assert.doesNotMatch(flow, /The document that keeps the work moving|agents carry the work forward/);
 assert.doesNotMatch(flow, /—/, 'revised Flow landing-page copy must not use em dashes');
 assert.doesNotMatch(flow, /data-checkout=/, 'Flow must not expose checkout before commercial terms exist');
-assert.match(flow, /<ProductLineRail current="flow"/);
+assert.doesNotMatch(flow, /ProductLineRail/, 'the Flow page must not restore the product-line card navigation');
 assert.match(flow, /text-\[clamp\(1\.4rem,2\.65vw,3\.25rem\)\]/, 'Flow hero title preserves the operator-directed compact scale');
 assert.match(flow, /leading-\[1\.16\]/, 'Flow hero title must preserve full descenders');
 assert.match(flow, /<span class="block whitespace-nowrap">Conduct beautiful documents<\/span>\s*<span class="mt-\[0\.02em\] block whitespace-nowrap">with AI agency built in<\/span>/);
@@ -55,7 +55,24 @@ assert.match(flow, /import FlowHeroCreative from '\.\.\/components\/flow\/FlowHe
 assert.match(flow, /<FlowHeroCreative \/>/);
 assert.doesNotMatch(flow, /FlowArtwork/);
 assert.match(flow, /<FlowWaitlist placement="flow" storyHref=\{flowStoryHref\} \/>/);
-assert.ok(flow.indexOf('<ProductLineRail current="flow"') < flow.indexOf('<FlowWaitlist placement="flow"'), 'Flow waitlist belongs after the full product story and line rail');
+assert.doesNotMatch(flow, /One document, many modes|const modes|flow-modes/, 'the retired modes section and page-only code must stay removed');
+
+const flowHeroSectionIndex = flow.indexOf('<section class="flow-hero');
+const flowHeroSectionEndIndex = flow.indexOf('</section>', flowHeroSectionIndex);
+const flowRoutingSectionIndex = flow.indexOf('<section class="px-6 py-20 sm:py-28">');
+const flowRoutingSectionEndIndex = flow.indexOf('</section>', flowRoutingSectionIndex);
+const flowScenarioSectionIndex = flow.indexOf('<section class="flow-scenario-section');
+assert.ok(flowHeroSectionIndex >= 0 && flowRoutingSectionIndex >= 0 && flowScenarioSectionIndex >= 0, 'the Flow hero, routing, and scenario sections must remain present');
+assert.equal(flow.indexOf('<section', flowHeroSectionEndIndex + '</section>'.length), flowRoutingSectionIndex, 'The routing direction must sit directly below the Flow hero');
+assert.equal(flow.indexOf('<section', flowRoutingSectionEndIndex + '</section>'.length), flowScenarioSectionIndex, 'Concrete journeys must sit directly below The routing direction');
+const flowDocumentSectionIndex = flow.indexOf('<section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">');
+const flowDocumentSectionEndIndex = flow.indexOf('</section>', flowDocumentSectionIndex);
+const flowStorySectionIndex = flow.indexOf('<section class="border-y border-border/70 bg-surface-raised/40 px-6 py-20 sm:py-24" aria-labelledby="flow-story-heading">');
+const flowStorySectionEndIndex = flow.indexOf('</section>', flowStorySectionIndex);
+const flowFoldSectionIndex = flow.indexOf('<section id="fold-loop"');
+assert.equal(flow.indexOf('<section', flowDocumentSectionEndIndex + '</section>'.length), flowStorySectionIndex, 'From the build log must sit directly above The FOLD loop');
+assert.equal(flow.indexOf('<section', flowStorySectionEndIndex + '</section>'.length), flowFoldSectionIndex, 'The FOLD loop must follow From the build log');
+assert.ok(flow.indexOf('<FlowWaitlist placement="flow"') > flowFoldSectionIndex, 'the waitlist must remain the closing Flow conversion surface');
 
 const scenarioSource = flow.match(/const scenarios = \[([\s\S]*?)\n\];/)?.[1] ?? '';
 for (const title of [

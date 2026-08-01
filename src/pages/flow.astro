@@ -6,7 +6,6 @@ import Footer from '../components/Footer.astro';
 import FlowHeroCreative from '../components/flow/FlowHeroCreative.astro';
 import FlowRoutingIcon from '../components/flow/FlowRoutingIcon.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
-import ProductLineRail from '../components/product/ProductLineRail.astro';
 import StoryCard from '../components/ui/StoryCard.astro';
 import { SITE, PERSON } from '../data/seo';
 import { ogMeta } from '../data/og';
@@ -30,13 +29,6 @@ const fold = [
   { letter: 'O', title: 'Orchestrate', body: 'Bring intelligence and specialists into the document.', icon: '<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/>' },
   { letter: 'L', title: 'Lock', body: 'Keep sources, decisions, approvals, and receipts attached.', icon: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M9 15l2 2 4-4"/>' },
   { letter: 'D', title: 'Distill', body: 'Turn the result and its feedback into a stronger next version.', icon: '<path d="M4 4h16v5H4zM7 9v11h10V9M10 13h4"/>' },
-];
-
-const modes = [
-  { name: 'Write', body: 'Craft the document with its purpose, voice, and evidence in view.' },
-  { name: 'Research', body: 'Find and cite sources without losing why they matter.' },
-  { name: 'Analyze', body: 'Interrogate evidence, routes, and tradeoffs in context.' },
-  { name: 'Act', body: 'Let agents use tools when the document and you are ready.' },
 ];
 
 const scenarios = [
@@ -190,104 +182,6 @@ const softwareSchema = {
       </div>
     </section>
 
-    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
-      <div class="mx-auto max-w-7xl">
-        <div class="max-w-3xl">
-          <p class="flow-kicker">The document is the work system</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">A beautiful document that gets better and gets work done.</h2>
-          <p class="mt-5 max-w-2xl text-lg leading-relaxed text-text-muted">Flow keeps intent, sources, decisions, feedback, and action in one living artifact. Its intelligence improves with the work while agents help research, analyze, and act without leaving the document.</p>
-        </div>
-        <ol class="flow-continuity mt-12 grid gap-3 lg:grid-cols-5" aria-label="The Flow continuity journey">
-          {continuity.map((item) => (
-            <li class="flow-continuity__item">
-              <span class="flow-continuity__number">{item.number}</span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-
-    <section id="fold-loop" class="scroll-mt-28 px-6 py-20 sm:py-28">
-      <div class="mx-auto max-w-6xl">
-        <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker">The FOLD loop</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Conduct the document. Let agency move the work.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">Frame the outcome, orchestrate intelligence, lock the evidence, and distill a stronger artifact. You still own goals, truth, taste, risk, and final approval.</p>
-        </div>
-        <div class="flow-fold mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {fold.map((item) => (
-            <article class="flow-fold__card">
-              <div class="flex items-start justify-between gap-5">
-                <span class="flow-fold__letter">{item.letter}</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={item.icon}></svg>
-              </div>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </article>
-          ))}
-        </div>
-        <div class="flow-approval mt-6">
-          <span class="flow-approval__line" aria-hidden="true"></span>
-          <span class="flow-approval__pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6" /></svg> You approve consequential actions</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="px-6 py-16 sm:py-24">
-      <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <div>
-          <p class="flow-kicker">One document, many modes</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Write beautifully. Research deeply. Analyze clearly. Act deliberately.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">Flow's intelligence and agency share one document, so every mode inherits the same outcome, sources, decisions, and feedback.</p>
-        </div>
-        <div class="flow-modes grid gap-3 sm:grid-cols-2">
-          {modes.map((mode, index) => (
-            <article class="flow-modes__card">
-              <span>0{index + 1}</span><h3>{mode.name}</h3><p>{mode.body}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="flow-scenario-section border-y border-border/70 bg-surface-raised/40 px-6 py-20 sm:py-28">
-      <div class="mx-auto max-w-6xl">
-        <div class="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
-          <div>
-            <p class="flow-kicker">Concrete journeys</p>
-            <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">One work system. Five very different documents.</h2>
-          </div>
-          <p class="max-w-2xl text-lg leading-relaxed text-text-muted">A Flow document can be a dashboard, dataset, post, presentation, or filing handoff. The artifact changes. The pattern stays consistent: gather trusted context, improve with feedback, and use agency to move the next step.</p>
-        </div>
-        <ol class="flow-scenarios mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Example Flow documents">
-          {scenarios.map((scenario) => (
-            <li
-              class:list={[
-                'flow-scenario',
-                `flow-scenario--${scenario.tone}`,
-                scenario.featured && 'flow-scenario--featured',
-              ]}
-              data-flow-scenario={scenario.title}
-            >
-              <div class="flow-scenario__top">
-                <span class="flow-scenario__icon">
-                  <svg viewBox="0 0 24 24" aria-hidden="true" set:html={scenario.icon}></svg>
-                </span>
-                <span class="flow-scenario__audience">{scenario.audience}</span>
-              </div>
-              <h3>{scenario.title}</h3>
-              <p>{scenario.body}</p>
-              <ol class="flow-scenario__path" aria-label={`${scenario.title} workflow`}>
-                {scenario.path.map((step) => <li>{step}</li>)}
-              </ol>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-
     <section class="px-6 py-20 sm:py-28">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
@@ -328,17 +222,58 @@ const softwareSchema = {
       </div>
     </section>
 
-    <section class="px-6 pb-20 sm:pb-28">
+    <section class="flow-scenario-section border-y border-border/70 bg-surface-raised/40 px-6 py-20 sm:py-28">
       <div class="mx-auto max-w-6xl">
-        <div class="grid gap-4 lg:grid-cols-3">
-          {principles.map((principle, index) => (
-            <article class="flow-principle">
-              <span>R0{index + 3}</span>
-              <h2>{principle.title}</h2>
-              <p>{principle.body}</p>
-            </article>
-          ))}
+        <div class="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
+          <div>
+            <p class="flow-kicker">Concrete journeys</p>
+            <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">One work system. Five very different documents.</h2>
+          </div>
+          <p class="max-w-2xl text-lg leading-relaxed text-text-muted">A Flow document can be a dashboard, dataset, post, presentation, or filing handoff. The artifact changes. The pattern stays consistent: gather trusted context, improve with feedback, and use agency to move the next step.</p>
         </div>
+        <ol class="flow-scenarios mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Example Flow documents">
+          {scenarios.map((scenario) => (
+            <li
+              class:list={[
+                'flow-scenario',
+                `flow-scenario--${scenario.tone}`,
+                scenario.featured && 'flow-scenario--featured',
+              ]}
+              data-flow-scenario={scenario.title}
+            >
+              <div class="flow-scenario__top">
+                <span class="flow-scenario__icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" set:html={scenario.icon}></svg>
+                </span>
+                <span class="flow-scenario__audience">{scenario.audience}</span>
+              </div>
+              <h3>{scenario.title}</h3>
+              <p>{scenario.body}</p>
+              <ol class="flow-scenario__path" aria-label={`${scenario.title} workflow`}>
+                {scenario.path.map((step) => <li>{step}</li>)}
+              </ol>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
+      <div class="mx-auto max-w-7xl">
+        <div class="max-w-3xl">
+          <p class="flow-kicker">The document is the work system</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">A beautiful document that gets better and gets work done.</h2>
+          <p class="mt-5 max-w-2xl text-lg leading-relaxed text-text-muted">Flow keeps intent, sources, decisions, feedback, and action in one living artifact. Its intelligence improves with the work while agents help research, analyze, and act without leaving the document.</p>
+        </div>
+        <ol class="flow-continuity mt-12 grid gap-3 lg:grid-cols-5" aria-label="The Flow continuity journey">
+          {continuity.map((item) => (
+            <li class="flow-continuity__item">
+              <span class="flow-continuity__number">{item.number}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
 
@@ -365,7 +300,45 @@ const softwareSchema = {
       </section>
     )}
 
-    <ProductLineRail current="flow" />
+    <section id="fold-loop" class="scroll-mt-28 px-6 py-20 sm:py-28">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="flow-kicker">The FOLD loop</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Conduct the document. Let agency move the work.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">Frame the outcome, orchestrate intelligence, lock the evidence, and distill a stronger artifact. You still own goals, truth, taste, risk, and final approval.</p>
+        </div>
+        <div class="flow-fold mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {fold.map((item) => (
+            <article class="flow-fold__card">
+              <div class="flex items-start justify-between gap-5">
+                <span class="flow-fold__letter">{item.letter}</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={item.icon}></svg>
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+        <div class="flow-approval mt-6">
+          <span class="flow-approval__line" aria-hidden="true"></span>
+          <span class="flow-approval__pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6" /></svg> You approve consequential actions</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 pb-20 sm:pb-28">
+      <div class="mx-auto max-w-6xl">
+        <div class="grid gap-4 lg:grid-cols-3">
+          {principles.map((principle, index) => (
+            <article class="flow-principle">
+              <span>R0{index + 3}</span>
+              <h2>{principle.title}</h2>
+              <p>{principle.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <FlowWaitlist placement="flow" storyHref={flowStoryHref} />
   </main>
@@ -413,10 +386,6 @@ const softwareSchema = {
   .flow-approval__line { position: absolute; left: 5%; right: 5%; height: 1px; background: linear-gradient(90deg, transparent, var(--color-primary), transparent); opacity: 0.35; }
   .flow-approval__pill { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid color-mix(in oklch, var(--color-success) 42%, var(--color-border)); border-radius: 999px; background: var(--color-surface); padding: 0.6rem 0.9rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-success); }
   .flow-approval__pill svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-  .flow-modes__card { border: 1px solid var(--color-border); border-radius: 1.25rem; background: var(--color-surface-raised); padding: 1.35rem; }
-  .flow-modes__card > span { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.15em; color: var(--color-primary); }
-  .flow-modes__card h3 { margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700; }
-  .flow-modes__card p { margin-top: 0.55rem; font-size: 0.9rem; line-height: 1.6; color: var(--color-text-muted); }
   .flow-scenario-section { position: relative; overflow: hidden; }
   .flow-scenario-section::before { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgb(91 141 239 / 0.035) 1px, transparent 1px), linear-gradient(90deg, rgb(91 141 239 / 0.035) 1px, transparent 1px); background-size: 36px 36px; content: ''; mask-image: radial-gradient(circle at 62% 58%, #000, transparent 78%); }
   .flow-scenario-section > div { position: relative; }
