@@ -94,6 +94,7 @@ const softwareSchema = {
     <section class="flow-hero relative px-6 pb-20 pt-32 sm:pb-28 sm:pt-40">
       <div class="flow-hero__grid" aria-hidden="true"></div>
       <div class="flow-hero__glow" aria-hidden="true"></div>
+      <div class="flow-hero__fade" aria-hidden="true"></div>
       <div class="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.84fr_1.16fr] lg:gap-16">
         <div class="relative z-10 text-center lg:text-left">
           <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Orionfold Flow · In development</p>
@@ -267,14 +268,29 @@ const softwareSchema = {
 
 <style>
   .flow-page { --flow-accent: #5b8def; }
-  .flow-hero { min-height: min(980px, 100svh); display: grid; align-items: center; }
+  .flow-hero {
+    isolation: isolate;
+    display: grid;
+    min-height: min(980px, 100svh);
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(145deg, color-mix(in oklch, var(--color-primary) 5%, var(--color-surface)) 0%, var(--color-surface) 58%, color-mix(in oklch, var(--color-primary) 3%, var(--color-surface)) 100%);
+  }
   .flow-hero__grid {
+    --bp-line: color-mix(in oklch, var(--color-primary) 12%, transparent);
+    --bp-major: color-mix(in oklch, var(--color-primary) 20%, transparent);
     position: absolute; inset: 0; pointer-events: none;
-    background-image: linear-gradient(rgb(91 141 239 / 0.055) 1px, transparent 1px), linear-gradient(90deg, rgb(91 141 239 / 0.055) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(circle at 70% 46%, #000 0%, transparent 76%);
+    background-image:
+      linear-gradient(to right, var(--bp-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--bp-line) 1px, transparent 1px),
+      linear-gradient(to right, var(--bp-major) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--bp-major) 1px, transparent 1px);
+    background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
+    -webkit-mask-image: radial-gradient(ellipse 82% 74% at 68% 45%, black 38%, transparent 100%);
+    mask-image: radial-gradient(ellipse 82% 74% at 68% 45%, black 38%, transparent 100%);
   }
   .flow-hero__glow { position: absolute; right: -14rem; top: 9rem; width: 58rem; height: 50rem; border-radius: 999px; background: rgb(91 141 239 / 0.11); filter: blur(120px); pointer-events: none; }
+  .flow-hero__fade { position: absolute; inset: auto 0 0; height: 9rem; background: linear-gradient(transparent, var(--color-surface)); pointer-events: none; }
   .flow-chip { border: 1px solid color-mix(in oklch, var(--color-primary) 25%, var(--color-border)); border-radius: 999px; background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface)); padding: 0.5rem 0.8rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; color: var(--color-text-muted); }
   .flow-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-primary); }
   .flow-continuity__item { position: relative; min-height: 15rem; border: 1px solid var(--color-border); border-radius: 1.25rem; background: var(--color-surface); padding: 1.35rem; }

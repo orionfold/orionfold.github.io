@@ -1,7 +1,7 @@
 ---
-// Flow-led homepage hero. The product is in development, so the visual reuses
+// Flow-led homepage hero. The product is in development, so the visual keeps
 // the operator-supplied story creative rather than an unfinished product shot.
-import FlowHeroCreative from '../flow/FlowHeroCreative.astro';
+import HomeFlowHeroCreative from '../flow/HomeFlowHeroCreative.astro';
 ---
 <section class="home-flow relative overflow-x-clip">
   <div class="home-flow__grid" aria-hidden="true"></div>
@@ -11,13 +11,14 @@ import FlowHeroCreative from '../flow/FlowHeroCreative.astro';
   <div class="relative z-10 mx-auto grid max-w-[90rem] items-center gap-12 px-6 pb-20 pt-28 sm:pt-32 lg:min-h-[calc(100dvh-100px)] lg:grid-cols-[0.82fr_1.18fr] lg:gap-14 lg:pb-24 lg:pt-32">
     <div class="text-center lg:text-left">
       <p class="font-mono text-[0.68rem] uppercase leading-relaxed tracking-[0.22em] text-primary">
-        Flow leads the Orionfold line · In development
+        Flow leads the Orionfold line · Join the Waitlist
       </p>
-      <h1 class="mx-auto mt-6 max-w-[12ch] text-balance font-display text-[clamp(3.25rem,6.5vw,6.6rem)] font-extrabold leading-[0.92] tracking-[-0.055em] text-text lg:mx-0">
-        Keep the work moving.
+      <h1 class="hero-gradient-text mx-auto mt-6 max-w-none font-display text-[clamp(2.35rem,4.8vw,5rem)] font-extrabold leading-[0.92] tracking-[-0.055em] lg:mx-0">
+        <span class="block whitespace-nowrap">World's first</span>
+        <span class="block whitespace-nowrap">Document as AI</span>
       </h1>
       <p class="mx-auto mt-7 max-w-xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl lg:mx-0">
-        Orionfold Flow is a native Mac workspace where documents hold the context, agents carry work forward, and every result keeps its proof.
+        Conduct beautifully crafted documents with intelligence built-in to self improve and AI agency enabled to get work done.
       </p>
       <div class="mt-7 flex flex-wrap justify-center gap-2 lg:justify-start">
         <span class="home-flow__chip">Native Mac app</span>
@@ -33,7 +34,7 @@ import FlowHeroCreative from '../flow/FlowHeroCreative.astro';
       </div>
     </div>
 
-    <FlowHeroCreative href="/flow/" />
+    <HomeFlowHeroCreative href="/flow/" />
   </div>
 </section>
 

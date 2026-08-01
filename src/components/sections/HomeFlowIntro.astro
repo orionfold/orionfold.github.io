@@ -2,12 +2,7 @@
 // Homepage bridge from the flagship hero into the broader Orionfold line.
 // It introduces Flow as one continuous work journey without duplicating the
 // full product page or implying the in-development app is already available.
-const journey = [
-  { number: '01', title: 'Frame the outcome', body: 'Begin with the result that should exist.' },
-  { number: '02', title: 'Keep the context', body: 'Let one document hold the sources, choices, and limits.' },
-  { number: '03', title: 'Route the work', body: 'Bring in specialists without breaking the thread.' },
-  { number: '04', title: 'Carry the receipt', body: 'Keep the checks and proof with the finished result.' },
-];
+import FlowWorkbenchIllustration from '../flow/FlowWorkbenchIllustration.astro';
 ---
 <section class="home-flow-intro px-6 py-20 sm:py-28" aria-labelledby="home-flow-intro-heading">
   <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:gap-20">
@@ -27,17 +22,7 @@ const journey = [
       </a>
     </div>
 
-    <ol class="home-flow-intro__journey" aria-label="How Flow keeps work continuous">
-      {journey.map((item, index) => (
-        <li class="home-flow-intro__step" data-animate style={`transition-delay: ${index * 70}ms`}>
-          <span class="home-flow-intro__number">{item.number}</span>
-          <span>
-            <strong>{item.title}</strong>
-            <small>{item.body}</small>
-          </span>
-        </li>
-      ))}
-    </ol>
+    <FlowWorkbenchIllustration />
   </div>
 </section>
 
@@ -49,59 +34,5 @@ const journey = [
     background:
       radial-gradient(circle at 86% 22%, rgb(91 141 239 / 0.09), transparent 34%),
       var(--color-surface);
-  }
-  .home-flow-intro__journey {
-    position: relative;
-    display: grid;
-    gap: 0.75rem;
-    padding: 1rem;
-    border: 1px solid color-mix(in oklch, var(--color-primary) 20%, var(--color-border));
-    border-radius: 1.75rem;
-    background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-raised));
-    box-shadow: 0 30px 80px rgb(13 24 48 / 0.08);
-  }
-  .home-flow-intro__journey::before {
-    content: '';
-    position: absolute;
-    left: 2.75rem;
-    top: 3.5rem;
-    bottom: 3.5rem;
-    width: 1px;
-    background: linear-gradient(var(--color-primary), color-mix(in oklch, var(--color-primary) 18%, transparent));
-  }
-  .home-flow-intro__step {
-    position: relative;
-    display: grid;
-    grid-template-columns: 3.5rem 1fr;
-    align-items: center;
-    gap: 1rem;
-    min-height: 7.5rem;
-    padding: 1.25rem;
-    border: 1px solid color-mix(in oklch, var(--color-primary) 12%, var(--color-border));
-    border-radius: 1.2rem;
-    background: color-mix(in oklch, var(--color-surface) 94%, transparent);
-  }
-  .home-flow-intro__number {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    width: 3.25rem;
-    height: 3.25rem;
-    place-items: center;
-    border: 1px solid color-mix(in oklch, var(--color-primary) 32%, var(--color-border));
-    border-radius: 999px;
-    background: color-mix(in oklch, var(--color-primary) 9%, var(--color-surface));
-    font-family: var(--font-mono);
-    font-size: 0.67rem;
-    letter-spacing: 0.14em;
-    color: var(--color-primary);
-  }
-  .home-flow-intro__step strong { display: block; font-size: 1.06rem; color: var(--color-text); }
-  .home-flow-intro__step small { display: block; margin-top: 0.35rem; font-size: 0.9rem; line-height: 1.55; color: var(--color-text-muted); }
-  @media (max-width: 640px) {
-    .home-flow-intro__journey { padding: 0.65rem; }
-    .home-flow-intro__journey::before { left: 2.12rem; top: 3rem; bottom: 3rem; }
-    .home-flow-intro__step { grid-template-columns: 2.7rem 1fr; min-height: 6.75rem; gap: 0.8rem; padding: 1rem; }
-    .home-flow-intro__number { width: 2.55rem; height: 2.55rem; }
   }
 </style>

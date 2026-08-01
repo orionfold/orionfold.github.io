@@ -38,7 +38,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Orionfold',
     title: SITE.tagline,
     seed: 'home',
-    alt: 'Orionfold Flow, Relay, and Arena: keep knowledge work moving, run repeatable agent work, and see which local AI wins',
+    alt: SITE.ogImageAlt,
   },
   '/advisor/': {
     slug: 'advisor',

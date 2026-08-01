@@ -137,7 +137,16 @@ for (const hostname of ['localhost', '127.0.0.1', 'orionfold.github.io', 'previe
 
 test('Lighthouse blocks analytics endpoints as defense in depth', () => {
   const collect = lighthouseConfig.ci.collect;
-  assert.equal(collect.url.length, 6);
+  assert.deepEqual(collect.url, [
+    'http://localhost/index.html',
+    'http://localhost/flow/index.html',
+    'http://localhost/arena/index.html',
+    'http://localhost/relay/index.html',
+    'http://localhost/proof/index.html',
+    'http://localhost/books/index.html',
+    'http://localhost/story/index.html',
+    'http://localhost/models/index.html',
+  ]);
   assert.equal(collect.numberOfRuns, 3);
   assert.deepEqual(collect.settings.blockedUrlPatterns, [
     '*googletagmanager.com/*',

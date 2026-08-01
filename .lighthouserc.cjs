@@ -2,8 +2,8 @@
  * Lighthouse CI config (M2 — lab perf). Audits the built `dist/` with a local
  * static server, mobile form factor, and DEVTOOLS (measured) throttling — not
  * the default `simulate`, which inflates LCP by tying it to TTI (see the
- * `chrome-mcp-perf-caveats` memory + the D2 baseline). The 6 URLs mirror the
- * D2 Cloudflare baseline so the lab trend lines up with the field numbers.
+ * `chrome-mcp-perf-caveats` memory + the D2 baseline). The 8 URLs are the key
+ * landing-page portfolio: home, four product hubs, books, story, and models.
  *
  * Local run:   npm run lhci  (collect → upload → assert; upload BEFORE assert
  *              so audit-reports/lhci/ refreshes even on a red budget run —
@@ -22,11 +22,13 @@ module.exports = {
       numberOfRuns: 3,
       url: [
         'http://localhost/index.html',
-        'http://localhost/sponsor/index.html',
-        'http://localhost/dgx-spark/index.html',
-        'http://localhost/software/index.html',
-        'http://localhost/software/fieldkit/index.html',
-        'http://localhost/books/ai-research-on-nvidia-dgx-spark/index.html',
+        'http://localhost/flow/index.html',
+        'http://localhost/arena/index.html',
+        'http://localhost/relay/index.html',
+        'http://localhost/proof/index.html',
+        'http://localhost/books/index.html',
+        'http://localhost/story/index.html',
+        'http://localhost/models/index.html',
       ],
       settings: {
         formFactor: 'mobile',
@@ -47,8 +49,8 @@ module.exports = {
     assert: {
       // Per-tier budgets. assertMatrix applies EVERY matching entry, so the
       // catch-all ".*" sets the global guards and the two tier entries add the
-      // perf-score + LCP ceilings that differ between text-LCP and image-LCP
-      // pages. Category scores are the hard ("error") regression guards (more
+      // perf-score + LCP ceilings that differ between the tight home/discovery
+      // tier and the product-hub tier. Category scores are the hard ("error") regression guards (more
       // stable than raw timings); single timing metrics are "warn".
       //
       // 🔴 Thresholds are calibrated to the GH-RUNNER medians (lighthouse.yml
@@ -66,28 +68,28 @@ module.exports = {
           assertions: {
             'categories:seo': ['error', { minScore: 1.0 }], // all pages 100 — SEO is core to the site
             'categories:accessibility': ['warn', { minScore: 0.92 }], // currently 95–100
-            'categories:best-practices': ['warn', { minScore: 0.55 }], // CI 61 uniform since Meta Pixel (was 79, GA4/Ads cookies)
+            'categories:best-practices': ['warn', { minScore: 0.55 }], // retains the historical third-party floor; current local baseline is 100
             'cumulative-layout-shift': ['warn', { maxNumericValue: 0.1 }], // Google's "good" boundary; home ~0.087 since the hero constellation (06-05)
             'total-blocking-time': ['warn', { maxNumericValue: 750 }], // CI 460–645ms (GA4+Ads+Meta 3p JS); a jump past 750 = real bloat
           },
         },
         {
-          // ── Fast tier: text-LCP pages. CI medians 0.80–0.87; floor 0.75 keeps
+          // ── Tight tier: homepage and discovery hubs. The 0.75 floor retains
           //    the data-animate-on-LCP net (that bug ties LCP to TTI and tanks
-          //    the score far below any sane floor). ──
-          matchingUrlPattern: '(localhost:\\d+/index\\.html|/sponsor/index\\.html|/dgx-spark/index\\.html)$',
+          //    the score far below any sane floor). Local 8-route baseline: 0.97–0.98. ──
+          matchingUrlPattern: '(localhost:\\d+/index\\.html|/(books|story|models)/index\\.html)$',
           assertions: {
-            'categories:performance': ['error', { minScore: 0.75 }], // CI 0.80–0.87 (local 98–99)
-            'largest-contentful-paint': ['warn', { maxNumericValue: 2800 }], // dgx-spark hero ~2.3s + headroom
+            'categories:performance': ['error', { minScore: 0.75 }], // CI-proven guard retained until the new matrix has runner history
+            'largest-contentful-paint': ['warn', { maxNumericValue: 2800 }], // new local baseline 1.99–2.25s + headroom
           },
         },
         {
-          // ── Image tier: poster/cover-LCP pages. Looser floors (image weight is
-          //    a documented follow-up, not a regression). ──
-          matchingUrlPattern: '(/software/index\\.html|/software/fieldkit/index\\.html|/books/ai-research-on-nvidia-dgx-spark/index\\.html)$',
+          // ── Product tier: Flow, Arena, Relay, and Proof. Keep the historical
+          //    image-heavy ceiling until the new matrix has runner history. ──
+          matchingUrlPattern: '/(flow|arena|relay|proof)/index\\.html$',
           assertions: {
-            'categories:performance': ['error', { minScore: 0.65 }], // CI 0.70–0.78 (local 88–92)
-            'largest-contentful-paint': ['warn', { maxNumericValue: 4500 }], // 3.3–3.8s lab / 4.3s live
+            'categories:performance': ['error', { minScore: 0.65 }], // local 8-route baseline 0.97–0.98
+            'largest-contentful-paint': ['warn', { maxNumericValue: 4500 }], // new local baseline 1.82–2.14s; runner calibration pending
           },
         },
       ],

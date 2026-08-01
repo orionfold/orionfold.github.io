@@ -12,3 +12,9 @@
 - For GA4, Google Search Console, and Cloudflare dashboard work, use Codex Chrome browser mode with the operator's existing signed-in profile.
 - Treat API or CLI access as a complementary evidence source, not a substitute for the authenticated dashboard when dashboard-only dimensions, reports, or controls are needed.
 - Cloudflare edge/API checks may use the repository's existing read-only scripts and credentials; do not infer that Wrangler is installed or that API summaries are equivalent to Cloudflare Web Analytics real-user measurements.
+
+## public-nomenclature-boundary
+
+- Customer-visible copy must use Orionfold, product, and customer language. Never expose internal project machinery such as goal IDs (`G-###`), repository roles such as `Website`, private source/path names (`_ASSETS`, `_IDEAS`, `_SPECS`, `_FLOWS`), or terms such as `backlog`, `goal contract`, `launch-dark`, and `operator gate`.
+- This boundary applies to local and development previews because they are the review source for future public copy. Translate internal state into customer-safe language such as `Orionfold`, `this page`, `preview`, `next supported Relay release`, and `before publication`.
+- Protect website-owned presentation source with `scripts/test/public-copy-nomenclature.test.mjs`. Canonical product content remains source-owned; report upstream leaks through the product contract instead of repairing `_ASSETS` locally.

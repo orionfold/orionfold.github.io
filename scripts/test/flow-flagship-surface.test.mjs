@@ -66,11 +66,54 @@ assert.ok(
   homeHeroIndex >= 0 && homeHeroIndex < homeFlowIntroIndex && homeFlowIntroIndex < homeFlowWaitlistIndex && homeFlowWaitlistIndex < homeProductLineIndex,
   'Homepage order must be hero, Flow introduction, Flow waitlist, then the broader product line',
 );
+const capabilitySystemMap = read('src/components/sections/CapabilitySystemMap.astro');
+assert.match(
+  capabilitySystemMap,
+  /\.flow-cta \{[\s\S]*?white-space: nowrap;/,
+  'the Three durable work surfaces CTA must stay on one line',
+);
 const homeFlowIntro = read('src/components/sections/HomeFlowIntro.astro');
 assert.match(homeFlowIntro, /Introducing Orionfold Flow/);
 assert.match(homeFlowIntro, /One document\. Every mode of work\./);
-assert.match(homeFlowIntro, /How Flow keeps work continuous/);
 assert.match(homeFlowIntro, /href="\/flow\/"/);
+assert.match(homeFlowIntro, /import FlowWorkbenchIllustration from '\.\.\/flow\/FlowWorkbenchIllustration\.astro'/);
+assert.match(homeFlowIntro, /<FlowWorkbenchIllustration \/>/);
+assert.doesNotMatch(homeFlowIntro, /home-flow-intro__step/, 'the retired numbered-card illustration must stay removed');
+
+const flowWorkbench = read('src/components/flow/FlowWorkbenchIllustration.astro');
+assert.match(flowWorkbench, /import lightMaster from '\.\.\/\.\.\/assets\/flow\/living-workbench-light-alpha-v2\.png'/);
+assert.match(flowWorkbench, /import darkMaster from '\.\.\/\.\.\/assets\/flow\/living-workbench-dark-alpha-v2\.png'/);
+assert.match(flowWorkbench, /const widths = \[480, 720, 960, 1180\] as const/);
+assert.equal((flowWorkbench.match(/format: 'webp', quality: 100/g) ?? []).length, 2, 'both theme masters must use maximum-quality responsive encoding');
+assert.match(flowWorkbench, /data-relay-shot/);
+assert.match(flowWorkbench, /data-shot-light-src=\{lightSrc\}/);
+assert.match(flowWorkbench, /data-shot-dark-src=\{darkSrc\}/);
+assert.match(flowWorkbench, /loading=\{priority \? 'eager' : 'lazy'\}/);
+assert.match(flowWorkbench, /fetchpriority=\{priority \? 'high' : 'low'\}/);
+assert.match(flowWorkbench, /aria-label="How Flow keeps work continuous:/);
+assert.doesNotMatch(flowWorkbench, /<svg\b/, 'the approved generated raster must replace the hand-drawn SVG');
+assert.match(flowWorkbench, /perspective: 1500px/);
+assert.match(flowWorkbench, /animation: flow-workbench-perspective-drift 14s ease-in-out infinite alternate/);
+assert.match(flowWorkbench, /:global\(html\[data-theme='dark'\]\) \.flow-workbench/);
+assert.match(flowWorkbench, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?animation: none !important/);
+const transparentLight = readBinary('src/assets/flow/living-workbench-light-alpha-v2.png');
+const transparentDark = readBinary('src/assets/flow/living-workbench-dark-alpha-v2.png');
+assert.equal(transparentLight[25], 6, 'the light Living Workbench master must be an RGBA PNG');
+assert.equal(transparentDark[25], 6, 'the dark Living Workbench master must be an RGBA PNG');
+assert.equal(
+  createHash('sha256').update(transparentLight).digest('hex'),
+  '900356a19c851ebb75889d58ffa62b6d42a28d7c112c8402bb501c585ee804d6',
+  'the source-faithful transparent light-theme Living Workbench master must not drift',
+);
+assert.equal(
+  createHash('sha256').update(transparentDark).digest('hex'),
+  'eb26b2d6a624c6b7eee14e5cd5256c6b02d5bf87d9e894c802c269fe3059cd55',
+  'the source-faithful transparent dark-theme Living Workbench master must not drift',
+);
+assert.match(flow, /--bp-line: color-mix\(in oklch, var\(--color-primary\) 12%, transparent\)/);
+assert.match(flow, /background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px/);
+assert.match(flow, /mask-image: radial-gradient\(ellipse 82% 74% at 68% 45%, black 38%, transparent 100%\)/);
+assert.match(flow, /<div class="flow-hero__fade" aria-hidden="true"><\/div>/);
 
 const flowStory = read('src/content/story/limitless-without-the-pill.md');
 const flowStoryBody = flowStory.split('\n---\n').slice(1).join('\n---\n').trim();
@@ -99,20 +142,13 @@ assert.doesNotMatch(flowStory, /utm_/i, 'story links must not carry UTM paramete
 assert.doesNotMatch(flowStory, /https:\/\/orionfold\.com/i, 'Orionfold-owned links must be site-relative');
 
 const flowHeroCreative = read('src/components/flow/FlowHeroCreative.astro');
-assert.match(flowHeroCreative, /assets\/story\/limitless-without-the-pill\/hero\.png/);
-assert.match(flowHeroCreative, /widths=\{\[640, 960, 1280, 1672\]\}/);
-assert.match(flowHeroCreative, /loading="eager"/);
-assert.match(flowHeroCreative, /fetchpriority="high"/);
-assert.match(flowHeroCreative, /perspective: 1500px/);
-assert.match(flowHeroCreative, /animation: flow-hero-perspective-drift 14s ease-in-out infinite alternate/);
-assert.match(flowHeroCreative, /from \{ transform: rotateX\(21deg\) rotateZ\(-4deg\) scale\(0\.94\); \}/);
-assert.match(flowHeroCreative, /to \{ transform: rotateX\(27deg\) rotateZ\(3deg\) scale\(0\.98\); \}/);
-assert.match(flowHeroCreative, /@media \(max-width: 1023px\)[\s\S]*?transform: none/);
-assert.match(flowHeroCreative, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?animation: none/);
+assert.match(flowHeroCreative, /import FlowWorkbenchIllustration from '\.\/FlowWorkbenchIllustration\.astro'/);
+assert.match(flowHeroCreative, /<FlowWorkbenchIllustration priority \/>/);
+assert.doesNotMatch(flowHeroCreative, /assets\/story\/limitless-without-the-pill\/hero\.png/);
 assert.equal(
   createHash('sha256').update(readBinary('src/assets/story/limitless-without-the-pill/hero.png')).digest('hex'),
   'cc6a5f04f26518316dafa1bbd282e5c728f8cba41c11f9b0008dfc44e7de7545',
-  'both heroes must keep using the operator-supplied story creative',
+  'the operator-supplied story creative must remain intact for the story page',
 );
 assert.equal(
   existsSync(new URL('../../src/components/flow/FlowArtwork.astro', import.meta.url)),
@@ -152,8 +188,13 @@ for (const benefit of ['Native Mac app', 'One document, many modes', 'Receipts b
   assert.match(homeHero, new RegExp(`<span class="home-flow__chip">${benefit}<\\/span>`));
 }
 assert.doesNotMatch(homeHero, /<span class="home-flow__chip">(?:Closed source|Freemium subscription)<\/span>/);
-assert.match(homeHero, /import FlowHeroCreative from '\.\.\/flow\/FlowHeroCreative\.astro'/);
-assert.match(homeHero, /<FlowHeroCreative href="\/flow\/" \/>/);
+assert.match(homeHero, /import HomeFlowHeroCreative from '\.\.\/flow\/HomeFlowHeroCreative\.astro'/);
+assert.match(homeHero, /<HomeFlowHeroCreative href="\/flow\/" \/>/);
+const homeFlowHeroCreative = read('src/components/flow/HomeFlowHeroCreative.astro');
+assert.match(homeFlowHeroCreative, /assets\/story\/limitless-without-the-pill\/hero\.png/);
+assert.match(homeFlowHeroCreative, /loading="eager"/);
+assert.match(homeFlowHeroCreative, /fetchpriority="high"/);
+assert.match(homeFlowHeroCreative, /animation: home-flow-hero-perspective-drift 14s ease-in-out infinite alternate/);
 assert.doesNotMatch(homeHero, /FlowArtwork/);
 assert.doesNotMatch(homeHero, /data-checkout=/);
 

@@ -1,0 +1,134 @@
+---
+// Theme-aware flagship artwork for the homepage Flow introduction. Both
+// production masters share one approved composition; Layout assigns only the
+// active theme's responsive sources so the below-fold image stays economical.
+import { getImage } from 'astro:assets';
+import lightMaster from '../../assets/flow/living-workbench-light-alpha-v2.png';
+import darkMaster from '../../assets/flow/living-workbench-dark-alpha-v2.png';
+
+interface Props {
+  priority?: boolean;
+  class?: string;
+}
+
+const { priority = false, class: className } = Astro.props;
+const widths = [480, 720, 960, 1180] as const;
+const [lightVariants, darkVariants] = await Promise.all([
+  Promise.all(widths.map((width) => getImage({ src: lightMaster, width, format: 'webp', quality: 100 }))),
+  Promise.all(widths.map((width) => getImage({ src: darkMaster, width, format: 'webp', quality: 100 }))),
+]);
+const makeSrcset = (variants: Awaited<ReturnType<typeof getImage>>[]) =>
+  variants.map((variant, index) => `${variant.src} ${widths[index]}w`).join(', ');
+const lightSrcset = makeSrcset(lightVariants);
+const darkSrcset = makeSrcset(darkVariants);
+const lightSrc = lightVariants.at(-1)!.src;
+const darkSrc = darkVariants.at(-1)!.src;
+const sizes = '(min-width: 1280px) 40rem, (min-width: 1024px) 52vw, calc(100vw - 3rem)';
+---
+
+<figure
+  class:list={['flow-workbench', className]}
+  data-flow-workbench
+  role="img"
+  aria-label="How Flow keeps work continuous: outcome, context, specialists, and your decision stay connected to a durable receipt."
+>
+  <div class="flow-workbench__frame">
+    <img
+      class="flow-workbench__image"
+      width={1182}
+      height={1331}
+      alt=""
+      loading={priority ? 'eager' : 'lazy'}
+      decoding="async"
+      fetchpriority={priority ? 'high' : 'low'}
+      sizes={sizes}
+      data-relay-shot
+      data-shot-light-src={lightSrc}
+      data-shot-light-srcset={lightSrcset}
+      data-shot-dark-src={darkSrc}
+      data-shot-dark-srcset={darkSrcset}
+      data-no-zoom
+    />
+    <noscript>
+      <img
+        class="flow-workbench__image"
+        src={lightSrc}
+        srcset={lightSrcset}
+        sizes={sizes}
+        width={1182}
+        height={1331}
+        alt="Flow’s Living Workbench connects outcome, context, specialists, and your decision to a durable receipt."
+        loading="lazy"
+        decoding="async"
+        data-no-zoom
+      />
+    </noscript>
+  </div>
+</figure>
+
+<style>
+  .flow-workbench {
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 40rem);
+    margin-inline: auto;
+    perspective: 1500px;
+    perspective-origin: 50% 46%;
+  }
+
+  .flow-workbench::before {
+    position: absolute;
+    z-index: -1;
+    inset: 16% 10% 10%;
+    border-radius: 50%;
+    background: color-mix(in oklch, var(--color-primary) 13%, transparent);
+    filter: blur(4rem);
+    content: '';
+    opacity: 0.72;
+  }
+
+  .flow-workbench__frame {
+    position: relative;
+    aspect-ratio: 1182 / 1331;
+    transform-style: preserve-3d;
+    transform-origin: 50% 52%;
+    will-change: transform;
+  }
+
+  .flow-workbench__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 1.4rem 2.6rem rgb(18 40 48 / 0.09));
+  }
+
+  :global(html[data-theme='dark']) .flow-workbench::before {
+    background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+    opacity: 0.88;
+  }
+
+  :global(html[data-theme='dark']) .flow-workbench__image {
+    filter: drop-shadow(0 1.6rem 3rem rgb(0 0 0 / 0.32));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .flow-workbench__frame {
+      animation: flow-workbench-perspective-drift 14s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes flow-workbench-perspective-drift {
+    from { transform: rotateX(1.1deg) rotateY(-1deg) translateY(0) scale(0.994); }
+    to { transform: rotateX(-0.7deg) rotateY(1deg) translateY(-0.45rem) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow-workbench__frame { animation: none !important; }
+  }
+
+  @media (max-width: 639px) {
+    .flow-workbench { width: min(100%, 34rem); }
+    .flow-workbench::before { filter: blur(2.75rem); }
+  }
+</style>

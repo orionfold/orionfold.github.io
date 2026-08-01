@@ -5,13 +5,13 @@
 export const SITE = {
   name: 'Orionfold',
   url: 'https://orionfold.com',
-  tagline: 'Work that keeps moving, on terms you control',
+  tagline: "World's first Document as AI",
   description:
-    'Orionfold builds Flow, Relay, and Arena: keep knowledge work moving, run repeatable agent work, and see which local AI wins.',
+    'Conduct beautifully crafted documents with intelligence built-in to self improve and AI agency enabled to get work done.',
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:
-    'Orionfold Flow, Relay, and Arena: keep knowledge work moving, run repeatable agent work, and see which local AI wins.',
+    "Orionfold Flow: World's first Document as AI. Conduct beautifully crafted documents with intelligence built-in to self improve and AI agency enabled to get work done.",
   // Single light theme: address-bar tint matches the manifest background.
   themeColor: '#f6f9fc',
   license: 'Apache-2.0',
