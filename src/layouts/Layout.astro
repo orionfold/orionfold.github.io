@@ -53,21 +53,21 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          light | dark | system) and data-theme (the RESOLVED value) on <html>
          BEFORE first paint, so the dark remap + the toggle icon apply with no
          flash. Reads localStorage "of-theme"; a new user with no saved choice
-         DEFAULTS TO DARK (not the OS preference). Only "system" follows the OS.
+         DEFAULTS TO LIGHT (not the OS preference). Only "system" follows the OS.
          The three-way toggle in the nav writes "of-theme". -->
     <script is:inline>
       (function () {
         try {
           var saved = localStorage.getItem('of-theme'); // 'light' | 'dark' | 'system' | null
-          var mode = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'dark';
+          var mode = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'light';
           var resolved = mode === 'system'
             ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
             : mode;
           document.documentElement.setAttribute('data-theme-mode', mode);
           document.documentElement.setAttribute('data-theme', resolved);
         } catch (e) {
-          document.documentElement.setAttribute('data-theme-mode', 'dark');
-          document.documentElement.setAttribute('data-theme', 'dark');
+          document.documentElement.setAttribute('data-theme-mode', 'light');
+          document.documentElement.setAttribute('data-theme', 'light');
         }
       })();
     </script>

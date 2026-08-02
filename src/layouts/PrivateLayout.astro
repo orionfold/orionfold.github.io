@@ -20,14 +20,15 @@ const { title, description } = Astro.props;
       (function () {
         try {
           var saved = localStorage.getItem('of-theme');
-          var mode = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'dark';
+          var mode = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'light';
           var resolved = mode === 'system'
             ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
             : mode;
           document.documentElement.setAttribute('data-theme-mode', mode);
           document.documentElement.setAttribute('data-theme', resolved);
         } catch (_) {
-          document.documentElement.setAttribute('data-theme', 'dark');
+          document.documentElement.setAttribute('data-theme-mode', 'light');
+          document.documentElement.setAttribute('data-theme', 'light');
         }
       })();
     </script>

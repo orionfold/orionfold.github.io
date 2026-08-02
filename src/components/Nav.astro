@@ -200,14 +200,14 @@ const links = [
 
     // Three-way theme toggle — cycles light → dark → system → light, writing the
     // CHOICE to localStorage 'of-theme'. The no-FOUC script in <head> reads it
-    // pre-paint and defaults new users to dark. data-theme-mode (the choice)
+    // pre-paint and defaults new users to light. data-theme-mode (the choice)
     // drives the icon (pure CSS); data-theme (resolved) drives the dark remap.
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
       const order = ['light', 'dark', 'system'];
       const mql = window.matchMedia('(prefers-color-scheme: dark)');
       const resolve = (mode) => (mode === 'system' ? (mql.matches ? 'dark' : 'light') : mode);
-      const currentMode = () => document.documentElement.getAttribute('data-theme-mode') || 'dark';
+      const currentMode = () => document.documentElement.getAttribute('data-theme-mode') || 'light';
       const apply = (mode) => {
         document.documentElement.setAttribute('data-theme-mode', mode);
         document.documentElement.setAttribute('data-theme', resolve(mode));

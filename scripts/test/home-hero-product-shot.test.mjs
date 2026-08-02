@@ -16,13 +16,14 @@ assert.match(hero, /Flow leads the Orionfold line · Join the Waitlist/);
 assert.doesNotMatch(hero, /Flow leads the Orionfold line · In development/);
 assert.match(
   hero,
-  /<span class="block whitespace-nowrap">Conduct beautiful documents<\/span>\s*<span class="mt-\[0\.02em\] block whitespace-nowrap">with AI agency built in<\/span>/,
+  /<span class="block whitespace-nowrap">Conduct beautiful<\/span>\s*<span class="mt-\[0\.02em\] block whitespace-nowrap">documents with AI<\/span>\s*<span class="mt-\[0\.02em\] block whitespace-nowrap">agency built in<\/span>/,
 );
 assert.match(
   hero,
   /Orionfold Flow creates documents with self-improving intelligence built in and AI agency enabled to get work done\./,
 );
-assert.match(hero, /<h1 class="[^"]*hero-gradient-text[^"]*text-\[clamp\(1\.45rem,2\.75vw,3\.5rem\)\][^"]*">/);
+assert.match(hero, /<h1 class="[^"]*hero-gradient-text[^"]*text-\[clamp\(2rem,9vw,3rem\)\][^"]*lg:text-\[clamp\(3rem,3\.4vw,3\.4rem\)\][^"]*">/);
+assert.match(hero, /lg:grid-cols-\[0\.82fr_1\.18fr\]/, 'home hero preserves the original creative column width');
 assert.match(hero, /<h1 class="[^"]*leading-\[1\.16\][^"]*">/);
 assert.doesNotMatch(hero, /leading-\[(?:0\.92|1\.02)\]/);
 assert.doesNotMatch(hero, /Your document holds the context|AI moves the work forward/);

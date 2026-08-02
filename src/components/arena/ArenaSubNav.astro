@@ -1,0 +1,107 @@
+---
+interface Props {
+  active?: 'overview' | 'demo' | 'notes' | 'sdk' | 'models' | 'book' | 'receipts';
+  class?: string;
+}
+
+const { active = 'overview', class: className } = Astro.props;
+
+const slots = [
+  { key: 'overview', label: 'Overview', href: '/arena/', live: true },
+  { key: 'demo', label: 'Demo', href: '/arena/demo/', live: true },
+  { key: 'notes', label: 'Notes', href: 'https://ainative.business/field-notes/', live: true },
+  { key: 'sdk', label: 'SDK', href: 'https://ainative.business/fieldkit/', live: true },
+  { key: 'models', label: 'Models', href: '/experts/', live: true },
+  { key: 'book', label: 'Book', href: '/books/ai-research-on-nvidia-dgx-spark/', live: true },
+  { key: 'receipts', label: 'Receipts', href: '/receipts/', live: true },
+] as const;
+---
+<nav aria-label="Arena sections" class:list={['arena-subnav', className]}>
+  <ul class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6">
+    {slots.map((slot) => {
+      const isActive = slot.key === active;
+      if (!slot.live) {
+        return (
+          <li>
+            <span
+              class="arena-subnav__link arena-subnav__link--soon"
+              aria-disabled="true"
+              title="Coming soon"
+            >
+              {slot.label}
+              <span class="arena-subnav__soon" aria-hidden="true">Soon</span>
+            </span>
+          </li>
+        );
+      }
+      return (
+        <li>
+          <a
+            href={slot.href}
+            aria-current={isActive ? 'page' : undefined}
+            class:list={['arena-subnav__link', isActive && 'is-active']}
+          >
+            {slot.label}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
+
+<style>
+  .arena-subnav {
+    margin-top: 7rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+    z-index: 1;
+  }
+  @media (min-width: 640px) {
+    .arena-subnav {
+      margin-top: 8rem;
+    }
+  }
+  .arena-subnav__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+    padding-block: 0.15rem;
+  }
+  a.arena-subnav__link:hover {
+    color: var(--color-primary);
+  }
+  .arena-subnav__link.is-active {
+    color: var(--color-primary);
+  }
+  .arena-subnav__link.is-active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.85rem;
+    height: 2px;
+    background: var(--color-primary);
+  }
+  .arena-subnav__link--soon {
+    color: var(--color-text-dim);
+    cursor: default;
+  }
+  .arena-subnav__soon {
+    font-size: 0.55rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-faint, var(--color-text-dim));
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    padding: 0.05rem 0.28rem;
+  }
+</style>

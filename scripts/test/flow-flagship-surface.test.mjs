@@ -37,9 +37,11 @@ assert.doesNotMatch(flow, /The document that keeps the work moving|agents carry 
 assert.doesNotMatch(flow, /—/, 'revised Flow landing-page copy must not use em dashes');
 assert.doesNotMatch(flow, /data-checkout=/, 'Flow must not expose checkout before commercial terms exist');
 assert.doesNotMatch(flow, /ProductLineRail/, 'the Flow page must not restore the product-line card navigation');
-assert.match(flow, /text-\[clamp\(1\.4rem,2\.65vw,3\.25rem\)\]/, 'Flow hero title preserves the operator-directed compact scale');
+assert.match(flow, /text-\[clamp\(2rem,9vw,3rem\)\]/, 'Flow hero title stays prominent on narrow screens');
+assert.match(flow, /lg:text-\[clamp\(3rem,3\.4vw,3\.4rem\)\]/, 'Flow hero title stays large while fitting the original copy column');
 assert.match(flow, /leading-\[1\.16\]/, 'Flow hero title must preserve full descenders');
-assert.match(flow, /<span class="block whitespace-nowrap">Conduct beautiful documents<\/span>\s*<span class="mt-\[0\.02em\] block whitespace-nowrap">with AI agency built in<\/span>/);
+assert.match(flow, /<span class="block whitespace-nowrap">Conduct beautiful<\/span>\s*<span class="mt-\[0\.02em\] block whitespace-nowrap">documents with AI<\/span>\s*<span class="mt-\[0\.02em\] block whitespace-nowrap">agency built in<\/span>/);
+assert.match(flow, /lg:grid-cols-\[0\.84fr_1\.16fr\]/, 'Flow hero preserves the original creative column width');
 assert.doesNotMatch(flow, /text-\[clamp\(3rem,7vw,6\.8rem\)\]/, 'Flow hero title must not restore the prior scale');
 assert.match(flow, /<h1 class="hero-gradient-text /, 'Flow hero title uses the shared Orionfold gradient fill');
 assert.match(flow, /flowStorySlug = 'limitless-without-the-pill'/);

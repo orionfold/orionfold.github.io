@@ -16,6 +16,7 @@
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
+import ArenaSubNav from '../components/arena/ArenaSubNav.astro';
 import Footer from '../components/Footer.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import ConstellationCover from '../components/ui/ConstellationCover.astro';
@@ -215,7 +216,8 @@ const evidence = [
   ]}
 >
   <Nav />
-  <main>
+  <ArenaSubNav active="overview" />
+  <main class="-mt-20 sm:-mt-24">
     <PageHeader
       eyebrow="Run · Compare · Score · Train"
       title="See which AI wins, on your own desk."
