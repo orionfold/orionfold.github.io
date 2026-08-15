@@ -1,14 +1,16 @@
 ---
 // Post-confirmation landing UI. The confirm-email edge function redirects to
 // /?confirmed=1 (success) | =already | =error&error=... Two render paths:
-//   • success (=1)  -> a prominent welcome BAR pinned inside the fixed nav-wrapper
-//     (the bar's MARKUP lives in Nav.astro so it joins the pinned overlay and the
-//     hero's nav-clearance adjusts for it). It's session-persistent (survives the
-//     URL clean + reloads via sessionStorage) and drives the next step to /proof/.
-//     This component owns the controller script that reveals/dismisses it by id.
+//   • success (=1)  -> a welcome BAR that takes over the magnet bar's top slot
+//     inside the fixed nav-wrapper (the bar's MARKUP lives in Nav.astro; the
+//     magnet-bar controller suppresses the waitlist strip while this shows, so
+//     the thank-you replaces the pitch). Session-persistent (survives the URL
+//     clean + reloads via sessionStorage); the CTA drives the next step to
+//     /flow/. This component owns the controller script that reveals/dismisses
+//     it by id.
 //   • already/error -> the small floating TOAST below (one-shot ack), rendered here.
 // Mounted once on the homepage (index.astro), which is where the confirm link lands.
-// Capture itself lives on /story (StorySubscribe).
+// Capture lives in the homepage hero + /flow/ waitlist forms and /story.
 ---
 <!-- TOAST (already/error): floating, one-shot ack (unchanged behavior) -->
 <div
@@ -72,7 +74,7 @@
       if (toast && text) {
         var msg = '', isError = false;
         if (state === 'already') {
-          msg = "You're already subscribed to our stories.";
+          msg = "You're already on the list.";
         } else {
           msg = params.get('error') || "That link didn't work. Please try again.";
           isError = true;

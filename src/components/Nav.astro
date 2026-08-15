@@ -33,9 +33,37 @@ const links = [
 ];
 ---
 <div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
+  <!-- Post-confirm welcome bar (success state). Takes the SAME top slot as the
+       waitlist magnet bar and replaces it after a confirmed signup (the magnet
+       bar controller suppresses itself while this is showing). Hidden by
+       default; ConfirmBanner's script reveals it (session-persistent via
+       sessionStorage). See src/components/ui/ConfirmBanner.astro. -->
+  <div id="confirm-bar" role="status" aria-live="polite" class="hidden border-b border-primary/20 bg-primary/[0.07] text-text">
+    <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-6 py-1.5">
+      <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+      <p class="text-center text-sm leading-tight">
+        <span class="font-semibold">You're on the Flow waitlist.</span>
+        <span class="text-text-muted">One email a week until launch, no more.</span>
+      </p>
+      <a
+        id="confirm-bar-cta"
+        href="/flow/"
+        class="group shrink-0 font-mono text-sm text-primary transition-colors hover:text-primary"
+        data-astro-prefetch
+      >Explore Flow <span class="inline-block transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span></a>
+      <button
+        id="confirm-bar-close"
+        type="button"
+        aria-label="Dismiss"
+        class="-mr-1 shrink-0 cursor-pointer rounded p-0.5 text-text-dim transition-colors hover:text-text"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+    </div>
+  </div>
   <!-- Persistent Flow waitlist sticky bar. Hidden by default; the controller
        script reveals it unless dismissed (localStorage) or the post-confirm
-       welcome bar is active. -->
+       welcome bar is active (the welcome bar owns this slot then). -->
   <div id="magnet-bar" class="hidden border-b border-primary/20 bg-primary/[0.07] text-text">
     <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-6 py-1.5">
       <a
@@ -142,31 +170,6 @@ const links = [
     </div>
   </div>
 </nav>
-  <!-- Post-confirm welcome bar (success state). Lives inside the fixed nav-wrapper
-       so it joins the pinned overlay and the hero's existing nav-clearance adjusts
-       for it automatically. Hidden by default; ConfirmBanner's script reveals it
-       (session-persistent via sessionStorage). See src/components/ui/ConfirmBanner.astro. -->
-  <div id="confirm-bar" role="status" aria-live="polite" class="hidden border-t border-accent/25 bg-accent-soft text-text">
-    <div class="mx-auto flex max-w-7xl items-center justify-end gap-2.5 px-6 py-1.5">
-      <svg class="shrink-0 text-accent" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-      <p class="text-sm leading-tight">
-        <span class="font-semibold">You're in.</span> Welcome to the real build log.
-      </p>
-      <a
-        id="confirm-bar-cta"
-        href="/proof/"
-        class="shrink-0 rounded-md bg-accent px-2.5 py-1 text-sm font-semibold text-accent-text transition-colors hover:bg-accent-hover"
-      >See the proof →</a>
-      <button
-        id="confirm-bar-close"
-        type="button"
-        aria-label="Dismiss"
-        class="-mr-1 shrink-0 cursor-pointer rounded p-0.5 text-text-dim transition-colors hover:text-text"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
-      </button>
-    </div>
-  </div>
 </div>
 
 <style is:global>
@@ -252,10 +255,18 @@ const links = [
       const DISMISSED = 'of-flow-bar-dismissed';
       let dismissed = false;
       try { dismissed = localStorage.getItem(DISMISSED) === '1'; } catch (e) {}
-      const confirmShowing =
-        (() => { try { return sessionStorage.getItem('of-confirm-welcome') === '1'
-          && sessionStorage.getItem('of-confirm-welcome-dismissed') !== '1'; } catch (e) { return false; } })();
-      if (!dismissed && !confirmShowing) {
+      // The converted state can arrive two ways depending on script order: the
+      // fresh ?confirmed=1 URL (this controller may run before ConfirmBanner
+      // stores it and cleans the URL) or the sessionStorage flag ConfirmBanner
+      // persisted on an earlier load. Honor both, else the two bars stack.
+      // A converted visitor never sees the signup pitch again this session,
+      // even after dismissing or acting on the welcome bar.
+      const converted =
+        (() => { try {
+          return new URLSearchParams(location.search).get('confirmed') === '1'
+            || sessionStorage.getItem('of-confirm-welcome') === '1';
+        } catch (e) { return false; } })();
+      if (!dismissed && !converted) {
         magnetBar.classList.remove('hidden');
         const closeBtn = document.getElementById('magnet-bar-close');
         closeBtn && closeBtn.addEventListener('click', () => {
