@@ -366,7 +366,7 @@ const enterpriseTeaser = [
     background-size: 44px 44px;
     mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 100%);
   }
-  /* Gradient instead of filter: blur() — a 60rem blurred layer re-rasterizes
+  /* Gradient instead of filter: blur(): a 60rem blurred layer re-rasterizes
      expensively at retina DPR and showed up as scroll jank. Same soft look. */
   .home-hero__glow { position: absolute; left: 50%; top: -10rem; width: 60rem; height: 40rem; transform: translateX(-50%); background: radial-gradient(closest-side, color-mix(in oklch, var(--color-primary) 13%, transparent), transparent 72%); pointer-events: none; }
   .home-chip {
@@ -381,7 +381,7 @@ const enterpriseTeaser = [
   .home-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-primary); font-weight: 650; }
   .home-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-primary); }
   /* Abstract origin-story card: the limitless constellation art on a gently
-     tilted plane (static transform, gradient halo — no filters, no loops,
+     tilted plane (static transform, gradient halo, no filters, no loops,
      per the scroll-jank hardening). */
   .origin-story__card { position: relative; display: block; border-radius: 1.75rem; }
   .origin-story__card::before {

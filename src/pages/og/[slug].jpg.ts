@@ -74,6 +74,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
         eyebrow: p.eyebrow,
         seed: p.seed,
         meta: p.meta,
+        ...(p.light ? { light: true } : {}),
         ...(useBackground
           ? { backgroundPath: bgAbs }
           : useShot

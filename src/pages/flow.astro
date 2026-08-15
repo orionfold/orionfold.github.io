@@ -681,7 +681,7 @@ const faqSchema = {
     background-size: 44px 44px;
     mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 100%);
   }
-  /* Gradient instead of filter: blur() — cheaper to composite at retina DPR
+  /* Gradient instead of filter: blur(), cheaper to composite at retina DPR
      (blur on a 60rem layer was a scroll-jank source on the homepage). */
   .flow-hero__glow { position: absolute; left: 50%; top: -10rem; width: 60rem; height: 40rem; transform: translateX(-50%); background: radial-gradient(closest-side, color-mix(in oklch, var(--color-primary) 13%, transparent), transparent 72%); pointer-events: none; }
   .flow-eyebrow-chip {

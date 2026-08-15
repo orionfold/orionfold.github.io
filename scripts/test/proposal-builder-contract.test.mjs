@@ -43,7 +43,13 @@ test('page keeps non-binding status and omits payment instructions', () => {
 });
 
 test('navigation and sticky summary keep the proposal action visible', () => {
-  assert.match(nav, /href="\/proposal\/"[\s\S]*?>Get Proposal<\/a>/);
+  // 2026-08-15 Flow takeover: the nav CTA became the Flow waitlist; the
+  // proposal path stays reachable from the footer's Explore column.
+  assert.match(nav, /href="\/flow\/#waitlist"[\s\S]*?>Join the waitlist<\/a>/);
+  assert.match(
+    readFileSync(new URL('../../src/components/Footer.astro', import.meta.url), 'utf8'),
+    /href: '\/proposal\/', label: 'Build a proposal'/,
+  );
   assert.match(page, /id="proposal-sticky-summary"/);
   assert.match(page, /id="sticky-selection-summary"/);
   assert.match(page, /id="sticky-savings"/);

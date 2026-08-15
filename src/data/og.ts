@@ -26,6 +26,9 @@ export interface OgPage {
   meta?: string;
   /** Optional repo-relative product screenshot, framed on the right (offering cards). */
   screenshot?: string;
+  /** Light card: hero light gradient + fading teal grid background, dark text,
+   *  full brand lockup. Used by the Flow flagship cards. */
+  light?: boolean;
   /** Optional repo-relative curated hero art, used FULL-BLEED as the card background
    *  instead of the brand banner (a landing page with its own featured image, e.g.
    *  /dgx-spark/). Title legibility comes from the card's text glow. PNG/JPG only. */
@@ -40,8 +43,10 @@ export const OG_PAGES: Record<string, OgPage> = {
     seed: 'home',
     alt: SITE.ogImageAlt,
     // The homepage is the Flow flagship front door; its social card carries the
-    // same real product capture as /flow/.
-    screenshot: 'src/assets/flow/og-writing-you-approve.jpg',
+    // same real product capture as /flow/ (a document with a picture rendering
+    // in place, pre-cropped to the frame's native 660x338 so text stays crisp).
+    screenshot: 'src/assets/flow/og-images-shot.png',
+    light: true,
   },
   '/advisor/': {
     slug: 'advisor',
@@ -175,9 +180,10 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Conduct beautiful documents with AI agency built in',
     seed: 'flow',
     alt: 'Orionfold Flow: the Mac app where every AI change is a diff you approve, with a receipt naming what ran, where, and what it cost',
-    // Real development-build capture: the approval review surface (framed on
-    // the right of the card, same pattern as relay-host).
-    screenshot: 'src/assets/flow/og-writing-you-approve.jpg',
+    // Real development-build capture: a Flow document with a picture rendering
+    // in place, pre-cropped to the frame's native 660x338 so text stays crisp.
+    screenshot: 'src/assets/flow/og-images-shot.png',
+    light: true,
   },
   '/relay/': {
     slug: 'relay',

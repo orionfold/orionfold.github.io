@@ -52,6 +52,12 @@ export interface CardOptions {
   eyebrow: string;
   seed: string;
   meta?: string; // bottom-right, e.g. "Build log · May 24, 2026"
+  /**
+   * Light theme: the site hero's light-gradient + fading teal grid replaces the
+   * dark constellation, and the type flips to the light-theme tokens (dark text,
+   * teal primary). Used by the Flow flagship cards (home + /flow/).
+   */
+  light?: boolean;
   /** Absolute path to a product screenshot to frame on the right (offering cards). */
   screenshotPath?: string;
   /**
@@ -76,9 +82,45 @@ export interface CardOptions {
 }
 
 const WHITE = '#ffffff';
-// Brand primary on a dark ground (global.css dark --color-primary). The OG cards are
-// always dark, so this is the cyan used for "fold" in the wordmark and the brand mark.
+// Brand primary on a dark ground (global.css dark --color-primary): the cyan used
+// for "fold" in the wordmark on the dark cards.
 const CYAN = '#14c8c0';
+// Light-theme tokens (global.css :root) for `light` cards.
+const LIGHT_TEXT = '#1d1f25';
+const LIGHT_MUTED = '#6b7280';
+const LIGHT_PRIMARY = '#0e9e98';
+
+/**
+ * The homepage hero background as an SVG: soft primary-tinted gradient, a 44px
+ * teal grid fading out radially (same recipe as .home-hero__grid), and the
+ * top-center primary glow. Rasterized once per card via pngDataUri.
+ */
+function heroGridSvg(): string {
+  const lines: string[] = [];
+  for (let x = 0; x <= 1200; x += 44) lines.push(`M${x} 0V630`);
+  for (let y = 0; y <= 630; y += 44) lines.push(`M0 ${y}H1200`);
+  return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#e9f4f3"/>
+      <stop offset="0.55" stop-color="#f9fafb"/>
+      <stop offset="1" stop-color="#f1f8f7"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0" r="0.85">
+      <stop offset="0" stop-color="${LIGHT_PRIMARY}" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="${LIGHT_PRIMARY}" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fade" cx="0.5" cy="0.3" r="0.8">
+      <stop offset="0.3" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="gridmask"><rect width="1200" height="630" fill="url(#fade)"/></mask>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <path d="${lines.join(' ')}" stroke="${LIGHT_PRIMARY}" stroke-opacity="0.12" stroke-width="1" fill="none" mask="url(#gridmask)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+</svg>`;
+}
 
 // Orionfold brand mark — 3D variant B (design-system logo-3d, 2026-07-05): a matte
 // white origami paper star on a filled teal disc, matching BrandMark.astro after the
@@ -92,7 +134,7 @@ const MARK_URI = `data:image/png;base64,${fs.readFileSync(path.join(ROOT, 'publi
 // without darkening the image. Layered: a crisp near shadow + two wider soft glows.
 const TEXT_GLOW = '0 0 5px rgba(0,0,0,0.95), 0 2px 7px rgba(0,0,0,0.92), 0 0 24px rgba(0,0,0,0.85), 0 0 54px rgba(0,0,0,0.6)';
 
-function wordmark(): El {
+function wordmark(light = false): El {
   return h(
     'div',
     {
@@ -102,15 +144,15 @@ function wordmark(): El {
         fontSize: 30,
         fontWeight: 700,
         letterSpacing: -0.5,
-        color: WHITE,
-        textShadow: TEXT_GLOW,
+        color: light ? LIGHT_TEXT : WHITE,
+        ...(light ? {} : { textShadow: TEXT_GLOW }),
       },
     },
     'orionfold.com',
   );
 }
 
-function eyebrow(text: string): El {
+function eyebrow(text: string, light = false): El {
   return h(
     'div',
     { style: { display: 'flex', alignItems: 'center' } },
@@ -118,12 +160,12 @@ function eyebrow(text: string): El {
       'div',
       {
         style: {
-          color: WHITE,
+          color: light ? LIGHT_PRIMARY : WHITE,
           fontSize: 22,
           fontWeight: 700,
           letterSpacing: 3,
           textTransform: 'uppercase',
-          textShadow: TEXT_GLOW,
+          ...(light ? {} : { textShadow: TEXT_GLOW }),
         },
       },
       text,
@@ -137,15 +179,21 @@ function eyebrow(text: string): El {
  * The mark is the rasterized BrandMark SVG. Sits as a horizontal group so the bar can
  * center it vertically and pin it to the left.
  */
-function brandLockup(): El {
+function brandLockup(light = false): El {
   const seg = (text: string, color: string): El =>
-    h('div', { style: { display: 'flex', color, fontSize: 32, fontWeight: 700, letterSpacing: -0.5, textShadow: TEXT_GLOW } }, text);
+    h(
+      'div',
+      { style: { display: 'flex', color, fontSize: 32, fontWeight: 700, letterSpacing: -0.5, ...(light ? {} : { textShadow: TEXT_GLOW }) } },
+      text,
+    );
+  const base = light ? LIGHT_TEXT : WHITE;
+  const accent = light ? LIGHT_PRIMARY : CYAN;
   return h(
     'div',
     { style: { display: 'flex', alignItems: 'center', gap: 14 } },
     [
       h('img', { src: MARK_URI, width: 40, height: 40, style: { width: 40, height: 40 } }),
-      h('div', { style: { display: 'flex', alignItems: 'center' } }, [seg('orion', WHITE), seg('fold', CYAN), seg('.com', WHITE)]),
+      h('div', { style: { display: 'flex', alignItems: 'center' } }, [seg('orion', base), seg('fold', accent), seg('.com', base)]),
     ],
   );
 }
@@ -187,17 +235,20 @@ function bottomStrip(_opts: CardOptions, _titleSize: number): El {
 /** Build the Satori element tree for a card. */
 function cardTree(opts: CardOptions): El {
   const useBanner = Boolean(opts.banner);
+  const light = Boolean(opts.light);
   const hasInset = Boolean(opts.insetPath);
   const hasShot = Boolean(opts.screenshotPath) && !useBanner;
   const usePhoto = Boolean(opts.backgroundPath) && !useBanner;
   // Full-bleed art (no framed screenshot) gets the bottom overlay strip so the title
   // never fights busy poster art or a comic's own lettering.
   const useStrip = usePhoto && !hasShot && !hasInset;
-  const bg = useBanner
-    ? BANNER_URI
-    : usePhoto
-      ? fileDataUri(opts.backgroundPath as string)
-      : pngDataUri(constellationSvg(opts.seed));
+  const bg = light
+    ? pngDataUri(heroGridSvg())
+    : useBanner
+      ? BANNER_URI
+      : usePhoto
+        ? fileDataUri(opts.backgroundPath as string)
+        : pngDataUri(constellationSvg(opts.seed));
 
   // Title scales down for long strings. It also narrows when a screenshot shares the
   // row, when the banner logo must stay clear on the right, or when a book cover sits
@@ -232,8 +283,9 @@ function cardTree(opts: CardOptions): El {
             display: 'flex',
             flexDirection: 'column',
             borderRadius: 16,
-            border: '1px solid rgba(255,255,255,0.14)',
-            backgroundColor: '#0c1020',
+            border: light ? '1px solid rgba(14,158,152,0.32)' : '1px solid rgba(255,255,255,0.14)',
+            backgroundColor: light ? '#ffffff' : '#0c1020',
+            ...(light ? { boxShadow: '0 30px 70px rgba(15,45,52,0.20)' } : {}),
             overflow: 'hidden',
           },
         },
@@ -247,7 +299,7 @@ function cardTree(opts: CardOptions): El {
                 alignItems: 'center',
                 height: 34,
                 paddingLeft: 16,
-                backgroundColor: 'rgba(255,255,255,0.06)',
+                backgroundColor: light ? '#eef1f4' : 'rgba(255,255,255,0.06)',
               },
             },
             [
@@ -310,7 +362,7 @@ function cardTree(opts: CardOptions): El {
       },
     },
     [
-      eyebrow(opts.eyebrow),
+      eyebrow(opts.eyebrow, light),
       h(
         'div',
         { style: { display: 'flex' } },
@@ -319,13 +371,13 @@ function cardTree(opts: CardOptions): El {
           {
             style: {
               display: 'flex',
-              color: WHITE,
+              color: light ? LIGHT_TEXT : WHITE,
               fontSize: titleSize,
               fontWeight: 700,
               lineHeight: 1.06,
               letterSpacing: -1,
               maxWidth: titleMaxWidth,
-              textShadow: TEXT_GLOW,
+              ...(light ? {} : { textShadow: TEXT_GLOW }),
             },
           },
           opts.title,
@@ -335,18 +387,20 @@ function cardTree(opts: CardOptions): El {
         'div',
         { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
         [
-          wordmark(),
+          // Light cards carry the full brand lockup (origami mark + wordmark);
+          // dark cards keep their original plain wordmark.
+          light ? brandLockup(true) : wordmark(),
           opts.meta
             ? h(
                 'div',
                 {
                   style: {
                     display: 'flex',
-                    color: WHITE,
+                    color: light ? LIGHT_MUTED : WHITE,
                     fontSize: 20,
                     fontWeight: 400,
                     letterSpacing: 0.3,
-                    textShadow: TEXT_GLOW,
+                    ...(light ? {} : { textShadow: TEXT_GLOW }),
                   },
                 },
                 opts.meta,
@@ -367,7 +421,7 @@ function cardTree(opts: CardOptions): El {
         width: 1200,
         height: 630,
         fontFamily: 'Geist',
-        backgroundColor: '#0e1322',
+        backgroundColor: light ? '#f9fafb' : '#0e1322',
       },
     },
     layers,
