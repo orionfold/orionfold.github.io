@@ -60,7 +60,7 @@ export const software: SoftwareProduct[] = [
     eyebrow: 'Lead flagship · In development',
     title: 'Orionfold Flow',
     body: 'Orionfold Flow creates beautiful documents with self-improving intelligence built in and AI agency enabled to get work done. The native Mac app keeps sources, decisions, approvals, and receipts in one living artifact you direct.',
-    pills: ['Native Mac', 'Self-improving', 'AI agency', 'Freemium'],
+    pills: ['Native Mac', 'Every change approved', 'Receipts', 'Patent pending'],
     href: '/flow/',
     ctaText: 'See Flow',
     coverType: 'motif',

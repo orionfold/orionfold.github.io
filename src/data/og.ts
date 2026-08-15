@@ -35,10 +35,13 @@ export interface OgPage {
 export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     slug: 'home',
-    eyebrow: 'Orionfold',
+    eyebrow: 'Orionfold Flow · Patent pending',
     title: SITE.tagline,
     seed: 'home',
     alt: SITE.ogImageAlt,
+    // The homepage is the Flow flagship front door; its social card carries the
+    // same real product capture as /flow/.
+    screenshot: 'src/assets/flow/og-writing-you-approve.jpg',
   },
   '/advisor/': {
     slug: 'advisor',
@@ -168,10 +171,13 @@ export const OG_PAGES: Record<string, OgPage> = {
   },
   '/flow/': {
     slug: 'flow',
-    eyebrow: 'Orionfold Flow · In development',
+    eyebrow: 'Orionfold Flow · Patent pending',
     title: 'Conduct beautiful documents with AI agency built in',
     seed: 'flow',
-    alt: 'Orionfold Flow: conduct beautiful documents with self-improving intelligence and AI agency built in',
+    alt: 'Orionfold Flow: the Mac app where every AI change is a diff you approve, with a receipt naming what ran, where, and what it cost',
+    // Real development-build capture: the approval review surface (framed on
+    // the right of the card, same pattern as relay-host).
+    screenshot: 'src/assets/flow/og-writing-you-approve.jpg',
   },
   '/relay/': {
     slug: 'relay',

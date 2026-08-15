@@ -1,51 +1,407 @@
 ---
-// Homepage (S4 + S5). Hero + narrative (Why → What → How) + lead form,
-// then the Book/Software/Model highlights and the stories carousel.
+// Homepage. Rebuilt 2026-08-14 as a full Flow flagship takeover: real product
+// shots from the development build, waitlist capture in the hero and in the
+// closing band, and the rest of the catalog relocated to the footer directory.
+// The /flow/ page carries the deep product tour, enterprise patterns, press
+// kit, and FAQ; this page is the demand-generation front door.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
-import Hero from '../components/sections/Hero.astro';
-import HomeFlowIntro from '../components/sections/HomeFlowIntro.astro';
-import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
-import FieldEditionBand from '../components/sections/FieldEditionBand.astro';
-import RelayBand from '../components/sections/RelayBand.astro';
-import RelayHostBox from '../components/product/RelayHostBox.astro';
-import CapabilitySystemMap from '../components/sections/CapabilitySystemMap.astro';
-import CompanyTrustTrio from '../components/sections/CompanyTrustTrio.astro';
-import Highlights from '../components/sections/Highlights.astro';
-import StoriesCarousel from '../components/sections/StoriesCarousel.astro';
-import FromTheFounder from '../components/sections/FromTheFounder.astro';
-import CatalogShelf from '../components/sections/CatalogShelf.astro';
 import Footer from '../components/Footer.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
+import FlowShot from '../components/flow/FlowShot.astro';
+import WaitlistForm from '../components/ui/WaitlistForm.astro';
+import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
+import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
-import { SITE } from '../data/seo';
+import { SITE, PERSON } from '../data/seo';
+
+import appIcon from '../assets/flow/flow-app-icon-512.png';
+import originArt from '../assets/story/limitless-without-the-pill/hero.png';
+import shotApprove from '../assets/flow/shots/flow-writing-you-approve-shot.webp';
+import shotLongDocs from '../assets/flow/shots/flow-long-documents-shot.webp';
+import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
+import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
 
 const og = ogMeta('/');
+
+// The homepage is the Flow front door, so it carries the same product entity
+// as /flow/ (canonical product URL stays /flow/). Helps answer engines tie
+// "Orionfold" and "Flow" to one SoftwareApplication.
+const flowSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Orionfold Flow',
+  applicationCategory: 'ProductivityApplication',
+  operatingSystem: 'macOS',
+  description:
+    'Orionfold Flow is a native Mac app for professional documents with AI agency built in. Every AI change is a diff you approve, with a receipt recording what ran, where it ran, and what it cost. Patent pending.',
+  url: `${SITE.url}/flow/`,
+  image: `${SITE.url}${og.image}`,
+  author: PERSON,
+  brand: { '@type': 'Brand', name: 'Orionfold' },
+};
+
+// Consent copy must stay identical to FlowWaitlist.astro so a subscriber's
+// recorded consent reads the same no matter which surface captured them.
+const consentText =
+  'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
+
+const heroStats = [
+  { value: '22.3 ms', label: 'search across 10,000 notes' },
+  { value: '$0.00425', label: 'a billed run, recorded to the digit' },
+  { value: '+19.2 MiB', label: 'a complete local AI runtime' },
+  { value: '5 actions', label: 'every one needs your approval' },
+];
+
+const capabilityRows = [
+  {
+    kicker: 'Long documents',
+    title: 'Your 50-page document is not too big. It is four reviews.',
+    body: 'Flow improves long documents part by part, following your document’s own structure. Never truncated, never guessed. Each part gets its own review and its own receipt, and coverage is reported in counts you can check: "You approved 3 of 4 parts."',
+    href: '/flow/#tour-longdocs',
+    shot: shotLongDocs,
+    alt: 'A live two-part review on a 3,905-word document in Flow, with part chips and an honest coverage line.',
+    flip: false,
+  },
+  {
+    kicker: 'Trust boundaries',
+    title: 'You pick where AI runs. Flow keeps it there.',
+    body: 'Four execution domains: Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own switch and states plainly whether your text stays on this Mac and what the work costs. Flow even discovers the AI subscriptions you already pay for and treats them as already paid. A fallback that would leave your Mac stops and asks first.',
+    href: '/flow/#tour-domains',
+    shot: shotDomains,
+    alt: 'Flow’s Models settings showing four execution domains with locality and cost statements and a user-owned provider order.',
+    flip: true,
+  },
+  {
+    kicker: 'Professional artifacts',
+    title: 'Documents that look like your work, not a chat transcript.',
+    body: 'Memos, calendars, client proposals, and investment briefs over plain folders of plain Markdown. Pictures render in place. Tables get a spreadsheet-grade grid while the file stays exactly the text you wrote. No import, no database, no lock-in.',
+    href: '/flow/#tour-files',
+    shot: shotCharts,
+    alt: 'Flow documents carrying images and tables: a publishing calendar beside an investment memo with charts and metrics.',
+    flip: false,
+  },
+];
+
+const enterpriseTeaser = [
+  {
+    k: 'Data classification',
+    q: 'Which documents may AI touch, and which AI may touch them?',
+    a: 'The folder is the classification. Four switchable domains decide where work may run.',
+  },
+  {
+    k: 'Attribution',
+    q: 'Who changed this part, human or AI, and when?',
+    a: 'Text changes two ways only: an edit you typed, or a change you approved. With a receipt.',
+  },
+  {
+    k: 'Knowledge mining',
+    q: 'How do we capture expert judgment without surveillance?',
+    a: 'The receipt is made by the worker, artifact by artifact, with consent. Not by watching them.',
+  },
+];
 ---
 <Layout
   title={`${SITE.tagline} · Orionfold`}
   description={SITE.description}
   ogImage={og.image}
   ogImageAlt={og.alt}
+  jsonLd={[flowSchema]}
 >
   <Nav />
-  <!-- Surfaces the ?confirmed= state the confirm-email funnel redirects here with (H3) -->
+  <!-- Surfaces the ?confirmed= state the confirm-email funnel redirects here with -->
   <ConfirmBanner />
-  <!-- Flow leads the homepage. Relay and Arena retain their own commercial
-       bands below the shared three-product map. -->
-  <main>
-    <Hero />
-    <HomeFlowIntro />
-    <FlowWaitlist placement="home" />
-    <div id="orionfold-line" class="scroll-mt-28"><CapabilitySystemMap /></div>
-    <CompanyTrustTrio />
-    <RelayBand />
-    <RelayHostBox placement="home" />
-    <FieldEditionBand />
-    <FromTheFounder />
-    <Highlights />
-    <StoriesCarousel />
-    <CatalogShelf />
+  <main class="overflow-x-clip">
+    <!-- ================= HERO ================= -->
+    <section class="home-hero relative px-6 pb-16 pt-32 sm:pt-36">
+      <div class="home-hero__grid" aria-hidden="true"></div>
+      <div class="home-hero__glow" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-5xl text-center">
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <span class="home-chip">
+            <Image src={appIcon} alt="" width={20} height={20} class="h-5 w-5 rounded-[5px]" loading="eager" />
+            Orionfold Flow · Our flagship Mac app
+          </span>
+          <span class="home-chip home-chip--accent">Patent pending</span>
+        </div>
+        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.2rem,8vw,4rem)] font-extrabold leading-[1.08] tracking-[-0.05em]">
+          The AI document app that shows its work
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl">
+          End the copy-paste dance between a chat window and your document. In Flow, the
+          work happens in the file: every AI change arrives as a diff you approve, and
+          every run leaves a receipt naming what ran, where it ran, and what it cost.
+          Flow is coming to Mac.
+        </p>
+        <div class="mx-auto mt-9 max-w-md">
+          <WaitlistForm
+            id="home-hero-waitlist"
+            source="home-hero-waitlist"
+            offer="flow-waitlist"
+            buttonText="Join the waitlist"
+            successMessage="Check your inbox to confirm."
+            consentText={consentText}
+          />
+          <p class="mt-3 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-text-dim">
+            Free to join · Double opt-in · One email a week, no more
+          </p>
+        </div>
+      </div>
+      <div class="relative mx-auto mt-12 max-w-6xl">
+        <FlowShot
+          src={shotApprove}
+          alt="Orionfold Flow reviewing an AI proofread: the proposal, its permission scope, Evidence, Checks with a human-review gate, and the exact diff beside the document."
+          caption="The real development build on a real local run. The diff, the evidence, the checks, and your approval."
+          priority
+        />
+        <div class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {heroStats.map((s) => (
+            <div class="text-center">
+              <p class="font-display text-2xl font-bold text-primary sm:text-3xl">{s.value}</p>
+              <p class="mt-1 text-xs leading-snug text-text-muted sm:text-sm">{s.label}</p>
+            </div>
+          ))}
+        </div>
+        <p class="mt-5 text-center font-mono text-[0.64rem] uppercase tracking-[0.14em] text-text-dim">
+          Measured on the development build · <a href="/flow/" class="text-primary hover:underline">See all the numbers and dates</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= THE BROKEN LOOP ================= -->
+    <section class="px-6 py-16 sm:py-24">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="home-kicker">The problem</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Chat is where work evaporates.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">
+            You draft in a chat window, paste into your document, and fix the formatting.
+            Again. Nobody can tell which parts you wrote and which parts the AI did. And the
+            thread that produced the work is gone in a month. Flow ends that loop, because
+            the document itself is where AI works.
+          </p>
+        </div>
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          <article class="of-surface rounded-2xl border border-border/70 p-6">
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">No more pasting</p>
+            <h3 class="mt-3 text-lg font-bold leading-snug">The work happens in the file.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">Nothing to copy out of a chat, nothing to reformat, and you always see exactly what changed.</p>
+          </article>
+          <article class="of-surface rounded-2xl border border-border/70 p-6">
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">Attribution survives</p>
+            <h3 class="mt-3 text-lg font-bold leading-snug">Which parts you wrote. Which parts AI proposed.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">Who approved each change, recorded with the document. When someone opens the file and asks, you have the answer.</p>
+          </article>
+          <article class="of-surface rounded-2xl border border-border/70 p-6">
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">A file, not a session</p>
+            <h3 class="mt-3 text-lg font-bold leading-snug">Chat workspaces expire. Files are forever.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">Your work is plain Markdown on your own disk, readable by every other tool you own. No export step, no lock-in.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= THE WEDGE ================= -->
+    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
+      <div class="mx-auto max-w-4xl text-center">
+        <p class="home-kicker">Why Flow exists</p>
+        <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">A silent rewrite is not a feature. It is a risk.</h2>
+        <p class="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-text-muted">
+          We measured the Mac's own built-in Writing Tools rewriting text inside a code block.
+          Silently. No diff, no approval, no record. So Flow retired that whole shape and replaced
+          it with one trust path: the exact change, the evidence for it, the checks that ran, and
+          your approval. Recorded. That is what "AI agency built in" means here.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="/flow/" class="of-primary-action">Take the product tour</a>
+          <a href="/flow/#press" class="of-secondary-action">Writing about Flow? Get the facts</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CAPABILITY ROWS ================= -->
+    {capabilityRows.map((row) => (
+      <section class="border-b border-border/60 px-6 py-14 sm:py-20">
+        <div class:list={['mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14', row.flip && 'lg:[&>*:first-child]:order-2']}>
+          <div>
+            <p class="home-kicker">{row.kicker}</p>
+            <h2 class="mt-3 text-balance text-3xl font-bold sm:text-4xl">{row.title}</h2>
+            <p class="mt-4 leading-relaxed text-text-muted">{row.body}</p>
+            <a href={row.href} class="of-text-action mt-6 inline-flex items-center gap-2">
+              See it in the tour <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <FlowShot src={row.shot} alt={row.alt} crop sizes="(min-width: 1024px) 44rem, 100vw" />
+        </div>
+      </section>
+    ))}
+
+    <!-- ================= ENTERPRISE TEASER ================= -->
+    <section class="bg-surface-raised/40 px-6 py-16 sm:py-24">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="home-kicker">For enterprise AI owners</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Governance at the source of knowledge work.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">
+            The hard part of enterprise AI is not reaching 70 percent accuracy. It is knowing which
+            30 percent is wrong, who approved what, and what it cost. Flow puts the evidence, the
+            approval, and the receipt inside the document itself.
+          </p>
+        </div>
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          {enterpriseTeaser.map((card) => (
+            <article class="of-surface rounded-2xl border border-border/70 p-6">
+              <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">{card.k}</p>
+              <h3 class="mt-3 text-lg font-bold leading-snug">{card.q}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-text-muted">{card.a}</p>
+            </article>
+          ))}
+        </div>
+        <div class="mt-8 text-center">
+          <a href="/flow/#enterprise" class="of-secondary-action">See all nine enterprise patterns <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ONE STACK ================= -->
+    <section class="border-t border-border/70 px-6 py-16 sm:py-24">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="home-kicker">One company, one stack</p>
+          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Flow is where the Orionfold work comes together.</h2>
+        </div>
+        <div class="mt-10 grid gap-4 lg:grid-cols-3">
+          <article class="of-surface rounded-2xl border border-border/70 p-7">
+            <h3 class="text-xl font-bold">Open models</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">
+              We publish open domain models in the same format Flow's bundled engine runs. The
+              models we ship and the app we ship are converging on one runtime you own.
+            </p>
+            <a href="/experts/" class="of-text-action mt-5 inline-flex items-center gap-2">See the models <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="of-surface rounded-2xl border border-border/70 p-7">
+            <h3 class="text-xl font-bold">The books</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">
+              Flow productizes the operating method from our books: routed work, receipts, and
+              human judgment, worked out in public by a one-person AI-native business.
+            </p>
+            <a href="/learn/" class="of-text-action mt-5 inline-flex items-center gap-2">Read the books <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="of-surface rounded-2xl border border-border/70 p-7">
+            <h3 class="text-xl font-bold">Relay and Arena</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">
+              Relay runs AI client work with per-client cost receipts. Arena scores local models
+              with reruns you can verify. Different products, one refusal: no invisible AI work.
+            </p>
+            <a href="/relay/" class="of-text-action mt-5 inline-flex items-center gap-2">Meet the family <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= THE ORIGIN STORY ================= -->
+    <section class="origin-story border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="origin-heading">
+      <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        <a
+          href="/story/limitless-without-the-pill/"
+          class="origin-story__card"
+          aria-label="Read the origin story: Limitless, Without the Pill"
+        >
+          <span class="origin-story__plane of-surface">
+            <Image
+              src={originArt}
+              alt="A knowledge worker at a laptop conducts a luminous constellation of research, code, strategy, art, and scientific ideas across a deep blue night sky."
+              widths={[640, 960, 1280, 1672]}
+              sizes="(min-width: 1024px) 38rem, calc(100vw - 3rem)"
+              loading="lazy"
+              decoding="async"
+              quality={90}
+              data-no-zoom
+              class="origin-story__image"
+            />
+          </span>
+        </a>
+        <div>
+          <p class="home-kicker">The origin story</p>
+          <h2 id="origin-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Limitless, without the pill.</h2>
+          <p class="mt-5 leading-relaxed text-text-muted">
+            The movie sold a fantasy: one pill, and every dormant capability wakes up.
+            Building Orionfold as one AI-native person has felt like the closest real-world
+            version of that. No pill needed.
+          </p>
+          <p class="mt-4 leading-relaxed text-text-muted">
+            That feeling is what Flow is built to give you. Not AI that replaces you. AI you
+            conduct: different modes of thinking, context that stays with the work, and
+            capabilities that used to live in separate departments, now in one document.
+          </p>
+          <p class="mt-5 border-l-2 border-primary/50 pl-4 text-lg font-medium leading-relaxed text-text">
+            The future may not be artificial superintelligence. It may be ordinary people
+            becoming far more capable versions of themselves.
+          </p>
+          <a href="/story/limitless-without-the-pill/" class="of-text-action mt-6 inline-flex items-center gap-2">
+            Read the origin story <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div id="waitlist" class="scroll-mt-24">
+      <FlowWaitlist placement="home" />
+    </div>
   </main>
   <Footer />
 </Layout>
+
+<style>
+  .home-hero {
+    isolation: isolate;
+    overflow: hidden;
+    background: linear-gradient(155deg, color-mix(in oklch, var(--color-primary) 6%, var(--color-surface)) 0%, var(--color-surface) 55%, color-mix(in oklch, var(--color-primary) 3%, var(--color-surface)) 100%);
+  }
+  .home-hero__grid {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 100%);
+  }
+  /* Gradient instead of filter: blur() — a 60rem blurred layer re-rasterizes
+     expensively at retina DPR and showed up as scroll jank. Same soft look. */
+  .home-hero__glow { position: absolute; left: 50%; top: -10rem; width: 60rem; height: 40rem; transform: translateX(-50%); background: radial-gradient(closest-side, color-mix(in oklch, var(--color-primary) 13%, transparent), transparent 72%); pointer-events: none; }
+  .home-chip {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    border: 1px solid color-mix(in oklch, var(--color-primary) 25%, var(--color-border));
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface));
+    padding: 0.42rem 0.85rem;
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--color-text-muted);
+  }
+  .home-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-primary); font-weight: 650; }
+  .home-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-primary); }
+  /* Abstract origin-story card: the limitless constellation art on a gently
+     tilted plane (static transform, gradient halo — no filters, no loops,
+     per the scroll-jank hardening). */
+  .origin-story__card { position: relative; display: block; border-radius: 1.75rem; }
+  .origin-story__card::before {
+    content: ''; position: absolute; z-index: -1; inset: 8% 5% -4%; border-radius: 999px;
+    background: radial-gradient(closest-side, color-mix(in oklch, var(--color-primary) 16%, transparent), transparent 74%);
+    pointer-events: none;
+  }
+  .origin-story__plane {
+    position: relative; display: block; overflow: hidden; border-radius: 1.75rem; padding: 0.45rem;
+    border: 1px solid color-mix(in oklch, var(--color-primary) 24%, var(--color-border));
+    background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-raised));
+    box-shadow: 0 36px 92px -52px rgb(3 13 31 / 0.82);
+    transition: transform 0.5s ease;
+  }
+  .origin-story__image { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 1.32rem; object-fit: cover; }
+  .origin-story__card:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 5px; }
+  @media (min-width: 1024px) {
+    .origin-story__card { perspective: 1500px; }
+    .origin-story__plane { transform: rotateX(14deg) rotateZ(-3deg) scale(0.96); }
+    .origin-story__card:hover .origin-story__plane { transform: rotateX(4deg) rotateZ(-1deg) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) { .origin-story__plane { transition: none; } }
+</style>

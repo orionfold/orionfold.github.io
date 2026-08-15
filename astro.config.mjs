@@ -120,6 +120,11 @@ function buildLastmodMap() {
   map['/training/'] = '2026-07-23';
   map['/training/relay-operator-workshop/'] = '2026-07-23';
   map['/proposal/'] = '2026-07-20';
+  // The Flow flagship landing is hand-built (no content collection), so its
+  // material redesigns are tracked explicitly, same as /training/. 2026-08-15:
+  // full rebuild on real dev-build captures + measured numbers + enterprise
+  // patterns + press kit + FAQ. Bump on the next material Flow-page change.
+  map['/flow/'] = '2026-08-15';
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
   // so it tracks the freshest date across all of them.
   const relayFreshest = freshestUnder('/relay/');

@@ -17,40 +17,34 @@
 // 2026-07-31: Flow becomes the lead flagship. Proof remains in the footer and
 // contextual evidence surfaces but leaves the top-level product set.
 import BrandMark from './ui/BrandMark.astro';
-import { magnetHref } from '../data/magnet.ts';
-// Persistent magnet sticky bar (2026-Q3 magnet-traffic, relay latest+21): a slim,
-// dismissible "free book" bar pinned ABOVE the nav, site-wide. It lives inside
-// #nav-wrapper (like #confirm-bar) so it joins the pinned overlay and the hero's
-// nav-clearance adjusts for it automatically. It is auto-suppressed on the magnet
-// page itself because that page (and /thanks/) render their own bare header, NOT
-// this Nav. The controller hides it once dismissed (localStorage, persists across
-// sessions) and yields to #confirm-bar for users who already converted.
-const magnetBarHref = magnetHref('nav-cta');
+// 2026-08-14 Flow-flagship takeover: the top nav is now Flow-only. Relay,
+// Arena, Models, Books, and Training moved to the footer's Products column and
+// directory band. The persistent sticky bar switched from the book magnet to
+// the Flow waitlist (same slot, same dismissal mechanics, new localStorage key
+// so users who dismissed the old book bar still see this one once). The magnet
+// page stays live and footer-linked.
 // `divider: true` renders a separator immediately BEFORE that link.
 const links = [
   { href: '/flow/', label: 'Flow' },
-  { href: '/relay/', label: 'Relay' },
-  { href: '/arena/', label: 'Arena' },
-  { href: '/experts/', label: 'Models', divider: true },
-  { href: '/learn/', label: 'Books' },
-  { href: '/training/', label: 'Training' },
+  { href: '/flow/#tour', label: 'Tour' },
+  { href: '/flow/#enterprise', label: 'Enterprise' },
+  { href: '/flow/#press', label: 'Press' },
   { href: '/story/', label: 'Story', divider: true },
 ];
 ---
 <div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
-  <!-- Persistent magnet sticky bar (relay latest+21). Hidden by default; the
-       controller script reveals it unless dismissed (localStorage) or the
-       post-confirm welcome bar is active. Value-first, message-matched to the
-       magnet page's "$20 book free" copy. -->
+  <!-- Persistent Flow waitlist sticky bar. Hidden by default; the controller
+       script reveals it unless dismissed (localStorage) or the post-confirm
+       welcome bar is active. -->
   <div id="magnet-bar" class="hidden border-b border-primary/20 bg-primary/[0.07] text-text">
     <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-6 py-1.5">
       <a
-        href={magnetBarHref}
+        href="/flow/#waitlist"
         class="group inline-flex items-center gap-2 text-center text-sm leading-tight transition-colors hover:text-primary"
       >
-        <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span><span class="font-semibold">Get the $20 AI Native Business book free</span> <span class="text-text-muted">(PDF + EPUB)</span></span>
-        <span class="font-mono text-primary transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
+        <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l4 4v16H6zM15 2v5h4M9 12h6M9 16h3"/><path d="M13 17l2 2 4-5"/></svg>
+        <span><span class="font-semibold">Orionfold Flow is coming to Mac</span> <span class="text-text-muted">· patent-pending AI agency for documents</span></span>
+        <span class="font-mono text-primary transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">Join the waitlist &rarr;</span>
       </a>
       <button
         id="magnet-bar-close"
@@ -94,10 +88,10 @@ const links = [
     <!-- Right cluster: theme toggle (all sizes) + mobile hamburger -->
     <div class="flex items-center gap-4">
       <a
-        href="/proposal/"
+        href="/flow/#waitlist"
         class="hidden lg:inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 font-mono text-[0.68rem] font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90"
         data-astro-prefetch
-      >Get Proposal</a>
+      >Join the waitlist</a>
       <button
         id="theme-toggle"
         type="button"
@@ -144,7 +138,7 @@ const links = [
           <a href={link.href} class="font-mono text-sm text-text-muted hover:text-primary transition-colors py-2" data-astro-prefetch>{link.label}</a>
         </Fragment>
       ))}
-      <a href="/proposal/" class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch>Get Proposal</a>
+      <a href="/flow/#waitlist" class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch>Join the waitlist</a>
     </div>
   </div>
 </nav>
@@ -249,13 +243,13 @@ const links = [
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
 
-    // Persistent magnet bar: reveal unless the user dismissed it (localStorage,
-    // persists across sessions) or the post-confirm welcome bar is showing (they
-    // already converted, so don't stack two bars). Dismissal is one click and
-    // sticky, so the bar never nags a returning visitor.
+    // Persistent Flow waitlist bar: reveal unless the user dismissed it
+    // (localStorage, persists across sessions) or the post-confirm welcome bar
+    // is showing (they already converted, so don't stack two bars). New key for
+    // the Flow era so old book-bar dismissals don't suppress it.
     const magnetBar = document.getElementById('magnet-bar');
     if (magnetBar) {
-      const DISMISSED = 'of-magnet-bar-dismissed';
+      const DISMISSED = 'of-flow-bar-dismissed';
       let dismissed = false;
       try { dismissed = localStorage.getItem(DISMISSED) === '1'; } catch (e) {}
       const confirmShowing =

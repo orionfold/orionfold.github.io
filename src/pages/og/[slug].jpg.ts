@@ -60,6 +60,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const fromPages = Object.values(OG_PAGES).map((p) => {
     const bgAbs = p.background ? path.join(process.cwd(), p.background) : undefined;
     const useBackground = Boolean(bgAbs && fs.existsSync(bgAbs));
+    // A page may instead ship a product screenshot (OgPage.screenshot), framed
+    // on the right of the card the way product-detail cards frame theirs.
+    // Satori cannot decode webp, so webp-configured entries keep the banner.
+    const shotAbs = p.screenshot && !p.screenshot.endsWith('.webp')
+      ? path.join(process.cwd(), p.screenshot)
+      : undefined;
+    const useShot = Boolean(shotAbs && fs.existsSync(shotAbs));
     return {
       params: { slug: p.slug },
       props: {
@@ -67,7 +74,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
         eyebrow: p.eyebrow,
         seed: p.seed,
         meta: p.meta,
-        ...(useBackground ? { backgroundPath: bgAbs } : { banner: true }),
+        ...(useBackground
+          ? { backgroundPath: bgAbs }
+          : useShot
+            ? { screenshotPath: shotAbs }
+            : { banner: true }),
       } satisfies CardOptions,
     };
   });

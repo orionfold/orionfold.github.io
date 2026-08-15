@@ -17,9 +17,20 @@ import BrandMark from './ui/BrandMark.astro';
 
 const detailKeys = await detailKeySet();
 
-// Software, grouped (flagship → platform → apps → intel → devtools), detail-gated.
+// 2026-08-14 Flow-flagship takeover: the top nav is Flow-only, so the footer
+// gained a dedicated Products column (first in the directory band) housing the
+// flagship landings that used to sit in the nav. The Software column keeps the
+// remaining groups; `flagship` left it to avoid double-listing.
+const PRODUCTS = [
+  { href: '/flow/', label: 'Flow · flagship' },
+  { href: '/relay/', label: 'Relay' },
+  { href: '/arena/', label: 'Arena' },
+  { href: '/advisor/', label: 'Advisor' },
+  { href: '/proof/', label: 'Proof' },
+  { href: '/dgx-spark/', label: 'DGX Spark' },
+];
+// Software, grouped (platform → apps → intel → devtools), detail-gated.
 const SW_GROUPS = [
-  { key: 'flagship', label: 'Flagship' },
   { key: 'platform', label: 'Platform' },
   { key: 'apps', label: 'Apps' },
   { key: 'intel', label: 'Intel' },
@@ -72,6 +83,7 @@ const latestStories = (await getCollection('story'))
 // Software directory column above, so they are NOT duplicated here. /cockpit/ (the
 // legacy Arena page) + /advisor/ stay listed for SEO/AEO internal-link equity.
 const explore = [
+  { href: '/become-ai-native-business/', label: 'Free AI book' },
   { href: '/cockpit/', label: 'Cockpit' },
   { href: '/workflows/', label: 'Workflows' },
   { href: '/experts/', label: 'Experts' },
@@ -98,7 +110,15 @@ const year = new Date().getFullYear();
   <div class="bg-primary/[0.07] px-6 py-10">
     <div class="max-w-6xl mx-auto text-text-muted text-xs font-mono">
       <div class="grid grid-cols-2 gap-x-6 gap-y-8 md:flex md:justify-between text-center sm:text-left">
-        <!-- Software (full width on mobile, first proportional col on desktop;
+        <!-- Products: the flagship landings displaced from the top nav -->
+        <div class="flex flex-col gap-2">
+          <span class="block py-1 -my-0.5 text-[0.65rem] uppercase tracking-[0.12em] text-text-dim">Products</span>
+          {PRODUCTS.map((p) => (
+            <a href={p.href} class="block py-1 -my-0.5 hover:text-primary transition-colors">{p.label}</a>
+          ))}
+        </div>
+
+        <!-- Software (full width on mobile, proportional col on desktop;
              its 4 groups sit in a 2-col sub-grid) -->
         <div class="col-span-2 md:col-span-1 flex flex-col gap-3">
           <a href="/software/" class="block py-1 -my-0.5 text-[0.65rem] uppercase tracking-[0.12em] text-text-dim hover:text-primary transition-colors">Software</a>

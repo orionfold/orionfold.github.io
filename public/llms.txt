@@ -1,18 +1,27 @@
 # Orionfold
 
-> Orionfold builds three lead products for work people control. Flow creates
-> beautiful documents with self-improving intelligence and AI agency built in. Relay runs repeatable agent work.
-> Arena shows which local AI wins. Flow is in development as Orionfold's first
-> closed-source commercial app, planned as a freemium subscription. Relay,
-> Arena, the models, books, and receipts are built on working code. Orionfold
-> is a member of NVIDIA Inception.
+> Orionfold's flagship is Flow, a native Mac app for professional documents
+> with patent-pending AI agency built in. In Flow the work happens in the
+> file, not a chat window: every AI change arrives as an exact diff you
+> approve, and every run leaves a receipt naming what ran, where it ran, and
+> what it cost. Flow is in development with an open waitlist, used daily by
+> its builder, planned as a closed-source freemium subscription. Relay runs
+> repeatable agent work with per-client cost receipts. Arena shows which
+> local AI wins. Relay, Arena, the models, books, and receipts are built on
+> working code. Orionfold is a member of NVIDIA Inception.
+
+## Flow (flagship, waitlist open)
+- [Flow](https://orionfold.com/flow/): The full product page: real screenshots of the development build, measured numbers with dates (search p95 of 22.3 ms on a 10,000-note library; long-document planning linear through 620,000 characters; a billed run recorded at $0.00425; a complete two-engine local AI runtime inside the app for about 19 MiB), the product tour, FAQ, and the waitlist.
+- [Flow product tour](https://orionfold.com/flow/#tour): Seven capabilities: approval-gated AI editing, long documents improved part by part, four execution domains (Local, LAN, Cloud prepaid, Cloud postpaid), a bundled local AI runtime, byte-verified search, a spreadsheet-grade table grid over plain Markdown, and plain folders with no silent overwrites.
+- [Flow for enterprise AI owners](https://orionfold.com/flow/#enterprise): How document-native evidence, approvals, and receipts answer enterprise questions about allocation, data classification, attribution, guardrails, evidence, routing, curation, system of record, and capturing expert judgment with consent.
+- [Flow press kit](https://orionfold.com/flow/#press): Quotable facts for journalists and analysts: status, patent-pending statement, measured numbers with dates, and the press contact.
 
 ## Buy
 - [Arena Field Edition](https://orionfold.com/arena/): The paid edition of the free Orionfold Arena. One installer turns an NVIDIA DGX Spark into a private AI lab with an AI research teammate (agents, domain models, and tests). It proves itself on first boot with a verifiable receipt and stays proven for a year, every update re-gated and re-receipted. The software stays free and open; what you buy is the assembled, proven team delivered turnkey. $349 founding for the first 25 licenses, then $499 one time with a 12-month kept-proven window; $149/yr renewal after year one.
 - [Relay](https://orionfold.com/relay/): A licensed product that runs your AI agents for real client work, all on your own machine. It shows what each client costs you, and none of your data leaves your computer. $349 founding for the first 25 licenses, then $499 one time; $149/yr renewal after year one.
 
 ## Flagship paths
-- [Flow](https://orionfold.com/flow/): Orionfold's lead flagship. Conduct beautiful documents with self-improving intelligence built in and AI agency enabled to get work done. In development as a native Mac, closed-source freemium subscription; exact tiers, price, and launch date are not announced.
+- [Flow](https://orionfold.com/flow/): Orionfold's lead flagship. Conduct beautiful documents with AI agency built in: every AI change is a diff you approve, with evidence, checks, and a receipt. Native Mac, patent pending, in development as a closed-source freemium subscription; exact tiers, price, and launch date are not announced. Waitlist open.
 - [Relay](https://orionfold.com/relay/): The operations layer for repeatable agent work. Run agents and client workflows from one place, keep approval in the loop, and see cost per client.
 - [Arena](https://orionfold.com/arena/): Orionfold Arena is the cockpit for local AI: run, compare, score, and train models on your own desktop. Arena Field Edition delivers the whole stack on an NVIDIA DGX Spark as a turnkey, proven lab; Cortex memory and the fieldkit toolkit are the stack around it.
 - [Workflows](https://orionfold.com/workflows/): Private Agent Starter Kits. One local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail.

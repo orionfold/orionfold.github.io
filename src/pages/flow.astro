@@ -1,125 +1,134 @@
 ---
+// Orionfold Flow flagship landing page. Rebuilt 2026-08-14 from the measured
+// capability briefs in the Flow repo (docs/reference/flow-*-source.md). Every
+// screenshot is a real capture of the running development build over the
+// synthetic flow-demo library; every number is a recorded measurement with its
+// date. Copy stays inside each brief's truth boundary: the bundled runtime is
+// "built so that", agency is gated not autonomous, no pricing exists yet.
 import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import FlowHeroCreative from '../components/flow/FlowHeroCreative.astro';
-import FlowRoutingIcon from '../components/flow/FlowRoutingIcon.astro';
+import FlowShot from '../components/flow/FlowShot.astro';
+import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustration.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
-import StoryCard from '../components/ui/StoryCard.astro';
+import { Image } from 'astro:assets';
 import { SITE, PERSON } from '../data/seo';
 import { ogMeta } from '../data/og';
 
+import appIcon from '../assets/flow/flow-app-icon-512.png';
+import shotApprove from '../assets/flow/shots/flow-writing-you-approve-shot.webp';
+import shotLongDocs from '../assets/flow/shots/flow-long-documents-shot.webp';
+import shotLongDocsMenu from '../assets/flow/shots/flow-long-documents-menu-shot.webp';
+import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
+import shotSearch from '../assets/flow/shots/flow-search-shot.webp';
+import shotTables from '../assets/flow/shots/flow-table-editor-shot.webp';
+import shotOrganizer from '../assets/flow/shots/flow-organizer-shot.webp';
+import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
+
 const og = ogMeta('/flow/');
 const flowUrl = `${SITE.url}/flow/`;
-const flowStorySlug = 'limitless-without-the-pill';
-const flowStory = (await getCollection('story')).find((story) => story.id === flowStorySlug);
-const flowStoryHref = `/story/${flowStorySlug}/`;
+const flowStoryHref = '/story/limitless-without-the-pill/';
 
-const continuity = [
-  { number: '01', title: 'Outcome', body: 'Start with what the document needs to accomplish.' },
-  { number: '02', title: 'Trusted context', body: 'Keep sources, files, decisions, and boundaries with the document.' },
-  { number: '03', title: 'Intelligence', body: 'Use context, checks, and feedback to make the next version stronger.' },
-  { number: '04', title: 'Agency', body: 'Let specialists research, analyze, and act inside clear boundaries.' },
-  { number: '05', title: 'Durable receipt', body: 'See what changed, why it changed, and what still needs judgment.' },
+// "Measured, not promised" stat band. Each number is a recorded measurement;
+// the fine print names its scope so the claim stays checkable.
+const stats = [
+  { value: '22.3 ms', label: 'Search, 95th percentile', fine: 'Measured on a 10,000-note library, Apple silicon, 2026-08-04' },
+  { value: '620,000', label: 'Characters planned part by part', fine: 'Document analysis stays linear. About 0.5 seconds, no cliff' },
+  { value: '$0.00425', label: 'A real billed run, to the digit', fine: '105 input and 149 output tokens. Exact decimal arithmetic' },
+  { value: '+19.2 MiB', label: 'A complete local AI runtime', fine: 'Two engines inside the app. About the size of twenty photos' },
+  { value: '5 actions', label: 'The Agency catalog', fine: 'Proofread, Summarize, Translate, and two table conversions' },
+  { value: '4 domains', label: 'Where AI may run', fine: 'Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own switch' },
 ];
 
-const fold = [
-  { letter: 'F', title: 'Frame', body: 'Define what the document must accomplish.', icon: '<path d="M5 5h14v14H5z"/><path d="M9 9h6v6H9z"/>' },
-  { letter: 'O', title: 'Orchestrate', body: 'Bring intelligence and specialists into the document.', icon: '<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/>' },
-  { letter: 'L', title: 'Lock', body: 'Keep sources, decisions, approvals, and receipts attached.', icon: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M9 15l2 2 4-4"/>' },
-  { letter: 'D', title: 'Distill', body: 'Turn the result and its feedback into a stronger next version.', icon: '<path d="M4 4h16v5H4zM7 9v11h10V9M10 13h4"/>' },
-];
-
-const scenarios = [
+// Enterprise adoption patterns. Each card answers a question enterprise AI
+// owners actually ask. "Today" marks shipped behavior in the development
+// build; "Direction" marks where the design is headed.
+const enterprise = [
   {
-    audience: 'Retail investor',
-    title: 'Portfolio dashboard document',
-    body: 'A living view of holdings, thesis, market signals, risk, and the next decision, with every number tied back to its source.',
-    path: ['Gather holdings', 'Improve the thesis', 'Flag decisions'],
-    tone: 'violet',
-    featured: true,
-    icon: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 15l3-4 3 2 4-6M7 8h3M17 11v4"/>',
+    q: 'How do we know which users need more AI and which need to cut back?',
+    k: 'Allocation',
+    a: 'Every action carries its own cost record. Local runs record no charge because none was owed. Billed runs record the observed charge, never an estimate. Spend becomes a per-person, per-action fact you can read, not a monthly surprise.',
+    tag: 'Today',
   },
   {
-    audience: 'Sales',
-    title: 'Leads dataset',
-    body: 'A source-linked dataset that researches accounts, cleans fields, scores fit, and prepares the next outreach step.',
-    path: ['Find accounts', 'Qualify fit', 'Prepare outreach'],
-    tone: 'cyan',
-    icon: '<circle cx="8" cy="8" r="3"/><path d="M3 19c0-3 2-5 5-5s5 2 5 5M15 7h6M15 11h6M16 16h5"/>',
+    q: 'How do we control which documents AI may touch, and which AI may touch them?',
+    k: 'Data classification',
+    a: 'The folder is the classification. Flow only sees folders you open, and a document cannot reach outside its folder by naming a path. Four execution domains then decide where work may run: on the Mac, on your network, or in the cloud you already pay for.',
+    tag: 'Today',
   },
   {
-    audience: 'Communications',
-    title: 'Earned media content post',
-    body: 'A publishable story that turns research, coverage, quotes, and proof into a clear point of view with a defensible trail.',
-    path: ['Collect signals', 'Shape the angle', 'Publish with proof'],
-    tone: 'coral',
-    icon: '<path d="M4 10v4h4l9 4V6L8 10zM8 14l1.5 6h3L11 15M20 9v6"/>',
+    q: 'How do we know who changed which part of a document, human or AI, and when?',
+    k: 'Attribution',
+    a: 'Text changes two ways only: an edit you typed, or a change you approved. Every AI change arrives as an exact diff with its own approval, and the receipt records what ran. Version history keeps that boundary readable later.',
+    tag: 'Today',
   },
   {
-    audience: 'Startup founder',
-    title: 'Startup investor pitch presentation',
-    body: 'A presentation that sharpens the company story, checks every claim, and keeps supporting evidence ready for diligence.',
-    path: ['Frame the story', 'Check the claims', 'Prepare the room'],
-    tone: 'amber',
-    icon: '<rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 13l3-3 2 2 3-5M12 17v4M8 21h8"/>',
+    q: 'How do we apply guardrails at the source of knowledge work?',
+    k: 'Guardrails',
+    a: 'Checks run inside the document, at creation, as named rules with six honest states. An override never turns Failed into Passed. The decision is recorded and the failure stays visible. Rules live where the work happens, not in a policy PDF.',
+    tag: 'Today',
   },
   {
-    audience: 'Personal admin',
-    title: 'Tax filing handoff',
-    body: 'A reviewable document that organizes local records, checks support, tracks corrections, and prepares a clean handoff.',
-    path: ['Gather records', 'Check guidance', 'Approve handoff'],
-    tone: 'green',
-    icon: '<path d="M6 2h9l4 4v16H6zM15 2v5h4M9 12h6M9 16h3"/><path d="M13 17l2 2 4-5"/>',
-  },
-];
-
-type RoutingRoute = { label: string; icon: string; tone: string; brand?: boolean; mono?: boolean };
-type RoutingTier = { tier: string; icon: string; tone: string; label: string; detail: string; routes: RoutingRoute[] };
-
-const routingTiers: RoutingTier[] = [
-  {
-    tier: '0', icon: 'device', tone: 'violet', label: 'On your device', detail: 'First',
-    routes: [
-      { label: 'Apple Intelligence', icon: 'apple', tone: 'apple', brand: true, mono: true },
-      { label: 'Foundation Models', icon: 'foundation', tone: 'blue' },
-      { label: 'Writing Tools', icon: 'writing', tone: 'purple' },
-    ],
+    q: 'How do we compare the quality of one AI generation against another?',
+    k: 'Evidence',
+    a: 'Evidence is scored only where a measurement exists. A proofread reads "2 dimensions assessed, 3 need sources". A summary is deliberately not scored, because Flow refuses to print a number with no measurement behind it. When the same model writes and judges a change, the receipt says so.',
+    tag: 'Today',
   },
   {
-    tier: '1', icon: 'local', tone: 'cyan', label: 'Local runtimes', detail: 'Private',
-    routes: [
-      { label: 'Ollama', icon: 'ollama', tone: 'ollama', brand: true, mono: true },
-      { label: 'LM Studio', icon: 'lmstudio', tone: 'lmstudio', brand: true, mono: true },
-    ],
+    q: 'How do we route each part of the work to the best model, provider, and place?',
+    k: 'Routing',
+    a: 'The domain is the decision; the provider is a detail. Long documents are improved part by part, so each part gets a right-sized run. A fallback that would leave your Mac stops and asks. Routing reads measured capability, never a vendor claim.',
+    tag: 'Today',
   },
   {
-    tier: '2', icon: 'subscription', tone: 'coral', label: 'Subscriptions you have', detail: 'Already paid',
-    routes: [
-      { label: 'Claude Code', icon: 'claude', tone: 'claude', brand: true },
-      { label: 'Codex', icon: 'openai', tone: 'codex', brand: true, mono: true },
-    ],
+    q: 'How do we curate structured value out of unstructured documents?',
+    k: 'Curation',
+    a: 'Convert Text to Table builds real structure from prose, and the review reports what was actually built, read from the proposed table itself, never from the model’s claim. The file stays plain Markdown, so the structure belongs to you.',
+    tag: 'Today',
   },
   {
-    tier: '3', icon: 'settings', tone: 'amber', label: 'Standard configuration', detail: 'Detected',
-    routes: [
-      { label: 'Environment keys', icon: 'environment', tone: 'amber' },
-      { label: 'MCP tools', icon: 'mcp', tone: 'mcp', brand: true, mono: true },
-    ],
+    q: 'How do we keep one system of record feeding many documents?',
+    k: 'System of record',
+    a: 'Plain files are the only authority. Search results carry anchors that are re-checked byte for byte before Flow highlights a passage, so a citation cannot silently drift. The index is disposable; your documents are the record.',
+    tag: 'Today',
   },
   {
-    tier: '4', icon: 'key', tone: 'green', label: 'Bring your own key', detail: 'Only if needed',
-    routes: [
-      { label: 'BYOK', icon: 'key', tone: 'green' },
-    ],
+    q: 'How do we capture how our best people decide, without "big brother watching"?',
+    k: 'Knowledge mining',
+    a: 'The receipt is made by the worker, artifact by artifact, as a side effect of work they already wanted to do. They consent by name and get the trust benefit of the same record. That is the only capture a professional volunteers for.',
+    tag: 'Direction',
   },
 ];
 
-const principles = [
-  { title: 'Beautiful results stay explainable', body: 'Sources, models, cost, checks, and approvals travel with the document instead of disappearing into a side log.' },
-  { title: 'Improvement stays inspectable', body: 'Feedback and decisions can strengthen the next version without hiding what changed or why.' },
-  { title: 'Agency respects your boundaries', body: 'Flow starts with the smallest useful action; consequential steps, including moving work off device, remain your choice.' },
+const faqs = [
+  {
+    q: 'What is Orionfold Flow?',
+    a: 'Flow is a native Mac app for professional documents with AI agency built in. It works on ordinary folders of plain Markdown files. Every AI change arrives as an exact diff you approve, and a receipt records what ran, where it ran, and what it cost.',
+  },
+  {
+    q: 'When does Flow launch?',
+    a: 'Flow is in active development and is used daily for real work by its builder. Join the waitlist on this page to get development updates and the launch note. A freemium subscription is planned.',
+  },
+  {
+    q: 'Does my text leave my Mac?',
+    a: 'Only if you allow it. Flow separates where AI may run into four switchable domains: Local, LAN, Cloud prepaid, and Cloud postpaid. Search is on-device, and a fallback that would leave your Mac stops and asks first.',
+  },
+  {
+    q: 'What does "patent pending" mean for Flow?',
+    a: 'Flow includes patent-pending technology for revision-scoped, verifiable AI agency in durable documents. A pending application does not mean granted rights, and it does not cover every Flow feature.',
+  },
+  {
+    q: 'Do I need to install a separate AI runtime?',
+    a: 'Flow is built so you can install nothing but Flow. Its app bundle carries its own local inference runtime, adding about 19 MiB to the download. If you already run Ollama or LM Studio, Flow detects them and serves the models you already pulled in place.',
+  },
+  {
+    q: 'How is Flow different from a chat canvas or artifacts panel?',
+    a: 'A chat canvas is a session workspace. The output lives inside the chat tool, export breaks formatting, and attribution is lost the moment you paste. Flow works the other way around: the document on your disk is the workplace. AI proposes changes there, you approve them there, and the record stays with the file.',
+  },
+  {
+    q: 'Is Flow another notes database?',
+    a: 'No. Flow opens ordinary folders of ordinary Markdown files. There is no import step and no library format. Every other tool on your Mac can read the same files at the same time, and delete goes to the system Trash.',
+  },
 ];
 
 const softwareSchema = {
@@ -128,20 +137,32 @@ const softwareSchema = {
   name: 'Orionfold Flow',
   applicationCategory: 'ProductivityApplication',
   operatingSystem: 'macOS',
-  description: 'Orionfold Flow creates documents with self-improving intelligence built in and AI agency enabled to get work done.',
+  description:
+    'Orionfold Flow is a native Mac app for professional documents with AI agency built in. Every AI change is a diff you approve, with a receipt recording what ran, where, and what it cost. Patent pending.',
   url: flowUrl,
   image: `${SITE.url}${og.image}`,
   author: PERSON,
   brand: { '@type': 'Brand', name: 'Orionfold' },
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
 ---
 <Layout
   title="Conduct beautiful documents with AI agency built in · Orionfold Flow"
-  description="Orionfold Flow creates documents with self-improving intelligence built in and AI agency enabled to get work done. In development as a native Mac, closed-source freemium subscription."
+  description="Orionfold Flow is a native Mac app for professional documents with AI agency built in. Every AI change is a diff you approve, with a receipt naming what ran, where, and what it cost. Patent pending. Join the waitlist."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
     softwareSchema,
+    faqSchema,
     {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -154,298 +175,547 @@ const softwareSchema = {
 >
   <Nav />
   <main class="flow-page overflow-x-clip">
-    <section class="flow-hero relative px-6 pb-20 pt-32 sm:pb-28 sm:pt-40">
+    <!-- ================= HERO ================= -->
+    <section class="flow-hero relative px-6 pb-16 pt-32 sm:pt-40">
       <div class="flow-hero__grid" aria-hidden="true"></div>
       <div class="flow-hero__glow" aria-hidden="true"></div>
-      <div class="flow-hero__fade" aria-hidden="true"></div>
-      <div class="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.84fr_1.16fr] lg:gap-16">
-        <div class="relative z-10 text-center lg:text-left">
-          <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Orionfold Flow · In development</p>
-          <h1 class="hero-gradient-text mt-6 font-display text-[clamp(2rem,9vw,3rem)] font-extrabold leading-[1.16] tracking-[-0.055em] text-text lg:text-[clamp(3rem,3.4vw,3.4rem)]">
-            <span class="block whitespace-nowrap">Conduct beautiful</span>
-            <span class="mt-[0.02em] block whitespace-nowrap">documents with AI</span>
-            <span class="mt-[0.02em] block whitespace-nowrap">agency built in</span>
-          </h1>
-          <p class="mx-auto mt-7 max-w-2xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl lg:mx-0">
-            Orionfold Flow creates documents with self-improving intelligence built in and AI agency enabled to get work done.
-          </p>
-          <div class="mt-7 flex flex-wrap justify-center gap-2 lg:justify-start">
-            <span class="flow-chip">Native Mac app</span>
-            <span class="flow-chip">Self-improving intelligence</span>
-            <span class="flow-chip">Agency with your approval</span>
-          </div>
-          <div class="mt-9 flex flex-wrap justify-center gap-3 lg:justify-start">
-            <a href="#fold-loop" class="of-primary-action">See how Flow works <span aria-hidden="true">↓</span></a>
-            <a href={flowStoryHref} class="of-secondary-action">Read the story</a>
-          </div>
+      <div class="relative mx-auto max-w-5xl text-center">
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <span class="flow-eyebrow-chip">
+            <Image src={appIcon} alt="" width={20} height={20} class="h-5 w-5 rounded-[5px]" loading="eager" />
+            Orionfold Flow
+          </span>
+          <span class="flow-eyebrow-chip">Native Mac</span>
+          <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Patent pending</span>
         </div>
-        <FlowHeroCreative />
+        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.2rem,8vw,4.1rem)] font-extrabold leading-[1.08] tracking-[-0.05em]">
+          Conduct beautiful documents with AI agency built in
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl">
+          The only ways your text changes: an edit you typed, or a change you approved.
+          No copy-paste loop between a chat window and the file. Flow is the Mac app where
+          AI does real document work in the document, shows you the exact diff, and leaves
+          a receipt naming what ran, where it ran, and what it cost.
+        </p>
+        <div class="mt-9 flex flex-wrap justify-center gap-3">
+          <a href="#waitlist" class="of-primary-action">Join the waitlist</a>
+          <a href="#tour" class="of-secondary-action">See the product tour <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="mt-6 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
+          In development · Freemium subscription planned · Every screen below is the real development build
+        </p>
+      </div>
+      <div class="relative mx-auto mt-12 max-w-6xl">
+        <FlowShot
+          src={shotApprove}
+          alt="Orionfold Flow reviewing an AI proofread of a press release: the proposal, its permission scope, Evidence, Checks with a human-review gate, and the exact diff beside the selected document."
+          caption="A real run on a local model. The proposal, the evidence, the checks, and the exact diff. Nothing lands until you approve."
+          priority
+        />
       </div>
     </section>
 
-    <section class="px-6 py-20 sm:py-28">
+    <!-- ================= STAT BAND ================= -->
+    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-20" aria-labelledby="flow-stats-heading">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker">The routing direction</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Use the best intelligence for each part of the document.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">Flow is designed to start with useful on-device routes before asking you to configure a new one. It begins private, free, and already present, then expands only with your choice.</p>
+          <p class="flow-kicker">Measured, not promised</p>
+          <h2 id="flow-stats-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Numbers with dates, not adjectives.</h2>
+          <p class="mt-4 text-lg leading-relaxed text-text-muted">Every figure below comes from a recorded measurement of the development build. The fine print tells you exactly what was measured.</p>
         </div>
-        <div class="flow-routing mt-14">
-          {routingTiers.map((tier) => (
-            <div class:list={['flow-routing__row', `flow-routing__row--${tier.tone}`]}>
-              <div class="flow-routing__tier">
-                <span class="flow-routing__tier-symbol">
-                  <FlowRoutingIcon name={tier.icon} />
-                  <span class="flow-routing__tier-number" aria-label={`Tier ${tier.tier}`}>{tier.tier}</span>
-                </span>
-                <div><strong>{tier.label}</strong><small>{tier.detail}</small></div>
-              </div>
-              <div class="flow-routing__marks">
-                {tier.routes.map((route) => (
-                  <span
-                    class:list={[
-                      'flow-routing__mark',
-                      `flow-routing__mark--${route.tone}`,
-                      route.brand && 'flow-routing__mark--brand',
-                      route.mono && 'flow-routing__mark--mono',
-                    ]}
-                    data-brand-mark={route.brand ? route.icon : undefined}
-                  >
-                    <span class="flow-routing__mark-icon"><FlowRoutingIcon name={route.icon} /></span>
-                    <span class="flow-routing__mark-label">{route.label}</span>
-                  </span>
-                ))}
-              </div>
+        <dl class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-animate-stagger>
+          {stats.map((s) => (
+            <div class="of-surface relative overflow-hidden rounded-2xl border border-border/70 p-6" data-animate>
+              <dd class="font-display text-4xl font-bold text-primary">{s.value}</dd>
+              <dt class="mt-2 text-base font-semibold text-text">{s.label}</dt>
+              <dd class="mt-2 font-mono text-[0.66rem] leading-relaxed tracking-wide text-text-dim">{s.fine}</dd>
             </div>
           ))}
-        </div>
-        <p class="mx-auto mt-6 max-w-3xl text-center font-mono text-[0.66rem] uppercase leading-relaxed tracking-[0.14em] text-text-dim">Support arrives in measured increments. A name here shows routing direction, not that every connection ships today.</p>
+        </dl>
       </div>
     </section>
 
-    <section class="flow-scenario-section border-y border-border/70 bg-surface-raised/40 px-6 py-20 sm:py-28">
-      <div class="mx-auto max-w-6xl">
-        <div class="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
-          <div>
-            <p class="flow-kicker">Concrete journeys</p>
-            <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">One work system. Five very different documents.</h2>
-          </div>
-          <p class="max-w-2xl text-lg leading-relaxed text-text-muted">A Flow document can be a dashboard, dataset, post, presentation, or filing handoff. The artifact changes. The pattern stays consistent: gather trusted context, improve with feedback, and use agency to move the next step.</p>
+    <!-- ================= THE PROBE STORY ================= -->
+    <section class="px-6 py-16 sm:py-24">
+      <div class="mx-auto max-w-4xl">
+        <p class="flow-kicker text-center">Why approval is the whole product</p>
+        <h2 class="mt-4 text-balance text-center text-4xl font-bold sm:text-5xl">A silent rewrite is not a feature. It is a risk.</h2>
+        <div class="flow-probe mt-10 rounded-2xl border border-warn/30 bg-surface-raised/60 p-7 sm:p-9">
+          <p class="text-lg leading-relaxed text-text">
+            While building Flow, we tested the Mac's own built-in Writing Tools on a document that
+            held a code comment with two typos. The system feature corrected and capitalized the text
+            <em>inside the code block</em>. Silently. No diff shown, no approval asked, no record kept.
+            On a real working note, that is corruption of code.
+          </p>
+          <p class="mt-4 leading-relaxed text-text-muted">
+            We measured it, dated it (2026-07-30), and reproduced it. Then we retired the system
+            Writing Tools inside Flow and replaced the whole shape: five AI actions, one trust path.
+            The exact change, what the evidence does and does not support, the checks that ran, and
+            your approval. Recorded.
+          </p>
+          <p class="mt-6 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
+            Flow's own recorded probes of macOS Writing Tools, 2026-07-30 to 2026-08-14. Other apps are untouched; the feature is off inside Flow only.
+          </p>
         </div>
-        <ol class="flow-scenarios mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Example Flow documents">
-          {scenarios.map((scenario) => (
-            <li
-              class:list={[
-                'flow-scenario',
-                `flow-scenario--${scenario.tone}`,
-                scenario.featured && 'flow-scenario--featured',
-              ]}
-              data-flow-scenario={scenario.title}
-            >
-              <div class="flow-scenario__top">
-                <span class="flow-scenario__icon">
-                  <svg viewBox="0 0 24 24" aria-hidden="true" set:html={scenario.icon}></svg>
-                </span>
-                <span class="flow-scenario__audience">{scenario.audience}</span>
-              </div>
-              <h3>{scenario.title}</h3>
-              <p>{scenario.body}</p>
-              <ol class="flow-scenario__path" aria-label={`${scenario.title} workflow`}>
-                {scenario.path.map((step) => <li>{step}</li>)}
-              </ol>
-            </li>
-          ))}
-        </ol>
+        <!-- The whole promise in one picture: the five-layer Living Workbench
+             (Outcome → Context → Specialists → Your call → Receipt). Concept
+             here, mechanism and real screenshots in the tour below. -->
+        <div class="mt-14">
+          <FlowWorkbenchIllustration />
+          <p class="mx-auto mt-6 max-w-2xl text-center text-sm leading-relaxed text-text-muted">
+            The whole promise in one picture. Your outcome sits on trusted context, specialist
+            intelligence does the work, nothing passes without your call, and a durable receipt
+            records how it happened.
+          </p>
+        </div>
       </div>
     </section>
 
-    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
-      <div class="mx-auto max-w-7xl">
-        <div class="max-w-3xl">
-          <p class="flow-kicker">The document is the work system</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">A beautiful document that gets better and gets work done.</h2>
-          <p class="mt-5 max-w-2xl text-lg leading-relaxed text-text-muted">Flow keeps intent, sources, decisions, feedback, and action in one living artifact. Its intelligence improves with the work while agents help research, analyze, and act without leaving the document.</p>
-        </div>
-        <ol class="flow-continuity mt-12 grid gap-3 lg:grid-cols-5" aria-label="The Flow continuity journey">
-          {continuity.map((item) => (
-            <li class="flow-continuity__item">
-              <span class="flow-continuity__number">{item.number}</span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </li>
-          ))}
-        </ol>
+    <!-- ================= PRODUCT TOUR ================= -->
+    <section id="tour" class="scroll-mt-28 border-t border-border/70 px-6 pt-16 sm:pt-20">
+      <div class="mx-auto max-w-6xl text-center">
+        <p class="flow-kicker">The product tour</p>
+        <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Real screens. Real runs. Real receipts.</h2>
       </div>
     </section>
 
-    {flowStory && (
-      <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-20 sm:py-24" aria-labelledby="flow-story-heading">
-        <div class="mx-auto max-w-6xl">
-          <div class="mb-10 max-w-3xl">
-            <p class="flow-kicker">From the build log</p>
-            <h2 id="flow-story-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Why I built documents that can think and act.</h2>
-            <p class="mt-5 text-lg leading-relaxed text-text-muted">How going AI-native turned the document from a static output into the place where intelligence improves and agency gets work done.</p>
-          </div>
-          <StoryCard
-            href={flowStoryHref}
-            title={flowStory.data.title}
-            date={flowStory.data.date}
-            tag={flowStory.data.tags[0]}
-            summary={flowStory.data.summary}
-            seed={flowStory.data.accent}
-            cover={flowStory.data.hero}
-            coverAlt={flowStory.data.heroAlt}
-            featured
-          />
+    <!-- Chapter 1: Writing you approve -->
+    <section class="px-6 py-14 sm:py-20" aria-labelledby="tour-agency">
+      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
+        <div>
+          <p class="flow-kicker">Agency</p>
+          <h3 id="tour-agency" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">AI editing with a paper trail.</h3>
+          <p class="mt-4 leading-relaxed text-text-muted">
+            Five actions: Proofread, Summarize, Translate into eleven languages, Convert Text to Table,
+            and Convert Table to Text. Every one goes through the same trust path.
+          </p>
+          <ul class="flow-list mt-5">
+            <li>The effect sentence is derived from the proposed bytes by Flow's parser, never taken on the model's word.</li>
+            <li>Evidence is scored only where a measurement exists. A summary is deliberately not scored, and Flow says so.</li>
+            <li>Checks are named rules with six honest states. An override never turns Failed into Passed.</li>
+            <li>The save is guarded byte for byte. A run started before your edit can never land after it.</li>
+            <li>Decline changes nothing. No save, no receipt, reported as a complete stop.</li>
+          </ul>
         </div>
-      </section>
-    )}
+        <FlowShot
+          src={shotApprove}
+          alt="The Flow review surface: What Flow proposes, permission scope, supporting sources, Evidence, Checks, and the exact proposed diff."
+          caption="One trust path for every action: proposal, evidence, checks, approval."
+          crop
+          sizes="(min-width: 1024px) 44rem, 100vw"
+        />
+      </div>
+    </section>
 
-    <section id="fold-loop" class="scroll-mt-28 px-6 py-20 sm:py-28">
+    <!-- Chapter 2: Long documents -->
+    <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-longdocs">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker">The FOLD loop</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Conduct the document. Let agency move the work.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">Frame the outcome, orchestrate intelligence, lock the evidence, and distill a stronger artifact. You still own goals, truth, taste, risk, and final approval.</p>
+          <p class="flow-kicker">Long documents</p>
+          <h3 id="tour-longdocs" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">Your 50-page document is not too big. It is four reviews.</h3>
+          <p class="mt-4 leading-relaxed text-text-muted">
+            Most AI tools refuse a long document, or quietly cut it and answer about the piece that fit.
+            Flow does neither. It plans the document as ordered parts that follow your document's own
+            structure. Each part gets its own review, its own evidence, and its own receipt. The finish
+            line reports coverage in counts a human can check: "You approved 3 of 4 parts. Everything
+            else stays exactly as written."
+          </p>
         </div>
-        <div class="flow-fold mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {fold.map((item) => (
-            <article class="flow-fold__card">
-              <div class="flex items-start justify-between gap-5">
-                <span class="flow-fold__letter">{item.letter}</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={item.icon}></svg>
-              </div>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </article>
-          ))}
-        </div>
-        <div class="flow-approval mt-6">
-          <span class="flow-approval__line" aria-hidden="true"></span>
-          <span class="flow-approval__pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6" /></svg> You approve consequential actions</span>
+        <div class="mt-10 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <FlowShot
+            src={shotLongDocs}
+            alt="A live two-part review on a 3,905-word document in Flow: part chips, an honest coverage line, part one's own range highlighted, and Skip as a first-class choice."
+            caption="Approve, decline, or skip parts in any order. Close it partway and it parks."
+            sizes="(min-width: 1024px) 46rem, 100vw"
+          />
+          <div class="flex flex-col gap-6">
+            <FlowShot
+              src={shotLongDocsMenu}
+              alt="Flow's Agency menu disclosing up front: Improves this document in about 2 parts, and Too long to check at once, before anything runs."
+              caption='"Improves this document in about 2 parts", answered before the menu closes.'
+              crop
+              sizes="(min-width: 1024px) 34rem, 100vw"
+            />
+            <div class="of-surface rounded-2xl border border-border/70 p-6">
+              <p class="text-sm leading-relaxed text-text-muted">
+                A split never lands inside anything fragile. Boundaries fall only between top-level
+                blocks, never inside code or front matter, and the parts reconstruct your document
+                byte for byte. That is a tested invariant, not an aspiration. Today this runs on
+                local models; cloud models still decline documents past one window, and Flow says so
+                instead of pretending.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="px-6 pb-20 sm:pb-28">
+    <!-- Chapter 3: Domains + receipts -->
+    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-domains">
+      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
+        <FlowShot
+          src={shotDomains}
+          alt="Flow's Models settings: four execution domains with locality and cost statements, provider discovery, Auto routing, and a user-owned provider order."
+          caption="Settings ▸ Models: the four domains, discovered providers, and your provider order."
+          sizes="(min-width: 1024px) 44rem, 100vw"
+        />
+        <div>
+          <p class="flow-kicker">Trust boundaries</p>
+          <h3 id="tour-domains" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">You pick where AI runs. Flow keeps it there.</h3>
+          <p class="mt-4 leading-relaxed text-text-muted">
+            Four execution domains: Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own
+            switch. Each states plainly whether your text stays on this Mac and whether the work is
+            free, covered by a subscription you already pay for, or billed per token.
+          </p>
+          <ul class="flow-list mt-5">
+            <li>Flow discovers eight providers from a machine that already works, including the AI subscriptions you already pay for. Discovery never enables anything.</li>
+            <li>A fallback that would cross a domain stops and asks. Leaving your Mac is your decision, never Flow's.</li>
+            <li>Cost is compared before, observed after, and never guessed. Models on your Mac show as free, because they are.</li>
+            <li>Receipts record facts only: which model answered, where it ran, what it cost. Your prompt and your API key are not recorded, and there is structurally nowhere in a receipt for them to go.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 4: Bundled owned runtime -->
+    <section class="flow-runtime border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-runtime">
       <div class="mx-auto max-w-6xl">
-        <div class="grid gap-4 lg:grid-cols-3">
-          {principles.map((principle, index) => (
-            <article class="flow-principle">
-              <span>R0{index + 3}</span>
-              <h2>{principle.title}</h2>
-              <p>{principle.body}</p>
+        <div class="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+          <div>
+            <p class="flow-kicker">Owned local runtime</p>
+            <h3 id="tour-runtime" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">Install nothing but Flow.</h3>
+            <p class="mt-4 leading-relaxed text-text-muted">
+              Flow is built so a person who installs nothing but Flow can pull a model and run
+              approval-gated agency on their own machine. The foundation is real and measured:
+              Flow's app bundle carries its own local AI runtime, two engines signed and verified
+              as one artifact, for about 19 MiB. The size of twenty photos.
+            </p>
+            <p class="mt-4 leading-relaxed text-text-muted">
+              The bundled runtime is a floor, never a wall. Already run Ollama or LM Studio? Flow
+              detects them, keeps them first class, and serves the models you already pulled in
+              place. Your gigabytes are never downloaded twice.
+            </p>
+            <p class="mt-5 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
+              Both engines proven running from the signed, read-only disk image, 2026-08-14. Loopback only. No new network surface.
+            </p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="of-surface rounded-2xl border border-border/70 p-6">
+              <p class="font-display text-3xl font-bold text-primary">2 engines</p>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">One for each dominant local model format on a Mac. GPU verified: 29 of 29 model layers on Apple silicon.</p>
+            </div>
+            <div class="of-surface rounded-2xl border border-border/70 p-6">
+              <p class="font-display text-3xl font-bold text-primary">263 tok/s</p>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">Prompt reading speed on a 7-billion-parameter model, 4-bit, one M3 Max. Generation at 51 tokens a second.</p>
+            </div>
+            <div class="of-surface rounded-2xl border border-border/70 p-6">
+              <p class="font-display text-3xl font-bold text-primary">Offline</p>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">The engine loaded and generated with its network host pointed at a dead port. No silent network dependency.</p>
+            </div>
+            <div class="of-surface rounded-2xl border border-border/70 p-6">
+              <p class="font-display text-3xl font-bold text-primary">0 bytes</p>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">Re-downloaded when Flow served a 4.7 GB model you already pulled with another tool. No copy, no import step.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 5: Search -->
+    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-search">
+      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
+        <div>
+          <p class="flow-kicker">Search</p>
+          <h3 id="tour-search" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">A search result is a citation, not a guess.</h3>
+          <p class="mt-4 leading-relaxed text-text-muted">
+            Every result carries an anchor into the exact bytes you wrote. Opening it scrolls to one
+            highlighted passage, after Flow re-checks, byte for byte, that the passage is still there.
+            If your document changed, Flow finds the moved passage again. If it is gone, Flow says so
+            instead of highlighting the wrong thing.
+          </p>
+          <ul class="flow-list mt-5">
+            <li>22.3 milliseconds at the 95th percentile on a 10,000-note library. First full index in 1.1 seconds.</li>
+            <li>A filename match can never masquerade as content. Structurally.</li>
+            <li>Open, unsaved edits are indexed live and always win over the on-disk copy.</li>
+            <li>Everything on-device. Nothing is sent over the network.</li>
+          </ul>
+        </div>
+        <FlowShot
+          src={shotSearch}
+          alt="Flow search across the demo library: results with abstracts, folder-qualified paths, and match reasons, beside two open documents."
+          caption="Results carry abstracts and match reasons, beside the work itself."
+          sizes="(min-width: 1024px) 44rem, 100vw"
+        />
+      </div>
+    </section>
+
+    <!-- Chapter 6: Tables -->
+    <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-tables">
+      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
+        <FlowShot
+          src={shotTables}
+          alt="The same Markdown table twice in Flow: rendered in the document, and open in a spreadsheet-style grid with a cell selected and the cell editor bar live."
+          caption="The grid and the note are the same document, not two copies. Saving is still ⌘S."
+          sizes="(min-width: 1024px) 44rem, 100vw"
+        />
+        <div>
+          <p class="flow-kicker">Tables</p>
+          <h3 id="tour-tables" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">Edit the cell, not the pipes.</h3>
+          <p class="mt-4 leading-relaxed text-text-muted">
+            Markdown tables are wonderful to read and miserable to edit. Flow gives every table a
+            real grid with spreadsheet interactions. Underneath, the file never stops being the
+            plain Markdown you wrote.
+          </p>
+          <ul class="flow-list mt-5">
+            <li>Editing a cell changes one cell. The rest of the table keeps the exact spacing and alignment you wrote, character for character.</li>
+            <li>The header row cannot be deleted, and a stray pipe character stays one cell instead of splitting the table.</li>
+            <li>The mapping cost that froze scrolling on table-heavy notes, about 213 ms per refresh, is now under 2 ms.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 7: Files -->
+    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-files">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="flow-kicker">Your files</p>
+          <h3 id="tour-files" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">Plain folders. Plain Markdown. Never a silent overwrite.</h3>
+          <p class="mt-4 leading-relaxed text-text-muted">
+            No import step, no library format, no sync silo. The files on disk are the product.
+            Collisions refuse instead of overwriting. Delete goes to the system Trash. Folders have
+            no Delete at all, deliberately, because deleting one would take everything inside it
+            without showing you what that was. And Flow is sandboxed to exactly the folders you
+            selected, so a note cannot reach the rest of your disk by naming a path.
+          </p>
+        </div>
+        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+          <FlowShot
+            src={shotOrganizer}
+            alt="Two full-page documents side by side in Flow over a plain folder of Markdown files, with a photograph rendering in place from the folder's own assets."
+            caption="Two documents, one plain folder. Pictures render in place, read only from inside the folder you opened."
+            sizes="(min-width: 1024px) 36rem, 100vw"
+          />
+          <FlowShot
+            src={shotCharts}
+            alt="Flow documents carrying images and tables: a publishing calendar beside an investment memo with a chart image and a metrics table."
+            caption="Professional artifacts, not chat transcripts: memos, calendars, and metrics that stay plain files."
+            sizes="(min-width: 1024px) 36rem, 100vw"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= OPEN THE FILE ================= -->
+    <section class="border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="open-file-heading">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="flow-kicker">Who feels this first</p>
+          <h2 id="open-file-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Built for the moment someone opens the file.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">
+            Diligence has moved from the story to the artifact. Investors open the file.
+            Journalists check the stat. Clients ask what the AI touched. Flow is for the
+            people whose name is on the document.
+          </p>
+        </div>
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          <article class="of-surface rounded-2xl border border-border/70 p-6">
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">Founders raising</p>
+            <h3 class="mt-3 text-lg font-bold leading-snug">One fake citation can kill a round.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">Your pitch is a living document with every claim tied to its source. When a partner asks where a number came from, the answer is attached to the number.</p>
+          </article>
+          <article class="of-surface rounded-2xl border border-border/70 p-6">
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">Comms and earned media</p>
+            <h3 class="mt-3 text-lg font-bold leading-snug">Journalists now screen for AI slop.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">A story with quotes, stats, and coverage attached earns trust that a polished paste job cannot. Proof travels with the piece, and a human approved every line.</p>
+          </article>
+          <article class="of-surface rounded-2xl border border-border/70 p-6">
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">Independent operators</p>
+            <h3 class="mt-3 text-lg font-bold leading-snug">Client work that survives scrutiny.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">Proposals, analyses, and briefs where sensitive documents stay on your Mac by default, and the record shows exactly what ran and what it cost.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ENTERPRISE ================= -->
+    <section id="enterprise" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="enterprise-heading">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="flow-kicker">Enterprise adoption patterns</p>
+          <h2 id="enterprise-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">The questions enterprise AI owners ask. Answered in the document.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">
+            Enterprises do not fail at AI for lack of models. They fail because they cannot tell
+            which 30 percent of the output is wrong, who approved what, and what it all cost. Flow's
+            answer is structural: put the evidence, the approval, and the receipt at the source of
+            knowledge work, inside the document itself.
+          </p>
+        </div>
+        <div class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-animate-stagger>
+          {enterprise.map((card) => (
+            <article class="flow-ent-card of-surface flex flex-col rounded-2xl border border-border/70 p-6" data-animate>
+              <div class="flex items-center justify-between gap-3">
+                <span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">{card.k}</span>
+                <span class:list={['flow-ent-tag', card.tag === 'Direction' && 'flow-ent-tag--direction']}>{card.tag}</span>
+              </div>
+              <h3 class="mt-3 text-lg font-bold leading-snug">{card.q}</h3>
+              <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{card.a}</p>
             </article>
+          ))}
+        </div>
+        <p class="mx-auto mt-10 max-w-3xl text-center text-lg leading-relaxed text-text">
+          The enterprises that win with AI will be the ones that turn real human decisions into
+          validated learning. Flow's receipts are that record, produced voluntarily, one approved
+          artifact at a time.
+        </p>
+        <div class="mt-8 text-center">
+          <a href="#waitlist" class="of-primary-action">Join the waitlist</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ONE STACK ================= -->
+    <section id="stack" class="scroll-mt-28 px-6 py-16 sm:py-24" aria-labelledby="stack-heading">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="flow-kicker">One company, one stack</p>
+          <h2 id="stack-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Flow is where the Orionfold work comes together.</h2>
+        </div>
+        <div class="mt-12 grid gap-4 lg:grid-cols-3">
+          <article class="of-surface rounded-2xl border border-border/70 p-7">
+            <h3 class="text-xl font-bold">The models we publish</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">
+              Orionfold publishes open domain models in the same format Flow's bundled engine runs.
+              Flow is built so a model can be pulled by name and run on your own Mac, with the
+              download verified before anything is kept. The models we ship and the app we ship are
+              converging on one runtime you own.
+            </p>
+            <a href="/experts/" class="of-text-action mt-5 inline-flex items-center gap-2">See the models <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="of-surface rounded-2xl border border-border/70 p-7">
+            <h3 class="text-xl font-bold">The method in the books</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">
+              Flow is the productized form of an operating thesis worked out in public: one person
+              running an AI-native business on routed work, receipts, and human judgment. The books
+              teach the method. Flow is that method as a Mac app.
+            </p>
+            <a href="/learn/" class="of-text-action mt-5 inline-flex items-center gap-2">Read the books <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="of-surface rounded-2xl border border-border/70 p-7">
+            <h3 class="text-xl font-bold">A receipts-first family</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">
+              Relay runs AI client work with per-client cost receipts. Arena scores local models
+              with reruns you can verify. Flow brings the same discipline to the document itself.
+              Different products, one refusal: no invisible AI work.
+            </p>
+            <a href="/relay/" class="of-text-action mt-5 inline-flex items-center gap-2">Meet Relay and Arena <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRESS KIT ================= -->
+    <section id="press" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="press-heading">
+      <div class="mx-auto max-w-4xl">
+        <p class="flow-kicker text-center">Writing about Flow?</p>
+        <h2 id="press-heading" class="mt-4 text-balance text-center text-4xl font-bold sm:text-5xl">The facts, ready to quote.</h2>
+        <div class="mt-10 overflow-hidden rounded-2xl border border-border/70">
+          <table class="w-full text-left text-sm">
+            <tbody class="divide-y divide-border/70">
+              <tr class="bg-surface"><th scope="row" class="w-40 px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Product</th><td class="px-5 py-3.5 text-text">Orionfold Flow. A native Mac app for professional documents with AI agency built in.</td></tr>
+              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Tagline</th><td class="px-5 py-3.5 text-text">"Conduct beautiful documents with AI agency built in."</td></tr>
+              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Status</th><td class="px-5 py-3.5 text-text">In development, used daily for real work by its builder. Direct download for Mac, signed and notarized, outside the App Store. Freemium subscription planned. Waitlist open on this page.</td></tr>
+              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Patent</th><td class="px-5 py-3.5 text-text">Flow includes patent-pending technology for revision-scoped, verifiable AI agency in durable documents.</td></tr>
+              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">The wedge</th><td class="px-5 py-3.5 text-text">Text changes two ways only: an edit you typed, or a change you approved. Every AI change is an exact diff with evidence, checks, and a receipt naming what ran, where, and what it cost. Chat is where work evaporates; Flow is where the record is kept.</td></tr>
+              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Numbers</th><td class="px-5 py-3.5 text-text">Search p95 of 22.3 ms on a 10,000-note library (2026-08-04). Long-document planning linear through 620,000 characters. A real billed run recorded at $0.00425, reproducible to the digit. A complete two-engine local AI runtime inside the app for about 19 MiB (2026-08-14).</td></tr>
+              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Founder</th><td class="px-5 py-3.5 text-text">Manav Sehgal, Orionfold LLC, Sacramento, California. Press and analyst contact: <a href="mailto:manav@orionfold.com" class="text-primary underline underline-offset-2">manav@orionfold.com</a>.</td></tr>
+              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Imagery</th><td class="px-5 py-3.5 text-text">Every screenshot on this page is a real capture of the running development build over a synthetic demo library. Email for original-resolution captures and the app icon.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-6 text-center text-sm leading-relaxed text-text-muted">
+          Background story: <a href={flowStoryHref} class="text-primary underline underline-offset-2">why I built documents that can think and act</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section class="px-6 py-16 sm:py-24" aria-labelledby="faq-heading">
+      <div class="mx-auto max-w-3xl">
+        <h2 id="faq-heading" class="text-balance text-center text-4xl font-bold sm:text-5xl">Questions, answered plainly.</h2>
+        <div class="mt-10 flex flex-col gap-3">
+          {faqs.map((f) => (
+            <details class="of-surface group rounded-2xl border border-border/70 p-5 open:border-primary/30">
+              <summary class="cursor-pointer list-none text-base font-semibold text-text marker:content-none [&::-webkit-details-marker]:hidden">
+                <span class="flex items-center justify-between gap-4">
+                  {f.q}
+                  <span class="text-primary transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span>
+                </span>
+              </summary>
+              <p class="mt-3 text-sm leading-relaxed text-text-muted">{f.a}</p>
+            </details>
           ))}
         </div>
       </div>
     </section>
 
-    <FlowWaitlist placement="flow" storyHref={flowStoryHref} />
+    <!-- ================= WAITLIST ================= -->
+    <div id="waitlist" class="scroll-mt-24">
+      <FlowWaitlist placement="flow" storyHref={flowStoryHref} />
+    </div>
   </main>
   <Footer />
 </Layout>
 
 <style>
-  .flow-page { --flow-accent: #5b8def; }
   .flow-hero {
     isolation: isolate;
-    display: grid;
-    min-height: min(980px, 100svh);
-    align-items: center;
     overflow: hidden;
-    background: linear-gradient(145deg, color-mix(in oklch, var(--color-primary) 5%, var(--color-surface)) 0%, var(--color-surface) 58%, color-mix(in oklch, var(--color-primary) 3%, var(--color-surface)) 100%);
+    background: linear-gradient(155deg, color-mix(in oklch, var(--color-primary) 6%, var(--color-surface)) 0%, var(--color-surface) 55%, color-mix(in oklch, var(--color-primary) 3%, var(--color-surface)) 100%);
   }
   .flow-hero__grid {
-    --bp-line: color-mix(in oklch, var(--color-primary) 12%, transparent);
-    --bp-major: color-mix(in oklch, var(--color-primary) 20%, transparent);
     position: absolute; inset: 0; pointer-events: none;
     background-image:
-      linear-gradient(to right, var(--bp-line) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--bp-line) 1px, transparent 1px),
-      linear-gradient(to right, var(--bp-major) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--bp-major) 1px, transparent 1px);
-    background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
-    -webkit-mask-image: radial-gradient(ellipse 82% 74% at 68% 45%, black 38%, transparent 100%);
-    mask-image: radial-gradient(ellipse 82% 74% at 68% 45%, black 38%, transparent 100%);
+      linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 100%);
   }
-  .flow-hero__glow { position: absolute; right: -14rem; top: 9rem; width: 58rem; height: 50rem; border-radius: 999px; background: rgb(91 141 239 / 0.11); filter: blur(120px); pointer-events: none; }
-  .flow-hero__fade { position: absolute; inset: auto 0 0; height: 9rem; background: linear-gradient(transparent, var(--color-surface)); pointer-events: none; }
-  .flow-chip { border: 1px solid color-mix(in oklch, var(--color-primary) 25%, var(--color-border)); border-radius: 999px; background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface)); padding: 0.5rem 0.8rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; color: var(--color-text-muted); }
+  /* Gradient instead of filter: blur() — cheaper to composite at retina DPR
+     (blur on a 60rem layer was a scroll-jank source on the homepage). */
+  .flow-hero__glow { position: absolute; left: 50%; top: -10rem; width: 60rem; height: 40rem; transform: translateX(-50%); background: radial-gradient(closest-side, color-mix(in oklch, var(--color-primary) 13%, transparent), transparent 72%); pointer-events: none; }
+  .flow-eyebrow-chip {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    border: 1px solid color-mix(in oklch, var(--color-primary) 25%, var(--color-border));
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface));
+    padding: 0.42rem 0.85rem;
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--color-text-muted);
+  }
+  .flow-eyebrow-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-primary); font-weight: 650; }
   .flow-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-primary); }
-  .flow-continuity__item { position: relative; min-height: 15rem; border: 1px solid var(--color-border); border-radius: 1.25rem; background: var(--color-surface); padding: 1.35rem; }
-  .flow-continuity__item:not(:last-child)::after { content: '→'; position: absolute; z-index: 2; right: -0.85rem; top: 2rem; display: none; width: 1.65rem; height: 1.65rem; place-items: center; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-surface-raised); color: var(--color-primary); }
-  .flow-continuity__number { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; color: var(--color-primary); }
-  .flow-continuity h3 { margin-top: 3.4rem; font-size: 1.18rem; font-weight: 700; }
-  .flow-continuity p { margin-top: 0.65rem; font-size: 0.9rem; line-height: 1.65; color: var(--color-text-muted); }
-  .flow-fold__card { border: 1px solid var(--color-border); border-radius: 1.5rem; background: linear-gradient(145deg, var(--color-surface-raised), var(--color-surface)); padding: 1.5rem; box-shadow: 0 22px 60px -50px rgb(91 141 239 / 0.55); }
-  .flow-fold__letter { font-family: var(--font-display); font-size: 3.5rem; font-weight: 800; line-height: 1; color: color-mix(in oklch, var(--color-primary) 82%, var(--color-text)); }
-  .flow-fold svg { width: 2rem; height: 2rem; fill: none; stroke: var(--color-primary); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0.75; }
-  .flow-fold h3 { margin-top: 2.2rem; font-size: 1.35rem; font-weight: 700; }
-  .flow-fold p { margin-top: 0.6rem; font-size: 0.92rem; line-height: 1.6; color: var(--color-text-muted); }
-  .flow-approval { position: relative; display: grid; place-items: center; min-height: 4rem; }
-  .flow-approval__line { position: absolute; left: 5%; right: 5%; height: 1px; background: linear-gradient(90deg, transparent, var(--color-primary), transparent); opacity: 0.35; }
-  .flow-approval__pill { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid color-mix(in oklch, var(--color-success) 42%, var(--color-border)); border-radius: 999px; background: var(--color-surface); padding: 0.6rem 0.9rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-success); }
-  .flow-approval__pill svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-  .flow-scenario-section { position: relative; overflow: hidden; }
-  .flow-scenario-section::before { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgb(91 141 239 / 0.035) 1px, transparent 1px), linear-gradient(90deg, rgb(91 141 239 / 0.035) 1px, transparent 1px); background-size: 36px 36px; content: ''; mask-image: radial-gradient(circle at 62% 58%, #000, transparent 78%); }
-  .flow-scenario-section > div { position: relative; }
-  .flow-scenario { --scenario-accent: #7770f5; position: relative; display: flex; min-height: 20rem; flex-direction: column; overflow: hidden; border: 1px solid color-mix(in oklch, var(--scenario-accent) 25%, var(--color-border)); border-radius: 1.5rem; background: linear-gradient(145deg, color-mix(in oklch, var(--scenario-accent) 8%, var(--color-surface)), var(--color-surface)); padding: 1.5rem; box-shadow: 0 28px 70px -58px color-mix(in oklch, var(--scenario-accent) 58%, transparent); }
-  .flow-scenario::before { position: absolute; inset: 0 0 auto; height: 2px; background: linear-gradient(90deg, transparent, var(--scenario-accent), transparent); content: ''; opacity: 0.8; }
-  .flow-scenario::after { position: absolute; right: -4.5rem; top: -5rem; width: 12rem; height: 12rem; border: 1px solid color-mix(in oklch, var(--scenario-accent) 18%, transparent); border-radius: 999px; content: ''; pointer-events: none; }
-  .flow-scenario--violet { --scenario-accent: #7770f5; }
-  .flow-scenario--cyan { --scenario-accent: #168da3; }
-  .flow-scenario--coral { --scenario-accent: #d06f56; }
-  .flow-scenario--amber { --scenario-accent: #b77a13; }
-  .flow-scenario--green { --scenario-accent: #208761; }
-  .flow-scenario__top { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-  .flow-scenario__icon { display: grid; width: 3.4rem; height: 3.4rem; flex: 0 0 auto; place-items: center; border: 1px solid color-mix(in oklch, var(--scenario-accent) 34%, var(--color-border)); border-radius: 1rem; background: color-mix(in oklch, var(--scenario-accent) 13%, var(--color-surface)); color: var(--scenario-accent); box-shadow: inset 0 1px rgb(255 255 255 / 0.3); }
-  .flow-scenario__icon svg { width: 1.65rem; height: 1.65rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .flow-scenario__audience { font-family: var(--font-mono); font-size: 0.59rem; letter-spacing: 0.14em; text-align: right; text-transform: uppercase; color: color-mix(in oklch, var(--scenario-accent) 78%, var(--color-text)); }
-  .flow-scenario h3 { position: relative; margin-top: 2.4rem; max-width: 18rem; font-size: 1.45rem; font-weight: 750; line-height: 1.13; }
-  .flow-scenario > p { position: relative; margin-top: 0.8rem; max-width: 35rem; font-size: 0.92rem; line-height: 1.65; color: var(--color-text-muted); }
-  .flow-scenario__path { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin-top: auto; padding-top: 1.5rem; list-style: none; }
-  .flow-scenario__path li { display: inline-flex; align-items: center; gap: 0.45rem; font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-dim); }
-  .flow-scenario__path li:not(:last-child)::after { color: var(--scenario-accent); content: '→'; }
-  @media (min-width: 640px) { .flow-scenario--featured { grid-column: span 2; } }
-  @media (min-width: 1024px) { .flow-scenario--featured { min-height: 21rem; } .flow-scenario--featured h3 { max-width: 28rem; font-size: 1.85rem; } .flow-scenario--featured > p { max-width: 38rem; font-size: 1rem; } }
-  .flow-routing { overflow: hidden; border: 1px solid var(--color-border); border-radius: 1.5rem; background: var(--color-surface-raised); box-shadow: 0 30px 80px -66px rgb(70 101 180 / 0.55); }
-  .flow-routing__row { --tier-accent: #7770f5; position: relative; display: grid; gap: 1rem; padding: 1.05rem; border-bottom: 1px solid var(--color-border); background: linear-gradient(100deg, color-mix(in oklch, var(--tier-accent) 5%, var(--color-surface-raised)), transparent 44%); }
-  .flow-routing__row::before { position: absolute; inset: 0 auto 0 0; width: 2px; background: linear-gradient(180deg, transparent 8%, var(--tier-accent), transparent 92%); content: ''; opacity: 0.7; }
-  .flow-routing__row:last-child { border-bottom: 0; }
-  .flow-routing__row--violet { --tier-accent: #7770f5; }
-  .flow-routing__row--cyan { --tier-accent: #1ea7b8; }
-  .flow-routing__row--coral { --tier-accent: #d97757; }
-  .flow-routing__row--amber { --tier-accent: #c68a22; }
-  .flow-routing__row--green { --tier-accent: #2b9d70; }
-  .flow-routing__tier { display: flex; align-items: center; gap: 0.85rem; }
-  .flow-routing__tier-symbol { position: relative; display: grid; width: 2.85rem; height: 2.85rem; flex: 0 0 auto; place-items: center; border: 1px solid color-mix(in oklch, var(--tier-accent) 32%, var(--color-border)); border-radius: 0.9rem; background: color-mix(in oklch, var(--tier-accent) 12%, var(--color-surface)); color: var(--tier-accent); box-shadow: inset 0 1px rgb(255 255 255 / 0.28); }
-  .flow-routing__tier-symbol :global(.flow-routing-icon) { width: 1.35rem; height: 1.35rem; }
-  .flow-routing__tier-number { position: absolute; right: -0.22rem; bottom: -0.22rem; display: grid; width: 1.08rem; height: 1.08rem; place-items: center; border: 1px solid color-mix(in oklch, var(--tier-accent) 46%, var(--color-border)); border-radius: 999px; background: var(--color-surface-raised); font-family: var(--font-mono); font-size: 0.47rem; font-weight: 750; line-height: 1; color: var(--tier-accent); }
-  .flow-routing__tier strong { display: block; font-size: 0.92rem; }
-  .flow-routing__tier small { display: block; margin-top: 0.15rem; font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-dim); }
-  .flow-routing__marks { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-  .flow-routing__mark { --mark-accent: #6489ed; --mark-logo: var(--mark-accent); display: inline-flex; min-height: 2.9rem; align-items: center; gap: 0.62rem; border: 1px solid color-mix(in oklch, var(--mark-accent) 26%, var(--color-border)); border-radius: 0.9rem; background: linear-gradient(135deg, color-mix(in oklch, var(--mark-accent) 8%, var(--color-surface)), var(--color-surface)); padding: 0.4rem 0.78rem 0.4rem 0.42rem; box-shadow: inset 0 1px rgb(255 255 255 / 0.22); white-space: nowrap; }
-  .flow-routing__mark-icon { display: grid; width: 2rem; height: 2rem; flex: 0 0 auto; place-items: center; border: 1px solid color-mix(in oklch, var(--mark-accent) 28%, transparent); border-radius: 0.68rem; background: color-mix(in oklch, var(--mark-accent) 15%, var(--color-surface)); color: var(--mark-logo); }
-  .flow-routing__mark-icon :global(.flow-routing-icon) { width: 1.08rem; height: 1.08rem; }
-  .flow-routing__mark-label { font-family: var(--font-display); font-size: 0.82rem; font-weight: 670; color: var(--color-text); }
-  .flow-routing__mark--apple { --mark-accent: #706df2; }
-  .flow-routing__mark--blue { --mark-accent: #397ee8; }
-  .flow-routing__mark--purple { --mark-accent: #9a62df; }
-  .flow-routing__mark--ollama { --mark-accent: #7969d5; }
-  .flow-routing__mark--lmstudio { --mark-accent: #278acb; }
-  .flow-routing__mark--claude { --mark-accent: #d97757; --mark-logo: #d97757; }
-  .flow-routing__mark--codex { --mark-accent: #1b9a70; }
-  .flow-routing__mark--amber { --mark-accent: #c68a22; }
-  .flow-routing__mark--mcp { --mark-accent: #dd685c; }
-  .flow-routing__mark--green { --mark-accent: #2b9d70; }
-  .flow-routing__mark--mono { --mark-logo: #17191d; }
-  :global(html[data-theme='dark']) .flow-routing__mark--mono { --mark-logo: #f7f8fa; }
-  .flow-principle { min-height: 18rem; border: 1px solid var(--color-border); border-radius: 1.5rem; background: linear-gradient(155deg, color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-raised)), var(--color-surface)); padding: 1.6rem; }
-  .flow-principle > span { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em; color: var(--color-primary); }
-  .flow-principle h2 { margin-top: 5rem; font-size: 1.55rem; font-weight: 700; line-height: 1.15; }
-  .flow-principle p { margin-top: 0.85rem; font-size: 0.94rem; line-height: 1.65; color: var(--color-text-muted); }
-  @media (min-width: 640px) { .flow-routing__row { grid-template-columns: minmax(13rem, 0.7fr) 1.3fr; align-items: center; padding: 1rem 1.2rem; } }
-  @media (min-width: 1024px) { .flow-continuity__item:not(:last-child)::after { display: grid; } }
-  @media (prefers-reduced-motion: reduce) { .flow-page *, .flow-page *::before, .flow-page *::after { scroll-behavior: auto !important; } }
+  .flow-probe { box-shadow: 0 28px 70px -55px color-mix(in oklch, var(--color-warn) 45%, transparent); }
+  .flow-list { display: flex; flex-direction: column; gap: 0.65rem; }
+  .flow-list li { position: relative; padding-left: 1.5rem; font-size: 0.94rem; line-height: 1.65; color: var(--color-text-muted); }
+  .flow-list li::before {
+    content: ''; position: absolute; left: 0; top: 0.52em; width: 0.62rem; height: 0.62rem;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--color-primary) 22%, var(--color-surface));
+    border: 1.5px solid var(--color-primary);
+  }
+  .flow-ent-tag {
+    display: inline-flex; border-radius: 999px; padding: 0.22rem 0.6rem;
+    font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+    border: 1px solid color-mix(in oklch, var(--color-success) 40%, var(--color-border));
+    color: var(--color-success);
+    background: color-mix(in oklch, var(--color-success) 8%, var(--color-surface));
+  }
+  .flow-ent-tag--direction {
+    border-color: color-mix(in oklch, var(--color-primary) 40%, var(--color-border));
+    color: var(--color-primary);
+    background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface));
+  }
+  .flow-ent-card { transition: border-color 0.2s ease; }
+  .flow-ent-card:hover { border-color: color-mix(in oklch, var(--color-primary) 40%, var(--color-border)); }
 </style>
