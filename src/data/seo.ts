@@ -7,7 +7,7 @@ export const SITE = {
   url: 'https://orionfold.com',
   tagline: 'Conduct beautiful documents with AI agency built in',
   description:
-    'Orionfold Flow is the Mac app where AI works inside your document, not a chat window. Every change is a diff you approve, with a receipt naming what ran, where, and what it cost. Patent pending. Join the waitlist.',
+    'Orionfold Flow is the Mac app where AI works in your document, not a chat window. Every change is a diff you approve, with a receipt. Patent pending.',
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:

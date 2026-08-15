@@ -46,7 +46,7 @@ assert.doesNotMatch(home, /^\s+filter: blur\(/m, 'blur-filter declarations were 
 assert.match(seo, /tagline: 'Conduct beautiful documents with AI agency built in'/);
 assert.match(
   seo,
-  /description:\s*\n\s*'Orionfold Flow is the Mac app where AI works inside your document, not a chat window\. Every change is a diff you approve, with a receipt naming what ran, where, and what it cost\. Patent pending\. Join the waitlist\.'/,
+  /description:\s*\n\s*'Orionfold Flow is the Mac app where AI works in your document, not a chat window\. Every change is a diff you approve, with a receipt\. Patent pending\.'/,
 );
 assert.match(
   seo,
