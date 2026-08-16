@@ -5,6 +5,15 @@
 // confirm (see supabase/functions/confirm-email). Logo-only header + no footer
 // = a 1:1 attention ratio (one action: enter email). The web book stays open
 // and indexed; only the download is gated.
+//
+// 2026-08-15 (operator): the page now ties the free book to Flow, the flagship.
+// The book GUIDES (how an AI-native business is structured); Flow TOOLS the
+// knowledge worker who has to do that work in a document. Still ONE capture and
+// ONE offer key — offer=become-ai-native-business is what confirm-email matches
+// to deliver the book, so it must not change. The capture uses the same panel
+// treatment as the Flow waitlist so both funnels read as one system. Flow copy
+// here stays green under FLOW-PATENT-CONTRACT.md: broad positioning plus the
+// current in-development / Mac / freemium-planned facts, no mechanism claims.
 import Layout from '../layouts/Layout.astro';
 import BrandMark from '../components/ui/BrandMark.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
@@ -14,8 +23,11 @@ import bookCover from '../assets/book/ai-native-business-book.jpg';
 
 const og = ogMeta('/become-ai-native-business/');
 
+// Consent scope now names Flow updates as well as the digest, because that is
+// what this capture actually subscribes you to. Recorded verbatim on every
+// submit (consent_text), so the stored record matches what the reader agreed to.
 const consentText =
-  'By subscribing you agree to receive the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
+  'By subscribing you agree to receive the free book, Orionfold Flow development and launch updates, plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
 const privacyNote = consentText.replace(' See our privacy policy.', '');
 
 // What's in the book — marketing-finalized outcome bullets (relay 2026-06-28 §5.2).
@@ -36,7 +48,11 @@ const objections = [
   },
   {
     q: 'What do you do with my email?',
-    a: 'We send your book, then the AI For Everyone digest, one email a week, no more. We never sell or rent your address. You can leave any time with one click.',
+    a: 'We send your book, then the AI For Everyone digest, one email a week, no more. You also get Orionfold Flow updates and the launch note when our Mac app is ready. We never sell or rent your address. You can leave any time with one click.',
+  },
+  {
+    q: 'What is Orionfold Flow?',
+    a: 'Flow is the Mac app we are building for the person doing the work: a place to conduct documents with AI agency built in, where you stay the one who approves what changes. The book shows you how an AI-native business is shaped. Flow is the tool for the writing, research, and reporting that shape asks of you. It is in development as a freemium subscription, so there is nothing to buy today.',
   },
   {
     q: 'Is this a sales pitch in disguise?',
@@ -50,7 +66,7 @@ const objections = [
 
 const title = 'Get the free AI Native Business book · Orionfold';
 const description =
-  'Get the $20 AI Native Business book free. Enter your email and we send the PDF and EPUB, plus one short email a week on running a business that thinks in AI.';
+  'Get the $20 AI Native Business book free. Enter your email for the PDF and EPUB, plus updates on Orionfold Flow, the Mac app for the knowledge worker doing the work.';
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -91,8 +107,18 @@ const faqSchema = {
           Get the $20 <span class="italic">AI Native Business</span> book free.
           Just your email, and we send the PDF and EPUB to read on any device.
         </p>
+        <p class="mt-3 max-w-md leading-relaxed text-text-muted">
+          You will also be first to hear about <span class="font-semibold text-text">Orionfold Flow</span>,
+          the Mac app we are building for the person doing the work.
+        </p>
 
-        <div class="mt-8">
+        <!-- Capture panel: same treatment as the Flow waitlist (FlowWaitlist.astro)
+             so both funnels read as one system. Offer key is unchanged. -->
+        <div class="mt-8 rounded-2xl border border-border/80 bg-surface/85 p-5 backdrop-blur sm:p-6">
+          <p class="mb-5 flex items-center justify-between gap-4 font-mono text-[0.64rem] uppercase tracking-[0.16em] text-text-dim">
+            <span>Email only</span>
+            <span>Double opt-in</span>
+          </p>
           <WaitlistForm
             id="magnet-ainb"
             source="magnet-ai-native-business"
@@ -101,7 +127,7 @@ const faqSchema = {
             successMessage="Check your inbox to confirm, then your book is on the way."
             consentText={consentText}
           />
-          <p class="mt-4 max-w-sm text-xs leading-relaxed text-text-dim">
+          <p class="mt-5 max-w-sm text-xs leading-relaxed text-text-dim">
             {privacyNote}{' '}
             <a class="underline underline-offset-2 hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
           </p>
@@ -141,6 +167,47 @@ const faqSchema = {
 
     <!-- Objection blocks (relay §5.3). Header-as-question doubles as FAQPage
          schema (jsonLd above) — AEO/citation surface as well as conversion. -->
+    <!-- Book to Flow tie (operator 2026-08-15). The book is the map; Flow is the
+         tool. Green under FLOW-PATENT-CONTRACT.md: broad positioning plus the
+         current in-development / Mac / freemium-planned facts. No mechanism,
+         verification, privacy, or pricing claims. -->
+    <section class="mx-auto mt-24 max-w-4xl" aria-labelledby="flow-tie-heading">
+      <div class="rounded-[2rem] border border-primary/25 bg-primary/[0.04] px-6 py-10 sm:px-10 sm:py-12">
+        <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">The book and the tool</p>
+        <h2 id="flow-tie-heading" class="mt-4 text-balance text-3xl font-bold leading-[1.08] sm:text-4xl">
+          The book shows you the shape. Flow does the work with you.
+        </h2>
+        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-text-muted">
+          Reading how an AI-native business is put together is the first half. The
+          second half is Monday morning, when the writing, the research, and the
+          reporting still land on your desk.
+        </p>
+        <div class="mt-10 grid gap-8 sm:grid-cols-2">
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.18em] text-text-dim">The book guides</p>
+            <p class="mt-3 leading-relaxed text-text-muted">
+              <span class="italic">AI Native Business</span> is the map. How the work is
+              structured, where AI does the doing instead of the talking, and how the
+              pieces hold together as you grow. Read it in about two hours, then keep
+              it as a working reference.
+            </p>
+          </div>
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Flow tools the work</p>
+            <p class="mt-3 leading-relaxed text-text-muted">
+              Orionfold Flow is our Mac app for the knowledge worker: a place to
+              conduct documents with AI agency built in, where you stay the one who
+              approves what changes. It is in development as a freemium subscription,
+              and your email puts you first in line.
+            </p>
+          </div>
+        </div>
+        <a href="/flow/" class="of-text-action mt-9 inline-flex items-center gap-2">
+          Explore Orionfold Flow <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
     <section class="mx-auto mt-24 max-w-2xl" aria-labelledby="faq-heading">
       <h2 id="faq-heading" class="text-center text-2xl font-semibold">Questions, answered straight</h2>
       <dl class="mt-10 space-y-8">
@@ -159,10 +226,14 @@ const faqSchema = {
         Ready when you are.
       </h2>
       <p class="mx-auto mt-4 max-w-md leading-relaxed text-text-muted">
-        Get the $20 <span class="italic">AI Native Business</span> book free.
-        Enter your email and we send the PDF and EPUB.
+        Get the $20 <span class="italic">AI Native Business</span> book free, and
+        be first to hear when Orionfold Flow is ready.
       </p>
-      <div class="mx-auto mt-8 max-w-md">
+      <div class="mx-auto mt-8 max-w-md rounded-2xl border border-border/80 bg-surface/85 p-5 text-left backdrop-blur sm:p-6">
+        <p class="mb-5 flex items-center justify-between gap-4 font-mono text-[0.64rem] uppercase tracking-[0.16em] text-text-dim">
+          <span>Email only</span>
+          <span>Double opt-in</span>
+        </p>
         <WaitlistForm
           id="magnet-ainb-2"
           source="magnet-ai-native-business-footer"
@@ -171,7 +242,7 @@ const faqSchema = {
           successMessage="Check your inbox to confirm, then your book is on the way."
           consentText={consentText}
         />
-        <p class="mx-auto mt-4 max-w-sm text-xs leading-relaxed text-text-dim">
+        <p class="mt-5 max-w-sm text-xs leading-relaxed text-text-dim">
           {privacyNote}{' '}
           <a class="underline underline-offset-2 hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
         </p>

@@ -73,7 +73,8 @@ Deno.serve(async (req) => {
       try {
         const links = await signBookFiles(supabase, "book_ai_native_business");
         if (links.length > 0) {
-          await sendBookEmail(row.email, "AI Native Business", links);
+          // "free" rail: this book is a gift, not a purchase (see bookEmailText).
+          await sendBookEmail(row.email, "AI Native Business", links, "free");
         } else {
           console.error("Magnet confirm: no files in book-files/book_ai_native_business");
         }

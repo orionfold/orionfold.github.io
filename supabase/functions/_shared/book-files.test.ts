@@ -62,6 +62,32 @@ Deno.test("bookEmailText includes both links and is em-dash free", () => {
   assert(!text.includes("—"));
 });
 
+// Rail split (2026-08-15). The magnet delivers the same book for free, so the
+// free rail must never tell a subscriber they bought it. Regression lock: the
+// paid rail keeps its purchase thanks, the free rail says the copy is free.
+const LINKS = [{ format: "PDF", url: "https://x/p.pdf" }];
+
+Deno.test("bookEmailText paid rail thanks the buyer for the purchase", () => {
+  const text = bookEmailText("AI Native Business", LINKS, "F", "purchase");
+  assert(text.includes("Thank you for buying AI Native Business."));
+  assert(!text.toLowerCase().includes("free copy"));
+});
+
+Deno.test("bookEmailText free rail never claims a purchase", () => {
+  const text = bookEmailText("AI Native Business", LINKS, "F", "free");
+  assert(text.includes("Here is your free copy of AI Native Business, as promised."));
+  assert(!text.toLowerCase().includes("buying"));
+  assert(!text.toLowerCase().includes("purchase"));
+  assert(!text.includes("—"));
+});
+
+Deno.test("bookEmailText defaults to the paid rail", () => {
+  assertEquals(
+    bookEmailText("AI Native Business", LINKS, "F"),
+    bookEmailText("AI Native Business", LINKS, "F", "purchase"),
+  );
+});
+
 Deno.test("brandedUrl rewrites only the production Supabase project", () => {
   const path = "/storage/v1/object/sign/field-edition/licenses/license.json?token=x";
   assertEquals(

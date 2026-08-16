@@ -66,9 +66,24 @@ export async function signBookFiles(
   return links;
 }
 
-export function bookEmailText(bookLabel: string, links: BookLink[], footer: string): string {
+// Which rail asked for the email. The paid rail (stripe-webhook fulfillBook)
+// thanks the buyer for a purchase; the free rail (confirm-email, the
+// become-ai-native-business magnet) must NOT, because nobody bought anything.
+// Before 2026-08-15 both rails shared the "thank you for buying" opening, so
+// every free-book subscriber was told they had bought the book.
+export type BookEmailRail = "purchase" | "free";
+
+export function bookEmailText(
+  bookLabel: string,
+  links: BookLink[],
+  footer: string,
+  rail: BookEmailRail = "purchase",
+): string {
   const downloads = links.map((l) => `${l.format}:\n${l.url}`).join("\n\n");
-  return `Thank you for buying ${bookLabel}.
+  const opening = rail === "free"
+    ? `Here is your free copy of ${bookLabel}, as promised.`
+    : `Thank you for buying ${bookLabel}.`;
+  return `${opening}
 
 Here are your download links. You get both the PDF and the
 EPUB, so you can read on any device.
@@ -86,6 +101,7 @@ export async function sendBookEmail(
   email: string,
   bookLabel: string,
   links: BookLink[],
+  rail: BookEmailRail = "purchase",
 ): Promise<void> {
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
   if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not configured");
@@ -95,7 +111,7 @@ export async function sendBookEmail(
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
   const footer = await footerForEmail(supabase, email);
-  const bodyText = bookEmailText(bookLabel, links, footer);
+  const bodyText = bookEmailText(bookLabel, links, footer, rail);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",

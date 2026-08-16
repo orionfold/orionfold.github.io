@@ -8,12 +8,14 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
-import ProductBand from '../components/product/ProductBand.astro';
 import { SITE, PERSON } from '../data/seo';
 import { ogMeta } from '../data/og';
 import avatar from '../assets/about/manav.jpg';
 import arc from '../assets/about/arc.jpeg';
 import mission from '../assets/about/mission.jpeg';
+// The Limitless story hero doubles as the Flow band creative: the same
+// conductor image the founder story now builds toward.
+import limitless from '../assets/story/limitless-without-the-pill/hero.png';
 
 const og = ogMeta('/about/');
 
@@ -53,6 +55,11 @@ const milestones = [
     year: '2026',
     mark: 'Orionfold',
     line: 'Open AI software, custom models, and books you can run, all from one small desk.',
+  },
+  {
+    year: '2026',
+    mark: 'Orionfold Flow',
+    line: 'Building the Mac app that lets one person conduct their documents with AI, the way I learned to work.',
     now: true,
   },
 ];
@@ -224,6 +231,19 @@ const beliefs = [
           in the world is worth almost nothing until it reaches the person who needs it. In June 2026,
           after nearly nine years at Amazon, I left to do the one thing all of it pointed at.
         </p>
+        <p class="mt-5 text-base leading-relaxed text-text-muted">
+          Then I spent sixty days building this startup the AI-native way. One person, one desk,
+          research and software and books and operations, all with AI helpers alongside me. What I
+          learned surprised me. AI did not make me smarter. It let me use different parts of my
+          thinking together, and hold the thread between them. I wrote that down in
+          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/story/limitless-without-the-pill/">Limitless, Without the Pill</a>.
+          The short version is a sentence I keep coming back to: I do not write every note anymore, I conduct.
+        </p>
+        <p class="mt-5 text-base leading-relaxed text-text-muted">
+          That sentence is now a product. <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/flow/">Orionfold Flow</a>
+          is the Mac app I am building so anyone can work that way, in the place the work actually
+          happens: the document. Everything before it taught me what to build. Flow is me building it.
+        </p>
       </div>
     </section>
 
@@ -280,7 +300,9 @@ const beliefs = [
           can do real AI is in the
           <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/proof/">receipts</a>.
           The full story of why I left, and what the name Orionfold means, is in
-          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/story/why-i-folded-orionfold/">Why I folded Orionfold</a>.
+          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/story/why-i-folded-orionfold/">Why I folded Orionfold</a>,
+          and what I am building next is in
+          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/story/limitless-without-the-pill/">Limitless, Without the Pill</a>.
         </p>
         <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
           <a href="/letter/" class="rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-text transition hover:bg-accent-hover">Read the letters</a>
@@ -288,9 +310,80 @@ const beliefs = [
       </div>
     </section>
 
-    <!-- The product band (Proof, by strong match) below the narrative close,
-         which keeps the letters + story links. Link mode: routes to /proof/. -->
-    <ProductBand type="page" slug="about" />
+    <!-- Flow CTA (operator 2026-08-15). Replaces the Proof ProductBand: Flow is
+         the flagship, and the founder story now lands on it. Deliberately NOT a
+         ProductBand — that component is priced-product machinery (founding seat
+         + one-time price + checkout), and Flow has no commercial terms yet, so
+         it would render an empty or false price. This band borrows the family
+         chrome (blueprint grid, cyan glow, poster at right) with the Limitless
+         hero as the creative and a single link to /flow/.
+         Flow copy stays green under FLOW-PATENT-CONTRACT.md: broad positioning
+         plus the current in-development / Mac / freemium-planned facts, no
+         mechanism, verification, or pricing claims. -->
+    <section class="flow-band relative overflow-hidden border-y border-primary/25 px-6 py-14" aria-labelledby="about-flow-heading">
+      <div class="flow-band__grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+        <div class="absolute -left-[6%] top-1/2 h-[380px] w-[380px] -translate-y-1/2 rounded-full bg-primary/[0.12] blur-[130px]"></div>
+      </div>
+
+      <div class="mx-auto grid max-w-5xl items-center gap-8 md:grid-cols-[1.1fr_auto] md:gap-10">
+        <div>
+          <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-primary">The tool I am building now</p>
+          <h2 id="about-flow-heading" class="mt-2 font-display text-2xl font-bold leading-tight sm:text-3xl">
+            I do not write every note anymore. I conduct.
+          </h2>
+          <p class="mt-3 max-w-xl text-sm leading-relaxed text-text-muted">
+            Orionfold Flow is that idea made into a Mac app. A place to conduct
+            documents with AI agency built in, where you stay the one who approves
+            what changes. It is in development as a freemium subscription, and the
+            waitlist is open.
+          </p>
+          <div class="mt-6 flex flex-wrap items-center gap-4">
+            <a
+              href="/flow/?utm_source=orionfold&utm_medium=cross-sell&utm_campaign=about-flow&utm_content=about-band"
+              class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-5 py-2.5 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
+            >
+              Explore Orionfold Flow
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+            <a href="/story/limitless-without-the-pill/" class="font-mono text-[0.7rem] tracking-wider text-text-muted underline underline-offset-2 hover:text-primary">
+              or read Limitless, Without the Pill
+            </a>
+          </div>
+        </div>
+
+        <figure class="hidden md:block">
+          <Image
+            src={limitless}
+            alt="A knowledge worker at a laptop conducts a luminous constellation of research, code, strategy, art, and scientific ideas across a deep blue night sky."
+            width={420}
+            widths={[420, 840]}
+            sizes="420px"
+            class="w-[420px] rounded-2xl border border-border/70 shadow-2xl"
+          />
+        </figure>
+      </div>
+    </section>
   </main>
   <Footer />
 </Layout>
+
+<style>
+  /* Band-family chrome, matched to ProductBand so the Flow CTA reads as the
+     same surface (blueprint grid + tinted ground, both themes). */
+  .flow-band { background-color: oklch(0.97 0.012 200); }
+  :global([data-theme='dark']) .flow-band { background-color: oklch(0.20 0.022 235); }
+  .flow-band__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
+    mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
+  }
+  :global([data-theme='dark']) .flow-band__grid {
+    background-image:
+      linear-gradient(to right, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px);
+  }
+</style>
