@@ -216,6 +216,8 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
     <meta name="description" content={description} />
     <meta name="author" content="Orionfold" />
     <link rel="canonical" href={canonicalURL} />
+    <!-- Feed autodiscovery: site-wide so a reader subscribes from any page. -->
+    <link rel="alternate" type="application/rss+xml" title="Orionfold Story" href="/story/rss.xml" />
     {noindex && <meta name="robots" content={noindex === 'follow' ? 'noindex, follow' : 'noindex, nofollow'} />}
 
     <!-- Open Graph -->
