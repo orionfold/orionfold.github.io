@@ -119,11 +119,15 @@ export function strongProduct(input: {
     return undefined;
   }
 
-  // Standalone pages with a clear product association (the founder trust
-  // narrative + the magnet thank-you both lead with "prove which AI you can
-  // trust" -> Proof).
+  // Standalone pages with a clear product association. Both /about/ and the
+  // magnet thank-you once led with "prove which AI you can trust" -> Proof, and
+  // both moved to Flow on 2026-08-15 (the flagship): /about/ now renders its own
+  // Flow CTA and the thank-you links straight to /flow/, so NEITHER calls a
+  // ProductBand today. Flow is deliberately not a band product (the band sells a
+  // priced catalog family; Flow has no commercial terms yet), so this branch has
+  // no page slugs left. It stays as the seam for the next standalone page that
+  // does want a priced band.
   if (type === 'page') {
-    if (slug === 'about' || slug === 'thanks') return 'proof';
     return undefined;
   }
 
