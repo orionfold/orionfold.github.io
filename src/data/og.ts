@@ -183,9 +183,10 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Conduct beautiful documents with AI agency built in',
     seed: 'flow',
     alt: 'Orionfold Flow: the Mac app where every AI change is a diff you approve, with a receipt naming what ran, where, and what it cost',
-    // Tracks the /flow/ hero picture (shotCharts): two documents side by side,
-    // with a publishing calendar table and a chart. Pre-cropped to the frame's
-    // native 660x338 so the table text stays crisp.
+    // Cropped from the /flow/ hero picture (shotCharts), onto the chart rather
+    // than the calendar table: the headline promises a BEAUTIFUL document, and a
+    // grid of cells reads as a spreadsheet. Pre-cropped to the frame's native
+    // 660x338 so the prose around the chart stays crisp.
     screenshot: 'src/assets/flow/og-flow-shot.png',
     light: true,
   },
