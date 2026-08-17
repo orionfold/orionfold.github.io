@@ -59,6 +59,15 @@ assert.match(
 );
 assert.match(seo, /slogan: SITE\.tagline/);
 assert.match(seo, /description: SITE\.description/);
-assert.match(og, /'\/': \{[\s\S]*title: SITE\.tagline[\s\S]*alt: SITE\.ogImageAlt/);
+// The home card's title tracks the home H1, NOT SITE.tagline. It reused the
+// tagline until 2026-08-16, so rewriting the hero to lead with the open-models
+// wedge silently left the social card arguing the retired pitch.
+const homeOg = og.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
+assert.match(homeOg, /title: 'Bring open AI models to your documents'/);
+assert.doesNotMatch(homeOg, /title: SITE\.tagline/);
+// The alt text must describe the card's own capture (the local run and its
+// zero-dollar spend), not the generic diff-review alt the whole site defaults to.
+assert.doesNotMatch(homeOg, /alt: SITE\.ogImageAlt/);
+assert.match(homeOg, /alt: '[^']*zero dollars/);
 
 console.log('home hero: Flow wedge copy, real capture, waitlist capture, and metadata contracts pass');

@@ -311,8 +311,31 @@ const ogFlow = ogData.match(/'\/flow\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
 const ogHome = ogData.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
 for (const entry of [ogFlow, ogHome]) {
   assert.match(entry, /Orionfold Flow · Patent pending/);
-  assert.match(entry, /screenshot: 'src\/assets\/flow\/og-images-shot\.png'/);
   assert.match(entry, /light: true/);
+}
+// Each flagship card carries its OWN capture, cropped from that page's hero
+// picture. They shared one screenshot until 2026-08-16, which is how both cards
+// kept showing a retired shot after the heroes were rebuilt.
+const ogShots = [ogHome, ogFlow].map((entry) => entry.match(/screenshot: '([^']+)'/)?.[1]);
+assert.deepEqual(
+  ogShots,
+  ['src/assets/flow/og-home-shot.png', 'src/assets/flow/og-flow-shot.png'],
+  'the home and flow cards each point at their own hero-derived capture',
+);
+for (const shot of ogShots) {
+  // Satori cannot decode webp, and the card frames the file at its native size,
+  // so a card screenshot must be a PNG that is actually on disk at 660x338.
+  // Downscaling a 2560px capture into the frame is what made the UI text in
+  // these cards unreadable, so the crop is baked into the asset, not the render.
+  assert.ok(shot.endsWith('.png'), `${shot} must be a PNG for Satori to decode`);
+  assert.ok(existsSync(new URL(`../../${shot}`, import.meta.url)), `${shot} must exist on disk`);
+  // PNG IHDR: 8-byte signature, 4-byte length, 4-byte type, then width/height.
+  const png = readBinary(shot);
+  assert.deepEqual(
+    { width: png.readUInt32BE(16), height: png.readUInt32BE(20) },
+    { width: 660, height: 338 },
+    `${shot} must be pre-cropped to the card frame`,
+  );
 }
 const ogCard = read('src/lib/og/card.ts');
 assert.match(ogCard, /function heroGridSvg\(\)/, 'the light card draws the hero gradient + fading grid');

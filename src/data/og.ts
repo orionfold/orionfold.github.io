@@ -39,13 +39,16 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     slug: 'home',
     eyebrow: 'Orionfold Flow · Patent pending',
-    title: SITE.tagline,
+    // Tracks the homepage H1, which leads with the open-models wedge rather than
+    // the brand tagline. Deliberately NOT SITE.tagline: /flow/ keeps the tagline,
+    // so the two cards now argue their own page instead of being interchangeable.
+    title: 'Bring open AI models to your documents',
     seed: 'home',
-    alt: SITE.ogImageAlt,
-    // The homepage is the Flow flagship front door; its social card carries the
-    // same real product capture as /flow/ (a document with a picture rendering
-    // in place, pre-cropped to the frame's native 660x338 so text stays crisp).
-    screenshot: 'src/assets/flow/og-images-shot.png',
+    alt: 'Orionfold Flow running an open AI model on a Mac: the What Flow is using popover reports the model size, the token ledger, and a spend of zero dollars.',
+    // The homepage hero picture, pre-cropped to the frame's native 660x338 so the
+    // popover text stays crisp. The card shows the receipt the headline promises:
+    // an open model answering locally, with the cost reading $0.00.
+    screenshot: 'src/assets/flow/og-home-shot.png',
     light: true,
   },
   '/advisor/': {
@@ -180,9 +183,10 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Conduct beautiful documents with AI agency built in',
     seed: 'flow',
     alt: 'Orionfold Flow: the Mac app where every AI change is a diff you approve, with a receipt naming what ran, where, and what it cost',
-    // Real development-build capture: a Flow document with a picture rendering
-    // in place, pre-cropped to the frame's native 660x338 so text stays crisp.
-    screenshot: 'src/assets/flow/og-images-shot.png',
+    // Tracks the /flow/ hero picture (shotCharts): two documents side by side,
+    // with a publishing calendar table and a chart. Pre-cropped to the frame's
+    // native 660x338 so the table text stays crisp.
+    screenshot: 'src/assets/flow/og-flow-shot.png',
     light: true,
   },
   '/relay/': {
