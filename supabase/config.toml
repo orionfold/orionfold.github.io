@@ -463,6 +463,13 @@ verify_jwt = false
 [functions.resend-webhook]
 verify_jwt = false
 
+# reply-unsubscribe (B14): Resend `email.received` callback that turns an opt-out
+# sent as a REPLY into the same suppression row the one-click link writes.
+# Svix-signature verified against RESEND_INBOUND_SECRET (the sole gate), so
+# verify_jwt off like resend-webhook.
+[functions.reply-unsubscribe]
+verify_jwt = false
+
 # suppressions-export (Phase-1 compliance, relay #9): read-only cursor drain of the
 # suppression table for marketing's poller. Server-to-server, constant-time token
 # check the sole gate, like waitlist-export / purchases-export.

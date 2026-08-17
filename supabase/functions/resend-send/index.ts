@@ -26,7 +26,7 @@
 //
 // Send identity is OWNED HERE, not by the caller:
 //   from      "Orionfold <manav@updates.orionfold.com>" (the one verified domain)
-//   reply_to  manav@orionfold.com
+//   reply_to  manav@reply.orionfold.com (Resend-receiving; replies feed reply-unsubscribe)
 //   footer    the recipient-tokenized one-click footer (footerFor) is appended to
 //             BOTH text and html server-side, so a nurture send can never ship
 //             without the CAN-SPAM address + a working one-click unsubscribe link,
@@ -42,7 +42,15 @@ import { getOrMintToken } from "../_shared/email-tokens.ts";
 
 const AUTH_PREFIX = "Bearer ";
 const FROM = "Orionfold <manav@updates.orionfold.com>";
-const REPLY_TO = "manav@orionfold.com";
+// Marketing nurture replies route to the Resend-receiving subdomain, NOT to the
+// operator's Google Workspace mailbox, so an opt-out sent as a reply reaches
+// reply-unsubscribe instead of failing silently (B14, operator decision
+// 2026-08-17). This is deliberately scoped to the NURTURE pipe only: receipts,
+// book delivery, workshop, consulting and renewal mail keep
+// manav@orionfold.com, because a human should still answer those by hand.
+// Changing this constant without the matching MX record sends nurture replies
+// into a black hole - see the growth-contract ledger entry for B14.
+export const REPLY_TO = "manav@reply.orionfold.com";
 
 export interface SendInput {
   to: string;

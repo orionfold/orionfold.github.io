@@ -7,7 +7,7 @@
 // Run: deno test supabase/functions/resend-send/index.test.ts
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { footerFor } from "../_shared/email-footer.ts";
-import { authorized, listUnsubHeaders, validate, withFooter } from "./index.ts";
+import { authorized, listUnsubHeaders, REPLY_TO, validate, withFooter } from "./index.ts";
 
 function authHeader(v: string): Headers {
   return new Headers({ Authorization: "Bearer " + v });
@@ -104,4 +104,14 @@ Deno.test("listUnsubHeaders builds the RFC 8058 one-click headers", () => {
   const h = listUnsubHeaders("tok-9");
   assertEquals(h["List-Unsubscribe"], "<https://orionfold.com/unsubscribe?t=tok-9>");
   assertEquals(h["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click");
+});
+
+// B14: nurture replies must land on the Resend-receiving subdomain, or a reply
+// saying "unsubscribe" never reaches reply-unsubscribe and fails silently again.
+// Reverting this to the root domain re-opens the exact compliance gap B14 closed,
+// and it would do so invisibly - nothing else in the system would notice.
+Deno.test("nurture reply_to points at the Resend-receiving subdomain", () => {
+  assertEquals(REPLY_TO, "manav@reply.orionfold.com");
+  // The root-domain mailbox is Google Workspace and cannot feed the webhook.
+  assert(!REPLY_TO.endsWith("@orionfold.com"));
 });
