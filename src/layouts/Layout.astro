@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { SITE, ORGANIZATION } from '../data/seo';
 import { META_PIXEL_ID } from '../data/meta';
 import { META_PIXEL_ENABLED } from '../data/launch';
+import { GOOGLE_ADS_LEAD_SEND_TO } from '../data/ads';
 
 interface Props {
   title?: string;
@@ -123,6 +124,9 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          processing tail (G-043). The queued calls flush when the library arrives;
          on the normal path the fetch starts ~50–75ms after navigation rather
          than competing with page completion. -->
+    {GOOGLE_ADS_LEAD_SEND_TO && (
+      <script is:inline set:html={`window.__ofAdsLeadSendTo=${JSON.stringify(GOOGLE_ADS_LEAD_SEND_TO)};`} />
+    )}
     <script is:inline>
       /* G-042 canonical analytics gate. */
       if (window.location.hostname === 'orionfold.com') {
@@ -133,6 +137,12 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
         // Google Ads (AW) shares the one gtag.js load. Drives the native
         // "Purchase" conversion fired on /thanks (MARKETING-HANDOFF.md, src/data/ads.ts).
         window.gtag('config', 'AW-18188052159');
+        // NOTE: the waitlist "confirmed lead" Ads conversion action is published
+        // as window.__ofAdsLeadSendTo by the small inline script ABOVE this one,
+        // and only when the operator has filled GOOGLE_ADS_LEAD_SEND_TO in
+        // src/data/ads.ts. It is deliberately kept out of this block so this
+        // gate stays free of build-time interpolation (its loader behavior is
+        // unit-tested by evaluating this script standalone).
 
         (function () {
           var loaded = false;
@@ -166,15 +176,29 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          before tracking, and CAPI (stripe-webhook) is the server-side backstop.
          Marketing can align or counter — see the strategy _RELAY.md entry.
 
-         GATED OFF while both ad channels are paused (META_PIXEL_ENABLED, set in
-         src/data/launch.ts; operator 2026-06-18). When false the loader below
-         never renders, so fbevents.js never loads and no _fbp/_fbc cookies are
-         set. window.__ofLoadMetaPixel stays undefined; reportPurchase() already
-         no-ops it via ?.(), and the server-side CAPI Purchase still fires its
-         eventID, so re-enabling is one flip back to true. -->
+         Gated on META_PIXEL_ENABLED (src/data/launch.ts) — ON since 2026-08-16
+         for the Flow waitlist ad activation. When false the loader below never
+         renders, so fbevents.js never loads and no _fbp/_fbc cookies are set;
+         window.__ofLoadMetaPixel stays undefined, reportPurchase() no-ops it via
+         ?.(), and the server-side CAPI Purchase still fires its eventID. So the
+         flag is reversible in one flip, either direction, with no redeploy.
+
+         NOTE for the waitlist Lead event: the deferred loader means fbq may not
+         exist yet on a page the visitor has barely touched, and the confirmed-lead
+         event fires on a FRESH load from the confirm-email redirect. So that
+         event force-loads via window.__ofLoadMetaPixel?.() first, the same way
+         reportPurchase does. Any future conversion event must do the same, or it
+         will silently miss on fast confirms. -->
     {META_PIXEL_ID && META_PIXEL_ENABLED && (
       <script is:inline define:vars={{ META_PIXEL_ID }}>
         (function () {
+          // Production-only, matching the GA4/Ads gate above. Without this the
+          // pixel fires from localhost and every preview build, sending real
+          // PageViews (with domain=localhost) into the live pixel and polluting
+          // audiences and attribution with developer traffic. Verified 2026-08-16:
+          // before this gate, a local page load produced a 200 to
+          // facebook.com/tr/?ev=PageView and set an _fbp cookie.
+          if (window.location.hostname !== 'orionfold.com') return;
           var loaded = false;
           var EVENTS = ['pointerdown', 'keydown', 'scroll', 'touchstart'];
           var OPTS = { once: true, passive: true, capture: true };
@@ -314,10 +338,50 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
                 // for each (137+ on the homepage) — a real cost on low-end mobile.
                 const el = entry.target as HTMLElement;
                 el.style.willChange = 'opacity, transform';
-                el.classList.add('is-visible');
-                el.addEventListener('transitionend', () => {
+
+                // Start the reveal on the NEXT frame. Setting will-change and
+                // the class in the same frame means the browser creates the
+                // layer and begins animating in one go, so the first frames run
+                // while the layer is still being rasterised — a visible hitch at
+                // the START of every reveal. One rAF lets the promotion land
+                // first, then animates against a ready layer.
+                requestAnimationFrame(() => {
+                  el.classList.add('is-visible');
+                });
+
+                // transitionend fires ONCE PER PROPERTY. The old handler used
+                // { once: true }, so the first property to finish tore down
+                // will-change while the other was still animating — collapsing
+                // the compositing layer mid-animation. That is what read as
+                // "fewer fps when finishing scroll". Durations are matched in
+                // CSS now, but count the properties anyway: a future tweak that
+                // unmatches them must not silently reintroduce this.
+                // `failsafe` is declared FIRST and assigned after: `release`
+                // and `onEnd` both close over it, and a const referenced before
+                // its initialiser is a temporal-dead-zone throw waiting for the
+                // one ordering where the timer beats the listener.
+                let failsafe = 0;
+                let settled = 0;
+                const release = () => {
+                  clearTimeout(failsafe);
                   el.style.willChange = 'auto';
-                }, { once: true });
+                  el.removeEventListener('transitionend', onEnd);
+                };
+                const onEnd = (ev: TransitionEvent) => {
+                  if (ev.target !== el) return; // ignore bubbling from children
+                  settled += 1;
+                  if (settled < 2) return;
+                  release();
+                };
+                el.addEventListener('transitionend', onEnd);
+                // Failsafe: if a transition is interrupted, or an element only
+                // ever animates one property, transitionend may fire fewer than
+                // twice and will-change would stick — a permanent compositing
+                // layer per element, which is worse than the bug above. 2s
+                // clears the longest reveal (0.9s) plus the longest stagger
+                // (750ms) with room to spare.
+                failsafe = window.setTimeout(release, 2000);
+
                 observer.unobserve(entry.target);
               }
             });
@@ -352,6 +416,32 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
 
       initScrollReveal();
       document.addEventListener('astro:after-swap', initScrollReveal);
+
+      // Decode-gated image fade. Large lazy captures used to paint the instant
+      // their async decode landed, which is often mid-reveal — the flash the
+      // operator reported. Waiting on decode() means the bitmap is ready BEFORE
+      // we make it visible, so the fade is the only thing the eye sees.
+      function initImageFade() {
+        const marked = document.querySelectorAll<HTMLImageElement>('img[data-fade]');
+        marked.forEach((img) => {
+          if (img.classList.contains('is-decoded')) return;
+          const reveal = () => img.classList.add('is-decoded');
+          // decode() rejects on a failed/aborted load; reveal anyway rather
+          // than leaving a permanently invisible image. Same reasoning as the
+          // .js-ready gate in CSS: never let this hide content.
+          if (typeof img.decode === 'function') {
+            img.decode().then(reveal).catch(reveal);
+          } else if (img.complete) {
+            reveal();
+          } else {
+            img.addEventListener('load', reveal, { once: true });
+            img.addEventListener('error', reveal, { once: true });
+          }
+        });
+      }
+
+      initImageFade();
+      document.addEventListener('astro:after-swap', initImageFade);
     </script>
 
     <!-- Copy-code for prose code blocks (.of-code, injected by

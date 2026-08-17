@@ -18,3 +18,21 @@ export const GOOGLE_ADS_ID = 'AW-18188052159';
  * pass the real `value` + `currency` (omitting value defaults it to $1).
  */
 export const GOOGLE_ADS_PURCHASE_SEND_TO = 'AW-18188052159/_ievCN3Tm7YcEL_N3uBD';
+
+/**
+ * `send_to` target for a "Waitlist signup" conversion action, fired when a
+ * subscriber CONFIRMS their double opt-in (not when they submit the form).
+ *
+ * Deliberately separate from the Purchase action above. A waitlist signup and a
+ * book sale are different events with wildly different volumes and values;
+ * pointing both at one action would teach Smart Bidding to chase whichever is
+ * more frequent and quietly wreck bidding on the one that earns money.
+ *
+ * EMPTY until the operator creates the action in Google Ads (Tools ▸
+ * Conversions ▸ New ▸ Website, category "Submit lead form", count ONE not
+ * every, no value). Paste the `<conversion-id>/<conversion-label>` here and the
+ * conversion starts firing on the next deploy. While empty, the confirmed-lead
+ * GA4 event still fires and nothing errors, so a campaign can run on the GA4
+ * key event alone until the native action exists.
+ */
+export const GOOGLE_ADS_LEAD_SEND_TO = '';

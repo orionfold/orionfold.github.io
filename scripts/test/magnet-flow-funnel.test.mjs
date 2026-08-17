@@ -55,9 +55,9 @@ assert.match(thanks, /href="\/flow\/"/, 'the thank-you page forwards to Flow');
 assert.match(thanks, /Meet the tool the book is about\./);
 assert.match(thanks, /noindex/, 'the post-confirm utility page stays out of the index');
 
-// ── Flow truth boundary (FLOW-PATENT-CONTRACT.md green rules) ──────────────
-// Broad positioning plus the current in-development / Mac / freemium facts are
-// green. Pricing and mechanism claims are not ours to make on these pages.
+// ── Flow truth boundary ────────────────────────────────────────────────────
+// These pages carry broad positioning plus the current in-development / Mac /
+// freemium facts. Pricing and mechanism claims are not ours to make here.
 for (const [name, source] of [['magnet', magnet], ['thanks', thanks]]) {
   assert.doesNotMatch(source, /\$\d+\s*(?:\/|per\s)/i, `${name}: no Flow price tiers exist yet, so none may be implied`);
   assert.doesNotMatch(source, /Apple Intelligence/, `${name}: Apple Intelligence was retired from Flow on 2026-08-14`);

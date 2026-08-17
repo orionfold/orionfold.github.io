@@ -15,12 +15,22 @@ import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
 import { SITE, PERSON } from '../data/seo';
 
+import FlowDetail from '../components/flow/FlowDetail.astro';
+
 import appIcon from '../assets/flow/flow-app-icon-512.png';
 import originArt from '../assets/story/limitless-without-the-pill/hero.png';
+import shotResourcePopover from '../assets/flow/shots/flow-resource-popover-shot.webp';
 import shotApprove from '../assets/flow/shots/flow-writing-you-approve-shot.webp';
 import shotLongDocs from '../assets/flow/shots/flow-long-documents-shot.webp';
 import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
+// Purpose-cut feature details (scripts/prepare-flow-details.mjs). A full window
+// shrunk into a page column renders the control being described at ~8px; these
+// crops show that one control at a size where the claim is checkable.
+import detailDiff from '../assets/flow/details/detail-diff.webp';
+import detailDomains from '../assets/flow/details/detail-domains.webp';
+import detailParts from '../assets/flow/details/detail-parts.webp';
+import detailGrid from '../assets/flow/details/detail-grid.webp';
 
 const og = ogMeta('/');
 
@@ -53,33 +63,86 @@ const heroStats = [
   { value: '5 actions', label: 'every one needs your approval' },
 ];
 
+// One capability per band, and one picture that PROVES it.
+//
+// Each row now carries two images doing different jobs: `shot` is the whole
+// window (context: this is a real Mac app), and `detail` is a purpose-cut crop
+// of the exact control the headline names (proof: here is the thing, legibly).
+// Before this, the window alone had to do both jobs and did neither: the
+// control being described rendered around eight pixels tall.
+//
+// Copy shape follows the section-headline rhythm: a short verbless claim, then
+// one tight paragraph. The long qualifier lists moved to /flow/, which is the
+// page built to carry them.
+//
+// `stage` and `align` drive the round-2 variety rule. The hero above spends
+// bottom-right + centred copy, so the bands walk away from it and from each
+// other. Full sequence down the page:
+//   hero  br / centre
+//   1     tl / left      approval
+//   2     bl / centre    long documents
+//   3     tr / right     trust boundaries
+//   4     bl / left      professional artifacts
+// No two ADJACENT sections share a corner (bl repeats at 2 and 4, which are
+// two apart and read as a rhythm rather than a rut). Keep them distinct —
+// collapsing these to one repeated position is the exact thing the operator
+// asked us not to do, and tests/e2e/product-stage.spec.ts enforces it.
+// `stage` values are the .of-stage__detail--* corner modifiers in global.css.
 const capabilityRows = [
   {
+    // Moved out of the hero on 2026-08-16 when the resource popover took over
+    // that slot. The approval gate is still the product's core promise, so it
+    // leads the bands rather than leaving the homepage.
+    kicker: 'Approval, not autopilot',
+    title: 'Nothing is saved until you approve it.',
+    body: 'Every AI change arrives as a diff in the file itself, with the evidence behind it and the checks that ran. Approve it, decline it, or leave it for later. Decline changes nothing at all.',
+    href: '/flow/#tour-agency',
+    shot: shotApprove,
+    alt: 'Orionfold Flow reviewing an AI proofread: the proposal, its permission scope, Evidence, Checks with a human-review gate, and the exact diff beside the document.',
+    detail: detailDiff,
+    detailAlt: 'The exact proposed diff in Flow: numbered lines with the removed text marked in red, above the Reject, Later, and Approve and Save buttons.',
+    detailCaption: 'The exact proposed diff · Nothing is saved until you approve it',
+    stage: 'tl',
+    align: 'left',
+  },
+  {
     kicker: 'Long documents',
-    title: 'Your 50-page document is not too big. It is four reviews.',
-    body: 'Flow improves long documents part by part, following your document’s own structure. Never truncated, never guessed. Each part gets its own review and its own receipt, and coverage is reported in counts you can check: "You approved 3 of 4 parts."',
+    title: 'A 50-page document is not too big. It is four reviews.',
+    body: 'Flow plans a long document into ordered parts that follow its own structure, then reviews each part on its own. Never truncated, never guessed. Coverage comes back in counts you can check.',
     href: '/flow/#tour-longdocs',
     shot: shotLongDocs,
     alt: 'A live two-part review on a 3,905-word document in Flow, with part chips and an honest coverage line.',
-    flip: false,
+    detail: detailParts,
+    detailAlt: 'Flow’s review header on a long document: numbered part chips, and the line "0 approved, 0 declined, 2 remaining".',
+    detailCaption: 'Coverage in plain counts · Approve, decline, or skip any part',
+    stage: 'bl',
+    align: 'center',
   },
   {
     kicker: 'Trust boundaries',
     title: 'You pick where AI runs. Flow keeps it there.',
-    body: 'Four execution domains: Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own switch and states plainly whether your text stays on this Mac and what the work costs. Flow even discovers the AI subscriptions you already pay for and treats them as already paid. A fallback that would leave your Mac stops and asks first.',
+    body: 'Four execution domains, each with its own switch: Local, LAN, Cloud prepaid, Cloud postpaid. Every one states plainly whether your text stays on this Mac and what the work costs. A fallback that would leave your Mac stops and asks first.',
     href: '/flow/#tour-domains',
     shot: shotDomains,
     alt: 'Flow’s Models settings showing four execution domains with locality and cost statements and a user-owned provider order.',
-    flip: true,
+    detail: detailDomains,
+    detailAlt: 'The Local execution domain in Flow: its switch turned on, the line "Stays on this Mac, free, it runs on hardware you have", and three discovered providers.',
+    detailCaption: 'One switch per domain · Discovery never enables anything',
+    stage: 'tr',
+    align: 'right',
   },
   {
     kicker: 'Professional artifacts',
     title: 'Documents that look like your work, not a chat transcript.',
-    body: 'Memos, calendars, client proposals, and investment briefs over plain folders of plain Markdown. Pictures render in place. Tables get a spreadsheet-grade grid while the file stays exactly the text you wrote. No import, no database, no lock-in.',
+    body: 'Memos, calendars, proposals, and investment briefs over plain folders of plain Markdown. Pictures render in place. Tables get a real grid while the file stays exactly the text you wrote.',
     href: '/flow/#tour-files',
     shot: shotCharts,
     alt: 'Flow documents carrying images and tables: a publishing calendar beside an investment memo with charts and metrics.',
-    flip: false,
+    detail: detailGrid,
+    detailAlt: 'A Markdown table open in Flow’s spreadsheet grid, one cell selected and named R5:C2 in the cell editor bar above it.',
+    detailCaption: 'Edit the cell, not the pipes · The file stays plain Markdown',
+    stage: 'bl',
+    align: 'left',
   },
 ];
 
@@ -124,14 +187,28 @@ const enterpriseTeaser = [
           </span>
           <span class="home-chip home-chip--accent">Patent pending</span>
         </div>
-        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.2rem,8vw,4rem)] font-extrabold leading-[1.08] tracking-[-0.05em]">
-          The AI document app that shows its work
+        <!-- Operator copy, 2026-08-16. Written against the hero picture: the
+             "What Flow is using" popover open over a real document, with the
+             local runtime serving the model. The headline says OPEN models
+             deliberately — that is the wedge, and the picture backs it (the
+             Models pane shows Ollama, LM Studio, and Flow's own runtime, with
+             a 19.1 GB open model actually answering). The subtext names the
+             three things the picture lets you check (cost $0.00, privacy — it
+             ran on this Mac, quality — you can see which model answered), then
+             heads off the obvious objection: open-first is not open-only. -->
+        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.4rem,8.4vw,4.6rem)] font-extrabold leading-[1.03] tracking-[-0.055em]">
+          Bring open AI models to your documents
         </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl">
-          End the copy-paste dance between a chat window and your document. In Flow, the
-          work happens in the file: every AI change arrives as a diff you approve, and
-          every run leaves a receipt naming what ran, where it ran, and what it cost.
-          Flow is coming to Mac.
+        {/* Each sentence is its own line on a large screen, and none of them
+            breaks mid-sentence. `.hero-lede` sets the three spans to
+            display:block + text-wrap:nowrap only from lg up, so the container
+            stops constraining them; below lg they fall back to inline spans in
+            one balanced paragraph, because forcing nowrap on a phone would
+            push the longest sentence off the side of the screen. */}
+        <p class="hero-lede mx-auto mt-6 max-w-xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
+          <span>Stay in control of cost, privacy, and quality on your Mac.</span>{' '}
+          <span>Switching to frontier models is a checkbox.</span>{' '}
+          <span>Flow selects the best model for the job.</span>
         </p>
         <div class="mx-auto mt-9 max-w-md">
           <WaitlistForm
@@ -147,23 +224,37 @@ const enterpriseTeaser = [
           </p>
         </div>
       </div>
-      <div class="relative mx-auto mt-12 max-w-6xl">
+      <!-- The hero product visual: the whole window for context, with the ONE
+           control the headline is about lifted out and shown at a legible size.
+           The window alone made "shows its work" an unreadable thumbnail. -->
+      {/* The hero picture: a live local run with the resource popover open.
+          No overlay crop here, deliberately — unlike the other captures, this
+          popover is already legible at full-window scale, so a zoom of it
+          would repeat what the reader can see rather than reveal anything. The
+          overlay pattern exists to rescue an 8px control; it is not decoration
+          to apply by default. */}
+      <div class="mx-auto mt-14 w-full max-w-[78rem]">
         <FlowShot
-          src={shotApprove}
-          alt="Orionfold Flow reviewing an AI proofread: the proposal, its permission scope, Evidence, Checks with a human-review gate, and the exact diff beside the document."
-          caption="The real development build on a real local run. The diff, the evidence, the checks, and your approval."
+          src={shotResourcePopover}
+          alt="Orionfold Flow during a live local run: the Models settings with the built-in runtime enabled, a field-notes document open, and the What Flow is using popover reporting processor at 35 percent, memory at 53 percent, whole-Mac graphics at 100 percent, the model's 19.1 GB footprint, the token ledger, and a spend of zero dollars."
+          sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
           priority
         />
-        <div class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      </div>
+      {/* Matches the stage's width, not the old max-w-6xl: with the media now
+          running to 78rem, a narrower stat row read as a second, misaligned
+          column edge directly beneath it. */}
+      <div class="mx-auto mt-10 w-full max-w-[78rem] sm:mt-14">
+        <dl class="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4" data-animate-stagger="slow">
           {heroStats.map((s) => (
-            <div class="text-center">
-              <p class="font-display text-2xl font-bold text-primary sm:text-3xl">{s.value}</p>
-              <p class="mt-1 text-xs leading-snug text-text-muted sm:text-sm">{s.label}</p>
+            <div data-animate="rise">
+              <dd class="of-spec-figure text-primary">{s.value}</dd>
+              <dt class="of-spec-label mt-2">{s.label}</dt>
             </div>
           ))}
-        </div>
-        <p class="mt-5 text-center font-mono text-[0.64rem] uppercase tracking-[0.14em] text-text-dim">
-          Measured on the development build · <a href="/flow/" class="text-primary hover:underline">See all the numbers and dates</a>
+        </dl>
+        <p class="of-spec-fine mt-8 uppercase tracking-[0.14em]">
+          Measured on the development build · <a href="/flow/" class="of-text-action of-compact underline underline-offset-2">See all the numbers and dates</a>
         </p>
       </div>
     </section>
@@ -172,28 +263,27 @@ const enterpriseTeaser = [
     <section class="px-6 py-16 sm:py-24">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="home-kicker">The problem</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Chat is where work evaporates.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">
+          <p class="of-eyebrow" data-animate="rise">The problem</p>
+          <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Chat is where work evaporates.</h2>
+          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
             You draft in a chat window, paste into your document, and fix the formatting.
             Again. Nobody can tell which parts you wrote and which parts the AI did. And the
-            thread that produced the work is gone in a month. Flow ends that loop, because
-            the document itself is where AI works.
+            thread that produced the work is gone in a month.
           </p>
         </div>
-        <div class="mt-10 grid gap-4 md:grid-cols-3">
-          <article class="of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">No more pasting</p>
+        <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger="slow">
+          <article class="of-surface rounded-2xl border border-border/70 p-6" data-animate="rise">
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">No more pasting</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">The work happens in the file.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Nothing to copy out of a chat, nothing to reformat, and you always see exactly what changed.</p>
           </article>
           <article class="of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">Attribution survives</p>
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Attribution survives</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">Which parts you wrote. Which parts AI proposed.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Who approved each change, recorded with the document. When someone opens the file and asks, you have the answer.</p>
           </article>
           <article class="of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">A file, not a session</p>
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">A file, not a session</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">Chat workspaces expire. Files are forever.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Your work is plain Markdown on your own disk, readable by every other tool you own. No export step, no lock-in.</p>
           </article>
@@ -204,15 +294,15 @@ const enterpriseTeaser = [
     <!-- ================= THE WEDGE ================= -->
     <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
       <div class="mx-auto max-w-4xl text-center">
-        <p class="home-kicker">Why Flow exists</p>
-        <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">A silent rewrite is not a feature. It is a risk.</h2>
-        <p class="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-text-muted">
+        <p class="of-eyebrow" data-animate="rise">Why Flow exists</p>
+        <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">A silent rewrite is not a feature. It is a risk.</h2>
+        <p class="of-lede mx-auto mt-6 max-w-2xl text-center" data-animate="rise">
           We measured the Mac's own built-in Writing Tools rewriting text inside a code block.
           Silently. No diff, no approval, no record. So Flow retired that whole shape and replaced
           it with one trust path: the exact change, the evidence for it, the checks that ran, and
           your approval. Recorded. That is what "AI agency built in" means here.
         </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <div class="mt-8 flex flex-wrap justify-center gap-3" data-animate="rise">
           <a href="/flow/" class="of-primary-action">Take the product tour</a>
           <a href="/flow/#press" class="of-secondary-action">Writing about Flow? Get the facts</a>
         </div>
@@ -220,18 +310,36 @@ const enterpriseTeaser = [
     </section>
 
     <!-- ================= CAPABILITY ROWS ================= -->
+    {/* Round 2: these were stacked two-column bands where the crop sat inside a
+        narrow 1.14fr media column. Promoted to the hero treatment — contained
+        copy above, the shot running wide beneath it, and the zoom crop
+        staggered over the shot. Each band takes a different corner and a
+        different copy alignment (see `stage`/`align` in capabilityRows) because
+        the operator asked for variety; do not normalise these back to one. */}
     {capabilityRows.map((row) => (
-      <section class="border-b border-border/60 px-6 py-14 sm:py-20">
-        <div class:list={['mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14', row.flip && 'lg:[&>*:first-child]:order-2']}>
-          <div>
-            <p class="home-kicker">{row.kicker}</p>
-            <h2 class="mt-3 text-balance text-3xl font-bold sm:text-4xl">{row.title}</h2>
-            <p class="mt-4 leading-relaxed text-text-muted">{row.body}</p>
-            <a href={row.href} class="of-text-action mt-6 inline-flex items-center gap-2">
-              See it in the tour <span aria-hidden="true">→</span>
-            </a>
-          </div>
-          <FlowShot src={row.shot} alt={row.alt} crop sizes="(min-width: 1024px) 44rem, 100vw" />
+      <section class="border-b border-border/60 px-6 py-16 sm:py-24">
+        <div class:list={['mx-auto max-w-3xl', row.align === 'center' ? 'text-center' : row.align === 'right' ? 'lg:ml-auto lg:mr-0' : '']}>
+          <p class="of-eyebrow" data-animate="rise">{row.kicker}</p>
+          <h2 class="of-display mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">{row.title}</h2>
+          <p class:list={['of-lede mt-5', row.align === 'center' && 'mx-auto text-center']} data-animate="rise">{row.body}</p>
+          <a href={row.href} class="of-text-action mt-7 inline-flex items-center gap-2" data-animate="rise">
+            See it in the tour <span aria-hidden="true">→</span>
+          </a>
+        </div>
+        {/* The window sets the scene; the crop over it carries the proof. Both
+            come from the same capture, so the reader can place the detail. */}
+        <div
+          class:list={['of-stage mt-12', row.stage.startsWith('t') ? 'of-stage--pad-top' : 'of-stage--pad-bottom']}
+          data-animate="plate"
+        >
+          <FlowShot src={row.shot} alt={row.alt} crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+          <FlowDetail
+            class={`of-stage__detail of-stage__detail--${row.stage}`}
+            src={row.detail}
+            alt={row.detailAlt}
+            caption={row.detailCaption}
+            sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 4rem)"
+          />
         </div>
       </section>
     ))}
@@ -240,18 +348,17 @@ const enterpriseTeaser = [
     <section class="bg-surface-raised/40 px-6 py-16 sm:py-24">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="home-kicker">For enterprise AI owners</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Governance at the source of knowledge work.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">
+          <p class="of-eyebrow" data-animate="rise">For enterprise AI owners</p>
+          <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Governance at the source of knowledge work.</h2>
+          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
             The hard part of enterprise AI is not reaching 70 percent accuracy. It is knowing which
-            30 percent is wrong, who approved what, and what it cost. Flow puts the evidence, the
-            approval, and the receipt inside the document itself.
+            30 percent is wrong, who approved what, and what it cost.
           </p>
         </div>
-        <div class="mt-10 grid gap-4 md:grid-cols-3">
+        <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger="slow">
           {enterpriseTeaser.map((card) => (
-            <article class="of-surface rounded-2xl border border-border/70 p-6">
-              <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">{card.k}</p>
+            <article class="of-surface rounded-2xl border border-border/70 p-6" data-animate="rise">
+              <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.k}</p>
               <h3 class="mt-3 text-lg font-bold leading-snug">{card.q}</h3>
               <p class="mt-3 text-sm leading-relaxed text-text-muted">{card.a}</p>
             </article>
@@ -267,11 +374,11 @@ const enterpriseTeaser = [
     <section class="border-t border-border/70 px-6 py-16 sm:py-24">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="home-kicker">One company, one stack</p>
-          <h2 class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Flow is where the Orionfold work comes together.</h2>
+          <p class="of-eyebrow" data-animate="rise">One company, one stack</p>
+          <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Flow is where the Orionfold work comes together.</h2>
         </div>
-        <div class="mt-10 grid gap-4 lg:grid-cols-3">
-          <article class="of-surface rounded-2xl border border-border/70 p-7">
+        <div class="mt-12 grid gap-4 lg:grid-cols-3" data-animate-stagger="slow">
+          <article class="of-surface rounded-2xl border border-border/70 p-7" data-animate="rise">
             <h3 class="text-xl font-bold">Open models</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">
               We publish open domain models in the same format Flow's bundled engine runs. The
@@ -279,7 +386,7 @@ const enterpriseTeaser = [
             </p>
             <a href="/experts/" class="of-text-action mt-5 inline-flex items-center gap-2">See the models <span aria-hidden="true">→</span></a>
           </article>
-          <article class="of-surface rounded-2xl border border-border/70 p-7">
+          <article class="of-surface rounded-2xl border border-border/70 p-7" data-animate="rise">
             <h3 class="text-xl font-bold">The books</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">
               Flow productizes the operating method from our books: routed work, receipts, and
@@ -287,7 +394,7 @@ const enterpriseTeaser = [
             </p>
             <a href="/learn/" class="of-text-action mt-5 inline-flex items-center gap-2">Read the books <span aria-hidden="true">→</span></a>
           </article>
-          <article class="of-surface rounded-2xl border border-border/70 p-7">
+          <article class="of-surface rounded-2xl border border-border/70 p-7" data-animate="rise">
             <h3 class="text-xl font-bold">Relay and Arena</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">
               Relay runs AI client work with per-client cost receipts. Arena scores local models
@@ -355,7 +462,11 @@ const enterpriseTeaser = [
 <style>
   .home-hero {
     isolation: isolate;
-    overflow: hidden;
+    /* Was overflow: hidden, which clipped the hero's overlaid detail crop where
+       it hangs past the shot. Clip only the axis that actually needs it (the
+       decorative grid/glow bleed sideways); the page's own overflow-x-clip on
+       <main> still guards against a horizontal scrollbar. */
+    overflow-x: clip;
     background: linear-gradient(155deg, color-mix(in oklch, var(--color-primary) 6%, var(--color-surface)) 0%, var(--color-surface) 55%, color-mix(in oklch, var(--color-primary) 3%, var(--color-surface)) 100%);
   }
   .home-hero__grid {
@@ -378,8 +489,28 @@ const enterpriseTeaser = [
     font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--color-text-muted);
   }
-  .home-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-primary); font-weight: 650; }
-  .home-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-primary); }
+  .home-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-accent-ink); font-weight: 650; }
+  .home-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-accent-ink); }
+
+  /* Hero lede: one sentence per line, never broken mid-sentence, on a large
+     screen. max-width has to be released too — the paragraph is capped at
+     max-w-xl for the phone layout, and a nowrap span inside a narrower box
+     would simply overflow it rather than widen it. Below lg the spans stay
+     inline and the paragraph balances normally. */
+  @media (min-width: 1024px) {
+    .hero-lede { max-width: none; }
+    .hero-lede span { display: block; text-wrap: nowrap; }
+  }
+
+  /* The capability bands ride the shared .of-stage primitive (global.css),
+     which is where the corner rotation and the below-lg flow fallback live.
+     The hero deliberately does NOT use it: its capture is legible whole. */
+
+  /* The capability bands used to declare their own overlay geometry here. That
+     is now the shared .of-stage primitive in global.css, so the three bands and
+     the two heroes cannot drift apart. See the rotation note there before
+     changing a crop's corner. */
+
   /* Abstract origin-story card: the limitless constellation art on a gently
      tilted plane (static transform, gradient halo, no filters, no loops,
      per the scroll-jank hardening). */

@@ -15,8 +15,9 @@ const seo = read('src/data/seo.ts');
 const og = read('src/data/og.ts');
 const flowShot = read('src/components/flow/FlowShot.astro');
 
-// The wedge headline over the locked tagline in the title tag.
-assert.match(home, /The AI document app that shows its work/);
+// The wedge headline over the locked tagline in the title tag. Operator copy,
+// 2026-08-16, written against the hero picture (see the shot assertion below).
+assert.match(home, /Bring open AI models to your documents/);
 assert.match(home, /title=\{`\$\{SITE\.tagline\} · Orionfold`\}/);
 assert.match(home, /hero-gradient-text/, 'the hero title keeps the shared Orionfold gradient fill');
 assert.match(home, /home-chip--accent">Patent pending</, 'the patent-pending chip stays in the hero');
@@ -27,7 +28,11 @@ assert.match(home, /Free to join · Double opt-in · One email a week, no more/)
 
 // The real development-build capture is the hero visual and the only eager image
 // candidate; FlowShot renders eager + fetchpriority only when priority is set.
-assert.match(home, /<FlowShot\s[\s\S]*?src=\{shotApprove\}[\s\S]*?priority\s/);
+// The hero shot became the resource-popover capture on 2026-08-16: it is the one
+// frame carrying the whole headline (usage, tokens, cost, model) at once, and
+// unlike the other captures it stays legible WITHOUT an overlay crop, which is
+// why the hero deliberately has no .of-stage detail.
+assert.match(home, /<FlowShot\s[\s\S]*?src=\{shotResourcePopover\}[\s\S]*?priority\s/);
 assert.match(flowShot, /loading=\{priority \? 'eager' : 'lazy'\}/);
 assert.match(flowShot, /fetchpriority=\{priority \? 'high' : undefined\}/);
 assert.equal((home.match(/\spriority\b/g) ?? []).length, 1, 'exactly one FlowShot is the eager hero image');

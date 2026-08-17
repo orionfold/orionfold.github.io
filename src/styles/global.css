@@ -49,12 +49,17 @@
   --color-bg: #f9fafb;               /* DS-native alias of the canvas */
   --color-raised: #ffffff;
 
-  /* ── text ── */
+  /* ── text ──
+     Darkened 2026-08-16. The old muted/#6b7280 + dim/#9aa1ab pair measured
+     4.63:1 and 2.49:1 on the #f9fafb canvas: the fine print FAILED WCAG AA
+     outright, and because muted carried nearly all body copy the page read
+     washed out. These values keep the same cool-grey character and clear AA
+     everywhere (muted 6.46:1, dim 4.78:1). Body copy is meant to be read. */
   --color-text: #1d1f25;
-  --color-text-muted: #6b7280;
-  --color-text-dim: #9aa1ab;
-  --color-muted: #6b7280;            /* DS-native alias */
-  --color-faint: #9aa1ab;            /* DS-native alias */
+  --color-text-muted: #555c67;
+  --color-text-dim: #677080;
+  --color-muted: #555c67;            /* DS-native alias */
+  --color-faint: #677080;            /* DS-native alias */
 
   /* ── THE one action color — Tide cyan (was indigo) ── */
   --color-primary: #0e9e98;
@@ -64,6 +69,13 @@
   --color-accent-hover: #0c8b86;
   --color-accent-text: #ffffff;
   --color-accent-soft: color-mix(in oklch, #0e9e98 10%, #ffffff);       /* feature-surface tint */
+  /* Accent INK — the accent as TYPE, not as a fill (added 2026-08-16).
+     #0e9e98 is correct behind white button text, but as small text on the page
+     canvas it measures 3.16:1 and fails AA. Every kicker, eyebrow, inline link
+     and small accent label uses this deeper cyan (4.89:1) instead. Same hue
+     family, so the brand does not shift; only the contrast does. Solid fills
+     keep --color-accent, where the ratio is measured against white. */
+  --color-accent-ink: #0a7b77;
 
   /* ── status — functional only, never a 2nd accent ── */
   --color-success: #1a9e3e;
@@ -147,6 +159,13 @@
   --font-display: "Geist Sans", system-ui, sans-serif;
   --font-body: "Geist Sans", system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+
+  /* Scroll-reveal easing. A symmetric ease-in-out: eases out of rest, holds
+     speed through the middle, settles without the long near-flat tail that
+     made the old ease-out curves look like dropped frames at the finish.
+     Every [data-animate] variant shares this so the page decelerates on one
+     rhythm. Change it here, not per component. */
+  --of-ease-reveal: cubic-bezier(0.42, 0, 0.32, 1);
 }
 
 /* ── DARK THEME — remap the SAME token names (DS [data-theme="dark"]) ──
@@ -168,12 +187,14 @@ html[data-theme="dark"] {
   --color-bg: #15171b;
   --color-raised: #262b33;
 
-  /* text */
+  /* text — dim lifted 2026-08-16 (#727a85 measured 4.13:1 on the #15171b
+     canvas and failed AA for the mono fine print it carries; #838b96 clears it
+     at 5.24:1). muted was already comfortable at 6.89:1 and is unchanged. */
   --color-text: #e9ecf0;
   --color-text-muted: #9aa1ab;
-  --color-text-dim: #727a85;
+  --color-text-dim: #838b96;
   --color-muted: #9aa1ab;
-  --color-faint: #727a85;
+  --color-faint: #838b96;
 
   /* the one action color — brighter cyan on dark */
   --color-primary: #14c8c0;
@@ -183,6 +204,9 @@ html[data-theme="dark"] {
   --color-accent-hover: #2ad6cd;
   --color-accent-text: #04201f;
   --color-accent-soft: color-mix(in oklch, #14c8c0 14%, #1f2228);
+  /* On dark the accent is already 8.59:1 as type, so ink == accent here. The
+     token still exists so components can reference one name in both themes. */
+  --color-accent-ink: #14c8c0;
 
   /* status */
   --color-success: #3fd55a;
@@ -287,7 +311,14 @@ body::before {
   }
 }
 
-/* ── Typography ── */
+/* ── Typography ──
+   Tracking added 2026-08-16. Headings previously ran at the font's default
+   spacing at every size, which is what made large type read loose and flat:
+   type drawn for 17px is far too airy at 48px. Optical sizing wants tracking to
+   TIGHTEN as size grows, so each level now carries its own negative tracking
+   and its own line-height (big type needs proportionally less leading).
+   Weight stays 700 for brand voice; the display sizes below are where the
+   character comes from, not extra weight. */
 @layer base {
   h1, h2, h3, h4 {
     font-family: var(--font-display);
@@ -296,9 +327,24 @@ body::before {
     color: var(--color-text);
   }
 
-  h1 { font-size: clamp(2rem, 6vw, 5rem); }
-  h2 { font-size: clamp(1.75rem, 4vw, 3rem); }
-  h3 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); }
+  h1 {
+    font-size: clamp(2rem, 6vw, 5rem);
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+  }
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.032em;
+  }
+  h3 {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    line-height: 1.18;
+    letter-spacing: -0.021em;
+  }
+  h4 {
+    letter-spacing: -0.014em;
+  }
 }
 
 /* ── CSS containment for section isolation ── */
@@ -317,8 +363,11 @@ section {
 .js-ready [data-animate] {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Matched durations + the shared ease-in-out. The old value here was
+     cubic-bezier(0.16, 1, 0.3, 1) — an extreme ease-out whose tail is nearly
+     flat, which is exactly the "stutter at the end" the operator saw. */
+  transition: opacity 0.55s var(--of-ease-reveal),
+              transform 0.55s var(--of-ease-reveal);
 }
 
 .js-ready [data-animate].is-visible {
@@ -334,6 +383,125 @@ section {
 .js-ready [data-animate-stagger] > [data-animate]:nth-child(5) { transition-delay: 160ms; }
 .js-ready [data-animate-stagger] > [data-animate]:nth-child(6) { transition-delay: 200ms; }
 .js-ready [data-animate-stagger] > [data-animate]:nth-child(7) { transition-delay: 240ms; }
+
+/* ── Editorial motion vocabulary (2026-08-16) ──
+   The reveal above is one gesture: rise 24px and fade. That is fine for a grid
+   of cards and too flat for a product page, where the reader should feel the
+   page composing itself around ONE claim at a time.
+   These variants ride the SAME [data-animate] observer and the same .is-visible
+   flip, so there is no second JS path to keep alive, and the reduced-motion
+   block below neutralises all of them in one rule. Only opacity and transform
+   are animated — both composite on the GPU and neither triggers layout.
+
+   The travel distances and the 150ms stagger come from Apple's production
+   marketing CSS (measured 2026-08-16).
+
+   REVISED 2026-08-16 (second pass). The original timings ran opacity 200ms
+   longer than transform, so the element finished settling before it finished
+   appearing. It looked good in isolation and caused two real defects:
+     * `transitionend` fires PER PROPERTY, so the shorter transform ended first
+       and the observer dropped will-change while opacity was still animating,
+       collapsing the compositing layer mid-animation. This is what the operator
+       saw as "less fps when finishing scroll".
+     * `ease-out` spends its last ~200ms moving almost no pixels per frame, and
+       the eye reads that near-flat tail as stutter rather than as easing.
+   So durations are now MATCHED per variant and every variant shares
+   `--of-ease-reveal`, a symmetric ease-in-out. If you unmatch the durations
+   again, the property-counting guard in Layout.astro is what keeps the layer
+   alive — do not simplify it back to `{ once: true }`.
+
+   data-animate="lead"  a headline: the full 30px rise. The anchor of a section.
+   data-animate="rise"  supporting copy: a shorter 20px move, same curve.
+   data-animate="plate" a product image: rises while scaling up from 0.97, so
+                        the picture settles into place rather than sliding in.
+   data-animate="wipe"  a stat or rule: grows from the left on its own axis. */
+/* EASING (revised 2026-08-16 after the operator reported the finish looking
+   like dropped frames). The old curve was `ease-out` — a steep start that
+   decelerates hard into the stop. Its final ~200ms move so few pixels per
+   frame that the eye reads the deceleration itself as stutter, especially on
+   a high-refresh display. It is not a frame-rate problem; it is the curve.
+
+   `--of-ease-reveal` is a true ease-IN-OUT: it accelerates out of rest and
+   settles symmetrically, so no part of the travel crawls. Every reveal now
+   shares it, which also means the whole page decelerates on one rhythm
+   instead of three competing ones.
+
+   DURATIONS ARE NOW MATCHED per variant (transform == opacity). They used to
+   differ (0.7s/0.9s), which was deliberate for the look — but it is what broke
+   the compositing teardown: `transitionend` fires PER PROPERTY, so the shorter
+   transform ended first and dropped will-change while opacity was still
+   animating, forcing a mid-animation layer collapse. That is the actual source
+   of the "fewer fps when finishing" report. Matching the durations means one
+   clean end for both properties. See the transitionend guard in Layout.astro,
+   which now also counts properties rather than trusting the first event. */
+.js-ready [data-animate="lead"] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: transform 0.8s var(--of-ease-reveal), opacity 0.8s var(--of-ease-reveal);
+}
+.js-ready [data-animate="rise"] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: transform 0.7s var(--of-ease-reveal), opacity 0.7s var(--of-ease-reveal);
+}
+.js-ready [data-animate="plate"] {
+  opacity: 0;
+  /* Media travels furthest, so it gets the longest settle. */
+  transform: translateY(30px) scale(0.972);
+  transition: transform 0.9s var(--of-ease-reveal), opacity 0.9s var(--of-ease-reveal);
+}
+.js-ready [data-animate="wipe"] {
+  opacity: 0;
+  transform: scaleX(0.82);
+  transform-origin: left center;
+  transition: transform 0.7s var(--of-ease-reveal), opacity 0.7s var(--of-ease-reveal);
+}
+.js-ready [data-animate="lead"].is-visible,
+.js-ready [data-animate="rise"].is-visible,
+.js-ready [data-animate="plate"].is-visible,
+.js-ready [data-animate="wipe"].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Deliberate stagger for a row of peer items. The default 40ms step above is
+   imperceptible; 150ms is Apple's measured sibling delay and reads as a
+   sequence. Capped at 6 so a long grid never makes the last card feel late. */
+.js-ready [data-animate-stagger="slow"] > [data-animate]:nth-child(1) { transition-delay: 0ms; }
+.js-ready [data-animate-stagger="slow"] > [data-animate]:nth-child(2) { transition-delay: 150ms; }
+.js-ready [data-animate-stagger="slow"] > [data-animate]:nth-child(3) { transition-delay: 300ms; }
+.js-ready [data-animate-stagger="slow"] > [data-animate]:nth-child(4) { transition-delay: 450ms; }
+.js-ready [data-animate-stagger="slow"] > [data-animate]:nth-child(5) { transition-delay: 600ms; }
+.js-ready [data-animate-stagger="slow"] > [data-animate]:nth-child(6) { transition-delay: 750ms; }
+
+/* ── Decode-gated image fade (2026-08-16) ──
+   Large lazy captures (200-345 KB) were popping into view mid-scroll: the
+   browser starts the fetch at the observer's rootMargin and paints the moment
+   the async decode lands, which lands whenever it lands — often part-way
+   through the container's reveal animation. That is the "large images flash
+   during scroll" report.
+
+   `data-fade` holds the image transparent until its own decode completes, then
+   fades it in on its own short curve. The image and its container animate
+   independently, so a slow decode can no longer interrupt a reveal.
+
+   FAIL-SAFE, load-bearing: the hidden state is gated on `.js-ready`, the same
+   class the reveal system uses. Without JS the rule never applies and every
+   image is simply visible — a decode-gated fade must never be able to hide
+   content permanently. `.is-decoded` is set from JS (Layout.astro). */
+.js-ready img[data-fade] {
+  opacity: 0;
+}
+.js-ready img[data-fade].is-decoded {
+  opacity: 1;
+}
+img[data-fade] {
+  transition: opacity 0.45s var(--of-ease-reveal);
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-ready img[data-fade] { opacity: 1; }
+  img[data-fade] { transition: none; }
+}
 
 /* ── Primary glow pulse (GPU-composited via opacity) ── */
 .primary-pulse {
@@ -447,9 +615,18 @@ section {
 
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
-  /* Match the .js-ready specificity so this overrides the scoped reveal rule. */
+  /* Match the .js-ready specificity so this overrides the scoped reveal rule.
+     The valued variants (lead/rise/plate/wipe) are listed explicitly: each of
+     those selectors carries an attribute-VALUE, so relying on the bare
+     [data-animate] rule to beat them would come down to source order, and this
+     block sits later in the file only by convention. Naming them is the
+     guarantee that "reduce" means no motion, whichever gesture was requested. */
   .js-ready [data-animate],
-  [data-animate] {
+  [data-animate],
+  .js-ready [data-animate="lead"],
+  .js-ready [data-animate="rise"],
+  .js-ready [data-animate="plate"],
+  .js-ready [data-animate="wipe"] {
     opacity: 1;
     transform: none;
     transition: none;
@@ -596,6 +773,154 @@ section {
 .of-chip.t6 { background: var(--color-t6-bg); color: var(--color-t6-fg); border-color: color-mix(in oklch, var(--color-t6-fg) 22%, var(--color-border)); }
 .of-chip.t7 { background: var(--color-t7-bg); color: var(--color-t7-fg); border-color: color-mix(in oklch, var(--color-t7-fg) 22%, var(--color-border)); }
 
+/* ── Editorial primitives (2026-08-16) ──
+   The Apple-style section rhythm is eyebrow → headline → one line of body.
+   These give that rhythm real tokens instead of the ad-hoc `.home-kicker` /
+   `.flow-kicker` copies each page used to declare for itself.
+
+   of-eyebrow — the small mono label above a section headline. Accent INK, so
+   it passes AA as type (the fill cyan does not at this size). */
+.of-eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.23em;
+  text-transform: uppercase;
+  color: var(--color-accent-ink);
+}
+
+/* of-display — a section headline that should read as a statement, not a
+   label. Tight tracking is what makes large type look composed rather than
+   merely big; it is applied only at display sizes, never to body copy. */
+.of-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.033em;
+  text-wrap: balance;
+  color: var(--color-text);
+}
+
+/* of-lede — the single sentence under a display headline. Larger and darker
+   than body copy: it is the one line most readers actually read. */
+.of-lede {
+  max-width: 46ch;
+  font-size: 1.14rem;
+  line-height: 1.62;
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+
+/* of-spec-figure / of-spec-label — the "measured, not promised" pairing.
+   The number carries the weight; its label stays quiet underneath it. */
+.of-spec-figure {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+.of-spec-label {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+/* The dated scope line under a measurement. Deliberately the quietest type on
+   the page, but it must still be READABLE — it is the receipt for the claim. */
+.of-spec-fine {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  line-height: 1.65;
+  letter-spacing: 0.045em;
+  color: var(--color-text-dim);
+}
+
+/* ── of-stage: the house pattern for a product section (2026-08-16, round 2) ──
+   The operator picked this out of round 1 as THE way Orionfold shows product:
+   a wide product shot with one purpose-cut zoom crop staggered over it. The
+   window says "real Mac app"; the crop says "and here, legibly, is the thing
+   the headline just claimed". Round 1 only used it in the two heroes; this
+   promotes it to a primitive so every stacked product band can adopt it
+   without each page re-deriving the geometry.
+
+   Media runs wider than copy, the way Apple lets media reach 1440–1728px while
+   text stays near 1068px. `section { contain: layout style }` makes each
+   section its own containing block, so a section child cannot escape with the
+   usual 50vw margin trick — and it should not: a horizontal scrollbar is a
+   worse bug than a contained image. So "full-bleed" here means the media grows
+   to its own wider max-width and the copy stays narrow, which reads as the
+   same release of pressure without fighting containment or overflow.
+
+   STAGGER ROTATION — deliberate, do not collapse this back to one position.
+   The operator explicitly asked for diversity across bands. Each section picks
+   a corner modifier; the sequence down a page should not repeat adjacently:
+     .of-stage__detail--br   bottom-right   (the homepage hero's position)
+     .of-stage__detail--tl   top-left
+     .of-stage__detail--bl   bottom-left
+     .of-stage__detail--tr   top-right
+   Below `lg` every one of them falls back to normal flow underneath the shot.
+   That is not a nicety: overlapping on a narrow screen hides the very context
+   the crop is being explained against. */
+.of-stage {
+  position: relative;
+  margin-inline: auto;
+  width: 100%;
+  max-width: 78rem;
+  /* How far the crop hangs past the shot. One value drives both the reserved
+     padding and the crop's own offset, so a top-anchored crop overlaps the
+     picture by the same amount a bottom-anchored one does. */
+  --of-stage-overhang: 5.5rem;
+}
+/* SPECIFICITY, load-bearing: the crop is a FlowDetail, whose own scoped rule
+   compiles to `.flow-detail[data-astro-cid-…] { position: relative }` — that is
+   (0,2,0) and beats a plain `.of-stage__detail` at (0,1,0). In round 1 these
+   overlays lived inside each page's scoped <style>, so they picked up the same
+   attribute boost for free; promoting them to a global primitive silently lost
+   it and every crop dropped back into normal flow. Doubling the class matches
+   the (0,2,0) without an !important or a hard-coded Astro hash. */
+.of-stage .of-stage__detail.of-stage__detail {
+  margin-top: 1.15rem;
+}
+@media (min-width: 1024px) {
+  /* Reserve the room the crop hangs into so the next block never collides
+     with it, whatever the crop's rendered height turns out to be. */
+  .of-stage--pad-bottom { padding-bottom: var(--of-stage-overhang); }
+  .of-stage--pad-top { padding-top: var(--of-stage-overhang); }
+  .of-stage .of-stage__detail.of-stage__detail {
+    position: absolute;
+    z-index: 2;
+    width: 27rem;
+    margin-top: 0;
+  }
+  /* Anchored to the SHOT, not to the padded stage box: --pad-top reserves room
+     above the shot, so a crop pinned to the stage's own top edge would sit in
+     that reserved gap instead of overlapping the picture it explains. */
+  .of-stage .of-stage__detail--br.of-stage__detail--br { right: -1.5rem; bottom: 0; }
+  .of-stage .of-stage__detail--bl.of-stage__detail--bl { left: -1.5rem; bottom: 0; }
+  /* Top-anchored crops hang UP out of the shot, mirroring the bottom pair.
+     They shift by slightly LESS than the full reserved overhang so the crop
+     still overlaps the window instead of floating clear of it. */
+  .of-stage .of-stage__detail--tl.of-stage__detail--tl { left: -1.5rem; top: var(--of-stage-overhang); margin-top: calc(var(--of-stage-overhang) * -0.72); }
+  .of-stage .of-stage__detail--tr.of-stage__detail--tr { right: -1.5rem; top: var(--of-stage-overhang); margin-top: calc(var(--of-stage-overhang) * -0.72); }
+  /* A top-anchored crop's caption would land ON the window's title bar, where
+     it is unreadable against the UI behind it. Flip the figure so the caption
+     rides above the plate for that pair only. */
+  .of-stage .of-stage__detail--tl.of-stage__detail--tl,
+  .of-stage .of-stage__detail--tr.of-stage__detail--tr {
+    flex-direction: column-reverse;
+  }
+}
+@media (min-width: 1280px) {
+  .of-stage .of-stage__detail.of-stage__detail { width: 30rem; }
+  .of-stage .of-stage__detail--br.of-stage__detail--br { right: -3rem; }
+  .of-stage .of-stage__detail--bl.of-stage__detail--bl { left: -3rem; }
+  .of-stage .of-stage__detail--tl.of-stage__detail--tl { left: -3rem; }
+  .of-stage .of-stage__detail--tr.of-stage__detail--tr { right: -3rem; }
+}
+
 .of-primary-action,
 .of-secondary-action,
 .of-text-action {
@@ -635,9 +960,10 @@ section {
   background: var(--color-primary-dim);
   color: var(--color-accent);
 }
-/* text → cyan textlink */
+/* text → cyan textlink. Uses accent-INK, not accent: as small type on the page
+   canvas the fill cyan measures 3.16:1 and fails AA, while the ink clears it. */
 .of-text-action {
-  color: var(--color-accent);
+  color: var(--color-accent-ink);
 }
 .of-text-action:hover {
   color: var(--color-accent-hover);

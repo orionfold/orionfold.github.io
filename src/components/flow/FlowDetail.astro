@@ -1,0 +1,106 @@
+---
+// A single Flow feature, shown at a size where you can actually read it.
+//
+// FlowShot renders a whole 2560x1400 app window. That is the right frame for
+// "here is the product", and the wrong frame for "here is the control that
+// proves this sentence" — at column width, one control in a full window is
+// about eight pixels tall. FlowDetail is the other frame: a purpose-cut
+// rectangle from the same real capture (see scripts/prepare-flow-details.mjs),
+// rendered near 1:1 so the labels, states, and numbers are legible.
+//
+// It carries no window chrome on purpose. Chrome would imply "this is the whole
+// app"; these are deliberately magnified fragments, and the `magnified` label
+// says so rather than letting a reader think the app looks like this.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** Short line under the crop naming what is on screen. */
+  caption?: string;
+  /** Responsive sizes hint; match the column this sits in. */
+  sizes?: string;
+  /** Lift the crop toward the reader with a soft accent glow behind it. */
+  glow?: boolean;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  caption,
+  sizes = '(min-width: 1024px) 34rem, calc(100vw - 3rem)',
+  glow = false,
+  class: className,
+} = Astro.props;
+---
+<figure class:list={['flow-detail', glow && 'flow-detail--glow', className]}>
+  <div class="flow-detail__plate">
+    <Image
+      src={src}
+      alt={alt}
+      widths={[520, 780, 1040]}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      quality={92}
+      data-fade
+      data-no-zoom
+      class="flow-detail__img"
+    />
+  </div>
+  {caption && <figcaption class="flow-detail__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  /* `position: relative` here anchors the glow and is correct for a standalone
+     crop. Note it also OUTRANKS a plain `.of-stage__detail` rule in global.css:
+     Astro compiles this to `.flow-detail[data-astro-cid-…]`, which is (0,2,0)
+     and is injected after global.css, so an equal-specificity global rule loses
+     on source order. That silently dropped every overlaid crop back into normal
+     flow on 2026-08-16 — the build and all tests still passed. The .of-stage
+     overlay selectors are deliberately (0,3,0) so they win here; keep them that
+     way, and see tests/e2e/product-stage.spec.ts, which asserts the resolved
+     computed style rather than the source text. */
+  .flow-detail {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  /* The crop sits on its own raised plate so a light-UI capture still reads as
+     a distinct object on a light page (and does not float on the dark theme). */
+  .flow-detail__plate {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in oklch, var(--color-primary) 22%, var(--color-border));
+    border-radius: var(--radius-of-lg);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-of-pop);
+  }
+  .flow-detail__img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* A soft accent bloom behind the plate. Gradient, never filter: blur() —
+     blurred layers at retina DPR were a measured scroll-jank source here. */
+  .flow-detail--glow::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -12% -8%;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, var(--color-primary-glow), transparent 72%);
+    pointer-events: none;
+  }
+  .flow-detail__caption {
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.1em;
+    line-height: 1.6;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+</style>

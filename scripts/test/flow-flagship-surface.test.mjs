@@ -6,9 +6,20 @@
 // Intelligence, no pricing, gated agency, patent-pending phrasing).
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const read = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url), 'utf8');
+// Source with comments removed, for the assertions that are about what a READER
+// sees. The em-dash ban is a copy rule (an em dash in body text is one of the
+// AI tells the house style bans); it is not a rule about how we annotate our own
+// CSS. Asserting it against the raw file conflated the two and made an
+// explanatory code comment fail a copy contract.
+const readCopy = (relativePath) =>
+  read(relativePath)
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ') // JSX-expression comments in the template
+    .replace(/<!--[\s\S]*?-->/g, ' ') // HTML comments
+    .replace(/\/\*[\s\S]*?\*\//g, ' ') // block comments (frontmatter + <style>)
+    .replace(/^\s*\/\/.*$/gm, ' '); // whole-line // comments
 const readBinary = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url));
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -45,7 +56,7 @@ assert.match(flow, /In development · Freemium subscription planned/);
 assert.match(flow, /Every screen below is the real development build/);
 // Truth boundaries from the Flow capability briefs.
 assert.doesNotMatch(flow, /Apple Intelligence/, 'Apple Intelligence was retired from Flow on 2026-08-14 and must not appear');
-assert.doesNotMatch(flow, /—/, 'Flow landing-page copy must not use em dashes');
+assert.doesNotMatch(readCopy('src/pages/flow.astro'), /—/, 'Flow landing-page copy must not use em dashes');
 assert.doesNotMatch(flow, /data-checkout=/, 'Flow must not expose checkout before commercial terms exist');
 assert.doesNotMatch(flow, /\$\d+\s*(?:\/|per\s)/i, 'no price tiers exist yet, so none may be implied');
 assert.match(flow, /Install nothing but Flow\./, 'the runtime story stays "built so that", led by its own chapter');
@@ -62,12 +73,72 @@ const anchors = ['id="tour"', 'id="enterprise"', 'id="stack"', 'id="press"', 'id
 const anchorIndexes = anchors.map((a) => flow.indexOf(a));
 assert.ok(anchorIndexes.every((i) => i >= 0), 'every landing anchor must exist');
 assert.deepEqual([...anchorIndexes].sort((a, b) => a - b), anchorIndexes, 'anchor order must stay tour, enterprise, stack, press, waitlist');
-for (const id of ['tour-agency', 'tour-longdocs', 'tour-domains', 'tour-runtime', 'tour-search', 'tour-tables', 'tour-files']) {
-  assert.match(flow, new RegExp(`id="${id}" class="scroll-mt-28`), `${id} must stay a linkable tour chapter`);
+// Each tour chapter stays deep-linkable AND stays clear of the fixed nav when
+// jumped to. The two are asserted separately because the class list is not
+// order-stable: the 2026-08-16 typography pass added .of-display alongside
+// scroll-mt-28, and a combined "id then class" regex broke on the reorder
+// while the anchors themselves were still perfectly fine.
+for (const id of ['tour-agency', 'tour-longdocs', 'tour-domains', 'tour-runtime', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
+  const heading = flow.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
+  assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
+  assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
 }
 // Real capture rail: every tour shot comes from the dev-build capture set.
 assert.match(flow, /import FlowShot from '\.\.\/components\/flow\/FlowShot\.astro'/);
-assert.equal((flow.match(/from '\.\.\/assets\/flow\/shots\//g) ?? []).length, 8, 'all eight development-build captures stay imported');
+// The requirement is provenance, not a headcount: every picture on the page has
+// to come from the real development-build capture set (or a purpose-cut crop of
+// one) rather than a stock or mocked image. Asserting an exact number made an
+// ordinary edit — 2026-08-16 replaced the raw readout strip with a legible crop
+// cut from that same strip — look like a contract breach when nothing about the
+// provenance rule had changed.
+// Product imagery only: the app icon also lives under assets/flow/ and is
+// brand art, not evidence, so it is deliberately outside this rule.
+const flowProductImages = [...flow.matchAll(/from '\.\.\/assets\/flow\/(shots|details)\/([^']+)'/g)];
+assert.ok(flowProductImages.length >= 8, 'the tour keeps its rail of real captures');
+for (const [, dir, file] of flowProductImages) {
+  assert.match(file, /\.webp$/, `${file} must ship as webp`);
+  assert.ok(
+    existsSync(new URL(`../../src/assets/flow/${dir}/${file}`, import.meta.url)),
+    `${dir}/${file} must exist on disk`,
+  );
+}
+// Both frames stay on the page: a crop proves one control is real, a whole
+// window proves it is a real Mac app. A page of crops alone loses the second.
+assert.ok(flowProductImages.some(([, dir]) => dir === 'shots'), 'the tour keeps whole-window captures for context');
+assert.ok(flowProductImages.some(([, dir]) => dir === 'details'), 'the tour keeps legible purpose-cut crops');
+// ── Legible feature details (2026-08-16 Apple-style imagery pass) ──────────
+// A full 2560x1400 window rendered into a page column shows the control a
+// section is describing at roughly eight pixels tall, so the claim cannot be
+// checked by eye. Every detail below is a purpose-cut crop of ONE control from
+// the same real capture, produced by scripts/prepare-flow-details.mjs and shown
+// near 1:1. These assertions keep the crops present, generated, and captioned.
+const detailScript = read('scripts/prepare-flow-details.mjs');
+assert.match(flow, /import FlowDetail from '\.\.\/components\/flow\/FlowDetail\.astro'/);
+for (const detail of [
+  'detail-proposal', 'detail-checks', 'detail-diff', 'detail-domains',
+  'detail-runtime-storage', 'detail-parts', 'detail-grid', 'detail-search',
+]) {
+  assert.match(detailScript, new RegExp(`out: '${esc(detail)}\\.webp'`), `${detail} must stay a generated crop`);
+  assert.ok(
+    existsSync(new URL(`../../src/assets/flow/details/${detail}.webp`, import.meta.url)),
+    `${detail}.webp must be committed (re-run scripts/prepare-flow-details.mjs)`,
+  );
+}
+// Every crop is cut from a real development-build capture, never a mock.
+for (const [, from] of detailScript.matchAll(/from: '([^']+)'/g)) {
+  assert.ok(
+    existsSync(new URL(`../../src/assets/flow/shots/${from}`, import.meta.url)),
+    `${from} must exist in the capture set that the crops are cut from`,
+  );
+}
+// The crops are magnified fragments, so they carry no window chrome and must
+// say what is on screen; an uncaptioned crop reads as a stray UI screenshot.
+const flowDetailComponent = read('src/components/flow/FlowDetail.astro');
+assert.match(flowDetailComponent, /caption &&/, 'FlowDetail renders its caption when given one');
+// Anchored to line-start so the rule catches a real declaration and not the
+// comment that explains why the declaration is banned.
+assert.doesNotMatch(flowDetailComponent, /^\s+filter:\s*blur\(/m, 'blur filters stay out of the shot frame (retina scroll-jank source)');
+
 // The Living Workbench concept illustration closes the probe section.
 assert.match(flow, /import FlowWorkbenchIllustration from '\.\.\/components\/flow\/FlowWorkbenchIllustration\.astro'/);
 assert.match(flow, /<FlowWorkbenchIllustration \/>/);
@@ -93,11 +164,29 @@ const home = read('src/pages/index.astro');
 assert.match(home, /title=\{`\$\{SITE\.tagline\} · Orionfold`\}/);
 assert.match(home, /description=\{SITE\.description\}/);
 assert.match(home, /jsonLd=\{\[flowSchema\]\}/, 'the homepage carries the Flow SoftwareApplication entity');
-assert.match(home, /The AI document app that shows its work/);
+// Hero copy, operator-written 2026-08-16 against the resource-popover picture.
+// "open" is load-bearing in the headline — it is the positioning wedge, not a
+// stray adjective, so it is asserted rather than left to a loose match.
+assert.match(home, /Bring open AI models to your documents/);
 assert.match(home, /Patent pending/);
-assert.match(home, /End the copy-paste dance between a chat window and your document/);
+// Asserted sentence by sentence, not as one run of text: each lives in its own
+// <span> so it can be set nowrap on large screens (one sentence per line), and
+// a regex spanning the markup between them would break on any layout tweak.
+// Open-first is not open-only — the last two sentences head off "so I am stuck
+// with small local models", and dropping them leaves the headline limiting.
+for (const sentence of [
+  'Stay in control of cost, privacy, and quality on your Mac.',
+  'Switching to frontier models is a checkbox.',
+  'Flow selects the best model for the job.',
+]) {
+  assert.match(home, new RegExp(esc(sentence)), `the hero lede keeps: ${sentence}`);
+}
+// The approval promise left the hero but must not leave the homepage — it moved
+// into the leading capability band, which still shows it with the diff crop.
+assert.match(home, /Nothing is saved until you approve it\./, 'the approval gate stays on the homepage after moving out of the hero');
+assert.match(home, /You draft in a chat window, paste into your document/, 'the copy-paste argument stays on the page, in the problem band');
 assert.match(home, /Chat is where work evaporates\./, 'the buyer-language problem band leads the argument');
-assert.doesNotMatch(home, /—/, 'homepage copy must not use em dashes');
+assert.doesNotMatch(readCopy('src/pages/index.astro'), /—/, 'homepage copy must not use em dashes');
 // Hero waitlist capture with its own attribution source and the canonical consent.
 assert.match(home, /id="home-hero-waitlist"/);
 assert.match(home, /source="home-hero-waitlist"/);
@@ -108,6 +197,21 @@ assert.ok(consent, 'the hero form declares its consent copy');
 assert.ok(flowWaitlistComponent.includes(consent), 'hero consent copy must stay byte-identical to FlowWaitlist');
 // Real capture hero + capability rows into the tour.
 assert.match(home, /<FlowShot[\s\S]*?priority/, 'the hero shot stays the eager LCP image');
+// The homepage pairs each window with a legible crop of the control its
+// headline names (2026-08-16 imagery pass), same rationale as /flow/ above.
+assert.match(home, /import FlowDetail from '\.\.\/components\/flow\/FlowDetail\.astro'/);
+// The requirement is that the DIFF stays proven with a picture — not that the
+// hero is where that happens. On 2026-08-16 the resource popover took the hero
+// slot and the approval story moved into the leading capability band, so this
+// asserts the crop is on the page rather than pinning it to one section. The
+// hero itself deliberately carries NO crop: its capture is legible whole, and
+// the overlay exists to rescue an illegible control, not as decoration.
+assert.match(home, /detail: detailDiff/, 'the diff crop stays on the homepage, in the band that now makes the approval claim');
+assert.match(home, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'the capability bands render their crops');
+assert.match(home, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'every capability band carries its own legible crop');
+for (const detailImport of ['detailDiff', 'detailDomains', 'detailParts', 'detailGrid']) {
+  assert.match(home, new RegExp(`import ${detailImport} from '\\.\\./assets/flow/details/`), `${detailImport} must come from the generated crop set`);
+}
 for (const href of ['/flow/#tour-longdocs', '/flow/#tour-domains', '/flow/#tour-files', '/flow/#enterprise', '/flow/#press']) {
   assert.match(home, new RegExp(esc(href)), `${href} must stay linked from the homepage`);
 }

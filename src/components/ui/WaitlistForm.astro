@@ -180,11 +180,26 @@ const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
       }
 
       try {
+        // Attribution comes from the STORED capture first, then the current URL.
+        // Why the stored copy matters: captureAttribution() (Layout.astro) writes
+        // every ad param to sessionStorage on the landing page, but a visitor who
+        // clicks an ad, reads a story, THEN signs up has no params left in the URL
+        // — reading location.search alone loses the whole click. The click ids
+        // (gclid/fbclid) are the part that cannot be reconstructed later, and they
+        // are what makes offline conversion import to Google/Meta possible.
+        // Unknown keys land in the lead row's metadata JSONB via the edge fn's
+        // catchall, so no schema or function change is needed to carry them.
         const params = new URLSearchParams(location.search);
+        let stored = {};
+        try {
+          stored = JSON.parse(sessionStorage.getItem('of_attribution') || '{}');
+        } catch {
+          stored = {}; // private mode / blocked storage: fall back to the URL
+        }
         const utm = {};
-        for (const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']) {
-          const v = params.get(k);
-          if (v) utm[k] = v;
+        for (const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid']) {
+          const v = params.get(k) || stored[k];
+          if (v) utm[k] = String(v).slice(0, 200);
         }
         const payload = {
           email,
@@ -239,7 +254,46 @@ const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
         if (state === '1') showSuccess("You're on the list.");
         else if (state === 'already') showSuccess("You're already on the list.");
         else if (state === 'error') showError(params.get('error') || "That link didn't work. Please try again.");
+        // Confirmed-lead conversion. This is the ONLY moment a signup becomes a
+        // real subscriber: the submit-time GA4 `generate_lead` above counts
+        // intent, but a double-opt-in list only gains a person when they click
+        // the emailed link, and confirm-email redirects here to say so. Ad
+        // platforms must optimize on THIS, or they learn to buy unconfirmed
+        // addresses. `already` is excluded deliberately: a re-confirm is not a
+        // new lead. Fired once per confirm token via the redirect's own query
+        // param, which history.replaceState then strips, so a reload cannot
+        // double-count.
+        if (state === '1') reportConfirmedLead();
         history.replaceState({}, '', location.pathname);
+      }
+    }
+
+    // Report a confirmed subscriber to every ad platform that is listening.
+    // Every call is best-effort and independently guarded: a blocked pixel or a
+    // missing conversion action must never break the confirmation banner the
+    // subscriber is here to read.
+    function reportConfirmedLead() {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'confirmed_lead', { offer, source });
+          // Google Ads conversion action, when one is configured. Kept separate
+          // from the Purchase action on purpose: waitlist volume must never skew
+          // bidding on the revenue action.
+          if (window.__ofAdsLeadSendTo) {
+            window.gtag('event', 'conversion', { send_to: window.__ofAdsLeadSendTo });
+          }
+        }
+        // Meta standard `Lead` event. The pixel loads lazily (first interaction,
+        // idle, or a 3s timeout — see Layout.astro), and this fires on a FRESH
+        // page load from the confirm-email redirect, so fbq may not exist yet.
+        // Force the pixel up first, exactly as reportPurchase does, then track.
+        // No-op when the pixel is gated off: the hook is simply undefined.
+        window.__ofLoadMetaPixel?.();
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'Lead', { content_name: offer || source });
+        }
+      } catch {
+        // analytics is never load-bearing
       }
     }
   })();

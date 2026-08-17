@@ -20,11 +20,16 @@ MARKETING-HANDOFF.md
 _SPECS/
 HANDOFF.md
 
-# Flow patent publishing contract (confidential, local-only)
-FLOW-PATENT-CONTRACT.md
-
 # SEO/AEO audit reports — may contain Search Console / Analytics figures (local-only)
 audit-reports/
+
+# Data-fix migrations that name a real subscriber (PII). This repo is PUBLIC and
+# committing is publishing, so a migration whose BODY contains a customer email
+# must never be tracked — it would republish the address of someone who asked us
+# to stop contacting them. These are applied to production with `supabase db push`
+# from this machine and then live on disk only; the remote migration history is
+# the record, not git. Schema migrations stay tracked as normal.
+supabase/migrations/*_suppress_reply_unsubscribe.sql
 
 # Lighthouse CI transient working dir (reports land in audit-reports/lhci/ via the filesystem target)
 .lighthouseci/

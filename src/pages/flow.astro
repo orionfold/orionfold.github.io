@@ -3,12 +3,17 @@
 // capability briefs in the Flow repo (docs/reference/flow-*-source.md). Every
 // screenshot is a real capture of the running development build over the
 // synthetic flow-demo library; every number is a recorded measurement with its
-// date. Copy stays inside each brief's truth boundary: the bundled runtime is
-// "built so that", agency is gated not autonomous, no pricing exists yet.
+// date. Copy stays inside each brief's truth boundary: agency is gated not
+// autonomous, no pricing or launch date exists yet, and every qualification
+// ("on one M3 Max", "whole-Mac", "development build") stays welded to the claim
+// it constrains. Those boundaries MOVE as proofs land: the zero-install claim
+// was hedged until its notarized-install proof passed on 2026-08-14, so re-read
+// the brief before changing a claim rather than trusting this comment.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
+import FlowDetail from '../components/flow/FlowDetail.astro';
 import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustration.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import { Image } from 'astro:assets';
@@ -24,6 +29,20 @@ import shotSearch from '../assets/flow/shots/flow-search-shot.webp';
 import shotTables from '../assets/flow/shots/flow-table-editor-shot.webp';
 import shotOrganizer from '../assets/flow/shots/flow-organizer-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
+import shotRuntimeModels from '../assets/flow/shots/flow-runtime-models-shot.webp';
+// Purpose-cut feature details (scripts/prepare-flow-details.mjs). Each tour
+// chapter makes a claim about one control; these crops show that control at a
+// size where the claim can be checked, instead of asking the reader to believe
+// an eight-pixel-tall fragment of a full window.
+import detailProposal from '../assets/flow/details/detail-proposal.webp';
+import detailChecks from '../assets/flow/details/detail-checks.webp';
+import detailDiff from '../assets/flow/details/detail-diff.webp';
+import detailDomains from '../assets/flow/details/detail-domains.webp';
+import detailRuntimeStorage from '../assets/flow/details/detail-runtime-storage.webp';
+import detailParts from '../assets/flow/details/detail-parts.webp';
+import detailGrid from '../assets/flow/details/detail-grid.webp';
+import detailSearch from '../assets/flow/details/detail-search.webp';
+import detailResourcePopover from '../assets/flow/details/detail-resource-popover.webp';
 
 const og = ogMeta('/flow/');
 const flowUrl = `${SITE.url}/flow/`;
@@ -119,7 +138,7 @@ const faqs = [
   },
   {
     q: 'Do I need to install a separate AI runtime?',
-    a: 'Flow is built so you can install nothing but Flow. Its app bundle carries its own local inference runtime, adding about 19 MiB to the download. If you already run Ollama or LM Studio, Flow detects them and serves the models you already pulled in place.',
+    a: 'No. Flow carries its own local inference runtime inside the app, adding about 19 MiB to the download, and it has been measured end to end: on a machine with no other AI runtime present, a model was pulled and runs were approved entirely by the app itself. If you already run Ollama or LM Studio, Flow detects them and serves the models you already pulled in place, with nothing copied.',
   },
   {
     q: 'How is Flow different from a chat canvas or artifacts panel?',
@@ -188,14 +207,13 @@ const faqSchema = {
           <span class="flow-eyebrow-chip">Native Mac</span>
           <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Patent pending</span>
         </div>
-        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.2rem,8vw,4.1rem)] font-extrabold leading-[1.08] tracking-[-0.05em]">
+        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.4rem,8.4vw,4.6rem)] font-extrabold leading-[1.03] tracking-[-0.055em]">
           Conduct beautiful documents with AI agency built in
         </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl">
-          The only ways your text changes: an edit you typed, or a change you approved.
-          No copy-paste loop between a chat window and the file. Flow is the Mac app where
-          AI does real document work in the document, shows you the exact diff, and leaves
-          a receipt naming what ran, where it ran, and what it cost.
+        <!-- One claim, stated once. The receipt, the domains, and the diff each
+             get their own chapter below, where a picture can carry them. -->
+        <p class="mx-auto mt-6 max-w-2xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
+          Your text changes two ways only: an edit you typed, or a change you approved.
         </p>
         <div class="mt-9 flex flex-wrap justify-center gap-3">
           <a href="#waitlist" class="of-primary-action">Join the waitlist</a>
@@ -219,16 +237,19 @@ const faqSchema = {
     <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-20" aria-labelledby="flow-stats-heading">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker">Measured, not promised</p>
-          <h2 id="flow-stats-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Numbers with dates, not adjectives.</h2>
-          <p class="mt-4 text-lg leading-relaxed text-text-muted">Every figure below comes from a recorded measurement of the development build. The fine print tells you exactly what was measured.</p>
+          <p class="of-eyebrow" data-animate="rise">Measured, not promised</p>
+          <h2 id="flow-stats-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Numbers with dates, not adjectives.</h2>
+          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">Every figure comes from a recorded measurement of the development build. The fine print names exactly what was measured.</p>
         </div>
-        <dl class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-animate-stagger>
+        <!-- The measurement leads; the card is a hairline, not a box. A grid of
+             six bordered panels made every number look like a UI control rather
+             than a fact you could quote. -->
+        <dl class="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3" data-animate-stagger="slow">
           {stats.map((s) => (
-            <div class="of-surface relative overflow-hidden rounded-2xl border border-border/70 p-6" data-animate>
-              <dd class="font-display text-4xl font-bold text-primary">{s.value}</dd>
-              <dt class="mt-2 text-base font-semibold text-text">{s.label}</dt>
-              <dd class="mt-2 font-mono text-[0.66rem] leading-relaxed tracking-wide text-text-dim">{s.fine}</dd>
+            <div class="flow-stat" data-animate="rise">
+              <dd class="of-spec-figure">{s.value}</dd>
+              <dt class="of-spec-label mt-2 font-semibold text-text">{s.label}</dt>
+              <dd class="of-spec-fine mt-2">{s.fine}</dd>
             </div>
           ))}
         </dl>
@@ -238,8 +259,8 @@ const faqSchema = {
     <!-- ================= THE PROBE STORY ================= -->
     <section class="px-6 py-16 sm:py-24">
       <div class="mx-auto max-w-4xl">
-        <p class="flow-kicker text-center">Why approval is the whole product</p>
-        <h2 class="mt-4 text-balance text-center text-4xl font-bold sm:text-5xl">A silent rewrite is not a feature. It is a risk.</h2>
+        <p class="flow-kicker text-center" data-animate="rise">Why approval is the whole product</p>
+        <h2 class="of-display mt-4 text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">A silent rewrite is not a feature. It is a risk.</h2>
         <div class="flow-probe mt-10 rounded-2xl border border-warn/30 bg-surface-raised/60 p-7 sm:p-9">
           <p class="text-lg leading-relaxed text-text">
             While building Flow, we tested the Mac's own built-in Writing Tools on a document that
@@ -274,46 +295,90 @@ const faqSchema = {
     <!-- ================= PRODUCT TOUR ================= -->
     <section id="tour" class="scroll-mt-28 border-t border-border/70 px-6 pt-16 sm:pt-20">
       <div class="mx-auto max-w-6xl text-center">
-        <p class="flow-kicker">The product tour</p>
-        <h2 class="mt-4 text-balance text-4xl font-bold sm:text-6xl">Real screens. Real runs. Real receipts.</h2>
+        <p class="flow-kicker" data-animate="rise">The product tour</p>
+        <h2 class="of-display mt-4 text-[clamp(2.1rem,5vw,3.5rem)]" data-animate="lead">Real screens. Real runs. Real receipts.</h2>
       </div>
     </section>
 
-    <!-- Chapter 1: Writing you approve -->
-    <section class="px-6 py-14 sm:py-20" aria-labelledby="tour-agency">
-      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
-        <div>
-          <p class="flow-kicker">Agency</p>
-          <h3 id="tour-agency" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">AI editing with a paper trail.</h3>
-          <p class="mt-4 leading-relaxed text-text-muted">
+    <!-- Chapter 1: Writing you approve.
+         The trust path is FOUR named steps, so it is shown as four pictures in
+         sequence rather than one window containing all of them at 8px. This is
+         the chapter where "shows its work" has to be literally legible. -->
+    <section class="px-6 py-16 sm:py-24" aria-labelledby="tour-agency">
+      <div class="mx-auto max-w-6xl">
+        <div class="max-w-3xl">
+          <p class="of-eyebrow" data-animate="rise">Agency</p>
+          <h3 id="tour-agency" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">AI editing with a paper trail.</h3>
+          <p class="of-lede mt-5" data-animate="rise">
             Five actions: Proofread, Summarize, Translate into eleven languages, Convert Text to Table,
-            and Convert Table to Text. Every one goes through the same trust path.
+            and Convert Table to Text. Every one goes through the same four steps.
           </p>
-          <ul class="flow-list mt-5">
-            <li>The effect sentence is derived from the proposed bytes by Flow's parser, never taken on the model's word.</li>
-            <li>Evidence is scored only where a measurement exists. A summary is deliberately not scored, and Flow says so.</li>
-            <li>Checks are named rules with six honest states. An override never turns Failed into Passed.</li>
-            <li>The save is guarded byte for byte. A run started before your edit can never land after it.</li>
-            <li>Decline changes nothing. No save, no receipt, reported as a complete stop.</li>
-          </ul>
         </div>
-        <FlowShot
-          src={shotApprove}
-          alt="The Flow review surface: What Flow proposes, permission scope, supporting sources, Evidence, Checks, and the exact proposed diff."
-          caption="One trust path for every action: proposal, evidence, checks, approval."
-          crop
-          sizes="(min-width: 1024px) 44rem, 100vw"
-        />
+
+        <!-- The trust path, one step per picture. -->
+        <ol class="flow-path mt-12" data-animate-stagger="slow">
+          <li class="flow-path__step" data-animate="rise">
+            <div class="flow-path__copy">
+              <p class="flow-path__num">Step one</p>
+              <h4 class="flow-path__head">It says what it will do.</h4>
+              <p class="flow-path__body">
+                The effect sentence is read out of the proposed bytes by Flow's own parser,
+                never taken on the model's word. The permission scope is stated before you decide.
+              </p>
+            </div>
+            <FlowDetail
+              src={detailProposal}
+              alt="Flow's proposal panel: 'Correct spelling and grammar in the selected text', permission 'Edit this document only', external action 'No external action', and three content hashes."
+              caption="Permission stated up front · No external action"
+              sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
+            />
+          </li>
+          <li class="flow-path__step" data-animate="rise">
+            <div class="flow-path__copy">
+              <p class="flow-path__num">Step two</p>
+              <h4 class="flow-path__head">It shows the evidence, or admits there is none.</h4>
+              <p class="flow-path__body">
+                Evidence is scored only where a measurement exists. A summary is deliberately
+                not scored, and Flow prints that instead of inventing a number.
+              </p>
+            </div>
+            <FlowDetail
+              src={detailChecks}
+              alt="Flow's Evidence and Checks panel: two dimensions assessed, 'No comparison, one side is not scored', two passing checks, and a Human review gate awaiting confirmation."
+              caption="Named checks · An override never turns Failed into Passed"
+              sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
+            />
+          </li>
+          <li class="flow-path__step" data-animate="rise">
+            <div class="flow-path__copy">
+              <p class="flow-path__num">Step three</p>
+              <h4 class="flow-path__head">It shows the exact bytes.</h4>
+              <p class="flow-path__body">
+                Not a summary of the change. The diff itself, line by line. The save is guarded
+                byte for byte, so a run started before your edit can never land after it.
+              </p>
+            </div>
+            <FlowDetail
+              src={detailDiff}
+              alt="Flow's exact proposed diff: numbered lines with removed text marked in red, above the Reject, Later, and Approve and Save buttons."
+              caption="The exact proposed diff · Decline changes nothing at all"
+              sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
+              glow
+            />
+          </li>
+        </ol>
       </div>
     </section>
 
     <!-- Chapter 2: Long documents -->
     <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-longdocs">
-      <div class="mx-auto max-w-6xl">
+      {/* No max-w-6xl wrapper: the stage below runs wider than the copy on
+          purpose, and a 6xl parent would clamp it back to the old width. */}
+      <div>
         <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker">Long documents</p>
-          <h3 id="tour-longdocs" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">Your 50-page document is not too big. It is four reviews.</h3>
-          <p class="mt-4 leading-relaxed text-text-muted">
+          <p class="of-eyebrow" data-animate="rise">Long documents</p>
+          <h3 id="tour-longdocs" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Your 50-page document is not too big. It is four reviews.</h3>
+          <p class="of-lede mx-auto mt-5 text-left" data-animate="rise">
             Most AI tools refuse a long document, or quietly cut it and answer about the piece that fit.
             Flow does neither. It plans the document as ordered parts that follow your document's own
             structure. Each part gets its own review, its own evidence, and its own receipt. The finish
@@ -321,30 +386,46 @@ const faqSchema = {
             else stays exactly as written."
           </p>
         </div>
-        <div class="mt-10 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+        {/* The coverage line is this chapter's whole claim, so it rides over
+            the review window as the stage crop rather than sitting in its own
+            band above it. Bottom-right here; the neighbouring chapters take
+            other corners (see .of-stage in global.css). */}
+        <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
           <FlowShot
             src={shotLongDocs}
             alt="A live two-part review on a 3,905-word document in Flow: part chips, an honest coverage line, part one's own range highlighted, and Skip as a first-class choice."
-            caption="Approve, decline, or skip parts in any order. Close it partway and it parks."
-            sizes="(min-width: 1024px) 46rem, 100vw"
+            sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
           />
-          <div class="flex flex-col gap-6">
-            <FlowShot
-              src={shotLongDocsMenu}
-              alt="Flow's Agency menu disclosing up front: Improves this document in about 2 parts, and Too long to check at once, before anything runs."
-              caption='"Improves this document in about 2 parts", answered before the menu closes.'
-              crop
-              sizes="(min-width: 1024px) 34rem, 100vw"
-            />
-            <div class="of-surface rounded-2xl border border-border/70 p-6">
-              <p class="text-sm leading-relaxed text-text-muted">
-                A split never lands inside anything fragile. Boundaries fall only between top-level
-                blocks, never inside code or front matter, and the parts reconstruct your document
-                byte for byte. That is a tested invariant, not an aspiration. Today this runs on
-                local models; cloud models still decline documents past one window, and Flow says so
-                instead of pretending.
-              </p>
-            </div>
+          <FlowDetail
+            class="of-stage__detail of-stage__detail--br"
+            src={detailParts}
+            alt="Flow's review header on a long document: numbered part chips, and the line '0 approved, 0 declined, 2 remaining'."
+            caption="Coverage in plain counts · Approve, decline, or skip parts in any order"
+            sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+            glow
+          />
+        </div>
+        {/* The disclosure menu is a separate claim — Flow tells you it will
+            split BEFORE anything runs — so it keeps its own smaller frame
+            rather than competing with the stage above. */}
+        <div class="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-[0.92fr_1.08fr]">
+          <FlowShot
+            src={shotLongDocsMenu}
+            alt="Flow's Agency menu disclosing up front: Improves this document in about 2 parts, and Too long to check at once, before anything runs."
+            caption='"Improves this document in about 2 parts", before the menu closes.'
+            crop
+            sizes="(min-width: 1024px) 26rem, 100vw"
+          />
+          <div>
+            <p class="text-[0.95rem] leading-relaxed text-text-muted">
+              A split never lands inside anything fragile. Boundaries fall only between top-level
+              blocks, never inside code or front matter, and the parts reconstruct your document
+              byte for byte. That is a tested invariant, not an aspiration.
+            </p>
+            <p class="of-spec-fine mt-5">
+              Today this runs on local models. Cloud models still decline documents past one
+              window, and Flow says so instead of pretending.
+            </p>
           </div>
         </div>
       </div>
@@ -352,28 +433,37 @@ const faqSchema = {
 
     <!-- Chapter 3: Domains + receipts -->
     <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-domains">
-      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
+      {/* Stage rotation on this page: domains = bottom-left, tables =
+          top-right, longdocs = bottom-right, files = top-left. Adjacent
+          chapters never share a corner. See .of-stage in global.css. */}
+      <div class="mx-auto max-w-3xl">
+        <p class="of-eyebrow" data-animate="rise">Trust boundaries</p>
+        <h3 id="tour-domains" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">You pick where AI runs. Flow keeps it there.</h3>
+        <p class="of-lede mt-5" data-animate="rise">
+          Four execution domains: Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own
+          switch. Each states plainly whether your text stays on this Mac and whether the work is
+          free, covered by a subscription you already pay for, or billed per token.
+        </p>
+        <ul class="flow-list mt-5">
+          <li>Flow discovers eight providers from a machine that already works, including the AI subscriptions you already pay for. Discovery never enables anything.</li>
+          <li>A fallback that would cross a domain stops and asks. Leaving your Mac is your decision, never Flow's.</li>
+          <li>Cost is compared before, observed after, and never guessed. Models on your Mac show as free, because they are.</li>
+          <li>Receipts record facts only: which model answered, where it ran, what it cost. Your prompt and your API key are not recorded, and there is structurally nowhere in a receipt for them to go.</li>
+        </ul>
+      </div>
+      <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
         <FlowShot
           src={shotDomains}
           alt="Flow's Models settings: four execution domains with locality and cost statements, provider discovery, Auto routing, and a user-owned provider order."
-          caption="Settings ▸ Models: the four domains, discovered providers, and your provider order."
-          sizes="(min-width: 1024px) 44rem, 100vw"
+          sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
         />
-        <div>
-          <p class="flow-kicker">Trust boundaries</p>
-          <h3 id="tour-domains" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">You pick where AI runs. Flow keeps it there.</h3>
-          <p class="mt-4 leading-relaxed text-text-muted">
-            Four execution domains: Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own
-            switch. Each states plainly whether your text stays on this Mac and whether the work is
-            free, covered by a subscription you already pay for, or billed per token.
-          </p>
-          <ul class="flow-list mt-5">
-            <li>Flow discovers eight providers from a machine that already works, including the AI subscriptions you already pay for. Discovery never enables anything.</li>
-            <li>A fallback that would cross a domain stops and asks. Leaving your Mac is your decision, never Flow's.</li>
-            <li>Cost is compared before, observed after, and never guessed. Models on your Mac show as free, because they are.</li>
-            <li>Receipts record facts only: which model answered, where it ran, what it cost. Your prompt and your API key are not recorded, and there is structurally nowhere in a receipt for them to go.</li>
-          </ul>
-        </div>
+        <FlowDetail
+          class="of-stage__detail of-stage__detail--bl"
+          src={detailDomains}
+          alt="The Local execution domain in Flow: its switch turned on, the line 'Stays on this Mac, free, it runs on hardware you have', and three discovered providers."
+          caption="One switch per domain · Discovery never enables anything"
+          sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+        />
       </div>
     </section>
 
@@ -382,21 +472,28 @@ const faqSchema = {
       <div class="mx-auto max-w-6xl">
         <div class="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
           <div>
-            <p class="flow-kicker">Owned local runtime</p>
-            <h3 id="tour-runtime" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">Install nothing but Flow.</h3>
-            <p class="mt-4 leading-relaxed text-text-muted">
-              Flow is built so a person who installs nothing but Flow can pull a model and run
-              approval-gated agency on their own machine. The foundation is real and measured:
-              Flow's app bundle carries its own local AI runtime, two engines signed and verified
-              as one artifact, for about 19 MiB. The size of twenty photos.
+            <p class="of-eyebrow" data-animate="rise">Owned local runtime</p>
+            <h3 id="tour-runtime" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Install nothing but Flow.</h3>
+            <p class="of-lede mt-5" data-animate="rise">
+              Install nothing but Flow, and you can still pull a model and run approval-gated
+              agency on your own machine. That is measured, not planned: on a notarized install
+              with no other AI runtime present, a 5.98 GB model was pulled and three runs were
+              approved, every one served by the app's own helper. Flow's bundle carries two
+              engines for about 19 MiB. The size of twenty photos.
             </p>
             <p class="mt-4 leading-relaxed text-text-muted">
               The bundled runtime is a floor, never a wall. Already run Ollama or LM Studio? Flow
               detects them, keeps them first class, and serves the models you already pulled in
               place. Your gigabytes are never downloaded twice.
             </p>
+            <p class="mt-4 leading-relaxed text-text-muted">
+              What Flow holds and what Flow borrows are shown as different things, because they
+              are. Downloaded models are Flow's own bytes, counted against a disk allowance you
+              set. Shared models are read where they already sit, and removing one from Flow's
+              list leaves the original files untouched.
+            </p>
             <p class="mt-5 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
-              Both engines proven running from the signed, read-only disk image, 2026-08-14. Loopback only. No new network surface.
+              Zero-install run measured 2026-08-14 on one M3 Max, on a development build, with 399 network samples recording no connection off the machine. Loopback only.
             </p>
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
@@ -418,16 +515,84 @@ const faqSchema = {
             </div>
           </div>
         </div>
+        <!-- "What Flow holds vs what Flow borrows" is the claim, and it is a
+             two-line distinction inside one card. Shown as a crop first, at a
+             size where "nothing copied" is actually readable, then the window. -->
+        <div class="mx-auto mt-12 max-w-3xl" data-animate="plate">
+          <FlowDetail
+            src={detailRuntimeStorage}
+            alt="Flow's Runtime card: two Downloaded models against a 4.59 GB of 20 GB allowance bar, and below them Shared models served from Ollama and LM Studio folders with nothing copied."
+            caption="Downloaded is Flow's own bytes · Shared is read where it already sits"
+            sizes="(min-width: 1024px) 46rem, calc(100vw - 3rem)"
+            glow
+          />
+        </div>
+        <FlowShot
+          class="mt-10"
+          src={shotRuntimeModels}
+          alt="Flow's Runtime card splitting Downloaded models, with a disk allowance bar, from Shared models served in place from other apps' folders."
+          caption="The same card in place: what Flow keeps, what Flow borrows, and how much of your allowance is used."
+        />
       </div>
     </section>
 
-    <!-- Chapter 5: Search -->
-    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-search">
+    <!-- Chapter 5: The resource readout. Local AI has a cost the cloud hides:
+         your own machine does the work, and you hear it. Vocabulary rule from
+         the brief: the internal name for this feature never appears in public
+         copy; call it what the user sees. The GPU figure is WHOLE-MAC and must
+         always say so: per-process GPU attribution does not exist publicly on
+         macOS, and claiming Flow's share would be the one thing the platform
+         cannot support. Heat is the machine's own verdict, never degrees. -->
+    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-resources">
+      <div class="mx-auto max-w-6xl">
+        {/* Apple rhythm at the top: eyebrow, one verbless headline, ONE lede.
+            The qualifiers sit beside the picture rather than above it, so the
+            reader meets the claim first and the caveats while looking at the
+            evidence for them. */}
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="of-eyebrow" data-animate="rise">What it is using</p>
+          <h3 id="tour-resources" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">
+            Answer the whirring fan without opening Activity Monitor.
+          </h3>
+          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
+            Processor, memory, graphics, the heat verdict, the model's own footprint, the
+            tokens, and the running cost. One place, in plain words, while it works.
+          </p>
+        </div>
+        {/* Re-captured 2026-08-16: the whole popover, not the title-bar strip
+            the section used to run. It is the better picture because it is the
+            same argument at full strength — this Mac is working hard (graphics
+            pinned, a 19.1 GB model resident) and the bill still reads $0.00.
+            Portrait, so it sits beside the copy rather than above it. */}
+        <div class="mx-auto mt-11 grid max-w-5xl items-center gap-10 lg:grid-cols-[0.78fr_1.22fr]" data-animate="plate">
+          <FlowDetail
+            src={detailResourcePopover}
+            alt="Flow's What Flow is using popover during a live local run: processor at 35 percent of 14 cores, memory at 53 percent, graphics at 100 percent labelled this whole Mac, Flow itself at 136.9 MB against the muse-glimmer model at 19.1 GB, tokens of 1.3K in and 2.5K out all time, and a spend of zero dollars."
+            caption="Graphics is your whole Mac, and says so · Heat is a verdict, not degrees"
+            sizes="(min-width: 1024px) 20rem, calc(100vw - 3rem)"
+            glow
+          />
+          <ul class="flow-list">
+            <li>Your own work and the model's are separated. Flow's own footprint sits beside the model it loaded, so you can see which one is actually holding the memory.</li>
+            <li>The graphics figure is for your whole Mac, and labels itself that way. Per-process graphics attribution does not exist publicly on macOS, so Flow reports what it can measure instead of inventing a share.</li>
+            <li>Tokens count hosted and local runs alike, but only hosted runs cost money. A local run moves thousands of tokens and still bills nothing, because nothing left the machine.</li>
+            <li>Heat reads Cool, Warm, Hot, or Too hot. That is the machine's own verdict, not a temperature nobody can act on.</li>
+            <li>The model answering names itself at the bottom, so "which model is the fan about" has an answer without leaving your document.</li>
+          </ul>
+        </div>
+        <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">
+          Captured during a live local run, 2026-08-16, on one M3 Max. Session and all-time totals are this machine's own history, not a typical figure.
+        </p>
+      </div>
+    </section>
+
+    <!-- Chapter 6: Search -->
+    <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-search">
       <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
         <div>
-          <p class="flow-kicker">Search</p>
-          <h3 id="tour-search" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">A search result is a citation, not a guess.</h3>
-          <p class="mt-4 leading-relaxed text-text-muted">
+          <p class="of-eyebrow" data-animate="rise">Search</p>
+          <h3 id="tour-search" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">A search result is a citation, not a guess.</h3>
+          <p class="of-lede mt-5" data-animate="rise">
             Every result carries an anchor into the exact bytes you wrote. Opening it scrolls to one
             highlighted passage, after Flow re-checks, byte for byte, that the passage is still there.
             If your document changed, Flow finds the moved passage again. If it is gone, Flow says so
@@ -440,68 +605,100 @@ const faqSchema = {
             <li>Everything on-device. Nothing is sent over the network.</li>
           </ul>
         </div>
-        <FlowShot
-          src={shotSearch}
-          alt="Flow search across the demo library: results with abstracts, folder-qualified paths, and match reasons, beside two open documents."
-          caption="Results carry abstracts and match reasons, beside the work itself."
-          sizes="(min-width: 1024px) 44rem, 100vw"
-        />
+        <!-- The search column is TALL and narrow, so it gets its own portrait
+             crop beside the window rather than an overlay: a result list is
+             only convincing if you can read the citations in it. -->
+        <div class="flow-search-media" data-animate="plate">
+          <FlowShot
+            src={shotSearch}
+            alt="Flow search across the demo library: results with abstracts, folder-qualified paths, and match reasons, beside two open documents."
+            crop
+            sizes="(min-width: 1024px) 30rem, 100vw"
+          />
+          <FlowDetail
+            src={detailSearch}
+            alt="Flow's search column: the query 'verification tax', eight results, each with an abstract, a folder-qualified path, and a match reason naming the exact line."
+            caption="Every result carries its path and its line"
+            sizes="(min-width: 1024px) 14rem, 45vw"
+          />
+        </div>
       </div>
     </section>
 
-    <!-- Chapter 6: Tables -->
-    <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-tables">
-      <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
+    <!-- Chapter 7: Tables -->
+    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-tables">
+      <div class="mx-auto max-w-3xl lg:ml-auto lg:mr-0">
+        <p class="of-eyebrow" data-animate="rise">Tables</p>
+        <h3 id="tour-tables" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Edit the cell, not the pipes.</h3>
+        <p class="of-lede mt-5" data-animate="rise">
+          Markdown tables are wonderful to read and miserable to edit. Flow gives every table a
+          real grid with spreadsheet interactions. Underneath, the file never stops being the
+          plain Markdown you wrote.
+        </p>
+        <ul class="flow-list mt-5">
+          <li>Editing a cell changes one cell. The rest of the table keeps the exact spacing and alignment you wrote, character for character.</li>
+          <li>The header row cannot be deleted, and a stray pipe character stays one cell instead of splitting the table.</li>
+          <li>The mapping cost that froze scrolling on table-heavy notes, about 213 ms per refresh, is now under 2 ms.</li>
+        </ul>
+      </div>
+      <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
         <FlowShot
           src={shotTables}
           alt="The same Markdown table twice in Flow: rendered in the document, and open in a spreadsheet-style grid with a cell selected and the cell editor bar live."
-          caption="The grid and the note are the same document, not two copies. Saving is still ⌘S."
-          sizes="(min-width: 1024px) 44rem, 100vw"
+          sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
         />
-        <div>
-          <p class="flow-kicker">Tables</p>
-          <h3 id="tour-tables" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">Edit the cell, not the pipes.</h3>
-          <p class="mt-4 leading-relaxed text-text-muted">
-            Markdown tables are wonderful to read and miserable to edit. Flow gives every table a
-            real grid with spreadsheet interactions. Underneath, the file never stops being the
-            plain Markdown you wrote.
-          </p>
-          <ul class="flow-list mt-5">
-            <li>Editing a cell changes one cell. The rest of the table keeps the exact spacing and alignment you wrote, character for character.</li>
-            <li>The header row cannot be deleted, and a stray pipe character stays one cell instead of splitting the table.</li>
-            <li>The mapping cost that froze scrolling on table-heavy notes, about 213 ms per refresh, is now under 2 ms.</li>
-          </ul>
-        </div>
+        <FlowDetail
+          class="of-stage__detail of-stage__detail--tr"
+          src={detailGrid}
+          alt="A Markdown table open in Flow's spreadsheet grid, one cell selected and named R5:C2 in the cell editor bar above it."
+          caption="The grid and the note are one document · Saving is still ⌘S"
+          sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+        />
       </div>
     </section>
 
-    <!-- Chapter 7: Files -->
-    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-files">
-      <div class="mx-auto max-w-6xl">
+    <!-- Chapter 8: Files -->
+    <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-files">
+      <div>
         <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker">Your files</p>
-          <h3 id="tour-files" class="scroll-mt-28 mt-3 text-balance text-3xl font-bold sm:text-4xl">Plain folders. Plain Markdown. Never a silent overwrite.</h3>
-          <p class="mt-4 leading-relaxed text-text-muted">
+          <p class="of-eyebrow" data-animate="rise">Your files</p>
+          <h3 id="tour-files" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Plain folders. Plain Markdown. Never a silent overwrite.</h3>
+          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
             No import step, no library format, no sync silo. The files on disk are the product.
-            Collisions refuse instead of overwriting. Delete goes to the system Trash. Folders have
-            no Delete at all, deliberately, because deleting one would take everything inside it
-            without showing you what that was. And Flow is sandboxed to exactly the folders you
-            selected, so a note cannot reach the rest of your disk by naming a path.
+            Collisions refuse instead of overwriting, and Delete goes to the system Trash.
           </p>
         </div>
-        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+        {/* Top-left crop, closing the page's rotation. The grid detail is the
+            proof that "plain Markdown" survives a real table, over the window
+            that shows the documents those tables live in. */}
+        <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
+          <FlowShot
+            src={shotCharts}
+            alt="Flow documents carrying images and tables: a publishing calendar beside an investment memo with a chart image and a metrics table."
+            sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
+          />
+          <FlowDetail
+            class="of-stage__detail of-stage__detail--tl"
+            src={detailGrid}
+            alt="A Markdown table open in Flow's spreadsheet grid, one cell selected and named R5:C2 in the cell editor bar above it."
+            caption="A real grid over a real table · The file on disk stays plain Markdown"
+            sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+          />
+        </div>
+        <div class="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
           <FlowShot
             src={shotOrganizer}
             alt="Two full-page documents side by side in Flow over a plain folder of Markdown files, with a photograph rendering in place from the folder's own assets."
             caption="Two documents, one plain folder. Pictures render in place, read only from inside the folder you opened."
-            sizes="(min-width: 1024px) 36rem, 100vw"
+            crop
+            sizes="(min-width: 1024px) 32rem, 100vw"
           />
-          <FlowShot
-            src={shotCharts}
-            alt="Flow documents carrying images and tables: a publishing calendar beside an investment memo with a chart image and a metrics table."
-            caption="Professional artifacts, not chat transcripts: memos, calendars, and metrics that stay plain files."
-            sizes="(min-width: 1024px) 36rem, 100vw"
-          />
+          <p class="text-[0.95rem] leading-relaxed text-text-muted">
+            Folders have no Delete at all, deliberately, because deleting one would take
+            everything inside it without showing you what that was. And Flow is sandboxed to
+            exactly the folders you selected, so a note cannot reach the rest of your disk by
+            naming a path.
+          </p>
         </div>
       </div>
     </section>
@@ -510,8 +707,8 @@ const faqSchema = {
     <section class="border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="open-file-heading">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker">Who feels this first</p>
-          <h2 id="open-file-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Built for the moment someone opens the file.</h2>
+          <p class="flow-kicker" data-animate="rise">Who feels this first</p>
+          <h2 id="open-file-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Built for the moment someone opens the file.</h2>
           <p class="mt-5 text-lg leading-relaxed text-text-muted">
             Diligence has moved from the story to the artifact. Investors open the file.
             Journalists check the stat. Clients ask what the AI touched. Flow is for the
@@ -520,17 +717,17 @@ const faqSchema = {
         </div>
         <div class="mt-10 grid gap-4 md:grid-cols-3">
           <article class="of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">Founders raising</p>
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Founders raising</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">One fake citation can kill a round.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Your pitch is a living document with every claim tied to its source. When a partner asks where a number came from, the answer is attached to the number.</p>
           </article>
           <article class="of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">Comms and earned media</p>
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Comms and earned media</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">Journalists now screen for AI slop.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">A story with quotes, stats, and coverage attached earns trust that a polished paste job cannot. Proof travels with the piece, and a human approved every line.</p>
           </article>
           <article class="of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">Independent operators</p>
+            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Independent operators</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">Client work that survives scrutiny.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Proposals, analyses, and briefs where sensitive documents stay on your Mac by default, and the record shows exactly what ran and what it cost.</p>
           </article>
@@ -542,8 +739,8 @@ const faqSchema = {
     <section id="enterprise" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="enterprise-heading">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker">Enterprise adoption patterns</p>
-          <h2 id="enterprise-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">The questions enterprise AI owners ask. Answered in the document.</h2>
+          <p class="flow-kicker" data-animate="rise">Enterprise adoption patterns</p>
+          <h2 id="enterprise-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">The questions enterprise AI owners ask. Answered in the document.</h2>
           <p class="mt-5 text-lg leading-relaxed text-text-muted">
             Enterprises do not fail at AI for lack of models. They fail because they cannot tell
             which 30 percent of the output is wrong, who approved what, and what it all cost. Flow's
@@ -555,7 +752,7 @@ const faqSchema = {
           {enterprise.map((card) => (
             <article class="flow-ent-card of-surface flex flex-col rounded-2xl border border-border/70 p-6" data-animate>
               <div class="flex items-center justify-between gap-3">
-                <span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-primary">{card.k}</span>
+                <span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.k}</span>
                 <span class:list={['flow-ent-tag', card.tag === 'Direction' && 'flow-ent-tag--direction']}>{card.tag}</span>
               </div>
               <h3 class="mt-3 text-lg font-bold leading-snug">{card.q}</h3>
@@ -578,8 +775,8 @@ const faqSchema = {
     <section id="stack" class="scroll-mt-28 px-6 py-16 sm:py-24" aria-labelledby="stack-heading">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker">One company, one stack</p>
-          <h2 id="stack-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Flow is where the Orionfold work comes together.</h2>
+          <p class="flow-kicker" data-animate="rise">One company, one stack</p>
+          <h2 id="stack-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Flow is where the Orionfold work comes together.</h2>
         </div>
         <div class="mt-12 grid gap-4 lg:grid-cols-3">
           <article class="of-surface rounded-2xl border border-border/70 p-7">
@@ -617,8 +814,8 @@ const faqSchema = {
     <!-- ================= PRESS KIT ================= -->
     <section id="press" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="press-heading">
       <div class="mx-auto max-w-4xl">
-        <p class="flow-kicker text-center">Writing about Flow?</p>
-        <h2 id="press-heading" class="mt-4 text-balance text-center text-4xl font-bold sm:text-5xl">The facts, ready to quote.</h2>
+        <p class="flow-kicker text-center" data-animate="rise">Writing about Flow?</p>
+        <h2 id="press-heading" class="of-display mt-4 text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">The facts, ready to quote.</h2>
         <div class="mt-10 overflow-hidden rounded-2xl border border-border/70">
           <table class="w-full text-left text-sm">
             <tbody class="divide-y divide-border/70">
@@ -642,7 +839,7 @@ const faqSchema = {
     <!-- ================= FAQ ================= -->
     <section class="px-6 py-16 sm:py-24" aria-labelledby="faq-heading">
       <div class="mx-auto max-w-3xl">
-        <h2 id="faq-heading" class="text-balance text-center text-4xl font-bold sm:text-5xl">Questions, answered plainly.</h2>
+        <h2 id="faq-heading" class="of-display text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Questions, answered plainly.</h2>
         <div class="mt-10 flex flex-col gap-3">
           {faqs.map((f) => (
             <details class="of-surface group rounded-2xl border border-border/70 p-5 open:border-primary/30">
@@ -694,7 +891,90 @@ const faqSchema = {
     text-transform: uppercase; color: var(--color-text-muted);
   }
   .flow-eyebrow-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-primary); font-weight: 650; }
-  .flow-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-primary); }
+  /* Kept as an alias of the shared .of-eyebrow primitive so the chapters that
+     still say "flow-kicker" pick up the accessible accent ink and the weight
+     without touching eight more call sites. New markup should use .of-eyebrow. */
+  .flow-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.23em;
+    text-transform: uppercase;
+    color: var(--color-accent-ink);
+  }
+
+  /* Chapter media geometry now lives in the shared .of-stage primitive
+     (global.css), so the tour chapters and the two heroes cannot drift apart.
+     Read the corner-rotation note there before moving a crop. */
+
+  /* Search chapter: the window and the portrait result column side by side.
+     The column is the proof (readable citations); the window is the context. */
+  .flow-search-media { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 640px) {
+    /* align-items: start would top-align a short 16:9 window against a tall
+       portrait column and leave the window floating; centring reads as one
+       composition. The column is intentionally the taller of the two. */
+    .flow-search-media { grid-template-columns: 1.5fr 1fr; align-items: center; }
+  }
+
+  /* ── The trust path: one step, one picture ──
+     Three peer steps read as a row of equals on desktop and a stack on mobile.
+     A counter rule down the left of each step carries the sequence, so the
+     order is visible without numbering the pictures themselves. */
+  .flow-path {
+    display: grid;
+    gap: 3.5rem;
+    list-style: none;
+    padding: 0;
+  }
+  /* Deliberately NOT a three-up grid. These crops are wide (about 1000px of UI)
+     and carry 11px labels; squeezed into a third of the page they become the
+     same unreadable thumbnail this whole pass exists to remove. Each step gets
+     a full row instead: copy on one side, the picture at real size on the
+     other, alternating so the eye zig-zags down the sequence. */
+  .flow-path__step {
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  /* The accent rule marks the STEP COPY, so it has to travel with the text
+     column rather than sit on the row: on alternating rows the text moves to
+     the right, and a row-level border would strand the rule beside a picture. */
+  .flow-path__copy {
+    padding-left: 1.15rem;
+    border-left: 2px solid color-mix(in oklch, var(--color-primary) 30%, var(--color-border));
+  }
+  @media (min-width: 900px) {
+    .flow-path__step {
+      grid-template-columns: 0.82fr 1.18fr;
+      gap: 3rem;
+    }
+    /* Alternate which side the picture sits on. */
+    .flow-path__step:nth-child(even) > :global(.flow-detail) { order: -1; }
+  }
+  .flow-path__num {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent-ink);
+  }
+  .flow-path__head {
+    margin-top: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.16rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.018em;
+    color: var(--color-text);
+  }
+  .flow-path__body {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    line-height: 1.62;
+    color: var(--color-text-muted);
+  }
   .flow-probe { box-shadow: 0 28px 70px -55px color-mix(in oklch, var(--color-warn) 45%, transparent); }
   .flow-list { display: flex; flex-direction: column; gap: 0.65rem; }
   .flow-list li { position: relative; padding-left: 1.5rem; font-size: 0.94rem; line-height: 1.65; color: var(--color-text-muted); }

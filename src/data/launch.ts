@@ -104,14 +104,23 @@ export const RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED =
   publicBuildEnv?.PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT === "true";
 
 // META_PIXEL_ENABLED — gate the browser-side Meta Pixel (fbevents.js loader +
-// PageView + the Purchase fbq track). OFF (operator 2026-06-18): BOTH Meta Ads
-// and Google Ads are paused, so the browser pixel buys nothing and is pure cost
-// — it is the cause of the Lighthouse Best-Practices third-party-cookie hit and a
-// cookie/consent surface. While OFF, fbevents.js never loads and no _fbp/_fbc
-// cookies are set (Layout.astro gates the loader on this flag; the
-// window.__ofLoadMetaPixel hook stays undefined and lib/conversion.ts already
-// no-ops safely via ?.()). The server-side CAPI Purchase (stripe-webhook) is
-// untouched and still fires its eventID, so the browser↔CAPI dedup pair is
-// preserved — re-enabling is ONE flip back to true when a Meta campaign resumes.
-// (No CAPI/webhook redeploy needed either way.) See audit-reports/seo-audit-2026-06-18.md §4.
-export const META_PIXEL_ENABLED = false;
+// PageView + the Purchase fbq track).
+//
+// ON (operator 2026-08-16): ads are being activated for the Flow waitlist push,
+// so the browser pixel now buys something. It writes _fbp/_fbc, which the
+// waitlist form and checkout attribution both read as CAPI match keys, and it
+// fires the browser half of the deduped Purchase pair.
+//
+// What turning this on costs, stated plainly so it is a decision and not a
+// surprise: fbevents.js is a third-party script that sets cookies, so the
+// Lighthouse Best-Practices third-party-cookie finding returns and the page
+// gains a cookie/consent surface. That was the exact reason it went OFF on
+// 2026-06-18 while both ad channels were paused.
+//
+// The server-side CAPI Purchase (stripe-webhook, _shared/meta-capi.ts) fires
+// independently and always has; it shares the Stripe Checkout session id as
+// event_id with the browser pixel, so Meta collapses the pair rather than
+// double-counting. Turning this flag off again is one flip and needs no
+// CAPI/webhook redeploy in either direction.
+// See audit-reports/seo-audit-2026-06-18.md §4.
+export const META_PIXEL_ENABLED = true;

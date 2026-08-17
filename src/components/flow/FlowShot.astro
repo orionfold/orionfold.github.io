@@ -14,6 +14,10 @@ interface Props {
   priority?: boolean;
   /** Crop to a shorter band (16/9-ish) instead of showing the full window. */
   crop?: boolean;
+  /** Render at the asset's own aspect ratio instead of the window frame.
+   *  For captures that are NOT a whole app window: a title-bar strip, a single
+   *  panel. Forcing those into the 2560x1400 window box letterboxes them. */
+  natural?: boolean;
   /** Responsive sizes hint. Default fits a full-width max-w-6xl figure. Pass a
    *  smaller value for side-by-side layouts so retina screens don't fetch and
    *  decode the 2000px variant for a ~650px slot (scroll-jank source). */
@@ -27,12 +31,13 @@ const {
   caption,
   priority = false,
   crop = false,
+  natural = false,
   sizes = '(min-width: 1024px) 64rem, 100vw',
   class: className,
 } = Astro.props;
 ---
 <figure class:list={['flow-shot overflow-hidden rounded-2xl border border-primary/25 bg-surface shadow-xl shadow-primary/10', className]}>
-  <div class:list={[crop ? 'aspect-[16/9] sm:aspect-[16/8]' : 'aspect-[2560/1400]', 'w-full overflow-hidden']}>
+  <div class:list={[natural ? '' : (crop ? 'aspect-[16/9] sm:aspect-[16/8]' : 'aspect-[2560/1400]'), 'w-full overflow-hidden']}>
     <Image
       src={src}
       alt={alt}
@@ -40,9 +45,15 @@ const {
       sizes={sizes}
       loading={priority ? 'eager' : 'lazy'}
       fetchpriority={priority ? 'high' : undefined}
-      decoding="async"
+      {/* The hero is decoded synchronously so it is never half-painted at
+          first render; lazy shots below the fold get `data-fade`, which holds
+          them at opacity 0 until their own decode finishes (see global.css).
+          These captures are 200-345 KB, so an async decode landing mid-reveal
+          is what made large images FLASH during scroll. */}
+      decoding={priority ? 'sync' : 'async'}
+      data-fade={priority ? undefined : ''}
       data-no-zoom
-      class="block h-full w-full object-cover object-top"
+      class:list={[natural ? 'block w-full h-auto' : 'block h-full w-full object-cover object-top']}
     />
   </div>
   {caption && (

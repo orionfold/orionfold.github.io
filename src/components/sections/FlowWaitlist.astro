@@ -74,7 +74,10 @@ const privacyNote = consentText.replace(' See our privacy policy.', '');
   .flow-waitlist__panel::after {
     content: '';
     position: absolute;
-    border: 1px solid rgb(91 141 239 / 0.2);
+    /* Was a hardcoded rgb(91 141 239) — indigo left over from the pre-cyan
+       design system, so these rings drifted off-accent in both themes and did
+       not follow the dark remap at all. Token-driven now. */
+    border: 1px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
     border-radius: 999px;
     pointer-events: none;
   }
