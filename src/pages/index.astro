@@ -25,11 +25,13 @@ import shotLongDocs from '../assets/flow/shots/flow-long-documents-shot.webp';
 import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
 import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
+import shotBenchmarks from '../assets/flow/shots/flow-benchmarks-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). A full window
 // shrunk into a page column renders the control being described at ~8px; these
 // crops show that one control at a size where the claim is checkable.
 import detailDiff from '../assets/flow/details/detail-diff.webp';
 import detailToolbarPreview from '../assets/flow/details/detail-toolbar-preview.webp';
+import detailBenchRows from '../assets/flow/details/detail-benchmarks-rows.webp';
 import detailDomains from '../assets/flow/details/detail-domains.webp';
 import detailParts from '../assets/flow/details/detail-parts.webp';
 import detailGrid from '../assets/flow/details/detail-grid.webp';
@@ -82,11 +84,14 @@ const heroStats = [
 // other. Full sequence down the page:
 //   hero  br / centre
 //   1     tl / left      approval
-//   2     bl / centre    long documents
-//   3     tr / right     trust boundaries
-//   4     bl / left      professional artifacts
-// No two ADJACENT sections share a corner (bl repeats at 2 and 4, which are
-// two apart and read as a rhythm rather than a rut). Keep them distinct —
+//   2     br / right     the tool strip
+//   3     bl / centre    long documents
+//   4     tl / left      benchmarks
+//   5     tr / right     trust boundaries
+//   6     bl / left      professional artifacts
+// No two ADJACENT sections share a corner (tl repeats at 1 and 4, bl at 3 and
+// 6, each pair far enough apart to read as a rhythm rather than a rut). Keep
+// them distinct —
 // collapsing these to one repeated position is the exact thing the operator
 // asked us not to do, and tests/e2e/product-stage.spec.ts enforces it.
 // `stage` values are the .of-stage__detail--* corner modifiers in global.css.
@@ -138,6 +143,41 @@ const capabilityRows = [
     detailCaption: 'Coverage in plain counts · Approve, decline, or skip any part',
     stage: 'bl',
     align: 'center',
+  },
+  {
+    // Added 2026-08-18 from the benchmarks brief. Sits after long documents and
+    // before trust boundaries because it answers the question the reader now
+    // has: they have seen AI work on their documents, so WHICH model does it,
+    // and the next band answers WHERE it runs.
+    //
+    // REVISED the same day for 0134 A2, which re-shot the screen: every model
+    // is now measured (the old "measured or estimated" sentence had no subject
+    // left), the list ranks three ways, and the rank order changed — the crop
+    // now leads with advisor-gguf-q8_0 at 2.1s, not the 35B at 4.5s.
+    //
+    // VOCABULARY RULE from the brief: the implementation's words (TTFT, tok/s,
+    // quantization) may never appear in public copy. The published vocabulary
+    // is the screen's own — time to first word, reading speed, fits this Mac.
+    // Things this copy must never say: that Flow read the 300 GB/s figure from
+    // the Mac (it is a published specification, and Flow's own measurement is
+    // 268.6); that any number came from someone else's hardware (there is no
+    // shared feed); or that a score judges model QUALITY (it weighs speed,
+    // reading rate and headroom only, and the screen prints "Not ranked:
+    // instruction-following" itself).
+    //
+    // STAGE: 'tl' — neighbours are 'bl' above and 'tr' below, so no two adjacent
+    // bands share a corner (product-stage.spec.ts asserts exactly that).
+    kicker: 'Measured on your Mac',
+    title: 'The fastest model on your Mac is probably not the one you picked.',
+    body: 'Every local model comparison you can find was run on hardware you do not own. Flow measures the models you already have, on the Mac you are sitting at, and ranks them by how long you wait for the first word. On one M3 Max a 20.4 GB model answered in 4.5 seconds while an 8.5 GB one took 10.2, so the bigger model was more than twice as quick. Open any row and the ranking shows the arithmetic behind it.',
+    href: '/flow/#tour-benchmarks',
+    shot: shotBenchmarks,
+    alt: 'Orionfold Flow\'s Benchmarks screen: a preset row stating the active weighting, then five measured local models ranked by score, each with its time to first word, reading speed, and a fit verdict for this Mac.',
+    detail: detailBenchRows,
+    detailAlt: 'The top two rows of Flow\'s leaderboard: advisor-gguf-q8_0 at 2.1 seconds to first word, 50 words a second, scoring 88 of 100, above qwen3.5-35b-a3b-4bit at 4.5 seconds and 84 words a second, scoring 64.',
+    detailCaption: 'Two models, two strengths · The quicker starter leads the faster reader',
+    stage: 'tl',
+    align: 'left',
   },
   {
     kicker: 'Trust boundaries',

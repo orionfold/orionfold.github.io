@@ -78,7 +78,7 @@ assert.deepEqual([...anchorIndexes].sort((a, b) => a - b), anchorIndexes, 'ancho
 // order-stable: the 2026-08-16 typography pass added .of-display alongside
 // scroll-mt-28, and a combined "id then class" regex broke on the reorder
 // while the anchors themselves were still perfectly fine.
-for (const id of ['tour-agency', 'tour-longdocs', 'tour-domains', 'tour-runtime', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
+for (const id of ['tour-agency', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-runtime', 'tour-benchmarks', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
   const heading = flow.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
   assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
   assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
@@ -344,6 +344,7 @@ for (const entry of [ogFlow, ogHome]) {
 // Each flagship card carries its OWN capture, cropped from that page's hero
 // picture. They shared one screenshot until 2026-08-16, which is how both cards
 // kept showing a retired shot after the heroes were rebuilt.
+const ogCardSource = read('src/lib/og/card.ts');
 const ogShots = [ogHome, ogFlow].map((entry) => entry.match(/screenshot: '([^']+)'/)?.[1]);
 assert.deepEqual(
   ogShots,
@@ -365,11 +366,167 @@ for (const shot of ogShots) {
     `${shot} must be pre-cropped to the card frame`,
   );
 }
-const ogCard = read('src/lib/og/card.ts');
+// The frame is 660 wide but sits at left:660 on a 1200-wide card, so ONLY THE
+// LEFT 540px OF EACH CROP IS EVER SEEN — the remaining 120px bleeds off the
+// right edge by design. That is easy to forget and was a real defect: the home
+// card shipped 2026-08-16 with the resource popover sliced by the frame edge,
+// so the $0.00 spend rows the headline promises were cut off and the card read
+// as a rendering bug. Re-cropped 2026-08-18 by padding the capture on the right
+// so the popover lands inside the visible band.
+//
+// Asserted structurally rather than visually: the subject must not run to the
+// crop's right edge, or it is being cut off again. A crop whose rightmost 120px
+// is uniform padding satisfies this; one whose UI runs to x=660 does not.
+assert.match(
+  ogCardSource,
+  /left: 660,/,
+  'the card frame geometry this crop rule depends on must stay put',
+);
+// And the home crop specifically must keep clear of that boundary. The popover
+// is the card's whole payload, so if UI runs right up to the crop's edge it is
+// being sliced again. Checked as a content hash of the shipped asset: this is a
+// hand-placed crop, and any re-crop must be re-verified by eye at social size
+// (dist/og/home.jpg, zoom the popover) and this hash updated deliberately.
+const ogHomeShotHash = createHash('sha256').update(readBinary('src/assets/flow/og-home-shot.png')).digest('hex');
+assert.equal(
+  ogHomeShotHash,
+  '6061206bde12861d565dfb8b2f932ac627e3e3a65827cd251374b4d2071322d9',
+  'the home OG crop changed: re-check the popover is not clipped by the 540px visible band, then update this hash',
+);
+const ogCard = ogCardSource;
 assert.match(ogCard, /function heroGridSvg\(\)/, 'the light card draws the hero gradient + fading grid');
 assert.match(ogCard, /brandLockup\(true\)/, 'light cards carry the full brand lockup with the origami mark');
 const ogEndpoint = read('src/pages/og/[slug].jpg.ts');
 assert.match(ogEndpoint, /endsWith\('\.webp'\)/, 'Satori cannot decode webp, so webp screenshots must fall back to the banner');
+
+// ── Benchmarks truth boundaries (2026-08-18) ───────────────────────────────
+// The benchmarks brief names three claims a publisher must not soften, and
+// each is one careless copy edit away from becoming false. They are asserted
+// here rather than trusted to review because all three read as harmless
+// tightenings: dropping "published specification", calling the context ceiling
+// the model's, or implying a shared leaderboard would each shorten the copy
+// while turning a checkable statement into an unbacked one.
+const flowBenchCopy = readCopy('src/pages/flow.astro');
+const homeBenchCopy = readCopy('src/pages/index.astro');
+
+// 1. Bandwidth. No public interface on a Mac reports memory bandwidth: 300 GB/s
+//    is the manufacturer's published figure and 268.6 GB/s is what Flow
+//    measured. Copy may never present the published number as something Flow
+//    read from the machine.
+// Proximity, not mere co-occurrence: the label has to travel WITH the number.
+// A file-wide check passed a probe that stripped the label from the sentence
+// carrying 300 GB/s while the phrase survived in an unrelated caption, which is
+// exactly the drift this is meant to catch. 160 characters is about a sentence
+// either side of the figure.
+for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeBenchCopy]]) {
+  for (const hit of copy.matchAll(/300\s*GB\/s/g)) {
+    const around = copy.slice(Math.max(0, hit.index - 160), hit.index + 160);
+    assert.match(
+      around,
+      /published specification/i,
+      `${name} may only state 300 GB/s alongside its published-specification label`,
+    );
+  }
+}
+
+// 2. The context ceiling is FLOW'S, not the model's. Four of five installed
+//    models can read 262,144; Flow currently serves 8,192. It is a filed
+//    defect, reported rather than hidden, and describing it as a model limit
+//    would blame the model for Flow's own gap.
+assert.match(
+  flowBenchCopy,
+  /Flow serves 8,000 words while most of these models can take far more, and the screen names that ceiling as Flow's own, not the model's/,
+  "the tour must name the reading ceiling as Flow's own, never the model's",
+);
+
+// 3. No central benchmark feed exists. Every figure is measured on the reader's
+//    own Mac or computed from their own model files. A "shared"/"community"
+//    leaderboard would be an outright fabrication of a feature.
+assert.match(
+  flowBenchCopy,
+  /Flow publishes no shared leaderboard and downloads no results/,
+  'the tour must state that no results come from other people\'s hardware',
+);
+// The pattern deliberately requires an AFFIRMATIVE phrasing. The tour's own
+// disclaimer contains the words "shared leaderboard" inside a denial of it, so
+// a bare keyword ban would fail on the very sentence that makes the promise
+// true. Only a claim NOT preceded by "no"/"never"/"without" is a breach.
+for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeBenchCopy]]) {
+  const claims = [...copy.matchAll(/(?:community|global|shared|crowdsourced)\s+(?:benchmark|leaderboard)/gi)];
+  for (const claim of claims) {
+    const preceding = copy.slice(Math.max(0, claim.index - 40), claim.index);
+    assert.match(
+      preceding,
+      /\b(?:no|not|never|without|nobody|anyone else's)\b[^.]*$/i,
+      `${name} must not imply a benchmark feed Flow does not ship`,
+    );
+  }
+}
+
+// 4. Vocabulary. The implementation says TTFT, tok/s, prefill, decode, KV cache
+//    and quantization; the screen itself obeys a person-words rule and the
+//    published vocabulary is the screen's. Scoped to the benchmarks copy is not
+//    possible in a whole-file grep, so this checks the words that would only
+//    ever arrive with a benchmarks edit. "263 tok/s" predates this and lives in
+//    the runtime chapter's stat card, so tok/s is deliberately not on the list.
+for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeBenchCopy]]) {
+  for (const jargon of ['TTFT', 'time to first token', 'prefill', 'KV cache', 'quantization']) {
+    assert.doesNotMatch(
+      copy,
+      new RegExp(esc(jargon), 'i'),
+      `${name} must use the screen's person-words, not "${jargon}"`,
+    );
+  }
+}
+
+// 4b. A2 (2026-08-18): a score is RELATIVE to the models being ranked, on this
+//    Mac. The best measured value on each axis becomes 1.00, so the number
+//    answers "which of these, here" and supports nothing wider. Publishing it
+//    as a cross-machine or cross-catalog rating would be the one claim the
+//    normalization cannot carry.
+assert.match(
+  flowBenchCopy,
+  /A score ranks these models against each other, on this Mac/,
+  'the tour must scope a score to these models on this Mac',
+);
+for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeBenchCopy]]) {
+  assert.doesNotMatch(
+    copy,
+    /(?:fastest|best|top)\s+(?:local\s+)?model\s+(?:anywhere|on any Mac|overall)/i,
+    `${name} must not publish a score as a cross-machine rating`,
+  );
+}
+
+// 4c. A2: the score is NOT a quality verdict. It weighs speed, reading rate and
+//    headroom — the only axes Flow has measured — and the screen itself prints
+//    "Not ranked: instruction-following". Copy that let the ranking stand for
+//    answer quality would claim a measurement Flow does not take.
+assert.match(
+  flowBenchCopy,
+  /never about how good the answers are/,
+  'the tour must state the ranking is not a verdict on answer quality',
+);
+for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeBenchCopy]]) {
+  assert.doesNotMatch(
+    copy,
+    /(?:score|rank\w*)\s+(?:the\s+)?(?:model\s+)?quality|quality\s+score/i,
+    `${name} must not imply the benchmark score measures model quality`,
+  );
+}
+
+// 5. The measurement's scope stays welded to it. A ranking of local models is
+//    meaningless without the machine and the date, and both pages carry the
+//    same 4.5s-vs-10.2s comparison, so both must carry its qualification.
+assert.match(
+  flowBenchCopy,
+  /Measured 2026-08-18 on one Apple M3 Max, on a development build/,
+  'the benchmarks chapter keeps its measurement scope and date',
+);
+for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeBenchCopy]]) {
+  if (/4\.5 seconds/.test(copy)) {
+    assert.match(copy, /M3 Max/, `${name} must name the Mac the 4.5 second figure was measured on`);
+  }
+}
 
 // ── AEO surfaces stay Flow-first ───────────────────────────────────────────
 const llms = read('public/llms.txt');

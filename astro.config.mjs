@@ -124,7 +124,9 @@ function buildLastmodMap() {
   // material redesigns are tracked explicitly, same as /training/. 2026-08-15:
   // full rebuild on real dev-build captures + measured numbers + enterprise
   // patterns + press kit + FAQ. Bump on the next material Flow-page change.
-  map['/flow/'] = '2026-08-15';
+  // 2026-08-18: Benchmarks chapter added (measured local-model leaderboard),
+  // after the tool-strip chapter landed the same day.
+  map['/flow/'] = '2026-08-18';
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
   // so it tracks the freshest date across all of them.
   const relayFreshest = freshestUnder('/relay/');

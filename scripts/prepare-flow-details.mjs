@@ -148,6 +148,65 @@ const DETAILS = [
     rect: { left: 470, top: 0, width: 330, height: 210 },
     note: 'The Agency menu: five actions, one keyboard shortcut, two submenus.',
   },
+  {
+    out: 'detail-benchmarks-rows.webp',
+    from: 'flow-benchmarks-shot.webp',
+    // RE-CUT 2026-08-18 for 0134 A2, which re-shot the screen: the A1 rectangle
+    // now lands on different rows. Ranks 1 and 2, collapsed, each carrying its
+    // Balanced score. Deliberately TWO rows: the claim is a comparison, and one
+    // row alone is a number with nothing to weigh it against. The pair also
+    // carries A2's real surprise, that the two models win different axes — rank
+    // 1 is quickest to a first word, rank 2 is the faster reader.
+    rect: { left: 417, top: 415, width: 997, height: 290 },
+    note: 'Ranks 1 and 2 with their Balanced scores: quickest vs fastest reader.',
+  },
+  {
+    out: 'detail-benchmarks-scoring.webp',
+    from: 'flow-benchmarks-scoring-shot.webp',
+    // A2's strongest picture, and the brief says to lead with it if only one can
+    // run: both rows expanded, each showing standing x weight = contribution per
+    // axis, and a Total that matches the collapsed score exactly. That match is
+    // the point — BenchmarkScore stores no total, so the expansion cannot drift
+    // from the number it explains. Both rows and not one, because the claim is
+    // that the weighting RESOLVED a genuine trade-off between them.
+    rect: { left: 424, top: 417, width: 731, height: 479 },
+    note: 'Two scores decomposed: standing, weight, contribution, and a matching total.',
+  },
+  {
+    out: 'detail-benchmarks-preset.webp',
+    from: 'flow-benchmarks-shot.webp',
+    // The one-row ranking control. Carries three claims in one cut: the three
+    // presets, the active weighting stated inline with each metric's own colour,
+    // and the omission in plain sight ("Not ranked: instruction-following").
+    // Runs down to include that line on purpose — a weighting shown without what
+    // it leaves out is the half of the picture that flatters.
+    rect: { left: 417, top: 322, width: 997, height: 95 },
+    note: 'The preset row: three presets, the live weights, and what is not ranked.',
+  },
+  {
+    out: 'detail-benchmarks-machine.webp',
+    from: 'flow-benchmarks-shot.webp',
+    // The machine strip beside the title. A leaderboard of local models is
+    // meaningless without the Mac it was measured on, so this crop is what makes
+    // the ranking above it checkable rather than decorative. Re-cut for the A2
+    // capture: the strip sits lower, and free disk now reads 194 GB, not 192.
+    rect: { left: 940, top: 150, width: 520, height: 100 },
+    note: 'The machine the ranking is OF: chip, memory, cores, free disk.',
+  },
+  {
+    out: 'detail-benchmarks-method.webp',
+    from: 'flow-benchmarks-shot.webp',
+    // The head of the method section, which is written from live state rather
+    // than canned. SHORTER THAN THE A1 CUT BY NECESSITY: the A2 capture pushed
+    // this section down, and only its first two entries clear the window's
+    // bottom edge. The "Published specification" line that made the A1 crop
+    // valuable is BELOW THE FOLD in this shot and cannot be cut from it, so the
+    // published-vs-measured bandwidth claim now travels in prose alone until a
+    // taller capture exists. Do not extend this rectangle to chase that line:
+    // top+height may not exceed 1400, and the script throws if it does.
+    rect: { left: 417, top: 1240, width: 997, height: 158 },
+    note: 'The method head: 5 of 5 measured, and the honest not-comparable note.',
+  },
 ];
 
 await import('node:fs/promises').then(({ mkdir }) => mkdir(outDir, { recursive: true }));

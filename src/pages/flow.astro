@@ -31,6 +31,8 @@ import shotOrganizer from '../assets/flow/shots/flow-organizer-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
 import shotRuntimeModels from '../assets/flow/shots/flow-runtime-models-shot.webp';
 import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
+import shotBenchmarks from '../assets/flow/shots/flow-benchmarks-shot.webp';
+import shotBenchmarksScoring from '../assets/flow/shots/flow-benchmarks-scoring-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). Each tour
 // chapter makes a claim about one control; these crops show that control at a
 // size where the claim can be checked, instead of asking the reader to believe
@@ -48,6 +50,11 @@ import detailToolbarPreview from '../assets/flow/details/detail-toolbar-preview.
 import detailToolbarBlocked from '../assets/flow/details/detail-toolbar-blocked.webp';
 import detailToolbarArmed from '../assets/flow/details/detail-toolbar-armed.webp';
 import detailToolbarMenu from '../assets/flow/details/detail-toolbar-menu.webp';
+import detailBenchRows from '../assets/flow/details/detail-benchmarks-rows.webp';
+import detailBenchScoring from '../assets/flow/details/detail-benchmarks-scoring.webp';
+import detailBenchPreset from '../assets/flow/details/detail-benchmarks-preset.webp';
+import detailBenchMachine from '../assets/flow/details/detail-benchmarks-machine.webp';
+import detailBenchMethod from '../assets/flow/details/detail-benchmarks-method.webp';
 
 const og = ogMeta('/flow/');
 const flowUrl = `${SITE.url}/flow/`;
@@ -678,6 +685,199 @@ const faqSchema = {
       </div>
     </section>
 
+    {/* Chapter 4b: Benchmarks. Written 2026-08-18 from the benchmarks brief and
+        REVISED THE SAME DAY for 0134 A2, which re-shot the screen and changed
+        what is true on it. Two A1 sentences this page carried are now false and
+        were removed rather than softened: every installed model has since been
+        measured, so the "a guess is labelled a guess" claim had no subject left
+        on screen, and the screen now ranks three ways rather than one.
+
+        Sits between the runtime chapter and the resource readout because that
+        is the argument's own order: you own models (4), which of them should
+        you actually run (4b), and what does running one cost your machine (5).
+
+        A2 IS BUILT AND MACHINE-VERIFIED BUT NOT OPERATOR-ACCEPTED, and the shot
+        is a development build. The scoring claims are shipped-in-repo, not
+        released. If this page goes live before that acceptance lands, re-read
+        the brief's build note first.
+
+        VOCABULARY RULE, non-negotiable. The implementation says TTFT, prefill,
+        decode, tok/s, KV cache and quantization. None of those may appear here.
+        The published vocabulary is the screen's: time to first word, reading
+        speed, how much it can read at once, fits this Mac. If a future edit
+        needs a word, take it off the screenshot, not out of the repo.
+
+        FIVE claims that must not be softened, each the reason the screen is
+        trustworthy rather than decorative:
+          * 300 GB/s is a PUBLISHED SPECIFICATION and is labelled that way. No
+            public interface on a Mac reports memory bandwidth. Flow measured
+            268.6 GB/s while running a model, and that is a different kind of
+            fact. Never write that Flow read 300 GB/s from the Mac.
+          * The 8K limit is FLOW'S, not the model's. Four of five models can
+            read 262,144. It is a filed defect, reported not hidden, and must
+            never be described as a model limitation.
+          * There is NO central benchmark feed. Every number is measured on the
+            reader's own Mac or computed from their own files.
+          * A SCORE IS RELATIVE TO THE MODELS BEING RANKED, on this Mac. The
+            best measured value on each axis becomes 1.00, so a score answers
+            "which of these, here". It must never be published as a
+            cross-machine or cross-catalog rating.
+          * THE SCORE IS NOT A QUALITY VERDICT. It weighs speed, reading rate
+            and headroom, which are the only axes Flow has measured. The screen
+            itself prints "Not ranked: instruction-following", and this page
+            must never imply the ranking judges how good a model's answers are.
+
+        STAGE CORNER: --br. Pinned by both neighbours, not chosen freely: the
+        previous stage is Chapter 3's --bl and the NEXT one is Chapter 7's --tr,
+        which sits directly after this chapter because Chapters 4 and 5 carry no
+        stage of their own. That leaves --br as the only corner distinct from
+        both. An earlier --tr here collided with Chapter 7 and was caught by
+        tests/e2e/product-stage.spec.ts, which asserts adjacency rather than
+        global uniqueness — so re-check the ADJACENT stages, which are not the
+        adjacent chapters, before changing this. */}
+    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-benchmarks">
+      <div>
+        <div class="mx-auto max-w-3xl">
+          <p class="of-eyebrow" data-animate="rise">Benchmarks</p>
+          <h3 id="tour-benchmarks" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">
+            The fastest model on your Mac is probably not the one you picked.
+          </h3>
+          <p class="of-lede mt-5" data-animate="rise">
+            Every local model comparison you can find was run on a machine you do not own. Flow
+            measures the models <em>you</em> have, on the Mac you are sitting at, and ranks them by
+            the thing you actually feel: how long you wait before the first word appears. Every row
+            carries the date it was measured, and the screen states its own method, so you can
+            check the ranking instead of trusting it.
+          </p>
+          <p class="of-lede mt-4" data-animate="rise">
+            Bigger is not slower, and that is the surprise. On one M3 Max, a 20.4 GB model reached
+            its first word in 4.5 seconds while an 8.5 GB model took 10.2. The larger one is
+            2.3 times quicker to answer and reads three times faster, because of how it is built
+            rather than how big it is. A list sorted by file size would rank those two exactly
+            backwards.
+          </p>
+        </div>
+
+        {/* The leaderboard, laid over the window it came from. TWO rows on
+            purpose: the claim is a comparison, and one row alone is a number
+            with nothing to weigh it against. */}
+        <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
+          <FlowShot
+            src={shotBenchmarks}
+            alt="Orionfold Flow's Benchmarks screen beside a client proposal: a preset row stating the active weighting, then five measured local models ranked by score, each with its time to first word, reading speed, fit verdict, and how much it can read."
+            crop
+            sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
+          />
+          <FlowDetail
+            class="of-stage__detail of-stage__detail--br"
+            src={detailBenchRows}
+            alt="The top two rows of Flow's leaderboard: advisor-gguf-q8_0 at 2.1 seconds to first word, 50 words a second, scoring 88 of 100, above qwen3.5-35b-a3b-4bit at 4.5 seconds and 84 words a second, scoring 64."
+            caption="Two models, two different strengths · The quicker starter leads the faster reader"
+            sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+            animate
+          />
+        </div>
+
+        {/* The machine strip. Short, wide, and centred under the stage because
+            it is the caveat the ranking above depends on rather than a claim of
+            its own: reading speed is a property of the chip, so the same model
+            is quick on one Mac and unusable on another. */}
+        <figure class="bench-machine mx-auto mt-14" data-animate="rise">
+          <FlowDetail
+            src={detailBenchMachine}
+            alt="The machine strip beside Flow's Benchmarks title: Apple M3 Max, 36 GB memory, 30 GPU cores, 10+4 CPU cores, and 194 GB free of 926 GB."
+            caption="Read from the machine · Anything the Mac does not report is left out"
+            sizes="(min-width: 900px) 26rem, calc(100vw - 3rem)"
+          />
+        </figure>
+        <p class="bench-machine__note mx-auto mt-5 text-center" data-animate="rise">
+          The Mac sits beside the ranking, because a ranking of local models means nothing without
+          the machine it was measured on. Reading speed depends on the chip, so the same model is
+          quick on one Mac and unusable on another. A score compares these models to each other,
+          here, and says nothing about any other machine.
+        </p>
+
+        {/* Three coupled claims about how the ranking is made and how it can be
+            checked. Each pairs its copy ABOVE a full-width crop for the
+            legibility reason recorded on .bench-honesty in the stylesheet
+            below. Order is deliberate: what you can ask of it, how it answers,
+            and what it refuses to answer. */}
+        <div class="bench-honesty mx-auto mt-16">
+          <div class="bench-honesty__item">
+            <div class="bench-honesty__copy" data-animate="rise">
+              <h4 class="bench-honesty__head">Rank it for the work you are doing.</h4>
+              <p class="bench-honesty__body">
+                Three settings sit above the list. Responsive puts most of the weight on how fast
+                the first word arrives, Roomy puts it on how much memory is left over, and Balanced
+                sits between them. Whichever you pick, the screen prints the weighting it is
+                applying, right there beside the models. The reader never has to guess what
+                "ranked" meant, and nothing is hidden in a settings pane somewhere else.
+              </p>
+            </div>
+            <FlowDetail
+              src={detailBenchPreset}
+              alt="Flow's ranking control: three preset buttons with the middle one selected, then the active weighting stated inline as First word 50 percent, Reading 30 percent, Headroom 20 percent, each with its own coloured bar, above the line Ranked for balanced, measured on this Mac, and Not ranked, instruction-following."
+              caption="The weighting is printed, not buried · And it names what it does not rank"
+              sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
+            />
+          </div>
+          <div class="bench-honesty__item">
+            <div class="bench-honesty__copy" data-animate="rise">
+              <h4 class="bench-honesty__head">Every score opens up and shows its arithmetic.</h4>
+              <p class="bench-honesty__body">
+                Open a row and the score breaks into the parts that made it: how each model stood on
+                each measure, the weight applied, and what that contributed. The parts add up to the
+                number on the row, because the number is nothing but their sum. Here the two leaders
+                win different things. The first is quickest to a first word but a middling reader.
+                The second is the best reader on this Mac and slower to start. One ranked list would
+                bury that. The breakdown shows it, and shows exactly how the weighting settled it.
+              </p>
+            </div>
+            <FlowDetail
+              src={detailBenchScoring}
+              alt="Two rows expanded in Flow's leaderboard. The first scores 88: time to first word 1.00 times 50 percent equals 0.50, reading speed 0.60 times 30 percent equals 0.18, memory headroom 1.00 times 20 percent equals 0.20, total 0.88. The second scores 64: 0.46 times 50 percent equals 0.23, 1.00 times 30 percent equals 0.30, 0.53 times 20 percent equals 0.11, total 0.64."
+              caption="Standing, weight, contribution · The parts add up to the score"
+              sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
+            />
+          </div>
+          <div class="bench-honesty__item">
+            <div class="bench-honesty__copy" data-animate="rise">
+              <h4 class="bench-honesty__head">The screen states its own method.</h4>
+              <p class="bench-honesty__body">
+                Written from what actually happened in your session, never canned: how many models
+                were run and when, and how much text was read. When two rows were measured on
+                different amounts of text it says so plainly and tells you to measure them again
+                before comparing, rather than quietly ranking figures that do not belong side by
+                side. Where a number is a manufacturer's published specification the screen marks it
+                as one, and Flow's own measurement sits beside it as a different kind of fact.
+              </p>
+            </div>
+            <FlowDetail
+              src={detailBenchMethod}
+              alt="Flow's How this was measured section: 5 of 5 models were run on this Mac with the most recent date and time, and a How much was read entry reading that the rows were measured at different lengths, are not directly comparable, and should be measured again to compare."
+              caption="Assembled from your session · It flags its own uneven comparisons"
+              sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
+            />
+          </div>
+        </div>
+
+        <ul class="flow-list mx-auto mt-14 max-w-3xl">
+          <li>A score ranks these models against each other, on this Mac. The best measured result on each measure sets the top mark, so the number answers "which of these, here" and nothing about anyone else's machine.</li>
+          <li>The ranking is about speed and fit, never about how good the answers are. The screen says so out loud: instruction-following is named on screen as something it does not rank.</li>
+          <li>A model that has never been run gets no score at all, rather than a zero that would rank it last as though it had been measured and lost.</li>
+          <li>Nothing comes from anyone else's hardware. Every figure was measured on your own Mac or worked out from your own model files. Flow publishes no shared leaderboard and downloads no results.</li>
+          <li>A model your Mac cannot open is still listed, with the reason. A model you can see in your library that vanished from this screen would read as a bug, so it never vanishes.</li>
+          <li>Memory is a verdict, not a number: fits comfortably, fits, or too large for this Mac. The two engines Flow ships count memory so differently that a byte figure would invite a comparison the measurement cannot support.</li>
+          <li>Every row names how much it could read and how much Flow currently serves it. Today Flow serves 8,000 words while most of these models can take far more, and the screen names that ceiling as Flow's own, not the model's.</li>
+          <li>This screen ranks what you already have. It does not recommend models, sell them, or fetch them.</li>
+        </ul>
+
+        <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">
+          Measured 2026-08-18 on one Apple M3 Max, on a development build, through the runtime Flow ships. Your own Mac and your own models will produce different numbers, which is the point.
+        </p>
+      </div>
+    </section>
+
     <!-- Chapter 5: The resource readout. Local AI has a cost the cloud hides:
          your own machine does the work, and you hear it. Vocabulary rule from
          the brief: the internal name for this feature never appears in public
@@ -1153,6 +1353,60 @@ const faqSchema = {
     line-height: 1.25;
     letter-spacing: -0.018em;
     color: var(--color-text);
+  }
+  /* The machine strip, alone and centred. Same shape problem as .toolbar-armed:
+     a wide, short ribbon (520x100) that letterboxes at full column width, so it
+     is capped under the copy measure and the specs stay legible. */
+  .bench-machine {
+    width: 100%;
+    max-width: 26rem;
+  }
+  .bench-machine__note {
+    max-width: 38rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+  /* The two honesty claims. They stack on every width rather than sitting side
+     by side, because each crop is a WIDE row (1050px of leaderboard and of
+     method text) — put two of those in one row and each renders at half column
+     width, which is exactly the illegibility FlowDetail exists to fix. The
+     desktop pairing is copy-beside-crop WITHIN each item, and the items
+     alternate their column order so the page does not read as two identical
+     rows. */
+  .bench-honesty {
+    display: grid;
+    gap: 3.5rem;
+    width: 100%;
+    max-width: 62rem;
+  }
+  /* Copy ABOVE its crop, never beside it. Measured 2026-08-18 in the browser:
+     side by side at this page width, the 1050px-wide crops rendered at 510 CSS
+     px — BELOW 1:1, which is precisely the illegibility FlowDetail exists to
+     fix, and the 11px row labels ("Not measured yet", the tilde on the
+     estimate) stopped being readable. Stacked, each crop takes the full 62rem
+     and renders at or above its native width. The copy column is capped at the
+     reading measure so a full-width crop does not drag the prose out with it. */
+  .bench-honesty__item {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .bench-honesty__copy {
+    max-width: 44rem;
+  }
+  .bench-honesty__head {
+    font-family: var(--font-display);
+    font-size: 1.16rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.018em;
+    color: var(--color-text);
+  }
+  .bench-honesty__body {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    line-height: 1.62;
+    color: var(--color-text-muted);
   }
   .toolbar-menu__body {
     margin-top: 0.6rem;
