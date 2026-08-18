@@ -5,13 +5,27 @@
 import WaitlistForm from '../ui/WaitlistForm.astro';
 
 interface Props {
-  placement: 'home' | 'flow';
+  /**
+   * Which surface this instance sits on. `flow-mid` is the SAME offer repeated
+   * part-way down the long /flow/ tour so a reader who is convinced at the
+   * halfway mark does not have to scroll to the end to act.
+   *
+   * It is a distinct value rather than a second `flow`, and that is
+   * load-bearing twice over: `formId` seeds five derived DOM ids (the form, its
+   * email input, error, success, and success-text nodes) plus the section's
+   * aria-labelledby, so two instances sharing it would emit duplicate ids and
+   * break the label association; and `source` is what the subscribe endpoint
+   * stores and what GA4/Meta report, so sharing it would make the mid-page and
+   * end-of-page CTAs indistinguishable in conversion data.
+   */
+  placement: 'home' | 'flow' | 'flow-mid';
   storyHref?: string;
 }
 
 const { placement, storyHref } = Astro.props;
 const isHome = placement === 'home';
-const formId = isHome ? 'home-flow-waitlist' : 'flow-page-waitlist';
+const isMid = placement === 'flow-mid';
+const formId = isHome ? 'home-flow-waitlist' : isMid ? 'flow-mid-waitlist' : 'flow-page-waitlist';
 const source = formId;
 const consentText = 'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
 const privacyNote = consentText.replace(' See our privacy policy.', '');
@@ -23,16 +37,21 @@ const privacyNote = consentText.replace(' See our privacy policy.', '');
   <div class="flow-waitlist__panel mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-[2rem] border border-primary/25 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16 lg:px-14">
     <div class="relative z-10 max-w-2xl">
       <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">
-        {isHome ? 'Flow waitlist · In development' : 'Built for Mac · Flow waitlist'}
+        {isHome ? 'Flow waitlist · In development' : isMid ? 'Seen enough? · Flow waitlist' : 'Built for Mac · Flow waitlist'}
       </p>
       <h2 id={`${formId}-heading`} class="mt-4 text-balance text-4xl font-bold leading-[1.03] sm:text-5xl">
-        {isHome ? 'Join the Flow waitlist.' : 'Conduct your first document with Flow.'}
+        {isHome ? 'Join the Flow waitlist.' : isMid ? 'Want this on your Mac?' : 'Conduct your first document with Flow.'}
       </h2>
       <p class="mt-5 max-w-xl text-lg leading-relaxed text-text-muted">
-        Flow is in development as Orionfold's first closed-source commercial app, offered through a freemium subscription. Join for meaningful updates as self-improving intelligence and AI agency move into the document, plus the launch note when Flow is ready.
+        {isMid
+          ? "Flow is in development, offered through a freemium subscription. Join now for meaningful updates and the launch note when it is ready, or keep reading: the rest of the tour covers where your work runs, search, tables, and what Flow costs to run."
+          : "Flow is in development as Orionfold's first closed-source commercial app, offered through a freemium subscription. Join for meaningful updates as self-improving intelligence and AI agency move into the document, plus the launch note when Flow is ready."}
       </p>
-      <a href={isHome ? '/flow/' : storyHref} class="of-text-action mt-6 inline-flex items-center gap-2">
-        {isHome ? 'Explore Orionfold Flow' : 'Read the story'} <span aria-hidden="true">→</span>
+      {/* The mid-page link keeps the reader ON the tour. Sending them to the
+          story here would end the page half-read; the closer at the bottom is
+          the right place for that exit. */}
+      <a href={isHome ? '/flow/' : isMid ? '#tour-domains' : storyHref} class="of-text-action mt-6 inline-flex items-center gap-2">
+        {isHome ? 'Explore Orionfold Flow' : isMid ? 'Keep reading the tour' : 'Read the story'} <span aria-hidden="true">→</span>
       </a>
     </div>
 

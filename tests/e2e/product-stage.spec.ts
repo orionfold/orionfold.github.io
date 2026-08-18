@@ -93,5 +93,62 @@ test.describe('product stage overlays', () => {
       );
       expect(overflows, `${route} must not scroll horizontally on mobile`).toBe(false);
     });
+
+    // ── The crop must stay READABLE AS AN OBJECT (2026-08-18) ──
+    // The overlay tests above prove the crop is positioned over the shot. They
+    // passed the whole time the crop was also visually broken: the plate had
+    // zero padding, so the fragment's first control sat flush against the
+    // frame and edge pills rendered as if clipped, and the default one-stop
+    // shadow left a light capture laid on a light app window reading as a hole
+    // punched in the picture rather than a card above it. Position was never
+    // the property at risk — presence of the mount and the lift is.
+    test(`${route} stage crops are matted and lifted off their shot`, async ({ page }) => {
+      await page.setViewportSize(DESKTOP);
+      await page.goto(route);
+
+      const plates = page.locator('.of-stage .of-stage__detail .flow-detail__plate');
+      const count = await plates.count();
+      expect(count, `${route} should carry stage crops`).toBeGreaterThan(0);
+
+      for (let i = 0; i < count; i += 1) {
+        const plate = plates.nth(i);
+
+        // A real matte on every side. The crops are cut to the feature with no
+        // margin of their own, so this padding is the only thing between the
+        // app UI and the plate border.
+        const pad = await plate.evaluate((el) => {
+          const cs = getComputedStyle(el);
+          return [cs.paddingTop, cs.paddingRight, cs.paddingBottom, cs.paddingLeft].map(parseFloat);
+        });
+        for (const side of pad) {
+          expect(side, `${route} crop ${i} needs breathing room on every side`).toBeGreaterThanOrEqual(6);
+        }
+
+        // Two-stop elevation. One stop is the flat page-level card shadow that
+        // could not separate the crop from the window behind it.
+        const shadow = await plate.evaluate((el) => getComputedStyle(el).boxShadow);
+        const stops = shadow.split(/,(?![^(]*\))/).length;
+        expect(stops, `${route} crop ${i} needs a layered shadow to read as lifted`).toBeGreaterThanOrEqual(2);
+      }
+    });
+
+    // The crop lands on the shot a beat AFTER the shot arrives. If it reuses
+    // the stage's own reveal it arrives simultaneously and the composition
+    // reads as one flat picture instead of a detail placed onto a window.
+    test(`${route} stage crops carry their own delayed entrance`, async ({ page }) => {
+      await page.setViewportSize(DESKTOP);
+      await page.goto(route);
+
+      const details = page.locator('.of-stage .of-stage__detail');
+      const count = await details.count();
+
+      for (let i = 0; i < count; i += 1) {
+        const detail = details.nth(i);
+        await expect(detail).toHaveAttribute('data-animate', 'detail');
+
+        const delay = await detail.evaluate((el) => parseFloat(getComputedStyle(el).transitionDelay));
+        expect(delay, `${route} crop ${i} must lag its shot`).toBeGreaterThan(0);
+      }
+    });
   }
 });

@@ -30,6 +30,7 @@ import shotTables from '../assets/flow/shots/flow-table-editor-shot.webp';
 import shotOrganizer from '../assets/flow/shots/flow-organizer-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
 import shotRuntimeModels from '../assets/flow/shots/flow-runtime-models-shot.webp';
+import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). Each tour
 // chapter makes a claim about one control; these crops show that control at a
 // size where the claim can be checked, instead of asking the reader to believe
@@ -43,6 +44,10 @@ import detailParts from '../assets/flow/details/detail-parts.webp';
 import detailGrid from '../assets/flow/details/detail-grid.webp';
 import detailSearch from '../assets/flow/details/detail-search.webp';
 import detailResourcePopover from '../assets/flow/details/detail-resource-popover.webp';
+import detailToolbarPreview from '../assets/flow/details/detail-toolbar-preview.webp';
+import detailToolbarBlocked from '../assets/flow/details/detail-toolbar-blocked.webp';
+import detailToolbarArmed from '../assets/flow/details/detail-toolbar-armed.webp';
+import detailToolbarMenu from '../assets/flow/details/detail-toolbar-menu.webp';
 
 const og = ogMeta('/flow/');
 const flowUrl = `${SITE.url}/flow/`;
@@ -301,9 +306,11 @@ const faqSchema = {
     </section>
 
     <!-- Chapter 1: Writing you approve.
-         The trust path is FOUR named steps, so it is shown as four pictures in
-         sequence rather than one window containing all of them at 8px. This is
-         the chapter where "shows its work" has to be literally legible. -->
+         The trust path is shown as one picture per step rather than one window
+         containing all of them at 8px. This is the chapter where "shows its
+         work" has to be literally legible. The count in the lede and the number
+         of <li> below must agree — the prose used to promise four steps while
+         three were drawn, which the toolbar step closed on 2026-08-18. -->
     <section class="px-6 py-16 sm:py-24" aria-labelledby="tour-agency">
       <div class="mx-auto max-w-6xl">
         <div class="max-w-3xl">
@@ -311,12 +318,37 @@ const faqSchema = {
           <h3 id="tour-agency" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">AI editing with a paper trail.</h3>
           <p class="of-lede mt-5" data-animate="rise">
             Five actions: Proofread, Summarize, Translate into eleven languages, Convert Text to Table,
-            and Convert Table to Text. Every one goes through the same four steps.
+            and Convert Table to Text. They live in the document's own tool strip, beside the
+            bold and italic buttons, and every one goes through the same steps: it prices the
+            work before you click, then says what it will do, shows its evidence, and shows the
+            exact bytes before anything is saved.
           </p>
         </div>
 
-        <!-- The trust path, one step per picture. -->
+        <!-- The trust path, one step per picture.
+             STEP ZERO added 2026-08-18 from the editor-toolbar brief. The other
+             four steps all happen AFTER you commit to a run; the toolbar is the
+             only one that answers "what will this do" while the answer can still
+             change your mind, so it leads rather than joins the middle. -->
         <ol class="flow-path mt-12" data-animate-stagger="slow">
+          <li class="flow-path__step" data-animate="rise">
+            <div class="flow-path__copy">
+              <p class="flow-path__num">Step zero</p>
+              <h4 class="flow-path__head">It tells you the price before you click.</h4>
+              <p class="flow-path__body">
+                Hover any of the five AI tools and Flow answers three questions first: how much
+                text it would act on, what the run would cost, and which model would do the work.
+                A run on your own hardware is free, and Flow writes "No cost" rather than a
+                number, because that is an absence of cost and not a measurement of one.
+              </p>
+            </div>
+            <FlowDetail
+              src={detailToolbarPreview}
+              alt="Flow's document tool strip: bold, italic and text controls, then five colored AI monograms, with Proofread's panel open showing 3,911 words for the whole document, 'No cost, free, it runs on hardware you have', and the model that would run it staying on this Mac."
+              caption="Scope, cost, and route · Answered before the click, not after"
+              sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
+            />
+          </li>
           <li class="flow-path__step" data-animate="rise">
             <div class="flow-path__copy">
               <p class="flow-path__num">Step one</p>
@@ -370,6 +402,96 @@ const faqSchema = {
       </div>
     </section>
 
+    {/* Chapter 1b: the tool strip (2026-08-18, from the editor-toolbar brief).
+        Sits directly after Agency because it is the same five actions seen from
+        the other end — Agency is what happens after you commit, this is what you
+        are told beforehand and where the tools actually live.
+
+        STAGE CORNER: --tl. The next stage down the page (Long documents) takes
+        --br, so adjacent bands do not repeat a corner; tests/e2e/product-stage
+        asserts exactly that. */}
+    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-toolbar">
+      <div>
+        <div class="mx-auto max-w-3xl">
+          <p class="of-eyebrow" data-animate="rise">The tool strip</p>
+          <h3 id="tour-toolbar" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">The tools come to the document.</h3>
+          <p class="of-lede mt-5" data-animate="rise">
+            The strip lives in the document's top-right corner and stays out of the way until you
+            reach for it. Your writing tools sit on one side of a divider and the five AI actions
+            on the other, because both act on the same document. The AI ones are marked with
+            letters rather than icons: five text operations do not have five icons you could tell
+            apart, and the same marks appear in the Agency menu so the two never drift.
+          </p>
+          <p class="of-lede mt-4" data-animate="rise">
+            When an action cannot run, it stays where it is, greyed, and the same panel says why in
+            words that came from whatever refused it. In a document that already has a table,
+            Convert Text to Table reads "Already contains a table". In one with nothing to convert,
+            the same tool gives a different reason. The scope line stays, because it is still true;
+            the cost and the model do not, because a run that cannot happen has neither.
+          </p>
+        </div>
+
+        {/* The armed strip, at rest and full width. Both crops on the stage
+            below carry a popover across half the strip; this is the only cut
+            where the DIVIDER is visible end to end, which is the chapter's
+            actual claim. Sized narrow and centred so it reads as one object
+            rather than a band. */}
+        <figure class="toolbar-armed mx-auto mt-12" data-animate="rise">
+          <FlowDetail
+            src={detailToolbarArmed}
+            alt="Flow's document tool strip at rest: bold, italic, text size and alignment controls, a divider, then five AI marks. Pr, Sm, Tr and Tt are in colour and ready; Tx is greyed out."
+            caption="Four ready, one unavailable · The divider is the whole idea"
+            sizes="(min-width: 900px) 34rem, calc(100vw - 3rem)"
+          />
+        </figure>
+        <p class="toolbar-armed__note mx-auto mt-5 text-center" data-animate="rise">
+          A tool you can run is in full colour. A tool you cannot is still there, greyed, rather
+          than hidden, so the set never changes shape under you.
+        </p>
+        <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
+          <FlowShot
+            src={shotToolbar}
+            alt="Orionfold Flow with the document tool strip expanded over an annual operating review: writing controls, a divider, and five colored AI monograms, with Proofread's hover panel stating the scope, cost, and model for the run."
+            crop
+            sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
+          />
+          <FlowDetail
+            class="of-stage__detail of-stage__detail--tl"
+            src={detailToolbarBlocked}
+            alt="Convert Text to Table greyed out in Flow's tool strip, its panel reading 'Unavailable, already contains a table' above the surviving scope line of 343 words for the whole document."
+            caption="A refusal names its own reason · The scope line survives, the cost does not"
+            sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+            animate
+          />
+        </div>
+
+        {/* The same five actions in the macOS menu bar. This is a DIFFERENT
+            claim from the strip and needs its own picture: the monograms are
+            identical across both surfaces (the brief's "cannot drift"), the
+            keyboard route exists, and the two actions that take a parameter are
+            the two carrying a submenu arrow. Paired with a short copy column
+            rather than given a full band — it is a corroborating detail, not a
+            chapter of its own. */}
+        <div class="toolbar-menu mx-auto mt-16">
+          <div class="toolbar-menu__copy" data-animate="rise">
+            <h4 class="toolbar-menu__head">The same five, wherever you reach for them.</h4>
+            <p class="toolbar-menu__body">
+              Every action in the strip is also in the menu bar, carrying the same mark, so nothing
+              has to be relearned between the two. Proofread has a keyboard shortcut. Two actions
+              need an answer before they can run: Translate, and turning a table back into text.
+              Those two show an arrow, because they open their choices rather than starting.
+            </p>
+          </div>
+          <FlowDetail
+            src={detailToolbarMenu}
+            alt="Flow's Agency menu open in the macOS menu bar: Proofread with the shift-command-P shortcut, Summarize, Translate with a submenu arrow, Convert Text to Table, and Convert Table to Text with a submenu arrow, each beside the same coloured mark used in the document's tool strip."
+            caption="One shortcut, two submenus · The marks match the strip exactly"
+            sizes="(min-width: 900px) 26rem, calc(100vw - 3rem)"
+          />
+        </div>
+      </div>
+    </section>
+
     <!-- Chapter 2: Long documents -->
     <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-longdocs">
       {/* No max-w-6xl wrapper: the stage below runs wider than the copy on
@@ -403,6 +525,7 @@ const faqSchema = {
             caption="Coverage in plain counts · Approve, decline, or skip parts in any order"
             sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
             glow
+            animate
           />
         </div>
         {/* The disclosure menu is a separate claim — Flow tells you it will
@@ -430,6 +553,24 @@ const faqSchema = {
         </div>
       </div>
     </section>
+
+    {/* Mid-tour CTA (2026-08-18). The tour runs eight chapters and the only
+        conversion surface used to be past all of them, so a reader sold by the
+        halfway mark had to scroll the rest of the page to act on it.
+
+        THIS SEAM, not an arbitrary midpoint: chapters 1-2b answer "what does
+        Flow do to my document" (agency, the tool strip, long documents) and
+        everything below answers "where does it run and what does it cost".
+        A repeated ask reads as pushy mid-argument and reasonable at a topic
+        change, which is what this is.
+
+        Its placement is `flow-mid`, NOT a second `flow` — see the prop doc in
+        FlowWaitlist.astro. Same offer and same consent text; different form id
+        (duplicate DOM ids would break the label association) and different
+        attribution source (so the two CTAs stay separable in conversion data). */}
+    <div id="waitlist-mid" class="scroll-mt-24">
+      <FlowWaitlist placement="flow-mid" storyHref={flowStoryHref} />
+    </div>
 
     <!-- Chapter 3: Domains + receipts -->
     <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-domains">
@@ -463,6 +604,7 @@ const faqSchema = {
           alt="The Local execution domain in Flow: its switch turned on, the line 'Stays on this Mac, free, it runs on hardware you have', and three discovered providers."
           caption="One switch per domain · Discovery never enables anything"
           sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+          animate
         />
       </div>
     </section>
@@ -653,6 +795,7 @@ const faqSchema = {
           alt="A Markdown table open in Flow's spreadsheet grid, one cell selected and named R5:C2 in the cell editor bar above it."
           caption="The grid and the note are one document · Saving is still ⌘S"
           sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+          animate
         />
       </div>
     </section>
@@ -683,6 +826,7 @@ const faqSchema = {
             alt="A Markdown table open in Flow's spreadsheet grid, one cell selected and named R5:C2 in the cell editor bar above it."
             caption="A real grid over a real table · The file on disk stays plain Markdown"
             sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+            animate
           />
         </div>
         <div class="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
@@ -970,6 +1114,47 @@ const faqSchema = {
     color: var(--color-text);
   }
   .flow-path__body {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    line-height: 1.62;
+    color: var(--color-text-muted);
+  }
+  /* The armed strip sits alone and centred. Capped well under the copy measure
+     because the crop is a WIDE, SHORT ribbon (520x90) — at full column width it
+     stretches into a letterbox and the 11px control labels stop being the point.
+     `max-width` on the figure, not the image, so the caption wraps with it. */
+  .toolbar-armed {
+    width: 100%;
+    max-width: 34rem;
+  }
+  .toolbar-armed__note {
+    max-width: 34rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+  /* The menu pairing: copy beside the crop, not above it. The menu crop is tall
+     and narrow (330x210 of dropdown), so a stacked layout would leave a column
+     of dead space next to it on desktop. */
+  .toolbar-menu {
+    display: grid;
+    gap: 1.75rem;
+    align-items: center;
+    width: 100%;
+    max-width: 58rem;
+  }
+  @media (min-width: 900px) {
+    .toolbar-menu { grid-template-columns: 1fr 26rem; gap: 3rem; }
+  }
+  .toolbar-menu__head {
+    font-family: var(--font-display);
+    font-size: 1.16rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.018em;
+    color: var(--color-text);
+  }
+  .toolbar-menu__body {
     margin-top: 0.6rem;
     font-size: 0.95rem;
     line-height: 1.62;

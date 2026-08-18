@@ -24,10 +24,12 @@ import shotApprove from '../assets/flow/shots/flow-writing-you-approve-shot.webp
 import shotLongDocs from '../assets/flow/shots/flow-long-documents-shot.webp';
 import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
+import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). A full window
 // shrunk into a page column renders the control being described at ~8px; these
 // crops show that one control at a size where the claim is checkable.
 import detailDiff from '../assets/flow/details/detail-diff.webp';
+import detailToolbarPreview from '../assets/flow/details/detail-toolbar-preview.webp';
 import detailDomains from '../assets/flow/details/detail-domains.webp';
 import detailParts from '../assets/flow/details/detail-parts.webp';
 import detailGrid from '../assets/flow/details/detail-grid.webp';
@@ -104,6 +106,25 @@ const capabilityRows = [
     detailCaption: 'The exact proposed diff · Nothing is saved until you approve it',
     stage: 'tl',
     align: 'left',
+  },
+  {
+    // Added 2026-08-18 from the editor-toolbar brief. Sits second because it is
+    // the step BEFORE the approval gate above it: the strip prices the work
+    // while you can still change your mind, the diff gates it once you have.
+    // STAGE: 'br' — neighbours are 'tl' above and 'bl' below, so no two
+    // adjacent bands share a corner (product-stage.spec.ts asserts this), and
+    // it is the one corner the homepage was not yet using.
+    kicker: 'Priced before you click',
+    title: 'The AI tools tell you the cost first.',
+    body: 'The five AI actions live in the document\'s own tool strip, beside bold and italic. Hover one and Flow answers before it runs: how much text it would act on, what it would cost, and which model would do the work. Work on your own Mac is free, and Flow says so in words rather than a number.',
+    href: '/flow/#tour-toolbar',
+    shot: shotToolbar,
+    alt: 'Orionfold Flow with the document tool strip expanded: writing controls, a divider, and five colored AI marks, with Proofread\'s panel stating the scope, the cost, and the model for the run.',
+    detail: detailToolbarPreview,
+    detailAlt: 'Flow\'s tool strip with Proofread\'s panel open: 3,911 words for the whole document, "No cost, free, it runs on hardware you have", and the model that would run it staying on this Mac.',
+    detailCaption: 'Scope, cost, and route · Answered before the click',
+    stage: 'br',
+    align: 'right',
   },
   {
     kicker: 'Long documents',
@@ -339,6 +360,7 @@ const enterpriseTeaser = [
             alt={row.detailAlt}
             caption={row.detailCaption}
             sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 4rem)"
+            animate
           />
         </div>
       </section>

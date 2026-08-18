@@ -103,6 +103,51 @@ const DETAILS = [
     rect: { left: 2044, top: 112, width: 382, height: 680 },
     note: 'The whole "What Flow is using" popover: usage, tokens, cost, model.',
   },
+  {
+    out: 'detail-toolbar-preview.webp',
+    from: 'flow-editor-toolbar-shot.webp',
+    // The toolbar chapter's proof crop (2026-08-18). Starts at the human tools
+    // rather than at the first monogram on purpose: the claim is that ONE strip
+    // carries both vocabularies either side of a divider, and a cut that began
+    // at "Pr" would show only the AI half and quietly lose it.
+    // Runs to the full height of the hover panel so all THREE cells survive —
+    // scope, cost, route. Any shorter cut drops the route line, which is the
+    // cell that says the work stays on this Mac.
+    rect: { left: 940, top: 110, width: 500, height: 275 },
+    note: 'The strip plus Proofread\'s panel: scope, "No cost", and the route.',
+  },
+  {
+    out: 'detail-toolbar-blocked.webp',
+    from: 'flow-editor-toolbar-blocked-shot.webp',
+    // The refusal, which is a different claim from the preview and needs its
+    // own picture: the tool stays visible and disabled, the panel replaces cost
+    // and route with the REASON, and the scope cell survives because it is
+    // still true. Two monograms are greyed here against one in the preview.
+    rect: { left: 940, top: 110, width: 500, height: 230 },
+    note: 'A blocked tool naming its own reason: "Already contains a table".',
+  },
+  {
+    out: 'detail-toolbar-armed.webp',
+    from: 'flow-editor-toolbar-expanded-shot.webp',
+    // The RESTING armed state, with no panel over it. The preview and blocked
+    // crops both have a popover covering half the strip; this is the only cut
+    // where the divider between the two tool vocabularies is fully visible,
+    // which is the thing the tool-strip chapter actually claims. Four monograms
+    // live, one greyed — a ready tool and an unavailable one, side by side.
+    rect: { left: 935, top: 110, width: 520, height: 90 },
+    note: 'The whole strip at rest: human tools, divider, five AI marks.',
+  },
+  {
+    out: 'detail-toolbar-menu.webp',
+    from: 'flow-editor-toolbar-agency-menu-shot.webp',
+    // The macOS Agency menu. Carries two claims one picture: the SAME five
+    // monograms as the in-document strip (they cannot drift, per the brief),
+    // and the submenu arrows on exactly the two actions that take a parameter.
+    // Includes the menu-bar row above the dropdown on purpose — cropping to the
+    // list alone would lose that this is the system menu bar and not a popover.
+    rect: { left: 470, top: 0, width: 330, height: 210 },
+    note: 'The Agency menu: five actions, one keyboard shortcut, two submenus.',
+  },
 ];
 
 await import('node:fs/promises').then(({ mkdir }) => mkdir(outDir, { recursive: true }));

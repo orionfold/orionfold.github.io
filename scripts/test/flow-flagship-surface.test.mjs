@@ -159,6 +159,34 @@ assert.match(flow, /How is Flow different from a chat canvas or artifacts panel\
 assert.match(flow, /<FlowWaitlist placement="flow" storyHref=\{flowStoryHref\} \/>/);
 assert.ok(flow.indexOf('<FlowWaitlist placement="flow"') > flow.indexOf('id="press"'));
 
+// ── The mid-tour CTA repeat (2026-08-18) ──
+// The tour is eight chapters long and the closer sits past all of them, so the
+// offer is repeated at the halfway seam. The risk this guards is NOT that the
+// section goes missing — it is that someone "simplifies" it to a second
+// placement="flow". That would emit the same formId twice, and formId seeds
+// five DOM ids plus the section's aria-labelledby, so the page would carry
+// duplicate ids and the label association would break. It would also collapse
+// both CTAs onto one attribution source, making them indistinguishable in
+// conversion data. Hence: distinct placement, and it must come BEFORE the
+// chapter it hands off to.
+assert.match(flow, /<FlowWaitlist placement="flow-mid"/, 'the mid-tour CTA must use its own placement');
+assert.ok(
+  flow.indexOf('<FlowWaitlist placement="flow-mid"') < flow.indexOf('aria-labelledby="tour-domains"'),
+  'the mid-tour CTA must sit at the seam, before the domains chapter',
+);
+assert.ok(
+  flow.indexOf('<FlowWaitlist placement="flow-mid"') < flow.indexOf('<FlowWaitlist placement="flow"'),
+  'the mid-tour CTA must come before the closing one',
+);
+// One offer, two surfaces: the placements must resolve to DIFFERENT form ids
+// (no duplicate DOM ids) and therefore different attribution sources.
+const waitlistComponent = read('src/components/sections/FlowWaitlist.astro');
+assert.match(waitlistComponent, /'home' \| 'flow' \| 'flow-mid'/);
+assert.match(waitlistComponent, /'flow-mid-waitlist'/);
+for (const id of ["'home-flow-waitlist'", "'flow-mid-waitlist'", "'flow-page-waitlist'"]) {
+  assert.ok(waitlistComponent.includes(id), `FlowWaitlist must keep a distinct form id for ${id}`);
+}
+
 // ── Homepage: the demand-generation front door ─────────────────────────────
 const home = read('src/pages/index.astro');
 assert.match(home, /title=\{`\$\{SITE\.tagline\} · Orionfold`\}/);

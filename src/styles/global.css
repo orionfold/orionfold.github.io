@@ -626,7 +626,8 @@ img[data-fade] {
   .js-ready [data-animate="lead"],
   .js-ready [data-animate="rise"],
   .js-ready [data-animate="plate"],
-  .js-ready [data-animate="wipe"] {
+  .js-ready [data-animate="wipe"],
+  .js-ready [data-animate="detail"] {
     opacity: 1;
     transform: none;
     transition: none;
@@ -919,6 +920,96 @@ img[data-fade] {
   .of-stage .of-stage__detail--bl.of-stage__detail--bl { left: -3rem; }
   .of-stage .of-stage__detail--tl.of-stage__detail--tl { left: -3rem; }
   .of-stage .of-stage__detail--tr.of-stage__detail--tr { right: -3rem; }
+}
+
+/* ── Lifting the crop off the shot (2026-08-18) ──
+   The overlay only works if the crop reads as an object ABOVE the window, and
+   at rest it did not: FlowDetail's default `--shadow-of-pop` is a one-stop
+   18px shadow tuned for a card on a page, and a light app capture laid on a
+   light app window with that shadow reads as a hole punched in the picture
+   rather than as a card over it.
+
+   ELEVATION, NOT A RESTING ZOOM. The obvious alternative was a standing
+   `scale()` on the crop. Rejected on purpose: FlowDetail's entire reason for
+   existing is that the fragment renders at or above 1:1 so the labels stay
+   legible (see the component header). Scaling it up past its native pixels
+   resamples exactly the text the crop exists to prove. So the crop stays at
+   native scale and gains depth instead — a two-stop shadow (a tight contact
+   shadow plus a wide soft one) is what the eye reads as height, and it costs
+   no sharpness. Scoped to `.of-stage` so the same component used in normal
+   flow elsewhere on /flow/ keeps the flatter page-level shadow.
+
+   Only the plate is touched, and only with box-shadow — no filter, no blur
+   layer. A `filter: blur()` bloom at retina DPR was a measured scroll-jank
+   source on this page already; do not reintroduce one here. */
+.of-stage .of-stage__detail .flow-detail__plate {
+  box-shadow:
+    0 2px 6px -2px rgba(16, 22, 30, 0.18),
+    0 18px 40px -12px rgba(16, 22, 30, 0.28);
+}
+html[data-theme="dark"] .of-stage .of-stage__detail .flow-detail__plate {
+  /* Dark needs more of the shadow's depth and a light top edge: a dark card on
+     a dark window separates by its rim, not by the shadow the canvas swallows. */
+  border-color: color-mix(in oklch, var(--color-primary) 30%, var(--color-border));
+  box-shadow:
+    0 2px 6px -2px rgba(0, 0, 0, 0.55),
+    0 22px 48px -14px rgba(0, 0, 0, 0.7);
+}
+
+/* ── The crop's own entrance (2026-08-18) ──
+   The stage as a whole already animates with data-animate="plate". Reusing
+   that on the crop made the two arrive together, which loses the point of the
+   composition: the window sets the scene, THEN the crop lands on it carrying
+   the proof. `data-animate="detail"` is a fifth variant on the same observer
+   and the same .is-visible flip — no second JS path, and the reduced-motion
+   block below neutralises it with the rest.
+
+   The gesture is direction-aware: the crop drifts in from the edge it hangs
+   off, so it reads as being placed onto the shot from outside the frame. The
+   per-corner offsets are set on the corner modifiers, and the crop settles to
+   `transform: none` like every other variant.
+
+   It does animate scale — from 0.94 UP to 1. That is the opposite of a resting
+   zoom: it ends at native scale, so the settled crop is pixel-exact and only
+   the in-flight frames are resampled. The delay is what sequences it behind
+   its shot. */
+.js-ready [data-animate="detail"] {
+  opacity: 0;
+  /* Default (no corner): a plain rise, so the variant is safe anywhere. */
+  --of-detail-x: 0rem;
+  --of-detail-y: 1.75rem;
+  transform: translate3d(var(--of-detail-x), var(--of-detail-y), 0) scale(0.94);
+  transition: transform 0.85s var(--of-ease-reveal), opacity 0.85s var(--of-ease-reveal);
+  transition-delay: 220ms;
+}
+.js-ready [data-animate="detail"].is-visible {
+  opacity: 1;
+  transform: none;
+}
+/* Direction per corner. Bottom-anchored crops rise into place; top-anchored
+   ones settle down onto the window. Each also drifts in from its own side. */
+@media (min-width: 1024px) {
+  .js-ready [data-animate="detail"].of-stage__detail--br { --of-detail-x: 2rem; --of-detail-y: 2rem; }
+  .js-ready [data-animate="detail"].of-stage__detail--bl { --of-detail-x: -2rem; --of-detail-y: 2rem; }
+  .js-ready [data-animate="detail"].of-stage__detail--tr { --of-detail-x: 2rem; --of-detail-y: -2rem; }
+  .js-ready [data-animate="detail"].of-stage__detail--tl { --of-detail-x: -2rem; --of-detail-y: -2rem; }
+}
+/* The shared reduced-motion block near the top of this file also names
+   `detail`, but it sits ~15k characters EARLIER, and these rules tie it on
+   specificity — so on source order the animated rule would win and "reduce"
+   would still animate. Repeat the neutralisation here, after the declaration,
+   which is the same pattern `.book-float` already needed for the same reason.
+   Keep this block last if you move the variant. */
+@media (prefers-reduced-motion: reduce) {
+  .js-ready [data-animate="detail"],
+  .js-ready [data-animate="detail"].of-stage__detail--br,
+  .js-ready [data-animate="detail"].of-stage__detail--bl,
+  .js-ready [data-animate="detail"].of-stage__detail--tr,
+  .js-ready [data-animate="detail"].of-stage__detail--tl {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 .of-primary-action,

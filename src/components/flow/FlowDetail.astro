@@ -23,6 +23,13 @@ interface Props {
   sizes?: string;
   /** Lift the crop toward the reader with a soft accent glow behind it. */
   glow?: boolean;
+  /**
+   * Give the crop its own scroll entrance (`data-animate="detail"`), so it
+   * lands ON the shot a beat after the shot itself arrives. Opt-in, because a
+   * crop sitting in normal flow is usually already inside an animated parent
+   * and a second reveal on the child would double the gesture.
+   */
+  animate?: boolean;
   class?: string;
 }
 
@@ -32,10 +39,14 @@ const {
   caption,
   sizes = '(min-width: 1024px) 34rem, calc(100vw - 3rem)',
   glow = false,
+  animate = false,
   class: className,
 } = Astro.props;
 ---
-<figure class:list={['flow-detail', glow && 'flow-detail--glow', className]}>
+<figure
+  class:list={['flow-detail', glow && 'flow-detail--glow', className]}
+  data-animate={animate ? 'detail' : undefined}
+>
   <div class="flow-detail__plate">
     <Image
       src={src}
@@ -70,19 +81,38 @@ const {
     gap: 0.85rem;
   }
   /* The crop sits on its own raised plate so a light-UI capture still reads as
-     a distinct object on a light page (and does not float on the dark theme). */
+     a distinct object on a light page (and does not float on the dark theme).
+
+     PADDING IS LOAD-BEARING (2026-08-18), not decoration. These crops are cut
+     to the feature and nothing else (scripts/prepare-flow-details.mjs), so the
+     source rectangle has no margin of its own: rendered flush to the plate
+     border, the first control touched the frame and edge pills like "1 Check
+     to resolve" read as clipped rather than as a whole UI. The matte gives the
+     fragment a mount, which is also what separates it from the app window it
+     is laid over — a bordered image alone reads as a hole punched in the shot.
+     Padded in `em` so the matte tracks the plate's own scale at every
+     breakpoint instead of going thin on the widest crop. */
   .flow-detail__plate {
     position: relative;
-    overflow: hidden;
+    padding: 0.6em;
     border: 1px solid color-mix(in oklch, var(--color-primary) 22%, var(--color-border));
     border-radius: var(--radius-of-lg);
     background: var(--color-surface-raised);
     box-shadow: var(--shadow-of-pop);
   }
+  /* `overflow: hidden` moved off the plate and onto the image itself. On the
+     plate it would clip the matte's own corners; the image now carries the
+     smaller inner radius, which is what makes the padding read as a mount
+     rather than as a gap. Inner radius ≈ outer minus the padding, the standard
+     concentric-corner relationship. */
   .flow-detail__img {
     display: block;
     width: 100%;
     height: auto;
+    border-radius: calc(var(--radius-of-lg) - 0.35rem);
+    /* A hairline so a light app capture on a light matte still has an edge. */
+    outline: 1px solid color-mix(in oklch, var(--color-border) 60%, transparent);
+    outline-offset: -1px;
   }
   /* A soft accent bloom behind the plate. Gradient, never filter: blur() —
      blurred layers at retina DPR were a measured scroll-jank source here. */
