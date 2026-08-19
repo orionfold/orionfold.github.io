@@ -33,6 +33,7 @@ import shotRuntimeModels from '../assets/flow/shots/flow-runtime-models-shot.web
 import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
 import shotBenchmarks from '../assets/flow/shots/flow-benchmarks-shot.webp';
 import shotBenchmarksScoring from '../assets/flow/shots/flow-benchmarks-scoring-shot.webp';
+import shotSmartRouting from '../assets/flow/shots/flow-smart-routing-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). Each tour
 // chapter makes a claim about one control; these crops show that control at a
 // size where the claim can be checked, instead of asking the reader to believe
@@ -55,6 +56,10 @@ import detailBenchScoring from '../assets/flow/details/detail-benchmarks-scoring
 import detailBenchPreset from '../assets/flow/details/detail-benchmarks-preset.webp';
 import detailBenchMachine from '../assets/flow/details/detail-benchmarks-machine.webp';
 import detailBenchMethod from '../assets/flow/details/detail-benchmarks-method.webp';
+import detailRoutingDecided from '../assets/flow/details/detail-routing-decided.webp';
+import detailRoutingRules from '../assets/flow/details/detail-routing-rules.webp';
+import detailRoutingNorule from '../assets/flow/details/detail-routing-norule.webp';
+import detailRoutingProviders from '../assets/flow/details/detail-routing-providers.webp';
 
 const og = ogMeta('/flow/');
 const flowUrl = `${SITE.url}/flow/`;
@@ -561,11 +566,11 @@ const faqSchema = {
       </div>
     </section>
 
-    {/* Mid-tour CTA (2026-08-18). The tour runs eight chapters and the only
-        conversion surface used to be past all of them, so a reader sold by the
-        halfway mark had to scroll the rest of the page to act on it.
+    {/* Mid-tour CTA (2026-08-18). The tour runs a long run of chapters and the
+        only conversion surface used to be past all of them, so a reader sold
+        by the halfway mark had to scroll the rest of the page to act on it.
 
-        THIS SEAM, not an arbitrary midpoint: chapters 1-2b answer "what does
+        THIS SEAM, not an arbitrary midpoint: chapters 1-2 answer "what does
         Flow do to my document" (agency, the tool strip, long documents) and
         everything below answers "where does it run and what does it cost".
         A repeated ask reads as pushy mid-argument and reasonable at a topic
@@ -602,13 +607,13 @@ const faqSchema = {
       <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
         <FlowShot
           src={shotDomains}
-          alt="Flow's Models settings: four execution domains with locality and cost statements, provider discovery, Auto routing, and a user-owned provider order."
+          alt="Flow's Models settings: four execution domains with locality and cost statements, and the discovered providers each domain offers to Smart Routing."
           sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
         />
         <FlowDetail
           class="of-stage__detail of-stage__detail--bl"
           src={detailDomains}
-          alt="The Local execution domain in Flow: its switch turned on, the line 'Stays on this Mac, free, it runs on hardware you have', and three discovered providers."
+          alt="The Local execution domain in Flow: its switch turned on, the line 'Stays on this Mac, free, it runs on hardware you have', and three discovered providers, each offered to Smart Routing."
           caption="One switch per domain · Discovery never enables anything"
           sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
           animate
@@ -728,10 +733,10 @@ const faqSchema = {
             must never imply the ranking judges how good a model's answers are.
 
         STAGE CORNER: --br. Pinned by both neighbours, not chosen freely: the
-        previous stage is Chapter 3's --bl and the NEXT one is Chapter 7's --tr,
-        which sits directly after this chapter because Chapters 4 and 5 carry no
-        stage of their own. That leaves --br as the only corner distinct from
-        both. An earlier --tr here collided with Chapter 7 and was caught by
+        previous stage is Chapter 3's --bl and the NEXT one is now Smart
+        Routing's --bl (Chapter 4c, added 2026-08-18; before that the next
+        stage was Chapter 7's --tr). --br stays distinct from both. An earlier
+        --tr here collided with Chapter 7 and was caught by
         tests/e2e/product-stage.spec.ts, which asserts adjacency rather than
         global uniqueness — so re-check the ADJACENT stages, which are not the
         adjacent chapters, before changing this. */}
@@ -874,6 +879,167 @@ const faqSchema = {
 
         <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">
           Measured 2026-08-18 on one Apple M3 Max, on a development build, through the runtime Flow ships. Your own Mac and your own models will produce different numbers, which is the point.
+        </p>
+      </div>
+    </section>
+
+    {/* Chapter 4c: Smart Routing. Written 2026-08-18 from the smart-routing
+        brief (flow-smart-routing-source.md). Sits directly after Benchmarks
+        because that is the argument's own order: which of your models is
+        fastest (4b), and who decides which one runs each request (4c). The
+        speed rule literally reads the Benchmarks screen's own measurements,
+        so the two chapters share evidence, not just adjacency.
+
+        VOCABULARY RULE, non-negotiable. The implementation says predicates,
+        resolvers, gates and fail-closed. None of those may appear here. The
+        published vocabulary is the screen's: rules, "rules decide in order;
+        the first one that matches applies", Deciding, models qualify,
+        provider routing order. The feature is SMART ROUTING; the name "Auto
+        routing" was retired 2026-08-18 and must not be reintroduced anywhere,
+        including alt text.
+
+        Guardrails from the brief that must not be softened OR strengthened:
+          * It is a deterministic ordered rulebook. Never "AI-powered
+            routing", never "learns your preferences". The refusal to adapt
+            is the selling point.
+          * Rules see locality, document fit, price, and measured speed.
+            NEVER a quality verdict; the Benchmarks chapter above carries the
+            same boundary from the other side.
+          * Claim system-wide rules only. Folder- and document-scoped rule
+            sets exist in the mechanism but no surface edits them yet.
+          * The speed rule ranks only models measured on THIS Mac; unmeasured
+            models are not ranked at all. A cost rule cannot admit a model
+            with no published price, because Flow will not guess a rate.
+
+        STAGE CORNER: --bl. Pinned by both neighbours: the previous stage is
+        Benchmarks' --br and the next is Chapter 7's --tr (Chapters 5 and 6
+        carry no stage). --bl also lands on the emptiest region of this
+        capture, below the provider list. tests/e2e/product-stage.spec.ts
+        asserts adjacency in rendered order, so re-check the ADJACENT stages
+        before changing this. */}
+    <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-routing">
+      <div>
+        <div class="mx-auto max-w-3xl">
+          <p class="of-eyebrow" data-animate="rise">Smart Routing</p>
+          <h3 id="tour-routing" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">
+            Your rules pick the model. The screen names the rule that did.
+          </h3>
+          <p class="of-lede mt-5" data-animate="rise">
+            Flow can reach eight providers across four domains, so every AI action starts with the
+            same question: which model should do this work? Smart Routing answers it with rules you
+            keep. A short, ordered list, read top to bottom: rules decide in order, and the first
+            one that matches applies. Five rules come built in, named in plain words, from
+            "Stays on this Mac" to "Cheapest". Duplicate any of them and edit your own copy.
+          </p>
+          <p class="of-lede mt-4" data-animate="rise">
+            Elsewhere, routing is an auto tier: the vendor's black box picks a model by its own
+            economics and tells you afterwards, if at all. Flow's routing is a rulebook you wrote,
+            applied in your order, decided on your Mac. The screen states the whole procedure in
+            one sentence: rules decide in order, and the first one that matches applies.
+          </p>
+        </div>
+
+        {/* The corner crop is the rulebook itself: four ordered rules, the
+            Deciding badge, live counts, and the orange no-model state. The
+            short "decided by" strip could not take this corner: at 82 source
+            pixels tall it renders shorter than the stage overhang and never
+            overlaps the shot (product-stage.spec.ts catches exactly that), so
+            it sits below as its own centred figure, machine-strip style. */}
+        <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
+          <FlowShot
+            src={shotSmartRouting}
+            alt="Orionfold Flow's Smart Routing settings beside an annual operating review: the Allow Smart Routing switch naming the routed model and its deciding rule, four ordered rules with live counts, and the provider routing order below."
+            crop
+            sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
+          />
+          <FlowDetail
+            class="of-stage__detail of-stage__detail--bl"
+            src={detailRoutingRules}
+            alt="Flow's Smart Routing rules: the sentence 'Rules decide in order; the first one that matches applies', then four numbered rules with reorder arrows. Rule 1, Can hold the whole document, wears the Deciding badge above 4 of 8 models qualify. Rule 4, Can hold the entire archive, reads No model qualifies right now in orange."
+            caption="Rules decide in order · The first one that matches applies"
+            sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+            animate
+          />
+        </div>
+
+        {/* The signed route, alone and centred. Same shape problem as the
+            benchmarks machine strip: a wide, short ribbon that letterboxes at
+            full column width, so it is capped near the copy measure and the
+            sentence stays legible. It gets its own moment because it is the
+            chapter's headline claim: the route is not just a result, it is
+            signed by the rule that picked it. */}
+        <figure class="routing-decided mx-auto mt-14" data-animate="rise">
+          <FlowDetail
+            src={detailRoutingDecided}
+            alt="Flow's Allow Smart Routing switch, turned on, above the sentence: Smart Routing would use qwen3.5-35b-a3b-4bit. Decided by the rule 'Can hold the whole document'."
+            caption="The route, signed · One sentence names the model and the rule that picked it"
+            sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
+          />
+        </figure>
+        <p class="routing-decided__note mx-auto mt-5 text-center" data-animate="rise">
+          Wherever the route is shown, the deciding rule is named in one plain sentence:
+          <em>Decided by the rule "Can hold the whole document".</em> The toolbar's hover panel
+          and the Settings screen read that sentence from one shared place, so the two can never
+          tell you different stories.
+        </p>
+
+        {/* Two coupled claims, same layout as the Benchmarks chapter for the
+            same legibility reason (.bench-honesty below): each crop is a wide
+            row of small UI text and needs the full column to stay readable.
+            Order is deliberate: what the rulebook refuses to pretend, then
+            the provider order underneath it all. */}
+        <div class="bench-honesty mx-auto mt-16">
+          <div class="bench-honesty__item">
+            <div class="bench-honesty__copy" data-animate="rise">
+              <h4 class="bench-honesty__head">A rule that cannot deliver says so. In orange.</h4>
+              <p class="bench-honesty__body">
+                A rule that matches but admits no model is not skipped in silence. Its row says
+                "No model qualifies right now.", in orange, and the decision moves on to the next
+                rule where you can watch it happen. The refusals run all the way down. The speed
+                rule ranks only by speeds measured on this Mac, the Benchmarks screen's own
+                numbers, so a model that was never measured is not ranked at all. And a cost rule
+                will not guess: a model with no published price simply cannot qualify.
+              </p>
+            </div>
+            <FlowDetail
+              src={detailRoutingNorule}
+              alt="Three of Flow's routing rules: Fastest measured on this Mac reading Would try qwen3.5-35b-a3b-4bit first, Stays on this Mac with 5 of 8 models qualify, and Can hold the entire archive with the orange line No model qualifies right now."
+              caption="Refusal over pretense · An empty match is stated, never skipped"
+              sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
+            />
+          </div>
+          <div class="bench-honesty__item">
+            <div class="bench-honesty__copy" data-animate="rise">
+              <h4 class="bench-honesty__head">Providers try in your order, and the off ones stay visible.</h4>
+              <p class="bench-honesty__body">
+                Below the rules sits the provider routing order: all eight providers Flow can
+                reach, in the order you set. Providers you have not enabled are labeled
+                "Not enabled" rather than dropped from the list, because a provider that silently
+                vanished would leave you guessing why a route changed. Rules pick from what these
+                providers can offer right now, never from a stored claim about what they once had.
+              </p>
+            </div>
+            <FlowDetail
+              src={detailRoutingProviders}
+              alt="Flow's provider routing order: eight providers from Flow Runtime to Claude Code in a numbered, reorderable list, with Codex CLI and Claude Code labeled Not enabled."
+              caption="All eight, always listed · Off means labeled, not hidden"
+              sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
+            />
+          </div>
+        </div>
+
+        <ul class="flow-list mx-auto mt-14 max-w-3xl">
+          <li>Five rules ship built in and read-only: Stays on this Mac, Can hold the whole document, Under $0.05 a run, Fastest measured on this Mac, and Cheapest. Duplicate one to make your own editable copy.</li>
+          <li>Every rule row carries a live count, like "4 of 8 models qualify.", and the rule currently choosing wears a Deciding badge. A new rule joins at the end of the order, so adding one never quietly outranks the rules you already trust.</li>
+          <li>The rule editor names every problem beside the field it belongs to, and Save stays off until the draft is valid. A broken rule cannot be saved now and fail you quietly later.</li>
+          <li>Every surface prices a rule at the open document's own size, so a cost rule cannot route one way while you hover one action and another way on the next.</li>
+          <li>Pin a model yourself and the rules section says the rules decide nothing. No rule takes credit for a choice you made by hand.</li>
+          <li>Rules see where a model runs, what it can hold, what it costs, and how fast it measured on this Mac. They never judge answer quality, because Flow has not measured that.</li>
+          <li>Nothing here learns, weights, or decides off this Mac. The same rules in the same order pick the same model, and you can read why, every time.</li>
+        </ul>
+
+        <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">
+          Captured 2026-08-18 on a development build. Every sentence in these pictures is the screen's own, photographed rather than promised.
         </p>
       </div>
     </section>
@@ -1367,13 +1533,25 @@ const faqSchema = {
     line-height: 1.6;
     color: var(--color-text-muted);
   }
-  /* The two honesty claims. They stack on every width rather than sitting side
-     by side, because each crop is a WIDE row (1050px of leaderboard and of
-     method text) — put two of those in one row and each renders at half column
-     width, which is exactly the illegibility FlowDetail exists to fix. The
-     desktop pairing is copy-beside-crop WITHIN each item, and the items
-     alternate their column order so the page does not read as two identical
-     rows. */
+  /* The signed-route strip in the Smart Routing chapter: the same wide, short
+     ribbon shape as .bench-machine, capped a little wider (the crop is 740
+     source pixels across) so the deciding sentence renders near legible 1:1. */
+  .routing-decided {
+    width: 100%;
+    max-width: 38rem;
+  }
+  .routing-decided__note {
+    max-width: 38rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+  /* The honesty-claim layout, shared by the Benchmarks and Smart Routing
+     chapters (the class name predates the second user). Items stack on every
+     width rather than sitting side by side, because each crop is a WIDE row
+     (1050px of leaderboard, method text, or rule list) — put two of those in
+     one row and each renders at half column width, which is exactly the
+     illegibility FlowDetail exists to fix. */
   .bench-honesty {
     display: grid;
     gap: 3.5rem;

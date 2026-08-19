@@ -78,7 +78,7 @@ assert.deepEqual([...anchorIndexes].sort((a, b) => a - b), anchorIndexes, 'ancho
 // order-stable: the 2026-08-16 typography pass added .of-display alongside
 // scroll-mt-28, and a combined "id then class" regex broke on the reorder
 // while the anchors themselves were still perfectly fine.
-for (const id of ['tour-agency', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-runtime', 'tour-benchmarks', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
+for (const id of ['tour-agency', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
   const heading = flow.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
   assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
   assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
@@ -527,6 +527,75 @@ for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeB
     assert.match(copy, /M3 Max/, `${name} must name the Mac the 4.5 second figure was measured on`);
   }
 }
+
+// ── Smart Routing truth boundaries (2026-08-18) ─────────────────────────────
+// The smart-routing brief draws a boundary that is easy to cross in BOTH
+// directions: the feature's selling point is what it refuses to do, so a
+// well-meaning copy edit that makes it sound smarter ("AI-powered", "learns")
+// fabricates the exact adaptivity the design rejects, while an edit that
+// drops the refusal language deletes the differentiator.
+
+// 1. The published vocabulary is the screen's. The implementation says
+//    predicates, resolvers and fail-closed; none of those may reach a reader.
+//    (Comment-stripped copy: the chapter's own source comment is allowed to
+//    name the banned words in order to ban them.)
+const flowRoutingCopy = readCopy('src/pages/flow.astro');
+for (const jargon of ['predicate', 'resolver', 'fail-closed', 'fails closed']) {
+  assert.doesNotMatch(
+    flowRoutingCopy,
+    new RegExp(esc(jargon), 'i'),
+    `flow.astro must use the screen's person-words, not "${jargon}"`,
+  );
+}
+
+// 2. The name. "Auto routing" was retired 2026-08-18 and appears nowhere on
+//    screen; reintroducing it (in copy OR alt text) would name a control that
+//    no longer exists.
+assert.doesNotMatch(flowRoutingCopy, /auto[- ]routing/i, 'the retired "Auto routing" name must not come back');
+assert.match(flowRoutingCopy, /Smart Routing/, 'the feature is named Smart Routing');
+
+// 3. It is a deterministic ordered rulebook, and that is the pitch. Copy must
+//    state the procedure in the screen's own sentence shape and must never
+//    dress the rulebook up as adaptive intelligence.
+assert.match(
+  flowRoutingCopy,
+  /[Rr]ules decide in order/,
+  'the tour must state the procedure: rules decide in order, first match applies',
+);
+assert.match(
+  flowRoutingCopy,
+  /Decided by the rule/,
+  'the tour must carry the signed-route sentence that names the deciding rule',
+);
+assert.doesNotMatch(
+  flowRoutingCopy,
+  /AI-powered routing|learns your|adapts to your/i,
+  'Smart Routing is a deterministic rulebook and must not be sold as adaptive',
+);
+
+// 4. Rules see locality, document fit, price, and measured speed. Never a
+//    quality verdict — the same boundary the Benchmarks chapter carries from
+//    the other side, so both chapters must keep their halves of it.
+assert.match(
+  flowRoutingCopy,
+  /never judge answer quality/,
+  'the routing chapter must state that rules do not judge answer quality',
+);
+
+// 5. No surface edits folder- or document-scoped rule sets yet, so the page
+//    may claim system-wide rules only.
+assert.doesNotMatch(
+  flowRoutingCopy,
+  /(?:folder|document)-scoped rule|per-folder rule|rules for this folder/i,
+  'scoped rule sets are unreleased and must not be claimed',
+);
+
+// 6. The capture's scope stays welded to it, matching the Benchmarks pattern.
+assert.match(
+  flowRoutingCopy,
+  /Captured 2026-08-18 on a development build/,
+  'the routing chapter keeps its capture scope and date',
+);
 
 // ── AEO surfaces stay Flow-first ───────────────────────────────────────────
 const llms = read('public/llms.txt');

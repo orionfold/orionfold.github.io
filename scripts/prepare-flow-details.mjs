@@ -57,7 +57,14 @@ const DETAILS = [
   {
     out: 'detail-domains.webp',
     from: 'flow-domains-shot.webp',
-    rect: { left: 400, top: 405, width: 1000, height: 400 },
+    // RE-CUT 2026-08-18: the domains capture was re-shot after 0080 landed
+    // (the old pixels said "offered to Auto", a name retired that day, and
+    // showed a settings rail without Smart Routing). Provider connections
+    // also moved above Execution Domains, so the old rectangle now landed on
+    // the wrong rows. This cut is the Local domain header with its switch,
+    // the locality-and-cost line, and the three provider rows each reading
+    // "offered to Smart Routing".
+    rect: { left: 430, top: 286, width: 990, height: 284 },
     note: 'The Local execution domain: its switch, locality line, and providers.',
   },
   {
@@ -206,6 +213,48 @@ const DETAILS = [
     // top+height may not exceed 1400, and the script throws if it does.
     rect: { left: 417, top: 1240, width: 997, height: 158 },
     note: 'The method head: 5 of 5 measured, and the honest not-comparable note.',
+  },
+  {
+    out: 'detail-routing-decided.webp',
+    from: 'flow-smart-routing-shot.webp',
+    // The chapter's headline claim in one cut (2026-08-18): the Allow Smart
+    // Routing switch and, under it, the sentence that names both the routed
+    // model AND the rule that chose it. The rule name is the payload, so the
+    // cut runs to the closing quote after "whole document" and no further.
+    rect: { left: 405, top: 310, width: 740, height: 82 },
+    note: 'The switch plus the sentence naming the model and its deciding rule.',
+  },
+  {
+    out: 'detail-routing-rules.webp',
+    from: 'flow-smart-routing-shot.webp',
+    // The whole rulebook: the on-screen sentence "Rules decide in order; the
+    // first one that matches applies.", four ordered rules with live counts,
+    // the Deciding badge on rule 1, the orange no-model state on rule 4, and
+    // the Add Rule / Duplicate to Edit controls. Deliberately ALL of it: the
+    // claim is that the entire decision procedure fits on one screen.
+    rect: { left: 405, top: 392, width: 1040, height: 290 },
+    note: 'Four ordered rules, live counts, the Deciding badge, and the editors.',
+  },
+  {
+    out: 'detail-routing-norule.webp',
+    from: 'flow-smart-routing-shot.webp',
+    // The honesty states, tighter than the full rulebook so the orange line is
+    // read rather than noticed: rule 2's "Would try … first" (a speed rule
+    // built from this Mac's own measurements) above rule 4's "No model
+    // qualifies right now." Starts at rule 2 so the Deciding badge stays out;
+    // that is the previous crop's claim, not this one's.
+    rect: { left: 405, top: 502, width: 1040, height: 144 },
+    note: 'A rule that admits nothing qualifies, in orange, instead of hiding.',
+  },
+  {
+    out: 'detail-routing-providers.webp',
+    from: 'flow-smart-routing-shot.webp',
+    // The provider order below the rules: all eight providers listed with the
+    // not-enabled ones labeled rather than hidden. Runs to the card's bottom
+    // border so "Claude Code · Not enabled" is whole; a sliced last row reads
+    // as truncation, and the claim is exactly that nothing is truncated.
+    rect: { left: 405, top: 685, width: 1040, height: 290 },
+    note: 'All eight providers in the user\'s order, the off ones labeled.',
   },
 ];
 
