@@ -206,7 +206,6 @@ const faqSchema = {
 // DOM ids stay unique and the three placements stay distinguishable in
 // conversion data. Keep this sentence byte-identical to FlowWaitlist.astro's.
 const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
-const heroPrivacyNote = heroConsentText.replace(' See our privacy policy.', '');
 ---
 <Layout
   title="Orionfold Flow · Mac AI document editor where you approve every change"
@@ -262,9 +261,8 @@ const heroPrivacyNote = heroConsentText.replace(' See our privacy policy.', '');
             successMessage="Check your inbox to confirm."
             consentText={heroConsentText}
           />
-          <p class="mt-4 text-xs leading-relaxed text-text-dim">
-            {heroPrivacyNote}{' '}
-            <a class="underline underline-offset-2 transition-colors hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
+          <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
+            Free to join · Double opt-in · One email a week, no more
           </p>
         </div>
       </div>

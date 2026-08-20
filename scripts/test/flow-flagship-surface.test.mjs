@@ -63,6 +63,12 @@ assert.doesNotMatch(flow, /of-secondary-action">See the product tour/, 'no join-
 const heroConsent = flow.match(/const heroConsentText = '([^']+)'/)?.[1] ?? '';
 const panelConsent = read('src/components/sections/FlowWaitlist.astro').match(/const consentText = '([^']+)'/)?.[1] ?? '';
 assert.equal(heroConsent, panelConsent, 'the hero capture must record the exact consent scope the FlowWaitlist panels record');
+// Every Flow capture form carries ONE caption line (operator decision
+// 2026-08-20): the long consent sentence is recorded on submit, never shown.
+for (const [name, src] of [['flow', flow], ['FlowWaitlist', read('src/components/sections/FlowWaitlist.astro')]]) {
+  assert.doesNotMatch(src, /\{(hero)?[pP]rivacyNote\}/, `${name} must not render the long consent note`);
+  assert.match(src, /of-waitlist-caption[^>]*>\s*Free to join · Double opt-in · One email a week, no more/, `${name} carries the one-line caption`);
+}
 // Truth boundaries from the Flow capability briefs.
 assert.doesNotMatch(flow, /Apple Intelligence/, 'Apple Intelligence was retired from Flow on 2026-08-14 and must not appear');
 assert.doesNotMatch(readCopy('src/pages/flow.astro'), /—/, 'Flow landing-page copy must not use em dashes');
@@ -282,7 +288,7 @@ for (const phrase of [
   'Join the waitlist',
   'Check your inbox to confirm.',
   'AI For Everyone digest, one email a week, no more',
-  'href="/privacy/"',
+  'Free to join · Double opt-in · One email a week, no more',
 ]) {
   assert.match(flowWaitlistComponent, new RegExp(esc(phrase)));
 }

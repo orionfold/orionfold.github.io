@@ -28,7 +28,6 @@ const isMid = placement === 'flow-mid';
 const formId = isHome ? 'home-flow-waitlist' : isMid ? 'flow-mid-waitlist' : 'flow-page-waitlist';
 const source = formId;
 const consentText = 'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
-const privacyNote = consentText.replace(' See our privacy policy.', '');
 ---
 <section
   class:list={['flow-waitlist px-6 py-16 sm:py-24', isHome && 'flow-waitlist--home']}
@@ -64,14 +63,10 @@ const privacyNote = consentText.replace(' See our privacy policy.', '');
         successMessage="Check your inbox to confirm."
         consentText={consentText}
       />
-      {/* Same single-line caption as the Home hero CTA, so the promise reads
-          identically wherever the waitlist form appears. */}
-      <p class="mt-3 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-text-dim">
+      {/* One caption, the same line as the Home hero CTA. The full consent
+          scope is recorded on submit (consentText), not shown. */}
+      <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
         Free to join · Double opt-in · One email a week, no more
-      </p>
-      <p class="mt-5 text-xs leading-relaxed text-text-dim">
-        {privacyNote}{' '}
-        <a class="underline underline-offset-2 transition-colors hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
       </p>
     </div>
   </div>

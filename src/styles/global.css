@@ -1659,3 +1659,15 @@ html[data-theme="dark"] .of-stage .of-stage__detail .flow-detail__plate {
   font-size: 0.85rem;
   line-height: 1.6;
 }
+
+/* Waitlist caption under every Flow capture form (home hero, flow hero, both
+   FlowWaitlist panels). One line by contract: it must never wrap, so it sheds
+   tracking and size on narrow widths instead of breaking. */
+.of-waitlist-caption {
+  white-space: nowrap;
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+}
+@media (max-width: 420px) {
+  .of-waitlist-caption { font-size: 0.56rem; letter-spacing: 0.04em; }
+}
