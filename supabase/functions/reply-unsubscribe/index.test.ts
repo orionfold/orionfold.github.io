@@ -1,8 +1,8 @@
 // Unit lock: inbound reply adapter (B14). Svix verify + event parsing. The
 // classification rules themselves are locked in _shared/reply-intent.test.ts.
 // Run: deno test supabase/functions/reply-unsubscribe/index.test.ts
-import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { inboundFromEvent, parseAddress, verifySvix } from "./index.ts";
+import { assert, assertEquals, assertStringIncludes } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { buildForward, inboundFromEvent, parseAddress, shouldForward, verifySvix } from "./index.ts";
 
 const PREFIX = "wh" + "sec_";
 const signingCreds = PREFIX + btoa("reply-inbound-signing-fixture");
@@ -89,4 +89,40 @@ Deno.test("inboundFromEvent ignores non-received events", () => {
 Deno.test("inboundFromEvent ignores an event with no usable sender", () => {
   assertEquals(inboundFromEvent({ type: "email.received", data: {} }), null);
   assertEquals(inboundFromEvent(null), null);
+});
+
+// --- operator forward (growth-contract 2026-08-17 16:30: route genuine replies
+// --- to the operator's mailbox; auto-replies and rule matches never forward)
+
+Deno.test("shouldForward: only a rule-less ignore forwards", () => {
+  assert(shouldForward("ignore", null));
+  assert(!shouldForward("ignore", "auto-reply"));
+  assert(!shouldForward("unsubscribe", "subject"));
+  assert(!shouldForward("review", "keep me"));
+});
+
+Deno.test("buildForward carries the verdict, the sender, and the reply text", () => {
+  const payload = buildForward(
+    { email: "jane@example.com", emailId: "e_123", subject: "Re: Your Flow rollout", headers: {} },
+    "Does Flow work with iCloud Drive folders?",
+  );
+  assertEquals(payload.to, "manav@orionfold.com");
+  assertEquals(payload.reply_to, "jane@example.com");
+  assertEquals(payload.subject, "Flow reply from jane@example.com: Re: Your Flow rollout");
+  const text = String(payload.text);
+  assertStringIncludes(text, "Classifier verdict: ignore, no rule matched");
+  assertStringIncludes(text, "From: jane@example.com");
+  assertStringIncludes(text, "Resend email id: e_123");
+  assertStringIncludes(text, "Does Flow work with iCloud Drive folders?");
+});
+
+Deno.test("buildForward says so when the body could not be fetched", () => {
+  const payload = buildForward(
+    { email: "jane@example.com", emailId: null, subject: "", headers: {} },
+    "",
+  );
+  assertEquals(payload.subject, "Flow reply from jane@example.com: (no subject)");
+  const text = String(payload.text);
+  assertStringIncludes(text, "body could not be fetched");
+  assertStringIncludes(text, "Resend email id: (none)");
 });

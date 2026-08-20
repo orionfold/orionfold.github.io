@@ -78,7 +78,7 @@ assert.deepEqual([...anchorIndexes].sort((a, b) => a - b), anchorIndexes, 'ancho
 // order-stable: the 2026-08-16 typography pass added .of-display alongside
 // scroll-mt-28, and a combined "id then class" regex broke on the reorder
 // while the anchors themselves were still perfectly fine.
-for (const id of ['tour-agency', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
+for (const id of ['tour-agency', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-receipts', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
   const heading = flow.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
   assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
   assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
@@ -240,7 +240,7 @@ assert.match(home, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'every capability b
 for (const detailImport of ['detailDiff', 'detailDomains', 'detailParts', 'detailGrid']) {
   assert.match(home, new RegExp(`import ${detailImport} from '\\.\\./assets/flow/details/`), `${detailImport} must come from the generated crop set`);
 }
-for (const href of ['/flow/#tour-longdocs', '/flow/#tour-domains', '/flow/#tour-files', '/flow/#enterprise', '/flow/#press']) {
+for (const href of ['/flow/#tour-longdocs', '/flow/#tour-domains', '/flow/#tour-receipts', '/flow/#tour-files', '/flow/#enterprise', '/flow/#press']) {
   assert.match(home, new RegExp(esc(href)), `${href} must stay linked from the homepage`);
 }
 // The origin story band replaces the founder section.
@@ -429,14 +429,26 @@ for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeB
   }
 }
 
-// 2. The context ceiling is FLOW'S, not the model's. Four of five installed
-//    models can read 262,144; Flow currently serves 8,192. It is a filed
-//    defect, reported rather than hidden, and describing it as a model limit
-//    would blame the model for Flow's own gap.
+// 2. The context window is FLOW'S call, not the model's limit. Revised
+//    2026-08-20 against the re-audited brief: the hard-coded 8,192 floor was
+//    replaced 2026-08-18 by a per-model, per-machine window (the smaller of
+//    what the model declares and Flow's stated memory budget). Public copy
+//    must never quote one number as "the" window, and must never describe the
+//    limit as a model limitation.
 assert.match(
   flowBenchCopy,
-  /Flow serves 8,000 words while most of these models can take far more, and the screen names that ceiling as Flow's own, not the model's/,
-  "the tour must name the reading ceiling as Flow's own, never the model's",
+  /worked out per model, per machine/,
+  'the tour must present the reading window as per model, per machine, never one number',
+);
+assert.doesNotMatch(
+  flowBenchCopy,
+  /8,000 words|8,192/,
+  'the retired single-number context window must not reappear in the benchmarks chapter',
+);
+assert.match(
+  flowBenchCopy,
+  /names the limit as Flow's own, not the model's/,
+  "the tour must name the reading limit as Flow's own, never the model's",
 );
 
 // 3. No central benchmark feed exists. Every figure is measured on the reader's
@@ -595,6 +607,97 @@ assert.match(
   flowRoutingCopy,
   /Captured 2026-08-18 on a development build/,
   'the routing chapter keeps its capture scope and date',
+);
+
+// ── Receipts and Evidence truth boundaries (2026-08-19) ─────────────────────
+// The two 2026-08-19 brief revisions (the run card, the answer-first Evidence
+// gallery) ship STAGED demonstration receipts: written over the demo library
+// through the same code path a real run uses, every validity mark earned, but
+// not a real charge. The chapter is honest only while the staging disclosure
+// travels with it and while the staged figure never migrates into copy as a
+// real one. Each guard below was chosen because the breach reads like a
+// harmless tightening.
+const flowReceiptCopy = readCopy('src/pages/flow.astro');
+const homeReceiptCopy = readCopy('src/pages/index.astro');
+
+// 1. The staging disclosure stays welded to the chapter. Dropping "staged
+//    demonstration" would quietly promote invented figures into evidence.
+assert.match(
+  flowReceiptCopy,
+  /staged demonstration material/,
+  'the receipts chapter must disclose that the pictured receipts are staged',
+);
+assert.match(
+  flowReceiptCopy,
+  /Captured 2026-08-19 on a development build/,
+  'the receipts chapter keeps its capture scope and date',
+);
+
+// 2. The staged $0.00318 must never appear in body copy as a charge. It lives
+//    in the pixels and may be DESCRIBED (alt text reads what is legible), but
+//    every mention must sit within a sentence's reach of the receipt/record
+//    framing, and the REAL recorded run stays $0.00425 with its token counts.
+for (const [name, copy] of [['flow.astro', flowReceiptCopy], ['index.astro', homeReceiptCopy]]) {
+  for (const hit of copy.matchAll(/0\.00318/g)) {
+    const around = copy.slice(Math.max(0, hit.index - 240), hit.index + 240);
+    assert.match(
+      around,
+      /demonstration|receipt/i,
+      `${name} may only show 0.00318 as what the pictured receipt reads, never as a real charge`,
+    );
+  }
+  assert.doesNotMatch(
+    copy,
+    /real(?:ly)?[^.]{0,80}0\.00318|0\.00318[^.]{0,80}\breal\b/i,
+    `${name} must never call the staged 0.00318 run real`,
+  );
+}
+assert.match(
+  flowReceiptCopy,
+  /\$0\.00425[^.]*(?:real|billed)|real[^.]*\$0\.00425|105 input and 149 output/,
+  'the real recorded run stays $0.00425 with its token counts',
+);
+
+// 3. The score delta claims exact History verification, wired 2026-08-19: the
+//    +4 and "Compared" render only against a byte-verified baseline. Copy must
+//    keep the qualification, and must never present the delta as generally
+//    available progress tracking.
+assert.match(
+  flowReceiptCopy,
+  /baseline revision was\s+verified in History,? byte for byte/,
+  'the delta claim must keep its byte-for-byte History verification',
+);
+assert.match(
+  flowReceiptCopy,
+  /shows its\s+reason instead of a number/,
+  'the unverifiable-comparison behavior stays stated: a reason, not a number',
+);
+
+// 4. Cost honesty keeps both halves: an estimate is never recorded as a
+//    charge, and a local run's absent cost means none was owed.
+assert.match(flowReceiptCopy, /An estimate is never recorded as a charge/);
+assert.match(flowReceiptCopy, /none was owed/);
+
+// 5. Each check row carries two encodings — the stored outcome and the rule's
+//    CURRENT consequence pill — and the pill vocabulary is the screen's own.
+assert.match(flowReceiptCopy, /Stops the change/);
+assert.match(flowReceiptCopy, /Warns you/);
+assert.match(flowReceiptCopy, /Needs your acknowledgment/);
+
+// 6. Vocabulary: "receipts", never "logs" or "telemetry"; and the internal
+//    core-package name stays out of public copy.
+for (const [name, copy] of [['flow.astro', flowReceiptCopy], ['index.astro', homeReceiptCopy]]) {
+  assert.doesNotMatch(copy, /\btelemetry\b/i, `${name} must say receipts, not telemetry`);
+  assert.doesNotMatch(copy, /\baudit log\b/i, `${name} must say receipts, not audit log`);
+  assert.doesNotMatch(copy, /FlowCore/, `${name} must not name internal packages`);
+}
+
+// 7. Prompt/key privacy is a structural claim and stays stated once, in the
+//    receipts chapter.
+assert.match(
+  flowReceiptCopy,
+  /Your prompt and your API key are\s+not recorded, and there is structurally\s+nowhere in a receipt for them to go/,
+  'the receipts chapter keeps the structural privacy claim',
 );
 
 // ── AEO surfaces stay Flow-first ───────────────────────────────────────────

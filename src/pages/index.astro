@@ -26,6 +26,7 @@ import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
 import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
 import shotBenchmarks from '../assets/flow/shots/flow-benchmarks-shot.webp';
+import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). A full window
 // shrunk into a page column renders the control being described at ~8px; these
 // crops show that one control at a size where the claim is checkable.
@@ -35,6 +36,7 @@ import detailBenchRows from '../assets/flow/details/detail-benchmarks-rows.webp'
 import detailDomains from '../assets/flow/details/detail-domains.webp';
 import detailParts from '../assets/flow/details/detail-parts.webp';
 import detailGrid from '../assets/flow/details/detail-grid.webp';
+import detailRunChecks from '../assets/flow/details/detail-run-checks.webp';
 
 const og = ogMeta('/');
 
@@ -88,10 +90,11 @@ const heroStats = [
 //   3     bl / centre    long documents
 //   4     tl / left      benchmarks
 //   5     tr / right     trust boundaries
-//   6     bl / left      professional artifacts
-// No two ADJACENT sections share a corner (tl repeats at 1 and 4, bl at 3 and
-// 6, each pair far enough apart to read as a rhythm rather than a rut). Keep
-// them distinct —
+//   6     br / centre    receipts
+//   7     bl / left      professional artifacts
+// No two ADJACENT sections share a corner (tl repeats at 1 and 4, br at 2 and
+// 6, bl at 3 and 7, each pair far enough apart to read as a rhythm rather than
+// a rut). Keep them distinct —
 // collapsing these to one repeated position is the exact thing the operator
 // asked us not to do, and tests/e2e/product-stage.spec.ts enforces it.
 // `stage` values are the .of-stage__detail--* corner modifiers in global.css.
@@ -191,6 +194,36 @@ const capabilityRows = [
     detailCaption: 'One switch per domain · Discovery never enables anything',
     stage: 'tr',
     align: 'right',
+  },
+  {
+    // Added 2026-08-19 from the receipts-pane sections of the domains and
+    // writing-you-approve briefs. Sits after trust boundaries because that is
+    // the argument's own order: you picked where AI may run, and here is the
+    // record of what actually ran there.
+    //
+    // TRUTH RAIL: the receipts in this capture are STAGED DEMONSTRATION
+    // material written over the demo library through the same code path a real
+    // run uses (the alt says "demonstration" for exactly this reason). The
+    // staged $0.00318 figure must never appear in homepage copy as a real
+    // charge; the real recorded run is the $0.00425 one in the hero stats.
+    // The crop is deliberately the CHECKS block, which carries no dollar
+    // figure, so this band makes no cost claim its picture cannot support.
+    // The pill vocabulary is the screen's own: "Stops the change", "Warns
+    // you", "Needs your acknowledgment".
+    //
+    // STAGE: 'br' — neighbours are 'tr' above and 'bl' below, so no two
+    // adjacent bands share a corner (product-stage.spec.ts asserts this).
+    kicker: 'The record',
+    title: 'Every run leaves a receipt you can read.',
+    body: 'One run reads as one card: the named checks that ran, what the evidence concluded, the cost with its basis, and the exact before and after content the change is bound to. The recorded cost is an observed fact, never an estimate, and a local run records no charge because none was owed.',
+    href: '/flow/#tour-receipts',
+    shot: shotRunCard,
+    alt: 'Orionfold Flow\'s Receipts timeline beside a demonstration client proposal: a run selected, its card showing three named checks with severity pills, Evidence at 89 of 100, the recorded cost with its basis, and before and after digests.',
+    detail: detailRunChecks,
+    detailAlt: 'Three named checks in a Flow run receipt: Human review with the pill Needs your acknowledgment, References are current with Warns you, and Citations resolve with Stops the change, each row also carrying a stored Checked mark.',
+    detailCaption: 'Named checks, two facts each · What it saw then, what the rule does now',
+    stage: 'br',
+    align: 'center',
   },
   {
     kicker: 'Professional artifacts',

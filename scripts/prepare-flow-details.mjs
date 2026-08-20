@@ -215,6 +215,80 @@ const DETAILS = [
     note: 'The method head: 5 of 5 measured, and the honest not-comparable note.',
   },
   {
+    out: 'detail-run-cost.webp',
+    from: 'flow-run-card-shot.webp',
+    // The receipts trifecta in one cut (2026-08-19): the recorded cost WITH its
+    // basis ("Billed by the provider"), then the model, provider, and locality
+    // under it. The basis line is the payload — the brief's whole point is that
+    // a recorded cost states where the number came from — so the cut must never
+    // shrink to the dollar figure alone. Staged demonstration receipts; the
+    // page copy that travels with this crop says so.
+    rect: { left: 1772, top: 716, width: 780, height: 212 },
+    note: 'Recorded cost with its basis, then the model, provider, and locality.',
+  },
+  {
+    out: 'detail-run-checks.webp',
+    from: 'flow-run-card-shot.webp',
+    // Each check row carries TWO separate encodings — the stored outcome mark
+    // ("Checked") and the rule's CURRENT consequence as a pill ("Stops the
+    // change", "Warns you", "Needs your acknowledgment") — because what a rule
+    // observed then and what it would do now are different facts. All three
+    // rows, so all three pill severities are in frame.
+    rect: { left: 1772, top: 412, width: 780, height: 180 },
+    note: 'Three named checks: stored outcome marks beside current-consequence pills.',
+  },
+  {
+    out: 'detail-run-binding.webp',
+    from: 'flow-run-card-shot.webp',
+    // The before/after content digests the change is bound to, with the
+    // receipt's validity mark. Runs to the card's bottom so "Receipt valid" is
+    // whole — the mark is what makes the digests evidence rather than decor.
+    rect: { left: 1772, top: 940, width: 780, height: 148 },
+    note: 'Binding: the exact before/after digests and the receipt validity mark.',
+  },
+  {
+    out: 'detail-run-timeline.webp',
+    from: 'flow-run-card-shot.webp',
+    // The Receipts timeline with the run group open: one Run entry holding all
+    // six recorded events, each row wearing its own "Receipt valid" mark.
+    // Deliberately includes the "Document version saved" entry BELOW the group
+    // — it is History-only and outside the run, which is what proves the group
+    // is a boundary and not just a visual fold. Portrait, pairs with copy.
+    rect: { left: 1290, top: 280, width: 480, height: 630 },
+    note: 'One run as one timeline entry: six events, each with its validity mark.',
+  },
+  {
+    out: 'detail-evidence-verdict.webp',
+    from: 'flow-evidence-gallery-shot.webp',
+    // The gallery's answer-first card (2026-08-19): the overall score beside
+    // its meter, the +4 change since the verified baseline, the Assessed state,
+    // and the assessment's own recorded reason in one strip. The +4 renders
+    // only because the exact baseline revision resolved in History byte for
+    // byte — never caption this as available on earlier builds.
+    rect: { left: 1292, top: 238, width: 1260, height: 130 },
+    note: 'The verdict first: 89/100, its meter, the +4 change, and the reason.',
+  },
+  {
+    out: 'detail-evidence-dimensions.webp',
+    from: 'flow-evidence-gallery-shot.webp',
+    // The top row of the dimension gallery: two rubric dimensions as cards,
+    // each with its score, meter, weight, coverage, uncertainty, and a
+    // Show-rationale disclosure. TWO cards, not one — the claim is that every
+    // dimension gets the same card, and a single card cannot show sameness.
+    rect: { left: 1292, top: 492, width: 1260, height: 170 },
+    note: 'Two dimension cards: score, weight, coverage, uncertainty, rationale.',
+  },
+  {
+    out: 'detail-evidence-restson.webp',
+    from: 'flow-evidence-gallery-shot.webp',
+    // The "What this rests on" strip: rubric and reference freshness, the
+    // Compared state (baseline verified in History), coverage, uncertainty,
+    // and when it was recorded. This is the crop that makes the 89 checkable
+    // rather than decorative, so it must keep all six cells.
+    rect: { left: 1292, top: 996, width: 1260, height: 92 },
+    note: 'What the score rests on: freshness, Compared, coverage, uncertainty, time.',
+  },
+  {
     out: 'detail-routing-decided.webp',
     from: 'flow-smart-routing-shot.webp',
     // The chapter's headline claim in one cut (2026-08-18): the Allow Smart

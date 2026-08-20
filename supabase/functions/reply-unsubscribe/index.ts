@@ -4,9 +4,19 @@
 // words creates no row at all and has to be caught by a human.
 //
 //   POST /reply-unsubscribe   <- Resend `email.received` (Svix-signed)
-//     opt-out    -> suppressions row, reason reply_unsubscribe
-//     ambiguous  -> reply_reviews row for a human, NO suppression
-//     otherwise  -> 200 ignored
+//     opt-out      -> suppressions row, reason reply_unsubscribe
+//     ambiguous    -> reply_reviews row for a human, NO suppression
+//     auto-reply   -> 200 ignored (out-of-office noise, nobody needs it)
+//     conversation -> forwarded to the operator's mailbox, verdict included
+//
+// The forward is the operator decision of 2026-08-17 (growth-contract ledger,
+// 16:30 entry): a genuine human reply used to classify `ignore` and vanish -
+// not suppressed, not queued, nobody notified. Replies stopped landing in Gmail
+// as a side effect of moving reply_to to the receiving subdomain; forwarding
+// puts back only the part worth keeping. A side effect worth knowing: a
+// subject-only "Not interested" with an empty body still classifies `ignore`
+// (subjects are only trusted for short bare opt-outs), so the operator's
+// mailbox is now the backstop for that compliance-adjacent case too.
 //
 // Svix-verified against RESEND_INBOUND_SECRET; verify_jwt = false (config.toml),
 // same posture as resend-webhook and stripe-webhook.
@@ -29,6 +39,13 @@ import { classifyReply } from "../_shared/reply-intent.ts";
 
 const SIGNING_PREFIX = "wh" + "sec_";
 const RESEND_API = "https://api.resend.com";
+
+// Where a genuine conversational reply goes: the operator's real mailbox
+// (root-domain Google Workspace, untouched by the reply-subdomain MX cutover).
+const FORWARD_TO = "manav@orionfold.com";
+// Same verified sending identity resend-send uses. Duplicated, not imported:
+// the fns are independently deployable units (see the Svix note below).
+const FORWARD_FROM = "Orionfold <manav@updates.orionfold.com>";
 
 // Same Svix scheme as resend-webhook: HMAC-SHA256 over `${id}.${timestamp}.${rawBody}`
 // with the base64 credential after the prefix. Duplicated rather than imported
@@ -123,6 +140,58 @@ export async function fetchBody(emailId: string, apiKey: string): Promise<string
   }
 }
 
+// Only a real human conversation forwards: `ignore` with no rule matched.
+// Auto-replies (matched: "auto-reply") stay silent, and opt-outs / ambiguous
+// replies already have their own automated paths above this one.
+export function shouldForward(intent: string, matched: string | null): boolean {
+  return intent === "ignore" && matched === null;
+}
+
+// The payload for the operator forward. The verdict travels with the reply so a
+// misclassification is visible instead of invisible, and reply_to is the human
+// who wrote in, so answering from Gmail reaches them directly.
+export function buildForward(inbound: InboundReply, body: string): Record<string, unknown> {
+  const text = [
+    "A reply to a nurture email reached reply.orionfold.com and did not",
+    "classify as an opt-out. Classifier verdict: ignore, no rule matched.",
+    "This reads as a real conversation for a human.",
+    "",
+    `From: ${inbound.email}`,
+    `Subject: ${inbound.subject || "(no subject)"}`,
+    `Resend email id: ${inbound.emailId ?? "(none)"}`,
+    "",
+    "--- reply text ---",
+    body || "(body could not be fetched; look the email id up in the Resend dashboard)",
+  ].join("\n");
+
+  return {
+    from: FORWARD_FROM,
+    to: FORWARD_TO,
+    reply_to: inbound.email,
+    subject: `Flow reply from ${inbound.email}: ${inbound.subject || "(no subject)"}`,
+    text,
+  };
+}
+
+export async function sendForward(payload: Record<string, unknown>, apiKey: string): Promise<boolean> {
+  if (!apiKey) {
+    console.error("reply-unsubscribe: forward skipped, no RESEND_API_KEY");
+    return false;
+  }
+  try {
+    const res = await fetch(`${RESEND_API}/emails`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) console.error("reply-unsubscribe: forward send failed:", res.status);
+    return res.ok;
+  } catch (err) {
+    console.error("reply-unsubscribe: forward send threw:", err);
+    return false;
+  }
+}
+
 function json(body: Record<string, unknown>, status = 200): Response {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 }
@@ -152,7 +221,17 @@ if (import.meta.main) {
       : "";
 
     const { intent, matched } = classifyReply(inbound.subject, body, inbound.headers);
-    if (intent === "ignore") return json({ ok: true, ignored: true });
+    if (intent === "ignore") {
+      if (!shouldForward(intent, matched)) return json({ ok: true, ignored: true });
+      // Non-2xx makes Resend retry. A duplicate forward is a minor nuisance; a
+      // silently dropped question from a live human is the gap this closes.
+      const sent = await sendForward(
+        buildForward(inbound, body),
+        Deno.env.get("RESEND_API_KEY") ?? "",
+      );
+      if (!sent) return json({ error: "forward failed" }, 500);
+      return json({ ok: true, forwarded: true });
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
