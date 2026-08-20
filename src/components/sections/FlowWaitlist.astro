@@ -56,10 +56,6 @@ const privacyNote = consentText.replace(' See our privacy policy.', '');
     </div>
 
     <div class="flow-waitlist__form relative z-10 rounded-2xl border border-border/80 bg-surface/85 p-5 backdrop-blur sm:p-7">
-      <p class="mb-5 flex items-center justify-between gap-4 font-mono text-[0.64rem] uppercase tracking-[0.16em] text-text-dim">
-        <span>Email only</span>
-        <span>Double opt-in</span>
-      </p>
       <WaitlistForm
         id={formId}
         source={source}
@@ -68,6 +64,11 @@ const privacyNote = consentText.replace(' See our privacy policy.', '');
         successMessage="Check your inbox to confirm."
         consentText={consentText}
       />
+      {/* Same single-line caption as the Home hero CTA, so the promise reads
+          identically wherever the waitlist form appears. */}
+      <p class="mt-3 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-text-dim">
+        Free to join · Double opt-in · One email a week, no more
+      </p>
       <p class="mt-5 text-xs leading-relaxed text-text-dim">
         {privacyNote}{' '}
         <a class="underline underline-offset-2 transition-colors hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
