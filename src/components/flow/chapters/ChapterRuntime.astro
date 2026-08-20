@@ -1,0 +1,76 @@
+---
+import FlowShot from '../FlowShot.astro';
+import FlowDetail from '../FlowDetail.astro';
+import FlowShot from '../../../components/flow/FlowShot.astro';
+import FlowDetail from '../../../components/flow/FlowDetail.astro';
+import shotRuntimeModels from '../../../assets/flow/shots/flow-runtime-models-shot.webp';
+import detailRuntimeStorage from '../../../assets/flow/details/detail-runtime-storage.webp';
+---
+<!-- Chapter 4: Bundled owned runtime -->
+<section class="flow-runtime border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-runtime">
+  <div class="mx-auto max-w-6xl">
+    <div class="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+      <div>
+        <p class="of-eyebrow" data-animate="rise">Owned local runtime</p>
+        <h3 id="tour-runtime" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Install nothing but Flow.</h3>
+        <p class="of-lede mt-5" data-animate="rise">
+          Install nothing but Flow, and you can still pull a model and run approval-gated
+          agency on your own machine. That is measured, not planned: on a notarized install
+          with no other AI runtime present, a 5.98 GB model was pulled and three runs were
+          approved, every one served by the app's own helper. Flow's bundle carries two
+          engines for about 19 MiB. The size of twenty photos.
+        </p>
+        <p class="mt-4 leading-relaxed text-text-muted">
+          The bundled runtime is a floor, never a wall. Already run Ollama or LM Studio? Flow
+          detects them, keeps them first class, and serves the models you already pulled in
+          place. Your gigabytes are never downloaded twice.
+        </p>
+        <p class="mt-4 leading-relaxed text-text-muted">
+          What Flow holds and what Flow borrows are shown as different things, because they
+          are. Downloaded models are Flow's own bytes, counted against a disk allowance you
+          set. Shared models are read where they already sit, and removing one from Flow's
+          list leaves the original files untouched.
+        </p>
+        <p class="mt-5 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
+          Zero-install run measured 2026-08-14 on one M3 Max, on a development build, with 399 network samples recording no connection off the machine. Loopback only.
+        </p>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="of-surface rounded-2xl border border-border/70 p-6">
+          <p class="font-display text-3xl font-bold text-primary">2 engines</p>
+          <p class="mt-2 text-sm leading-relaxed text-text-muted">One for each dominant local model format on a Mac. GPU verified: 29 of 29 model layers on Apple silicon.</p>
+        </div>
+        <div class="of-surface rounded-2xl border border-border/70 p-6">
+          <p class="font-display text-3xl font-bold text-primary">263 tok/s</p>
+          <p class="mt-2 text-sm leading-relaxed text-text-muted">Prompt reading speed on a 7-billion-parameter model, 4-bit, one M3 Max. Generation at 51 tokens a second.</p>
+        </div>
+        <div class="of-surface rounded-2xl border border-border/70 p-6">
+          <p class="font-display text-3xl font-bold text-primary">Offline</p>
+          <p class="mt-2 text-sm leading-relaxed text-text-muted">The engine loaded and generated with its network host pointed at a dead port. No silent network dependency.</p>
+        </div>
+        <div class="of-surface rounded-2xl border border-border/70 p-6">
+          <p class="font-display text-3xl font-bold text-primary">0 bytes</p>
+          <p class="mt-2 text-sm leading-relaxed text-text-muted">Re-downloaded when Flow served a 4.7 GB model you already pulled with another tool. No copy, no import step.</p>
+        </div>
+      </div>
+    </div>
+    <!-- "What Flow holds vs what Flow borrows" is the claim, and it is a
+         two-line distinction inside one card. Shown as a crop first, at a
+         size where "nothing copied" is actually readable, then the window. -->
+    <div class="mx-auto mt-12 max-w-3xl" data-animate="plate">
+      <FlowDetail
+        src={detailRuntimeStorage}
+        alt="Flow's Runtime card: two Downloaded models against a 4.59 GB of 20 GB allowance bar, and below them Shared models served from Ollama and LM Studio folders with nothing copied."
+        caption="Downloaded is Flow's own bytes · Shared is read where it already sits"
+        sizes="(min-width: 1024px) 46rem, calc(100vw - 3rem)"
+        glow
+      />
+    </div>
+    <FlowShot
+      class="mt-10"
+      src={shotRuntimeModels}
+      alt="Flow's Runtime card splitting Downloaded models, with a disk allowance bar, from Shared models served in place from other apps' folders."
+      caption="The same card in place: what Flow keeps, what Flow borrows, and how much of your allowance is used."
+    />
+  </div>
+</section>

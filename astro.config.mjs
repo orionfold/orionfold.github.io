@@ -127,7 +127,11 @@ function buildLastmodMap() {
   // 2026-08-18: Benchmarks chapter added (measured local-model leaderboard),
   // after the tool-strip chapter landed the same day.
   // 2026-08-20: search-facing title + per-model context-window copy.
+  // 2026-08-20 (later): tour split into four category pages; overview rebuilt.
   map['/flow/'] = '2026-08-20';
+  for (const cat of ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files']) {
+    map[`/flow/${cat}/`] = '2026-08-20';
+  }
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
   // so it tracks the freshest date across all of them.
   const relayFreshest = freshestUnder('/relay/');

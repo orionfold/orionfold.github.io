@@ -1,0 +1,351 @@
+/* Flow flagship styles, shared by /flow/ (overview) and the four
+   /flow/<category>/ pages (2026-08-20 split). Everything here used to be the
+   scoped <style> of flow.astro; it moved global so the tour chapters could
+   become components (scoped styles cannot reach markup rendered by a child
+   component). Every class is flow-specific (flow-*, toolbar-*, bench-*,
+   routing-*), so nothing here can collide with another page. */
+.flow-hero {
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(155deg, color-mix(in oklch, var(--color-primary) 6%, var(--color-surface)) 0%, var(--color-surface) 55%, color-mix(in oklch, var(--color-primary) 3%, var(--color-surface)) 100%);
+}
+.flow-hero__grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 100%);
+}
+/* Gradient instead of filter: blur(), cheaper to composite at retina DPR
+   (blur on a 60rem layer was a scroll-jank source on the homepage). */
+.flow-hero__glow { position: absolute; left: 50%; top: -10rem; width: 60rem; height: 40rem; transform: translateX(-50%); background: radial-gradient(closest-side, color-mix(in oklch, var(--color-primary) 13%, transparent), transparent 72%); pointer-events: none; }
+.flow-eyebrow-chip {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 25%, var(--color-border));
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface));
+  padding: 0.42rem 0.85rem;
+  font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--color-text-muted);
+}
+.flow-eyebrow-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-primary); font-weight: 650; }
+/* Kept as an alias of the shared .of-eyebrow primitive so the chapters that
+   still say "flow-kicker" pick up the accessible accent ink and the weight
+   without touching eight more call sites. New markup should use .of-eyebrow. */
+.flow-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.23em;
+  text-transform: uppercase;
+  color: var(--color-accent-ink);
+}
+
+/* Chapter media geometry now lives in the shared .of-stage primitive
+   (global.css), so the tour chapters and the two heroes cannot drift apart.
+   Read the corner-rotation note there before moving a crop. */
+
+/* Search chapter: the window and the portrait result column side by side.
+   The column is the proof (readable citations); the window is the context. */
+.flow-search-media { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) {
+  /* align-items: start would top-align a short 16:9 window against a tall
+     portrait column and leave the window floating; centring reads as one
+     composition. The column is intentionally the taller of the two. */
+  .flow-search-media { grid-template-columns: 1.5fr 1fr; align-items: center; }
+}
+
+/* ── The trust path: one step, one picture ──
+   Three peer steps read as a row of equals on desktop and a stack on mobile.
+   A counter rule down the left of each step carries the sequence, so the
+   order is visible without numbering the pictures themselves. */
+.flow-path {
+  display: grid;
+  gap: 3.5rem;
+  list-style: none;
+  padding: 0;
+}
+/* Deliberately NOT a three-up grid. These crops are wide (about 1000px of UI)
+   and carry 11px labels; squeezed into a third of the page they become the
+   same unreadable thumbnail this whole pass exists to remove. Each step gets
+   a full row instead: copy on one side, the picture at real size on the
+   other, alternating so the eye zig-zags down the sequence. */
+.flow-path__step {
+  display: grid;
+  gap: 1.5rem;
+  align-items: center;
+}
+/* The accent rule marks the STEP COPY, so it has to travel with the text
+   column rather than sit on the row: on alternating rows the text moves to
+   the right, and a row-level border would strand the rule beside a picture. */
+.flow-path__copy {
+  padding-left: 1.15rem;
+  border-left: 2px solid color-mix(in oklch, var(--color-primary) 30%, var(--color-border));
+}
+@media (min-width: 900px) {
+  .flow-path__step {
+    grid-template-columns: 0.82fr 1.18fr;
+    gap: 3rem;
+  }
+  /* Alternate which side the picture sits on. */
+  .flow-path__step:nth-child(even) > .flow-detail { order: -1; }
+}
+.flow-path__num {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent-ink);
+}
+.flow-path__head {
+  margin-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.16rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.018em;
+  color: var(--color-text);
+}
+.flow-path__body {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.62;
+  color: var(--color-text-muted);
+}
+/* The armed strip sits alone and centred. Capped well under the copy measure
+   because the crop is a WIDE, SHORT ribbon (520x90) — at full column width it
+   stretches into a letterbox and the 11px control labels stop being the point.
+   `max-width` on the figure, not the image, so the caption wraps with it. */
+.toolbar-armed {
+  width: 100%;
+  max-width: 34rem;
+}
+.toolbar-armed__note {
+  max-width: 34rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+/* The menu pairing: copy beside the crop, not above it. The menu crop is tall
+   and narrow (330x210 of dropdown), so a stacked layout would leave a column
+   of dead space next to it on desktop. */
+.toolbar-menu {
+  display: grid;
+  gap: 1.75rem;
+  align-items: center;
+  width: 100%;
+  max-width: 58rem;
+}
+@media (min-width: 900px) {
+  .toolbar-menu { grid-template-columns: 1fr 26rem; gap: 3rem; }
+}
+.toolbar-menu__head {
+  font-family: var(--font-display);
+  font-size: 1.16rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.018em;
+  color: var(--color-text);
+}
+/* The machine strip, alone and centred. Same shape problem as .toolbar-armed:
+   a wide, short ribbon (520x100) that letterboxes at full column width, so it
+   is capped under the copy measure and the specs stay legible. */
+.bench-machine {
+  width: 100%;
+  max-width: 26rem;
+}
+.bench-machine__note {
+  max-width: 38rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+/* The signed-route strip in the Smart Routing chapter: the same wide, short
+   ribbon shape as .bench-machine, capped a little wider (the crop is 740
+   source pixels across) so the deciding sentence renders near legible 1:1. */
+.routing-decided {
+  width: 100%;
+  max-width: 38rem;
+}
+.routing-decided__note {
+  max-width: 38rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+/* The honesty-claim layout, shared by the Benchmarks and Smart Routing
+   chapters (the class name predates the second user). Items stack on every
+   width rather than sitting side by side, because each crop is a WIDE row
+   (1050px of leaderboard, method text, or rule list) — put two of those in
+   one row and each renders at half column width, which is exactly the
+   illegibility FlowDetail exists to fix. */
+.bench-honesty {
+  display: grid;
+  gap: 3.5rem;
+  width: 100%;
+  max-width: 62rem;
+}
+/* Copy ABOVE its crop, never beside it. Measured 2026-08-18 in the browser:
+   side by side at this page width, the 1050px-wide crops rendered at 510 CSS
+   px — BELOW 1:1, which is precisely the illegibility FlowDetail exists to
+   fix, and the 11px row labels ("Not measured yet", the tilde on the
+   estimate) stopped being readable. Stacked, each crop takes the full 62rem
+   and renders at or above its native width. The copy column is capped at the
+   reading measure so a full-width crop does not drag the prose out with it. */
+.bench-honesty__item {
+  display: grid;
+  gap: 1.5rem;
+}
+.bench-honesty__copy {
+  max-width: 44rem;
+}
+.bench-honesty__head {
+  font-family: var(--font-display);
+  font-size: 1.16rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.018em;
+  color: var(--color-text);
+}
+.bench-honesty__body {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.62;
+  color: var(--color-text-muted);
+}
+.toolbar-menu__body {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.62;
+  color: var(--color-text-muted);
+}
+.flow-probe { box-shadow: 0 28px 70px -55px color-mix(in oklch, var(--color-warn) 45%, transparent); }
+.flow-list { display: flex; flex-direction: column; gap: 0.65rem; }
+.flow-list li { position: relative; padding-left: 1.5rem; font-size: 0.94rem; line-height: 1.65; color: var(--color-text-muted); }
+.flow-list li::before {
+  content: ''; position: absolute; left: 0; top: 0.52em; width: 0.62rem; height: 0.62rem;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 22%, var(--color-surface));
+  border: 1.5px solid var(--color-primary);
+}
+.flow-ent-tag {
+  display: inline-flex; border-radius: 999px; padding: 0.22rem 0.6rem;
+  font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid color-mix(in oklch, var(--color-success) 40%, var(--color-border));
+  color: var(--color-success);
+  background: color-mix(in oklch, var(--color-success) 8%, var(--color-surface));
+}
+.flow-ent-tag--direction {
+  border-color: color-mix(in oklch, var(--color-primary) 40%, var(--color-border));
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface));
+}
+.flow-ent-card { transition: border-color 0.2s ease; }
+.flow-ent-card:hover { border-color: color-mix(in oklch, var(--color-primary) 40%, var(--color-border)); }
+
+/* ── Category sub-navigation (the four tour pages) ──
+   A sticky pill row under the fixed site nav. It scrolls sideways on narrow
+   screens instead of wrapping, so the current category is always one glance
+   away. The top offset is the FIXED site nav's live height (35px magnet bar,
+   dismissible, plus an 85px main nav at desktop, measured 2026-08-20), set
+   as --flow-nav-h by FlowCategoryPage's ResizeObserver so the bar never
+   slides under the nav when the magnet bar is dismissed or the nav wraps. */
+.flow-subnav {
+  position: sticky;
+  top: var(--flow-nav-h, 7.5rem);
+  z-index: 30;
+  border-bottom: 1px solid color-mix(in oklch, var(--color-border) 70%, transparent);
+  background: color-mix(in oklch, var(--color-surface) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.flow-subnav__row {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0.55rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+.flow-subnav__row::-webkit-scrollbar { display: none; }
+.flow-subnav__link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  padding: 0.42rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  white-space: nowrap;
+}
+.flow-subnav__link:hover { color: var(--color-text); border-color: color-mix(in oklch, var(--color-primary) 25%, var(--color-border)); }
+.flow-subnav__link[aria-current="page"] {
+  color: var(--color-primary);
+  font-weight: 650;
+  border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface));
+}
+.flow-subnav__link--overview { color: var(--color-text); }
+
+/* ── Category cards on the overview ──
+   One card per category. The chapter list inside each card carries the old
+   #tour-<chapter> ids, so every deep link published before the split still
+   lands on the card that links onward. */
+.flow-cat-card { transition: border-color 0.2s ease; }
+.flow-cat-card:hover { border-color: color-mix(in oklch, var(--color-primary) 40%, var(--color-border)); }
+.flow-cat-card__list { display: flex; flex-direction: column; gap: 0.45rem; }
+.flow-cat-card__list a {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding: 0.45rem 0;
+  border-top: 1px solid color-mix(in oklch, var(--color-border) 70%, transparent);
+  font-size: 0.94rem; line-height: 1.4; color: var(--color-text);
+}
+.flow-cat-card__list a:hover { color: var(--color-primary); }
+.flow-cat-card__list a span:last-child { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-dim); }
+
+/* Chapter jump list on a category hero. */
+.flow-jump { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+.flow-jump a {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  border: 1px solid var(--color-border); border-radius: 999px;
+  padding: 0.45rem 0.9rem; font-size: 0.88rem; color: var(--color-text-muted);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.flow-jump a:hover { color: var(--color-text); border-color: color-mix(in oklch, var(--color-primary) 40%, var(--color-border)); }
+
+/* Pager at the foot of a category page. */
+.flow-pager { display: grid; gap: 1rem; }
+@media (min-width: 640px) { .flow-pager { grid-template-columns: 1fr 1fr; } }
+.flow-pager a { display: block; border: 1px solid var(--color-border); border-radius: 1rem; padding: 1.1rem 1.25rem; transition: border-color 0.15s ease; }
+.flow-pager a:hover { border-color: color-mix(in oklch, var(--color-primary) 40%, var(--color-border)); }
+.flow-pager__label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-dim); }
+.flow-pager__title { margin-top: 0.35rem; font-weight: 700; color: var(--color-text); }
+.flow-pager a[data-dir="next"] { text-align: right; }
+
+/* On a category page, a deep link has to clear BOTH the fixed site nav and
+   the sticky sub-nav. The chapters keep their shared scroll-mt-28 (right for
+   the overview); here the measured nav height plus the sub-nav wins. */
+.flow-page--category [id] { scroll-margin-top: calc(var(--flow-nav-h, 7.5rem) + 7.25rem); }
+
+/* Category card thumbnail: one purpose-cut crop (a FlowDetail, never a
+   whole window) on a fixed-shape plate. The crops are wide strips of 2.6:1
+   to 3.7:1, so the plate is 3:1 and the crop is CONTAINED, never cropped:
+   the whole point is that the control stays readable. */
+.flow-cat-card__plate {
+  display: grid; place-items: center;
+  aspect-ratio: 3 / 1; padding: 0.75rem 1rem;
+  border-radius: 0.9rem; border: 1px solid color-mix(in oklch, var(--color-border) 80%, transparent);
+  background: var(--color-surface-raised);
+}
+.flow-cat-card__thumb {
+  display: block; width: 100%; height: 100%; object-fit: contain;
+  border-radius: 0.5rem;
+}

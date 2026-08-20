@@ -31,28 +31,79 @@ const outDir = path.resolve('src/assets/flow/details');
 
 /** @type {{out: string, from: string, rect: {left:number,top:number,width:number,height:number}, note: string}[]} */
 const DETAILS = [
+  // ── Writing you approve: re-cut 2026-08-20 on the 0144 re-shoot ──
+  // The capture is now 2560x1607 (was 2560x1400) and the review surface is a
+  // decision surface: one fact row, single-row check pills, the proposed
+  // document leading with the change highlighted, and the human-review gate
+  // in the decision footer beside the button it unblocks. Every rect below
+  // was measured on that frame; a re-capture needs them re-measured.
+  {
+    out: 'detail-proposal.webp',
+    from: 'flow-writing-you-approve-shot.webp',
+    // Header, tabs, the "1 Check to resolve" pill, and the effect sentence.
+    rect: { left: 1518, top: 174, width: 1035, height: 108 },
+    note: 'What Flow proposes: the effect sentence, read out of the proposed bytes.',
+  },
   {
     out: 'detail-checks.webp',
     from: 'flow-writing-you-approve-shot.webp',
-    // Stops above "Exact proposed diff": that header belongs to detail-diff,
-    // and a crop that trails into the next feature stops being one claim.
-    rect: { left: 380, top: 660, width: 830, height: 430 },
-    note: 'Evidence rows, the three named checks, and the human-review gate.',
+    // The fact row (permission, sources, evidence counts) and the check pills.
+    rect: { left: 1518, top: 268, width: 1035, height: 128 },
+    note: 'One fact row and three named checks as pills: Passed, Not required, Not checked.',
+  },
+  {
+    out: 'detail-result.webp',
+    from: 'flow-writing-you-approve-shot.webp',
+    // The proposed document, scrolled to the corrected clause, highlighted.
+    rect: { left: 1518, top: 411, width: 1035, height: 357 },
+    note: 'The result leads: the proposed document with the change highlighted.',
   },
   {
     out: 'detail-diff.webp',
     from: 'flow-writing-you-approve-shot.webp',
-    // Runs to x=1500 so "Approve & Save" is a whole button. This crop is the
-    // homepage hero's proof image and its caption says nothing is saved until
-    // you approve — a half-sliced Approve button undercuts exactly that line.
-    rect: { left: 380, top: 1090, width: 1120, height: 290 },
-    note: 'The exact proposed diff, with removed lines marked in red.',
+    // The decision footer: the human-review checkbox, "1 Check to resolve",
+    // and Approve & Save DISABLED. The homepage band uses this crop under
+    // "Nothing is saved until you approve it", so the disabled button must
+    // stay whole; never re-cut it with the button enabled.
+    rect: { left: 1518, top: 1478, width: 1035, height: 117 },
+    note: 'The decision footer: Approve & Save stays disabled until you tick the box.',
+  },
+  // ── Expand with Sources (0131), captured 2026-08-20 on the dev build ──
+  {
+    out: 'detail-expand-hover.webp',
+    from: 'flow-expand-hover-panel-shot.webp',
+    rect: { left: 905, top: 168, width: 545, height: 256 },
+    note: 'The Ex panel before the click: 99 words, under a cent estimated, Claude Haiku 4.5, Leaves this Mac, the deciding rule.',
   },
   {
-    out: 'detail-proposal.webp',
-    from: 'flow-writing-you-approve-shot.webp',
-    rect: { left: 380, top: 255, width: 1010, height: 300 },
-    note: 'What Flow proposes, its permission scope, and the content hashes.',
+    out: 'detail-expand-consent.webp',
+    from: 'flow-expand-consent-shot.webp',
+    rect: { left: 936, top: 497, width: 688, height: 485 },
+    note: 'The consent sheet: destination, named sources with size, the estimate to the digit, read access only.',
+  },
+  {
+    out: 'detail-expand-banner.webp',
+    from: 'flow-expand-run-banner-shot.webp',
+    rect: { left: 366, top: 165, width: 1088, height: 106 },
+    note: 'The run banner mid-flight: three lookups narrated, pause and stop one click away.',
+  },
+  {
+    out: 'detail-expand-bound.webp',
+    from: 'flow-expand-bound-shot.webp',
+    rect: { left: 366, top: 124, width: 1088, height: 82 },
+    note: 'The honest ending: the run reached its limit of 12 lookups and changed nothing.',
+  },
+  {
+    out: 'detail-expand-lookups.webp',
+    from: 'flow-expand-run-card-shot.webp',
+    rect: { left: 1953, top: 466, width: 600, height: 576 },
+    note: 'The run card: every lookup in order with its query, what it retrieved, and how long it took.',
+  },
+  {
+    out: 'detail-expand-saved.webp',
+    from: 'flow-expand-saved-change-shot.webp',
+    rect: { left: 1953, top: 1066, width: 600, height: 372 },
+    note: 'Recorded cost with model and provider, and the saved change pinned to its before and after digests.',
   },
   {
     out: 'detail-domains.webp',

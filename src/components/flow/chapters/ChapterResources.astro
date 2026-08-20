@@ -1,0 +1,54 @@
+---
+import FlowDetail from '../FlowDetail.astro';
+import FlowDetail from '../../../components/flow/FlowDetail.astro';
+import detailResourcePopover from '../../../assets/flow/details/detail-resource-popover.webp';
+---
+<!-- Chapter 5: The resource readout. Local AI has a cost the cloud hides:
+     your own machine does the work, and you hear it. Vocabulary rule from
+     the brief: the internal name for this feature never appears in public
+     copy; call it what the user sees. The GPU figure is WHOLE-MAC and must
+     always say so: per-process GPU attribution does not exist publicly on
+     macOS, and claiming Flow's share would be the one thing the platform
+     cannot support. Heat is the machine's own verdict, never degrees. -->
+<section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-resources">
+  <div class="mx-auto max-w-6xl">
+    {/* Apple rhythm at the top: eyebrow, one verbless headline, ONE lede.
+        The qualifiers sit beside the picture rather than above it, so the
+        reader meets the claim first and the caveats while looking at the
+        evidence for them. */}
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="of-eyebrow" data-animate="rise">What it is using</p>
+      <h3 id="tour-resources" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">
+        Answer the whirring fan without opening Activity Monitor.
+      </h3>
+      <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
+        Processor, memory, graphics, the heat verdict, the model's own footprint, the
+        tokens, and the running cost. One place, in plain words, while it works.
+      </p>
+    </div>
+    {/* Re-captured 2026-08-16: the whole popover, not the title-bar strip
+        the section used to run. It is the better picture because it is the
+        same argument at full strength — this Mac is working hard (graphics
+        pinned, a 19.1 GB model resident) and the bill still reads $0.00.
+        Portrait, so it sits beside the copy rather than above it. */}
+    <div class="mx-auto mt-11 grid max-w-5xl items-center gap-10 lg:grid-cols-[0.78fr_1.22fr]" data-animate="plate">
+      <FlowDetail
+        src={detailResourcePopover}
+        alt="Flow's What Flow is using popover during a live local run: processor at 35 percent of 14 cores, memory at 53 percent, graphics at 100 percent labelled this whole Mac, Flow itself at 136.9 MB against the muse-glimmer model at 19.1 GB, tokens of 1.3K in and 2.5K out all time, and a spend of zero dollars."
+        caption="Graphics is your whole Mac, and says so · Heat is a verdict, not degrees"
+        sizes="(min-width: 1024px) 20rem, calc(100vw - 3rem)"
+        glow
+      />
+      <ul class="flow-list">
+        <li>Your own work and the model's are separated. Flow's own footprint sits beside the model it loaded, so you can see which one is actually holding the memory.</li>
+        <li>The graphics figure is for your whole Mac, and labels itself that way. Per-process graphics attribution does not exist publicly on macOS, so Flow reports what it can measure instead of inventing a share.</li>
+        <li>Tokens count hosted and local runs alike, but only hosted runs cost money. A local run moves thousands of tokens and still bills nothing, because nothing left the machine.</li>
+        <li>Heat reads Cool, Warm, Hot, or Too hot. That is the machine's own verdict, not a temperature nobody can act on.</li>
+        <li>The model answering names itself at the bottom, so "which model is the fan about" has an answer without leaving your document.</li>
+      </ul>
+    </div>
+    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">
+      Captured during a live local run, 2026-08-16, on one M3 Max. Session and all-time totals are this machine's own history, not a typical figure.
+    </p>
+  </div>
+</section>

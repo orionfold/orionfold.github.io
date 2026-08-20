@@ -1,0 +1,44 @@
+---
+import FlowShot from '../FlowShot.astro';
+import FlowDetail from '../FlowDetail.astro';
+import FlowShot from '../../../components/flow/FlowShot.astro';
+import FlowDetail from '../../../components/flow/FlowDetail.astro';
+import shotDomains from '../../../assets/flow/shots/flow-domains-shot.webp';
+import detailDomains from '../../../assets/flow/details/detail-domains.webp';
+---
+<!-- Chapter 3: Domains + receipts -->
+<section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-domains">
+  {/* Stage rotation on this page: domains = bottom-left, tables =
+      top-right, longdocs = bottom-right, files = top-left. Adjacent
+      chapters never share a corner. See .of-stage in global.css. */}
+  <div class="mx-auto max-w-3xl">
+    <p class="of-eyebrow" data-animate="rise">Trust boundaries</p>
+    <h3 id="tour-domains" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">You pick where AI runs. Flow keeps it there.</h3>
+    <p class="of-lede mt-5" data-animate="rise">
+      Four execution domains: Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own
+      switch. Each states plainly whether your text stays on this Mac and whether the work is
+      free, covered by a subscription you already pay for, or billed per token.
+    </p>
+    <ul class="flow-list mt-5">
+      <li>Flow discovers eight providers from a machine that already works, including the AI subscriptions you already pay for. Discovery never enables anything.</li>
+      <li>A fallback that would cross a domain stops and asks. Leaving your Mac is your decision, never Flow's.</li>
+      <li>Cost is compared before, observed after, and never guessed. Models on your Mac show as free, because they are.</li>
+      <li>Receipts record facts only: which model answered, where it ran, what it cost. The next chapter reads one, card by card.</li>
+    </ul>
+  </div>
+  <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
+    <FlowShot
+      src={shotDomains}
+      alt="Flow's Models settings: four execution domains with locality and cost statements, and the discovered providers each domain offers to Smart Routing."
+      sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
+    />
+    <FlowDetail
+      class="of-stage__detail of-stage__detail--bl"
+      src={detailDomains}
+      alt="The Local execution domain in Flow: its switch turned on, the line 'Stays on this Mac, free, it runs on hardware you have', and three discovered providers, each offered to Smart Routing."
+      caption="One switch per domain · Discovery never enables anything"
+      sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+      animate
+    />
+  </div>
+</section>

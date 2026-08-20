@@ -50,6 +50,21 @@ assert.match(footer, /Site source: Apache 2\.0/);
 
 // ── /flow/: the flagship atlas ─────────────────────────────────────────────
 const flow = read('src/pages/flow.astro');
+// 2026-08-20 split: the twelve tour chapters live in components rendered by
+// the four /flow/<category>/ pages; /flow/ is the overview. Content contracts
+// run over the whole surface (`tour`); layout contracts name their file.
+const CHAPTERS = [
+  'ChapterAgency', 'ChapterExpand', 'ChapterToolbar', 'ChapterLongDocs', 'ChapterDomains', 'ChapterReceipts', 'ChapterRuntime',
+  'ChapterBenchmarks', 'ChapterRouting', 'ChapterResources', 'ChapterSearch', 'ChapterTables', 'ChapterFiles',
+];
+const chapterPath = (c) => `src/components/flow/chapters/${c}.astro`;
+const chapters = CHAPTERS.map((c) => read(chapterPath(c))).join('\n');
+const chaptersCopy = CHAPTERS.map((c) => readCopy(chapterPath(c))).join('\n');
+const categoryShell = read('src/components/flow/FlowCategoryPage.astro');
+const categories = read('src/data/flow-categories.ts');
+const CATEGORY_SLUGS = ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files'];
+const categoryPages = Object.fromEntries(CATEGORY_SLUGS.map((slug) => [slug, read(`src/pages/flow/${slug}.astro`)]));
+const tour = `${flow}\n${chapters}\n${categoryShell}`;
 assert.match(flow, /Conduct beautiful documents with AI agency built in/, 'the locked tagline stays the H1');
 assert.match(flow, /Patent pending/);
 assert.match(flow, /In development · Freemium subscription planned/);
@@ -70,11 +85,14 @@ for (const [name, src] of [['flow', flow], ['FlowWaitlist', read('src/components
   assert.match(src, /of-waitlist-caption[^>]*>\s*Free to join · Double opt-in · One email a week, no more/, `${name} carries the one-line caption`);
 }
 // Truth boundaries from the Flow capability briefs.
-assert.doesNotMatch(flow, /Apple Intelligence/, 'Apple Intelligence was retired from Flow on 2026-08-14 and must not appear');
+assert.doesNotMatch(tour, /Apple Intelligence/, 'Apple Intelligence was retired from Flow on 2026-08-14 and must not appear');
 assert.doesNotMatch(readCopy('src/pages/flow.astro'), /—/, 'Flow landing-page copy must not use em dashes');
-assert.doesNotMatch(flow, /data-checkout=/, 'Flow must not expose checkout before commercial terms exist');
-assert.doesNotMatch(flow, /\$\d+\s*(?:\/|per\s)/i, 'no price tiers exist yet, so none may be implied');
-assert.match(flow, /Install nothing but Flow\./, 'the runtime story stays "built so that", led by its own chapter');
+assert.doesNotMatch(chaptersCopy, /—/, 'Flow chapter copy must not use em dashes');
+assert.doesNotMatch(readCopy('src/components/flow/FlowCategoryPage.astro'), /—/, 'Flow category shell copy must not use em dashes');
+assert.doesNotMatch(readCopy('src/data/flow-categories.ts'), /—/, 'Flow category copy must not use em dashes');
+assert.doesNotMatch(tour, /data-checkout=/, 'Flow must not expose checkout before commercial terms exist');
+assert.doesNotMatch(tour, /\$\d+\s*(?:\/|per\s)/i, 'no price tiers exist yet, so none may be implied');
+assert.match(chapters, /Install nothing but Flow\./, 'the runtime story stays "built so that", led by its own chapter');
 assert.match(flow, /patent-pending technology for revision-scoped, verifiable AI agency in durable documents/);
 // Measured numbers with dates (the stat band).
 for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '5 actions', '4 domains']) {
@@ -93,10 +111,23 @@ assert.deepEqual([...anchorIndexes].sort((a, b) => a - b), anchorIndexes, 'ancho
 // order-stable: the 2026-08-16 typography pass added .of-display alongside
 // scroll-mt-28, and a combined "id then class" regex broke on the reorder
 // while the anchors themselves were still perfectly fine.
-for (const id of ['tour-agency', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-receipts', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
-  const heading = flow.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
+for (const id of ['tour-agency', 'tour-expand', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-receipts', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
+  const heading = chapters.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
   assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
   assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
+  // The overview keeps the same id on the card link, so /flow/#tour-<x> links
+  // published before the split still land on the card that points onward.
+  assert.match(categories, new RegExp(`id: '${id}'`), `${id} must be registered in flow-categories.ts`);
+}
+assert.match(flow, /<a id=\{ch\.id\} class="scroll-mt-28" href=\{`\$\{flowCategoryHref\(cat\.slug\)\}#\$\{ch\.id\}`\}>/, 'overview card links carry the chapter ids as anchor stubs');
+// Every chapter component renders on exactly one category page.
+for (const c of CHAPTERS) {
+  const uses = Object.values(categoryPages).filter((page) => page.includes(`<${c} />`)).length;
+  assert.equal(uses, 1, `${c} must render on exactly one category page`);
+}
+for (const slug of CATEGORY_SLUGS) {
+  assert.match(categoryPages[slug], new RegExp(`<FlowCategoryPage slug="${slug}">`), `${slug} page must use the shared shell`);
+  assert.match(categories, new RegExp(`slug: '${slug}'`), `${slug} must be registered in flow-categories.ts`);
 }
 // Real capture rail: every tour shot comes from the dev-build capture set.
 assert.match(flow, /import FlowShot from '\.\.\/components\/flow\/FlowShot\.astro'/);
@@ -108,7 +139,7 @@ assert.match(flow, /import FlowShot from '\.\.\/components\/flow\/FlowShot\.astr
 // provenance rule had changed.
 // Product imagery only: the app icon also lives under assets/flow/ and is
 // brand art, not evidence, so it is deliberately outside this rule.
-const flowProductImages = [...flow.matchAll(/from '\.\.\/assets\/flow\/(shots|details)\/([^']+)'/g)];
+const flowProductImages = [...tour.matchAll(/from '(?:\.\.\/)+assets\/flow\/(shots|details)\/([^']+)'/g)];
 assert.ok(flowProductImages.length >= 8, 'the tour keeps its rail of real captures');
 for (const [, dir, file] of flowProductImages) {
   assert.match(file, /\.webp$/, `${file} must ship as webp`);
@@ -128,10 +159,12 @@ assert.ok(flowProductImages.some(([, dir]) => dir === 'details'), 'the tour keep
 // the same real capture, produced by scripts/prepare-flow-details.mjs and shown
 // near 1:1. These assertions keep the crops present, generated, and captioned.
 const detailScript = read('scripts/prepare-flow-details.mjs');
-assert.match(flow, /import FlowDetail from '\.\.\/components\/flow\/FlowDetail\.astro'/);
+assert.match(chapters, /import FlowDetail from '\.\.\/FlowDetail\.astro'/);
 for (const detail of [
-  'detail-proposal', 'detail-checks', 'detail-diff', 'detail-domains',
+  'detail-proposal', 'detail-checks', 'detail-result', 'detail-diff', 'detail-domains',
   'detail-runtime-storage', 'detail-parts', 'detail-grid', 'detail-search',
+  'detail-expand-hover', 'detail-expand-consent', 'detail-expand-banner',
+  'detail-expand-bound', 'detail-expand-lookups', 'detail-expand-saved',
 ]) {
   assert.match(detailScript, new RegExp(`out: '${esc(detail)}\\.webp'`), `${detail} must stay a generated crop`);
   assert.ok(
@@ -174,25 +207,37 @@ assert.match(flow, /How is Flow different from a chat canvas or artifacts panel\
 assert.match(flow, /<FlowWaitlist placement="flow" storyHref=\{flowStoryHref\} \/>/);
 assert.ok(flow.indexOf('<FlowWaitlist placement="flow"') > flow.indexOf('id="press"'));
 
-// ── The mid-tour CTA repeat (2026-08-18) ──
-// The tour is eight chapters long and the closer sits past all of them, so the
-// offer is repeated at the halfway seam. The risk this guards is NOT that the
-// section goes missing — it is that someone "simplifies" it to a second
-// placement="flow". That would emit the same formId twice, and formId seeds
-// five DOM ids plus the section's aria-labelledby, so the page would carry
-// duplicate ids and the label association would break. It would also collapse
-// both CTAs onto one attribution source, making them indistinguishable in
-// conversion data. Hence: distinct placement, and it must come BEFORE the
-// chapter it hands off to.
-assert.match(flow, /<FlowWaitlist placement="flow-mid"/, 'the mid-tour CTA must use its own placement');
-assert.ok(
-  flow.indexOf('<FlowWaitlist placement="flow-mid"') < flow.indexOf('aria-labelledby="tour-domains"'),
-  'the mid-tour CTA must sit at the seam, before the domains chapter',
-);
-assert.ok(
-  flow.indexOf('<FlowWaitlist placement="flow-mid"') < flow.indexOf('<FlowWaitlist placement="flow"'),
-  'the mid-tour CTA must come before the closing one',
-);
+
+// ── Expand with Sources (0131) truth rails, 2026-08-20 ────────────────────
+// Source: flow-expand-with-sources-source.md "Hard guardrails". Lookup-backed
+// runs are hosted-Anthropic only today, fetch is closed, estimate and recorded
+// cost are two facts, the 12-lookup bound is a feature, retrieval is named.
+const expandCopy = readCopy(chapterPath('ChapterExpand'));
+assert.match(expandCopy, /hosted Anthropic models only/, 'Expand must state the hosted-only carrier');
+assert.match(expandCopy, /0\.000924 USD/, 'Expand must carry the pre-run estimate to the digit');
+assert.match(expandCopy, /0\.026684 USD/, 'Expand must carry the recorded cost to the digit');
+assert.match(expandCopy, /two facts/, 'estimate and recorded cost must be presented as two facts');
+assert.match(expandCopy, /limit of 12 lookups/, 'the bound must be named');
+assert.match(expandCopy, /[Nn]othing in the document was changed/, 'the bound must be shown as a no-write ending');
+assert.match(expandCopy, /fetching public\s+pages stays switched off/i, 'fetch must be stated as closed');
+assert.doesNotMatch(expandCopy, /lookups? (run|runs|ran) (locally|on this Mac)/i, 'no local-lookup claim (goal 0142 is unbuilt)');
+assert.doesNotMatch(expandCopy, /\$0\.00\b/, 'no zero-dollar lookup claim');
+assert.doesNotMatch(expandCopy, /citation|snapshot|grounded in your research/i, 'no citation, snapshot, or grounding claim (goal 0074)');
+assert.doesNotMatch(expandCopy, /—/, 'Expand chapter copy must not use em dashes');
+assert.ok(categoryPages['writing-with-ai'].includes('<ChapterExpand />'), 'Expand renders on the Writing with AI page');
+
+// ── The category pages' CTA (2026-08-20 split) ──
+// The mid-tour repeat used to sit at the seam between chapters 2 and 3 of the
+// single page. The tour now spans four category pages, each of which closes
+// with the SAME `flow-mid` placement (inside the tour, own form id and
+// attribution source), and the overview keeps only the hero capture and the
+// closing placement="flow". A category page must never reuse placement="flow":
+// that would collapse category signups onto the overview closer in the data.
+assert.doesNotMatch(flow, /placement="flow-mid"/, 'the overview no longer carries the mid-tour CTA');
+assert.match(categoryShell, /<FlowWaitlist placement="flow-mid"/, 'category pages close with the flow-mid placement');
+assert.doesNotMatch(categoryShell, /placement="flow"[\s/>]/, 'a category page must not reuse the overview closer placement');
+assert.match(categoryShell, /aria-label="Flow tour categories"/, 'category pages carry the shared sub-nav');
+assert.match(categoryShell, /aria-current=\{c\.slug === cat\.slug \? 'page' : undefined\}/, 'the sub-nav marks the current category');
 // One offer, two surfaces: the placements must resolve to DIFFERENT form ids
 // (no duplicate DOM ids) and therefore different attribution sources.
 const waitlistComponent = read('src/components/sections/FlowWaitlist.astro');
@@ -421,7 +466,10 @@ assert.match(ogEndpoint, /endsWith\('\.webp'\)/, 'Satori cannot decode webp, so 
 // tightenings: dropping "published specification", calling the context ceiling
 // the model's, or implying a shared leaderboard would each shorten the copy
 // while turning a checkable statement into an unbacked one.
-const flowBenchCopy = readCopy('src/pages/flow.astro');
+// Truth guards read the whole tour surface (overview + the twelve chapter
+// components) since the 2026-08-20 split.
+const flowTourCopy = `${readCopy('src/pages/flow.astro')}\n${chaptersCopy}`;
+const flowBenchCopy = flowTourCopy;
 const homeBenchCopy = readCopy('src/pages/index.astro');
 
 // 1. Bandwidth. No public interface on a Mac reports memory bandwidth: 300 GB/s
@@ -566,7 +614,7 @@ for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeB
 //    predicates, resolvers and fail-closed; none of those may reach a reader.
 //    (Comment-stripped copy: the chapter's own source comment is allowed to
 //    name the banned words in order to ban them.)
-const flowRoutingCopy = readCopy('src/pages/flow.astro');
+const flowRoutingCopy = flowTourCopy;
 for (const jargon of ['predicate', 'resolver', 'fail-closed', 'fails closed']) {
   assert.doesNotMatch(
     flowRoutingCopy,
@@ -632,7 +680,7 @@ assert.match(
 // travels with it and while the staged figure never migrates into copy as a
 // real one. Each guard below was chosen because the breach reads like a
 // harmless tightening.
-const flowReceiptCopy = readCopy('src/pages/flow.astro');
+const flowReceiptCopy = flowTourCopy;
 const homeReceiptCopy = readCopy('src/pages/index.astro');
 
 // 1. The staging disclosure stays welded to the chapter. Dropping "staged

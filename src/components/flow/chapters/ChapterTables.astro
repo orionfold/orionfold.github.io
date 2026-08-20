@@ -1,0 +1,40 @@
+---
+import FlowShot from '../FlowShot.astro';
+import FlowDetail from '../FlowDetail.astro';
+import FlowShot from '../../../components/flow/FlowShot.astro';
+import FlowDetail from '../../../components/flow/FlowDetail.astro';
+import shotTables from '../../../assets/flow/shots/flow-table-editor-shot.webp';
+import detailGrid from '../../../assets/flow/details/detail-grid.webp';
+---
+<!-- Chapter 7: Tables -->
+<section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-tables">
+  <div class="mx-auto max-w-3xl lg:ml-auto lg:mr-0">
+    <p class="of-eyebrow" data-animate="rise">Tables</p>
+    <h3 id="tour-tables" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Edit the cell, not the pipes.</h3>
+    <p class="of-lede mt-5" data-animate="rise">
+      Markdown tables are wonderful to read and miserable to edit. Flow gives every table a
+      real grid with spreadsheet interactions. Underneath, the file never stops being the
+      plain Markdown you wrote.
+    </p>
+    <ul class="flow-list mt-5">
+      <li>Editing a cell changes one cell. The rest of the table keeps the exact spacing and alignment you wrote, character for character.</li>
+      <li>The header row cannot be deleted, and a stray pipe character stays one cell instead of splitting the table.</li>
+      <li>The mapping cost that froze scrolling on table-heavy notes, about 213 ms per refresh, is now under 2 ms.</li>
+    </ul>
+  </div>
+  <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
+    <FlowShot
+      src={shotTables}
+      alt="The same Markdown table twice in Flow: rendered in the document, and open in a spreadsheet-style grid with a cell selected and the cell editor bar live."
+      sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
+    />
+    <FlowDetail
+      class="of-stage__detail of-stage__detail--tr"
+      src={detailGrid}
+      alt="A Markdown table open in Flow's spreadsheet grid, one cell selected and named R5:C2 in the cell editor bar above it."
+      caption="The grid and the note are one document · Saving is still ⌘S"
+      sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+      animate
+    />
+  </div>
+</section>

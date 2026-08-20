@@ -1,0 +1,46 @@
+---
+import FlowShot from '../FlowShot.astro';
+import FlowDetail from '../FlowDetail.astro';
+import FlowShot from '../../../components/flow/FlowShot.astro';
+import FlowDetail from '../../../components/flow/FlowDetail.astro';
+import shotSearch from '../../../assets/flow/shots/flow-search-shot.webp';
+import detailSearch from '../../../assets/flow/details/detail-search.webp';
+---
+<!-- Chapter 6: Search -->
+<section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-search">
+  <div class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
+    <div>
+      <p class="of-eyebrow" data-animate="rise">Search</p>
+      <h3 id="tour-search" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">A search result is a citation, not a guess.</h3>
+      <p class="of-lede mt-5" data-animate="rise">
+        Every result carries an anchor into the exact bytes you wrote. Opening it scrolls to one
+        highlighted passage, after Flow re-checks, byte for byte, that the passage is still there.
+        If your document changed, Flow finds the moved passage again. If it is gone, Flow says so
+        instead of highlighting the wrong thing.
+      </p>
+      <ul class="flow-list mt-5">
+        <li>22.3 milliseconds at the 95th percentile on a 10,000-note library. First full index in 1.1 seconds.</li>
+        <li>A filename match can never masquerade as content. Structurally.</li>
+        <li>Open, unsaved edits are indexed live and always win over the on-disk copy.</li>
+        <li>Everything on-device. Nothing is sent over the network.</li>
+      </ul>
+    </div>
+    <!-- The search column is TALL and narrow, so it gets its own portrait
+         crop beside the window rather than an overlay: a result list is
+         only convincing if you can read the citations in it. -->
+    <div class="flow-search-media" data-animate="plate">
+      <FlowShot
+        src={shotSearch}
+        alt="Flow search across the demo library: results with abstracts, folder-qualified paths, and match reasons, beside two open documents."
+        crop
+        sizes="(min-width: 1024px) 30rem, 100vw"
+      />
+      <FlowDetail
+        src={detailSearch}
+        alt="Flow's search column: the query 'verification tax', eight results, each with an abstract, a folder-qualified path, and a match reason naming the exact line."
+        caption="Every result carries its path and its line"
+        sizes="(min-width: 1024px) 14rem, 45vw"
+      />
+    </div>
+  </div>
+</section>

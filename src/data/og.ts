@@ -190,6 +190,41 @@ export const OG_PAGES: Record<string, OgPage> = {
     screenshot: 'src/assets/flow/og-flow-shot.png',
     light: true,
   },
+  // The four /flow/<category>/ tour pages (2026-08-20 split). Text-only cards
+  // on the Flow light treatment; the chapter shots are too dense to read at
+  // social-card size and the overview card already carries the product.
+  '/flow/writing-with-ai/': {
+    slug: 'flow-writing-with-ai',
+    eyebrow: 'Orionfold Flow · Writing with AI',
+    title: 'AI that edits with you, not behind your back',
+    seed: 'flow-writing',
+    alt: 'Orionfold Flow, writing with AI: five actions, a tool strip in the document, and an exact diff you approve for every change',
+    light: true,
+  },
+  '/flow/receipts/': {
+    slug: 'flow-receipts',
+    eyebrow: 'Orionfold Flow · Receipts and evidence',
+    title: 'Every run leaves a record you can check',
+    seed: 'flow-receipts',
+    alt: 'Orionfold Flow receipts: one card per run names what ran, where, what it cost, and what the evidence supports',
+    light: true,
+  },
+  '/flow/models-and-runtime/': {
+    slug: 'flow-models-and-runtime',
+    eyebrow: 'Orionfold Flow · Models and runtime',
+    title: 'AI runs where you allow it, and nowhere else',
+    seed: 'flow-models',
+    alt: 'Orionfold Flow models and runtime: four domains, a local runtime inside the app, and rules that pick the model',
+    light: true,
+  },
+  '/flow/documents-and-files/': {
+    slug: 'flow-documents-and-files',
+    eyebrow: 'Orionfold Flow · Documents and files',
+    title: 'Ordinary files, with search and tables that hold up',
+    seed: 'flow-documents',
+    alt: 'Orionfold Flow documents and files: search results as checked citations, tables that edit like tables, ordinary Markdown files',
+    light: true,
+  },
   '/relay/': {
     slug: 'relay',
     eyebrow: 'Orionfold Relay · Own it',

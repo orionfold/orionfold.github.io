@@ -14,7 +14,7 @@
 // assertions read COMPUTED style, not source text.
 import { expect, test } from '@playwright/test';
 
-const STAGE_ROUTES = ['/', '/flow/'] as const;
+const STAGE_ROUTES = ['/', '/flow/writing-with-ai/', '/flow/receipts/', '/flow/models-and-runtime/', '/flow/documents-and-files/'] as const;
 const DESKTOP = { width: 1440, height: 1000 };
 const MOBILE = { width: 430, height: 900 };
 
