@@ -16,6 +16,7 @@ import FlowShot from '../components/flow/FlowShot.astro';
 import FlowDetail from '../components/flow/FlowDetail.astro';
 import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustration.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
+import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import { Image } from 'astro:assets';
 import { SITE, PERSON } from '../data/seo';
 import { ogMeta } from '../data/og';
@@ -199,6 +200,13 @@ const faqSchema = {
     acceptedAnswer: { '@type': 'Answer', text: f.a },
   })),
 };
+
+// First-paint capture (2026-08-20): the hero carries the SAME named offer and
+// consent scope as the two FlowWaitlist panels, with its own formId/source so
+// DOM ids stay unique and the three placements stay distinguishable in
+// conversion data. Keep this sentence byte-identical to FlowWaitlist.astro's.
+const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
+const heroPrivacyNote = heroConsentText.replace(' See our privacy policy.', '');
 ---
 <Layout
   title="Orionfold Flow · Mac AI document editor where you approve every change"
@@ -233,7 +241,7 @@ const faqSchema = {
           <span class="flow-eyebrow-chip">Native Mac</span>
           <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Patent pending</span>
         </div>
-        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.4rem,8.4vw,4.6rem)] font-extrabold leading-[1.03] tracking-[-0.055em]">
+        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.3rem,6.4vw,3.6rem)] font-extrabold leading-[1.06] tracking-[-0.05em]">
           Conduct beautiful documents with AI agency built in
         </h1>
         <!-- One claim, stated once. The receipt, the domains, and the diff each
@@ -241,19 +249,30 @@ const faqSchema = {
         <p class="mx-auto mt-6 max-w-2xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
           Your text changes two ways only: an edit you typed, or a change you approved.
         </p>
-        <div class="mt-9 flex flex-wrap justify-center gap-3">
-          <a href="#waitlist" class="of-primary-action">Join the waitlist</a>
-          <a href="#tour" class="of-secondary-action">See the product tour <span aria-hidden="true">↓</span></a>
+        <!-- First paint is the capture, no join-versus-tour fork (operator
+             decision 2026-08-20). The tour is one scroll away and the sticky
+             nav keeps a Tour link; the in-development framing moved into the
+             product-shot caption right below. -->
+        <div class="mx-auto mt-9 max-w-md">
+          <WaitlistForm
+            id="flow-hero-waitlist"
+            source="flow-hero-waitlist"
+            offer="flow-waitlist"
+            buttonText="Join the waitlist"
+            successMessage="Check your inbox to confirm."
+            consentText={heroConsentText}
+          />
+          <p class="mt-4 text-xs leading-relaxed text-text-dim">
+            {heroPrivacyNote}{' '}
+            <a class="underline underline-offset-2 transition-colors hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
+          </p>
         </div>
-        <p class="mt-6 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
-          In development · Freemium subscription planned · Every screen below is the real development build
-        </p>
       </div>
       <div class="relative mx-auto mt-12 max-w-6xl">
         <FlowShot
           src={shotCharts}
           alt="Orionfold Flow with two documents open side by side: a Q4 content strategy with a publishing calendar table and a chart, and an investment memo carrying a photo and a metrics table, over a plain folder of Markdown files."
-          caption="The real development build. Memos, calendars, charts, and tables, side by side, all plain files in a folder you chose."
+          caption="In development · Freemium subscription planned · Every screen is the real development build"
           priority
         />
       </div>

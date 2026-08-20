@@ -53,7 +53,16 @@ const flow = read('src/pages/flow.astro');
 assert.match(flow, /Conduct beautiful documents with AI agency built in/, 'the locked tagline stays the H1');
 assert.match(flow, /Patent pending/);
 assert.match(flow, /In development · Freemium subscription planned/);
-assert.match(flow, /Every screen below is the real development build/);
+assert.match(flow, /Every screen is the real development build/);
+// First-paint capture (operator decision 2026-08-20): the hero leads with the
+// email field and no join-versus-tour fork; the in-development framing rides
+// the hero product-shot caption instead of a line above it.
+assert.match(flow, /source="flow-hero-waitlist"/, 'the hero carries its own attributable waitlist capture');
+assert.match(flow, /caption="In development · Freemium subscription planned · Every screen is the real development build"/, 'the development framing stays welded to the hero shot');
+assert.doesNotMatch(flow, /of-secondary-action">See the product tour/, 'no join-versus-tour fork on first paint');
+const heroConsent = flow.match(/const heroConsentText = '([^']+)'/)?.[1] ?? '';
+const panelConsent = read('src/components/sections/FlowWaitlist.astro').match(/const consentText = '([^']+)'/)?.[1] ?? '';
+assert.equal(heroConsent, panelConsent, 'the hero capture must record the exact consent scope the FlowWaitlist panels record');
 // Truth boundaries from the Flow capability briefs.
 assert.doesNotMatch(flow, /Apple Intelligence/, 'Apple Intelligence was retired from Flow on 2026-08-14 and must not appear');
 assert.doesNotMatch(readCopy('src/pages/flow.astro'), /—/, 'Flow landing-page copy must not use em dashes');
