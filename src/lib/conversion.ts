@@ -18,6 +18,7 @@
 // to major units here, as Google expects (e.g. 50.0, not 5000).
 
 import { GOOGLE_ADS_PURCHASE_SEND_TO } from '../data/ads';
+import { GOOGLE_ADS_ENABLED } from '../data/launch';
 
 // Delegate to the global gtag shim installed in Layout.astro (it pushes the raw
 // `arguments` object to dataLayer, which gtag.js requires — do NOT reimplement
@@ -97,7 +98,7 @@ export async function reportPurchase(c: PurchaseConversion): Promise<void> {
   });
 
   // Tasks 1 + 2 — native Google Ads conversion + Enhanced Conversions (books + licenses).
-  if (fireAdConversions && GOOGLE_ADS_PURCHASE_SEND_TO) {
+  if (fireAdConversions && GOOGLE_ADS_ENABLED && GOOGLE_ADS_PURCHASE_SEND_TO) {
     if (c.email) {
       try {
         const hashed = await sha256Hex(c.email.trim().toLowerCase());

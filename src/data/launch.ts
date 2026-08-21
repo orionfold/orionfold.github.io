@@ -131,3 +131,18 @@ export const RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED =
 // blocking to connect.facebook.net (first-party script was under 0.7 s). Flip
 // back to true the day a website-conversion wave is scheduled (B2/B3).
 export const META_PIXEL_ENABLED = false;
+
+// GOOGLE_ADS_ENABLED — gate the Google Ads (AW) half of the shared gtag.js
+// load: the `AW-18188052159` config call, the native Purchase conversion on
+// /thanks (lib/conversion.ts) and the confirmed-lead conversion in
+// WaitlistForm. GA4 (`G-04PH843W2C`) is NOT gated by this flag and keeps
+// firing page views and key events on every deploy.
+//
+// OFF (operator 2026-08-20 21:51 PDT): no Google Ads campaigns are running, so
+// the AW config buys nothing and was the last remaining third-party cookie on
+// the site (googleads.g.doubleclick.net viewthroughconversion on every page,
+// Lighthouse Best-Practices 79 in audit-reports/seo-audit-2026-08-20.md).
+// Same reasoning as META_PIXEL_ENABLED above. Flip to true the day a Google
+// Ads campaign is scheduled; no other file changes are needed, the conversion
+// wiring below stays intact and is unit-tested in both states.
+export const GOOGLE_ADS_ENABLED = false;

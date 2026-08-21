@@ -20,10 +20,11 @@ async function loaderSource() {
   return { source, script: source.slice(start, end + gateEnd.length) };
 }
 
-function runLoader(script, hostname, readyState = 'loading') {
+function runLoader(script, hostname, readyState = 'loading', windowExtras = {}) {
   const listeners = new Map();
   const appended = [];
   const window = {
+    ...windowExtras,
     location: { hostname },
     addEventListener(type, handler, options) {
       listeners.set(type, { handler, options });
@@ -86,18 +87,17 @@ test('Google tag keeps its queue but cannot delay document load completion', asy
   assert.match(source, /document\.head\.appendChild\(tag\);/);
 });
 
-test('canonical production queues GA4 and Ads and loads gtag exactly once after load', async () => {
+test('canonical production queues GA4 only while Google Ads is gated off, and loads gtag exactly once after load', async () => {
   const { script } = await loaderSource();
   const run = runLoader(script, 'orionfold.com');
 
   assert.equal(typeof run.window.gtag, 'function');
-  assert.equal(run.window.dataLayer.length, 3);
+  assert.equal(run.window.dataLayer.length, 2);
   assert.deepEqual(
     Array.from(run.window.dataLayer, (entry) => [entry[0], entry[1]]),
     [
       ['js', run.window.dataLayer[0][1]],
       ['config', 'G-04PH843W2C'],
-      ['config', 'AW-18188052159'],
     ],
   );
   assert.ok(run.window.dataLayer[0][1] instanceof Date);
@@ -110,6 +110,33 @@ test('canonical production queues GA4 and Ads and loads gtag exactly once after 
   assert.equal(run.appended[0].nodeName, 'SCRIPT');
   assert.equal(run.appended[0].async, true);
   assert.equal(run.appended[0].src, googleTagUrl);
+});
+
+test('canonical production queues the Ads config after GA4 once GOOGLE_ADS_ENABLED publishes window.__ofAdsEnabled', async () => {
+  const { script } = await loaderSource();
+  const run = runLoader(script, 'orionfold.com', 'loading', { __ofAdsEnabled: true });
+
+  assert.deepEqual(
+    Array.from(run.window.dataLayer, (entry) => [entry[0], entry[1]]),
+    [
+      ['js', run.window.dataLayer[0][1]],
+      ['config', 'G-04PH843W2C'],
+      ['config', 'AW-18188052159'],
+    ],
+  );
+  run.fire('load');
+  assert.equal(run.appended.length, 1, 'the flag adds a config call, never a second gtag.js load');
+});
+
+test('GOOGLE_ADS_ENABLED is the single switch for the AW config, the lead send_to, and the purchase conversion', async () => {
+  const layout = await readFile(layoutUrl, 'utf8');
+  const launch = await readFile(new URL('../../src/data/launch.ts', import.meta.url), 'utf8');
+  const conversion = await readFile(new URL('../../src/lib/conversion.ts', import.meta.url), 'utf8');
+  assert.match(launch, /export const GOOGLE_ADS_ENABLED = (true|false);/);
+  assert.match(layout, /\{GOOGLE_ADS_ENABLED && \([\s\S]*?window\.__ofAdsEnabled=true;/);
+  assert.match(layout, /if \(window\.__ofAdsEnabled\) window\.gtag\('config', 'AW-18188052159'\);/);
+  assert.doesNotMatch(layout, /^\s*window\.gtag\('config', 'AW-18188052159'\);/m, 'the AW config must never run unconditionally');
+  assert.match(conversion, /fireAdConversions && GOOGLE_ADS_ENABLED && GOOGLE_ADS_PURCHASE_SEND_TO/);
 });
 
 test('canonical production loaded after document completion still appends exactly once', async () => {

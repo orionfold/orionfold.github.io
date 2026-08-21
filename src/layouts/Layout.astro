@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import { SITE, ORGANIZATION } from '../data/seo';
 import { META_PIXEL_ID } from '../data/meta';
-import { META_PIXEL_ENABLED } from '../data/launch';
+import { META_PIXEL_ENABLED, GOOGLE_ADS_ENABLED } from '../data/launch';
 import { GOOGLE_ADS_LEAD_SEND_TO } from '../data/ads';
 
 interface Props {
@@ -124,8 +124,8 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          processing tail (G-043). The queued calls flush when the library arrives;
          on the normal path the fetch starts ~50–75ms after navigation rather
          than competing with page completion. -->
-    {GOOGLE_ADS_LEAD_SEND_TO && (
-      <script is:inline set:html={`window.__ofAdsLeadSendTo=${JSON.stringify(GOOGLE_ADS_LEAD_SEND_TO)};`} />
+    {GOOGLE_ADS_ENABLED && (
+      <script is:inline set:html={`window.__ofAdsEnabled=true;${GOOGLE_ADS_LEAD_SEND_TO ? `window.__ofAdsLeadSendTo=${JSON.stringify(GOOGLE_ADS_LEAD_SEND_TO)};` : ''}`} />
     )}
     <script is:inline>
       /* G-042 canonical analytics gate. */
@@ -136,13 +136,14 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
         window.gtag('config', 'G-04PH843W2C');
         // Google Ads (AW) shares the one gtag.js load. Drives the native
         // "Purchase" conversion fired on /thanks (MARKETING-HANDOFF.md, src/data/ads.ts).
-        window.gtag('config', 'AW-18188052159');
+        // Gated on GOOGLE_ADS_ENABLED (src/data/launch.ts), published as
+        // window.__ofAdsEnabled by the small inline script ABOVE this one, so
+        // this block stays free of build-time interpolation (its loader
+        // behavior is unit-tested by evaluating this script standalone).
+        if (window.__ofAdsEnabled) window.gtag('config', 'AW-18188052159');
         // NOTE: the waitlist "confirmed lead" Ads conversion action is published
-        // as window.__ofAdsLeadSendTo by the small inline script ABOVE this one,
-        // and only when the operator has filled GOOGLE_ADS_LEAD_SEND_TO in
-        // src/data/ads.ts. It is deliberately kept out of this block so this
-        // gate stays free of build-time interpolation (its loader behavior is
-        // unit-tested by evaluating this script standalone).
+        // the same way as window.__ofAdsLeadSendTo, and only when the operator
+        // has filled GOOGLE_ADS_LEAD_SEND_TO in src/data/ads.ts.
 
         (function () {
           var loaded = false;
