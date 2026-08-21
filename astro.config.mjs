@@ -128,8 +128,10 @@ function buildLastmodMap() {
   // after the tool-strip chapter landed the same day.
   // 2026-08-20: search-facing title + per-model context-window copy.
   // 2026-08-20 (later): tour split into four category pages; overview rebuilt.
+  // 2026-08-20 (latest): content-masterclass rewrite of both front doors and the
+  // category heroes; enterprise patterns moved to /flow/enterprise/.
   map['/flow/'] = '2026-08-20';
-  for (const cat of ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files']) {
+  for (const cat of ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files', 'enterprise']) {
     map[`/flow/${cat}/`] = '2026-08-20';
   }
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),

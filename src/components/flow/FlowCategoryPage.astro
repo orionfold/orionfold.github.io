@@ -1,17 +1,25 @@
 ---
 // Shared shell for the four /flow/<category>/ pages (2026-08-20 split).
-// Renders the site nav, the category sub-nav, a compact hero with a chapter
-// jump list, the chapters passed in the slot, a pager to the neighbouring
-// categories, and the Flow waitlist. Copy for each category lives in
-// src/data/flow-categories.ts so the overview cards and these pages agree.
+// Renders the site nav, the category sub-nav, a hero with the category's
+// cover crop and a chapter jump list, the chapters passed in the slot, a pager
+// to the neighbouring categories, and the Flow waitlist. Copy for each category
+// lives in src/data/flow-categories.ts so the overview cards and these pages
+// agree; the cover crop lives in src/data/flow-category-shots.ts for the same
+// reason.
+//
+// Chapters are numbered 1 to 13 ACROSS the four pages (content-masterclass
+// review, 2026-08-20): a numbered series reads as one set to complete, and the
+// pager says which chapters come next.
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
+import FlowDetail from './FlowDetail.astro';
 import FlowWaitlist from '../sections/FlowWaitlist.astro';
 import { Image } from 'astro:assets';
 import { SITE } from '../../data/seo';
 import { ogMeta } from '../../data/og';
 import { FLOW_CATEGORIES, flowCategoryHref } from '../../data/flow-categories';
+import { FLOW_CATEGORY_SHOTS } from '../../data/flow-category-shots';
 import appIcon from '../../assets/flow/flow-app-icon-512.png';
 import '../../styles/flow.css';
 
@@ -26,7 +34,13 @@ const prev = FLOW_CATEGORIES[index - 1];
 const next = FLOW_CATEGORIES[index + 1];
 const href = flowCategoryHref(cat.slug);
 const og = ogMeta(href);
+const cover = FLOW_CATEGORY_SHOTS[cat.slug];
 const flowStoryHref = '/story/limitless-without-the-pill/';
+const totalChapters = FLOW_CATEGORIES.reduce((n, c) => n + c.chapters.length, 0);
+const firstChapter = FLOW_CATEGORIES.slice(0, index).reduce((n, c) => n + c.chapters.length, 0) + 1;
+const lastChapter = firstChapter + cat.chapters.length - 1;
+const nextHref = next ? flowCategoryHref(next.slug) : '/flow/enterprise/';
+const nextLabel = next ? `${next.label} (chapters ${lastChapter + 1} to ${lastChapter + next.chapters.length})` : 'Flow for enterprise AI owners';
 const breadcrumbs = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -49,7 +63,7 @@ const breadcrumbs = {
             <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
             Orionfold Flow
           </a>
-          <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Product tour · {index + 1} of {FLOW_CATEGORIES.length}</span>
+          <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Product tour · Part {index + 1} of {FLOW_CATEGORIES.length} · Chapters {firstChapter} to {lastChapter} of {totalChapters}</span>
         </div>
         <p class="of-eyebrow mt-8">{cat.label}</p>
         <h1 class="hero-gradient-text mx-auto mt-4 max-w-3xl font-display text-[clamp(2.1rem,5.4vw,3.3rem)] font-extrabold leading-[1.08] tracking-[-0.045em]">
@@ -58,12 +72,24 @@ const breadcrumbs = {
         <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-[1.55] text-text-muted sm:text-xl">{cat.blurb}</p>
         <nav class="flow-jump mt-8" aria-label="Chapters on this page">
           {cat.chapters.map((ch, i) => (
-            <a href={`#${ch.id}`}><span class="font-mono text-[0.62rem] text-text-dim">{i + 1}</span>{ch.label}</a>
+            <a href={`#${ch.id}`}><span class="font-mono text-[0.62rem] text-text-dim">{firstChapter + i}</span>{ch.label}</a>
           ))}
         </nav>
         <p class="mt-6 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
           In development · Freemium subscription planned · Every screen is the real development build
         </p>
+      </div>
+      <!-- The cover: the same crop the overview card showed, so the picture the
+           reader clicked is the picture that greets them, and the first screen
+           carries a visual, not only a text block. -->
+      <div class="mx-auto mt-10 max-w-3xl" data-animate="plate">
+        <FlowDetail
+          src={cover.src}
+          alt={cover.alt}
+          caption={cover.caption}
+          sizes="(min-width: 1024px) 46rem, calc(100vw - 3rem)"
+          glow
+        />
       </div>
     </section>
 
@@ -73,6 +99,7 @@ const breadcrumbs = {
         {FLOW_CATEGORIES.map((c) => (
           <a href={flowCategoryHref(c.slug)} class="flow-subnav__link" aria-current={c.slug === cat.slug ? 'page' : undefined}>{c.label}</a>
         ))}
+        <a href="/flow/enterprise/" class="flow-subnav__link">Enterprise</a>
       </div>
     </nav>
 
@@ -82,7 +109,7 @@ const breadcrumbs = {
       <div class="flow-pager mx-auto max-w-6xl">
         {prev ? (
           <a href={flowCategoryHref(prev.slug)} data-dir="prev">
-            <p class="flow-pager__label">← Previous</p>
+            <p class="flow-pager__label">← Previous · Part {index}</p>
             <p class="flow-pager__title">{prev.label}</p>
           </a>
         ) : (
@@ -93,12 +120,12 @@ const breadcrumbs = {
         )}
         {next ? (
           <a href={flowCategoryHref(next.slug)} data-dir="next">
-            <p class="flow-pager__label">Next →</p>
+            <p class="flow-pager__label">Next → Part {index + 2} · Chapters {lastChapter + 1} to {lastChapter + next.chapters.length}</p>
             <p class="flow-pager__title">{next.label}</p>
           </a>
         ) : (
-          <a href="/flow/#enterprise" data-dir="next">
-            <p class="flow-pager__label">Next →</p>
+          <a href="/flow/enterprise/" data-dir="next">
+            <p class="flow-pager__label">Next → After the tour</p>
             <p class="flow-pager__title">Flow for enterprise AI owners</p>
           </a>
         )}
@@ -107,9 +134,10 @@ const breadcrumbs = {
 
     <!-- The category pages reuse the `flow-mid` placement (inside the tour,
          same offer, same consent text) so signups here stay separable from
-         the overview's hero and foot forms in conversion data. -->
+         the overview's hero and foot forms in conversion data. The continue
+         link goes to the NEXT part, never to an anchor this page lacks. -->
     <div id="waitlist" class="scroll-mt-24">
-      <FlowWaitlist placement="flow-mid" storyHref={flowStoryHref} />
+      <FlowWaitlist placement="flow-mid" storyHref={flowStoryHref} nextHref={nextHref} nextLabel={nextLabel} />
     </div>
   </main>
   <Footer />

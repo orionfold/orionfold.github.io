@@ -1,0 +1,107 @@
+---
+// /flow/enterprise/ (2026-08-20). The nine enterprise adoption patterns moved
+// here from the /flow/ overview, which now teases three and links on. Same
+// data (src/data/flow-enterprise.ts), same truth tags: "Today" is shipped
+// behavior in the development build, "Direction" is where the design heads.
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import FlowWaitlist from '../../components/sections/FlowWaitlist.astro';
+import { Image } from 'astro:assets';
+import { SITE } from '../../data/seo';
+import { ogMeta } from '../../data/og';
+import { FLOW_ENTERPRISE } from '../../data/flow-enterprise';
+import appIcon from '../../assets/flow/flow-app-icon-512.png';
+import '../../styles/flow.css';
+
+const href = '/flow/enterprise/';
+const og = ogMeta(href);
+const flowStoryHref = '/story/limitless-without-the-pill/';
+const shippedCount = FLOW_ENTERPRISE.filter((p) => p.tag === 'Today').length;
+const breadcrumbs = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Flow', item: `${SITE.url}/flow/` },
+    { '@type': 'ListItem', position: 3, name: 'Enterprise', item: `${SITE.url}${href}` },
+  ],
+};
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FLOW_ENTERPRISE.map((p) => ({
+    '@type': 'Question',
+    name: p.q,
+    acceptedAnswer: { '@type': 'Answer', text: p.a },
+  })),
+};
+---
+<Layout
+  title="Flow for enterprise AI owners · Nine questions, answered in the document · Orionfold"
+  description="How Orionfold Flow answers the questions enterprise AI owners ask: allocation, data classification, attribution, guardrails, evidence, routing, curation, system of record, and capturing expert judgment with consent."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  jsonLd={[breadcrumbs, faqSchema]}
+>
+  <Nav />
+  <main class="flow-page flow-page--category overflow-x-clip">
+    <section class="flow-hero relative px-6 pb-12 pt-32 sm:pt-40">
+      <div class="flow-hero__grid" aria-hidden="true"></div>
+      <div class="flow-hero__glow" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-4xl text-center">
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <a href="/flow/" class="flow-eyebrow-chip">
+            <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
+            Orionfold Flow
+          </a>
+          <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">For enterprise AI owners</span>
+        </div>
+        <p class="of-eyebrow mt-8">Enterprise adoption patterns</p>
+        <h1 class="hero-gradient-text mx-auto mt-4 max-w-3xl font-display text-[clamp(2.1rem,5.4vw,3.3rem)] font-extrabold leading-[1.08] tracking-[-0.045em]">
+          Most enterprise AI fails at the audit, not the model. Flow puts the record in the document.
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-[1.55] text-text-muted sm:text-xl">
+          Enterprises do not fail at AI for lack of models. They fail because they cannot tell which
+          30 percent of the output is wrong, who approved what, and what it all cost. Flow's answer is
+          structural: the evidence, the approval, and the receipt sit at the source of knowledge work,
+          inside the document itself. {shippedCount} of these nine patterns ship in the development build today.
+        </p>
+        <p class="mt-6 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
+          In development · Freemium subscription planned · "Today" means shipped in the development build
+        </p>
+      </div>
+    </section>
+
+    <section class="border-t border-border/70 px-6 py-14 sm:py-20" aria-label="The nine patterns">
+      <div class="mx-auto max-w-6xl">
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-animate-stagger>
+          {FLOW_ENTERPRISE.map((card, i) => (
+            <article class="flow-ent-card of-surface flex flex-col rounded-2xl border border-border/70 p-6" data-animate>
+              <div class="flex items-center justify-between gap-3">
+                <span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{i + 1} · {card.k}</span>
+                <span class:list={['flow-ent-tag', card.tag === 'Direction' && 'flow-ent-tag--direction']}>{card.tag}</span>
+              </div>
+              <h2 class="mt-3 text-lg font-bold leading-snug">{card.q}</h2>
+              <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{card.a}</p>
+            </article>
+          ))}
+        </div>
+        <p class="mx-auto mt-12 max-w-3xl text-center text-lg leading-relaxed text-text">
+          The enterprises that win with AI will be the ones that turn real human decisions into
+          validated learning. Flow's receipts are that record, produced voluntarily, one approved
+          artifact at a time.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="/flow/receipts/" class="of-secondary-action">See a receipt, card by card <span aria-hidden="true">→</span></a>
+          <a href="/flow/#press" class="of-secondary-action">Press kit and contact</a>
+        </div>
+      </div>
+    </section>
+
+    <div id="waitlist" class="scroll-mt-24">
+      <FlowWaitlist placement="flow-enterprise" storyHref={flowStoryHref} />
+    </div>
+  </main>
+  <Footer />
+</Layout>

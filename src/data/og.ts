@@ -39,15 +39,14 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     slug: 'home',
     eyebrow: 'Orionfold Flow · Patent pending',
-    // Tracks the homepage H1, which leads with the open-models wedge rather than
-    // the brand tagline. Deliberately NOT SITE.tagline: /flow/ keeps the tagline,
-    // so the two cards now argue their own page instead of being interchangeable.
-    title: 'Bring open AI models to your documents',
+    // Tracks the homepage H1 (2026-08-20): the common belief, then the flip.
+    // Deliberately NOT SITE.tagline, so the card argues its own page.
+    title: 'Most AI tools rewrite your document. Flow asks first.',
     seed: 'home',
-    alt: 'Orionfold Flow running an open AI model on a Mac: the What Flow is using popover reports the model size, the token ledger, and a spend of zero dollars.',
-    // The homepage hero picture, pre-cropped to the frame's native 660x338 so the
-    // popover text stays crisp. The card shows the receipt the headline promises:
-    // an open model answering locally, with the cost reading $0.00.
+    alt: 'Orionfold Flow reviewing an AI change on a Mac: the decision footer with Approve and Save disabled until the reviewer ticks I have reviewed this change.',
+    // The homepage hero crop (the decision footer), pre-cropped to the frame's
+    // native 660x338 so the control text stays crisp, with the subject inside
+    // the visible left 540px band.
     screenshot: 'src/assets/flow/og-home-shot.png',
     light: true,
   },
@@ -180,13 +179,14 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/': {
     slug: 'flow',
     eyebrow: 'Orionfold Flow · Patent pending',
-    title: 'Conduct beautiful documents with AI agency built in',
+    // Tracks the /flow/ H1 (2026-08-20), not SITE.tagline, which stays in the
+    // press kit.
+    title: 'Every AI change is a diff you approve. Every run leaves a receipt.',
     seed: 'flow',
-    alt: 'Orionfold Flow: the Mac app where every AI change is a diff you approve, with a receipt naming what ran, where, and what it cost',
-    // Cropped from the /flow/ hero picture (shotCharts), onto the chart rather
-    // than the calendar table: the headline promises a BEAUTIFUL document, and a
-    // grid of cells reads as a spreadsheet. Pre-cropped to the frame's native
-    // 660x338 so the prose around the chart stays crisp.
+    alt: 'Orionfold Flow: a run receipt with three named checks, each carrying what it saw then and what the rule does now',
+    // Cropped from the /flow/ hero picture (the run card), onto the named checks
+    // block. Pre-cropped to the frame's native 660x338 so the pill text stays
+    // crisp, subject inside the visible left 540px band.
     screenshot: 'src/assets/flow/og-flow-shot.png',
     light: true,
   },
@@ -196,7 +196,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/writing-with-ai/': {
     slug: 'flow-writing-with-ai',
     eyebrow: 'Orionfold Flow · Writing with AI',
-    title: 'AI that edits with you, not behind your back',
+    title: 'Most AI edits happen behind your back. Flow edits with you.',
     seed: 'flow-writing',
     alt: 'Orionfold Flow, writing with AI: five actions, a tool strip in the document, and an exact diff you approve for every change',
     light: true,
@@ -204,7 +204,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/receipts/': {
     slug: 'flow-receipts',
     eyebrow: 'Orionfold Flow · Receipts and evidence',
-    title: 'Every run leaves a record you can check',
+    title: 'Most AI work leaves no trace. Every Flow run leaves a receipt.',
     seed: 'flow-receipts',
     alt: 'Orionfold Flow receipts: one card per run names what ran, where, what it cost, and what the evidence supports',
     light: true,
@@ -212,7 +212,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/models-and-runtime/': {
     slug: 'flow-models-and-runtime',
     eyebrow: 'Orionfold Flow · Models and runtime',
-    title: 'AI runs where you allow it, and nowhere else',
+    title: 'Most tools decide where your text goes. With Flow, you do.',
     seed: 'flow-models',
     alt: 'Orionfold Flow models and runtime: four domains, a local runtime inside the app, and rules that pick the model',
     light: true,
@@ -220,9 +220,17 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/documents-and-files/': {
     slug: 'flow-documents-and-files',
     eyebrow: 'Orionfold Flow · Documents and files',
-    title: 'Ordinary files, with search and tables that hold up',
+    title: 'Most note apps lock your files in a database. Flow works on plain folders.',
     seed: 'flow-documents',
     alt: 'Orionfold Flow documents and files: search results as checked citations, tables that edit like tables, ordinary Markdown files',
+    light: true,
+  },
+  '/flow/enterprise/': {
+    slug: 'flow-enterprise',
+    eyebrow: 'Orionfold Flow · For enterprise AI owners',
+    title: 'Most enterprise AI fails at the audit, not the model',
+    seed: 'flow-enterprise',
+    alt: 'Orionfold Flow for enterprise AI owners: nine adoption questions answered with evidence, approvals, and receipts inside the document',
     light: true,
   },
   '/relay/': {

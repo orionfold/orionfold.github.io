@@ -1,44 +1,55 @@
 ---
-// Homepage. Rebuilt 2026-08-14 as a full Flow flagship takeover: real product
-// shots from the development build, waitlist capture in the hero and in the
-// closing band, and the rest of the catalog relocated to the footer directory.
-// The /flow/ page carries the deep product tour, enterprise patterns, press
-// kit, and FAQ; this page is the demand-generation front door.
+// Homepage. Rebuilt 2026-08-14 as a full Flow flagship takeover, then rewritten
+// on 2026-08-20 against the content-masterclass review
+// (audit-reports/content-masterclass-review-2026-08-20.md). The rules that
+// shaped this page:
+//   * the hero says ONE thing three ways (headline, lede, picture) and that
+//     thing is the approval promise, which is also the title tag's promise;
+//   * the common belief is named before it is flipped (direct contrast);
+//   * the reader knows who the page is for in the first screen;
+//   * two usable, dated facts arrive before the second scroll, and the first
+//     email ask is the answer to the worry those facts raise;
+//   * four capability bands, not seven, each with the crop of the control it
+//     names; the rest of the tour lives on /flow/ and its category pages.
+// The /flow/ page carries the stat band, the tour, the press kit, and the FAQ;
+// this page is the demand-generation front door.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
+import FlowDetail from '../components/flow/FlowDetail.astro';
+import FlowProofNuggets from '../components/flow/FlowProofNuggets.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
 import { SITE, PERSON } from '../data/seo';
-
-import FlowDetail from '../components/flow/FlowDetail.astro';
+import { FLOW_CONSENT_TEXT } from '../data/flow-consent';
+import { FLOW_ENTERPRISE_TEASER } from '../data/flow-enterprise';
 
 import appIcon from '../assets/flow/flow-app-icon-512.png';
 import originArt from '../assets/story/limitless-without-the-pill/hero.png';
-import shotResourcePopover from '../assets/flow/shots/flow-resource-popover-shot.webp';
 import shotApprove from '../assets/flow/shots/flow-writing-you-approve-shot.webp';
 import shotLongDocs from '../assets/flow/shots/flow-long-documents-shot.webp';
 import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
-import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
 import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
-import shotBenchmarks from '../assets/flow/shots/flow-benchmarks-shot.webp';
 import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). A full window
 // shrunk into a page column renders the control being described at ~8px; these
 // crops show that one control at a size where the claim is checkable.
 import detailDiff from '../assets/flow/details/detail-diff.webp';
 import detailToolbarPreview from '../assets/flow/details/detail-toolbar-preview.webp';
-import detailBenchRows from '../assets/flow/details/detail-benchmarks-rows.webp';
 import detailDomains from '../assets/flow/details/detail-domains.webp';
 import detailParts from '../assets/flow/details/detail-parts.webp';
-import detailGrid from '../assets/flow/details/detail-grid.webp';
 import detailRunChecks from '../assets/flow/details/detail-run-checks.webp';
 
 const og = ogMeta('/');
+
+// The title tag, the OG card title (src/data/og.ts), and the H1 below are one
+// promise in three lengths. A reader who clicks the title must see it confirmed
+// in the first five seconds, so none of the three may drift from the others.
+const HOME_TITLE = 'Orionfold Flow · AI that asks before it changes your document';
 
 // The homepage is the Flow front door, so it carries the same product entity
 // as /flow/ (canonical product URL stays /flow/). Helps answer engines tie
@@ -57,10 +68,9 @@ const flowSchema = {
   brand: { '@type': 'Brand', name: 'Orionfold' },
 };
 
-// Consent copy must stay identical to FlowWaitlist.astro so a subscriber's
-// recorded consent reads the same no matter which surface captured them.
-const consentText =
-  'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
+// Consent copy is shared (src/data/flow-consent.ts) so a subscriber's recorded
+// consent reads the same no matter which surface captured them.
+const consentText = FLOW_CONSENT_TEXT;
 
 const heroStats = [
   { value: '22.3 ms', label: 'search across 10,000 notes' },
@@ -71,136 +81,59 @@ const heroStats = [
 
 // One capability per band, and one picture that PROVES it.
 //
-// Each row now carries two images doing different jobs: `shot` is the whole
-// window (context: this is a real Mac app), and `detail` is a purpose-cut crop
-// of the exact control the headline names (proof: here is the thing, legibly).
-// Before this, the window alone had to do both jobs and did neither: the
-// control being described rendered around eight pixels tall.
+// Each row carries two images doing different jobs: `shot` is the whole window
+// (context: this is a real Mac app), and `detail` is a purpose-cut crop of the
+// exact control the headline names (proof: here is the thing, legibly).
 //
-// Copy shape follows the section-headline rhythm: a short verbless claim, then
-// one tight paragraph. The long qualifier lists moved to /flow/, which is the
-// page built to carry them.
+// Copy shape: the common belief first, then the flip, then one tight paragraph.
+// The long qualifier lists live on the tour pages, which are built to carry
+// them.
 //
-// `stage` and `align` drive the round-2 variety rule. The hero above spends
-// bottom-right + centred copy, so the bands walk away from it and from each
-// other. Full sequence down the page:
-//   hero  br / centre
-//   1     tl / left      approval
-//   2     br / right     the tool strip
-//   3     bl / centre    long documents
-//   4     tl / left      benchmarks
-//   5     tr / right     trust boundaries
-//   6     br / centre    receipts
-//   7     bl / left      professional artifacts
-// No two ADJACENT sections share a corner (tl repeats at 1 and 4, br at 2 and
-// 6, bl at 3 and 7, each pair far enough apart to read as a rhythm rather than
-// a rut). Keep them distinct —
-// collapsing these to one repeated position is the exact thing the operator
-// asked us not to do, and tests/e2e/product-stage.spec.ts enforces it.
-// `stage` values are the .of-stage__detail--* corner modifiers in global.css.
+// `stage` and `align` drive the variety rule. The hero above spends
+// top-right + centred copy, so the bands walk away from it and from each
+// other. Sequence down the page: hero tr, then tl, br, bl, tr. No two ADJACENT
+// stages share a corner; tests/e2e/product-stage.spec.ts enforces it.
 const capabilityRows = [
   {
-    // Moved out of the hero on 2026-08-16 when the resource popover took over
-    // that slot. The approval gate is still the product's core promise, so it
-    // leads the bands rather than leaving the homepage.
-    kicker: 'Approval, not autopilot',
-    title: 'Nothing is saved until you approve it.',
-    body: 'Every AI change arrives as a diff in the file itself, with the evidence behind it and the checks that ran. Approve it, decline it, or leave it for later. Decline changes nothing at all.',
-    href: '/flow/#tour-agency',
-    shot: shotApprove,
-    alt: 'Orionfold Flow reviewing an AI proofread: the proposed document with the change highlighted, one fact row, three check pills, and the human-review gate beside a disabled Approve and Save button.',
-    detail: detailDiff,
-    detailAlt: "Flow's decision footer: an unticked 'I have reviewed this change' checkbox, '1 Check to resolve', and a disabled Approve and Save button beside Reject and Later.",
-    detailCaption: 'Approve and Save stays disabled until you tick the box · Nothing is saved until you approve it',
-    stage: 'tl',
-    align: 'left',
-  },
-  {
-    // Added 2026-08-18 from the editor-toolbar brief. Sits second because it is
-    // the step BEFORE the approval gate above it: the strip prices the work
-    // while you can still change your mind, the diff gates it once you have.
-    // STAGE: 'br' — neighbours are 'tl' above and 'bl' below, so no two
-    // adjacent bands share a corner (product-stage.spec.ts asserts this), and
-    // it is the one corner the homepage was not yet using.
     kicker: 'Priced before you click',
-    title: 'The AI tools tell you the cost first.',
+    title: 'Most tools bill you after. Flow tells you the cost first.',
     body: 'The five AI actions live in the document\'s own tool strip, beside bold and italic. Hover one and Flow answers before it runs: how much text it would act on, what it would cost, and which model would do the work. Work on your own Mac is free, and Flow says so in words rather than a number.',
-    href: '/flow/#tour-toolbar',
+    href: '/flow/writing-with-ai/#tour-toolbar',
     shot: shotToolbar,
     alt: 'Orionfold Flow with the document tool strip expanded: writing controls, a divider, and five colored AI marks, with Proofread\'s panel stating the scope, the cost, and the model for the run.',
     detail: detailToolbarPreview,
     detailAlt: 'Flow\'s tool strip with Proofread\'s panel open: 3,911 words for the whole document, "No cost, free, it runs on hardware you have", and the model that would run it staying on this Mac.',
     detailCaption: 'Scope, cost, and route · Answered before the click',
-    stage: 'br',
-    align: 'right',
+    stage: 'tl',
+    align: 'left',
   },
   {
     kicker: 'Long documents',
-    title: 'A 50-page document is not too big. It is four reviews.',
-    body: 'Flow plans a long document into ordered parts that follow its own structure, then reviews each part on its own. Never truncated, never guessed. Coverage comes back in counts you can check.',
-    href: '/flow/#tour-longdocs',
+    title: 'Most tools cut a long document and guess. Flow reviews it in parts.',
+    body: 'A 50-page document is not too big. It is four reviews. Flow plans it into ordered parts that follow its own structure, then reviews each part on its own. Never truncated, never guessed. Coverage comes back in counts you can check.',
+    href: '/flow/writing-with-ai/#tour-longdocs',
     shot: shotLongDocs,
     alt: 'A live two-part review on a 3,905-word document in Flow, with part chips and an honest coverage line.',
     detail: detailParts,
     detailAlt: 'Flow’s review header on a long document: numbered part chips, and the line "0 approved, 0 declined, 2 remaining".',
     detailCaption: 'Coverage in plain counts · Approve, decline, or skip any part',
-    stage: 'bl',
-    align: 'center',
-  },
-  {
-    // Added 2026-08-18 from the benchmarks brief. Sits after long documents and
-    // before trust boundaries because it answers the question the reader now
-    // has: they have seen AI work on their documents, so WHICH model does it,
-    // and the next band answers WHERE it runs.
-    //
-    // REVISED the same day for 0134 A2, which re-shot the screen: every model
-    // is now measured (the old "measured or estimated" sentence had no subject
-    // left), the list ranks three ways, and the rank order changed — the crop
-    // now leads with advisor-gguf-q8_0 at 2.1s, not the 35B at 4.5s.
-    //
-    // VOCABULARY RULE from the brief: the implementation's words (TTFT, tok/s,
-    // quantization) may never appear in public copy. The published vocabulary
-    // is the screen's own — time to first word, reading speed, fits this Mac.
-    // Things this copy must never say: that Flow read the 300 GB/s figure from
-    // the Mac (it is a published specification, and Flow's own measurement is
-    // 268.6); that any number came from someone else's hardware (there is no
-    // shared feed); or that a score judges model QUALITY (it weighs speed,
-    // reading rate and headroom only, and the screen prints "Not ranked:
-    // instruction-following" itself).
-    //
-    // STAGE: 'tl' — neighbours are 'bl' above and 'tr' below, so no two adjacent
-    // bands share a corner (product-stage.spec.ts asserts exactly that).
-    kicker: 'Measured on your Mac',
-    title: 'The fastest model on your Mac is probably not the one you picked.',
-    body: 'Every local model comparison you can find was run on hardware you do not own. Flow measures the models you already have, on the Mac you are sitting at, and ranks them by how long you wait for the first word. On one M3 Max a 20.4 GB model answered in 4.5 seconds while an 8.5 GB one took 10.2, so the bigger model was more than twice as quick. Open any row and the ranking shows the arithmetic behind it.',
-    href: '/flow/#tour-benchmarks',
-    shot: shotBenchmarks,
-    alt: 'Orionfold Flow\'s Benchmarks screen: a preset row stating the active weighting, then five measured local models ranked by score, each with its time to first word, reading speed, and a fit verdict for this Mac.',
-    detail: detailBenchRows,
-    detailAlt: 'The top two rows of Flow\'s leaderboard: advisor-gguf-q8_0 at 2.1 seconds to first word, 50 words a second, scoring 88 of 100, above qwen3.5-35b-a3b-4bit at 4.5 seconds and 84 words a second, scoring 64.',
-    detailCaption: 'Two models, two strengths · The quicker starter leads the faster reader',
-    stage: 'tl',
-    align: 'left',
+    stage: 'br',
+    align: 'right',
   },
   {
     kicker: 'Trust boundaries',
-    title: 'You pick where AI runs. Flow keeps it there.',
+    title: 'Most tools decide where your text goes. You pick where AI runs. Flow keeps it there.',
     body: 'Four execution domains, each with its own switch: Local, LAN, Cloud prepaid, Cloud postpaid. Every one states plainly whether your text stays on this Mac and what the work costs. A fallback that would leave your Mac stops and asks first.',
-    href: '/flow/#tour-domains',
+    href: '/flow/models-and-runtime/#tour-domains',
     shot: shotDomains,
     alt: 'Flow’s Models settings showing four execution domains with locality and cost statements and a user-owned provider order.',
     detail: detailDomains,
     detailAlt: 'The Local execution domain in Flow: its switch turned on, the line "Stays on this Mac, free, it runs on hardware you have", and three discovered providers.',
     detailCaption: 'One switch per domain · Discovery never enables anything',
-    stage: 'tr',
-    align: 'right',
+    stage: 'bl',
+    align: 'center',
   },
   {
-    // Added 2026-08-19 from the receipts-pane sections of the domains and
-    // writing-you-approve briefs. Sits after trust boundaries because that is
-    // the argument's own order: you picked where AI may run, and here is the
-    // record of what actually ran there.
-    //
     // TRUTH RAIL: the receipts in this capture are STAGED DEMONSTRATION
     // material written over the demo library through the same code path a real
     // run uses (the alt says "demonstration" for exactly this reason). The
@@ -208,58 +141,22 @@ const capabilityRows = [
     // charge; the real recorded run is the $0.00425 one in the hero stats.
     // The crop is deliberately the CHECKS block, which carries no dollar
     // figure, so this band makes no cost claim its picture cannot support.
-    // The pill vocabulary is the screen's own: "Stops the change", "Warns
-    // you", "Needs your acknowledgment".
-    //
-    // STAGE: 'br' — neighbours are 'tr' above and 'bl' below, so no two
-    // adjacent bands share a corner (product-stage.spec.ts asserts this).
-    kicker: 'The record',
-    title: 'Every run leaves a receipt you can read.',
+    kicker: 'Receipts',
+    title: 'Most AI work leaves no trace. Every Flow run leaves a receipt you can read.',
     body: 'One run reads as one card: the named checks that ran, what the evidence concluded, the cost with its basis, and the exact before and after content the change is bound to. The recorded cost is an observed fact, never an estimate, and a local run records no charge because none was owed.',
-    href: '/flow/#tour-receipts',
+    href: '/flow/receipts/#tour-receipts',
     shot: shotRunCard,
     alt: 'Orionfold Flow\'s Receipts timeline beside a demonstration client proposal: a run selected, its card showing three named checks with severity pills, Evidence at 89 of 100, the recorded cost with its basis, and before and after digests.',
     detail: detailRunChecks,
     detailAlt: 'Three named checks in a Flow run receipt: Human review with the pill Needs your acknowledgment, References are current with Warns you, and Citations resolve with Stops the change, each row also carrying a stored Checked mark.',
     detailCaption: 'Named checks, two facts each · What it saw then, what the rule does now',
-    stage: 'br',
-    align: 'center',
-  },
-  {
-    kicker: 'Professional artifacts',
-    title: 'Documents that look like your work, not a chat transcript.',
-    body: 'Memos, calendars, proposals, and investment briefs over plain folders of plain Markdown. Pictures render in place. Tables get a real grid while the file stays exactly the text you wrote.',
-    href: '/flow/#tour-files',
-    shot: shotCharts,
-    alt: 'Flow documents carrying images and tables: a publishing calendar beside an investment memo with charts and metrics.',
-    detail: detailGrid,
-    detailAlt: 'A Markdown table open in Flow’s spreadsheet grid, one cell selected and named R5:C2 in the cell editor bar above it.',
-    detailCaption: 'Edit the cell, not the pipes · The file stays plain Markdown',
-    stage: 'bl',
+    stage: 'tr',
     align: 'left',
-  },
-];
-
-const enterpriseTeaser = [
-  {
-    k: 'Data classification',
-    q: 'Which documents may AI touch, and which AI may touch them?',
-    a: 'The folder is the classification. Four switchable domains decide where work may run.',
-  },
-  {
-    k: 'Attribution',
-    q: 'Who changed this part, human or AI, and when?',
-    a: 'Text changes two ways only: an edit you typed, or a change you approved. With a receipt.',
-  },
-  {
-    k: 'Knowledge mining',
-    q: 'How do we capture expert judgment without surveillance?',
-    a: 'The receipt is made by the worker, artifact by artifact, with consent. Not by watching them.',
   },
 ];
 ---
 <Layout
-  title={`${SITE.tagline} · Orionfold`}
+  title={HOME_TITLE}
   description={SITE.description}
   ogImage={og.image}
   ogImageAlt={og.alt}
@@ -277,32 +174,21 @@ const enterpriseTeaser = [
         <div class="flex flex-wrap items-center justify-center gap-2">
           <span class="home-chip">
             <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
-            Orionfold Flow · Our flagship Mac app
+            Orionfold Flow · Native Mac app
           </span>
           <span class="home-chip home-chip--accent">Patent pending</span>
         </div>
-        <!-- Operator copy, 2026-08-16. Written against the hero picture: the
-             "What Flow is using" popover open over a real document, with the
-             local runtime serving the model. The headline says OPEN models
-             deliberately — that is the wedge, and the picture backs it (the
-             Models pane shows Ollama, LM Studio, and Flow's own runtime, with
-             a 19.1 GB open model actually answering). The subtext names the
-             three things the picture lets you check (cost $0.00, privacy — it
-             ran on this Mac, quality — you can see which model answered), then
-             heads off the obvious objection: open-first is not open-only. -->
-        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.4rem,8.4vw,4.6rem)] font-extrabold leading-[1.03] tracking-[-0.055em]">
-          Bring open AI models to your documents
+        <!-- Context first: who this is for, in plain words, before the claim. -->
+        <p class="of-eyebrow mt-7">For founders, comms leads, and independent operators. Anyone whose name is on the document.</p>
+        <!-- The common belief, then the flip. Written against the hero picture:
+             the review surface with Approve and Save DISABLED until the reader
+             ticks the box. Headline, lede, and picture carry one claim. -->
+        <h1 class="hero-gradient-text mx-auto mt-4 max-w-4xl font-display text-[clamp(2.3rem,7.6vw,4.4rem)] font-extrabold leading-[1.04] tracking-[-0.05em]">
+          Most AI tools rewrite your document. Flow asks first.
         </h1>
-        {/* Each sentence is its own line on a large screen, and none of them
-            breaks mid-sentence. `.hero-lede` sets the three spans to
-            display:block + text-wrap:nowrap only from lg up, so the container
-            stops constraining them; below lg they fall back to inline spans in
-            one balanced paragraph, because forcing nowrap on a phone would
-            push the longest sentence off the side of the screen. */}
-        <p class="hero-lede mx-auto mt-6 max-w-xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
-          <span>Stay in control of cost, privacy, and quality on your Mac.</span>{' '}
-          <span>Switching to frontier models is a checkbox.</span>{' '}
-          <span>Flow selects the best model for the job.</span>
+        <p class="hero-lede mx-auto mt-6 max-w-2xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
+          <span>Every AI change arrives as a diff you approve, with a receipt of what ran, where it ran, and what it cost.</span>{' '}
+          <span>Your text changes two ways only: an edit you typed, or a change you approved.</span>
         </p>
         <div class="mx-auto mt-9 max-w-md">
           <WaitlistForm
@@ -318,27 +204,31 @@ const enterpriseTeaser = [
           </p>
         </div>
       </div>
-      <!-- The hero product visual: the whole window for context, with the ONE
-           control the headline is about lifted out and shown at a legible size.
-           The window alone made "shows its work" an unreadable thumbnail. -->
-      {/* The hero picture: a live local run with the resource popover open.
-          No overlay crop here, deliberately — unlike the other captures, this
-          popover is already legible at full-window scale, so a zoom of it
-          would repeat what the reader can see rather than reveal anything. The
-          overlay pattern exists to rescue an 8px control; it is not decoration
-          to apply by default. */}
-      <div class="mx-auto mt-14 w-full max-w-[78rem]">
+      <!-- The hero picture proves the headline: the whole review window for
+           context, and the decision footer lifted out at a legible size, with
+           Approve and Save disabled until the box is ticked. TOP-right, not a
+           bottom corner: the footer crop is a short wide strip, and at a bottom
+           corner it renders shorter than the stage overhang and never overlaps
+           the shot (product-stage.spec.ts catches exactly that). The first band
+           below takes top-left. -->
+      <div class="of-stage of-stage--pad-top mx-auto mt-14 w-full max-w-6xl" data-animate="plate">
         <FlowShot
-          src={shotResourcePopover}
-          alt="Orionfold Flow during a live local run: the Models settings with the built-in runtime enabled, a field-notes document open, and the What Flow is using popover reporting processor at 35 percent, memory at 53 percent, whole-Mac graphics at 100 percent, the model's 19.1 GB footprint, the token ledger, and a spend of zero dollars."
-          sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
+          src={shotApprove}
+          alt="Orionfold Flow reviewing an AI proofread: the proposed document with the change highlighted, one fact row, three check pills, and the human-review gate beside a disabled Approve and Save button."
+          crop
+          sizes="(min-width: 1280px) 72rem, (min-width: 1024px) 64rem, 100vw"
           priority
         />
+        <FlowDetail
+          class="of-stage__detail of-stage__detail--tr"
+          src={detailDiff}
+          alt="Flow's decision footer: an unticked 'I have reviewed this change' checkbox, '1 Check to resolve', and a disabled Approve and Save button beside Reject and Later."
+          caption="Approve and Save stays disabled until you tick the box · Nothing is saved until you approve it"
+          sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 4rem)"
+          animate
+        />
       </div>
-      {/* Matches the stage's width, not the old max-w-6xl: with the media now
-          running to 78rem, a narrower stat row read as a second, misaligned
-          column edge directly beneath it. */}
-      <div class="mx-auto mt-10 w-full max-w-[78rem] sm:mt-14">
+      <div class="mx-auto mt-10 w-full max-w-6xl sm:mt-14">
         <dl class="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4" data-animate-stagger="slow">
           {heroStats.map((s) => (
             <div data-animate="rise">
@@ -353,8 +243,11 @@ const enterpriseTeaser = [
       </div>
     </section>
 
+    <!-- ================= TWO THINGS WE MEASURED + the native ask ================= -->
+    <FlowProofNuggets formId="home-proof-waitlist" />
+
     <!-- ================= THE BROKEN LOOP ================= -->
-    <section class="px-6 py-16 sm:py-24">
+    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
           <p class="of-eyebrow" data-animate="rise">The problem</p>
@@ -382,34 +275,14 @@ const enterpriseTeaser = [
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Your work is plain Markdown on your own disk, readable by every other tool you own. No export step, no lock-in.</p>
           </article>
         </div>
-      </div>
-    </section>
-
-    <!-- ================= THE WEDGE ================= -->
-    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
-      <div class="mx-auto max-w-4xl text-center">
-        <p class="of-eyebrow" data-animate="rise">Why Flow exists</p>
-        <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">A silent rewrite is not a feature. It is a risk.</h2>
-        <p class="of-lede mx-auto mt-6 max-w-2xl text-center" data-animate="rise">
-          We measured the Mac's own built-in Writing Tools rewriting text inside a code block.
-          Silently. No diff, no approval, no record. So Flow retired that whole shape and replaced
-          it with one trust path: the exact change, the evidence for it, the checks that ran, and
-          your approval. Recorded. That is what "AI agency built in" means here.
-        </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-3" data-animate="rise">
+        <div class="mt-10 flex flex-wrap justify-center gap-3" data-animate="rise">
           <a href="/flow/" class="of-primary-action">Take the product tour</a>
           <a href="/flow/#press" class="of-secondary-action">Writing about Flow? Get the facts</a>
         </div>
       </div>
     </section>
 
-    <!-- ================= CAPABILITY ROWS ================= -->
-    {/* Round 2: these were stacked two-column bands where the crop sat inside a
-        narrow 1.14fr media column. Promoted to the hero treatment — contained
-        copy above, the shot running wide beneath it, and the zoom crop
-        staggered over the shot. Each band takes a different corner and a
-        different copy alignment (see `stage`/`align` in capabilityRows) because
-        the operator asked for variety; do not normalise these back to one. */}
+    <!-- ================= CAPABILITY BANDS ================= -->
     {capabilityRows.map((row) => (
       <section class="border-b border-border/60 px-6 py-16 sm:py-24">
         <div class:list={['mx-auto max-w-3xl', row.align === 'center' ? 'text-center' : row.align === 'right' ? 'lg:ml-auto lg:mr-0' : '']}>
@@ -420,8 +293,6 @@ const enterpriseTeaser = [
             See it in the tour <span aria-hidden="true">→</span>
           </a>
         </div>
-        {/* The window sets the scene; the crop over it carries the proof. Both
-            come from the same capture, so the reader can place the detail. */}
         <div
           class:list={['of-stage mt-12', row.stage.startsWith('t') ? 'of-stage--pad-top' : 'of-stage--pad-bottom']}
           data-animate="plate"
@@ -451,7 +322,7 @@ const enterpriseTeaser = [
           </p>
         </div>
         <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger="slow">
-          {enterpriseTeaser.map((card) => (
+          {FLOW_ENTERPRISE_TEASER.map((card) => (
             <article class="of-surface rounded-2xl border border-border/70 p-6" data-animate="rise">
               <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.k}</p>
               <h3 class="mt-3 text-lg font-bold leading-snug">{card.q}</h3>
@@ -460,49 +331,13 @@ const enterpriseTeaser = [
           ))}
         </div>
         <div class="mt-8 text-center">
-          <a href="/flow/#enterprise" class="of-secondary-action">See all nine enterprise patterns <span aria-hidden="true">→</span></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= ONE STACK ================= -->
-    <section class="border-t border-border/70 px-6 py-16 sm:py-24">
-      <div class="mx-auto max-w-6xl">
-        <div class="mx-auto max-w-3xl text-center">
-          <p class="of-eyebrow" data-animate="rise">One company, one stack</p>
-          <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Flow is where the Orionfold work comes together.</h2>
-        </div>
-        <div class="mt-12 grid gap-4 lg:grid-cols-3" data-animate-stagger="slow">
-          <article class="of-surface rounded-2xl border border-border/70 p-7" data-animate="rise">
-            <h3 class="text-xl font-bold">Open models</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">
-              We publish open domain models in the same format Flow's bundled engine runs. The
-              models we ship and the app we ship are converging on one runtime you own.
-            </p>
-            <a href="/experts/" class="of-text-action mt-5 inline-flex items-center gap-2">See the models <span aria-hidden="true">→</span></a>
-          </article>
-          <article class="of-surface rounded-2xl border border-border/70 p-7" data-animate="rise">
-            <h3 class="text-xl font-bold">The books</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">
-              Flow productizes the operating method from our books: routed work, receipts, and
-              human judgment, worked out in public by a one-person AI-native business.
-            </p>
-            <a href="/learn/" class="of-text-action mt-5 inline-flex items-center gap-2">Read the books <span aria-hidden="true">→</span></a>
-          </article>
-          <article class="of-surface rounded-2xl border border-border/70 p-7" data-animate="rise">
-            <h3 class="text-xl font-bold">Relay and Arena</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">
-              Relay runs AI client work with per-client cost receipts. Arena scores local models
-              with reruns you can verify. Different products, one refusal: no invisible AI work.
-            </p>
-            <a href="/relay/" class="of-text-action mt-5 inline-flex items-center gap-2">Meet the family <span aria-hidden="true">→</span></a>
-          </article>
+          <a href="/flow/enterprise/" class="of-secondary-action">All nine enterprise patterns <span aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
 
     <!-- ================= THE ORIGIN STORY ================= -->
-    <section class="origin-story border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="origin-heading">
+    <section class="origin-story border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="origin-heading">
       <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <a
           href="/story/limitless-without-the-pill/"
@@ -557,10 +392,8 @@ const enterpriseTeaser = [
 <style>
   .home-hero {
     isolation: isolate;
-    /* Was overflow: hidden, which clipped the hero's overlaid detail crop where
-       it hangs past the shot. Clip only the axis that actually needs it (the
-       decorative grid/glow bleed sideways); the page's own overflow-x-clip on
-       <main> still guards against a horizontal scrollbar. */
+    /* Clip only the axis that needs it (the decorative grid/glow bleed
+       sideways); the overlaid detail crop hangs past the shot vertically. */
     overflow-x: clip;
     background: linear-gradient(155deg, color-mix(in oklch, var(--color-primary) 6%, var(--color-surface)) 0%, var(--color-surface) 55%, color-mix(in oklch, var(--color-primary) 3%, var(--color-surface)) 100%);
   }
@@ -587,24 +420,23 @@ const enterpriseTeaser = [
   .home-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-accent-ink); font-weight: 650; }
   .home-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-accent-ink); }
 
-  /* Hero lede: one sentence per line, never broken mid-sentence, on a large
-     screen. max-width has to be released too — the paragraph is capped at
-     max-w-xl for the phone layout, and a nowrap span inside a narrower box
-     would simply overflow it rather than widen it. Below lg the spans stay
-     inline and the paragraph balances normally. */
+  /* Hero lede: one sentence per line on a large screen, never broken
+     mid-sentence. Below lg the spans stay inline and balance normally. */
   @media (min-width: 1024px) {
     .hero-lede { max-width: none; }
-    .hero-lede span { display: block; text-wrap: nowrap; }
+    .hero-lede span { display: block; text-wrap: balance; }
   }
 
-  /* The capability bands ride the shared .of-stage primitive (global.css),
-     which is where the corner rotation and the below-lg flow fallback live.
-     The hero deliberately does NOT use it: its capture is legible whole. */
-
-  /* The capability bands used to declare their own overlay geometry here. That
-     is now the shared .of-stage primitive in global.css, so the three bands and
-     the two heroes cannot drift apart. See the rotation note there before
-     changing a crop's corner. */
+  /* The hero and the capability bands ride the shared .of-stage primitive
+     (global.css), which owns the corner rotation and the below-lg fallback.
+     The hero crop alone keeps its horizontal overhang INSIDE the stage: at a
+     1440 viewport the stage already fills the width, and a crop hanging a
+     further 3rem past it lost its Approve and Save button off-screen, which is
+     the one control the headline is about. It still hangs past the TOP edge,
+     so it reads as a detail placed onto the window, not a picture-in-picture. */
+  @media (min-width: 1024px) {
+    .home-hero :global(.of-stage .of-stage__detail--tr.of-stage__detail--tr) { right: 0.75rem; }
+  }
 
   /* Abstract origin-story card: the limitless constellation art on a gently
      tilted plane (static transform, gradient halo, no filters, no loops,

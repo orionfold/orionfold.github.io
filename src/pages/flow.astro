@@ -1,18 +1,24 @@
 ---
 // Orionfold Flow flagship landing page. Rebuilt 2026-08-14 from the measured
-// capability briefs in the Flow repo (docs/reference/flow-*-source.md). Every
-// screenshot is a real capture of the running development build over the
+// capability briefs in the Flow repo (docs/reference/flow-*-source.md), split
+// into an overview plus four category pages on 2026-08-20, and rewritten the
+// same day against the content-masterclass review
+// (audit-reports/content-masterclass-review-2026-08-20.md): the hero states
+// the approval promise in plain words (title, H1, lede, and picture agree),
+// names who the page is for, puts two dated facts and the first email ask
+// before the second scroll, and sends the reader into ONE part of the tour.
+// Every screenshot is a real capture of the running development build over the
 // synthetic flow-demo library; every number is a recorded measurement with its
 // date. Copy stays inside each brief's truth boundary: agency is gated not
 // autonomous, no pricing or launch date exists yet, and every qualification
 // ("on one M3 Max", "whole-Mac", "development build") stays welded to the claim
-// it constrains. Those boundaries MOVE as proofs land: the zero-install claim
-// was hedged until its notarized-install proof passed on 2026-08-14, so re-read
-// the brief before changing a claim rather than trusting this comment.
+// it constrains. Re-read the brief before changing a claim.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
+import FlowDetail from '../components/flow/FlowDetail.astro';
+import FlowProofNuggets from '../components/flow/FlowProofNuggets.astro';
 import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustration.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
@@ -20,96 +26,36 @@ import { Image } from 'astro:assets';
 import { SITE, PERSON } from '../data/seo';
 import { ogMeta } from '../data/og';
 import { FLOW_CATEGORIES, flowCategoryHref } from '../data/flow-categories';
+import { FLOW_CATEGORY_SHOTS } from '../data/flow-category-shots';
+import { FLOW_ENTERPRISE_TEASER } from '../data/flow-enterprise';
+import { FLOW_CONSENT_TEXT } from '../data/flow-consent';
 import '../styles/flow.css';
 
 import appIcon from '../assets/flow/flow-app-icon-512.png';
-import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
-// One representative purpose-cut crop per tour part, for the overview cards.
-// Crops, not whole windows: a full capture at card width renders its controls
-// at a few pixels tall (operator, 2026-08-20), which is the exact illegibility
-// the FlowDetail crops were cut to fix.
-import detailResult from '../assets/flow/details/detail-result.webp';
-import detailRunCost from '../assets/flow/details/detail-run-cost.webp';
-import detailRoutingRules from '../assets/flow/details/detail-routing-rules.webp';
-import detailGrid from '../assets/flow/details/detail-grid.webp';
-// Purpose-cut feature details (scripts/prepare-flow-details.mjs). Each tour
-// chapter makes a claim about one control; these crops show that control at a
-// size where the claim can be checked, instead of asking the reader to believe
-// an eight-pixel-tall fragment of a full window.
+import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
+import detailRunChecks from '../assets/flow/details/detail-run-checks.webp';
 
 const og = ogMeta('/flow/');
 const flowUrl = `${SITE.url}/flow/`;
 const flowStoryHref = '/story/limitless-without-the-pill/';
 
+// Title tag, OG card title (src/data/og.ts), and H1: one promise, three
+// lengths. The official tagline stays in the press kit, where a journalist
+// wants the exact phrase.
+const FLOW_TITLE = 'Orionfold Flow · Every AI change is a diff you approve, with a receipt';
+
+const totalChapters = FLOW_CATEGORIES.reduce((n, c) => n + c.chapters.length, 0);
+const chapterOffsets = FLOW_CATEGORIES.reduce<number[]>((acc, c, i) => [...acc, (acc[i - 1] ?? 0) + (FLOW_CATEGORIES[i - 1]?.chapters.length ?? 0)], []);
+
 // "Measured, not promised" stat band. Each number is a recorded measurement;
 // the fine print names its scope so the claim stays checkable.
 const stats = [
   { value: '22.3 ms', label: 'Search, 95th percentile', fine: 'Measured on a 10,000-note library, Apple silicon, 2026-08-04' },
-  { value: '620,000', label: 'Characters planned part by part', fine: 'Document analysis stays linear. About 0.5 seconds, no cliff' },
+  { value: '620,000', label: 'Characters planned part by part', fine: 'Long documents are split in about 0.5 seconds, and the time grows evenly with length' },
   { value: '$0.00425', label: 'A real billed run, to the digit', fine: '105 input and 149 output tokens. Exact decimal arithmetic' },
   { value: '+19.2 MiB', label: 'A complete local AI runtime', fine: 'Two engines inside the app. About the size of twenty photos' },
   { value: '5 actions', label: 'The Agency catalog', fine: 'Proofread, Summarize, Translate, and two table conversions' },
   { value: '4 domains', label: 'Where AI may run', fine: 'Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own switch' },
-];
-
-// Enterprise adoption patterns. Each card answers a question enterprise AI
-// owners actually ask. "Today" marks shipped behavior in the development
-// build; "Direction" marks where the design is headed.
-const enterprise = [
-  {
-    q: 'How do we know which users need more AI and which need to cut back?',
-    k: 'Allocation',
-    a: 'Every action carries its own cost record. Local runs record no charge because none was owed. Billed runs record the observed charge, never an estimate. Spend becomes a per-person, per-action fact you can read, not a monthly surprise.',
-    tag: 'Today',
-  },
-  {
-    q: 'How do we control which documents AI may touch, and which AI may touch them?',
-    k: 'Data classification',
-    a: 'The folder is the classification. Flow only sees folders you open, and a document cannot reach outside its folder by naming a path. Four execution domains then decide where work may run: on the Mac, on your network, or in the cloud you already pay for.',
-    tag: 'Today',
-  },
-  {
-    q: 'How do we know who changed which part of a document, human or AI, and when?',
-    k: 'Attribution',
-    a: 'Text changes two ways only: an edit you typed, or a change you approved. Every AI change arrives as an exact diff with its own approval, and the receipt records what ran. Version history keeps that boundary readable later.',
-    tag: 'Today',
-  },
-  {
-    q: 'How do we apply guardrails at the source of knowledge work?',
-    k: 'Guardrails',
-    a: 'Checks run inside the document, at creation, as named rules with six honest states. An override never turns Failed into Passed. The decision is recorded and the failure stays visible. Rules live where the work happens, not in a policy PDF.',
-    tag: 'Today',
-  },
-  {
-    q: 'How do we compare the quality of one AI generation against another?',
-    k: 'Evidence',
-    a: 'Evidence is scored only where a measurement exists. A proofread reads "2 dimensions assessed, 3 need sources". A summary is deliberately not scored, because Flow refuses to print a number with no measurement behind it. When the same model writes and judges a change, the receipt says so.',
-    tag: 'Today',
-  },
-  {
-    q: 'How do we route each part of the work to the best model, provider, and place?',
-    k: 'Routing',
-    a: 'The domain is the decision; the provider is a detail. Long documents are improved part by part, so each part gets a right-sized run. A fallback that would leave your Mac stops and asks. Routing reads measured capability, never a vendor claim.',
-    tag: 'Today',
-  },
-  {
-    q: 'How do we curate structured value out of unstructured documents?',
-    k: 'Curation',
-    a: 'Convert Text to Table builds real structure from prose, and the review reports what was actually built, read from the proposed table itself, never from the model’s claim. The file stays plain Markdown, so the structure belongs to you.',
-    tag: 'Today',
-  },
-  {
-    q: 'How do we keep one system of record feeding many documents?',
-    k: 'System of record',
-    a: 'Plain files are the only authority. Search results carry anchors that are re-checked byte for byte before Flow highlights a passage, so a citation cannot silently drift. The index is disposable; your documents are the record.',
-    tag: 'Today',
-  },
-  {
-    q: 'How do we capture how our best people decide, without "big brother watching"?',
-    k: 'Knowledge mining',
-    a: 'The receipt is made by the worker, artifact by artifact, as a side effect of work they already wanted to do. They consent by name and get the trust benefit of the same record. That is the only capture a professional volunteers for.',
-    tag: 'Direction',
-  },
 ];
 
 const faqs = [
@@ -167,21 +113,13 @@ const faqSchema = {
   })),
 };
 
-// First-paint capture (2026-08-20): the hero carries the SAME named offer and
-// consent scope as the two FlowWaitlist panels, with its own formId/source so
-// DOM ids stay unique and the three placements stay distinguishable in
-// conversion data. Keep this sentence byte-identical to FlowWaitlist.astro's.
-const categoryShots: Record<string, { src: ImageMetadata; alt: string }> = {
-  'writing-with-ai': { src: detailResult, alt: 'The proposed document in Flow, scrolled to the corrected sentence with the change highlighted' },
-  receipts: { src: detailRunCost, alt: 'The cost block of a Flow run card: recorded cost, model, provider, and where it ran' },
-  'models-and-runtime': { src: detailRoutingRules, alt: 'The Smart Routing rule list: your rules, in order, deciding which model runs' },
-  'documents-and-files': { src: detailGrid, alt: 'The Flow table editor: a Markdown table edited cell by cell' },
-};
-
-const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
+// The hero carries the SAME named offer and consent scope as the FlowWaitlist
+// panels, with its own formId/source so DOM ids stay unique and the placements
+// stay distinguishable in conversion data.
+const heroConsentText = FLOW_CONSENT_TEXT;
 ---
 <Layout
-  title="Orionfold Flow · Mac AI document editor where you approve every change"
+  title={FLOW_TITLE}
   description="A native Mac app for documents with AI agency built in. Every change is a diff you approve, with a receipt naming what ran and what it cost. Patent pending."
   ogImage={og.image}
   ogImageAlt={og.alt}
@@ -213,18 +151,16 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
           <span class="flow-eyebrow-chip">Native Mac</span>
           <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Patent pending</span>
         </div>
-        <h1 class="hero-gradient-text mx-auto mt-7 max-w-4xl font-display text-[clamp(2.3rem,6.4vw,3.6rem)] font-extrabold leading-[1.06] tracking-[-0.05em]">
-          Conduct beautiful documents with AI agency built in
+        <!-- Context first: who this is for. Then one claim, stated once, and
+             the picture that proves it. The receipt, the domains, and the diff
+             each get their own chapter on the tour pages. -->
+        <p class="of-eyebrow mt-7">For founders, comms leads, and independent operators. Anyone whose name is on the document.</p>
+        <h1 class="hero-gradient-text mx-auto mt-4 max-w-4xl font-display text-[clamp(2.2rem,6.2vw,3.6rem)] font-extrabold leading-[1.06] tracking-[-0.05em]">
+          Every AI change is a diff you approve. Every run leaves a receipt.
         </h1>
-        <!-- One claim, stated once. The receipt, the domains, and the diff each
-             get their own chapter below, where a picture can carry them. -->
         <p class="mx-auto mt-6 max-w-2xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
-          Your text changes two ways only: an edit you typed, or a change you approved.
+          Your text changes two ways only: an edit you typed, or a change you approved. The receipt records what ran, where it ran, and what it cost.
         </p>
-        <!-- First paint is the capture, no join-versus-tour fork (operator
-             decision 2026-08-20). The tour is one scroll away and the sticky
-             nav keeps a Tour link; the in-development framing moved into the
-             product-shot caption right below. -->
         <div class="mx-auto mt-9 max-w-md">
           <WaitlistForm
             id="flow-hero-waitlist"
@@ -239,15 +175,33 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
           </p>
         </div>
       </div>
-      <div class="relative mx-auto mt-12 max-w-6xl">
+      <!-- The hero picture proves the headline's second half: one run, one
+           receipt card, with the named checks lifted out at a legible size.
+           The crop is the CHECKS block, which carries no dollar figure, so the
+           hero makes no cost claim its picture cannot support. TOP-right: a
+           bottom corner sat over the shot's own caption bar and hid the
+           "In development" framing that must stay welded to the shot. -->
+      <div class="of-stage of-stage--pad-top relative mx-auto mt-12 max-w-6xl" data-animate="plate">
         <FlowShot
-          src={shotCharts}
-          alt="Orionfold Flow with two documents open side by side: a Q4 content strategy with a publishing calendar table and a chart, and an investment memo carrying a photo and a metrics table, over a plain folder of Markdown files."
+          src={shotRunCard}
+          alt="Orionfold Flow's Receipts timeline beside a demonstration client proposal: a run selected, its card showing three named checks with severity pills, Evidence at 89 of 100, the recorded cost with its basis, and the before and after digests the change is bound to."
           caption="In development · Freemium subscription planned · Every screen is the real development build"
+          crop
           priority
+        />
+        <FlowDetail
+          class="of-stage__detail of-stage__detail--tr"
+          src={detailRunChecks}
+          alt="Three named checks in a Flow run receipt: Human review with the pill Needs your acknowledgment, References are current with Warns you, and Citations resolve with Stops the change, each row also carrying a stored Checked mark."
+          caption="Named checks, two facts each · What it saw then, what the rule does now"
+          sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+          animate
         />
       </div>
     </section>
+
+    <!-- ================= TWO THINGS WE MEASURED + the native ask ================= -->
+    <FlowProofNuggets formId="flow-proof-waitlist" />
 
     <!-- ================= STAT BAND ================= -->
     <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-20" aria-labelledby="flow-stats-heading">
@@ -257,9 +211,6 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
           <h2 id="flow-stats-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Numbers with dates, not adjectives.</h2>
           <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">Every figure comes from a recorded measurement of the development build. The fine print names exactly what was measured.</p>
         </div>
-        <!-- The measurement leads; the card is a hairline, not a box. A grid of
-             six bordered panels made every number look like a UI control rather
-             than a fact you could quote. -->
         <dl class="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3" data-animate-stagger="slow">
           {stats.map((s) => (
             <div class="flow-stat" data-animate="rise">
@@ -272,32 +223,12 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
       </div>
     </section>
 
-    <!-- ================= THE PROBE STORY ================= -->
-    <section class="px-6 py-16 sm:py-24">
+    <!-- ================= THE WHOLE PROMISE IN ONE PICTURE ================= -->
+    <section class="px-6 py-16 sm:py-20">
       <div class="mx-auto max-w-4xl">
-        <p class="flow-kicker text-center" data-animate="rise">Why approval is the whole product</p>
-        <h2 class="of-display mt-4 text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">A silent rewrite is not a feature. It is a risk.</h2>
-        <div class="flow-probe mt-10 rounded-2xl border border-warn/30 bg-surface-raised/60 p-7 sm:p-9">
-          <p class="text-lg leading-relaxed text-text">
-            While building Flow, we tested the Mac's own built-in Writing Tools on a document that
-            held a code comment with two typos. The system feature corrected and capitalized the text
-            <em>inside the code block</em>. Silently. No diff shown, no approval asked, no record kept.
-            On a real working note, that is corruption of code.
-          </p>
-          <p class="mt-4 leading-relaxed text-text-muted">
-            We measured it, dated it (2026-07-30), and reproduced it. Then we retired the system
-            Writing Tools inside Flow and replaced the whole shape: five AI actions, one trust path.
-            The exact change, what the evidence does and does not support, the checks that ran, and
-            your approval. Recorded.
-          </p>
-          <p class="mt-6 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
-            Flow's own recorded probes of macOS Writing Tools, 2026-07-30 to 2026-08-14. Other apps are untouched; the feature is off inside Flow only.
-          </p>
-        </div>
-        <!-- The whole promise in one picture: the five-layer Living Workbench
-             (Outcome → Context → Specialists → Your call → Receipt). Concept
-             here, mechanism and real screenshots in the tour below. -->
-        <div class="mt-14">
+        <p class="flow-kicker text-center" data-animate="rise">How the pieces fit</p>
+        <h2 class="of-display mt-4 text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Five layers, one approval.</h2>
+        <div class="mt-10">
           <FlowWorkbenchIllustration />
           <p class="mx-auto mt-6 max-w-2xl text-center text-sm leading-relaxed text-text-muted">
             The whole promise in one picture. Your outcome sits on trusted context, specialist
@@ -309,18 +240,19 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
     </section>
 
     <!-- ================= PRODUCT TOUR (four category pages) =================
-         2026-08-20 split: the twelve chapters moved verbatim to
-         /flow/<category>/ (src/components/flow/chapters/*, data in
-         src/data/flow-categories.ts). Each chapter link below carries the
-         chapter's ORIGINAL #tour-<chapter> id, so every deep link published
-         before the split still lands here and goes one click onward. -->
+         2026-08-20 split: the thirteen chapters live at /flow/<category>/
+         (src/components/flow/chapters/*, data in src/data/flow-categories.ts).
+         Each chapter link below carries the chapter's ORIGINAL #tour-<chapter>
+         id, so every deep link published before the split still lands here
+         and goes one click onward. Chapters are numbered 1 to 13 across the
+         four parts so the series reads as one set to complete. -->
     <section id="tour" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="tour-heading">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
           <p class="flow-kicker" data-animate="rise">The product tour</p>
           <h2 id="tour-heading" class="of-display mt-4 text-[clamp(2.1rem,5vw,3.5rem)]" data-animate="lead">Real screens. Real runs. Real receipts.</h2>
           <p class="mt-5 text-lg leading-relaxed text-text-muted">
-            Thirteen chapters in four parts. Every screen is a real capture of the development
+            {totalChapters} chapters in four parts. Every screen is a real capture of the development
             build. Start with the part that matches your question.
           </p>
         </div>
@@ -328,14 +260,14 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
           {FLOW_CATEGORIES.map((cat, i) => (
             <article class="flow-cat-card of-surface flex flex-col rounded-2xl border border-border/70 p-6 sm:p-7" data-animate>
               <a href={flowCategoryHref(cat.slug)} class="flow-cat-card__plate" aria-hidden="true" tabindex="-1">
-                <Image src={categoryShots[cat.slug].src} alt={categoryShots[cat.slug].alt} widths={[560, 1120]} sizes="(min-width: 768px) 42vw, 88vw" class="flow-cat-card__thumb" loading="lazy" decoding="async" />
+                <Image src={FLOW_CATEGORY_SHOTS[cat.slug].src} alt={FLOW_CATEGORY_SHOTS[cat.slug].alt} widths={[560, 1120]} sizes="(min-width: 768px) 42vw, 88vw" class="flow-cat-card__thumb" loading="lazy" decoding="async" />
               </a>
-              <p class="mt-5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Part {i + 1} · {cat.label}</p>
+              <p class="mt-5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Part {i + 1} of {FLOW_CATEGORIES.length} · {cat.label} · Chapters {chapterOffsets[i] + 1} to {chapterOffsets[i] + cat.chapters.length}</p>
               <h3 class="mt-3 text-xl font-bold leading-snug"><a href={flowCategoryHref(cat.slug)} class="transition-colors hover:text-primary">{cat.title}</a></h3>
               <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{cat.blurb}</p>
               <ul class="flow-cat-card__list mt-5">
-                {cat.chapters.map((ch) => (
-                  <li><a id={ch.id} class="scroll-mt-28" href={`${flowCategoryHref(cat.slug)}#${ch.id}`}><span>{ch.label}</span><span>Read →</span></a></li>
+                {cat.chapters.map((ch, j) => (
+                  <li><a id={ch.id} class="scroll-mt-28" href={`${flowCategoryHref(cat.slug)}#${ch.id}`}><span><span class="font-mono text-[0.62rem] text-text-dim">{chapterOffsets[i] + j + 1}</span> {ch.label}</span><span>Read →</span></a></li>
                 ))}
               </ul>
               <a href={flowCategoryHref(cat.slug)} class="of-text-action mt-6 inline-flex items-center gap-2">Open {cat.label} <span aria-hidden="true">→</span></a>
@@ -345,8 +277,7 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
       </div>
     </section>
 
-
-    <!-- ================= OPEN THE FILE ================= -->
+    <!-- ================= WHO FEELS THIS FIRST ================= -->
     <section class="border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="open-file-heading">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
@@ -378,7 +309,7 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
       </div>
     </section>
 
-    <!-- ================= ENTERPRISE ================= -->
+    <!-- ================= ENTERPRISE (three cards; all nine on /flow/enterprise/) ================= -->
     <section id="enterprise" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="enterprise-heading">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
@@ -386,13 +317,11 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
           <h2 id="enterprise-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">The questions enterprise AI owners ask. Answered in the document.</h2>
           <p class="mt-5 text-lg leading-relaxed text-text-muted">
             Enterprises do not fail at AI for lack of models. They fail because they cannot tell
-            which 30 percent of the output is wrong, who approved what, and what it all cost. Flow's
-            answer is structural: put the evidence, the approval, and the receipt at the source of
-            knowledge work, inside the document itself.
+            which 30 percent of the output is wrong, who approved what, and what it all cost.
           </p>
         </div>
-        <div class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-animate-stagger>
-          {enterprise.map((card) => (
+        <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger>
+          {FLOW_ENTERPRISE_TEASER.map((card) => (
             <article class="flow-ent-card of-surface flex flex-col rounded-2xl border border-border/70 p-6" data-animate>
               <div class="flex items-center justify-between gap-3">
                 <span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.k}</span>
@@ -403,59 +332,14 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
             </article>
           ))}
         </div>
-        <p class="mx-auto mt-10 max-w-3xl text-center text-lg leading-relaxed text-text">
-          The enterprises that win with AI will be the ones that turn real human decisions into
-          validated learning. Flow's receipts are that record, produced voluntarily, one approved
-          artifact at a time.
-        </p>
-        <div class="mt-8 text-center">
-          <a href="#waitlist" class="of-primary-action">Join the waitlist</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= ONE STACK ================= -->
-    <section id="stack" class="scroll-mt-28 px-6 py-16 sm:py-24" aria-labelledby="stack-heading">
-      <div class="mx-auto max-w-6xl">
-        <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker" data-animate="rise">One company, one stack</p>
-          <h2 id="stack-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Flow is where the Orionfold work comes together.</h2>
-        </div>
-        <div class="mt-12 grid gap-4 lg:grid-cols-3">
-          <article class="of-surface rounded-2xl border border-border/70 p-7">
-            <h3 class="text-xl font-bold">The models we publish</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">
-              Orionfold publishes open domain models in the same format Flow's bundled engine runs.
-              Flow is built so a model can be pulled by name and run on your own Mac, with the
-              download verified before anything is kept. The models we ship and the app we ship are
-              converging on one runtime you own.
-            </p>
-            <a href="/experts/" class="of-text-action mt-5 inline-flex items-center gap-2">See the models <span aria-hidden="true">→</span></a>
-          </article>
-          <article class="of-surface rounded-2xl border border-border/70 p-7">
-            <h3 class="text-xl font-bold">The method in the books</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">
-              Flow is the productized form of an operating thesis worked out in public: one person
-              running an AI-native business on routed work, receipts, and human judgment. The books
-              teach the method. Flow is that method as a Mac app.
-            </p>
-            <a href="/learn/" class="of-text-action mt-5 inline-flex items-center gap-2">Read the books <span aria-hidden="true">→</span></a>
-          </article>
-          <article class="of-surface rounded-2xl border border-border/70 p-7">
-            <h3 class="text-xl font-bold">A receipts-first family</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">
-              Relay runs AI client work with per-client cost receipts. Arena scores local models
-              with reruns you can verify. Flow brings the same discipline to the document itself.
-              Different products, one refusal: no invisible AI work.
-            </p>
-            <a href="/relay/" class="of-text-action mt-5 inline-flex items-center gap-2">Meet Relay and Arena <span aria-hidden="true">→</span></a>
-          </article>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="/flow/enterprise/" class="of-primary-action">All nine patterns, with what ships today</a>
         </div>
       </div>
     </section>
 
     <!-- ================= PRESS KIT ================= -->
-    <section id="press" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="press-heading">
+    <section id="press" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="press-heading">
       <div class="mx-auto max-w-4xl">
         <p class="flow-kicker text-center" data-animate="rise">Writing about Flow?</p>
         <h2 id="press-heading" class="of-display mt-4 text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">The facts, ready to quote.</h2>
@@ -463,7 +347,7 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
           <table class="w-full text-left text-sm">
             <tbody class="divide-y divide-border/70">
               <tr class="bg-surface"><th scope="row" class="w-40 px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Product</th><td class="px-5 py-3.5 text-text">Orionfold Flow. A native Mac app for professional documents with AI agency built in.</td></tr>
-              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Tagline</th><td class="px-5 py-3.5 text-text">"Conduct beautiful documents with AI agency built in."</td></tr>
+              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Tagline</th><td class="px-5 py-3.5 text-text">"{SITE.tagline}."</td></tr>
               <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Status</th><td class="px-5 py-3.5 text-text">In development, used daily for real work by its builder. Direct download for Mac, signed and notarized, outside the App Store. Freemium subscription planned. Waitlist open on this page.</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Patent</th><td class="px-5 py-3.5 text-text">Flow includes patent-pending technology for revision-scoped, verifiable AI agency in durable documents.</td></tr>
               <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">The wedge</th><td class="px-5 py-3.5 text-text">Text changes two ways only: an edit you typed, or a change you approved. Every AI change is an exact diff with evidence, checks, and a receipt naming what ran, where, and what it cost. Chat is where work evaporates; Flow is where the record is kept.</td></tr>
@@ -475,12 +359,13 @@ const heroConsentText = 'By joining the Flow waitlist, you agree to receive Flow
         </div>
         <p class="mt-6 text-center text-sm leading-relaxed text-text-muted">
           Background story: <a href={flowStoryHref} class="text-primary underline underline-offset-2">why I built documents that can think and act</a>.
+          The models, the books, and the Relay and Arena products are in the footer directory.
         </p>
       </div>
     </section>
 
     <!-- ================= FAQ ================= -->
-    <section class="px-6 py-16 sm:py-24" aria-labelledby="faq-heading">
+    <section class="bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="faq-heading">
       <div class="mx-auto max-w-3xl">
         <h2 id="faq-heading" class="of-display text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Questions, answered plainly.</h2>
         <div class="mt-10 flex flex-col gap-3">

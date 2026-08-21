@@ -1,33 +1,56 @@
 ---
-// Shared Flow conversion surface. Both placements use the same named offer,
+// Shared Flow conversion surface. Every placement uses the same named offer,
 // consent, and live double-opt-in component; only the narrative context and
 // attribution source differ.
+//
+// Copy rewritten 2026-08-20 (content-masterclass review): the ask names the
+// exchange (what arrives for the address) instead of "updates", and offers the
+// free book as a second, immediate magnet. Both are true today: the waitlist
+// sends development notes and the launch note; the book page delivers the PDF
+// and EPUB on confirm.
 import WaitlistForm from '../ui/WaitlistForm.astro';
+import { FLOW_CONSENT_TEXT } from '../../data/flow-consent';
+import { magnetHref } from '../../data/magnet';
 
 interface Props {
   /**
-   * Which surface this instance sits on. `flow-mid` is the SAME offer repeated
-   * part-way down the long /flow/ tour so a reader who is convinced at the
-   * halfway mark does not have to scroll to the end to act.
-   *
-   * It is a distinct value rather than a second `flow`, and that is
-   * load-bearing twice over: `formId` seeds five derived DOM ids (the form, its
-   * email input, error, success, and success-text nodes) plus the section's
-   * aria-labelledby, so two instances sharing it would emit duplicate ids and
-   * break the label association; and `source` is what the subscribe endpoint
-   * stores and what GA4/Meta report, so sharing it would make the mid-page and
-   * end-of-page CTAs indistinguishable in conversion data.
+   * Which surface this instance sits on. Each value seeds its own formId (five
+   * derived DOM ids plus the section's aria-labelledby, so two instances
+   * sharing one would emit duplicate ids) and its own `source`, which the
+   * subscribe endpoint stores and GA4/Meta report. `flow-mid` closes each
+   * /flow/<category>/ page; `flow-enterprise` closes /flow/enterprise/.
    */
-  placement: 'home' | 'flow' | 'flow-mid';
+  placement: 'home' | 'flow' | 'flow-mid' | 'flow-enterprise';
   storyHref?: string;
+  /** Where the mid-tour panel sends a reader who wants to keep reading. */
+  nextHref?: string;
+  nextLabel?: string;
 }
 
-const { placement, storyHref } = Astro.props;
+const { placement, storyHref, nextHref, nextLabel } = Astro.props;
 const isHome = placement === 'home';
 const isMid = placement === 'flow-mid';
-const formId = isHome ? 'home-flow-waitlist' : isMid ? 'flow-mid-waitlist' : 'flow-page-waitlist';
+const isEnterprise = placement === 'flow-enterprise';
+const formId = isHome ? 'home-flow-waitlist' : isMid ? 'flow-mid-waitlist' : isEnterprise ? 'flow-enterprise-waitlist' : 'flow-page-waitlist';
 const source = formId;
-const consentText = 'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy.';
+const consentText = FLOW_CONSENT_TEXT;
+
+const eyebrow = isHome
+  ? 'Flow waitlist · In development'
+  : isMid
+    ? 'Seen enough? · Flow waitlist'
+    : isEnterprise
+      ? 'For enterprise AI owners · Flow waitlist'
+      : 'Built for Mac · Flow waitlist';
+const heading = isHome
+  ? 'Be first to approve a change in Flow.'
+  : isMid
+    ? 'Want this on your Mac?'
+    : isEnterprise
+      ? 'Bring the receipt to your documents.'
+      : 'Be first to approve a change in Flow.';
+const continueHref = isHome ? '/flow/' : isMid ? (nextHref ?? '/flow/') : storyHref;
+const continueLabel = isHome ? 'Take the product tour' : isMid ? (nextLabel ? `Next: ${nextLabel}` : 'Back to the Flow overview') : 'Read the story';
 ---
 <section
   class:list={['flow-waitlist px-6 py-16 sm:py-24', isHome && 'flow-waitlist--home']}
@@ -35,23 +58,25 @@ const consentText = 'By joining the Flow waitlist, you agree to receive Flow dev
 >
   <div class="flow-waitlist__panel mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-[2rem] border border-primary/25 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16 lg:px-14">
     <div class="relative z-10 max-w-2xl">
-      <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">
-        {isHome ? 'Flow waitlist · In development' : isMid ? 'Seen enough? · Flow waitlist' : 'Built for Mac · Flow waitlist'}
-      </p>
-      <h2 id={`${formId}-heading`} class="mt-4 text-balance text-4xl font-bold leading-[1.03] sm:text-5xl">
-        {isHome ? 'Join the Flow waitlist.' : isMid ? 'Want this on your Mac?' : 'Conduct your first document with Flow.'}
-      </h2>
+      <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">{eyebrow}</p>
+      <h2 id={`${formId}-heading`} class="mt-4 text-balance text-4xl font-bold leading-[1.03] sm:text-5xl">{heading}</h2>
       <p class="mt-5 max-w-xl text-lg leading-relaxed text-text-muted">
-        {isMid
-          ? "Flow is in development, offered through a freemium subscription. Join now for meaningful updates and the launch note when it is ready, or keep reading: the rest of the tour covers where your work runs, search, tables, and what Flow costs to run."
-          : "Flow is in development as Orionfold's first closed-source commercial app, offered through a freemium subscription. Join for meaningful updates as self-improving intelligence and AI agency move into the document, plus the launch note when Flow is ready."}
+        Flow is in development, offered as a freemium subscription when it is ready. Here is what
+        your address gets you, and nothing else:
       </p>
-      {/* The mid-page link keeps the reader ON the tour. Sending them to the
-          story here would end the page half-read; the closer at the bottom is
-          the right place for that exit. */}
-      <a href={isHome ? '/flow/' : isMid ? '#tour-domains' : storyHref} class="of-text-action mt-6 inline-flex items-center gap-2">
-        {isHome ? 'Explore Orionfold Flow' : isMid ? 'Keep reading the tour' : 'Read the story'} <span aria-hidden="true">→</span>
-      </a>
+      <ul class="flow-list mt-4 max-w-xl">
+        <li>The launch note the day Flow ships for Mac.</li>
+        <li>Development notes with the measured numbers and their dates, one email a week at most.</li>
+        <li>The weekly AI For Everyone digest, which you can stop any time.</li>
+      </ul>
+      <p class="mt-5 max-w-xl text-sm leading-relaxed text-text-muted">
+        Want something to read today? <a href={magnetHref('flow-waitlist')} class="of-text-action underline underline-offset-2">The AI Native Business book is free</a>, PDF and EPUB, the method Flow turns into an app.
+      </p>
+      {continueHref && (
+        <a href={continueHref} class="of-text-action mt-6 inline-flex items-center gap-2">
+          {continueLabel} <span aria-hidden="true">→</span>
+        </a>
+      )}
     </div>
 
     <div class="flow-waitlist__form relative z-10 rounded-2xl border border-border/80 bg-surface/85 p-5 backdrop-blur sm:p-7">
@@ -89,9 +114,7 @@ const consentText = 'By joining the Flow waitlist, you agree to receive Flow dev
   .flow-waitlist__panel::after {
     content: '';
     position: absolute;
-    /* Was a hardcoded rgb(91 141 239) — indigo left over from the pre-cyan
-       design system, so these rings drifted off-accent in both themes and did
-       not follow the dark remap at all. Token-driven now. */
+    /* Token-driven rings so they follow the accent in both themes. */
     border: 1px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
     border-radius: 999px;
     pointer-events: none;

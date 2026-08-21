@@ -27,7 +27,14 @@ import { readFileSync } from 'node:fs';
 
 const read = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url), 'utf8');
 
-const flowWaitlist = read('src/components/sections/FlowWaitlist.astro');
+// The consent sentence lives in ONE module since 2026-08-20 and every Flow
+// capture surface imports it; the legal-basis checks read the module and then
+// prove the panel still records it.
+const flowConsentModule = read('src/data/flow-consent.ts');
+const flowWaitlistComponent = read('src/components/sections/FlowWaitlist.astro');
+assert.match(flowWaitlistComponent, /import \{ FLOW_CONSENT_TEXT \} from '\.\.\/\.\.\/data\/flow-consent'/, 'FlowWaitlist must record the shared Flow consent sentence');
+assert.match(flowWaitlistComponent, /consentText=\{consentText\}/);
+const flowWaitlist = `${flowConsentModule}\n${flowWaitlistComponent}`;
 const waitlistForm = read('src/components/ui/WaitlistForm.astro');
 const magnet = read('src/pages/become-ai-native-business.astro');
 

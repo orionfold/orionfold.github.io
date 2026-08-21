@@ -58,15 +58,14 @@ import detailEvidenceRestson from '../../../assets/flow/details/detail-evidence-
         One run. One card. Every fact it recorded.
       </h3>
       <p class="of-lede mt-5" data-animate="rise">
-        Approve a change and the work is not just done. It is recorded. The Receipts timeline
-        groups everything one run recorded under a single entry, and selecting it reads as one
-        card: the checks that ran, what the evidence concluded, what it cost and on what basis,
-        and the exact before and after content the change is bound to.
+        Elsewhere, "what did this cost" has no per-action answer. Spend shows up on a monthly
+        bill, and no durable record ties a change to the model, the place it ran, and the
+        price. Flow writes that record at the moment of the change.
       </p>
       <p class="of-lede mt-4" data-animate="rise">
-        Elsewhere, "what did this cost" has no per-action answer: spend shows up on a monthly
-        bill, and no durable record ties a change to the model, the place it ran, and the
-        price. Flow writes that record at the moment of the change. Cost is compared before,
+        Approve a change and it is recorded. One run reads as one card: the checks that ran,
+        what the evidence concluded, what it cost and on what basis, and a fingerprint of the
+        exact before and after content the change is bound to. Cost is compared before,
         observed after, and never guessed.
       </p>
     </div>
@@ -142,10 +141,10 @@ import detailEvidenceRestson from '../../../assets/flow/details/detail-evidence-
       <div>
         <h4 class="text-lg font-bold">The change is bound to exact bytes.</h4>
         <p class="mt-3 text-[0.95rem] leading-relaxed text-text-muted">
-          The card ends with the before and after content digests the change is bound to,
-          under the receipt's own validity mark. Not a description of the change: a
-          fingerprint of the exact bytes on both sides of it, checkable later, long after
-          everyone has forgotten what the run was for.
+          The card ends with two fingerprints, one of the document before the change and one
+          after (the screen calls them digests), under the receipt's own validity mark. Not a
+          description of the change: a fingerprint of the exact bytes on both sides of it,
+          checkable later, long after everyone has forgotten what the run was for.
         </p>
         <FlowDetail
           class="mt-6"
@@ -163,10 +162,10 @@ import detailEvidenceRestson from '../../../assets/flow/details/detail-evidence-
     <div class="mx-auto mt-20 max-w-3xl text-center">
       <h4 class="of-display text-[clamp(1.5rem,2.6vw,2.1rem)]" data-animate="lead">The scorecard leads with the answer.</h4>
       <p class="of-lede mx-auto mt-4 text-center" data-animate="rise">
-        The document's Evidence tab starts where a reader would end: the verdict. The overall
-        score beside its meter, the change since the verified baseline, and the assessment's
-        own recorded reason. Then the checks, then every rubric dimension as its own card,
-        and last, a plain strip stating what the number rests on.
+        The document's Evidence tab starts where a reader would end: the verdict, then the
+        checks, then every scored dimension as its own card, and last a plain strip stating
+        what the number rests on. A score that will not say what it rests on is an opinion
+        with a font size.
       </p>
     </div>
     <FlowShot
@@ -177,6 +176,13 @@ import detailEvidenceRestson from '../../../assets/flow/details/detail-evidence-
       caption="The Evidence tab as a gallery: verdict first, then checks, dimensions, and what it all rests on."
       sizes="(min-width: 1024px) 64rem, 100vw"
     />
+    {/* The three sub-claims of the gallery are one click away rather than
+        three more screens (content-masterclass review, 2026-08-20): the
+        reader's question chain here is "what was recorded, what did it cost,
+        can I check it later", and the score's arithmetic answers a later
+        question. Every truth rail below is unchanged; it is folded, not cut. */}
+    <details class="receipts-more mx-auto mt-8 max-w-5xl">
+      <summary class="receipts-more__summary">How the score is built, and what it refuses to claim</summary>
     <div class="bench-honesty mx-auto mt-12">
       <div class="bench-honesty__item">
         <div class="bench-honesty__copy" data-animate="rise">
@@ -233,6 +239,7 @@ import detailEvidenceRestson from '../../../assets/flow/details/detail-evidence-
       </div>
     </div>
 
+    </details>
     <ul class="flow-list mx-auto mt-14 max-w-3xl">
       <li>The recorded cost is an observed fact: the provider's own reported charge where one exists, otherwise usage priced by Flow's versioned price table, with the table version recorded so the number stays readable after rates move. An estimate is never recorded as a charge.</li>
       <li>A local run records no charge at all. An absent cost means none was owed, never that one went unmeasured, and the two read differently in the ledger on purpose.</li>
@@ -246,3 +253,15 @@ import detailEvidenceRestson from '../../../assets/flow/details/detail-evidence-
     </p>
   </div>
 </section>
+
+<style>
+  .receipts-more { border: 1px solid var(--color-border); border-radius: 1rem; padding: 0 1.25rem; }
+  .receipts-more__summary {
+    cursor: pointer; list-style: none; padding: 1rem 0; font-weight: 600; color: var(--color-text);
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  .receipts-more__summary::-webkit-details-marker { display: none; }
+  .receipts-more__summary::after { content: '+'; color: var(--color-primary); font-size: 1.25rem; transition: transform 0.2s ease; }
+  .receipts-more[open] .receipts-more__summary::after { transform: rotate(45deg); }
+  .receipts-more[open] { padding-bottom: 1.25rem; }
+</style>

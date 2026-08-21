@@ -55,7 +55,7 @@ const flow = read('src/pages/flow.astro');
 // run over the whole surface (`tour`); layout contracts name their file.
 const CHAPTERS = [
   'ChapterAgency', 'ChapterExpand', 'ChapterToolbar', 'ChapterLongDocs', 'ChapterDomains', 'ChapterReceipts', 'ChapterRuntime',
-  'ChapterBenchmarks', 'ChapterRouting', 'ChapterResources', 'ChapterSearch', 'ChapterTables', 'ChapterFiles',
+  'ChapterBenchmarks', 'ChapterRouting', 'ChapterResources', 'ChapterSearch', 'ChapterTables', 'ChapterVisualize', 'ChapterFiles',
 ];
 const chapterPath = (c) => `src/components/flow/chapters/${c}.astro`;
 const chapters = CHAPTERS.map((c) => read(chapterPath(c))).join('\n');
@@ -65,7 +65,15 @@ const categories = read('src/data/flow-categories.ts');
 const CATEGORY_SLUGS = ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files'];
 const categoryPages = Object.fromEntries(CATEGORY_SLUGS.map((slug) => [slug, read(`src/pages/flow/${slug}.astro`)]));
 const tour = `${flow}\n${chapters}\n${categoryShell}`;
-assert.match(flow, /Conduct beautiful documents with AI agency built in/, 'the locked tagline stays the H1');
+// 2026-08-20 content-masterclass rewrite: the H1 is the approval promise in
+// plain words (title tag, OG card, and H1 agree); the locked tagline moved to
+// the press kit, where a journalist wants the exact phrase.
+assert.match(flow, /Every AI change is a diff you approve\. Every run leaves a receipt\./, 'the H1 is the approval promise');
+assert.match(flow, /const FLOW_TITLE = 'Orionfold Flow · Every AI change is a diff you approve, with a receipt'/, 'the title tag carries the same promise');
+assert.match(flow, /title=\{FLOW_TITLE\}/);
+assert.match(flow, /\{SITE\.tagline\}/, 'the locked tagline stays in the press kit');
+assert.match(flow, /Anyone whose name is on the document/, 'the ICP line sits in the first screen');
+assert.match(flow, /<FlowProofNuggets formId="flow-proof-waitlist" \/>/, 'two dated facts and the native ask follow the hero');
 assert.match(flow, /Patent pending/);
 assert.match(flow, /In development · Freemium subscription planned/);
 assert.match(flow, /Every screen is the real development build/);
@@ -75,12 +83,17 @@ assert.match(flow, /Every screen is the real development build/);
 assert.match(flow, /source="flow-hero-waitlist"/, 'the hero carries its own attributable waitlist capture');
 assert.match(flow, /caption="In development · Freemium subscription planned · Every screen is the real development build"/, 'the development framing stays welded to the hero shot');
 assert.doesNotMatch(flow, /of-secondary-action">See the product tour/, 'no join-versus-tour fork on first paint');
-const heroConsent = flow.match(/const heroConsentText = '([^']+)'/)?.[1] ?? '';
-const panelConsent = read('src/components/sections/FlowWaitlist.astro').match(/const consentText = '([^']+)'/)?.[1] ?? '';
-assert.equal(heroConsent, panelConsent, 'the hero capture must record the exact consent scope the FlowWaitlist panels record');
+// One consent sentence, one module (src/data/flow-consent.ts): every Flow
+// capture surface imports it, so recorded consent cannot drift between them.
+const consentModule = read('src/data/flow-consent.ts');
+assert.match(consentModule, /export const FLOW_CONSENT_TEXT =\s*\n?\s*'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more\. You can unsubscribe any time\. See our privacy policy\.'/);
+for (const [name, path] of [['flow.astro', 'src/pages/flow.astro'], ['index.astro', 'src/pages/index.astro'], ['FlowWaitlist', 'src/components/sections/FlowWaitlist.astro'], ['FlowProofNuggets', 'src/components/flow/FlowProofNuggets.astro']]) {
+  assert.match(read(path), /import \{ FLOW_CONSENT_TEXT \} from '[./]+data\/flow-consent'/, `${name} must import the shared consent sentence`);
+  assert.doesNotMatch(read(path), /consentText\s*=\s*'By joining/, `${name} must not carry its own copy of the consent sentence`);
+}
 // Every Flow capture form carries ONE caption line (operator decision
 // 2026-08-20): the long consent sentence is recorded on submit, never shown.
-for (const [name, src] of [['flow', flow], ['FlowWaitlist', read('src/components/sections/FlowWaitlist.astro')]]) {
+for (const [name, src] of [['flow', flow], ['FlowWaitlist', read('src/components/sections/FlowWaitlist.astro')], ['FlowProofNuggets', read('src/components/flow/FlowProofNuggets.astro')]]) {
   assert.doesNotMatch(src, /\{(hero)?[pP]rivacyNote\}/, `${name} must not render the long consent note`);
   assert.match(src, /of-waitlist-caption[^>]*>\s*Free to join · Double opt-in · One email a week, no more/, `${name} carries the one-line caption`);
 }
@@ -101,17 +114,19 @@ for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '5 actions',
 assert.match(flow, /2026-08-04/, 'the search measurement keeps its date');
 // The four execution domains, named exactly.
 assert.match(flow, /Local, LAN, Cloud prepaid, Cloud postpaid/);
-// Section order: tour → enterprise → stack → press → waitlist.
-const anchors = ['id="tour"', 'id="enterprise"', 'id="stack"', 'id="press"', 'id="waitlist"'];
+// Section order: tour → enterprise → press → waitlist. (The stack band left
+// for the footer directory on 2026-08-20; the press kit names the footer.)
+const anchors = ['id="tour"', 'id="enterprise"', 'id="press"', 'id="waitlist"'];
+assert.doesNotMatch(flow, /id="stack"/, 'the stack band lives in the footer directory, not on the overview');
 const anchorIndexes = anchors.map((a) => flow.indexOf(a));
 assert.ok(anchorIndexes.every((i) => i >= 0), 'every landing anchor must exist');
-assert.deepEqual([...anchorIndexes].sort((a, b) => a - b), anchorIndexes, 'anchor order must stay tour, enterprise, stack, press, waitlist');
+assert.deepEqual([...anchorIndexes].sort((a, b) => a - b), anchorIndexes, 'anchor order must stay tour, enterprise, press, waitlist');
 // Each tour chapter stays deep-linkable AND stays clear of the fixed nav when
 // jumped to. The two are asserted separately because the class list is not
 // order-stable: the 2026-08-16 typography pass added .of-display alongside
 // scroll-mt-28, and a combined "id then class" regex broke on the reorder
 // while the anchors themselves were still perfectly fine.
-for (const id of ['tour-agency', 'tour-expand', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-receipts', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-files']) {
+for (const id of ['tour-agency', 'tour-expand', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-receipts', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-visualize', 'tour-files']) {
   const heading = chapters.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
   assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
   assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
@@ -191,8 +206,17 @@ assert.doesNotMatch(flowDetailComponent, /^\s+filter:\s*blur\(/m, 'blur filters 
 assert.match(flow, /import FlowWorkbenchIllustration from '\.\.\/components\/flow\/FlowWorkbenchIllustration\.astro'/);
 assert.match(flow, /<FlowWorkbenchIllustration \/>/);
 assert.match(flow, /The whole promise in one picture\./);
-// Enterprise adoption patterns: nine question cards, honestly tagged.
-const enterpriseSource = flow.match(/const enterprise = \[([\s\S]*?)\n\];/)?.[1] ?? '';
+// Enterprise adoption patterns: nine question cards, honestly tagged. Data
+// lives in src/data/flow-enterprise.ts (2026-08-20); the overview teases three
+// and /flow/enterprise/ renders all nine.
+const enterpriseData = read('src/data/flow-enterprise.ts');
+const enterpriseSource = enterpriseData.match(/export const FLOW_ENTERPRISE: EnterprisePattern\[\] = \[([\s\S]*?)\n\];/)?.[1] ?? '';
+const enterprisePage = read('src/pages/flow/enterprise.astro');
+assert.match(enterprisePage, /FLOW_ENTERPRISE\.map\(/, '/flow/enterprise/ renders every pattern');
+assert.match(enterprisePage, /<FlowWaitlist placement="flow-enterprise"/, '/flow/enterprise/ closes with its own attributable placement');
+assert.match(flow, /FLOW_ENTERPRISE_TEASER\.map\(/, 'the overview teases the patterns');
+assert.match(flow, /href="\/flow\/enterprise\/"/, 'the overview links on to the full set');
+assert.match(enterpriseData, /\['Data classification', 'Attribution', 'Knowledge mining'\]/, 'the teaser picks three named patterns');
 for (const k of ['Allocation', 'Data classification', 'Attribution', 'Guardrails', 'Evidence', 'Routing', 'Curation', 'System of record', 'Knowledge mining']) {
   assert.match(enterpriseSource, new RegExp(`k: '${k}'`), `${k} must remain an enterprise pattern card`);
 }
@@ -241,37 +265,52 @@ assert.match(categoryShell, /aria-current=\{c\.slug === cat\.slug \? 'page' : un
 // One offer, two surfaces: the placements must resolve to DIFFERENT form ids
 // (no duplicate DOM ids) and therefore different attribution sources.
 const waitlistComponent = read('src/components/sections/FlowWaitlist.astro');
-assert.match(waitlistComponent, /'home' \| 'flow' \| 'flow-mid'/);
+assert.match(waitlistComponent, /'home' \| 'flow' \| 'flow-mid' \| 'flow-enterprise'/);
 assert.match(waitlistComponent, /'flow-mid-waitlist'/);
-for (const id of ["'home-flow-waitlist'", "'flow-mid-waitlist'", "'flow-page-waitlist'"]) {
+// The mid-tour continue link goes to the NEXT part (passed in by the shell),
+// never to a #tour-<chapter> anchor that may not exist on this page: the
+// 2026-08-20 split left '#tour-domains' dead on three of four pages.
+assert.doesNotMatch(waitlistComponent, /#tour-/, 'FlowWaitlist must not hardcode a chapter anchor');
+assert.match(categoryShell, /<FlowWaitlist placement="flow-mid" storyHref=\{flowStoryHref\} nextHref=\{nextHref\} nextLabel=\{nextLabel\} \/>/, 'the shell passes the next part to the mid-tour panel');
+assert.match(categoryShell, /const nextHref = next \? flowCategoryHref\(next\.slug\) : '\/flow\/enterprise\/'/);
+// The category hero carries the same cover crop as the overview card, so the
+// picture a reader clicked is the picture that greets them.
+assert.match(categoryShell, /import \{ FLOW_CATEGORY_SHOTS \} from '\.\.\/\.\.\/data\/flow-category-shots'/);
+assert.match(flow, /import \{ FLOW_CATEGORY_SHOTS \} from '\.\.\/data\/flow-category-shots'/);
+assert.match(categoryShell, /<FlowDetail\s[\s\S]*?src=\{cover\.src\}/, 'the category hero shows its cover crop');
+// Chapters are numbered 1 to 13 across the four parts.
+assert.match(categoryShell, /Chapters \{firstChapter\} to \{lastChapter\} of \{totalChapters\}/);
+assert.match(flow, /Chapters \{chapterOffsets\[i\] \+ 1\} to \{chapterOffsets\[i\] \+ cat\.chapters\.length\}/);
+// The waitlist panel names the exchange and offers the free book as a second magnet.
+assert.match(waitlistComponent, /The launch note the day Flow ships for Mac\./);
+assert.match(waitlistComponent, /magnetHref\('flow-waitlist'\)/, 'the panel offers the free book');
+for (const id of ["'home-flow-waitlist'", "'flow-mid-waitlist'", "'flow-page-waitlist'", "'flow-enterprise-waitlist'"]) {
   assert.ok(waitlistComponent.includes(id), `FlowWaitlist must keep a distinct form id for ${id}`);
 }
 
 // ── Homepage: the demand-generation front door ─────────────────────────────
 const home = read('src/pages/index.astro');
-assert.match(home, /title=\{`\$\{SITE\.tagline\} · Orionfold`\}/);
+assert.match(home, /const HOME_TITLE = 'Orionfold Flow · AI that asks before it changes your document'/, 'the title tag carries the hero promise');
+assert.match(home, /title=\{HOME_TITLE\}/);
 assert.match(home, /description=\{SITE\.description\}/);
 assert.match(home, /jsonLd=\{\[flowSchema\]\}/, 'the homepage carries the Flow SoftwareApplication entity');
-// Hero copy, operator-written 2026-08-16 against the resource-popover picture.
-// "open" is load-bearing in the headline — it is the positioning wedge, not a
-// stray adjective, so it is asserted rather than left to a loose match.
-assert.match(home, /Bring open AI models to your documents/);
+// Hero copy, 2026-08-20 content-masterclass rewrite: the common belief, then
+// the flip, written against the review-surface picture whose Approve and Save
+// button is DISABLED until the box is ticked. Headline, lede, and picture carry
+// one claim, and the reader knows who the page is for before the claim.
+assert.match(home, /Most AI tools rewrite your document\. Flow asks first\./);
+assert.match(home, /Anyone whose name is on the document/, 'the ICP line sits in the first screen');
 assert.match(home, /Patent pending/);
-// Asserted sentence by sentence, not as one run of text: each lives in its own
-// <span> so it can be set nowrap on large screens (one sentence per line), and
-// a regex spanning the markup between them would break on any layout tweak.
-// Open-first is not open-only — the last two sentences head off "so I am stuck
-// with small local models", and dropping them leaves the headline limiting.
+// Asserted sentence by sentence: each lives in its own <span> so it can be set
+// one-per-line on large screens.
 for (const sentence of [
-  'Stay in control of cost, privacy, and quality on your Mac.',
-  'Switching to frontier models is a checkbox.',
-  'Flow selects the best model for the job.',
+  'Every AI change arrives as a diff you approve, with a receipt of what ran, where it ran, and what it cost.',
+  'Your text changes two ways only: an edit you typed, or a change you approved.',
 ]) {
   assert.match(home, new RegExp(esc(sentence)), `the hero lede keeps: ${sentence}`);
 }
-// The approval promise left the hero but must not leave the homepage — it moved
-// into the leading capability band, which still shows it with the diff crop.
-assert.match(home, /Nothing is saved until you approve it\./, 'the approval gate stays on the homepage after moving out of the hero');
+assert.match(home, /Nothing is saved until you approve it/, 'the approval gate is stated beside its crop');
+assert.match(home, /<FlowProofNuggets formId="home-proof-waitlist" \/>/, 'two dated facts and the native ask follow the hero');
 assert.match(home, /You draft in a chat window, paste into your document/, 'the copy-paste argument stays on the page, in the problem band');
 assert.match(home, /Chat is where work evaporates\./, 'the buyer-language problem band leads the argument');
 assert.doesNotMatch(readCopy('src/pages/index.astro'), /—/, 'homepage copy must not use em dashes');
@@ -280,9 +319,7 @@ assert.match(home, /id="home-hero-waitlist"/);
 assert.match(home, /source="home-hero-waitlist"/);
 assert.match(home, /offer="flow-waitlist"/);
 const flowWaitlistComponent = read('src/components/sections/FlowWaitlist.astro');
-const consent = home.match(/consentText =\s*\n\s*'([^']+)'/)?.[1];
-assert.ok(consent, 'the hero form declares its consent copy');
-assert.ok(flowWaitlistComponent.includes(consent), 'hero consent copy must stay byte-identical to FlowWaitlist');
+assert.match(home, /const consentText = FLOW_CONSENT_TEXT;/, 'the hero form records the shared consent sentence');
 // Real capture hero + capability rows into the tour.
 assert.match(home, /<FlowShot[\s\S]*?priority/, 'the hero shot stays the eager LCP image');
 // The homepage pairs each window with a legible crop of the control its
@@ -294,13 +331,14 @@ assert.match(home, /import FlowDetail from '\.\.\/components\/flow\/FlowDetail\.
 // asserts the crop is on the page rather than pinning it to one section. The
 // hero itself deliberately carries NO crop: its capture is legible whole, and
 // the overlay exists to rescue an illegible control, not as decoration.
-assert.match(home, /detail: detailDiff/, 'the diff crop stays on the homepage, in the band that now makes the approval claim');
+assert.match(home, /<FlowDetail[\s\S]*?src=\{detailDiff\}/, 'the diff crop proves the hero claim');
+assert.match(home, /of-stage__detail of-stage__detail--tr"\s*\n?\s*src=\{detailDiff\}/, 'the hero crop takes top-right (a short strip never overlaps from a bottom corner); the first band below takes top-left');
 assert.match(home, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'the capability bands render their crops');
 assert.match(home, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'every capability band carries its own legible crop');
-for (const detailImport of ['detailDiff', 'detailDomains', 'detailParts', 'detailGrid']) {
+for (const detailImport of ['detailDiff', 'detailDomains', 'detailParts', 'detailRunChecks']) {
   assert.match(home, new RegExp(`import ${detailImport} from '\\.\\./assets/flow/details/`), `${detailImport} must come from the generated crop set`);
 }
-for (const href of ['/flow/#tour-longdocs', '/flow/#tour-domains', '/flow/#tour-receipts', '/flow/#tour-files', '/flow/#enterprise', '/flow/#press']) {
+for (const href of ['/flow/writing-with-ai/#tour-toolbar', '/flow/writing-with-ai/#tour-longdocs', '/flow/models-and-runtime/#tour-domains', '/flow/receipts/#tour-receipts', '/flow/enterprise/', '/flow/#press']) {
   assert.match(home, new RegExp(esc(href)), `${href} must stay linked from the homepage`);
 }
 // The origin story band replaces the founder section.
@@ -312,16 +350,19 @@ assert.equal((home.match(/href="\/story\/limitless-without-the-pill\/"/g) ?? [])
 for (const retired of ['RelayBand', 'FieldEditionBand', 'CatalogShelf', 'CapabilitySystemMap', 'HomeFlowIntro', 'FromTheFounder', 'RelayHostBox', 'Highlights', 'StoriesCarousel']) {
   assert.doesNotMatch(home, new RegExp(`<${retired}`), `${retired} stays off the Flow-first homepage`);
 }
-// Order: hero → problem band → wedge → rows → enterprise → stack → origin → waitlist.
+// Order: hero → two measured facts + ask → problem band → four bands →
+// enterprise teaser → origin → waitlist. The stack band left for the footer.
 const homeOrder = [
   'class="home-hero',
+  '<FlowProofNuggets',
   'Chat is where work evaporates.',
-  'A silent rewrite is not a feature. It is a risk.',
+  '{capabilityRows.map(',
   'For enterprise AI owners',
-  'One company, one stack',
   'The origin story',
   '<FlowWaitlist placement="home" />',
 ].map((marker) => home.indexOf(marker));
+assert.doesNotMatch(home, /One company, one stack/, 'the stack band lives in the footer directory');
+assert.equal((home.match(/kicker: '/g) ?? []).length, 4, 'four capability bands, not seven');
 assert.ok(homeOrder.every((i) => i >= 0), 'every homepage band must exist');
 assert.deepEqual([...homeOrder].sort((a, b) => a - b), homeOrder, 'homepage band order must hold');
 
@@ -332,11 +373,11 @@ for (const phrase of [
   'offer="flow-waitlist"',
   'Join the waitlist',
   'Check your inbox to confirm.',
-  'AI For Everyone digest, one email a week, no more',
   'Free to join · Double opt-in · One email a week, no more',
 ]) {
   assert.match(flowWaitlistComponent, new RegExp(esc(phrase)));
 }
+assert.match(consentModule, /AI For Everyone digest, one email a week, no more/);
 assert.match(flowWaitlistComponent, /import WaitlistForm from '\.\.\/ui\/WaitlistForm\.astro'/);
 assert.doesNotMatch(flowWaitlistComponent, /type="(text|tel|number)"/, 'Flow waitlist must remain email-only apart from the shared honeypot');
 
@@ -450,8 +491,8 @@ assert.match(
 const ogHomeShotHash = createHash('sha256').update(readBinary('src/assets/flow/og-home-shot.png')).digest('hex');
 assert.equal(
   ogHomeShotHash,
-  '6061206bde12861d565dfb8b2f932ac627e3e3a65827cd251374b4d2071322d9',
-  'the home OG crop changed: re-check the popover is not clipped by the 540px visible band, then update this hash',
+  '9ae7cff1e4cd3a0f7217fa9b4b4210237ca4580b6f7c56e1af369d05d75232d7',
+  'the home OG crop changed: re-check the decision footer is not clipped by the 540px visible band, then update this hash',
 );
 const ogCard = ogCardSource;
 assert.match(ogCard, /function heroGridSvg\(\)/, 'the light card draws the hero gradient + fading grid');
@@ -468,9 +509,13 @@ assert.match(ogEndpoint, /endsWith\('\.webp'\)/, 'Satori cannot decode webp, so 
 // while turning a checkable statement into an unbacked one.
 // Truth guards read the whole tour surface (overview + the twelve chapter
 // components) since the 2026-08-20 split.
-const flowTourCopy = `${readCopy('src/pages/flow.astro')}\n${chaptersCopy}`;
+const nuggetsCopy = readCopy('src/components/flow/FlowProofNuggets.astro');
+const flowTourCopy = `${readCopy('src/pages/flow.astro')}\n${nuggetsCopy}\n${chaptersCopy}`;
 const flowBenchCopy = flowTourCopy;
-const homeBenchCopy = readCopy('src/pages/index.astro');
+const homeBenchCopy = `${readCopy('src/pages/index.astro')}\n${nuggetsCopy}`;
+assert.doesNotMatch(nuggetsCopy, /—/, 'proof-nuggets copy must not use em dashes');
+assert.match(nuggetsCopy, /Recorded 2026-07-30/, 'the probe card keeps its date');
+assert.match(nuggetsCopy, /Measured 2026-08-18/, 'the benchmark card keeps its date');
 
 // 1. Bandwidth. No public interface on a Mac reports memory bandwidth: 300 GB/s
 //    is the manufacturer's published figure and 268.6 GB/s is what Flow
@@ -542,10 +587,11 @@ for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeB
 //    and quantization; the screen itself obeys a person-words rule and the
 //    published vocabulary is the screen's. Scoped to the benchmarks copy is not
 //    possible in a whole-file grep, so this checks the words that would only
-//    ever arrive with a benchmarks edit. "263 tok/s" predates this and lives in
-//    the runtime chapter's stat card, so tok/s is deliberately not on the list.
+//    ever arrive with a benchmarks edit. The runtime chapter's "263 tok/s"
+//    stat card was rewritten in person-words on 2026-08-20, so tok/s and
+//    "4-bit" are on the list now.
 for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeBenchCopy]]) {
-  for (const jargon of ['TTFT', 'time to first token', 'prefill', 'KV cache', 'quantization']) {
+  for (const jargon of ['TTFT', 'time to first token', 'prefill', 'KV cache', 'quantization', 'tok/s', '4-bit']) {
     assert.doesNotMatch(
       copy,
       new RegExp(esc(jargon), 'i'),
@@ -763,11 +809,31 @@ assert.match(
   'the receipts chapter keeps the structural privacy claim',
 );
 
+// ── Charts and diagrams (0129, Visualize) truth rails, 2026-08-20 ─────────
+// Source: the Flow CHANGELOG entries of 2026-08-20 and the 0129 SPEC. Each
+// guard is a sentence a copy edit would happily "tighten" into a false one.
+const visualizeCopy = readCopy(chapterPath('ChapterVisualize'));
+assert.match(visualizeCopy, /after the selected text, never in place of it/, 'Visualize adds after the selection; it never replaces');
+assert.doesNotMatch(visualizeCopy, /replaces? (your|the) (table|text|selection) with/i, 'no replace claim');
+assert.match(visualizeCopy, /A proposal Flow cannot draw is never shown/, 'the undrawable-proposal rule stays stated');
+assert.match(visualizeCopy, /offline/, 'rendering is stated as offline');
+assert.doesNotMatch(visualizeCopy, /Wi-?Fi off|airplane mode|network (was )?disabled/i, 'the Wi-Fi-off capture was waived; never claim it');
+assert.doesNotMatch(visualizeCopy, /callouts?[^.]*(ship|today|now)|(ship|today|now)[^.]*callouts?/i, 'layout blocks are a later goal');
+assert.match(visualizeCopy, /are a separate, later goal, and are not claimed here/, 'the layout-blocks boundary is stated');
+assert.match(visualizeCopy, /Captured 2026-08-20 on a development build/, 'the chapter keeps its capture scope and date');
+assert.match(visualizeCopy, /invented demo data/, 'chart numbers are disclosed as invented');
+assert.doesNotMatch(visualizeCopy, /infographic|AI-generated (chart|image)/i, 'the vocabulary is the screen\'s');
+assert.ok(categoryPages['documents-and-files'].includes('<ChapterVisualize />'), 'Visualize renders on the Documents and files page');
+for (const detail of ['detail-chart-line', 'detail-chart-gallery', 'detail-chart-flowchart']) {
+  assert.match(detailScript, new RegExp(`out: '${esc(detail)}\\.webp'`), `${detail} must stay a generated crop`);
+  assert.ok(existsSync(new URL(`../../src/assets/flow/details/${detail}.webp`, import.meta.url)), `${detail}.webp must be committed`);
+}
+
 // ── AEO surfaces stay Flow-first ───────────────────────────────────────────
 const llms = read('public/llms.txt');
 assert.match(llms, /patent-pending AI agency built in/);
 assert.match(llms, /\[Flow\]\(https:\/\/orionfold\.com\/flow\/\)/);
-for (const anchor of ['flow/#tour', 'flow/#enterprise', 'flow/#press']) {
+for (const anchor of ['flow/#tour', 'flow/enterprise/', 'flow/#press']) {
   assert.match(llms, new RegExp(esc(anchor)), `llms.txt must feed the ${anchor} surface to answer engines`);
 }
 const astroConfig = read('astro.config.mjs');

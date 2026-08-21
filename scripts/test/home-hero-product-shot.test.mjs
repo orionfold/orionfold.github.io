@@ -15,10 +15,11 @@ const seo = read('src/data/seo.ts');
 const og = read('src/data/og.ts');
 const flowShot = read('src/components/flow/FlowShot.astro');
 
-// The wedge headline over the locked tagline in the title tag. Operator copy,
-// 2026-08-16, written against the hero picture (see the shot assertion below).
-assert.match(home, /Bring open AI models to your documents/);
-assert.match(home, /title=\{`\$\{SITE\.tagline\} · Orionfold`\}/);
+// The contrast headline (common belief, then the flip) and a title tag that
+// carries the same promise. 2026-08-20 content-masterclass rewrite, written
+// against the hero picture (see the shot assertion below).
+assert.match(home, /Most AI tools rewrite your document\. Flow asks first\./);
+assert.match(home, /title=\{HOME_TITLE\}/);
 assert.match(home, /hero-gradient-text/, 'the hero title keeps the shared Orionfold gradient fill');
 assert.match(home, /home-chip--accent">Patent pending</, 'the patent-pending chip stays in the hero');
 
@@ -28,11 +29,10 @@ assert.match(home, /Free to join · Double opt-in · One email a week, no more/)
 
 // The real development-build capture is the hero visual and the only eager image
 // candidate; FlowShot renders eager + fetchpriority only when priority is set.
-// The hero shot became the resource-popover capture on 2026-08-16: it is the one
-// frame carrying the whole headline (usage, tokens, cost, model) at once, and
-// unlike the other captures it stays legible WITHOUT an overlay crop, which is
-// why the hero deliberately has no .of-stage detail.
-assert.match(home, /<FlowShot\s[\s\S]*?src=\{shotResourcePopover\}[\s\S]*?priority\s/);
+// The hero shot became the review-surface capture on 2026-08-20, with the
+// decision footer lifted out as a stage crop: the one frame that shows the
+// headline's promise (Approve and Save disabled until the box is ticked).
+assert.match(home, /<FlowShot\s[\s\S]*?src=\{shotApprove\}[\s\S]*?priority\s/);
 assert.match(flowShot, /loading=\{priority \? 'eager' : 'lazy'\}/);
 assert.match(flowShot, /fetchpriority=\{priority \? 'high' : undefined\}/);
 assert.equal((home.match(/\spriority\b/g) ?? []).length, 1, 'exactly one FlowShot is the eager hero image');
@@ -63,11 +63,11 @@ assert.match(seo, /description: SITE\.description/);
 // tagline until 2026-08-16, so rewriting the hero to lead with the open-models
 // wedge silently left the social card arguing the retired pitch.
 const homeOg = og.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
-assert.match(homeOg, /title: 'Bring open AI models to your documents'/);
+assert.match(homeOg, /title: 'Most AI tools rewrite your document\. Flow asks first\.'/);
 assert.doesNotMatch(homeOg, /title: SITE\.tagline/);
-// The alt text must describe the card's own capture (the local run and its
-// zero-dollar spend), not the generic diff-review alt the whole site defaults to.
+// The alt text must describe the card's own capture (the decision footer with
+// Approve and Save disabled), not the generic alt the whole site defaults to.
 assert.doesNotMatch(homeOg, /alt: SITE\.ogImageAlt/);
-assert.match(homeOg, /alt: '[^']*zero dollars/);
+assert.match(homeOg, /alt: '[^']*Approve and Save disabled/);
 
 console.log('home hero: Flow wedge copy, real capture, waitlist capture, and metadata contracts pass');

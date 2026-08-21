@@ -15,7 +15,8 @@ export type MagnetPlacement =
   | 'nav-cta' // persistent sticky bar (site-wide)
   | 'story-footer' // foot of every Story post (highest intent)
   | 'book-page-cta' // /books/ai-native-business/ buy box
-  | 'hero-secondary'; // homepage hero secondary CTA
+  | 'hero-secondary' // homepage hero secondary CTA
+  | 'flow-waitlist'; // the free-book offer inside every Flow waitlist panel (2026-08-20)
 
 /** UTM-stamped magnet link for a given on-site placement. */
 export function magnetHref(placement: MagnetPlacement): string {

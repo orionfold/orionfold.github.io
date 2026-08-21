@@ -381,6 +381,35 @@ const DETAILS = [
     rect: { left: 405, top: 685, width: 1040, height: 290 },
     note: 'All eight providers in the user\'s order, the off ones labeled.',
   },
+  // ── Charts and diagrams (0129, Visualize): cut 2026-08-20 on the c6ec42a
+  // re-shoot of flow-charts-shot (3840x2100 source, shipped at 2560x1400).
+  // Left pane is the Reader view of the QBR demo doc with a chart fence and a
+  // mermaid fence drawn in place; right pane is the chart gallery editor on
+  // the same file's bar chart. Every number in the charts is invented demo
+  // data: the crops show the drawing, never a figure to be quoted.
+  {
+    out: 'detail-chart-line.webp',
+    from: 'flow-charts-shot.webp',
+    // The line chart card: action title, subtitle, plan legend with Team
+    // highlighted in the accent, the axes, and the source line.
+    rect: { left: 458, top: 180, width: 902, height: 640 },
+    note: 'A chart fence drawn in place: title, highlighted series, source line.',
+  },
+  {
+    out: 'detail-chart-gallery.webp',
+    from: 'flow-charts-shot.webp',
+    // The gallery pane head: the type pull-down, the one-line data-shape
+    // requirement, the Ask row, and the bar chart drawn at full width.
+    rect: { left: 1462, top: 120, width: 1098, height: 640 },
+    note: 'The chart gallery editor: type by question, Ask Flow to change it, the drawing.',
+  },
+  {
+    out: 'detail-chart-flowchart.webp',
+    from: 'flow-charts-shot.webp',
+    // The mermaid deal-flow flowchart, drawn in place under its paragraph.
+    rect: { left: 458, top: 1020, width: 902, height: 160 },
+    note: 'A mermaid fence drawn in place in the document.',
+  },
 ];
 
 await import('node:fs/promises').then(({ mkdir }) => mkdir(outDir, { recursive: true }));

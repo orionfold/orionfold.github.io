@@ -6,7 +6,6 @@ import FlowDetail from '../../../components/flow/FlowDetail.astro';
 import shotToolbar from '../../../assets/flow/shots/flow-editor-toolbar-shot.webp';
 import detailToolbarBlocked from '../../../assets/flow/details/detail-toolbar-blocked.webp';
 import detailToolbarArmed from '../../../assets/flow/details/detail-toolbar-armed.webp';
-import detailToolbarMenu from '../../../assets/flow/details/detail-toolbar-menu.webp';
 ---
 {/* Chapter 1b: the tool strip (2026-08-18, from the editor-toolbar brief).
     Sits directly after Agency because it is the same five actions seen from
@@ -22,18 +21,16 @@ import detailToolbarMenu from '../../../assets/flow/details/detail-toolbar-menu.
       <p class="of-eyebrow" data-animate="rise">The tool strip</p>
       <h3 id="tour-toolbar" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">The tools come to the document.</h3>
       <p class="of-lede mt-5" data-animate="rise">
-        The strip lives in the document's top-right corner and stays out of the way until you
-        reach for it. Your writing tools sit on one side of a divider and the five AI actions
-        on the other, because both act on the same document. The AI ones are marked with
-        letters rather than icons: five text operations do not have five icons you could tell
-        apart, and the same marks appear in the Agency menu so the two never drift.
+        Most AI tools live in a side panel and bill you after. Flow's five AI actions sit in
+        the document's own tool strip, beside bold and italic. Hover one and it answers three
+        questions before anything runs: how much text it would act on, what it would cost, and
+        which model would do the work.
       </p>
       <p class="of-lede mt-4" data-animate="rise">
-        When an action cannot run, it stays where it is, greyed, and the same panel says why in
-        words that came from whatever refused it. In a document that already has a table,
-        Convert Text to Table reads "Already contains a table". In one with nothing to convert,
-        the same tool gives a different reason. The scope line stays, because it is still true;
-        the cost and the model do not, because a run that cannot happen has neither.
+        A tool that cannot run stays where it is, greyed, and says why in plain words. In a
+        document that already has a table, Convert Text to Table reads "Already contains a
+        table". The scope line stays, because it is still true. The cost and the model do not,
+        because a run that cannot happen has neither.
       </p>
     </div>
 
@@ -46,13 +43,14 @@ import detailToolbarMenu from '../../../assets/flow/details/detail-toolbar-menu.
       <FlowDetail
         src={detailToolbarArmed}
         alt="Flow's document tool strip at rest: bold, italic, text size and alignment controls, a divider, then five AI marks. Pr, Sm, Tr and Tt are in colour and ready; Tx is greyed out."
-        caption="Four ready, one unavailable · The divider is the whole idea"
+        caption="Four ready, one unavailable · Writing tools on one side, AI on the other"
         sizes="(min-width: 900px) 34rem, calc(100vw - 3rem)"
       />
     </figure>
     <p class="toolbar-armed__note mx-auto mt-5 text-center" data-animate="rise">
       A tool you can run is in full colour. A tool you cannot is still there, greyed, rather
-      than hidden, so the set never changes shape under you.
+      than hidden, so the set never changes shape under you. The same five actions, with the
+      same marks, sit in the menu bar too, and Proofread has a keyboard shortcut.
     </p>
     <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
       <FlowShot
@@ -71,29 +69,5 @@ import detailToolbarMenu from '../../../assets/flow/details/detail-toolbar-menu.
       />
     </div>
 
-    {/* The same five actions in the macOS menu bar. This is a DIFFERENT
-        claim from the strip and needs its own picture: the monograms are
-        identical across both surfaces (the brief's "cannot drift"), the
-        keyboard route exists, and the two actions that take a parameter are
-        the two carrying a submenu arrow. Paired with a short copy column
-        rather than given a full band — it is a corroborating detail, not a
-        chapter of its own. */}
-    <div class="toolbar-menu mx-auto mt-16">
-      <div class="toolbar-menu__copy" data-animate="rise">
-        <h4 class="toolbar-menu__head">The same five, wherever you reach for them.</h4>
-        <p class="toolbar-menu__body">
-          Every action in the strip is also in the menu bar, carrying the same mark, so nothing
-          has to be relearned between the two. Proofread has a keyboard shortcut. Two actions
-          need an answer before they can run: Translate, and turning a table back into text.
-          Those two show an arrow, because they open their choices rather than starting.
-        </p>
-      </div>
-      <FlowDetail
-        src={detailToolbarMenu}
-        alt="Flow's Agency menu open in the macOS menu bar: Proofread with the shift-command-P shortcut, Summarize, Translate with a submenu arrow, Convert Text to Table, and Convert Table to Text with a submenu arrow, each beside the same coloured mark used in the document's tool strip."
-        caption="One shortcut, two submenus · The marks match the strip exactly"
-        sizes="(min-width: 900px) 26rem, calc(100vw - 3rem)"
-      />
-    </div>
   </div>
 </section>

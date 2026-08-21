@@ -4,13 +4,15 @@
 // about eight seconds, while the one warm visitor stayed almost seven
 // minutes. The single page carried twelve chapters and nearly 12,000 words.
 // The overview now sells the promise and sends the reader into one category;
-// each category page carries its chapters verbatim under a shared sub-nav.
+// each category page carries its chapters under a shared sub-nav.
 //
 // RULES. Chapter ids are the ORIGINAL #tour-<chapter> anchors. They exist on
 // the category page (the chapter heading) AND on the overview (the card link),
 // so every link published before the split still lands somewhere useful.
 // Category copy follows website-copy-style: plain words, no em dashes, no
-// capability Flow does not have.
+// capability Flow does not have. Titles name the common belief and flip it
+// (content-masterclass review, 2026-08-20); blurbs are short sentences, one
+// idea each.
 
 export interface FlowChapter {
   /** The original anchor id, e.g. `tour-agency`. Never rename. */
@@ -25,7 +27,7 @@ export interface FlowCategory {
   label: string;
   /** Category page H1 and overview card title. */
   title: string;
-  /** One or two sentences. Overview card body and category lede. */
+  /** Two to four short sentences. Overview card body and category lede. */
   blurb: string;
   /** `<title>` for the category page (search-facing). */
   pageTitle: string;
@@ -38,9 +40,9 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
   {
     slug: 'writing-with-ai',
     label: 'Writing with AI',
-    title: 'AI that edits with you, not behind your back.',
+    title: 'Most AI edits happen behind your back. Flow edits with you.',
     blurb:
-      'Five AI actions, one trust path. Every change arrives as an exact diff you approve, a model can look things up in your folders while you watch each lookup, the tools live inside the document, and a fifty page file gets the same care part by part.',
+      'Five AI actions, one trust path. Every change arrives as an exact diff you approve. The tools tell you the cost before you click. A fifty page file gets the same care, part by part.',
     pageTitle: 'Flow · Writing with AI: approve every change · Orionfold',
     description:
       'How Orionfold Flow edits with AI: five actions, lookups you watch live, a tool strip that states scope and cost, and an exact diff you approve for every change.',
@@ -54,9 +56,9 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
   {
     slug: 'receipts',
     label: 'Receipts and evidence',
-    title: 'Every run leaves a record you can check.',
+    title: 'Most AI work leaves no trace. Every Flow run leaves a receipt.',
     blurb:
-      'One card per run names what ran, where it ran, what it cost, and what the evidence does and does not support. Benchmarks measure the models on your own Mac before you trust one.',
+      'One card per run names what ran, where it ran, and what it cost. It says what the evidence does and does not support. Benchmarks measure the models on your own Mac before you trust one.',
     pageTitle: 'Flow · Receipts and evidence: what ran and what it cost · Orionfold',
     description:
       'Every Orionfold Flow run records a receipt: the model, the place it ran, the exact cost, the checks, and the evidence. Benchmarks measure local models on your Mac.',
@@ -68,7 +70,7 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
   {
     slug: 'models-and-runtime',
     label: 'Models and runtime',
-    title: 'AI runs where you allow it, and nowhere else.',
+    title: 'Most tools decide where your text goes. With Flow, you do.',
     blurb:
       'Four domains decide where work may run. A complete local runtime ships inside the app. Your rules pick the model, and the screen names the rule that did.',
     pageTitle: 'Flow · Models and runtime: local, LAN, or your cloud · Orionfold',
@@ -83,17 +85,18 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
   {
     slug: 'documents-and-files',
     label: 'Documents and files',
-    title: 'Ordinary files, with search and tables that hold up.',
+    title: 'Most note apps lock your files in a database. Flow works on plain folders.',
     blurb:
-      'Search results are citations checked byte for byte. Tables edit like tables. A small popover shows what the app is using right now. Your files stay ordinary files any app can read.',
+      'A search result is a citation, checked byte for byte. Tables edit like tables. Charts and diagrams are drawn from the text in the file, and Flow can draw one for you. Your files stay ordinary files any app can read.',
     pageTitle: 'Flow · Documents and files: search, tables, plain Markdown · Orionfold',
     description:
-      'Orionfold Flow works on ordinary folders of Markdown. Search returns citations checked byte for byte, tables edit as tables, and a popover shows what the app is using.',
+      'Orionfold Flow works on ordinary folders of Markdown. Search returns citations checked byte for byte, tables edit as tables, and charts and diagrams are drawn from the text.',
     chapters: [
-      { id: 'tour-resources', label: 'What it is using' },
       { id: 'tour-search', label: 'Search' },
       { id: 'tour-tables', label: 'Tables' },
+      { id: 'tour-visualize', label: 'Charts and diagrams' },
       { id: 'tour-files', label: 'Your files' },
+      { id: 'tour-resources', label: 'What it is using' },
     ],
   },
 ];

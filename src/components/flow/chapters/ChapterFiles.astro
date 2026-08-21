@@ -4,7 +4,6 @@ import FlowDetail from '../FlowDetail.astro';
 import FlowShot from '../../../components/flow/FlowShot.astro';
 import FlowDetail from '../../../components/flow/FlowDetail.astro';
 import shotOrganizer from '../../../assets/flow/shots/flow-organizer-shot.webp';
-import shotCharts from '../../../assets/flow/shots/flow-charts-shot.webp';
 import detailGrid from '../../../assets/flow/details/detail-grid.webp';
 ---
 <!-- Chapter 8: Files -->
@@ -18,13 +17,13 @@ import detailGrid from '../../../assets/flow/details/detail-grid.webp';
         Collisions refuse instead of overwriting, and Delete goes to the system Trash.
       </p>
     </div>
-    {/* Top-left crop, closing the page's rotation. The grid detail is the
-        proof that "plain Markdown" survives a real table, over the window
-        that shows the documents those tables live in. */}
+    {/* Top-left crop. The grid detail is the proof that "plain Markdown"
+        survives a real table, over the window that shows the plain folder
+        those documents live in. */}
     <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
       <FlowShot
-        src={shotCharts}
-        alt="Flow documents carrying images and tables: a publishing calendar beside an investment memo with a chart image and a metrics table."
+        src={shotOrganizer}
+        alt="Two full-page documents side by side in Flow over a plain folder of Markdown files, with a photograph rendering in place from the folder's own assets."
         sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
       />
       <FlowDetail
@@ -36,20 +35,11 @@ import detailGrid from '../../../assets/flow/details/detail-grid.webp';
         animate
       />
     </div>
-    <div class="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
-      <FlowShot
-        src={shotOrganizer}
-        alt="Two full-page documents side by side in Flow over a plain folder of Markdown files, with a photograph rendering in place from the folder's own assets."
-        caption="Two documents, one plain folder. Pictures render in place, read only from inside the folder you opened."
-        crop
-        sizes="(min-width: 1024px) 32rem, 100vw"
-      />
-      <p class="text-[0.95rem] leading-relaxed text-text-muted">
-        Folders have no Delete at all, deliberately, because deleting one would take
-        everything inside it without showing you what that was. And Flow is sandboxed to
-        exactly the folders you selected, so a note cannot reach the rest of your disk by
-        naming a path.
-      </p>
-    </div>
+    <p class="mx-auto mt-10 max-w-3xl text-center text-[0.95rem] leading-relaxed text-text-muted">
+      Pictures render in place, read only from inside the folder you opened. Folders have no
+      Delete at all, deliberately, because deleting one would take everything inside it without
+      showing you what that was. And Flow is sandboxed to exactly the folders you selected, so a
+      note cannot reach the rest of your disk by naming a path.
+    </p>
   </div>
 </section>

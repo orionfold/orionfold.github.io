@@ -1,13 +1,15 @@
 ---
 import FlowCategoryPage from '../../components/flow/FlowCategoryPage.astro';
-import ChapterResources from '../../components/flow/chapters/ChapterResources.astro';
 import ChapterSearch from '../../components/flow/chapters/ChapterSearch.astro';
 import ChapterTables from '../../components/flow/chapters/ChapterTables.astro';
+import ChapterVisualize from '../../components/flow/chapters/ChapterVisualize.astro';
 import ChapterFiles from '../../components/flow/chapters/ChapterFiles.astro';
+import ChapterResources from '../../components/flow/chapters/ChapterResources.astro';
 ---
 <FlowCategoryPage slug="documents-and-files">
-  <ChapterResources />
   <ChapterSearch />
   <ChapterTables />
+  <ChapterVisualize />
   <ChapterFiles />
+  <ChapterResources />
 </FlowCategoryPage>

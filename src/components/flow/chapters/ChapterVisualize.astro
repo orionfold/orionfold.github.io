@@ -1,0 +1,134 @@
+---
+import FlowShot from '../FlowShot.astro';
+import FlowDetail from '../FlowDetail.astro';
+import shotCharts from '../../../assets/flow/shots/flow-charts-shot.webp';
+import detailChartLine from '../../../assets/flow/details/detail-chart-line.webp';
+import detailChartGallery from '../../../assets/flow/details/detail-chart-gallery.webp';
+import detailChartFlowchart from '../../../assets/flow/details/detail-chart-flowchart.webp';
+---
+{/* Chapter: Charts and diagrams (Visualize, goal 0129). Written 2026-08-20
+    from the Flow CHANGELOG "Unreleased" entries of the same day (both units
+    operator-accepted) and features/0129-charts-and-diagrams/SPEC.md. The
+    capture is the 2026-08-20 re-shoot on development build c6ec42a, which
+    the installed /Applications build does not yet carry; every number in
+    the charts is invented demo data and must never be quoted as a figure.
+
+    TRUTH RAILS (each one is a sentence someone will want to "tighten"):
+      * Visualize ADDS one chart or diagram fence AFTER the selected text.
+        Never "replaces", never "rewrites your table into a chart".
+      * A proposal Flow cannot draw is never shown; the notice says why in
+        the renderer's words. Never promise "always draws".
+      * Rendering is offline from the fence text (bundle, no CDN). The
+        Wi-Fi-off CAPTURE was waived by the operator, so never say "verified
+        with Wi-Fi off"; say what the CHANGELOG says: renders offline.
+      * Verified on the local Flow Runtime at $0 and on the operator's own
+        runs. Do not name a hosted price or a model.
+      * Designed layout blocks (callouts, columns, cards) are a separate,
+        later goal: never claim them.
+      * The gallery's Ask is Visualize with a refinement, reviewed like any
+        edit; nothing is written until Apply, and Apply edits the note.
+      * Vocabulary is the screen's: "chart", "diagram", "gallery", "Ask",
+        "Insert Chart or Diagram". Never "AI-generated infographics".
+
+    STAGE CORNER: --bl. Neighbours on the Documents page are Tables (--tr)
+    above and Files (--tl) below; tests/e2e/product-stage asserts adjacency
+    in rendered order. */}
+<section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-visualize">
+  <div>
+    <div class="mx-auto max-w-3xl">
+      <p class="of-eyebrow" data-animate="rise">Charts and diagrams</p>
+      <h3 id="tour-visualize" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Most chart tools give you a picture to paste. Flow draws the chart from the text in your file.</h3>
+      <p class="of-lede mt-5" data-animate="rise">
+        A chart or a diagram in Flow is a small fenced block of plain text inside your Markdown.
+        Flow draws it in place, offline, in one house style: an action title, direct labels, one
+        highlighted series, a source line. Click into it to edit the text. Click out to see it
+        drawn. Any other editor still shows the text, and a diagram block renders on GitHub the
+        same way it does here.
+      </p>
+      <p class="of-lede mt-4" data-animate="rise">
+        Select a table, a list, or a paragraph and ask Flow to <strong>Visualize</strong> it. Flow
+        proposes one chart or one diagram after the selected text, never in place of it, and the
+        review draws the proposal before you approve. A proposal Flow cannot draw is never shown;
+        the notice says why, in the renderer's own words.
+      </p>
+    </div>
+
+    {/* The whole window for context (Reader view on the left, the chart
+        gallery editor on the right), with the drawn line chart lifted out so
+        the house style is legible: the highlighted series, the direct labels,
+        the source line. */}
+    <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
+      <FlowShot
+        src={shotCharts}
+        alt="Orionfold Flow with a quarterly business review open in Reader on the left, its line chart and deal-flow flowchart drawn in place from the file's own text, and the chart gallery editor open on the right on the same file's bar chart, with the type menu, the Ask row, and the chart's YAML beneath the drawing."
+        crop
+        sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
+      />
+      <FlowDetail
+        class="of-stage__detail of-stage__detail--bl"
+        src={detailChartLine}
+        alt="A line chart drawn by Flow inside a document: the title 'Team plan drove MRR growth through the summer', a plan legend with Team highlighted in the accent colour and Pro and Enterprise in grey, dated axes, and the source line 'Billing system, month-end snapshots'."
+        caption="Drawn from the fence text, offline · One highlighted series, a title that makes the claim, a source line"
+        sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
+        animate
+      />
+    </div>
+
+    {/* Two coupled claims: the gallery (edit a chart by the question it
+        answers, ask Flow to revise it) and the diagram fence. Each crop is a
+        wide block that reads at full column width. */}
+    <div class="bench-honesty mx-auto mt-14" data-animate-stagger="slow">
+      <div class="bench-honesty__item" data-animate="rise">
+        <div class="bench-honesty__copy">
+          <p class="flow-path__num">The chart gallery</p>
+          <h4 class="bench-honesty__head">Pick a chart by the question it answers. Ask Flow to change it in one sentence.</h4>
+          <p class="bench-honesty__body">
+            Hover a drawn chart and open it in its own tab. The type menu is grouped by what you
+            are trying to show: a comparison, a change over time, a composition, a distribution, a
+            diagram. Each type names the data shape it needs. Switching type keeps your data and
+            re-maps it. "Use a table" copies a table's rows in. Ask sends one sentence to Visualize
+            and the revised chart comes back for your review like any other edit. Nothing is
+            written until you press Apply, and Apply edits the note itself, so ⌘S saves and ⌘Z
+            undoes.
+          </p>
+        </div>
+        <FlowDetail
+          src={detailChartGallery}
+          alt="The head of Flow's chart gallery editor: a Chart type menu reading Bar chart, a one-line note of the data shape it needs, the row 'Ask Flow to change this chart...' with an Ask button, and the bar chart 'Enterprise carried Q3' drawn at full width with one bar in the accent colour."
+          caption="Type by question · Ask in one sentence · Revert and Apply, nothing written until Apply"
+          sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
+        />
+      </div>
+      <div class="bench-honesty__item" data-animate="rise">
+        <div class="bench-honesty__copy">
+          <p class="flow-path__num">Diagrams</p>
+          <h4 class="bench-honesty__head">A diagram is text too.</h4>
+          <p class="bench-honesty__body">
+            A flowchart, a sequence, or any of the diagram types Flow knows is a fenced block of
+            plain text that Flow draws in place, in the same style as the charts. Hover it in
+            Reader and copy it out as a picture, PNG or SVG, for the deck that needs one. The file
+            keeps the text.
+          </p>
+        </div>
+        <FlowDetail
+          src={detailChartFlowchart}
+          alt="A deal-flow flowchart drawn by Flow inside the document: Qualified opportunity, Proposal sent, a Security review needed decision with Yes and No branches, Security questionnaire, Contract redlines, Signed, Onboarding, Revenue recognised."
+          caption="A flowchart drawn in place · The file on disk is still the text that describes it"
+          sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
+        />
+      </div>
+    </div>
+
+    <ul class="flow-list mx-auto mt-14 max-w-3xl">
+      <li>Visualize sits on the Agency menu, on the editor strip beside the other AI actions, and on a keyboard shortcut. It adds one chart or diagram after the selected text. It never replaces the text it read.</li>
+      <li>The review states what the proposal adds, read from the proposed block itself: for example "Adds a bar chart with 3 data rows after the selected text". The drawing in the review is the drawing you will get.</li>
+      <li>Charts follow your system accent, and dark mode is a re-theme of the same drawing, not a second picture.</li>
+      <li>Hover a chart, a diagram, a table, or an image in the Editor for its own buttons, including one that removes the whole block in one step, so ⌘Z brings it back whole.</li>
+      <li>Verified on the local Flow Runtime at no cost and on the builder's own runs. Designed layout blocks such as callouts, columns, and cards are a separate, later goal, and are not claimed here.</li>
+    </ul>
+
+    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">
+      Captured 2026-08-20 on a development build. Every document, name, and number in the charts is invented demo data; the charts are plots of that data, not pictures.
+    </p>
+  </div>
+</section>
