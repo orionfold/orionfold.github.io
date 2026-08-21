@@ -234,8 +234,13 @@ const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
         // GA4 lead key event — only for named-offer captures (magnet, offer
         // slots), so offer-less forms (homepage hero, footer) are unchanged.
         // Uses the global gtag shim from Layout.astro (no-op if gtag absent).
+        // The parameter is `form_source`, NOT `source`: gtag treats event
+        // parameters literally named source / medium / campaign as a
+        // traffic-source override, so `{ source }` rewrote the converting
+        // session's source to the form id with medium "(not set)" and dropped
+        // it into Unassigned (found by marketing from GA4, 2026-08-20).
         if (offer && typeof window.gtag === 'function') {
-          window.gtag('event', 'generate_lead', { offer, source });
+          window.gtag('event', 'generate_lead', { offer, form_source: source });
         }
       } catch {
         showError('Could not connect. Please try again.');
@@ -275,7 +280,7 @@ const endpoint = 'https://orionfold.supabase.co/functions/v1/waitlist-signup';
     function reportConfirmedLead() {
       try {
         if (typeof window.gtag === 'function') {
-          window.gtag('event', 'confirmed_lead', { offer, source });
+          window.gtag('event', 'confirmed_lead', { offer, form_source: source });
           // Google Ads conversion action, when one is configured. Kept separate
           // from the Purchase action on purpose: waitlist volume must never skew
           // bidding on the revenue action.

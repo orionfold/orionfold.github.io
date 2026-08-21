@@ -123,4 +123,11 @@ export const RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED =
 // double-counting. Turning this flag off again is one flip and needs no
 // CAPI/webhook redeploy in either direction.
 // See audit-reports/seo-audit-2026-06-18.md §4.
-export const META_PIXEL_ENABLED = true;
+//
+// OFF again (operator 2026-08-20, marketing ack in the flow-growth ledger
+// 16:3x PDT): wave 1 is Meta Instant forms, where the lead is captured inside
+// Facebook and no site page loads, so the pixel buys nothing for it, while
+// live mobile Lighthouse attributed most of both landing pages' main-thread
+// blocking to connect.facebook.net (first-party script was under 0.7 s). Flip
+// back to true the day a website-conversion wave is scheduled (B2/B3).
+export const META_PIXEL_ENABLED = false;
