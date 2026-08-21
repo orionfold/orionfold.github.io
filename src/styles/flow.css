@@ -357,3 +357,9 @@
 @media (min-width: 1024px) {
   .flow-hero .of-stage .of-stage__detail--tr.of-stage__detail--tr { right: 0.75rem; }
 }
+
+/* /flow/ hero title: one sentence per line on a large screen, never broken
+   mid-sentence. Below lg the spans stay inline and the title balances. */
+@media (min-width: 1024px) {
+  .flow-hero__title span { display: block; text-wrap: nowrap; }
+}

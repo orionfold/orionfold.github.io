@@ -155,8 +155,13 @@ const heroConsentText = FLOW_CONSENT_TEXT;
              the picture that proves it. The receipt, the domains, and the diff
              each get their own chapter on the tour pages. -->
         <p class="of-eyebrow mt-7">For founders, comms leads, and independent operators. Anyone whose name is on the document.</p>
-        <h1 class="hero-gradient-text mx-auto mt-4 max-w-4xl font-display text-[clamp(2.2rem,6.2vw,3.6rem)] font-extrabold leading-[1.06] tracking-[-0.05em]">
-          Every AI change is a diff you approve. Every run leaves a receipt.
+        {/* Two lines on a large screen, one sentence each: the spans go
+            display:block + nowrap from lg up (flow.css .flow-hero__title), and
+            the size clamp is capped so the longer sentence fits the 5xl
+            measure. Below lg they fall back to one balanced paragraph. */}
+        <h1 class="flow-hero__title hero-gradient-text mx-auto mt-4 max-w-5xl font-display text-[clamp(2.2rem,5.6vw,3.3rem)] font-extrabold leading-[1.06] tracking-[-0.05em]">
+          <span>Every AI change is a diff you approve.</span>{' '}
+          <span>Every run leaves a receipt.</span>
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
           Your text changes two ways only: an edit you typed, or a change you approved. The receipt records what ran, where it ran, and what it cost.

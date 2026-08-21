@@ -68,7 +68,10 @@ const tour = `${flow}\n${chapters}\n${categoryShell}`;
 // 2026-08-20 content-masterclass rewrite: the H1 is the approval promise in
 // plain words (title tag, OG card, and H1 agree); the locked tagline moved to
 // the press kit, where a journalist wants the exact phrase.
-assert.match(flow, /Every AI change is a diff you approve\. Every run leaves a receipt\./, 'the H1 is the approval promise');
+// Two sentences, each in its own <span> so the title reads as two lines on a
+// large screen (operator ask, 2026-08-20 23:50); asserted sentence by sentence.
+assert.match(flow, /flow-hero__title[\s\S]*?<span>Every AI change is a diff you approve\.<\/span>[\s\S]*?<span>Every run leaves a receipt\.<\/span>/, 'the H1 is the approval promise, one sentence per line');
+assert.match(read('src/styles/flow.css'), /\.flow-hero__title span \{ display: block; text-wrap: nowrap; \}/, 'the two-line rule lives in flow.css');
 assert.match(flow, /const FLOW_TITLE = 'Orionfold Flow · Every AI change is a diff you approve, with a receipt'/, 'the title tag carries the same promise');
 assert.match(flow, /title=\{FLOW_TITLE\}/);
 assert.match(flow, /\{SITE\.tagline\}/, 'the locked tagline stays in the press kit');
