@@ -11,6 +11,8 @@
 import WaitlistForm from '../ui/WaitlistForm.astro';
 import { FLOW_CONSENT_TEXT } from '../../data/flow-consent';
 import { magnetHref } from '../../data/magnet';
+import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
+import { FLOW_DOWNLOAD_READY, FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT } from '../../data/flow-pricing.ts';
 
 interface Props {
   /**
@@ -35,20 +37,42 @@ const formId = isHome ? 'home-flow-waitlist' : isMid ? 'flow-mid-waitlist' : isE
 const source = formId;
 const consentText = FLOW_CONSENT_TEXT;
 
-const eyebrow = isHome
-  ? 'Flow waitlist · Launching soon'
-  : isMid
-    ? 'Seen enough? · Flow waitlist'
-    : isEnterprise
-      ? 'For enterprise AI owners · Flow waitlist'
-      : 'Built for Mac · Flow waitlist';
-const heading = isHome
-  ? 'Be first to approve a change in Flow.'
-  : isMid
-    ? 'Want this on your Mac?'
-    : isEnterprise
-      ? 'Bring the receipt to your documents.'
-      : 'Be first to approve a change in Flow.';
+// Two states, one component. Pre-launch the offer is the waitlist; once
+// ORIONFOLD_FLOW_LIVE is on the offer is the app itself and the email capture
+// becomes the secondary ask rather than the only one. Keeping both in one
+// component means the funnel, the consent text and the attribution sources do
+// not fork on launch day.
+const live = ORIONFOLD_FLOW_LIVE;
+const eyebrow = live
+  ? (isHome
+      ? 'Free to use · Built for Mac'
+      : isMid
+        ? 'Seen enough? · Download Flow'
+        : isEnterprise
+          ? 'For enterprise AI owners · Built for Mac'
+          : 'Built for Mac · Free to use')
+  : (isHome
+      ? 'Flow waitlist · Launching soon'
+      : isMid
+        ? 'Seen enough? · Flow waitlist'
+        : isEnterprise
+          ? 'For enterprise AI owners · Flow waitlist'
+          : 'Built for Mac · Flow waitlist');
+const heading = live
+  ? (isHome
+      ? 'Approve your first change in Flow today.'
+      : isMid
+        ? 'Want this on your Mac?'
+        : isEnterprise
+          ? 'Bring the receipt to your documents.'
+          : 'Download Flow and open a folder.')
+  : (isHome
+      ? 'Be first to approve a change in Flow.'
+      : isMid
+        ? 'Want this on your Mac?'
+        : isEnterprise
+          ? 'Bring the receipt to your documents.'
+          : 'Be first to approve a change in Flow.');
 const continueHref = isHome ? '/flow/' : isMid ? (nextHref ?? '/flow/') : storyHref;
 const continueLabel = isHome ? 'Take the product tour' : isMid ? (nextLabel ? `Next: ${nextLabel}` : 'Back to the Flow overview') : 'Read the story';
 ---
@@ -60,15 +84,31 @@ const continueLabel = isHome ? 'Take the product tour' : isMid ? (nextLabel ? `N
     <div class="relative z-10 max-w-2xl">
       <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">{eyebrow}</p>
       <h2 id={`${formId}-heading`} class="mt-4 text-balance text-4xl font-bold leading-[1.03] sm:text-5xl">{heading}</h2>
-      <p class="mt-5 max-w-xl text-lg leading-relaxed text-text-muted">
-        Flow is pre-launch, offered as a freemium subscription when it ships. Here is what
-        your address gets you, and nothing else:
-      </p>
-      <ul class="flow-list mt-4 max-w-xl">
-        <li>The launch note the day Flow ships for Mac.</li>
-        <li>Development notes with the measured numbers and their dates, one email a week at most.</li>
-        <li>The weekly AI For Everyone digest, which you can stop any time.</li>
-      </ul>
+      {live ? (
+        <>
+          <p class="mt-5 max-w-xl text-lg leading-relaxed text-text-muted">
+            Reading, writing, searching and exporting your documents are free forever. Flow's
+            AI is the part you subscribe to, and you can try it before you decide.
+          </p>
+          <ul class="flow-list mt-4 max-w-xl">
+            <li>Works on ordinary folders of Markdown files you already own.</li>
+            <li>Every AI change arrives as an exact diff you approve or reject.</li>
+            <li>If you ever stop paying, your documents stay open and editable.</li>
+          </ul>
+        </>
+      ) : (
+        <>
+          <p class="mt-5 max-w-xl text-lg leading-relaxed text-text-muted">
+            Flow is pre-launch, offered as a freemium subscription when it ships. Here is what
+            your address gets you, and nothing else:
+          </p>
+          <ul class="flow-list mt-4 max-w-xl">
+            <li>The launch note the day Flow ships for Mac.</li>
+            <li>Development notes with the measured numbers and their dates, one email a week at most.</li>
+            <li>The weekly AI For Everyone digest, which you can stop any time.</li>
+          </ul>
+        </>
+      )}
       <p class="mt-5 max-w-xl text-sm leading-relaxed text-text-muted">
         Want something to read today? <a href={magnetHref('flow-waitlist')} class="of-text-action underline underline-offset-2">The AI Native Business book is free</a>, PDF and EPUB, the method Flow turns into an app.
       </p>
@@ -80,11 +120,39 @@ const continueLabel = isHome ? 'Take the product tour' : isMid ? (nextLabel ? `N
     </div>
 
     <div class="flow-waitlist__form relative z-10 rounded-2xl border border-border/80 bg-surface/85 p-5 backdrop-blur sm:p-7">
+      {live && (
+        /* The download leads once Flow ships. FLOW_DOWNLOAD_READY is false while
+           the URL is a placeholder, and a dependency that is not active must
+           never be dressed as a working action -- so the button is disabled and
+           says so truthfully rather than linking somewhere dead. */
+        <div class="mb-6">
+          {FLOW_DOWNLOAD_READY ? (
+            <a href={FLOW_DMG_URL} class="of-primary-action w-full justify-center" data-flow-download>
+              Download Flow for Mac
+            </a>
+          ) : (
+            <>
+              <span class="of-primary-action w-full cursor-not-allowed justify-center opacity-60" aria-disabled="true" role="link">
+                Download Flow for Mac
+              </span>
+              <p class="mt-2 text-center font-mono text-[0.62rem] uppercase tracking-[0.16em] text-text-dim">
+                Download link not live yet
+              </p>
+            </>
+          )}
+          <p class="mt-3 text-center text-xs leading-relaxed text-text-dim">
+            {FLOW_SYSTEM_REQUIREMENT}. Free to use, no account needed.
+          </p>
+          <p class="mt-4 border-t border-border/60 pt-4 text-center text-sm text-text-muted">
+            Or get the release notes by email
+          </p>
+        </div>
+      )}
       <WaitlistForm
         id={formId}
         source={source}
         offer="flow-waitlist"
-        buttonText="Join the waitlist"
+        buttonText={live ? 'Email me Flow updates' : 'Join the waitlist'}
         successMessage="Check your inbox to confirm."
         consentText={consentText}
       />

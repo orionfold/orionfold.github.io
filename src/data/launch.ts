@@ -70,6 +70,46 @@ export const ORIONFOLD_PROOF_LIVE = true;
 // admin-issue-license call — it gates the peer's close, not the live Buy button.
 export const ORIONFOLD_RELAY_LIVE = true;
 
+// ORIONFOLD_FLOW_LIVE — gate the live "Buy now" / price display on any Orionfold
+// Flow purchase surface, exactly like ORIONFOLD_RELAY_LIVE gates Relay's. Flow is
+// the first SUBSCRIPTION product: two SKUs (license_orionfold_flow_monthly /
+// _annual) that differ only by billing period, with the annual amount DERIVED
+// from the monthly one and one discount rate in catalog.ts, never written as a
+// second literal.
+//
+// This ships OFF, and the reason is a hard product gate rather than a missing
+// storefront. Two independent conditions, BOTH required:
+//
+//   1. The app must ENFORCE the terms before the website states them. A published
+//      price the binary contradicts is the worst failure 0127 can produce
+//      (orionfold-flow contract entry 2026-08-21 23:41). While OFF, the pricing
+//      surface renders the Base/Pro CAPABILITY split — which is true today and
+//      enforced at one seam — and shows no amount and no buy button.
+//   2. Operator direction 2026-08-22 07:56 PDT: every public-facing Flow change
+//      stays local until the operator declares Flow released.
+//
+// Flip ON once: the 2 live Stripe subscription prices exist by lookup_key
+// (neither exists in live OR sandbox as of 2026-08-22 — verified, count 0), the
+// subscription webhook path (invoice.paid extending expires_at,
+// customer.subscription.deleted flipping status) is deployed and exercised end to
+// end, flow-license-refresh + flow-billing-portal are deployed --no-verify-jwt
+// and answer a real round trip, and the operator declares Flow released.
+//
+// NOTE: this flag gates the PRICE and the BUY BUTTON, never the capability table
+// and never the free tier. Base (Flow unlicensed) is free forever and is true
+// whether this is on or off.
+// LOCAL LAUNCH REHEARSAL (operator direction 2026-08-22 09:18): this is ON so
+// the local site renders exactly as it will on launch day: price, Download CTAs,
+// buy buttons, launched FAQ and metadata.
+//
+// LOCAL COMMITS ONLY. No push to the live website until the operator declares
+// Flow released. The two conditions above are still unmet, so this flag being
+// true is a REHEARSAL STATE, not a claim that Flow is buyable.
+//
+// BEFORE ANY PUSH, confirm with the operator that release is declared. If it is
+// not, this line goes back to false in the pushed commit.
+export const ORIONFOLD_FLOW_LIVE = true;
+
 // RELAY_HOST_LIVE — managed Host is a separate annual commercial right from
 // premium Relay Packs. ON (operator 2026-07-20): G-041 proved the isolated
 // purchase, signed-license delivery, re-download, replay and refund gates;

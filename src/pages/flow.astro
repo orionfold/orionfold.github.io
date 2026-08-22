@@ -20,16 +20,23 @@
 // shipped, and the only goals left are 0145 first-run onboarding (took Now at
 // 09:12 that day) and 0127 buy/license/update. The dev-build/released
 // distinction was an internal guardrail the operator had not yet retired, not
-// a claim boundary. "Pre-launch" replaces "in development"; no launch DATE is
+// a claim boundary. "Pre-launch" replaced "in development"; no launch DATE is
 // printed anywhere without the operator.
+// 2026-08-22 (operator direction): the standing disclosure line "Pre-launch ·
+// Freemium subscription planned · Every screen is the real build, running" is
+// REMOVED from every Flow surface -- the /flow/ hero, the four tour subpages
+// (FlowCategoryPage.astro), and /flow/enterprise/ -- along with the
+// "Pre-launch." and "Freemium subscription planned." sentences in the press-kit
+// Status row. The three guards in flow-flagship-surface.test.mjs are inverted
+// to doesNotMatch so the line cannot creep back. Pricing copy stays absent
+// until the operator declares Flow released.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
-import FlowDetail from '../components/flow/FlowDetail.astro';
-import FlowProofNuggets from '../components/flow/FlowProofNuggets.astro';
 import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustration.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
+import FlowPricing from '../components/flow/FlowPricing.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import { Image } from 'astro:assets';
 import { SITE, PERSON } from '../data/seo';
@@ -38,11 +45,16 @@ import { FLOW_CATEGORIES, flowCategoryHref } from '../data/flow-categories';
 import { FLOW_CATEGORY_SHOTS } from '../data/flow-category-shots';
 import { FLOW_ENTERPRISE_TEASER } from '../data/flow-enterprise';
 import { FLOW_CONSENT_TEXT } from '../data/flow-consent';
+import { FLOW, formatUsd } from '../data/commerce.ts';
+import { FLOW_SYSTEM_REQUIREMENT } from '../data/flow-pricing.ts';
+import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import '../styles/flow.css';
 
 import appIcon from '../assets/flow/flow-app-icon-512.png';
-import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
-import detailRunChecks from '../assets/flow/details/detail-run-checks.webp';
+// Flow Guide capture (3840x2100, light only). The hero artifact: the Welcome
+// document renders "Conduct beautiful documents" as its own H1, so the page's
+// headline and the product agree inside one frame.
+import shotGuideCharts from '../assets/flow/shots/flow-guide-charts-market-shot.webp';
 
 const og = ogMeta('/flow/');
 const flowUrl = `${SITE.url}/flow/`;
@@ -51,7 +63,7 @@ const flowStoryHref = '/story/limitless-without-the-pill/';
 // Title tag, OG card title (src/data/og.ts), and H1: one promise, three
 // lengths. The official tagline stays in the press kit, where a journalist
 // wants the exact phrase.
-const FLOW_TITLE = 'Orionfold Flow · Every AI change is a diff you approve, with a receipt';
+const FLOW_TITLE = 'Orionfold Flow · Charts and diagrams from plain text, offline on your Mac';
 
 const totalChapters = FLOW_CATEGORIES.reduce((n, c) => n + c.chapters.length, 0);
 const chapterOffsets = FLOW_CATEGORIES.reduce<number[]>((acc, c, i) => [...acc, (acc[i - 1] ?? 0) + (FLOW_CATEGORIES[i - 1]?.chapters.length ?? 0)], []);
@@ -76,21 +88,50 @@ const stats = [
   { value: '140 changes', label: 'Shipped in the last 24 days', fine: 'Counted from the Flow changelog, which records user-visible behavior only. Entries from 2026-07-28 to 2026-08-21' },
 ];
 
+// Price strings come from the catalog via formatUsd, never from a literal, so
+// the FAQ, the pricing section and the JSON-LD Offer cannot disagree.
+const flowMonthlyDisplay = formatUsd(FLOW.monthly.amount);
+const flowAnnualDisplay = formatUsd(FLOW.annual.amount);
+
 const faqs = [
   {
     q: 'What is Orionfold Flow?',
     a: 'Flow is a native Mac app for professional documents with AI agency built in. It works on ordinary folders of plain Markdown files. Every AI change arrives as an exact diff you approve, and a receipt records what ran, where it ran, and what it cost.',
   },
-  {
-    // Pre-launch, not "someday". Verified 2026-08-21 against the Flow repo's
-    // own BACKLOG "Now": every capability chapter on this site has shipped,
-    // and the two goals left are first-run onboarding (0145, took Now at
-    // 09:12 today) and buy/license/update (0127, next). Do not restore
-    // "in active development" here; it understates where the build is. If a
-    // launch date is ever printed, it needs the operator, not this file.
-    q: 'When does Flow launch?',
-    a: 'Very soon. Every capability on this page is built and running, and Flow is used daily for real work by its builder. What is left is the way you first meet the app and the way you buy it: first-run onboarding, then licensing and updates. Join the waitlist to get the launch note the day it ships. A freemium subscription is planned.',
-  },
+  // Buyer questions. These feed faqSchema, so every answer here also reaches
+  // Google and the AI answer engines; a wrong one is wrong in more places than
+  // this page. All five are gated on ORIONFOLD_FLOW_LIVE: while it is off the
+  // page keeps the pre-launch answer instead, because a price nothing can charge
+  // must not appear in structured data.
+  ...(ORIONFOLD_FLOW_LIVE
+    ? [
+        {
+          q: 'How much does Flow cost?',
+          a: `Reading, writing, searching, organizing and exporting your documents are free forever, with no account and no expiry. Flow's AI features are ${flowMonthlyDisplay} a month, or ${flowAnnualDisplay} a year if you pay for the year at once. One licence covers one person on as many of your own Macs as you like. Nobody counts your machines.`,
+        },
+        {
+          q: 'Is there a free version of Flow?',
+          a: 'Yes, and it is not a trial. The whole document side of Flow is free permanently: the editor, the reader, search across your folders including search by meaning, wiki links, tables, charts, the bundled guide, dictation, the shipped guardrail checks and app updates. You can also read every receipt, timeline and evidence score Flow has ever recorded, permanently, even if you never subscribe. What you pay for is running the AI that produces new ones. You also get a stretch of Pro access to try it properly, and a day is only spent on a day you actually use it.',
+        },
+        {
+          q: 'What happens if I stop paying?',
+          a: 'The AI stops. That is the whole list. There are no document locks, no read-only mode, no export wall and no watermark. Your files are ordinary Markdown in your own folders, so they stay open and editable in Flow and in any other editor. App updates keep arriving too, including security fixes.',
+        },
+        {
+          q: 'Are local models free to use in Flow?',
+          a: 'No, and this is the line most people expect to go the other way. Flow can run models on your own Mac with no network involved, and that is still part of the subscription. What you pay for is the layer around the model: the routing that picks which one runs, the tools it may use, the approval step, the receipt and the checks on its output. Flow never charges for the words a model produces and never touches your provider bill.',
+        },
+        {
+          q: 'What Macs does Flow run on?',
+          a: `${FLOW_SYSTEM_REQUIREMENT}. Flow is a direct download, signed and notarized, outside the App Store.`,
+        },
+      ]
+    : [
+        {
+          q: 'When does Flow launch?',
+          a: 'Very soon. Every capability on this page is built and running, and Flow is used daily for real work by its builder. What is left is the way you first meet the app and the way you buy it: first-run onboarding, then licensing and updates. Join the waitlist to get the launch note the day it ships.',
+        },
+      ]),
   {
     q: 'Does my text leave my Mac?',
     a: 'Only if you allow it. Flow separates where AI may run into four switchable domains: Local, LAN, Cloud prepaid, and Cloud postpaid. Search is on-device, and a fallback that would leave your Mac stops and asks first.',
@@ -152,6 +193,25 @@ const faqs = [
   },
 ];
 
+// Merchant fields for a digital product, matching the shape the other paid
+// Orionfold products use (defined locally per file, as they are).
+const flowMerchantFields = {
+  hasMerchantReturnPolicy: {
+    '@type': 'MerchantReturnPolicy',
+    applicableCountry: 'US',
+    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+  },
+  shippingDetails: {
+    '@type': 'OfferShippingDetails',
+    shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'USD' },
+    shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
+  },
+};
+
+const flowAvailability = ORIONFOLD_FLOW_LIVE
+  ? 'https://schema.org/InStock'
+  : 'https://schema.org/OutOfStock';
+
 const softwareSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -164,6 +224,57 @@ const softwareSchema = {
   image: `${SITE.url}${og.image}`,
   author: PERSON,
   brand: { '@type': 'Brand', name: 'Orionfold' },
+  // Flow is the first SUBSCRIPTION offer on this site, so it needs a shape the
+  // three one-time-license products did not: each Offer carries a
+  // priceSpecification with a billingDuration, or a crawler reads "$96" as a
+  // one-off purchase and the annual plan looks ten times more expensive than
+  // the monthly one.
+  //
+  // Base (Flow unlicensed) is deliberately NOT an Offer. It has no SKU and
+  // nothing to buy; it is expressed by the free-to-use SoftwareApplication
+  // itself. Only the subscription is offered.
+  //
+  // Availability is gated on ORIONFOLD_FLOW_LIVE exactly like Relay Host gates
+  // on RELAY_HOST_LIVE, so a pre-launch crawl reports OutOfStock rather than
+  // advertising a price nothing can yet charge.
+  offers: [
+    {
+      '@type': 'Offer',
+      name: 'Orionfold Flow, monthly',
+      price: (FLOW.monthly.amount / 100).toFixed(2),
+      priceCurrency: 'USD',
+      availability: flowAvailability,
+      url: `${flowUrl}#pricing`,
+      category: 'Software subscription',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: (FLOW.monthly.amount / 100).toFixed(2),
+        priceCurrency: 'USD',
+        billingDuration: FLOW.periodMonths.monthly,
+        billingIncrement: 1,
+        unitCode: 'MON',
+      },
+      ...flowMerchantFields,
+    },
+    {
+      '@type': 'Offer',
+      name: 'Orionfold Flow, annual',
+      price: (FLOW.annual.amount / 100).toFixed(2),
+      priceCurrency: 'USD',
+      availability: flowAvailability,
+      url: `${flowUrl}#pricing`,
+      category: 'Software subscription',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: (FLOW.annual.amount / 100).toFixed(2),
+        priceCurrency: 'USD',
+        billingDuration: FLOW.periodMonths.annual,
+        billingIncrement: 1,
+        unitCode: 'MON',
+      },
+      ...flowMerchantFields,
+    },
+  ],
 };
 
 const faqSchema = {
@@ -183,7 +294,7 @@ const heroConsentText = FLOW_CONSENT_TEXT;
 ---
 <Layout
   title={FLOW_TITLE}
-  description="A native Mac app for documents with AI agency built in. Every change is a diff you approve, with a receipt naming what ran and what it cost. Patent pending."
+  description="A native Mac app that draws 54 kinds of chart and diagram in place from the plain text in your file, offline. Every AI change is a diff you approve, with a receipt. Patent pending."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
@@ -205,71 +316,86 @@ const heroConsentText = FLOW_CONSENT_TEXT;
     <section class="flow-hero relative px-6 pb-16 pt-32 sm:pt-40">
       <div class="flow-hero__grid" aria-hidden="true"></div>
       <div class="flow-hero__glow" aria-hidden="true"></div>
-      <div class="relative mx-auto max-w-5xl text-center">
-        <div class="flex flex-wrap items-center justify-center gap-2">
-          <span class="flow-eyebrow-chip">
-            <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
-            Orionfold Flow
-          </span>
-          <span class="flow-eyebrow-chip">Native Mac</span>
-          <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Patent pending</span>
-        </div>
-        <!-- Context first: who this is for. Then one claim, stated once, and
-             the picture that proves it. The receipt, the domains, and the diff
-             each get their own chapter on the tour pages. -->
-        <p class="of-eyebrow mt-7">For founders, comms leads, and independent operators. Anyone whose name is on the document.</p>
-        {/* Two lines on a large screen, one sentence each: the spans go
-            display:block + nowrap from lg up (flow.css .flow-hero__title), and
-            the size clamp is capped so the longer sentence fits the 5xl
-            measure. Below lg they fall back to one balanced paragraph. */}
-        <h1 class="flow-hero__title hero-gradient-text mx-auto mt-4 max-w-5xl font-display text-[clamp(2.2rem,5.6vw,3.3rem)] font-extrabold leading-[1.06] tracking-[-0.05em]">
-          <span>Every AI change is a diff you approve.</span>{' '}
-          <span>Every run leaves a receipt.</span>
-        </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
-          Your text changes two ways only: an edit you typed, or a change you approved. The receipt records what ran, where it ran, and what it cost.
-        </p>
-        <div class="mx-auto mt-9 max-w-md">
-          <WaitlistForm
-            id="flow-hero-waitlist"
-            source="flow-hero-waitlist"
-            offer="flow-waitlist"
-            buttonText="Join the waitlist"
-            successMessage="Check your inbox to confirm."
-            consentText={heroConsentText}
-          />
-          <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
-            Free to join · Double opt-in · One email a week, no more
+      {/* TWO-COLUMN HERO (2026-08-21, operator direction). Same layout as the
+          homepage: copy left, artifact right, so the picture sits BESIDE the
+          claim rather than a scroll below it. Collapses to one centred column
+          below lg. */}
+      <div class="relative mx-auto grid w-full max-w-[88rem] items-center gap-10 lg:grid-cols-[0.8fr_1.3fr] lg:gap-12">
+        <!-- Left column: who it is for, the claim, the ask -->
+        <div class="flow-hero__copy min-w-0 text-center lg:text-left">
+          <div class="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
+            <span class="flow-eyebrow-chip">
+              <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
+              Orionfold Flow
+            </span>
+            <span class="flow-eyebrow-chip">Native Mac</span>
+            <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Patent pending</span>
+          </div>
+          <!-- Context first: who this is for. Then one claim, stated once, and
+               the picture that proves it. The receipt, the domains, and the diff
+               each get their own chapter on the tour pages. -->
+          <p class="of-eyebrow mt-7">
+            For creators, builders, and authors.
+            {/* Second line, dimmer: the audience is named first, then widened.
+                Splitting it stops the eyebrow wrapping mid-thought at any
+                width, and the tone drop marks it as the aside it is. */}
+            <span class="hero-icp__wide">Anyone whose name is on the document.</span>
           </p>
+          {/* Two lines on a large screen, one sentence each: the spans go
+              display:block + nowrap from lg up (flow.css .flow-hero__title).
+              2026-08-21: the homepage owns the tagline ("Conduct beautiful
+              documents. Choose where AI operates."), so this page must NOT
+              repeat it -- a reader arriving from / would see the same sentence
+              twice and learn nothing. The homepage sells the promise; this page
+              sells what the file itself can hold, which is the tour's subject
+              and what the picture beside it shows. */}
+          <h1 class="flow-hero__title hero-gradient-text mt-4 font-display text-[clamp(1.7rem,2.85vw,2.2rem)] font-extrabold leading-[1.1] tracking-[-0.04em]">
+            <span>Charts and images.</span>{' '}
+            <span>Flow organizes. AI refines.</span>{' '}
+            <span>Human approves.</span>
+          </h1>
+          <p class="mt-6 max-w-xl text-balance text-lg leading-[1.5] text-text-muted sm:text-xl">
+            Fifty four kinds of chart and diagram, drawn in place and offline. Flow lays them out, AI proposes the changes, and nothing lands until you approve it.
+          </p>
+          <div class="mt-9 max-w-md lg:mx-0">
+            <WaitlistForm
+              id="flow-hero-waitlist"
+              source="flow-hero-waitlist"
+              offer="flow-waitlist"
+              buttonText="Join the waitlist"
+              successMessage="Check your inbox to confirm."
+              consentText={heroConsentText}
+            />
+            <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
+              Free to join · Double opt-in · One email a week, no more
+            </p>
+          </div>
         </div>
-      </div>
-      <!-- The hero picture proves the headline's second half: one run, one
-           receipt card, with the named checks lifted out at a legible size.
-           The crop is the CHECKS block, which carries no dollar figure, so the
-           hero makes no cost claim its picture cannot support. TOP-right: a
-           bottom corner sat over the shot's own caption bar and hid the
-           "Pre-launch" framing that must stay welded to the shot. -->
-      <div class="of-stage of-stage--pad-top relative mx-auto mt-12 max-w-6xl" data-animate="plate">
-        <FlowShot
-          src={shotRunCard}
-          alt="Orionfold Flow's Receipts timeline beside a demonstration client proposal: a run selected, its card showing three named checks with severity pills, Evidence at 89 of 100, the recorded cost with its basis, and the before and after digests the change is bound to."
-          caption="Pre-launch · Freemium subscription planned · Every screen is the real build, running"
-          crop
-          priority
-        />
-        <FlowDetail
-          class="of-stage__detail of-stage__detail--tr"
-          src={detailRunChecks}
-          alt="Three named checks in a Flow run receipt: Human review with the pill Needs your acknowledgment, References are current with Warns you, and Citations resolve with Stops the change, each row also carrying a stored Checked mark."
-          caption="Named checks, two facts each · What it saw then, what the rule does now"
-          sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
-          animate
-        />
+
+        {/* RIGHT COLUMN: the artifact. Flow is roughly 90% rendered document
+            and 10% chrome, so the hero shows what the file holds: a chart
+            catalogue beside a document carrying a diagram and a photograph --
+            the headline's three nouns, in one frame.
+            MOTION: float + one slow sheen sweep, shared with the homepage. Both
+            animate `transform` only (compositor-only, no layout or paint),
+            which is why they are safe on the eager LCP image where a
+            `data-animate` reveal would NOT be. The caption bar keeps the
+            pre-launch framing, which must stay welded to the shot. */}
+        <div class="home-hero__shot">
+          <div class="home-hero__shot-frame">
+            <FlowShot
+              src={shotGuideCharts}
+              alt="Two documents open side by side in Orionfold Flow: a Visualization Gallery showing a highlighted bar chart and a grouped bar chart with their source notes, beside a market landscape document showing a flow diagram and a photograph of a whiteboard."
+              crop
+              sizes="(min-width: 1536px) 64rem, (min-width: 1280px) 54rem, (min-width: 1024px) 44rem, 100vw"
+              priority
+            />
+            <span class="home-hero__sheen" aria-hidden="true"></span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ================= TWO THINGS WE MEASURED + the native ask ================= -->
-    <FlowProofNuggets formId="flow-proof-waitlist" />
 
     <!-- ================= STAT BAND ================= -->
     <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-20" aria-labelledby="flow-stats-heading">
@@ -407,6 +533,11 @@ const heroConsentText = FLOW_CONSENT_TEXT;
     </section>
 
     <!-- ================= PRESS KIT ================= -->
+    {/* Pricing sits after the reader has seen what Flow does and before the
+        press kit. While ORIONFOLD_FLOW_LIVE is off it shows the Base/Pro
+        capability split with no amount and no buy button. */}
+    <FlowPricing />
+
     <section id="press" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="press-heading">
       <div class="mx-auto max-w-4xl">
         <p class="flow-kicker text-center" data-animate="rise">Writing about Flow?</p>
@@ -416,7 +547,7 @@ const heroConsentText = FLOW_CONSENT_TEXT;
             <tbody class="divide-y divide-border/70">
               <tr class="bg-surface"><th scope="row" class="w-40 px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Product</th><td class="px-5 py-3.5 text-text">Orionfold Flow. A native Mac app for professional documents with AI agency built in.</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Tagline</th><td class="px-5 py-3.5 text-text">"{SITE.tagline}."</td></tr>
-              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Status</th><td class="px-5 py-3.5 text-text">Pre-launch. Every capability shown on this page is built and running, and Flow is used daily for real work by its builder. The remaining work is first-run onboarding, then licensing and updates. Direct download for Mac, signed and notarized, outside the App Store. Freemium subscription planned. Waitlist open on this page.</td></tr>
+              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Status</th><td class="px-5 py-3.5 text-text">Every capability shown on this page is built and running, and Flow is used daily for real work by its builder. The remaining work is first-run onboarding, then licensing and updates. Direct download for Mac, signed and notarized, outside the App Store. Waitlist open on this page.</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Patent</th><td class="px-5 py-3.5 text-text">Flow includes patent-pending technology for revision-scoped, verifiable AI agency in durable documents.</td></tr>
               <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">The wedge</th><td class="px-5 py-3.5 text-text">Text changes two ways only: an edit you typed, or a change you approved. Every AI change is an exact diff with evidence, checks, and a receipt naming what ran, where, and what it cost. Chat is where work evaporates; Flow is where the record is kept.</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Numbers</th><td class="px-5 py-3.5 text-text">Search p95 of 22.3 ms on a 10,000-note library (2026-08-04). Long-document planning linear through 620,000 characters. A real billed run recorded at $0.00425, reproducible to the digit. A complete two-engine local AI runtime inside the app for about 19 MiB (2026-08-14).</td></tr>

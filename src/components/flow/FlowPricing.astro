@@ -1,0 +1,140 @@
+---
+// Flow's Base vs Pro pricing section.
+//
+// TWO GATES SHAPE THIS COMPONENT, and neither is cosmetic:
+//
+// 1. ORIONFOLD_FLOW_LIVE is OFF, so NO AMOUNT AND NO BUY BUTTON RENDER. The app
+//    does not yet enforce the terms, and a published price the binary
+//    contradicts is the worst failure 0127 can produce. What renders instead is
+//    the CAPABILITY split, which is true today and enforced at one seam. When the
+//    flag flips, the price and the two buy buttons appear with no copy rewrite.
+//
+// 2. VOCABULARY. The app itself never says "Base" or "Pro" to a user — the
+//    shipped badge reads "N days left" and the withdrawal notice says "Subscribe
+//    to keep using Flow's AI features". So this page uses Base/Pro as HEADINGS
+//    only and quotes the app's own sentences verbatim inside them (the website
+//    lane's option 2, recorded in FLOW-GROWTH-CONTRACT.md 2026-08-22 09:15). If
+//    the product lane adopts Base/Pro in B2's pill, this needs no change.
+//
+// NO PRO DAYS COUNTDOWN. The free grant is 10 Pro Days, and a Pro Day is spent
+// only on a day the user actually invokes AI, so "10 days free" is FALSE. B2 (the
+// tier and remaining pill) is unbuilt, so the grant is described qualitatively or
+// not at all — never as a countdown.
+import {
+  FLOW_BASE_CAPABILITIES,
+  FLOW_LAPSE_FACTS,
+  FLOW_PRO_CAPABILITIES,
+  FLOW_PROMISE,
+  FLOW_SPLIT_RULE,
+  FLOW_TASTER_NOTE,
+  FLOW_WITHDRAWAL_NOTICE,
+} from '../../data/flow-pricing.ts';
+import { FLOW, formatUsd } from '../../data/commerce.ts';
+import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
+
+const monthly = formatUsd(FLOW.monthly.amount);
+const annual = formatUsd(FLOW.annual.amount);
+const discountPercent = Math.round(FLOW.annualDiscount * 100);
+---
+
+<section id="pricing" class="border-t border-border/70 px-6 py-14 sm:py-20" aria-label="What is free and what is paid">
+  <div class="mx-auto max-w-5xl">
+    <p class="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-accent-ink">Base and Pro</p>
+    <h2 class="mt-3 text-balance text-3xl font-bold leading-[1.15] sm:text-4xl">
+      {FLOW_PROMISE}
+    </h2>
+    <p class="mt-5 max-w-2xl text-lg leading-[1.55] text-text-muted">
+      Flow has one line through it, and it sits in one place in the code. Everything that
+      reads, writes and organises your documents is free and stays free. {FLOW_SPLIT_RULE}
+    </p>
+
+    <div class="mt-10 grid gap-4 md:grid-cols-2" data-animate-stagger>
+      {/* BASE */}
+      <article class="of-surface flex flex-col rounded-2xl border border-border/70 p-6" data-animate>
+        <div class="flex items-baseline justify-between gap-3">
+          <h3 class="text-xl font-bold">Base</h3>
+          <span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Free forever</span>
+        </div>
+        <p class="mt-3 text-sm leading-relaxed text-text-muted">
+          The whole document app. No trial, no expiry, no account, and nothing to buy.
+          Open a folder of Markdown files and work.
+        </p>
+        <ul class="mt-5 flex-1 space-y-2.5">
+          {FLOW_BASE_CAPABILITIES.map((c) => (
+            <li class="text-sm leading-relaxed">
+              <span class="font-semibold text-text">{c.label}</span>
+              <span class="text-text-dim"> · {c.note}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      {/* PRO */}
+      <article class="of-surface flex flex-col rounded-2xl border border-accent/40 p-6" data-animate>
+        <div class="flex items-baseline justify-between gap-3">
+          <h3 class="text-xl font-bold">Pro</h3>
+          {ORIONFOLD_FLOW_LIVE ? (
+            <span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">
+              {monthly}/month · {annual}/year
+            </span>
+          ) : (
+            <span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-text-dim">Subscription</span>
+          )}
+        </div>
+        <p class="mt-3 text-sm leading-relaxed text-text-muted">
+          Everything in Base, plus Flow's AI. One licence covers one person on as many of
+          your own Macs as you like.
+        </p>
+        <ul class="mt-5 flex-1 space-y-2.5">
+          {FLOW_PRO_CAPABILITIES.map((c) => (
+            <li class="text-sm leading-relaxed">
+              <span class="font-semibold text-text">{c.label}</span>
+              <span class="text-text-dim"> · {c.note}</span>
+            </li>
+          ))}
+        </ul>
+        {ORIONFOLD_FLOW_LIVE ? (
+          <p class="mt-5 text-sm text-text-muted">
+            {monthly} a month, or {annual} a year and save {discountPercent} percent.
+          </p>
+        ) : (
+          <p class="mt-5 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
+            Pricing opens when Flow is released
+          </p>
+        )}
+      </article>
+    </div>
+
+    {/* The read/produce split. The product lane's 09:55 B11 report calls this the
+        real upgrade argument and says it is worth copy rather than a table row:
+        a Base user inspects a permanent record of what the AI did and cannot add
+        to it. Kept above the lapse block because it explains why Base is not a
+        crippled tier. */}
+    <div class="of-surface mt-4 rounded-2xl border border-border/70 p-6" data-animate>
+      <h3 class="text-lg font-bold">Base is not a crippled version</h3>
+      <p class="mt-3 max-w-3xl text-sm leading-relaxed text-text-muted">{FLOW_TASTER_NOTE}</p>
+    </div>
+
+    {/* The lapse promise. This is the part a reader is actually worried about, so
+        it gets its own block rather than a footnote, and it quotes the app. */}
+    <div class="of-surface mt-4 rounded-2xl border border-border/70 p-6" data-animate>
+      <h3 class="text-lg font-bold">If you stop paying, you keep your work</h3>
+      <p class="mt-3 max-w-3xl text-sm leading-relaxed text-text-muted">
+        When a subscription ends, the AI stops and nothing else does. Flow says so in the
+        app, in these words: <span class="text-text">“{FLOW_WITHDRAWAL_NOTICE}”</span>
+      </p>
+      <ul class="mt-4 grid gap-2 sm:grid-cols-2">
+        {FLOW_LAPSE_FACTS.map((fact) => (
+          <li class="text-sm leading-relaxed text-text-muted">{fact}</li>
+        ))}
+      </ul>
+    </div>
+
+    <p class="mt-6 max-w-3xl text-sm leading-relaxed text-text-dim">
+      One thing worth being plain about: local models are part of Pro too. Flow can run
+      models on your own Mac, and that is still the paid side of the line. What you pay for
+      is Flow's approval layer, the routing, the tools, the receipts and the guardrails,
+      not the words the model makes.
+    </p>
+  </div>
+</section>

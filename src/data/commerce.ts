@@ -9,6 +9,7 @@
 import {
   CATALOG,
   FOUNDING_SEATS,
+  FLOW_ANNUAL_DISCOUNT,
   RELAY_HOST_AMOUNT,
   RELAY_HOST_LOOKUP_KEY,
   RELAY_HOST_MANAGED_CELLS,
@@ -71,6 +72,31 @@ export const RELAY = {
   renewal: getCatalogItem("license_orionfold_relay_renewal")!,
   foundingSeats: FOUNDING_SEATS,
   windowMonths: 12,
+} as const;
+
+// Orionfold Flow price family — the FIRST subscription product, so its shape
+// differs from the three above: two SKUs that differ only by BILLING PERIOD, no
+// founding cohort, and no separate renewal SKU (Stripe renews the subscription
+// and each paid invoice extends the term). Display only; CATALOG is the SSOT and
+// Stripe resolves the real charge server-side by lookup_key.
+//
+// `annualDiscount` and the derived annual amount come from the catalog, never
+// from a literal here — the orionfold-flow contract (2026-08-21 23:41) requires
+// the annual price be derived from the monthly one and one rate, or the two can
+// silently disagree.
+//
+// Tier vocabulary: Base = Flow unlicensed (free forever, no SKU, no entitlement);
+// Pro = these SKUs. See FLOW_TIERS in ./flow-pricing.ts for the capability split.
+export const FLOW = {
+  monthly: getCatalogItem("license_orionfold_flow_monthly")!,
+  annual: getCatalogItem("license_orionfold_flow_annual")!,
+  /** The one rate the annual amount is derived from (0.2 = 20% off). */
+  annualDiscount: FLOW_ANNUAL_DISCOUNT,
+  /** What each paid invoice extends `expires_at` by. */
+  periodMonths: { monthly: 1, annual: 12 },
+  /** One licence = one person, unlimited personal Macs. No device limit, no
+   * activation count — copy must never imply the app counts machines or seats. */
+  entitlement: "product:orionfold-flow",
 } as const;
 
 export const RELAY_HOST = {
