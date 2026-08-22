@@ -1,0 +1,93 @@
+// Orionfold Flow's published releases — the source of truth for the Sparkle
+// appcast served at https://orionfold.com/flow/appcast.xml.
+//
+// WHY THIS FILE EXISTS RATHER THAN A HAND-EDITED XML. Sparkle decides "is there
+// an update" by comparing `CFBundleVersion`, and it reports "you are up to
+// date" SILENTLY when that number does not increase. Every Flow build before
+// 0127 A4 shipped `CFBundleVersion` 1, so a feed published against them would
+// have told every user forever that nothing was available, with no error and no
+// log line. A generated feed with checked assertions is the answer to a failure
+// whose whole nature is that it looks healthy.
+//
+// THE FEED URL IS A ONE-WAY DOOR. `SUFeedURL` is baked into the notarized
+// bundle, so moving it strands every copy already installed. The DMG download
+// URLs are NOT baked — they are fields inside each entry here and are rewritten
+// on every release, which is what lets the binary host move freely later.
+//
+// HOW TO PUBLISH A RELEASE: add an entry to RELEASES below, run
+// `npm run build:appcast`, and commit. The generator refuses anything Sparkle
+// would mis-serve. See scripts/build-flow-appcast.mjs.
+
+/** One published Flow release. Every field is required for a real entry. */
+export interface FlowRelease {
+  /**
+   * `CFBundleVersion` — what Sparkle actually compares. Derived by the release
+   * script from `git rev-list --count HEAD`, so it is monotonic without anyone
+   * having to remember it.
+   */
+  build: number;
+  /** The human-facing version shown in the update prompt, e.g. "0.2.0". */
+  shortVersion: string;
+  /** Publication date, ISO 8601. Rendered into the feed as RFC 822. */
+  published: string;
+  /**
+   * Public, permanent HTTPS URL of the notarized DMG.
+   *
+   * NOT the website: this repo is PUBLIC and GitHub hard-rejects files over
+   * 100 MB, so binaries live on a public bucket fronted by a vanity host. The
+   * appcast (a few KB of text) is the only part that belongs in `public/`.
+   */
+  url: string;
+  /** Exact byte length of the DMG. Sparkle checks it before extraction. */
+  length: number;
+  /**
+   * EdDSA signature of the DMG, from Sparkle's `sign_update` tool. The private
+   * key is not in this repo and never will be.
+   */
+  edSignature: string;
+  /** Minimum macOS version, e.g. "14.0". Omit only if there is genuinely none. */
+  minimumSystemVersion?: string;
+  /** Plain-language release notes. Rendered as an inline CDATA description. */
+  notes?: string;
+}
+
+/**
+ * Every Flow release published to users, oldest first.
+ *
+ * EMPTY IS THE CORRECT STATE TODAY, and it is a deliberate choice rather than a
+ * placeholder. As of 2026-08-22 nothing has ever been published with a moving
+ * build number (`tools/published-builds.txt` in the app repo has no entries),
+ * there is no notarized DMG at a public URL, and the EdDSA private key that
+ * would sign one lives only on the operator's machine.
+ *
+ * A fabricated entry would be strictly worse than none: Sparkle would fetch it,
+ * fail to verify a signature we invented, and show users an error — whereas an
+ * empty channel parses cleanly and yields "you are up to date". *Measured, not
+ * assumed*: Sparkle's `SUAppcast.m` reads items via `nodesForXPath`, which
+ * returns an empty array rather than nil for a well-formed feed with no items,
+ * and `SUAppcastDriver.m` guards its selection with `appcast.items.count > 0`.
+ *
+ * So this ships the real feed at the real URL, honestly empty, which turns the
+ * app's "Check for Updates…" from a fail-soft network error into a truthful
+ * "no updates yet" — and lets the in-place-update half of C1865 be exercised
+ * the moment the first release exists, without spending a second notarization.
+ */
+export const RELEASES: FlowRelease[] = [];
+
+/** The channel's title, as shown by Sparkle in some update UIs. */
+export const FEED_TITLE = "Orionfold Flow";
+
+/**
+ * The feed's own canonical URL. Baked into the app as `SUFeedURL` and settled
+ * with the product lane on 2026-08-22; changing it strands every installed copy.
+ */
+export const FEED_URL = "https://orionfold.com/flow/appcast.xml";
+
+/** Where a human goes to read about Flow. */
+export const FEED_LINK = "https://orionfold.com/flow/";
+
+/** The most recently published release, or null when nothing has shipped. */
+export function latestRelease(releases: FlowRelease[] = RELEASES): FlowRelease | null {
+  if (releases.length === 0) return null;
+  return releases.reduce((best, r) => (r.build > best.build ? r : best));
+}

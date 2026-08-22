@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:appcast": "node scripts/build-flow-appcast.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "test": "npm run test:deno && npm run test:regression",

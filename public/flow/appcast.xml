@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Orionfold Flow update feed. GENERATED — do not hand-edit.
+     Source: src/data/flow-releases.ts · Generator: scripts/build-flow-appcast.mjs
+     Regenerate with: npm run build:appcast -->
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Orionfold Flow</title>
+    <link>https://orionfold.com/flow/appcast.xml</link>
+    <description>Updates for Orionfold Flow</description>
+    <language>en</language>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="https://orionfold.com/flow/appcast.xml" rel="self" type="application/rss+xml" />
+
+    <!-- No releases published yet, and this is deliberate rather than a stub.
+         Nothing has shipped with a moving CFBundleVersion, no notarized DMG
+         sits at a public URL, and the EdDSA key that would sign one is not in
+         this repo. A fabricated entry would be worse than none: Sparkle would
+         download it and fail signature verification in front of a user.
+
+         An empty channel is well-formed and yields "you are up to date" —
+         Sparkle guards item selection with items.count > 0 and reads items via
+         nodesForXPath, which returns an empty array rather than nil. So the
+         real feed lives at the real URL today, and the app's Check for
+         Updates… tells the truth instead of erroring on a 404. -->
+
+  </channel>
+</rss>
