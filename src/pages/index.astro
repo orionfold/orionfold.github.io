@@ -9,10 +9,29 @@
 //   * the reader knows who the page is for in the first screen;
 //   * two usable, dated facts arrive before the second scroll, and the first
 //     email ask is the answer to the worry those facts raise;
-//   * four capability bands, not seven, each with the crop of the control it
-//     names; the rest of the tour lives on /flow/ and its category pages.
+//   * six capability bands, each with the crop of the control it names; the
+//     rest of the tour lives on /flow/ and its category pages.
 // The /flow/ page carries the stat band, the tour, the press kit, and the FAQ;
 // this page is the demand-generation front door.
+//
+// 2026-08-21, VISION alignment pass. An audit against ~/orionfold-flow/VISION.md
+// found the page true to ONE of the abstract's three claims (agency with your
+// approval) and near-silent on the other two. The vision's own words: "Conduct
+// beautiful documents with AI agency built in", where "beautiful" is called a
+// commitment and "the one easiest to let slide", and self-improving is
+// "promised in the abstract rather than deferred to a roadmap". The page showed
+// the app's CHROME (toolbars, diffs, settings) and never the ARTIFACT, and all
+// four band titles were shaped "AI will not hurt you". Three changes:
+//   * the hero keeps its two safety sentences and gains one line naming what
+//     the reader GETS (the vision's first word is "conduct", not "approve");
+//   * an output band, because ICP latent need 7 is "turn thinking into a
+//     professional artifact" and nothing on the site answered it;
+//   * a compounding band, stating the SHIPPED half of self-improving: rules
+//     plus measured-on-this-Mac benchmarks mean the document uses a better
+//     model as your models improve. Nothing claims a document that rewrites
+//     itself; that capability (0062 freshness monitor) is unbuilt.
+// The truth rails for both new bands are guarded by name in
+// scripts/test/flow-flagship-surface.test.mjs.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -35,6 +54,8 @@ import shotLongDocs from '../assets/flow/shots/flow-long-documents-shot.webp';
 import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
 import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
 import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
+import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
+import shotRouting from '../assets/flow/shots/flow-smart-routing-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). A full window
 // shrunk into a page column renders the control being described at ~8px; these
 // crops show that one control at a size where the claim is checkable.
@@ -43,6 +64,8 @@ import detailToolbarPreview from '../assets/flow/details/detail-toolbar-preview.
 import detailDomains from '../assets/flow/details/detail-domains.webp';
 import detailParts from '../assets/flow/details/detail-parts.webp';
 import detailRunChecks from '../assets/flow/details/detail-run-checks.webp';
+import detailChartLine from '../assets/flow/details/detail-chart-line.webp';
+import detailRoutingRules from '../assets/flow/details/detail-routing-rules.webp';
 
 const og = ogMeta('/');
 
@@ -72,11 +95,23 @@ const flowSchema = {
 // consent reads the same no matter which surface captured them.
 const consentText = FLOW_CONSENT_TEXT;
 
+// The fourth figure was "5 actions, every one needs your approval" until
+// 2026-08-21. It restated the hero headline a fourth time, while the pace of
+// the build, which is the reason a waitlist is worth joining, was nowhere on
+// the page. The count is the Flow CHANGELOG's own entries, and that file's
+// first line reads "User-visible behavior only", so the claim is checkable
+// rather than a commit tally dressed up as progress.
+//
+// THIS NUMBER DRIFTS. It is a hand-count of top-level CHANGELOG entries in the
+// span 2026-07-28 (the file's first commit) to the stated end date, re-verified
+// 2026-08-21 at 140 (was 138 on 2026-08-20). The Flow repo is not a build
+// dependency here, so nothing recomputes it. Re-count and move BOTH this tile
+// and the /flow/ stat band together, or widen the window and restate the days.
 const heroStats = [
   { value: '22.3 ms', label: 'search across 10,000 notes' },
   { value: '$0.00425', label: 'a billed run, recorded to the digit' },
   { value: '+19.2 MiB', label: 'a complete local AI runtime' },
-  { value: '5 actions', label: 'every one needs your approval' },
+  { value: '140 changes', label: 'shipped in the last 24 days' },
 ];
 
 // One capability per band, and one picture that PROVES it.
@@ -91,13 +126,20 @@ const heroStats = [
 //
 // `stage` and `align` drive the variety rule. The hero above spends
 // top-right + centred copy, so the bands walk away from it and from each
-// other. Sequence down the page: hero tr, then tl, br, bl, tr. No two ADJACENT
-// stages share a corner; tests/e2e/product-stage.spec.ts enforces it.
+// other. Sequence down the page: hero tr, then tl, br, bl, tr, tl, br. No two
+// ADJACENT stages share a corner; tests/e2e/product-stage.spec.ts enforces it.
+// Adding a band in the middle re-pins every corner BELOW it, which is why
+// domains and receipts moved on 2026-08-21.
+//
+// Band order is an argument, not a list: cost, then scale, then what you get
+// out (output), then where it runs, then the record, then why it keeps paying
+// off. The two capability bands sit among the safety ones deliberately rather
+// than in a block, so the page never reads as four warnings then a brochure.
 const capabilityRows = [
   {
     kicker: 'Priced before you click',
     title: 'Most tools bill you after. Flow tells you the cost first.',
-    body: 'The five AI actions live in the document\'s own tool strip, beside bold and italic. Hover one and Flow answers before it runs: how much text it would act on, what it would cost, and which model would do the work. Work on your own Mac is free, and Flow says so in words rather than a number.',
+    body: 'The six AI actions live in the document\'s own tool strip, beside bold and italic. Hover one and Flow answers before it runs: how much text it would act on, what it would cost, and which model would do the work. Work on your own Mac is free, and Flow says so in words rather than a number.',
     href: '/flow/writing-with-ai/#tour-toolbar',
     shot: shotToolbar,
     alt: 'Orionfold Flow with the document tool strip expanded: writing controls, a divider, and five colored AI marks, with Proofread\'s panel stating the scope, the cost, and the model for the run.',
@@ -121,6 +163,28 @@ const capabilityRows = [
     align: 'right',
   },
   {
+    // THE OUTPUT BAND. Added 2026-08-21 to close the gap the vision names as
+    // the easiest to let slide: "beautiful" is a commitment, and the site
+    // showed only the app's chrome, never the artifact it produces. The claim
+    // here is about the DOCUMENT, not the control.
+    // TRUTH RAIL (flow-charts brief + 0129 SPEC): Visualize ADDS one chart or
+    // diagram fence AFTER the selection, never replaces it. Rendering is
+    // offline from the fence text. Never "AI-generated infographics".
+    // Designed layout blocks (callouts, columns, cards) are a later goal and
+    // must not be claimed. Every number in the capture is invented demo data.
+    kicker: 'Documents worth handing over',
+    title: 'Most AI gives you text to reformat. Flow gives you a document to send.',
+    body: 'Ask for a waterfall, a bump chart, or a calendar heatmap by name. Thirty four chart types, and twenty diagram types beside them, drawn in place from plain text in your file, offline, in one house style: a title that makes the claim, one highlighted series, a source line. The few other editors that draw charts at all hand you a chart grammar to write yourself. Select a table or a paragraph and Flow proposes the picture, reviewed like any other change, and the file stays readable in every editor you own.',
+    href: '/flow/documents-and-files/#tour-visualize',
+    shot: shotCharts,
+    alt: 'Orionfold Flow with a quarterly business review open in Reader on the left, its line chart and deal-flow flowchart drawn in place from the file\'s own text, and the chart gallery editor open on the right on the same file\'s bar chart.',
+    detail: detailChartLine,
+    detailAlt: 'A line chart drawn by Flow inside a document: the title "Team plan drove MRR growth through the summer", a plan legend with Team highlighted in the accent colour, dated axes, and the source line "Billing system, month-end snapshots".',
+    detailCaption: 'Drawn from the text in your file · A title that makes the claim, one highlighted series, a source line',
+    stage: 'bl',
+    align: 'left',
+  },
+  {
     kicker: 'Trust boundaries',
     title: 'Most tools decide where your text goes. You pick where AI runs. Flow keeps it there.',
     body: 'Four execution domains, each with its own switch: Local, LAN, Cloud prepaid, Cloud postpaid. Every one states plainly whether your text stays on this Mac and what the work costs. A fallback that would leave your Mac stops and asks first.',
@@ -130,7 +194,9 @@ const capabilityRows = [
     detail: detailDomains,
     detailAlt: 'The Local execution domain in Flow: its switch turned on, the line "Stays on this Mac, free, it runs on hardware you have", and three discovered providers.',
     detailCaption: 'One switch per domain · Discovery never enables anything',
-    stage: 'bl',
+    // Was 'bl' until 2026-08-21, when the output band above took that corner.
+    // Adjacent bands may never repeat one (tests/e2e/product-stage.spec.ts).
+    stage: 'tr',
     align: 'center',
   },
   {
@@ -150,8 +216,37 @@ const capabilityRows = [
     detail: detailRunChecks,
     detailAlt: 'Three named checks in a Flow run receipt: Human review with the pill Needs your acknowledgment, References are current with Warns you, and Citations resolve with Stops the change, each row also carrying a stored Checked mark.',
     detailCaption: 'Named checks, two facts each · What it saw then, what the rule does now',
-    stage: 'tr',
+    // Was 'tr' until 2026-08-21; the domains band above now holds that corner.
+    stage: 'tl',
     align: 'left',
+  },
+  {
+    // THE COMPOUNDING BAND. Added 2026-08-21. The vision promises
+    // "self-improving intelligence" and the site never said it. This band
+    // states the honest, shipped half of it: your rules outlive any one model,
+    // and the routing reads measurements taken on YOUR Mac, so the same
+    // document gets a better model as your models get better.
+    // TRUTH RAILS (flow-smart-routing brief, non-negotiable):
+    //   * Vocabulary is the screen's: "rules", "rules decide in order; the
+    //     first one that matches applies", "Deciding". NEVER predicates,
+    //     resolvers, gates, or fail-closed. The feature is Smart Routing;
+    //     "Auto routing" was retired 2026-08-18.
+    //   * "Fastest measured on this Mac" orders by SPEED measured on this
+    //     machine only. It is NEVER a quality verdict, and a model with no
+    //     measurement is not ranked at all.
+    //   * Rules do not learn. "Your rules, re-applied" is the claim; never
+    //     "learns your preferences". The refusal to adapt is the selling point.
+    kicker: 'It gets better without you',
+    title: 'Most tools age around a model. Flow gets better as the models do.',
+    body: 'No AI improves itself yet, and Flow does not claim to. The system around it does. Flow benchmarks the models on your own Mac, and Smart Routing reads those measurements: rules decide in order, and the first one that matches applies. Write "Fastest measured on this Mac" once. Pull a better model next month and the same document starts using it, with no setting to revisit and no rule to rewrite. The screen always names the rule that decided.',
+    href: '/flow/models-and-runtime/#tour-routing',
+    shot: shotRouting,
+    alt: 'Flow\'s Smart Routing settings: an ordered rulebook with the sentence "Rules decide in order; the first one that matches applies", four named rules with live model counts, a Deciding badge on the first, and the provider routing order beneath.',
+    detail: detailRoutingRules,
+    detailAlt: 'Flow\'s rulebook: the sentence "Rules decide in order; the first one that matches applies", four ordered rules with the count of models that qualify for each, a Deciding badge on rule one, and an orange no-model state on rule four.',
+    detailCaption: 'Rules decide in order · The first one that matches applies',
+    stage: 'br',
+    align: 'right',
   },
 ];
 ---
@@ -189,6 +284,14 @@ const capabilityRows = [
         <p class="hero-lede mx-auto mt-6 max-w-2xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
           <span>Every AI change arrives as a diff you approve, with a receipt of what ran, where it ran, and what it cost.</span>{' '}
           <span>Your text changes two ways only: an edit you typed, or a change you approved.</span>
+        </p>
+        <!-- The gain, not only the guard. The vision's first word is "conduct",
+             and a page that only promises safety sells a smaller product than
+             the one being built. This line names what the reader gets; the two
+             sentences above name what they keep. -->
+        <p class="hero-gain mx-auto mt-5 max-w-2xl text-lg leading-[1.55] text-text sm:text-xl">
+          You stop writing every line and start directing the work. Research, tables, charts,
+          and diagrams are drawn in the file you already own.
         </p>
         <div class="mx-auto mt-9 max-w-md">
           <WaitlistForm
@@ -238,7 +341,7 @@ const capabilityRows = [
           ))}
         </dl>
         <p class="of-spec-fine mt-8 uppercase tracking-[0.14em]">
-          Measured on the development build · <a href="/flow/" class="of-text-action of-compact underline underline-offset-2">See all the numbers and dates</a>
+          Measured on the running build · <a href="/flow/" class="of-text-action of-compact underline underline-offset-2">See all the numbers and dates</a>
         </p>
       </div>
     </section>

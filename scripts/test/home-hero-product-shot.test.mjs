@@ -41,7 +41,10 @@ assert.equal((home.match(/\spriority\b/g) ?? []).length, 1, 'exactly one FlowSho
 for (const value of ['22.3 ms', '$0.00425', '+19.2 MiB', '5 actions']) {
   assert.match(home, new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${value} must stay in the hero stat strip`);
 }
-assert.match(home, /Measured on the development build/);
+// 2026-08-21: "development build" became "running build" in the pre-launch
+// reframing. The assertion protects the SCOPE line under the hero stats, not
+// the word "development" — every figure must still name what it was measured on.
+assert.match(home, /Measured on the running build/);
 
 // Scroll-perf hardening: hero glows are gradients, never blur filters.
 assert.match(home, /radial-gradient\(closest-side, color-mix\(in oklch, var\(--color-primary\)/);

@@ -403,6 +403,34 @@ const DETAILS = [
     rect: { left: 1462, top: 120, width: 1098, height: 640 },
     note: 'The chart gallery editor: type by question, Ask Flow to change it, the drawing.',
   },
+  // ── The image gallery (0054), cut 2026-08-21 on the 26eddf4 dev-build
+  // capture of flow-image-gallery-shot (3840x2100 source, shipped at
+  // 2560x1400). Left pane is the Client Proposal demo document with its
+  // picture rendered in place; right pane is the gallery on that picture.
+  // The document, the client, and every figure in it are invented demo data.
+  {
+    out: 'detail-gallery-words.webp',
+    from: 'flow-image-gallery-shot.webp',
+    // The two fields, and ONLY the two fields. Cut below the subject
+    // photograph on purpose: including its bottom edge reads as a sliced
+    // picture sitting on the form rather than as the form itself, and the
+    // claim here is that a picture's description is typed by a person into a
+    // labelled field. Both rows, because "Alt text" and "Title" are two
+    // different promises (read aloud / shown on hover).
+    rect: { left: 1460, top: 735, width: 1093, height: 105 },
+    note: 'The two typed fields: Alt text filled, Title showing its placeholder.',
+  },
+  {
+    out: 'detail-gallery-collection.webp',
+    from: 'flow-image-gallery-shot.webp',
+    // The collection, cut to the first two groups: "In this document" with the
+    // subject ring-marked, then the "assets" folder group. Height stops at the
+    // first row of file names so the group structure is whole — the claim is
+    // that the collection IS the folder, grouped, with the document's own
+    // pictures first, and a cut that lost the group headings would lose it.
+    rect: { left: 1460, top: 845, width: 1093, height: 390 },
+    note: 'The collection: the document\'s own picture first, then the folder, grouped.',
+  },
   {
     out: 'detail-chart-flowchart.webp',
     from: 'flow-charts-shot.webp',

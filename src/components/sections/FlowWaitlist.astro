@@ -36,7 +36,7 @@ const source = formId;
 const consentText = FLOW_CONSENT_TEXT;
 
 const eyebrow = isHome
-  ? 'Flow waitlist · In development'
+  ? 'Flow waitlist · Launching soon'
   : isMid
     ? 'Seen enough? · Flow waitlist'
     : isEnterprise
@@ -61,7 +61,7 @@ const continueLabel = isHome ? 'Take the product tour' : isMid ? (nextLabel ? `N
       <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">{eyebrow}</p>
       <h2 id={`${formId}-heading`} class="mt-4 text-balance text-4xl font-bold leading-[1.03] sm:text-5xl">{heading}</h2>
       <p class="mt-5 max-w-xl text-lg leading-relaxed text-text-muted">
-        Flow is in development, offered as a freemium subscription when it is ready. Here is what
+        Flow is pre-launch, offered as a freemium subscription when it ships. Here is what
         your address gets you, and nothing else:
       </p>
       <ul class="flow-list mt-4 max-w-xl">

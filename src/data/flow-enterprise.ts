@@ -1,7 +1,7 @@
 // Enterprise adoption patterns for Orionfold Flow (moved out of flow.astro on
 // 2026-08-20 so the overview can carry three cards and /flow/enterprise/ can
 // carry all nine). Each card answers a question enterprise AI owners actually
-// ask. "Today" marks shipped behavior in the development build; "Direction"
+// ask. "Today" marks behavior shipped and running now; "Direction"
 // marks where the design is headed. Copy follows website-copy-style: plain
 // words, no em dashes, no capability Flow does not have.
 

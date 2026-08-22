@@ -7,12 +7,21 @@
 // the approval promise in plain words (title, H1, lede, and picture agree),
 // names who the page is for, puts two dated facts and the first email ask
 // before the second scroll, and sends the reader into ONE part of the tour.
-// Every screenshot is a real capture of the running development build over the
-// synthetic flow-demo library; every number is a recorded measurement with its
-// date. Copy stays inside each brief's truth boundary: agency is gated not
-// autonomous, no pricing or launch date exists yet, and every qualification
-// ("on one M3 Max", "whole-Mac", "development build") stays welded to the claim
-// it constrains. Re-read the brief before changing a claim.
+// Every screenshot is a real capture of the running build over the synthetic
+// flow-demo library; every number is a recorded measurement with its date.
+// Copy stays inside each brief's truth boundary: agency is gated not
+// autonomous, no pricing exists yet, and every qualification ("on one M3 Max",
+// "whole-Mac") stays welded to the claim it constrains. Re-read the brief
+// before changing a claim.
+//
+// 2026-08-21, PRE-LAUNCH reframing (operator direction). The page hedged with
+// "in development" everywhere, which understated the build: verified against
+// the Flow repo's own BACKLOG "Now", every capability chapter on this site has
+// shipped, and the only goals left are 0145 first-run onboarding (took Now at
+// 09:12 that day) and 0127 buy/license/update. The dev-build/released
+// distinction was an internal guardrail the operator had not yet retired, not
+// a claim boundary. "Pre-launch" replaces "in development"; no launch DATE is
+// printed anywhere without the operator.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -54,8 +63,17 @@ const stats = [
   { value: '620,000', label: 'Characters planned part by part', fine: 'Long documents are split in about 0.5 seconds, and the time grows evenly with length' },
   { value: '$0.00425', label: 'A real billed run, to the digit', fine: '105 input and 149 output tokens. Exact decimal arithmetic' },
   { value: '+19.2 MiB', label: 'A complete local AI runtime', fine: 'Two engines inside the app. About the size of twenty photos' },
-  { value: '5 actions', label: 'The Agency catalog', fine: 'Proofread, Summarize, Translate, and two table conversions' },
+  { value: '6 actions', label: 'The Agency catalog', fine: 'Proofread, Summarize, Translate, two table conversions, and Expand with Sources' },
   { value: '4 domains', label: 'Where AI may run', fine: 'Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own switch' },
+  // 34 + 20 is the honest composition and the fine print says so: the app's
+  // own vocabulary file (App/Editor/fence-vocabulary.mjs) lists 34 chartType
+  // values, and the diagram fence renders 20 further types through a separate
+  // renderer. Never say "54 chart types" — that would misread the 34.
+  { value: '54 pictures', label: '34 chart plus 20 diagram types', fine: 'Drawn in place from plain text in your file, offline, in one house style' },
+  // Ninth figure keeps the grid square at three columns, and it is the one
+  // number that answers "what happens when I point Flow at everything I have".
+  { value: '1.1 s', label: 'First index of 10,000 notes', fine: 'Measured on a 10,000-note library, Apple silicon, 2026-08-04. Results stream in as it goes' },
+  { value: '140 changes', label: 'Shipped in the last 24 days', fine: 'Counted from the Flow changelog, which records user-visible behavior only. Entries from 2026-07-28 to 2026-08-21' },
 ];
 
 const faqs = [
@@ -64,8 +82,14 @@ const faqs = [
     a: 'Flow is a native Mac app for professional documents with AI agency built in. It works on ordinary folders of plain Markdown files. Every AI change arrives as an exact diff you approve, and a receipt records what ran, where it ran, and what it cost.',
   },
   {
+    // Pre-launch, not "someday". Verified 2026-08-21 against the Flow repo's
+    // own BACKLOG "Now": every capability chapter on this site has shipped,
+    // and the two goals left are first-run onboarding (0145, took Now at
+    // 09:12 today) and buy/license/update (0127, next). Do not restore
+    // "in active development" here; it understates where the build is. If a
+    // launch date is ever printed, it needs the operator, not this file.
     q: 'When does Flow launch?',
-    a: 'Flow is in active development and is used daily for real work by its builder. Join the waitlist on this page to get development updates and the launch note. A freemium subscription is planned.',
+    a: 'Very soon. Every capability on this page is built and running, and Flow is used daily for real work by its builder. What is left is the way you first meet the app and the way you buy it: first-run onboarding, then licensing and updates. Join the waitlist to get the launch note the day it ships. A freemium subscription is planned.',
   },
   {
     q: 'Does my text leave my Mac?',
@@ -82,6 +106,45 @@ const faqs = [
   {
     q: 'How is Flow different from a chat canvas or artifacts panel?',
     a: 'A chat canvas is a session workspace. The output lives inside the chat tool, export breaks formatting, and attribution is lost the moment you paste. Flow works the other way around: the document on your disk is the workplace. AI proposes changes there, you approve them there, and the record stays with the file.',
+  },
+  {
+    // Added 2026-08-21. The site could answer "how does Flow keep me safe" in
+    // eight places and "what do I get out of it" in none. This is the answer
+    // engines' version of the hero's capability line, and it stays inside the
+    // briefs: charts and diagrams ship, Expand with Sources ships, and the
+    // improvement claim is scoped to what routing actually does (reads
+    // measured speed on this Mac) rather than a document that rewrites itself.
+    q: 'What can Flow actually do for my document?',
+    a: 'Flow draws charts and diagrams in place from the plain text in your file, fifty four types, offline and in one house style. It can research a partial document using your own folders, showing each lookup as it happens. It reviews a fifty page document part by part instead of cutting it. And because Flow measures the models on your Mac and routes by rules you keep, the same document uses a better model as your models get better, without you changing anything. Every one of those arrives as a diff you approve.',
+  },
+  {
+    // Added 2026-08-21 after a competitive check (Obsidian, Typora, Bear, iA
+    // Writer, Craft, Ulysses, Zettlr, Logseq, Joplin, Notion, MarkText,
+    // VS Code + MPE). TWO RAILS, both load-bearing:
+    //   * NEVER claim "the only app that renders charts and diagrams".
+    //     MarkText bundles mermaid 11 and vega-embed and does both natively;
+    //     verified in its package.json on 2026-08-21. That claim would be
+    //     false and an evaluator would catch it.
+    //   * NEVER lead with Mermaid. Bear (2.9.2, Jul 2026), Craft, Typora,
+    //     Joplin, Obsidian, Zettlr and VS Code all render it natively.
+    // The real, defensible difference is NAMED TYPES vs a hand-authored
+    // chart grammar, plus one house style across both engines. Obsidian's
+    // chart support is a COMMUNITY PLUGIN (Chart.js, a handful of types),
+    // which is why "core" is the word doing the work below.
+    // TWO MORE RAILS, added the same day from a second market check:
+    //   * Do NOT write that Craft "draws Mermaid" unqualified. Craft's own
+    //     help page (support.craft.do/en/write-and-edit/mermaid-diagrams,
+    //     read 2026-08-21) lists flowchart, sequence, state, class, ER and XY
+    //     chart, then says "other types like pie charts, Gantt charts, or
+    //     mindmaps are not currently supported". Naming that limit is both
+    //     more accurate and more useful than a flat list.
+    //   * Do NOT use "offline" inside the competitor comparison. Offline
+    //     rendering is documented only for Typora and MarkText; asserting or
+    //     implying it about Bear or Craft is the likeliest expert challenge.
+    //     Flow's own offline claim is fine and lives in the chapters, welded
+    //     to Flow. Here the phrase is "drawn in place".
+    q: 'Do other Markdown apps draw charts like this?',
+    a: 'Diagrams, yes. Mermaid is common now, and Typora, Bear, Joplin, Obsidian and VS Code all draw it, though coverage varies: Craft, for one, says pie charts, Gantt charts and mindmaps are not currently supported. Data charts are the rare part. Obsidian needs a community plugin for a handful of chart types, most apps offer none at all, and the few editors that do draw charts hand you a chart grammar to write by hand. Flow ships 34 chart types you pick by name, next to 20 diagram types, drawn in place in one house style, from plain text that any other editor still shows as text.',
   },
   {
     q: 'Is Flow another notes database?',
@@ -185,12 +248,12 @@ const heroConsentText = FLOW_CONSENT_TEXT;
            The crop is the CHECKS block, which carries no dollar figure, so the
            hero makes no cost claim its picture cannot support. TOP-right: a
            bottom corner sat over the shot's own caption bar and hid the
-           "In development" framing that must stay welded to the shot. -->
+           "Pre-launch" framing that must stay welded to the shot. -->
       <div class="of-stage of-stage--pad-top relative mx-auto mt-12 max-w-6xl" data-animate="plate">
         <FlowShot
           src={shotRunCard}
           alt="Orionfold Flow's Receipts timeline beside a demonstration client proposal: a run selected, its card showing three named checks with severity pills, Evidence at 89 of 100, the recorded cost with its basis, and the before and after digests the change is bound to."
-          caption="In development · Freemium subscription planned · Every screen is the real development build"
+          caption="Pre-launch · Freemium subscription planned · Every screen is the real build, running"
           crop
           priority
         />
@@ -214,7 +277,7 @@ const heroConsentText = FLOW_CONSENT_TEXT;
         <div class="mx-auto max-w-3xl text-center">
           <p class="of-eyebrow" data-animate="rise">Measured, not promised</p>
           <h2 id="flow-stats-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Numbers with dates, not adjectives.</h2>
-          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">Every figure comes from a recorded measurement of the development build. The fine print names exactly what was measured.</p>
+          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">Every figure comes from a recorded measurement of the running build. The fine print names exactly what was measured.</p>
         </div>
         <dl class="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3" data-animate-stagger="slow">
           {stats.map((s) => (
@@ -245,7 +308,7 @@ const heroConsentText = FLOW_CONSENT_TEXT;
     </section>
 
     <!-- ================= PRODUCT TOUR (four category pages) =================
-         2026-08-20 split: the thirteen chapters live at /flow/<category>/
+         2026-08-20 split: the tour chapters live at /flow/<category>/
          (src/components/flow/chapters/*, data in src/data/flow-categories.ts).
          Each chapter link below carries the chapter's ORIGINAL #tour-<chapter>
          id, so every deep link published before the split still lands here
@@ -353,12 +416,12 @@ const heroConsentText = FLOW_CONSENT_TEXT;
             <tbody class="divide-y divide-border/70">
               <tr class="bg-surface"><th scope="row" class="w-40 px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Product</th><td class="px-5 py-3.5 text-text">Orionfold Flow. A native Mac app for professional documents with AI agency built in.</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Tagline</th><td class="px-5 py-3.5 text-text">"{SITE.tagline}."</td></tr>
-              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Status</th><td class="px-5 py-3.5 text-text">In development, used daily for real work by its builder. Direct download for Mac, signed and notarized, outside the App Store. Freemium subscription planned. Waitlist open on this page.</td></tr>
+              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Status</th><td class="px-5 py-3.5 text-text">Pre-launch. Every capability shown on this page is built and running, and Flow is used daily for real work by its builder. The remaining work is first-run onboarding, then licensing and updates. Direct download for Mac, signed and notarized, outside the App Store. Freemium subscription planned. Waitlist open on this page.</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Patent</th><td class="px-5 py-3.5 text-text">Flow includes patent-pending technology for revision-scoped, verifiable AI agency in durable documents.</td></tr>
               <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">The wedge</th><td class="px-5 py-3.5 text-text">Text changes two ways only: an edit you typed, or a change you approved. Every AI change is an exact diff with evidence, checks, and a receipt naming what ran, where, and what it cost. Chat is where work evaporates; Flow is where the record is kept.</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Numbers</th><td class="px-5 py-3.5 text-text">Search p95 of 22.3 ms on a 10,000-note library (2026-08-04). Long-document planning linear through 620,000 characters. A real billed run recorded at $0.00425, reproducible to the digit. A complete two-engine local AI runtime inside the app for about 19 MiB (2026-08-14).</td></tr>
               <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Founder</th><td class="px-5 py-3.5 text-text">Manav Sehgal, Orionfold LLC, Sacramento, California. Press and analyst contact: <a href="mailto:manav@orionfold.com" class="text-primary underline underline-offset-2">manav@orionfold.com</a>.</td></tr>
-              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Imagery</th><td class="px-5 py-3.5 text-text">Every screenshot on this page is a real capture of the running development build over a synthetic demo library. Email for original-resolution captures and the app icon.</td></tr>
+              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Imagery</th><td class="px-5 py-3.5 text-text">Every screenshot on this page is a real capture of the running build over a synthetic demo library. Email for original-resolution captures and the app icon.</td></tr>
             </tbody>
           </table>
         </div>

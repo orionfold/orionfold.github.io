@@ -198,7 +198,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Orionfold Flow · Writing with AI',
     title: 'Most AI edits happen behind your back. Flow edits with you.',
     seed: 'flow-writing',
-    alt: 'Orionfold Flow, writing with AI: five actions, a tool strip in the document, and an exact diff you approve for every change',
+    alt: 'Orionfold Flow, writing with AI: six actions, a tool strip in the document, and an exact diff you approve for every change',
     light: true,
   },
   '/flow/receipts/': {

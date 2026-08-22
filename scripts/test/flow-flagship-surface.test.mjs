@@ -55,7 +55,7 @@ const flow = read('src/pages/flow.astro');
 // run over the whole surface (`tour`); layout contracts name their file.
 const CHAPTERS = [
   'ChapterAgency', 'ChapterExpand', 'ChapterToolbar', 'ChapterLongDocs', 'ChapterDomains', 'ChapterReceipts', 'ChapterRuntime',
-  'ChapterBenchmarks', 'ChapterRouting', 'ChapterResources', 'ChapterSearch', 'ChapterTables', 'ChapterVisualize', 'ChapterFiles',
+  'ChapterBenchmarks', 'ChapterRouting', 'ChapterResources', 'ChapterSearch', 'ChapterTables', 'ChapterVisualize', 'ChapterPictures', 'ChapterFiles',
 ];
 const chapterPath = (c) => `src/components/flow/chapters/${c}.astro`;
 const chapters = CHAPTERS.map((c) => read(chapterPath(c))).join('\n');
@@ -78,13 +78,19 @@ assert.match(flow, /\{SITE\.tagline\}/, 'the locked tagline stays in the press k
 assert.match(flow, /Anyone whose name is on the document/, 'the ICP line sits in the first screen');
 assert.match(flow, /<FlowProofNuggets formId="flow-proof-waitlist" \/>/, 'two dated facts and the native ask follow the hero');
 assert.match(flow, /Patent pending/);
-assert.match(flow, /In development · Freemium subscription planned/);
-assert.match(flow, /Every screen is the real development build/);
+// 2026-08-21 pre-launch reframing (operator direction). Every capability
+// chapter on this site has shipped; only 0145 onboarding and 0127 licensing
+// remain. "In development" understated that, so the status framing is now
+// "Pre-launch". The pairing with the freemium note stays: a reader must never
+// meet a launch claim without the commercial state beside it.
+assert.match(flow, /Pre-launch · Freemium subscription planned/);
+assert.doesNotMatch(readCopy('src/pages/flow.astro'), /\bin development\b/i, 'the pre-launch framing replaced "in development"');
+assert.match(flow, /Every screen is the real build, running/);
 // First-paint capture (operator decision 2026-08-20): the hero leads with the
 // email field and no join-versus-tour fork; the in-development framing rides
 // the hero product-shot caption instead of a line above it.
 assert.match(flow, /source="flow-hero-waitlist"/, 'the hero carries its own attributable waitlist capture');
-assert.match(flow, /caption="In development · Freemium subscription planned · Every screen is the real development build"/, 'the development framing stays welded to the hero shot');
+assert.match(flow, /caption="Pre-launch · Freemium subscription planned · Every screen is the real build, running"/, 'the pre-launch framing stays welded to the hero shot');
 assert.doesNotMatch(flow, /of-secondary-action">See the product tour/, 'no join-versus-tour fork on first paint');
 // One consent sentence, one module (src/data/flow-consent.ts): every Flow
 // capture surface imports it, so recorded consent cannot drift between them.
@@ -111,10 +117,21 @@ assert.doesNotMatch(tour, /\$\d+\s*(?:\/|per\s)/i, 'no price tiers exist yet, so
 assert.match(chapters, /Install nothing but Flow\./, 'the runtime story stays "built so that", led by its own chapter');
 assert.match(flow, /patent-pending technology for revision-scoped, verifiable AI agency in durable documents/);
 // Measured numbers with dates (the stat band).
-for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '5 actions', '4 domains']) {
+// '6 actions' (not 5): Expand with Sources joined the catalog in Flow 0131 on
+// 2026-08-20, and the toolbar brief names this page's old "five" as stale.
+for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '6 actions', '4 domains']) {
   assert.match(flow, new RegExp(esc(value)), `${value} must stay in the measured stat band`);
 }
 assert.match(flow, /2026-08-04/, 'the search measurement keeps its date');
+// The action count undercounted for a day (Expand landed 2026-08-20, the site
+// caught up 2026-08-21). Prose anywhere in the tour must not go back to five.
+// Alt text is exempt on purpose: the toolbar captures predate Expand and still
+// show five monograms, and alt text describes the picture, not the catalog.
+const chapterProse = chapters.replace(/alt="[^"]*"/g, '');
+for (const stale of [/[Ff]ive AI actions/, /[Ff]ive actions/, /five AI tools/]) {
+  assert.doesNotMatch(chapterProse, stale, 'the Agency catalog is six actions since Expand with Sources');
+}
+assert.doesNotMatch(flow, /5 actions/, 'the stat band counts six actions');
 // The four execution domains, named exactly.
 assert.match(flow, /Local, LAN, Cloud prepaid, Cloud postpaid/);
 // Section order: tour → enterprise → press → waitlist. (The stack band left
@@ -129,7 +146,7 @@ assert.deepEqual([...anchorIndexes].sort((a, b) => a - b), anchorIndexes, 'ancho
 // order-stable: the 2026-08-16 typography pass added .of-display alongside
 // scroll-mt-28, and a combined "id then class" regex broke on the reorder
 // while the anchors themselves were still perfectly fine.
-for (const id of ['tour-agency', 'tour-expand', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-receipts', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-visualize', 'tour-files']) {
+for (const id of ['tour-agency', 'tour-expand', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-receipts', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-visualize', 'tour-pictures', 'tour-files']) {
   const heading = chapters.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
   assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
   assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
@@ -365,7 +382,73 @@ const homeOrder = [
   '<FlowWaitlist placement="home" />',
 ].map((marker) => home.indexOf(marker));
 assert.doesNotMatch(home, /One company, one stack/, 'the stack band lives in the footer directory');
-assert.equal((home.match(/kicker: '/g) ?? []).length, 4, 'four capability bands, not seven');
+// Six capability bands since 2026-08-21. The 2026-08-20 review cut seven bands
+// to four because the page repeated one claim; the two added back are not
+// repetitions of it. They close the two gaps the VISION audit found: the site
+// showed the app's chrome but never the ARTIFACT it produces ("beautiful" is a
+// commitment in VISION.md, not polish), and it never said the product gets
+// better over time. Both are guarded below by name so a future trim cannot
+// silently drop them and leave only the safety argument.
+assert.equal((home.match(/kicker: '/g) ?? []).length, 6, 'six capability bands: four safety, one output, one compounding');
+assert.match(home, /Most AI gives you text to reformat\. Flow gives you a document to send\./, 'the output band states the artifact claim');
+assert.match(home, /Most tools age around a model\. Flow gets better as the models do\./, 'the compounding band states the improves-over-time claim');
+// Operator direction 2026-08-21: self-improvement is a JOURNEY and no frontier
+// model has achieved it, so Flow must not imply it has. What Flow honestly
+// claims is that the SYSTEM around the model improves (benchmarks + routing
+// rules + new model capability). The disclaimer is what earns the claim, so it
+// is asserted rather than left to a future editor's judgement.
+assert.match(home, /No AI improves itself yet, and Flow does not claim to\./, 'the compounding band disclaims model self-improvement before claiming system improvement');
+// The vision's first word is "conduct". A page that only promises safety sells
+// a smaller product than the one being built, so the hero must keep a line
+// naming what the reader GAINS beside the two naming what they keep.
+assert.match(home, /You stop writing every line and start directing the work\./, 'the hero keeps its capability line');
+// TRUTH RAILS for the two new bands, from the Flow capability briefs. Each of
+// these is a sentence someone will want to "tighten" into a bigger claim.
+const homeCopy = readCopy('src/pages/index.astro');
+// Smart Routing brief: the published vocabulary is the SCREEN's. The
+// implementation words must never reach public copy, and the retired name
+// "Auto routing" must not come back.
+for (const banned of ['predicate', 'resolver', 'fail-closed', 'Auto routing']) {
+  assert.doesNotMatch(homeCopy, new RegExp(esc(banned), 'i'), `Smart Routing copy must not say "${banned}" (screen vocabulary only)`);
+}
+// The routing rules order by measured SPEED on this Mac. They are never a
+// verdict on answer quality, and a model with no measurement is not ranked.
+assert.doesNotMatch(homeCopy, /best (model|answers)|smartest model|highest quality model/i, 'routing ranks measured speed and fit, never answer quality');
+// Rules do not adapt. The refusal to learn is the selling point.
+assert.doesNotMatch(homeCopy, /learns your (preferences|habits|style)/i, 'Smart Routing rules do not learn; they are re-applied');
+// Self-improvement is a journey; no frontier model has achieved it, so Flow
+// claims the SYSTEM improves (benchmarks + rules + new model capability) and
+// never that the model improves itself.
+assert.doesNotMatch(homeCopy, /self-improving (AI|model|intelligence)|the AI improves itself|improves its own/i, 'Flow never claims the model improves itself');
+// Visualize ADDS a fence after the selection. It never replaces the text, and
+// the pictures are drawn from the file, not generated as images.
+assert.doesNotMatch(homeCopy, /AI-generated infographic|rewrites your table into a chart|replaces your table/i, 'Visualize adds a fence after the selection, never replaces it');
+// Designed layout blocks (callouts, columns, cards) are a separate later goal.
+assert.doesNotMatch(homeCopy, /callouts?, columns,? and cards|designed layout blocks/i, 'designed layout blocks are a later goal and must not be claimed');
+// The visualization count is 34 CHART types (the app's own
+// App/Editor/fence-vocabulary.mjs CHART_TYPES list, which is Flint's Vega-Lite
+// set minus Map and Choropleth) plus 20 DIAGRAM types on a separate renderer.
+// Collapsing that into "54 chart types" misstates the 34 and would be caught
+// by anyone reading the app. Marimekko, Dumbbell and Funnel are on backends
+// Flow does not ship and are never promised.
+for (const surface of ['src/pages/index.astro', 'src/pages/flow.astro', 'src/data/flow-categories.ts']) {
+  const copy = readCopy(surface);
+  assert.doesNotMatch(copy, /54 chart types|fifty four chart types/i, `${surface}: 54 is charts PLUS diagrams, never 54 chart types`);
+  for (const absent of ['Marimekko', 'Dumbbell', 'Funnel chart', 'Choropleth']) {
+    assert.doesNotMatch(copy, new RegExp(esc(absent), 'i'), `${surface} must not promise ${absent} (not on a backend Flow ships)`);
+  }
+  // COMPETITIVE RAILS, from the 2026-08-21 market check. Flow is NOT the only
+  // Markdown app that renders charts and diagrams: MarkText bundles mermaid 11
+  // and vega-embed and does both natively (verified in its package.json), and
+  // Mermaid alone is now near-universal (Bear 2.9.2 Jul 2026, Craft, Typora,
+  // Joplin, Obsidian, Zettlr, VS Code). Either claim would be false and an
+  // evaluator would catch it. The defensible difference is NAMED chart types
+  // versus a hand-authored chart grammar, plus one house style across both
+  // engines. Keep the copy on that ground.
+  assert.doesNotMatch(copy, /only (Mac )?(Markdown )?(app|editor)[^.]*\b(chart|diagram|mermaid)/i, `${surface}: never claim to be the only app that draws charts or diagrams (MarkText does both)`);
+  assert.doesNotMatch(copy, /first (Markdown )?(app|editor)[^.]*\b(chart|diagram|mermaid)/i, `${surface}: never claim a first on charts or diagrams`);
+  assert.doesNotMatch(copy, /no other (app|editor)[^.]*\b(chart|diagram|mermaid)/i, `${surface}: never claim no other app draws charts or diagrams`);
+}
 assert.ok(homeOrder.every((i) => i >= 0), 'every homepage band must exist');
 assert.deepEqual([...homeOrder].sort((a, b) => a - b), homeOrder, 'homepage band order must hold');
 
@@ -643,7 +726,7 @@ for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeB
 //    same 4.5s-vs-10.2s comparison, so both must carry its qualification.
 assert.match(
   flowBenchCopy,
-  /Measured 2026-08-18 on one Apple M3 Max, on a development build/,
+  /Measured 2026-08-18 on one Apple M3 Max, on the running build/,
   'the benchmarks chapter keeps its measurement scope and date',
 );
 for (const [name, copy] of [['flow.astro', flowBenchCopy], ['index.astro', homeBenchCopy]]) {
@@ -717,7 +800,7 @@ assert.doesNotMatch(
 // 6. The capture's scope stays welded to it, matching the Benchmarks pattern.
 assert.match(
   flowRoutingCopy,
-  /Captured 2026-08-18 on a development build/,
+  /Captured 2026-08-18 on the running build/,
   'the routing chapter keeps its capture scope and date',
 );
 
@@ -741,7 +824,7 @@ assert.match(
 );
 assert.match(
   flowReceiptCopy,
-  /Captured 2026-08-19 on a development build/,
+  /Captured 2026-08-19 on the running build/,
   'the receipts chapter keeps its capture scope and date',
 );
 
@@ -828,6 +911,48 @@ assert.match(visualizeCopy, /invented demo data/, 'chart numbers are disclosed a
 assert.doesNotMatch(visualizeCopy, /infographic|AI-generated (chart|image)/i, 'the vocabulary is the screen\'s');
 assert.ok(categoryPages['documents-and-files'].includes('<ChapterVisualize />'), 'Visualize renders on the Documents and files page');
 for (const detail of ['detail-chart-line', 'detail-chart-gallery', 'detail-chart-flowchart']) {
+  assert.match(detailScript, new RegExp(`out: '${esc(detail)}\\.webp'`), `${detail} must stay a generated crop`);
+  assert.ok(existsSync(new URL(`../../src/assets/flow/details/${detail}.webp`, import.meta.url)), `${detail}.webp must be committed`);
+}
+
+// ── The image gallery (0054, Pictures) truth rails, 2026-08-21 ────────────
+// The brief (docs/reference/flow-image-gallery-source.md) states these as hard
+// guardrails. The NO-AI one is the highest-risk sentence on the page: in 2026 a
+// reader assumes a picture surface describes pictures for you, and a well-meant
+// copy edit ("Flow suggests a description") would invent a capability the goal
+// explicitly deferred. Guard it from both directions.
+const picturesCopy = readCopy(chapterPath('ChapterPictures'));
+// Prose wraps across source lines, so every phrase assertion runs over a
+// whitespace-collapsed copy — otherwise a harmless re-wrap breaks the guard
+// and teaches the next person that these rails are noise.
+const picturesProse = picturesCopy.replace(/\s+/g, ' ');
+assert.match(picturesProse, /the gallery proposes nothing and writes nothing on its own/, 'the no-AI rail stays stated');
+assert.doesNotMatch(
+  picturesProse,
+  /(Flow|it|gallery)\s+(can\s+)?(suggests?|proposes?|generates?|writes?|describes?)\s+(the\s+|a\s+|your\s+)?(alt|description|caption)/i,
+  'the gallery never proposes or generates a description',
+);
+assert.doesNotMatch(picturesProse, /auto-?(generate|describe|caption)|AI-(generated|written)\s+(alt|description)/i, 'no generated-description claim');
+// Not an image editor in the pixel sense: GFM has no syntax for any of these.
+assert.doesNotMatch(picturesProse, /\b(crop|resize|filter)(s|ping|ed)?\s+(your|the|a)\s+picture/i, 'no pixel-editing claim');
+assert.match(picturesProse, /No cropping, resizing, or filters/, 'the no-pixel-editing boundary is stated');
+// Copy, never move, never overwrite — the rule that protects the user's files.
+assert.match(picturesProse, /It copies, so the picture you dragged from stays exactly where it was/, 'import is stated as a copy, never a move');
+assert.doesNotMatch(picturesProse, /moves? (your|the) (file|picture|original) into/i, 'never claim a move');
+// One line, and zero bytes until you act: both measured, both easy to inflate.
+assert.match(picturesProse, /A swap changes that one line/, 'the one-line swap claim stays exact');
+assert.match(picturesProse, /changes nothing on disk, byte for byte/, 'browsing writes nothing');
+// The collection is the folder, not a library Flow keeps.
+assert.match(picturesProse, /Flow keeps no library of its own/, 'the folder-is-the-collection rail stays stated');
+assert.doesNotMatch(picturesProse, /upload(s|ed|ing)?\s+(to|into)\s+(Flow|the (app|cloud|library))/i, 'nothing is uploaded');
+// Web images are recognised and NOT loaded; they never appear in the gallery.
+assert.doesNotMatch(picturesProse, /(paste|add|use)\s+(an?\s+)?(image|picture)\s+(from\s+)?(a\s+)?(url|link|the web)/i, 'no web-image claim');
+// Drag-from-Finder was NOT exercised live; the doors that were are named.
+assert.doesNotMatch(picturesProse, /drag (it |a picture |an image )?(from|out of) (the )?Finder/i, 'a Finder drag was never verified');
+assert.match(picturesProse, /Captured 2026-08-21 on the running build/, 'the chapter keeps its capture scope and date');
+assert.match(picturesProse, /invented demo data/, 'the demo document is disclosed as invented');
+assert.ok(categoryPages['documents-and-files'].includes('<ChapterPictures />'), 'Pictures renders on the Documents and files page');
+for (const detail of ['detail-gallery-words', 'detail-gallery-collection']) {
   assert.match(detailScript, new RegExp(`out: '${esc(detail)}\\.webp'`), `${detail} must stay a generated crop`);
   assert.ok(existsSync(new URL(`../../src/assets/flow/details/${detail}.webp`, import.meta.url)), `${detail}.webp must be committed`);
 }

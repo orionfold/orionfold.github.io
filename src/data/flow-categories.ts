@@ -42,10 +42,10 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
     label: 'Writing with AI',
     title: 'Most AI edits happen behind your back. Flow edits with you.',
     blurb:
-      'Five AI actions, one trust path. Every change arrives as an exact diff you approve. The tools tell you the cost before you click. A fifty page file gets the same care, part by part.',
+      'Six AI actions, one trust path. Every change arrives as an exact diff you approve. The tools tell you the cost before you click. A fifty page file gets the same care, part by part.',
     pageTitle: 'Flow · Writing with AI: approve every change · Orionfold',
     description:
-      'How Orionfold Flow edits with AI: five actions, lookups you watch live, a tool strip that states scope and cost, and an exact diff you approve for every change.',
+      'How Orionfold Flow edits with AI: six actions, lookups you watch live, a tool strip that states scope and cost, and an exact diff you approve for every change.',
     chapters: [
       { id: 'tour-agency', label: 'Writing you approve' },
       { id: 'tour-expand', label: 'Expand with Sources' },
@@ -87,14 +87,15 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
     label: 'Documents and files',
     title: 'Most note apps lock your files in a database. Flow works on plain folders.',
     blurb:
-      'A search result is a citation, checked byte for byte. Tables edit like tables. Charts and diagrams are drawn from the text in the file, and Flow can draw one for you. Your files stay ordinary files any app can read.',
+      'A search result is a citation, checked byte for byte. Tables edit like tables. Fifty four chart and diagram types are drawn from the text in the file, offline, and Flow can draw one for you. Pictures swap from your own folder. Your files stay ordinary files any app can read.',
     pageTitle: 'Flow · Documents and files: search, tables, plain Markdown · Orionfold',
     description:
-      'Orionfold Flow works on ordinary folders of Markdown. Search returns citations checked byte for byte, tables edit as tables, and charts and diagrams are drawn from the text.',
+      'Orionfold Flow works on ordinary folders of Markdown. Search returns citations checked byte for byte, tables edit as tables, charts draw from the text, and pictures swap from your folder.',
     chapters: [
       { id: 'tour-search', label: 'Search' },
       { id: 'tour-tables', label: 'Tables' },
       { id: 'tour-visualize', label: 'Charts and diagrams' },
+      { id: 'tour-pictures', label: 'Pictures' },
       { id: 'tour-files', label: 'Your files' },
       { id: 'tour-resources', label: 'What it is using' },
     ],
