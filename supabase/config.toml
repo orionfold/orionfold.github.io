@@ -492,3 +492,14 @@ verify_jwt = false
 # --no-verify-jwt requirement on deploy.
 [functions.flow-license-refresh]
 verify_jwt = false
+
+# flow-checkout (0127, contract 2026-08-22 10:50): starts a Flow Pro
+# subscription from inside the Mac app. The caller is by definition an
+# unlicensed Base user, so there is no licence to sign with and no account to
+# authenticate — verify_jwt MUST be false here and the deploy MUST pass
+# --no-verify-jwt, or every caller would also need a platform apikey the signed
+# app does not carry. Unauthenticated is safe because the endpoint mints nothing
+# of value: a public Stripe Checkout URL, and a claim that is worthless until a
+# payment completes.
+[functions.flow-checkout]
+verify_jwt = false

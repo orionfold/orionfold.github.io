@@ -203,6 +203,11 @@ export default defineConfig({
         (RELAY_HOST_PORTABLE_LIVE || !page.endsWith(RELAY_HOST_PORTABLE_ROUTE)) &&
         !page.endsWith('/thanks/') &&
         !page.endsWith('/sponsor/thanks/') &&
+        // /flow/welcome/ is the Flow Pro post-checkout page. Same reasoning as
+        // the /thanks/ pages: it is noindex, its URL carries a checkout session
+        // id, and it has nothing to offer search. It does not end in /thanks/,
+        // so it needs naming here explicitly.
+        !page.endsWith('/flow/welcome/') &&
         !page.endsWith('/training/relay-operator-workshop/access/') &&
         !page.endsWith('/training/relay-operator-workshop/relay/') &&
         !page.endsWith('/training/relay-operator-workshop/workspace/') &&
