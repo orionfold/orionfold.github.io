@@ -2,6 +2,12 @@
 title: The Fastest Model on Your Mac Is Probably Not the One You Picked
 date: 2026-08-24
 summary: "I trusted a benchmark measured on a machine I do not own, and picked the wrong model for a month. So Flow now measures the models you have, on the Mac you are sitting at."
+# PLACEHOLDER ARTWORK. Generated locally so the series is not bare; it is
+# clearly labelled on the image itself. Replace with real creative (the
+# featured-imagery skill drives Gemini and keeps a human curation gate) and
+# swap this alt text for a description of the real picture before publishing.
+hero: ../../assets/story/the-fastest-model-on-your-mac/hero.png
+heroAlt: "Placeholder artwork. Dark blue card reading MEASURED HERE, marked as placeholder art to be replaced."
 tags:
   - Orionfold Flow
   - AI-native work

@@ -31,6 +31,7 @@ import {
 } from '../../data/flow-pricing.ts';
 import { FLOW, formatUsd } from '../../data/commerce.ts';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
+import FlowDownloadCta from './FlowDownloadCta.astro';
 
 const monthly = formatUsd(FLOW.monthly.amount);
 const annual = formatUsd(FLOW.annual.amount);
@@ -94,9 +95,21 @@ const discountPercent = Math.round(FLOW.annualDiscount * 100);
           ))}
         </ul>
         {ORIONFOLD_FLOW_LIVE ? (
-          <p class="mt-5 text-sm text-text-muted">
-            {monthly} a month, or {annual} a year and save {discountPercent} percent.
-          </p>
+          <>
+            <p class="mt-5 text-sm text-text-muted">
+              {monthly} a month, or {annual} a year and save {discountPercent} percent.
+            </p>
+            {/* The download is the action on BOTH cards, because Base and Pro
+                are the same download: you get Base by installing, and the Pro
+                Days start you inside the subscription so there is nothing
+                separate to buy here. A "Buy now" beside a card the reader cannot
+                yet subscribe from would be the working-looking action pointing
+                at a missing dependency that the download guard exists to
+                prevent. */}
+            <div class="mt-5">
+              <FlowDownloadCta source="pricing-pro" showCaption={false} />
+            </div>
+          </>
         ) : (
           <p class="mt-5 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
             Pricing opens when Flow is released

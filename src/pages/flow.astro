@@ -37,6 +37,7 @@ import FlowShot from '../components/flow/FlowShot.astro';
 import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustration.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import FlowPricing from '../components/flow/FlowPricing.astro';
+import FlowDownloadCta from '../components/flow/FlowDownloadCta.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import { Image } from 'astro:assets';
 import { SITE, PERSON } from '../data/seo';
@@ -357,12 +358,25 @@ const heroConsentText = FLOW_CONSENT_TEXT;
           <p class="mt-6 max-w-xl text-balance text-lg leading-[1.5] text-text-muted sm:text-xl">
             Fifty four kinds of chart and diagram, drawn in place and offline. Flow lays them out, AI proposes the changes, and nothing lands until you approve it.
           </p>
+          {/* Once Flow ships the hero leads with the app itself: download plus
+              the tour as the second door. The email capture stays underneath as
+              the third ask rather than the only one, so the funnel does not fork
+              on launch day. Pre-launch, the form leads exactly as before. */}
           <div class="mt-9 max-w-md lg:mx-0">
+            {ORIONFOLD_FLOW_LIVE && (
+              <div class="mb-7">
+                <FlowDownloadCta
+                  source="flow-hero"
+                  secondaryHref="#tour"
+                  secondaryLabel="Take the product tour"
+                />
+              </div>
+            )}
             <WaitlistForm
               id="flow-hero-waitlist"
               source="flow-hero-waitlist"
               offer="flow-waitlist"
-              buttonText="Join the waitlist"
+              buttonText={ORIONFOLD_FLOW_LIVE ? 'Email me Flow updates' : 'Join the waitlist'}
               successMessage="Check your inbox to confirm."
               consentText={heroConsentText}
             />

@@ -1,0 +1,84 @@
+---
+// The Flow download call to action, in one place.
+//
+// WHY A COMPONENT: this markup now appears on the homepage hero, the /flow/
+// hero, the shared waitlist panel across four placements, the pricing section
+// and the top nav. Six copies of a disabled-state rule is six chances for one of
+// them to ship a working-looking button pointing at a URL that does not exist.
+//
+// THE UNAVAILABLE STATE IS THE POINT. While FLOW_DOWNLOAD_READY is false the
+// button is deliberately NOT a link: it renders disabled and says so. A
+// dependency that is not active must never be dressed as a working action.
+//
+// The whole component renders nothing at all when ORIONFOLD_FLOW_LIVE is off, so
+// callers can drop it in beside their pre-launch markup without a second guard.
+import {
+  FLOW_DMG_URL,
+  FLOW_DOWNLOAD_CAPTION,
+  FLOW_DOWNLOAD_READY,
+} from '../../data/flow-pricing.ts';
+import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
+
+interface Props {
+  /** Where this instance sits, so downloads stay attributable per surface. */
+  source: string;
+  /** The secondary ask beside the download. Omit for a lone download button. */
+  secondaryHref?: string;
+  secondaryLabel?: string;
+  /** Center the pair and its caption (heroes) rather than left-aligning them. */
+  align?: 'left' | 'center';
+  /** Suppress the caption where the surrounding copy already carries it. */
+  showCaption?: boolean;
+}
+
+const {
+  source,
+  secondaryHref,
+  secondaryLabel,
+  align = 'left',
+  showCaption = true,
+} = Astro.props;
+
+const centered = align === 'center';
+---
+
+{ORIONFOLD_FLOW_LIVE && (
+  <div class:list={['flow-download-cta', centered && 'flow-download-cta--center']}>
+    <div class:list={['flex flex-wrap gap-3', centered && 'justify-center']}>
+      {FLOW_DOWNLOAD_READY ? (
+        <a
+          href={FLOW_DMG_URL}
+          class="of-primary-action"
+          data-flow-download={source}
+        >
+          Download Flow
+        </a>
+      ) : (
+        /* Not a link, and not styled as one that works. aria-disabled plus the
+           caption below tell a screen reader the same thing the eye is told. */
+        <span
+          class="of-primary-action cursor-not-allowed opacity-60"
+          aria-disabled="true"
+          data-flow-download-pending={source}
+        >
+          Download Flow
+        </span>
+      )}
+      {secondaryHref && secondaryLabel && (
+        <a href={secondaryHref} class="of-secondary-action">
+          {secondaryLabel}
+        </a>
+      )}
+    </div>
+    {showCaption && (
+      <p
+        class:list={[
+          'of-waitlist-caption mt-3 font-mono uppercase text-text-dim',
+          centered && 'text-center',
+        ]}
+      >
+        {FLOW_DOWNLOAD_READY ? FLOW_DOWNLOAD_CAPTION : 'Download link not live yet'}
+      </p>
+    )}
+  </div>
+)}

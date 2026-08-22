@@ -2,6 +2,12 @@
 title: A Search Result Is a Citation, Not a Guess
 date: 2026-08-25
 summary: "My search result highlighted the wrong paragraph. That is why Flow re-checks every passage byte for byte when you click, and why a 50-page document is four reviews, not a refusal."
+# PLACEHOLDER ARTWORK. Generated locally so the series is not bare; it is
+# clearly labelled on the image itself. Replace with real creative (the
+# featured-imagery skill drives Gemini and keeps a human curation gate) and
+# swap this alt text for a description of the real picture before publishing.
+hero: ../../assets/story/a-search-result-is-a-citation/hero.png
+heroAlt: "Placeholder artwork. Dark blue card reading THE CITATION, marked as placeholder art to be replaced."
 tags:
   - Orionfold Flow
   - AI-native work

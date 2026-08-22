@@ -12,7 +12,7 @@ import WaitlistForm from '../ui/WaitlistForm.astro';
 import { FLOW_CONSENT_TEXT } from '../../data/flow-consent';
 import { magnetHref } from '../../data/magnet';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
-import { FLOW_DOWNLOAD_READY, FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT } from '../../data/flow-pricing.ts';
+import FlowDownloadCta from '../flow/FlowDownloadCta.astro';
 
 interface Props {
   /**
@@ -121,28 +121,10 @@ const continueLabel = isHome ? 'Take the product tour' : isMid ? (nextLabel ? `N
 
     <div class="flow-waitlist__form relative z-10 rounded-2xl border border-border/80 bg-surface/85 p-5 backdrop-blur sm:p-7">
       {live && (
-        /* The download leads once Flow ships. FLOW_DOWNLOAD_READY is false while
-           the URL is a placeholder, and a dependency that is not active must
-           never be dressed as a working action -- so the button is disabled and
-           says so truthfully rather than linking somewhere dead. */
+        /* The download leads once Flow ships; the email capture below stays as
+           the secondary ask so the funnel does not fork on launch day. */
         <div class="mb-6">
-          {FLOW_DOWNLOAD_READY ? (
-            <a href={FLOW_DMG_URL} class="of-primary-action w-full justify-center" data-flow-download>
-              Download Flow for Mac
-            </a>
-          ) : (
-            <>
-              <span class="of-primary-action w-full cursor-not-allowed justify-center opacity-60" aria-disabled="true" role="link">
-                Download Flow for Mac
-              </span>
-              <p class="mt-2 text-center font-mono text-[0.62rem] uppercase tracking-[0.16em] text-text-dim">
-                Download link not live yet
-              </p>
-            </>
-          )}
-          <p class="mt-3 text-center text-xs leading-relaxed text-text-dim">
-            {FLOW_SYSTEM_REQUIREMENT}. Free to use, no account needed.
-          </p>
+          <FlowDownloadCta source={`${source}-download`} align="center" />
           <p class="mt-4 border-t border-border/60 pt-4 text-center text-sm text-text-muted">
             Or get the release notes by email
           </p>

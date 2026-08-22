@@ -2,6 +2,12 @@
 title: The Fan Spun for Twelve Minutes and Nothing Told Me Why
 date: 2026-08-23
 summary: "A proofread ran my Mac's fans for twelve minutes and the app said nothing. That is why Flow makes you pick where AI runs, keeps it there, and writes down what it cost."
+# PLACEHOLDER ARTWORK. Generated locally so the series is not bare; it is
+# clearly labelled on the image itself. Replace with real creative (the
+# featured-imagery skill drives Gemini and keeps a human curation gate) and
+# swap this alt text for a description of the real picture before publishing.
+hero: ../../assets/story/where-your-ai-actually-runs/hero.png
+heroAlt: "Placeholder artwork. Dark blue card reading WHERE IT RUNS, marked as placeholder art to be replaced."
 tags:
   - Orionfold Flow
   - AI-native work

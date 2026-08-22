@@ -142,5 +142,18 @@ export const FLOW_DMG_URL = "https://PLACEHOLDER.invalid/flow/Flow.dmg";
 export const FLOW_DOWNLOAD_READY = !FLOW_DMG_URL.includes("PLACEHOLDER");
 
 /** Minimum macOS the signed build targets. Verified against the app's
- * deployment target before release. */
+ * deployment target before release. Kept for the FAQ answer, which is the place
+ * a specific version genuinely helps a reader. */
 export const FLOW_SYSTEM_REQUIREMENT = "macOS 14 Sonoma or later, Apple silicon or Intel";
+
+/** The line under every Download button. Three facts a reader wants before they
+ * click: what it runs on, that clicking costs nothing, and what they get.
+ *
+ * THE NUMBER IS DELIBERATE AND CHECKED. 10 is the grant the app enforces
+ * (ProDayGrant.installDays == 10, set by the operator 2026-08-22 08:11 and
+ * verified by the product lane). It is expected to RISE, so it lives here as one
+ * constant rather than being typed into each surface.
+ *
+ * "Included" not "free trial", and no countdown: a Pro Day is spent only on a
+ * day the reader actually invokes AI, so "10 days" would be false. */
+export const FLOW_DOWNLOAD_CAPTION = "Apple macOS. No credit card. 10 Pro Days included.";

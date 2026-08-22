@@ -2,6 +2,12 @@
 title: The Chart That Was Wrong for Six Weeks
 date: 2026-08-26
 summary: "A chart I pasted in once went stale the day the numbers changed, and nobody noticed for six weeks. Flow draws the picture from the words in your file, so the two can never drift apart."
+# PLACEHOLDER ARTWORK. Generated locally so the series is not bare; it is
+# clearly labelled on the image itself. Replace with real creative (the
+# featured-imagery skill drives Gemini and keeps a human curation gate) and
+# swap this alt text for a description of the real picture before publishing.
+hero: ../../assets/story/charts-that-come-from-the-words/hero.png
+heroAlt: "Placeholder artwork. Dark blue card reading THE ARTIFACT, marked as placeholder art to be replaced."
 tags:
   - Orionfold Flow
   - AI-native work

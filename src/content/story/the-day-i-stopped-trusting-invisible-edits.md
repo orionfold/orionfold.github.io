@@ -2,6 +2,12 @@
 title: The Day I Stopped Trusting Invisible Edits
 date: 2026-08-22
 summary: "My Mac's built-in AI quietly rewrote the inside of a code block. No diff, no approval, no record. That one silent edit is why I spent a year building Flow, and why it ships today."
+# PLACEHOLDER ARTWORK. Generated locally so the series is not bare; it is
+# clearly labelled on the image itself. Replace with real creative (the
+# featured-imagery skill drives Gemini and keeps a human curation gate) and
+# swap this alt text for a description of the real picture before publishing.
+hero: ../../assets/story/the-day-i-stopped-trusting-invisible-edits/hero.png
+heroAlt: "Placeholder artwork for the launch story. Dark blue card reading THE APPROVAL, marked as placeholder art to be replaced."
 tags:
   - Orionfold Flow
   - AI-native work

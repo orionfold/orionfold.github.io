@@ -76,6 +76,27 @@ for (const { file, text } of flowStories) {
   assert.doesNotMatch(text, /Flow can update itself/i, where('the self-update claim is not publishable yet'));
 }
 
+// PLACEHOLDER ARTWORK TRIPWIRE. Every story in the series carries a hero so the
+// pages are not bare, but the current images are locally generated placeholders
+// that say so on their own face. This asserts the pairing stays honest: a story
+// with a hero must carry alt text, and while the alt text still says
+// "Placeholder artwork" the note explaining how to replace it must survive.
+//
+// This guard is meant to FAIL once real creative lands, at which point the alt
+// text describes the real picture and this block is deleted. That is the signal,
+// not a bug.
+for (const { file, text } of flowStories) {
+  if (!/\nhero: /.test(text)) continue;
+  assert.match(text, /\nheroAlt: /, `${file}: a hero image needs alt text`);
+  if (/Placeholder artwork/i.test(text)) {
+    assert.match(
+      text,
+      /# PLACEHOLDER ARTWORK\./,
+      `${file}: placeholder art must keep the note saying how to replace it`,
+    );
+  }
+}
+
 // Story #1 is the launch story and doubles as the subscriber email body, so it
 // carries the promise the whole pricing model rests on.
 const launchStory = flowStories.find(({ file }) => file === 'the-day-i-stopped-trusting-invisible-edits.md');

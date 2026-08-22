@@ -39,6 +39,8 @@ import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
 import FlowDetail from '../components/flow/FlowDetail.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
+import FlowDownloadCta from '../components/flow/FlowDownloadCta.astro';
+import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
@@ -329,12 +331,23 @@ const capabilityRows = [
             <span class="text-text">&ldquo;I do not write every note anymore, I conduct. Using AI on devices of my choosing. Quality approved by me.&rdquo;</span>{' '}
             Manav Sehgal, who is building Flow after nine years at Amazon.
           </p>
+          {/* Same launch switch as the /flow/ hero: download plus the tour lead
+              once Flow ships, and the email capture stays as the third ask. */}
           <div class="mt-9 max-w-md lg:mx-0">
+            {ORIONFOLD_FLOW_LIVE && (
+              <div class="mb-7">
+                <FlowDownloadCta
+                  source="home-hero"
+                  secondaryHref="/flow/"
+                  secondaryLabel="Take the product tour"
+                />
+              </div>
+            )}
             <WaitlistForm
               id="home-hero-waitlist"
               source="home-hero-waitlist"
               offer="flow-waitlist"
-              buttonText="Join the waitlist"
+              buttonText={ORIONFOLD_FLOW_LIVE ? 'Email me Flow updates' : 'Join the waitlist'}
               successMessage="Check your inbox to confirm."
               consentText={consentText}
             />

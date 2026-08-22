@@ -31,9 +31,15 @@ assert.deepEqual(navLabels, ['Flow', 'Tour', 'Enterprise', 'Press', 'Story'], 't
 for (const retired of ['Relay', 'Arena', 'Models', 'Books', 'Training', 'Proof']) {
   assert.equal(navLabels.includes(retired), false, `${retired} stays out of the top nav (footer Products column owns it)`);
 }
-assert.match(nav, /href="\/flow\/#waitlist"[\s\S]*?>Join the waitlist<\/a>/, 'the nav CTA drives the Flow waitlist');
+// The nav CTA and sticky bar now switch on ORIONFOLD_FLOW_LIVE (operator ask
+// 2026-08-22 10:13: the sticky CTA becomes a direct Download button). Both
+// branches must exist in the source, so the pre-launch wording is still one
+// flag flip away rather than deleted.
+assert.match(nav, /'Download Flow' : 'Join the waitlist'/, 'the nav CTA switches between download and waitlist');
+assert.match(nav, /'\/flow\/#waitlist'/, 'the pre-launch waitlist path survives in the off branch');
 assert.doesNotMatch(nav, />Get Proposal</, 'the proposal CTA left the nav (footer keeps the path)');
-assert.match(nav, /Orionfold Flow is coming to Mac/, 'the sticky bar promotes the Flow waitlist');
+assert.match(nav, /Orionfold Flow is coming to Mac/, 'the pre-launch sticky bar copy survives in the off branch');
+assert.match(nav, /Orionfold Flow for Mac/, 'the launched sticky bar names the shipped app');
 assert.match(nav, /of-flow-bar-dismissed/, 'the Flow bar uses its own dismissal key so old book-bar dismissals do not hide it');
 
 // ── Footer: Products column houses the displaced flagships ─────────────────
@@ -200,6 +206,37 @@ assert.match(pricingData, /Guardrails.*no model involved/, 'the shipped guardrai
 // It must never appear in a comparison table.
 assert.doesNotMatch(pricingData, /Apple Intelligence/i, 'Apple Intelligence does not exist in Flow');
 assert.doesNotMatch(pricingCopy, /Apple Intelligence/i, 'Apple Intelligence does not exist in Flow');
+
+// THE DOWNLOAD CAPTION. One constant, used under every Download button, so the
+// grant figure cannot be typed differently on two surfaces. 10 is what the app
+// enforces (ProDayGrant.installDays == 10, operator 2026-08-22 08:11) and it is
+// expected to RISE, which is exactly why it lives in one place.
+assert.match(
+  pricingData,
+  /FLOW_DOWNLOAD_CAPTION = "Apple macOS\. No credit card\. 10 Pro Days included\."/,
+  'the download caption states the grant the app actually enforces',
+);
+// "Included", never "free trial", and never a countdown: a Pro Day is spent only
+// on a day the reader invokes AI, so "10 days free" would be false.
+assert.doesNotMatch(pricingData, /10 days free/i, 'the grant is not a calendar countdown');
+
+// THE DOWNLOAD CTA IS ONE COMPONENT. Six surfaces render it (both heroes, the
+// shared waitlist panel, the pricing card and the nav), so the disabled state
+// lives in one place rather than being re-implemented per surface.
+const downloadCta = read('src/components/flow/FlowDownloadCta.astro');
+assert.match(downloadCta, /FLOW_DOWNLOAD_READY \?/, 'the CTA branches on whether a real download exists');
+assert.match(downloadCta, /aria-disabled="true"/, 'the unavailable state is announced, not just styled');
+// While the URL is a placeholder the control must NOT be an anchor, or a reader
+// can click through to a dead address.
+assert.match(downloadCta, /<span[\s\S]{0,200}?aria-disabled="true"/, 'the pending state renders as a span, never a link');
+
+// THE NAV STICKY BAR leads with the download once Flow is live (operator ask
+// 2026-08-22 10:13). All three nav calls to action switch together.
+const navSource = read('src/components/Nav.astro');
+assert.match(navSource, /const navCtaLabel = flowLive \? 'Download Flow' : 'Join the waitlist';/);
+assert.match(navSource, /const stickyCtaLabel = flowLive \? 'Download Flow' : 'Join the waitlist';/);
+// The nav degrades to the pricing section rather than a dead link.
+assert.match(navSource, /FLOW_DOWNLOAD_READY \? FLOW_DMG_URL : '\/flow\/#pricing'/, 'the nav never points at a placeholder URL');
 
 // BASE IS THE ABSENCE OF AN ENTITLEMENT. It has no SKU, no price and no
 // entitlement string, and the commerce layer must never grow one for it.

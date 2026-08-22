@@ -31,6 +31,24 @@ const links = [
   { href: '/flow/#press', label: 'Press' },
   { href: '/story/', label: 'Story', divider: true },
 ];
+import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
+import { FLOW_DMG_URL, FLOW_DOWNLOAD_READY } from '../data/flow-pricing.ts';
+
+// 2026-08-22 launch switch. Once ORIONFOLD_FLOW_LIVE is on, all three nav calls
+// to action point straight at the download instead of the waitlist: the sticky
+// bar, the desktop pill and the mobile pill. The sticky bar is the operator's
+// named priority, since it is the one that follows a reader down every page.
+//
+// While the DMG URL is still a placeholder the href is the /flow/ pricing
+// section rather than a dead link, and the control carries aria-disabled so it
+// is not announced as a working download. A nav button cannot render the
+// disabled visual treatment the hero uses without breaking the bar's layout, so
+// it degrades to "see the pricing section" instead of lying about a file.
+const flowLive = ORIONFOLD_FLOW_LIVE;
+const flowDownloadHref = FLOW_DOWNLOAD_READY ? FLOW_DMG_URL : '/flow/#pricing';
+const navCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
+const stickyCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
+
 ---
 <div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
   <!-- Post-confirm welcome bar (success state). Takes the SAME top slot as the
@@ -67,12 +85,18 @@ const links = [
   <div id="magnet-bar" class="hidden border-b border-primary/20 bg-primary/[0.07] text-text">
     <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-6 py-1.5">
       <a
-        href="/flow/#waitlist"
+        href={flowLive ? flowDownloadHref : '/flow/#waitlist'}
         class="group inline-flex items-center gap-2 text-center text-sm leading-tight transition-colors hover:text-primary"
+        data-flow-download={flowLive ? 'nav-sticky-bar' : undefined}
+        aria-disabled={flowLive && !FLOW_DOWNLOAD_READY ? 'true' : undefined}
       >
         <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l4 4v16H6zM15 2v5h4M9 12h6M9 16h3"/><path d="M13 17l2 2 4-5"/></svg>
-        <span><span class="font-semibold">Orionfold Flow is coming to Mac</span> <span class="text-text-muted">· patent-pending AI agency for documents</span></span>
-        <span class="font-mono text-primary transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">Join the waitlist &rarr;</span>
+        {flowLive ? (
+          <span><span class="font-semibold">Orionfold Flow for Mac</span> <span class="text-text-muted">· free to use, AI is the subscription</span></span>
+        ) : (
+          <span><span class="font-semibold">Orionfold Flow is coming to Mac</span> <span class="text-text-muted">· patent-pending AI agency for documents</span></span>
+        )}
+        <span class="font-mono text-primary transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">{stickyCtaLabel} &rarr;</span>
       </a>
       <button
         id="magnet-bar-close"
@@ -116,10 +140,12 @@ const links = [
     <!-- Right cluster: theme toggle (all sizes) + mobile hamburger -->
     <div class="flex items-center gap-4">
       <a
-        href="/flow/#waitlist"
+        href={flowLive ? flowDownloadHref : '/flow/#waitlist'}
         class="hidden lg:inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 font-mono text-[0.68rem] font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90"
-        data-astro-prefetch
-      >Join the waitlist</a>
+        data-astro-prefetch={flowLive ? undefined : true}
+        data-flow-download={flowLive ? 'nav-desktop' : undefined}
+        aria-disabled={flowLive && !FLOW_DOWNLOAD_READY ? 'true' : undefined}
+      >{navCtaLabel}</a>
       <button
         id="theme-toggle"
         type="button"
@@ -166,7 +192,7 @@ const links = [
           <a href={link.href} class="font-mono text-sm text-text-muted hover:text-primary transition-colors py-2" data-astro-prefetch>{link.label}</a>
         </Fragment>
       ))}
-      <a href="/flow/#waitlist" class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch>Join the waitlist</a>
+      <a href={flowLive ? flowDownloadHref : '/flow/#waitlist'} class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowLive ? undefined : true} data-flow-download={flowLive ? 'nav-mobile' : undefined} aria-disabled={flowLive && !FLOW_DOWNLOAD_READY ? 'true' : undefined}>{navCtaLabel}</a>
     </div>
   </div>
 </nav>
