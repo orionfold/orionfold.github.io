@@ -128,7 +128,7 @@ export {
   RELAY_HOST_PORTABLE_LIVE,
   RELAY_HOST_PORTABLE_RELEASE,
   RELAY_HOST_PORTABLE_ROUTE,
-} from './relay-host-portable';
+} from './relay-host-portable.ts';
 
 // RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED — the first Training product reuses
 // the accepted G-034 guest Checkout/access/refund lifecycle. Production
