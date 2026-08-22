@@ -39,15 +39,18 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     slug: 'home',
     eyebrow: 'Orionfold Flow · Patent pending',
-    // Tracks the homepage H1 (2026-08-20): the common belief, then the flip.
-    // Deliberately NOT SITE.tagline, so the card argues its own page.
-    title: 'Most AI tools rewrite your document. Flow asks first.',
+    // Tracks the homepage H1 (2026-08-21). The card used to argue the approval
+    // promise and show the decision footer; the hero now leads with the
+    // outcome, so the card leads with it too and shows the artifact. This IS
+    // SITE.tagline's first half, unlike the 2026-08-20 card which deliberately
+    // avoided it -- the tagline is the page's own claim again.
+    title: 'Conduct beautiful documents.',
     seed: 'home',
-    alt: 'Orionfold Flow reviewing an AI change on a Mac: the decision footer with Approve and Save disabled until the reviewer ticks I have reviewed this change.',
-    // The homepage hero crop (the decision footer), pre-cropped to the frame's
-    // native 660x338 so the control text stays crisp, with the subject inside
-    // the visible left 540px band.
-    screenshot: 'src/assets/flow/og-home-shot.png',
+    alt: 'A quota attainment chart drawn inside an Orionfold Flow document: four sales reps as horizontal bars, colored below or meeting target, each with a target marker.',
+    // Cut from the Flow Guide sales-marketing capture (3840x2100) at the OG
+    // frame's native 660x338 so the chart's own labels stay crisp, and framed
+    // so the whole chart card sits inside the visible left 540px band.
+    screenshot: 'src/assets/flow/og-home-shot-guide.png',
     light: true,
   },
   '/advisor/': {
@@ -179,15 +182,16 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/': {
     slug: 'flow',
     eyebrow: 'Orionfold Flow · Patent pending',
-    // Tracks the /flow/ H1 (2026-08-20), not SITE.tagline, which stays in the
-    // press kit.
-    title: 'Every AI change is a diff you approve. Every run leaves a receipt.',
+    // Tracks the /flow/ H1 (2026-08-21). The homepage card carries the tagline;
+    // this one must argue its OWN page, so it states what the file can hold.
+    title: 'Charts, diagrams, and pictures. All from plain text in your file.',
     seed: 'flow',
-    alt: 'Orionfold Flow: a run receipt with three named checks, each carrying what it saw then and what the rule does now',
-    // Cropped from the /flow/ hero picture (the run card), onto the named checks
-    // block. Pre-cropped to the frame's native 660x338 so the pill text stays
-    // crisp, subject inside the visible left 540px band.
-    screenshot: 'src/assets/flow/og-flow-shot.png',
+    alt: 'A bar chart drawn inside an Orionfold Flow document, one quarter highlighted in blue against grey, with its title and source line above and below.',
+    // Cropped from the /flow/ hero picture (the Visualization Gallery), onto
+    // one finished chart. Pre-cropped to the frame's native 660x338 so the
+    // chart's own labels stay crisp, subject inside the visible left 540px
+    // band.
+    screenshot: 'src/assets/flow/og-flow-shot-charts.png',
     light: true,
   },
   // The four /flow/<category>/ tour pages (2026-08-20 split). Text-only cards

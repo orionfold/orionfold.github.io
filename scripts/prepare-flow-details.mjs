@@ -59,6 +59,20 @@ const DETAILS = [
     note: 'The result leads: the proposed document with the change highlighted.',
   },
   {
+    out: 'detail-review-header.webp',
+    from: 'flow-writing-you-approve-shot.webp',
+    // Operator ask 2026-08-21: the Review Changes block from its title down to
+    // the "> Details" disclosure divider, in one piece. It spans what
+    // detail-proposal and detail-checks cut separately -- the title with its
+    // Proposed / Exact changes toggle and the "1 Check to resolve" pill, the
+    // effect sentence and file name, the permission fact row, the three named
+    // check pills, and the Details row that closes the block. Used by the
+    // homepage broken-loop section, where the claim is "you see exactly what
+    // changed", so the pills and the toggle must both stay legible.
+    rect: { left: 1518, top: 168, width: 1035, height: 250 },
+    note: 'The Review Changes block whole: what is proposed, the checks that ran, down to Details.',
+  },
+  {
     out: 'detail-diff.webp',
     from: 'flow-writing-you-approve-shot.webp',
     // The decision footer: the human-review checkbox, "1 Check to resolve",

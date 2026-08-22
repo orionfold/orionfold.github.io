@@ -7,11 +7,11 @@ export const SITE = {
   url: 'https://orionfold.com',
   tagline: 'Conduct beautiful documents with AI agency built in',
   description:
-    'Orionfold Flow is the Mac app where AI works in your document, not a chat window. Every change is a diff you approve, with a receipt. Patent pending.',
+    'Orionfold Flow is the Mac app that brings AI to your documents instead of sending them to a cloud. It works with the wifi off, and every change is a diff you approve. Patent pending.',
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:
-    'Orionfold Flow, patent pending: conduct beautiful documents with AI agency built in. A real capture of the Mac app reviewing an AI change as an exact diff with evidence, checks, and approval.',
+    'Orionfold Flow, patent pending: conduct beautiful documents with AI agency built in. A real capture of the Mac app showing a finished document with charts and tables drawn in place from plain Markdown.',
   // Single light theme: address-bar tint matches the manifest background.
   themeColor: '#f6f9fc',
   license: 'Apache-2.0',

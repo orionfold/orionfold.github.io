@@ -359,7 +359,15 @@
 }
 
 /* /flow/ hero title: one sentence per line on a large screen, never broken
-   mid-sentence. Below lg the spans stay inline and the title balances. */
+   mid-sentence. Below lg the spans stay inline and the title balances.
+   `min-width: 0` on the grid ITEM is load-bearing (2026-08-21): a nowrap span
+   gives the column a min-content width equal to its longest line, and a grid
+   track refuses to shrink below min-content, so the title was overriding the
+   0.8fr/1.3fr ratio and squeezing the product shot ~18% narrower than the
+   homepage's. Capping the item lets the declared ratio win; the spans still
+   never break mid-sentence because the type scale keeps them inside it. */
 @media (min-width: 1024px) {
   .flow-hero__title span { display: block; text-wrap: nowrap; }
+  .flow-hero__copy { min-width: 0; }
+  .flow-hero__title, .flow-hero__title span { max-width: 100%; }
 }

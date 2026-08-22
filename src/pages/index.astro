@@ -38,7 +38,6 @@ import Footer from '../components/Footer.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
 import FlowDetail from '../components/flow/FlowDetail.astro';
-import FlowProofNuggets from '../components/flow/FlowProofNuggets.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import { Image } from 'astro:assets';
@@ -56,10 +55,14 @@ import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
 import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
 import shotRouting from '../assets/flow/shots/flow-smart-routing-shot.webp';
+// Flow Guide capture (3840x2100, light only). The hero artifact: two finished
+// documents, not a panel. See the hero block for why it carries no detail crop.
+import shotGuideSales from '../assets/flow/shots/flow-guide-sales-marketing-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). A full window
 // shrunk into a page column renders the control being described at ~8px; these
 // crops show that one control at a size where the claim is checkable.
 import detailDiff from '../assets/flow/details/detail-diff.webp';
+import detailReviewHeader from '../assets/flow/details/detail-review-header.webp';
 import detailToolbarPreview from '../assets/flow/details/detail-toolbar-preview.webp';
 import detailDomains from '../assets/flow/details/detail-domains.webp';
 import detailParts from '../assets/flow/details/detail-parts.webp';
@@ -72,7 +75,7 @@ const og = ogMeta('/');
 // The title tag, the OG card title (src/data/og.ts), and the H1 below are one
 // promise in three lengths. A reader who clicks the title must see it confirmed
 // in the first five seconds, so none of the three may drift from the others.
-const HOME_TITLE = 'Orionfold Flow · AI that asks before it changes your document';
+const HOME_TITLE = 'Orionfold Flow · Conduct beautiful documents, offline on your Mac';
 
 // The homepage is the Flow front door, so it carries the same product entity
 // as /flow/ (canonical product URL stays /flow/). Helps answer engines tie
@@ -137,6 +140,26 @@ const heroStats = [
 // than in a block, so the page never reads as four warnings then a brochure.
 const capabilityRows = [
   {
+    // THE APPROVAL BAND. Added 2026-08-21 when the hero moved to the outcome
+    // ("Conduct beautiful documents") and the artifact picture. Approval used
+    // to BE the hero, so the page had no band for it; demoting it without
+    // rehoming it would have dropped the wedge entirely. It leads the bands
+    // because it is still the claim everything else rests on, and it keeps the
+    // exact picture and crop the hero used, so nothing about the proof
+    // changed, only where it sits in the argument.
+    kicker: 'Nothing changes without you',
+    title: 'Most AI tools rewrite your document. Flow asks first.',
+    body: 'Your text changes two ways only: an edit you typed, or a change you approved. Every AI change arrives as an exact diff, with the checks that ran beside it, and Approve and Save stays disabled until you tick the box that says you read it.',
+    href: '/flow/writing-with-ai/#tour-agency',
+    shot: shotApprove,
+    alt: 'Orionfold Flow reviewing an AI proofread: the proposed document with the change highlighted, one fact row, three check pills, and the human-review gate beside a disabled Approve and Save button.',
+    detail: detailDiff,
+    detailAlt: 'Flow\'s decision footer: an unticked "I have reviewed this change" checkbox, "1 Check to resolve", and a disabled Approve and Save button beside Reject and Later.',
+    detailCaption: 'Approve and Save stays disabled until you tick the box · Nothing is saved until you approve it',
+    stage: 'tl',
+    align: 'left',
+  },
+  {
     kicker: 'Priced before you click',
     title: 'Most tools bill you after. Flow tells you the cost first.',
     body: 'The six AI actions live in the document\'s own tool strip, beside bold and italic. Hover one and Flow answers before it runs: how much text it would act on, what it would cost, and which model would do the work. Work on your own Mac is free, and Flow says so in words rather than a number.',
@@ -146,7 +169,7 @@ const capabilityRows = [
     detail: detailToolbarPreview,
     detailAlt: 'Flow\'s tool strip with Proofread\'s panel open: 3,911 words for the whole document, "No cost, free, it runs on hardware you have", and the model that would run it staying on this Mac.',
     detailCaption: 'Scope, cost, and route · Answered before the click',
-    stage: 'tl',
+    stage: 'br',
     align: 'left',
   },
   {
@@ -159,7 +182,7 @@ const capabilityRows = [
     detail: detailParts,
     detailAlt: 'Flow’s review header on a long document: numbered part chips, and the line "0 approved, 0 declined, 2 remaining".',
     detailCaption: 'Coverage in plain counts · Approve, decline, or skip any part',
-    stage: 'br',
+    stage: 'bl',
     align: 'right',
   },
   {
@@ -181,7 +204,7 @@ const capabilityRows = [
     detail: detailChartLine,
     detailAlt: 'A line chart drawn by Flow inside a document: the title "Team plan drove MRR growth through the summer", a plan legend with Team highlighted in the accent colour, dated axes, and the source line "Billing system, month-end snapshots".',
     detailCaption: 'Drawn from the text in your file · A title that makes the claim, one highlighted series, a source line',
-    stage: 'bl',
+    stage: 'tr',
     align: 'left',
   },
   {
@@ -196,7 +219,7 @@ const capabilityRows = [
     detailCaption: 'One switch per domain · Discovery never enables anything',
     // Was 'bl' until 2026-08-21, when the output band above took that corner.
     // Adjacent bands may never repeat one (tests/e2e/product-stage.spec.ts).
-    stage: 'tr',
+    stage: 'tl',
     align: 'center',
   },
   {
@@ -217,7 +240,7 @@ const capabilityRows = [
     detailAlt: 'Three named checks in a Flow run receipt: Human review with the pill Needs your acknowledgment, References are current with Warns you, and Citations resolve with Stops the change, each row also carrying a stored Checked mark.',
     detailCaption: 'Named checks, two facts each · What it saw then, what the rule does now',
     // Was 'tr' until 2026-08-21; the domains band above now holds that corner.
-    stage: 'tl',
+    stage: 'br',
     align: 'left',
   },
   {
@@ -245,7 +268,7 @@ const capabilityRows = [
     detail: detailRoutingRules,
     detailAlt: 'Flow\'s rulebook: the sentence "Rules decide in order; the first one that matches applies", four ordered rules with the count of models that qualify for each, a Deciding badge on rule one, and an orange no-model state on rule four.',
     detailCaption: 'Rules decide in order · The first one that matches applies',
-    stage: 'br',
+    stage: 'bl',
     align: 'right',
   },
 ];
@@ -265,71 +288,87 @@ const capabilityRows = [
     <section class="home-hero relative px-6 pb-16 pt-32 sm:pt-36">
       <div class="home-hero__grid" aria-hidden="true"></div>
       <div class="home-hero__glow" aria-hidden="true"></div>
-      <div class="relative mx-auto max-w-5xl text-center">
-        <div class="flex flex-wrap items-center justify-center gap-2">
-          <span class="home-chip">
-            <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
-            Orionfold Flow · Native Mac app
-          </span>
-          <span class="home-chip home-chip--accent">Patent pending</span>
-        </div>
-        <!-- Context first: who this is for, in plain words, before the claim. -->
-        <p class="of-eyebrow mt-7">For founders, comms leads, and independent operators. Anyone whose name is on the document.</p>
-        <!-- The common belief, then the flip. Written against the hero picture:
-             the review surface with Approve and Save DISABLED until the reader
-             ticks the box. Headline, lede, and picture carry one claim. -->
-        <h1 class="hero-gradient-text mx-auto mt-4 max-w-4xl font-display text-[clamp(2.3rem,7.6vw,4.4rem)] font-extrabold leading-[1.04] tracking-[-0.05em]">
-          Most AI tools rewrite your document. Flow asks first.
-        </h1>
-        <p class="hero-lede mx-auto mt-6 max-w-2xl text-balance text-xl leading-[1.5] text-text-muted sm:text-2xl">
-          <span>Every AI change arrives as a diff you approve, with a receipt of what ran, where it ran, and what it cost.</span>{' '}
-          <span>Your text changes two ways only: an edit you typed, or a change you approved.</span>
-        </p>
-        <!-- The gain, not only the guard. The vision's first word is "conduct",
-             and a page that only promises safety sells a smaller product than
-             the one being built. This line names what the reader gets; the two
-             sentences above name what they keep. -->
-        <p class="hero-gain mx-auto mt-5 max-w-2xl text-lg leading-[1.55] text-text sm:text-xl">
-          You stop writing every line and start directing the work. Research, tables, charts,
-          and diagrams are drawn in the file you already own.
-        </p>
-        <div class="mx-auto mt-9 max-w-md">
-          <WaitlistForm
-            id="home-hero-waitlist"
-            source="home-hero-waitlist"
-            offer="flow-waitlist"
-            buttonText="Join the waitlist"
-            successMessage="Check your inbox to confirm."
-            consentText={consentText}
-          />
-          <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
-            Free to join · Double opt-in · One email a week, no more
+      {/* TWO-COLUMN HERO (2026-08-21, operator direction, modelled on
+          ainative.business). Copy left, product shot right, so the artifact is
+          beside the promise rather than a scroll below it. Collapses to one
+          centred column below lg. */}
+      <div class="relative mx-auto grid w-full max-w-[88rem] items-center gap-10 lg:grid-cols-[0.8fr_1.3fr] lg:gap-12">
+        <!-- Left column: the promise, the proof line, the ask -->
+        <div class="text-center lg:text-left">
+          <div class="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
+            <span class="home-chip">
+              <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
+              Orionfold Flow · Native Mac app
+            </span>
+            <span class="home-chip home-chip--accent">Patent pending</span>
+          </div>
+          <!-- Context first: who this is for, in plain words, before the claim. -->
+          <p class="of-eyebrow mt-7">
+            For creators, builders, and authors.
+            {/* Second line, dimmer: the audience is named first, then widened.
+                Splitting it stops the eyebrow wrapping mid-thought at any
+                width, and the tone drop marks it as the aside it is. */}
+            <span class="hero-icp__wide">Anyone whose name is on the document.</span>
           </p>
+          {/* The outcome, then the control. "Choose where AI operates" is the
+              offline wedge in the reader's own words: the four execution
+              domains (Local, LAN, Cloud prepaid, Cloud postpaid) are a real
+              shipped switch, so the headline names a capability rather than a
+              mood. */}
+          <h1 class="hero-gradient-text mt-4 font-display text-[clamp(2.1rem,5.4vw,3.4rem)] font-extrabold leading-[1.06] tracking-[-0.05em]">
+            Conduct beautiful documents. Choose where AI operates.
+          </h1>
+          {/* FOUNDER LINE (2026-08-21, operator direction). One-of-one evidence
+              above the fold: the page is one person's, not a company's. The
+              first sentence is the line the founder already published in
+              "Limitless, Without the Pill" and quotes on /about/; the second
+              was added by the operator so the quote carries the hardware
+              choice the headline promises. Link goes to the story, not
+              /about/, so the claim is checkable at its origin. */}
+          <p class="hero-founder mt-6 max-w-xl text-base leading-[1.5] text-text-muted">
+            <span class="text-text">&ldquo;I do not write every note anymore, I conduct. Using AI on devices of my choosing. Quality approved by me.&rdquo;</span>{' '}
+            Manav Sehgal, who is building Flow after nine years at Amazon.
+          </p>
+          <div class="mt-9 max-w-md lg:mx-0">
+            <WaitlistForm
+              id="home-hero-waitlist"
+              source="home-hero-waitlist"
+              offer="flow-waitlist"
+              buttonText="Join the waitlist"
+              successMessage="Check your inbox to confirm."
+              consentText={consentText}
+            />
+            <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
+              Free to join · Double opt-in · One email a week, no more
+            </p>
+          </div>
         </div>
-      </div>
-      <!-- The hero picture proves the headline: the whole review window for
-           context, and the decision footer lifted out at a legible size, with
-           Approve and Save disabled until the box is ticked. TOP-right, not a
-           bottom corner: the footer crop is a short wide strip, and at a bottom
-           corner it renders shorter than the stage overhang and never overlaps
-           the shot (product-stage.spec.ts catches exactly that). The first band
-           below takes top-left. -->
-      <div class="of-stage of-stage--pad-top mx-auto mt-14 w-full max-w-6xl" data-animate="plate">
-        <FlowShot
-          src={shotApprove}
-          alt="Orionfold Flow reviewing an AI proofread: the proposed document with the change highlighted, one fact row, three check pills, and the human-review gate beside a disabled Approve and Save button."
-          crop
-          sizes="(min-width: 1280px) 72rem, (min-width: 1024px) 64rem, 100vw"
-          priority
-        />
-        <FlowDetail
-          class="of-stage__detail of-stage__detail--tr"
-          src={detailDiff}
-          alt="Flow's decision footer: an unticked 'I have reviewed this change' checkbox, '1 Check to resolve', and a disabled Approve and Save button beside Reject and Later."
-          caption="Approve and Save stays disabled until you tick the box · Nothing is saved until you approve it"
-          sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 4rem)"
-          animate
-        />
+
+        {/* RIGHT COLUMN: the artifact. Replaced the approve-gate review window
+            on 2026-08-21: Flow is roughly 90% rendered document and 10%
+            chrome, and every one of the site's sixteen rendered hero shots
+            showed the chrome. This is two documents from the Flow Guide, with
+            an attainment chart, a funnel table, three KPI cards and a sessions
+            line chart, all drawn in place from plain Markdown. The headline
+            says "beautiful documents" and the picture is one.
+            MOTION: float + one slow sheen sweep, ported from ainative.business.
+            Both animate `transform` only (compositor-only, no layout or paint),
+            which is why this is safe on the eager LCP image where a
+            `data-animate` reveal would NOT be -- see the mobile-perf rule that
+            an LCP candidate must never be opacity-gated. Capture is 3840x2100
+            (not the 2560x1400 of the older shots), light theme only. */}
+        <div class="home-hero__shot">
+          <div class="home-hero__shot-frame">
+            <FlowShot
+              src={shotGuideSales}
+              alt="Two documents open side by side in Orionfold Flow: a Q3 sales report showing a quota attainment chart with target markers and a five-stage funnel table, beside a marketing dashboard showing three metric cards with progress bars and a weekly sessions line chart."
+              crop
+              sizes="(min-width: 1536px) 64rem, (min-width: 1280px) 54rem, (min-width: 1024px) 44rem, 100vw"
+              priority
+            />
+            <span class="home-hero__sheen" aria-hidden="true"></span>
+          </div>
+        </div>
       </div>
       <div class="mx-auto mt-10 w-full max-w-6xl sm:mt-14">
         <dl class="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4" data-animate-stagger="slow">
@@ -346,8 +385,6 @@ const capabilityRows = [
       </div>
     </section>
 
-    <!-- ================= TWO THINGS WE MEASURED + the native ask ================= -->
-    <FlowProofNuggets formId="home-proof-waitlist" />
 
     <!-- ================= THE BROKEN LOOP ================= -->
     <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
@@ -377,6 +414,36 @@ const capabilityRows = [
             <h3 class="mt-3 text-lg font-bold leading-snug">Chat workspaces expire. Files are forever.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Your work is plain Markdown on your own disk, readable by every other tool you own. No export step, no lock-in.</p>
           </article>
+        </div>
+        {/* The answer to the three cards above, in one picture (2026-08-21).
+            The section argues the work belongs IN THE FILE rather than a chat
+            thread, so the picture has to show a change being made TO a
+            document: the file being edited on the left, Review Changes on the
+            right with the proposed text, the named checks, and the approval
+            gate. That is all three cards at once -- no pasting, attribution
+            visible, a file rather than a session.
+            The zoom crop lifts the Review Changes block out at a legible size
+            and animates in on scroll, hanging past the window's BOTTOM-RIGHT
+            edge like every other stage crop on the page (a bottom corner needs
+            of-stage--pad-bottom, not --pad-top, or it has no room to overhang).
+            The window behind it is only context.
+            Lazy, not eager -- the hero above is the page's one eager image
+            (mobile-perf: one per page). */}
+        <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
+          <FlowShot
+            src={shotApprove}
+            alt="Orionfold Flow with a field notes document open on the left and Review Changes on the right: the proposed text with the corrected phrase highlighted, three named checks, and an Approve and Save button held disabled until the reviewer ticks the box."
+            crop
+            sizes="(min-width: 1280px) 72rem, (min-width: 1024px) 64rem, 100vw"
+          />
+          <FlowDetail
+            class="of-stage__detail of-stage__detail--br"
+            src={detailReviewHeader}
+            alt="Flow's Review Changes block: the title with a Proposed and Exact changes toggle and a '1 Check to resolve' pill, the effect sentence naming the file, a permission row reading 'Edit this document only' with 'No external action' and 'No Sources', and three named checks as pills reading Citations resolve Passed, References are current Not required, and Human review Not checked."
+            caption="What is proposed, and every check that ran"
+            sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 4rem)"
+            animate
+          />
         </div>
         <div class="mt-10 flex flex-wrap justify-center gap-3" data-animate="rise">
           <a href="/flow/" class="of-primary-action">Take the product tour</a>
@@ -523,23 +590,6 @@ const capabilityRows = [
   .home-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-accent-ink); font-weight: 650; }
   .home-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-accent-ink); }
 
-  /* Hero lede: one sentence per line on a large screen, never broken
-     mid-sentence. Below lg the spans stay inline and balance normally. */
-  @media (min-width: 1024px) {
-    .hero-lede { max-width: none; }
-    .hero-lede span { display: block; text-wrap: balance; }
-  }
-
-  /* The hero and the capability bands ride the shared .of-stage primitive
-     (global.css), which owns the corner rotation and the below-lg fallback.
-     The hero crop alone keeps its horizontal overhang INSIDE the stage: at a
-     1440 viewport the stage already fills the width, and a crop hanging a
-     further 3rem past it lost its Approve and Save button off-screen, which is
-     the one control the headline is about. It still hangs past the TOP edge,
-     so it reads as a detail placed onto the window, not a picture-in-picture. */
-  @media (min-width: 1024px) {
-    .home-hero :global(.of-stage .of-stage__detail--tr.of-stage__detail--tr) { right: 0.75rem; }
-  }
 
   /* Abstract origin-story card: the limitless constellation art on a gently
      tilted plane (static transform, gradient halo, no filters, no loops,

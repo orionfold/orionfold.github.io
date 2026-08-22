@@ -35,6 +35,13 @@ test.describe('product stage overlays', () => {
         const detail = stage.locator('.of-stage__detail');
         const shot = stage.locator('.flow-shot');
 
+        // A stage may legitimately carry NO overlay (2026-08-21: both front-door
+        // heroes became Flow Guide document captures, which are legible whole
+        // and would only be spoiled by laying chrome back over them). Such a
+        // stage has nothing to position, so it is skipped rather than failed --
+        // the assertions below all describe an overlay's geometry.
+        if ((await detail.count()) === 0) continue;
+
         // The whole point of the primitive: the crop is LIFTED OUT of flow and
         // laid over the window. If this is `relative` or `static`, the cascade
         // regression above has come back.
@@ -82,6 +89,7 @@ test.describe('product stage overlays', () => {
 
       for (let i = 0; i < count; i += 1) {
         const detail = stages.nth(i).locator('.of-stage__detail');
+        if ((await detail.count()) === 0) continue; // overlay-less stage, see above
         // Overlaying on a narrow screen would cover the very context the crop
         // is being explained against, so the overlay is desktop-only.
         await expect(detail).not.toHaveCSS('position', 'absolute');
