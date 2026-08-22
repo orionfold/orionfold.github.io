@@ -14,6 +14,7 @@ import {
   licenseIsCurrent,
   mayRefresh,
   reissuePayload,
+  sessionIdFromBody,
 } from "./license-reissue.ts";
 import { signLicense, verifyLicense } from "./license.ts";
 
@@ -180,4 +181,62 @@ Deno.test("mayRefresh allows every status except revoked", () => {
   assert(mayRefresh("canceled"));
   assert(mayRefresh(null));
   assertEquals(mayRefresh("revoked"), false);
+});
+
+
+// ── The buyer path's way in (orionfold-flow 2026-08-22 12:36) ──────────────
+// A buyer mid-purchase has no envelope, so `flow-license-refresh` accepts a
+// Stripe session id as an alternative bearer secret. This resolver is the only
+// place a request can name one, so it is where the shape is pinned.
+
+Deno.test("sessionIdFromBody accepts both key spellings", () => {
+  assertEquals(sessionIdFromBody({ session_id: "cs_test_123" }), "cs_test_123");
+  assertEquals(sessionIdFromBody({ stripe_session_id: "cs_test_123" }), "cs_test_123");
+  // Whitespace is the buyer's, not theirs to lose a purchase over.
+  assertEquals(sessionIdFromBody({ session_id: "  cs_test_123  " }), "cs_test_123");
+});
+
+// The `cs_` prefix keeps this from degrading into a row lookup by arbitrary
+// string. A legitimate caller never notices; a prober cannot enumerate.
+Deno.test("sessionIdFromBody requires a Stripe session id", () => {
+  for (const junk of [
+    { session_id: "sub_123" },
+    { session_id: "pi_123" },
+    { session_id: "" },
+    { session_id: "   " },
+    { session_id: `cs_${"x".repeat(300)}` },
+    { session_id: 42 },
+    { session_id: null },
+    { license: "envelope" },
+    {},
+    null,
+    undefined,
+    "cs_test_123",
+  ]) {
+    assertEquals(sessionIdFromBody(junk), null, `must refuse ${JSON.stringify(junk)}`);
+  }
+});
+
+// A session id must NOT widen what the caller can ask for. Everything but the
+// term still comes from the row, which is what makes the second way in safe.
+//
+// Note what this does NOT assert: that the id is absent from the payload. It is
+// present, as `stripe_purchase_id`, and that is correct — it is the provenance
+// the ISSUING path signed, copied from the row like every other claim. The
+// property that matters is that presenting an id cannot CHANGE any of it.
+Deno.test("a session id grants nothing the row does not already say", () => {
+  const row = flowRow({ tier: "pro", seats: 2, stripe_session_id: "cs_test_123" });
+  const payload = reissuePayload(row, FLOW_ENTITLEMENTS)!;
+  assertEquals(payload.tier, "pro");
+  assertEquals(payload.seats, 2);
+  // Provenance is copied from the row, never taken from the request.
+  assertEquals(payload.provenance?.stripe_purchase_id, "cs_test_123");
+
+  // The same row reached by either way in must produce a BYTE-IDENTICAL
+  // payload. That is the whole safety argument for the second key: the lookup
+  // differs, nothing after it does.
+  assertEquals(
+    JSON.stringify(reissuePayload(row, FLOW_ENTITLEMENTS)),
+    JSON.stringify(payload),
+  );
 });

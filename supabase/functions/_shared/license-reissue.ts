@@ -147,3 +147,36 @@ export function licenseIsCurrent(
 export function mayRefresh(status: string | null | undefined): boolean {
   return status !== "revoked";
 }
+
+/**
+ * The Stripe Checkout session id in a refresh request, or null.
+ *
+ * WHY THIS EXISTS. `flow-license-refresh` was built for a subscriber who
+ * already HOLDS an envelope: it verifies our signature over their bytes and
+ * re-signs from the row. A buyer mid-purchase has no envelope, which is the
+ * whole problem the poll solves — the endpoint that hands back a licence
+ * required already having one. This is the second way in, for that one case.
+ *
+ * WHAT IT IS NOT. It is not a second AUTH story. A session id is a bearer
+ * secret of exactly the same weight as the envelope: whoever holds it bought
+ * the thing. It is `UNIQUE` on `fe_entitlements`, unguessable, and already
+ * visible in the buyer's own address bar. What it must never do is widen what
+ * a caller can ask for — see `reissuePayload`, where every claim but the term
+ * comes from the row the issuing path wrote, never from the request.
+ *
+ * Accepts `session_id` and `stripe_session_id` for the same reason
+ * `licenseFromBody` accepts `license` and `licence`: a caller should not lose
+ * a purchase to a key name.
+ */
+export function sessionIdFromBody(body: unknown): string | null {
+  if (!body || typeof body !== "object") return null;
+  const b = body as Record<string, unknown>;
+  const raw = b.session_id ?? b.stripe_session_id;
+  if (typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+  // Stripe Checkout session ids are `cs_`-prefixed. Requiring the prefix keeps
+  // this from becoming a general-purpose row lookup by arbitrary string, and
+  // costs a legitimate caller nothing.
+  if (!trimmed.startsWith("cs_") || trimmed.length > 255) return null;
+  return trimmed;
+}

@@ -490,6 +490,10 @@ verify_jwt = false
 # with the term their renewals have already extended in the database. Same
 # licence-as-credential gate as flow-billing-portal, same reasoning, same
 # --no-verify-jwt requirement on deploy.
+# WIDENED 2026-08-22 (orionfold-flow 12:36): also accepts `{"session_id":"cs_…"}`
+# so a buyer mid-purchase, who has no envelope yet, can poll for the licence the
+# Stripe webhook is about to write. Both keys are bearer secrets of the same
+# weight, which is why the no-header decision is unchanged by the addition.
 [functions.flow-license-refresh]
 verify_jwt = false
 
