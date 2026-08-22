@@ -12,14 +12,23 @@
 // ONE offer key — offer=become-ai-native-business is what confirm-email matches
 // to deliver the book, so it must not change. The capture uses the same panel
 // treatment as the Flow waitlist so both funnels read as one system. Flow copy
-// here stays broad positioning plus the current in-development / Mac /
-// freemium-planned facts, no mechanism claims.
+// here stays broad positioning plus the current Mac / subscription facts, no
+// mechanism claims.
+//
+// 2026-08-22: the Flow-state copy on this page branches on ORIONFOLD_FLOW_LIVE
+// so one line reverts it with the rest of the site. The FAQ answers are inside
+// FAQPage JSON-LD, so a stale one is quoted by answer engines -- they branch too.
+// `consentText` does NOT branch, deliberately: it is recorded verbatim into the
+// DB on every submit, so a flag flip would fork the compliance record between
+// subscribers. It also stays true either way -- this capture still sends Flow
+// updates and the digest.
 import Layout from '../layouts/Layout.astro';
 import BrandMark from '../components/ui/BrandMark.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
 import bookCover from '../assets/book/ai-native-business-book.jpg';
+import { ORIONFOLD_FLOW_LIVE } from '../data/launch';
 
 const og = ogMeta('/become-ai-native-business/');
 
@@ -48,11 +57,13 @@ const objections = [
   },
   {
     q: 'What do you do with my email?',
-    a: 'We send your book, then the AI For Everyone digest, one email a week, no more. You also get Orionfold Flow updates and the launch note when our Mac app is ready. We never sell or rent your address. You can leave any time with one click.',
+    a: `We send your book, then the AI For Everyone digest, one email a week, no more. You also get Orionfold Flow updates${ORIONFOLD_FLOW_LIVE ? ', our Mac app' : ' and the launch note when our Mac app is ready'}. We never sell or rent your address. You can leave any time with one click.`,
   },
   {
     q: 'What is Orionfold Flow?',
-    a: 'Flow is the Mac app we are building for the person doing the work: a place to conduct documents with AI agency built in, where you stay the one who approves what changes. The book shows you how an AI-native business is shaped. Flow is the tool for the writing, research, and reporting that shape asks of you. It is in development as a freemium subscription, so there is nothing to buy today.',
+    a: ORIONFOLD_FLOW_LIVE
+      ? 'Flow is our Mac app for the person doing the work: a place to conduct documents with AI agency built in, where you stay the one who approves what changes. The book shows you how an AI-native business is shaped. Flow is the tool for the writing, research, and reporting that shape asks of you. Reading, writing, searching and exporting your documents are free forever, and Flow\'s AI is a paid subscription.'
+      : 'Flow is the Mac app we are building for the person doing the work: a place to conduct documents with AI agency built in, where you stay the one who approves what changes. The book shows you how an AI-native business is shaped. Flow is the tool for the writing, research, and reporting that shape asks of you. It is in development as a freemium subscription, so there is nothing to buy today.',
   },
   {
     q: 'Is this a sales pitch in disguise?',
@@ -108,8 +119,8 @@ const faqSchema = {
           Just your email, and we send the PDF and EPUB to read on any device.
         </p>
         <p class="mt-3 max-w-md leading-relaxed text-text-muted">
-          You will also be first to hear about <span class="font-semibold text-text">Orionfold Flow</span>,
-          the Mac app we are building for the person doing the work.
+          You will also get updates on <span class="font-semibold text-text">Orionfold Flow</span>,
+          {ORIONFOLD_FLOW_LIVE ? 'our Mac app for the person doing the work.' : 'the Mac app we are building for the person doing the work.'}
         </p>
 
         <!-- Capture panel: same treatment as the Flow waitlist (FlowWaitlist.astro)
@@ -197,8 +208,10 @@ const faqSchema = {
             <p class="mt-3 leading-relaxed text-text-muted">
               Orionfold Flow is our Mac app for the knowledge worker: a place to
               conduct documents with AI agency built in, where you stay the one who
-              approves what changes. It is in development as a freemium subscription,
-              and your email puts you first in line.
+              approves what changes.
+              {ORIONFOLD_FLOW_LIVE
+                ? ' Your documents are free forever. The AI is what you pay for.'
+                : ' It is in development as a freemium subscription, and your email puts you first in line.'}
             </p>
           </div>
         </div>
@@ -227,7 +240,7 @@ const faqSchema = {
       </h2>
       <p class="mx-auto mt-4 max-w-md leading-relaxed text-text-muted">
         Get the $20 <span class="italic">AI Native Business</span> book free, and
-        be first to hear when Orionfold Flow is ready.
+        {ORIONFOLD_FLOW_LIVE ? 'get the updates on Orionfold Flow.' : 'be first to hear when Orionfold Flow is ready.'}
       </p>
       <div class="mx-auto mt-8 max-w-md rounded-2xl border border-border/80 bg-surface/85 p-5 text-left backdrop-blur sm:p-6">
         <p class="mb-5 flex items-center justify-between gap-4 font-mono text-[0.64rem] uppercase tracking-[0.16em] text-text-dim">

@@ -1197,4 +1197,85 @@ const astroConfig = read('astro.config.mjs');
 assert.match(astroConfig, /map\['\/flow\/'\] = '\d{4}-\d{2}-\d{2}'/, 'the hand-built Flow landing tracks an honest sitemap lastmod');
 assert.match(read('tests/e2e/critical-routes.spec.ts'), /'\/flow\/'/);
 
+// ── The MACHINE-READ layer must not lag the launch ─────────────────────────
+// 2026-08-22. The rendered site branches on ORIONFOLD_FLOW_LIVE, but three
+// surfaces have no flag available and are the ones machines actually quote:
+// llms.txt (static, answer engines), the sitemap priority band, and the FAQPage
+// JSON-LD on the magnet page. Each drifted behind the site at least once.
+//
+// llms.txt is STATIC -- no flag, so it states one thing and must match whatever
+// the flag currently renders. These guards ban the pre-launch vocabulary
+// outright rather than pinning the launched wording, so a copy rewrite stays
+// free while a regression to "waitlist"/"not announced" cannot ship.
+for (const banned of [
+  [/pre-launch/i, 'llms.txt must not describe a released Flow as pre-launch'],
+  [/waitlist/i, 'llms.txt must not offer a waitlist once Flow is downloadable'],
+  [/development build/i, 'llms.txt must not call the shipping app a development build'],
+  [/not announced/i, 'llms.txt must not say the price or date is unannounced'],
+]) {
+  assert.doesNotMatch(llms, banned[0], banned[1]);
+}
+
+// Flow is the lead flagship and outranks /proof/ and /relay/, both of which sit
+// at 0.9. A flagship release left in the 0.6 fallthrough band deprioritises
+// recrawl exactly when it matters most.
+assert.match(
+  astroConfig,
+  /url === 'https:\/\/orionfold\.com\/flow\/'\)\s*\{\s*return \{ \.\.\.item, changefreq: 'weekly', priority: 0\.9, lastmod \};/,
+  'the Flow landing sits in the top sitemap band with the other flagships',
+);
+assert.match(
+  astroConfig,
+  /url\.startsWith\('https:\/\/orionfold\.com\/flow\/'\)\)\s*\{\s*return \{ \.\.\.item, changefreq: 'weekly', priority: 0\.8, lastmod \};/,
+  'the Flow tour + enterprise subpages form the cluster band below the hub',
+);
+
+// The catalog card carries the roadmap status the rest of the site implies.
+const softwareData = read('src/data/software.ts');
+assert.match(softwareData, /import \{ ORIONFOLD_FLOW_LIVE \} from '\.\/launch'/, 'the Flow card reads the launch flag');
+assert.match(softwareData, /status: ORIONFOLD_FLOW_LIVE \? 'active' : 'planned'/, 'a released Flow is not still roadmap-planned');
+assert.match(softwareData, /eyebrow: ORIONFOLD_FLOW_LIVE \? 'Lead flagship · Out now for Mac' : 'Lead flagship · In development'/);
+
+// The magnet funnel: its FAQ answers ship inside FAQPage JSON-LD, so a stale one
+// is quoted by answer engines rather than merely read by a visitor.
+const magnetSource = read('src/pages/become-ai-native-business.astro');
+assert.match(magnetSource, /import \{ ORIONFOLD_FLOW_LIVE \} from '\.\.\/data\/launch'/, 'the magnet page reads the launch flag');
+assert.match(magnetSource, /ORIONFOLD_FLOW_LIVE\s*\n?\s*\? 'Flow is our Mac app/, 'the What-is-Flow FAQ answer branches on the flag');
+// Both branches must survive in source (one line reverts the site), so a source
+// grep cannot tell which one RENDERS. Every pre-launch phrase on this page is
+// therefore required to sit inside a flag branch rather than be absent -- the
+// rendered-output check belongs in the e2e suite, which sees real HTML.
+for (const [phrase, label] of [
+  ['be first to hear when Orionfold Flow is ready', 'the repeated CTA'],
+  ['It is in development as a freemium subscription', 'the Flow-tie block and the FAQ'],
+  ['the Mac app we are building', 'the hero subline'],
+]) {
+  const hits = magnetSource.split(phrase).length - 1;
+  assert.ok(hits > 0, `${label} keeps its pre-launch wording in the off branch`);
+  for (const line of magnetSource.split('\n').filter((l) => l.includes(phrase))) {
+    assert.match(
+      line,
+      /ORIONFOLD_FLOW_LIVE|^\s*[:?]|^\s*\? |^\s*: /,
+      `${label}: every pre-launch phrase must sit inside a flag branch, not ship unconditionally`,
+    );
+  }
+}
+// The recorded consent sentence deliberately does NOT branch: it is written
+// verbatim into the DB on submit, so forking it would fork the compliance record
+// between subscribers. It is true in both states. Guard that it stays unforked.
+assert.match(
+  magnetSource,
+  /const consentText =\s*\n?\s*'By subscribing you agree to receive the free book, Orionfold Flow development and launch updates/,
+  'the recorded consent sentence stays one literal, never flag-branched',
+);
+assert.doesNotMatch(magnetSource, /consentText =\s*ORIONFOLD_FLOW_LIVE/, 'consent is a compliance record, not launch copy');
+
+// The magnet thank-you page: its own comment promised this becomes the download
+// step on launch. It must route through FlowDownloadCta so it inherits the
+// truthful unavailable state rather than hand-rolling a link that could 404.
+const thanksSource = read('src/pages/become-ai-native-business/thanks.astro');
+assert.match(thanksSource, /import FlowDownloadCta from '\.\.\/\.\.\/components\/flow\/FlowDownloadCta\.astro'/);
+assert.match(thanksSource, /<FlowDownloadCta[\s\S]{0,200}?source="magnet-thanks"/, 'the thanks-page download is attributable to its own surface');
+assert.doesNotMatch(thanksSource, /href=\{FLOW_DMG_URL\}/, 'the thanks page must not hand-roll the download link');
+
 console.log('[flow-flagship-surface] Flow leads with real captures, truthful claims, and waitlist capture; the catalog lives in the footer');

@@ -17,6 +17,7 @@
 // `poster-variety-feedback`). The real product screenshots are kept in the repo as
 // compositing material but the in-card cover is the poster.
 import type { RoadmapMeta } from './roadmap-types';
+import { ORIONFOLD_FLOW_LIVE } from './launch';
 
 export type SoftwareGroup = 'flagship' | 'platform' | 'apps' | 'intel' | 'devtools';
 export type CoverType = 'screenshot' | 'logo' | 'motif' | 'poster';
@@ -50,21 +51,23 @@ export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }
 
 export const software: SoftwareProduct[] = [
   // ── Flagship (Flow leads, followed by Relay and Arena) ──
-  // Flow is Orionfold's first closed-source commercial app. It is in
-  // development under a freemium-subscription model, so this card has no price,
-  // checkout, or launch-date claim. Relay and Arena retain their canonical
-  // commercial surfaces and existing offers.
+  // Flow is Orionfold's first closed-source commercial app and its first
+  // SUBSCRIPTION product. The card's eyebrow and roadmap status branch on
+  // ORIONFOLD_FLOW_LIVE so one line still reverts the whole site to pre-launch
+  // (same contract as every other Flow surface). The card carries no price
+  // either way: /flow/ owns the price, behind the same flag. Relay and Arena
+  // retain their canonical commercial surfaces and existing offers.
   {
     slug: 'flow',
     group: 'flagship',
-    eyebrow: 'Lead flagship · In development',
+    eyebrow: ORIONFOLD_FLOW_LIVE ? 'Lead flagship · Out now for Mac' : 'Lead flagship · In development',
     title: 'Orionfold Flow',
     body: 'Orionfold Flow creates beautiful documents with self-improving intelligence built in and AI agency enabled to get work done. The native Mac app keeps sources, decisions, approvals, and receipts in one living artifact you direct.',
     pills: ['Native Mac', 'Every change approved', 'Receipts', 'Patent pending'],
     href: '/flow/',
     ctaText: 'See Flow',
     coverType: 'motif',
-    status: 'planned',
+    status: ORIONFOLD_FLOW_LIVE ? 'active' : 'planned',
   },
   {
     slug: 'relay',

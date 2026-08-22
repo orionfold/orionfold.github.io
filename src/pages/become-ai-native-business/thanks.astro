@@ -15,9 +15,15 @@
 //     end and record nothing, so the forward step is a plain link to /flow/.
 //   - That also removes the need for the never-built "later welcome email" the
 //     old bundle comment promised. No scheduled-send rail is required.
-// When Flow ships, this block becomes the "Download Flow" step.
+// 2026-08-22: Flow shipped, so this block is now the "Download Flow" step the
+// comment above anticipated. It branches on ORIONFOLD_FLOW_LIVE like every other
+// Flow surface, so one line reverts it. The download control routes through
+// FlowDownloadCta, which owns the truthful unavailable state while FLOW_DMG_URL
+// is a placeholder -- this page must never hand out a link that 404s.
 import Layout from '../../layouts/Layout.astro';
 import BrandMark from '../../components/ui/BrandMark.astro';
+import FlowDownloadCta from '../../components/flow/FlowDownloadCta.astro';
+import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
 ---
 <Layout title="Your book is on the way · Orionfold" description="Your free AI Native Business book is on its way to your inbox." noindex>
   <header class="px-6 py-5">
@@ -41,25 +47,41 @@ import BrandMark from '../../components/ui/BrandMark.astro';
       save the files once you grab them.
     </p>
     <p class="mx-auto mt-4 max-w-md leading-relaxed text-text-muted">
-      You are also on the list for Orionfold Flow. Nothing more to do.
+      {ORIONFOLD_FLOW_LIVE
+        ? 'You are also signed up for Orionfold Flow updates. Nothing more to do.'
+        : 'You are also on the list for Orionfold Flow. Nothing more to do.'}
     </p>
 
     <!-- Single forward step: the flagship. Link only, no capture (see header). -->
     <div class="mt-12 rounded-2xl border border-primary/25 bg-primary/[0.04] px-6 py-10">
-      <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">While you wait</p>
+      <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">{ORIONFOLD_FLOW_LIVE ? 'Your next step' : 'While you wait'}</p>
       <h2 class="mt-4 text-2xl font-bold leading-tight">Meet the tool the book is about.</h2>
       <p class="mx-auto mt-4 max-w-md leading-relaxed text-text-muted">
         Orionfold Flow is our Mac app for the person doing the work: a place to
         conduct documents with AI agency built in, where you stay the one who
-        approves what changes. See the real development build, screen by screen.
+        approves what changes.
+        {ORIONFOLD_FLOW_LIVE
+          ? ' Reading and writing your documents is free forever.'
+          : ' See the real development build, screen by screen.'}
       </p>
-      <a
-        href="/flow/"
-        class="mt-7 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-semibold text-surface transition-opacity hover:opacity-90"
-        data-astro-prefetch
-      >
-        Explore Orionfold Flow <span aria-hidden="true">→</span>
-      </a>
+      {ORIONFOLD_FLOW_LIVE ? (
+        <div class="mt-7">
+          <FlowDownloadCta
+            source="magnet-thanks"
+            secondaryHref="/flow/"
+            secondaryLabel="Take the product tour"
+            align="center"
+          />
+        </div>
+      ) : (
+        <a
+          href="/flow/"
+          class="mt-7 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-semibold text-surface transition-opacity hover:opacity-90"
+          data-astro-prefetch
+        >
+          Explore Orionfold Flow <span aria-hidden="true">&rarr;</span>
+        </a>
+      )}
     </div>
 
     <p class="mt-10 text-sm text-text-dim">
