@@ -24,11 +24,17 @@
 // CONTRACT (published to the product lane at 2026-08-22 11:00 before being
 // built, so it is fixed — they are baking `LicenseEndpoints.checkout` against
 // it):
-//   POST { "plan": "monthly" | "annual" }   no licence, no auth header
+//   POST { "plan": "monthly" | "annual", "seats": <integer> }
+//                                            no licence, no auth header
 //   200  { url, session_id }                 open `url`, then poll with `session_id`
 //   403                                      refused (unknown plan)
+//   503                                      no active price — nothing to sell YET
 //   default                                  badResponse
 //   NO 404 — `noCustomer` is meaningless here and must not be sent.
+//
+// `seats` was added 2026-08-22 13:0x (contract 13:05) for team purchase. It is
+// OPTIONAL and defaults to 1, so the shape the app already compiled against
+// stays valid — an older build that omits it keeps buying a single seat.
 //
 // `session_id` is the addition to their spec, and it is the floor of the licence
 // handoff: the app polls `flow-license-refresh` with it until the licence row
@@ -36,7 +42,14 @@
 // `_shared/license-claim.ts`.
 import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { CATALOG, STRIPE_API_VERSION } from "../_shared/catalog.ts";
+import {
+  CATALOG,
+  clampSeats,
+  MAX_SEATS,
+  MIN_SEATS,
+  STRIPE_API_VERSION,
+  supportsMultipleSeats,
+} from "../_shared/catalog.ts";
 import { getCorsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { CLAIM_TTL_SECONDS, mintClaim } from "../_shared/license-claim.ts";
 
@@ -76,6 +89,29 @@ export function planFromBody(body: unknown): string | null {
   return plan in PLANS ? plan : null;
 }
 
+/** Read the requested seat count, clamped into the range this lane owns.
+ *
+ * MULTI-SEAT (option (a), operator 2026-08-22): an admin buys N seats in one
+ * transaction and distributes the licence themselves. This is the same decision
+ * `create-checkout-session` already carries, reusing the same `clampSeats` so
+ * there is ONE definition of the range rather than two that can drift.
+ *
+ * The app deliberately does NOT clamp: a second bound baked into a notarized
+ * binary would go stale the day MIN_SEATS/MAX_SEATS moves here. So this is the
+ * only bound, and it never rejects — an out-of-range count collapses to a safe
+ * value and the buyer meets a working checkout. The Checkout page itself also
+ * exposes `adjustable_quantity`, so the count stays correctable up to the
+ * moment of payment.
+ *
+ * Absent or unparseable means one seat, which is what every Flow build shipped
+ * before this parameter existed sends. */
+export function seatsFromBody(body: unknown): number {
+  if (!body || typeof body !== "object") return MIN_SEATS;
+  const raw = (body as Record<string, unknown>).seats;
+  if (raw === undefined || raw === null) return MIN_SEATS;
+  return clampSeats(raw);
+}
+
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
 
@@ -96,6 +132,12 @@ Deno.serve(async (req) => {
     }
 
     const lookupKey = PLANS[plan];
+    // Both Flow plans are subscription licences, so this is true today. It is
+    // asked rather than assumed because the gate is what stops a seat count
+    // reaching a SKU whose fulfilment counts one row per sale (a perpetual
+    // licence's founding cap), and a third plan could one day be added above.
+    const seatsAreSold = supportsMultipleSeats(lookupKey);
+    const seats = seatsAreSold ? seatsFromBody(body) : MIN_SEATS;
     const item = CATALOG[lookupKey];
     if (!item) {
       console.error("flow-checkout: no catalog item for", lookupKey);
@@ -123,7 +165,16 @@ Deno.serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      line_items: [{ price: price.id, quantity: 1 }],
+      line_items: [{
+        price: price.id,
+        quantity: seats,
+        // Keep the count correctable on the Checkout page itself. The app's
+        // picker is the usual way in, but a buyer who lands here from a shared
+        // link, or who miscounted, should not have to restart checkout.
+        ...(seatsAreSold
+          ? { adjustable_quantity: { enabled: true, minimum: MIN_SEATS, maximum: MAX_SEATS } }
+          : {}),
+      }],
       // NOTE: never set payment_method_types — dynamic payment methods stay on.
       //
       // The success page is a website page, not a deep link, and that ordering
@@ -137,10 +188,17 @@ Deno.serve(async (req) => {
       // The claim digest rides in metadata so the webhook can attach it to the
       // licence row it writes, without this endpoint needing to know when that
       // happens. Stripe caps a metadata value at 500 chars; a hex digest is 64.
-      metadata: { lookup_key: lookupKey, flow_claim_digest: digest },
+      // `seats` MUST be here: `stripe-webhook` reads the count off the SESSION
+      // metadata to write `fe_entitlements.seats`, which is what reaches the
+      // signed licence payload. Omitting it would charge for N and license 1 —
+      // the worst of the three possible failures, because the buyer pays
+      // correctly and is under-served silently.
+      metadata: { lookup_key: lookupKey, flow_claim_digest: digest, seats: String(seats) },
       // Mirror onto the subscription so the lifecycle webhooks (invoice.paid,
-      // customer.subscription.deleted) can read the same values.
-      subscription_data: { metadata: { lookup_key: lookupKey } },
+      // customer.subscription.deleted) can read the same values. The seat count
+      // rides along so a RENEWAL re-signs the licence for the same number of
+      // seats the buyer originally paid for.
+      subscription_data: { metadata: { lookup_key: lookupKey, seats: String(seats) } },
     });
 
     // Record the claim against the session. The webhook resolves it to a licence

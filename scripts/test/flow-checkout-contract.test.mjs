@@ -136,3 +136,51 @@ assert.match(
 // "the webhook has not written the row yet", never "you did not buy this". The
 // log line has to say which, or a later grep reads every poll as a failure.
 assert.match(refresh, /flow-license-refresh not yet: no row for session/, 'a pre-webhook 403 logs as "not yet", not as a failure');
+
+// ── MULTI-SEAT (contract 2026-08-22 13:05) ────────────────────────────────────
+//
+// The product lane ships a seat picker that sends `{plan, seats}` and does NOT
+// clamp, deliberately: this lane owns the range so a bound baked into a
+// notarized binary cannot go stale. Every guard below pins one half of a
+// charge/licence pairing that fails SILENTLY when it breaks.
+
+// THE FAILURE THIS WHOLE BLOCK EXISTS FOR: charging for N and licensing 1.
+// `stripe-webhook` reads the count off the SESSION metadata, so a quantity
+// without matching metadata takes the buyer's money and under-serves them
+// without erroring anywhere.
+assert.match(fn, /quantity: seats/, 'the line item is charged for the requested seats');
+assert.match(
+  fn,
+  /metadata: \{ lookup_key: lookupKey, flow_claim_digest: digest, seats: String\(seats\) \}/,
+  'seats MUST reach session metadata, or the webhook licenses 1 while Stripe charges N',
+);
+assert.doesNotMatch(fn, /line_items: \[\{ price: price\.id, quantity: 1 \}\]/, 'the quantity is never hardcoded');
+
+// RENEWAL. A subscription renewal arrives as invoice.paid with no Checkout
+// Session, so the subscription's own metadata is the only place the count
+// survives. (The re-sign path reads fe_entitlements.seats, but mirroring keeps
+// the Stripe object self-describing for the lifecycle webhooks.)
+assert.match(
+  fn,
+  /subscription_data: \{ metadata: \{ lookup_key: lookupKey, seats: String\(seats\) \} \}/,
+  'seats mirror onto the subscription so a renewal is not a single-seat licence',
+);
+
+// ONE DEFINITION OF THE RANGE. Reusing clampSeats keeps this endpoint and
+// create-checkout-session from drifting into two different ceilings.
+assert.match(fn, /clampSeats/, 'the seat range is the shared one, never a second local clamp');
+assert.doesNotMatch(fn, /Math\.min\(\s*50|const MAX_SEATS = /, 'no second seat bound in this file');
+
+// NEVER REJECT ON THE COUNT. An out-of-range or junk seat count clamps to a
+// safe value; a buyer who mistypes a quantity meets a working checkout.
+assert.doesNotMatch(fn, /seats[^\n]*corsHeaders,\s*4\d\d/, 'a bad seat count clamps, it does not refuse');
+
+// BACKWARD COMPATIBLE. Flow builds that predate the picker send no `seats` at
+// all, and must keep buying exactly one seat.
+assert.match(fn, /raw === undefined \|\| raw === null\) return MIN_SEATS/, 'an absent seats field means one seat');
+
+// THE FAMILY GATE. Only a subscription licence is seat-shaped. A perpetual
+// licence's founding cap counts one purchases row per sale, so a quantity there
+// would let a 5-seat order consume one of 25 founding seats.
+assert.match(fn, /supportsMultipleSeats\(lookupKey\)/, 'seats are gated on the licence family');
+assert.match(fn, /seatsAreSold \? seatsFromBody\(body\) : MIN_SEATS/, 'a non-seat plan can never carry a quantity');
