@@ -36,6 +36,47 @@ export interface CatalogItem {
   amount: number;
 }
 
+/**
+ * Orionfold Flow — the first SUBSCRIPTION product (goal 0127). Operator terms,
+ * set at the 2026-08-17 grooming and confirmed 2026-08-21:
+ *   $10 per user per month · 20% off paid annually up front ·
+ *   one license = one person, unlimited personal Macs.
+ *
+ * THE FREE GRANT IS DELIBERATELY NOT REPRESENTED HERE, and that is the whole
+ * reason a change to it does not reach this file. The app owns the grant and
+ * enforces it offline; Stripe is never told about it (no `trial_period_days` —
+ * a Stripe trial would hand the user a SECOND unbilled window the app cannot
+ * even see, since it has no visibility of `trialing`). So the server half
+ * encodes only what the customer is CHARGED.
+ *
+ * That separation earned its keep on 2026-08-22, when the grant changed shape
+ * twice inside an hour — 30 calendar days → 30 Pro Days → 10 Pro Days — and
+ * nothing in the checkout, webhook, term math or licence endpoints had to move.
+ * A `FLOW_TRIAL_DAYS = 30` constant used to sit here mirroring the app's
+ * `TrialTerm.days`; it had no consumers and was REMOVED rather than updated,
+ * because a number here can only ever drift from the app that actually
+ * enforces it. If a page needs to state the grant, source it from the product
+ * brief at that moment — not from a copy kept in the commerce layer.
+ *
+ * A NOTE FOR COPY, because the unit is the trap: a Pro Day is spent only on a
+ * day the person actually uses AI, so ten Pro Days is NOT ten days. And it is
+ * not "credits" — Flow is BYOK, so an AI action costs Orionfold nothing and
+ * there is no marginal cost to meter.
+ *
+ * THE ANNUAL PRICE IS DERIVED, never written as a second literal. The growth
+ * contract calls this out by name: two literals can silently disagree, and the
+ * one the customer is charged is whichever Stripe holds. One monthly price and
+ * one discount rate is the only representation that cannot drift.
+ *
+ * These `amount` values are DISPLAY ONLY, like every other catalog amount —
+ * Stripe remains the source of truth and checkout resolves by lookup_key.
+ */
+export const FLOW_MONTHLY_AMOUNT = 1000;
+export const FLOW_ANNUAL_DISCOUNT = 0.2;
+export const FLOW_ANNUAL_AMOUNT = Math.round(
+  FLOW_MONTHLY_AMOUNT * 12 * (1 - FLOW_ANNUAL_DISCOUNT),
+);
+
 export const RELAY_HOST_LOOKUP_KEY = "license_relay_host_annual";
 export const RELAY_HOST_AMOUNT = 149900;
 export const RELAY_HOSTS = 1;
@@ -153,6 +194,24 @@ export const CATALOG: Record<string, CatalogItem> = {
   // purchase issues carries `product:orionfold-relay` (no pack id, so adding packs
   // later needs no re-issue) — see licenseProductForLookupKey + stripe-webhook
   // fulfillLicense. (Relay ask orionfold-relay 2026-06-30.)
+  // Flow's two subscription SKUs. No founding cohort and no separate renewal
+  // SKU: Stripe renews the subscription and each paid invoice extends the term.
+  // Both are `mode: "subscription"`, which create-checkout-session already
+  // supports (sponsor tiers use it).
+  license_orionfold_flow_monthly: {
+    lookupKey: "license_orionfold_flow_monthly",
+    kind: "license",
+    mode: "subscription",
+    label: "Orionfold Flow (monthly)",
+    amount: FLOW_MONTHLY_AMOUNT,
+  },
+  license_orionfold_flow_annual: {
+    lookupKey: "license_orionfold_flow_annual",
+    kind: "license",
+    mode: "subscription",
+    label: "Orionfold Flow (annual, 20% off)",
+    amount: FLOW_ANNUAL_AMOUNT,
+  },
   license_orionfold_relay: {
     lookupKey: "license_orionfold_relay",
     kind: "license",
@@ -252,13 +311,95 @@ export const FOUNDING_SEATS = 25;
  * and the frontend price box (commerce.ts) work for every licensed product
  * without per-product branching. Add a family here and the cap "just works".
  */
+/**
+ * How a family is SOLD. Added 2026-08-22 for Flow, whose monthly/annual
+ * subscription does not fit the perpetual shape the first three families share.
+ *
+ *  - "perpetual": buy once, own it, with a kept-proven window and a separate
+ *    annual renewal SKU. Arena, Proof and Relay. Three SKUs, a founding cohort.
+ *  - "subscription": pay monthly or annually for as long as you use it. Flow.
+ *    Two SKUs, no founding cohort, no separate renewal (Stripe renews the
+ *    subscription itself and each `invoice.paid` extends the term).
+ *
+ * The discriminant exists so nothing has to infer intent from which fields
+ * happen to be filled in.
+ */
+export type LicenseTerm = "perpetual" | "subscription";
+
 export interface LicenseFamily {
   /** Stable product id baked into the signed license payload (`product` claim). */
   product: string;
-  founding: string;
-  standard: string;
-  renewal: string;
-  foundingSeats: number;
+  /** How the family is sold. Absent means "perpetual" (the original three). */
+  term?: LicenseTerm;
+  /**
+   * Perpetual families only. A subscription family leaves all three unset:
+   * there is no founding cohort to cap and no separate renewal SKU to sell,
+   * so `licenseFamilyForLookupKey` matches on `monthly`/`annual` instead.
+   */
+  founding?: string;
+  standard?: string;
+  renewal?: string;
+  foundingSeats?: number;
+  /** Subscription families only. */
+  monthly?: string;
+  annual?: string;
+  /**
+   * Subscription families only: months of access one paid invoice grants.
+   * `expires_at` is extended by this on every `invoice.paid`, so a lapsed
+   * subscription stops extending and the license expires on its own.
+   */
+  periodMonths?: { monthly: number; annual: number };
+}
+
+/**
+ * Seat bounds for a multi-seat purchase (option (a), operator 2026-08-22).
+ *
+ * A buyer may purchase N seats in one transaction; distribution is theirs. The
+ * ceiling exists to stop a fat-fingered quantity becoming a five-figure charge,
+ * not because anything breaks above it — a genuine larger order is a
+ * conversation with the operator, which is the right outcome at that size.
+ */
+export const MIN_SEATS = 1;
+export const MAX_SEATS = 50;
+
+/**
+ * Coerce a client-supplied seat count into the allowed range.
+ *
+ * The client is NEVER trusted: this runs server-side before the Checkout
+ * Session is created, and Stripe multiplies the per-unit price by whatever
+ * survives. Anything unparseable, fractional, or out of range collapses to a
+ * safe value rather than erroring, because a buyer who mistypes a quantity
+ * should meet a working checkout, not a stack trace.
+ */
+export function clampSeats(raw: unknown): number {
+  const n = typeof raw === "number" ? raw : Number(raw);
+  // NaN (junk input) is the only truly unusable value and means "one".
+  // Infinity is NOT junk — it is an out-of-range number, so it clamps to the
+  // ceiling like 9999 does rather than collapsing to the floor. Testing
+  // isFinite first would silently turn "absurdly many" into "one", which is
+  // the opposite of what the buyer asked for.
+  if (Number.isNaN(n)) return MIN_SEATS;
+  if (n === Infinity) return MAX_SEATS;
+  if (n === -Infinity) return MIN_SEATS;
+  return Math.min(MAX_SEATS, Math.max(MIN_SEATS, Math.floor(n)));
+}
+
+/**
+ * Whether a lookup key may be bought in multiples.
+ *
+ * Only subscription licences are seat-shaped today. A book is a file, a sponsor
+ * tier is a single relationship, and a perpetual licence carries a founding cap
+ * whose count-boxed arithmetic assumes one row per sale — passing a quantity
+ * there would silently undercount the cohort.
+ */
+export function supportsMultipleSeats(lookupKey: string): boolean {
+  const family = licenseFamilyForLookupKey(lookupKey);
+  return Boolean(family && isSubscriptionFamily(family));
+}
+
+/** True when a family is sold as a subscription rather than bought outright. */
+export function isSubscriptionFamily(family: LicenseFamily): boolean {
+  return family.term === "subscription";
 }
 
 export const LICENSE_FAMILIES: Record<string, LicenseFamily> = {
@@ -276,6 +417,17 @@ export const LICENSE_FAMILIES: Record<string, LicenseFamily> = {
     renewal: "license_orionfold_proof_renewal",
     foundingSeats: FOUNDING_SEATS,
   },
+  // Flow: the first subscription family. Two SKUs, no founding cohort, no
+  // separate renewal. `periodMonths` is what each paid invoice extends
+  // `expires_at` by, so a canceled subscription simply stops extending and the
+  // license lapses on its own rather than needing a revocation.
+  "orionfold-flow": {
+    product: "orionfold-flow",
+    term: "subscription",
+    monthly: "license_orionfold_flow_monthly",
+    annual: "license_orionfold_flow_annual",
+    periodMonths: { monthly: 1, annual: 12 },
+  },
   "orionfold-relay": {
     product: "orionfold-relay",
     founding: "license_orionfold_relay_founding",
@@ -288,8 +440,27 @@ export const LICENSE_FAMILIES: Record<string, LicenseFamily> = {
 /** Resolve the license family that owns a lookup key (any of its 3 SKUs), or undefined. */
 export function licenseFamilyForLookupKey(lookupKey: string): LicenseFamily | undefined {
   return Object.values(LICENSE_FAMILIES).find(
-    (f) => f.founding === lookupKey || f.standard === lookupKey || f.renewal === lookupKey,
+    (f) =>
+      f.founding === lookupKey ||
+      f.standard === lookupKey ||
+      f.renewal === lookupKey ||
+      // Subscription families (Flow) carry monthly/annual instead.
+      f.monthly === lookupKey ||
+      f.annual === lookupKey,
   );
+}
+
+/**
+ * Months of access one paid invoice grants, for a subscription family's SKU.
+ * The webhook extends `expires_at` by this on `invoice.paid`. Returns
+ * undefined for a perpetual family, whose term is KEPT_PROVEN_MONTHS instead.
+ */
+export function subscriptionPeriodMonths(lookupKey: string): number | undefined {
+  const family = licenseFamilyForLookupKey(lookupKey);
+  if (!family || !isSubscriptionFamily(family) || !family.periodMonths) return undefined;
+  if (lookupKey === family.monthly) return family.periodMonths.monthly;
+  if (lookupKey === family.annual) return family.periodMonths.annual;
+  return undefined;
 }
 
 /**
@@ -300,7 +471,10 @@ export function licenseFamilyForLookupKey(lookupKey: string): LicenseFamily | un
  */
 export function foundingFallback(lookupKey: string): string {
   const family = licenseFamilyForLookupKey(lookupKey);
-  return family && lookupKey === family.founding ? family.standard : lookupKey;
+  // A subscription family has no founding cohort, so there is nothing to fall
+  // back to and the key passes straight through.
+  if (!family || isSubscriptionFamily(family)) return lookupKey;
+  return lookupKey === family.founding && family.standard ? family.standard : lookupKey;
 }
 
 /** Backward-compatible Arena aliases (older imports / copy). Prefer LICENSE_FAMILIES. */
@@ -399,6 +573,17 @@ export function licenseProductForLookupKey(
         entitlements: ["proven-matrix-images", "signed-update-channel"],
         // Arena carries the founding-25/standard edition badge.
         edition: editionForLookupKey(lookupKey) ?? "standard",
+      };
+    case "orionfold-flow":
+      return {
+        product: "orionfold-flow",
+        tier: "subscription",
+        // The entitlement string the APP compiles in as
+        // `LicenseVerifier.requiredEntitlement`. One signing key covers the
+        // whole constellation, so this string is the only thing separating
+        // products: a Flow license missing it is refused by a correctly
+        // working app. Verified against orionfold-flow, 2026-08-21.
+        entitlements: ["product:orionfold-flow"],
       };
     case "orionfold-proof":
       return {

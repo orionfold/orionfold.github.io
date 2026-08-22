@@ -15,6 +15,10 @@ import {
   licenseFamilyForLookupKey,
   RELAY_HOST_LOOKUP_KEY,
   STRIPE_API_VERSION,
+  clampSeats,
+  MAX_SEATS,
+  MIN_SEATS,
+  supportsMultipleSeats,
 } from "../_shared/catalog.ts";
 import { getCorsHeaders, jsonResponse } from "../_shared/cors.ts";
 import {
@@ -46,17 +50,23 @@ function supabaseAdmin() {
 // the lookup key the checkout should actually use.
 async function resolveFoundingKey(lookupKey: string): Promise<string> {
   const family = licenseFamilyForLookupKey(lookupKey);
-  // Only a family's FOUNDING key is capped; any other key passes straight through.
-  if (!family || lookupKey !== family.founding) return lookupKey;
+  // Only a family's FOUNDING key is capped; any other key passes straight
+  // through. A SUBSCRIPTION family (Flow, 2026-08-22) has no founding cohort at
+  // all: `founding`/`foundingSeats` are undefined, so the identity check below
+  // already excludes it. The explicit fields test states that rather than
+  // leaving it to be inferred, and satisfies the typechecker for the count.
+  if (!family || !family.founding || !family.foundingSeats) return lookupKey;
+  if (lookupKey !== family.founding) return lookupKey;
+  const foundingSeats = family.foundingSeats;
   try {
     const { count, error } = await supabaseAdmin()
       .from("purchases")
       .select("id", { count: "exact", head: true })
       .eq("lookup_key", family.founding);
     if (error) throw error;
-    if ((count ?? 0) >= family.foundingSeats) {
+    if ((count ?? 0) >= foundingSeats) {
       console.log(
-        `Founding cap reached for ${family.product} (${count}/${family.foundingSeats}) — falling back to standard price ${family.standard}`,
+        `Founding cap reached for ${family.product} (${count}/${foundingSeats}) — falling back to standard price ${family.standard}`,
       );
       return foundingFallback(lookupKey); // → family.standard
     }
@@ -148,6 +158,18 @@ Deno.serve(async (req) => {
     // initiative even if the browser pixel is incomplete.
     const attribution = sanitizeAttribution(body.attribution);
 
+    // MULTI-SEAT (option (a), operator 2026-08-22). A buyer may purchase N
+    // seats in one transaction and distribute the licence themselves. Stripe
+    // multiplies the per-unit price by `quantity`; there is no bundle SKU.
+    //
+    // The count is CLAMPED server-side and the client is never trusted with it.
+    // It is also gated on the family: only a subscription licence is
+    // seat-shaped. Passing a quantity to a perpetual licence would silently
+    // undercount the founding cohort, whose cap counts one `purchases` row per
+    // sale, so a 5-seat founding order would consume one of 25 seats while
+    // charging for five.
+    const requestedSeats = body.seats ?? body.quantity;
+
     // Server-trusted allowlist: the client can only name a known offering.
     if (!isAllowedLookupKey(lookupKey)) {
       return jsonResponse({ error: "Unknown item." }, corsHeaders, 400);
@@ -188,12 +210,20 @@ Deno.serve(async (req) => {
 
     const isSponsor = item.kind === "sponsor";
     const isRelayHost = effectiveKey === RELAY_HOST_LOOKUP_KEY;
+    // Undefined seats means "the client did not ask", which is one — the
+    // overwhelming case and the only shape every existing caller sends.
+    const seats = supportsMultipleSeats(effectiveKey) && requestedSeats !== undefined
+      ? clampSeats(requestedSeats)
+      : 1;
     const metadata: Record<string, string> = {
       lookup_key: effectiveKey,
       kind: item.kind,
     };
     if (item.kind === "workshop") Object.assign(metadata, workshopCheckoutMetadata());
     if (item.tier) metadata.tier = item.tier;
+    // Recorded even at 1, so the webhook never has to infer intent from an
+    // absent key and a later audit can tell "bought one" from "pre-seats".
+    if (supportsMultipleSeats(effectiveKey)) metadata.seats = String(seats);
     Object.assign(metadata, attribution);
     // roadmap_item = the single/primary item (the deployed C3 webhook persists this
     // to purchases/sponsors). roadmap_items = the full comma-joined selection when
@@ -250,7 +280,15 @@ Deno.serve(async (req) => {
     const workshopRoutes = workshopCheckoutRoutes(SITE_URL);
     const session = await stripe.checkout.sessions.create({
       mode: item.mode, // 'payment' for books, 'subscription' for sponsors
-      line_items: [{ price: price.id, quantity: 1 }],
+      line_items: [{
+        price: price.id,
+        quantity: seats,
+        // Let the buyer change their mind inside Checkout rather than going
+        // back to the site. Only offered where seats mean something.
+        ...(supportsMultipleSeats(effectiveKey)
+          ? { adjustable_quantity: { enabled: true, minimum: MIN_SEATS, maximum: MAX_SEATS } }
+          : {}),
+      }],
       // NOTE: never set payment_method_types — dynamic payment methods stay on.
       success_url: item.kind === "workshop"
         ? workshopRoutes.successUrl

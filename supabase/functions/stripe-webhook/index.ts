@@ -18,6 +18,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 import {
   getCatalogItem,
+  clampSeats,
   licenseFamilyForLookupKey,
   licenseProductForLookupKey,
   RELAY_HOST_LOOKUP_KEY,
@@ -36,8 +37,13 @@ import {
   isoSecondUTC,
   licenseTerm,
   LICENSE_KEY_ID,
-  LICENSE_SEATS,
 } from "../_shared/license-payload.ts";
+import {
+  extendedExpiry,
+  isSubscriptionLookupKey,
+  shouldExtendSubscriptionTerm,
+  subscriptionLicenseStatus,
+} from "../_shared/subscription-license.ts";
 import { sendMetaPurchase } from "../_shared/meta-capi.ts";
 import { BOOK_FILES_BUCKET, brandedUrl, sendBookEmail, signBookFiles } from "../_shared/book-files.ts";
 import { footerForEmail } from "../_shared/email-footer.ts";
@@ -656,6 +662,20 @@ async function issueAndDeliverLicense(
       ? { email: ctx.email, org: hostIdentity.displayName }
       : { email: ctx.email, name: hostIdentity.displayName }
     : { email: ctx.email, name: checkoutName };
+  // The seat count this purchase was charged for. Written by
+  // create-checkout-session onto the session metadata; absent for every
+  // pre-2026-08-22 sale and for every non-seat product, both of which mean one.
+  //
+  // IMPORTANT, and stated here because it is the question the operator asked:
+  // this number is a LICENCE TERM, not an enforced limit. The app cannot count
+  // installs — Flow verifies its licence offline by signature, and criterion
+  // C1852 fails the app's build if anything under `Sources/FlowCore/Licensing`
+  // branches on the seat count. So nothing detects a 5-seat licence in use on
+  // 50 Macs. That is the deliberate trade for offline verification, and any
+  // future enforcement would need an online check, which contradicts the
+  // fail-open promise the pricing brief makes.
+  const purchasedSeats = clampSeats(session.metadata?.seats ?? 1);
+
   const payload = ctx.descriptor.relayHost && hostIdentity
     ? buildRelayHostLicensePayload({
         licenseId,
@@ -678,6 +698,11 @@ async function issueAndDeliverLicense(
         tier: ctx.descriptor.tier,
         entitlements: ctx.descriptor.entitlements,
         edition: ctx.descriptor.edition,
+        // MULTI-SEAT (option (a)). The count the buyer paid for, re-clamped
+        // here rather than trusted from metadata: this value is about to be
+        // SIGNED, and a signed claim is the one thing that cannot be corrected
+        // after delivery. See `purchasedSeats` for why it is display-only.
+        seats: purchasedSeats,
         issuedTo,
         issuedAt: term.issuedAt,
         notBefore: term.notBefore,
@@ -709,7 +734,7 @@ async function issueAndDeliverLicense(
       product: ctx.descriptor.product,
       edition: ctx.descriptor.edition ?? null, // null for Proof (column now nullable)
       tier: ctx.descriptor.tier,
-      seats: LICENSE_SEATS,
+      seats: purchasedSeats,
       email: ctx.email,
       issued_to_name: issuedTo.name ?? null,
       issued_to_org: issuedTo.org ?? null,
@@ -1076,6 +1101,54 @@ async function fulfillSponsor(session: Stripe.Checkout.Session) {
   if (error) throw error;
 }
 
+/**
+ * Push a subscription license's term out by the period a paid invoice covers.
+ *
+ * Reads the current `expires_at` so an EARLY renewal is additive rather than
+ * lossy (the user keeps days they already paid for) while a LAPSED subscriber's
+ * new term starts from now instead of being eaten by dead time. The arithmetic
+ * lives in `_shared/subscription-license.ts` and is unit-tested there; this
+ * function only does the database round trip.
+ *
+ * No new license is signed or emailed. The envelope the buyer already installed
+ * stays valid — its `expires_at` is what moves.
+ */
+async function extendSubscriptionLicense(
+  // deno-lint-ignore no-explicit-any
+  db: any,
+  subscriptionId: string,
+  lookupKey: string,
+) {
+  const current = await db.from("fe_entitlements")
+    .select("id,expires_at")
+    .eq("stripe_subscription_id", subscriptionId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (current.error) throw current.error;
+  if (!current.data) {
+    // The first invoice can beat checkout.session.completed. That race is the
+    // reason `subscription_create` is excluded upstream, so reaching here means
+    // a cycle invoice for a subscription we never issued against — worth a log,
+    // not a throw: retrying the webhook cannot conjure the missing row.
+    console.log("Subscription renewal with no issued license yet:", subscriptionId);
+    return;
+  }
+
+  const expiresAt = extendedExpiry(lookupKey, current.data.expires_at, new Date());
+  if (!expiresAt) return;
+
+  const { error } = await db.from("fe_entitlements")
+    .update({
+      expires_at: expiresAt,
+      status: "active",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", current.data.id);
+  if (error) throw error;
+  console.log(`Extended ${lookupKey} license ${current.data.id} to ${expiresAt}`);
+}
+
 async function onInvoicePaid(invoice: Stripe.Invoice) {
   const subscriptionId = invoiceSubscriptionId(invoice);
   if (!subscriptionId) return; // not a subscription invoice
@@ -1097,6 +1170,18 @@ async function onInvoicePaid(invoice: Stripe.Invoice) {
     : null;
   const lookupKey = expandedLookupKey ??
     (linePriceId ? (await stripe.prices.retrieve(linePriceId)).lookup_key : null);
+
+  // SUBSCRIPTION-SHAPED LICENSES (Flow, 2026-08-22). A subscription license is
+  // never re-issued per cycle: the SAME signed envelope stays valid and each
+  // paid invoice pushes its `expires_at` out by the period just paid for.
+  // Cancellation therefore needs no revocation — the extensions simply stop and
+  // the term runs out. This must happen BEFORE the Relay-host early return,
+  // which is scoped to that one perpetual SKU.
+  if (shouldExtendSubscriptionTerm(invoice.billing_reason, lookupKey)) {
+    await extendSubscriptionLicense(db, subscriptionId, lookupKey!);
+    return;
+  }
+
   if (!shouldIssueRelayHostRenewal(invoice.billing_reason, lookupKey, RELAY_HOST_LOOKUP_KEY)) return;
 
   const current = await db.from("fe_entitlements")
@@ -1205,6 +1290,43 @@ async function updateLatestRelayHostSubscriptionStatus(
   if (updated.error) throw updated.error;
 }
 
+/**
+ * Sync a subscription license's `status` from the Stripe subscription.
+ *
+ * Deliberately does NOT touch `expires_at`: the term is paid-for time, and a
+ * status change is not a refund. A canceled subscriber keeps the period they
+ * already paid for and lapses when it runs out, which is both fairer and
+ * simpler than backdating an expiry.
+ *
+ * Product-scoped by the family, not hardcoded, so the next subscription product
+ * needs no new function here.
+ */
+async function updateSubscriptionLicenseStatus(
+  sub: Stripe.Subscription,
+  status: string,
+) {
+  const lookupKey = sub.metadata?.lookup_key ?? sub.items?.data?.[0]?.price?.lookup_key ?? null;
+  if (!lookupKey || !isSubscriptionLookupKey(lookupKey)) return;
+  const family = licenseFamilyForLookupKey(lookupKey);
+  if (!family) return;
+
+  const db = supabaseAdmin();
+  const latest = await db.from("fe_entitlements")
+    .select("id")
+    .eq("product", family.product)
+    .eq("stripe_subscription_id", sub.id)
+    .is("refunded_at", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (latest.error) throw latest.error;
+  if (!latest.data) return;
+  const updated = await db.from("fe_entitlements")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", latest.data.id);
+  if (updated.error) throw updated.error;
+}
+
 async function onSubscriptionUpdated(sub: Stripe.Subscription) {
   const tier = sub.metadata?.tier ?? sub.items?.data?.[0]?.price?.lookup_key?.replace("sponsor_", "") ?? null;
   const lookupKey = sub.metadata?.lookup_key ?? sub.items?.data?.[0]?.price?.lookup_key ?? null;
@@ -1224,6 +1346,7 @@ async function onSubscriptionUpdated(sub: Stripe.Subscription) {
   if (error) throw error;
   const hostStatus = relayHostLifecycleStatus(sub.status);
   await updateLatestRelayHostSubscriptionStatus(sub.id, hostStatus);
+  await updateSubscriptionLicenseStatus(sub, subscriptionLicenseStatus(sub.status));
 }
 
 async function onSubscriptionDeleted(sub: Stripe.Subscription) {
@@ -1233,4 +1356,6 @@ async function onSubscriptionDeleted(sub: Stripe.Subscription) {
     .eq("stripe_subscription_id", sub.id);
   if (error) throw error;
   await updateLatestRelayHostSubscriptionStatus(sub.id, "canceled");
+  // The license keeps its paid-for `expires_at` and lapses on its own.
+  await updateSubscriptionLicenseStatus(sub, "canceled");
 }

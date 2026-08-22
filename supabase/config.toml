@@ -475,3 +475,20 @@ verify_jwt = false
 # check the sole gate, like waitlist-export / purchases-export.
 [functions.suppressions-export]
 verify_jwt = false
+
+# flow-billing-portal (0127 A2): opens the Stripe Billing Portal for a Flow
+# subscriber, called from inside the Mac app's Settings ▸ Billing. The app POSTs
+# the verbatim bytes of its `.license.json` and we verify OUR OWN Ed25519
+# signature over them — the signature IS the credential, so verify_jwt off like
+# the other signature-gated callbacks. A platform apikey on top would be a
+# second secret the signed app does not carry, for no second guarantee.
+# MUST also deploy with --no-verify-jwt (this file alone does not do it).
+[functions.flow-billing-portal]
+verify_jwt = false
+
+# flow-license-refresh (0127 A2): re-signs a Flow subscriber's licence envelope
+# with the term their renewals have already extended in the database. Same
+# licence-as-credential gate as flow-billing-portal, same reasoning, same
+# --no-verify-jwt requirement on deploy.
+[functions.flow-license-refresh]
+verify_jwt = false
