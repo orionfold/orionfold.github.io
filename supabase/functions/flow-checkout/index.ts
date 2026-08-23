@@ -51,9 +51,10 @@ import {
   supportsMultipleSeats,
 } from "../_shared/catalog.ts";
 import { getCorsHeaders, jsonResponse } from "../_shared/cors.ts";
+import { flowStripeSecretKey } from "../_shared/flow-stripe.ts";
 import { CLAIM_TTL_SECONDS, mintClaim } from "../_shared/license-claim.ts";
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
+const stripe = new Stripe(flowStripeSecretKey(), {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
   httpClient: Stripe.createFetchHttpClient(),
   appInfo: { name: "orionfold-website", url: "https://orionfold.com" },

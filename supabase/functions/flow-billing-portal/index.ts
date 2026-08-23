@@ -31,11 +31,12 @@ import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { STRIPE_API_VERSION } from "../_shared/catalog.ts";
 import { getCorsHeaders, jsonResponse } from "../_shared/cors.ts";
+import { flowStripeSecretKey } from "../_shared/flow-stripe.ts";
 import { licenseFromBody, verifyLicenseCredential } from "../_shared/license-credential.ts";
 
 const FLOW_PRODUCT = "orionfold-flow";
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
+const stripe = new Stripe(flowStripeSecretKey(), {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
   httpClient: Stripe.createFetchHttpClient(),
   appInfo: { name: "orionfold-website", url: "https://orionfold.com" },

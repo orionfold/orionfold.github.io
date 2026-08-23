@@ -63,17 +63,39 @@ import {
 } from "../_shared/relay-host-delivery.ts";
 import { deriveWorkshopToken, hashWorkshopToken, normalizeWorkshopEmail } from "../_shared/workshop-token.ts";
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
-  apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
-  httpClient: Stripe.createFetchHttpClient(),
-  appInfo: { name: "orionfold-website", url: "https://orionfold.com" },
-});
+const stripeClientFor = (secretKey: string) =>
+  new Stripe(secretKey, {
+    apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
+    httpClient: Stripe.createFetchHttpClient(),
+    appInfo: { name: "orionfold-website", url: "https://orionfold.com" },
+  });
+
+// The LIVE client. Used for signature verification (which needs a client but not
+// a matching key) and as the default for every event from the live account.
+const stripe = stripeClientFor(Deno.env.get("STRIPE_SECRET_KEY") ?? "");
+
+// Flow's sandbox client, built only when its key is configured (see
+// ../_shared/flow-stripe.ts for why Flow gets its own credential). A verified
+// TEST event must be answered with the TEST key: retrieving a sandbox
+// subscription with the live key is a 404, so the key has to follow the event.
+const FLOW_SECRET_KEY = Deno.env.get("STRIPE_FLOW_SECRET_KEY")?.trim() ?? "";
+const flowStripe = FLOW_SECRET_KEY ? stripeClientFor(FLOW_SECRET_KEY) : null;
+
+/** The client matching the account a VERIFIED event came from.
+ *
+ * `event.livemode` is signed data, not a caller-supplied hint. Passed explicitly
+ * down the handler chain rather than swapped on a module binding: two concurrent
+ * requests share one isolate, so a mutable module client could let a live event
+ * be processed with the test key. */
+const clientForEvent = (event: Stripe.Event) =>
+  event.livemode === false && flowStripe ? flowStripe : stripe;
 
 // Deno runs on Web Crypto (no Node `crypto`), so signature verification must be
 // the ASYNC path with a SubtleCrypto provider. `constructEvent` (sync) throws here.
 const cryptoProvider = Stripe.createSubtleCryptoProvider();
 
 const WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") ?? "";
+const FLOW_WEBHOOK_SECRET = Deno.env.get("STRIPE_FLOW_WEBHOOK_SECRET")?.trim() ?? "";
 // BOOK_FILES_BUCKET, DOWNLOAD_TTL_SECONDS, brandedUrl, signBookFiles,
 // bookEmailText and sendBookEmail now live in ../_shared/book-files.ts so the
 // free magnet rail (confirm-email) delivers through the same path.
@@ -188,35 +210,65 @@ Deno.serve(async (req) => {
   // RAW body — any reserialization (e.g. req.json()) breaks the HMAC.
   const body = await req.text();
 
-  let event: Stripe.Event;
-  try {
-    event = await stripe.webhooks.constructEventAsync(
-      body,
-      signature,
-      WEBHOOK_SECRET,
-      undefined,
-      cryptoProvider,
-    );
-  } catch (err) {
-    console.error("Signature verification failed:", (err as Error).message);
+  // TWO signing secrets, tried in order (Flow sandbox testing, 2026-08-22).
+  // Flow is exercised end to end against the Stripe SANDBOX while books,
+  // sponsors, Relay and Proof keep running against the live account. Supabase
+  // secrets are PROJECT-wide, so repointing the shared secret at test mode would
+  // stop live fulfilment for all of them — a real book buyer would pay and
+  // receive nothing. Instead this endpoint accepts EITHER secret and lets the
+  // HMAC decide which account sent the event.
+  //
+  // Safe because a signature is not a claim: Stripe's HMAC is derived from the
+  // secret, so a live-account event CANNOT verify against the Flow secret, or
+  // the reverse. Trying both widens which accounts we accept; it never weakens
+  // what a verified signature proves. With STRIPE_FLOW_WEBHOOK_SECRET unset this
+  // collapses to exactly the previous single-secret behaviour.
+  const signingSecrets = [...new Set([WEBHOOK_SECRET, FLOW_WEBHOOK_SECRET].filter(Boolean))];
+  if (signingSecrets.length === 0) {
+    console.error("No webhook signing secret configured");
     return new Response("Invalid signature", { status: 400 });
   }
+
+  let event: Stripe.Event | undefined;
+  let lastError: Error | undefined;
+  for (const secret of signingSecrets) {
+    try {
+      event = await stripe.webhooks.constructEventAsync(
+        body,
+        signature,
+        secret,
+        undefined,
+        cryptoProvider,
+      );
+      break;
+    } catch (err) {
+      lastError = err as Error;
+    }
+  }
+  if (!event) {
+    console.error("Signature verification failed:", lastError?.message);
+    return new Response("Invalid signature", { status: 400 });
+  }
+
+  // The client for THIS event's account, threaded to the handlers that call the
+  // Stripe API. A test event answered with the live key 404s on every retrieve.
+  const api = clientForEvent(event);
 
   try {
     switch (event.type) {
       case "checkout.session.completed":
-        await onCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        await onCheckoutCompleted(event.data.object as Stripe.Checkout.Session, api);
         break;
       case "checkout.session.async_payment_succeeded":
-        await onCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        await onCheckoutCompleted(event.data.object as Stripe.Checkout.Session, api);
         break;
       case "refund.created":
       case "refund.updated":
       case "refund.failed":
-        await onRefundChanged(event.data.object as Stripe.Refund);
+        await onRefundChanged(event.data.object as Stripe.Refund, api);
         break;
       case "invoice.paid":
-        await onInvoicePaid(event.data.object as Stripe.Invoice);
+        await onInvoicePaid(event.data.object as Stripe.Invoice, api);
         break;
       case "invoice.payment_failed":
         await onInvoicePaymentFailed(event.data.object as Stripe.Invoice);
@@ -247,7 +299,7 @@ Deno.serve(async (req) => {
 // ---------------------------------------------------------------------------
 // checkout.session.completed — the first fulfillment touchpoint for both kinds.
 // ---------------------------------------------------------------------------
-async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
+async function onCheckoutCompleted(session: Stripe.Checkout.Session, api: Stripe = stripe) {
   // Dispatch on the catalog KIND, not the Checkout mode: both sponsor and the
   // Arena Field Edition renewal are subscription mode, and both book and the
   // Field Edition one-time/founding are payment mode. Kind is the unambiguous key.
@@ -255,7 +307,7 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
   if (kind === "sponsor") {
     await fulfillSponsor(session);
   } else if (kind === "license") {
-    if (session.payment_status === "paid") await fulfillLicense(session);
+    if (session.payment_status === "paid") await fulfillLicense(session, api);
   } else if (kind === "workshop") {
     if (session.payment_status === "paid") await fulfillWorkshop(session);
   } else if (kind === "book") {
@@ -389,19 +441,19 @@ async function fulfillWorkshop(session: Stripe.Checkout.Session) {
   });
 }
 
-async function onRefundChanged(refund: Stripe.Refund) {
+async function onRefundChanged(refund: Stripe.Refund, api: Stripe = stripe) {
   let paymentIntentId = asId((refund as unknown as { payment_intent?: unknown }).payment_intent);
   let fullyRefunded = false;
   const chargeId = asId(refund.charge);
   if (chargeId) {
     // Some Refund payloads omit the expanded PaymentIntent. Recover it from the
     // Charge before asking Stripe's Invoice Payments mapping for exact lineage.
-    const charge = await stripe.charges.retrieve(chargeId);
+    const charge = await api.charges.retrieve(chargeId);
     paymentIntentId ??= asId(charge.payment_intent);
     fullyRefunded = charge.amount_refunded >= charge.amount;
   }
   const invoicePayment = paymentIntentId
-    ? await stripe.invoicePayments.list({
+    ? await api.invoicePayments.list({
         payment: { type: "payment_intent", payment_intent: paymentIntentId },
         status: "paid",
         limit: 1,
@@ -437,9 +489,9 @@ async function onRefundChanged(refund: Stripe.Refund) {
     // remain safe because an already-canceled subscription is left alone.
     const subscriptionId = result.data?.stripe_subscription_id;
     if (subscriptionId) {
-      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      const subscription = await api.subscriptions.retrieve(subscriptionId);
       if (subscription.status !== "canceled") {
-        await stripe.subscriptions.cancel(subscriptionId);
+        await api.subscriptions.cancel(subscriptionId);
       }
     }
   }
@@ -459,7 +511,7 @@ async function onRefundChanged(refund: Stripe.Refund) {
 // and are a fast-follow (entitlement-fetch / lifecycle) — no buyer is in renewal
 // at launch. The renewal SKU's FIRST checkout issues a standard 12-month license
 // here so a paid renewal is never dropped.
-async function fulfillLicense(session: Stripe.Checkout.Session) {
+async function fulfillLicense(session: Stripe.Checkout.Session, api: Stripe = stripe) {
   const lookupKey = session.metadata?.lookup_key ?? "";
   const email = session.customer_details?.email ?? session.customer_email ?? "";
   const item = getCatalogItem(lookupKey);
@@ -515,7 +567,7 @@ async function fulfillLicense(session: Stripe.Checkout.Session) {
     if (descriptor.relayHost) throw new Error("Relay Host signing seed is not configured");
   } else {
     try {
-      await issueAndDeliverLicense(supabase, session, { lookupKey, descriptor, email, item });
+      await issueAndDeliverLicense(supabase, session, { lookupKey, descriptor, email, item, api });
     } catch (err) {
       console.error("License issuance/delivery failed (recorded, delivered=false):", session.id, err);
       if (descriptor.relayHost) throw err;
@@ -608,6 +660,8 @@ async function issueAndDeliverLicense(
     replacesLicenseId?: string | null;
     term?: { issuedAt: string; notBefore: string; expiresAt: string };
     hostIdentity?: { ref: string; kind: "organization" | "individual"; displayName: string };
+    /** The Stripe client for this event's account (live, or Flow's sandbox). */
+    api?: Stripe;
   },
 ) {
   const seedB64 = Deno.env.get(LICENSE_SIGNING_SEED_ENV)!;
@@ -631,7 +685,9 @@ async function issueAndDeliverLicense(
 
   // Term from the sale moment; provenance from the line item + the charge.
   const term = ctx.term ?? licenseTerm(session.created);
-  const priceId = ctx.priceId === undefined ? await sessionPriceId(session) : ctx.priceId;
+  const priceId = ctx.priceId === undefined
+    ? await sessionPriceId(session, ctx.api ?? stripe)
+    : ctx.priceId;
   const purchaseId = ctx.purchaseId === undefined
     ? asId(session.payment_intent) ?? asId(session.subscription)
     : ctx.purchaseId;
@@ -812,9 +868,12 @@ async function uploadAndSignLicense(
 }
 
 /** The Stripe price id charged on this session (for license provenance). */
-async function sessionPriceId(session: Stripe.Checkout.Session): Promise<string | null> {
+async function sessionPriceId(
+  session: Stripe.Checkout.Session,
+  api: Stripe = stripe,
+): Promise<string | null> {
   try {
-    const items = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
+    const items = await api.checkout.sessions.listLineItems(session.id, { limit: 1 });
     return items.data[0]?.price?.id ?? null;
   } catch (err) {
     console.error("listLineItems failed for", session.id, err);
@@ -1149,7 +1208,7 @@ async function extendSubscriptionLicense(
   console.log(`Extended ${lookupKey} license ${current.data.id} to ${expiresAt}`);
 }
 
-async function onInvoicePaid(invoice: Stripe.Invoice) {
+async function onInvoicePaid(invoice: Stripe.Invoice, api: Stripe = stripe) {
   const subscriptionId = invoiceSubscriptionId(invoice);
   if (!subscriptionId) return; // not a subscription invoice
   const db = supabaseAdmin();
@@ -1169,7 +1228,7 @@ async function onInvoicePaid(invoice: Stripe.Invoice) {
     ? linePriceRef?.lookup_key
     : null;
   const lookupKey = expandedLookupKey ??
-    (linePriceId ? (await stripe.prices.retrieve(linePriceId)).lookup_key : null);
+    (linePriceId ? (await api.prices.retrieve(linePriceId)).lookup_key : null);
 
   // SUBSCRIPTION-SHAPED LICENSES (Flow, 2026-08-22). A subscription license is
   // never re-issued per cycle: the SAME signed envelope stays valid and each
@@ -1248,6 +1307,7 @@ async function onInvoicePaid(invoice: Stripe.Invoice) {
       kind: current.data.licensee_kind,
       displayName: current.data.issued_to_org ?? current.data.issued_to_name ?? current.data.email,
     },
+    api,
   };
   if (alreadyIssued.data) {
     await recoverRelayHostDelivery(db, syntheticSession, deliveryContext);
