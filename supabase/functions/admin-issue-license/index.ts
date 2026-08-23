@@ -45,11 +45,13 @@ const LICENSE_ID_RPC: Record<string, string> = {
   "arena-field-edition": "next_fe_license_id",
   "orionfold-proof": "next_proof_license_id",
   "orionfold-relay": "next_relay_license_id",
+  "orionfold-flow": "next_flow_license_id",
 };
 const LICENSE_ID_PREFIX: Record<string, string> = {
   "arena-field-edition": "OF-FE",
   "orionfold-proof": "OF-PROOF",
   "orionfold-relay": "OF-RELAY",
+  "orionfold-flow": "OF-FLOW",
 };
 
 function json(body: Record<string, unknown>, status: number): Response {

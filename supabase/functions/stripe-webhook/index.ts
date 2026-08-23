@@ -129,6 +129,9 @@ const LICENSE_ID_RPC: Record<string, string> = {
   "orionfold-proof": "next_proof_license_id",
   "orionfold-relay": "next_relay_license_id",
   "orionfold-relay-host": "next_relay_host_license_id",
+  // Flow, the first SUBSCRIPTION-shaped product. Drawn once at first purchase;
+  // renewals extend the same license rather than minting a new id.
+  "orionfold-flow": "next_flow_license_id",
 };
 
 function supabaseAdmin() {
