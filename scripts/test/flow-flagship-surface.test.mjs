@@ -1278,4 +1278,73 @@ assert.match(thanksSource, /import FlowDownloadCta from '\.\.\/\.\.\/components\
 assert.match(thanksSource, /<FlowDownloadCta[\s\S]{0,200}?source="magnet-thanks"/, 'the thanks-page download is attributable to its own surface');
 assert.doesNotMatch(thanksSource, /href=\{FLOW_DMG_URL\}/, 'the thanks page must not hand-roll the download link');
 
+// ── The annual saving is DERIVED, never written ────────────────────────────
+// 2026-08-22 14:16 B11: the app published "two months free" for the annual term.
+// At $10/mo and $96/yr the saving is $24 of $120 -- 20%, which is 2.4 months. The
+// app's 2 came out of an integer division that truncated the 0.4 away. The
+// website never carried the phrase, and this guard is what keeps it that way:
+// any month-count framing of the annual term is arithmetically wrong at these
+// prices, and a hand-written percentage silently disagrees with the catalog the
+// day either price moves.
+const flowPricing = readCopy('src/components/flow/FlowPricing.astro');
+assert.match(
+  flowPricing,
+  /const discountPercent = Math\.round\(FLOW\.annualDiscount \* 100\)/,
+  'the annual saving is computed from the one catalog rate, never written as a literal',
+);
+assert.match(flowPricing, /save \{discountPercent\} percent/, 'the rendered saving reads from the derived value');
+for (const surface of ['src/components/flow/FlowPricing.astro', 'src/pages/flow.astro', 'src/data/flow-pricing.ts']) {
+  const copy = readCopy(surface);
+  assert.doesNotMatch(
+    copy,
+    /(two|three|2|3)\s+months?\s+free/i,
+    `${surface}: the annual term is a percentage off, never a count of free months`,
+  );
+  assert.doesNotMatch(
+    copy,
+    /save\s+\d+\s*(percent|%)/i,
+    `${surface}: a hand-written saving drifts from the catalog -- derive it from FLOW.annualDiscount`,
+  );
+}
+
+// ── The press kit tracks the launch flag ───────────────────────────────────
+// The Status row shipped UNGATED: with ORIONFOLD_FLOW_LIVE on it still told
+// journalists licensing was unfinished and a waitlist was open. Press-kit rows
+// are the sentences most likely to be quoted verbatim, so no pre-launch phrase
+// may reach that table except inside a flag branch. Third drift of this shape
+// (llms.txt twice before), hence a guard rather than only a fix.
+const flowPage = readCopy('src/pages/flow.astro');
+assert.match(flowPage, /const pressStatus = ORIONFOLD_FLOW_LIVE/, 'the press-kit Status row branches on the launch flag');
+assert.match(flowPage, /<td[^>]*>\{pressStatus\}<\/td>/, 'the Status row renders the branched value, not a literal');
+const pressTable = flowPage.slice(flowPage.indexOf('id="press"'));
+for (const phrase of ['Waitlist open on this page', 'The remaining work is first-run onboarding']) {
+  for (const line of pressTable.split('\n').filter((l) => l.includes(phrase))) {
+    assert.fail(`the press kit must not state "${phrase}" outside a flag branch: ${line.trim().slice(0, 80)}`);
+  }
+}
+
+// ── Withdrawn features must not be sold ────────────────────────────────────
+// 2026-08-22 15:43 B11: Flow Quick is withdrawn from the first paid release
+// (`68638ba`) and cannot be reached in a shipped build. It was listed as a Pro
+// capability on /flow/, which sells a subscriber a feature they cannot use — the
+// exact direction the downstream contract test cannot catch, since it only
+// notices claims REMOVED from the site, never stale ones still on it.
+//
+// The feature still exists in source and restoring it is one flag, so this guard
+// exists to make the return deliberate: re-add the row only against a NEW
+// product-lane entry saying it ships, never by reading the app source.
+for (const surface of ['src/data/flow-pricing.ts', 'src/pages/flow.astro']) {
+  const copy = readCopy(surface);
+  assert.doesNotMatch(
+    copy,
+    /label:\s*["'`]Flow Quick/i,
+    `${surface}: Flow Quick is withdrawn — it must not be listed as a capability`,
+  );
+  assert.doesNotMatch(
+    copy,
+    /global hotkey assistant/i,
+    `${surface}: the Flow Quick claim must not survive under a different label`,
+  );
+}
+
 console.log('[flow-flagship-surface] Flow leads with real captures, truthful claims, and waitlist capture; the catalog lives in the footer');

@@ -107,7 +107,14 @@ export const FLOW_PRO_CAPABILITIES: FlowCapability[] = [
   // Smart Routing is a shipped, named subsystem (RoutingRules.swift). It was
   // missing from the 01:14 table.
   { label: "Smart Routing", note: "Your rules pick the model, and the screen names the rule that decided" },
-  { label: "Flow Quick", note: "The global hotkey assistant" },
+  // Flow Quick ("the global hotkey assistant") was REMOVED 2026-08-22 on the
+  // product lane's 15:43 B11: it is withdrawn from the first paid release
+  // (`68638ba`) and cannot be reached in a shipped build, so listing it as a Pro
+  // capability would sell a feature a subscriber cannot use. Its claim-ledger row
+  // moved to "Avoid without new evidence" rather than being deleted, because the
+  // feature still exists in source and restoring it is one flag — so restore this
+  // line only against a NEW product-lane entry saying it ships, never by reading
+  // the source. Guarded in scripts/test/flow-flagship-surface.test.mjs.
   // The PRODUCE half of the split. Reading these is Base; making new ones is Pro.
   { label: "Produce new receipts", note: "Approving an AI change is what writes one" },
   { label: "Generate new evidence", note: "Running a fresh evaluation is an AI run" },

@@ -213,6 +213,14 @@ const flowAvailability = ORIONFOLD_FLOW_LIVE
   ? 'https://schema.org/InStock'
   : 'https://schema.org/OutOfStock';
 
+// The press-kit Status row. This shipped UNGATED and so kept telling journalists
+// that licensing was unfinished and a waitlist was open while the launch flag was
+// ON -- the third time a flag-less Flow surface drifted (llms.txt twice before).
+// Anything a journalist quotes has to track the flag like the rest of the page.
+const pressStatus = ORIONFOLD_FLOW_LIVE
+  ? 'Released for Mac. Every capability shown on this page is built, running, and used daily for real work by its builder. Direct download for Mac, signed and notarized, outside the App Store.'
+  : 'Every capability shown on this page is built and running, and Flow is used daily for real work by its builder. The remaining work is first-run onboarding, then licensing and updates. Direct download for Mac, signed and notarized, outside the App Store. Waitlist open on this page.';
+
 const softwareSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -561,7 +569,7 @@ const heroConsentText = FLOW_CONSENT_TEXT;
             <tbody class="divide-y divide-border/70">
               <tr class="bg-surface"><th scope="row" class="w-40 px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Product</th><td class="px-5 py-3.5 text-text">Orionfold Flow. A native Mac app for professional documents with AI agency built in.</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Tagline</th><td class="px-5 py-3.5 text-text">"{SITE.tagline}."</td></tr>
-              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Status</th><td class="px-5 py-3.5 text-text">Every capability shown on this page is built and running, and Flow is used daily for real work by its builder. The remaining work is first-run onboarding, then licensing and updates. Direct download for Mac, signed and notarized, outside the App Store. Waitlist open on this page.</td></tr>
+              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Status</th><td class="px-5 py-3.5 text-text">{pressStatus}</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Patent</th><td class="px-5 py-3.5 text-text">Flow includes patent-pending technology for revision-scoped, verifiable AI agency in durable documents.</td></tr>
               <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">The wedge</th><td class="px-5 py-3.5 text-text">Text changes two ways only: an edit you typed, or a change you approved. Every AI change is an exact diff with evidence, checks, and a receipt naming what ran, where, and what it cost. Chat is where work evaporates; Flow is where the record is kept.</td></tr>
               <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Numbers</th><td class="px-5 py-3.5 text-text">Search p95 of 22.3 ms on a 10,000-note library (2026-08-04). Long-document planning linear through 620,000 characters. A real billed run recorded at $0.00425, reproducible to the digit. A complete two-engine local AI runtime inside the app for about 19 MiB (2026-08-14).</td></tr>
