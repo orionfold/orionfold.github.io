@@ -36,6 +36,7 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
+import LineIcon from '../components/ui/LineIcon.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
 import FlowDetail from '../components/flow/FlowDetail.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
@@ -100,23 +101,29 @@ const flowSchema = {
 // consent reads the same no matter which surface captured them.
 const consentText = FLOW_CONSENT_TEXT;
 
-// The fourth figure was "5 actions, every one needs your approval" until
-// 2026-08-21. It restated the hero headline a fourth time, while the pace of
-// the build, which is the reason a waitlist is worth joining, was nowhere on
-// the page. The count is the Flow CHANGELOG's own entries, and that file's
-// first line reads "User-visible behavior only", so the claim is checkable
-// rather than a commit tally dressed up as progress.
+// FOUR MEASURED FIGURES (operator ask 2026-08-22 21:04). Every one is a
+// recorded measurement, not a promise, and each has a longer twin with its
+// scope in the /flow/ stat band — move the two together or they drift apart.
 //
-// THIS NUMBER DRIFTS. It is a hand-count of top-level CHANGELOG entries in the
-// span 2026-07-28 (the file's first commit) to the stated end date, re-verified
-// 2026-08-21 at 140 (was 138 on 2026-08-20). The Flow repo is not a build
-// dependency here, so nothing recomputes it. Re-count and move BOTH this tile
-// and the /flow/ stat band together, or widen the window and restate the days.
+// The "140 changes" pace tile was dropped here on 2026-08-22: it was a
+// hand-count nothing recomputed, so it went stale between deploys. What
+// replaced it says what the app DOES, which does not rot the same way.
+//
+// Sources: 22.3 ms and $0.00425 are the same measurements the /flow/ band
+// carries. "4 AI domains" is the routing switch set (local, LAN, cloud prepaid,
+// cloud postpaid). "6 AI actions" is the Agency catalog, verified against the
+// app's own toolbar brief: Proofread, Summarize, Translate, both table
+// conversions, and Expand with Sources. Naming three keeps the tile short; if
+// the catalog grows, the number and the /flow/ band both change.
 const heroStats = [
-  { value: '22.3 ms', label: 'search across 10,000 notes' },
-  { value: '$0.00425', label: 'a billed run, recorded to the digit' },
-  { value: '+19.2 MiB', label: 'a complete local AI runtime' },
-  { value: '140 changes', label: 'shipped in the last 24 days' },
+  // `tone` colours the glyph by what the figure is ABOUT — speed, routing,
+  // money, capability — so the row reads as four different kinds of fact
+  // rather than four of the same. Every tone is a theme-aware token that
+  // redefines in dark, never a hex literal.
+  { value: '22.3 ms', label: 'search across 10,000 notes', icon: 'searchFast', tone: 'speed' },
+  { value: '4 AI domains', label: 'local, LAN, cloud prepaid and postpaid', icon: 'domains', tone: 'route' },
+  { value: '$0.00425', label: 'a real billed run, to the digit', icon: 'receipt', tone: 'money' },
+  { value: '6 AI actions', label: 'proofread, table conversions, expand with sources', icon: 'actions', tone: 'craft' },
 ];
 
 // One capability per band, and one picture that PROVES it.
@@ -328,32 +335,36 @@ const capabilityRows = [
               choice the headline promises. Link goes to the story, not
               /about/, so the claim is checkable at its origin. */}
           <p class="hero-founder mt-6 max-w-xl text-base leading-[1.5] text-text-muted">
-            <span class="text-text">&ldquo;I do not write every note anymore, I conduct. Using AI on devices of my choosing. Quality approved by me.&rdquo;</span>{' '}
+            <span class="italic text-text">&ldquo;I do not write every note anymore, I conduct. Using AI on devices of my choosing. Quality approved by me.&rdquo;</span>{' '}
             Manav Sehgal, who is building Flow after nine years at Amazon.
           </p>
-          {/* Same launch switch as the /flow/ hero: download plus the tour lead
-              once Flow ships, and the email capture stays as the third ask. */}
+          {/* Same launch switch as the /flow/ hero: the download is the hero's
+              single ask once Flow ships, and the waitlist is the pre-launch
+              stand-in. */}
           <div class="mt-9 max-w-md lg:mx-0">
-            {ORIONFOLD_FLOW_LIVE && (
-              <div class="mb-7">
-                <FlowDownloadCta
-                  source="home-hero"
-                  secondaryHref="/flow/"
-                  secondaryLabel="Take the product tour"
+            {ORIONFOLD_FLOW_LIVE ? (
+              /* ONE ASK IN THE HERO (operator 2026-08-22 20:58). Once Flow ships
+                 the download is the only call to action above the fold; the email
+                 capture moved out so the hero does not fork the reader. It still
+                 appears further down the page. */
+              <FlowDownloadCta source="home-hero" size="large" />
+            ) : (
+              /* Pre-launch there is no download to offer, so the hero keeps the
+                 waitlist rather than standing empty. */
+              <>
+                <WaitlistForm
+                  id="home-hero-waitlist"
+                  source="home-hero-waitlist"
+                  offer="flow-waitlist"
+                  buttonText="Join the waitlist"
+                  successMessage="Check your inbox to confirm."
+                  consentText={consentText}
                 />
-              </div>
+                <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
+                  Free to join · Double opt-in · One email a week, no more
+                </p>
+              </>
             )}
-            <WaitlistForm
-              id="home-hero-waitlist"
-              source="home-hero-waitlist"
-              offer="flow-waitlist"
-              buttonText={ORIONFOLD_FLOW_LIVE ? 'Email me Flow updates' : 'Join the waitlist'}
-              successMessage="Check your inbox to confirm."
-              consentText={consentText}
-            />
-            <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
-              Free to join · Double opt-in · One email a week, no more
-            </p>
           </div>
         </div>
 
@@ -384,16 +395,23 @@ const capabilityRows = [
         </div>
       </div>
       <div class="mx-auto mt-10 w-full max-w-6xl sm:mt-14">
-        <dl class="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4" data-animate-stagger="slow">
+        {/* INFOGRAPHIC TILES (operator 2026-08-22 21:14). Even whitespace comes
+            from equal-width columns with one gap value in both axes, and from
+            each tile being a flex column: the icon, figure and label sit on a
+            shared rhythm, so a two-line label cannot shove its neighbours. */}
+        <dl class="grid grid-cols-2 gap-6 lg:grid-cols-4" data-animate-stagger="slow">
           {heroStats.map((s) => (
-            <div data-animate="rise">
-              <dd class="of-spec-figure text-primary">{s.value}</dd>
-              <dt class="of-spec-label mt-2">{s.label}</dt>
+            <div class="hero-stat" data-animate="rise">
+              <dd class="hero-stat__row of-spec-figure text-primary">
+                <LineIcon name={s.icon} class={`hero-stat__icon hero-stat__icon--${s.tone}`} strokeWidth={1.6} />
+                <span>{s.value}</span>
+              </dd>
+              <dt class="hero-stat__label of-spec-label mt-1.5">{s.label}</dt>
             </div>
           ))}
         </dl>
         <p class="of-spec-fine mt-8 uppercase tracking-[0.14em]">
-          Measured on the running build · <a href="/flow/" class="of-text-action of-compact underline underline-offset-2">See all the numbers and dates</a>
+          Measured on the running build · <a href="/flow/" class="of-text-action of-compact underline underline-offset-2">See all the numbers</a>
         </p>
       </div>
     </section>
@@ -573,6 +591,57 @@ const capabilityRows = [
 </Layout>
 
 <style>
+  /* HERO STAT TILES. An infographic row: each figure gets a glyph in a soft
+     accent chip, and the three parts share one vertical rhythm so the tiles
+     line up whether their label runs one line or two. */
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+  /* Icon sits ON the figure's own line and is sized in `em`, so it tracks the
+     figure's fluid clamp automatically instead of needing its own breakpoints.
+     No chip: the glyph carries the colour itself. */
+  /* :global() on the icon rules is REQUIRED, not stylistic. Astro scopes a
+     page's <style> by hashing elements in this file's markup; the <svg> is
+     rendered by the LineIcon child component, so it never carries this page's
+     scope hash and an unscoped rule silently does nothing (measured: width
+     computed to 0px and every tone fell back to text colour). */
+  .hero-stat__row {
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+    /* NEVER WRAP. The icon and its figure are one unit; a wrapped row would
+       drop the glyph onto a line of its own and stop reading as one fact. */
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    /* The figure came down from clamp(1.9rem, 3.4vw, 2.6rem) once the glyph
+       joined its line: the pair is wider than the figure alone, and the widest
+       tile ("4 AI domains") has to clear a quarter of the row at every width. */
+    font-size: clamp(1.35rem, 2.1vw, 1.75rem);
+  }
+  /* Captions come down from the shared .of-spec-label size so the longest one
+     ("proofread, table conversions, expand with sources") sits on one line at
+     desktop instead of wrapping alone and unbalancing the row. */
+  .hero-stat__label {
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+  :global(.hero-stat__icon) {
+    width: 0.92em;
+    height: 0.92em;
+    flex: none;
+  }
+  /* Tones are semantic, not decorative: speed, routing, money, capability.
+     Four live theme-aware tokens (each redefines under dark), deliberately not
+     the retired orbit-* hues. Cyan stays the action colour, so the glyph tones
+     read as data categories and never as something to click. */
+  :global(.hero-stat__icon--speed) { color: var(--color-accent-ink); }
+  :global(.hero-stat__icon--route) { color: var(--color-danger); }
+  :global(.hero-stat__icon--money) { color: var(--color-success); }
+  :global(.hero-stat__icon--craft) { color: var(--color-warn); }
+
   .home-hero {
     isolation: isolate;
     /* Clip only the axis that needs it (the decorative grid/glow bleed

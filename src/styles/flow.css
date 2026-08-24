@@ -42,6 +42,46 @@
   color: var(--color-accent-ink);
 }
 
+/* STAT BAND TILES. An infographic row: each measured figure carries a glyph in
+   a soft accent chip, matching the homepage hero stat strip. The tile is a flex
+   column so the icon, figure, label and fine print share one vertical rhythm and
+   a longer fine-print line cannot shove its neighbours out of alignment. */
+.flow-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+/* Icon sits ON the figure's own line and is sized in `em`, so it tracks the
+   figure's fluid clamp automatically instead of needing its own breakpoints.
+   No chip: the glyph carries the colour itself. */
+.flow-stat__row {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  /* NEVER WRAP. The icon and its figure are one unit; a wrapped row would drop
+     the glyph onto a line of its own and stop reading as one fact. */
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  /* Reduced from the shared .of-spec-figure clamp now that the glyph shares the
+     line — three columns leave less room per figure than the homepage's four. */
+  font-size: clamp(1.35rem, 2.1vw, 1.75rem);
+}
+.flow-stat__icon {
+  width: 0.92em;
+  height: 0.92em;
+  flex: none;
+}
+/* Tones are semantic, not decorative — speed, routing, money, capability,
+   pace — so nine tiles read as five kinds of fact rather than nine of one.
+   Every tone is a live theme-aware token that redefines under dark; the
+   retired orbit-* hues are deliberately not used, and cyan stays the action
+   colour so a coloured glyph never reads as something to click. */
+.flow-stat__icon--speed { color: var(--color-accent-ink); }
+.flow-stat__icon--route { color: var(--color-danger); }
+.flow-stat__icon--money { color: var(--color-success); }
+.flow-stat__icon--craft { color: var(--color-warn); }
+.flow-stat__icon--pace  { color: var(--color-text-muted); }
+
 /* Chapter media geometry now lives in the shared .of-stage primitive
    (global.css), so the tour chapters and the two heroes cannot drift apart.
    Read the corner-rotation note there before moving a crop. */

@@ -26,6 +26,33 @@ const icons: Record<string, string> = {
   chip: '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M9 2v2"/><path d="M15 2v2"/><path d="M9 20v2"/><path d="M15 20v2"/><path d="M2 9h2"/><path d="M2 15h2"/><path d="M20 9h2"/><path d="M20 15h2"/>',
   // "personal devices" — monitor
   monitor: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+
+  // ---- Homepage hero stat strip (2026-08-22). One glyph per measured figure. ----
+  // "22.3 ms search" — magnifier with a speed line, so it reads as FAST search
+  // rather than plain search.
+  searchFast:
+    '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M8 11h6"/><path d="M10.5 8.5 13 11l-2.5 2.5"/>',
+  // "4 AI domains" — four routing nodes around a hub: the local/LAN/prepaid/
+  // postpaid switch set, drawn as choice rather than as a cloud.
+  domains:
+    '<circle cx="12" cy="12" r="2.6"/><circle cx="12" cy="3.4" r="1.9"/><circle cx="12" cy="20.6" r="1.9"/><circle cx="3.4" cy="12" r="1.9"/><circle cx="20.6" cy="12" r="1.9"/><path d="M12 5.3v4.1M12 14.6v4.1M5.3 12h4.1M14.6 12h4.1"/>',
+  // "$0.00425 billed run" — a receipt with a torn foot, matching the app's own
+  // receipt vocabulary.
+  receipt:
+    '<path d="M5 2.5h14v19l-2.3-1.6-2.4 1.6-2.3-1.6-2.3 1.6-2.4-1.6L5 21.5z"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h3"/>',
+  // "620,000 characters" — a long document with lines of text.
+  document:
+    '<path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5"/><path d="M8.5 12.5h7"/><path d="M8.5 16h7"/><path d="M8.5 9h3"/>',
+  // "54 pictures" — a bar chart, the largest half of the 34+20 composition.
+  chart:
+    '<path d="M3 3v18h18"/><rect x="6.5" y="12" width="3" height="6" rx="0.6"/><rect x="12" y="8" width="3" height="10" rx="0.6"/><rect x="17.5" y="4.5" width="3" height="13.5" rx="0.6"/>',
+  // "1.1 s first index" — a stopwatch: elapsed time, not a clock face.
+  bolt:
+    '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2"/><path d="M9.5 2h5"/><path d="M19.5 6l1.4-1.4"/>',
+  // "6 AI actions" — a document with a wand spark: an action applied TO a
+  // document, which is what the Agency catalog does.
+  actions:
+    '<path d="M13.5 3H6.5a1.5 1.5 0 0 0-1.5 1.5v15A1.5 1.5 0 0 0 6.5 21h8a1.5 1.5 0 0 0 1.5-1.5V9z"/><path d="M13.5 3v6H19"/><path d="M19.6 13.4l1.2 2.5 2.5 1.2-2.5 1.2-1.2 2.5-1.2-2.5-2.5-1.2 2.5-1.2z"/>',
 };
 
 const inner = icons[name] ?? '';

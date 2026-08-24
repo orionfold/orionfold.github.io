@@ -88,12 +88,23 @@ export const ORIONFOLD_RELAY_LIVE = true;
 //   2. Operator direction 2026-08-22 07:56 PDT: every public-facing Flow change
 //      stays local until the operator declares Flow released.
 //
-// Flip ON once: the 2 live Stripe subscription prices exist by lookup_key
-// (neither exists in live OR sandbox as of 2026-08-22 — verified, count 0), the
-// subscription webhook path (invoice.paid extending expires_at,
-// customer.subscription.deleted flipping status) is deployed and exercised end to
-// end, flow-license-refresh + flow-billing-portal are deployed --no-verify-jwt
-// and answer a real round trip, and the operator declares Flow released.
+// Flip ON once all four gates below are met. Their state as of 2026-08-23:
+//   1. DONE - the 2 live Stripe subscription prices exist by lookup_key:
+//      license_orionfold_flow_monthly ($10.00/month) and
+//      license_orionfold_flow_annual ($96.00/year). Created 2026-08-22 after the
+//      operator enabled Prices:Write; verified live 2026-08-23.
+//      VERIFY-TRAP, because it cost a wrong report to the operator: querying two
+//      keys in ONE call (`--lookup-keys a b --live`) silently returns EMPTY even
+//      though both exist. Query one key per call, or list and filter. An empty
+//      Stripe result is a QUERY problem until a control query on a key you KNOW
+//      exists also comes back empty.
+//   2. DONE - the subscription webhook path (invoice.paid extending expires_at,
+//      customer.subscription.deleted flipping status) is deployed and exercised
+//      end to end.
+//   3. DONE - flow-license-refresh + flow-billing-portal are deployed
+//      --no-verify-jwt and answer a real round trip.
+//   4. OPEN - the app ENFORCES the terms (gate 1 of the two above), and the
+//      operator declares Flow released. This is the only gate still holding.
 //
 // NOTE: this flag gates the PRICE and the BUY BUTTON, never the capability table
 // and never the free tier. Base (Flow unlicensed) is free forever and is true

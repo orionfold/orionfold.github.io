@@ -213,7 +213,7 @@ assert.doesNotMatch(pricingCopy, /Apple Intelligence/i, 'Apple Intelligence does
 // expected to RISE, which is exactly why it lives in one place.
 assert.match(
   pricingData,
-  /FLOW_DOWNLOAD_CAPTION = "Apple macOS\. No credit card\. 10 Pro Days included\."/,
+  /FLOW_DOWNLOAD_CAPTION = "Apple Mac\. 10 Pro Days included\. No credit card to use\."/,
   'the download caption states the grant the app actually enforces',
 );
 // "Included", never "free trial", and never a countdown: a Pro Day is spent only
@@ -223,20 +223,23 @@ assert.doesNotMatch(pricingData, /10 days free/i, 'the grant is not a calendar c
 // THE DOWNLOAD CTA IS ONE COMPONENT. Six surfaces render it (both heroes, the
 // shared waitlist panel, the pricing card and the nav), so the disabled state
 // lives in one place rather than being re-implemented per surface.
+// OPERATOR DECISION 2026-08-22 20:47: the disabled state and its "not live yet"
+// caption were removed on explicit instruction. Every surface now renders the
+// download as a live anchor at FLOW_DMG_URL, whatever that URL currently is.
 const downloadCta = read('src/components/flow/FlowDownloadCta.astro');
-assert.match(downloadCta, /FLOW_DOWNLOAD_READY \?/, 'the CTA branches on whether a real download exists');
-assert.match(downloadCta, /aria-disabled="true"/, 'the unavailable state is announced, not just styled');
-// While the URL is a placeholder the control must NOT be an anchor, or a reader
-// can click through to a dead address.
-assert.match(downloadCta, /<span[\s\S]{0,200}?aria-disabled="true"/, 'the pending state renders as a span, never a link');
+assert.match(downloadCta, /href=\{FLOW_DMG_URL\}/, 'the CTA links straight at the one download URL');
+assert.match(downloadCta, />\s*Download Flow Now\s*</, 'the button carries the operator label');
+assert.doesNotMatch(downloadCta, /aria-disabled/, 'the disabled state is gone by operator decision');
+// The subtext under the button is the shared constant, never retyped per surface.
+assert.match(downloadCta, /\{FLOW_DOWNLOAD_CAPTION\}/, 'the subtext comes from the one caption constant');
 
 // THE NAV STICKY BAR leads with the download once Flow is live (operator ask
 // 2026-08-22 10:13). All three nav calls to action switch together.
 const navSource = read('src/components/Nav.astro');
 assert.match(navSource, /const navCtaLabel = flowLive \? 'Download Flow' : 'Join the waitlist';/);
 assert.match(navSource, /const stickyCtaLabel = flowLive \? 'Download Flow' : 'Join the waitlist';/);
-// The nav degrades to the pricing section rather than a dead link.
-assert.match(navSource, /FLOW_DOWNLOAD_READY \? FLOW_DMG_URL : '\/flow\/#pricing'/, 'the nav never points at a placeholder URL');
+// The nav points at the same single URL constant as every other surface.
+assert.match(navSource, /const flowDownloadHref = FLOW_DMG_URL;/, 'the nav download uses the one URL constant');
 
 // BASE IS THE ABSENCE OF AN ENTITLEMENT. It has no SKU, no price and no
 // entitlement string, and the commerce layer must never grow one for it.
@@ -287,13 +290,20 @@ assert.doesNotMatch(tour, /data-checkout=/, 'Flow must not expose checkout befor
 assert.doesNotMatch(tour, /\$\d+\s*(?:\/|per\s)/i, 'no price tiers exist yet, so none may be implied');
 assert.match(chapters, /Install nothing but Flow\./, 'the runtime story stays "built so that", led by its own chapter');
 assert.match(flow, /patent-pending technology for revision-scoped, verifiable AI agency in durable documents/);
-// Measured numbers with dates (the stat band).
+// The measured stat band. Every figure must survive; the fine print states the
+// DATA (what was measured, on what) and, since the operator's 2026-08-22 call,
+// no longer prints capture dates. The dates stay recorded in the capability
+// briefs — dropping them from the page changed no figure.
 // '6 actions' (not 5): Expand with Sources joined the catalog in Flow 0131 on
 // 2026-08-20, and the toolbar brief names this page's old "five" as stale.
 for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '6 actions', '4 domains']) {
   assert.match(flow, new RegExp(esc(value)), `${value} must stay in the measured stat band`);
 }
-assert.match(flow, /2026-08-04/, 'the search measurement keeps its date');
+// Scoped to the `stats` array itself: the press facts table further down is a
+// different surface and deliberately keeps its dates.
+const statBand = flow.slice(flow.indexOf('const stats = ['), flow.indexOf('// Price strings come from the catalog'));
+assert.doesNotMatch(statBand, /\b20\d\d-\d\d-\d\d\b(?![^\n]*\*\/)/, 'the stat band prints data, not capture dates');
+assert.match(statBand, /icon: '/, 'every stat carries an infographic glyph');
 // The action count undercounted for a day (Expand landed 2026-08-20, the site
 // caught up 2026-08-21). Prose anywhere in the tour must not go back to five.
 // Alt text is exempt on purpose: the toolbar captures predate Expand and still

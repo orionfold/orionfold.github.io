@@ -75,7 +75,46 @@ const heading = live
           : 'Be first to approve a change in Flow.');
 const continueHref = isHome ? '/flow/' : isMid ? (nextHref ?? '/flow/') : storyHref;
 const continueLabel = isHome ? 'Take the product tour' : isMid ? (nextLabel ? `Next: ${nextLabel}` : 'Back to the Flow overview') : 'Read the story';
+
+// ONE SUPPORTING SENTENCE PER PLACEMENT (operator 2026-08-22 22:18). The
+// single-ask panel carries exactly one line under the hook, so each surface
+// says the one thing its reader still needs before clicking rather than
+// re-listing features. Every sentence is true of the shipped app today.
+const subtext = isEnterprise
+  ? 'Every AI change arrives as an exact diff, with a receipt that records what ran, where it ran, and what it cost.'
+  : isMid
+    ? 'It works on ordinary folders of Markdown files you already own, and nothing changes until you approve it.'
+    : 'Reading, writing, searching and exporting are free forever, and Flow\'s AI is the part you subscribe to.';
 ---
+{/* POST-LAUNCH: ONE ASK (operator, home 2026-08-22 22:01, all placements
+    22:18). Same treatment as the hero — one hook, one supporting sentence, one
+    Download button, and nothing else to click. The panel used to carry a
+    three-item list, a free-book link, a continue-reading link and an email form
+    beside the download; every one of those was a competing exit from a section
+    whose whole job is the download.
+
+    Losing the continue link costs the tour nothing: each /flow/<category>/ page
+    already carries a sticky sub-nav AND a prev/next pager directly above this
+    panel, so the reader's path onward is intact without it.
+
+    The full panel below still serves the PRE-LAUNCH state, where there is no
+    download to offer and the waitlist is the only real ask. */}
+{live ? (
+  <section
+    class:list={['flow-waitlist px-6 py-16 sm:py-24', isHome && 'flow-waitlist--home']}
+    aria-labelledby={`${formId}-heading`}
+  >
+    <div class="flow-waitlist__panel mx-auto max-w-3xl overflow-hidden rounded-[2rem] border border-primary/25 px-6 py-12 text-center sm:px-10 sm:py-16">
+      <div class="relative z-10">
+        <h2 id={`${formId}-heading`} class="text-balance text-4xl font-bold leading-[1.03] sm:text-5xl">{heading}</h2>
+        <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-text-muted">{subtext}</p>
+        <div class="mx-auto mt-9 max-w-md">
+          <FlowDownloadCta source={`${source}-download`} align="center" size="large" />
+        </div>
+      </div>
+    </div>
+  </section>
+) : (
 <section
   class:list={['flow-waitlist px-6 py-16 sm:py-24', isHome && 'flow-waitlist--home']}
   aria-labelledby={`${formId}-heading`}
@@ -146,6 +185,7 @@ const continueLabel = isHome ? 'Take the product tour' : isMid ? (nextLabel ? `N
     </div>
   </div>
 </section>
+)}
 
 <style>
   .flow-waitlist { position: relative; overflow: hidden; }

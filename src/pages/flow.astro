@@ -38,6 +38,7 @@ import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustrat
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import FlowPricing from '../components/flow/FlowPricing.astro';
 import FlowDownloadCta from '../components/flow/FlowDownloadCta.astro';
+import LineIcon from '../components/ui/LineIcon.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import { Image } from 'astro:assets';
 import { SITE, PERSON } from '../data/seo';
@@ -71,22 +72,26 @@ const chapterOffsets = FLOW_CATEGORIES.reduce<number[]>((acc, c, i) => [...acc, 
 
 // "Measured, not promised" stat band. Each number is a recorded measurement;
 // the fine print names its scope so the claim stays checkable.
+// DATES REMOVED 2026-08-22 (operator): the fine print states the DATA — what
+// was measured and on what — and no longer carries capture dates. The dates
+// remain recorded in the capability briefs and this file's history; nothing
+// about a figure changed, only whether the strip prints its timestamp.
 const stats = [
-  { value: '22.3 ms', label: 'Search, 95th percentile', fine: 'Measured on a 10,000-note library, Apple silicon, 2026-08-04' },
-  { value: '620,000', label: 'Characters planned part by part', fine: 'Long documents are split in about 0.5 seconds, and the time grows evenly with length' },
-  { value: '$0.00425', label: 'A real billed run, to the digit', fine: '105 input and 149 output tokens. Exact decimal arithmetic' },
-  { value: '+19.2 MiB', label: 'A complete local AI runtime', fine: 'Two engines inside the app. About the size of twenty photos' },
-  { value: '6 actions', label: 'The Agency catalog', fine: 'Proofread, Summarize, Translate, two table conversions, and Expand with Sources' },
-  { value: '4 domains', label: 'Where AI may run', fine: 'Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own switch' },
+  { value: '22.3 ms', label: 'Search, 95th percentile', fine: 'Measured on a 10,000-note library, Apple silicon', icon: 'searchFast', tone: 'speed' },
+  { value: '620,000', label: 'Characters planned part by part', fine: 'Long documents are split in about 0.5 seconds, and the time grows evenly with length', icon: 'document', tone: 'craft' },
+  { value: '$0.00425', label: 'A real billed run, to the digit', fine: '105 input and 149 output tokens. Exact decimal arithmetic', icon: 'receipt', tone: 'money' },
+  { value: '+19.2 MiB', label: 'A complete local AI runtime', fine: 'Two engines inside the app. About the size of twenty photos', icon: 'chip', tone: 'route' },
+  { value: '6 actions', label: 'The Agency catalog', fine: 'Proofread, Summarize, Translate, two table conversions, and Expand with Sources', icon: 'actions', tone: 'craft' },
+  { value: '4 domains', label: 'Where AI may run', fine: 'Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own switch', icon: 'domains', tone: 'route' },
   // 34 + 20 is the honest composition and the fine print says so: the app's
   // own vocabulary file (App/Editor/fence-vocabulary.mjs) lists 34 chartType
   // values, and the diagram fence renders 20 further types through a separate
   // renderer. Never say "54 chart types" — that would misread the 34.
-  { value: '54 pictures', label: '34 chart plus 20 diagram types', fine: 'Drawn in place from plain text in your file, offline, in one house style' },
+  { value: '54 pictures', label: '34 chart plus 20 diagram types', fine: 'Drawn in place from plain text in your file, offline, in one house style', icon: 'chart', tone: 'craft' },
   // Ninth figure keeps the grid square at three columns, and it is the one
   // number that answers "what happens when I point Flow at everything I have".
-  { value: '1.1 s', label: 'First index of 10,000 notes', fine: 'Measured on a 10,000-note library, Apple silicon, 2026-08-04. Results stream in as it goes' },
-  { value: '140 changes', label: 'Shipped in the last 24 days', fine: 'Counted from the Flow changelog, which records user-visible behavior only. Entries from 2026-07-28 to 2026-08-21' },
+  { value: '1.1 s', label: 'First index of 10,000 notes', fine: 'Measured on a 10,000-note library, Apple silicon. Results stream in as it goes', icon: 'bolt', tone: 'speed' },
+  { value: '140 changes', label: 'Shipped in the last 24 days', fine: 'Counted from the Flow changelog, which records user-visible behavior only', icon: 'refresh', tone: 'pace' },
 ];
 
 // Price strings come from the catalog via formatUsd, never from a literal, so
@@ -366,31 +371,34 @@ const heroConsentText = FLOW_CONSENT_TEXT;
           <p class="mt-6 max-w-xl text-balance text-lg leading-[1.5] text-text-muted sm:text-xl">
             Fifty four kinds of chart and diagram, drawn in place and offline. Flow lays them out, AI proposes the changes, and nothing lands until you approve it.
           </p>
-          {/* Once Flow ships the hero leads with the app itself: download plus
-              the tour as the second door. The email capture stays underneath as
-              the third ask rather than the only one, so the funnel does not fork
-              on launch day. Pre-launch, the form leads exactly as before. */}
+          {/* Once Flow ships the hero leads with the app itself, and the
+              download is its ONLY ask: the email capture was moved out of the
+              hero so nothing competes with it above the fold. Pre-launch, the
+              waitlist form leads exactly as before. */}
           <div class="mt-9 max-w-md lg:mx-0">
-            {ORIONFOLD_FLOW_LIVE && (
-              <div class="mb-7">
-                <FlowDownloadCta
-                  source="flow-hero"
-                  secondaryHref="#tour"
-                  secondaryLabel="Take the product tour"
+            {ORIONFOLD_FLOW_LIVE ? (
+              /* ONE ASK IN THE HERO (operator 2026-08-22 20:58). Once Flow ships
+                 the download is the only call to action above the fold; the email
+                 capture moved out so the hero does not fork the reader. It still
+                 appears further down the page. */
+              <FlowDownloadCta source="flow-hero" size="large" />
+            ) : (
+              /* Pre-launch there is no download to offer, so the hero keeps the
+                 waitlist rather than standing empty. */
+              <>
+                <WaitlistForm
+                  id="flow-hero-waitlist"
+                  source="flow-hero-waitlist"
+                  offer="flow-waitlist"
+                  buttonText="Join the waitlist"
+                  successMessage="Check your inbox to confirm."
+                  consentText={heroConsentText}
                 />
-              </div>
+                <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
+                  Free to join · Double opt-in · One email a week, no more
+                </p>
+              </>
             )}
-            <WaitlistForm
-              id="flow-hero-waitlist"
-              source="flow-hero-waitlist"
-              offer="flow-waitlist"
-              buttonText={ORIONFOLD_FLOW_LIVE ? 'Email me Flow updates' : 'Join the waitlist'}
-              successMessage="Check your inbox to confirm."
-              consentText={heroConsentText}
-            />
-            <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
-              Free to join · Double opt-in · One email a week, no more
-            </p>
           </div>
         </div>
 
@@ -424,14 +432,20 @@ const heroConsentText = FLOW_CONSENT_TEXT;
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
           <p class="of-eyebrow" data-animate="rise">Measured, not promised</p>
-          <h2 id="flow-stats-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Numbers with dates, not adjectives.</h2>
+          <h2 id="flow-stats-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Numbers, not adjectives.</h2>
           <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">Every figure comes from a recorded measurement of the running build. The fine print names exactly what was measured.</p>
         </div>
-        <dl class="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3" data-animate-stagger="slow">
+        {/* INFOGRAPHIC TILES, same treatment as the homepage stat strip: one
+            glyph per figure, and a single gap value in both axes so the nine
+            tiles sit on an even rhythm however long their fine print runs. */}
+        <dl class="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" data-animate-stagger="slow">
           {stats.map((s) => (
             <div class="flow-stat" data-animate="rise">
-              <dd class="of-spec-figure">{s.value}</dd>
-              <dt class="of-spec-label mt-2 font-semibold text-text">{s.label}</dt>
+              <dd class="flow-stat__row of-spec-figure">
+                <LineIcon name={s.icon} class={`flow-stat__icon flow-stat__icon--${s.tone}`} strokeWidth={1.6} />
+                <span>{s.value}</span>
+              </dd>
+              <dt class="of-spec-label mt-1.5 font-semibold text-text">{s.label}</dt>
               <dd class="of-spec-fine mt-2">{s.fine}</dd>
             </div>
           ))}

@@ -143,9 +143,11 @@ export const FLOW_LAPSE_FACTS: string[] = [
 // before release, not merely the URL.
 export const FLOW_DMG_URL = "https://PLACEHOLDER.invalid/flow/Flow.dmg";
 
-/** True when the download URL is still the placeholder. Any surface offering a
- * download must render a truthful unavailable state rather than a dead link:
- * never ship a working-looking action pointing at a missing dependency. */
+/** True when the download URL is no longer the placeholder.
+ *
+ * OPERATOR DECISION 2026-08-22 20:47: the surfaces no longer branch on this —
+ * every Download button is a live link regardless. Kept as the one place that
+ * can still tell whether FLOW_DMG_URL points at a real host. */
 export const FLOW_DOWNLOAD_READY = !FLOW_DMG_URL.includes("PLACEHOLDER");
 
 /** Minimum macOS the signed build targets. Verified against the app's
@@ -163,4 +165,4 @@ export const FLOW_SYSTEM_REQUIREMENT = "macOS 14 Sonoma or later, Apple silicon 
  *
  * "Included" not "free trial", and no countdown: a Pro Day is spent only on a
  * day the reader actually invokes AI, so "10 days" would be false. */
-export const FLOW_DOWNLOAD_CAPTION = "Apple macOS. No credit card. 10 Pro Days included.";
+export const FLOW_DOWNLOAD_CAPTION = "Apple Mac. 10 Pro Days included. No credit card to use.";

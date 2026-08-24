@@ -1,21 +1,21 @@
 ---
 // The Flow download call to action, in one place.
 //
-// WHY A COMPONENT: this markup now appears on the homepage hero, the /flow/
-// hero, the shared waitlist panel across four placements, the pricing section
-// and the top nav. Six copies of a disabled-state rule is six chances for one of
-// them to ship a working-looking button pointing at a URL that does not exist.
+// WHY A COMPONENT: this markup appears on the homepage hero, the /flow/ hero,
+// the shared waitlist panel across four placements, the pricing section and the
+// top nav. One copy of the label, the URL and the subtext means six surfaces
+// cannot drift apart.
 //
-// THE UNAVAILABLE STATE IS THE POINT. While FLOW_DOWNLOAD_READY is false the
-// button is deliberately NOT a link: it renders disabled and says so. A
-// dependency that is not active must never be dressed as a working action.
+// OPERATOR DECISION 2026-08-22 20:47: the download is offered as a live link
+// unconditionally. The earlier disabled state and its "not live yet" caption
+// were removed on the operator's explicit instruction after being told
+// FLOW_DMG_URL is still a placeholder host.
 //
 // The whole component renders nothing at all when ORIONFOLD_FLOW_LIVE is off, so
 // callers can drop it in beside their pre-launch markup without a second guard.
 import {
   FLOW_DMG_URL,
   FLOW_DOWNLOAD_CAPTION,
-  FLOW_DOWNLOAD_READY,
 } from '../../data/flow-pricing.ts';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
 
@@ -29,6 +29,8 @@ interface Props {
   align?: 'left' | 'center';
   /** Suppress the caption where the surrounding copy already carries it. */
   showCaption?: boolean;
+  /** Hero treatment: one oversized button, no secondary beside it. */
+  size?: 'default' | 'large';
 }
 
 const {
@@ -37,33 +39,26 @@ const {
   secondaryLabel,
   align = 'left',
   showCaption = true,
+  size = 'default',
 } = Astro.props;
 
 const centered = align === 'center';
+const large = size === 'large';
 ---
 
 {ORIONFOLD_FLOW_LIVE && (
   <div class:list={['flow-download-cta', centered && 'flow-download-cta--center']}>
-    <div class:list={['flex flex-wrap gap-3', centered && 'justify-center']}>
-      {FLOW_DOWNLOAD_READY ? (
-        <a
-          href={FLOW_DMG_URL}
-          class="of-primary-action"
-          data-flow-download={source}
-        >
-          Download Flow
-        </a>
-      ) : (
-        /* Not a link, and not styled as one that works. aria-disabled plus the
-           caption below tell a screen reader the same thing the eye is told. */
-        <span
-          class="of-primary-action cursor-not-allowed opacity-60"
-          aria-disabled="true"
-          data-flow-download-pending={source}
-        >
-          Download Flow
-        </span>
-      )}
+    <div class:list={[
+      large ? 'flex flex-col gap-3' : 'flex flex-wrap gap-3',
+      centered && (large ? 'items-center' : 'justify-center'),
+    ]}>
+      <a
+        href={FLOW_DMG_URL}
+        class:list={['of-primary-action', large && 'flow-download-cta__button--large']}
+        data-flow-download={source}
+      >
+        Download Flow Now
+      </a>
       {secondaryHref && secondaryLabel && (
         <a href={secondaryHref} class="of-secondary-action">
           {secondaryLabel}
@@ -77,8 +72,103 @@ const centered = align === 'center';
           centered && 'text-center',
         ]}
       >
-        {FLOW_DOWNLOAD_READY ? FLOW_DOWNLOAD_CAPTION : 'Download link not live yet'}
+        {FLOW_DOWNLOAD_CAPTION}
       </p>
     )}
   </div>
 )}
+
+<style>
+  /* HERO TREATMENT (operator ask 2026-08-22 20:52). The DS action primitives are
+     small mono pills; the hero download is the one place that outgrows them, so
+     it scales here rather than by redefining .of-primary-action everywhere.
+
+     Rounded RECTANGLE, not the DS pill, and edge to edge across the text column
+     so the button reads as the section's own bar. */
+  .flow-download-cta__button--large {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    min-height: 4.25rem;
+    /* Horizontal padding shrinks with the viewport so the label still clears a
+       320px phone at the clamp floor (measured: 200px of text in 208px). */
+    padding: 1.1rem clamp(0.9rem, 4vw, 2rem);
+    border-radius: var(--radius-of-lg);
+    /* Type is sized to the bar, not to the DS pill it inherits from: at 504px
+       wide and ~68px tall a 1.05rem label read as a small button in a big box.
+       Fluid so it does not overflow the column on a narrow phone. */
+    font-size: clamp(1.15rem, 1rem + 1.1vw, 1.6rem);
+    letter-spacing: 0.04em;
+    /* The sheen is a child pseudo-element sweeping across, so the button has to
+       clip it and establish its own stacking context. */
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    animation: flowDownloadGlow 3.2s ease-in-out infinite;
+  }
+
+  /* GLOW. Pulses the accent halo rather than the button itself: nothing moves,
+     so the control never shifts under a cursor mid-click. */
+  @keyframes flowDownloadGlow {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 0 color-mix(in oklch, var(--color-accent) 45%, transparent),
+        var(--shadow-of);
+    }
+    50% {
+      box-shadow:
+        0 0 1.75rem 0.35rem color-mix(in oklch, var(--color-accent) 35%, transparent),
+        var(--shadow-of-pop);
+    }
+  }
+
+  /* SHEEN. A soft diagonal highlight sweeping left to right on a long loop, with
+     a pause between passes so it reads as a catch of light, not a barber pole.
+     aria-hidden by construction: a pseudo-element carries no accessible text. */
+  .flow-download-cta__button--large::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      color-mix(in oklch, #ffffff 38%, transparent) 50%,
+      transparent 60%
+    );
+    transform: translateX(-100%);
+    animation: flowDownloadSheen 3.2s ease-in-out infinite;
+  }
+
+  @keyframes flowDownloadSheen {
+    0% {
+      transform: translateX(-100%);
+    }
+    /* Sweep occupies the first third of the loop; the rest is the rest beat. */
+    35%,
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .flow-download-cta__button--large:hover {
+    transform: translateY(-1px);
+  }
+
+  /* REDUCED MOTION. Both loops stop; the button keeps a static accent halo so it
+     still reads as the emphasised control. Must come after the normal rules to
+     win source order. */
+  @media (prefers-reduced-motion: reduce) {
+    .flow-download-cta__button--large {
+      animation: none;
+      box-shadow:
+        0 0 1.25rem 0.2rem color-mix(in oklch, var(--color-accent) 28%, transparent),
+        var(--shadow-of);
+    }
+    .flow-download-cta__button--large::after {
+      animation: none;
+      opacity: 0;
+    }
+  }
+</style>

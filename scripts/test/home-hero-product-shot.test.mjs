@@ -41,8 +41,11 @@ assert.match(flowShot, /loading=\{priority \? 'eager' : 'lazy'\}/);
 assert.match(flowShot, /fetchpriority=\{priority \? 'high' : undefined\}/);
 assert.equal((home.match(/\spriority\b/g) ?? []).length, 1, 'exactly one FlowShot is the eager hero image');
 
-// The measured stat strip under the hero shot.
-for (const value of ['22.3 ms', '$0.00425', '+19.2 MiB', '140 changes']) {
+// The measured stat strip under the hero shot. Reset by the operator
+// 2026-08-22: the "+19.2 MiB" and "140 changes" tiles gave way to two figures
+// about what the app does. Each value here still has a scoped twin in the
+// /flow/ stat band.
+for (const value of ['22.3 ms', '4 AI domains', '$0.00425', '6 AI actions']) {
   assert.match(home, new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${value} must stay in the hero stat strip`);
 }
 // 2026-08-21: "development build" became "running build" in the pre-launch

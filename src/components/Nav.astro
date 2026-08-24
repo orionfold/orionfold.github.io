@@ -32,7 +32,7 @@ const links = [
   { href: '/story/', label: 'Story', divider: true },
 ];
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
-import { FLOW_DMG_URL, FLOW_DOWNLOAD_READY } from '../data/flow-pricing.ts';
+import { FLOW_DMG_URL } from '../data/flow-pricing.ts';
 
 // 2026-08-22 launch switch. Once ORIONFOLD_FLOW_LIVE is on, all three nav calls
 // to action point straight at the download instead of the waitlist: the sticky
@@ -45,7 +45,7 @@ import { FLOW_DMG_URL, FLOW_DOWNLOAD_READY } from '../data/flow-pricing.ts';
 // disabled visual treatment the hero uses without breaking the bar's layout, so
 // it degrades to "see the pricing section" instead of lying about a file.
 const flowLive = ORIONFOLD_FLOW_LIVE;
-const flowDownloadHref = FLOW_DOWNLOAD_READY ? FLOW_DMG_URL : '/flow/#pricing';
+const flowDownloadHref = FLOW_DMG_URL;
 const navCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
 const stickyCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
 
@@ -88,7 +88,6 @@ const stickyCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
         href={flowLive ? flowDownloadHref : '/flow/#waitlist'}
         class="group inline-flex items-center gap-2 text-center text-sm leading-tight transition-colors hover:text-primary"
         data-flow-download={flowLive ? 'nav-sticky-bar' : undefined}
-        aria-disabled={flowLive && !FLOW_DOWNLOAD_READY ? 'true' : undefined}
       >
         <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l4 4v16H6zM15 2v5h4M9 12h6M9 16h3"/><path d="M13 17l2 2 4-5"/></svg>
         {flowLive ? (
@@ -144,7 +143,6 @@ const stickyCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
         class="hidden lg:inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 font-mono text-[0.68rem] font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90"
         data-astro-prefetch={flowLive ? undefined : true}
         data-flow-download={flowLive ? 'nav-desktop' : undefined}
-        aria-disabled={flowLive && !FLOW_DOWNLOAD_READY ? 'true' : undefined}
       >{navCtaLabel}</a>
       <button
         id="theme-toggle"
@@ -192,7 +190,7 @@ const stickyCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
           <a href={link.href} class="font-mono text-sm text-text-muted hover:text-primary transition-colors py-2" data-astro-prefetch>{link.label}</a>
         </Fragment>
       ))}
-      <a href={flowLive ? flowDownloadHref : '/flow/#waitlist'} class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowLive ? undefined : true} data-flow-download={flowLive ? 'nav-mobile' : undefined} aria-disabled={flowLive && !FLOW_DOWNLOAD_READY ? 'true' : undefined}>{navCtaLabel}</a>
+      <a href={flowLive ? flowDownloadHref : '/flow/#waitlist'} class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowLive ? undefined : true} data-flow-download={flowLive ? 'nav-mobile' : undefined}>{navCtaLabel}</a>
     </div>
   </div>
 </nav>

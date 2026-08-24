@@ -494,5 +494,66 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
       });
     </script>
 
+    <!-- Flow download tracking. Every Download button on the site carries
+         `data-flow-download="<surface>"` (both heroes, the four single-ask CTA
+         panels, and the three nav placements). Until this listener existed the
+         attribute was decorative: nothing read it, so a download was the one
+         funnel step with no measurement.
+
+         DELEGATED ON `document`, exactly like the copy-button handler above:
+         one listener covers every current and future button, and it survives
+         `astro:after-swap` view transitions with no re-init. Per-button
+         listeners would silently stop working after the first client-side
+         navigation.
+
+         WHAT THIS MEASURES IS A CLICK, NOT AN INSTALL. The link leaves for the
+         DMG host, so the honest event is "someone asked for the file". The site
+         cannot see what happens after that, so do not relabel this event as
+         installs or downloads-completed.
+
+         `file_download` is a GA4 RECOMMENDED event name, so it reports as a
+         first-class dimension instead of a custom event needing registration.
+
+         PARAMETER NAMING IS A TRAP: `link_source`, never `source`. GA4 treats
+         an event parameter literally named source / medium / campaign as a
+         traffic-source override — marketing found on 2026-08-20 that `{ source }`
+         rewrote the converting session's source and dropped it into Unassigned.
+         The same reason WaitlistForm sends `form_source`. -->
+    <script is:inline>
+      document.addEventListener('click', function (e) {
+        var link = e.target && e.target.closest ? e.target.closest('[data-flow-download]') : null;
+        if (!link) return;
+        // The disabled pre-launch state renders as a <span>, not a link, and
+        // must never report a download that cannot have happened.
+        if (link.tagName !== 'A') return;
+        try {
+          var surface = link.getAttribute('data-flow-download') || 'unknown';
+          var href = link.getAttribute('href') || '';
+          // Derive the file name from the href at CLICK time rather than baking
+          // it in, so this stays correct the moment FLOW_DMG_URL stops being a
+          // placeholder — no second edit, nothing to forget.
+          var fileName = 'Flow.dmg';
+          try {
+            var path = new URL(href, window.location.href).pathname;
+            var last = path.split('/').pop();
+            if (last) fileName = decodeURIComponent(last);
+          } catch (urlErr) {
+            /* unparseable href — keep the sensible default */
+          }
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'file_download', {
+              file_name: fileName,
+              file_extension: 'dmg',
+              link_source: surface,
+              link_url: href,
+            });
+          }
+        } catch (err) {
+          /* Analytics must never break the download itself. The click is
+             already on its way to the DMG; swallow and let it go. */
+        }
+      });
+    </script>
+
   </body>
 </html>
