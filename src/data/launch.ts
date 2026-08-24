@@ -151,6 +151,16 @@ const publicBuildEnv = (
     env?: Record<string, string | undefined>;
   }
 ).env;
+
+// ORIONFOLD_FLOW_IDEAS_CAMPAIGN — launch-dark campaign surface for the Flow
+// Ideas racing story. The source may land before the product feature is
+// accepted, but Home, /flow/, and the concept route stay absent from the
+// production build unless this one public build flag is set deliberately.
+// This is independent of ORIONFOLD_FLOW_LIVE: a live download is not evidence
+// that Flow Ideas itself is ready to market.
+export const ORIONFOLD_FLOW_IDEAS_CAMPAIGN =
+  publicBuildEnv?.PUBLIC_FLOW_IDEAS_CAMPAIGN === "true";
+
 export const RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED =
   publicBuildEnv?.PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT === "true";
 

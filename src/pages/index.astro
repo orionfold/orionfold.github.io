@@ -39,9 +39,10 @@ import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
 import LineIcon from '../components/ui/LineIcon.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
 import FlowDetail from '../components/flow/FlowDetail.astro';
+import FlowIdeasPitStop from '../components/flow/FlowIdeasPitStop.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import FlowDownloadCta from '../components/flow/FlowDownloadCta.astro';
-import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
+import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN, ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
@@ -482,6 +483,14 @@ const capabilityRows = [
         </div>
       </div>
     </section>
+
+    {/* FLOW IDEAS LAUNCH ARC. The dedicated flag is deliberately independent
+        of ORIONFOLD_FLOW_LIVE: a live app is not evidence that the Ideas
+        feature or its campaign is accepted. With the flag off this emits no
+        markup, links, or media request into the production homepage. */}
+    {ORIONFOLD_FLOW_IDEAS_CAMPAIGN && (
+      <FlowIdeasPitStop id="home-flow-ideas-pit-stop" variant="home" />
+    )}
 
     <!-- ================= CAPABILITY BANDS ================= -->
     {capabilityRows.map((row) => (

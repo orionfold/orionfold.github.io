@@ -211,6 +211,10 @@ export default defineConfig({
         // id, and it has nothing to offer search. It does not end in /thanks/,
         // so it needs naming here explicitly.
         !page.endsWith('/flow/welcome/') &&
+        // The Flow Ideas concept route is a noindex campaign-review surface,
+        // not a public Story entry. Keep it out of discovery in every build;
+        // a later accepted launch story can own its own indexable route.
+        !page.endsWith('/flow/ideas-in-motion/') &&
         !page.endsWith('/training/relay-operator-workshop/access/') &&
         !page.endsWith('/training/relay-operator-workshop/relay/') &&
         !page.endsWith('/training/relay-operator-workshop/workspace/') &&

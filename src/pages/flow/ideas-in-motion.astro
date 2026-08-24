@@ -1,0 +1,143 @@
+---
+// Private campaign-review route. Unlike a normal /story/ entry, this page is
+// not part of the content collection, RSS, story index, or sitemap discovery.
+// It exists only in builds that deliberately opt into the Flow Ideas campaign.
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import FlowIdeasPitStop from '../../components/flow/FlowIdeasPitStop.astro';
+import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN } from '../../data/launch.ts';
+import '../../styles/flow.css';
+
+if (!ORIONFOLD_FLOW_IDEAS_CAMPAIGN) {
+  return Astro.redirect('/flow/', 302);
+}
+
+const beats = [
+  {
+    number: '01',
+    kicker: 'On the grid',
+    title: 'One outcome. Your hands on the wheel.',
+    body: 'The story starts with your destination, not an open-ended prompt. You name the outcome and the boundaries. Flow carries the document, its context, and its rules with you.',
+  },
+  {
+    number: '02',
+    kicker: 'Into the pit lane',
+    title: 'Make the thinking visible before the work begins.',
+    body: 'The Flow Ideas launch story turns a plan into a pit stop: a focused pause where the work is inspected, divided into stations, and made legible before any specialist runs.',
+  },
+  {
+    number: '03',
+    kicker: 'Specialist craft',
+    title: 'The right crew for each station.',
+    body: 'Each specialist has a narrow job. One checks structure. Another checks evidence. Another checks presentation. They propose and report. They do not take the wheel.',
+  },
+  {
+    number: '04',
+    kicker: 'Release',
+    title: 'Your call puts the work back on track.',
+    body: 'The crew clears only when you approve. Flow leaves the stop carrying the result and its record, ready for the next turn without losing who decided what.',
+  },
+];
+---
+
+<Layout
+  title="Flow Ideas in motion · Campaign preview · Orionfold"
+  description="A launch-dark campaign concept for Orionfold Flow Ideas: the user drives, Flow carries the work, and a specialist pit crew proposes each move before release."
+  noindex={true}
+>
+  <Nav />
+  <main class="flow-ideas-story overflow-x-clip">
+    <FlowIdeasPitStop
+      id="flow-ideas-story-hero"
+      variant="story"
+      showStoryLink={false}
+    />
+
+    <section class="flow-ideas-story__arc" aria-labelledby="flow-ideas-story-arc-title">
+      <div class="flow-ideas-story__intro">
+        <p class="of-eyebrow" data-animate="rise">The launch story</p>
+        <h2 id="flow-ideas-story-arc-title" class="of-display" data-animate="lead">
+          A fast car is only half a race.
+        </h2>
+        <p class="of-lede" data-animate="rise">
+          Performance comes from a system: the driver, the machine, the crew, the timing,
+          and a shared view of what happens next. That is the arc Flow Ideas is built to explain.
+        </p>
+      </div>
+
+      <ol class="flow-ideas-story__beats" aria-label="Four beats in the Flow Ideas launch story">
+        {beats.map((beat) => (
+          <li data-animate="rise">
+            <div class="flow-ideas-story__number" aria-hidden="true">{beat.number}</div>
+            <div>
+              <p class="flow-ideas-story__kicker">{beat.kicker}</p>
+              <h3>{beat.title}</h3>
+              <p>{beat.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="flow-ideas-story__control" aria-labelledby="flow-ideas-story-control-title">
+      <div>
+        <p class="of-eyebrow" data-animate="rise">The point of the metaphor</p>
+        <h2 id="flow-ideas-story-control-title" class="of-display" data-animate="lead">
+          More performance. No surrender of control.
+        </h2>
+      </div>
+      <div class="flow-ideas-story__control-copy" data-animate="rise">
+        <p>
+          Flow is not the driver and the specialist crew is not a swarm making hidden decisions.
+          The campaign works only if the person in the cockpit remains visible at every beat.
+        </p>
+        <p>
+          The cinematic layer carries energy, speed, and craft. The product layer still has to show
+          the real screen, the real proposal, the approval, and the receipt. Atmosphere earns attention.
+          Evidence earns trust.
+        </p>
+        <a class="of-primary-action" href="/flow/">See the real Flow product <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .flow-ideas-story { background: var(--color-surface); }
+  .flow-ideas-story__arc,
+  .flow-ideas-story__control {
+    width: min(calc(100% - 3rem), 76rem);
+    margin-inline: auto;
+    padding-block: clamp(4.5rem, 9vw, 8rem);
+  }
+  .flow-ideas-story__intro { max-width: 54rem; }
+  .flow-ideas-story__intro h2,
+  .flow-ideas-story__control h2 {
+    margin-top: 1rem;
+    font-size: clamp(2.3rem, 5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+  }
+  .flow-ideas-story__intro .of-lede { max-width: 46rem; margin-top: 1.5rem; }
+  .flow-ideas-story__beats { display: grid; gap: 0; margin-top: clamp(3rem, 7vw, 6rem); padding: 0; border-top: 1px solid var(--color-border); list-style: none; }
+  .flow-ideas-story__beats li { display: grid; grid-template-columns: auto 1fr; gap: clamp(1.2rem, 3vw, 3rem); padding-block: clamp(1.7rem, 4vw, 3rem); border-bottom: 1px solid var(--color-border); }
+  .flow-ideas-story__number { padding-top: 0.15rem; color: var(--color-accent-ink); font: 700 clamp(1.2rem,2.4vw,1.8rem)/1 var(--font-mono); }
+  .flow-ideas-story__kicker { color: var(--color-accent-ink); font: 700 0.65rem/1 var(--font-mono); letter-spacing: 0.18em; text-transform: uppercase; }
+  .flow-ideas-story__beats h3 { margin-top: 0.65rem; font: 750 clamp(1.35rem,2.7vw,2rem)/1.15 var(--font-display); letter-spacing: -0.035em; }
+  .flow-ideas-story__beats li p:last-child { max-width: 48rem; margin-top: 0.75rem; color: var(--color-text-muted); line-height: 1.7; }
+  .flow-ideas-story__control { display: grid; gap: 2rem 5rem; border-top: 1px solid var(--color-border); }
+  .flow-ideas-story__control-copy { color: var(--color-text-muted); font-size: 1.02rem; line-height: 1.75; }
+  .flow-ideas-story__control-copy p + p { margin-top: 1rem; }
+  .flow-ideas-story__control-copy a { margin-top: 2rem; }
+  @media (min-width: 820px) {
+    .flow-ideas-story__control { grid-template-columns: minmax(0,1fr) minmax(24rem,0.78fr); align-items: start; }
+  }
+  @media (max-width: 520px) {
+    .flow-ideas-story__arc,
+    .flow-ideas-story__control { width: min(calc(100% - 2rem), 76rem); }
+    .flow-ideas-story__beats li { grid-template-columns: 1fr; gap: 0.8rem; }
+  }
+</style>

@@ -34,6 +34,7 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
+import FlowIdeasPitStop from '../components/flow/FlowIdeasPitStop.astro';
 import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustration.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import FlowPricing from '../components/flow/FlowPricing.astro';
@@ -49,7 +50,7 @@ import { FLOW_ENTERPRISE_TEASER } from '../data/flow-enterprise';
 import { FLOW_CONSENT_TEXT } from '../data/flow-consent';
 import { FLOW, formatUsd } from '../data/commerce.ts';
 import { FLOW_SYSTEM_REQUIREMENT } from '../data/flow-pricing.ts';
-import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
+import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN, ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import '../styles/flow.css';
 
 import appIcon from '../assets/flow/flow-app-icon-512.png';
@@ -452,6 +453,13 @@ const heroConsentText = FLOW_CONSENT_TEXT;
         </dl>
       </div>
     </section>
+
+    {/* Campaign splice, launch-dark until Flow Ideas has its own acceptance.
+        The measured band above and the real product proof below remain in
+        their original order; this metaphor never replaces either one. */}
+    {ORIONFOLD_FLOW_IDEAS_CAMPAIGN && (
+      <FlowIdeasPitStop id="flow-ideas-pit-stop" variant="flow" />
+    )}
 
     <!-- ================= THE WHOLE PROMISE IN ONE PICTURE ================= -->
     <section class="px-6 py-16 sm:py-20">
