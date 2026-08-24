@@ -1,0 +1,211 @@
+---
+import BrandMark from '../ui/BrandMark.astro';
+import releasePoster from '../../assets/flow/launch/flow-ideas-release-exit-poster.webp';
+
+const releaseVideo = '/video/flow/flow-ideas-release-exit.mp4';
+---
+
+<section id="flow-release-cut" class="flow-release" aria-labelledby="flow-release-title">
+  <div class="flow-release__shell">
+    <div class="flow-release__copy">
+      <p class="flow-release__eyebrow" data-animate="rise">Release cam · 1.5 seconds</p>
+      <h2 id="flow-release-title" data-animate="lead">When you say go, Flow moves.</h2>
+      <p class="flow-release__lede" data-animate="rise">
+        The pit stop ends with a decision, not an autonomous hand-off. The crew clears.
+        The user releases. Flow carries the work back onto the track.
+      </p>
+      <p class="flow-release__note" data-animate="rise">
+        The motion is intentionally one beat: forward momentum. The longer story stays in
+        the still frame, where the driver, crew, telemetry, and decision remain legible.
+      </p>
+    </div>
+
+    <figure class="flow-release__frame" data-release-film data-animate="plate">
+      <div class="flow-release__media">
+        <video
+          class="flow-release__video"
+          src={releaseVideo}
+          poster={releasePoster.src}
+          muted
+          playsinline
+          preload="metadata"
+          aria-describedby="flow-release-caption"
+        ></video>
+
+        <div class="flow-release__brand" aria-hidden="true">
+          <BrandMark size={22} />
+          <span>ORION<span>FOLD</span></span>
+          <strong>RELEASE CAM</strong>
+        </div>
+
+        <button class="flow-release__toggle" type="button" aria-label="Play release cut">
+          Play release cut
+        </button>
+      </div>
+      <figcaption id="flow-release-caption">
+        Campaign motion study · Generated in Gemini and editorially cut to a forward-only
+        release beat. Illustrative, not product evidence.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-release-film]').forEach((root) => {
+    if (root.dataset.releaseReady === 'true') return;
+    const video = root.querySelector<HTMLVideoElement>('.flow-release__video');
+    const toggle = root.querySelector<HTMLButtonElement>('.flow-release__toggle');
+    if (!video || !toggle) return;
+    root.dataset.releaseReady = 'true';
+
+    const update = () => {
+      const label = video.ended
+        ? 'Replay release cut'
+        : video.paused
+          ? 'Play release cut'
+          : 'Pause release cut';
+      toggle.textContent = label;
+      toggle.setAttribute('aria-label', label);
+    };
+
+    toggle.addEventListener('click', () => {
+      if (video.paused) {
+        if (video.ended) video.currentTime = 0;
+        void video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+    video.addEventListener('play', update);
+    video.addEventListener('pause', update);
+    video.addEventListener('ended', update);
+    update();
+  });
+</script>
+
+<style>
+  .flow-release {
+    position: relative;
+    overflow: hidden;
+    scroll-margin-top: 7rem;
+    padding: clamp(4.5rem, 9vw, 8rem) 1.5rem;
+    color: #f3fbfb;
+    background:
+      radial-gradient(circle at 72% 36%, color-mix(in oklch, var(--color-primary) 15%, transparent), transparent 25rem),
+      linear-gradient(145deg, #071115 0%, #0d2024 54%, #081317 100%);
+  }
+  .flow-release__shell {
+    display: grid;
+    width: min(100%, 72rem);
+    margin-inline: auto;
+    gap: clamp(2.5rem, 7vw, 6rem);
+    align-items: center;
+  }
+  .flow-release__copy { max-width: 37rem; }
+  .flow-release__eyebrow {
+    color: color-mix(in oklch, var(--color-primary) 82%, white);
+    font: 700 0.68rem/1 var(--font-mono);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .flow-release__copy h2 {
+    max-width: 11ch;
+    margin-top: 1rem;
+    color: #f3fbfb;
+    font: 800 clamp(2.5rem, 6vw, 5.6rem)/0.94 var(--font-display);
+    letter-spacing: -0.058em;
+    text-wrap: balance;
+  }
+  .flow-release__lede {
+    margin-top: 1.5rem;
+    color: rgba(235,247,247,0.78);
+    font-size: clamp(1.02rem, 1.7vw, 1.26rem);
+    line-height: 1.65;
+  }
+  .flow-release__note {
+    max-width: 34rem;
+    margin-top: 1rem;
+    color: rgba(226,243,242,0.56);
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+  .flow-release__frame {
+    width: min(100%, 27rem);
+    margin-inline: auto;
+    overflow: hidden;
+    border: 1px solid rgba(170,245,241,0.2);
+    border-radius: clamp(1.25rem, 3vw, 2rem);
+    background: #061014;
+    box-shadow: 0 2rem 6rem rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.025) inset;
+  }
+  .flow-release__media {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #061014;
+  }
+  .flow-release__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+  }
+  .flow-release__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(3,10,13,0.34), transparent 34% 70%, rgba(3,10,13,0.34));
+  }
+  .flow-release__brand {
+    position: absolute;
+    z-index: 2;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    border: 1px solid rgba(203,250,246,0.22);
+    border-radius: 999px;
+    padding: 0.45rem 0.65rem 0.45rem 0.45rem;
+    background: rgba(4,13,16,0.9);
+    font: 800 0.62rem/1 var(--font-display);
+  }
+  .flow-release__brand > span:nth-child(2) > span { color: color-mix(in oklch, var(--color-primary) 82%, white); }
+  .flow-release__brand strong {
+    margin-left: 0.25rem;
+    color: color-mix(in oklch, var(--color-primary) 82%, white);
+    font-family: var(--font-mono);
+    letter-spacing: 0.09em;
+  }
+  .flow-release__toggle {
+    position: absolute;
+    z-index: 3;
+    right: 1rem;
+    bottom: 1rem;
+    min-height: 2.7rem;
+    border: 1px solid rgba(203,250,246,0.22);
+    border-radius: 999px;
+    padding: 0.7rem 0.9rem;
+    color: #071416;
+    background: color-mix(in oklch, var(--color-primary) 82%, white);
+    font: 750 0.68rem/1 var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+  .flow-release__toggle:focus-visible { outline: 2px solid white; outline-offset: 4px; }
+  .flow-release__frame figcaption {
+    padding: 0.85rem 1rem 1rem;
+    color: rgba(221,241,240,0.54);
+    font: 500 0.68rem/1.55 var(--font-mono);
+  }
+  @media (min-width: 820px) {
+    .flow-release__shell { grid-template-columns: minmax(0,1fr) minmax(18rem,0.65fr); }
+    .flow-release__frame { margin-right: 0; }
+  }
+  @media (max-width: 480px) {
+    .flow-release { padding-inline: 1rem; }
+    .flow-release__copy h2 { font-size: clamp(2.5rem, 14vw, 3.9rem); }
+    .flow-release__brand strong { display: none; }
+  }
+</style>

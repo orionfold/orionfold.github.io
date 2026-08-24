@@ -14,6 +14,7 @@ const config = read('astro.config.mjs');
 const home = read('src/pages/index.astro');
 const flow = read('src/pages/flow.astro');
 const component = read('src/components/flow/FlowIdeasPitStop.astro');
+const release = read('src/components/flow/FlowIdeasReleaseCut.astro');
 const concept = read('src/pages/flow/ideas-in-motion.astro');
 
 // A live Flow download is not evidence that Ideas is ready to launch. The
@@ -82,3 +83,12 @@ assert.doesNotMatch(concept, /src\/content\/story/, 'campaign concept is not a S
 assert.match(concept, /They propose and report\. They do not take the wheel\./, 'story preserves driver control');
 assert.match(concept, /<h2 id=["']flow-ideas-story-arc-title["']/, 'story arc follows the campaign H1');
 assert.match(concept, /<h3>\{beat\.title\}<\/h3>/, 'story beats preserve heading hierarchy');
+assert.match(concept, /<FlowIdeasReleaseCut\s*\/>/, 'story carries the edited release motion beat');
+
+// The salvage edit is a user-controlled, forward-only release sting. It never
+// loops, autoplays below the fold, or pretends to be product evidence.
+assert.match(release, /flow-ideas-release-exit\.mp4/, 'release component uses the curated motion cut');
+assert.doesNotMatch(release, /\bautoplay\b|\bloop\b/, 'release cut does not autoplay or loop');
+assert.match(release, /Play release cut/, 'release cut has an explicit play control');
+assert.match(release, /Replay release cut/, 'release cut can be replayed after it ends');
+assert.match(release, /forward-only[\s\S]*Illustrative, not product evidence\./, 'release cut is truthfully labeled');

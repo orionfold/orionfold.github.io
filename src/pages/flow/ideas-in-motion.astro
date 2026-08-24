@@ -6,6 +6,7 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import FlowIdeasPitStop from '../../components/flow/FlowIdeasPitStop.astro';
+import FlowIdeasReleaseCut from '../../components/flow/FlowIdeasReleaseCut.astro';
 import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN } from '../../data/launch.ts';
 import '../../styles/flow.css';
 
@@ -79,6 +80,8 @@ const beats = [
         ))}
       </ol>
     </section>
+
+    <FlowIdeasReleaseCut />
 
     <section class="flow-ideas-story__control" aria-labelledby="flow-ideas-story-control-title">
       <div>
