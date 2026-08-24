@@ -1,0 +1,589 @@
+---
+import { getImage, Image } from 'astro:assets';
+import pitStopWide from '../../assets/flow/launch/flow-ideas-pit-stop-wide.webp';
+import pitStopPortrait from '../../assets/flow/launch/flow-ideas-pit-stop-portrait.webp';
+import tunePoster from '../../assets/flow/launch/flow-ideas-pit-stop-tune-poster.webp';
+import shotGuideSales from '../../assets/flow/shots/flow-guide-sales-marketing-shot.webp';
+import appIcon from '../../assets/flow/flow-app-icon-512.png';
+import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
+import { FLOW_CONSENT_TEXT } from '../../data/flow-consent.ts';
+import BrandMark from '../ui/BrandMark.astro';
+import LineIcon from '../ui/LineIcon.astro';
+import WaitlistForm from '../ui/WaitlistForm.astro';
+import FlowDownloadCta from './FlowDownloadCta.astro';
+import FlowRaceBlueprint from './FlowRaceBlueprint.astro';
+import FlowShot from './FlowShot.astro';
+
+interface HeroStat {
+  value: string;
+  label: string;
+  icon: string;
+  tone: string;
+}
+
+interface Props {
+  stats: HeroStat[];
+}
+
+const { stats } = Astro.props;
+const portraitWidths = [480, 720, 960, 1280];
+const portraitImages = await Promise.all(
+  portraitWidths.map((width) => getImage({ src: pitStopPortrait, width, format: 'webp', quality: 84 })),
+);
+const portraitSrcset = portraitImages
+  .map((image, index) => `${image.src} ${portraitWidths[index]}w`)
+  .join(', ');
+
+const metaphor = [
+  ['User', 'Driver'],
+  ['Flow', 'Race car'],
+  ['Ideas', 'Pit stop'],
+  ['Specialists', 'Pit crew'],
+];
+
+const heroAlt =
+  'Orionfold Flow launch concept: a Flow race car in an Orionfold Ideas pit stop, surrounded by a specialist crew and active performance telemetry.';
+---
+
+<section class="flow-launch-hero" aria-labelledby="flow-launch-home-title">
+  <div class="flow-launch-hero__key-art" aria-hidden="true">
+    <picture>
+      <source media="(max-width: 699px)" srcset={portraitSrcset} sizes="100vw" />
+      <Image
+        src={pitStopWide}
+        alt=""
+        widths={[768, 1152, 1600, 2048]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        decoding="sync"
+        class="flow-launch-hero__key-image"
+      />
+    </picture>
+  </div>
+  <div class="flow-launch-hero__veil" aria-hidden="true"></div>
+
+  <div class="flow-launch-hero__shell">
+    <div class="flow-launch-hero__poster-grid">
+      <div class="flow-launch-hero__copy">
+        <div class="flow-launch-hero__chips">
+          <span class="flow-launch-hero__chip">
+            <Image src={appIcon} alt="" width={40} height={40} class="flow-launch-hero__app-icon" loading="eager" />
+            Orionfold Flow · Native Mac app
+          </span>
+          <span class="flow-launch-hero__chip flow-launch-hero__chip--accent">Flow Ideas launch</span>
+          <span class="flow-launch-hero__chip">Patent pending</span>
+        </div>
+
+        <p class="flow-launch-hero__eyebrow">
+          For creators, builders, and authors.
+          <span>Anyone whose name is on the document.</span>
+        </p>
+        <h1 id="flow-launch-home-title">
+          Conduct beautiful documents. <em>Choose where AI operates.</em>
+        </h1>
+        <p class="flow-launch-hero__founder">
+          <span>&ldquo;I do not write every note anymore, I conduct. Using AI on devices of my choosing. Quality approved by me.&rdquo;</span>
+          Manav Sehgal, who is building Flow after nine years at Amazon.
+        </p>
+
+        <div class="flow-launch-hero__actions">
+          {ORIONFOLD_FLOW_LIVE ? (
+            <FlowDownloadCta source="home-hero" size="large" />
+          ) : (
+            <>
+              <WaitlistForm
+                id="home-hero-waitlist"
+                source="home-hero-waitlist"
+                offer="flow-waitlist"
+                buttonText="Join the waitlist"
+                successMessage="Check your inbox to confirm."
+                consentText={FLOW_CONSENT_TEXT}
+              />
+              <p class="flow-launch-hero__caption">
+                Free to join · Double opt-in · One email a week, no more
+              </p>
+            </>
+          )}
+          <a href="/flow/ideas-in-motion/" class="flow-launch-hero__story-link">
+            Enter the Ideas pit stop <span aria-hidden="true">→</span>
+          </a>
+        </div>
+
+        <dl class="flow-launch-hero__metaphor" aria-label="Flow Ideas racing metaphor">
+          {metaphor.map(([term, meaning]) => (
+            <div>
+              <dt>{term}</dt>
+              <dd>{meaning}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <aside class="flow-launch-hero__film" aria-labelledby="flow-launch-film-title" data-home-pit-film>
+        <div class="flow-launch-hero__film-topline">
+          <span>Launch film · 5.6 seconds</span>
+          <strong>01 / PIT + TUNE</strong>
+        </div>
+        <div class="flow-launch-hero__film-media">
+          <video
+            src="/video/flow/flow-ideas-pit-stop-tune.mp4"
+            poster={tunePoster.src}
+            muted
+            playsinline
+            preload="metadata"
+            aria-describedby="flow-launch-film-caption"
+          ></video>
+          <div class="flow-launch-hero__film-brand" aria-hidden="true">
+            <BrandMark size={22} />
+            <span>ORION<span>FOLD</span></span>
+          </div>
+        </div>
+        <div class="flow-launch-hero__film-telemetry" aria-label="Pit wall status">
+          <div>
+            <span>System health</span>
+            <strong>99%</strong>
+          </div>
+          <div>
+            <span>Specialists</span>
+            <strong>06 ready</strong>
+          </div>
+          <div>
+            <span>Driver control</span>
+            <strong id="flow-launch-film-title">Release held</strong>
+          </div>
+        </div>
+        <div class="flow-launch-hero__film-controls">
+          <span>Motion remains user controlled</span>
+          <button type="button" aria-label="Play pit and tune film">Play film</button>
+        </div>
+        <p id="flow-launch-film-caption">
+          Arrival and specialist tuning. The film stops before release. Illustrative, not product evidence.
+        </p>
+      </aside>
+    </div>
+
+    <div class="flow-launch-hero__pit-wall">
+      <FlowRaceBlueprint class="flow-launch-hero__blueprint" />
+      <div class="flow-launch-hero__proof">
+        <div class="flow-launch-hero__proof-label">
+          <span>Live cockpit</span>
+          <strong>Real Flow build</strong>
+        </div>
+        <FlowShot
+          src={shotGuideSales}
+          alt="Two documents open side by side in Orionfold Flow: a Q3 sales report showing a quota attainment chart and funnel table, beside a marketing dashboard showing metric cards and a weekly sessions line chart."
+          crop
+          sizes="(min-width: 1024px) 44rem, calc(100vw - 3rem)"
+        />
+      </div>
+
+      <div class="flow-launch-hero__telemetry">
+        <p>Pit-wall telemetry <span>Measured on the running build</span></p>
+        <dl>
+          {stats.map((stat) => (
+            <div>
+              <LineIcon name={stat.icon} class={`flow-launch-hero__stat-icon flow-launch-hero__stat-icon--${stat.tone}`} strokeWidth={1.6} />
+              <dd>{stat.value}</dd>
+              <dt>{stat.label}</dt>
+            </div>
+          ))}
+        </dl>
+        <a href="/flow/">See every measured number <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-home-pit-film]').forEach((root) => {
+    if (root.dataset.filmReady === 'true') return;
+    const video = root.querySelector<HTMLVideoElement>('video');
+    const button = root.querySelector<HTMLButtonElement>('button');
+    if (!video || !button) return;
+    root.dataset.filmReady = 'true';
+
+    const update = () => {
+      const label = video.ended ? 'Replay film' : video.paused ? 'Play film' : 'Pause film';
+      button.textContent = label;
+      button.setAttribute('aria-label', label === 'Play film' ? 'Play pit and tune film' : label);
+    };
+
+    button.addEventListener('click', () => {
+      if (video.paused) {
+        if (video.ended) video.currentTime = 0;
+        void video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+    video.addEventListener('play', update);
+    video.addEventListener('pause', update);
+    video.addEventListener('ended', update);
+    update();
+  });
+</script>
+
+<style>
+  .flow-launch-hero {
+    --race-teal: #75eee7;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(7.5rem, 12vw, 10rem) 1rem clamp(4rem, 7vw, 7rem);
+    color: #f3fbfb;
+    background: #061114;
+  }
+
+  .flow-launch-hero__key-art,
+  .flow-launch-hero__key-art picture,
+  .flow-launch-hero__veil {
+    position: absolute;
+    inset: 0;
+  }
+  .flow-launch-hero__key-art { z-index: -3; }
+  .flow-launch-hero__key-art picture { display: block; }
+  .flow-launch-hero__key-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .flow-launch-hero__veil {
+    z-index: -2;
+    background:
+      linear-gradient(90deg, rgba(3, 11, 14, 0.97) 0%, rgba(3, 11, 14, 0.82) 35%, rgba(3, 11, 14, 0.24) 68%, rgba(3, 11, 14, 0.58) 100%),
+      linear-gradient(0deg, #061114 0%, rgba(6, 17, 20, 0.04) 42%, rgba(5, 14, 17, 0.34) 100%);
+  }
+  .flow-launch-hero__shell {
+    width: min(100%, 88rem);
+    margin-inline: auto;
+  }
+  .flow-launch-hero__poster-grid {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: end;
+  }
+  .flow-launch-hero__copy { max-width: 48rem; }
+  .flow-launch-hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+  .flow-launch-hero__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid rgba(187, 246, 242, 0.22);
+    border-radius: 999px;
+    padding: 0.42rem 0.78rem;
+    color: rgba(232, 248, 247, 0.72);
+    background: rgba(3, 12, 15, 0.82);
+    font: 650 0.62rem/1 var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .flow-launch-hero__chip--accent {
+    border-color: rgba(117, 238, 231, 0.48);
+    color: var(--race-teal);
+  }
+  .flow-launch-hero__app-icon { width: 1.2rem; height: 1.2rem; border-radius: 0.3rem; }
+  .flow-launch-hero__eyebrow {
+    margin-top: 2rem;
+    color: var(--race-teal);
+    font: 700 0.66rem/1.55 var(--font-mono);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .flow-launch-hero__eyebrow span {
+    display: block;
+    color: rgba(225, 244, 243, 0.52);
+  }
+  .flow-launch-hero h1 {
+    max-width: 11ch;
+    margin-top: 1.15rem;
+    color: #f5fbfb;
+    font: 850 clamp(3.15rem, 7.5vw, 7rem)/0.87 var(--font-display);
+    letter-spacing: -0.07em;
+    text-wrap: balance;
+    text-shadow: 0 0.08em 0.42em rgba(0, 0, 0, 0.62);
+  }
+  .flow-launch-hero h1 em {
+    display: block;
+    margin-top: 0.08em;
+    color: var(--race-teal);
+    font-style: normal;
+  }
+  .flow-launch-hero__founder {
+    max-width: 42rem;
+    margin-top: 1.6rem;
+    color: rgba(226, 243, 242, 0.62);
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+  .flow-launch-hero__founder span {
+    color: rgba(247, 252, 252, 0.9);
+    font-style: italic;
+  }
+  .flow-launch-hero__metaphor {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    max-width: 40rem;
+    margin-top: 2rem;
+    overflow: hidden;
+    border: 1px solid rgba(166, 239, 235, 0.16);
+    border-radius: 0.8rem;
+    background: rgba(166, 239, 235, 0.16);
+  }
+  .flow-launch-hero__metaphor div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    padding: 0.72rem 0.8rem;
+    background: rgba(3, 13, 16, 0.88);
+  }
+  .flow-launch-hero__metaphor dt,
+  .flow-launch-hero__metaphor dd {
+    margin: 0;
+    font: 650 0.62rem/1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .flow-launch-hero__metaphor dt { color: rgba(221, 241, 240, 0.48); }
+  .flow-launch-hero__metaphor dd { color: var(--race-teal); }
+  .flow-launch-hero__actions { max-width: 31.5rem; margin-top: 2rem; }
+  .flow-launch-hero__caption {
+    margin-top: 0.75rem;
+    color: rgba(224, 242, 241, 0.46);
+    font: 600 0.58rem/1.5 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .flow-launch-hero__story-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    color: #f2fbfa;
+    font-size: 0.84rem;
+    font-weight: 750;
+  }
+  .flow-launch-hero__story-link:hover { color: var(--race-teal); }
+
+  .flow-launch-hero__film {
+    width: min(100%, 22rem);
+    margin-inline: auto;
+    overflow: hidden;
+    border: 1px solid rgba(164, 242, 237, 0.24);
+    border-radius: 1.35rem;
+    background: rgba(3, 12, 15, 0.94);
+    box-shadow: 0 2.5rem 7rem rgba(0, 0, 0, 0.62);
+  }
+  .flow-launch-hero__film-topline {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 0.9rem;
+    color: rgba(221, 241, 240, 0.5);
+    font: 650 0.56rem/1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .flow-launch-hero__film-topline strong { color: var(--race-teal); }
+  .flow-launch-hero__film-media {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    background: #02090b;
+  }
+  .flow-launch-hero__film video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .flow-launch-hero__film-brand {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid rgba(191, 247, 243, 0.2);
+    border-radius: 999px;
+    padding: 0.38rem 0.55rem 0.38rem 0.38rem;
+    color: white;
+    background: rgba(2, 10, 13, 0.88);
+    font: 800 0.58rem/1 var(--font-display);
+  }
+  .flow-launch-hero__film-brand span span { color: var(--race-teal); }
+  .flow-launch-hero__film-telemetry {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+    padding: 0.75rem 0.75rem 0;
+  }
+  .flow-launch-hero__film-telemetry > div {
+    min-width: 0;
+    border: 1px solid rgba(164, 242, 237, 0.14);
+    border-radius: 0.5rem;
+    padding: 0.58rem 0.5rem;
+    background: rgba(1, 9, 12, 0.92);
+  }
+  .flow-launch-hero__film-telemetry span,
+  .flow-launch-hero__film-telemetry strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .flow-launch-hero__film-telemetry span {
+    color: rgba(221, 241, 240, 0.44);
+    font: 600 0.47rem/1 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .flow-launch-hero__film-telemetry strong {
+    margin-top: 0.38rem;
+    color: #f2fbfa;
+    font: 700 0.6rem/1 var(--font-mono);
+  }
+  .flow-launch-hero__film-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0.85rem;
+  }
+  .flow-launch-hero__film-controls span {
+    color: rgba(221, 241, 240, 0.44);
+    font: 600 0.5rem/1.3 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .flow-launch-hero__film-controls button {
+    min-height: 2.6rem;
+    border: 1px solid rgba(191, 247, 243, 0.24);
+    border-radius: 999px;
+    padding: 0.65rem 0.85rem;
+    color: #051315;
+    background: var(--race-teal);
+    font: 750 0.65rem/1 var(--font-mono);
+    cursor: pointer;
+  }
+  .flow-launch-hero__film-controls button:focus-visible { outline: 2px solid white; outline-offset: 3px; }
+  .flow-launch-hero__film > p {
+    border-top: 1px solid rgba(164, 242, 237, 0.12);
+    padding: 0.75rem 0.85rem 0.9rem;
+    color: rgba(221, 241, 240, 0.45);
+    font: 500 0.58rem/1.5 var(--font-mono);
+  }
+
+  .flow-launch-hero__pit-wall {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(4rem, 8vw, 7rem);
+    overflow: hidden;
+    border: 1px solid rgba(164, 242, 237, 0.17);
+    border-radius: 1.5rem;
+    padding: clamp(0.8rem, 2vw, 1.25rem);
+    background: rgba(3, 12, 15, 0.94);
+    box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.45);
+  }
+  :global(.flow-launch-hero__blueprint) { opacity: 0.13; }
+  .flow-launch-hero__proof,
+  .flow-launch-hero__telemetry { position: relative; z-index: 1; }
+  .flow-launch-hero__proof-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.25rem 0.35rem 0.75rem;
+    color: rgba(221, 241, 240, 0.48);
+    font: 650 0.6rem/1 var(--font-mono);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  .flow-launch-hero__proof-label strong { color: var(--race-teal); }
+  .flow-launch-hero__telemetry {
+    border: 1px solid rgba(164, 242, 237, 0.14);
+    border-radius: 1rem;
+    padding: 1rem;
+    background: rgba(2, 11, 14, 0.88);
+  }
+  .flow-launch-hero__telemetry > p {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0;
+    color: var(--race-teal);
+    font: 700 0.62rem/1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .flow-launch-hero__telemetry > p span { color: rgba(221, 241, 240, 0.42); }
+  .flow-launch-hero__telemetry dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 1rem;
+    overflow: hidden;
+    border: 1px solid rgba(164, 242, 237, 0.12);
+    border-radius: 0.75rem;
+    background: rgba(164, 242, 237, 0.12);
+  }
+  .flow-launch-hero__telemetry dl div {
+    position: relative;
+    min-width: 0;
+    padding: 1rem 0.8rem;
+    background: rgba(3, 14, 17, 0.94);
+  }
+  :global(.flow-launch-hero__stat-icon) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--race-teal);
+  }
+  .flow-launch-hero__telemetry dd {
+    margin: 0.75rem 0 0;
+    color: #f5fbfb;
+    font: 760 clamp(1.15rem, 2.5vw, 1.8rem)/1 var(--font-display);
+    letter-spacing: -0.035em;
+  }
+  .flow-launch-hero__telemetry dt {
+    margin-top: 0.4rem;
+    color: rgba(221, 241, 240, 0.48);
+    font: 500 0.62rem/1.45 var(--font-mono);
+  }
+  .flow-launch-hero__telemetry > a {
+    display: inline-flex;
+    gap: 0.45rem;
+    margin-top: 1rem;
+    color: var(--race-teal);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  @media (min-width: 920px) {
+    .flow-launch-hero { padding-inline: 1.5rem; }
+    .flow-launch-hero__poster-grid { grid-template-columns: minmax(0, 1.25fr) minmax(17rem, 0.47fr); }
+    .flow-launch-hero__film { margin-right: 0; transform: translateY(2rem) rotate(1.3deg); }
+    .flow-launch-hero__pit-wall { grid-template-columns: minmax(0, 1.35fr) minmax(22rem, 0.65fr); }
+  }
+  @media (max-width: 919px) {
+    .flow-launch-hero__film { width: min(100%, 25rem); }
+    .flow-launch-hero__key-image { object-position: center top; }
+    .flow-launch-hero__veil {
+      background: linear-gradient(0deg, #061114 0%, rgba(4, 13, 16, 0.76) 58%, rgba(4, 13, 16, 0.52) 100%);
+    }
+  }
+  @media (max-width: 520px) {
+    .flow-launch-hero { padding-inline: 0.75rem; }
+    .flow-launch-hero h1 { font-size: clamp(3rem, 15.8vw, 4.5rem); }
+    .flow-launch-hero__metaphor { grid-template-columns: 1fr; }
+    .flow-launch-hero__film { border-radius: 1rem; }
+    .flow-launch-hero__telemetry > p { align-items: flex-start; flex-direction: column; }
+    .flow-launch-hero__telemetry dd { font-size: 1.08rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flow-launch-hero__film { transform: none; }
+  }
+</style>

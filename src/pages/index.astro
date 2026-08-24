@@ -40,6 +40,8 @@ import LineIcon from '../components/ui/LineIcon.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
 import FlowDetail from '../components/flow/FlowDetail.astro';
 import FlowIdeasPitStop from '../components/flow/FlowIdeasPitStop.astro';
+import FlowLaunchHomeHero from '../components/flow/FlowLaunchHomeHero.astro';
+import HomeRaceCapabilityAct from '../components/flow/HomeRaceCapabilityAct.astro';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import FlowDownloadCta from '../components/flow/FlowDownloadCta.astro';
 import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN, ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
@@ -282,6 +284,34 @@ const capabilityRows = [
     align: 'right',
   },
 ];
+
+// The launch skin changes the editorial structure, not the product argument.
+// These acts preserve the existing row order and reuse every claim, link, real
+// capture, and proof crop. With the campaign flag dark, the original seven
+// standalone bands below remain the production rendering.
+const capabilityActs = [
+  {
+    number: '01',
+    label: 'Driver control',
+    title: 'You hold the line.',
+    body: 'Approval and cost stay visible before anything moves. Flow works at speed without taking the decision away from you.',
+    rows: capabilityRows.slice(0, 2),
+  },
+  {
+    number: '02',
+    label: 'Specialist craft',
+    title: 'The pit crew works the problem.',
+    body: 'Long documents become ordered work. Visuals arrive in the file. Every route stays inside the boundary you chose.',
+    rows: capabilityRows.slice(2, 5),
+  },
+  {
+    number: '03',
+    label: 'Race performance',
+    title: 'Evidence carries speed forward.',
+    body: 'Receipts show what happened. Measured routing lets the same rule choose a faster model when your own hardware improves.',
+    rows: capabilityRows.slice(5),
+  },
+];
 ---
 <Layout
   title={HOME_TITLE}
@@ -293,9 +323,12 @@ const capabilityRows = [
   <Nav />
   <!-- Surfaces the ?confirmed= state the confirm-email funnel redirects here with -->
   <ConfirmBanner />
-  <main class="overflow-x-clip">
+  <main class:list={['overflow-x-clip', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-theme']}>
     <!-- ================= HERO ================= -->
-    <section class="home-hero relative px-6 pb-16 pt-32 sm:pt-36">
+    {ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? (
+      <FlowLaunchHomeHero stats={heroStats} />
+    ) : (
+      <section class="home-hero relative px-6 pb-16 pt-32 sm:pt-36">
       <div class="home-hero__grid" aria-hidden="true"></div>
       <div class="home-hero__glow" aria-hidden="true"></div>
       {/* TWO-COLUMN HERO (2026-08-21, operator direction, modelled on
@@ -415,14 +448,15 @@ const capabilityRows = [
           Measured on the running build · <a href="/flow/" class="of-text-action of-compact underline underline-offset-2">See all the numbers</a>
         </p>
       </div>
-    </section>
+      </section>
+    )}
 
 
     <!-- ================= THE BROKEN LOOP ================= -->
-    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
+    <section class:list={['border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-problem']}>
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="of-eyebrow" data-animate="rise">The problem</p>
+          <p class="of-eyebrow" data-animate="rise">{ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? 'Before the pit stop · The problem' : 'The problem'}</p>
           <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Chat is where work evaporates.</h2>
           <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
             You draft in a chat window, paste into your document, and fix the formatting.
@@ -431,17 +465,17 @@ const capabilityRows = [
           </p>
         </div>
         <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger="slow">
-          <article class="of-surface rounded-2xl border border-border/70 p-6" data-animate="rise">
+          <article class:list={['of-surface rounded-2xl border border-border/70 p-6', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-card']} data-animate="rise">
             <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">No more pasting</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">The work happens in the file.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Nothing to copy out of a chat, nothing to reformat, and you always see exactly what changed.</p>
           </article>
-          <article class="of-surface rounded-2xl border border-border/70 p-6">
+          <article class:list={['of-surface rounded-2xl border border-border/70 p-6', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-card']}>
             <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Attribution survives</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">Which parts you wrote. Which parts AI proposed.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Who approved each change, recorded with the document. When someone opens the file and asks, you have the answer.</p>
           </article>
-          <article class="of-surface rounded-2xl border border-border/70 p-6">
+          <article class:list={['of-surface rounded-2xl border border-border/70 p-6', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-card']}>
             <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">A file, not a session</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">Chat workspaces expire. Files are forever.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Your work is plain Markdown on your own disk, readable by every other tool you own. No export step, no lock-in.</p>
@@ -493,38 +527,50 @@ const capabilityRows = [
     )}
 
     <!-- ================= CAPABILITY BANDS ================= -->
-    {capabilityRows.map((row) => (
-      <section class="border-b border-border/60 px-6 py-16 sm:py-24">
-        <div class:list={['mx-auto max-w-3xl', row.align === 'center' ? 'text-center' : row.align === 'right' ? 'lg:ml-auto lg:mr-0' : '']}>
-          <p class="of-eyebrow" data-animate="rise">{row.kicker}</p>
-          <h2 class="of-display mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">{row.title}</h2>
-          <p class:list={['of-lede mt-5', row.align === 'center' && 'mx-auto text-center']} data-animate="rise">{row.body}</p>
-          <a href={row.href} class="of-text-action mt-7 inline-flex items-center gap-2" data-animate="rise">
-            See it in the tour <span aria-hidden="true">→</span>
-          </a>
-        </div>
-        <div
-          class:list={['of-stage mt-12', row.stage.startsWith('t') ? 'of-stage--pad-top' : 'of-stage--pad-bottom']}
-          data-animate="plate"
-        >
-          <FlowShot src={row.shot} alt={row.alt} crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
-          <FlowDetail
-            class={`of-stage__detail of-stage__detail--${row.stage}`}
-            src={row.detail}
-            alt={row.detailAlt}
-            caption={row.detailCaption}
-            sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 4rem)"
-            animate
-          />
-        </div>
-      </section>
-    ))}
+    {ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? (
+      capabilityActs.map((act) => (
+        <HomeRaceCapabilityAct
+          number={act.number}
+          label={act.label}
+          title={act.title}
+          body={act.body}
+          rows={act.rows}
+        />
+      ))
+    ) : (
+      capabilityRows.map((row) => (
+        <section class="border-b border-border/60 px-6 py-16 sm:py-24">
+          <div class:list={['mx-auto max-w-3xl', row.align === 'center' ? 'text-center' : row.align === 'right' ? 'lg:ml-auto lg:mr-0' : '']}>
+            <p class="of-eyebrow" data-animate="rise">{row.kicker}</p>
+            <h2 class="of-display mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">{row.title}</h2>
+            <p class:list={['of-lede mt-5', row.align === 'center' && 'mx-auto text-center']} data-animate="rise">{row.body}</p>
+            <a href={row.href} class="of-text-action mt-7 inline-flex items-center gap-2" data-animate="rise">
+              See it in the tour <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div
+            class:list={['of-stage mt-12', row.stage.startsWith('t') ? 'of-stage--pad-top' : 'of-stage--pad-bottom']}
+            data-animate="plate"
+          >
+            <FlowShot src={row.shot} alt={row.alt} crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+            <FlowDetail
+              class={`of-stage__detail of-stage__detail--${row.stage}`}
+              src={row.detail}
+              alt={row.detailAlt}
+              caption={row.detailCaption}
+              sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 4rem)"
+              animate
+            />
+          </div>
+        </section>
+      ))
+    )}
 
     <!-- ================= ENTERPRISE TEASER ================= -->
-    <section class="bg-surface-raised/40 px-6 py-16 sm:py-24">
+    <section class:list={['bg-surface-raised/40 px-6 py-16 sm:py-24', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-control']}>
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="of-eyebrow" data-animate="rise">For enterprise AI owners</p>
+          <p class="of-eyebrow" data-animate="rise">{ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? 'Race control · For enterprise AI owners' : 'For enterprise AI owners'}</p>
           <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Governance at the source of knowledge work.</h2>
           <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
             The hard part of enterprise AI is not reaching 70 percent accuracy. It is knowing which
@@ -533,7 +579,7 @@ const capabilityRows = [
         </div>
         <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger="slow">
           {FLOW_ENTERPRISE_TEASER.map((card) => (
-            <article class="of-surface rounded-2xl border border-border/70 p-6" data-animate="rise">
+            <article class:list={['of-surface rounded-2xl border border-border/70 p-6', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-card']} data-animate="rise">
               <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.k}</p>
               <h3 class="mt-3 text-lg font-bold leading-snug">{card.q}</h3>
               <p class="mt-3 text-sm leading-relaxed text-text-muted">{card.a}</p>
@@ -547,7 +593,7 @@ const capabilityRows = [
     </section>
 
     <!-- ================= THE ORIGIN STORY ================= -->
-    <section class="origin-story border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="origin-heading">
+    <section class:list={['origin-story border-t border-border/70 px-6 py-16 sm:py-24', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-origin']} aria-labelledby="origin-heading">
       <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <a
           href="/story/limitless-without-the-pill/"
@@ -569,7 +615,7 @@ const capabilityRows = [
           </span>
         </a>
         <div>
-          <p class="home-kicker">The origin story</p>
+          <p class="home-kicker">{ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? 'Final lap · The origin story' : 'The origin story'}</p>
           <h2 id="origin-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Limitless, without the pill.</h2>
           <p class="mt-5 leading-relaxed text-text-muted">
             The movie sold a fantasy: one pill, and every dormant capability wakes up.
@@ -592,7 +638,7 @@ const capabilityRows = [
       </div>
     </section>
 
-    <div id="waitlist" class="scroll-mt-24">
+    <div id="waitlist" class:list={['scroll-mt-24', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-waitlist']}>
       <FlowWaitlist placement="home" />
     </div>
   </main>
@@ -705,5 +751,45 @@ const capabilityRows = [
     .origin-story__plane { transform: rotateX(14deg) rotateZ(-3deg) scale(0.96); }
     .origin-story__card:hover .origin-story__plane { transform: rotateX(4deg) rotateZ(-1deg) scale(1); }
   }
+
+  /* Launch skin. The racing world owns atmosphere and editorial structure;
+     every claim and every real product capture above stays unchanged. */
+  .home-race-problem,
+  .home-race-control,
+  .home-race-origin {
+    border-color: rgba(131, 236, 229, 0.14);
+    color: #f2fbfa;
+    background: #071417;
+  }
+  .home-race-problem :is(h2, h3),
+  .home-race-control :is(h2, h3),
+  .home-race-origin :is(h2, h3) { color: #f3fbfb; }
+  .home-race-problem :is(.of-lede, article p),
+  .home-race-control :is(.of-lede, article p),
+  .home-race-origin > div > div > p { color: rgba(226, 243, 242, 0.66); }
+  .home-race-card {
+    border-color: rgba(151, 239, 233, 0.18);
+    color: #f3fbfb;
+    background: rgba(8, 29, 33, 0.94);
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.2);
+  }
+  .home-race-card > p:first-child { color: #75eee7; }
+  .home-race-problem :global(.flow-shot),
+  .home-race-origin .origin-story__plane { border-color: rgba(151, 239, 233, 0.22); }
+  .home-race-origin .home-kicker { color: #75eee7; }
+  .home-race-origin .origin-story__plane { background: rgba(8, 29, 33, 0.94); }
+  .home-race-waitlist :global(.flow-waitlist--home) {
+    border-color: rgba(131, 236, 229, 0.14);
+    color: #f2fbfa;
+    background: #071417;
+  }
+  .home-race-waitlist :global(.flow-waitlist__panel) {
+    border-color: rgba(151, 239, 233, 0.2);
+    color: #f3fbfb;
+    background: #0a1d21;
+    box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.32);
+  }
+  .home-race-waitlist :global(.flow-waitlist__panel h2) { color: #f3fbfb; }
+  .home-race-waitlist :global(.flow-waitlist__panel p) { color: rgba(226, 243, 242, 0.66); }
   @media (prefers-reduced-motion: reduce) { .origin-story__plane { transition: none; } }
 </style>

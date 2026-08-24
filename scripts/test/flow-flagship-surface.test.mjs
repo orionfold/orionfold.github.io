@@ -581,7 +581,7 @@ for (const retired of ['RelayBand', 'FieldEditionBand', 'CatalogShelf', 'Capabil
 const homeOrder = [
   'class="home-hero',
   'Chat is where work evaporates.',
-  '{capabilityRows.map(',
+  '<!-- ================= CAPABILITY BANDS ================= -->',
   'For enterprise AI owners',
   'The origin story',
   '<FlowWaitlist placement="home" />',

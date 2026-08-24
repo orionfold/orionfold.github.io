@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "campaign": "orionfold-flow-ideas-racing",
+  "source": {
+    "provider": "Google Gemini",
+    "assetName": "gemini-motion-latest-2.mp4",
+    "sha256": "359d2f11c327a5d0187e3f1d1f0e98502c9d44da88caf8f0623fe43ce2a64496",
+    "durationSeconds": 8,
+    "video": {
+      "width": 720,
+      "height": 1280,
+      "framesPerSecond": 24
+    }
+  },
+  "cuts": [
+    {
+      "id": "pit-tune",
+      "asset": "/video/flow/flow-ideas-pit-stop-tune.mp4",
+      "sha256": "8cd04ef2b8fdd41dd592635da3c0bc31b8b8b5f4fd44a077a7077f5be9736e42",
+      "sourceIntervalSeconds": {
+        "start": 0,
+        "end": 5.625
+      },
+      "durationSeconds": 5.625,
+      "edit": "Trimmed from the source interval, transcoded to H.264, and stripped of audio. The complete 9:16 frame is preserved."
+    },
+    {
+      "id": "release",
+      "asset": "/video/flow/flow-ideas-release-exit.mp4",
+      "sha256": "b3e08de0ecc6c9026ac9a749efe720f73317c52b18329d5ac9085b9b6c25456c",
+      "sourceIntervalSeconds": {
+        "start": 6.5,
+        "end": 8
+      },
+      "durationSeconds": 1.5,
+      "edit": "Trimmed from the source interval, transcoded to H.264, and stripped of audio. The complete 9:16 frame is preserved."
+    }
+  ],
+  "omittedSourceIntervalsSeconds": [
+    {
+      "start": 5.625,
+      "end": 6.5,
+      "reason": "Transition omitted between the pit and release beats."
+    }
+  ]
+}
