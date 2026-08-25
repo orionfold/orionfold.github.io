@@ -57,6 +57,7 @@ assert.match(footer, /Site source: Apache 2\.0/);
 // ── /flow/: the flagship atlas ─────────────────────────────────────────────
 const flow = read('src/pages/flow.astro');
 const flowMeasurements = read('src/data/flow-measurements.ts');
+const sharedHero = read('src/components/flow/FlowLaunchHomeHero.astro');
 // 2026-08-20 split: the twelve tour chapters live in components rendered by
 // the four /flow/<category>/ pages; /flow/ is the overview. Content contracts
 // run over the whole surface (`tour`); layout contracts name their file.
@@ -72,19 +73,15 @@ const categories = read('src/data/flow-categories.ts');
 const CATEGORY_SLUGS = ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files'];
 const categoryPages = Object.fromEntries(CATEGORY_SLUGS.map((slug) => [slug, read(`src/pages/flow/${slug}.astro`)]));
 const tour = `${flow}\n${chapters}\n${categoryShell}`;
-// 2026-08-21 (operator direction, second pass): the HOMEPAGE owns the tagline;
-// this page must not repeat it, or a reader arriving from / reads the same
-// sentence twice and learns nothing. /flow/ leads instead with what the file
-// itself can hold, which is the tour's actual subject and what the hero
-// picture shows. The title tag and OG card track this H1, not the tagline.
-// Two halves, each in its own <span> so the title reads as two lines on a
-// large screen (operator ask, 2026-08-20 23:50); asserted half by half.
-assert.match(flow, /flow-hero__title[\s\S]*?<span>Charts and images\.<\/span>[\s\S]*?<span>Flow organizes\. AI refines\.<\/span>[\s\S]*?<span>Human approves\.<\/span>/, 'the /flow/ H1 names the artifact then the three-party division of labour, one line each');
-// The two front doors must never run the same headline.
-assert.doesNotMatch(flow, /Conduct beautiful documents\. Choose where AI operates/, '/flow/ does not repeat the homepage headline');
-// No founder quote on this page (operator, 2026-08-21): it is the homepage's
-// one-of-one device, and repeating it spends the same credibility twice.
-assert.doesNotMatch(flow, /I do not write every note anymore/, '/flow/ carries no founder quote');
+// 2026-08-25 (operator direction): /flow/ mounts the same hero shell as the
+// homepage so layout, type, product sizing and ticker cannot drift, while the
+// racing key art remains exclusive to the homepage and /flow/ restores its
+// original blueprint-grid background.
+assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?titleLead="Conduct useful work\."[\s\S]*?titleEmphasis="Flow refines\. You approve\."/, 'the /flow/ H1 carries the approved conducting promise');
+assert.doesNotMatch(flow, /founderQuote=|founderIntro=/, 'the /flow/ hero inherits the shared founder quote and byline');
+assert.match(flow, /heroBackground="blueprint"/, 'the /flow/ hero restores the prior blueprint-grid background');
+assert.match(sharedHero, /heroBackground = 'racing'/, 'the reusable shell keeps racing artwork on by default for Home');
+assert.match(sharedHero, /flow-launch-hero__blueprint-grid[\s\S]*<FlowCapabilityTicker\s*\/>/, 'the reusable shell offers the Flow blueprint grid and always keeps the capability ticker');
 // The offline claim is the one a rival cannot copy without rebuilding, so it
 // must survive every copy pass. The two front doors now state it differently:
 // / says the AI comes to the document ("works with the wifi off"); /flow/ says
@@ -99,12 +96,12 @@ assert.match(flow, /offline/i, '/flow/ hero keeps the offline claim');
 assert.match(flow, /diff you approve/i, '/flow/ still states the approval promise somewhere on the page');
 // The founder line is one-of-one evidence and quotes a real published
 // sentence; it must keep its source link rather than becoming loose copy.
-assert.match(read('src/styles/flow.css'), /\.flow-hero__title span \{ display: block; text-wrap: nowrap; \}/, 'the two-line rule lives in flow.css');
+assert.match(sharedHero, /\.flow-launch-hero h1\s*\{[\s\S]*font:\s*850 clamp\(3\.15rem, 7\.5vw, 7rem\)/, 'the /flow/ title inherits the homepage hero scale');
 assert.match(flow, /const FLOW_TITLE = 'Orionfold Flow · Charts and diagrams from plain text, offline on your Mac'/, 'the title tag carries the same promise');
 assert.match(flow, /title=\{FLOW_TITLE\}/);
 assert.match(flow, /\{SITE\.tagline\}/, 'the locked tagline stays in the press kit');
-assert.match(flow, /For creators, builders, and authors\.[\s\S]{0,400}?Anyone whose name is on the document\./, 'the ICP line sits in the first screen, audience then widening');
-assert.match(flow, /Patent pending/);
+assert.match(sharedHero, /For creators, builders, and authors\.[\s\S]{0,400}?Anyone whose name is on the document\./, 'the shared first screen carries the ICP line');
+assert.match(sharedHero, /Patent pending/);
 // 2026-08-22 (operator direction): the standing pre-launch disclosure line is
 // REMOVED from every Flow surface. It read "Pre-launch · Freemium subscription
 // planned · Every screen is the real build, running" and rode the /flow/ hero,
@@ -132,14 +129,15 @@ for (const surface of [
 // First-paint capture (operator decision 2026-08-20): the hero leads with the
 // email field and no join-versus-tour fork; the in-development framing rides
 // the hero product-shot caption instead of a line above it.
-assert.match(flow, /source="flow-hero-waitlist"/, 'the hero carries its own attributable waitlist capture');
+assert.match(flow, /waitlistSource="flow-hero-waitlist"/, 'the hero carries its own attributable waitlist capture');
 // The framing rode the hero shot's caption bar until 2026-08-21, when the
 // operator removed the caption so the picture reads as an artifact rather than
 // a labelled exhibit; it then sat under the hero's waitlist ask until
 // 2026-08-22, when the operator removed it entirely (see above). The hero shot
 // itself must still carry no caption.
 assert.doesNotMatch(readCopy('src/pages/flow.astro'), /Pre-launch · Freemium subscription planned · Every screen is the real build, running/, 'the pre-launch line no longer sits with the hero ask');
-assert.doesNotMatch(flow, /src=\{shotGuideCharts\}[\s\S]{0,400}?caption=/, 'the hero shot carries no caption bar');
+assert.match(flow, /shot=\{shotGuideCharts\}/, 'the /flow/ hero keeps its Flow Guide capture');
+assert.doesNotMatch(sharedHero, /caption=/, 'the shared hero shot carries no caption bar');
 assert.doesNotMatch(flow, /of-secondary-action">See the product tour/, 'no join-versus-tour fork on first paint');
 // ── Flow pricing: Base vs Pro truth boundaries ─────────────────────────────
 // Base = Flow unlicensed, free forever; Pro = Base + the AI features. The split
@@ -271,13 +269,13 @@ assert.match(consentModule, /export const FLOW_CONSENT_TEXT =\s*\n?\s*'By joinin
 // FlowProofNuggets is unmounted as of 2026-08-21 but still carries a form, so
 // it stays in this list: if anyone remounts it, the shared consent sentence is
 // already enforced.
-for (const [name, path] of [['flow.astro', 'src/pages/flow.astro'], ['FlowLaunchHomeHero', 'src/components/flow/FlowLaunchHomeHero.astro'], ['FlowWaitlist', 'src/components/sections/FlowWaitlist.astro'], ['FlowProofNuggets', 'src/components/flow/FlowProofNuggets.astro']]) {
+for (const [name, path] of [['FlowLaunchHomeHero', 'src/components/flow/FlowLaunchHomeHero.astro'], ['FlowWaitlist', 'src/components/sections/FlowWaitlist.astro'], ['FlowProofNuggets', 'src/components/flow/FlowProofNuggets.astro']]) {
   assert.match(read(path), /import \{ FLOW_CONSENT_TEXT \} from '[./]+data\/flow-consent(?:\.ts)?'/, `${name} must import the shared consent sentence`);
   assert.doesNotMatch(read(path), /consentText\s*=\s*'By joining/, `${name} must not carry its own copy of the consent sentence`);
 }
 // Every Flow capture form carries ONE caption line (operator decision
 // 2026-08-20): the long consent sentence is recorded on submit, never shown.
-for (const [name, src] of [['flow', flow], ['FlowWaitlist', read('src/components/sections/FlowWaitlist.astro')], ['FlowProofNuggets', read('src/components/flow/FlowProofNuggets.astro')]]) {
+for (const [name, src] of [['FlowLaunchHomeHero', sharedHero], ['FlowWaitlist', read('src/components/sections/FlowWaitlist.astro')], ['FlowProofNuggets', read('src/components/flow/FlowProofNuggets.astro')]]) {
   assert.doesNotMatch(src, /\{(hero)?[pP]rivacyNote\}/, `${name} must not render the long consent note`);
   assert.match(src, /of-waitlist-caption[^>]*>\s*Free to join · Double opt-in · One email a week, no more/, `${name} carries the one-line caption`);
 }
@@ -347,7 +345,7 @@ for (const slug of CATEGORY_SLUGS) {
   assert.match(categories, new RegExp(`slug: '${slug}'`), `${slug} must be registered in flow-categories.ts`);
 }
 // Real capture rail: every tour shot comes from the dev-build capture set.
-assert.match(flow, /import FlowShot from '\.\.\/components\/flow\/FlowShot\.astro'/);
+assert.match(flow, /import FlowLaunchHomeHero from '\.\.\/components\/flow\/FlowLaunchHomeHero\.astro'/);
 // The requirement is provenance, not a headcount: every picture on the page has
 // to come from the real development-build capture set (or a purpose-cut crop of
 // one) rather than a stock or mocked image. Asserting an exact number made an
@@ -492,26 +490,20 @@ for (const id of ["'home-flow-waitlist'", "'flow-mid-waitlist'", "'flow-page-wai
 
 // ── Homepage: the demand-generation front door ─────────────────────────────
 const home = read('src/pages/index.astro');
-const homeHero = read('src/components/flow/FlowLaunchHomeHero.astro');
+const homeHero = sharedHero;
 const homeRaceAct = read('src/components/flow/HomeRaceCapabilityAct.astro');
 // The 2026-08-24 racing composition keeps the compact hero structure while
 // changing the approved headline and founder quote. /flow/ still carries the
 // longer offline/control argument asserted above.
 assert.doesNotMatch(home, /Every other AI tool sends your document to a cloud/, 'the homepage hero drops the lede paragraph; the headline carries the wedge');
 assert.match(homeHero, /You drive the work\.[\s\S]*?Flow tunes AI to your needs\./, 'the homepage H1 carries the approved racing promise');
-// The approval promise is DEMOTED off the H1, never deleted: it is now the
-// first capability band, keeping the contrast headline it always had.
-assert.match(home, /Most AI tools rewrite your document\. Flow asks first\./, 'the approval claim survives as the homepage lead band');
-assert.match(homeHero, /I stay in the driver&rsquo;s seat\.[\s\S]*?runs it where I choose,[\s\S]*?changes nothing until I approve\./, 'the homepage carries the approved founder line');
-assert.match(home, /const HOME_TITLE = 'Orionfold Flow · Conduct beautiful documents, offline on your Mac'/, 'the title tag carries the hero promise');
+assert.match(home, /Nothing changes until you say so\./, 'the approval promise survives as the homepage lead act');
+assert.match(homeHero, /I stay in the driver’s seat\. Flow tunes AI to the work in front of me[\s\S]*?Manav Sehgal, built Flow after nine years at Amazon\./, 'the shared hero carries the approved founder line and byline');
+assert.match(home, /const HOME_TITLE = 'Orionfold Flow for Mac · You drive the work\. Flow tunes AI to your needs\.'/);
+assert.match(home, /const HOME_DESCRIPTION = 'Orionfold Flow brings the right AI to documents you own, proposes exact changes, and waits for your approval\. Every run leaves an inspectable receipt\.'/);
 assert.match(home, /title=\{HOME_TITLE\}/);
-assert.match(home, /description=\{SITE\.description\}/);
+assert.match(home, /description=\{HOME_DESCRIPTION\}/);
 assert.match(home, /jsonLd=\{\[flowSchema\]\}/, 'the homepage carries the Flow SoftwareApplication entity');
-// Hero copy, 2026-08-20 content-masterclass rewrite: the common belief, then
-// the flip, written against the review-surface picture whose Approve and Save
-// button is DISABLED until the box is ticked. Headline, lede, and picture carry
-// one claim, and the reader knows who the page is for before the claim.
-assert.match(home, /Most AI tools rewrite your document\. Flow asks first\./);
 assert.match(homeHero, /For creators, builders, and authors\.[\s\S]{0,400}?Anyone whose name is on the document\./, 'the ICP line sits in the first screen, audience then widening');
 assert.match(homeHero, /Patent pending/);
 // The homepage hero lede was REMOVED on 2026-08-21 (operator): the headline
@@ -520,89 +512,50 @@ assert.match(homeHero, /Patent pending/);
 // above is what keeps the paragraph from creeping back. The same lede still
 // runs on /flow/ and is asserted in that block.
 assert.match(home, /Nothing is saved until you approve it/, 'the approval gate is stated beside its crop');
-assert.match(home, /You draft in a chat window, paste into your document/, 'the copy-paste argument stays on the page, in the problem band');
-assert.match(home, /Chat is where work evaporates\./, 'the buyer-language problem band leads the argument');
+assert.match(home, /Chat makes work disposable\. Flow keeps it in the document\./, 'the problem band makes one direct contrast');
 assert.doesNotMatch(readCopy('src/pages/index.astro'), /—/, 'homepage copy must not use em dashes');
 // Hero waitlist capture with its own attribution source and the canonical consent.
-assert.match(homeHero, /id="home-hero-waitlist"/);
-assert.match(homeHero, /source="home-hero-waitlist"/);
+assert.match(homeHero, /waitlistId = 'home-hero-waitlist'/);
+assert.match(homeHero, /waitlistSource = 'home-hero-waitlist'/);
 assert.match(homeHero, /offer="flow-waitlist"/);
 const flowWaitlistComponent = read('src/components/sections/FlowWaitlist.astro');
 assert.match(homeHero, /consentText=\{FLOW_CONSENT_TEXT\}/, 'the hero form records the shared consent sentence');
 // Real capture hero + capability rows into the tour.
 assert.match(homeHero, /src=\{pitStopDaylightWide\}[\s\S]*?loading="eager"[\s\S]*?fetchpriority="high"/, 'the landscape campaign art stays the eager LCP image');
-// The homepage pairs each window with a legible crop of the control its
-// headline names (2026-08-16 imagery pass), same rationale as /flow/ above.
-assert.match(home, /import FlowDetail from '\.\.\/components\/flow\/FlowDetail\.astro'/);
-// The requirement is that the DIFF stays proven with a picture — not that the
-// hero is where that happens. On 2026-08-16 the resource popover took the hero
-// slot and the approval story moved into the leading capability band; on
-// 2026-08-21 the hero became a Flow Guide document and approval became the
-// FIRST band, which is where the crop lives now. Bands feed FlowDetail from
-// the capabilityRows data, so this asserts the binding in the row rather than
-// a literal element. The hero deliberately carries NO crop: its capture is a
-// finished document, legible whole, and an overlay would put chrome back on
-// the one shot that finally has none.
 assert.match(home, /detail: detailDiff,/, 'the diff crop proves the approval claim');
 assert.match(homeRaceAct, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'the bands render their detail crop');
 // The hero is a Flow Guide document shot, eager, and carries no overlay. Guard
 // the SHOT rather than a corner: with no detail there is no corner to place.
-assert.match(homeHero, /<FlowShot[\s\S]*?src=\{shotExpandHoverPanel\}/, 'the homepage hero includes the selected Flow document and receipt capture');
+assert.match(homeHero, /shot = shotExpandHoverPanel[\s\S]*?<FlowShot[\s\S]*?src=\{shot\}/, 'the homepage hero defaults to the selected Flow document and receipt capture');
 assert.doesNotMatch(homeHero, /<FlowDetail/, 'the hero product proof carries no overlay crop');
 // Flow is ~90% rendered document and ~10% chrome (operator, 2026-08-21). Both
 // front-door heroes must show the ARTIFACT; every hero shot before this date
 // showed a panel, a rail or a settings pane instead.
-assert.match(flow, /<FlowShot[\s\S]*?src=\{shotGuideCharts\}[\s\S]*?priority/, 'the /flow/ hero is the Flow Guide chart capture, eager');
-assert.match(homeRaceAct, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'the capability bands render their crops');
-assert.match(homeRaceAct, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'every capability band carries its own legible crop');
-for (const detailImport of ['detailDiff', 'detailDomains', 'detailParts', 'detailRunChecks']) {
+assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?shot=\{shotGuideCharts\}/, 'the /flow/ hero uses the Flow Guide chart capture in the shared product frame');
+assert.match(sharedHero, /<FlowShot[\s\S]*?src=\{shot\}[\s\S]*?natural/, 'both front doors use the shared full-fit product treatment');
+for (const detailImport of ['detailDiff', 'detailChartLine', 'detailDomains', 'detailRunChecks']) {
   assert.match(home, new RegExp(`import ${detailImport} from '\\.\\./assets/flow/details/`), `${detailImport} must come from the generated crop set`);
 }
-for (const href of ['/flow/writing-with-ai/#tour-toolbar', '/flow/writing-with-ai/#tour-longdocs', '/flow/models-and-runtime/#tour-domains', '/flow/receipts/#tour-receipts', '/flow/enterprise/', '/flow/#press']) {
+for (const href of ['/flow/writing-with-ai/#tour-agency', '/flow/documents-and-files/#tour-visualize', '/flow/models-and-runtime/#tour-domains', '/flow/receipts/#tour-receipts']) {
   assert.match(home, new RegExp(esc(href)), `${href} must stay linked from the homepage`);
 }
-// The origin story band replaces the founder section.
-assert.match(home, /The origin story/i);
-assert.match(home, /Limitless, without the pill\./);
-assert.match(home, /assets\/story\/limitless-without-the-pill\/hero\.png/);
-// Two links: the origin card and its text action. The hero founder line
-// carried a third from 2026-08-21 until the operator dropped the attribution
-// the same day -- the quote now stands on the founder's name alone, and the
-// story stays reachable from the origin band lower down the page.
-assert.equal((home.match(/href="\/story\/limitless-without-the-pill\/"/g) ?? []).length, 2, 'the origin card and its text action share the canonical story route');
 // The catalog bands moved to the footer; they must not return to the homepage.
 for (const retired of ['RelayBand', 'FieldEditionBand', 'CatalogShelf', 'CapabilitySystemMap', 'HomeFlowIntro', 'FromTheFounder', 'RelayHostBox', 'Highlights', 'StoriesCarousel']) {
   assert.doesNotMatch(home, new RegExp(`<${retired}`), `${retired} stays off the Flow-first homepage`);
 }
-// Order: hero → problem band → capability bands → enterprise teaser → origin
-// → waitlist. The stack band left for the footer. The "Two things we measured"
-// section was removed from BOTH front doors on 2026-08-21 (operator); its
-// component still exists and keeps its own copy guards below, unmounted.
 const homeOrder = [
   '<FlowLaunchHomeHero',
-  'Chat is where work evaporates.',
-  '<!-- ================= CAPABILITY BANDS ================= -->',
-  'For enterprise AI owners',
-  'The origin story',
+  'Chat makes work disposable.',
+  '<FlowIdeasPitStop',
+  'capabilityActs.map',
   '<FlowWaitlist placement="home" />',
 ].map((marker) => home.indexOf(marker));
 assert.doesNotMatch(home, /One company, one stack/, 'the stack band lives in the footer directory');
-// Six capability bands since 2026-08-21. The 2026-08-20 review cut seven bands
-// to four because the page repeated one claim; the two added back are not
-// repetitions of it. They close the two gaps the VISION audit found: the site
-// showed the app's chrome but never the ARTIFACT it produces ("beautiful" is a
-// commitment in VISION.md, not polish), and it never said the product gets
-// better over time. Both are guarded below by name so a future trim cannot
-// silently drop them and leave only the safety argument.
-assert.equal((home.match(/kicker: '/g) ?? []).length, 7, 'seven capability bands: approval, four safety, one output, one compounding');
-assert.match(home, /Most AI gives you text to reformat\. Flow gives you a document to send\./, 'the output band states the artifact claim');
-assert.match(home, /Most tools age around a model\. Flow gets better as the models do\./, 'the compounding band states the improves-over-time claim');
-// Operator direction 2026-08-21: self-improvement is a JOURNEY and no frontier
-// model has achieved it, so Flow must not imply it has. What Flow honestly
-// claims is that the SYSTEM around the model improves (benchmarks + routing
-// rules + new model capability). The disclaimer is what earns the claim, so it
-// is asserted rather than left to a future editor's judgement.
-assert.match(home, /No AI improves itself yet, and Flow does not claim to\./, 'the compounding band disclaims model self-improvement before claiming system improvement');
+assert.equal((home.match(/kicker: '/g) ?? []).length, 4, 'homepage keeps one proof row per launch act');
+for (const title of ['See exactly what Flow wants to change.', 'Turn plain text into a chart you can hand over.', 'Choose where the work may run.', 'Every run leaves a record.']) {
+  assert.match(home, new RegExp(esc(title)), `${title} remains a homepage proof claim`);
+}
+assert.doesNotMatch(home, /Most (AI )?tools|The origin story|Limitless, without the pill|All nine enterprise patterns|FLOW_ENTERPRISE_TEASER/, 'homepage does not reopen retired arguments');
 // The 2026-08-24 operator-approved racing headline connects user control to
 // Flow's tuning role. Guard both halves so the metaphor cannot lose either the
 // driver's agency or the product's concrete job.
@@ -613,13 +566,6 @@ assert.match(homeHero, /You drive the work\.[\s\S]*Flow tunes AI to your needs\.
 // centred hero would silently undo the operator's layout direction.
 assert.match(homeHero, /grid-template-columns: minmax\(0, 0\.92fr\) minmax\(30rem, 1\.08fr\)/, 'the hero is a picture-weighted two-column grid from desktop up');
 assert.match(homeHero, /<aside class="[^"]*home-hero__shot/, 'the hero shot sits in its own column');
-// The broken-loop section argues the work belongs IN THE FILE, so its picture
-// must show a change being made TO a document: the review surface, with the
-// corrected clause lifted out as a zoom crop (2026-08-21). It must stay LAZY:
-// the hero is the page's single eager image, and a second eager shot would
-// compete for the largest paint.
-assert.match(home, /src=\{shotApprove\}[\s\S]{0,600}?src=\{detailReviewHeader\}/, 'the broken-loop section shows the review surface with its zoom crop');
-assert.doesNotMatch(home, /src=\{shotApprove\}[\s\S]{0,400}?priority/, 'the broken-loop capture is lazy, never a second eager image');
 // MOTION: float + sheen. Both animate transform ONLY (compositor-only, no
 // layout or paint), which is the whole reason they are permitted on the eager
 // LCP image where an opacity-gated reveal would not be. A future edit that
@@ -632,11 +578,11 @@ assert.match(globalCss, /@keyframes home-hero-float \{[^}]*transform: translateY
 assert.match(globalCss, /@keyframes home-hero-sheen \{[^}]*transform: translateX/, 'the hero sheen animates transform only');
 assert.match(globalCss, /prefers-reduced-motion: reduce\)[\s\S]*?\.home-hero__sheen \{ display: none/, 'the sheen is disabled under reduced motion');
 // Both front doors run the same hero shell.
-assert.match(flow, /<div class="home-hero__shot">/, '/flow/ uses the shared hero shot shell');
-assert.match(flow, /lg:grid-cols-\[0\.8fr_1\.3fr\]/, '/flow/ hero is the same two-column grid');
-// The founder quote gained its second sentence on 2026-08-21 (operator): the
-// quote now carries the hardware choice the headline promises.
-assert.match(homeHero, /runs it where I choose,[\s\S]*changes nothing until I approve\./, 'the founder quote carries runtime choice and approval');
+assert.match(sharedHero, /class="flow-launch-hero__product home-hero__shot"/, '/flow/ uses the shared hero shot shell');
+assert.match(sharedHero, /grid-template-columns: minmax\(0, 0\.92fr\) minmax\(30rem, 1\.08fr\)/, '/flow/ inherits the homepage two-column grid');
+// The shared founder line now keeps the driver metaphor tied directly to the
+// work in front of the reader and uses one compact byline on both front doors.
+assert.match(homeHero, /I stay in the driver’s seat\. Flow tunes AI to the work in front of me[\s\S]*Manav Sehgal, built Flow after nine years at Amazon\./, 'the founder quote and byline stay shared across both front doors');
 // TRUTH RAILS for the two new bands, from the Flow capability briefs. Each of
 // these is a sentence someone will want to "tighten" into a bigger claim.
 const homeCopy = readCopy('src/pages/index.astro');

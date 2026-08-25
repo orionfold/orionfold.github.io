@@ -1,5 +1,6 @@
 ---
 import { getImage, Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import pitStopDaylightWide from '../../assets/flow/launch/flow-ideas-pit-stop-daylight-wide.webp';
 import pitStopDaylightPortrait from '../../assets/flow/launch/flow-ideas-pit-stop-daylight-portrait.webp';
 import shotExpandHoverPanel from '../../assets/flow/shots/flow-expand-hover-panel-shot.webp';
@@ -18,25 +19,65 @@ const portraitSrcset = portraitImages
   .map((image, index) => `${image.src} ${portraitWidths[index]}w`)
   .join(', ');
 
+interface Props {
+  titleId?: string;
+  titleLead?: string;
+  titleEmphasis?: string;
+  founderQuote?: string;
+  founderIntro?: string;
+  shot?: ImageMetadata;
+  shotAlt?: string;
+  downloadSource?: string;
+  waitlistId?: string;
+  waitlistSource?: string;
+  heroBackground?: 'racing' | 'blueprint';
+}
+
+const {
+  titleId = 'flow-launch-home-title',
+  titleLead = 'You drive the work.',
+  titleEmphasis = 'Flow tunes AI to your needs.',
+  founderQuote = 'I stay in the driver’s seat. Flow tunes AI to the work in front of me',
+  founderIntro = 'Manav Sehgal, built Flow after nine years at Amazon.',
+  shot = shotExpandHoverPanel,
+  shotAlt = 'Orionfold Flow showing a Market Landscape document beside its receipt timeline, with selected text and the Expand with Sources action open in the document toolbar.',
+  downloadSource = 'home-hero',
+  waitlistId = 'home-hero-waitlist',
+  waitlistSource = 'home-hero-waitlist',
+  heroBackground = 'racing',
+} = Astro.props;
+
 ---
 
-<section class="flow-launch-hero flow-launch-hero--light" aria-labelledby="flow-launch-home-title">
-  <div class="flow-launch-hero__key-art" aria-hidden="true">
-    <picture>
-      <source media="(max-width: 919px)" srcset={portraitSrcset} sizes="100vw" />
-      <Image
-        src={pitStopDaylightWide}
-        alt=""
-        widths={[768, 1152, 1600, 2048]}
-        sizes="100vw"
-        loading="eager"
-        fetchpriority="high"
-        decoding="sync"
-        class="flow-launch-hero__key-image"
-      />
-    </picture>
-  </div>
-  <div class="flow-launch-hero__veil" aria-hidden="true"></div>
+<section
+  class:list={['flow-launch-hero', 'flow-launch-hero--light', heroBackground === 'blueprint' && 'flow-launch-hero--blueprint']}
+  aria-labelledby={titleId}
+>
+  {heroBackground === 'racing' ? (
+    <>
+      <div class="flow-launch-hero__key-art" aria-hidden="true">
+        <picture>
+          <source media="(max-width: 919px)" srcset={portraitSrcset} sizes="100vw" />
+          <Image
+            src={pitStopDaylightWide}
+            alt=""
+            widths={[768, 1152, 1600, 2048]}
+            sizes="100vw"
+            loading="eager"
+            fetchpriority="high"
+            decoding="sync"
+            class="flow-launch-hero__key-image"
+          />
+        </picture>
+      </div>
+      <div class="flow-launch-hero__veil" aria-hidden="true"></div>
+    </>
+  ) : (
+    <>
+      <div class="flow-launch-hero__blueprint-grid" aria-hidden="true"></div>
+      <div class="flow-launch-hero__blueprint-glow" aria-hidden="true"></div>
+    </>
+  )}
 
   <div class="flow-launch-hero__shell">
     <div class="flow-launch-hero__meta-row">
@@ -55,28 +96,28 @@ const portraitSrcset = portraitImages
 
     <div class="flow-launch-hero__poster-grid">
       <div class="flow-launch-hero__copy">
-        <h1 id="flow-launch-home-title">
-          You drive the work. <em>Flow tunes AI to your needs.</em>
+        <h1 id={titleId}>
+          {titleLead} <em>{titleEmphasis}</em>
         </h1>
         <p class="flow-launch-hero__founder">
-          <span>&ldquo;I stay in the driver&rsquo;s seat. Flow tunes AI to the work in front of me, runs it where I choose, and changes nothing until I approve.&rdquo;</span>
-          Manav Sehgal, who is building Flow after nine years at Amazon.
+          <span>&ldquo;{founderQuote}&rdquo;,</span>
+          {founderIntro}
         </p>
 
         <div class="flow-launch-hero__actions">
           {ORIONFOLD_FLOW_LIVE ? (
-            <FlowDownloadCta source="home-hero" size="large" />
+            <FlowDownloadCta source={downloadSource} size="large" />
           ) : (
             <>
               <WaitlistForm
-                id="home-hero-waitlist"
-                source="home-hero-waitlist"
+                id={waitlistId}
+                source={waitlistSource}
                 offer="flow-waitlist"
                 buttonText="Join the waitlist"
                 successMessage="Check your inbox to confirm."
                 consentText={FLOW_CONSENT_TEXT}
               />
-              <p class="flow-launch-hero__caption">
+              <p class="flow-launch-hero__caption of-waitlist-caption">
                 Free to join · Double opt-in · One email a week, no more
               </p>
             </>
@@ -88,8 +129,8 @@ const portraitSrcset = portraitImages
         <div class="flow-launch-hero__product-window">
           <div class="home-hero__shot-frame">
             <FlowShot
-              src={shotExpandHoverPanel}
-              alt="Orionfold Flow showing a Market Landscape document beside its receipt timeline, with selected text and the Expand with Sources action open in the document toolbar."
+              src={shot}
+              alt={shotAlt}
               natural
               sizes="(min-width: 1280px) 54rem, (min-width: 920px) 48rem, calc(100vw - 2rem)"
             />
@@ -119,6 +160,28 @@ const portraitSrcset = portraitImages
   .flow-launch-hero__veil {
     position: absolute;
     inset: 0;
+  }
+  .flow-launch-hero__blueprint-grid,
+  .flow-launch-hero__blueprint-glow {
+    position: absolute;
+    z-index: -2;
+    pointer-events: none;
+  }
+  .flow-launch-hero__blueprint-grid {
+    inset: 0;
+    background-image:
+      linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 100%);
+  }
+  .flow-launch-hero__blueprint-glow {
+    top: -10rem;
+    left: 50%;
+    width: 60rem;
+    height: 40rem;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, color-mix(in oklch, var(--color-primary) 13%, transparent), transparent 72%);
   }
   .flow-launch-hero__key-art { z-index: -3; }
   .flow-launch-hero__key-art picture { display: block; }
@@ -229,7 +292,6 @@ const portraitSrcset = portraitImages
     align-self: center;
   }
   .flow-launch-hero__product-window { position: relative; }
-  .flow-launch-hero__product-window :global(.flow-shot) { opacity: 0.9; }
 
   .flow-launch-hero__ticker { margin: clamp(1.5rem, 2.8vw, 2.5rem) -1rem 0; }
 
@@ -270,6 +332,14 @@ const portraitSrcset = portraitImages
     color: #112a31;
     background: #eef4f1;
   }
+  .flow-launch-hero--blueprint {
+    background: linear-gradient(
+      155deg,
+      color-mix(in oklch, var(--color-primary) 6%, var(--color-surface)) 0%,
+      var(--color-surface) 55%,
+      color-mix(in oklch, var(--color-primary) 3%, var(--color-surface)) 100%
+    );
+  }
   .flow-launch-hero--light .flow-launch-hero__key-art {
     inset: 0 0 auto;
     height: clamp(58rem, 118vh, 72rem);
@@ -305,7 +375,13 @@ const portraitSrcset = portraitImages
   .flow-launch-hero--light .flow-launch-hero__founder span { color: #16343b; }
   .flow-launch-hero--light .flow-launch-hero__caption { color: rgba(25, 57, 63, 0.52); }
   @media (min-width: 920px) {
-    .flow-launch-hero--light { padding-top: clamp(5rem, 6.5vw, 6rem); }
+    .flow-launch-hero--light { padding-top: clamp(6.25rem, calc(6.5vw + 1.25rem), 7.25rem); }
+    .flow-launch-hero--light .flow-launch-hero__meta-row {
+      margin-bottom: clamp(0.75rem, 1.05vw, 1rem);
+    }
+    .flow-launch-hero--light .flow-launch-hero__ticker {
+      margin-top: clamp(0.75rem, 1.4vw, 1.25rem);
+    }
     .flow-launch-hero--light h1 { font-size: clamp(3.15rem, 6.5vw, 5.8rem); }
     .flow-launch-hero--light .flow-launch-hero__founder { margin-top: 1.35rem; }
     .flow-launch-hero--light .flow-launch-hero__actions { margin-top: 1.5rem; }

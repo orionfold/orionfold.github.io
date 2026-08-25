@@ -33,28 +33,24 @@
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import FlowShot from '../components/flow/FlowShot.astro';
 import FlowIdeasPitStop from '../components/flow/FlowIdeasPitStop.astro';
+import FlowLaunchHomeHero from '../components/flow/FlowLaunchHomeHero.astro';
 import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustration.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import FlowPricing from '../components/flow/FlowPricing.astro';
-import FlowDownloadCta from '../components/flow/FlowDownloadCta.astro';
 import LineIcon from '../components/ui/LineIcon.astro';
-import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import { Image } from 'astro:assets';
 import { SITE, PERSON } from '../data/seo';
 import { ogMeta } from '../data/og';
 import { FLOW_CATEGORIES, flowCategoryHref } from '../data/flow-categories';
 import { FLOW_CATEGORY_SHOTS } from '../data/flow-category-shots';
 import { FLOW_ENTERPRISE_TEASER } from '../data/flow-enterprise';
-import { FLOW_CONSENT_TEXT } from '../data/flow-consent';
 import { FLOW, formatUsd } from '../data/commerce.ts';
 import { FLOW_SYSTEM_REQUIREMENT } from '../data/flow-pricing.ts';
 import { FLOW_MEASUREMENTS } from '../data/flow-measurements.ts';
 import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN, ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import '../styles/flow.css';
 
-import appIcon from '../assets/flow/flow-app-icon-512.png';
 // Flow Guide capture (3840x2100, light only). The hero artifact: the Welcome
 // document renders "Conduct beautiful documents" as its own H1, so the page's
 // headline and the product agree inside one frame.
@@ -287,10 +283,6 @@ const faqSchema = {
   })),
 };
 
-// The hero carries the SAME named offer and consent scope as the FlowWaitlist
-// panels, with its own formId/source so DOM ids stay unique and the placements
-// stay distinguishable in conversion data.
-const heroConsentText = FLOW_CONSENT_TEXT;
 ---
 <Layout
   title={FLOW_TITLE}
@@ -313,104 +305,17 @@ const heroConsentText = FLOW_CONSENT_TEXT;
   <Nav />
   <main class="flow-page overflow-x-clip">
     <!-- ================= HERO ================= -->
-    <section class="flow-hero relative px-6 pb-16 pt-32 sm:pt-40">
-      <div class="flow-hero__grid" aria-hidden="true"></div>
-      <div class="flow-hero__glow" aria-hidden="true"></div>
-      {/* TWO-COLUMN HERO (2026-08-21, operator direction). Same layout as the
-          homepage: copy left, artifact right, so the picture sits BESIDE the
-          claim rather than a scroll below it. Collapses to one centred column
-          below lg. */}
-      <div class="relative mx-auto grid w-full max-w-[88rem] items-center gap-10 lg:grid-cols-[0.8fr_1.3fr] lg:gap-12">
-        <!-- Left column: who it is for, the claim, the ask -->
-        <div class="flow-hero__copy min-w-0 text-center lg:text-left">
-          <div class="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
-            <span class="flow-eyebrow-chip">
-              <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
-              Orionfold Flow
-            </span>
-            <span class="flow-eyebrow-chip">Native Mac</span>
-            <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Patent pending</span>
-          </div>
-          <!-- Context first: who this is for. Then one claim, stated once, and
-               the picture that proves it. The receipt, the domains, and the diff
-               each get their own chapter on the tour pages. -->
-          <p class="of-eyebrow mt-7">
-            For creators, builders, and authors.
-            {/* Second line, dimmer: the audience is named first, then widened.
-                Splitting it stops the eyebrow wrapping mid-thought at any
-                width, and the tone drop marks it as the aside it is. */}
-            <span class="hero-icp__wide">Anyone whose name is on the document.</span>
-          </p>
-          {/* Two lines on a large screen, one sentence each: the spans go
-              display:block + nowrap from lg up (flow.css .flow-hero__title).
-              2026-08-21: the homepage owns the tagline ("Conduct beautiful
-              documents. Choose where AI operates."), so this page must NOT
-              repeat it -- a reader arriving from / would see the same sentence
-              twice and learn nothing. The homepage sells the promise; this page
-              sells what the file itself can hold, which is the tour's subject
-              and what the picture beside it shows. */}
-          <h1 class="flow-hero__title hero-gradient-text mt-4 font-display text-[clamp(1.7rem,2.85vw,2.2rem)] font-extrabold leading-[1.1] tracking-[-0.04em]">
-            <span>Charts and images.</span>{' '}
-            <span>Flow organizes. AI refines.</span>{' '}
-            <span>Human approves.</span>
-          </h1>
-          <p class="mt-6 max-w-xl text-balance text-lg leading-[1.5] text-text-muted sm:text-xl">
-            Fifty four kinds of chart and diagram, drawn in place and offline. Flow lays them out, AI proposes the changes, and nothing lands until you approve it.
-          </p>
-          {/* Once Flow ships the hero leads with the app itself, and the
-              download is its ONLY ask: the email capture was moved out of the
-              hero so nothing competes with it above the fold. Pre-launch, the
-              waitlist form leads exactly as before. */}
-          <div class="mt-9 max-w-md lg:mx-0">
-            {ORIONFOLD_FLOW_LIVE ? (
-              /* ONE ASK IN THE HERO (operator 2026-08-22 20:58). Once Flow ships
-                 the download is the only call to action above the fold; the email
-                 capture moved out so the hero does not fork the reader. It still
-                 appears further down the page. */
-              <FlowDownloadCta source="flow-hero" size="large" />
-            ) : (
-              /* Pre-launch there is no download to offer, so the hero keeps the
-                 waitlist rather than standing empty. */
-              <>
-                <WaitlistForm
-                  id="flow-hero-waitlist"
-                  source="flow-hero-waitlist"
-                  offer="flow-waitlist"
-                  buttonText="Join the waitlist"
-                  successMessage="Check your inbox to confirm."
-                  consentText={heroConsentText}
-                />
-                <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
-                  Free to join · Double opt-in · One email a week, no more
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* RIGHT COLUMN: the artifact. Flow is roughly 90% rendered document
-            and 10% chrome, so the hero shows what the file holds: a chart
-            catalogue beside a document carrying a diagram and a photograph --
-            the headline's three nouns, in one frame.
-            MOTION: float + one slow sheen sweep, shared with the homepage. Both
-            animate `transform` only (compositor-only, no layout or paint),
-            which is why they are safe on the eager LCP image where a
-            `data-animate` reveal would NOT be. The caption bar keeps the
-            pre-launch framing, which must stay welded to the shot. */}
-        <div class="home-hero__shot">
-          <div class="home-hero__shot-frame">
-            <FlowShot
-              src={shotGuideCharts}
-              alt="Two documents open side by side in Orionfold Flow: a Visualization Gallery showing a highlighted bar chart and a grouped bar chart with their source notes, beside a market landscape document showing a flow diagram and a photograph of a whiteboard."
-              crop
-              sizes="(min-width: 1536px) 64rem, (min-width: 1280px) 54rem, (min-width: 1024px) 44rem, 100vw"
-              priority
-            />
-            <span class="home-hero__sheen" aria-hidden="true"></span>
-          </div>
-        </div>
-      </div>
-    </section>
+    <FlowLaunchHomeHero
+      titleId="flow-landing-title"
+      titleLead="Conduct useful work."
+      titleEmphasis="Flow refines. You approve."
+      shot={shotGuideCharts}
+      shotAlt="Two documents open side by side in Orionfold Flow: a Visualization Gallery showing a highlighted bar chart and a grouped bar chart with their source notes, beside a market landscape document showing a flow diagram and a photograph of a whiteboard."
+      downloadSource="flow-hero"
+      waitlistId="flow-hero-waitlist"
+      waitlistSource="flow-hero-waitlist"
+      heroBackground="blueprint"
+    />
 
 
     <!-- ================= STAT BAND ================= -->

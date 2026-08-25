@@ -13,21 +13,23 @@ const og = read('src/data/og.ts');
 assert.match(home, /<FlowLaunchHomeHero\s*\/>/, 'homepage mounts one canonical hero');
 assert.match(hero, /You drive the work\.[\s\S]*Flow tunes AI to your needs\./, 'hero keeps the accepted driver and tuning promise');
 assert.match(hero, /\.flow-launch-hero h1\s*\{[\s\S]*?opacity:\s*0\.9;/, 'hero title uses the requested ten-percent transparency');
-assert.match(hero, /I stay in the driver&rsquo;s seat\.[\s\S]*runs it where I choose,[\s\S]*changes nothing until I approve\./, 'founder quote grounds the metaphor in runtime choice and approval');
+assert.match(hero, /I stay in the driver’s seat\. Flow tunes AI to the work in front of me[\s\S]*Manav Sehgal, built Flow after nine years at Amazon\./, 'founder quote grounds the metaphor in the work and the approved founder byline');
+assert.match(hero, /padding-top: clamp\(6\.25rem, calc\(6\.5vw \+ 1\.25rem\), 7\.25rem\)/, 'desktop hero leaves a deliberate gap below the navigation');
+assert.match(hero, /flow-launch-hero__meta-row[\s\S]*margin-bottom: clamp\(0\.75rem, 1\.05vw, 1rem\)[\s\S]*flow-launch-hero__ticker[\s\S]*margin-top: clamp\(0\.75rem, 1\.4vw, 1\.25rem\)/, 'shared hero reclaims lower whitespace without pushing the ticker down');
 assert.match(hero, /flow-launch-hero__chip[^>]*>[\s\S]*?Orionfold Flow\s*<\/span>[\s\S]*flow-launch-hero__chip flow-launch-hero__chip--accent">Native Mac app<\/span>/, 'product labels keep Flow and its native Mac platform in separate pills');
 assert.doesNotMatch(hero, /Flow Ideas launch|Orionfold Flow · Native Mac app/, 'hero omits the launch label and the combined product-platform pill');
 assert.match(hero, /Patent pending/, 'patent-pending status stays above the fold');
-assert.match(hero, /<WaitlistForm[\s\S]*id="home-hero-waitlist"[\s\S]*offer="flow-waitlist"/, 'pre-launch conversion path remains');
+assert.match(hero, /waitlistId = 'home-hero-waitlist'[\s\S]*<WaitlistForm[\s\S]*id=\{waitlistId\}[\s\S]*offer="flow-waitlist"/, 'pre-launch conversion path remains');
 assert.match(hero, /Free to join · Double opt-in · One email a week, no more/, 'waitlist caption remains');
 
 assert.match(hero, /src=\{pitStopDaylightWide\}[\s\S]*loading="eager"[\s\S]*fetchpriority="high"/, 'landscape campaign art is the eager background');
-assert.match(hero, /<FlowShot[\s\S]*src=\{shotExpandHoverPanel\}[\s\S]*natural/, 'right column is the selected full-fit Flow product shot');
-assert.match(hero, /flow-launch-hero__product-window :global\(\.flow-shot\)\s*\{\s*opacity:\s*0\.9;/, 'product shot uses the requested ten-percent transparency');
+assert.match(hero, /shot = shotExpandHoverPanel[\s\S]*<FlowShot[\s\S]*src=\{shot\}[\s\S]*natural/, 'right column defaults to the selected full-fit Flow product shot');
+assert.doesNotMatch(hero, /flow-launch-hero__product-window :global\(\.flow-shot\)[\s\S]*?opacity:/, 'product shot remains at full opacity');
 assert.match(hero, /flow-launch-hero__product-window[\s\S]*--flow-product-edge-bleed[\s\S]*width:\s*calc\(100% \+ var\(--flow-product-edge-bleed\)\)/, 'desktop product proof uses the full space through the right edge');
 assert.match(hero, /flow-launch-hero__product-window > \.home-hero__shot-frame\s*\{[\s\S]*?width:\s*110%;[\s\S]*?margin-left:\s*-10%;/, 'large desktop product proof grows ten percent while staying right-anchored');
 assert.doesNotMatch(hero, /width:\s*111\.111%|clip-path:\s*inset\(-4rem 0 -4rem -4rem\)/, 'product proof is not enlarged behind a clipping mask');
 assert.doesNotMatch(hero, /Real Flow build|Live cockpit|Product evidence from the running Mac build/, 'product proof carries no badge or caption');
-assert.doesNotMatch(hero, /src=\{shotExpandHoverPanel\}[\s\S]{0,260}?\bpriority\b/, 'product proof does not compete with the LCP background');
+assert.doesNotMatch(hero, /src=\{shot\}[\s\S]{0,260}?\bpriority\b/, 'product proof does not compete with the LCP background');
 assert.match(hero, /home-hero__shot-frame/);
 assert.match(hero, /home-hero__sheen/);
 assert.match(css, /@keyframes home-hero-float/);
@@ -64,7 +66,7 @@ assert.match(ticker, /prefers-reduced-motion:\s*reduce[\s\S]*animation-play-stat
 assert.match(seo, /tagline: 'Conduct beautiful documents with AI agency built in'/);
 assert.match(seo, /slogan: SITE\.tagline/);
 const homeOg = og.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
-assert.match(homeOg, /title: 'Conduct beautiful documents\.'/);
+assert.match(homeOg, /title: 'You drive the work\. Flow tunes AI to your needs\.'/);
 assert.match(homeOg, /alt: '[^']*attainment chart/);
 
 console.log('home hero: daylight racing world, real Flow proof, conversion and metadata contracts pass');

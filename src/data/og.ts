@@ -39,12 +39,8 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     slug: 'home',
     eyebrow: 'Orionfold Flow · Patent pending',
-    // Tracks the homepage H1 (2026-08-21). The card used to argue the approval
-    // promise and show the decision footer; the hero now leads with the
-    // outcome, so the card leads with it too and shows the artifact. This IS
-    // SITE.tagline's first half, unlike the 2026-08-20 card which deliberately
-    // avoided it -- the tagline is the page's own claim again.
-    title: 'Conduct beautiful documents.',
+    // The card carries the same promise as the launch homepage H1.
+    title: 'You drive the work. Flow tunes AI to your needs.',
     seed: 'home',
     alt: 'A quota attainment chart drawn inside an Orionfold Flow document: four sales reps as horizontal bars, colored below or meeting target, each with a target marker.',
     // Cut from the Flow Guide sales-marketing capture (3840x2100) at the OG

@@ -17,7 +17,7 @@ assert.doesNotMatch(home, /flow\/home-variants/, 'homepage no longer references 
 assert.match(hero, /flow-ideas-pit-stop-daylight-wide\.webp/, 'hero retains the daylight landscape pit-stop master');
 assert.match(hero, /flow-ideas-pit-stop-daylight-portrait\.webp/, 'hero retains responsive portrait background art');
 assert.match(hero, /loading="eager"[\s\S]*fetchpriority="high"[\s\S]*decoding="sync"/, 'landscape campaign art remains the eager LCP background');
-assert.match(hero, /class="[^"]*flow-launch-hero__product[^"]*"[\s\S]*?<FlowShot[\s\S]*?src=\{shotExpandHoverPanel\}/, 'right-side proof is the selected real Flow product shot');
+assert.match(hero, /shot = shotExpandHoverPanel[\s\S]*class="[^"]*flow-launch-hero__product[^"]*"[\s\S]*?<FlowShot[\s\S]*?src=\{shot\}/, 'right-side proof defaults to the selected real Flow product shot');
 assert.match(hero, /home-hero__shot-frame/, 'product proof reuses the earlier compositor-only float shell');
 assert.match(hero, /home-hero__sheen/, 'product proof reuses the earlier diagonal sheen');
 assert.doesNotMatch(hero, /pitStopDaylightPoster|tunePoster|pitFilmSrc|<video\b|flow-launch-hero__film|Play film|Replay film/, 'vertical campaign card and hero film are removed');

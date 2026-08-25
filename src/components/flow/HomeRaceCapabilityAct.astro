@@ -18,15 +18,17 @@ interface CapabilityRow {
 }
 
 interface Props {
+  id?: string;
   number: string;
   label: string;
   title: string;
   body: string;
-  rows: CapabilityRow[];
+  rows?: CapabilityRow[];
 }
 
-const { number, label, title, body, rows } = Astro.props;
-const actId = `home-race-act-${number}`;
+const { id, number, label, title, body, rows = [] } = Astro.props;
+const actId = id ?? `home-race-act-${number}`;
+const hasSupplement = Astro.slots.has('default');
 const blueprintPlacement = number === '01' ? 'driver' : number === '02' ? 'crew' : 'release';
 ---
 
@@ -36,46 +38,50 @@ const blueprintPlacement = number === '01' ? 'driver' : number === '02' ? 'crew'
     <header class="home-race-act__header">
       <div class="home-race-act__number" aria-hidden="true">{number}</div>
       <div>
-        <p data-animate="rise">Race act {number} · {label}</p>
+        <p data-animate="rise">{number} · {label}</p>
         <h2 id={`${actId}-title`} data-animate="lead">{title}</h2>
       </div>
       <p class="home-race-act__lede" data-animate="rise">{body}</p>
     </header>
 
-    <div class="home-race-act__features">
-      {rows.map((row, index) => (
-        <article class:list={['home-race-act__feature', index % 2 === 1 && 'home-race-act__feature--reverse']}>
-          <div class="home-race-act__copy">
-            <p class="home-race-act__station"><span>{number}.{String(index + 1).padStart(2, '0')}</span>{row.kicker}</p>
-            <h3 data-animate="lead">{row.title}</h3>
-            <p class="home-race-act__body" data-animate="rise">{row.body}</p>
-            <a href={row.href} data-animate="rise">
-              See it in the tour <span aria-hidden="true">→</span>
-            </a>
-          </div>
+    {rows.length > 0 && (
+      <div class="home-race-act__features">
+        {rows.map((row, index) => (
+          <article class:list={['home-race-act__feature', index % 2 === 1 && 'home-race-act__feature--reverse']}>
+            <div class="home-race-act__copy">
+              <p class="home-race-act__station"><span>{number}.{String(index + 1).padStart(2, '0')}</span>{row.kicker}</p>
+              <h3 data-animate="lead">{row.title}</h3>
+              <p class="home-race-act__body" data-animate="rise">{row.body}</p>
+              <a href={row.href} data-animate="rise">
+                See it in the tour <span aria-hidden="true">→</span>
+              </a>
+            </div>
 
-          <div
-            class:list={['of-stage home-race-act__stage', row.stage.startsWith('t') ? 'of-stage--pad-top' : 'of-stage--pad-bottom']}
-            data-animate="plate"
-          >
-            <FlowShot
-              src={row.shot}
-              alt={row.alt}
-              crop
-              sizes="(min-width: 1200px) 48rem, (min-width: 920px) 55vw, calc(100vw - 2rem)"
-            />
-            <FlowDetail
-              class={`of-stage__detail of-stage__detail--${row.stage}`}
-              src={row.detail}
-              alt={row.detailAlt}
-              caption={row.detailCaption}
-              sizes="(min-width: 1200px) 24rem, (min-width: 920px) 22rem, calc(100vw - 3rem)"
-              animate
-            />
-          </div>
-        </article>
-      ))}
-    </div>
+            <div
+              class:list={['of-stage home-race-act__stage', row.stage.startsWith('t') ? 'of-stage--pad-top' : 'of-stage--pad-bottom']}
+              data-animate="plate"
+            >
+              <FlowShot
+                src={row.shot}
+                alt={row.alt}
+                crop
+                sizes="(min-width: 1200px) 48rem, (min-width: 920px) 55vw, calc(100vw - 2rem)"
+              />
+              <FlowDetail
+                class={`of-stage__detail of-stage__detail--${row.stage}`}
+                src={row.detail}
+                alt={row.detailAlt}
+                caption={row.detailCaption}
+                sizes="(min-width: 1200px) 24rem, (min-width: 920px) 22rem, calc(100vw - 3rem)"
+                animate
+              />
+            </div>
+          </article>
+        ))}
+      </div>
+    )}
+
+    {hasSupplement && <div class="home-race-act__supplement"><slot /></div>}
   </div>
 </section>
 

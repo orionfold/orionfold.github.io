@@ -1,367 +1,158 @@
 ---
-// Homepage. Rebuilt 2026-08-14 as a full Flow flagship takeover, then rewritten
-// on 2026-08-20 against the content-masterclass review
-// (audit-reports/content-masterclass-review-2026-08-20.md). The rules that
-// shaped this page:
-//   * the hero says ONE thing three ways (headline, lede, picture) and that
-//     thing is the approval promise, which is also the title tag's promise;
-//   * the common belief is named before it is flipped (direct contrast);
-//   * the reader knows who the page is for in the first screen;
-//   * two usable, dated facts arrive before the second scroll, and the first
-//     email ask is the answer to the worry those facts raise;
-//   * six capability bands, each with the crop of the control it names; the
-//     rest of the tour lives on /flow/ and its category pages.
-// The /flow/ page carries the stat band, the tour, the press kit, and the FAQ;
-// this page is the demand-generation front door.
-//
-// 2026-08-21, VISION alignment pass. An audit against ~/orionfold-flow/VISION.md
-// found the page true to ONE of the abstract's three claims (agency with your
-// approval) and near-silent on the other two. The vision's own words: "Conduct
-// beautiful documents with AI agency built in", where "beautiful" is called a
-// commitment and "the one easiest to let slide", and self-improving is
-// "promised in the abstract rather than deferred to a roadmap". The page showed
-// the app's CHROME (toolbars, diffs, settings) and never the ARTIFACT, and all
-// four band titles were shaped "AI will not hurt you". Three changes:
-//   * the hero keeps its two safety sentences and gains one line naming what
-//     the reader GETS (the vision's first word is "conduct", not "approve");
-//   * an output band, because ICP latent need 7 is "turn thinking into a
-//     professional artifact" and nothing on the site answered it;
-//   * a compounding band, stating the SHIPPED half of self-improving: rules
-//     plus measured-on-this-Mac benchmarks mean the document uses a better
-//     model as your models improve. Nothing claims a document that rewrites
-//     itself; that capability (0062 freshness monitor) is unbuilt.
-// The truth rails for both new bands are guarded by name in
-// scripts/test/flow-flagship-surface.test.mjs.
+// Flow launch homepage. The hero, title, social card, and product schema carry
+// one promise; the four acts below prove it without duplicating the full tour.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
-import FlowShot from '../components/flow/FlowShot.astro';
-import FlowDetail from '../components/flow/FlowDetail.astro';
 import FlowIdeasPitStop from '../components/flow/FlowIdeasPitStop.astro';
 import FlowLaunchHomeHero from '../components/flow/FlowLaunchHomeHero.astro';
 import HomeRaceCapabilityAct from '../components/flow/HomeRaceCapabilityAct.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
-import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
 import { SITE, PERSON } from '../data/seo';
-import { FLOW_ENTERPRISE_TEASER } from '../data/flow-enterprise';
 
-import originArt from '../assets/story/limitless-without-the-pill/hero.png';
 import shotApprove from '../assets/flow/shots/flow-writing-you-approve-shot.webp';
-import shotLongDocs from '../assets/flow/shots/flow-long-documents-shot.webp';
-import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
-import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
-import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
-import shotRouting from '../assets/flow/shots/flow-smart-routing-shot.webp';
-// Purpose-cut feature details (scripts/prepare-flow-details.mjs). A full window
-// shrunk into a page column renders the control being described at ~8px; these
-// crops show that one control at a size where the claim is checkable.
+import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
+import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
 import detailDiff from '../assets/flow/details/detail-diff.webp';
-import detailReviewHeader from '../assets/flow/details/detail-review-header.webp';
-import detailToolbarPreview from '../assets/flow/details/detail-toolbar-preview.webp';
-import detailDomains from '../assets/flow/details/detail-domains.webp';
-import detailParts from '../assets/flow/details/detail-parts.webp';
-import detailRunChecks from '../assets/flow/details/detail-run-checks.webp';
 import detailChartLine from '../assets/flow/details/detail-chart-line.webp';
-import detailRoutingRules from '../assets/flow/details/detail-routing-rules.webp';
+import detailDomains from '../assets/flow/details/detail-domains.webp';
+import detailRunChecks from '../assets/flow/details/detail-run-checks.webp';
 
 const og = ogMeta('/');
+const HOME_TITLE = 'Orionfold Flow for Mac · You drive the work. Flow tunes AI to your needs.';
+const HOME_DESCRIPTION = 'Orionfold Flow brings the right AI to documents you own, proposes exact changes, and waits for your approval. Every run leaves an inspectable receipt.';
 
-// The title tag, the OG card title (src/data/og.ts), and the H1 below are one
-// promise in three lengths. A reader who clicks the title must see it confirmed
-// in the first five seconds, so none of the three may drift from the others.
-const HOME_TITLE = 'Orionfold Flow · Conduct beautiful documents, offline on your Mac';
-
-// The homepage is the Flow front door, so it carries the same product entity
-// as /flow/ (canonical product URL stays /flow/). Helps answer engines tie
-// "Orionfold" and "Flow" to one SoftwareApplication.
 const flowSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'Orionfold Flow',
   applicationCategory: 'ProductivityApplication',
   operatingSystem: 'macOS',
-  description:
-    'Orionfold Flow is a native Mac app for professional documents with AI agency built in. Every AI change is a diff you approve, with a receipt recording what ran, where it ran, and what it cost. Patent pending.',
+  description: HOME_DESCRIPTION,
   url: `${SITE.url}/flow/`,
   image: `${SITE.url}${og.image}`,
   author: PERSON,
   brand: { '@type': 'Brand', name: 'Orionfold' },
 };
 
-// Consent copy is shared (src/data/flow-consent.ts) so a subscriber's recorded
-// consent reads the same no matter which surface captured them.
-
-// One capability per band, and one picture that PROVES it.
-//
-// Each row carries two images doing different jobs: `shot` is the whole window
-// (context: this is a real Mac app), and `detail` is a purpose-cut crop of the
-// exact control the headline names (proof: here is the thing, legibly).
-//
-// Copy shape: the common belief first, then the flip, then one tight paragraph.
-// The long qualifier lists live on the tour pages, which are built to carry
-// them.
-//
-// `stage` and `align` drive the variety rule. The hero above spends
-// top-right + centred copy, so the bands walk away from it and from each
-// other. Sequence down the page: hero tr, then tl, br, bl, tr, tl, br. No two
-// ADJACENT stages share a corner; tests/e2e/product-stage.spec.ts enforces it.
-// Adding a band in the middle re-pins every corner BELOW it, which is why
-// domains and receipts moved on 2026-08-21.
-//
-// Band order is an argument, not a list: cost, then scale, then what you get
-// out (output), then where it runs, then the record, then why it keeps paying
-// off. The two capability bands sit among the safety ones deliberately rather
-// than in a block, so the page never reads as four warnings then a brochure.
+// Four claims, four current product captures. Exact qualifications remain in
+// the linked tour; the homepage gives each claim only the proof needed to earn
+// the next scroll.
 const capabilityRows = [
   {
-    // THE APPROVAL BAND. Added 2026-08-21 when the hero moved to the outcome
-    // ("Conduct beautiful documents") and the artifact picture. Approval used
-    // to BE the hero, so the page had no band for it; demoting it without
-    // rehoming it would have dropped the wedge entirely. It leads the bands
-    // because it is still the claim everything else rests on, and it keeps the
-    // exact picture and crop the hero used, so nothing about the proof
-    // changed, only where it sits in the argument.
-    kicker: 'Nothing changes without you',
-    title: 'Most AI tools rewrite your document. Flow asks first.',
-    body: 'Your text changes two ways only: an edit you typed, or a change you approved. Every AI change arrives as an exact diff, with the checks that ran beside it, and Approve and Save stays disabled until you tick the box that says you read it.',
+    kicker: 'Approval',
+    title: 'See exactly what Flow wants to change.',
+    body: 'Every AI action arrives as a proposal. Read the exact diff and the checks beside it. Approve it, reject it, or leave it for later. Nothing is saved until you approve it.',
     href: '/flow/writing-with-ai/#tour-agency',
     shot: shotApprove,
-    alt: 'Orionfold Flow reviewing an AI proofread: the proposed document with the change highlighted, one fact row, three check pills, and the human-review gate beside a disabled Approve and Save button.',
+    alt: 'Orionfold Flow reviewing a proposed edit beside the document, with the exact change, named checks, and human approval controls visible.',
     detail: detailDiff,
-    detailAlt: 'Flow\'s decision footer: an unticked "I have reviewed this change" checkbox, "1 Check to resolve", and a disabled Approve and Save button beside Reject and Later.',
-    detailCaption: 'Approve and Save stays disabled until you tick the box · Nothing is saved until you approve it',
+    detailAlt: 'Flow\'s decision footer with the review checkbox, one check to resolve, and Approve and Save disabled until the reviewer confirms the change.',
+    detailCaption: 'Review the diff · Approve and Save stays disabled until you confirm it',
     stage: 'tl',
-    align: 'left',
   },
   {
-    kicker: 'Priced before you click',
-    title: 'Most tools bill you after. Flow tells you the cost first.',
-    body: 'The six AI actions live in the document\'s own tool strip, beside bold and italic. Hover one and Flow answers before it runs: how much text it would act on, what it would cost, and which model would do the work. Work on your own Mac is free, and Flow says so in words rather than a number.',
-    href: '/flow/writing-with-ai/#tour-toolbar',
-    shot: shotToolbar,
-    alt: 'Orionfold Flow with the document tool strip expanded: writing controls, a divider, and five colored AI marks, with Proofread\'s panel stating the scope, the cost, and the model for the run.',
-    detail: detailToolbarPreview,
-    detailAlt: 'Flow\'s tool strip with Proofread\'s panel open: 3,911 words for the whole document, "No cost, free, it runs on hardware you have", and the model that would run it staying on this Mac.',
-    detailCaption: 'Scope, cost, and route · Answered before the click',
-    stage: 'br',
-    align: 'left',
-  },
-  {
-    kicker: 'Long documents',
-    title: 'Most tools cut a long document and guess. Flow reviews it in parts.',
-    body: 'A 50-page document is not too big. It is four reviews. Flow plans it into ordered parts that follow its own structure, then reviews each part on its own. Never truncated, never guessed. Coverage comes back in counts you can check.',
-    href: '/flow/writing-with-ai/#tour-longdocs',
-    shot: shotLongDocs,
-    alt: 'A live two-part review on a 3,905-word document in Flow, with part chips and an honest coverage line.',
-    detail: detailParts,
-    detailAlt: 'Flow’s review header on a long document: numbered part chips, and the line "0 approved, 0 declined, 2 remaining".',
-    detailCaption: 'Coverage in plain counts · Approve, decline, or skip any part',
-    stage: 'bl',
-    align: 'right',
-  },
-  {
-    // THE OUTPUT BAND. Added 2026-08-21 to close the gap the vision names as
-    // the easiest to let slide: "beautiful" is a commitment, and the site
-    // showed only the app's chrome, never the artifact it produces. The claim
-    // here is about the DOCUMENT, not the control.
-    // TRUTH RAIL (flow-charts brief + 0129 SPEC): Visualize ADDS one chart or
-    // diagram fence AFTER the selection, never replaces it. Rendering is
-    // offline from the fence text. Never "AI-generated infographics".
-    // Designed layout blocks (callouts, columns, cards) are a later goal and
-    // must not be claimed. Every number in the capture is invented demo data.
-    kicker: 'Documents worth handing over',
-    title: 'Most AI gives you text to reformat. Flow gives you a document to send.',
-    body: 'Ask for a waterfall, a bump chart, or a calendar heatmap by name. Thirty four chart types, and twenty diagram types beside them, drawn in place from plain text in your file, offline, in one house style: a title that makes the claim, one highlighted series, a source line. The few other editors that draw charts at all hand you a chart grammar to write yourself. Select a table or a paragraph and Flow proposes the picture, reviewed like any other change, and the file stays readable in every editor you own.',
+    kicker: 'Documents',
+    title: 'Turn plain text into a chart you can hand over.',
+    body: 'Flow draws 34 chart types and 20 diagram types from plain text in your file. They render offline in one house style, and the document stays readable in every editor you own.',
     href: '/flow/documents-and-files/#tour-visualize',
     shot: shotCharts,
-    alt: 'Orionfold Flow with a quarterly business review open in Reader on the left, its line chart and deal-flow flowchart drawn in place from the file\'s own text, and the chart gallery editor open on the right on the same file\'s bar chart.',
+    alt: 'Orionfold Flow showing a quarterly review with a line chart and flowchart drawn inside the document, beside the chart editor for the same file.',
     detail: detailChartLine,
-    detailAlt: 'A line chart drawn by Flow inside a document: the title "Team plan drove MRR growth through the summer", a plan legend with Team highlighted in the accent colour, dated axes, and the source line "Billing system, month-end snapshots".',
-    detailCaption: 'Drawn from the text in your file · A title that makes the claim, one highlighted series, a source line',
-    stage: 'tr',
-    align: 'left',
+    detailAlt: 'A line chart drawn by Flow with a claim-led title, one highlighted series, dated axes, and a source line.',
+    detailCaption: 'Drawn from the file · A clear claim, one highlight, and a source',
+    stage: 'br',
   },
   {
-    kicker: 'Trust boundaries',
-    title: 'Most tools decide where your text goes. You pick where AI runs. Flow keeps it there.',
-    body: 'Four execution domains, each with its own switch: Local, LAN, Cloud prepaid, Cloud postpaid. Every one states plainly whether your text stays on this Mac and what the work costs. A fallback that would leave your Mac stops and asks first.',
+    kicker: 'Routing',
+    title: 'Choose where the work may run.',
+    body: 'Local, LAN, prepaid cloud, or postpaid cloud. Each domain says whether your text leaves your Mac and what the work costs. A fallback outside your boundary stops and asks first.',
     href: '/flow/models-and-runtime/#tour-domains',
     shot: shotDomains,
-    alt: 'Flow’s Models settings showing four execution domains with locality and cost statements and a user-owned provider order.',
+    alt: 'Flow Models settings showing four execution domains with locality, cost, and provider controls.',
     detail: detailDomains,
-    detailAlt: 'The Local execution domain in Flow: its switch turned on, the line "Stays on this Mac, free, it runs on hardware you have", and three discovered providers.',
-    detailCaption: 'One switch per domain · Discovery never enables anything',
-    // Was 'bl' until 2026-08-21, when the output band above took that corner.
-    // Adjacent bands may never repeat one (tests/e2e/product-stage.spec.ts).
+    detailAlt: 'Flow\'s Local domain enabled with the statement that work stays on this Mac and runs free on hardware you own.',
+    detailCaption: 'One switch per domain · Discovery never enables a route',
     stage: 'tl',
-    align: 'center',
   },
   {
-    // TRUTH RAIL: the receipts in this capture are STAGED DEMONSTRATION
-    // material written over the demo library through the same code path a real
-    // run uses (the alt says "demonstration" for exactly this reason). The
-    // staged $0.00318 figure must never appear in homepage copy as a real
-    // charge; the real recorded run is the $0.00425 one in the hero stats.
-    // The crop is deliberately the CHECKS block, which carries no dollar
-    // figure, so this band makes no cost claim its picture cannot support.
     kicker: 'Receipts',
-    title: 'Most AI work leaves no trace. Every Flow run leaves a receipt you can read.',
-    body: 'One run reads as one card: the named checks that ran, what the evidence concluded, the cost with its basis, and the exact before and after content the change is bound to. The recorded cost is an observed fact, never an estimate, and a local run records no charge because none was owed.',
+    title: 'Every run leaves a record.',
+    body: 'The receipt binds the model, route, cost, checks, evidence, proposal, and your decision to the exact document revision. You can see what happened without reconstructing a chat.',
     href: '/flow/receipts/#tour-receipts',
     shot: shotRunCard,
-    alt: 'Orionfold Flow\'s Receipts timeline beside a demonstration client proposal: a run selected, its card showing three named checks with severity pills, Evidence at 89 of 100, the recorded cost with its basis, and before and after digests.',
+    alt: 'Orionfold Flow Receipts showing a demonstration run with named checks, evidence, recorded cost, and before and after document digests.',
     detail: detailRunChecks,
-    detailAlt: 'Three named checks in a Flow run receipt: Human review with the pill Needs your acknowledgment, References are current with Warns you, and Citations resolve with Stops the change, each row also carrying a stored Checked mark.',
-    detailCaption: 'Named checks, two facts each · What it saw then, what the rule does now',
-    // Was 'tr' until 2026-08-21; the domains band above now holds that corner.
+    detailAlt: 'Three named checks in a Flow receipt, each with its stored result and the rule it applied.',
+    detailCaption: 'Named checks · Stored with the run and the document revision',
     stage: 'br',
-    align: 'left',
-  },
-  {
-    // THE COMPOUNDING BAND. Added 2026-08-21. The vision promises
-    // "self-improving intelligence" and the site never said it. This band
-    // states the honest, shipped half of it: your rules outlive any one model,
-    // and the routing reads measurements taken on YOUR Mac, so the same
-    // document gets a better model as your models get better.
-    // TRUTH RAILS (flow-smart-routing brief, non-negotiable):
-    //   * Vocabulary is the screen's: "rules", "rules decide in order; the
-    //     first one that matches applies", "Deciding". NEVER predicates,
-    //     resolvers, gates, or fail-closed. The feature is Smart Routing;
-    //     "Auto routing" was retired 2026-08-18.
-    //   * "Fastest measured on this Mac" orders by SPEED measured on this
-    //     machine only. It is NEVER a quality verdict, and a model with no
-    //     measurement is not ranked at all.
-    //   * Rules do not learn. "Your rules, re-applied" is the claim; never
-    //     "learns your preferences". The refusal to adapt is the selling point.
-    kicker: 'It gets better without you',
-    title: 'Most tools age around a model. Flow gets better as the models do.',
-    body: 'No AI improves itself yet, and Flow does not claim to. The system around it does. Flow benchmarks the models on your own Mac, and Smart Routing reads those measurements: rules decide in order, and the first one that matches applies. Write "Fastest measured on this Mac" once. Pull a better model next month and the same document starts using it, with no setting to revisit and no rule to rewrite. The screen always names the rule that decided.',
-    href: '/flow/models-and-runtime/#tour-routing',
-    shot: shotRouting,
-    alt: 'Flow\'s Smart Routing settings: an ordered rulebook with the sentence "Rules decide in order; the first one that matches applies", four named rules with live model counts, a Deciding badge on the first, and the provider routing order beneath.',
-    detail: detailRoutingRules,
-    detailAlt: 'Flow\'s rulebook: the sentence "Rules decide in order; the first one that matches applies", four ordered rules with the count of models that qualify for each, a Deciding badge on rule one, and an orange no-model state on rule four.',
-    detailCaption: 'Rules decide in order · The first one that matches applies',
-    stage: 'bl',
-    align: 'right',
   },
 ];
 
-// The launch skin changes the editorial structure, not the product argument.
-// These acts preserve the existing row order and reuse every claim, link, real
-// capture, and proof crop. With the campaign flag dark, the original seven
-// standalone bands below remain the production rendering.
 const capabilityActs = [
   {
     number: '01',
-    label: 'Driver control',
-    title: 'You hold the line.',
-    body: 'Approval and cost stay visible before anything moves. Flow works at speed without taking the decision away from you.',
-    rows: capabilityRows.slice(0, 2),
+    label: 'Control',
+    title: 'Nothing changes until you say so.',
+    body: 'Flow can move quickly without taking the decision away from you. The proposal, checks, and approval stay together.',
+    rows: capabilityRows.slice(0, 1),
   },
   {
     number: '02',
-    label: 'Specialist craft',
-    title: 'The pit crew works the problem.',
-    body: 'Long documents become ordered work. Visuals arrive in the file. Every route stays inside the boundary you chose.',
-    rows: capabilityRows.slice(2, 5),
+    label: 'Craft',
+    title: 'The file becomes the finished work.',
+    body: 'Write in portable Markdown. Add charts and diagrams where the argument needs them. Keep the result on your own disk.',
+    rows: capabilityRows.slice(1, 2),
   },
   {
     number: '03',
-    label: 'Race performance',
-    title: 'Evidence carries speed forward.',
-    body: 'Receipts show what happened. Measured routing lets the same rule choose a faster model when your own hardware improves.',
-    rows: capabilityRows.slice(5),
+    label: 'Routing',
+    title: 'Use the right AI. Keep the boundary.',
+    body: 'Flow can use models on your Mac, your network, or supported cloud providers. You decide which routes are available.',
+    rows: capabilityRows.slice(2, 3),
+  },
+  {
+    id: 'home-race-control',
+    number: '04',
+    label: 'Governance',
+    title: 'Keep the record with the work.',
+    body: 'A durable receipt preserves the facts of every run, so review starts with evidence instead of memory.',
+    rows: capabilityRows.slice(3, 4),
   },
 ];
 ---
 <Layout
   title={HOME_TITLE}
-  description={SITE.description}
+  description={HOME_DESCRIPTION}
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[flowSchema]}
 >
   <Nav />
-  <!-- Surfaces the ?confirmed= state the confirm-email funnel redirects here with -->
   <ConfirmBanner />
   <main class="home-race-theme overflow-x-clip">
-    <!-- ================= HERO ================= -->
     <FlowLaunchHomeHero />
-    <!-- ================= THE BROKEN LOOP ================= -->
-    <section class="home-race-problem border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
-      <div class="mx-auto max-w-6xl">
-        <div class="mx-auto max-w-3xl text-center">
-          <p class="of-eyebrow" data-animate="rise">Before the pit stop · The problem</p>
-          <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Chat is where work evaporates.</h2>
-          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
-            You draft in a chat window, paste into your document, and fix the formatting.
-            Again. Nobody can tell which parts you wrote and which parts the AI did. And the
-            thread that produced the work is gone in a month.
-          </p>
-        </div>
-        <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger="slow">
-          <article class="home-race-card of-surface rounded-2xl border border-border/70 p-6" data-animate="rise">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">No more pasting</p>
-            <h3 class="mt-3 text-lg font-bold leading-snug">The work happens in the file.</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">Nothing to copy out of a chat, nothing to reformat, and you always see exactly what changed.</p>
-          </article>
-          <article class="home-race-card of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Attribution survives</p>
-            <h3 class="mt-3 text-lg font-bold leading-snug">Which parts you wrote. Which parts AI proposed.</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">Who approved each change, recorded with the document. When someone opens the file and asks, you have the answer.</p>
-          </article>
-          <article class="home-race-card of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">A file, not a session</p>
-            <h3 class="mt-3 text-lg font-bold leading-snug">Chat workspaces expire. Files are forever.</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">Your work is plain Markdown on your own disk, readable by every other tool you own. No export step, no lock-in.</p>
-          </article>
-        </div>
-        {/* The answer to the three cards above, in one picture (2026-08-21).
-            The section argues the work belongs IN THE FILE rather than a chat
-            thread, so the picture has to show a change being made TO a
-            document: the file being edited on the left, Review Changes on the
-            right with the proposed text, the named checks, and the approval
-            gate. That is all three cards at once -- no pasting, attribution
-            visible, a file rather than a session.
-            The zoom crop lifts the Review Changes block out at a legible size
-            and animates in on scroll, hanging past the window's BOTTOM-RIGHT
-            edge like every other stage crop on the page (a bottom corner needs
-            of-stage--pad-bottom, not --pad-top, or it has no room to overhang).
-            The window behind it is only context.
-            Lazy, not eager -- the hero above is the page's one eager image
-            (mobile-perf: one per page). */}
-        <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
-          <FlowShot
-            src={shotApprove}
-            alt="Orionfold Flow with a field notes document open on the left and Review Changes on the right: the proposed text with the corrected phrase highlighted, three named checks, and an Approve and Save button held disabled until the reviewer ticks the box."
-            crop
-            sizes="(min-width: 1280px) 72rem, (min-width: 1024px) 64rem, 100vw"
-          />
-          <FlowDetail
-            class="of-stage__detail of-stage__detail--br"
-            src={detailReviewHeader}
-            alt="Flow's Review Changes block: the title with a Proposed and Exact changes toggle and a '1 Check to resolve' pill, the effect sentence naming the file, a permission row reading 'Edit this document only' with 'No external action' and 'No Sources', and three named checks as pills reading Citations resolve Passed, References are current Not required, and Human review Not checked."
-            caption="What is proposed, and every check that ran"
-            sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 4rem)"
-            animate
-          />
-        </div>
-        <div class="mt-10 flex flex-wrap justify-center gap-3" data-animate="rise">
-          <a href="/flow/" class="of-primary-action">Take the product tour</a>
-          <a href="/flow/#press" class="of-secondary-action">Writing about Flow? Get the facts</a>
-        </div>
+
+    <section class="home-race-problem border-y px-6 py-16 sm:py-24" aria-labelledby="home-problem-title">
+      <div class="mx-auto max-w-4xl text-center">
+        <p class="of-eyebrow" data-animate="rise">Why Flow</p>
+        <h2 id="home-problem-title" class="of-display mt-4 text-[clamp(2rem,4vw,3.4rem)]" data-animate="lead">
+          Chat makes work disposable. Flow keeps it in the document.
+        </h2>
+        <p class="of-lede mx-auto mt-5 max-w-3xl text-center" data-animate="rise">
+          Your words, AI proposals, approvals, and receipts stay with the file. No copy and paste. No lost thread. No mystery about what changed.
+        </p>
       </div>
     </section>
 
     <FlowIdeasPitStop id="home-flow-ideas-pit-stop" variant="home" />
 
-    <!-- ================= CAPABILITY BANDS ================= -->
     {capabilityActs.map((act) => (
       <HomeRaceCapabilityAct
+        id={act.id}
         number={act.number}
         label={act.label}
         title={act.title}
@@ -369,78 +160,6 @@ const capabilityActs = [
         rows={act.rows}
       />
     ))}
-
-    <!-- ================= ENTERPRISE TEASER ================= -->
-    <section id="home-race-control" class="home-race-control scroll-mt-24 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="home-race-control-title">
-      <div class="mx-auto max-w-6xl">
-        <div class="mx-auto max-w-3xl text-center">
-          <p class="of-eyebrow" data-animate="rise">Race control · For enterprise AI owners</p>
-          <h2 id="home-race-control-title" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Governance at the source of knowledge work.</h2>
-          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
-            The hard part of enterprise AI is not reaching 70 percent accuracy. It is knowing which
-            30 percent is wrong, who approved what, and what it cost.
-          </p>
-        </div>
-        <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger="slow">
-          {FLOW_ENTERPRISE_TEASER.map((card) => (
-            <article class="home-race-card of-surface rounded-2xl border border-border/70 p-6" data-animate="rise">
-              <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.k}</p>
-              <h3 class="mt-3 text-lg font-bold leading-snug">{card.q}</h3>
-              <p class="mt-3 text-sm leading-relaxed text-text-muted">{card.a}</p>
-            </article>
-          ))}
-        </div>
-        <div class="mt-8 text-center">
-          <a href="/flow/enterprise/" class="of-secondary-action">All nine enterprise patterns <span aria-hidden="true">→</span></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= THE ORIGIN STORY ================= -->
-    <section class="home-race-origin origin-story border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="origin-heading">
-      <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-        <a
-          href="/story/limitless-without-the-pill/"
-          class="origin-story__card"
-          aria-label="Read the origin story: Limitless, Without the Pill"
-        >
-          <span class="origin-story__plane of-surface">
-            <Image
-              src={originArt}
-              alt="A knowledge worker at a laptop conducts a luminous constellation of research, code, strategy, art, and scientific ideas across a deep blue night sky."
-              widths={[640, 960, 1280, 1672]}
-              sizes="(min-width: 1024px) 38rem, calc(100vw - 3rem)"
-              loading="lazy"
-              decoding="async"
-              quality={90}
-              data-no-zoom
-              class="origin-story__image"
-            />
-          </span>
-        </a>
-        <div>
-          <p class="home-kicker">Final lap · The origin story</p>
-          <h2 id="origin-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Limitless, without the pill.</h2>
-          <p class="mt-5 leading-relaxed text-text-muted">
-            The movie sold a fantasy: one pill, and every dormant capability wakes up.
-            Building Orionfold as one AI-native person has felt like the closest real-world
-            version of that. No pill needed.
-          </p>
-          <p class="mt-4 leading-relaxed text-text-muted">
-            That feeling is what Flow is built to give you. Not AI that replaces you. AI you
-            conduct: different modes of thinking, context that stays with the work, and
-            capabilities that used to live in separate departments, now in one document.
-          </p>
-          <p class="mt-5 border-l-2 border-primary/50 pl-4 text-lg font-medium leading-relaxed text-text">
-            The future may not be artificial superintelligence. It may be ordinary people
-            becoming far more capable versions of themselves.
-          </p>
-          <a href="/story/limitless-without-the-pill/" class="of-text-action mt-6 inline-flex items-center gap-2">
-            Read the origin story <span aria-hidden="true">→</span>
-          </a>
-        </div>
-      </div>
-    </section>
 
     <div id="waitlist" class="home-race-waitlist scroll-mt-24">
       <FlowWaitlist placement="home" />
@@ -450,62 +169,13 @@ const capabilityActs = [
 </Layout>
 
 <style>
-  .home-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-accent-ink); }
-
-
-  /* Abstract origin-story card: the limitless constellation art on a gently
-     tilted plane (static transform, gradient halo, no filters, no loops,
-     per the scroll-jank hardening). */
-  .origin-story__card { position: relative; display: block; border-radius: 1.75rem; }
-  .origin-story__card::before {
-    content: ''; position: absolute; z-index: -1; inset: 8% 5% -4%; border-radius: 999px;
-    background: radial-gradient(closest-side, color-mix(in oklch, var(--color-primary) 16%, transparent), transparent 74%);
-    pointer-events: none;
-  }
-  .origin-story__plane {
-    position: relative; display: block; overflow: hidden; border-radius: 1.75rem; padding: 0.45rem;
-    border: 1px solid color-mix(in oklch, var(--color-primary) 24%, var(--color-border));
-    background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-raised));
-    box-shadow: 0 36px 92px -52px rgb(3 13 31 / 0.82);
-    transition: transform 0.5s ease;
-  }
-  .origin-story__image { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 1.32rem; object-fit: cover; }
-  .origin-story__card:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 5px; }
-  @media (min-width: 1024px) {
-    .origin-story__card { perspective: 1500px; }
-    .origin-story__plane { transform: rotateX(14deg) rotateZ(-3deg) scale(0.96); }
-    .origin-story__card:hover .origin-story__plane { transform: rotateX(4deg) rotateZ(-1deg) scale(1); }
-  }
-
-  .home-race-problem,
-  .home-race-control,
-  .home-race-origin {
+  .home-race-problem {
     border-color: rgba(15, 118, 116, 0.16);
     color: #173138;
     background: #f4f7f5;
   }
-  .home-race-problem :is(h2, h3),
-  .home-race-control :is(h2, h3),
-  .home-race-origin :is(h2, h3) { color: #10272e; }
-  .home-race-problem :is(.of-lede, article p),
-  .home-race-control :is(.of-lede, article p),
-  .home-race-origin > div > div > p { color: rgba(29, 57, 63, 0.7); }
-  .home-race-card {
-    border-color: rgba(15, 118, 116, 0.17);
-    color: #10272e;
-    background: rgba(255, 255, 255, 0.86);
-    box-shadow: 0 1.5rem 4rem rgba(35, 76, 79, 0.09);
-  }
-  .home-race-card > p:first-child { color: #087f7b; }
-  .home-race-problem :global(.flow-shot),
-  .home-race-origin .origin-story__plane {
-    border-color: rgba(15, 118, 116, 0.2);
-  }
-  .home-race-origin .home-kicker { color: #087f7b; }
-  .home-race-origin .origin-story__plane {
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 2.2rem 5rem -2.5rem rgba(22, 74, 75, 0.28);
-  }
+  .home-race-problem h2 { color: #10272e; }
+  .home-race-problem .of-lede { color: rgba(29, 57, 63, 0.7); }
   .home-race-waitlist :global(.flow-waitlist--home) {
     border-color: rgba(15, 118, 116, 0.16);
     color: #173138;
@@ -519,5 +189,4 @@ const capabilityActs = [
   }
   .home-race-waitlist :global(.flow-waitlist__panel h2) { color: #10272e; }
   .home-race-waitlist :global(.flow-waitlist__panel p) { color: rgba(29, 57, 63, 0.7); }
-  @media (prefers-reduced-motion: reduce) { .origin-story__plane { transition: none; } }
 </style>
