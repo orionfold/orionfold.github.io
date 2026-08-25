@@ -97,7 +97,9 @@ assert.match(flow, /diff you approve/i, '/flow/ still states the approval promis
 // The founder line is one-of-one evidence and quotes a real published
 // sentence; it must keep its source link rather than becoming loose copy.
 assert.match(sharedHero, /\.flow-launch-hero h1\s*\{[\s\S]*font:\s*850 clamp\(3\.15rem, 7\.5vw, 7rem\)/, 'the /flow/ title inherits the homepage hero scale');
-assert.match(flow, /const FLOW_TITLE = 'Orionfold Flow · Charts and diagrams from plain text, offline on your Mac'/, 'the title tag carries the same promise');
+assert.match(flow, /const FLOW_TITLE = 'Orionfold Flow for Mac · Conduct useful work'/, 'the title tag carries the approved benefit promise');
+assert.match(flow, /const FLOW_DESCRIPTION = 'Flow is a native Mac app for documents you own\. AI proposes exact changes, you approve them, and every run leaves an inspectable receipt\.'/,
+  'the description answers what Flow is, how it works, and why the record matters');
 assert.match(flow, /title=\{FLOW_TITLE\}/);
 assert.match(flow, /\{SITE\.tagline\}/, 'the locked tagline stays in the press kit');
 assert.match(sharedHero, /For creators, builders, and authors\.[\s\S]{0,400}?Anyone whose name is on the document\./, 'the shared first screen carries the ICP line');
@@ -330,11 +332,11 @@ for (const id of ['tour-agency', 'tour-expand', 'tour-toolbar', 'tour-longdocs',
   const heading = chapters.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
   assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
   assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
-  // The overview keeps the same id on the card link, so /flow/#tour-<x> links
-  // published before the split still land on the card that points onward.
+  // The overview keeps the same id on the category card, so /flow/#tour-<x>
+  // links published before the split still land on the card that points onward.
   assert.match(categories, new RegExp(`id: '${id}'`), `${id} must be registered in flow-categories.ts`);
 }
-assert.match(flow, /<a id=\{ch\.id\} class="scroll-mt-28" href=\{`\$\{flowCategoryHref\(cat\.slug\)\}#\$\{ch\.id\}`\}>/, 'overview card links carry the chapter ids as anchor stubs');
+assert.match(flow, /card\.category\.chapters\.map\(\(chapter\) =>[\s\S]*?<span id=\{chapter\.id\} class="scroll-mt-28"/, 'overview cards carry the chapter ids as anchor stubs');
 // Every chapter component renders on exactly one category page.
 for (const c of CHAPTERS) {
   const uses = Object.values(categoryPages).filter((page) => page.includes(`<${c} />`)).length;
@@ -402,19 +404,24 @@ assert.match(flowDetailComponent, /caption &&/, 'FlowDetail renders its caption 
 // comment that explains why the declaration is banned.
 assert.doesNotMatch(flowDetailComponent, /^\s+filter:\s*blur\(/m, 'blur filters stay out of the shot frame (retina scroll-jank source)');
 
-// The Living Workbench concept illustration closes the probe section.
-assert.match(flow, /import FlowWorkbenchIllustration from '\.\.\/components\/flow\/FlowWorkbenchIllustration\.astro'/);
-assert.match(flow, /<FlowWorkbenchIllustration \/>/);
-assert.match(flow, /The whole promise in one picture\./);
+// G-113 overview compression: one concrete four-part product argument replaces
+// the old five-layer concept diagram and its second product model.
+assert.doesNotMatch(flow, /FlowWorkbenchIllustration|Five layers, one approval/, 'the overview keeps one product model');
+for (const claim of [
+  'See the change before it becomes yours.',
+  'Turn plain text into finished visuals.',
+  'Choose where every model may run.',
+  'Keep the proof with the work.',
+]) assert.match(flow, new RegExp(claim.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${claim} stays in the four-part overview`);
 // Enterprise adoption patterns: nine question cards, honestly tagged. Data
-// lives in src/data/flow-enterprise.ts (2026-08-20); the overview teases three
-// and /flow/enterprise/ renders all nine.
+// lives in src/data/flow-enterprise.ts (2026-08-20); the overview now carries
+// one compact route and /flow/enterprise/ renders all nine.
 const enterpriseData = read('src/data/flow-enterprise.ts');
 const enterpriseSource = enterpriseData.match(/export const FLOW_ENTERPRISE: EnterprisePattern\[\] = \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const enterprisePage = read('src/pages/flow/enterprise.astro');
 assert.match(enterprisePage, /FLOW_ENTERPRISE\.map\(/, '/flow/enterprise/ renders every pattern');
 assert.match(enterprisePage, /<FlowWaitlist placement="flow-enterprise"/, '/flow/enterprise/ closes with its own attributable placement');
-assert.match(flow, /FLOW_ENTERPRISE_TEASER\.map\(/, 'the overview teases the patterns');
+assert.doesNotMatch(flow, /FLOW_ENTERPRISE_TEASER\.map\(/, 'the overview no longer duplicates enterprise detail cards');
 assert.match(flow, /href="\/flow\/enterprise\/"/, 'the overview links on to the full set');
 assert.match(enterpriseData, /\['Data classification', 'Attribution', 'Knowledge mining'\]/, 'the teaser picks three named patterns');
 for (const k of ['Allocation', 'Data classification', 'Attribution', 'Guardrails', 'Evidence', 'Routing', 'Curation', 'System of record', 'Knowledge mining']) {
@@ -478,9 +485,11 @@ assert.match(categoryShell, /const nextHref = next \? flowCategoryHref\(next\.sl
 assert.match(categoryShell, /import \{ FLOW_CATEGORY_SHOTS \} from '\.\.\/\.\.\/data\/flow-category-shots'/);
 assert.match(flow, /import \{ FLOW_CATEGORY_SHOTS \} from '\.\.\/data\/flow-category-shots'/);
 assert.match(categoryShell, /<FlowDetail\s[\s\S]*?src=\{cover\.src\}/, 'the category hero shows its cover crop');
-// Chapters are numbered 1 to 13 across the four parts.
+// Chapters remain numbered across the category family; the concise overview
+// links to each category without duplicating all fifteen chapter links.
 assert.match(categoryShell, /Chapters \{firstChapter\} to \{lastChapter\} of \{totalChapters\}/);
-assert.match(flow, /Chapters \{chapterOffsets\[i\] \+ 1\} to \{chapterOffsets\[i\] \+ cat\.chapters\.length\}/);
+assert.match(flow, /tourCards\.map\(\(card\) =>/);
+assert.doesNotMatch(flow, /chapterOffsets|cat\.chapters\.map/, 'chapter lists stay in the tour pages');
 // The waitlist panel names the exchange and offers the free book as a second magnet.
 assert.match(waitlistComponent, /The launch note the day Flow ships for Mac\./);
 assert.match(waitlistComponent, /magnetHref\('flow-waitlist'\)/, 'the panel offers the free book');
@@ -699,6 +708,8 @@ assert.match(terms, /Proprietary products, including Orionfold Flow/);
 const ogData = read('src/data/og.ts');
 const ogFlow = ogData.match(/'\/flow\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
 const ogHome = ogData.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
+assert.match(ogFlow, /title: 'Conduct useful work\. Flow refines\. You approve\.'/,
+  'the Flow social card carries the overview promise');
 for (const entry of [ogFlow, ogHome]) {
   assert.match(entry, /Orionfold Flow · Patent pending/);
   assert.match(entry, /light: true/);
@@ -1261,7 +1272,7 @@ for (const surface of ['src/components/flow/FlowPricing.astro', 'src/pages/flow.
 // (llms.txt twice before), hence a guard rather than only a fix.
 const flowPage = readCopy('src/pages/flow.astro');
 assert.match(flowPage, /const pressStatus = ORIONFOLD_FLOW_LIVE/, 'the press-kit Status row branches on the launch flag');
-assert.match(flowPage, /<td[^>]*>\{pressStatus\}<\/td>/, 'the Status row renders the branched value, not a literal');
+assert.match(flowPage, /Status\.<\/strong> \{pressStatus\}/, 'the compact press disclosure renders the branched value, not a literal');
 const pressTable = flowPage.slice(flowPage.indexOf('id="press"'));
 for (const phrase of ['Waitlist open on this page', 'The remaining work is first-run onboarding']) {
   for (const line of pressTable.split('\n').filter((l) => l.includes(phrase))) {

@@ -33,22 +33,18 @@
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import FlowIdeasPitStop from '../components/flow/FlowIdeasPitStop.astro';
 import FlowLaunchHomeHero from '../components/flow/FlowLaunchHomeHero.astro';
-import FlowWorkbenchIllustration from '../components/flow/FlowWorkbenchIllustration.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
-import FlowPricing from '../components/flow/FlowPricing.astro';
 import LineIcon from '../components/ui/LineIcon.astro';
 import { Image } from 'astro:assets';
 import { SITE, PERSON } from '../data/seo';
 import { ogMeta } from '../data/og';
 import { FLOW_CATEGORIES, flowCategoryHref } from '../data/flow-categories';
 import { FLOW_CATEGORY_SHOTS } from '../data/flow-category-shots';
-import { FLOW_ENTERPRISE_TEASER } from '../data/flow-enterprise';
 import { FLOW, formatUsd } from '../data/commerce.ts';
 import { FLOW_SYSTEM_REQUIREMENT } from '../data/flow-pricing.ts';
-import { FLOW_MEASUREMENTS } from '../data/flow-measurements.ts';
-import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN, ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
+import { FLOW_STORYBOARD_MEASUREMENTS } from '../data/flow-measurements.ts';
+import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import '../styles/flow.css';
 
 // Flow Guide capture (3840x2100, light only). The hero artifact: the Welcome
@@ -58,23 +54,63 @@ import shotGuideCharts from '../assets/flow/shots/flow-guide-charts-market-shot.
 
 const og = ogMeta('/flow/');
 const flowUrl = `${SITE.url}/flow/`;
-const flowStoryHref = '/story/limitless-without-the-pill/';
+const flowStoryHref = '/story/the-day-i-stopped-trusting-invisible-edits/';
 
 // Title tag, OG card title (src/data/og.ts), and H1: one promise, three
 // lengths. The official tagline stays in the press kit, where a journalist
 // wants the exact phrase.
-const FLOW_TITLE = 'Orionfold Flow · Charts and diagrams from plain text, offline on your Mac';
+const FLOW_TITLE = 'Orionfold Flow for Mac · Conduct useful work';
+const FLOW_DESCRIPTION = 'Flow is a native Mac app for documents you own. AI proposes exact changes, you approve them, and every run leaves an inspectable receipt.';
 
-const totalChapters = FLOW_CATEGORIES.reduce((n, c) => n + c.chapters.length, 0);
-const chapterOffsets = FLOW_CATEGORIES.reduce<number[]>((acc, c, i) => [...acc, (acc[i - 1] ?? 0) + (FLOW_CATEGORIES[i - 1]?.chapters.length ?? 0)], []);
+const overviewCapabilities = [
+  {
+    number: '01',
+    icon: 'document',
+    title: 'See the change before it becomes yours.',
+    body: 'Flow proposes an exact diff. You can approve it, reject it, or keep reviewing. Your document changes only when you say so.',
+    href: '/flow/writing-with-ai/',
+    action: 'See writing with AI',
+  },
+  {
+    number: '02',
+    icon: 'chart',
+    title: 'Turn plain text into finished visuals.',
+    body: 'Choose from 34 chart types and 20 diagram types. Flow draws them in place, offline, from readable text that stays in your file.',
+    href: '/flow/documents-and-files/',
+    action: 'See documents and files',
+  },
+  {
+    number: '03',
+    icon: 'domains',
+    title: 'Choose where every model may run.',
+    body: 'Allow AI on your Mac, your network, or the cloud accounts you already use. If a fallback would cross a boundary, Flow asks first.',
+    href: '/flow/models-and-runtime/',
+    action: 'See models and runtime',
+  },
+  {
+    number: '04',
+    icon: 'receipt',
+    title: 'Keep the proof with the work.',
+    body: 'Every approved run leaves a receipt with the model, route, cost, checks, evidence, and the revision you chose to keep.',
+    href: '/flow/receipts/',
+    action: 'See receipts and evidence',
+  },
+];
 
-// "Measured, not promised" stat band. Each number is a recorded measurement;
-// the fine print names its scope so the claim stays checkable.
-// DATES REMOVED 2026-08-22 (operator): the fine print states the DATA — what
-// was measured and on what — and no longer carries capture dates. The dates
-// remain recorded in the capability briefs and this file's history; nothing
-// about a figure changed, only whether the strip prints its timestamp.
-const stats = FLOW_MEASUREMENTS;
+const tourCards = [
+  { slug: 'writing-with-ai', title: 'Review every change.', body: 'Six focused AI actions, live source lookups, long-document planning, and one approval path.' },
+  { slug: 'documents-and-files', title: 'Keep ordinary files.', body: 'Markdown folders, fast search, tables, pictures, charts, and diagrams without a private library format.' },
+  { slug: 'models-and-runtime', title: 'Choose where AI runs.', body: 'Local, LAN, and cloud routes under rules you control, with a local runtime included.' },
+  { slug: 'receipts', title: 'Know what happened.', body: 'Run receipts, evidence, checks, costs, and benchmarks you can inspect after the work is done.' },
+].map((card) => {
+  const category = FLOW_CATEGORIES.find((item) => item.slug === card.slug);
+  if (!category) throw new Error(`Unknown Flow category ${card.slug}`);
+  return { ...card, category };
+});
+
+// The overview uses four representative measurements. The complete qualified
+// set moves to the specifications surface in G-114.
+const stats = FLOW_STORYBOARD_MEASUREMENTS;
 
 // Price strings come from the catalog via formatUsd, never from a literal, so
 // the FAQ, the pricing section and the JSON-LD Offer cannot disagree.
@@ -86,32 +122,11 @@ const faqs = [
     q: 'What is Orionfold Flow?',
     a: 'Flow is a native Mac app for professional documents with AI agency built in. It works on ordinary folders of plain Markdown files. Every AI change arrives as an exact diff you approve, and a receipt records what ran, where it ran, and what it cost.',
   },
-  // Buyer questions. These feed faqSchema, so every answer here also reaches
-  // Google and the AI answer engines; a wrong one is wrong in more places than
-  // this page. All five are gated on ORIONFOLD_FLOW_LIVE: while it is off the
-  // page keeps the pre-launch answer instead, because a price nothing can charge
-  // must not appear in structured data.
   ...(ORIONFOLD_FLOW_LIVE
     ? [
         {
           q: 'How much does Flow cost?',
-          a: `Reading, writing, searching, organizing and exporting your documents are free forever, with no account and no expiry. Flow's AI features are ${flowMonthlyDisplay} a month, or ${flowAnnualDisplay} a year if you pay for the year at once. One licence covers one person on as many of your own Macs as you like. Nobody counts your machines.`,
-        },
-        {
-          q: 'Is there a free version of Flow?',
-          a: 'Yes, and it is not a trial. The whole document side of Flow is free permanently: the editor, the reader, search across your folders including search by meaning, wiki links, tables, charts, the bundled guide, dictation, the shipped guardrail checks and app updates. You can also read every receipt, timeline and evidence score Flow has ever recorded, permanently, even if you never subscribe. What you pay for is running the AI that produces new ones. You also get a stretch of Pro access to try it properly, and a day is only spent on a day you actually use it.',
-        },
-        {
-          q: 'What happens if I stop paying?',
-          a: 'The AI stops. That is the whole list. There are no document locks, no read-only mode, no export wall and no watermark. Your files are ordinary Markdown in your own folders, so they stay open and editable in Flow and in any other editor. App updates keep arriving too, including security fixes.',
-        },
-        {
-          q: 'Are local models free to use in Flow?',
-          a: 'No, and this is the line most people expect to go the other way. Flow can run models on your own Mac with no network involved, and that is still part of the subscription. What you pay for is the layer around the model: the routing that picks which one runs, the tools it may use, the approval step, the receipt and the checks on its output. Flow never charges for the words a model produces and never touches your provider bill.',
-        },
-        {
-          q: 'What Macs does Flow run on?',
-          a: `${FLOW_SYSTEM_REQUIREMENT}. Flow is a direct download, signed and notarized, outside the App Store.`,
+          a: `Reading, writing, searching, organizing and exporting are free forever. Flow's AI features are ${flowMonthlyDisplay} a month, or ${flowAnnualDisplay} a year. One licence covers one person on their own Macs. If the subscription ends, the AI stops and the documents remain open and editable.`,
         },
       ]
     : [
@@ -125,59 +140,16 @@ const faqs = [
     a: 'Only if you allow it. Flow separates where AI may run into four switchable domains: Local, LAN, Cloud prepaid, and Cloud postpaid. Search is on-device, and a fallback that would leave your Mac stops and asks first.',
   },
   {
-    q: 'What does "patent pending" mean for Flow?',
-    a: 'Flow includes patent-pending technology for revision-scoped, verifiable AI agency in durable documents. A pending application does not mean granted rights, and it does not cover every Flow feature.',
+    q: 'What files does Flow use?',
+    a: 'Ordinary Markdown files in ordinary folders. There is no import step or private library format. Other apps can read the same files, and deleting a file sends it to the system Trash.',
   },
   {
     q: 'Do I need to install a separate AI runtime?',
-    a: 'No. Flow carries its own local inference runtime inside the app, adding about 19 MiB to the download, and it has been measured end to end: on a machine with no other AI runtime present, a model was pulled and runs were approved entirely by the app itself. If you already run Ollama or LM Studio, Flow detects them and serves the models you already pulled in place, with nothing copied.',
+    a: 'No. Flow includes its own local inference runtime. If you already use Ollama or LM Studio, Flow can detect and use the models already there without copying them.',
   },
   {
     q: 'How is Flow different from a chat canvas or artifacts panel?',
-    a: 'A chat canvas is a session workspace. The output lives inside the chat tool, export breaks formatting, and attribution is lost the moment you paste. Flow works the other way around: the document on your disk is the workplace. AI proposes changes there, you approve them there, and the record stays with the file.',
-  },
-  {
-    // Added 2026-08-21. The site could answer "how does Flow keep me safe" in
-    // eight places and "what do I get out of it" in none. This is the answer
-    // engines' version of the hero's capability line, and it stays inside the
-    // briefs: charts and diagrams ship, Expand with Sources ships, and the
-    // improvement claim is scoped to what routing actually does (reads
-    // measured speed on this Mac) rather than a document that rewrites itself.
-    q: 'What can Flow actually do for my document?',
-    a: 'Flow draws charts and diagrams in place from the plain text in your file, fifty four types, offline and in one house style. It can research a partial document using your own folders, showing each lookup as it happens. It reviews a fifty page document part by part instead of cutting it. And because Flow measures the models on your Mac and routes by rules you keep, the same document uses a better model as your models get better, without you changing anything. Every one of those arrives as a diff you approve.',
-  },
-  {
-    // Added 2026-08-21 after a competitive check (Obsidian, Typora, Bear, iA
-    // Writer, Craft, Ulysses, Zettlr, Logseq, Joplin, Notion, MarkText,
-    // VS Code + MPE). TWO RAILS, both load-bearing:
-    //   * NEVER claim "the only app that renders charts and diagrams".
-    //     MarkText bundles mermaid 11 and vega-embed and does both natively;
-    //     verified in its package.json on 2026-08-21. That claim would be
-    //     false and an evaluator would catch it.
-    //   * NEVER lead with Mermaid. Bear (2.9.2, Jul 2026), Craft, Typora,
-    //     Joplin, Obsidian, Zettlr and VS Code all render it natively.
-    // The real, defensible difference is NAMED TYPES vs a hand-authored
-    // chart grammar, plus one house style across both engines. Obsidian's
-    // chart support is a COMMUNITY PLUGIN (Chart.js, a handful of types),
-    // which is why "core" is the word doing the work below.
-    // TWO MORE RAILS, added the same day from a second market check:
-    //   * Do NOT write that Craft "draws Mermaid" unqualified. Craft's own
-    //     help page (support.craft.do/en/write-and-edit/mermaid-diagrams,
-    //     read 2026-08-21) lists flowchart, sequence, state, class, ER and XY
-    //     chart, then says "other types like pie charts, Gantt charts, or
-    //     mindmaps are not currently supported". Naming that limit is both
-    //     more accurate and more useful than a flat list.
-    //   * Do NOT use "offline" inside the competitor comparison. Offline
-    //     rendering is documented only for Typora and MarkText; asserting or
-    //     implying it about Bear or Craft is the likeliest expert challenge.
-    //     Flow's own offline claim is fine and lives in the chapters, welded
-    //     to Flow. Here the phrase is "drawn in place".
-    q: 'Do other Markdown apps draw charts like this?',
-    a: 'Diagrams, yes. Mermaid is common now, and Typora, Bear, Joplin, Obsidian and VS Code all draw it, though coverage varies: Craft, for one, says pie charts, Gantt charts and mindmaps are not currently supported. Data charts are the rare part. Obsidian needs a community plugin for a handful of chart types, most apps offer none at all, and the few editors that do draw charts hand you a chart grammar to write by hand. Flow ships 34 chart types you pick by name, next to 20 diagram types, drawn in place in one house style, from plain text that any other editor still shows as text.',
-  },
-  {
-    q: 'Is Flow another notes database?',
-    a: 'No. Flow opens ordinary folders of ordinary Markdown files. There is no import step and no library format. Every other tool on your Mac can read the same files at the same time, and delete goes to the system Trash.',
+    a: 'The document on your disk is the workplace. AI proposes changes there, you approve them there, and the record stays with the file instead of disappearing with a chat session.',
   },
 ];
 
@@ -214,8 +186,7 @@ const softwareSchema = {
   name: 'Orionfold Flow',
   applicationCategory: 'ProductivityApplication',
   operatingSystem: 'macOS',
-  description:
-    'Orionfold Flow is a native Mac app for professional documents with AI agency built in. Every AI change is a diff you approve, with a receipt recording what ran, where, and what it cost. Patent pending.',
+  description: `${FLOW_DESCRIPTION} Patent pending.`,
   url: flowUrl,
   image: `${SITE.url}${og.image}`,
   author: PERSON,
@@ -286,7 +257,7 @@ const faqSchema = {
 ---
 <Layout
   title={FLOW_TITLE}
-  description="A native Mac app that draws 54 kinds of chart and diagram in place from the plain text in your file, offline. Every AI change is a diff you approve, with a receipt. Patent pending."
+  description={FLOW_DESCRIPTION}
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
@@ -318,197 +289,159 @@ const faqSchema = {
     />
 
 
-    <!-- ================= STAT BAND ================= -->
-    <section class="border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-20" aria-labelledby="flow-stats-heading">
+    <!-- ================= FOUR REASONS TO CARE ================= -->
+    <section class="border-y border-border/70 px-6 py-16 sm:py-24" aria-labelledby="flow-overview-heading">
       <div class="mx-auto max-w-6xl">
-        <div class="mx-auto max-w-3xl text-center">
-          <p class="of-eyebrow" data-animate="rise">Measured, not promised</p>
-          <h2 id="flow-stats-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Numbers, not adjectives.</h2>
-          <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">Every figure comes from a recorded measurement of the running build. The fine print names exactly what was measured.</p>
+        <div class="max-w-3xl">
+          <p class="flow-kicker" data-animate="rise">Orionfold Flow for Mac</p>
+          <h2 id="flow-overview-heading" class="of-display mt-4 text-[clamp(2.1rem,5vw,3.5rem)]" data-animate="lead">The document is the workplace.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">
+            Flow opens folders of Markdown you already own. It brings AI into the file,
+            proposes useful changes, and keeps the record beside the work.
+          </p>
         </div>
-        {/* INFOGRAPHIC TILES, same treatment as the homepage stat strip: one
-            glyph per figure, and a single gap value in both axes so the nine
-            tiles sit on an even rhythm however long their fine print runs. */}
-        <dl class="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" data-animate-stagger="slow">
+        <div class="mt-12 grid gap-4 md:grid-cols-2" data-animate-stagger>
+          {overviewCapabilities.map((capability) => (
+            <article class="of-surface flex flex-col rounded-2xl border border-border/70 p-6 sm:p-7" data-animate>
+              <div class="flex items-center justify-between gap-4">
+                <LineIcon name={capability.icon} class="h-8 w-8 text-primary" strokeWidth={1.5} />
+                <span class="font-mono text-[0.66rem] tracking-[0.16em] text-text-dim">{capability.number}</span>
+              </div>
+              <h3 class="mt-6 text-2xl font-bold leading-tight">{capability.title}</h3>
+              <p class="mt-4 flex-1 text-base leading-relaxed text-text-muted">{capability.body}</p>
+              <a href={capability.href} class="of-text-action mt-6 inline-flex items-center gap-2">{capability.action} <span aria-hidden="true">→</span></a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MEASURED PROOF ================= -->
+    <section id="specifications" class="scroll-mt-28 bg-surface-raised/40 px-6 py-16 sm:py-20" aria-labelledby="flow-stats-heading">
+      <div class="mx-auto max-w-6xl">
+        <div class="max-w-3xl">
+          <p class="of-eyebrow" data-animate="rise">Measured, not promised</p>
+          <h2 id="flow-stats-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Built facts. Exact numbers.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">Four measurements from the running build, with the scope attached.</p>
+        </div>
+        <dl class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-animate-stagger="slow">
           {stats.map((s) => (
-            <div class="flow-stat" data-animate="rise">
+            <div class="flow-stat of-surface rounded-2xl border border-border/70 p-5" data-animate="rise">
               <dd class="flow-stat__row of-spec-figure">
                 <LineIcon name={s.icon} class={`flow-stat__icon flow-stat__icon--${s.tone}`} strokeWidth={1.6} />
                 <span>{s.value}</span>
               </dd>
-              <dt class="of-spec-label mt-1.5 font-semibold text-text">{s.label}</dt>
+              <dt class="of-spec-label mt-2 font-semibold text-text">{s.label}</dt>
               <dd class="of-spec-fine mt-2">{s.fine}</dd>
             </div>
           ))}
         </dl>
+        <p class="mt-7 max-w-3xl text-sm leading-relaxed text-text-muted">
+          {FLOW_SYSTEM_REQUIREMENT}. Flow works with ordinary Markdown files and can run AI
+          locally, across your LAN, or through supported cloud providers.
+        </p>
       </div>
     </section>
 
-    {/* Campaign splice, launch-dark until Flow Ideas has its own acceptance.
-        The measured band above and the real product proof below remain in
-        their original order; this metaphor never replaces either one. */}
-    {ORIONFOLD_FLOW_IDEAS_CAMPAIGN && (
-      <FlowIdeasPitStop id="flow-ideas-pit-stop" variant="flow" />
-    )}
-
-    <!-- ================= THE WHOLE PROMISE IN ONE PICTURE ================= -->
-    <section class="px-6 py-16 sm:py-20">
-      <div class="mx-auto max-w-4xl">
-        <p class="flow-kicker text-center" data-animate="rise">How the pieces fit</p>
-        <h2 class="of-display mt-4 text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Five layers, one approval.</h2>
-        <div class="mt-10">
-          <FlowWorkbenchIllustration />
-          <p class="mx-auto mt-6 max-w-2xl text-center text-sm leading-relaxed text-text-muted">
-            The whole promise in one picture. Your outcome sits on trusted context, specialist
-            intelligence does the work, nothing passes without your call, and a durable receipt
-            records how it happened.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= PRODUCT TOUR (four category pages) =================
-         2026-08-20 split: the tour chapters live at /flow/<category>/
-         (src/components/flow/chapters/*, data in src/data/flow-categories.ts).
-         Each chapter link below carries the chapter's ORIGINAL #tour-<chapter>
-         id, so every deep link published before the split still lands here
-         and goes one click onward. Chapters are numbered 1 to 13 across the
-         four parts so the series reads as one set to complete. -->
+    <!-- ================= PRODUCT TOUR ================= -->
     <section id="tour" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="tour-heading">
       <div class="mx-auto max-w-6xl">
-        <div class="mx-auto max-w-3xl text-center">
+        <div class="max-w-3xl">
           <p class="flow-kicker" data-animate="rise">The product tour</p>
-          <h2 id="tour-heading" class="of-display mt-4 text-[clamp(2.1rem,5vw,3.5rem)]" data-animate="lead">Real screens. Real runs. Real receipts.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">
-            {totalChapters} chapters in four parts. Every screen is a real capture of the development
-            build. Start with the part that matches your question.
-          </p>
+          <h2 id="tour-heading" class="of-display mt-4 text-[clamp(2.1rem,5vw,3.5rem)]" data-animate="lead">Go straight to what matters.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">Four focused tours. Each uses real Flow screens and keeps the qualifications beside the claim.</p>
         </div>
         <div class="mt-12 grid gap-4 md:grid-cols-2" data-animate-stagger>
-          {FLOW_CATEGORIES.map((cat, i) => (
+          {tourCards.map((card) => (
             <article class="flow-cat-card of-surface flex flex-col rounded-2xl border border-border/70 p-6 sm:p-7" data-animate>
-              <a href={flowCategoryHref(cat.slug)} class="flow-cat-card__plate" aria-hidden="true" tabindex="-1">
-                <Image src={FLOW_CATEGORY_SHOTS[cat.slug].src} alt={FLOW_CATEGORY_SHOTS[cat.slug].alt} widths={[560, 1120]} sizes="(min-width: 768px) 42vw, 88vw" class="flow-cat-card__thumb" loading="lazy" decoding="async" />
+              {card.category.chapters.map((chapter) => (
+                <span id={chapter.id} class="scroll-mt-28" aria-hidden="true"></span>
+              ))}
+              <a href={flowCategoryHref(card.slug)} class="flow-cat-card__plate" aria-hidden="true" tabindex="-1">
+                <Image src={FLOW_CATEGORY_SHOTS[card.slug].src} alt={FLOW_CATEGORY_SHOTS[card.slug].alt} widths={[560, 1120]} sizes="(min-width: 768px) 42vw, 88vw" class="flow-cat-card__thumb" loading="lazy" decoding="async" />
               </a>
-              <p class="mt-5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Part {i + 1} of {FLOW_CATEGORIES.length} · {cat.label} · Chapters {chapterOffsets[i] + 1} to {chapterOffsets[i] + cat.chapters.length}</p>
-              <h3 class="mt-3 text-xl font-bold leading-snug"><a href={flowCategoryHref(cat.slug)} class="transition-colors hover:text-primary">{cat.title}</a></h3>
-              <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{cat.blurb}</p>
-              <ul class="flow-cat-card__list mt-5">
-                {cat.chapters.map((ch, j) => (
-                  <li><a id={ch.id} class="scroll-mt-28" href={`${flowCategoryHref(cat.slug)}#${ch.id}`}><span><span class="font-mono text-[0.62rem] text-text-dim">{chapterOffsets[i] + j + 1}</span> {ch.label}</span><span>Read →</span></a></li>
-                ))}
-              </ul>
-              <a href={flowCategoryHref(cat.slug)} class="of-text-action mt-6 inline-flex items-center gap-2">Open {cat.label} <span aria-hidden="true">→</span></a>
+              <p class="mt-5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.category.label}</p>
+              <h3 class="mt-3 text-2xl font-bold leading-tight"><a href={flowCategoryHref(card.slug)} class="transition-colors hover:text-primary">{card.title}</a></h3>
+              <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{card.body}</p>
+              <a href={flowCategoryHref(card.slug)} class="of-text-action mt-6 inline-flex items-center gap-2">Open the tour <span aria-hidden="true">→</span></a>
             </article>
           ))}
         </div>
       </div>
     </section>
 
-    <!-- ================= WHO FEELS THIS FIRST ================= -->
-    <section class="border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="open-file-heading">
-      <div class="mx-auto max-w-6xl">
-        <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker" data-animate="rise">Who feels this first</p>
-          <h2 id="open-file-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Built for the moment someone opens the file.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">
-            Diligence has moved from the story to the artifact. Investors open the file.
-            Journalists check the stat. Clients ask what the AI touched. Flow is for the
-            people whose name is on the document.
-          </p>
+    <!-- ================= COMMERCIAL PROMISE ================= -->
+    <section id="pricing" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="pricing-heading">
+      <div class="mx-auto max-w-5xl">
+        <p class="flow-kicker" data-animate="rise">Base and Pro</p>
+        <h2 id="pricing-heading" class="of-display mt-4 max-w-4xl text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Your documents are free forever. The AI is what you pay for.</h2>
+        <div class="mt-10 grid gap-4 md:grid-cols-2">
+          <article class="of-surface rounded-2xl border border-border/70 p-6">
+            <div class="flex items-baseline justify-between gap-4"><h3 class="text-xl font-bold">Base</h3><span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Free forever</span></div>
+            <p class="mt-4 text-sm leading-relaxed text-text-muted">Read, write, search, organize, chart, and export. No account, no expiry, and no private file format.</p>
+          </article>
+          <article class="of-surface rounded-2xl border border-primary/35 p-6">
+            <div class="flex items-baseline justify-between gap-4"><h3 class="text-xl font-bold">Pro</h3><span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{ORIONFOLD_FLOW_LIVE ? `${flowMonthlyDisplay}/month` : 'Subscription'}</span></div>
+            <p class="mt-4 text-sm leading-relaxed text-text-muted">Add Flow's AI actions, routing, approval, guardrails, and new receipts. One licence covers one person on their own Macs.</p>
+          </article>
         </div>
+        <p class="mt-6 text-sm leading-relaxed text-text-muted">If you stop paying, the AI stops. Your documents remain open and editable.</p>
+      </div>
+    </section>
+
+    <!-- ================= DEEPER ROUTES ================= -->
+    <section id="enterprise" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="deeper-heading">
+      <div class="mx-auto max-w-6xl">
+        <h2 id="deeper-heading" class="of-display max-w-3xl text-[clamp(2rem,4vw,3rem)]" data-animate="lead">One product. The detail you need.</h2>
         <div class="mt-10 grid gap-4 md:grid-cols-3">
           <article class="of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Founders raising</p>
-            <h3 class="mt-3 text-lg font-bold leading-snug">One fake citation can kill a round.</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">Your pitch is a living document with every claim tied to its source. When a partner asks where a number came from, the answer is attached to the number.</p>
+            <p class="flow-kicker">For technical readers</p>
+            <h3 class="mt-3 text-xl font-bold">Check the built facts.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">Start with the qualified measurements above, then follow any tour for formats, routes, limits, and real screens.</p>
+            <a href="#specifications" class="of-text-action mt-5 inline-flex">Review specifications ↑</a>
           </article>
           <article class="of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Comms and earned media</p>
-            <h3 class="mt-3 text-lg font-bold leading-snug">Journalists now screen for AI slop.</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">A story with quotes, stats, and coverage attached earns trust that a polished paste job cannot. Proof travels with the piece, and a human approved every line.</p>
+            <p class="flow-kicker">For organizations</p>
+            <h3 class="mt-3 text-xl font-bold">Make adoption inspectable.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">See how Flow handles data boundaries, attribution, routing, guardrails, evidence, and records.</p>
+            <a href="/flow/enterprise/" class="of-text-action mt-5 inline-flex">Explore enterprise patterns →</a>
           </article>
           <article class="of-surface rounded-2xl border border-border/70 p-6">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Independent operators</p>
-            <h3 class="mt-3 text-lg font-bold leading-snug">Client work that survives scrutiny.</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">Proposals, analyses, and briefs where sensitive documents stay on your Mac by default, and the record shows exactly what ran and what it cost.</p>
+            <p class="flow-kicker">From the founder</p>
+            <h3 class="mt-3 text-xl font-bold">Why approval comes first.</h3>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">The moment invisible AI edits stopped feeling useful, and the product decision that followed.</p>
+            <a href={flowStoryHref} class="of-text-action mt-5 inline-flex">Read the story →</a>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- ================= ENTERPRISE (three cards; all nine on /flow/enterprise/) ================= -->
-    <section id="enterprise" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="enterprise-heading">
-      <div class="mx-auto max-w-6xl">
-        <div class="mx-auto max-w-3xl text-center">
-          <p class="flow-kicker" data-animate="rise">Enterprise adoption patterns</p>
-          <h2 id="enterprise-heading" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">The questions enterprise AI owners ask. Answered in the document.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">
-            Enterprises do not fail at AI for lack of models. They fail because they cannot tell
-            which 30 percent of the output is wrong, who approved what, and what it all cost.
-          </p>
-        </div>
-        <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger>
-          {FLOW_ENTERPRISE_TEASER.map((card) => (
-            <article class="flow-ent-card of-surface flex flex-col rounded-2xl border border-border/70 p-6" data-animate>
-              <div class="flex items-center justify-between gap-3">
-                <span class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.k}</span>
-                <span class:list={['flow-ent-tag', card.tag === 'Direction' && 'flow-ent-tag--direction']}>{card.tag}</span>
-              </div>
-              <h3 class="mt-3 text-lg font-bold leading-snug">{card.q}</h3>
-              <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{card.a}</p>
-            </article>
-          ))}
-        </div>
-        <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <a href="/flow/enterprise/" class="of-primary-action">All nine patterns, with what ships today</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= PRESS KIT ================= -->
-    {/* Pricing sits after the reader has seen what Flow does and before the
-        press kit. While ORIONFOLD_FLOW_LIVE is off it shows the Base/Pro
-        capability split with no amount and no buy button. */}
-    <FlowPricing />
-
-    <section id="press" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="press-heading">
+    <!-- ================= PRESS FACTS ================= -->
+    <section id="press" class="scroll-mt-28 border-t border-border/70 px-6 py-12" aria-labelledby="press-heading">
       <div class="mx-auto max-w-4xl">
-        <p class="flow-kicker text-center" data-animate="rise">Writing about Flow?</p>
-        <h2 id="press-heading" class="of-display mt-4 text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">The facts, ready to quote.</h2>
-        <div class="mt-10 overflow-hidden rounded-2xl border border-border/70">
-          <table class="w-full text-left text-sm">
-            <tbody class="divide-y divide-border/70">
-              <tr class="bg-surface"><th scope="row" class="w-40 px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Product</th><td class="px-5 py-3.5 text-text">Orionfold Flow. A native Mac app for professional documents with AI agency built in.</td></tr>
-              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Tagline</th><td class="px-5 py-3.5 text-text">"{SITE.tagline}."</td></tr>
-              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Status</th><td class="px-5 py-3.5 text-text">{pressStatus}</td></tr>
-              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Patent</th><td class="px-5 py-3.5 text-text">Flow includes patent-pending technology for revision-scoped, verifiable AI agency in durable documents.</td></tr>
-              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">The wedge</th><td class="px-5 py-3.5 text-text">Text changes two ways only: an edit you typed, or a change you approved. Every AI change is an exact diff with evidence, checks, and a receipt naming what ran, where, and what it cost. Chat is where work evaporates; Flow is where the record is kept.</td></tr>
-              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Numbers</th><td class="px-5 py-3.5 text-text">Search p95 of 22.3 ms on a 10,000-note library (2026-08-04). Long-document planning linear through 620,000 characters. A real billed run recorded at $0.00425, reproducible to the digit. A complete two-engine local AI runtime inside the app for about 19 MiB (2026-08-14).</td></tr>
-              <tr class="bg-surface"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Founder</th><td class="px-5 py-3.5 text-text">Manav Sehgal, Orionfold LLC, Sacramento, California. Press and analyst contact: <a href="mailto:manav@orionfold.com" class="text-primary underline underline-offset-2">manav@orionfold.com</a>.</td></tr>
-              <tr class="bg-surface-raised/40"><th scope="row" class="px-5 py-3.5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-text-dim align-top">Imagery</th><td class="px-5 py-3.5 text-text">Every screenshot on this page is a real capture of the running build over a synthetic demo library. Email for original-resolution captures and the app icon.</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="mt-6 text-center text-sm leading-relaxed text-text-muted">
-          Background story: <a href={flowStoryHref} class="text-primary underline underline-offset-2">why I built documents that can think and act</a>.
-          The models, the books, and the Relay and Arena products are in the footer directory.
-        </p>
+        <details class="of-surface group rounded-2xl border border-border/70 p-5">
+          <summary class="cursor-pointer list-none marker:content-none [&::-webkit-details-marker]:hidden">
+            <span class="flex items-center justify-between gap-4"><span><span class="flow-kicker">Press and analysts</span><span id="press-heading" class="mt-2 block text-xl font-bold">The facts, ready to quote.</span></span><span class="text-primary transition-transform group-open:rotate-45" aria-hidden="true">+</span></span>
+          </summary>
+          <div class="mt-5 grid gap-4 border-t border-border/70 pt-5 text-sm leading-relaxed text-text-muted sm:grid-cols-2">
+            <p><strong class="text-text">Product.</strong> Orionfold Flow is a native Mac app for professional documents with AI agency built in. {SITE.tagline}.</p>
+            <p><strong class="text-text">Status.</strong> {pressStatus}</p>
+            <p><strong class="text-text">Technology.</strong> Flow includes patent-pending technology for revision-scoped, verifiable AI agency in durable documents.</p>
+            <p><strong class="text-text">Contact.</strong> Manav Sehgal, Orionfold LLC, Sacramento, California. <a href="mailto:manav@orionfold.com" class="text-primary underline underline-offset-2">manav@orionfold.com</a>.</p>
+          </div>
+        </details>
       </div>
     </section>
 
     <!-- ================= FAQ ================= -->
     <section class="bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="faq-heading">
       <div class="mx-auto max-w-3xl">
-        <h2 id="faq-heading" class="of-display text-center text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Questions, answered plainly.</h2>
+        <h2 id="faq-heading" class="of-display text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Good questions. Plain answers.</h2>
         <div class="mt-10 flex flex-col gap-3">
           {faqs.map((f) => (
             <details class="of-surface group rounded-2xl border border-border/70 p-5 open:border-primary/30">
               <summary class="cursor-pointer list-none text-base font-semibold text-text marker:content-none [&::-webkit-details-marker]:hidden">
-                <span class="flex items-center justify-between gap-4">
-                  {f.q}
-                  <span class="text-primary transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span>
-                </span>
+                <span class="flex items-center justify-between gap-4">{f.q}<span class="text-primary transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span></span>
               </summary>
               <p class="mt-3 text-sm leading-relaxed text-text-muted">{f.a}</p>
             </details>

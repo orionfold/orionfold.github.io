@@ -20,7 +20,7 @@ const concept = read('src/pages/flow/ideas-in-motion.astro');
 const measurements = read('src/data/flow-measurements.ts');
 
 assert.match(launch, /PUBLIC_FLOW_IDEAS_CAMPAIGN === ["']true["']/, 'concept route retains its explicit opt-in flag');
-assert.match(flow, /ORIONFOLD_FLOW_IDEAS_CAMPAIGN && \(/, 'Flow detail page keeps the optional campaign mount');
+assert.doesNotMatch(flow, /ORIONFOLD_FLOW_IDEAS_CAMPAIGN|FlowIdeasPitStop/, 'the definitive Flow overview leaves racing campaign art on Home');
 assert.match(concept, /if \(!ORIONFOLD_FLOW_IDEAS_CAMPAIGN\)/, 'concept route remains gated');
 assert.match(concept, /noindex=\{true\}/, 'concept route stays out of search');
 assert.match(config, /!page\.endsWith\(['"]\/flow\/ideas-in-motion\/['"]\)/, 'sitemap excludes the concept route');

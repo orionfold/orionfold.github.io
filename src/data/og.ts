@@ -178,9 +178,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/': {
     slug: 'flow',
     eyebrow: 'Orionfold Flow · Patent pending',
-    // Tracks the /flow/ H1 (2026-08-21). The homepage card carries the tagline;
-    // this one must argue its OWN page, so it states what the file can hold.
-    title: 'Charts, diagrams, and pictures. All from plain text in your file.',
+    // G-113: the social card carries the same benefit and approval rhythm as
+    // the canonical overview instead of reopening the old charts-only wedge.
+    title: 'Conduct useful work. Flow refines. You approve.',
     seed: 'flow',
     alt: 'A bar chart drawn inside an Orionfold Flow document, one quarter highlighted in blue against grey, with its title and source line above and below.',
     // Cropped from the /flow/ hero picture (the Visualization Gallery), onto
