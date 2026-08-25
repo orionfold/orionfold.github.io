@@ -58,7 +58,7 @@ test('the production build explicitly enables live workshop enrollment', async (
   assert.doesNotMatch(product, /preview checkout available/);
 });
 
-test('landing page presents every real workshop screen as a theme-aware alternating story', async () => {
+test('landing page presents every real workshop screen as a light-only alternating story', async () => {
   const [product, shot] = await Promise.all([
     read('src/pages/training/relay-operator-workshop/index.astro'),
     read('src/components/training/WorkshopShot.astro'),
@@ -71,8 +71,9 @@ test('landing page presents every real workshop screen as a theme-aware alternat
   assert.match(product, /index % 2 === 1 && 'lg:order-2'/);
   assert.match(product, /index % 2 === 1 && 'lg:order-1'/);
   assert.match(product, /index % 2 === 1 \? 'lg:grid-cols-\[1\.22fr_0\.78fr\]' : 'lg:grid-cols-\[0\.78fr_1\.22fr\]'/);
-  assert.match(shot, /data-shot-light-src/);
-  assert.match(shot, /data-shot-dark-src/);
+  assert.match(shot, /src=\{shot\.light\.src\}/);
+  assert.match(shot, /srcset=\{shot\.light\.srcset\}/);
+  assert.doesNotMatch(shot, /data-shot-dark|shot\.dark/);
   assert.match(shot, /loading="lazy"/);
   assert.match(shot, /fetchpriority="low"/);
 });

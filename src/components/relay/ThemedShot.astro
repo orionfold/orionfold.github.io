@@ -1,9 +1,8 @@
 ---
 // src/components/relay/ThemedShot.astro
-// Theme-aware Relay screenshot. The head bootstrap in Layout assigns only the
-// active theme's responsive srcset, and native loading="lazy" keeps below-fold
-// shots off the initial network path. Exact viewport dimensions from the corpus
-// reserve layout for zero CLS. Never use this for an above-fold LCP hero. See
+// Light-only Relay screenshot. Native loading="lazy" keeps below-fold shots off
+// the initial network path. Exact viewport dimensions from the corpus reserve
+// layout for zero CLS. Never use this for an above-fold LCP hero. See
 // docs/superpowers/specs/2026-07-09-relay-themed-screenshot-component-design.md
 import index from '../../data/relay-shots.json';
 import { themedShotProps } from './themed-shot.logic.mjs';
@@ -26,25 +25,8 @@ const shot = themedShotProps(index, { id, alt });
     loading="lazy"
     decoding="async"
     sizes={shot.sizes}
-    data-relay-shot
-    data-shot-light-src={shot.light.src}
-    data-shot-light-srcset={shot.light.srcset}
-    data-shot-dark-src={shot.dark.src}
-    data-shot-dark-srcset={shot.dark.srcset}
+    src={shot.light.src}
+    srcset={shot.light.srcset}
     data-no-zoom
   />
-  <noscript>
-    <img
-      class="relay-shot__image"
-      src={shot.light.src}
-      srcset={shot.light.srcset}
-      sizes={shot.sizes}
-      width={shot.width}
-      height={shot.height}
-      alt={shot.alt}
-      loading="lazy"
-      decoding="async"
-      data-no-zoom
-    />
-  </noscript>
 </div>

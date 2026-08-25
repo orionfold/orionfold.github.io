@@ -12,12 +12,12 @@ const relayPage = readFileSync(new URL('../../src/pages/relay/index.astro', impo
 // it; the Relay overview remains the canonical placement.
 assert.doesNotMatch(homepage, /<RelayHostBox/, 'Relay Host stays off the Flow-first homepage');
 assert.match(relayPage, /<RelayHostBox\s*\/>/, 'Relay overview uses the shared Relay Host feature');
-assert.match(component, /id: 'settings-host-deployment'/, 'feature uses the current themed Host deployment capture');
-assert.match(component, /data-relay-shot/, 'deployment capture participates in resolved theme switching');
-assert.match(component, /data-shot-light-src=\{deploymentShot\.light\.src\}/, 'light mode uses the optimized light capture');
-assert.match(component, /data-shot-dark-src=\{deploymentShot\.dark\.src\}/, 'dark mode uses the optimized dark capture');
+assert.match(component, /id: 'settings-host-deployment'/, 'feature uses the current Host deployment capture');
+assert.match(component, /src=\{deploymentShot\.light\.src\}/, 'feature uses the optimized light capture directly');
+assert.match(component, /srcset=\{deploymentShot\.light\.srcset\}/, 'feature keeps responsive light sources');
+assert.doesNotMatch(component, /data-relay-shot|data-shot-dark|deploymentShot\.dark/, 'feature has no runtime appearance switch');
 assert.match(component, /--host-canvas-bg: #eff9f8/, 'feature defines a light canvas by default');
-assert.match(component, /:global\(html\[data-theme='dark'\]\) \.relay-host-feature__canvas/, 'feature retains a scoped dark override');
+assert.doesNotMatch(component, /data-theme=['"]dark|data-theme='dark'/, 'feature has no dark override');
 assert.doesNotMatch(component, /import relayHostDeployment/, 'feature no longer pins the legacy dark-only screenshot');
 
-console.log('relay-host-feature-theme: shared homepage and Relay placements honor the resolved theme');
+console.log('relay-host-feature-theme: Relay placement uses one responsive light surface');

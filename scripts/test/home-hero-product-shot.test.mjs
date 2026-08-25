@@ -1,84 +1,70 @@
-// Homepage hero contracts. Rewritten 2026-08-15 for the Flow takeover: the
-// hero is inline in index.astro, leads with the buyer-language wedge headline,
-// captures email directly, and shows the real development-build capture as the
-// only eager image on the page (mobile-perf hygiene: one eager image max).
+// Canonical homepage hero contracts after the product-led racing merge.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const read = (relativePath) => readFileSync(
-  new URL(`../../${relativePath}`, import.meta.url),
-  'utf8',
-);
-
+const read = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url), 'utf8');
 const home = read('src/pages/index.astro');
+const hero = read('src/components/flow/FlowLaunchHomeHero.astro');
+const ticker = read('src/components/flow/FlowCapabilityTicker.astro');
+const css = read('src/styles/global.css');
 const seo = read('src/data/seo.ts');
 const og = read('src/data/og.ts');
-const flowShot = read('src/components/flow/FlowShot.astro');
 
-// 2026-08-21 hero rewrite (operator direction): the H1 is the OUTCOME (the
-// locked tagline), the lede carries the offline wedge, and the contrast
-// headline that used to be the H1 now leads the capability bands. All three
-// still have to be on the page.
-assert.match(home, /Conduct beautiful documents\. Choose where AI operates\./, 'the H1 is the tagline plus the control');
-assert.doesNotMatch(home, /Every other AI tool sends your document to a cloud/, 'the hero drops the lede paragraph; the headline carries the wedge');
-assert.match(home, /Most AI tools rewrite your document\. Flow asks first\./, 'the approval contrast survives as the lead band');
-assert.match(home, /title=\{HOME_TITLE\}/);
-assert.match(home, /hero-gradient-text/, 'the hero title keeps the shared Orionfold gradient fill');
-assert.match(home, /home-chip--accent">Patent pending</, 'the patent-pending chip stays in the hero');
+assert.match(home, /<FlowLaunchHomeHero\s*\/>/, 'homepage mounts one canonical hero');
+assert.match(hero, /You drive the work\.[\s\S]*Flow tunes AI to your needs\./, 'hero keeps the accepted driver and tuning promise');
+assert.match(hero, /\.flow-launch-hero h1\s*\{[\s\S]*?opacity:\s*0\.9;/, 'hero title uses the requested ten-percent transparency');
+assert.match(hero, /I stay in the driver&rsquo;s seat\.[\s\S]*runs it where I choose,[\s\S]*changes nothing until I approve\./, 'founder quote grounds the metaphor in runtime choice and approval');
+assert.match(hero, /flow-launch-hero__chip[^>]*>[\s\S]*?Orionfold Flow\s*<\/span>[\s\S]*flow-launch-hero__chip flow-launch-hero__chip--accent">Native Mac app<\/span>/, 'product labels keep Flow and its native Mac platform in separate pills');
+assert.doesNotMatch(hero, /Flow Ideas launch|Orionfold Flow · Native Mac app/, 'hero omits the launch label and the combined product-platform pill');
+assert.match(hero, /Patent pending/, 'patent-pending status stays above the fold');
+assert.match(hero, /<WaitlistForm[\s\S]*id="home-hero-waitlist"[\s\S]*offer="flow-waitlist"/, 'pre-launch conversion path remains');
+assert.match(hero, /Free to join · Double opt-in · One email a week, no more/, 'waitlist caption remains');
 
-// Hero email capture: the demand-gen surface with its own attribution source.
-assert.match(home, /<WaitlistForm\s[\s\S]*?id="home-hero-waitlist"[\s\S]*?offer="flow-waitlist"/);
-assert.match(home, /Free to join · Double opt-in · One email a week, no more/);
+assert.match(hero, /src=\{pitStopDaylightWide\}[\s\S]*loading="eager"[\s\S]*fetchpriority="high"/, 'landscape campaign art is the eager background');
+assert.match(hero, /<FlowShot[\s\S]*src=\{shotExpandHoverPanel\}[\s\S]*natural/, 'right column is the selected full-fit Flow product shot');
+assert.match(hero, /flow-launch-hero__product-window :global\(\.flow-shot\)\s*\{\s*opacity:\s*0\.9;/, 'product shot uses the requested ten-percent transparency');
+assert.match(hero, /flow-launch-hero__product-window[\s\S]*--flow-product-edge-bleed[\s\S]*width:\s*calc\(100% \+ var\(--flow-product-edge-bleed\)\)/, 'desktop product proof uses the full space through the right edge');
+assert.match(hero, /flow-launch-hero__product-window > \.home-hero__shot-frame\s*\{[\s\S]*?width:\s*110%;[\s\S]*?margin-left:\s*-10%;/, 'large desktop product proof grows ten percent while staying right-anchored');
+assert.doesNotMatch(hero, /width:\s*111\.111%|clip-path:\s*inset\(-4rem 0 -4rem -4rem\)/, 'product proof is not enlarged behind a clipping mask');
+assert.doesNotMatch(hero, /Real Flow build|Live cockpit|Product evidence from the running Mac build/, 'product proof carries no badge or caption');
+assert.doesNotMatch(hero, /src=\{shotExpandHoverPanel\}[\s\S]{0,260}?\bpriority\b/, 'product proof does not compete with the LCP background');
+assert.match(hero, /home-hero__shot-frame/);
+assert.match(hero, /home-hero__sheen/);
+assert.match(css, /@keyframes home-hero-float/);
+assert.match(css, /@keyframes home-hero-sheen/);
+assert.match(css, /prefers-reduced-motion:\s*reduce[\s\S]*\.home-hero__shot-frame\s*\{ animation: none; \}/);
+assert.match(css, /html:has\(\.flow-launch-hero--light\)::-webkit-scrollbar-track\s*\{\s*background:\s*#eef4f1;/, 'homepage scrollbar track blends into the light racing canvas instead of leaving a white seam');
 
-// The real capture is the hero visual and the only eager image candidate;
-// FlowShot renders eager + fetchpriority only when priority is set.
-// 2026-08-21: the hero shot became a FLOW GUIDE DOCUMENT capture. Flow is
-// roughly 90% rendered document and 10% chrome, and every hero shot before
-// this date showed the chrome. The headline promises beautiful documents and
-// the picture is now one, so the two agree.
-assert.match(home, /<FlowShot\s[\s\S]*?src=\{shotGuideSales\}[\s\S]*?priority\s/);
-assert.match(flowShot, /loading=\{priority \? 'eager' : 'lazy'\}/);
-assert.match(flowShot, /fetchpriority=\{priority \? 'high' : undefined\}/);
-assert.equal((home.match(/\spriority\b/g) ?? []).length, 1, 'exactly one FlowShot is the eager hero image');
-
-// The measured stat strip under the hero shot. Reset by the operator
-// 2026-08-22: the "+19.2 MiB" and "140 changes" tiles gave way to two figures
-// about what the app does. Each value here still has a scoped twin in the
-// /flow/ stat band.
-for (const value of ['22.3 ms', '4 AI domains', '$0.00425', '6 AI actions']) {
-  assert.match(home, new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${value} must stay in the hero stat strip`);
+assert.doesNotMatch(home, /heroStats/, 'homepage no longer carries a hero telemetry data structure');
+assert.doesNotMatch(hero, /Pit-wall telemetry|Measured on the running build|flow-launch-hero__telemetry/, 'hero telemetry surface is removed');
+assert.doesNotMatch(hero, /Enter the Ideas pit stop|flow-launch-hero__story-link/, 'hero has no pit-stop text link');
+assert.doesNotMatch(hero, /flow-launch-hero__metaphor|\['User', 'Driver'\]|\['Flow', 'Race car'\]/, 'hero has no explanatory racing legend');
+assert.match(hero, /flow-launch-hero__meta-row[\s\S]*flow-launch-hero__eyebrow[\s\S]*flow-launch-hero__chips/, 'audience copy and right-aligned pills share the compact top row');
+assert.match(hero, /<FlowCapabilityTicker\s*\/>/, 'capability ticker remains inside the racing hero creative');
+for (const value of ['Cloud models', 'OpenAI', 'Anthropic', 'OpenRouter', 'Local models', 'Flow Runtime', 'Ollama', 'LM Studio', 'AI subscriptions', 'Codex CLI', 'Claude Code', 'Everyday work', 'Markdown', 'Charts + diagrams', 'Tables', 'Images', 'Agency', 'Search', 'Benchmarks', 'Routing', 'Guardrails', 'Govern', 'Cost', 'Evidence', 'Receipts', 'Reviews']) {
+  assert.match(ticker, new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${value} remains in the buyer-facing capability ticker`);
 }
-// 2026-08-21: "development build" became "running build" in the pre-launch
-// reframing. The assertion protects the SCOPE line under the hero stats, not
-// the word "development" — every figure must still name what it was measured on.
-assert.match(home, /Measured on the running build/);
+assert.doesNotMatch(ticker, /Exact diffs/, 'ticker omits exact diffs');
+assert.match(ticker, /label: 'Everyday work'[\s\S]*?Markdown[\s\S]*?Charts \+ diagrams[\s\S]*?Tables[\s\S]*?Images[\s\S]*?label: 'Agency'/, 'Everyday work contains only its selected four capabilities');
+assert.match(ticker, /label: 'Govern'[\s\S]*?Cost[\s\S]*?Evidence[\s\S]*?Receipts[\s\S]*?Reviews/, 'receipts return under the Govern category');
+assert.match(ticker, /Tables', icon: 'table'/, 'Tables uses a dedicated table pictogram');
+assert.match(ticker, /Images', icon: 'image'/, 'Images uses a dedicated image pictogram');
+assert.match(ticker, /OpenRouter', path: brandPaths\.openrouter/, 'OpenRouter uses its provider mark');
+assert.match(ticker, /Ollama', image: ollamaLogo/, 'Ollama uses its official provider logo');
+assert.match(ticker, /LM Studio', brandIcon: 'lmstudio'/, 'LM Studio uses a crisp monochrome vector rendition of its provider mark');
+assert.match(ticker, /Codex CLI', path: brandPaths\.openai/, 'Codex reuses the OpenAI provider glyph');
+assert.match(ticker, /Claude Code', path: brandPaths\.anthropic/, 'Claude Code reuses the Anthropic provider glyph');
+assert.doesNotMatch(ticker, /lm-studio-logo\.webp/, 'ticker no longer uses the low-contrast LM Studio raster app icon');
+assert.match(ticker, /width:\s*1\.5rem;[\s\S]*height:\s*1\.5rem;/, 'ticker icons remain visibly sized');
+assert.doesNotMatch(ticker, /flow-capability-ticker__mark/, 'capability icons no longer use tiny boxed glyphs');
+assert.match(ticker, /\[0, 1\]\.map/, 'ticker renders two identical halves');
+assert.match(ticker, /translateX\(-50%\)/, 'ticker loop lands on its identical second half');
+assert.match(ticker, /prefers-reduced-motion:\s*reduce[\s\S]*animation-play-state:\s*paused/, 'ticker pauses for reduced motion');
 
-// Scroll-perf hardening: hero glows are gradients, never blur filters.
-assert.match(home, /radial-gradient\(closest-side, color-mix\(in oklch, var\(--color-primary\)/);
-assert.doesNotMatch(home, /^\s+filter: blur\(/m, 'blur-filter declarations were removed from the homepage as a scroll-jank source');
-
-// Site metadata carries the wedge with waitlist intent.
 assert.match(seo, /tagline: 'Conduct beautiful documents with AI agency built in'/);
-assert.match(
-  seo,
-  /description:\s*\n\s*'Orionfold Flow is the Mac app that brings AI to your documents instead of sending them to a cloud\. It works with the wifi off, and every change is a diff you approve\. Patent pending\.'/,
-);
-assert.match(
-  seo,
-  /ogImageAlt:\s*\n\s*'Orionfold Flow, patent pending: conduct beautiful documents with AI agency built in\. A real capture of the Mac app showing a finished document with charts and tables drawn in place from plain Markdown\.'/,
-);
 assert.match(seo, /slogan: SITE\.tagline/);
-assert.match(seo, /description: SITE\.description/);
-// The home card's title tracks the home H1. It reused the tagline until
-// 2026-08-16, then argued the approval promise from 2026-08-20. On 2026-08-21
-// the H1 became the tagline again, so the card follows it back -- this is the
-// H1 tracking rule holding, not a revert.
 const homeOg = og.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
 assert.match(homeOg, /title: 'Conduct beautiful documents\.'/);
-assert.doesNotMatch(homeOg, /title: SITE\.tagline/, 'the card states its own claim rather than importing the constant');
-// The alt text must describe the card's own capture. That capture is now a
-// quota attainment chart drawn inside a Flow document, not the decision footer.
-assert.doesNotMatch(homeOg, /alt: SITE\.ogImageAlt/);
 assert.match(homeOg, /alt: '[^']*attainment chart/);
 
-console.log('home hero: Flow wedge copy, real capture, waitlist capture, and metadata contracts pass');
+console.log('home hero: daylight racing world, real Flow proof, conversion and metadata contracts pass');

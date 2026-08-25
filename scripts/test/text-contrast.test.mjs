@@ -7,15 +7,14 @@
 // was, and the fine print was below the accessibility floor.
 //
 // The fix that this test protects has two halves:
-//   1. muted/dim were darkened on light and lifted on dark;
+//   1. muted/dim were darkened on the light surface;
 //   2. an --color-accent-ink token was added, because the brand cyan is fine
 //      as a BUTTON FILL (measured against white button text) and not fine as
 //      TYPE on the page canvas. Small accent text uses the ink; fills keep the
 //      accent. Never "fix" a contrast failure by swapping the fill colour.
 //
 // Ratios are computed against BOTH surface levels, because a card sits on
-// --color-surface-raised while the section around it sits on --color-surface,
-// and dark mode inverts which of the two is the harder background.
+// --color-surface-raised while the section around it sits on --color-surface.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -44,14 +43,12 @@ const contrast = (a, b) => {
   return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 };
 
-// The light palette lives in the @theme block; the dark palette remaps the same
-// names under html[data-theme="dark"].
-const lightBlock = css.slice(css.indexOf('@theme {'), css.indexOf('html[data-theme="dark"]'));
-const darkBlock = css.slice(css.indexOf('html[data-theme="dark"]'));
+// The public site has one light palette in the @theme block.
+const lightBlock = css.slice(css.indexOf('@theme {'));
 
 const AA = 4.5;
 
-for (const [themeName, block] of [['light', lightBlock], ['dark', darkBlock]]) {
+for (const [themeName, block] of [['light', lightBlock]]) {
   test(`${themeName} theme text tokens meet WCAG AA on both surface levels`, () => {
     const canvas = tokenIn(block, '--color-surface');
     const raised = tokenIn(block, '--color-surface-raised');

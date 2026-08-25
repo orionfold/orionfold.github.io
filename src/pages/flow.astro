@@ -50,6 +50,7 @@ import { FLOW_ENTERPRISE_TEASER } from '../data/flow-enterprise';
 import { FLOW_CONSENT_TEXT } from '../data/flow-consent';
 import { FLOW, formatUsd } from '../data/commerce.ts';
 import { FLOW_SYSTEM_REQUIREMENT } from '../data/flow-pricing.ts';
+import { FLOW_MEASUREMENTS } from '../data/flow-measurements.ts';
 import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN, ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import '../styles/flow.css';
 
@@ -77,23 +78,7 @@ const chapterOffsets = FLOW_CATEGORIES.reduce<number[]>((acc, c, i) => [...acc, 
 // was measured and on what — and no longer carries capture dates. The dates
 // remain recorded in the capability briefs and this file's history; nothing
 // about a figure changed, only whether the strip prints its timestamp.
-const stats = [
-  { value: '22.3 ms', label: 'Search, 95th percentile', fine: 'Measured on a 10,000-note library, Apple silicon', icon: 'searchFast', tone: 'speed' },
-  { value: '620,000', label: 'Characters planned part by part', fine: 'Long documents are split in about 0.5 seconds, and the time grows evenly with length', icon: 'document', tone: 'craft' },
-  { value: '$0.00425', label: 'A real billed run, to the digit', fine: '105 input and 149 output tokens. Exact decimal arithmetic', icon: 'receipt', tone: 'money' },
-  { value: '+19.2 MiB', label: 'A complete local AI runtime', fine: 'Two engines inside the app. About the size of twenty photos', icon: 'chip', tone: 'route' },
-  { value: '6 actions', label: 'The Agency catalog', fine: 'Proofread, Summarize, Translate, two table conversions, and Expand with Sources', icon: 'actions', tone: 'craft' },
-  { value: '4 domains', label: 'Where AI may run', fine: 'Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own switch', icon: 'domains', tone: 'route' },
-  // 34 + 20 is the honest composition and the fine print says so: the app's
-  // own vocabulary file (App/Editor/fence-vocabulary.mjs) lists 34 chartType
-  // values, and the diagram fence renders 20 further types through a separate
-  // renderer. Never say "54 chart types" — that would misread the 34.
-  { value: '54 pictures', label: '34 chart plus 20 diagram types', fine: 'Drawn in place from plain text in your file, offline, in one house style', icon: 'chart', tone: 'craft' },
-  // Ninth figure keeps the grid square at three columns, and it is the one
-  // number that answers "what happens when I point Flow at everything I have".
-  { value: '1.1 s', label: 'First index of 10,000 notes', fine: 'Measured on a 10,000-note library, Apple silicon. Results stream in as it goes', icon: 'bolt', tone: 'speed' },
-  { value: '140 changes', label: 'Shipped in the last 24 days', fine: 'Counted from the Flow changelog, which records user-visible behavior only', icon: 'refresh', tone: 'pace' },
-];
+const stats = FLOW_MEASUREMENTS;
 
 // Price strings come from the catalog via formatUsd, never from a literal, so
 // the FAQ, the pricing section and the JSON-LD Offer cannot disagree.

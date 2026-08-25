@@ -1,10 +1,7 @@
 ---
-// Theme-aware flagship artwork for the homepage Flow introduction. Both
-// production masters share one approved composition; Layout assigns only the
-// active theme's responsive sources so the below-fold image stays economical.
+// Light-only flagship artwork for the homepage Flow introduction.
 import { getImage } from 'astro:assets';
 import lightMaster from '../../assets/flow/living-workbench-light-alpha-v2.png';
-import darkMaster from '../../assets/flow/living-workbench-dark-alpha-v2.png';
 
 interface Props {
   priority?: boolean;
@@ -13,16 +10,13 @@ interface Props {
 
 const { priority = false, class: className } = Astro.props;
 const widths = [480, 720, 960, 1180] as const;
-const [lightVariants, darkVariants] = await Promise.all([
-  Promise.all(widths.map((width) => getImage({ src: lightMaster, width, format: 'webp', quality: 100 }))),
-  Promise.all(widths.map((width) => getImage({ src: darkMaster, width, format: 'webp', quality: 100 }))),
-]);
+const lightVariants = await Promise.all(
+  widths.map((width) => getImage({ src: lightMaster, width, format: 'webp', quality: 100 })),
+);
 const makeSrcset = (variants: Awaited<ReturnType<typeof getImage>>[]) =>
   variants.map((variant, index) => `${variant.src} ${widths[index]}w`).join(', ');
 const lightSrcset = makeSrcset(lightVariants);
-const darkSrcset = makeSrcset(darkVariants);
 const lightSrc = lightVariants.at(-1)!.src;
-const darkSrc = darkVariants.at(-1)!.src;
 const sizes = '(min-width: 1280px) 40rem, (min-width: 1024px) 52vw, calc(100vw - 3rem)';
 ---
 
@@ -42,27 +36,10 @@ const sizes = '(min-width: 1280px) 40rem, (min-width: 1024px) 52vw, calc(100vw -
       decoding="async"
       fetchpriority={priority ? 'high' : 'low'}
       sizes={sizes}
-      data-relay-shot
-      data-shot-light-src={lightSrc}
-      data-shot-light-srcset={lightSrcset}
-      data-shot-dark-src={darkSrc}
-      data-shot-dark-srcset={darkSrcset}
+      src={lightSrc}
+      srcset={lightSrcset}
       data-no-zoom
     />
-    <noscript>
-      <img
-        class="flow-workbench__image"
-        src={lightSrc}
-        srcset={lightSrcset}
-        sizes={sizes}
-        width={1182}
-        height={1331}
-        alt="Flow's Living Workbench connects an outcome, trusted context, self-improving intelligence, AI agency, and your judgment in one durable document."
-        loading="lazy"
-        decoding="async"
-        data-no-zoom
-      />
-    </noscript>
   </div>
 </figure>
 
@@ -101,15 +78,6 @@ const sizes = '(min-width: 1280px) 40rem, (min-width: 1024px) 52vw, calc(100vw -
     height: 100%;
     object-fit: contain;
     filter: drop-shadow(0 1.4rem 2.6rem rgb(18 40 48 / 0.09));
-  }
-
-  :global(html[data-theme='dark']) .flow-workbench::before {
-    background: color-mix(in oklch, var(--color-primary) 18%, transparent);
-    opacity: 0.88;
-  }
-
-  :global(html[data-theme='dark']) .flow-workbench__image {
-    filter: drop-shadow(0 1.6rem 3rem rgb(0 0 0 / 0.32));
   }
 
   @media (prefers-reduced-motion: no-preference) {

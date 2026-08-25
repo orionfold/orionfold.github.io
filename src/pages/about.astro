@@ -372,7 +372,6 @@ const beliefs = [
   /* Band-family chrome, matched to ProductBand so the Flow CTA reads as the
      same surface (blueprint grid + tinted ground, both themes). */
   .flow-band { background-color: oklch(0.97 0.012 200); }
-  :global([data-theme='dark']) .flow-band { background-color: oklch(0.20 0.022 235); }
   .flow-band__grid {
     background-image:
       linear-gradient(to right, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px),
@@ -380,10 +379,5 @@ const beliefs = [
     background-size: 26px 26px;
     -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
     mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
-  }
-  :global([data-theme='dark']) .flow-band__grid {
-    background-image:
-      linear-gradient(to right, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px),
-      linear-gradient(to bottom, oklch(0.70 0.12 210 / 0.09) 1px, transparent 1px);
   }
 </style>

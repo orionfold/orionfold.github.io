@@ -8,7 +8,7 @@ interface Props {
 const { title, description } = Astro.props;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
@@ -16,22 +16,6 @@ const { title, description } = Astro.props;
     <meta name="referrer" content="no-referrer" />
     <meta name="description" content={description} />
     <title>{title}</title>
-    <script is:inline>
-      (function () {
-        try {
-          var saved = localStorage.getItem('of-theme');
-          var mode = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'light';
-          var resolved = mode === 'system'
-            ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-            : mode;
-          document.documentElement.setAttribute('data-theme-mode', mode);
-          document.documentElement.setAttribute('data-theme', resolved);
-        } catch (_) {
-          document.documentElement.setAttribute('data-theme-mode', 'light');
-          document.documentElement.setAttribute('data-theme', 'light');
-        }
-      })();
-    </script>
   </head>
   <body class="min-h-screen bg-surface text-text antialiased">
     <slot />

@@ -27,16 +27,17 @@ interface Props {
 
 const { number, label, title, body, rows } = Astro.props;
 const actId = `home-race-act-${number}`;
+const blueprintPlacement = number === '01' ? 'driver' : number === '02' ? 'crew' : 'release';
 ---
 
-<section class="home-race-act" aria-labelledby={actId}>
-  <FlowRaceBlueprint class="home-race-act__blueprint" />
+<section id={actId} class="home-race-act home-race-act--light" aria-labelledby={`${actId}-title`}>
+  <FlowRaceBlueprint class="home-race-act__blueprint" placement={blueprintPlacement} />
   <div class="home-race-act__shell">
     <header class="home-race-act__header">
       <div class="home-race-act__number" aria-hidden="true">{number}</div>
       <div>
         <p data-animate="rise">Race act {number} · {label}</p>
-        <h2 id={actId} data-animate="lead">{title}</h2>
+        <h2 id={`${actId}-title`} data-animate="lead">{title}</h2>
       </div>
       <p class="home-race-act__lede" data-animate="rise">{body}</p>
     </header>
@@ -87,6 +88,7 @@ const actId = `home-race-act-${number}`;
     padding: clamp(5rem, 10vw, 9rem) 1rem;
     color: #f2fbfa;
     background: #071417;
+    scroll-margin-top: 6rem;
   }
   :global(.home-race-act__blueprint) {
     z-index: -1;
@@ -184,5 +186,28 @@ const actId = `home-race-act-${number}`;
   @media (max-width: 919px) {
     .home-race-act__number { margin-bottom: 1rem; }
     .home-race-act__header { align-items: start; }
+  }
+
+  .home-race-act--light {
+    border-color: rgba(15, 118, 116, 0.15);
+    color: #173138;
+    background: #f4f7f5;
+  }
+  .home-race-act--light :global(.home-race-act__blueprint) { opacity: 0.17; }
+  .home-race-act--light :global(.flow-race-blueprint--driver) { opacity: 0.21; }
+  .home-race-act--light :global(.flow-race-blueprint--crew) { opacity: 0.19; }
+  .home-race-act--light :global(.flow-race-blueprint--release) { opacity: 0.16; }
+  .home-race-act--light .home-race-act__number { color: rgba(8, 127, 123, 0.12); }
+  .home-race-act--light .home-race-act__header > div:nth-child(2) > p,
+  .home-race-act--light .home-race-act__station,
+  .home-race-act--light .home-race-act__copy > a { color: #087f7b; }
+  .home-race-act--light .home-race-act__header h2,
+  .home-race-act--light .home-race-act__copy h3 { color: #10272e; }
+  .home-race-act--light .home-race-act__lede,
+  .home-race-act--light .home-race-act__body { color: rgba(29, 57, 63, 0.7); }
+  .home-race-act--light .home-race-act__station span {
+    border-color: rgba(8, 127, 123, 0.25);
+    color: rgba(29, 57, 63, 0.54);
+    background: rgba(255, 255, 255, 0.64);
   }
 </style>

@@ -1,21 +1,19 @@
 ---
 import { getImage, Image } from 'astro:assets';
-import pitStopWide from '../../assets/flow/launch/flow-ideas-pit-stop-wide.webp';
-import pitStopPortrait from '../../assets/flow/launch/flow-ideas-pit-stop-portrait.webp';
-import BrandMark from '../ui/BrandMark.astro';
+import pitStopDaylightWide from '../../assets/flow/launch/flow-ideas-pit-stop-daylight-wide.webp';
+import pitStopDaylightPortrait from '../../assets/flow/launch/flow-ideas-pit-stop-daylight-portrait.webp';
+import { FLOW_STORYBOARD_MEASUREMENTS } from '../../data/flow-measurements.ts';
+import LineIcon from '../ui/LineIcon.astro';
+import FlowRaceBlueprint from './FlowRaceBlueprint.astro';
 
 interface Props {
   id?: string;
   variant?: 'home' | 'flow' | 'story';
-  videoSrc?: string;
-  showStoryLink?: boolean;
 }
 
 const {
   id = 'flow-ideas-pit-stop',
   variant = 'flow',
-  videoSrc,
-  showStoryLink = true,
 } = Astro.props;
 const isStory = variant === 'story';
 
@@ -24,7 +22,7 @@ const isStory = variant === 'story';
 // without every handset downloading the full 1536px source.
 const portraitWidths = [480, 720, 960, 1280];
 const portraitImages = await Promise.all(
-  portraitWidths.map((width) => getImage({ src: pitStopPortrait, width, format: 'webp', quality: 82 })),
+  portraitWidths.map((width) => getImage({ src: pitStopDaylightPortrait, width, format: 'webp', quality: 82 })),
 );
 const portraitSrcset = portraitImages
   .map((image, index) => `${image.src} ${portraitWidths[index]}w`)
@@ -57,20 +55,49 @@ const roles = [
   },
 ];
 
+const storyboard = [
+  {
+    number: '01',
+    label: 'Driver control',
+    title: 'You hold the line.',
+    href: '#home-race-act-01',
+  },
+  {
+    number: '02',
+    label: 'Specialist craft',
+    title: 'The pit crew works the problem.',
+    href: '#home-race-act-02',
+  },
+  {
+    number: '03',
+    label: 'Race performance',
+    title: 'Evidence carries speed forward.',
+    href: '#home-race-act-03',
+  },
+  {
+    number: '04',
+    label: 'Race control',
+    title: 'Governance at the source of knowledge work.',
+    href: '#home-race-control',
+  },
+];
+
 const mediaAlt =
-  'Campaign concept for Orionfold Flow Ideas: the user drives a Flow race car into an Orionfold pit stop, where a specialist crew works around the car while active telemetry monitors show timing, system health, review status, and driver control.';
+  'Flow capabilities storyboard: a driver brings the Flow race car into an Orionfold pit stop while four panels show measured search speed, a billed AI run, first indexing time, and the Agency catalog.';
 ---
 
 <section
   id={id}
-  class:list={['flow-pit', `flow-pit--${variant}`]}
+  class:list={['flow-pit', `flow-pit--${variant}`, 'flow-pit--light']}
   aria-labelledby={`${id}-title`}
 >
-  <div class="flow-pit__atmosphere" aria-hidden="true"></div>
+  <div class="flow-pit__atmosphere" aria-hidden="true">
+    <FlowRaceBlueprint class="flow-pit__blueprint" placement="pit-stop" />
+  </div>
   <div class="flow-pit__shell">
     <header class="flow-pit__header">
       <div>
-        <p class="flow-pit__eyebrow" data-animate="rise">Campaign preview · Flow Ideas</p>
+        <p class="flow-pit__eyebrow" data-animate="rise">Flow Capabilities . Storyboard</p>
         {variant === 'story' ? (
           <h1 id={`${id}-title`} class="flow-pit__title" data-animate="lead">
             You drive. Flow brings the pit crew.
@@ -89,26 +116,7 @@ const mediaAlt =
 
     <figure class="flow-pit__frame" data-animate="plate">
       <div class="flow-pit__media">
-        {videoSrc && (
-          <>
-            <video
-              class="flow-pit__asset flow-pit__video"
-              src={videoSrc}
-              poster={pitStopWide.src}
-              muted
-              loop
-              autoplay
-              playsinline
-              preload="metadata"
-              aria-label={mediaAlt}
-            ></video>
-            <button class="flow-pit__motion-toggle" type="button" aria-label="Pause campaign motion">
-              Pause motion
-            </button>
-          </>
-        )}
-
-        <picture class:list={['flow-pit__picture', videoSrc && 'flow-pit__picture--video-fallback']}>
+        <picture class="flow-pit__picture">
           <source
             media="(max-width: 699px)"
             srcset={portraitSrcset}
@@ -116,7 +124,7 @@ const mediaAlt =
           />
           <Image
             class="flow-pit__asset"
-            src={pitStopWide}
+            src={pitStopDaylightWide}
             alt={mediaAlt}
             widths={[768, 1152, 1600, 2048]}
             sizes="(min-width: 1480px) 1408px, calc(100vw - 3rem)"
@@ -126,38 +134,18 @@ const mediaAlt =
           />
         </picture>
 
-        <div class="flow-pit__brand" aria-hidden="true">
-          <BrandMark size={24} />
-          <span>ORION<span>FOLD</span></span>
-          <strong>FLOW</strong>
-        </div>
-
-        <div class="flow-pit__telemetry" aria-hidden="true">
-          <div class="flow-pit__screen flow-pit__screen--lap">
-            <span>Lap time</span>
-            <strong>00:22.3</strong>
-            <i><b style="width: 78%"></b></i>
-          </div>
-          <div class="flow-pit__screen flow-pit__screen--health">
-            <span>System health</span>
-            <strong>99%</strong>
-            <i><b style="width: 99%"></b></i>
-          </div>
-          <div class="flow-pit__screen flow-pit__screen--crew">
-            <span>Specialists</span>
-            <strong>06 ready</strong>
-            <i><b style="width: 84%"></b></i>
-          </div>
-          <div class="flow-pit__screen flow-pit__screen--control">
-            <span>Driver control</span>
-            <strong>Release held</strong>
-            <i><b style="width: 64%"></b></i>
-          </div>
-        </div>
+        <dl class="flow-pit__telemetry" aria-label="Measured Flow capabilities">
+          {FLOW_STORYBOARD_MEASUREMENTS.map((measurement) => (
+            <div class:list={['flow-pit__screen', `flow-pit__screen--${measurement.tone}`]}>
+              <dt>
+                <LineIcon name={measurement.icon} class="flow-pit__screen-icon" strokeWidth={1.6} />
+                <span>{measurement.label}</span>
+              </dt>
+              <dd>{measurement.value}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-      <figcaption>
-        Campaign telemetry is illustrative. The product tour keeps the proof on real Flow screens and recorded runs.
-      </figcaption>
     </figure>
 
     {variant === 'flow' && (
@@ -175,47 +163,23 @@ const mediaAlt =
       </ol>
     )}
 
-    <div class="flow-pit__actions" data-animate="rise">
-      {showStoryLink && (
-        <a class="flow-pit__primary" href="/flow/ideas-in-motion/">
-          Enter the Ideas Pit Stop <span aria-hidden="true">→</span>
-        </a>
-      )}
-      <a class="flow-pit__secondary" href="/flow/">
-        See the real Flow product <span aria-hidden="true">↗</span>
-      </a>
-    </div>
+    {variant === 'home' && (
+      <nav class="flow-pit__storyboard" aria-label="Flow capability storyboard" data-animate="rise">
+        <ol>
+          {storyboard.map((card) => (
+            <li>
+              <a href={card.href}>
+                <span>{card.number} · {card.label}</span>
+                <strong>{card.title}</strong>
+                <i aria-hidden="true">↓</i>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
   </div>
 </section>
-
-<script>
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  document.querySelectorAll<HTMLElement>('.flow-pit__media:has(.flow-pit__video)').forEach((media) => {
-    const video = media.querySelector<HTMLVideoElement>('.flow-pit__video');
-    const toggle = media.querySelector<HTMLButtonElement>('.flow-pit__motion-toggle');
-    if (!video || !toggle) return;
-
-    let userPaused = false;
-    const updateToggle = () => {
-      const label = video.paused ? 'Play motion' : 'Pause motion';
-      toggle.textContent = label;
-      toggle.setAttribute('aria-label', label === 'Play motion' ? 'Play campaign motion' : 'Pause campaign motion');
-    };
-    const syncMotion = () => {
-      if (reducedMotion.matches || userPaused) video.pause();
-      else void video.play().catch(() => {});
-    };
-    toggle.addEventListener('click', () => {
-      userPaused = !video.paused;
-      syncMotion();
-    });
-    video.addEventListener('play', updateToggle);
-    video.addEventListener('pause', updateToggle);
-    syncMotion();
-    updateToggle();
-    reducedMotion.addEventListener('change', syncMotion);
-  });
-</script>
 
 <style>
   .flow-pit {
@@ -243,14 +207,10 @@ const mediaAlt =
     position: absolute;
     inset: 0;
     z-index: -1;
-    opacity: 0.34;
-    background-image:
-      linear-gradient(110deg, transparent 0 36%, rgba(255,255,255,0.035) 36.2% 36.35%, transparent 36.55% 100%),
-      radial-gradient(circle, rgba(255,255,255,0.15) 0 0.7px, transparent 0.9px);
-    background-size: auto, 5px 5px;
     mask-image: linear-gradient(to bottom, black, transparent 82%);
     pointer-events: none;
   }
+  .flow-pit__atmosphere :global(.flow-pit__blueprint) { opacity: 0.13; }
 
   .flow-pit__shell { width: min(100%, 88rem); margin-inline: auto; }
   .flow-pit__header {
@@ -310,27 +270,6 @@ const mediaAlt =
     object-fit: cover;
     object-position: center;
   }
-  .flow-pit__video {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
-  .flow-pit__motion-toggle {
-    position: absolute;
-    z-index: 5;
-    top: 1.25rem;
-    right: 1.25rem;
-    min-height: 2.25rem;
-    border: 1px solid rgba(203,250,246,0.24);
-    border-radius: 999px;
-    padding: 0.5rem 0.75rem;
-    color: #eefafa;
-    background: rgba(4,13,16,0.88);
-    font: 700 0.62rem/1 var(--font-mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .flow-pit__motion-toggle:focus-visible { outline: 2px solid white; outline-offset: 4px; }
   .flow-pit__media::after {
     content: '';
     position: absolute;
@@ -341,17 +280,49 @@ const mediaAlt =
     pointer-events: none;
   }
 
-  .flow-pit__brand { position: absolute; z-index: 3; top: 1.25rem; left: 1.25rem; display: flex; align-items: center; gap: 0.7rem; border: 1px solid rgba(203,250,246,0.2); border-radius: 999px; padding: 0.5rem 0.75rem 0.5rem 0.55rem; background: rgba(4,13,16,0.88); font: 800 clamp(0.62rem,1vw,0.78rem)/1 var(--font-display); letter-spacing: -0.025em; box-shadow: 0 0.7rem 2rem rgba(0,0,0,0.25); }
-  .flow-pit__brand > span:nth-child(2) > span { color: var(--pit-teal); }
-  .flow-pit__brand strong { margin-left: 0.4rem; color: var(--pit-teal); font-family: var(--font-mono); letter-spacing: 0.12em; }
-
-  .flow-pit__telemetry { position: absolute; z-index: 4; inset: auto 1rem 1rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.55rem; }
-  .flow-pit__screen { min-width: 0; border: 1px solid rgba(160,246,239,0.2); border-radius: 0.55rem; padding: 0.7rem 0.8rem; background: rgba(3,14,18,0.9); box-shadow: 0 0.7rem 2rem rgba(0,0,0,0.32); }
-  .flow-pit__screen span { display: block; overflow: hidden; color: rgba(226,247,246,0.6); font: 600 clamp(0.47rem,0.8vw,0.62rem)/1 var(--font-mono); letter-spacing: 0.12em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-  .flow-pit__screen strong { display: block; margin-top: 0.42rem; overflow: hidden; color: #f5ffff; font: 700 clamp(0.65rem,1.25vw,0.95rem)/1 var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
-  .flow-pit__screen i { display: block; height: 2px; margin-top: 0.55rem; overflow: hidden; background: rgba(207,248,245,0.11); }
-  .flow-pit__screen b { display: block; height: 100%; background: var(--pit-teal); box-shadow: 0 0 0.7rem var(--pit-teal); }
-  .flow-pit__frame figcaption { padding: 0.75rem 1.1rem 0.9rem; color: rgba(221,241,240,0.56); font: 500 0.68rem/1.5 var(--font-mono); letter-spacing: 0.02em; }
+  .flow-pit__telemetry {
+    position: absolute;
+    z-index: 4;
+    inset: auto 1rem 1rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin: 0;
+  }
+  .flow-pit__screen {
+    min-width: 0;
+    border: 1px solid rgba(160,246,239,0.2);
+    border-radius: 0.65rem;
+    padding: 0.75rem 0.8rem;
+    background: rgba(3,14,18,0.9);
+    box-shadow: 0 0.7rem 2rem rgba(0,0,0,0.32);
+    backdrop-filter: blur(10px);
+  }
+  .flow-pit__screen dt {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.48rem;
+    min-height: 2.45em;
+    color: rgba(226,247,246,0.68);
+    font: 650 clamp(0.46rem,0.72vw,0.59rem)/1.25 var(--font-mono);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  .flow-pit__screen dt span { text-wrap: balance; }
+  :global(.flow-pit__screen-icon) {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    color: var(--pit-teal);
+  }
+  .flow-pit__screen--money :global(.flow-pit__screen-icon) { color: #9ee6bd; }
+  .flow-pit__screen--craft :global(.flow-pit__screen-icon) { color: #f6b078; }
+  .flow-pit__screen dd {
+    margin: 0.48rem 0 0;
+    color: #f5ffff;
+    font: 760 clamp(0.72rem,1.35vw,1.05rem)/1 var(--font-mono);
+    white-space: nowrap;
+  }
 
   .flow-pit__roles { display: grid; gap: 1px; margin-top: 1px; overflow: hidden; border: 1px solid rgba(170,245,241,0.14); border-radius: 1.1rem; padding: 0; background: rgba(170,245,241,0.14); list-style: none; }
   .flow-pit__roles li { min-width: 0; padding: 1.25rem; background: rgba(8,23,27,0.96); }
@@ -360,33 +331,113 @@ const mediaAlt =
   .flow-pit__roles h3 { margin-top: 1rem; color: #f3fbfb; font: 700 1.05rem/1.2 var(--font-display); letter-spacing: -0.02em; }
   .flow-pit__roles p { margin-top: 0.55rem; color: rgba(226,243,242,0.66); font-size: 0.88rem; line-height: 1.55; }
 
-  .flow-pit__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 2rem; }
-  .flow-pit__primary, .flow-pit__secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem; min-height: 3rem; border-radius: 999px; padding: 0.75rem 1.1rem; font-size: 0.88rem; font-weight: 750; transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease; }
-  .flow-pit__primary { color: #071416; background: var(--pit-teal); box-shadow: 0 0.8rem 2.5rem color-mix(in oklch, var(--pit-teal) 16%, transparent); }
-  .flow-pit__secondary { border: 1px solid rgba(196,243,239,0.22); color: #eefafa; background: rgba(255,255,255,0.035); }
-  .flow-pit__primary:hover, .flow-pit__secondary:hover { transform: translateY(-2px); }
-  .flow-pit__primary:focus-visible, .flow-pit__secondary:focus-visible { outline: 2px solid white; outline-offset: 4px; }
+  .flow-pit__storyboard { margin-top: 1rem; }
+  .flow-pit__storyboard ol {
+    display: grid;
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid rgba(170,245,241,0.14);
+    border-radius: 1.1rem;
+    padding: 0;
+    background: rgba(170,245,241,0.14);
+    list-style: none;
+  }
+  .flow-pit__storyboard a {
+    position: relative;
+    display: grid;
+    min-height: 8.2rem;
+    padding: 1.15rem 2.4rem 1.15rem 1.15rem;
+    color: #f3fbfb;
+    background: rgba(8,23,27,0.96);
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+  .flow-pit__storyboard a > span {
+    color: var(--pit-teal);
+    font: 700 0.59rem/1.2 var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .flow-pit__storyboard a > strong {
+    align-self: end;
+    max-width: 18ch;
+    margin-top: 1rem;
+    font: 720 1rem/1.18 var(--font-display);
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .flow-pit__storyboard a > i {
+    position: absolute;
+    right: 1.1rem;
+    bottom: 1.05rem;
+    color: var(--pit-teal);
+    font: 700 1rem/1 var(--font-mono);
+    font-style: normal;
+    transition: transform 160ms ease;
+  }
+  .flow-pit__storyboard a:hover { background: rgba(12,34,39,0.98); }
+  .flow-pit__storyboard a:hover > i { transform: translateY(0.2rem); }
+  .flow-pit__storyboard a:focus-visible { z-index: 1; outline: 2px solid white; outline-offset: -3px; }
 
   @media (min-width: 780px) {
     .flow-pit__header { grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.75fr); }
     .flow-pit__roles { grid-template-columns: repeat(4, 1fr); }
+    .flow-pit__storyboard ol { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
   @media (max-width: 779px) {
     .flow-pit__media { aspect-ratio: 4 / 5; }
     .flow-pit__asset { object-position: center; }
     .flow-pit__telemetry { grid-template-columns: repeat(2, 1fr); }
-    .flow-pit__brand { top: 0.8rem; left: 0.8rem; }
-    .flow-pit__motion-toggle { top: 0.8rem; right: 0.8rem; }
   }
   @media (max-width: 480px) {
     .flow-pit { padding-inline: 1rem; }
     .flow-pit__title { font-size: clamp(2.1rem, 12vw, 3.15rem); }
     .flow-pit__screen { padding: 0.62rem; }
     .flow-pit__screen strong { font-size: 0.67rem; }
-    .flow-pit__actions { align-items: stretch; flex-direction: column; }
-    .flow-pit__primary, .flow-pit__secondary { width: 100%; }
+    .flow-pit__screen dt { min-height: 3.4em; }
+    .flow-pit__screen dd { font-size: 0.67rem; }
   }
+
+  .flow-pit--light {
+    --pit-teal: #087f7b;
+    --pit-teal-dim: #b8dfdb;
+    color: #173138;
+    background:
+      radial-gradient(circle at 76% 18%, rgba(35, 163, 156, 0.11), transparent 28rem),
+      radial-gradient(circle at 12% 82%, rgba(229, 111, 54, 0.075), transparent 24rem),
+      linear-gradient(155deg, #edf4f1 0%, #f7f9f6 52%, #eef4f1 100%);
+  }
+  .flow-pit--light .flow-pit__atmosphere {
+    mask-image: linear-gradient(to bottom, black 0 58%, transparent 92%);
+  }
+  .flow-pit--light .flow-pit__atmosphere :global(.flow-pit__blueprint) { opacity: 0.17; }
+  .flow-pit--light .flow-pit__eyebrow { color: #087f7b; }
+  .flow-pit--light .flow-pit__title { color: #10272e; }
+  .flow-pit--light .flow-pit__lede { color: rgba(29, 57, 63, 0.72); }
+  .flow-pit--light .flow-pit__frame {
+    border-color: rgba(8, 127, 123, 0.22);
+    background: white;
+    box-shadow: 0 2rem 7rem rgba(35, 76, 79, 0.18), 0 0 0 1px rgba(255,255,255,0.7) inset;
+  }
+  .flow-pit--light .flow-pit__roles {
+    border-color: rgba(8, 127, 123, 0.16);
+    background: rgba(8, 127, 123, 0.14);
+  }
+  .flow-pit--light .flow-pit__roles li { background: rgba(255, 255, 255, 0.88); }
+  .flow-pit--light .flow-pit__role-topline { color: #087f7b; }
+  .flow-pit--light .flow-pit__role-topline span { color: rgba(29, 57, 63, 0.48); }
+  .flow-pit--light .flow-pit__roles h3 { color: #10272e; }
+  .flow-pit--light .flow-pit__roles p { color: rgba(29, 57, 63, 0.68); }
+  .flow-pit--light .flow-pit__storyboard ol {
+    border-color: rgba(8, 127, 123, 0.16);
+    background: rgba(8, 127, 123, 0.14);
+  }
+  .flow-pit--light .flow-pit__storyboard a { color: #10272e; background: rgba(255, 255, 255, 0.88); }
+  .flow-pit--light .flow-pit__storyboard a > span,
+  .flow-pit--light .flow-pit__storyboard a > i { color: #087f7b; }
+  .flow-pit--light .flow-pit__storyboard a:hover { background: white; }
+  .flow-pit--light .flow-pit__storyboard a:focus-visible { outline-color: #087f7b; }
   @media (prefers-reduced-motion: reduce) {
-    .flow-pit__primary, .flow-pit__secondary { transition: none; }
+    .flow-pit__storyboard a,
+    .flow-pit__storyboard a > i { transition: none; }
   }
 </style>

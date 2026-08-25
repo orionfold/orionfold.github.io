@@ -26,9 +26,9 @@ const activeImage = swapped.children[0];
 assert.equal(activeImage.tagName, 'img');
 assert.equal(activeImage.properties.alt, 'The home cockpit', 'markdown alt wins');
 assert.equal(activeImage.properties.loading, 'lazy');
-assert.match(activeImage.properties['data-shot-light-srcset'], /720w/, 'carries responsive light sources');
-assert.match(activeImage.properties['data-shot-dark-srcset'], /1600w/, 'carries responsive dark sources');
-assert.equal(swapped.children[1].tagName, 'noscript', 'includes a no-JS fallback');
+assert.match(activeImage.properties.srcSet, /720w/, 'carries responsive light sources directly');
+assert.match(activeImage.properties.src, /\.webp$/, 'carries a direct light source without a theme bootstrap');
+assert.equal(swapped.children.length, 1, 'one light image is the complete no-script-safe result');
 assert.equal(normal.tagName, 'img', 'a normal img is left untouched');
 
 // idempotent: a second pass changes nothing (no relay-shot: src remains)

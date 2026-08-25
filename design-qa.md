@@ -1,59 +1,63 @@
-**Comparison Target**
+# G-111 design QA — product-led, light-only Flow Ideas homepage
 
-- Source visual truth: `/Users/manavsehgal/Downloads/Gemini_Generated_Image_cl6fg6cl6fg6cl6f.jpeg` (2752 × 1536) and `/Users/manavsehgal/Downloads/Gemini_Generated_Image_82f14n82f14n82f1.jpeg` (1536 × 2752).
-- Implementation: campaign-enabled Orionfold homepage at `http://127.0.0.1:4321/`.
-- Desktop capture: `/private/tmp/flow-launch-home-desktop-after-1440x1000.png` (1434 × 996 screenshot from a 1440 × 1000 CSS viewport, DPR 1).
-- Mobile capture: `/private/tmp/flow-launch-home-mobile-after-390x844.png` (384 × 831 screenshot from a 390 × 844 CSS viewport, DPR 1).
-- State: dark theme, Flow live-download state, film paused at the curated pit/tune poster, campaign flag enabled.
-- Density normalization: each source was center-cropped and downsampled to the exact implementation screenshot pixel dimensions before comparison.
+**Review target**
 
-**Full-view Comparison Evidence**
+- Canonical homepage at `http://127.0.0.1:4321/`.
+- Desktop viewport: 1440 × 900.
+- Mobile viewport: 390 × 844 (384 CSS-pixel client width in the in-app browser).
+- Representative public route: `/about/`.
+- Representative private-layout route: `/training/relay-operator-workshop/access/`.
 
-- Desktop: `/private/tmp/flow-launch-design-qa/full-desktop-comparison-after.jpg` (source and implementation side by side at 1434 × 996 each).
-- Mobile: `/private/tmp/flow-launch-design-qa/full-mobile-comparison-after.jpg` (source and implementation side by side at 384 × 831 each).
-- The implementation intentionally adapts the source creative into a movie-poster homepage rather than cloning the unlettered image. The race scene remains the dominant visual, while the existing Flow promise and conversion action create the poster typography layer.
+**Hero findings**
 
-**Focused Region Comparison Evidence**
+- The operator-approved copy pair is “You drive the work. Flow tunes AI to your needs.” with the founder quote “I stay in the driver’s seat. Flow tunes AI to the work in front of me, runs it where I choose, and changes nothing until I approve.”
+- The daylight landscape racing pit-stop creative remains the full-bleed desktop hero background.
+- Mobile resolves the dedicated daylight portrait crop; the racing world, Orionfold sign, headline, and primary CTA remain visible in the opening composition.
+- The separate right-side vertical campaign still/film card is absent.
+- The right proof position renders the operator-selected real `flow-expand-hover-panel-shot.webp` Flow capture in landscape format. The title-bar brand, working document, selected text, Expand with Sources action, and receipt timeline are visible together, with the existing ambient glow, compositor-only float, hover lift, and diagonal sheen shell. At large desktop it is 10% larger and right-anchored through the viewport edge; the complete 16:9 frame remains visible, and the text column itself is unchanged. Mobile also keeps the complete frame.
+- Product-shot badges and captions are removed so the full product surface stands on its own.
+- The hero title and selected product frame render at 90% opacity. The 6px custom scrollbar track now matches the light racing canvas, removing the white strip beside the background without stretching or cropping the artwork.
+- The product capture is visible without opacity gating and is not a second eager LCP candidate.
+- The page renders one H1 and has no horizontal overflow at either reviewed viewport.
+- The former hero telemetry, pit-stop link, and user/driver plus Flow/race-car legend are absent.
+- At desktop, the audience statement stays on one line while all three launch pills share a right-aligned row beside it.
+- A buyer-facing capability ticker loops inside the racing creative from y=794 to y=872 at 1440×900, leaving 28px before the fold. It names verified cloud routes, local routes, AI subscriptions, everyday Flow work, Agency capabilities, and governance controls. It does not advertise Swift or other implementation details.
 
-- Before telemetry fix: `/private/tmp/flow-launch-design-qa/focused-film-comparison-before.jpg`.
-- After telemetry fix: `/private/tmp/flow-launch-design-qa/focused-film-comparison-after.jpg`.
-- Focused comparison was required because the Orionfold marks, Ideas branding, active telemetry, specialist crew, and motion control were too small to judge reliably in the full-page comparison.
+**Blueprint and grid findings**
 
-**Findings**
+- The daylight racing-car blueprint remains recognizable behind the race-act sections.
+- Contrast sharpening preserves the meaningful car outline while the shared opacity and radial mask keep it subordinate to copy and product evidence.
+- A one-pixel technical grid uses the same fade mask, so the raster blueprint dissolves into the grid instead of ending as a hard-edged image.
+- Desktop and mobile resolve only daylight blueprint sources.
 
-- No actionable P0, P1, or P2 findings remain.
-- Fonts and typography: the existing Orionfold display, body, and mono roles are preserved. The large poster headline matches the creative's performance-poster hierarchy, and wrapping remains controlled at 1440 px and 390 px.
-- Spacing and layout rhythm: the desktop one-sheet composition keeps the promise and CTA in the first viewport; mobile stacks the metaphor and film without horizontal overflow. Race acts use clear cinematic pacing without collisions or clipped controls.
-- Colors and visual tokens: charcoal, fogged blue-black, and Orionfold teal match the source; text and controls retain strong contrast in dark and system/light site themes.
-- Image quality and asset fidelity: supplied high-resolution artwork remains the hero source, official brand assets remain intact, the blueprint layers are real raster derivatives of the car and track, and product proof uses real Flow screenshots. The 720 × 1280 motion source is visibly softer than the hero still at large sizes, but it is contained in a portrait film frame and remains a P3 source limitation rather than a blocking mismatch.
-- Copy and content: the existing product promise, founder quote, audience, measured proof, capability copy, enterprise narrative, origin story, and CTA remain. The racing layer is clearly mapped and creative imagery is labeled illustrative; real product proof is labeled `Real Flow build`.
-- Accessibility and behavior: one H1, semantic Play/Pause/Replay buttons, visible focus treatment, descriptive alt text, no autoplay, no loop, reduced-motion-safe page behavior, and no horizontal overflow at the tested mobile width.
+**Light-only appearance findings**
 
-**Comparison History**
+- Homepage, `/about/`, and the private-layout access route all render `data-theme="light"` with the light body background.
+- No theme switcher is present.
+- No dark appearance asset is requested on the reviewed routes.
+- Stale saved preference, system color-scheme, campaign flag, and component tone props have no homepage appearance path.
+- Intentional dark content inside screenshots or campaign photography remains content within the light page, not a selectable site theme.
 
-- Pass 1 finding [P2]: the focused pit-film console showed only `Driver control · Release held`; compared with the source's populated pit-wall screens, the film treatment did not carry enough active telemetry and risked feeling visually under-instrumented.
-- Fix: added three populated status screens directly beneath the motion frame: `System health · 99%`, `Specialists · 06 ready`, and `Driver control · Release held`, while retaining the user-controlled film button.
-- Pass 2 evidence: `/private/tmp/flow-launch-design-qa/focused-film-comparison-after.jpg` shows the revised film card against the normalized source. Branding, crew activity, Ideas signage, moving telemetry, populated status screens, and the release-held control now read as one coherent pit-wall surface. No actionable P0/P1/P2 difference remains.
+**Behavior and diagnostics**
 
-**Primary Interactions Tested**
+- No browser console warnings or errors were observed on the reviewed routes.
+- No horizontal overflow was observed at desktop or mobile widths.
+- Product-shot float and sheen are transform-only; the reduced-motion rule removes both loops while leaving the screenshot visible and static.
+- The capability ticker uses two identical halves and a `translateX(-50%)` seam; reduced motion pauses the loop.
+- The campaign flag still gates the separate Ideas concept route but no longer selects homepage appearance.
+- The former original/dark/light homepage comparison routes and sitemap exception are removed.
 
-- Homepage pit/tune film: Play, Pause, completion at 5.625 seconds, and Replay.
-- Companion two-act story: starting Release pauses Pit/Tune; neither video autoplays or loops.
-- Theme control: campaign skin remains visually stable in dark and system/light states.
-- Responsive layout: 1440 × 1000 and 390 × 844; mobile document width remained 384 px with no horizontal overflow.
-- Console errors checked: none.
+**Verification**
 
-**Implementation Checklist**
+- `npm run test:node` — pass, 72/72 tests.
+- `git diff --check` — pass.
+- `npm run build` — pass, 144 pages.
+- `PUBLIC_FLOW_IDEAS_CAMPAIGN=true npm run build` — pass, 144 pages. The build used existing local snapshots when sandboxed live roadmap/trust pulls were unavailable.
+- Browser QA — pass at 1440 × 900 and 390 × 844, plus representative public/private-layout routes.
 
-- [x] Preserve current product content and real Flow proof.
-- [x] Keep Orionfold, Flow, Ideas, crew, car, and telemetry branding visible.
-- [x] Replace generic campaign grid language with source-derived race/car blueprint assets.
-- [x] Stop the pit/tune film before the invalid backwards-car transition.
-- [x] Keep motion user-controlled and label illustrative versus product evidence.
-- [x] Validate desktop, mobile, alternate theme, interactions, and console.
+**Operator gate**
 
-**Follow-up Polish**
+- Implementation is ready for visual acceptance.
+- No Website commit, push, deploy, campaign activation, spend change, or public positioning change has been performed or authorized.
 
-- [P3] A future native 4K motion render could replace the 720 × 1280 Gemini clip without changing layout or timing.
-
-final result: passed
+final result: ready for operator visual acceptance

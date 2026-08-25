@@ -41,7 +41,7 @@ const pageSchemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const jsonLdSchemas = [orgSchema, ...pageSchemas];
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <!-- Scroll-reveal gate. Without this class, [data-animate] elements paint
@@ -50,59 +50,6 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          JS, this runs synchronously before <body> paints, so the hide-then-
          reveal animation still plays on fast devices. -->
     <script is:inline>document.documentElement.classList.add('js-ready');</script>
-    <!-- No-FOUC theme init. Sets BOTH data-theme-mode (the user's CHOICE:
-         light | dark | system) and data-theme (the RESOLVED value) on <html>
-         BEFORE first paint, so the dark remap + the toggle icon apply with no
-         flash. Reads localStorage "of-theme"; a new user with no saved choice
-         DEFAULTS TO LIGHT (not the OS preference). Only "system" follows the OS.
-         The three-way toggle in the nav writes "of-theme". -->
-    <script is:inline>
-      (function () {
-        try {
-          var saved = localStorage.getItem('of-theme'); // 'light' | 'dark' | 'system' | null
-          var mode = (saved === 'light' || saved === 'dark' || saved === 'system') ? saved : 'light';
-          var resolved = mode === 'system'
-            ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-            : mode;
-          document.documentElement.setAttribute('data-theme-mode', mode);
-          document.documentElement.setAttribute('data-theme', resolved);
-        } catch (e) {
-          document.documentElement.setAttribute('data-theme-mode', 'light');
-          document.documentElement.setAttribute('data-theme', 'light');
-        }
-      })();
-    </script>
-    <!-- Relay screenshots start without a network URL. Assign only the active
-         theme's responsive srcset as each node enters the parsed DOM; native
-         loading="lazy" then defers below-fold figures. Watching data-theme keeps
-         the site's explicit light/dark/system control authoritative. -->
-    <script is:inline>
-      (function () {
-        function applyShot(img) {
-          var theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-          if (img.getAttribute('data-shot-theme') === theme) return;
-          var prefix = theme === 'light' ? 'data-shot-light-' : 'data-shot-dark-';
-          var src = img.getAttribute(prefix + 'src');
-          var srcset = img.getAttribute(prefix + 'srcset');
-          if (!src || !srcset) return;
-          img.setAttribute('srcset', srcset);
-          img.setAttribute('src', src);
-          img.setAttribute('data-shot-theme', theme);
-        }
-        function applyWithin(root) {
-          if (root.nodeType !== 1) return;
-          if (root.matches && root.matches('img[data-relay-shot]')) applyShot(root);
-          if (root.querySelectorAll) root.querySelectorAll('img[data-relay-shot]').forEach(applyShot);
-        }
-        applyWithin(document.documentElement);
-        new MutationObserver(function (mutations) {
-          mutations.forEach(function (mutation) {
-            if (mutation.type === 'attributes') applyWithin(document.documentElement);
-            else mutation.addedNodes.forEach(applyWithin);
-          });
-        }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'], childList: true, subtree: true });
-      })();
-    </script>
     <!-- Warm DNS+TLS for the analytics origins so the post-load gtag.js fetch +
          beacons land quickly (Google Ads pulls a second tagmanager script when
          AW-... is configured below; the GA collect endpoint lives on
@@ -300,9 +247,8 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
     <link rel="preload" href="/fonts/geist-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/geist-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 
-    <!-- Browser chrome paints to match the active surface (light + dark) -->
-    <meta name="theme-color" content="#f9fafb" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#15171b" media="(prefers-color-scheme: dark)" />
+    <!-- The public site is intentionally light-only. -->
+    <meta name="theme-color" content="#f9fafb" />
     <meta name="application-name" content="Orionfold" />
     <meta name="apple-mobile-web-app-title" content="Orionfold" />
     <meta name="format-detection" content="telephone=no" />

@@ -1,30 +1,38 @@
 ---
 import { getImage, Image } from 'astro:assets';
-import blueprintWide from '../../assets/flow/launch/flow-race-blueprint-wide.webp';
-import blueprintPortrait from '../../assets/flow/launch/flow-race-blueprint-portrait.webp';
+import blueprintWideDaylight from '../../assets/flow/launch/flow-race-blueprint-daylight-wide.webp';
+import blueprintPortraitDaylight from '../../assets/flow/launch/flow-race-blueprint-daylight-portrait.webp';
 
 interface Props {
   class?: string;
+  placement?: 'pit-wall' | 'pit-stop' | 'driver' | 'crew' | 'release' | 'finish';
 }
 
-const { class: className } = Astro.props;
+const { class: className, placement = 'pit-wall' } = Astro.props;
 const portraitWidths = [480, 720, 960, 1200];
 const portraitImages = await Promise.all(
-  portraitWidths.map((width) => getImage({ src: blueprintPortrait, width, format: 'webp', quality: 82 })),
+  portraitWidths.map((width) => getImage({ src: blueprintPortraitDaylight, width, format: 'webp', quality: 82 })),
 );
 const portraitSrcset = portraitImages
   .map((image, index) => `${image.src} ${portraitWidths[index]}w`)
   .join(', ');
 ---
 
-<picture class:list={['flow-race-blueprint', className]} aria-hidden="true">
+<picture
+  class:list={[
+    'flow-race-blueprint',
+    `flow-race-blueprint--${placement}`,
+    className,
+  ]}
+  aria-hidden="true"
+>
   <source
-    media="(max-width: 699px)"
+    media="(max-width: 919px)"
     srcset={portraitSrcset}
     sizes="100vw"
   />
   <Image
-    src={blueprintWide}
+    src={blueprintWideDaylight}
     alt=""
     widths={[768, 1152, 1600, 2200]}
     sizes="100vw"
@@ -32,6 +40,7 @@ const portraitSrcset = portraitImages
     decoding="async"
     class="flow-race-blueprint__image"
   />
+  <span class="flow-race-blueprint__grid"></span>
 </picture>
 
 <style>
@@ -41,13 +50,45 @@ const portraitSrcset = portraitImages
     display: block;
     overflow: hidden;
     pointer-events: none;
+    isolation: isolate;
+    background: #f4f6f3;
   }
 
   .flow-race-blueprint__image {
+    position: relative;
+    z-index: 1;
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
+    opacity: 0.44;
+    filter: contrast(1.22) saturate(0.7);
+    mix-blend-mode: multiply;
+    -webkit-mask-image: radial-gradient(ellipse 90% 82% at 58% 46%, #000 14%, rgba(0, 0, 0, 0.86) 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse 90% 82% at 58% 46%, #000 14%, rgba(0, 0, 0, 0.86) 55%, transparent 100%);
+  }
+
+  .flow-race-blueprint__grid {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(8, 127, 123, 0.13) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(8, 127, 123, 0.13) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.58;
+    -webkit-mask-image: radial-gradient(ellipse 92% 82% at 58% 46%, #000 10%, rgba(0, 0, 0, 0.8) 58%, transparent 100%);
+    mask-image: radial-gradient(ellipse 92% 82% at 58% 46%, #000 10%, rgba(0, 0, 0, 0.8) 58%, transparent 100%);
+  }
+  .flow-race-blueprint--pit-wall .flow-race-blueprint__image { object-position: 62% center; }
+  .flow-race-blueprint--pit-stop .flow-race-blueprint__image { object-position: 54% center; }
+  .flow-race-blueprint--driver .flow-race-blueprint__image { object-position: 35% center; }
+  .flow-race-blueprint--crew .flow-race-blueprint__image { object-position: 64% center; }
+  .flow-race-blueprint--release .flow-race-blueprint__image { object-position: 82% center; }
+  .flow-race-blueprint--finish .flow-race-blueprint__image { object-position: 88% center; }
+
+  @media (max-width: 919px) {
+    .flow-race-blueprint__image { object-position: center; }
   }
 </style>

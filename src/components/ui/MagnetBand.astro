@@ -78,15 +78,9 @@ const href = magnetHref(placement);
   .magnet-band {
     background-color: oklch(0.97 0.012 80);
   }
-  :global([data-theme='dark']) .magnet-band {
-    background-color: oklch(0.205 0.018 70);
-  }
   .magnet-band__paper {
     background-image: radial-gradient(oklch(0.60 0.10 70 / 0.16) 1px, transparent 1.4px);
     background-size: 16px 16px;
-  }
-  :global([data-theme='dark']) .magnet-band__paper {
-    background-image: radial-gradient(oklch(0.78 0.12 80 / 0.10) 1px, transparent 1.4px);
   }
 
   /* Desktop-only isometric drift, same compositor-owned recipe as ProofCTA/Hero,

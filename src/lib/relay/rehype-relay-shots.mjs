@@ -1,6 +1,6 @@
 // src/lib/relay/rehype-relay-shots.mjs
 // Rehype plugin: rewrites a portable ![alt](relay-shot:<id>) markdown image
-// into the same responsive, theme-aware markup as ThemedShot. Relay ships the
+// into the same responsive, light-only markup as ThemedShot. Relay ships the
 // verbatim portable marker; the website owns the
 // chrome — honoring the one-direction publish contract. Guarded + idempotent
 // (house pattern, cf. rehype-table-scroll.mjs): only touches nodes whose src
@@ -33,37 +33,12 @@ export default function rehypeRelayShots() {
         loading: 'lazy',
         decoding: 'async',
         sizes: shot.sizes,
-        'data-relay-shot': '',
-        'data-shot-light-src': shot.light.src,
-        'data-shot-light-srcset': shot.light.srcset,
-        'data-shot-dark-src': shot.dark.src,
-        'data-shot-dark-srcset': shot.dark.srcset,
+        src: shot.light.src,
+        srcSet: shot.light.srcset,
         'data-no-zoom': '',
       };
       node.children = [
         { type: 'element', tagName: 'img', properties: imageProperties, children: [] },
-        {
-          type: 'element',
-          tagName: 'noscript',
-          properties: {},
-          children: [{
-            type: 'element',
-            tagName: 'img',
-            properties: {
-              className: ['relay-shot__image'],
-              src: shot.light.src,
-              srcSet: shot.light.srcset,
-              sizes: shot.sizes,
-              width: shot.width,
-              height: shot.height,
-              alt: shot.alt,
-              loading: 'lazy',
-              decoding: 'async',
-              'data-no-zoom': '',
-            },
-            children: [],
-          }],
-        },
       ];
     });
   };

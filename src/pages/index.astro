@@ -36,23 +36,17 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
-import LineIcon from '../components/ui/LineIcon.astro';
 import FlowShot from '../components/flow/FlowShot.astro';
 import FlowDetail from '../components/flow/FlowDetail.astro';
 import FlowIdeasPitStop from '../components/flow/FlowIdeasPitStop.astro';
 import FlowLaunchHomeHero from '../components/flow/FlowLaunchHomeHero.astro';
 import HomeRaceCapabilityAct from '../components/flow/HomeRaceCapabilityAct.astro';
-import WaitlistForm from '../components/ui/WaitlistForm.astro';
-import FlowDownloadCta from '../components/flow/FlowDownloadCta.astro';
-import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN, ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
 import { SITE, PERSON } from '../data/seo';
-import { FLOW_CONSENT_TEXT } from '../data/flow-consent';
 import { FLOW_ENTERPRISE_TEASER } from '../data/flow-enterprise';
 
-import appIcon from '../assets/flow/flow-app-icon-512.png';
 import originArt from '../assets/story/limitless-without-the-pill/hero.png';
 import shotApprove from '../assets/flow/shots/flow-writing-you-approve-shot.webp';
 import shotLongDocs from '../assets/flow/shots/flow-long-documents-shot.webp';
@@ -61,9 +55,6 @@ import shotToolbar from '../assets/flow/shots/flow-editor-toolbar-shot.webp';
 import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
 import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
 import shotRouting from '../assets/flow/shots/flow-smart-routing-shot.webp';
-// Flow Guide capture (3840x2100, light only). The hero artifact: two finished
-// documents, not a panel. See the hero block for why it carries no detail crop.
-import shotGuideSales from '../assets/flow/shots/flow-guide-sales-marketing-shot.webp';
 // Purpose-cut feature details (scripts/prepare-flow-details.mjs). A full window
 // shrunk into a page column renders the control being described at ~8px; these
 // crops show that one control at a size where the claim is checkable.
@@ -102,32 +93,6 @@ const flowSchema = {
 
 // Consent copy is shared (src/data/flow-consent.ts) so a subscriber's recorded
 // consent reads the same no matter which surface captured them.
-const consentText = FLOW_CONSENT_TEXT;
-
-// FOUR MEASURED FIGURES (operator ask 2026-08-22 21:04). Every one is a
-// recorded measurement, not a promise, and each has a longer twin with its
-// scope in the /flow/ stat band — move the two together or they drift apart.
-//
-// The "140 changes" pace tile was dropped here on 2026-08-22: it was a
-// hand-count nothing recomputed, so it went stale between deploys. What
-// replaced it says what the app DOES, which does not rot the same way.
-//
-// Sources: 22.3 ms and $0.00425 are the same measurements the /flow/ band
-// carries. "4 AI domains" is the routing switch set (local, LAN, cloud prepaid,
-// cloud postpaid). "6 AI actions" is the Agency catalog, verified against the
-// app's own toolbar brief: Proofread, Summarize, Translate, both table
-// conversions, and Expand with Sources. Naming three keeps the tile short; if
-// the catalog grows, the number and the /flow/ band both change.
-const heroStats = [
-  // `tone` colours the glyph by what the figure is ABOUT — speed, routing,
-  // money, capability — so the row reads as four different kinds of fact
-  // rather than four of the same. Every tone is a theme-aware token that
-  // redefines in dark, never a hex literal.
-  { value: '22.3 ms', label: 'search across 10,000 notes', icon: 'searchFast', tone: 'speed' },
-  { value: '4 AI domains', label: 'local, LAN, cloud prepaid and postpaid', icon: 'domains', tone: 'route' },
-  { value: '$0.00425', label: 'a real billed run, to the digit', icon: 'receipt', tone: 'money' },
-  { value: '6 AI actions', label: 'proofread, table conversions, expand with sources', icon: 'actions', tone: 'craft' },
-];
 
 // One capability per band, and one picture that PROVES it.
 //
@@ -323,140 +288,14 @@ const capabilityActs = [
   <Nav />
   <!-- Surfaces the ?confirmed= state the confirm-email funnel redirects here with -->
   <ConfirmBanner />
-  <main class:list={['overflow-x-clip', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-theme']}>
+  <main class="home-race-theme overflow-x-clip">
     <!-- ================= HERO ================= -->
-    {ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? (
-      <FlowLaunchHomeHero stats={heroStats} />
-    ) : (
-      <section class="home-hero relative px-6 pb-16 pt-32 sm:pt-36">
-      <div class="home-hero__grid" aria-hidden="true"></div>
-      <div class="home-hero__glow" aria-hidden="true"></div>
-      {/* TWO-COLUMN HERO (2026-08-21, operator direction, modelled on
-          ainative.business). Copy left, product shot right, so the artifact is
-          beside the promise rather than a scroll below it. Collapses to one
-          centred column below lg. */}
-      <div class="relative mx-auto grid w-full max-w-[88rem] items-center gap-10 lg:grid-cols-[0.8fr_1.3fr] lg:gap-12">
-        <!-- Left column: the promise, the proof line, the ask -->
-        <div class="text-center lg:text-left">
-          <div class="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
-            <span class="home-chip">
-              <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
-              Orionfold Flow · Native Mac app
-            </span>
-            <span class="home-chip home-chip--accent">Patent pending</span>
-          </div>
-          <!-- Context first: who this is for, in plain words, before the claim. -->
-          <p class="of-eyebrow mt-7">
-            For creators, builders, and authors.
-            {/* Second line, dimmer: the audience is named first, then widened.
-                Splitting it stops the eyebrow wrapping mid-thought at any
-                width, and the tone drop marks it as the aside it is. */}
-            <span class="hero-icp__wide">Anyone whose name is on the document.</span>
-          </p>
-          {/* The outcome, then the control. "Choose where AI operates" is the
-              offline wedge in the reader's own words: the four execution
-              domains (Local, LAN, Cloud prepaid, Cloud postpaid) are a real
-              shipped switch, so the headline names a capability rather than a
-              mood. */}
-          <h1 class="hero-gradient-text mt-4 font-display text-[clamp(2.1rem,5.4vw,3.4rem)] font-extrabold leading-[1.06] tracking-[-0.05em]">
-            Conduct beautiful documents. Choose where AI operates.
-          </h1>
-          {/* FOUNDER LINE (2026-08-21, operator direction). One-of-one evidence
-              above the fold: the page is one person's, not a company's. The
-              first sentence is the line the founder already published in
-              "Limitless, Without the Pill" and quotes on /about/; the second
-              was added by the operator so the quote carries the hardware
-              choice the headline promises. Link goes to the story, not
-              /about/, so the claim is checkable at its origin. */}
-          <p class="hero-founder mt-6 max-w-xl text-base leading-[1.5] text-text-muted">
-            <span class="italic text-text">&ldquo;I do not write every note anymore, I conduct. Using AI on devices of my choosing. Quality approved by me.&rdquo;</span>{' '}
-            Manav Sehgal, who is building Flow after nine years at Amazon.
-          </p>
-          {/* Same launch switch as the /flow/ hero: the download is the hero's
-              single ask once Flow ships, and the waitlist is the pre-launch
-              stand-in. */}
-          <div class="mt-9 max-w-md lg:mx-0">
-            {ORIONFOLD_FLOW_LIVE ? (
-              /* ONE ASK IN THE HERO (operator 2026-08-22 20:58). Once Flow ships
-                 the download is the only call to action above the fold; the email
-                 capture moved out so the hero does not fork the reader. It still
-                 appears further down the page. */
-              <FlowDownloadCta source="home-hero" size="large" />
-            ) : (
-              /* Pre-launch there is no download to offer, so the hero keeps the
-                 waitlist rather than standing empty. */
-              <>
-                <WaitlistForm
-                  id="home-hero-waitlist"
-                  source="home-hero-waitlist"
-                  offer="flow-waitlist"
-                  buttonText="Join the waitlist"
-                  successMessage="Check your inbox to confirm."
-                  consentText={consentText}
-                />
-                <p class="of-waitlist-caption mt-3 font-mono uppercase text-text-dim">
-                  Free to join · Double opt-in · One email a week, no more
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* RIGHT COLUMN: the artifact. Replaced the approve-gate review window
-            on 2026-08-21: Flow is roughly 90% rendered document and 10%
-            chrome, and every one of the site's sixteen rendered hero shots
-            showed the chrome. This is two documents from the Flow Guide, with
-            an attainment chart, a funnel table, three KPI cards and a sessions
-            line chart, all drawn in place from plain Markdown. The headline
-            says "beautiful documents" and the picture is one.
-            MOTION: float + one slow sheen sweep, ported from ainative.business.
-            Both animate `transform` only (compositor-only, no layout or paint),
-            which is why this is safe on the eager LCP image where a
-            `data-animate` reveal would NOT be -- see the mobile-perf rule that
-            an LCP candidate must never be opacity-gated. Capture is 3840x2100
-            (not the 2560x1400 of the older shots), light theme only. */}
-        <div class="home-hero__shot">
-          <div class="home-hero__shot-frame">
-            <FlowShot
-              src={shotGuideSales}
-              alt="Two documents open side by side in Orionfold Flow: a Q3 sales report showing a quota attainment chart with target markers and a five-stage funnel table, beside a marketing dashboard showing three metric cards with progress bars and a weekly sessions line chart."
-              crop
-              sizes="(min-width: 1536px) 64rem, (min-width: 1280px) 54rem, (min-width: 1024px) 44rem, 100vw"
-              priority
-            />
-            <span class="home-hero__sheen" aria-hidden="true"></span>
-          </div>
-        </div>
-      </div>
-      <div class="mx-auto mt-10 w-full max-w-6xl sm:mt-14">
-        {/* INFOGRAPHIC TILES (operator 2026-08-22 21:14). Even whitespace comes
-            from equal-width columns with one gap value in both axes, and from
-            each tile being a flex column: the icon, figure and label sit on a
-            shared rhythm, so a two-line label cannot shove its neighbours. */}
-        <dl class="grid grid-cols-2 gap-6 lg:grid-cols-4" data-animate-stagger="slow">
-          {heroStats.map((s) => (
-            <div class="hero-stat" data-animate="rise">
-              <dd class="hero-stat__row of-spec-figure text-primary">
-                <LineIcon name={s.icon} class={`hero-stat__icon hero-stat__icon--${s.tone}`} strokeWidth={1.6} />
-                <span>{s.value}</span>
-              </dd>
-              <dt class="hero-stat__label of-spec-label mt-1.5">{s.label}</dt>
-            </div>
-          ))}
-        </dl>
-        <p class="of-spec-fine mt-8 uppercase tracking-[0.14em]">
-          Measured on the running build · <a href="/flow/" class="of-text-action of-compact underline underline-offset-2">See all the numbers</a>
-        </p>
-      </div>
-      </section>
-    )}
-
-
+    <FlowLaunchHomeHero />
     <!-- ================= THE BROKEN LOOP ================= -->
-    <section class:list={['border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-problem']}>
+    <section class="home-race-problem border-y border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="of-eyebrow" data-animate="rise">{ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? 'Before the pit stop · The problem' : 'The problem'}</p>
+          <p class="of-eyebrow" data-animate="rise">Before the pit stop · The problem</p>
           <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Chat is where work evaporates.</h2>
           <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
             You draft in a chat window, paste into your document, and fix the formatting.
@@ -465,17 +304,17 @@ const capabilityActs = [
           </p>
         </div>
         <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger="slow">
-          <article class:list={['of-surface rounded-2xl border border-border/70 p-6', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-card']} data-animate="rise">
+          <article class="home-race-card of-surface rounded-2xl border border-border/70 p-6" data-animate="rise">
             <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">No more pasting</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">The work happens in the file.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Nothing to copy out of a chat, nothing to reformat, and you always see exactly what changed.</p>
           </article>
-          <article class:list={['of-surface rounded-2xl border border-border/70 p-6', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-card']}>
+          <article class="home-race-card of-surface rounded-2xl border border-border/70 p-6">
             <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Attribution survives</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">Which parts you wrote. Which parts AI proposed.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Who approved each change, recorded with the document. When someone opens the file and asks, you have the answer.</p>
           </article>
-          <article class:list={['of-surface rounded-2xl border border-border/70 p-6', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-card']}>
+          <article class="home-race-card of-surface rounded-2xl border border-border/70 p-6">
             <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">A file, not a session</p>
             <h3 class="mt-3 text-lg font-bold leading-snug">Chat workspaces expire. Files are forever.</h3>
             <p class="mt-3 text-sm leading-relaxed text-text-muted">Your work is plain Markdown on your own disk, readable by every other tool you own. No export step, no lock-in.</p>
@@ -518,60 +357,25 @@ const capabilityActs = [
       </div>
     </section>
 
-    {/* FLOW IDEAS LAUNCH ARC. The dedicated flag is deliberately independent
-        of ORIONFOLD_FLOW_LIVE: a live app is not evidence that the Ideas
-        feature or its campaign is accepted. With the flag off this emits no
-        markup, links, or media request into the production homepage. */}
-    {ORIONFOLD_FLOW_IDEAS_CAMPAIGN && (
-      <FlowIdeasPitStop id="home-flow-ideas-pit-stop" variant="home" />
-    )}
+    <FlowIdeasPitStop id="home-flow-ideas-pit-stop" variant="home" />
 
     <!-- ================= CAPABILITY BANDS ================= -->
-    {ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? (
-      capabilityActs.map((act) => (
-        <HomeRaceCapabilityAct
-          number={act.number}
-          label={act.label}
-          title={act.title}
-          body={act.body}
-          rows={act.rows}
-        />
-      ))
-    ) : (
-      capabilityRows.map((row) => (
-        <section class="border-b border-border/60 px-6 py-16 sm:py-24">
-          <div class:list={['mx-auto max-w-3xl', row.align === 'center' ? 'text-center' : row.align === 'right' ? 'lg:ml-auto lg:mr-0' : '']}>
-            <p class="of-eyebrow" data-animate="rise">{row.kicker}</p>
-            <h2 class="of-display mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">{row.title}</h2>
-            <p class:list={['of-lede mt-5', row.align === 'center' && 'mx-auto text-center']} data-animate="rise">{row.body}</p>
-            <a href={row.href} class="of-text-action mt-7 inline-flex items-center gap-2" data-animate="rise">
-              See it in the tour <span aria-hidden="true">→</span>
-            </a>
-          </div>
-          <div
-            class:list={['of-stage mt-12', row.stage.startsWith('t') ? 'of-stage--pad-top' : 'of-stage--pad-bottom']}
-            data-animate="plate"
-          >
-            <FlowShot src={row.shot} alt={row.alt} crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
-            <FlowDetail
-              class={`of-stage__detail of-stage__detail--${row.stage}`}
-              src={row.detail}
-              alt={row.detailAlt}
-              caption={row.detailCaption}
-              sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 4rem)"
-              animate
-            />
-          </div>
-        </section>
-      ))
-    )}
+    {capabilityActs.map((act) => (
+      <HomeRaceCapabilityAct
+        number={act.number}
+        label={act.label}
+        title={act.title}
+        body={act.body}
+        rows={act.rows}
+      />
+    ))}
 
     <!-- ================= ENTERPRISE TEASER ================= -->
-    <section class:list={['bg-surface-raised/40 px-6 py-16 sm:py-24', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-control']}>
+    <section id="home-race-control" class="home-race-control scroll-mt-24 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="home-race-control-title">
       <div class="mx-auto max-w-6xl">
         <div class="mx-auto max-w-3xl text-center">
-          <p class="of-eyebrow" data-animate="rise">{ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? 'Race control · For enterprise AI owners' : 'For enterprise AI owners'}</p>
-          <h2 class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Governance at the source of knowledge work.</h2>
+          <p class="of-eyebrow" data-animate="rise">Race control · For enterprise AI owners</p>
+          <h2 id="home-race-control-title" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]" data-animate="lead">Governance at the source of knowledge work.</h2>
           <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
             The hard part of enterprise AI is not reaching 70 percent accuracy. It is knowing which
             30 percent is wrong, who approved what, and what it cost.
@@ -579,7 +383,7 @@ const capabilityActs = [
         </div>
         <div class="mt-12 grid gap-4 md:grid-cols-3" data-animate-stagger="slow">
           {FLOW_ENTERPRISE_TEASER.map((card) => (
-            <article class:list={['of-surface rounded-2xl border border-border/70 p-6', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-card']} data-animate="rise">
+            <article class="home-race-card of-surface rounded-2xl border border-border/70 p-6" data-animate="rise">
               <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.k}</p>
               <h3 class="mt-3 text-lg font-bold leading-snug">{card.q}</h3>
               <p class="mt-3 text-sm leading-relaxed text-text-muted">{card.a}</p>
@@ -593,7 +397,7 @@ const capabilityActs = [
     </section>
 
     <!-- ================= THE ORIGIN STORY ================= -->
-    <section class:list={['origin-story border-t border-border/70 px-6 py-16 sm:py-24', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-origin']} aria-labelledby="origin-heading">
+    <section class="home-race-origin origin-story border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="origin-heading">
       <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <a
           href="/story/limitless-without-the-pill/"
@@ -615,7 +419,7 @@ const capabilityActs = [
           </span>
         </a>
         <div>
-          <p class="home-kicker">{ORIONFOLD_FLOW_IDEAS_CAMPAIGN ? 'Final lap · The origin story' : 'The origin story'}</p>
+          <p class="home-kicker">Final lap · The origin story</p>
           <h2 id="origin-heading" class="mt-4 text-balance text-4xl font-bold sm:text-5xl">Limitless, without the pill.</h2>
           <p class="mt-5 leading-relaxed text-text-muted">
             The movie sold a fantasy: one pill, and every dormant capability wakes up.
@@ -638,7 +442,7 @@ const capabilityActs = [
       </div>
     </section>
 
-    <div id="waitlist" class:list={['scroll-mt-24', ORIONFOLD_FLOW_IDEAS_CAMPAIGN && 'home-race-waitlist']}>
+    <div id="waitlist" class="home-race-waitlist scroll-mt-24">
       <FlowWaitlist placement="home" />
     </div>
   </main>
@@ -646,85 +450,6 @@ const capabilityActs = [
 </Layout>
 
 <style>
-  /* HERO STAT TILES. An infographic row: each figure gets a glyph in a soft
-     accent chip, and the three parts share one vertical rhythm so the tiles
-     line up whether their label runs one line or two. */
-  .hero-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-  }
-  /* Icon sits ON the figure's own line and is sized in `em`, so it tracks the
-     figure's fluid clamp automatically instead of needing its own breakpoints.
-     No chip: the glyph carries the colour itself. */
-  /* :global() on the icon rules is REQUIRED, not stylistic. Astro scopes a
-     page's <style> by hashing elements in this file's markup; the <svg> is
-     rendered by the LineIcon child component, so it never carries this page's
-     scope hash and an unscoped rule silently does nothing (measured: width
-     computed to 0px and every tone fell back to text colour). */
-  .hero-stat__row {
-    display: flex;
-    align-items: center;
-    gap: 0.45em;
-    /* NEVER WRAP. The icon and its figure are one unit; a wrapped row would
-       drop the glyph onto a line of its own and stop reading as one fact. */
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    /* The figure came down from clamp(1.9rem, 3.4vw, 2.6rem) once the glyph
-       joined its line: the pair is wider than the figure alone, and the widest
-       tile ("4 AI domains") has to clear a quarter of the row at every width. */
-    font-size: clamp(1.35rem, 2.1vw, 1.75rem);
-  }
-  /* Captions come down from the shared .of-spec-label size so the longest one
-     ("proofread, table conversions, expand with sources") sits on one line at
-     desktop instead of wrapping alone and unbalancing the row. */
-  .hero-stat__label {
-    font-size: 0.78rem;
-    line-height: 1.45;
-  }
-  :global(.hero-stat__icon) {
-    width: 0.92em;
-    height: 0.92em;
-    flex: none;
-  }
-  /* Tones are semantic, not decorative: speed, routing, money, capability.
-     Four live theme-aware tokens (each redefines under dark), deliberately not
-     the retired orbit-* hues. Cyan stays the action colour, so the glyph tones
-     read as data categories and never as something to click. */
-  :global(.hero-stat__icon--speed) { color: var(--color-accent-ink); }
-  :global(.hero-stat__icon--route) { color: var(--color-danger); }
-  :global(.hero-stat__icon--money) { color: var(--color-success); }
-  :global(.hero-stat__icon--craft) { color: var(--color-warn); }
-
-  .home-hero {
-    isolation: isolate;
-    /* Clip only the axis that needs it (the decorative grid/glow bleed
-       sideways); the overlaid detail crop hangs past the shot vertically. */
-    overflow-x: clip;
-    background: linear-gradient(155deg, color-mix(in oklch, var(--color-primary) 6%, var(--color-surface)) 0%, var(--color-surface) 55%, color-mix(in oklch, var(--color-primary) 3%, var(--color-surface)) 100%);
-  }
-  .home-hero__grid {
-    position: absolute; inset: 0; pointer-events: none;
-    background-image:
-      linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 100%);
-  }
-  /* Gradient instead of filter: blur(): a 60rem blurred layer re-rasterizes
-     expensively at retina DPR and showed up as scroll jank. Same soft look. */
-  .home-hero__glow { position: absolute; left: 50%; top: -10rem; width: 60rem; height: 40rem; transform: translateX(-50%); background: radial-gradient(closest-side, color-mix(in oklch, var(--color-primary) 13%, transparent), transparent 72%); pointer-events: none; }
-  .home-chip {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    border: 1px solid color-mix(in oklch, var(--color-primary) 25%, var(--color-border));
-    border-radius: 999px;
-    background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface));
-    padding: 0.42rem 0.85rem;
-    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--color-text-muted);
-  }
-  .home-chip--accent { border-color: color-mix(in oklch, var(--color-primary) 55%, var(--color-border)); color: var(--color-accent-ink); font-weight: 650; }
   .home-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.23em; text-transform: uppercase; color: var(--color-accent-ink); }
 
 
@@ -752,44 +477,47 @@ const capabilityActs = [
     .origin-story__card:hover .origin-story__plane { transform: rotateX(4deg) rotateZ(-1deg) scale(1); }
   }
 
-  /* Launch skin. The racing world owns atmosphere and editorial structure;
-     every claim and every real product capture above stays unchanged. */
   .home-race-problem,
   .home-race-control,
   .home-race-origin {
-    border-color: rgba(131, 236, 229, 0.14);
-    color: #f2fbfa;
-    background: #071417;
+    border-color: rgba(15, 118, 116, 0.16);
+    color: #173138;
+    background: #f4f7f5;
   }
   .home-race-problem :is(h2, h3),
   .home-race-control :is(h2, h3),
-  .home-race-origin :is(h2, h3) { color: #f3fbfb; }
+  .home-race-origin :is(h2, h3) { color: #10272e; }
   .home-race-problem :is(.of-lede, article p),
   .home-race-control :is(.of-lede, article p),
-  .home-race-origin > div > div > p { color: rgba(226, 243, 242, 0.66); }
+  .home-race-origin > div > div > p { color: rgba(29, 57, 63, 0.7); }
   .home-race-card {
-    border-color: rgba(151, 239, 233, 0.18);
-    color: #f3fbfb;
-    background: rgba(8, 29, 33, 0.94);
-    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.2);
+    border-color: rgba(15, 118, 116, 0.17);
+    color: #10272e;
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 1.5rem 4rem rgba(35, 76, 79, 0.09);
   }
-  .home-race-card > p:first-child { color: #75eee7; }
+  .home-race-card > p:first-child { color: #087f7b; }
   .home-race-problem :global(.flow-shot),
-  .home-race-origin .origin-story__plane { border-color: rgba(151, 239, 233, 0.22); }
-  .home-race-origin .home-kicker { color: #75eee7; }
-  .home-race-origin .origin-story__plane { background: rgba(8, 29, 33, 0.94); }
+  .home-race-origin .origin-story__plane {
+    border-color: rgba(15, 118, 116, 0.2);
+  }
+  .home-race-origin .home-kicker { color: #087f7b; }
+  .home-race-origin .origin-story__plane {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2.2rem 5rem -2.5rem rgba(22, 74, 75, 0.28);
+  }
   .home-race-waitlist :global(.flow-waitlist--home) {
-    border-color: rgba(131, 236, 229, 0.14);
-    color: #f2fbfa;
-    background: #071417;
+    border-color: rgba(15, 118, 116, 0.16);
+    color: #173138;
+    background: #edf4f1;
   }
   .home-race-waitlist :global(.flow-waitlist__panel) {
-    border-color: rgba(151, 239, 233, 0.2);
-    color: #f3fbfb;
-    background: #0a1d21;
-    box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.32);
+    border-color: rgba(15, 118, 116, 0.2);
+    color: #10272e;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2rem 6rem rgba(35, 76, 79, 0.13);
   }
-  .home-race-waitlist :global(.flow-waitlist__panel h2) { color: #f3fbfb; }
-  .home-race-waitlist :global(.flow-waitlist__panel p) { color: rgba(226, 243, 242, 0.66); }
+  .home-race-waitlist :global(.flow-waitlist__panel h2) { color: #10272e; }
+  .home-race-waitlist :global(.flow-waitlist__panel p) { color: rgba(29, 57, 63, 0.7); }
   @media (prefers-reduced-motion: reduce) { .origin-story__plane { transition: none; } }
 </style>

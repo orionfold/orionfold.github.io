@@ -80,27 +80,10 @@ const deploymentShot = themedShotProps(relayShots, {
               loading="lazy"
               decoding="async"
               class="h-full w-full object-cover object-top"
-              data-relay-shot
-              data-shot-light-src={deploymentShot.light.src}
-              data-shot-light-srcset={deploymentShot.light.srcset}
-              data-shot-dark-src={deploymentShot.dark.src}
-              data-shot-dark-srcset={deploymentShot.dark.srcset}
+              src={deploymentShot.light.src}
+              srcset={deploymentShot.light.srcset}
               data-no-zoom
             />
-            <noscript>
-              <img
-                src={deploymentShot.light.src}
-                srcset={deploymentShot.light.srcset}
-                sizes={deploymentShot.sizes}
-                width={deploymentShot.width}
-                height={deploymentShot.height}
-                alt={deploymentShot.alt}
-                loading="lazy"
-                decoding="async"
-                class="h-full w-full object-cover object-top"
-                data-no-zoom
-              />
-            </noscript>
             <span class="relay-host-shot__sheen" aria-hidden="true"></span>
           </div>
         </div>
@@ -153,38 +136,6 @@ const deploymentShot = themedShotProps(relayShots, {
     transition: background-color 180ms ease, border-color 180ms ease;
   }
 
-  :global(html[data-theme='dark']) .relay-host-feature__canvas {
-    --host-canvas-border: rgb(77 222 219 / 0.32);
-    --host-grid-line: rgb(39 213 210 / 0.055);
-    --host-canvas-radial: rgb(28 203 199 / 0.12);
-    --host-canvas-bg: #061117;
-    --host-canvas-shadow: 0 34px 90px -42px rgb(0 0 0 / 0.85), 0 0 0 1px rgb(20 200 192 / 0.07);
-    --host-glow: rgb(23 210 205 / 0.13);
-    --host-eyebrow: #57e9e5;
-    --host-title: #ffffff;
-    --host-title-accent: #21d3d0;
-    --host-tagline: rgb(255 255 255 / 0.9);
-    --host-tagline-accent: #38e2de;
-    --host-description: rgb(255 255 255 / 0.65);
-    --host-price: rgb(255 255 255 / 0.55);
-    --host-cta-bg: #2ad6d2;
-    --host-cta-hover: #4ce3df;
-    --host-cta-text: #03201f;
-    --host-cta-ring: rgb(42 214 210 / 0.15);
-    --host-focus: #6ff0ed;
-    --host-shot-glow: rgb(33 211 208 / 0.19);
-    --host-frame-border: rgb(96 221 219 / 0.48);
-    --host-frame-bg: #071219;
-    --host-frame-shadow: 0 34px 70px -28px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(66 232 228 / 0.12);
-    --host-frame-hover-shadow: 0 46px 86px -28px rgb(0 0 0 / 0.95), 0 0 0 1px rgb(74 238 234 / 0.45);
-    --host-bar-border: rgb(71 112 120 / 0.42);
-    --host-bar-bg: #09171e;
-    --host-tab: rgb(220 239 241 / 0.58);
-    --host-live: #4de7e3;
-    --host-live-dot: #32dcd8;
-    --host-sheen: rgb(202 255 253 / 0.11);
-  }
-
   .relay-host-feature__glow {
     position: absolute;
     inset: auto -8rem -11rem 35%;
@@ -210,10 +161,6 @@ const deploymentShot = themedShotProps(relayShots, {
 
   .relay-host-feature__topology {
     filter: drop-shadow(0 16px 28px rgb(14 88 86 / 0.12));
-  }
-
-  :global(html[data-theme='dark']) .relay-host-feature__topology {
-    filter: none;
   }
 
   .relay-host-feature__cta {

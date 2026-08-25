@@ -168,105 +168,6 @@
   --of-ease-reveal: cubic-bezier(0.42, 0, 0.32, 1);
 }
 
-/* ── DARK THEME — remap the SAME token names (DS [data-theme="dark"]) ──
-   Driven by `data-theme="dark"` on <html> (set pre-paint by the no-FOUC script
-   in Layout.astro). Tailwind utilities resolve through these CSS vars, so every
-   bg / text / border utility flips automatically — dark mode is a remap, not a
-   rewrite. Operator reversed the earlier light-only decision (2026-06-21): the
-   dark theme reads really well, so it ships. Cyan stays the lone action color
-   (brighter #14c8c0 on dark for contrast).
-   Selector is `html[data-theme="dark"]` (specificity 0,1,1) NOT bare
-   `[data-theme="dark"]` (0,1,0) — Tailwind v4 emits the `@theme` `:root` vars
-   AFTER this rule, so an equal-specificity selector would lose on source order;
-   the `html` qualifier wins the override cleanly. */
-html[data-theme="dark"] {
-  /* surfaces */
-  --color-surface: #15171b;          /* page canvas */
-  --color-surface-raised: #1f2228;   /* cards / rows / header */
-  --color-surface-overlay: #262b33;  /* overlays / popovers */
-  --color-bg: #15171b;
-  --color-raised: #262b33;
-
-  /* text — dim lifted 2026-08-16 (#727a85 measured 4.13:1 on the #15171b
-     canvas and failed AA for the mono fine print it carries; #838b96 clears it
-     at 5.24:1). muted was already comfortable at 6.89:1 and is unchanged. */
-  --color-text: #e9ecf0;
-  --color-text-muted: #9aa1ab;
-  --color-text-dim: #838b96;
-  --color-muted: #9aa1ab;
-  --color-faint: #838b96;
-
-  /* the one action color — brighter cyan on dark */
-  --color-primary: #14c8c0;
-  --color-primary-dim: color-mix(in oklch, #14c8c0 14%, transparent);
-  --color-primary-glow: color-mix(in oklch, #14c8c0 26%, transparent);
-  --color-accent: #14c8c0;
-  --color-accent-hover: #2ad6cd;
-  --color-accent-text: #04201f;
-  --color-accent-soft: color-mix(in oklch, #14c8c0 14%, #1f2228);
-  /* On dark the accent is already 8.59:1 as type, so ink == accent here. The
-     token still exists so components can reference one name in both themes. */
-  --color-accent-ink: #14c8c0;
-
-  /* status */
-  --color-success: #3fd55a;
-  --color-success-dim: color-mix(in oklch, #3fd55a 14%, transparent);
-  --color-success-glow: color-mix(in oklch, #3fd55a 24%, transparent);
-  --color-ok: #3fd55a;
-  --color-warn: #f5b14a;
-  --color-danger: #ff7a93;
-
-  /* hairlines */
-  --color-border: #2c313a;
-  --color-border-strong: #3a414c;
-  --color-track: #2c313a;
-
-  /* categorical tags — dark variants (same domain order as the light :root block:
-     t1 Advisory · t2 Security · t3 Legal · t4 Finance · t5 Medical · t6 Space · t7 Patent/Dataset) */
-  --color-t1-bg: #16345e; --color-t1-fg: #7fb4ff;  /* Advisory (blue)  */
-  --color-t2-bg: #1e2a5e; --color-t2-fg: #aab6ee;  /* Security (indigo)*/
-  --color-t3-bg: #2e2256; --color-t3-fg: #b79cff;  /* Legal (purple)   */
-  --color-t4-bg: #143a28; --color-t4-fg: #62d98c;  /* Finance (green)  */
-  --color-t5-bg: #4a1e30; --color-t5-fg: #ff8db0;  /* Medical (rose)   */
-  --color-t6-bg: #103a3e; --color-t6-fg: #4fd6dd;  /* Space (teal)     */
-  --color-t7-bg: #4a3410; --color-t7-fg: #f5b14a;  /* Patent/Dataset (amber) */
-
-  /* retired orbit hues (dark) */
-  --color-orbit-cyan: #9aa1ab;
-  --color-orbit-gold: #f5b14a;
-  --color-orbit-ink: #e9ecf0;
-
-  /* shadow (deeper on dark) */
-  --shadow-of: 0 1px 2px rgba(0,0,0,0.4);
-  --shadow-of-pop: 0 10px 28px -12px rgba(0,0,0,0.6);
-
-  /* SVG diagram palette (dark) — single-accent: cyan + neutral + status */
-  --svg-card-fill: #1f2228;
-  --svg-card-stroke: color-mix(in oklch, #2c313a 80%, transparent);
-  --svg-bg: #15171b;
-  --svg-bg-inner: #1a1d22;
-  --svg-bg-inner-stroke: color-mix(in oklch, #3a414c 70%, transparent);
-  --svg-stroke: color-mix(in oklch, #2c313a 80%, transparent);
-  --svg-text-bright: #e9ecf0;
-  --svg-text-dim: #9aa1ab;
-  --svg-text-muted: #9aa1ab;
-  --svg-text-extra-dim: #727a85;
-  --svg-text-faint: #727a85;
-  --svg-connector: #727a85;
-  --svg-connector-label: #9aa1ab;
-  --svg-accent-blue: #14c8c0;
-  --svg-accent-teal: #14c8c0;
-  --svg-accent-cyan: #14c8c0;
-  --svg-accent-green: #3fd55a;
-  --svg-accent-green-alt: #3fd55a;
-  --svg-accent-purple: #727a85;
-  --svg-accent-orange: #9aa1ab;
-  --svg-accent-red: #ff7a93;
-  --svg-accent-pink: #9aa1ab;
-
-  color-scheme: dark;
-}
-
 /* ── Base ── */
 html {
   scroll-behavior: smooth;
@@ -681,17 +582,6 @@ img[data-fade] {
   }
 }
 
-/* ── Theme toggle — sun/moon icon swap is pure CSS off data-theme ── */
-/* Three-way theme toggle icon: keyed off data-theme-mode (the CHOICE), so
-   "System" shows the monitor glyph regardless of the resolved light/dark. */
-.theme-toggle { display: inline-flex; align-items: center; }
-.theme-toggle .ic-sun,
-.theme-toggle .ic-moon,
-.theme-toggle .ic-system { display: none; }
-[data-theme-mode="light"] .theme-toggle .ic-sun { display: block; }
-[data-theme-mode="dark"] .theme-toggle .ic-moon { display: block; }
-[data-theme-mode="system"] .theme-toggle .ic-system { display: block; }
-
 /* ── Focus accessibility ── */
 :focus-visible {
   outline: 2px solid var(--color-primary);
@@ -710,6 +600,12 @@ img[data-fade] {
 }
 ::-webkit-scrollbar-track {
   background: var(--color-surface);
+}
+html:has(.flow-launch-hero--light) {
+  scrollbar-color: var(--color-border) #eef4f1;
+}
+html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
+  background: #eef4f1;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
@@ -1025,15 +921,6 @@ img[data-fade] {
     0 2px 6px -2px rgba(16, 22, 30, 0.18),
     0 18px 40px -12px rgba(16, 22, 30, 0.28);
 }
-html[data-theme="dark"] .of-stage .of-stage__detail .flow-detail__plate {
-  /* Dark needs more of the shadow's depth and a light top edge: a dark card on
-     a dark window separates by its rim, not by the shadow the canvas swallows. */
-  border-color: color-mix(in oklch, var(--color-primary) 30%, var(--color-border));
-  box-shadow:
-    0 2px 6px -2px rgba(0, 0, 0, 0.55),
-    0 22px 48px -14px rgba(0, 0, 0, 0.7);
-}
-
 /* ── The crop's own entrance (2026-08-18) ──
    The stage as a whole already animates with data-animate="plate". Reusing
    that on the crop made the two arrive together, which loses the point of the
