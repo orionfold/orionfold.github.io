@@ -46,6 +46,16 @@ jobs:
       - name: Install Chromium for browser regressions
         run: npx playwright install --with-deps chromium
 
+      # Flow is rehearsed locally in its launched state before the product lane
+      # declares release. A push must not turn that rehearsal into a public
+      # placeholder download. The repository variable is an operator-owned
+      # declaration; the script independently requires a real DMG and a signed,
+      # non-empty appcast that names the same package.
+      - name: Verify Flow release boundary
+        env:
+          FLOW_RELEASE_DECLARED: ${{ vars.FLOW_RELEASE_DECLARED }}
+        run: node scripts/check-flow-release-boundary.mjs
+
       - name: Test server and commerce contracts
         run: npm run test:deno
 

@@ -63,7 +63,8 @@ assert.match(nav, /href: '\/relay\/', label: 'Relay'/, 'Relay remains a global f
 assert.match(nav, /href: '\/arena\/', label: 'Arena'/, 'Arena remains a global flagship destination');
 assert.match(flowSubNav, /label: 'Tech Specs', href: '\/flow\/specifications\/'/, 'the Flow-local rail uses Apple\'s concise Tech Specs label');
 assert.match(page, /<FlowSubNav active="specs" \/>/, 'the technical specifications page marks its local-nav item active');
-assert.match(nav, /flowDownloadReady \? FLOW_DMG_URL : \(flowLive \? '\/flow\/#pricing' : '\/flow\/#waitlist'\)/, 'the shared nav cannot advertise the placeholder as a download');
+assert.match(nav, /flowLive \? FLOW_DMG_URL : '\/flow\/#waitlist'/, 'the shared nav keeps the direct launch CTA and the pre-launch waitlist branch');
+assert.doesNotMatch(nav, /See Flow plans/, 'the Flow CTA does not become a pricing detour');
 assert.match(og, /'\/flow\/specifications\/': {[\s\S]*slug: 'flow-specifications'/, 'the route has a social card source');
 assert.match(config, /map\['\/flow\/specifications\/'\] = '2026-08-25'/, 'the route has an honest sitemap date');
 

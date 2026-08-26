@@ -38,7 +38,8 @@ for (const retired of ['Models', 'Training', 'Proof']) {
 // 2026-08-22 10:13: the sticky CTA becomes a direct Download button). Both
 // branches must exist in the source, so the pre-launch wording is still one
 // flag flip away rather than deleted.
-assert.match(nav, /flowDownloadReady \? 'Download Flow' : \(flowLive \? 'See Flow plans' : 'Join the waitlist'\)/, 'the nav CTA switches between a real download, plans, and waitlist');
+assert.match(nav, /flowLive \? 'Download Flow' : 'Join the waitlist'/, 'the nav CTA keeps the same launch intent as the hero and returns to the waitlist when the flag is off');
+assert.doesNotMatch(nav, /See Flow plans/, 'the launch CTA never changes from download intent to a pricing detour');
 assert.match(nav, /'\/flow\/#waitlist'/, 'the pre-launch waitlist path survives in the off branch');
 assert.doesNotMatch(nav, />Get Proposal</, 'the proposal CTA left the nav (footer keeps the path)');
 assert.match(nav, /Orionfold Flow is coming to Mac/, 'the pre-launch sticky bar copy survives in the off branch');
@@ -251,11 +252,12 @@ assert.match(downloadCta, /\{FLOW_DOWNLOAD_CAPTION\}/, 'the subtext comes from t
 // THE NAV STICKY BAR leads with the download once Flow is live (operator ask
 // 2026-08-22 10:13). All three nav calls to action switch together.
 const navSource = read('src/components/Nav.astro');
-assert.match(navSource, /const flowDownloadReady = flowLive && FLOW_DOWNLOAD_READY;/);
-assert.match(navSource, /const navCtaLabel = flowDownloadReady \? 'Download Flow' : \(flowLive \? 'See Flow plans' : 'Join the waitlist'\);/);
+assert.match(navSource, /const navCtaLabel = flowLive \? 'Download Flow' : 'Join the waitlist';/);
 assert.match(navSource, /const stickyCtaLabel = navCtaLabel;/);
-// The nav points at the one download URL only when it is genuinely connected.
-assert.match(navSource, /const flowDownloadHref = flowDownloadReady \? FLOW_DMG_URL : \(flowLive \? '\/flow\/#pricing' : '\/flow\/#waitlist'\);/, 'the nav never advertises the placeholder as a download');
+// The nav keeps the same direct-download contract as every other launch CTA.
+// Release safety is enforced at the deployment boundary, not by changing the
+// action label or detouring this one surface to pricing.
+assert.match(navSource, /const flowDownloadHref = flowLive \? FLOW_DMG_URL : '\/flow\/#waitlist';/, 'the launched nav points at the one canonical download URL');
 
 // BASE IS THE ABSENCE OF AN ENTITLEMENT. It has no SKU, no price and no
 // entitlement string, and the commerce layer must never grow one for it.
