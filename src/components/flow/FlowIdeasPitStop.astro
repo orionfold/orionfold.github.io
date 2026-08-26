@@ -9,11 +9,15 @@ import FlowRaceBlueprint from './FlowRaceBlueprint.astro';
 interface Props {
   id?: string;
   variant?: 'home' | 'flow' | 'story';
+  /** When set, a small pill in the top-right corner of the racing creative links
+   *  to the launch story that walks the same driver / car / crew / record order. */
+  storyHref?: string;
 }
 
 const {
   id = 'flow-ideas-pit-stop',
   variant = 'flow',
+  storyHref,
 } = Astro.props;
 const isStory = variant === 'story';
 
@@ -133,6 +137,12 @@ const mediaAlt =
             decoding="async"
           />
         </picture>
+
+        {storyHref && (
+          <a class="flow-pit__story-link" href={storyHref}>
+            Read the launch story <span aria-hidden="true">→</span>
+          </a>
+        )}
 
         <dl class="flow-pit__telemetry" aria-label="Measured Flow capabilities">
           {FLOW_STORYBOARD_MEASUREMENTS.map((measurement) => (
@@ -280,6 +290,34 @@ const mediaAlt =
     pointer-events: none;
   }
 
+  .flow-pit__story-link {
+    position: absolute;
+    z-index: 5;
+    top: 1rem;
+    right: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    background: rgba(7, 20, 23, 0.66);
+    color: #f2fbfa;
+    font: 700 0.66rem/1 var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  .flow-pit__story-link:hover,
+  .flow-pit__story-link:focus-visible {
+    background: rgba(7, 20, 23, 0.84);
+    transform: translateY(-1px);
+  }
+  .flow-pit__story-link span { transition: transform 0.2s ease; }
+  .flow-pit__story-link:hover span { transform: translateX(2px); }
   .flow-pit__telemetry {
     position: absolute;
     z-index: 4;
@@ -389,6 +427,7 @@ const mediaAlt =
     .flow-pit__telemetry { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 480px) {
+    .flow-pit__story-link { top: 0.65rem; right: 0.65rem; padding: 0.5rem 0.75rem; font-size: 0.6rem; }
     .flow-pit { padding-inline: 1rem; }
     .flow-pit__title { font-size: clamp(2.1rem, 12vw, 3.15rem); }
     .flow-pit__screen { padding: 0.62rem; }

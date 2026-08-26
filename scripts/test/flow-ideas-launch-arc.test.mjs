@@ -26,7 +26,7 @@ assert.match(concept, /noindex=\{true\}/, 'concept route stays out of search');
 assert.match(config, /!page\.endsWith\(['"]\/flow\/ideas-in-motion\/['"]\)/, 'sitemap excludes the concept route');
 
 assert.match(home, /<FlowLaunchHomeHero\s*\/>/, 'homepage always mounts the launch hero');
-assert.match(home, /<FlowIdeasPitStop id="home-flow-ideas-pit-stop" variant="home"\s*\/>/, 'homepage keeps the pit-stop creative');
+assert.match(home, /<FlowIdeasPitStop id="home-flow-ideas-pit-stop" variant="home"(?:\s+storyHref="\/story\/[a-z0-9-]+\/")?\s*\/>/, 'homepage keeps the pit-stop creative (optionally carrying the launch-story pill)');
 assert.doesNotMatch(home, /Take the product tour|Writing about Flow\? Get the facts/, 'problem section has no product-tour or press CTA row');
 assert.match(home, /capabilityActs\.map/, 'homepage keeps the complete racing editorial arc');
 assert.match(home, /id: 'home-race-control'[\s\S]*?number: '04'[\s\S]*?label: 'Governance'[\s\S]*?title: 'Keep the record with the work\.'/, 'receipt proof is presented as race act 04');

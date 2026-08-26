@@ -12,8 +12,7 @@ import Footer from '../../../components/Footer.astro';
 import StorySubscribe from '../../../components/sections/StorySubscribe.astro';
 import StoryPrevNext from '../../../components/story/StoryPrevNext.astro';
 import ProofCTA from '../../../components/story/ProofCTA.astro';
-import ProductBand from '../../../components/product/ProductBand.astro';
-import MagnetBand from '../../../components/ui/MagnetBand.astro';
+import FlowStoryCta from '../../../components/story/FlowStoryCta.astro';
 import { ogPath, storyOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 
@@ -26,6 +25,9 @@ import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 // tall product screenshots squished. One poster across all three keeps the
 // product's face consistent.
 import proofPoster from '../../../assets/proof/orionfold-proof-poster.jpeg';
+import flowPitStop from '../../../assets/flow/launch/flow-ideas-pit-stop-daylight-wide.webp';
+import { ORIONFOLD_FLOW_LIVE } from '../../../data/launch.ts';
+import { FLOW_DMG_URL, FLOW_DOWNLOAD_CAPTION } from '../../../data/flow-pricing.ts';
 
 const POSTER_ALT = 'Orionfold Proof poster: a laptop on a desk emitting a long signed receipt under a star constellation, with the gold title Orionfold Proof.';
 
@@ -60,6 +62,23 @@ const PROOF_CTA = {
   },
 } as const;
 
+// Mid-article Flow download card, same slot mechanism as PROOF_CTA but at the
+// `::flow-cta` directive. Only the launch stories that end on the download ask
+// appear here. The card reuses the canonical download URL and caption so it
+// cannot drift from the hero, nav, and pricing buttons, and it renders only
+// while ORIONFOLD_FLOW_LIVE is on: with the flag off the slot stays empty and
+// the essay's closing link still lands on /flow/ and its waitlist.
+const FLOW_CTA = {
+  'the-pit-crew-that-never-touches-the-wheel': {
+    thumb: flowPitStop,
+    thumbAlt: 'The Orionfold Flow race car in the Ideas pit stop with its crew at work and a driver reading telemetry beside the track.',
+    eyebrow: 'The car in this story',
+    title: 'Orionfold Flow for Mac',
+    description: 'Bring a real document, ask for one proofread, and read the exact diff before anything is saved. Base is free. AI runs use Pro Days.',
+    ctaText: 'Download Flow Now',
+  },
+} as const;
+
 export async function getStaticPaths() {
   const posts = await getCollection('story');
   return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
@@ -70,12 +89,34 @@ const { Content } = await render(post);
 const { title, date, summary, tags, hero, heroAlt } = post.data;
 
 const proofCta = PROOF_CTA[post.id as keyof typeof PROOF_CTA];
+const flowCta = ORIONFOLD_FLOW_LIVE ? FLOW_CTA[post.id as keyof typeof FLOW_CTA] : undefined;
+// Every story ends on Flow (operator 2026-08-26 10:03): the free-book magnet
+// and the tag-routed product band (Proof / Relay / Arena) left the story
+// footer, and one Flow block sits between the prev/next rail and the
+// subscribe form. Launch-dark it asks for the waitlist; live it is the same
+// download as every other Download CTA. A story that already carries the
+// mid-article `::flow-cta` block does not repeat it at the foot.
+const hasMidStoryFlowCta = post.id in FLOW_CTA;
+const footerFlowCta = ORIONFOLD_FLOW_LIVE
+  ? {
+      href: FLOW_DMG_URL,
+      ctaText: 'Download Flow Now',
+      caption: FLOW_DOWNLOAD_CAPTION,
+      downloadSource: `story-footer-${post.id}`,
+    }
+  : {
+      href: '/flow/#waitlist',
+      ctaText: 'Join the waitlist',
+      caption: 'Free to join · Double opt-in · One email a week, no more',
+      downloadSource: undefined,
+    };
 const FLOW_LAUNCH_STORIES = new Set([
   'the-day-i-stopped-trusting-invisible-edits',
   'where-your-ai-actually-runs',
   'the-fastest-model-on-your-mac',
   'a-search-result-is-a-citation',
   'charts-that-come-from-the-words',
+  'the-pit-crew-that-never-touches-the-wheel',
 ]);
 const titleBeforeHero = FLOW_LAUNCH_STORIES.has(post.id);
 
@@ -142,7 +183,7 @@ const breadcrumbSchema = {
   jsonLd={[blogPostingSchema, breadcrumbSchema]}
 >
   <Nav />
-  <main class="px-6 pt-36 pb-28 sm:pt-40">
+  <main class="overflow-x-clip px-6 pt-36 pb-28 sm:pt-40">
     <article class="mx-auto max-w-2xl">
       <a href="/story/" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-primary">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
@@ -224,6 +265,46 @@ const breadcrumbSchema = {
         </>
       )}
 
+      {flowCta && (
+        <>
+          <div id="flow-cta-source" hidden>
+            <FlowStoryCta
+              image={flowCta.thumb}
+              imageAlt={flowCta.thumbAlt}
+              eyebrow={flowCta.eyebrow}
+              title={flowCta.title}
+              description={flowCta.description}
+              ctaText={flowCta.ctaText}
+              href={FLOW_DMG_URL}
+              downloadSource={`story-${post.id}`}
+              caption={FLOW_DOWNLOAD_CAPTION}
+            />
+          </div>
+          <script is:inline define:vars={{ flowDmgUrl: FLOW_DMG_URL, inlineSource: `story-inline-${post.id}` }}>
+            (() => {
+              // Inline prose asks (`:flow-download[...]`) ship as /flow/ links and
+              // become the canonical download only while Flow is live, which is
+              // the only time this script is rendered.
+              for (const link of document.querySelectorAll('[data-flow-inline-download]')) {
+                link.setAttribute('href', flowDmgUrl);
+                link.setAttribute('data-flow-download', inlineSource);
+              }
+              const src = document.getElementById('flow-cta-source');
+              const slot = document.querySelector('[data-flow-cta-slot]');
+              if (!src) return;
+              const card = src.firstElementChild;
+              if (!card) { src.remove(); return; }
+              if (slot) {
+                slot.replaceWith(card);
+              } else {
+                src.parentElement.insertBefore(card, src);
+              }
+              src.remove();
+            })();
+          </script>
+        </>
+      )}
+
       {tags.length > 0 && (
         <ul class="mt-12 flex flex-wrap gap-1.5" aria-label="Tags">
           {tags.map((tag) => (
@@ -238,27 +319,26 @@ const breadcrumbSchema = {
     </article>
   </main>
 
-  <!-- Magnet card (relay latest+21): the owned-audience next step. A reader who
-       finished a Story is warm, so the highest-intent on-site magnet placement is
-       here, right at the foot of the essay. It PAIRS with the /proof/ next step
-       below (ProofBand) rather than replacing it: free book = capture the email,
-       Proof = the paid anchor. Story-specific framing, value-first. -->
-  <MagnetBand
-    placement="story-footer"
-    eyebrow="Want the playbook?"
-    line="This is one entry in the build log. The whole AI Native Business book is free, in PDF and EPUB. Just your email."
-  />
-
   <!-- Read-next/prev within the arc; renders nothing at the ends if neither neighbor exists -->
   <StoryPrevNext current={post} posts={allStories} />
 
-  <!-- A guaranteed product next step on EVERY story. Which of the three products
-       it sells is picked by the story's tags (strong topical match, else a stable
-       hash to a roughly-even split) — see ProductBand + band-for-page. Story pages
-       are lower-intent, so this is the link mode (routes to the product's landing
-       page). The mid-article ProofCTA above stays Proof-specific for Proof-tagged
-       posts. Capture already lives in StorySubscribe below. -->
-  <ProductBand type="story" slug={post.id} tags={tags} />
+  <!-- The one product next step on every story: Flow. Same full-bleed block as
+       the launch story's mid-article ask, so the racing world and the download
+       label agree across the story surface. -->
+  {!hasMidStoryFlowCta && (
+    <FlowStoryCta
+      image={flowPitStop}
+      imageAlt="The Orionfold Flow race car in the Ideas pit stop with its crew at work and a driver reading telemetry beside the track."
+      eyebrow="The product behind these stories"
+      title="Orionfold Flow for Mac"
+      description="Write with AI that proposes exact changes and waits for your approval. Every run leaves a receipt, and the files stay yours. Base is free."
+      ctaText={footerFlowCta.ctaText}
+      href={footerFlowCta.href}
+      downloadSource={footerFlowCta.downloadSource}
+      caption={footerFlowCta.caption}
+      placement="footer"
+    />
+  )}
 
   <!-- Subscribe to stories (H3): same capture block as the story index -->
   <StorySubscribe class="border-t border-border" />

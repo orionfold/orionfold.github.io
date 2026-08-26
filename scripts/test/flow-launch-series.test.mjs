@@ -35,7 +35,7 @@ const flowStories = readdirSync(STORY_DIR)
   .filter(({ text }) => /^tags:[\s\S]*?- Orionfold Flow/m.test(text))
   .filter(({ text }) => (text.match(/\ndate: (\d{4}-\d{2}-\d{2})/)?.[1] ?? '') >= SERIES_START);
 
-assert.equal(flowStories.length, 5, `the Flow launch sequence is five stories, found ${flowStories.length}`);
+assert.equal(flowStories.length, 6, `the Flow launch sequence is five capability stories plus the ad-to-download story, found ${flowStories.length}`);
 
 const editorialContract = {
   'the-day-i-stopped-trusting-invisible-edits.md': {
@@ -77,6 +77,27 @@ const editorialContract = {
       /It adds a fenced block after them/,
     ],
   },
+  // Story #6 speaks to the readers the winning Meta ad (c8, "built by one
+  // founder ... could not touch a document without permission") brought in. It
+  // walks the homepage racing structure (driver, car, pit crew, record) and is
+  // the only story that ends on the download. Its measured numbers must stay
+  // word-for-word with the stories and surfaces that own them.
+  'the-pit-crew-that-never-touches-the-wheel.md': {
+    title: 'The Pit Crew That Never Touches the Wheel',
+    proof: [
+      /could not touch a document without permission/,
+      /Text changes in Flow only when you type the edit or approve the proposal/,
+      /34 chart types and 20 diagram types/,
+      /20\.4 GB model reached its first word in 4\.5 seconds/,
+      /say nothing about answer quality/,
+      /22\.3 milliseconds at the 95th percentile/,
+      /\$0\.00425/,
+      /::flow-cta/,
+      /\[Download Flow\]\(\/flow\/\)/,
+      // The above-the-fold ask lives in the first paragraph as an inline link.
+      /^You may have met Orionfold in one sentence\.[^\n]*:flow-download\[Download Flow\]/m,
+    ],
+  },
 };
 
 for (const { file, text } of flowStories) {
@@ -91,7 +112,7 @@ for (const { file, text } of flowStories) {
   assert.match(text, /\ntitle: .+/, where('has a title'));
   assert.match(text, /\ndate: \d{4}-\d{2}-\d{2}/, where('has a date'));
   assert.match(text, /\nsummary: /, where('has a summary'));
-  assert.ok(contract, where('is one of the five named launch stories'));
+  assert.ok(contract, where('is one of the six named launch stories'));
   assert.ok(text.includes(`\ntitle: ${contract.title}\n`), where('uses the accepted story title'));
   assert.ok(words.length >= 1_150 && words.length <= 1_650, where(`keeps one substantial cross-channel essay, found ${words.length} body words`));
   assert.ok(sections.length >= 3 && sections.length <= 5, where(`uses a restrained section hierarchy, found ${sections.length}`));
@@ -156,7 +177,36 @@ assert.doesNotMatch(
   'pricing detail stays on the overview and Tech Specs instead of interrupting the approval story',
 );
 
+// The download story carries the Flow card at its authored midpoint, and the
+// card itself reads the one canonical URL and caption so it cannot drift from
+// the hero, nav, and pricing buttons. It renders only while Flow is live.
+const downloadStory = flowStories.find(({ file }) => file === 'the-pit-crew-that-never-touches-the-wheel.md');
+assert.ok(downloadStory, 'the ad-to-download story is present');
+assert.doesNotMatch(downloadStory.text, /\$10|\$96|ten dollars|ninety-six/i, 'the download story leaves the price to the overview and Tech Specs');
+assert.doesNotMatch(downloadStory.text, /Flow Ideas/, 'the download story uses the racing metaphor without marketing the flag-gated Ideas feature');
+
 const storyRoute = readFileSync(new URL('../../src/pages/story/[slug]/index.astro', import.meta.url), 'utf8');
+assert.match(storyRoute, /'the-pit-crew-that-never-touches-the-wheel': \{/, 'the download story has a FLOW_CTA entry');
+assert.match(storyRoute, /const flowCta = ORIONFOLD_FLOW_LIVE \? FLOW_CTA\[/, 'the Flow card is gated on the launch flag');
+assert.match(storyRoute, /href=\{FLOW_DMG_URL\}/, 'the Flow card points at the one canonical download URL');
+assert.match(storyRoute, /caption=\{FLOW_DOWNLOAD_CAPTION\}/, 'the Flow card carries the shared download caption');
+assert.match(storyRoute, /ctaText: 'Download Flow Now'/, 'the Flow card uses the hero download label');
+assert.match(storyRoute, /define:vars=\{\{ flowDmgUrl: FLOW_DMG_URL/, 'inline prose links upgrade to the one canonical download URL while live');
+// Every story footer ends on Flow (operator 2026-08-26 10:03): no book magnet,
+// no Proof/Relay/Arena band, one Flow block between prev/next and subscribe,
+// waitlist while launch-dark and the canonical download while live.
+assert.doesNotMatch(storyRoute, /MagnetBand|ProductBand/, 'the book magnet and the product band left the story footer');
+assert.match(storyRoute, /<StoryPrevNext[\s\S]*?<FlowStoryCta[\s\S]*?<StorySubscribe/, 'the footer Flow block sits between prev/next and the subscribe form');
+assert.match(storyRoute, /const hasMidStoryFlowCta = post\.id in FLOW_CTA;/, 'a story with the mid-article block does not repeat it at the foot');
+assert.match(storyRoute, /href: '\/flow\/#waitlist',\s*ctaText: 'Join the waitlist'/, 'launch-dark footer asks for the waitlist, not a download');
+assert.match(storyRoute, /href: FLOW_DMG_URL,\s*ctaText: 'Download Flow Now'/, 'live footer uses the one canonical download URL and label');
+const flowStoryCta = readFileSync(new URL('../../src/components/story/FlowStoryCta.astro', import.meta.url), 'utf8');
+assert.match(flowStoryCta, /<a href="\/flow\/" class="flow-story-cta__tour">\s*Flow Product Tour/, 'the Flow block carries a tour pill on its image into /flow/');
+assert.match(flowStoryCta, /<a href="\/flow\/" class="flow-story-cta__figure"/, 'the Flow block image opens the Flow landing page, not the package');
+assert.match(flowStoryCta, /<FlowDownloadCta source=\{downloadSource\} size="large" \/>/, 'the live Flow block reuses the home-hero download bar');
+const remarkCta = readFileSync(new URL('../../src/lib/products/remark-proof-cta.mjs', import.meta.url), 'utf8');
+assert.match(remarkCta, /node\.name !== 'flow-cta'/, 'the remark plugin accepts the ::flow-cta directive');
+assert.match(remarkCta, /href="\/flow\/" data-flow-inline-download/, 'inline download links fall back to /flow/ without JavaScript or when Flow is off');
 for (const file of Object.keys(editorialContract)) {
   assert.match(
     storyRoute,
