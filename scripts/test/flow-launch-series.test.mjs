@@ -3,7 +3,10 @@
 // The series is 5 to 7 first-person stories published one a day during launch
 // week, drawn from the measured capability briefs in ~/orionfold-flow/docs/
 // reference. Story #1 doubles as the full subscriber email body, so a false
-// claim here reaches an inbox as well as the web.
+// claim here reaches an inbox as well as the web. Each website story is the
+// canonical essay reused for LinkedIn Newsletters, X Articles, Substack, and
+// email. The length guard protects enough narrative depth for those channels
+// without restoring the 3,000-word product inventories these essays replaced.
 //
 // These guards exist because the series repeats, in prose, the exact claims the
 // Flow surface tests protect in markup. A rule enforced on /flow/ and not in a
@@ -32,16 +35,68 @@ const flowStories = readdirSync(STORY_DIR)
   .filter(({ text }) => /^tags:[\s\S]*?- Orionfold Flow/m.test(text))
   .filter(({ text }) => (text.match(/\ndate: (\d{4}-\d{2}-\d{2})/)?.[1] ?? '') >= SERIES_START);
 
-assert.ok(flowStories.length >= 3, `expected the Flow series to exist, found ${flowStories.length}`);
+assert.equal(flowStories.length, 5, `the Flow launch sequence is five stories, found ${flowStories.length}`);
+
+const editorialContract = {
+  'the-day-i-stopped-trusting-invisible-edits.md': {
+    title: 'The Edit I Never Approved',
+    proof: [
+      /Text changes in Flow only when you type the edit or approve the proposal/,
+      /Only approval changes the file/,
+    ],
+  },
+  'where-your-ai-actually-runs.md': {
+    title: 'The Fan Was the Only Status Light',
+    proof: [
+      /Local, on this Mac/,
+      /A fallback that would cross an execution domain stops and asks/,
+      /prompt and API key have no field in that record/,
+    ],
+  },
+  'the-fastest-model-on-your-mac.md': {
+    title: 'The Faster Model Was the Bigger One',
+    proof: [
+      /20\.4 GB model reached its first word in 4\.5 seconds/,
+      /8\.5 GB model took 10\.2 seconds/,
+      /not a claim about answer quality/,
+    ],
+  },
+  'a-search-result-is-a-citation.md': {
+    title: 'The Search Result That Moved',
+    proof: [
+      /compares the anchored passage with the text found during search/,
+      /22\.3 milliseconds at the 95th percentile/,
+      /10,000 notes/,
+    ],
+  },
+  'charts-that-come-from-the-words.md': {
+    title: 'The Chart That Stayed Wrong',
+    proof: [
+      /34 chart types and 20 diagram types/,
+      /draws the result on the Mac, offline/,
+      /It adds a fenced block after them/,
+    ],
+  },
+};
 
 for (const { file, text } of flowStories) {
   const where = (rule) => `${file}: ${rule}`;
+  const body = text.split('\n---\n').slice(1).join('\n---\n').trim();
+  const words = body.match(/[A-Za-z0-9$][A-Za-z0-9’'._$-]*/g) ?? [];
+  const sections = body.match(/^## /gm) ?? [];
+  const contract = editorialContract[file];
 
   // Frontmatter must be complete or the collection schema fails the build in a
   // way that names the schema, not the story.
   assert.match(text, /\ntitle: .+/, where('has a title'));
   assert.match(text, /\ndate: \d{4}-\d{2}-\d{2}/, where('has a date'));
   assert.match(text, /\nsummary: /, where('has a summary'));
+  assert.ok(contract, where('is one of the five named launch stories'));
+  assert.ok(text.includes(`\ntitle: ${contract.title}\n`), where('uses the accepted story title'));
+  assert.ok(words.length >= 1_150 && words.length <= 1_650, where(`keeps one substantial cross-channel essay, found ${words.length} body words`));
+  assert.ok(sections.length >= 3 && sections.length <= 5, where(`uses a restrained section hierarchy, found ${sections.length}`));
+  assert.match(body.slice(0, 900), /\bI\b|\bmy\b/i, where('opens on a first-person event'));
+  for (const proof of contract.proof) assert.match(text, proof, where(`retains required proof ${proof}`));
 
   // HOUSE COPY RULE: no em dashes in body text. This is the single most common
   // failure when prose is drafted at length.
@@ -54,6 +109,8 @@ for (const { file, text } of flowStories) {
   assert.doesNotMatch(text, /\b\d+\s*(?:Pro )?days? (?:free|left|remaining)/i, where('no Pro Days countdown'));
   // Flow is BYOK, so there is no marginal cost to meter and nothing to call a credit.
   assert.doesNotMatch(text, /\busage allowance\b/i, where('never meter Flow as an allowance'));
+  assert.doesNotMatch(text, /\bFlow is out\b|\bships today\b|\bdownload it\b/i, where('launch-dark stories do not claim public availability'));
+  assert.doesNotMatch(text, /twenty seven|\b27 finished documents\b/i, where('the Flow Guide count must not regress'));
 
   // THE MOST DANGEROUS CLAIM IN THE WHOLE SERIES. The gate sits ABOVE the runner
   // protocol, so local models are part of the paid subscription. "Bring your own
@@ -76,40 +133,34 @@ for (const { file, text } of flowStories) {
   assert.doesNotMatch(text, /Flow can update itself/i, where('the self-update claim is not publishable yet'));
 }
 
-// PLACEHOLDER ARTWORK TRIPWIRE. Every story in the series carries a hero so the
-// pages are not bare, but the current images are locally generated placeholders
-// that say so on their own face. This asserts the pairing stays honest: a story
-// with a hero must carry alt text, and while the alt text still says
-// "Placeholder artwork" the note explaining how to replace it must survive.
-//
-// This guard is meant to FAIL once real creative lands, at which point the alt
-// text describes the real picture and this block is deleted. That is the signal,
-// not a bug.
+// FINAL ART TRIPWIRE. The launch series must keep its curated covers and useful
+// descriptions. Placeholder declarations are no longer allowed back in.
 for (const { file, text } of flowStories) {
-  if (!/\nhero: /.test(text)) continue;
-  assert.match(text, /\nheroAlt: /, `${file}: a hero image needs alt text`);
-  if (/Placeholder artwork/i.test(text)) {
-    assert.match(
-      text,
-      /# PLACEHOLDER ARTWORK\./,
-      `${file}: placeholder art must keep the note saying how to replace it`,
-    );
-  }
+  assert.match(text, /\nhero: .*\/hero\.jpg\n/, `${file}: must use its curated JPEG cover`);
+  assert.match(text, /\nheroAlt: "[^"\n]{30,}"\n/, `${file}: needs descriptive hero alt text`);
+  assert.doesNotMatch(text, /placeholder artwork/i, `${file}: must not restore placeholder art`);
 }
 
-// Story #1 is the launch story and doubles as the subscriber email body, so it
-// carries the promise the whole pricing model rests on.
+// Story #1 is the launch story and doubles as the subscriber email body. Its
+// job is approval, while the overview and Tech Specs own pricing detail.
 const launchStory = flowStories.find(({ file }) => file === 'the-day-i-stopped-trusting-invisible-edits.md');
 assert.ok(launchStory, 'the launch story is present');
 assert.match(
   launchStory.text,
-  /Your documents are free forever\. The AI is what you pay for\./,
-  'the launch story states the promise verbatim',
+  /AI proposes\. You review\. Only approval changes the file\./,
+  'the launch story lands the approval lesson',
 );
-// It must be explicit about the local-model line rather than silent on it,
-// because silence is what lets a reader assume the convenient wrong thing.
-assert.match(
+assert.doesNotMatch(
   launchStory.text,
-  /[Ll]ocal models are part of the subscription/,
-  'the launch story states plainly that local models are paid',
+  /ten dollars|ninety-six|Pro Days|local models are part of the subscription/i,
+  'pricing detail stays on the overview and Tech Specs instead of interrupting the approval story',
 );
+
+const storyRoute = readFileSync(new URL('../../src/pages/story/[slug]/index.astro', import.meta.url), 'utf8');
+for (const file of Object.keys(editorialContract)) {
+  assert.match(
+    storyRoute,
+    new RegExp(`'${file.replace(/\.md$/, '')}'`),
+    `${file}: the title and human stakes render before supporting art`,
+  );
+}

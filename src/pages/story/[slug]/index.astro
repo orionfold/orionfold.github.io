@@ -70,6 +70,14 @@ const { Content } = await render(post);
 const { title, date, summary, tags, hero, heroAlt } = post.data;
 
 const proofCta = PROOF_CTA[post.id as keyof typeof PROOF_CTA];
+const FLOW_LAUNCH_STORIES = new Set([
+  'the-day-i-stopped-trusting-invisible-edits',
+  'where-your-ai-actually-runs',
+  'the-fastest-model-on-your-mac',
+  'a-search-result-is-a-citation',
+  'charts-that-come-from-the-words',
+]);
+const titleBeforeHero = FLOW_LAUNCH_STORIES.has(post.id);
 
 // Ascending by date (oldest → newest) so a left-to-right walk in the index IS
 // the founder-arc walk. StoryPrevNext picks neighbors by simple index math.
@@ -141,6 +149,17 @@ const breadcrumbSchema = {
         All stories
       </a>
 
+      {titleBeforeHero && (
+        <header class="mt-8">
+          <div class="mb-4 flex flex-wrap items-center gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">
+            {tags[0] && <span class="text-primary">{tags[0]}</span>}
+            <time datetime={dateIso}>{dateFmt}</time>
+          </div>
+          <h1 class="leading-tight" style="font-size: clamp(2rem, 5vw, 3rem);">{title}</h1>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">{summary}</p>
+        </header>
+      )}
+
       {hero && (
         <Image
           src={hero}
@@ -153,14 +172,16 @@ const breadcrumbSchema = {
         />
       )}
 
-      <header class="mt-8">
-        <div class="mb-4 flex flex-wrap items-center gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">
-          {tags[0] && <span class="text-primary">{tags[0]}</span>}
-          <time datetime={dateIso}>{dateFmt}</time>
-        </div>
-        <h1 class="leading-tight" style="font-size: clamp(2rem, 5vw, 3rem);">{title}</h1>
-        <p class="mt-5 text-lg leading-relaxed text-text-muted">{summary}</p>
-      </header>
+      {!titleBeforeHero && (
+        <header class="mt-8">
+          <div class="mb-4 flex flex-wrap items-center gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">
+            {tags[0] && <span class="text-primary">{tags[0]}</span>}
+            <time datetime={dateIso}>{dateFmt}</time>
+          </div>
+          <h1 class="leading-tight" style="font-size: clamp(2rem, 5vw, 3rem);">{title}</h1>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">{summary}</p>
+        </header>
+      )}
 
       <div class="story-prose mt-12 border-t border-border pt-10">
         <Content />

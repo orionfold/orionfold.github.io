@@ -1,13 +1,9 @@
 ---
-title: The Fastest Model on Your Mac Is Probably Not the One You Picked
+title: The Faster Model Was the Bigger One
 date: 2026-08-24
-summary: "I trusted a benchmark measured on a machine I do not own, and picked the wrong model for a month. So Flow now measures the models you have, on the Mac you are sitting at."
-# PLACEHOLDER ARTWORK. Generated locally so the series is not bare; it is
-# clearly labelled on the image itself. Replace with real creative (the
-# featured-imagery skill drives Gemini and keeps a human curation gate) and
-# swap this alt text for a description of the real picture before publishing.
-hero: ../../assets/story/the-fastest-model-on-your-mac/hero.png
-heroAlt: "Placeholder artwork. Dark blue card reading MEASURED HERE, marked as placeholder art to be replaced."
+summary: "I picked a small local model for weeks because it looked faster. One measurement on my own Mac proved the larger model was quicker."
+hero: ../../assets/story/the-fastest-model-on-your-mac/hero.jpg
+heroAlt: "An engineer times two model engines on the same test rig as the larger one races ahead."
 tags:
   - Orionfold Flow
   - AI-native work
@@ -16,165 +12,102 @@ tags:
 
 I had been running the wrong model for weeks, and I felt clever about it the whole time.
 
-I had a folder of models on my Mac. When I needed one for a document I picked the small one. Small file, small memory, small wait. Big models are for big machines, and a laptop is not a big machine. Everybody knows this. I knew it so well I never checked.
+I kept several models on my Mac. For ordinary document work, I picked the smaller file. Small model, small wait. Big models belong on big machines. The rule felt so obvious that I never measured it.
 
-Then one afternoon I ran the same piece of work through a much larger model, mostly by accident, and the answer started arriving before I had finished sitting back in my chair. I ran it again, because that could not be right. It was right.
+Then I ran the same work through a much larger model. The answer began arriving before I had finished sitting back in my chair.
 
-On my Mac, on the same day, through the same runtime, here is what the two models actually did:
+I ran it again because it could not be right.
 
-| Model | Size on disk | Time to first word | Reading speed |
-| --- | --- | --- | --- |
-| `qwen3.5-35b-a3b-4bit` | 20.4 GB | 4.5 s | 84 words/s |
-| `ternary-bonsai-27b-mlx-2bit` | 8.5 GB | 10.2 s | 28 words/s |
+It was right.
 
-The file nearly two and a half times bigger on disk reached its first word 2.3 times quicker, and produced words three times faster once it got going. The small one, the sensible one, the one I had been picking on purpose for weeks, was the slow one.
+On one M3 Max, on the same day, through the same runtime, the 20.4 GB model reached its first word in 4.5 seconds and read at 84 words per second. The 8.5 GB model took 10.2 seconds to begin and read at 28 words per second.
 
-It felt like finding out the shortcut you take every morning is the long way round, and always was, and nobody was hiding it from you. You just never measured.
+The file nearly two and a half times larger started 2.3 times sooner and ran three times faster.
 
-## Why bigger can be quicker
+My sensible shortcut had been the long way around.
 
-The reason is not magic, and it is the whole argument for measuring instead of guessing.
+The strange part was not that I had guessed wrong. It was how little evidence I had needed to feel certain. File size was visible. The model names looked technical. The conclusion arrived before the work did.
 
-Some models are built as one solid block. To write a single word, the machine reads the entire block. Big block, long read, slow word.
+## File size was answering the wrong question
 
-The larger model here is built as a set of specialists, 256 of them, and for any given word it wakes only 8. So although the file is huge, the part it reads per word is small. Size on disk tells you how much room a model takes up, not how much of itself it reads per word. Only the second is the thing you sit and wait for.
+The larger model did not read all 20.4 GB for every word. It was built as a collection of specialists and activated only a small set at a time.
 
-A leaderboard sorted by file size would put those two models in exactly the wrong order. Mine did. My leaderboard was in my head, it had one rule, and the rule was wrong.
+Size on disk tells you how much room a model occupies. It does not tell you how much work the machine performs for each word.
 
-## The benchmark problem
+That difference is easy to understand after someone points it out. Before the measurement, I had treated the size as if it described the experience. A tidy number had become a proxy for the thing I actually cared about: how long I would wait.
 
-So I went looking for a leaderboard that was not in my head.
+I went looking for a better answer and found plenty of leaderboards. They had careful tables, precise figures, and models ranked from fastest to slowest. Then I noticed what made every one of them incomplete for my decision.
 
-There are plenty. People publish local model speeds constantly, in blog posts and forum threads and tidy comparison tables. I read a lot of them. Then I noticed what made all of them useless to me.
+The measurements came from computers I did not own.
 
-Every single number was measured on somebody else's computer.
+A model benchmark is a fact about a model and a machine together. Remove the machine from the label and the number looks universal when it is not. Memory bandwidth, available memory, runtime, prompt length, and model format all matter.
 
-That sounds obvious written down. It did not feel obvious while reading. A number in a table looks like a fact about the model. It is not. It is a fact about the model *and* the machine it ran on, welded together, with the machine half quietly left off the label.
+The same model can feel immediate on one Mac and impractical on another. A benchmark gathered elsewhere may be excellent evidence about that machine. It is not a measurement of mine.
 
-That half matters enormously. The speed a model reads at is limited by how fast the chip pulls data out of memory, and that is a property of the chip. The same model can be comfortable on one Mac and unusable on another, and no amount of reading somebody else's table tells you which one you own.
+I could solve this with a stopwatch and an afternoon. A person trying to choose a model for work should not need either. The app should measure the models they have on the Mac they own.
 
-I solved it for myself with a stopwatch and an afternoon. But I kept thinking about the person who does not have an afternoon and does not think of themselves as somebody who benchmarks things, who will make the same wrong guess I did because it is the sensible-sounding one. That person should not have to run a research project to learn which of their own models is fastest. The app should just tell them.
+## Measure here
 
-## What I built instead
+Flow's Benchmarks screen has no shared leaderboard. It ranks the local models available to this Mac from measurements made on this Mac.
 
-Flow now has a Benchmarks screen. It does one thing: it measures the models you already have, on the Mac you are sitting at, and ranks them for that Mac.
+The machine description sits beside the results because the machine is part of every result. A measurement carries its date. A model Flow can see but cannot run stays visible with the reason.
 
-It fetches nothing. There is no central feed of numbers gathered from other people's hardware. Every figure was either measured on your machine or worked out from your own model files. That is the entire supply chain, and it is short on purpose.
+Nothing measures itself. Loading a model takes time, memory, and power, so Measure is an action you choose. The screen does not turn an idle moment into a benchmark simply because more data would look useful.
 
-Beside the title sits a strip describing the machine. On mine: Apple M3 Max, 36 GB memory, 30 GPU cores, 10 and 4 CPU cores, 192 GB free of 926 GB. All read from the Mac, and anything the Mac does not report is absent rather than invented. A ranking of models means nothing without the hardware it was measured on, so you see what the ranking is *of* before you read it.
+The default ranking begins with time to first word because that is the wait you feel after pressing a button. Reading speed remains visible for longer responses. I had initially been drawn to reading speed because it is the number people quote. For short document work, the silent wait before anything appears often matters more.
 
-## Ranking by the thing you actually feel
+The prompt length belongs beside that measurement too. A waiting time without the work that produced it is another number detached from its conditions.
 
-The default sort is time to first word. How long you sit there after you press the button, before anything appears.
+Flow may estimate reading speed from the model's active size and this Mac's observed throughput. It never estimates time to first word. When the arithmetic runs beyond the evidence, Flow shows no estimate rather than inventing a tidy ceiling.
 
-I got that wrong first. My early version sorted by reading speed, the more impressive-sounding number and the one everybody quotes. Then I did the arithmetic on a realistic piece of work and found the wait before the first word is roughly 50 times larger than the gap between any two models' reading speeds. Sorting by reading speed sorts by the number you barely notice and hides the one you sit through. So first word leads, with reading speed beside it, because that matters once the answer is long. The prompt length is stated on screen too. A waiting time without its length is a claim nobody can check.
+That happened during development. One calculation for a very small model produced a speed that the formula could express but the evidence could not support. Capping it at a plausible number would have looked polished. Leaving it unavailable was more honest.
 
-Two more things on that screen matter.
+Memory fit follows the same restraint. Different runtimes account for memory differently, so Flow reports a useful verdict rather than pretending unlike byte counts are directly comparable.
 
-**Every row says whether its number was measured or guessed.** A measured row carries its date. An unmeasured row says *Estimated*, marks its figure with a squiggle, and offers a **Measure** button. No row is ever blank, and a guess never outranks a measurement.
+Those refusals matter more than another decimal place. A benchmark earns trust by showing where measurement ends.
 
-**Time to first word is never guessed.** Only measured. You can read the shape of a model file and predict its reading speed honestly enough, but you cannot predict the wait that way. An invention in the most prominent spot would be the worst thing this screen could do, so that spot only holds a real measurement.
+## The score shows its work
 
-A model the runtime cannot even open is still listed with the reason why, rather than dropped. If you can see it in your library it belongs here, or its absence reads as a bug. And nothing measures itself: a measurement loads many gigabytes off your disk and spends real time and battery, so each one is a button you press on purpose.
+Different jobs need different tradeoffs. A quick rewrite benefits from a fast first word. A long document may need more room.
 
-## The estimate that refuses to be made
+Flow offers three named views: Responsive, Balanced, and Roomy. Each view prints its weights and applies them to the measured models on this Mac.
 
-One detail here I am oddly proud of is restraint rather than engineering.
+Open a row and the score breaks into its parts. The total is the sum of the values on screen. There is no separate stored score that can drift from its explanation.
 
-When Flow estimates a reading speed for a model you have not measured, it works it out from how much of itself the model reads per word against how fast this Mac was observed moving data. That method checks out where it can be checked. At the one point where an independent measurement exists, the estimate said 64.0 words a second and the measurement came back 62.7. Within two percent.
+That matters because a single ranking invites a single interpretation: first is best. The measurements support a narrower conclusion. One model may begin fastest. Another may read fastest. A third may leave the most memory available. The active weighting decides which tradeoff rises to the top, and the arithmetic remains visible.
 
-Then I pointed the same method at a very small model and it produced roughly 927 words a second.
+The score is relative to the models in that list. It is not a portable rating and not a claim about answer quality. The screen says what is not ranked: instruction-following.
 
-That is arithmetic running off the end of its evidence. Not a speed, a formula that has stopped describing reality. I could have capped it at a tidy-looking ceiling and it would have looked completely normal on screen. Instead that row shows no estimate at all. A cap would publish a ceiling I made up. An empty space is honest about not knowing.
+That last line keeps the benchmark honest. Flow can measure wait, reading speed, and fit. It cannot turn those numbers into a verdict on whether a model understood your work.
 
-The same instinct governs another number. A memory bandwidth figure of 300 GB/s gets quoted for this chip. No Mac reports it to software, so wherever it appears Flow labels it *Published specification*, next to a figure Flow really did observe while running a model: 268.6 GB/s achieved. Two kinds of fact, kept apart, both labelled. The published one is never dressed up as something Flow read from the Mac.
+The distinction sounds obvious, yet product screens collapse unlike facts all the time. A fast model becomes “best.” A large context becomes “smart.” A score built for one machine becomes a property of the model itself. Each shortcut makes the interface easier to read and the decision harder to defend.
 
-Memory itself is a verdict, not a number. *Fits comfortably*, *Fits*, or *Too large for this Mac*. The two engines Flow uses account for memory so differently that a byte count would invite a comparison the measurement cannot support.
+I wanted the screen to reduce uncertainty without manufacturing certainty.
 
-## Three ways to be right
+## Knowing is not choosing
 
-Speed is not the only thing anyone wants. Some work needs the answer to start immediately, some needs a model that can hold a long document at once. So above the leaderboard sits a three-way switch: Responsive, Balanced, Roomy. Flipping it re-scores every row, and the active setting prints the weights it is using, on screen.
+The measurement changed which model I reached for. It did not remove the need to choose.
 
-| Setting | Time to first word | Reading speed | Memory headroom |
-| --- | --- | --- | --- |
-| Responsive | 70% | 20% | 10% |
-| Balanced (default) | 50% | 30% | 20% |
-| Roomy | 20% | 30% | 50% |
+If I had to inspect a benchmark before every AI action, the screen would become another place where useful information goes to be ignored. So Flow can use measured facts inside rules you write.
 
-A blended score is a dangerous thing to ship. A single number that ranks things is exactly what people quote without checking, and exactly what a company can quietly tilt in its own favour. So this one shows its working. Tap a row and it opens into the arithmetic that produced it. On my screen the top model reads `1.00 × 50% = 0.50`, then `0.60 × 30% = 0.18`, then `1.00 × 20% = 0.20`, **Total 0.88**. The collapsed row above it reads **Score 88 of 100**. Same number. The second model opens to `0.46 × 50% = 0.23`, `1.00 × 30% = 0.30`, `0.53 × 20% = 0.11`, **Total 0.64**.
+“Fastest measured on this Mac” can be a routing preference because it is based on a measurement you can inspect. With no measurement, the rule says none exists. It does not substitute a default order and call it speed.
 
-Read those together and you see something a single ranked list would bury. The two models win different things. The first is best on this Mac at reaching a first word, a perfect 1.00, but a middling reader at 0.60. The second is the best reader on the machine, a full 1.00, while slower off the mark at 0.46. Neither is simply better. The weighting decided between them, and you can watch it decide.
+Other rules can prefer work that stays on the Mac, a model that can hold the whole document, or a route under a chosen cost. Rules decide in order. The rule that decided is named wherever the route is shown.
 
-The score cannot drift from its own explanation, because there is no stored total anywhere. The score *is* the sum of those parts.
+There is no learning hidden behind that behavior. Flow does not watch what I pick and gradually replace my stated preference with a prediction about me. The rulebook applies in the order I wrote it. Pinning a model turns the rulebook off and says so.
 
-I considered sliders and decided against them. Three sliders turn a leaderboard into a settings panel, and you end up fiddling with machinery instead of reading a result. A named setting with its reasoning printed beside it gives the same visible, chosen weighting and leaves the screen a leaderboard.
+The model remains my choice, expressed through an ordered rule or a model I pin. Measurement informs the choice. It does not make the decision mysterious.
 
-One more limit, stated on the screen: scores are relative to the models being ranked, because no absolute scale exists. "Fast" for a small model on this M3 Max is not "fast" for a big one on a thin laptop. The best measured value on each axis becomes 1.00 and everything else sits against it. So a score answers *which of these models, on this Mac*, which is the only question the measurements support. It is not a rating you can carry to another machine, and I would rather say so than have someone screenshot it as one.
+This is where the benchmark became more than a table. It changed a guess I repeated every day into a preference the software could execute and explain.
 
-The screen also names what it does not measure, out loud: **Not ranked: instruction-following.** Flow measures speed and fit. It has no opinion on whether a model is any good at following what you asked, and I will not imply I have answered that by ranking something else. A model that has never been run gets no score at all, either. Not a zero, which would rank it last as though it had been measured and lost.
+## The useful answer
 
-## Knowing is not the same as choosing
+I had trusted file size because it was visible. I had trusted internet tables because they looked precise. Both were easier than measuring the machine in front of me, and both sent me to the slower model.
 
-Measuring the models fixed my ignorance. It did not fix my workflow.
+The confident answer arrived free. The useful answer cost one measurement.
 
-I now knew which model was quickest, which could hold the longest document, and which stayed on my machine. I still had to pick one every time I did anything. Every action became a small decision, and small decisions made all day are how you end up defaulting back to whatever is easiest to click. Which is how I got here in the first place.
+That is a small product lesson and a larger one. Numbers do not become evidence merely because they are precise. A useful measurement carries its conditions with it, shows what it did not measure, and stays close to the decision it informs.
 
-What I wanted was to write my preferences down once and have the app apply them.
+The faster model was the bigger one. On a different Mac, it may not be.
 
-That is Smart Routing. You keep an ordered list of rules. Rules decide in order, and the first one that matches applies. That is not my summary of the feature. It is printed on the screen in those words, because a routing system you cannot state in one sentence is one you cannot predict.
-
-Five rules ship built in, and they read like things a person would say:
-
-- *Stays on this Mac*
-- *Can hold the whole document*
-- *Under $0.05 a run*
-- *Fastest measured on this Mac*
-- *Cheapest*
-
-Any of them can be duplicated into a rule you edit yourself. The editor is small: a name, a condition, an effect. If something is wrong it says so beside the field it is wrong in, and Save stays switched off until the draft makes sense. I have used too many settings screens that let you save nonsense and behave strangely later.
-
-## The sentence that made it worth building
-
-Here is the part I would keep if I had to throw the rest away.
-
-**The rule that decided is named wherever the route is shown.**
-
-Hover the model name in the toolbar and it says: *Decided by the rule "Can hold the whole document".* Open the Settings explanation and it says the same thing in the same words, because both read from one source. There is a test whose only job is to keep those two surfaces from drifting apart, and to stop anyone typing a "Decided by" sentence by hand somewhere new.
-
-That is the difference between routing you can read and routing you cannot. Most automatic model picking elsewhere is a box that chooses on your behalf using the vendor's reasoning, and tells you afterwards if at all. This is your rulebook, in your order, applied the same way every time, with the decider named on the screen where you approve the work.
-
-There is no learning here, and that is on purpose rather than a gap. It does not study your habits or adapt. It does what your list says, in the order your list says it, every time. The predictability is the feature.
-
-## Rules that admit when they have nothing
-
-The honesty rules from the Benchmarks screen carry straight over, and they are why I trust the thing.
-
-**A rule that matches but has nothing to offer says so.** In orange, on the row: "No model qualifies right now." It is not skipped quietly while another rule takes over behind your back.
-
-**A speed rule with nothing measured refuses to pretend.** *Fastest measured on this Mac* reads the same measurements the Benchmarks screen shows. With nothing measured it says "No speeds measured on this Mac yet." rather than handing you the default ordering dressed up as a speed ranking. A model never measured is not ranked at all.
-
-**A cost rule with no published price fails shut.** Flow will not invent a rate, so a model without a published price cannot qualify for an under-a-price rule. That is the safe direction to fail in.
-
-**Every rule row carries a live count.** "4 of 8 models qualify." Counted from the providers switched on this second, not from something stored last month.
-
-**Pinning a model turns the rulebook off out loud.** Pin one model and the rules section says the rules are deciding nothing. No rule takes credit for a choice you made yourself.
-
-Those five took longer to build than the routing itself. Every one is the app admitting to a limit, and that is the only thing I have found worth over-engineering, because it is what makes the rest believable.
-
-## Where this actually sits
-
-I should be straight about what is where. Both screens are built, tested, and living in the repository. Neither is in the installed, signed copy of Flow yet. Everything above came from a development build: written down and working, not yet delivered to your Applications folder. When it ships signed I will re-take the pictures and re-check every number here the same day. I would rather say that now than have you go looking for a screen that has not arrived.
-
-One thing has not changed. Models running on your own Mac are part of the subscription, exactly like the ones running anywhere else. It would be an easier story to say that once a model lives on your machine the software costs nothing. It would not be true. What you pay for is the measuring, the ranking, the rules, the naming of the rule that decided, the proposal, the approval, the record. That layer costs the same to build whichever machine the model sits on, and it is why the output is safe to accept. Ten dollars a month, or ninety-six a year.
-
-## What I actually learned
-
-The lesson is smaller than the feature, and more useful.
-
-I had a belief about my own machine. Smaller is faster. Reasonable, widely shared, easy to check, and wrong. I held it for weeks because it never occurred to me it was checkable, and because every table I could find agreed with me while quietly describing a computer I do not own.
-
-The fix was not a better model or a cleverer guess. It was measuring the thing in front of me, then writing down what I wanted so I would not have to keep guessing.
-
-That is most of what I have learned building this way. The confident answer arrives free. The measurement costs something. And almost every time I have paid for the measurement, it has told me something I would have sworn was not true.
-
-So go and look at which model on your Mac is actually the quick one. You may already know. I thought I did.
+That is exactly why Flow measures here.

@@ -1,13 +1,9 @@
 ---
-title: The Fan Spun for Twelve Minutes and Nothing Told Me Why
+title: The Fan Was the Only Status Light
 date: 2026-08-23
-summary: "A proofread ran my Mac's fans for twelve minutes and the app said nothing. That is why Flow makes you pick where AI runs, keeps it there, and writes down what it cost."
-# PLACEHOLDER ARTWORK. Generated locally so the series is not bare; it is
-# clearly labelled on the image itself. Replace with real creative (the
-# featured-imagery skill drives Gemini and keeps a human curation gate) and
-# swap this alt text for a description of the real picture before publishing.
-hero: ../../assets/story/where-your-ai-actually-runs/hero.png
-heroAlt: "Placeholder artwork. Dark blue card reading WHERE IT RUNS, marked as placeholder art to be replaced."
+summary: "A proofread ran my Mac hard for twelve minutes, but the app could not tell me which model was working or where my document had gone."
+hero: ../../assets/story/where-your-ai-actually-runs/hero.jpg
+heroAlt: "A creator routes a glowing document path between four execution chambers, stopping it at a bright boundary."
 tags:
   - Orionfold Flow
   - AI-native work
@@ -16,170 +12,101 @@ tags:
 
 It was the fan that got me, not the bill.
 
-I had asked for a proofread. A short document, nothing dramatic. I went back to what I was doing in another window, and after a minute the Mac started to make that sound. Not the polite sound. The other one. The one that means something is working very hard and has been for a while.
+I had asked for a proofread. A short document, nothing that should have turned the afternoon into an engineering investigation. After a minute, the Mac began making the sound that means something is working very hard.
 
 Twelve minutes later it was still going.
 
-I sat there and tried to answer three ordinary questions, and I could not answer any of them. Which model was doing this? Was it running on my machine, or had my text gone somewhere? Was this costing me money right now, and if so, how much?
+I could not answer three ordinary questions. Which model was doing this? Was it running on my Mac, or had my text gone somewhere else? Was it costing money?
 
-The app I was using had nothing to say about any of it. So I opened Activity Monitor and squinted at process names, which is like asking your car why it is making a noise and being handed a list of its bolts.
+The app had nothing to say. I opened Activity Monitor and squinted at process names, which is like asking a car why it is making a noise and being handed a list of bolts.
 
-That same morning I found something worse. A model helper still running at 84% of the processor, working away on nothing, with the app that started it already quit. It had been abandoned and left on.
+That morning I found a model helper still using most of a processor after the app that started it had quit. It was working on nothing, for nobody. Closing the window had ended my view of the work, but not the work itself.
 
-I filed both as urgent against my own product, because by then I was building Flow and this was my problem to fix.
+The fan was the only status light.
 
-## The question nobody asks you
+I did not mind that the computer was busy. I minded that software had made three decisions involving my document, my machine, and possibly my money without giving me a sentence I could understand.
 
-Yesterday I wrote about the day a proofreader silently reached into a code block and changed the code, and how that one invisible edit set the rule the whole app is built on: text changes only when you type it or approve it.
+## Where may this work run?
 
-This is the other half of the same idea, and honestly it is the half people think about less.
+Approving a change tells you what enters a document. It does not tell you where the document went to get that change.
 
-Approving a change tells you *what* went into your document. It does not tell you where your document went to get that change.
+Many AI tools hide that decision in a provider setting. Pick a service once and text leaves the machine whenever the app needs it. If one route fails, another may take over. The boundary is treated as plumbing.
 
-Most AI tools do not ask you. There is a dropdown in settings with some provider names in it, you pick one, and after that your text leaves your machine whenever the software decides it needs to. If the first attempt fails, it quietly tries another one. You never see the moment your words crossed a line, because nothing in the design treats that as a moment.
+It is not plumbing when the document is a client proposal, a board update, a private research note, or the first version of an idea you are not ready to share.
 
-I do not think that is malice. The boundary was simply invisible to the people building it. Everything ran in the cloud, so the cloud was just where things ran.
+Some documents can go anywhere. Others should never leave the room. The software cannot know which kind is in front of you, so it should not be the one silently deciding.
 
-But it is not invisible to you. Some documents you do not mind sending anywhere. Some documents you would lose your job over. The software has no idea which is which, so it should not be the one deciding.
+Flow asks a more useful question: **Where may this work run?**
 
-## Four rooms, four doors
+There are four execution domains:
 
-So Flow does not ask you to trust a provider. It asks you one question, and it asks it about your whole setup rather than about each model.
+- Local, on this Mac.
+- LAN, on another machine on your network.
+- Cloud prepaid, through a service you already subscribe to.
+- Cloud postpaid, where usage is billed.
 
-Where may work run?
+Each domain has its own switch and a plain statement of locality and cost. The heavier control belongs to the heavier decision: enabling a provider inside an allowed domain is different from opening the boundary itself.
 
-There are four answers, and Flow calls them execution domains. Think of them as four rooms, each with its own door and its own lock.
+Flow may discover providers already available to you, but discovery never enables them. Finding an Ollama model or an active Claude subscription is an observation. Permission is a decision.
 
-**Local** is your Mac. The model runs on hardware you already own. Your text does not leave the machine.
+That distinction felt almost pedantic until I considered the alternative. Software that can detect a credential, model, or signed-in service can easily behave as if detection were consent. It is not. A key present in an environment says what is technically possible. It does not say what may happen to this document.
 
-**LAN** is another computer on your own network. Your text leaves this Mac, but stays inside your building.
+## A fallback may not move the boundary
 
-**Cloud prepaid** is a subscription you already pay for. The work runs on someone else's machines, and the cost is already covered by whatever you pay each month.
+The rule I care about most appears when something goes wrong.
 
-**Cloud postpaid** is billed per use. The work runs remotely, and the meter is running.
+**A fallback that would cross an execution domain stops and asks.**
 
-Each has its own switch, separate on purpose. You can permit a subscription you already pay for and refuse the one that bills by the use. That is not an exotic preference. That is most people, once you put the choice in front of them.
+If one local model fails and another allowed local model can do the work, Flow can stay inside the same boundary. If the next route would leave your Mac, the run pauses. The error does not silently become permission.
 
-Each domain also states plainly what it means, in the app, in words. The Local domain reads "Stays on this Mac. Free, it runs on hardware you have." The LAN domain sits right below it and says the opposite just as plainly: "Leaves this Mac." Nobody has to infer anything from a product name.
+That is when consent matters most. A smooth run rarely tempts software to improvise. A failure does. The fastest recovery is often to send the work to a larger remote model and keep moving. It is also the moment when a boundary is easiest to step over while calling the result helpful.
 
-Under each domain sit the actual providers, and here is a small design detail I am proud of. A domain gets a switch. A provider gets a checkbox. They look deliberately different, because they are different kinds of decision. Permitting a domain opens a boundary. Enabling a provider is a choice inside a boundary you already opened. The heavier control is for the heavier decision.
+Before a remote run, Flow shows what would be sent, where it would run, and the estimated cost when a published price is available. An estimate remains labelled as an estimate. Cancel is a complete stop.
 
-One caution, because I would rather say it than let you find out: the LAN domain exists and you can permit it, but no provider ships for it yet. The door is built. There is nothing behind it today.
+The route is then fixed for that run. Flow does not begin locally and finish somewhere else because another provider looked more convenient halfway through.
 
-## The moment I care most about
+This is deliberately less clever than invisible routing. Predictability is the feature. A route you can understand before the work begins is more useful than an optimal route you discover afterwards.
 
-Here is the rule that made all the rest of it worth building.
+## Before, during, after
 
-**A fallback that would cross a domain stops and asks.**
+The fan incident exposed an information gap, so I designed the answer around three moments.
 
-Say the model on your Mac fails. Maybe it ran out of room, maybe it fell over. Trying a different model on your own machine is plumbing. Flow just does it, because nothing about your situation changed. Your words are still where they were.
+Before a run, Flow shows the route and any estimated charge. You can see whether the work stays on the Mac, moves across your network, uses a subscription you already have, or enters a metered service.
 
-Leaving your Mac is not plumbing. That is a decision. So Flow stops and asks you, every time, even in the middle of a run that was going fine a second ago. It will not quietly upgrade its way out of a problem by sending your document somewhere you did not agree to.
+During a local run, the title bar names the model and shows the Mac's memory, processor, whole-Mac graphics activity, and thermal state in plain words. macOS does not provide a public per-model graphics figure, so Flow labels that reading as whole-Mac activity. If the public measurement is unavailable, the number disappears.
 
-That is the difference between a tool that respects a boundary and one that draws it on a settings screen then steps over it when things get inconvenient. A boundary that bends under pressure is a suggestion with good manners.
+That qualification matters. A precise-looking number with the wrong scope would repeat the problem in a more attractive form. “Whole-Mac graphics” is less impressive than pretending to know exactly what one model consumed. It is also true.
 
-Before any run that does leave your Mac, Flow shows you what it is about to do: what would be sent, where to, roughly how many bytes, and an estimated cost. It always says the estimate is an estimate, and it names the price list the number came from. And if you cancel, that is a complete stop, reported as a stop. Not an error. Not a failure. You changed your mind, which is allowed.
+After an approved run, the receipt records the model, provider, execution domain, cost basis, checks, evidence, and saved change. A prompt and API key have no field in that record.
 
-## Detection is not permission
+These are three different kinds of fact. An estimate before the run never becomes a recorded charge after it. A local run can record that no charge was owed. An unavailable cost remains unavailable.
 
-Flow will look at your machine and find what is already there. Local runtimes you have installed, agent subscriptions you are already signed into, keys sitting in your environment. Eight providers, at the current count. That is what discovery finds today, not a list of partners.
+In one billed test, 105 words in and 149 words out recorded $0.00425. The small number is useful because it proves the decimal arithmetic is exact and the basis can be reproduced. Most software would round four tenths of a cent away. I wanted the record to say what happened rather than make the event look tidier.
 
-Finding is not enabling. Nothing is switched on because Flow noticed it. It sits in a list, unlocked by nobody, waiting for you.
-
-Two details underneath that I think matter more than they sound.
-
-Flow never reads or copies another app's credentials. If it offers to adopt a key from your environment, it shows you the variable's **name**, never its value. Your key is not something Flow needs to display back at you to prove it found it.
-
-And when a provider cannot be used, Flow lists **every** reason it is blocked, not just the first one it hit. Each reason carries a button that scrolls you to the exact control that fixes it. I have lost too many hours to software that reveals one wall at a time.
-
-## What it costs, before and after, and never a guess
-
-Cost is where most AI tools go soft, and I understand why. A price tag next to a button makes the button feel expensive.
-
-Flow shows it anyway, in three places, treated as three different kinds of fact.
-
-**Before.** There is a sortable table of every model you have connected or could connect. Rates per million words of input and output, and what one request would actually cost. You can resize the request and every row re-prices. Models that run on your Mac show as free, because they are, and I mean that narrowly: no per-use charge is owed for running them. If a model has no published rate, its row shows a dash and says so. It never shows a zero. A zero is a claim. A dash is the truth. Every figure on that table says where it came from.
-
-**During.** There is a readout in the title bar telling you what Flow is using right now. Memory, processor, whole-Mac graphics, and the machine's own heat verdict in plain words: Cool, Warm, Hot, Too hot. Not a temperature. Nobody can act on a temperature. And while a run is going, the readout names the model doing it, so "which model is the fan about" finally has an answer.
-
-**After.** The receipt. This is the part that took the longest and matters the most.
-
-## Recorded to the digit
-
-A receipt records what actually happened. Not what Flow expected, not what it estimated. What happened.
-
-Which model answered. Where it ran. Where the key came from, Flow's own keychain or your environment. If a fallback happened, what it fell back **from**. And when the same model both wrote a change and judged whether the change was good, the receipt says so out loud, because a model marking its own homework is not an independent second opinion and should never be dressed up as one.
-
-The cost is recorded only as observed fact. If the provider reported its own charge, that is the number. If not, Flow prices the actual usage with its own price table, and records which version of that table it used, so the figure still makes sense in a year when rates have moved. If neither is available, the receipt says plainly that the cost is unavailable. An estimate is never written down as a charge. Those are different things and Flow keeps them different.
-
-The arithmetic is exact decimal, not the sort of floating point maths that turns ten cents into 0.10000000001. A real billed run of 105 words in and 149 words out recorded **$0.00425**, and you can reproduce that to the digit.
-
-That number is small and that is the point. Four tenths of a cent. Most software would round it away. But a system honest about four tenths of a cent can be trusted with four hundred dollars, and one that shrugs at the small number has told you what it will do with the big one.
-
-A run on your own Mac records **no** charge at all. Not a zero pretending to be a measurement. Nothing was owed, so nothing is recorded, and in the ledger that is deliberately distinguishable from a run where the cost could not be measured. Those two states look nothing alike, because they are nothing alike.
-
-One thing that never appears in a receipt: your prompt, and your API key. Not by policy. There is structurally nowhere in a receipt for them to go.
-
-## One run, one card
-
-All of a run's receipts gather into a single card.
-
-Select a run in the Receipts timeline and you get one view of everything it did. What was checked. What the evidence concluded. What it cost and on what basis. And the exact before and after fingerprints of the document content, so the change is bound to a specific state of your file and cannot be quietly reattributed later.
-
-Each check on that card carries two separate marks, and I fought with myself over this before deciding they both had to be there. One is the outcome that was stored when the check ran. The other is what that rule would do *today*, shown as a plain pill: "Stops the change", "Warns you", "Needs your acknowledgment".
-
-They are two different facts. A rule you have since made stricter did not retroactively stop anything last Tuesday. Collapsing those into one number would be tidier and would also be a small lie, and small lies in a record are the ones that eventually cost you an argument you should have won.
-
-## The honest cost of running things yourself
-
-I said earlier that a local model is free of per-use charges, and that is true. It is not the same as free.
-
-Your own machine does the work. You hear it. That is the real trade, and I would rather write it down than let the fan tell you later.
-
-So Flow counts the local runs too, at zero, because zero is a measurement. On a real local run, the readout ticked to "Tokens 4.8K in, 3.3K out this session. Spent $0.00" as the run landed. Real work counted, at a genuine nothing.
-
-Here is my favourite capture, because it is the exact scenario I started with. A thirty-billion-parameter model proofreading a 326-word document on my Mac. The readout during the run: memory 52%, processor 52%, graphics 99% across the whole Mac, heat verdict **Cool**, spend $0.00, and the model named in a badge so there was no guessing. After the run finished, the same readout read 52%, 6%, 9%, **Warm**, 485 in and 1.7K out, $0.00.
-
-Two small things in there I keep pointing at. The heat word moved from Cool to Warm *after* the work, which is the machine's own verdict changing rather than a digit ticking. And the graphics figure is labelled "across this whole Mac" in the readout itself, not in a caption underneath it.
-
-That last one is a refusal, and it is worth explaining. macOS does not publicly offer a way to say how much of the graphics chip any one app is using. Activity Monitor gets that number through private interfaces. Flow will not. So Flow reads a whole-Mac figure from a public source, labels it whole-Mac right there in the text, and adds a footnote saying per-model attribution is what macOS does not offer. If macOS ever stops answering, the figure disappears rather than showing you something wrong.
-
-Three separate chances to quietly state a number Flow cannot honestly source. Three refusals. That is the whole character of the thing.
+The point is not that the run was cheap. It is that the estimate, the observed usage, and the final cost remain distinct. A receipt should survive the moment in which it was generated.
 
 ## Make it stop
 
-Knowing what is happening is only half of an answer to a spinning fan. The other half is being able to end it.
+Knowing what is happening is only half the answer to a spinning fan. The other half is being able to end it.
 
-A run shows a progress bar with plain words. "Part 2 of 4", not "this usually takes a few seconds", which is the phrase software uses when it has no idea.
+Stop ends the model process. It does not merely close the review while work continues in the background. A stopped run reports that it stopped and that nothing in the document changed.
 
-Stop truly stops the model. The helper process ends and the fans wind down. It does not just close the window while your Mac keeps computing an answer that nobody will ever read. A stopped run reports "Stopped, nothing in the document was changed", which is a result, not a malfunction.
+Pause waits for the current part to finish and says so. That is a smaller promise than an instant pause, but it matches what the runtime can actually do.
 
-Pause waits for the current part to finish, and tells you that is what it is doing.
+Two Agency runs cannot overlap. While one is active, it owns the progress and Stop controls. A second request cannot hide the first behind another progress bar. That closes the path that left the abandoned helper chewing through my Mac after its app was gone.
 
-And two runs cannot overlap. While one is in flight the menu waits and the banner owns the Stop button, so a second request can never leave a forgotten helper chewing through memory behind another run's progress bar. That is the 84%-with-the-app-quit bug, closed by design rather than by patching it each time it comes back.
+These details are not performance polish. They define whether the person or the process is in charge. A Stop button that leaves the model running is only a way to stop looking.
 
-## Why any of this is worth paying for
+The same principle applies to the route. If I stop a local run, Flow does not reinterpret the interruption as a reason to try the cloud. If a run cannot continue inside the boundary I approved, the correct result is not silent success. It is a visible stop and a new decision.
 
-I will say the awkward part plainly, the same as yesterday.
+## What the fan was saying
 
-Running models on your own Mac is part of the subscription. Flow can run a model with no network involved at all, and it would be easier to tell you that once the model lives on your machine the software is free. It is not, and I am not going to say it is.
+The twelve-minute proofread was not only a performance problem. It was an authority problem. My machine was working hard with my document, and the software had not told me what it was doing.
 
-You are not paying for the words the model produces. Flow never charges for those and never touches your provider bill. You are paying for the layer above the model: the four domains and their locks, the fallback that stops at a boundary instead of stepping over it, the estimate before, the readout during, the receipt after, the exact decimal arithmetic, and the versioned price table that keeps a number meaningful after rates move. That layer costs exactly the same to build whether the model is sitting on your desk or in a data centre. It is also the entire reason the answer is safe to accept.
+I still use local models. I also use cloud models. The point is not to declare one virtuous and the other suspect. Different work deserves different machines.
 
-Ten dollars a month, or ninety-six a year. One licence for one person across as many of your own Macs as you like. And you get a stretch of Pro Days to try it properly, where a day is only spent on a day you actually use the AI.
+What I wanted was to be the person who decides, with enough information to decide well and a record afterwards that does not depend on memory. That means the boundary is visible before the run, fixed during it, and written down after it.
 
-The documents stay free forever, as they were yesterday and will be next year.
+The fan can still spin. Now the title bar names why. The route says where. The receipt says what happened. And Stop means stop.
 
-## What I actually wanted
-
-I did not want to be protected from the cloud. I use it. Some work genuinely belongs out there on a machine far better than mine.
-
-What I wanted was to be the one who decided, each time, with enough information to decide well, and a record afterwards that survives my memory of it.
-
-The fan that ran for twelve minutes was not a performance problem. It was an information problem. My machine was working hard on my behalf and had no way to tell me what it was doing, so the only signal that reached me was noise.
-
-Now there is a readout that names the model, four doors that only you can open, a fallback that stops at the edge rather than stepping over it, and a receipt that says $0.00425 and means it.
-
-Tomorrow I will write about search, and how finding the exact passage in a pile of your own documents turns out to be a harder and more interesting problem than it sounds.
-
-Today, though, you can open a folder of your own files and look at what your Mac is actually doing.
+The machine is allowed to work hard. It is no longer allowed to work mysteriously.

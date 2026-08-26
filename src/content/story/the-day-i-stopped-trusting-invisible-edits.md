@@ -1,13 +1,9 @@
 ---
-title: The Day I Stopped Trusting Invisible Edits
+title: The Edit I Never Approved
 date: 2026-08-22
-summary: "My Mac's built-in AI quietly rewrote the inside of a code block. No diff, no approval, no record. That one silent edit is why I spent a year building Flow, and why it ships today."
-# PLACEHOLDER ARTWORK. Generated locally so the series is not bare; it is
-# clearly labelled on the image itself. Replace with real creative (the
-# featured-imagery skill drives Gemini and keeps a human curation gate) and
-# swap this alt text for a description of the real picture before publishing.
-hero: ../../assets/story/the-day-i-stopped-trusting-invisible-edits/hero.png
-heroAlt: "Placeholder artwork for the launch story. Dark blue card reading THE APPROVAL, marked as placeholder art to be replaced."
+summary: "A proofreader quietly changed code inside my note. That silent edit became Flow's first rule: AI may propose a change, but only you can save it."
+hero: ../../assets/story/the-day-i-stopped-trusting-invisible-edits/hero.jpg
+heroAlt: "A writer reviews glowing revisions from a paper while holding a physical approval control in a rain-lit studio."
 tags:
   - Orionfold Flow
   - AI-native work
@@ -16,84 +12,96 @@ tags:
 
 There is a particular kind of quiet that follows a mistake you cannot see.
 
-I was working on a note. An ordinary one, the kind that piles up when you are building something: half a decision, half a reminder, a fragment of code pasted in so I would not lose it. I ran the proofreader that comes free with my Mac. It did what proofreaders do. It fixed my typing.
+I was proofreading an ordinary working note, the kind that accumulates while I am building something. It held half a decision, half a reminder, and a fragment of code pasted in so I would not lose it. I asked the proofreader on my Mac to clean up the writing.
 
-It also reached inside a fenced code block and changed the code.
+It reached inside the code block and changed the code.
 
-The comment had read `// recieve teh value`. Two typos, the honest kind you make at speed. What came back read `// Receive the value`. Corrected. Capitalized. Correct English and, in that context, entirely wrong. Code is not prose. Inside a code fence, a typo is data. Fixing it is not a courtesy. It is corruption.
+The comment had read `// recieve teh value`. Two typos, made at speed. What came back read `// Receive the value`.
 
-Here is the part that kept me up. Nothing told me. No diff appeared. No approval was asked. No record was kept. If I had not happened to look at that exact block, that change would have travelled into whatever the note became, and I would have carried it forward believing I had written it.
+Correct English. Wrong edit.
 
-I checked whether I had misconfigured something. Apple publishes a way for an app to protect ranges of text from Writing Tools, and I wanted to believe I had simply failed to call it. I set up the test properly and watched. Across five invocations on a correctly configured text view, that protection was never called at all. I reproduced the underlying failure outside my app too, straight from the macOS menu, so I could be sure I was not looking at my own bug. The same trivial prompt failed four times out of five. With a reused session, six out of six.
+Inside a code fence, a typo can be data. Fixing it without asking is not a courtesy. It is a change to the thing I am building.
 
-I want to be careful here, because it would be easy and cheap to turn this into a complaint about one company. That is not the story. The story is a design assumption that has quietly spread across almost every AI feature shipped in the last two years, and it goes like this: *the model is probably right, so just apply the change.*
+Nothing told me. There was no diff, no approval, and no record. I happened to notice because I looked at that exact line. If I had not, the change would have travelled into whatever the note became. I would have carried it forward believing I had written it.
 
-That assumption is fine when the stakes are a text message. It is not fine when the document is a client proposal, a board update, a shareholder letter, a hiring plan, or a piece of code. It is not fine when your name is on it.
+That was the moment I stopped thinking about AI as a better autocomplete. The question was no longer whether the model was right. The question was how software could make authorship invisible and still call the result assistance.
 
-## What I actually wanted
+## I tried to prove myself wrong
 
-I did not want less AI. I want a great deal of AI. Over the past year I have shipped more work than in any comparable stretch of my career, and almost none of it happened without a model somewhere in the loop.
+The Mac provides a way for an app to mark ranges that Writing Tools should leave alone. I wanted this to be my mistake. A bad configuration would have been easier to fix than a bad assumption.
 
-What I wanted was to stay the author.
+So I built a small test, configured the text view correctly, and watched for the protection call. Across five runs, the call never arrived. I reproduced the underlying behavior outside Flow from the macOS menu as well. In that test, the same small task failed four times out of five. Reusing the session failed six times out of six.
 
-There is a difference between a tool that does your work and a tool that proposes work you accept. The first one saves you time and quietly takes your judgment. The second one saves you time and hands your judgment back, sharpened. Everything I have built since that afternoon comes from insisting on the second shape.
+Those are dated development observations, not a claim about every Mac or every version of macOS. They were enough to settle one product decision for me.
 
-So the rule I set was narrow enough to be testable:
+This was not really a complaint about a particular feature. It exposed an assumption that appears across AI software: if the model is probably right, apply the change and let the person keep moving.
 
-**The only ways text changes in Flow are an edit you typed, or a change you approved.**
+That can feel magical in a text message. It feels different in a client proposal, a board update, a shareholder letter, a hiring plan, or a piece of code. The more polished the result looks, the easier it is to forget that a decision occurred.
 
-Not "usually." Not "for important documents." The only ways. If a rule has exceptions, it is not a rule, it is a preference, and preferences do not survive a deadline.
+I did not want less AI. I had already seen how much more work I could finish with a model in the loop. I wanted to remain the author of that work.
 
-The first consequence was uncomfortable. It meant switching off the operating system's own Writing Tools inside my app. Not hiding it, not warning about it. Off. A rewrite that lands with no diff, no approval and no record is not a feature I can wrap safely. It is a hole in the floor. You do not put a rug over a hole in the floor.
+## The rule
+
+There is a useful difference between a tool that edits your work and a tool that proposes an edit. The first saves time by taking a decision. The second saves time while leaving the decision with you.
+
+So I wrote one rule:
+
+**Text changes in Flow only when you type the edit or approve the proposal.**
+
+Not usually. Not only for important files. A rule with exceptions becomes a preference, and preferences do not survive a deadline.
+
+That meant Flow could not simply wrap an invisible rewrite in a friendlier screen. An AI action had to produce a proposed change. The proposal had to show the exact before and after text. It had to stay separate from the file until a person chose what happened next.
+
+Approval is not a polite button displayed after the real work has already happened. Until you approve, the file on disk has not changed.
+
+That distinction also changes failure. If the document moves while you are reviewing, Flow does not force the proposal onto newer text. The proposal belongs to the state it was made from. Stale ground stops the save. You can return to the document, understand what changed, and ask again.
+
+The model is still allowed to be ambitious. It can draft, restructure, translate, search, and refine. The boundary is not about making AI timid. It is about keeping a suggestion visibly different from a decision.
 
 ## The diff is the product
 
-Once I stopped thinking of AI as something that edits your document and started thinking of it as something that *proposes* an edit, the whole shape of the app fell out.
+For a while I described Flow as a Markdown editor with AI. That is accurate and misses the point.
 
-Every AI action in Flow arrives as a proposal. You see the exact change, down to the character. You see what evidence supports it and, just as importantly, what it does not. You see which checks ran. Then you approve or you reject, and either way that decision is recorded.
+The product is the distance between a suggestion and an accepted change.
 
-That last clause carries more weight than it first appears. An approval nobody wrote down is just a feeling you had on a Tuesday. Six weeks later, when someone asks why a paragraph in a board update says what it says, "I think the AI suggested it and it looked right" is not an answer anyone can use. A record is.
+You can see that distance in the diff. You can read the proposed words before they become your words. You can see the evidence and checks attached to the run, and where the work ran. You approve, decline, or leave it waiting.
 
-I did not arrive at this because I love bureaucracy. I arrived at it because I kept losing arguments with myself. I would look at a document I had produced with AI help and genuinely not remember which parts were mine. That is a strange and slightly hollow feeling, and I do not think enough people are naming it. Approving each change fixes it, not through discipline, but through structure.
+I did not arrive at this because I enjoy ceremony. I arrived at it because memory is a poor audit trail.
 
-## What it turns out I was really building
+Six weeks later, “I think the AI changed that paragraph” is not useful. It does not tell you what the paragraph said before, why the new version looked better, or whether the source changed after the proposal was made. A revision you can inspect and restore does.
 
-For a long time I described Flow as a Markdown editor with AI in it. That description is accurate and almost completely useless, in the way that describing a car as a chair with wheels is accurate.
+After approval, History shows the saved revision. The receipt records what ran without storing your prompt or API key. The record is not there to make ordinary writing feel regulated. It is there so an important question has somewhere better to land than your memory of a Tuesday afternoon.
 
-Flow is roughly ninety percent document and ten percent machinery. When you open it you are looking at your own writing, rendered properly, on your own Mac, from ordinary Markdown files in ordinary folders you already have. There is no database to import into and no cloud to sync with before you can read your own words. If Flow disappeared tomorrow, every file would still be sitting exactly where it was, readable in any text editor written in the last forty years.
+This structure protects small decisions too. Declining a proposal is not a failed run. Leaving one unresolved is not consent. Closing a review is not the same as saving it. Each state says what actually happened.
 
-That is not nostalgia. It is the only arrangement where the promise underneath everything else can be true.
+The code-block mistake taught me that confidence is not the same as authority. A perfectly fluent change can still be the wrong change to make.
 
-**Your documents are free forever. The AI is what you pay for.**
+## The file underneath
 
-Reading, writing, searching, organizing, exporting: all of it is free, permanently, with no account and no expiry. Not a trial that turns into a wall. Not a free tier that quietly becomes read-only when you stop paying. Free.
+The approval rule would mean less if Flow also owned the only readable copy of the document.
 
-I can make that promise cleanly because of how the app is built. There is exactly one place in the entire product where a permission is checked, and it sits above the part that talks to models. Everything past that line is the subscription. Everything else is yours. It is not a list of decisions scattered through a codebase that might drift apart over the years. It is one line, in one place.
+Flow works with ordinary Markdown files in folders you choose. Reading, writing, searching, organizing, and exporting do not depend on an AI subscription. If Flow disappeared, the files would still be yours and another editor could open them.
 
-Which means if you subscribe and later stop, here is precisely what happens: the AI stops. That is the whole list. No document locks. No read-only mode. No export wall. No watermark. Your files stay open and editable, because they were only ever your files.
+That is not a side benefit. Open files make approval meaningful.
 
-## The part I expect to be argued with
+You are not choosing between accepting the AI's version and losing access to the work. You can compare the proposal with a source you control. You can refuse the change. You can leave with the document, its readable history, and no proprietary format standing between you and what you wrote.
 
-Local models are part of the subscription too.
+The file is the durable artifact. AI is a visitor with useful suggestions.
 
-I know how that sounds. Flow can run models directly on your Mac, with no network involved, and it would be an easier sell to say that once the model is yours the software is free. Several people have told me to say exactly that. It would be false, so I am not going to.
+Once I saw the product that way, many later decisions became simpler. A search result should return to the current source before claiming a passage is still there. A chart should be redrawn from readable data rather than survive as a detached picture. A route should not cross from a local model to the cloud because a fallback found it convenient. Each is the same argument at a different scale: the software must not quietly replace a fact or decision that belongs to you.
 
-What you pay for is not the words the model produces. Flow never charges for those and never touches your provider bill. What you pay for is everything around the model: the routing that picks which one runs, the tools it is allowed to use, the approval step, and the receipt it writes. That layer costs the same to build whether the model is on your machine or on someone else's, and it is the entire reason the output is safe to accept.
+## What I was really trying to keep
 
-I would rather lose a sale to that sentence than earn one by blurring it and issue a refund in a week.
+I used to look at AI-assisted work and wonder which sentences were mine.
 
-## What today is
+That feeling is hard to name. The document looks finished, but your relationship to it is thin. You did not quite write it. You did not quite review it. You mostly watched it arrive.
 
-Flow is out. You can download it and open a folder of your own files right now, and the whole document side works forever without paying anyone.
+Flow is my answer to that feeling.
 
-If you want the AI, it is ten dollars a month, or ninety-six a year if you would rather pay once and forget about it. One licence covers one person across as many of your own Macs as you like. Nobody counts your machines.
+Authorship does not require doing every mechanical step yourself. A conductor does not play every instrument. A director does not operate every camera. What matters is that the consequential choices remain visible and that the final work carries a decision you can stand behind.
 
-And you get a stretch of Pro access to try properly before deciding. Not a countdown that burns while you are on holiday: a day is only spent on a day you actually use the AI. Use it hard for a week, ignore it for a month, come back and your remaining days are still there waiting.
+AI can move quickly. It can find alternatives I would not have considered and turn a rough thought into something worth reviewing. Flow lets it do that work without pretending the result became mine before I chose it.
 
-I built this because a machine changed my work without telling me and I could not prove what it had done. Nothing in Flow can do that to you. Every change arrives as a proposal, in your hands, with a record.
+The code-block mistake gave me the rule. The rule gave the product its shape.
 
-That is the whole idea. The rest is details, and I will spend this week on them: where the AI actually runs and what it costs, how search finds the exact passage, why the fastest model on your Mac is probably not the one you picked, and what happens to a document that is far too long to fit anywhere.
-
-One a day. Starting tomorrow.
-
-Today, though, you can just open it.
+AI proposes. You review. Only approval changes the file.
