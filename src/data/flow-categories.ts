@@ -1,14 +1,16 @@
-// The Flow product tour, split into four category pages (2026-08-20).
+// The Flow product tour, split into a tour landing and four category pages.
 //
 // WHY. GA4 (Jul 23 to Aug 19) showed cold visitors to /flow/ leaving after
 // about eight seconds, while the one warm visitor stayed almost seven
 // minutes. The single page carried twelve chapters and nearly 12,000 words.
-// The overview now sells the promise and sends the reader into one category;
-// each category page carries its chapters under a shared sub-nav.
+// The product overview now sells the promise and routes into /flow/tour/;
+// the tour landing introduces the four parts, and each category page carries
+// its chapters under a shared sub-nav.
 //
 // RULES. Chapter ids are the ORIGINAL #tour-<chapter> anchors. They exist on
-// the category page (the chapter heading) AND on the overview (the card link),
-// so every link published before the split still lands somewhere useful.
+// the category page (the chapter heading) AND on the product overview (the
+// tour invitation), so every link published before the split still lands
+// somewhere useful.
 // Category copy follows website-copy-style: plain words, no em dashes, no
 // capability Flow does not have. Titles name the common belief and flip it
 // (content-masterclass review, 2026-08-20); blurbs are short sentences, one
@@ -42,10 +44,10 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
     label: 'Writing with AI',
     title: 'Most AI edits happen behind your back. Flow edits with you.',
     blurb:
-      'Six AI actions, one trust path. Every change arrives as an exact diff you approve. The tools tell you the cost before you click. A fifty page file gets the same care, part by part.',
+      'Seven AI actions, one trust path. Every change arrives as an exact diff you approve. The tools tell you the cost before you click. A fifty page file gets the same care, part by part.',
     pageTitle: 'Flow · Writing with AI: approve every change · Orionfold',
     description:
-      'How Orionfold Flow edits with AI: six actions, lookups you watch live, a tool strip that states scope and cost, and an exact diff you approve for every change.',
+      'How Orionfold Flow edits with AI: seven actions, lookups you watch live, a tool strip that states scope and cost, and an exact diff you approve for every change.',
     chapters: [
       { id: 'tour-agency', label: 'Writing you approve' },
       { id: 'tour-expand', label: 'Expand with Sources' },

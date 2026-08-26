@@ -1,0 +1,462 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import FlowSubNav from '../../components/flow/FlowSubNav.astro';
+import Footer from '../../components/Footer.astro';
+import LineIcon from '../../components/ui/LineIcon.astro';
+import { SITE } from '../../data/seo';
+import { ogMeta } from '../../data/og';
+import { FLOW, formatUsd } from '../../data/commerce';
+import {
+  FLOW_DOWNLOAD_CAPTION,
+  FLOW_DOWNLOAD_READY,
+  FLOW_PROMISE,
+  FLOW_SPLIT_RULE,
+} from '../../data/flow-pricing';
+import { FLOW_SPECIFICATION_MEASUREMENTS } from '../../data/flow-measurements';
+import {
+  FLOW_AGENCY_SPECIFICATIONS,
+  FLOW_BASE_SPECIFICATIONS,
+  FLOW_COMPATIBILITY_SPECIFICATIONS,
+  FLOW_DOCUMENT_SPECIFICATIONS,
+  FLOW_EXECUTION_SPECIFICATIONS,
+  FLOW_LAPSE_SPECIFICATIONS,
+  FLOW_PROOF_SPECIFICATIONS,
+  FLOW_PRO_SPECIFICATIONS,
+  FLOW_PROVIDER_SPECIFICATIONS,
+  FLOW_RUNTIME_COMPARISON,
+  type FlowSpecificationState,
+} from '../../data/flow-specifications';
+import '../../styles/flow.css';
+
+const href = '/flow/specifications/';
+const og = ogMeta(href);
+const monthly = formatUsd(FLOW.monthly.amount);
+const annual = formatUsd(FLOW.annual.amount);
+
+const sectionLinks = [
+  { href: '#compatibility', label: 'Compatibility' },
+  { href: '#documents', label: 'Documents' },
+  { href: '#agency', label: 'Agency' },
+  { href: '#models', label: 'Models & privacy' },
+  { href: '#proof', label: 'Proof & history' },
+  { href: '#plans', label: 'Base & Pro' },
+  { href: '#measurements', label: 'Measurements' },
+  { href: '#availability', label: 'Availability' },
+];
+
+const stateClass = (state: FlowSpecificationState) => {
+  if (state === 'Runnable now' || state === 'Built in') return 'flow-spec-state--ready';
+  if (state === 'Detected today') return 'flow-spec-state--detected';
+  return 'flow-spec-state--priority';
+};
+
+const breadcrumbs = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Flow', item: `${SITE.url}/flow/` },
+    { '@type': 'ListItem', position: 3, name: 'Technical specifications', item: `${SITE.url}${href}` },
+  ],
+};
+
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Orionfold Flow technical specifications',
+  description: 'System requirements, document formats, approval-led Agency, model routes, proof, privacy boundaries, plans, and qualified measurements for Orionfold Flow.',
+  url: `${SITE.url}${href}`,
+  isPartOf: {
+    '@type': 'SoftwareApplication',
+    name: 'Orionfold Flow',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'macOS 26 or later',
+    url: `${SITE.url}/flow/`,
+  },
+};
+---
+
+<Layout
+  title="Flow technical specifications · Orionfold"
+  description="System requirements, document formats, approval-led Agency, model routes, proof, privacy boundaries, plans, and qualified measurements for Orionfold Flow on Mac."
+  ogImage={og.image}
+  ogImageAlt={og.alt}
+  jsonLd={[breadcrumbs, pageSchema]}
+>
+  <Nav />
+  <FlowSubNav active="specs" />
+  <main class="flow-page flow-spec-page -mt-20 overflow-x-clip sm:-mt-24">
+    <section class="flow-hero relative px-6 pb-12 pt-32 sm:pb-16 sm:pt-40" aria-labelledby="flow-spec-title">
+      <div class="flow-hero__grid" aria-hidden="true"></div>
+      <div class="flow-hero__glow" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-5xl">
+        <a href="/flow/" class="of-eyebrow inline-flex items-center gap-2">Orionfold Flow <span aria-hidden="true">›</span></a>
+        <h1 id="flow-spec-title" class="of-display mt-6 max-w-5xl text-[clamp(2.45rem,6vw,4.25rem)] leading-[1] tracking-[-0.05em]">
+          Technical specifications.
+        </h1>
+        <p class="mt-7 max-w-3xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl">
+          Requirements, documents, Agency, model routes, proof, privacy, plans, and measurements. All in one place.
+        </p>
+        <dl class="mt-10 grid grid-cols-2 overflow-hidden rounded-2xl border border-border/70 bg-surface/80 lg:grid-cols-4">
+          <div class="flow-spec-hero-fact"><dt>Minimum</dt><dd>macOS 26</dd></div>
+          <div class="flow-spec-hero-fact"><dt>Files</dt><dd>Plain Markdown</dd></div>
+          <div class="flow-spec-hero-fact"><dt>AI domains</dt><dd>4, separately controlled</dd></div>
+          <div class="flow-spec-hero-fact"><dt>App payload</dt><dd>Around 40 MB</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <nav class="flow-spec-nav border-y border-border/70 bg-surface/90 px-6" aria-label="Technical specification sections">
+      <div class="mx-auto flex max-w-5xl gap-7 overflow-x-auto py-4">
+        {sectionLinks.map((link) => (
+          <a href={link.href} class="shrink-0 text-sm font-semibold text-text-muted transition-colors hover:text-primary">{link.label}</a>
+        ))}
+      </div>
+    </nav>
+
+    <section id="compatibility" class="scroll-mt-28 px-6 py-16 sm:py-24" aria-labelledby="compatibility-title">
+      <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16">
+        <div>
+          <p class="flow-kicker">Compatibility</p>
+          <h2 id="compatibility-title" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]">Made for Mac.</h2>
+        </div>
+        <dl class="flow-spec-list">
+          {FLOW_COMPATIBILITY_SPECIFICATIONS.map((row) => (
+            <div class="flow-spec-row">
+              <dt>{row.label}</dt>
+              <dd><strong>{row.value}</strong>{row.note && <span>{row.note}</span>}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section id="documents" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="documents-title">
+      <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16">
+        <div>
+          <p class="flow-kicker">Documents</p>
+          <h2 id="documents-title" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]">Your files stay files.</h2>
+          <p class="mt-5 max-w-sm text-base leading-relaxed text-text-muted">Flow works on the folders you choose. Other apps can read the same files.</p>
+        </div>
+        <dl class="flow-spec-list">
+          {FLOW_DOCUMENT_SPECIFICATIONS.map((row) => (
+            <div class="flow-spec-row">
+              <dt>{row.label}</dt>
+              <dd><strong>{row.value}</strong>{row.note && <span>{row.note}</span>}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section id="agency" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="agency-title">
+      <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16">
+        <div>
+          <p class="flow-kicker">Agency</p>
+          <h2 id="agency-title" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]">A proposal. Then your decision.</h2>
+          <p class="mt-5 max-w-sm text-base leading-relaxed text-text-muted">Every AI action uses one approval path. Flow states the scope before it runs, shows the proposed work, and saves only what you approve.</p>
+        </div>
+        <dl class="flow-spec-list">
+          {FLOW_AGENCY_SPECIFICATIONS.map((row) => (
+            <div class="flow-spec-row">
+              <dt>{row.label}</dt>
+              <dd><strong>{row.value}</strong>{row.note && <span>{row.note}</span>}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section id="models" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="models-title">
+      <div class="mx-auto max-w-5xl">
+        <div class="grid gap-10 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16">
+          <div>
+            <p class="flow-kicker">Models and privacy</p>
+            <h2 id="models-title" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]">You choose where AI runs.</h2>
+          </div>
+          <dl class="flow-spec-list">
+            {FLOW_EXECUTION_SPECIFICATIONS.map((row) => (
+              <div class="flow-spec-row">
+                <dt>{row.label}</dt>
+                <dd><strong>{row.value}</strong>{row.note && <span>{row.note}</span>}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <aside class="flow-spec-comparison mt-14 rounded-3xl border border-primary/30 bg-surface p-6 sm:p-8" aria-label="Flow Runtime measured comparison">
+          <p class="flow-kicker">{FLOW_RUNTIME_COMPARISON.eyebrow}</p>
+          <div class="mt-4 grid gap-5 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-12">
+            <h3 class="of-display text-[clamp(1.7rem,3.3vw,2.55rem)] leading-[1.05]">{FLOW_RUNTIME_COMPARISON.title}</h3>
+            <div>
+              <p class="text-base leading-relaxed text-text-muted">{FLOW_RUNTIME_COMPARISON.body}</p>
+              <p class="mt-4 text-xs leading-relaxed text-text-dim">{FLOW_RUNTIME_COMPARISON.qualifier}</p>
+            </div>
+          </div>
+        </aside>
+
+        <div class="mt-14 overflow-hidden rounded-2xl border border-border/70">
+          <div class="hidden grid-cols-[1.1fr_0.8fr_0.8fr_2.3fr] gap-4 bg-surface-raised px-5 py-3 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-text-dim md:grid">
+            <span>Provider</span><span>Domain</span><span>State</span><span>What that means</span>
+          </div>
+          <div class="divide-y divide-border/70">
+            {FLOW_PROVIDER_SPECIFICATIONS.map((row) => (
+              <article class="grid gap-3 bg-surface/80 px-5 py-5 md:grid-cols-[1.1fr_0.8fr_0.8fr_2.3fr] md:items-start md:gap-4">
+                <h3 class="font-semibold text-text">{row.provider}</h3>
+                <p class="text-sm text-text-muted">{row.route}</p>
+                <p><span class:list={['flow-spec-state', stateClass(row.state)]}>{row.state}</span></p>
+                <p class="text-sm leading-relaxed text-text-muted">{row.note}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+        <p class="mt-5 text-sm leading-relaxed text-text-muted"><strong class="text-text">State is part of the specification.</strong> Detection alone never grants permission or proves a runnable Agency path. Launch-priority routes remain labelled until their full path is accepted.</p>
+      </div>
+    </section>
+
+    <section id="proof" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="proof-title">
+      <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16">
+        <div>
+          <p class="flow-kicker">Proof and history</p>
+          <h2 id="proof-title" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]">The work leaves a record.</h2>
+          <p class="mt-5 max-w-sm text-base leading-relaxed text-text-muted">A receipt says what happened. Evidence says what was assessed. History preserves the exact revision you can inspect or restore.</p>
+        </div>
+        <dl class="flow-spec-list">
+          {FLOW_PROOF_SPECIFICATIONS.map((row) => (
+            <div class="flow-spec-row">
+              <dt>{row.label}</dt>
+              <dd><strong>{row.value}</strong>{row.note && <span>{row.note}</span>}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section id="plans" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="plans-title">
+      <div class="mx-auto max-w-5xl">
+        <p class="flow-kicker">Base and Pro</p>
+        <h2 id="plans-title" class="of-display mt-4 max-w-4xl text-[clamp(2rem,4vw,3rem)]">{FLOW_PROMISE}</h2>
+        <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">{FLOW_SPLIT_RULE} Reading old receipts stays free. Producing new AI work is Pro.</p>
+        <div class="mt-12 grid gap-5 lg:grid-cols-2">
+          <article class="of-surface rounded-2xl border border-border/70 p-6 sm:p-8">
+            <div class="flex items-baseline justify-between gap-4"><h3 class="text-2xl font-bold">Base</h3><span class="flow-spec-state flow-spec-state--ready">Free forever</span></div>
+            <p class="mt-5 text-sm leading-relaxed text-text-muted">Write, organize, search, visualize, and export. Read every past receipt, timeline, evidence score, and guardrail result without an account or expiry.</p>
+            <details class="flow-spec-plan-details mt-6">
+              <summary>{FLOW_BASE_SPECIFICATIONS.length} Base capabilities <span aria-hidden="true">+</span></summary>
+              <ul class="mt-3 divide-y divide-border/70">
+                {FLOW_BASE_SPECIFICATIONS.map((item) => (
+                  <li class="py-3"><strong class="block text-sm text-text">{item.label}</strong><span class="mt-1 block text-sm leading-relaxed text-text-muted">{item.note}</span></li>
+                ))}
+              </ul>
+            </details>
+          </article>
+          <article class="of-surface rounded-2xl border border-primary/35 p-6 sm:p-8">
+            <div class="flex items-baseline justify-between gap-4"><h3 class="text-2xl font-bold">Pro</h3><span class="flow-spec-state flow-spec-state--detected">{monthly}/month</span></div>
+            <p class="mt-5 text-sm leading-relaxed text-text-muted">Everything in Base, plus every feature that runs a model: seven actions, agentic tools, routing, approvals, new receipts, and new evidence.</p>
+            <details class="flow-spec-plan-details mt-6">
+              <summary>{FLOW_PRO_SPECIFICATIONS.length} Pro capabilities <span aria-hidden="true">+</span></summary>
+              <ul class="mt-3 divide-y divide-border/70">
+                {FLOW_PRO_SPECIFICATIONS.map((item) => (
+                  <li class="py-3"><strong class="block text-sm text-text">{item.label}</strong><span class="mt-1 block text-sm leading-relaxed text-text-muted">{item.note}</span></li>
+                ))}
+              </ul>
+            </details>
+          </article>
+        </div>
+        <div class="mt-5 rounded-2xl border border-border/70 bg-surface px-6 py-5">
+          <h3 class="text-base font-bold">If Pro ends</h3>
+          <ul class="mt-3 grid gap-x-8 gap-y-2 text-sm leading-relaxed text-text-muted sm:grid-cols-2">
+            {FLOW_LAPSE_SPECIFICATIONS.map((fact) => <li class="flex gap-2"><span class="text-primary" aria-hidden="true">✓</span><span>{fact}</span></li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="measurements" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="measurements-title">
+      <div class="mx-auto max-w-5xl">
+        <p class="flow-kicker">Measured, not promised</p>
+        <h2 id="measurements-title" class="of-display mt-4 text-[clamp(2rem,4vw,3rem)]">The number and its boundary.</h2>
+        <dl class="mt-12 grid gap-4 sm:grid-cols-2">
+          {FLOW_SPECIFICATION_MEASUREMENTS.map((item) => (
+            <div class="of-surface grid grid-cols-[auto_1fr] gap-x-4 rounded-2xl border border-border/70 p-5 sm:p-6">
+              <LineIcon name={item.icon} class={`row-span-3 mt-1 h-7 w-7 flow-stat__icon--${item.tone}`} strokeWidth={1.6} />
+              <dd class="of-spec-figure">{item.value}</dd>
+              <dt class="mt-1 font-semibold text-text">{item.label}</dt>
+              <dd class="mt-1 text-sm leading-relaxed text-text-muted">{item.fine}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section id="availability" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="availability-title">
+      <div class="mx-auto max-w-5xl">
+        <div class="of-surface rounded-3xl border border-border/70 p-7 sm:p-10">
+          <p class="flow-kicker">Availability</p>
+          <h2 id="availability-title" class="of-display mt-4 max-w-4xl text-[clamp(2rem,4vw,3rem)]">Flow for Mac.</h2>
+          <div class="mt-9 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+            <div><p class="flow-spec-mini-label">Public download</p><p class="mt-2 font-semibold">{FLOW_DOWNLOAD_READY ? 'Available now' : 'Package not connected yet'}</p></div>
+            <div><p class="flow-spec-mini-label">Monthly</p><p class="mt-2 font-semibold">{monthly}</p></div>
+            <div><p class="flow-spec-mini-label">Annual</p><p class="mt-2 font-semibold">{annual}</p></div>
+            <div><p class="flow-spec-mini-label">First use</p><p class="mt-2 font-semibold">10 Pro Days included</p></div>
+          </div>
+          <p class="mt-7 max-w-3xl text-sm leading-relaxed text-text-muted">{FLOW_DOWNLOAD_CAPTION} One licence covers one person on their own Macs. Patent pending.</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="/flow/" class="of-primary-action">Explore Flow</a>
+            <a href="/flow/#pricing" class="of-secondary-action">See plans</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .flow-spec-nav {
+    backdrop-filter: blur(18px);
+  }
+
+  .flow-spec-plan-details summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    cursor: pointer;
+    list-style: none;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1rem;
+    font-size: 0.86rem;
+    font-weight: 650;
+    color: var(--color-primary);
+  }
+
+  .flow-spec-plan-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .flow-spec-plan-details[open] summary span {
+    transform: rotate(45deg);
+  }
+
+  .flow-spec-plan-details summary span {
+    transition: transform 180ms ease;
+  }
+
+  .flow-spec-hero-fact {
+    padding: 0.95rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .flow-spec-hero-fact:nth-child(odd) {
+    border-right: 1px solid var(--color-border);
+  }
+
+  .flow-spec-hero-fact:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  .flow-spec-hero-fact dt,
+  .flow-spec-mini-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+
+  .flow-spec-hero-fact dd {
+    margin-top: 0.45rem;
+    font-size: 0.92rem;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+
+  .flow-spec-list {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .flow-spec-row {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .flow-spec-row dt {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+
+  .flow-spec-row dd strong,
+  .flow-spec-row dd span {
+    display: block;
+  }
+
+  .flow-spec-row dd strong {
+    font-size: 0.95rem;
+    color: var(--color-text);
+  }
+
+  .flow-spec-row dd span {
+    margin-top: 0.35rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+
+  .flow-spec-state {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.28rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .flow-spec-state--ready {
+    border-color: color-mix(in srgb, var(--color-success) 32%, transparent);
+    background: color-mix(in srgb, var(--color-success) 9%, transparent);
+    color: var(--color-success);
+  }
+
+  .flow-spec-state--detected {
+    border-color: color-mix(in srgb, var(--color-primary) 32%, transparent);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    color: var(--color-primary);
+  }
+
+  .flow-spec-state--priority {
+    border-color: color-mix(in srgb, var(--color-warn) 35%, transparent);
+    background: color-mix(in srgb, var(--color-warn) 9%, transparent);
+    color: var(--color-warn);
+  }
+
+  @media (min-width: 640px) {
+    .flow-spec-row {
+      grid-template-columns: minmax(7rem, 0.34fr) minmax(0, 0.66fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .flow-spec-hero-fact,
+    .flow-spec-hero-fact:nth-child(2n) {
+      border-right: 1px solid var(--color-border);
+      border-bottom: 0;
+    }
+
+    .flow-spec-hero-fact:last-child {
+      border-right: 0;
+    }
+  }
+</style>

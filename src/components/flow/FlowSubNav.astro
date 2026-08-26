@@ -1,0 +1,68 @@
+---
+interface Props {
+  active?: 'overview' | 'tour' | 'specs' | 'enterprise';
+  class?: string;
+}
+
+const { active = 'overview', class: className } = Astro.props;
+
+const slots = [
+  { key: 'overview', label: 'Overview', href: '/flow/' },
+  { key: 'tour', label: 'Tour', href: '/flow/tour/' },
+  { key: 'specs', label: 'Tech Specs', href: '/flow/specifications/' },
+  { key: 'enterprise', label: 'Enterprise', href: '/flow/enterprise/' },
+] as const;
+---
+<nav aria-label="Flow sections" class:list={['flow-product-subnav', className]}>
+  <ul class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6">
+    {slots.map((slot) => (
+      <li>
+        <a
+          href={slot.href}
+          aria-current={slot.key === active ? 'page' : undefined}
+          class:list={['flow-product-subnav__link', slot.key === active && 'is-active']}
+        >
+          {slot.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .flow-product-subnav {
+    margin-top: 7rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+    z-index: 31;
+  }
+  @media (min-width: 640px) {
+    .flow-product-subnav { margin-top: 8rem; }
+  }
+  .flow-product-subnav__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding-block: 0.15rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+  }
+  .flow-product-subnav__link:hover,
+  .flow-product-subnav__link.is-active {
+    color: var(--color-primary);
+  }
+  .flow-product-subnav__link.is-active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -0.85rem;
+    left: 0;
+    height: 2px;
+    background: var(--color-primary);
+  }
+</style>

@@ -49,7 +49,7 @@ test('navigation and sticky summary keep the proposal action visible', () => {
   // Flow ships, waitlist before). What THIS test cares about is only that the
   // nav CTA still belongs to Flow rather than to the proposal builder, so it
   // asserts the switch exists and leaves the wording to the Flow surface test.
-  assert.match(nav, /'Download Flow' : 'Join the waitlist'/);
+  assert.match(nav, /flowDownloadReady \? 'Download Flow' : \(flowLive \? 'See Flow plans' : 'Join the waitlist'\)/);
   assert.match(
     readFileSync(new URL('../../src/components/Footer.astro', import.meta.url), 'utf8'),
     /href: '\/proposal\/', label: 'Build a proposal'/,

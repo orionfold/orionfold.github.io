@@ -1,7 +1,7 @@
 // Flow flagship surface contracts. Rewritten 2026-08-15 for the operator-
 // approved Flow takeover: the homepage and /flow/ lead with real development-
 // build captures, measured numbers, buyer-language copy, and waitlist capture;
-// the top nav is Flow-only and the catalog lives in the footer. These
+// the top nav carries the flagship family and the catalog lives in the footer. These
 // assertions protect that surface and its truth boundaries (no Apple
 // Intelligence, no pricing, gated agency, patent-pending phrasing).
 import assert from 'node:assert/strict';
@@ -23,19 +23,22 @@ const readCopy = (relativePath) =>
 const readBinary = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url));
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// ── Nav: Flow-only takeover ────────────────────────────────────────────────
+// ── Nav: flagship product family ──────────────────────────────────────────
 const nav = read('src/components/Nav.astro');
 const navArray = nav.match(/const links = \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/label: '([^']+)'/g)].map((match) => match[1]);
-assert.deepEqual(navLabels, ['Flow', 'Tour', 'Enterprise', 'Press', 'Story'], 'the top nav is Flow-only');
-for (const retired of ['Relay', 'Arena', 'Models', 'Books', 'Training', 'Proof']) {
+assert.deepEqual(navLabels, ['Flow', 'Relay', 'Arena', 'Books', 'Story'], 'the global nav carries the flagship product family, then Books and Story');
+for (const localOnly of ['Tour', 'Tech Specs', 'Enterprise']) {
+  assert.equal(navLabels.includes(localOnly), false, `${localOnly} stays in the Flow-local rail, not the global nav`);
+}
+for (const retired of ['Models', 'Training', 'Proof']) {
   assert.equal(navLabels.includes(retired), false, `${retired} stays out of the top nav (footer Products column owns it)`);
 }
 // The nav CTA and sticky bar now switch on ORIONFOLD_FLOW_LIVE (operator ask
 // 2026-08-22 10:13: the sticky CTA becomes a direct Download button). Both
 // branches must exist in the source, so the pre-launch wording is still one
 // flag flip away rather than deleted.
-assert.match(nav, /'Download Flow' : 'Join the waitlist'/, 'the nav CTA switches between download and waitlist');
+assert.match(nav, /flowDownloadReady \? 'Download Flow' : \(flowLive \? 'See Flow plans' : 'Join the waitlist'\)/, 'the nav CTA switches between a real download, plans, and waitlist');
 assert.match(nav, /'\/flow\/#waitlist'/, 'the pre-launch waitlist path survives in the off branch');
 assert.doesNotMatch(nav, />Get Proposal</, 'the proposal CTA left the nav (footer keeps the path)');
 assert.match(nav, /Orionfold Flow is coming to Mac/, 'the pre-launch sticky bar copy survives in the off branch');
@@ -56,6 +59,8 @@ assert.match(footer, /Site source: Apache 2\.0/);
 
 // ── /flow/: the flagship atlas ─────────────────────────────────────────────
 const flow = read('src/pages/flow.astro');
+const flowTour = read('src/pages/flow/tour.astro');
+const flowSubNav = read('src/components/flow/FlowSubNav.astro');
 const flowMeasurements = read('src/data/flow-measurements.ts');
 const sharedHero = read('src/components/flow/FlowLaunchHomeHero.astro');
 // 2026-08-20 split: the twelve tour chapters live in components rendered by
@@ -72,7 +77,16 @@ const categoryShell = read('src/components/flow/FlowCategoryPage.astro');
 const categories = read('src/data/flow-categories.ts');
 const CATEGORY_SLUGS = ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files'];
 const categoryPages = Object.fromEntries(CATEGORY_SLUGS.map((slug) => [slug, read(`src/pages/flow/${slug}.astro`)]));
-const tour = `${flow}\n${chapters}\n${categoryShell}`;
+const tour = `${flow}\n${flowTour}\n${chapters}\n${categoryShell}`;
+assert.deepEqual(
+  [...flowSubNav.matchAll(/label: '([^']+)'/g)].map((match) => match[1]),
+  ['Overview', 'Tour', 'Tech Specs', 'Enterprise'],
+  'Flow carries the same concise product-local navigation pattern as Relay and Arena',
+);
+assert.match(flow, /<FlowSubNav active="overview" \/>/, 'the Flow overview marks Overview active');
+assert.match(flowSubNav, /label: 'Tour', href: '\/flow\/tour\/'/, 'Tour opens its own product-tour landing');
+assert.match(flowTour, /<FlowSubNav active="tour" \/>/, 'the tour landing marks Tour active');
+assert.match(categoryShell, /<FlowSubNav active="tour" \/>/, 'the Flow category pages mark Tour active');
 // 2026-08-25 (operator direction): /flow/ mounts the same hero shell as the
 // homepage so layout, type, product sizing and ticker cannot drift, while the
 // racing key art remains exclusive to the homepage and /flow/ restores its
@@ -237,10 +251,11 @@ assert.match(downloadCta, /\{FLOW_DOWNLOAD_CAPTION\}/, 'the subtext comes from t
 // THE NAV STICKY BAR leads with the download once Flow is live (operator ask
 // 2026-08-22 10:13). All three nav calls to action switch together.
 const navSource = read('src/components/Nav.astro');
-assert.match(navSource, /const navCtaLabel = flowLive \? 'Download Flow' : 'Join the waitlist';/);
-assert.match(navSource, /const stickyCtaLabel = flowLive \? 'Download Flow' : 'Join the waitlist';/);
-// The nav points at the same single URL constant as every other surface.
-assert.match(navSource, /const flowDownloadHref = FLOW_DMG_URL;/, 'the nav download uses the one URL constant');
+assert.match(navSource, /const flowDownloadReady = flowLive && FLOW_DOWNLOAD_READY;/);
+assert.match(navSource, /const navCtaLabel = flowDownloadReady \? 'Download Flow' : \(flowLive \? 'See Flow plans' : 'Join the waitlist'\);/);
+assert.match(navSource, /const stickyCtaLabel = navCtaLabel;/);
+// The nav points at the one download URL only when it is genuinely connected.
+assert.match(navSource, /const flowDownloadHref = flowDownloadReady \? FLOW_DMG_URL : \(flowLive \? '\/flow\/#pricing' : '\/flow\/#waitlist'\);/, 'the nav never advertises the placeholder as a download');
 
 // BASE IS THE ABSENCE OF AN ENTITLEMENT. It has no SKU, no price and no
 // entitlement string, and the commerce layer must never grow one for it.
@@ -295,9 +310,9 @@ assert.match(flow, /patent-pending technology for revision-scoped, verifiable AI
 // DATA (what was measured, on what) and, since the operator's 2026-08-22 call,
 // no longer prints capture dates. The dates stay recorded in the capability
 // briefs — dropping them from the page changed no figure.
-// '6 actions' (not 5): Expand with Sources joined the catalog in Flow 0131 on
-// 2026-08-20, and the toolbar brief names this page's old "five" as stale.
-for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '6 actions', '4 domains']) {
+// '7 actions': Visualize joined the six-action catalog in Flow 0129 and is
+// present in the current AgencyAction.allCases product source.
+for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '7 actions', '4 domains']) {
   assert.match(flowMeasurements, new RegExp(esc(value)), `${value} must stay in the measured stat band`);
 }
 // Scoped to the canonical measurement source: the press facts table further
@@ -305,15 +320,14 @@ for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '6 actions',
 const statBand = flowMeasurements;
 assert.doesNotMatch(statBand, /\b20\d\d-\d\d-\d\d\b(?![^\n]*\*\/)/, 'the stat band prints data, not capture dates');
 assert.match(statBand, /icon: '/, 'every stat carries an infographic glyph');
-// The action count undercounted for a day (Expand landed 2026-08-20, the site
-// caught up 2026-08-21). Prose anywhere in the tour must not go back to five.
+// Prose anywhere in the tour must not return to the retired five- or six-action counts.
 // Alt text is exempt on purpose: the toolbar captures predate Expand and still
 // show five monograms, and alt text describes the picture, not the catalog.
 const chapterProse = chapters.replace(/alt="[^"]*"/g, '');
-for (const stale of [/[Ff]ive AI actions/, /[Ff]ive actions/, /five AI tools/]) {
-  assert.doesNotMatch(chapterProse, stale, 'the Agency catalog is six actions since Expand with Sources');
+for (const stale of [/[Ff]ive AI actions/, /[Ff]ive actions/, /five AI tools/, /[Ss]ix AI actions/, /[Ss]ix actions/, /six AI tools/]) {
+  assert.doesNotMatch(chapterProse, stale, 'the Agency catalog is seven actions with Expand with Sources and Visualize');
 }
-assert.doesNotMatch(flowMeasurements, /5 actions/, 'the stat band counts six actions');
+assert.doesNotMatch(flowMeasurements, /[56] actions/, 'the stat band counts seven actions');
 // The four execution domains, named exactly.
 assert.match(flowMeasurements, /Local, LAN, Cloud prepaid, Cloud postpaid/);
 // Section order: tour → enterprise → press → waitlist. (The stack band left
@@ -332,11 +346,11 @@ for (const id of ['tour-agency', 'tour-expand', 'tour-toolbar', 'tour-longdocs',
   const heading = chapters.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
   assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
   assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
-  // The overview keeps the same id on the category card, so /flow/#tour-<x>
-  // links published before the split still land on the card that points onward.
+  // The overview keeps the same id in its tour invitation, so /flow/#tour-<x>
+  // links published before the split still land on the route into the tour.
   assert.match(categories, new RegExp(`id: '${id}'`), `${id} must be registered in flow-categories.ts`);
 }
-assert.match(flow, /card\.category\.chapters\.map\(\(chapter\) =>[\s\S]*?<span id=\{chapter\.id\} class="scroll-mt-28"/, 'overview cards carry the chapter ids as anchor stubs');
+assert.match(flow, /FLOW_CATEGORIES\.flatMap\(\(category\) => category\.chapters\)\.map\(\(chapter\) =>[\s\S]*?<span id=\{chapter\.id\} class="scroll-mt-28"/, 'the overview tour invitation carries the legacy chapter anchors');
 // Every chapter component renders on exactly one category page.
 for (const c of CHAPTERS) {
   const uses = Object.values(categoryPages).filter((page) => page.includes(`<${c} />`)).length;
@@ -469,6 +483,7 @@ assert.match(categoryShell, /<FlowWaitlist placement="flow-mid"/, 'category page
 assert.doesNotMatch(categoryShell, /placement="flow"[\s/>]/, 'a category page must not reuse the overview closer placement');
 assert.match(categoryShell, /aria-label="Flow tour categories"/, 'category pages carry the shared sub-nav');
 assert.match(categoryShell, /aria-current=\{c\.slug === cat\.slug \? 'page' : undefined\}/, 'the sub-nav marks the current category');
+assert.match(categoryShell, /href="\/flow\/tour\/"[\s\S]*Tour overview/, 'the category rail returns to the dedicated tour home');
 // One offer, two surfaces: the placements must resolve to DIFFERENT form ids
 // (no duplicate DOM ids) and therefore different attribution sources.
 const waitlistComponent = read('src/components/sections/FlowWaitlist.astro');
@@ -480,15 +495,21 @@ assert.match(waitlistComponent, /'flow-mid-waitlist'/);
 assert.doesNotMatch(waitlistComponent, /#tour-/, 'FlowWaitlist must not hardcode a chapter anchor');
 assert.match(categoryShell, /<FlowWaitlist placement="flow-mid" storyHref=\{flowStoryHref\} nextHref=\{nextHref\} nextLabel=\{nextLabel\} \/>/, 'the shell passes the next part to the mid-tour panel');
 assert.match(categoryShell, /const nextHref = next \? flowCategoryHref\(next\.slug\) : '\/flow\/enterprise\/'/);
-// The category hero carries the same cover crop as the overview card, so the
-// picture a reader clicked is the picture that greets them.
+assert.match(categoryShell, /href="\/flow\/tour\/" data-dir="prev"[\s\S]*Product tour/, 'the first-part pager returns to the tour home');
+// The category hero carries the same cover crop as the dedicated tour card, so
+// the picture a reader clicked is the picture that greets them.
 assert.match(categoryShell, /import \{ FLOW_CATEGORY_SHOTS \} from '\.\.\/\.\.\/data\/flow-category-shots'/);
-assert.match(flow, /import \{ FLOW_CATEGORY_SHOTS \} from '\.\.\/data\/flow-category-shots'/);
+assert.match(flowTour, /import \{ FLOW_CATEGORY_SHOTS \} from '\.\.\/\.\.\/data\/flow-category-shots'/);
 assert.match(categoryShell, /<FlowDetail\s[\s\S]*?src=\{cover\.src\}/, 'the category hero shows its cover crop');
 // Chapters remain numbered across the category family; the concise overview
-// links to each category without duplicating all fifteen chapter links.
+// points to one tour home, which then links to each part.
 assert.match(categoryShell, /Chapters \{firstChapter\} to \{lastChapter\} of \{totalChapters\}/);
-assert.match(flow, /tourCards\.map\(\(card\) =>/);
+assert.match(flow, /href="\/flow\/tour\/"[\s\S]*Take the product tour/, 'the overview routes into the dedicated tour home');
+assert.doesNotMatch(flow, /tourCards\.map\(\(card\) =>/, 'the full tour grid no longer lives on the product overview');
+assert.match(flowTour, /tourCards\.map\(\(card, index\) =>/, 'the dedicated tour landing owns the four-part grid');
+for (const slug of CATEGORY_SLUGS) {
+  assert.match(flowTour, new RegExp(`slug: '${slug}'`), `${slug} stays represented on the tour landing`);
+}
 assert.doesNotMatch(flow, /chapterOffsets|cat\.chapters\.map/, 'chapter lists stay in the tour pages');
 // The waitlist panel names the exchange and offers the free book as a second magnet.
 assert.match(waitlistComponent, /The launch note the day Flow ships for Mac\./);

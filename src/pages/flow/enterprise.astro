@@ -5,6 +5,7 @@
 // behavior shipped and running now, "Direction" is where the design heads.
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
+import FlowSubNav from '../../components/flow/FlowSubNav.astro';
 import Footer from '../../components/Footer.astro';
 import FlowWaitlist from '../../components/sections/FlowWaitlist.astro';
 import { Image } from 'astro:assets';
@@ -45,7 +46,8 @@ const faqSchema = {
   jsonLd={[breadcrumbs, faqSchema]}
 >
   <Nav />
-  <main class="flow-page flow-page--category overflow-x-clip">
+  <FlowSubNav active="enterprise" />
+  <main class="flow-page flow-page--category -mt-20 overflow-x-clip sm:-mt-24">
     <section class="flow-hero relative px-6 pb-12 pt-32 sm:pt-40">
       <div class="flow-hero__grid" aria-hidden="true"></div>
       <div class="flow-hero__glow" aria-hidden="true"></div>

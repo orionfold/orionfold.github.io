@@ -61,7 +61,7 @@ assert.match(pitStop, /pitStopDaylightPortrait/);
 assert.doesNotMatch(pitStop, /pitStopWide|pitStopPortrait|videoSrc|<video\b/);
 assert.match(pitStop, /Flow Capabilities \. The Pit Stop/, 'high-fidelity creative is framed as the Flow capabilities pit stop');
 assert.match(pitStop, /FLOW_STORYBOARD_MEASUREMENTS\.map[\s\S]*<LineIcon[\s\S]*measurement\.icon[\s\S]*measurement\.label[\s\S]*measurement\.value/, 'storyboard overlay reuses the canonical measured values, labels and icons');
-for (const value of ['22.3 ms', 'Search, 95th percentile', '$0.00425', 'A real billed run, to the digit', '1.1 s', 'First index of 10,000 notes', '6 actions', 'The Agency catalog']) {
+for (const value of ['22.3 ms', 'Search, 95th percentile', '$0.00425', 'A real billed run, to the digit', '1.1 s', 'First index of 10,000 notes', '7 actions', 'The Agency catalog']) {
   assert.match(measurements, new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${value} remains canonical measured evidence`);
 }
 assert.doesNotMatch(pitStop, /BrandMark|flow-pit__brand|Campaign telemetry is illustrative|<figcaption>/, 'creative has no overlaid brand badge or caption bar');

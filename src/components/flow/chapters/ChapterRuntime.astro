@@ -1,8 +1,7 @@
 ---
-import FlowShot from '../FlowShot.astro';
-import FlowDetail from '../FlowDetail.astro';
 import FlowShot from '../../../components/flow/FlowShot.astro';
 import FlowDetail from '../../../components/flow/FlowDetail.astro';
+import { FLOW_RUNTIME_COMPARISON } from '../../../data/flow-specifications';
 import shotRuntimeModels from '../../../assets/flow/shots/flow-runtime-models-shot.webp';
 import detailRuntimeStorage from '../../../assets/flow/details/detail-runtime-storage.webp';
 ---
@@ -17,13 +16,14 @@ import detailRuntimeStorage from '../../../assets/flow/details/detail-runtime-st
           Install nothing but Flow, and you can still pull a model and run approval-gated
           agency on your own machine. That is measured, not planned: on a notarized install
           with no other AI runtime present, a 5.98 GB model was pulled and three runs were
-          approved, every one served by the app's own helper. Flow's bundle carries two
-          engines for about 19 MiB. The size of twenty photos.
+          approved, every one served by the app's own helper. The complete app payload is
+          around 40 MB, including two inference engines that account for 19.2 MiB.
         </p>
         <p class="mt-4 leading-relaxed text-text-muted">
           The bundled runtime is a floor, never a wall. Already run Ollama or LM Studio? Flow
-          detects them, keeps them first class, and serves the models you already pulled in
-          place. Your gigabytes are never downloaded twice.
+          keeps them first class and uses compatible models where they already live. A loaded
+          LM Studio text model can run the ordinary Agency path directly. Your gigabytes are
+          never downloaded twice.
         </p>
         <p class="mt-4 leading-relaxed text-text-muted">
           What Flow holds and what Flow borrows are shown as different things, because they
@@ -34,6 +34,12 @@ import detailRuntimeStorage from '../../../assets/flow/details/detail-runtime-st
         <p class="mt-5 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-text-dim">
           Zero-install run measured 2026-08-14 on one M3 Max, on the running build, with 399 network samples recording no connection off the machine. Loopback only.
         </p>
+        <aside class="mt-7 rounded-2xl border border-primary/30 bg-surface p-5">
+          <p class="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-primary">{FLOW_RUNTIME_COMPARISON.eyebrow}</p>
+          <h4 class="of-display mt-3 text-xl leading-tight">{FLOW_RUNTIME_COMPARISON.title}</h4>
+          <p class="mt-3 text-sm leading-relaxed text-text-muted">{FLOW_RUNTIME_COMPARISON.body}</p>
+          <p class="mt-3 text-xs leading-relaxed text-text-dim">{FLOW_RUNTIME_COMPARISON.qualifier}</p>
+        </aside>
       </div>
       <div class="grid gap-4 sm:grid-cols-2">
         <div class="of-surface rounded-2xl border border-border/70 p-6">

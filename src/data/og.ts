@@ -190,6 +190,22 @@ export const OG_PAGES: Record<string, OgPage> = {
     screenshot: 'src/assets/flow/og-flow-shot-charts.png',
     light: true,
   },
+  '/flow/specifications/': {
+    slug: 'flow-specifications',
+    eyebrow: 'Orionfold Flow · Technical specifications',
+    title: 'Requirements, routes, plans, and measured performance',
+    seed: 'flow-specifications',
+    alt: 'Orionfold Flow technical specifications for compatibility, document formats, model routes, privacy boundaries, plans, and measured performance',
+    light: true,
+  },
+  '/flow/tour/': {
+    slug: 'flow-tour',
+    eyebrow: 'Orionfold Flow · Product tour',
+    title: 'See Flow at work',
+    seed: 'flow-tour',
+    alt: 'Orionfold Flow product tour: writing with AI, ordinary files, model routing, and receipts shown through real product screens',
+    light: true,
+  },
   // The four /flow/<category>/ tour pages (2026-08-20 split). Text-only cards
   // on the Flow light treatment; the chapter shots are too dense to read at
   // social-card size and the overview card already carries the product.
@@ -198,7 +214,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Orionfold Flow · Writing with AI',
     title: 'Most AI edits happen behind your back. Flow edits with you.',
     seed: 'flow-writing',
-    alt: 'Orionfold Flow, writing with AI: six actions, a tool strip in the document, and an exact diff you approve for every change',
+    alt: 'Orionfold Flow, writing with AI: seven actions, a tool strip in the document, and an exact diff you approve for every change',
     light: true,
   },
   '/flow/receipts/': {

@@ -1,9 +1,8 @@
 // One representative purpose-cut crop per Flow tour category. Shared by the
-// /flow/ overview cards and each category page's hero (2026-08-20), so the
-// cover a reader clicks on the overview is the picture that greets them on the
-// page: the masterclass "thumbnail confirms the click" rule, applied to a
-// product tour. Crops, not whole windows: a full capture at card width renders
-// its controls at a few pixels tall.
+// /flow/tour/ cards and each category page's hero, so the cover a reader clicks
+// on the tour landing is the picture that greets them on the page. Crops, not
+// whole windows: a full capture at card width renders its controls at a few
+// pixels tall.
 import type { ImageMetadata } from 'astro';
 import detailResult from '../assets/flow/details/detail-result.webp';
 import detailRunCost from '../assets/flow/details/detail-run-cost.webp';

@@ -32,15 +32,14 @@
 // until the operator declares Flow released.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
+import FlowSubNav from '../components/flow/FlowSubNav.astro';
 import Footer from '../components/Footer.astro';
 import FlowLaunchHomeHero from '../components/flow/FlowLaunchHomeHero.astro';
 import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import LineIcon from '../components/ui/LineIcon.astro';
-import { Image } from 'astro:assets';
 import { SITE, PERSON } from '../data/seo';
 import { ogMeta } from '../data/og';
-import { FLOW_CATEGORIES, flowCategoryHref } from '../data/flow-categories';
-import { FLOW_CATEGORY_SHOTS } from '../data/flow-category-shots';
+import { FLOW_CATEGORIES } from '../data/flow-categories';
 import { FLOW, formatUsd } from '../data/commerce.ts';
 import { FLOW_SYSTEM_REQUIREMENT } from '../data/flow-pricing.ts';
 import { FLOW_STORYBOARD_MEASUREMENTS } from '../data/flow-measurements.ts';
@@ -97,16 +96,7 @@ const overviewCapabilities = [
   },
 ];
 
-const tourCards = [
-  { slug: 'writing-with-ai', title: 'Review every change.', body: 'Six focused AI actions, live source lookups, long-document planning, and one approval path.' },
-  { slug: 'documents-and-files', title: 'Keep ordinary files.', body: 'Markdown folders, fast search, tables, pictures, charts, and diagrams without a private library format.' },
-  { slug: 'models-and-runtime', title: 'Choose where AI runs.', body: 'Local, LAN, and cloud routes under rules you control, with a local runtime included.' },
-  { slug: 'receipts', title: 'Know what happened.', body: 'Run receipts, evidence, checks, costs, and benchmarks you can inspect after the work is done.' },
-].map((card) => {
-  const category = FLOW_CATEGORIES.find((item) => item.slug === card.slug);
-  if (!category) throw new Error(`Unknown Flow category ${card.slug}`);
-  return { ...card, category };
-});
+const totalTourChapters = FLOW_CATEGORIES.reduce((total, category) => total + category.chapters.length, 0);
 
 // The overview uses four representative measurements. The complete qualified
 // set moves to the specifications surface in G-114.
@@ -274,7 +264,8 @@ const faqSchema = {
   ]}
 >
   <Nav />
-  <main class="flow-page overflow-x-clip">
+  <FlowSubNav active="overview" />
+  <main class="flow-page -mt-20 overflow-x-clip sm:-mt-24">
     <!-- ================= HERO ================= -->
     <FlowLaunchHomeHero
       titleId="flow-landing-title"
@@ -317,7 +308,7 @@ const faqSchema = {
     </section>
 
     <!-- ================= MEASURED PROOF ================= -->
-    <section id="specifications" class="scroll-mt-28 bg-surface-raised/40 px-6 py-16 sm:py-20" aria-labelledby="flow-stats-heading">
+    <section id="measured" class="scroll-mt-28 bg-surface-raised/40 px-6 py-16 sm:py-20" aria-labelledby="flow-stats-heading">
       <div class="mx-auto max-w-6xl">
         <div class="max-w-3xl">
           <p class="of-eyebrow" data-animate="rise">Measured, not promised</p>
@@ -345,27 +336,20 @@ const faqSchema = {
 
     <!-- ================= PRODUCT TOUR ================= -->
     <section id="tour" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="tour-heading">
-      <div class="mx-auto max-w-6xl">
+      {FLOW_CATEGORIES.flatMap((category) => category.chapters).map((chapter) => (
+        <span id={chapter.id} class="scroll-mt-28" aria-hidden="true"></span>
+      ))}
+      <div class="mx-auto grid max-w-6xl items-end gap-10 lg:grid-cols-[minmax(0,0.66fr)_minmax(18rem,0.34fr)]">
         <div class="max-w-3xl">
           <p class="flow-kicker" data-animate="rise">The product tour</p>
-          <h2 id="tour-heading" class="of-display mt-4 text-[clamp(2.1rem,5vw,3.5rem)]" data-animate="lead">Go straight to what matters.</h2>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">Four focused tours. Each uses real Flow screens and keeps the qualifications beside the claim.</p>
+          <h2 id="tour-heading" class="of-display mt-4 text-[clamp(2.1rem,5vw,3.5rem)]" data-animate="lead">See Flow at work.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">A dedicated tour brings the real screens, the claims, and the qualifications together in four focused parts.</p>
+          <a href="/flow/tour/" class="of-primary-action mt-8 inline-flex">Take the product tour <span aria-hidden="true">→</span></a>
         </div>
-        <div class="mt-12 grid gap-4 md:grid-cols-2" data-animate-stagger>
-          {tourCards.map((card) => (
-            <article class="flow-cat-card of-surface flex flex-col rounded-2xl border border-border/70 p-6 sm:p-7" data-animate>
-              {card.category.chapters.map((chapter) => (
-                <span id={chapter.id} class="scroll-mt-28" aria-hidden="true"></span>
-              ))}
-              <a href={flowCategoryHref(card.slug)} class="flow-cat-card__plate" aria-hidden="true" tabindex="-1">
-                <Image src={FLOW_CATEGORY_SHOTS[card.slug].src} alt={FLOW_CATEGORY_SHOTS[card.slug].alt} widths={[560, 1120]} sizes="(min-width: 768px) 42vw, 88vw" class="flow-cat-card__thumb" loading="lazy" decoding="async" />
-              </a>
-              <p class="mt-5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">{card.category.label}</p>
-              <h3 class="mt-3 text-2xl font-bold leading-tight"><a href={flowCategoryHref(card.slug)} class="transition-colors hover:text-primary">{card.title}</a></h3>
-              <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{card.body}</p>
-              <a href={flowCategoryHref(card.slug)} class="of-text-action mt-6 inline-flex items-center gap-2">Open the tour <span aria-hidden="true">→</span></a>
-            </article>
-          ))}
+        <div class="of-surface rounded-2xl border border-border/70 p-6 sm:p-7" data-animate="rise">
+          <p class="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-accent-ink">{FLOW_CATEGORIES.length} parts · {totalTourChapters} chapters</p>
+          <p class="mt-4 text-xl font-bold leading-snug">Writing, files, models, and the record behind every run.</p>
+          <p class="mt-4 text-sm leading-relaxed text-text-muted">Start with the part closest to your work, or follow the whole tour in order.</p>
         </div>
       </div>
     </section>
@@ -397,8 +381,8 @@ const faqSchema = {
           <article class="of-surface rounded-2xl border border-border/70 p-6">
             <p class="flow-kicker">For technical readers</p>
             <h3 class="mt-3 text-xl font-bold">Check the built facts.</h3>
-            <p class="mt-3 text-sm leading-relaxed text-text-muted">Start with the qualified measurements above, then follow any tour for formats, routes, limits, and real screens.</p>
-            <a href="#specifications" class="of-text-action mt-5 inline-flex">Review specifications ↑</a>
+            <p class="mt-3 text-sm leading-relaxed text-text-muted">System requirements, formats, privacy boundaries, model routes, plan limits, and qualified measurements in one scan-first page.</p>
+            <a href="/flow/specifications/" class="of-text-action mt-5 inline-flex">Review technical specifications →</a>
           </article>
           <article class="of-surface rounded-2xl border border-border/70 p-6">
             <p class="flow-kicker">For organizations</p>

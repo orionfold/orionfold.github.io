@@ -17,22 +17,23 @@
 // 2026-07-31: Flow becomes the lead flagship. Proof remains in the footer and
 // contextual evidence surfaces but leaves the top-level product set.
 import BrandMark from './ui/BrandMark.astro';
-// 2026-08-14 Flow-flagship takeover: the top nav is now Flow-only. Relay,
-// Arena, Models, Books, and Training moved to the footer's Products column and
-// directory band. The persistent sticky bar switched from the book magnet to
-// the Flow waitlist (same slot, same dismissal mechanics, new localStorage key
-// so users who dismissed the old book bar still see this one once). The magnet
-// page stays live and footer-linked.
+// 2026-08-14 Flow-flagship takeover: Models and Training moved to the footer's
+// Products column and directory band. Flow leads the flagship family with
+// Relay and Arena beside it; Books and Story follow the product divider. The
+// persistent sticky bar switched from the book magnet to the Flow waitlist
+// (same slot, same dismissal mechanics, new localStorage key so users who
+// dismissed the old book bar still see this one once). The magnet page stays
+// live and footer-linked.
 // `divider: true` renders a separator immediately BEFORE that link.
 const links = [
   { href: '/flow/', label: 'Flow' },
-  { href: '/flow/#tour', label: 'Tour' },
-  { href: '/flow/#enterprise', label: 'Enterprise' },
-  { href: '/flow/#press', label: 'Press' },
-  { href: '/story/', label: 'Story', divider: true },
+  { href: '/relay/', label: 'Relay' },
+  { href: '/arena/', label: 'Arena' },
+  { href: '/learn/', label: 'Books', divider: true },
+  { href: '/story/', label: 'Story' },
 ];
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
-import { FLOW_DMG_URL } from '../data/flow-pricing.ts';
+import { FLOW_DMG_URL, FLOW_DOWNLOAD_READY } from '../data/flow-pricing.ts';
 
 // 2026-08-22 launch switch. Once ORIONFOLD_FLOW_LIVE is on, all three nav calls
 // to action point straight at the download instead of the waitlist: the sticky
@@ -45,9 +46,10 @@ import { FLOW_DMG_URL } from '../data/flow-pricing.ts';
 // disabled visual treatment the hero uses without breaking the bar's layout, so
 // it degrades to "see the pricing section" instead of lying about a file.
 const flowLive = ORIONFOLD_FLOW_LIVE;
-const flowDownloadHref = FLOW_DMG_URL;
-const navCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
-const stickyCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
+const flowDownloadReady = flowLive && FLOW_DOWNLOAD_READY;
+const flowDownloadHref = flowDownloadReady ? FLOW_DMG_URL : (flowLive ? '/flow/#pricing' : '/flow/#waitlist');
+const navCtaLabel = flowDownloadReady ? 'Download Flow' : (flowLive ? 'See Flow plans' : 'Join the waitlist');
+const stickyCtaLabel = navCtaLabel;
 
 ---
 <div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
@@ -85,9 +87,9 @@ const stickyCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
   <div id="magnet-bar" class="hidden border-b border-primary/20 bg-primary/[0.07] text-text">
     <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-6 py-1.5">
       <a
-        href={flowLive ? flowDownloadHref : '/flow/#waitlist'}
+        href={flowDownloadHref}
         class="group inline-flex items-center gap-2 text-center text-sm leading-tight transition-colors hover:text-primary"
-        data-flow-download={flowLive ? 'nav-sticky-bar' : undefined}
+        data-flow-download={flowDownloadReady ? 'nav-sticky-bar' : undefined}
       >
         <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l4 4v16H6zM15 2v5h4M9 12h6M9 16h3"/><path d="M13 17l2 2 4-5"/></svg>
         {flowLive ? (
@@ -139,10 +141,10 @@ const stickyCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
     <!-- Right cluster: primary action + mobile hamburger -->
     <div class="flex items-center gap-4">
       <a
-        href={flowLive ? flowDownloadHref : '/flow/#waitlist'}
+        href={flowDownloadHref}
         class="hidden lg:inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 font-mono text-[0.68rem] font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90"
-        data-astro-prefetch={flowLive ? undefined : true}
-        data-flow-download={flowLive ? 'nav-desktop' : undefined}
+        data-astro-prefetch={flowDownloadReady ? undefined : true}
+        data-flow-download={flowDownloadReady ? 'nav-desktop' : undefined}
       >{navCtaLabel}</a>
       <!-- Mobile hamburger — CSS-only disclosure. A visually-hidden checkbox is
            the real control; the <label> below toggles it. The menu open/close and
@@ -179,7 +181,7 @@ const stickyCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
           <a href={link.href} class="font-mono text-sm text-text-muted hover:text-primary transition-colors py-2" data-astro-prefetch>{link.label}</a>
         </Fragment>
       ))}
-      <a href={flowLive ? flowDownloadHref : '/flow/#waitlist'} class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowLive ? undefined : true} data-flow-download={flowLive ? 'nav-mobile' : undefined}>{navCtaLabel}</a>
+      <a href={flowDownloadHref} class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowDownloadReady ? undefined : true} data-flow-download={flowDownloadReady ? 'nav-mobile' : undefined}>{navCtaLabel}</a>
     </div>
   </div>
 </nav>

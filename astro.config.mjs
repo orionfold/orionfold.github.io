@@ -134,6 +134,8 @@ function buildLastmodMap() {
   // pricing went live, and the five launch-week stories landed. A release is the
   // most material change a page can carry, so recrawl priority matters most here.
   map['/flow/'] = '2026-08-22';
+  map['/flow/tour/'] = '2026-08-25';
+  map['/flow/specifications/'] = '2026-08-25';
   for (const cat of ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files', 'enterprise']) {
     map[`/flow/${cat}/`] = '2026-08-22';
   }

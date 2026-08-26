@@ -75,7 +75,7 @@ export const FLOW_BASE_CAPABILITIES: FlowCapability[] = [
   { label: "Tables, grid view, charts", note: "Including the chart gallery" },
   { label: "Multiple folders", note: "Add as many as you like" },
   { label: "Tabs, panes, split view", note: "The whole workspace" },
-  { label: "Flow Guide", note: "The bundled 27 document guide, and its updates" },
+  { label: "Flow Guide", note: "The bundled 28 document guide, plus 13 assets and its updates" },
   { label: "Dictation", note: "Voice input into a document" },
   { label: "Themes and settings", note: "Everything in Settings" },
   { label: "App updates", note: "Never gated by a licence, even after you cancel" },
@@ -153,7 +153,7 @@ export const FLOW_DOWNLOAD_READY = !FLOW_DMG_URL.includes("PLACEHOLDER");
 /** Minimum macOS the signed build targets. Verified against the app's
  * deployment target before release. Kept for the FAQ answer, which is the place
  * a specific version genuinely helps a reader. */
-export const FLOW_SYSTEM_REQUIREMENT = "macOS 14 Sonoma or later, Apple silicon or Intel";
+export const FLOW_SYSTEM_REQUIREMENT = "macOS 26 or later, Apple silicon or Intel";
 
 /** The line under every Download button. Three facts a reader wants before they
  * click: what it runs on, that clicking costs nothing, and what they get.

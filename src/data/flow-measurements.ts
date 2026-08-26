@@ -41,9 +41,9 @@ const localRuntime = {
 } satisfies FlowMeasurement;
 
 const agencyCatalog = {
-  value: '6 actions',
+  value: '7 actions',
   label: 'The Agency catalog',
-  fine: 'Proofread, Summarize, Translate, two table conversions, and Expand with Sources',
+  fine: 'Proofread, Summarize, Translate, two table conversions, Expand with Sources, and Visualize',
   icon: 'actions',
   tone: 'craft',
 } satisfies FlowMeasurement;
@@ -100,4 +100,18 @@ export const FLOW_STORYBOARD_MEASUREMENTS: FlowMeasurement[] = [
   billedRun,
   firstIndex,
   agencyCatalog,
+];
+
+// Stable, qualified measurements suitable for the technical specifications
+// page. The rolling changelog count is intentionally excluded: it describes a
+// moment in the release train, not a durable product characteristic.
+export const FLOW_SPECIFICATION_MEASUREMENTS: FlowMeasurement[] = [
+  searchP95,
+  longDocumentPlanning,
+  billedRun,
+  localRuntime,
+  agencyCatalog,
+  aiDomains,
+  pictures,
+  firstIndex,
 ];

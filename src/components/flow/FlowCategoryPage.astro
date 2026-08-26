@@ -12,6 +12,7 @@
 // pager says which chapters come next.
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
+import FlowSubNav from './FlowSubNav.astro';
 import Footer from '../Footer.astro';
 import FlowDetail from './FlowDetail.astro';
 import FlowWaitlist from '../sections/FlowWaitlist.astro';
@@ -53,7 +54,8 @@ const breadcrumbs = {
 ---
 <Layout title={cat.pageTitle} description={cat.description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={[breadcrumbs]}>
   <Nav />
-  <main class="flow-page flow-page--category overflow-x-clip">
+  <FlowSubNav active="tour" />
+  <main class="flow-page flow-page--category -mt-20 overflow-x-clip sm:-mt-24">
     <section class="flow-hero relative px-6 pb-10 pt-32 sm:pt-40">
       <div class="flow-hero__grid" aria-hidden="true"></div>
       <div class="flow-hero__glow" aria-hidden="true"></div>
@@ -92,7 +94,7 @@ const breadcrumbs = {
 
     <nav class="flow-subnav px-6" aria-label="Flow tour categories">
       <div class="flow-subnav__row mx-auto max-w-6xl">
-        <a href="/flow/" class="flow-subnav__link flow-subnav__link--overview"><span aria-hidden="true">←</span> Flow overview</a>
+        <a href="/flow/tour/" class="flow-subnav__link flow-subnav__link--overview"><span aria-hidden="true">←</span> Tour overview</a>
         {FLOW_CATEGORIES.map((c) => (
           <a href={flowCategoryHref(c.slug)} class="flow-subnav__link" aria-current={c.slug === cat.slug ? 'page' : undefined}>{c.label}</a>
         ))}
@@ -110,9 +112,9 @@ const breadcrumbs = {
             <p class="flow-pager__title">{prev.label}</p>
           </a>
         ) : (
-          <a href="/flow/" data-dir="prev">
+          <a href="/flow/tour/" data-dir="prev">
             <p class="flow-pager__label">← Back to</p>
-            <p class="flow-pager__title">Flow overview</p>
+            <p class="flow-pager__title">Product tour</p>
           </a>
         )}
         {next ? (
