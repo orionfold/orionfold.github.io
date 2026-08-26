@@ -1,131 +1,44 @@
 ---
-import FlowDetail from '../../../components/flow/FlowDetail.astro';
-import detailProposal from '../../../assets/flow/details/detail-proposal.webp';
-import detailChecks from '../../../assets/flow/details/detail-checks.webp';
+import FlowDetail from '../FlowDetail.astro';
+import detailToolbarPreview from '../../../assets/flow/details/detail-toolbar-preview.webp';
 import detailResult from '../../../assets/flow/details/detail-result.webp';
 import detailDiff from '../../../assets/flow/details/detail-diff.webp';
-import detailToolbarPreview from '../../../assets/flow/details/detail-toolbar-preview.webp';
 ---
-<!-- Chapter 1: Writing you approve.
-     The trust path is shown as one picture per step rather than one window
-     containing all of them at 8px. This is the chapter where "shows its
-     work" has to be literally legible. The count in the lede and the number
-     of <li> below must agree — the prose used to promise four steps while
-     three were drawn, which the toolbar step closed on 2026-08-18.
-     RE-CUT 2026-08-20 on the 0144 re-shoot (flow-writing-you-approve-source.md,
-     "Product shot"): the review surface is now a decision surface. The
-     result leads with the change highlighted, the facts are one icon-phrase
-     row, the checks are single-row pills, and the human-review gate sits in
-     the decision footer beside the button it unblocks. Steps one to four
-     below follow that frame top to bottom. -->
 <section class="px-6 py-16 sm:py-24" aria-labelledby="tour-agency">
   <div class="mx-auto max-w-6xl">
     <div class="max-w-3xl">
       <p class="of-eyebrow" data-animate="rise">Agency</p>
-      <h3 id="tour-agency" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">AI editing with a paper trail.</h3>
+      <h3 id="tour-agency" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">One path from request to approved change.</h3>
       <p class="of-lede mt-5" data-animate="rise">
-        Seven actions: Proofread, Summarize, Translate into eleven languages, Convert Text to Table,
-        Convert Table to Text, Expand with Sources, and Visualize. They live in the document's own tool strip, beside the
-        bold and italic buttons, and every one goes through the same steps: it prices the
-        work before you click, then says what it will do, shows its evidence, shows you the
-        result with the change marked, and saves nothing until you approve.
+        Proofread, Summarize, Translate, two table conversions, Expand with Sources, and
+        Visualize all use the same trust path. Flow states the scope, route, and cost first.
+        The result arrives as a review. The file changes only after you approve it.
       </p>
     </div>
-
-    <!-- The trust path, one step per picture.
-         STEP ZERO added 2026-08-18 from the editor-toolbar brief. The other
-         four steps all happen AFTER you commit to a run; the toolbar is the
-         only one that answers "what will this do" while the answer can still
-         change your mind, so it leads rather than joins the middle. -->
     <ol class="flow-path mt-12" data-animate-stagger="slow">
       <li class="flow-path__step" data-animate="rise">
         <div class="flow-path__copy">
-          <p class="flow-path__num">Step zero</p>
-          <h4 class="flow-path__head">It tells you the price before you click.</h4>
-          <p class="flow-path__body">
-            Hover any of the seven AI tools and Flow answers three questions first: how much
-            text it would act on, what the run would cost, and which model would do the work.
-            A run on your own hardware is free, and Flow writes "No cost" rather than a
-            number, because that is an absence of cost and not a measurement of one.
-          </p>
+          <p class="flow-path__num">Before</p>
+          <h4 class="flow-path__head">Know the bargain before the run.</h4>
+          <p class="flow-path__body">Hover an action to see what text it will use, what it should cost, which model will run, and whether the text leaves your Mac.</p>
         </div>
-        <FlowDetail
-          src={detailToolbarPreview}
-          alt="Flow's document tool strip: bold, italic and text controls, then five colored AI monograms, with Proofread's panel open showing 3,911 words for the whole document, 'No cost, free, it runs on hardware you have', and the model that would run it staying on this Mac."
-          caption="Scope, cost, and route · Answered before the click, not after"
-          sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
-        />
+        <FlowDetail src={detailToolbarPreview} alt="Flow's document tool strip with Proofread open, showing the document scope, no cost, and the local model that would run." caption="Scope, cost, model, and locality · Before the click" sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)" />
       </li>
       <li class="flow-path__step" data-animate="rise">
         <div class="flow-path__copy">
-          <p class="flow-path__num">Step one</p>
-          <h4 class="flow-path__head">It says what it will do.</h4>
-          <p class="flow-path__body">
-            The effect sentence is read out of the proposed bytes by Flow's own parser,
-            never taken on the model's word. The exact line diff sits one tab away, and
-            the content hashes sit under Details as proof.
-          </p>
+          <p class="flow-path__num">Review</p>
+          <h4 class="flow-path__head">Judge the writing. Inspect the bytes.</h4>
+          <p class="flow-path__body">Flow opens on the proposed document with the change highlighted. Exact changes, evidence, and named checks stay one tab away.</p>
         </div>
-        <FlowDetail
-          src={detailProposal}
-          alt="The top of Flow's Review Changes surface: the Proposed and Exact changes tabs, a '1 Check to resolve' pill, and the effect sentence 'Correct spelling and grammar in the selected text'."
-          caption="The effect sentence · Exact changes one tab away"
-          sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
-        />
+        <FlowDetail src={detailResult} alt="Flow's review pane on the proposed document, scrolled to a corrected sentence with the changed words highlighted." caption="The result first · Exact changes one tab away" sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)" />
       </li>
       <li class="flow-path__step" data-animate="rise">
         <div class="flow-path__copy">
-          <p class="flow-path__num">Step two</p>
-          <h4 class="flow-path__head">It shows the evidence, or admits there is none.</h4>
-          <p class="flow-path__body">
-            One fact row states the permission, the sources, and what was measured: two
-            dimensions assessed, three that need sources, one unresolved. Every absence is a
-            stated phrase, never a dressed-up zero. The checks are pills that name their
-            rule and their state, the same pills the Evidence screen draws.
-          </p>
+          <p class="flow-path__num">Approve</p>
+          <h4 class="flow-path__head">Your review unlocks the save.</h4>
+          <p class="flow-path__body">Approve &amp; Save stays disabled until you confirm the review. Reject changes nothing. A byte guard stops an older run from landing over newer work.</p>
         </div>
-        <FlowDetail
-          src={detailChecks}
-          alt="Flow's fact row and check pills: 'Edit this document only · No external action · No Sources · 2 assessed · 3 need sources · 1 unresolved', then 'Citations resolve Passed', 'References are current Not required', 'Human review Not checked'."
-          caption="Named checks · An override never turns Failed into Passed"
-          sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
-        />
-      </li>
-      <li class="flow-path__step" data-animate="rise">
-        <div class="flow-path__copy">
-          <p class="flow-path__num">Step three</p>
-          <h4 class="flow-path__head">It shows you the result, found for you.</h4>
-          <p class="flow-path__body">
-            The review opens on the proposed document, scrolled to the corrected clause with
-            the change highlighted, so you judge the writing, not a diff. The exact bytes keep
-            full fidelity under Exact changes, line by line, for when you want them.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailResult}
-          alt="The proposed document in Flow's review pane, scrolled to the corrected sentence with the changed words highlighted in yellow."
-          caption="The result leads · The exact bytes one tab away"
-          sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
-        />
-      </li>
-      <li class="flow-path__step" data-animate="rise">
-        <div class="flow-path__copy">
-          <p class="flow-path__num">Step four</p>
-          <h4 class="flow-path__head">Nothing is saved until you say so.</h4>
-          <p class="flow-path__body">
-            Human review is a check like any other, and it is not advisory. Approve &amp; Save
-            stays disabled until you tick "I have reviewed this change", right beside the
-            button it unblocks. The save is guarded byte for byte, so a run started before
-            your edit can never land after it. Decline changes nothing at all.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailDiff}
-          alt="Flow's decision footer: an unticked 'I have reviewed this change' checkbox, '1 Check to resolve', and the Reject, Later, and a disabled Approve and Save button."
-          caption="Approve &amp; Save stays disabled until you tick the box · Decline changes nothing at all"
-          sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)"
-          glow
-        />
+        <FlowDetail src={detailDiff} alt="Flow's decision footer with a human-review checkbox and a disabled Approve and Save button beside Reject and Later." caption="Nothing saved until you approve · Reject changes nothing" sizes="(min-width: 900px) 38rem, calc(100vw - 3rem)" glow />
       </li>
     </ol>
   </div>

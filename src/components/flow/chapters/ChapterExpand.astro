@@ -2,182 +2,41 @@
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
 import shotBanner from '../../../assets/flow/shots/flow-expand-run-banner-shot.webp';
-import detailHover from '../../../assets/flow/details/detail-expand-hover.webp';
 import detailConsent from '../../../assets/flow/details/detail-expand-consent.webp';
-import detailBanner from '../../../assets/flow/details/detail-expand-banner.webp';
-import detailBound from '../../../assets/flow/details/detail-expand-bound.webp';
-import detailLookups from '../../../assets/flow/details/detail-expand-lookups.webp';
 import detailSaved from '../../../assets/flow/details/detail-expand-saved.webp';
 ---
-<!-- Chapter 1b: Expand with Sources (0131). Written 2026-08-20 from
-     flow-expand-with-sources-source.md. Every number below is a recorded
-     figure from that shoot's two billed runs on the development build; the
-     operator accepted dev-build shots as launch-ready on 2026-08-20.
-     TRUTH RAILS (the brief's hard guardrails, each one load-bearing):
-       * hosted Anthropic models only today; NEVER say a lookup runs locally
-         or costs $0.00 (the owned-runtime carrier is goal 0142, unbuilt);
-       * no citations, no snapshots, no source-scope picker (goal 0074);
-       * no fetch demo: the public-page fetch scope is closed today;
-       * the estimate (0.000924 USD, from the price table) and the recorded
-         cost (0.026684 USD, after the run) are TWO facts, never one;
-       * the 12-lookup bound is a feature, not an apology;
-       * do not oversell retrieval: name what each lookup retrieved, even
-         when it was the document itself.
-     No of-stage here on purpose: the page's stage corners (toolbar --tl,
-     long documents --br) stay adjacent and tests/e2e/product-stage asserts
-     adjacency in rendered order. -->
 <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-expand">
   <div class="mx-auto max-w-6xl">
     <div class="max-w-3xl">
       <p class="of-eyebrow" data-animate="rise">Expand with Sources</p>
-      <h3 id="tour-expand" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">The AI agent that shows you its work before it acts.</h3>
+      <h3 id="tour-expand" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">See the agent work. Stop it when you want.</h3>
       <p class="of-lede mt-5" data-animate="rise">
-        Expand with Sources lets a model use Flow's own lookups: read the document and search
-        the folders you have open. Every lookup is shown live while it runs, the run is bounded
-        and you can stop it, and the final write arrives as the same approved diff as every
-        other run. Other agents run their tools out of sight and hand you a result to trust.
-        Flow runs them behind the machinery it already owns: scope, consent, live narration,
-        approval, and a receipt.
+        Expand can read the document and search folders you opened. Flow names each lookup as
+        it happens, counts real tokens and cost, and keeps pause and stop in reach. The final
+        writing still returns through the same review and approval path.
       </p>
       <p class="mt-4 text-sm leading-relaxed text-text-muted" data-animate="rise">
-        Today a run with lookups is done by hosted Anthropic models only, so the text leaves your Mac, and fetching public
-        pages stays switched off. Both are stated on screen before you click.
+        Today, lookups use hosted Anthropic models only. The text leaves your Mac, fetching public
+        pages stays switched off, and every run stops at its limit of 12 lookups or 180 seconds.
+        If it reaches that bound, nothing in the document was changed.
       </p>
     </div>
-
-    <ol class="flow-path mt-12" data-animate-stagger="slow">
-      <li class="flow-path__step" data-animate="rise">
-        <div class="flow-path__copy">
-          <p class="flow-path__num">Before the click</p>
-          <h4 class="flow-path__head">The whole bargain, stated first.</h4>
-          <p class="flow-path__body">
-            Hover the Ex mark in the tool strip and the panel says what would run: 99 words of selection,
-            under a cent estimated from Flow's price table, Claude Haiku 4.5, that the text
-            leaves this Mac, and the routing rule that decided it. Nothing has run yet.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailHover}
-          class="w-full max-w-[34rem]"
-          alt="Flow's tool strip with the Expand with Sources panel open: 99 words, selection; under $0.01 estimated from Flow price table v2; Claude Haiku 4.5, Leaves this Mac, decided by the rule 'Can hold the whole document'."
-          caption="Scope, cost, model, locality, and the deciding rule · All before anything runs"
-          sizes="(min-width: 900px) 34rem, calc(100vw - 3rem)"
-        />
-      </li>
-      <li class="flow-path__step" data-animate="rise">
-        <div class="flow-path__copy">
-          <p class="flow-path__num">Consent</p>
-          <h4 class="flow-path__head">Itemized, and bounded to reading.</h4>
-          <p class="flow-path__body">
-            The sheet names the destination, lists the sources it will send by filename with
-            a size (two items, about one kilobyte), and states the estimate to the digit:
-            0.000924 USD, priced from the table before the run. One sentence bounds the
-            authority: read access only. Editing, browsing, publishing, messaging, and
-            spending each need their own permission.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailConsent}
-          class="w-full max-w-[43rem]"
-          alt="Flow's consent sheet titled 'Leaves this Mac': destination Anthropic, one included source with '2 items, approximately 1 KB', 'Estimated 0.000924 USD', the read-access-only sentence, and Cancel and Allow Once buttons."
-          caption="Destination, sources, estimate to the digit · Read access only"
-          sizes="(min-width: 900px) 34rem, calc(100vw - 3rem)"
-        />
-      </li>
-    </ol>
-
-    <!-- Mid-flight: the whole window, because the banner and the title-bar
-         readout are the two places the run shows itself, and they sit at
-         opposite ends of the frame. 2560x1440 capture, so natural aspect. -->
-    <div class="mt-14">
-      <FlowShot
-        src={shotBanner}
-        alt="Orionfold Flow mid-run: the banner reads 'Expanding with sources' and lists three folder searches already made, the title bar counts tokens and dollars as they accrue, and the Receipts pane sits beside the document."
-        caption="Mid-flight · Each lookup narrated as it happens, pause and stop one click away"
-        natural
-        sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
-      />
+    <div class="mt-12" data-animate="plate">
+      <FlowShot src={shotBanner} alt="Orionfold Flow during Expand with Sources: a banner lists folder searches as they happen, tokens and dollars accrue in the title bar, and pause and stop remain available." caption="Every lookup narrated live · Pause or stop in one click" natural sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
     </div>
-
-    <div class="bench-honesty mx-auto mt-14" data-animate-stagger="slow">
-      <div class="bench-honesty__item" data-animate="rise">
-        <div class="bench-honesty__copy">
-          <p class="flow-path__num">During the run</p>
-          <h4 class="bench-honesty__head">It narrates every lookup, live.</h4>
-          <p class="bench-honesty__body">
-            The banner streams each lookup as it happens and names the model doing the work. The title bar
-            counts real tokens and dollars as they accrue. Pause and stop stay one click away
-            for the whole run.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailBanner}
-          alt="Flow's run banner: 'Expanding with sources...' with three lines, each 'Searched your folders for' a quoted phrase, the model doing the work, 'Anthropic · claude-haiku-4-5', at the right, and pause and stop controls."
-          caption="Searched your folders for … · Anthropic, claude-haiku-4-5 · Pause, stop"
-          sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
-        />
+    <div class="mx-auto mt-12 grid max-w-5xl gap-8 lg:grid-cols-2">
+      <div>
+        <p class="flow-path__num">Consent</p>
+        <h4 class="mt-2 text-xl font-bold">Destination, sources, estimate, authority.</h4>
+        <p class="mt-3 text-sm leading-relaxed text-text-muted">The sheet names what will leave, where it will go, and the estimated cost to the digit. Permission is read-only and granted once.</p>
+        <FlowDetail class="mt-6" src={detailConsent} alt="Flow's Leaves this Mac sheet naming Anthropic, the included sources, an exact estimate, read-only authority, and Allow Once." caption="The complete bargain · Before the run" sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)" />
       </div>
-      <div class="bench-honesty__item" data-animate="rise">
-        <div class="bench-honesty__copy">
-          <p class="flow-path__num">The bound</p>
-          <h4 class="bench-honesty__head">A run that hits its limit ends itself, and says so.</h4>
-          <p class="bench-honesty__body">
-            Every run is bounded: 12 lookups and 180 seconds. This one spent its lookups
-            and stopped. The banner says it plainly: the run reached its limit of 12 lookups,
-            and nothing in the document was changed. No partial write, no silent retry. That
-            is the product refusing to run away with your money.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailBound}
-          alt="Flow's run banner after a bounded run: 'The run ended early. The run reached its limit of 12 lookups. Nothing in the document was changed. Try running Expand with Sources again.'"
-          caption="The run reached its limit of 12 lookups · Nothing in the document was changed"
-          sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
-        />
+      <div>
+        <p class="flow-path__num">Receipt</p>
+        <h4 class="mt-2 text-xl font-bold">Estimate before. Recorded cost after.</h4>
+        <p class="mt-3 text-sm leading-relaxed text-text-muted">One measured run estimated 0.000924 USD and later recorded 0.026684 USD. Those are two facts, kept separate. The saved change is bound to its before-and-after fingerprints.</p>
+        <FlowDetail class="mt-6" src={detailSaved} alt="A Flow receipt showing recorded cost, model, provider, cloud route, before and after digests, and Receipt valid." caption="Recorded cost · Exact saved change · Receipt valid" sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)" glow />
       </div>
     </div>
-
-    <ol class="flow-path mt-14" data-animate-stagger="slow">
-      <li class="flow-path__step" data-animate="rise">
-        <div class="flow-path__copy">
-          <p class="flow-path__num">After approval</p>
-          <h4 class="flow-path__head">Every lookup, in order, in the receipt.</h4>
-          <p class="flow-path__body">
-            The run card leads the document's Receipts pane. One read of the document, then
-            nine folder searches, each with its query, what it retrieved, and how long it
-            took. Named honestly: most of these searches came back with the document being
-            expanded, and the receipt says exactly that rather than claiming research it did
-            not do.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailLookups}
-          class="w-full max-w-[37.5rem]"
-          alt="The Lookups section of a Flow run card: 'Read the document', then nine rows of 'Searched your folders for' a quoted phrase, each with a 'Retrieved:' filename and a duration between 0.3 and 0.7 seconds."
-          caption="Ten lookups · Each one named, timed, and its retrieval stated"
-          sizes="(min-width: 900px) 34rem, calc(100vw - 3rem)"
-        />
-      </li>
-      <li class="flow-path__step" data-animate="rise">
-        <div class="flow-path__copy">
-          <p class="flow-path__num">The record</p>
-          <h4 class="flow-path__head">Recorded cost, and the change pinned to the bytes.</h4>
-          <p class="flow-path__body">
-            The estimate was 0.000924 USD before the run. The recorded cost after it was
-            0.026684 USD, priced from the cost table, with the model and provider named.
-            Those are two facts, and Flow keeps them apart. Under them, the saved change is
-            pinned to the exact saved document by its before and after fingerprints (the digests on screen): Receipt valid.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailSaved}
-          class="w-full max-w-[37.5rem]"
-          alt="The Cost and Saved change sections of a Flow run card: 'Recorded cost 0.026684 USD, priced from the cost table', model claude-haiku-4-5, provider anthropic, ran on Cloud, then 'Before the change' and 'After the change' digests and 'Receipt valid'."
-          caption="Recorded cost 0.026684 USD · Before and after fingerprints · Receipt valid"
-          sizes="(min-width: 900px) 34rem, calc(100vw - 3rem)"
-          glow
-        />
-      </li>
-    </ol>
   </div>
 </section>

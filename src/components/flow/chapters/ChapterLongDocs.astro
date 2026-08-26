@@ -1,70 +1,20 @@
 ---
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
-import FlowShot from '../../../components/flow/FlowShot.astro';
-import FlowDetail from '../../../components/flow/FlowDetail.astro';
 import shotLongDocs from '../../../assets/flow/shots/flow-long-documents-shot.webp';
-import shotLongDocsMenu from '../../../assets/flow/shots/flow-long-documents-menu-shot.webp';
 import detailParts from '../../../assets/flow/details/detail-parts.webp';
 ---
-<!-- Chapter 2: Long documents -->
 <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-longdocs">
-  {/* No max-w-6xl wrapper: the stage below runs wider than the copy on
-      purpose, and a 6xl parent would clamp it back to the old width. */}
   <div>
     <div class="mx-auto max-w-3xl text-center">
       <p class="of-eyebrow" data-animate="rise">Long documents</p>
-      <h3 id="tour-longdocs" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Your 50-page document is not too big. It is four reviews.</h3>
-      <p class="of-lede mx-auto mt-5 text-left" data-animate="rise">
-        Most AI tools refuse a long document, or quietly cut it and answer about the piece that fit.
-        Flow does neither. It plans the document as ordered parts that follow your document's own
-        structure. Each part gets its own review, its own evidence, and its own receipt. The finish
-        line reports coverage in counts a human can check: "You approved 3 of 4 parts. Everything
-        else stays exactly as written."
-      </p>
+      <h3 id="tour-longdocs" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Review the whole document. Part by part.</h3>
+      <p class="of-lede mx-auto mt-5 text-left" data-animate="rise">Flow splits a long local-model run only between top-level blocks, then gives every part its own review, evidence, and receipt. Approve, decline, or skip in any order. The finish line reports exactly what you approved; everything else stays byte-for-byte unchanged.</p>
+      <p class="mt-4 text-sm leading-relaxed text-text-muted">Today this path runs on local models. Cloud models decline work beyond one window instead of silently cutting it.</p>
     </div>
-    {/* The coverage line is this chapter's whole claim, so it rides over
-        the review window as the stage crop rather than sitting in its own
-        band above it. Bottom-right here; the neighbouring chapters take
-        other corners (see .of-stage in global.css). */}
     <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
-      <FlowShot
-        src={shotLongDocs}
-        alt="A live two-part review on a 3,905-word document in Flow: part chips, an honest coverage line, part one's own range highlighted, and Skip as a first-class choice."
-        sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
-      />
-      <FlowDetail
-        class="of-stage__detail of-stage__detail--br"
-        src={detailParts}
-        alt="Flow's review header on a long document: numbered part chips, and the line '0 approved, 0 declined, 2 remaining'."
-        caption="Coverage in plain counts · Approve, decline, or skip parts in any order"
-        sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
-        glow
-        animate
-      />
-    </div>
-    {/* The disclosure menu is a separate claim — Flow tells you it will
-        split BEFORE anything runs — so it keeps its own smaller frame
-        rather than competing with the stage above. */}
-    <div class="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-      <FlowShot
-        src={shotLongDocsMenu}
-        alt="Flow's Agency menu disclosing up front: Improves this document in about 2 parts, and Too long to check at once, before anything runs."
-        caption='"Improves this document in about 2 parts", before the menu closes.'
-        crop
-        sizes="(min-width: 1024px) 26rem, 100vw"
-      />
-      <div>
-        <p class="text-[0.95rem] leading-relaxed text-text-muted">
-          A split never lands inside anything fragile. Boundaries fall only between top-level
-          blocks, never inside code or front matter, and the parts reconstruct your document
-          byte for byte. That is a tested invariant, not an aspiration.
-        </p>
-        <p class="of-spec-fine mt-5">
-          Today this runs on local models. Cloud models still decline documents past one
-          window, and Flow says so instead of pretending.
-        </p>
-      </div>
+      <FlowShot src={shotLongDocs} alt="A multi-part Flow review with part chips, an exact coverage line, and Skip beside the approval controls." sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+      <FlowDetail class="of-stage__detail of-stage__detail--br" src={detailParts} alt="Flow's review header with numbered part chips and the line zero approved, zero declined, two remaining." caption="Coverage in plain counts · Approve, decline, or skip" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" glow animate />
     </div>
   </div>
 </section>

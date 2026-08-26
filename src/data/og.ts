@@ -212,7 +212,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/writing-with-ai/': {
     slug: 'flow-writing-with-ai',
     eyebrow: 'Orionfold Flow · Writing with AI',
-    title: 'Most AI edits happen behind your back. Flow edits with you.',
+    title: 'Write with AI. Keep the final word.',
     seed: 'flow-writing',
     alt: 'Orionfold Flow, writing with AI: seven actions, a tool strip in the document, and an exact diff you approve for every change',
     light: true,
@@ -220,7 +220,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/receipts/': {
     slug: 'flow-receipts',
     eyebrow: 'Orionfold Flow · Receipts and evidence',
-    title: 'Most AI work leaves no trace. Every Flow run leaves a receipt.',
+    title: 'Know what AI did. Keep the record.',
     seed: 'flow-receipts',
     alt: 'Orionfold Flow receipts: one card per run names what ran, where, what it cost, and what the evidence supports',
     light: true,
@@ -228,7 +228,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/models-and-runtime/': {
     slug: 'flow-models-and-runtime',
     eyebrow: 'Orionfold Flow · Models and runtime',
-    title: 'Most tools decide where your text goes. With Flow, you do.',
+    title: 'Choose where AI runs. Every time.',
     seed: 'flow-models',
     alt: 'Orionfold Flow models and runtime: four domains, a local runtime inside the app, and rules that pick the model',
     light: true,
@@ -236,7 +236,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/documents-and-files/': {
     slug: 'flow-documents-and-files',
     eyebrow: 'Orionfold Flow · Documents and files',
-    title: 'Most note apps lock your files in a database. Flow works on plain folders.',
+    title: 'Do more with your files. Keep them yours.',
     seed: 'flow-documents',
     alt: 'Orionfold Flow documents and files: search results as checked citations, tables that edit like tables, ordinary Markdown files',
     light: true,
@@ -244,9 +244,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/enterprise/': {
     slug: 'flow-enterprise',
     eyebrow: 'Orionfold Flow · For enterprise AI owners',
-    title: 'Most enterprise AI fails at the audit, not the model',
+    title: 'Govern AI where the work happens',
     seed: 'flow-enterprise',
-    alt: 'Orionfold Flow for enterprise AI owners: nine adoption questions answered with evidence, approvals, and receipts inside the document',
+    alt: 'Orionfold Flow for enterprise: scope, routing, approval, evidence, and receipts inside the document',
     light: true,
   },
   '/relay/': {

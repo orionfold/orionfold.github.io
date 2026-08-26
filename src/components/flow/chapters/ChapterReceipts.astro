@@ -1,267 +1,58 @@
 ---
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
-import FlowShot from '../../../components/flow/FlowShot.astro';
-import FlowDetail from '../../../components/flow/FlowDetail.astro';
 import shotRunCard from '../../../assets/flow/shots/flow-run-card-shot.webp';
 import shotEvidenceGallery from '../../../assets/flow/shots/flow-evidence-gallery-shot.webp';
 import detailRunCost from '../../../assets/flow/details/detail-run-cost.webp';
 import detailRunChecks from '../../../assets/flow/details/detail-run-checks.webp';
 import detailRunBinding from '../../../assets/flow/details/detail-run-binding.webp';
-import detailRunTimeline from '../../../assets/flow/details/detail-run-timeline.webp';
-import detailEvidenceVerdict from '../../../assets/flow/details/detail-evidence-verdict.webp';
-import detailEvidenceDimensions from '../../../assets/flow/details/detail-evidence-dimensions.webp';
-import detailEvidenceRestson from '../../../assets/flow/details/detail-evidence-restson.webp';
 ---
-{/* Chapter 3b: Receipts. Written 2026-08-19 from the receipts-pane sections
-    added that day to flow-domains-and-receipts-source.md (the run card) and
-    flow-writing-you-approve-source.md (the Evidence gallery). Sits directly
-    after the domains chapter because that is the argument's own order: you
-    picked where AI may run (3), and here is the record of what actually ran
-    there (3b).
-
-    THE RECEIPTS PICTURED ARE STAGED DEMONSTRATION MATERIAL. Both captures
-    show demonstration receipts written over the demo library through the
-    same code path a real run uses, read back through the real reader, every
-    validity mark earned. The $0.00318 run (214 in / 96 out,
-    claude-sonnet-5 via Anthropic) is staged and must NEVER be presented as
-    a real billed charge. The real recorded run is the $0.00425 one
-    (105 in / 149 out) in the stat band and press kit, and the two must
-    never be swapped. The fine print below states the staging plainly;
-    keep it welded to the chapter.
-
-    DATE RAIL: the score delta and the "Compared" state render only when
-    the exact baseline revision is verified in History byte for byte, and
-    that resolution path was wired 2026-08-19. Never date these claims, or
-    depict them, earlier than that day.
-
-    Other guardrails from the briefs:
-      * Each check row carries TWO encodings: the stored outcome mark and
-        the rule's CURRENT severity pill. Different facts; never collapse
-        them into one in copy.
-      * An estimate is never recorded as a charge; a local run records NO
-        charge (absence, not zero). Keep both halves.
-      * "Not scored" is a feature, never a deficiency.
-      * Vocabulary: "receipts", never "logs" or "telemetry". Internal
-        names (the receipts feature number, the core package) stay out.
-
-    STAGE CORNER: --tl. Pinned by both neighbours: the previous stage is
-    Chapter 3's --bl and the next is Benchmarks' --br (Chapter 4 carries
-    no stage). tests/e2e/product-stage.spec.ts asserts adjacency in
-    rendered order, so re-check ADJACENT STAGES, not adjacent chapters,
-    before changing this. */}
 <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-receipts">
   <div>
     <div class="mx-auto max-w-3xl">
       <p class="of-eyebrow" data-animate="rise">Receipts</p>
-      <h3 id="tour-receipts" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">
-        One run. One card. Every fact it recorded.
-      </h3>
-      <p class="of-lede mt-5" data-animate="rise">
-        Elsewhere, "what did this cost" has no per-action answer. Spend shows up on a monthly
-        bill, and no durable record ties a change to the model, the place it ran, and the
-        price. Flow writes that record at the moment of the change.
-      </p>
-      <p class="of-lede mt-4" data-animate="rise">
-        Approve a change and it is recorded. One run reads as one card: the checks that ran,
-        what the evidence concluded, what it cost and on what basis, and a fingerprint of the
-        exact before and after content the change is bound to. Cost is compared before,
-        observed after, and never guessed.
-      </p>
+      <h3 id="tour-receipts" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">One run. One durable record.</h3>
+      <p class="of-lede mt-5" data-animate="rise">Approve a change and Flow records the model, provider, place, cost, checks, evidence, and exact before-and-after content. Your prompt and your API key are not recorded, and there is structurally nowhere in a receipt for them to go.</p>
     </div>
-
-    {/* The corner crop is the receipts trifecta: the recorded cost WITH
-        its basis, then the model, the provider, and where it ran. The
-        basis line is the payload, so the crop must never shrink to the
-        dollar figure alone. */}
     <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
-      <FlowShot
-        src={shotRunCard}
-        alt="Orionfold Flow's Receipts timeline beside a demonstration client proposal: a run selected, its card showing three named checks with severity pills, Evidence at 89 of 100, the recorded cost with its basis, and the before and after digests the change is bound to."
-        crop
-        sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
-      />
-      <FlowDetail
-        class="of-stage__detail of-stage__detail--tl"
-        src={detailRunCost}
-        alt="The Cost block of a Flow run receipt: Recorded cost 0.00318 USD with the basis line Billed by the provider, then Recorded model claude-sonnet-5, Provider anthropic, and Ran on Cloud."
-        caption="Cost as observed fact · The basis, the model, the provider, and where it ran"
-        sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
-        animate
-      />
+      <FlowShot src={shotRunCard} alt="Flow's Receipts timeline beside a demonstration document, with one run card showing checks, evidence, cost, model, route, and content digests." crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+      <FlowDetail class="of-stage__detail of-stage__detail--tl" src={detailRunCost} alt="A demonstration Flow receipt showing recorded cost, its billing basis, model, provider, and cloud route." caption="Observed cost · Basis, model, provider, and place" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
     </div>
-
-    {/* The timeline group is a separate claim from the card: the run is a
-        BOUNDARY, not a visual fold. The version-save entry below the group
-        is History's, not the run's, and including it is what proves the
-        grouping means something. Portrait crop, so it sits beside its copy
-        like the long-documents menu does. */}
-    <div class="mx-auto mt-14 grid max-w-5xl items-center gap-8 lg:grid-cols-[0.88fr_1.12fr]">
-      <FlowDetail
-        src={detailRunTimeline}
-        alt="Flow's Receipts timeline with a run group open: one Run entry holding six events, from Model usage recorded to Document changed, each row reading Receipt valid, and below the group a separate Document version saved entry marked History only."
-        caption="Six events, one run entry · Every row carries its own validity mark"
-        sizes="(min-width: 1024px) 22rem, calc(100vw - 3rem)"
-      />
+    <div class="mx-auto mt-12 grid max-w-5xl gap-8 lg:grid-cols-2">
       <div>
-        <h4 class="text-xl font-bold">Everything one run recorded, in one place.</h4>
-        <p class="mt-3 text-[0.95rem] leading-relaxed text-text-muted">
-          The model usage, the evidence assessment, each guardrail check, and the change
-          itself: one run's receipts read as one entry, and every receipt in it carries its
-          own validity mark. The version save below the group sits outside it on purpose,
-          because History made that record, not the run.
-        </p>
-        <p class="mt-3 text-[0.95rem] leading-relaxed text-text-muted">
-          Receipts record facts, and only facts. Which model answered and where it ran, the
-          key's source, and what a fallback fell back from. Your prompt and your API key are
-          not recorded, and there is structurally nowhere in a receipt for them to go.
-        </p>
-      </div>
-    </div>
-
-    {/* Two coupled claims about what the card holds, side by side because
-        each crop is a short wide block that reads at half column width. */}
-    <div class="mx-auto mt-14 grid max-w-5xl gap-10 lg:grid-cols-2">
-      <div>
-        <h4 class="text-lg font-bold">A check remembers what it saw. The pill says what the rule would do now.</h4>
-        <p class="mt-3 text-[0.95rem] leading-relaxed text-text-muted">
-          Every check row carries two separate facts: the stored outcome mark from when the
-          run happened, and the rule's current consequence as a pill reading "Stops the
-          change", "Warns you", or "Needs your acknowledgment". Rules can change after the
-          fact. The receipt keeps both truths apart instead of quietly rewriting one.
-        </p>
-        <FlowDetail
-          class="mt-6"
-          src={detailRunChecks}
-          alt="Three named checks in a Flow run receipt: Human review with the pill Needs your acknowledgment, References are current with Warns you, and Citations resolve with Stops the change, each row also carrying a stored Checked mark."
-          caption="Two facts per row · What it saw then, what the rule does now"
-          sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)"
-        />
+        <h4 class="text-xl font-bold">The check and the rule stay distinct.</h4>
+        <p class="mt-3 text-sm leading-relaxed text-text-muted">A stored outcome says what happened then. A severity pill says what the rule would do now: Stops the change, Warns you, or Needs your acknowledgment. Flow keeps both facts instead of rewriting history when a rule changes.</p>
+        <FlowDetail class="mt-6" src={detailRunChecks} alt="Three check rows with stored outcomes and separate current-severity pills." caption="What happened then · What the rule does now" sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)" />
       </div>
       <div>
-        <h4 class="text-lg font-bold">The change is bound to exact bytes.</h4>
-        <p class="mt-3 text-[0.95rem] leading-relaxed text-text-muted">
-          The card ends with two fingerprints, one of the document before the change and one
-          after (the screen calls them digests), under the receipt's own validity mark. Not a
-          description of the change: a fingerprint of the exact bytes on both sides of it,
-          checkable later, long after everyone has forgotten what the run was for.
-        </p>
-        <FlowDetail
-          class="mt-6"
-          src={detailRunBinding}
-          alt="The Binding block of a Flow run receipt: Before and After rows each showing a long content digest, above the green Receipt valid mark."
-          caption="Before and after digests · The receipt's validity mark under them"
-          sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)"
-        />
+        <h4 class="text-xl font-bold">The receipt is bound to the bytes.</h4>
+        <p class="mt-3 text-sm leading-relaxed text-text-muted">Before and after fingerprints tie the record to the exact saved document. A validity mark makes that binding checkable later.</p>
+        <FlowDetail class="mt-6" src={detailRunBinding} alt="A Flow receipt binding block with before and after content digests and Receipt valid." caption="Before and after digests · Receipt valid" sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)" />
       </div>
     </div>
-
-    {/* The Evidence gallery: the document's own scorecard, redesigned
-        answer-first (shipped 2026-08-19). The three wide crops carry the
-        claims; the window above them proves the tab is real. */}
-    <div class="mx-auto mt-20 max-w-3xl text-center">
-      <h4 class="of-display text-[clamp(1.5rem,2.6vw,2.1rem)]" data-animate="lead">The scorecard leads with the answer.</h4>
-      <p class="of-lede mx-auto mt-4 text-center" data-animate="rise">
-        The document's Evidence tab starts where a reader would end: the verdict, then the
-        checks, then every scored dimension as its own card, and last a plain strip stating
-        what the number rests on. A score that will not say what it rests on is an opinion
-        with a font size.
-      </p>
+    <div class="mx-auto mt-16 max-w-3xl text-center">
+      <p class="of-eyebrow">Evidence</p>
+      <h4 class="of-display mt-4 text-[clamp(1.5rem,2.6vw,2.1rem)]">A score must say what it rests on.</h4>
+      <p class="of-lede mx-auto mt-4">The Evidence gallery leads with the verdict, then checks, dimensions, coverage, uncertainty, and the recorded reason. A dimension with no measurement says Not scored.</p>
     </div>
-    <FlowShot
-      class="mx-auto mt-10 max-w-5xl"
-      src={shotEvidenceGallery}
-      alt="Flow's Evidence tab open beside a demonstration client proposal: a verdict card reading 89 of 100 with a plus 4 change and the Assessed state, a row of three passed checks, five rubric dimension cards in two columns, and a What this rests on strip at the bottom."
-      crop
-      caption="The Evidence tab as a gallery: verdict first, then checks, dimensions, and what it all rests on."
-      sizes="(min-width: 1024px) 64rem, 100vw"
-    />
-    {/* The three sub-claims of the gallery are one click away rather than
-        three more screens (content-masterclass review, 2026-08-20): the
-        reader's question chain here is "what was recorded, what did it cost,
-        can I check it later", and the score's arithmetic answers a later
-        question. Every truth rail below is unchanged; it is folded, not cut. */}
+    <FlowShot class="mx-auto mt-10 max-w-5xl" src={shotEvidenceGallery} alt="Flow's Evidence gallery with a verdict, passed checks, scored dimensions, coverage, uncertainty, and what the score rests on." crop caption="Verdict first · Then the basis" sizes="(min-width: 1024px) 64rem, 100vw" />
     <details class="receipts-more mx-auto mt-8 max-w-5xl">
-      <summary class="receipts-more__summary">How the score is built, and what it refuses to claim</summary>
-    <div class="bench-honesty mx-auto mt-12">
-      <div class="bench-honesty__item">
-        <div class="bench-honesty__copy" data-animate="rise">
-          <h4 class="bench-honesty__head">The change since the last verified state, or no change claim at all.</h4>
-          <p class="bench-honesty__body">
-            The plus 4 beside the score is not a guess about progress. It appears only because
-            the exact baseline revision was verified in History, byte for byte, before the two
-            assessments were compared. A comparison Flow cannot verify that way shows its
-            reason instead of a number, because a delta against an unverified baseline is a
-            story, not a measurement.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailEvidenceVerdict}
-          alt="Flow's evidence verdict card: 89 of 100 in large type beside a plus 4 change, a score meter, the green Assessed state, and the assessment's recorded reason describing a spelling-only revision in which every claim still matches its source."
-          caption="Answer first · The delta renders only against a byte-verified baseline"
-          sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
-        />
-      </div>
-      <div class="bench-honesty__item">
-        <div class="bench-honesty__copy" data-animate="rise">
-          <h4 class="bench-honesty__head">Every dimension gets the same card, and shows the same arithmetic.</h4>
-          <p class="bench-honesty__body">
-            Each rubric dimension is a card carrying its score, its meter, its weight in the
-            overall number, its coverage, and its uncertainty, with the written rationale one
-            click away. A dimension with no measurement behind it says "Not scored" rather
-            than inventing a number, and that refusal is the feature, not a gap.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailEvidenceDimensions}
-          alt="Two rubric dimension cards in Flow's Evidence gallery: factual-source-fidelity at 88 of 100 with weight 30 percent, coverage 90 percent, uncertainty 10 percent, and guidance-outcome-alignment at 92 of 100 with weight 25 percent, coverage 100 percent, uncertainty 5 percent, each with a Show rationale disclosure."
-          caption="Score, weight, coverage, uncertainty · The rationale is one click away"
-          sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
-        />
-      </div>
-      <div class="bench-honesty__item">
-        <div class="bench-honesty__copy" data-animate="rise">
-          <h4 class="bench-honesty__head">The strip that makes the number checkable.</h4>
-          <p class="bench-honesty__body">
-            At the bottom, "What this rests on" states the score's own footing in six cells:
-            whether the rubric and the references are current, whether the comparison was
-            verified ("Compared"), how much of the document the assessment covered, how
-            uncertain it is, and when it was recorded. A score that will not say what it
-            rests on is an opinion with a font size.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailEvidenceRestson}
-          alt="Flow's What this rests on strip: Current rubric, Current references, Compared comparison, 96 percent coverage with its meter, 7 percent uncertainty, and Recorded 58 minutes ago."
-          caption="Freshness, Compared, coverage, uncertainty, time · Six cells under every score"
-          sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
-        />
-      </div>
-    </div>
-
+      <summary class="receipts-more__summary">Read the receipt's truth boundaries</summary>
+      <ul class="flow-list py-5">
+        <li>A score delta appears only after the baseline revision was verified in History, byte for byte. Otherwise Flow shows its reason instead of a number.</li>
+        <li>An estimate is never recorded as a charge. A local run records no charge because none was owed.</li>
+        <li>The real billed run in the measured facts recorded $0.00425 from 105 input and 149 output tokens, reproducible to the digit.</li>
+        <li>When the same model writes and judges a change, the receipt says so.</li>
+      </ul>
     </details>
-    <ul class="flow-list mx-auto mt-14 max-w-3xl">
-      <li>The recorded cost is an observed fact: the provider's own reported charge where one exists, otherwise usage priced by Flow's versioned price table, with the table version recorded so the number stays readable after rates move. An estimate is never recorded as a charge.</li>
-      <li>A local run records no charge at all. An absent cost means none was owed, never that one went unmeasured, and the two read differently in the ledger on purpose.</li>
-      <li>When the same model both wrote and judged a change, the receipt says so, because a self-assessment is not an independent second opinion.</li>
-      <li>Arithmetic is exact decimal, never floating point. The real billed run in the numbers above recorded $0.00425 from 105 input and 149 output tokens, reproducible to the digit.</li>
-      <li>Evidence is scored only where a measurement exists. A summary is deliberately not scored, and Flow prints that instead of a number with nothing behind it.</li>
-    </ul>
-
-    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">
-      Captured 2026-08-19 on the running build. The receipts pictured are staged demonstration material over the demo library, written and read back through Flow's own receipt machinery; the staged run is not a real billed charge. The $0.00425 run in the numbers above is the real one.
-    </p>
+    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-19 on the running build. The pictured receipts are staged demonstration material, not real billed charges; the $0.00425 measured run is real.</p>
   </div>
 </section>
 
 <style>
   .receipts-more { border: 1px solid var(--color-border); border-radius: 1rem; padding: 0 1.25rem; }
-  .receipts-more__summary {
-    cursor: pointer; list-style: none; padding: 1rem 0; font-weight: 600; color: var(--color-text);
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  }
+  .receipts-more__summary { cursor: pointer; list-style: none; padding: 1rem 0; font-weight: 600; color: var(--color-text); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
   .receipts-more__summary::-webkit-details-marker { display: none; }
   .receipts-more__summary::after { content: '+'; color: var(--color-primary); font-size: 1.25rem; transition: transform 0.2s ease; }
   .receipts-more[open] .receipts-more__summary::after { transform: rotate(45deg); }
-  .receipts-more[open] { padding-bottom: 1.25rem; }
 </style>

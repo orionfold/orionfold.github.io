@@ -1,45 +1,19 @@
 ---
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
-import FlowShot from '../../../components/flow/FlowShot.astro';
-import FlowDetail from '../../../components/flow/FlowDetail.astro';
 import shotOrganizer from '../../../assets/flow/shots/flow-organizer-shot.webp';
 import detailGrid from '../../../assets/flow/details/detail-grid.webp';
 ---
-<!-- Chapter 8: Files -->
 <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-files">
   <div>
     <div class="mx-auto max-w-3xl text-center">
       <p class="of-eyebrow" data-animate="rise">Your files</p>
-      <h3 id="tour-files" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Plain folders. Plain Markdown. Never a silent overwrite.</h3>
-      <p class="of-lede mx-auto mt-5 text-center" data-animate="rise">
-        No import step, no library format, no sync silo. The files on disk are the product.
-        Collisions refuse instead of overwriting, and Delete goes to the system Trash.
-      </p>
+      <h3 id="tour-files" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">No import. No library. No silent overwrite.</h3>
+      <p class="of-lede mx-auto mt-5" data-animate="rise">Open ordinary folders and Markdown files. Flow is sandboxed to the folders you choose, refuses name collisions, and sends deleted files to the system Trash. It deliberately does not delete folders.</p>
     </div>
-    {/* Top-left crop. The grid detail is the proof that "plain Markdown"
-        survives a real table, over the window that shows the plain folder
-        those documents live in. */}
     <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
-      <FlowShot
-        src={shotOrganizer}
-        alt="Two full-page documents side by side in Flow over a plain folder of Markdown files, with a photograph rendering in place from the folder's own assets."
-        sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
-      />
-      <FlowDetail
-        class="of-stage__detail of-stage__detail--tl"
-        src={detailGrid}
-        alt="A Markdown table open in Flow's spreadsheet grid, one cell selected and named R5:C2 in the cell editor bar above it."
-        caption="A real grid over a real table · The file on disk stays plain Markdown"
-        sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
-        animate
-      />
+      <FlowShot src={shotOrganizer} alt="Two documents side by side in Flow over a folder of ordinary Markdown files and local pictures." sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+      <FlowDetail class="of-stage__detail of-stage__detail--tl" src={detailGrid} alt="A Markdown table open in Flow's grid while the underlying file remains plain text." caption="A richer view over an ordinary file" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
     </div>
-    <p class="mx-auto mt-10 max-w-3xl text-center text-[0.95rem] leading-relaxed text-text-muted">
-      Pictures render in place, read only from inside the folder you opened. Folders have no
-      Delete at all, deliberately, because deleting one would take everything inside it without
-      showing you what that was. And Flow is sandboxed to exactly the folders you selected, so a
-      note cannot reach the rest of your disk by naming a path.
-    </p>
   </div>
 </section>

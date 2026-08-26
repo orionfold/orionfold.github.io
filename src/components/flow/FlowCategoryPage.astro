@@ -16,12 +16,10 @@ import FlowSubNav from './FlowSubNav.astro';
 import Footer from '../Footer.astro';
 import FlowDetail from './FlowDetail.astro';
 import FlowWaitlist from '../sections/FlowWaitlist.astro';
-import { Image } from 'astro:assets';
 import { SITE } from '../../data/seo';
 import { ogMeta } from '../../data/og';
 import { FLOW_CATEGORIES, flowCategoryHref } from '../../data/flow-categories';
 import { FLOW_CATEGORY_SHOTS } from '../../data/flow-category-shots';
-import appIcon from '../../assets/flow/flow-app-icon-512.png';
 import '../../styles/flow.css';
 
 interface Props {
@@ -60,27 +58,22 @@ const breadcrumbs = {
       <div class="flow-hero__grid" aria-hidden="true"></div>
       <div class="flow-hero__glow" aria-hidden="true"></div>
       <div class="relative mx-auto max-w-4xl text-center">
-        <div class="flex flex-wrap items-center justify-center gap-2">
-          <a href="/flow/" class="flow-eyebrow-chip">
-            <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
-            Orionfold Flow
-          </a>
-          <span class="flow-eyebrow-chip flow-eyebrow-chip--accent">Product tour · Part {index + 1} of {FLOW_CATEGORIES.length} · Chapters {firstChapter} to {lastChapter} of {totalChapters}</span>
-        </div>
-        <p class="of-eyebrow mt-8">{cat.label}</p>
+        <p class="of-eyebrow">Product tour · Part {index + 1} of {FLOW_CATEGORIES.length}</p>
         <h1 class="hero-gradient-text mx-auto mt-4 max-w-3xl font-display text-[clamp(2.1rem,5.4vw,3.3rem)] font-extrabold leading-[1.08] tracking-[-0.045em]">
           {cat.title}
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-[1.55] text-text-muted sm:text-xl">{cat.blurb}</p>
-        <nav class="flow-jump mt-8" aria-label="Chapters on this page">
+        <div class="mx-auto mt-7 max-w-2xl rounded-2xl border border-primary/20 bg-surface/80 px-5 py-4 text-left">
+          <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">The proof</p>
+          <p class="mt-2 text-sm font-semibold leading-relaxed text-text">{cat.proof}</p>
+        </div>
+        <nav class="flow-jump mt-7" aria-label="On this page">
           {cat.chapters.map((ch, i) => (
             <a href={`#${ch.id}`}><span class="font-mono text-[0.62rem] text-text-dim">{firstChapter + i}</span>{ch.label}</a>
           ))}
         </nav>
       </div>
-      <!-- The cover: the same crop the overview card showed, so the picture the
-           reader clicked is the picture that greets them, and the first screen
-           carries a visual, not only a text block. -->
+      <!-- The same real product crop that introduced this part on the tour home. -->
       <div class="mx-auto mt-10 max-w-3xl" data-animate="plate">
         <FlowDetail
           src={cover.src}
@@ -103,6 +96,16 @@ const breadcrumbs = {
     </nav>
 
     <slot />
+
+    <section class="border-t border-border/70 px-6 py-10 sm:py-12" aria-label="Technical details">
+      <div class="mx-auto flex max-w-6xl flex-col gap-4 rounded-2xl border border-border/70 bg-surface-raised/35 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+        <div>
+          <p class="flow-kicker">Need the exact limits?</p>
+          <p class="mt-2 text-sm leading-relaxed text-text-muted">Requirements, formats, model states, plan boundaries, and qualified measurements live in Tech Specs.</p>
+        </div>
+        <a href="/flow/specifications/" class="of-secondary-action shrink-0">Read Tech Specs <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
 
     <section class="border-t border-border/70 px-6 py-12 sm:py-16" aria-label="More of the tour">
       <div class="flow-pager mx-auto max-w-6xl">

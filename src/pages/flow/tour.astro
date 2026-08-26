@@ -9,23 +9,13 @@ import { SITE } from '../../data/seo';
 import { ogMeta } from '../../data/og';
 import { FLOW_CATEGORIES, flowCategoryHref } from '../../data/flow-categories';
 import { FLOW_CATEGORY_SHOTS } from '../../data/flow-category-shots';
-import appIcon from '../../assets/flow/flow-app-icon-512.png';
 import '../../styles/flow.css';
 
 const href = '/flow/tour/';
 const og = ogMeta(href);
 const flowStoryHref = '/story/the-day-i-stopped-trusting-invisible-edits/';
 
-const tourCards = [
-  { slug: 'writing-with-ai', title: 'Review every change.', body: 'Six focused AI actions, live source lookups, long-document planning, and one approval path.' },
-  { slug: 'documents-and-files', title: 'Keep ordinary files.', body: 'Markdown folders, fast search, tables, pictures, charts, and diagrams without a private library format.' },
-  { slug: 'models-and-runtime', title: 'Choose where AI runs.', body: 'Local, LAN, and cloud routes under rules you control, with a local runtime included.' },
-  { slug: 'receipts', title: 'Know what happened.', body: 'Run receipts, evidence, checks, costs, and benchmarks you can inspect after the work is done.' },
-].map((card) => {
-  const category = FLOW_CATEGORIES.find((item) => item.slug === card.slug);
-  if (!category) throw new Error(`Unknown Flow category ${card.slug}`);
-  return { ...card, category };
-});
+const tourCards = FLOW_CATEGORIES;
 
 const breadcrumbs = {
   '@context': 'https://schema.org',
@@ -51,11 +41,7 @@ const breadcrumbs = {
       <div class="flow-hero__grid" aria-hidden="true"></div>
       <div class="flow-hero__glow" aria-hidden="true"></div>
       <div class="relative mx-auto max-w-4xl text-center">
-        <a href="/flow/" class="flow-eyebrow-chip">
-          <Image src={appIcon} alt="" width={40} height={40} class="h-5 w-5 rounded-[5px]" loading="eager" />
-          Orionfold Flow
-        </a>
-        <p class="of-eyebrow mt-8">Product tour</p>
+        <p class="of-eyebrow">Product tour</p>
         <h1 id="flow-tour-title" class="hero-gradient-text mx-auto mt-4 max-w-3xl font-display text-[clamp(2.5rem,6vw,4.4rem)] font-extrabold leading-[1.03] tracking-[-0.05em]">
           See Flow at work.
         </h1>
@@ -67,21 +53,21 @@ const breadcrumbs = {
 
     <section class="border-t border-border/70 px-6 py-14 sm:py-20" aria-label="Flow product tour parts">
       <div class="mx-auto grid max-w-6xl gap-4 md:grid-cols-2" data-animate-stagger>
-        {tourCards.map((card, index) => (
+        {tourCards.map((category, index) => (
           <article class="flow-cat-card of-surface flex flex-col rounded-2xl border border-border/70 p-6 sm:p-7" data-animate>
-            <a href={flowCategoryHref(card.slug)} class="flow-cat-card__plate" aria-hidden="true" tabindex="-1">
-              <Image src={FLOW_CATEGORY_SHOTS[card.slug].src} alt={FLOW_CATEGORY_SHOTS[card.slug].alt} widths={[560, 1120]} sizes="(min-width: 768px) 42vw, 88vw" class="flow-cat-card__thumb" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+            <a href={flowCategoryHref(category.slug)} class="flow-cat-card__plate" aria-hidden="true" tabindex="-1">
+              <Image src={FLOW_CATEGORY_SHOTS[category.slug].src} alt={FLOW_CATEGORY_SHOTS[category.slug].alt} widths={[560, 1120]} sizes="(min-width: 768px) 42vw, 88vw" class="flow-cat-card__thumb" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
             </a>
             <div class="mt-5 flex items-center justify-between gap-4">
-              <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Part {index + 1} · {card.category.label}</p>
-              <p class="font-mono text-[0.62rem] text-text-dim">{card.category.chapters.length} chapters</p>
+              <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">Part {index + 1} · {category.label}</p>
+              <p class="font-mono text-[0.62rem] text-text-dim">{category.chapters.length} chapters</p>
             </div>
-            <h2 class="mt-3 text-2xl font-bold leading-tight"><a href={flowCategoryHref(card.slug)} class="transition-colors hover:text-primary">{card.title}</a></h2>
-            <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{card.body}</p>
+            <h2 class="mt-3 text-2xl font-bold leading-tight"><a href={flowCategoryHref(category.slug)} class="transition-colors hover:text-primary">{category.title}</a></h2>
+            <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{category.blurb}</p>
             <ul class="mt-5 border-t border-border/70 pt-4 text-sm leading-relaxed text-text-muted">
-              {card.category.chapters.map((chapter) => <li class="mt-1 first:mt-0">{chapter.label}</li>)}
+              {category.chapters.map((chapter) => <li class="mt-1 first:mt-0">{chapter.label}</li>)}
             </ul>
-            <a href={flowCategoryHref(card.slug)} class="of-text-action mt-6 inline-flex items-center gap-2">Open part {index + 1} <span aria-hidden="true">→</span></a>
+            <a href={flowCategoryHref(category.slug)} class="of-text-action mt-6 inline-flex items-center gap-2">Open part {index + 1} <span aria-hidden="true">→</span></a>
           </article>
         ))}
       </div>

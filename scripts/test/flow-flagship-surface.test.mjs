@@ -304,7 +304,7 @@ assert.doesNotMatch(readCopy('src/components/flow/FlowCategoryPage.astro'), /—
 assert.doesNotMatch(readCopy('src/data/flow-categories.ts'), /—/, 'Flow category copy must not use em dashes');
 assert.doesNotMatch(tour, /data-checkout=/, 'Flow must not expose checkout before commercial terms exist');
 assert.doesNotMatch(tour, /\$\d+\s*(?:\/|per\s)/i, 'no price tiers exist yet, so none may be implied');
-assert.match(chapters, /Install nothing but Flow\./, 'the runtime story stays "built so that", led by its own chapter');
+assert.match(chapters, /Local AI comes with the app\./, 'the runtime story leads with the zero-extra-runtime benefit');
 assert.match(flow, /patent-pending technology for revision-scoped, verifiable AI agency in durable documents/);
 // The measured stat band. Every figure must survive; the fine print states the
 // DATA (what was measured, on what) and, since the operator's 2026-08-22 call,
@@ -503,12 +503,13 @@ assert.match(flowTour, /import \{ FLOW_CATEGORY_SHOTS \} from '\.\.\/\.\.\/data\
 assert.match(categoryShell, /<FlowDetail\s[\s\S]*?src=\{cover\.src\}/, 'the category hero shows its cover crop');
 // Chapters remain numbered across the category family; the concise overview
 // points to one tour home, which then links to each part.
-assert.match(categoryShell, /Chapters \{firstChapter\} to \{lastChapter\} of \{totalChapters\}/);
+assert.match(categoryShell, /Product tour · Part \{index \+ 1\} of \{FLOW_CATEGORIES\.length\}/);
+assert.match(categoryShell, /The proof[\s\S]*\{cat\.proof\}/, 'every tour hero names its one proof pattern');
 assert.match(flow, /href="\/flow\/tour\/"[\s\S]*Take the product tour/, 'the overview routes into the dedicated tour home');
 assert.doesNotMatch(flow, /tourCards\.map\(\(card\) =>/, 'the full tour grid no longer lives on the product overview');
-assert.match(flowTour, /tourCards\.map\(\(card, index\) =>/, 'the dedicated tour landing owns the four-part grid');
+assert.match(flowTour, /tourCards\.map\(\(category, index\) =>/, 'the dedicated tour landing owns the four-part grid');
 for (const slug of CATEGORY_SLUGS) {
-  assert.match(flowTour, new RegExp(`slug: '${slug}'`), `${slug} stays represented on the tour landing`);
+  assert.match(categories, new RegExp(`slug: '${slug}'`), `${slug} stays represented on the tour landing`);
 }
 assert.doesNotMatch(flow, /chapterOffsets|cat\.chapters\.map/, 'chapter lists stay in the tour pages');
 // The waitlist panel names the exchange and offers the free book as a second magnet.
@@ -1133,7 +1134,7 @@ const picturesCopy = readCopy(chapterPath('ChapterPictures'));
 // whitespace-collapsed copy — otherwise a harmless re-wrap breaks the guard
 // and teaches the next person that these rails are noise.
 const picturesProse = picturesCopy.replace(/\s+/g, ' ');
-assert.match(picturesProse, /the gallery proposes nothing and writes nothing on its own/, 'the no-AI rail stays stated');
+assert.match(picturesProse, /[Tt]he gallery proposes nothing and writes nothing on its own/, 'the no-AI rail stays stated');
 assert.doesNotMatch(
   picturesProse,
   /(Flow|it|gallery)\s+(can\s+)?(suggests?|proposes?|generates?|writes?|describes?)\s+(the\s+|a\s+|your\s+)?(alt|description|caption)/i,
@@ -1144,7 +1145,7 @@ assert.doesNotMatch(picturesProse, /auto-?(generate|describe|caption)|AI-(genera
 assert.doesNotMatch(picturesProse, /\b(crop|resize|filter)(s|ping|ed)?\s+(your|the|a)\s+picture/i, 'no pixel-editing claim');
 assert.match(picturesProse, /No cropping, resizing, or filters/, 'the no-pixel-editing boundary is stated');
 // Copy, never move, never overwrite — the rule that protects the user's files.
-assert.match(picturesProse, /It copies, so the picture you dragged from stays exactly where it was/, 'import is stated as a copy, never a move');
+assert.match(picturesProse, /copies a new picture[^.]*folder[^.]*original stays exactly where it was/, 'import is stated as a copy, never a move');
 assert.doesNotMatch(picturesProse, /moves? (your|the) (file|picture|original) into/i, 'never claim a move');
 // One line, and zero bytes until you act: both measured, both easy to inflate.
 assert.match(picturesProse, /A swap changes that one line/, 'the one-line swap claim stays exact');

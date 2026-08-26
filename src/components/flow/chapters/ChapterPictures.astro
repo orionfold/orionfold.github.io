@@ -5,184 +5,40 @@ import shotGallery from '../../../assets/flow/shots/flow-image-gallery-shot.webp
 import detailGalleryWords from '../../../assets/flow/details/detail-gallery-words.webp';
 import detailGalleryCollection from '../../../assets/flow/details/detail-gallery-collection.webp';
 ---
-{/* Chapter: The image gallery (goal 0054, the third Primitive pane after
-    Tables and Visualize). Written 2026-08-21 from
-    docs/reference/flow-image-gallery-source.md — the measured brief — and
-    features/0054-image-gallery-primitive/SPEC.md + STATE.md (operator-accepted
-    2026-08-21 00:53). The capture is the 26eddf4 development build; the
-    document, the client "Meridian Retail", and every figure in it are invented
-    demo data.
-
-    TRUTH RAILS (the brief states each of these as a hard guardrail):
-      * DO NOT CLAIM AI. The gallery proposes nothing, describes nothing,
-        generates nothing. Alt text is TYPED by a person. An alt-text proposal
-        through the approval loop is a named LATER unit — never hint at it.
-      * No cropping, resizing, filters, captions or figure layout. GFM has no
-        syntax for them and Flow refuses to invent any. Never imply an editor
-        in the pixel sense.
-      * No web images: http(s) sources are recognised and NOT loaded, and never
-        appear in the collection.
-      * Drag-from-Finder is NOT verified. Add Image…, drop and paste share one
-        import path, but only paste and the gallery's own doors were exercised
-        live. Say "add one from a file, a drop, or a paste" — never show a
-        Finder drag as proof.
-      * The collection is the FOLDER, not a library Flow keeps: nothing is
-        indexed, uploaded, or duplicated into an app database.
-      * A swap or a description edit rewrites EXACTLY ONE LINE (verified by
-        diff); opening and browsing writes ZERO bytes (verified by md5).
-      * Bringing a picture in is a COPY, never a move, never an overwrite.
-        Identical bytes are reused; different bytes under one name get a
-        numbered suffix. The original stays where it was.
-      * Containment is the document's own rule: a path outside the open folder
-        never appears, and a refused picture is shown AS refused, with reason.
-      * Pictures inside a sentence are out of scope by design — edited in the
-        text, and the gallery is for a picture on a line of its own.
-      * Vocabulary is the screen's: "picture" in prose, "Image" in titles and
-        menus, "Alt text", "Title", "Add Image…", "In this document".
-
-    BUILD NOTE: the source brief asked to hold these claims until a signed
-    build carried 0054. Operator decision 2026-08-21: that gate is RETIRED —
-    this is launch content, on the same footing as the other dev-build chapters
-    in this tour (Benchmarks, Routing, Receipts, Visualize all ship this way).
-    The "development build" line under the stage STAYS: it is an accuracy
-    disclosure about the capture, not a gate, and removing it would make the
-    sentence untrue. Everything above it in TRUTH RAILS still binds — those are
-    claims about the feature, which the operator did not reopen.
-
-    STAGE CORNER: --tr. Neighbours on the Documents page are Visualize (--bl)
-    above and Files (--tl) below; tests/e2e/product-stage asserts that adjacent
-    stages never share a corner. */}
 <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-pictures">
   <div>
     <div class="mx-auto max-w-3xl">
       <p class="of-eyebrow" data-animate="rise">Pictures</p>
-      <h3 id="tour-pictures" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]">Swap a picture without touching the Markdown.</h3>
-      <p class="of-lede mt-5" data-animate="rise">
-        Hover a picture in your document and open the gallery. You get that picture drawn large,
-        its description in a field you can type in, and under it every image in the folder you
-        opened, with the document's own pictures first. Click one to swap it in. The gallery
-        closes and the document shows the new picture.
-      </p>
-      <p class="of-lede mt-4" data-animate="rise">
-        The file on disk still carries the same plain line of Markdown any other editor reads: a
-        description in brackets, a path in parentheses. A swap changes that one line. Nothing else
-        in your document moves.
-      </p>
+      <h3 id="tour-pictures" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]">Change the picture. Keep the line.</h3>
+      <p class="of-lede mt-5" data-animate="rise">Open a picture in Flow's gallery, choose another file from the same folder, and the document updates one Markdown line. Nothing else moves. The folder is the collection; Flow uploads, indexes, and duplicates nothing into a private library.</p>
     </div>
-
-    {/* The whole window: the proposal document with its picture rendered in
-        place on the left, the gallery open on that same picture on the right.
-
-        WHICH CROP GOES ON THE STAGE (measured 2026-08-21, do not swap back):
-        the top-right overlay lands at 69% of the shot's width, which is exactly
-        where the gallery pane sits. Laying the COLLECTION crop there covered
-        the very tiles it magnifies — the crop read as a duplicate rather than
-        an explanation. The fields crop is the right overlay because it is a
-        one-line band: it explains the pane without hiding it, and the
-        collection gets full column width in the body below, where its group
-        headings are actually legible. */}
     <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
-      <FlowShot
-        src={shotGallery}
-        alt="Orionfold Flow with a client proposal open on the left, a photograph rendered in place inside it, and the image gallery open on the right on that same photograph: the picture drawn at the pane's width above its Alt text and Title fields, and beneath them the folder's pictures as tiles, the document's own first."
-        crop
-        sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw"
-      />
-      <FlowDetail
-        class="of-stage__detail of-stage__detail--tr gallery-words-crop"
-        src={detailGalleryWords}
-        alt="Two labelled fields in Flow's image gallery: 'Alt text' holding the typed sentence 'Meridian's flagship-format produce floor, the pilot environment', and 'Title' below it showing the grey placeholder 'Shown on hover'."
-        caption="You type the description · Flow proposes nothing"
-        sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)"
-        animate
-      />
+      <FlowShot src={shotGallery} alt="Orionfold Flow with a picture rendered in a document and the image gallery open on the same file." crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+      <FlowDetail class="of-stage__detail of-stage__detail--tr gallery-words-crop" src={detailGalleryWords} alt="Alt text and Title fields in Flow's image gallery." caption="You write the description · Flow does not guess" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
     </div>
-
-    {/* Two coupled claims that the window alone cannot carry: the description
-        fields are TYPED (the no-AI rail, which a reader will otherwise assume
-        the other way round in 2026), and getting a new picture in is a copy. */}
-    <div class="bench-honesty mx-auto mt-14" data-animate-stagger="slow">
-      <div class="bench-honesty__item" data-animate="rise">
-        <div class="bench-honesty__copy">
-          <p class="flow-path__num">The description</p>
-          <h4 class="bench-honesty__head">You write what the picture shows. Flow does not guess.</h4>
-          <p class="bench-honesty__body">
-            Two fields sit under the picture. <strong>Alt text</strong> is what a screen reader
-            says out loud, and what shows if the file ever goes missing. <strong>Title</strong> is
-            what appears when someone hovers the picture. Both are yours to type: the gallery
-            proposes nothing and writes nothing on its own. Press return and Flow rewrites the one
-            line that picture lives on, so the tab goes dirty, ⌘S saves it, and ⌘Z takes it back.
-          </p>
-        </div>
+    <div class="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <div>
+        <p class="flow-path__num">Your folder, on screen</p>
+        <h4 class="mt-2 text-xl font-bold">Add by file, drop, or paste.</h4>
+        <p class="mt-3 text-sm leading-relaxed text-text-muted">Flow copies a new picture into the folder and never moves the original or overwrites different bytes under the same name. Alt text and title are yours to type. Cropping, filters, and private Markdown syntax stay out.</p>
       </div>
-      <div class="bench-honesty__item" data-animate="rise">
-        <div class="bench-honesty__copy">
-          <p class="flow-path__num">The collection</p>
-          <h4 class="bench-honesty__head">Your folder is the collection. Flow keeps no library of its own.</h4>
-          <p class="bench-honesty__body">
-            Under the fields sit the pictures you can choose from: the ones already in this
-            document first, marked so you can see which is on screen, then each folder in turn.
-            Nothing here was imported or uploaded. These are the files as they sit on your disk, so
-            a picture you drop into the folder in the Finder is simply there the next time you
-            look, and a picture you delete there is gone from here too.
-          </p>
-        </div>
-        <FlowDetail
-          src={detailGalleryCollection}
-          alt="The gallery's collection: a group headed 'In this document' holding one tile, retail-interior.jpeg, outlined to mark it as the picture on screen, and beneath it a group headed 'assets' with seven tiles, each captioned with its own file name."
-          caption="Grouped by folder · The document's own pictures first, the one on screen marked"
-          sizes="(min-width: 1024px) 62rem, calc(100vw - 3rem)"
-        />
-      </div>
-      <div class="bench-honesty__item" data-animate="rise">
-        <div class="bench-honesty__copy">
-          <p class="flow-path__num">Adding a picture</p>
-          <h4 class="bench-honesty__head">A new picture is copied in. Your original never moves.</h4>
-          <p class="bench-honesty__body">
-            Use <strong>Add Image…</strong>, drop a file on the gallery, or paste one. Flow copies
-            the file into your folder and swaps it in. It copies, so the picture you dragged from
-            stays exactly where it was. It never writes over a different picture that happens to
-            share a name: that one gets a number on the end. Drop the same picture twice and Flow
-            reuses the file it already has.
-          </p>
-        </div>
-      </div>
+      <FlowDetail src={detailGalleryCollection} alt="Flow's image gallery grouped by folder, with the document's pictures first and the current picture marked." caption="The document first · Then each folder" sizes="(min-width: 1024px) 36rem, calc(100vw - 3rem)" />
     </div>
-
-    <ul class="flow-list mx-auto mt-14 max-w-3xl">
-      <li>A document with no pictures yet gets there through Format ▸ Insert Image…, which opens the same gallery as a picker and puts the picture you choose where your cursor is.</li>
-      <li>The gallery offers exactly what your document is allowed to show. A picture outside the folder you opened never appears, and one Flow cannot show is listed as refused, with the reason.</li>
-      <li>Opening the gallery and browsing it changes nothing on disk, byte for byte. Only a swap, a typed description, or an added picture writes, and each writes one line.</li>
-      <li>The gallery edits a picture on a line of its own. A small picture inside a sentence is edited in the text, where it sits.</li>
-      <li>No cropping, resizing, or filters. Markdown has no way to write those down, and Flow will not invent a private syntax that only Flow can read.</li>
-    </ul>
-
-    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">
-      Captured 2026-08-21 on the running build. The document, the client, and every figure in it are invented demo data.
-    </p>
+    <details class="mx-auto mt-8 max-w-5xl rounded-2xl border border-border/70 bg-surface px-5">
+      <summary class="cursor-pointer py-4 font-semibold">What the gallery changes, and what it does not</summary>
+      <ul class="flow-list pb-5">
+        <li>The gallery proposes nothing and writes nothing on its own. You type the alt text and title.</li>
+        <li>A swap changes that one line. Opening and browsing changes nothing on disk, byte for byte.</li>
+        <li>Flow keeps no library of its own. It copies a new picture into your folder, so the original stays exactly where it was, and it never overwrites different bytes under the same name.</li>
+        <li>No cropping, resizing, or filters. Markdown has no portable way to preserve them.</li>
+      </ul>
+    </details>
+    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-21 on the running build. The document, client, and figures are invented demo data.</p>
   </div>
 </section>
 
 <style>
-  /* The overhang math in global.css assumes a TALL crop: a top-anchored detail
-     is pushed down by --of-stage-overhang and then pulled back up by 72% of it,
-     which leaves a tall plate straddling the window's top edge. This crop is a
-     67px band (two form rows), so the same pull lifted it clear of the shot
-     entirely — it floated 4px ABOVE the window instead of sitting on it, and
-     tests/e2e/product-stage.spec.ts caught it as "crop must overlap its shot".
-     A short crop needs less counter-pull, not a different corner, so this
-     cancels the negative margin for this one figure.
-
-     `:global()` and the doubled class are both load-bearing. Astro scopes a
-     bare selector to elements in THIS file, and the figure root is rendered by
-     FlowDetail, so an unscoped rule never lands on it. FlowDetail's own scoped
-     rule is (0,2,0) and is injected after global.css, so the doubled class
-     (0,4,0) is what keeps this winning — the same reason the .of-stage overlay
-     selectors in global.css are deliberately (0,3,0). See the comment in
-     FlowDetail.astro's <style> for the 2026-08-16 regression this prevents. */
   @media (min-width: 1024px) {
-    :global(.of-stage .gallery-words-crop.gallery-words-crop) {
-      margin-top: 0;
-    }
+    :global(.of-stage .gallery-words-crop.gallery-words-crop) { margin-top: 0; }
   }
 </style>

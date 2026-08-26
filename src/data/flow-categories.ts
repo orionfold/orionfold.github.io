@@ -31,6 +31,8 @@ export interface FlowCategory {
   title: string;
   /** Two to four short sentences. Overview card body and category lede. */
   blurb: string;
+  /** The one visual proof pattern the page keeps returning to. */
+  proof: string;
   /** `<title>` for the category page (search-facing). */
   pageTitle: string;
   /** Meta description, under 160 characters. */
@@ -42,12 +44,13 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
   {
     slug: 'writing-with-ai',
     label: 'Writing with AI',
-    title: 'Most AI edits happen behind your back. Flow edits with you.',
+    title: 'Write with AI. Keep the final word.',
     blurb:
-      'Seven AI actions, one trust path. Every change arrives as an exact diff you approve. The tools tell you the cost before you click. A fifty page file gets the same care, part by part.',
-    pageTitle: 'Flow · Writing with AI: approve every change · Orionfold',
+      'Seven focused actions help draft, check, translate, structure, source, and visualize your work. Every result arrives as a review you approve before it changes the file.',
+    proof: 'Before and after bytes. One human review gate. Nothing saved without approval.',
+    pageTitle: 'Flow · Writing with AI you approve · Orionfold',
     description:
-      'How Orionfold Flow edits with AI: seven actions, lookups you watch live, a tool strip that states scope and cost, and an exact diff you approve for every change.',
+      'Write, refine, translate, structure, source, and visualize in Orionfold Flow. Review the exact change and approve it before the file is saved.',
     chapters: [
       { id: 'tour-agency', label: 'Writing you approve' },
       { id: 'tour-expand', label: 'Expand with Sources' },
@@ -56,50 +59,53 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
     ],
   },
   {
-    slug: 'receipts',
-    label: 'Receipts and evidence',
-    title: 'Most AI work leaves no trace. Every Flow run leaves a receipt.',
-    blurb:
-      'One card per run names what ran, where it ran, and what it cost. It says what the evidence does and does not support. Benchmarks measure the models on your own Mac before you trust one.',
-    pageTitle: 'Flow · Receipts and evidence: what ran and what it cost · Orionfold',
-    description:
-      'Every Orionfold Flow run records a receipt: the model, the place it ran, the exact cost, the checks, and the evidence. Benchmarks measure local models on your Mac.',
-    chapters: [
-      { id: 'tour-receipts', label: 'Receipts' },
-      { id: 'tour-benchmarks', label: 'Benchmarks' },
-    ],
-  },
-  {
-    slug: 'models-and-runtime',
-    label: 'Models and runtime',
-    title: 'Most tools decide where your text goes. With Flow, you do.',
-    blurb:
-      'Four domains decide where work may run. A complete local runtime ships inside the app. Your rules pick the model, and the screen names the rule that did.',
-    pageTitle: 'Flow · Models and runtime: local, LAN, or your cloud · Orionfold',
-    description:
-      'Orionfold Flow runs AI where you allow: on your Mac, on your network, or in the cloud you already pay for. A 19 MiB local runtime ships inside the app. Rules pick the model.',
-    chapters: [
-      { id: 'tour-domains', label: 'Trust boundaries' },
-      { id: 'tour-runtime', label: 'Owned local runtime' },
-      { id: 'tour-routing', label: 'Smart Routing' },
-    ],
-  },
-  {
     slug: 'documents-and-files',
     label: 'Documents and files',
-    title: 'Most note apps lock your files in a database. Flow works on plain folders.',
+    title: 'Do more with your files. Keep them yours.',
     blurb:
-      'A search result is a citation, checked byte for byte. Tables edit like tables. Fifty four chart and diagram types are drawn from the text in the file, offline, and Flow can draw one for you. Pictures swap from your own folder. Your files stay ordinary files any app can read.',
-    pageTitle: 'Flow · Documents and files: search, tables, plain Markdown · Orionfold',
+      'Search, tables, charts, diagrams, and pictures work directly on ordinary Markdown folders. Flow adds a better workspace, not a private file format.',
+    proof: 'The file on disk stays ordinary Markdown that any editor can read.',
+    pageTitle: 'Flow · Documents and files that stay yours · Orionfold',
     description:
-      'Orionfold Flow works on ordinary folders of Markdown. Search returns citations checked byte for byte, tables edit as tables, charts draw from the text, and pictures swap from your folder.',
+      'Search, edit tables, draw charts and diagrams, and manage pictures directly in ordinary Markdown folders with Orionfold Flow for Mac.',
     chapters: [
       { id: 'tour-search', label: 'Search' },
       { id: 'tour-tables', label: 'Tables' },
       { id: 'tour-visualize', label: 'Charts and diagrams' },
       { id: 'tour-pictures', label: 'Pictures' },
       { id: 'tour-files', label: 'Your files' },
+    ],
+  },
+  {
+    slug: 'models-and-runtime',
+    label: 'Models and runtime',
+    title: 'Choose where AI runs. Every time.',
+    blurb:
+      'Keep work on your Mac, use models on your network, or route to cloud providers you trust. Flow shows the place, model, rule, and cost before the run.',
+    proof: 'One named domain, model, deciding rule, and cost before every run.',
+    pageTitle: 'Flow · Choose where AI runs · Orionfold',
+    description:
+      'Run AI on your Mac, network, or chosen cloud with Orionfold Flow. Its local runtime, explicit domains, and ordered rules keep every route visible.',
+    chapters: [
+      { id: 'tour-domains', label: 'Trust boundaries' },
+      { id: 'tour-runtime', label: 'Owned local runtime' },
+      { id: 'tour-routing', label: 'Smart Routing' },
       { id: 'tour-resources', label: 'What it is using' },
+    ],
+  },
+  {
+    slug: 'receipts',
+    label: 'Receipts and evidence',
+    title: 'Know what AI did. Keep the record.',
+    blurb:
+      'Every approved run records the model, location, cost, checks, evidence, and saved change. Benchmarks show how local models performed on your Mac before you choose.',
+    proof: 'One run card bound to the exact document before and after the change.',
+    pageTitle: 'Flow · Receipts and evidence for every AI run · Orionfold',
+    description:
+      'Inspect the model, route, cost, checks, evidence, and saved change for every approved Orionfold Flow run. Compare local models on your own Mac.',
+    chapters: [
+      { id: 'tour-receipts', label: 'Receipts' },
+      { id: 'tour-benchmarks', label: 'Benchmarks' },
     ],
   },
 ];

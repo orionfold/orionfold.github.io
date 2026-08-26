@@ -30,6 +30,6 @@ export const FLOW_CATEGORY_SHOTS: Record<string, { src: ImageMetadata; alt: stri
     // balloons a landscape card and the category hero.
     src: detailGrid,
     alt: 'A Markdown table open in Flow\'s spreadsheet grid, one cell selected and named R5:C2 in the cell editor bar above it.',
-    caption: 'Edit the cell, not the pipes · The file on disk stays plain Markdown',
+    caption: 'Edit the cell · Keep the Markdown',
   },
 };
