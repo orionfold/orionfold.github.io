@@ -1,0 +1,53 @@
+---
+// /launch: the one link inside the Flow launch email.
+//
+// The email carries this short first-party path so it reads clean in a
+// plain-text client and needs no tracking domain. This page attaches the
+// campaign attribution on arrival and moves the reader to the launch story.
+//
+// It is a hand-built page rather than an entry in astro.config `redirects`
+// because Astro's static redirect stub is a bare unstyled document whose only
+// mechanism is a meta refresh: the browser paints it, then navigates, and the
+// reader sees a white flash with a raw URL (operator report, 2026-08-27). Here
+// the inline `location.replace` in <head> runs before first paint, the meta
+// refresh remains for readers without JavaScript, and the fallback body is on
+// brand if it is ever seen. `replace` keeps /launch out of the back-button
+// history. No Layout: this page must load nothing but the redirect (the story
+// page records the session with the UTMs).
+import { LAUNCH_LINK_TARGET } from '../data/launch-link';
+
+const target = LAUNCH_LINK_TARGET;
+const canonical = new URL(target.split('?')[0], Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline define:vars={{ target }}>
+      location.replace(target);
+    </script>
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <title>Orionfold Flow</title>
+    <style>
+      html { background: #f6f8f9; color: #1e293b; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+      }
+      a { color: #0f5f52; text-decoration: underline; text-underline-offset: 0.15em; }
+      p { margin: 0; padding: 0 1.5rem; text-align: center; max-width: 34rem; }
+    </style>
+  </head>
+  <body>
+    <p>Taking you to the story. If nothing happens, <a href={target}>read it here</a>.</p>
+  </body>
+</html>
