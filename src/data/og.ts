@@ -42,10 +42,11 @@ export const OG_PAGES: Record<string, OgPage> = {
     // The card carries the same promise as the launch homepage H1.
     title: 'You drive the work. Flow tunes AI to your needs.',
     seed: 'home',
-    alt: 'The phases of a project plan drawn as a flowchart inside an Orionfold Flow document, from audit to launch, with the risk that blocks the build.',
-    // Cut from the release-build Project Plan capture (G-120, build 1255) onto
-    // the Phases flowchart, padded on the right so the whole diagram sits inside
-    // the visible left 540px band, then halved to 660x338.
+    alt: 'The What Flow is using readout open in Orionfold Flow beside a trip plan: memory, GPU, and the Flow row, then tokens and spend this session and all time, all zero and $0.00.',
+    // Cut 1:1 from the installed-1382 home hero (first-launch-home-hero-welcome,
+    // 2026-08-27): the readout popover over the trip plan's Booked table, padded
+    // on the right so the popover sits inside the visible left 540px band, then
+    // halved to 660x338 so the Retina text lands at 1:1.
     screenshot: 'src/assets/flow/og-home-shot-guide.png',
     light: true,
   },
@@ -182,10 +183,10 @@ export const OG_PAGES: Record<string, OgPage> = {
     // the canonical overview instead of reopening the old charts-only wedge.
     title: 'Conduct useful work. Flow refines. You approve.',
     seed: 'flow',
-    alt: 'A Gantt chart drawn inside an Orionfold Flow document: five coloured phase bars from design freeze to launch across a September to November timeline, with its title and source line.',
-    // Cropped from the /flow/ hero picture (the release-build Visualization
-    // Gallery capture) onto the Gantt card, halved to 660x338 so the Retina
-    // text lands at 1:1, the whole card inside the visible left 540px band.
+    alt: 'The Schedule Gantt chart drawn inside an Orionfold Flow project plan: audit, structure, build and migrate bars across September to November, with the Migrate tooltip open.',
+    // Cut from the installed-1382 /flow/ hero (first-launch-flow-hero-project,
+    // 2026-08-27): the Schedule card with its tooltip, scaled to 0.42 and padded
+    // on the right so the WHOLE card sits inside the visible left 540px band.
     screenshot: 'src/assets/flow/og-flow-shot-charts.png',
     light: true,
   },
