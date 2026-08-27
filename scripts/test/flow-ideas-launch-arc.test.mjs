@@ -37,7 +37,7 @@ assert.doesNotMatch(nav, /theme-toggle|lockedTheme|data-theme-lock|of-theme/, 'n
 assert.match(hero, /flow-ideas-pit-stop-daylight-wide\.webp/, 'hero retains daylight landscape art');
 assert.match(hero, /flow-ideas-pit-stop-daylight-portrait\.webp/, 'hero keeps mobile art direction');
 assert.match(hero, /loading="eager"[\s\S]*fetchpriority="high"/, 'campaign background owns LCP priority');
-assert.match(hero, /shot = shotExpandHoverPanel[\s\S]*flow-launch-hero__product[\s\S]*<FlowShot[\s\S]*src=\{shot\}/, 'right side defaults to the selected real Flow product proof');
+assert.match(hero, /shot = shotHomeHero[\s\S]*flow-launch-hero__product[\s\S]*<FlowShot[\s\S]*src=\{shot\}/, 'right side defaults to the selected real Flow product proof');
 assert.match(hero, /home-hero__shot-frame[\s\S]*home-hero__sheen/, 'product proof keeps float and sheen hooks');
 assert.doesNotMatch(hero, /<video\b|flow-launch-hero__film|Replay film|Play film/, 'hero has no vertical campaign film');
 assert.doesNotMatch(hero, /flow-launch-hero__metaphor|Enter the Ideas pit stop|Pit-wall telemetry/, 'hero drops the legend, pit-stop link, and telemetry block');

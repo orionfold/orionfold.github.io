@@ -890,6 +890,18 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
 }
 @media (min-width: 1280px) {
   .of-stage .of-stage__detail.of-stage__detail { width: 30rem; }
+  /* The plate is wider here, so the right-anchored pair hangs less until the
+     3rem breakpoint below: measured at 1440 the -1.5rem hang still crossed the
+     viewport edge by 7px. */
+  .of-stage .of-stage__detail--br.of-stage__detail--br { right: -0.5rem; }
+  .of-stage .of-stage__detail--tr.of-stage__detail--tr { right: -0.5rem; }
+}
+/* The wider 3rem hang only fits once the viewport leaves room for it: on the
+   homepage's two-column proof rows the stage already runs to within ~1.7rem of
+   a 1440px viewport, so a 3rem hang put the right-anchored crop's edge past
+   the page (clipped by overflow-x: clip, so it read as a cut-off card; seen
+   2026-08-26 on the G-120 re-cut). From 1536px the margin exists. */
+@media (min-width: 1536px) {
   .of-stage .of-stage__detail--br.of-stage__detail--br { right: -3rem; }
   .of-stage .of-stage__detail--bl.of-stage__detail--bl { left: -3rem; }
   .of-stage .of-stage__detail--tl.of-stage__detail--tl { left: -3rem; }

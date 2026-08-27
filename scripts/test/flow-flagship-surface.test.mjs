@@ -153,7 +153,7 @@ assert.match(flow, /waitlistSource="flow-hero-waitlist"/, 'the hero carries its 
 // 2026-08-22, when the operator removed it entirely (see above). The hero shot
 // itself must still carry no caption.
 assert.doesNotMatch(readCopy('src/pages/flow.astro'), /Pre-launch · Freemium subscription planned · Every screen is the real build, running/, 'the pre-launch line no longer sits with the hero ask');
-assert.match(flow, /shot=\{shotGuideCharts\}/, 'the /flow/ hero keeps its Flow Guide capture');
+assert.match(flow, /shot=\{shotFlowHero\}/, 'the /flow/ hero keeps its Flow Guide capture (the release-build Project Plan frame)');
 assert.doesNotMatch(sharedHero, /caption=/, 'the shared hero shot carries no caption bar');
 assert.doesNotMatch(flow, /of-secondary-action">See the product tour/, 'no join-versus-tour fork on first paint');
 // ── Flow pricing: Base vs Pro truth boundaries ─────────────────────────────
@@ -559,12 +559,12 @@ assert.match(home, /detail: detailDiff,/, 'the diff crop proves the approval cla
 assert.match(homeRaceAct, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'the bands render their detail crop');
 // The hero is a Flow Guide document shot, eager, and carries no overlay. Guard
 // the SHOT rather than a corner: with no detail there is no corner to place.
-assert.match(homeHero, /shot = shotExpandHoverPanel[\s\S]*?<FlowShot[\s\S]*?src=\{shot\}/, 'the homepage hero defaults to the selected Flow document and receipt capture');
+assert.match(homeHero, /shot = shotHomeHero[\s\S]*?<FlowShot[\s\S]*?src=\{shot\}/, 'the homepage hero defaults to the selected Flow document capture');
 assert.doesNotMatch(homeHero, /<FlowDetail/, 'the hero product proof carries no overlay crop');
 // Flow is ~90% rendered document and ~10% chrome (operator, 2026-08-21). Both
 // front-door heroes must show the ARTIFACT; every hero shot before this date
 // showed a panel, a rail or a settings pane instead.
-assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?shot=\{shotGuideCharts\}/, 'the /flow/ hero uses the Flow Guide chart capture in the shared product frame');
+assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?shot=\{shotFlowHero\}/, 'the /flow/ hero uses the Flow Guide document capture in the shared product frame');
 assert.match(sharedHero, /<FlowShot[\s\S]*?src=\{shot\}[\s\S]*?natural/, 'both front doors use the shared full-fit product treatment');
 for (const detailImport of ['detailDiff', 'detailChartLine', 'detailDomains', 'detailRunChecks']) {
   assert.match(home, new RegExp(`import ${detailImport} from '\\.\\./assets/flow/details/`), `${detailImport} must come from the generated crop set`);
@@ -1010,7 +1010,7 @@ assert.doesNotMatch(
 // 6. The capture's scope stays welded to it, matching the Benchmarks pattern.
 assert.match(
   flowRoutingCopy,
-  /Captured 2026-08-18 on the running build/,
+  /Captured 2026-08-26 on the installed release build 1255/,
   'the routing chapter keeps its capture scope and date',
 );
 
@@ -1025,16 +1025,18 @@ assert.match(
 const flowReceiptCopy = flowTourCopy;
 const homeReceiptCopy = readCopy('src/pages/index.astro');
 
-// 1. The staging disclosure stays welded to the chapter. Dropping "staged
-//    demonstration" would quietly promote invented figures into evidence.
+// 1. The disclosure stays welded to the chapter. Since G-120 (2026-08-26) the
+//    pictured run is the operator's own hosted run on the release build, and
+//    the chapter must say so with the exact recorded figure, never round it
+//    into a claim, and never let the older staged figure back in as real.
 assert.match(
   flowReceiptCopy,
-  /staged demonstration material/,
-  'the receipts chapter must disclose that the pictured receipts are staged',
+  /The pictured run is real: 0\.121375 USD billed for claude-opus-5 through Anthropic/,
+  'the receipts chapter must disclose what the pictured receipt is: a real hosted run, with its exact recorded cost',
 );
 assert.match(
   flowReceiptCopy,
-  /Captured 2026-08-19 on the running build/,
+  /Captured 2026-08-26 on the installed release build 1255/,
   'the receipts chapter keeps its capture scope and date',
 );
 
@@ -1116,7 +1118,7 @@ assert.match(visualizeCopy, /offline/, 'rendering is stated as offline');
 assert.doesNotMatch(visualizeCopy, /Wi-?Fi off|airplane mode|network (was )?disabled/i, 'the Wi-Fi-off capture was waived; never claim it');
 assert.doesNotMatch(visualizeCopy, /callouts?[^.]*(ship|today|now)|(ship|today|now)[^.]*callouts?/i, 'layout blocks are a later goal');
 assert.match(visualizeCopy, /are a separate, later goal, and are not claimed here/, 'the layout-blocks boundary is stated');
-assert.match(visualizeCopy, /Captured 2026-08-20 on a development build/, 'the chapter keeps its capture scope and date');
+assert.match(visualizeCopy, /Captured 2026-08-26 on the installed release build 1255/, 'the chapter keeps its capture scope and date');
 assert.match(visualizeCopy, /invented demo data/, 'chart numbers are disclosed as invented');
 assert.doesNotMatch(visualizeCopy, /infographic|AI-generated (chart|image)/i, 'the vocabulary is the screen\'s');
 assert.ok(categoryPages['documents-and-files'].includes('<ChapterVisualize />'), 'Visualize renders on the Documents and files page');
@@ -1159,7 +1161,7 @@ assert.doesNotMatch(picturesProse, /upload(s|ed|ing)?\s+(to|into)\s+(Flow|the (a
 assert.doesNotMatch(picturesProse, /(paste|add|use)\s+(an?\s+)?(image|picture)\s+(from\s+)?(a\s+)?(url|link|the web)/i, 'no web-image claim');
 // Drag-from-Finder was NOT exercised live; the doors that were are named.
 assert.doesNotMatch(picturesProse, /drag (it |a picture |an image )?(from|out of) (the )?Finder/i, 'a Finder drag was never verified');
-assert.match(picturesProse, /Captured 2026-08-21 on the running build/, 'the chapter keeps its capture scope and date');
+assert.match(picturesProse, /Captured 2026-08-26 on the installed release build 1255/, 'the chapter keeps its capture scope and date');
 assert.match(picturesProse, /invented demo data/, 'the demo document is disclosed as invented');
 assert.ok(categoryPages['documents-and-files'].includes('<ChapterPictures />'), 'Pictures renders on the Documents and files page');
 for (const detail of ['detail-gallery-words', 'detail-gallery-collection']) {

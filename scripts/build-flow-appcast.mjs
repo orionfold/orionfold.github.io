@@ -25,17 +25,33 @@
 //
 // where the signature covers only the bytes BEFORE that block. This generator
 // does not sign — the private key is not in this repo and must never be. It
-// emits the content half and tells you when signing is required. An EMPTY feed
-// needs no signature to be useful: Sparkle skips item selection entirely when
-// there are no items, so nothing reaches a signature check that could fail.
-import { mkdir, writeFile } from "node:fs/promises";
+// emits the content half and tells you to sign.
+//
+// SIGNING IS REQUIRED IN EVERY STATE, EMPTY INCLUDED. This corrects the first
+// version of this file, which claimed an empty feed needs no signature because
+// Sparkle skips item selection. Measured 2026-08-27 (product lane, unified log;
+// Sparkle 2.9.6 `SUAppcastDriver.m downloadDriverDidDownloadData:`): with
+// `SURequireSignedFeed` the downloaded bytes are verified BEFORE parsing, so an
+// unsigned empty feed fails every check with `SUSparkleErrorDomain code 1000`.
+//
+// So the artifact has two halves with two owners: this script renders the
+// content; the operator signs it with Sparkle's `sign_update`, which appends
+// the block. To keep a valid signature from being thrown away by a no-op
+// regeneration, this script leaves the file alone when the rendered content is
+// byte-identical to the signed content already on disk and the signature still
+// verifies against the app's public key. When the content changes, the file is
+// rewritten UNSIGNED and the operator's command is printed; the feed test stays
+// red until the block is back.
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import {
   FEED_LINK,
+  FEED_PUBLIC_ED_KEY_BASE64,
   FEED_TITLE,
   FEED_URL,
   RELEASES,
 } from "../src/data/flow-releases.ts";
+import { SIGN_FEED_COMMAND, verifyFeedSignature } from "./lib/sparkle-feed.mjs";
 
 const OUT = resolve(process.cwd(), "public/flow/appcast.xml");
 
@@ -186,7 +202,12 @@ export function renderAppcast(releases) {
          Sparkle guards item selection with items.count > 0 and reads items via
          nodesForXPath, which returns an empty array rather than nil. So the
          real feed lives at the real URL today, and the app's Check for
-         Updates… tells the truth instead of erroring on a 404. -->
+         Updates… tells the truth instead of erroring on a 404.
+
+         Even empty, this file must end with the operator's signature block:
+         the app requires a signed feed and verifies the bytes before it looks
+         for items (measured 2026-08-27). The generator preserves a valid block
+         across no-op regenerations; a content change means signing again. -->
 `
     : "";
 
@@ -217,19 +238,41 @@ async function main() {
     process.exit(1);
   }
 
-  const xml = renderAppcast(RELEASES);
-  await mkdir(dirname(OUT), { recursive: true });
-  await writeFile(OUT, xml, "utf8");
+  const content = Buffer.from(renderAppcast(RELEASES), "utf8");
+  const summary = RELEASES.length === 0
+    ? '0 releases (empty channel, serves "up to date" once signed)'
+    : (() => {
+        const newest = [...RELEASES].sort((a, b) => b.build - a.build)[0];
+        return `${RELEASES.length} release(s), newest build ${newest.build} (${newest.shortVersion})`;
+      })();
 
-  if (RELEASES.length === 0) {
-    console.log(`[appcast] wrote ${OUT} — 0 releases (empty channel, serves "up to date")`);
-    console.log("[appcast] no signature needed while empty: Sparkle skips item selection entirely.");
-  } else {
-    const newest = [...RELEASES].sort((a, b) => b.build - a.build)[0];
-    console.log(`[appcast] wrote ${OUT} — ${RELEASES.length} release(s), newest build ${newest.build} (${newest.shortVersion})`);
-    console.log("[appcast] SURequireSignedFeed is ON — sign the feed before publishing:");
-    console.log("[appcast]   append <!-- sparkle-signatures:\\nedSignature: <b64>\\nlength: <bytes>\\n--> after the XML");
+  await mkdir(dirname(OUT), { recursive: true });
+
+  // Keep the operator's signature when nothing it covers has changed. A
+  // regeneration that silently dropped a valid block would put every installed
+  // Flow back into the failing state the block exists to end.
+  let existing = null;
+  try {
+    existing = await readFile(OUT);
+  } catch {
+    existing = null;
   }
+  if (existing) {
+    const verdict = verifyFeedSignature(existing, FEED_PUBLIC_ED_KEY_BASE64);
+    if (verdict.signed && verdict.valid && verdict.content.equals(content)) {
+      console.log(`[appcast] ${OUT} unchanged — ${summary}`);
+      console.log(`[appcast] kept the operator's feed signature (verifies, ${verdict.length} bytes signed)`);
+      console.log(`[appcast] ${FEED_URL} · human page ${FEED_LINK}`);
+      return;
+    }
+  }
+
+  await writeFile(OUT, content);
+  console.log(`[appcast] wrote ${OUT} — ${summary}`);
+  console.log("[appcast] THE FEED IS NOW UNSIGNED. The app requires a signed feed (SURequireSignedFeed),");
+  console.log("[appcast] so every installed Flow fails its update check until the operator signs it:");
+  console.log(`[appcast]   ${SIGN_FEED_COMMAND}`);
+  console.log("[appcast] then `node scripts/test/flow-appcast.test.mjs` verifies the block against the app's public key.");
   console.log(`[appcast] ${FEED_URL} · human page ${FEED_LINK}`);
 }
 

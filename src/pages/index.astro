@@ -12,10 +12,10 @@ import FlowWaitlist from '../components/sections/FlowWaitlist.astro';
 import { ogMeta } from '../data/og';
 import { SITE, PERSON } from '../data/seo';
 
-import shotApprove from '../assets/flow/shots/flow-writing-you-approve-shot.webp';
-import shotCharts from '../assets/flow/shots/flow-charts-shot.webp';
-import shotDomains from '../assets/flow/shots/flow-domains-shot.webp';
-import shotRunCard from '../assets/flow/shots/flow-run-card-shot.webp';
+import shotApprove from '../assets/flow/shots/agency-proofread-review.webp';
+import shotCharts from '../assets/flow/shots/first-launch-chart-landed-receipts.webp';
+import shotDomains from '../assets/flow/shots/settings-models.webp';
+import shotRunCard from '../assets/flow/shots/agency-expand-landed-receipt.webp';
 import detailDiff from '../assets/flow/details/detail-diff.webp';
 import detailChartLine from '../assets/flow/details/detail-chart-line.webp';
 import detailDomains from '../assets/flow/details/detail-domains.webp';
@@ -60,9 +60,9 @@ const capabilityRows = [
     body: 'Flow draws 34 chart types and 20 diagram types from plain text in your file. They render offline in one house style, and the document stays readable in every editor you own.',
     href: '/flow/documents-and-files/#tour-visualize',
     shot: shotCharts,
-    alt: 'Orionfold Flow showing a quarterly review with a line chart and flowchart drawn inside the document, beside the chart editor for the same file.',
+    alt: 'Orionfold Flow showing a client proposal with a fee chart drawn inside the document, beside the Receipts timeline that recorded the run.',
     detail: detailChartLine,
-    detailAlt: 'A line chart drawn by Flow with a claim-led title, one highlighted series, dated axes, and a source line.',
+    detailAlt: 'A bar chart drawn by Flow with a claim-led title, the pilot phase highlighted, labelled bars, and a source line.',
     detailCaption: 'Drawn from the file · A clear claim, one highlight, and a source',
     stage: 'br',
   },
@@ -72,7 +72,7 @@ const capabilityRows = [
     body: 'Local, LAN, prepaid cloud, or postpaid cloud. Each domain says whether your text leaves your Mac and what the work costs. A fallback outside your boundary stops and asks first.',
     href: '/flow/models-and-runtime/#tour-domains',
     shot: shotDomains,
-    alt: 'Flow Models settings showing four execution domains with locality, cost, and provider controls.',
+    alt: 'Flow Models settings with provider keys in Flow Keychain and the Local execution domain switched on, beside a document that records why local models were chosen.',
     detail: detailDomains,
     detailAlt: 'Flow\'s Local domain enabled with the statement that work stays on this Mac and runs free on hardware you own.',
     detailCaption: 'One switch per domain · Discovery never enables a route',
@@ -84,7 +84,7 @@ const capabilityRows = [
     body: 'The receipt binds the model, route, cost, checks, evidence, proposal, and your decision to the exact document revision. You can see what happened without reconstructing a chat.',
     href: '/flow/receipts/#tour-receipts',
     shot: shotRunCard,
-    alt: 'Orionfold Flow Receipts showing a demonstration run with named checks, evidence, recorded cost, and before and after document digests.',
+    alt: 'Orionfold Flow Receipts beside the document, with one hosted run opened: its lookups, named checks, evidence, and the recorded cost.',
     detail: detailRunChecks,
     detailAlt: 'Three named checks in a Flow receipt, each with its stored result and the rule it applied.',
     detailCaption: 'Named checks · Stored with the run and the document revision',

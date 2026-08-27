@@ -10,7 +10,7 @@ import detailResourcePopover from '../../../assets/flow/details/detail-resource-
       <p class="of-lede mx-auto mt-5" data-animate="rise">Processor, memory, whole-Mac graphics use, heat, the loaded model, tokens, and running cost appear in one readout while Flow works.</p>
     </div>
     <div class="mx-auto mt-11 grid max-w-5xl items-center gap-10 lg:grid-cols-[0.78fr_1.22fr]" data-animate="plate">
-      <FlowDetail src={detailResourcePopover} alt="Flow's resource readout during a local run, separating Flow's memory from the loaded model and showing whole-Mac graphics, heat, tokens, and no charge." caption="Flow and model memory, kept separate · Whole-Mac graphics, labeled honestly" sizes="(min-width: 1024px) 20rem, calc(100vw - 3rem)" glow />
+      <FlowDetail src={detailResourcePopover} alt="Flow's What Flow is using popover during a benchmark: CPU, memory, and GPU for the whole Mac, Flow's own memory share, tokens and spend for this session and all time, and that the Mac reports cool." caption="Whole-Mac usage · Flow's own share · Tokens and spend, this session and all time" sizes="(min-width: 1024px) 20rem, calc(100vw - 3rem)" glow />
       <ul class="flow-list">
         <li>Flow's own footprint sits beside the model's.</li>
         <li>Graphics is labeled for the whole Mac; macOS exposes no honest per-process figure.</li>

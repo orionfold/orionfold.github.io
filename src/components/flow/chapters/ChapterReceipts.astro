@@ -1,8 +1,8 @@
 ---
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
-import shotRunCard from '../../../assets/flow/shots/flow-run-card-shot.webp';
-import shotEvidenceGallery from '../../../assets/flow/shots/flow-evidence-gallery-shot.webp';
+import shotRunCard from '../../../assets/flow/shots/agency-expand-landed-receipt.webp';
+import shotEvidenceGallery from '../../../assets/flow/shots/settings-evidence.webp';
 import detailRunCost from '../../../assets/flow/details/detail-run-cost.webp';
 import detailRunChecks from '../../../assets/flow/details/detail-run-checks.webp';
 import detailRunBinding from '../../../assets/flow/details/detail-run-binding.webp';
@@ -15,8 +15,8 @@ import detailRunBinding from '../../../assets/flow/details/detail-run-binding.we
       <p class="of-lede mt-5" data-animate="rise">Approve a change and Flow records the model, provider, place, cost, checks, evidence, and exact before-and-after content. Your prompt and your API key are not recorded, and there is structurally nowhere in a receipt for them to go.</p>
     </div>
     <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
-      <FlowShot src={shotRunCard} alt="Flow's Receipts timeline beside a demonstration document, with one run card showing checks, evidence, cost, model, route, and content digests." crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
-      <FlowDetail class="of-stage__detail of-stage__detail--tl" src={detailRunCost} alt="A demonstration Flow receipt showing recorded cost, its billing basis, model, provider, and cloud route." caption="Observed cost · Basis, model, provider, and place" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
+      <FlowShot src={shotRunCard} alt="Flow's Receipts timeline beside the document, with one hosted run opened in the event detail: its lookups, named checks, evidence, and the recorded cost." crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+      <FlowDetail class="of-stage__detail of-stage__detail--tl" src={detailRunCost} alt="A Flow receipt's cost block: 0.121375 USD priced from the cost table, claude-opus-5, anthropic, ran on Cloud." caption="Observed cost · Basis, model, provider, and place" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
     </div>
     <div class="mx-auto mt-12 grid max-w-5xl gap-8 lg:grid-cols-2">
       <div>
@@ -35,7 +35,7 @@ import detailRunBinding from '../../../assets/flow/details/detail-run-binding.we
       <h4 class="of-display mt-4 text-[clamp(1.5rem,2.6vw,2.1rem)]">A score must say what it rests on.</h4>
       <p class="of-lede mx-auto mt-4">The Evidence gallery leads with the verdict, then checks, dimensions, coverage, uncertainty, and the recorded reason. A dimension with no measurement says Not scored.</p>
     </div>
-    <FlowShot class="mx-auto mt-10 max-w-5xl" src={shotEvidenceGallery} alt="Flow's Evidence gallery with a verdict, passed checks, scored dimensions, coverage, uncertainty, and what the score rests on." crop caption="Verdict first · Then the basis" sizes="(min-width: 1024px) 64rem, 100vw" />
+    <FlowShot class="mx-auto mt-10 max-w-5xl" src={shotEvidenceGallery} alt="Flow's Evidence settings: the rubric profile with five weighted dimensions a proposed change is measured against, beside a quarterly review document." crop caption="The rubric first · Five weighted dimensions, every weight visible" sizes="(min-width: 1024px) 64rem, 100vw" />
     <details class="receipts-more mx-auto mt-8 max-w-5xl">
       <summary class="receipts-more__summary">Read the receipt's truth boundaries</summary>
       <ul class="flow-list py-5">
@@ -45,7 +45,7 @@ import detailRunBinding from '../../../assets/flow/details/detail-run-binding.we
         <li>When the same model writes and judges a change, the receipt says so.</li>
       </ul>
     </details>
-    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-19 on the running build. The pictured receipts are staged demonstration material, not real billed charges; the $0.00425 measured run is real.</p>
+    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-26 on the installed release build 1255 (v1.5), driven by the operator. The pictured run is real: 0.121375 USD billed for claude-opus-5 through Anthropic. The $0.00425 run in the truth boundaries is a separate measured run.</p>
   </div>
 </section>
 

@@ -23,7 +23,7 @@ assert.match(hero, /waitlistId = 'home-hero-waitlist'[\s\S]*<WaitlistForm[\s\S]*
 assert.match(hero, /Free to join · Double opt-in · One email a week, no more/, 'waitlist caption remains');
 
 assert.match(hero, /src=\{pitStopDaylightWide\}[\s\S]*loading="eager"[\s\S]*fetchpriority="high"/, 'landscape campaign art is the eager background');
-assert.match(hero, /shot = shotExpandHoverPanel[\s\S]*<FlowShot[\s\S]*src=\{shot\}[\s\S]*natural/, 'right column defaults to the selected full-fit Flow product shot');
+assert.match(hero, /shot = shotHomeHero[\s\S]*<FlowShot[\s\S]*src=\{shot\}[\s\S]*natural/, 'right column defaults to the selected full-fit Flow product shot');
 assert.doesNotMatch(hero, /flow-launch-hero__product-window :global\(\.flow-shot\)[\s\S]*?opacity:/, 'product shot remains at full opacity');
 assert.match(hero, /flow-launch-hero__product-window[\s\S]*--flow-product-edge-bleed[\s\S]*width:\s*calc\(100% \+ var\(--flow-product-edge-bleed\)\)/, 'desktop product proof uses the full space through the right edge');
 assert.match(hero, /flow-launch-hero__product-window > \.home-hero__shot-frame\s*\{[\s\S]*?width:\s*110%;[\s\S]*?margin-left:\s*-10%;/, 'large desktop product proof grows ten percent while staying right-anchored');
@@ -67,6 +67,6 @@ assert.match(seo, /tagline: 'Conduct beautiful documents with AI agency built in
 assert.match(seo, /slogan: SITE\.tagline/);
 const homeOg = og.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
 assert.match(homeOg, /title: 'You drive the work\. Flow tunes AI to your needs\.'/);
-assert.match(homeOg, /alt: '[^']*attainment chart/);
+assert.match(homeOg, /alt: '[^']*flowchart/);
 
 console.log('home hero: daylight racing world, real Flow proof, conversion and metadata contracts pass');

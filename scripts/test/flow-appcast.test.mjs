@@ -9,12 +9,34 @@
 //
 // The feed URL is also a ONE-WAY DOOR — `SUFeedURL` is baked into the notarized
 // bundle, so a change here strands every installed copy. That is asserted too.
+//
+// THE FEED MUST BE SIGNED, EMPTY OR NOT. Measured 2026-08-27: the app sets
+// `SURequireSignedFeed`, so Sparkle verifies the downloaded bytes before it
+// parses items, and an unsigned empty feed fails every check with error 1000.
+// The committed file therefore has two halves: the generator's content and the
+// operator's signature block. This test checks the content against the
+// generator and the block against the app's baked public key, the same way the
+// installed app will. It FAILS CLOSED on an unsigned feed on purpose: a green
+// suite over a feed every installed Flow rejects would be the silent failure
+// this file exists to refuse.
 import assert from 'node:assert/strict';
+import { generateKeyPairSync, sign as cryptoSign } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { renderAppcast, validate } from '../build-flow-appcast.mjs';
-import { FEED_URL, latestRelease, RELEASES } from '../../src/data/flow-releases.ts';
+import {
+  SIGN_FEED_COMMAND,
+  appendSignatureBlock,
+  extractSignedFeed,
+  verifyFeedSignature,
+} from '../lib/sparkle-feed.mjs';
+import {
+  FEED_PUBLIC_ED_KEY_BASE64,
+  FEED_URL,
+  latestRelease,
+  RELEASES,
+} from '../../src/data/flow-releases.ts';
 
-const read = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url), 'utf8');
+const readBytes = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url));
 
 // ---------------------------------------------------------------------------
 // The committed artifact
@@ -26,15 +48,108 @@ assert.ok(
   '404 is the fail-soft error state we are shipping this to remove',
 );
 
-const xml = read('public/flow/appcast.xml');
+const feedBytes = readBytes('public/flow/appcast.xml');
+const feed = extractSignedFeed(feedBytes);
+const xml = feed.content.toString('utf8');
 
-// The committed file must be exactly what the generator produces from the
+// `sign_update` without `--disable-signing-warning` re-serialises the XML
+// through Foundation to insert a warning comment. Catch that by name before
+// the byte comparison below reports it as a mysterious hand-edit.
+assert.doesNotMatch(
+  xml,
+  /sparkle-sign-warning/,
+  'the feed was signed without --disable-signing-warning, which re-serialised the XML. ' +
+  `Run \`npm run build:appcast\` and then: ${SIGN_FEED_COMMAND}`,
+);
+
+// The content half must be exactly what the generator produces from the
 // committed data. Otherwise someone hand-edited the XML and the next run of
-// `npm run build:appcast` silently reverts it.
+// `npm run build:appcast` silently reverts it (and drops the signature).
 assert.equal(
   xml,
   renderAppcast(RELEASES),
-  'public/flow/appcast.xml is stale or hand-edited — run `npm run build:appcast`',
+  'public/flow/appcast.xml content is stale or hand-edited — run `npm run build:appcast`, ' +
+  `then sign it: ${SIGN_FEED_COMMAND}`,
+);
+
+// ---------------------------------------------------------------------------
+// The signature half — fail closed
+// ---------------------------------------------------------------------------
+
+const verdict = verifyFeedSignature(feedBytes, FEED_PUBLIC_ED_KEY_BASE64);
+assert.ok(
+  verdict.signed,
+  'public/flow/appcast.xml carries NO signature block. The app requires a signed feed, so ' +
+  'every installed Flow fails its update check (SUSparkleErrorDomain 1000) until the operator ' +
+  `signs it: ${SIGN_FEED_COMMAND}`,
+);
+assert.ok(
+  verdict.valid,
+  `public/flow/appcast.xml signature block is present but wrong (${verdict.reason}). ` +
+  `Re-sign after every regeneration: ${SIGN_FEED_COMMAND}`,
+);
+assert.equal(
+  verdict.length,
+  feed.content.length,
+  'the block\'s length must equal the byte count before it — Sparkle checks this too',
+);
+
+// ---------------------------------------------------------------------------
+// The extractor and verifier mirror Sparkle (SPUExtractSignedFeed.m), proven
+// with a throwaway key so the assertions do not depend on the operator's.
+// ---------------------------------------------------------------------------
+
+{
+  const { publicKey, privateKey } = generateKeyPairSync('ed25519');
+  const rawPublic = publicKey.export({ format: 'der', type: 'spki' }).subarray(-32).toString('base64');
+  const content = Buffer.from(renderAppcast([]), 'utf8');
+  const signature = cryptoSign(null, content, privateKey).toString('base64');
+  const signed = appendSignatureBlock(content, signature);
+
+  const parsed = extractSignedFeed(signed);
+  assert.ok(parsed.content.equals(content), 'extraction returns exactly the bytes before the block');
+  assert.equal(parsed.edSignature, signature, 'the edSignature line is read back trimmed');
+  assert.equal(parsed.length, content.length, 'the length line is read back as an integer');
+  assert.match(
+    signed.toString('utf8'),
+    /<!-- sparkle-signatures:\nedSignature: [A-Za-z0-9+/=]+\nlength: \d+\n-->\n$/,
+    'the block is formatted exactly as Sparkle\'s signAppcast writes it',
+  );
+
+  const good = verifyFeedSignature(signed, rawPublic);
+  assert.ok(good.signed && good.valid, `a correctly signed feed verifies: ${good.reason}`);
+
+  // One flipped byte in the content — the case a hand-edit after signing hits.
+  const tampered = Buffer.from(signed);
+  tampered[tampered.indexOf('<channel>') + 1] ^= 0x01;
+  assert.equal(verifyFeedSignature(tampered, rawPublic).valid, false, 'a tampered content byte must fail');
+
+  // The right block signed by the wrong key — the case a rotated key hits.
+  assert.equal(verifyFeedSignature(signed, FEED_PUBLIC_ED_KEY_BASE64).valid, false, 'another key must fail');
+
+  // A wrong length line — the case a re-render without re-signing hits.
+  const wrongLength = Buffer.from(
+    signed.toString('utf8').replace(/length: \d+/, `length: ${content.length + 1}`),
+    'utf8',
+  );
+  const lengthVerdict = verifyFeedSignature(wrongLength, rawPublic);
+  assert.equal(lengthVerdict.valid, false, 'a length mismatch must fail');
+  assert.match(lengthVerdict.reason, /length/, 'and say so');
+
+  // A truncated block (no `-->`) is unsigned to Sparkle, so it is unsigned here.
+  const truncated = signed.subarray(0, signed.length - 4);
+  assert.equal(extractSignedFeed(truncated).edSignature, null, 'a block without a closing --> is not a block');
+  assert.equal(verifyFeedSignature(truncated, rawPublic).signed, false);
+
+  // No block at all.
+  assert.equal(verifyFeedSignature(content, rawPublic).signed, false, 'plain content is unsigned');
+}
+
+// The app's public key must be a real 32-byte Ed25519 key, not a placeholder.
+assert.equal(
+  Buffer.from(FEED_PUBLIC_ED_KEY_BASE64, 'base64').length,
+  32,
+  'FEED_PUBLIC_ED_KEY_BASE64 must decode to a 32-byte Ed25519 public key',
 );
 
 // ---------------------------------------------------------------------------
@@ -52,12 +167,12 @@ assert.match(xml, /<link>https:\/\/orionfold\.com\/flow\/appcast\.xml<\/link>/);
 // C1864 — updates are never gated by licence, enforced at the feed level: a
 // feed that cannot identify who is asking cannot withhold a fix from someone
 // who stopped paying. The app has a matching test on SUFeedURL.
-const feed = new URL(FEED_URL);
-assert.equal(feed.protocol, 'https:', 'the feed must be HTTPS');
-assert.equal(feed.search, '', 'the feed URL must carry no query — it must not identify who is asking');
-assert.equal(feed.hash, '', 'the feed URL must carry no fragment');
-assert.equal(feed.username, '', 'the feed URL must carry no credentials');
-assert.equal(feed.password, '', 'the feed URL must carry no credentials');
+const feedUrl = new URL(FEED_URL);
+assert.equal(feedUrl.protocol, 'https:', 'the feed must be HTTPS');
+assert.equal(feedUrl.search, '', 'the feed URL must carry no query — it must not identify who is asking');
+assert.equal(feedUrl.hash, '', 'the feed URL must carry no fragment');
+assert.equal(feedUrl.username, '', 'the feed URL must carry no credentials');
+assert.equal(feedUrl.password, '', 'the feed URL must carry no credentials');
 
 // ---------------------------------------------------------------------------
 // Well-formedness and shape
@@ -93,7 +208,7 @@ if (RELEASES.length === 0) {
     'downloaded and then fail signature verification in front of a user',
   );
   // Guards against a well-meaning "let me just put a placeholder in" edit.
-  assert.doesNotMatch(xml, /sparkle:edSignature/, 'no signature attribute without a real release');
+  assert.doesNotMatch(xml, /sparkle:edSignature/, 'no enclosure signature attribute without a real release');
   assert.doesNotMatch(xml, /example\.com|placeholder|TODO|FIXME|CHANGEME/i, 'no placeholder values in a served feed');
 }
 
@@ -184,5 +299,6 @@ assert.doesNotMatch(escaped, /<b>/, 'raw markup must not survive into the feed')
 
 console.log(
   `flow-appcast: feed well-formed at ${FEED_URL}; ${RELEASES.length} release(s); ` +
+  `signature block verifies against the app's public key (${verdict.length} bytes signed); ` +
   'silent-failure guards (duplicate/non-increasing build, missing signature) hold',
 );

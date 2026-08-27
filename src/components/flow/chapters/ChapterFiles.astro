@@ -1,8 +1,9 @@
 ---
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
-import shotOrganizer from '../../../assets/flow/shots/flow-organizer-shot.webp';
+import shotOrganizer from '../../../assets/flow/shots/guide-document-gallery-project-plan-both-panes.webp';
 import detailGrid from '../../../assets/flow/details/detail-grid.webp';
+import detailAddFolder from '../../../assets/flow/details/detail-add-folder.webp';
 ---
 <section class="border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-files">
   <div>
@@ -12,8 +13,9 @@ import detailGrid from '../../../assets/flow/details/detail-grid.webp';
       <p class="of-lede mx-auto mt-5" data-animate="rise">Open ordinary folders and Markdown files. Flow is sandboxed to the folders you choose, refuses name collisions, and sends deleted files to the system Trash. It deliberately does not delete folders.</p>
     </div>
     <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
-      <FlowShot src={shotOrganizer} alt="Two documents side by side in Flow over a folder of ordinary Markdown files and local pictures." sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+      <FlowShot src={shotOrganizer} alt="One project plan open twice in Flow over a folder of ordinary Markdown files, with a photograph from the same folder rendered in place." sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
       <FlowDetail class="of-stage__detail of-stage__detail--tl" src={detailGrid} alt="A Markdown table open in Flow's grid while the underlying file remains plain text." caption="A richer view over an ordinary file" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
     </div>
+    <FlowDetail class="mx-auto mt-6 max-w-4xl" src={detailAddFolder} alt="Flow's Add Folder sheet: choose one or more folders of Markdown files, the location set to a Flow Projects folder showing its Markdown documents and an assets folder, with Cancel beside Open Folder." caption="Add Folder · Choose one or more folders of Markdown files · Flow sees only what you open" sizes="(min-width: 1024px) 56rem, calc(100vw - 3rem)" />
   </div>
 </section>

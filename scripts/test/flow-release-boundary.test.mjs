@@ -73,3 +73,60 @@ test('the public CTA and the signed feed must identify the same current DMG', ()
   assert.match(result.problems.join('\n'), /does not match FLOW_DMG_URL/);
   assert.match(result.problems.join('\n'), /no appended signed-feed block/);
 });
+
+// ---------------------------------------------------------------------------
+// When the app's public key is supplied, the signed-feed block is VERIFIED,
+// not merely detected. A block signed by another key, or over different bytes,
+// is the same failure to a user as no block at all.
+// ---------------------------------------------------------------------------
+
+import { generateKeyPairSync, sign as cryptoSign } from 'node:crypto';
+import { appendSignatureBlock } from '../lib/sparkle-feed.mjs';
+
+const throwaway = generateKeyPairSync('ed25519');
+const throwawayPublic = throwaway.publicKey.export({ format: 'der', type: 'spki' }).subarray(-32).toString('base64');
+const releases = (publicBase64) => `export const FEED_PUBLIC_ED_KEY_BASE64 = "${publicBase64}";`;
+const signedAppcast = (url = realDmg) => {
+  const content = Buffer.from(appcast(url, { feedSigned: false }), 'utf8');
+  const signature = cryptoSign(null, content, throwaway.privateKey).toString('base64');
+  return appendSignatureBlock(content, signature).toString('utf8');
+};
+
+test('a declared release with a feed signed by the app\'s key is release-ready', () => {
+  const result = evaluateFlowReleaseBoundary({
+    launchSource: launch(true),
+    pricingSource: pricing(realDmg),
+    appcastSource: signedAppcast(),
+    releaseDeclared: 'true',
+    releasesSource: releases(throwawayPublic),
+  });
+  assert.deepEqual(result.problems, []);
+  assert.equal(result.state, 'release-ready');
+});
+
+test('a feed block that does not verify against the app\'s key is blocked', () => {
+  const other = generateKeyPairSync('ed25519').publicKey
+    .export({ format: 'der', type: 'spki' }).subarray(-32).toString('base64');
+  const result = evaluateFlowReleaseBoundary({
+    launchSource: launch(true),
+    pricingSource: pricing(realDmg),
+    appcastSource: signedAppcast(),
+    releaseDeclared: 'true',
+    releasesSource: releases(other),
+  });
+  assert.equal(result.state, 'blocked');
+  assert.match(result.problems.join('\n'), /does not verify against the app's EdDSA public key/);
+});
+
+test('a feed edited after signing is blocked even though its block is intact', () => {
+  const edited = signedAppcast().replace('length="48231004"', 'length="48231005"');
+  const result = evaluateFlowReleaseBoundary({
+    launchSource: launch(true),
+    pricingSource: pricing(realDmg),
+    appcastSource: edited,
+    releaseDeclared: 'true',
+    releasesSource: releases(throwawayPublic),
+  });
+  assert.equal(result.state, 'blocked');
+  assert.match(result.problems.join('\n'), /does not verify/);
+});

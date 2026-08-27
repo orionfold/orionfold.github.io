@@ -1,7 +1,7 @@
 ---
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
-import shotCharts from '../../../assets/flow/shots/flow-charts-shot.webp';
+import shotCharts from '../../../assets/flow/shots/guide-visualization-gallery-state-sequence.webp';
 import detailChartLine from '../../../assets/flow/details/detail-chart-line.webp';
 import detailChartGallery from '../../../assets/flow/details/detail-chart-gallery.webp';
 ---
@@ -14,8 +14,8 @@ import detailChartGallery from '../../../assets/flow/details/detail-chart-galler
       <p class="mt-4 leading-relaxed text-text-muted">Select a table, list, or paragraph and ask Visualize to add one chart or diagram after the selected text, never in place of it. A proposal Flow cannot draw is never shown. The proposed drawing appears in review before you approve it.</p>
     </div>
     <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
-      <FlowShot src={shotCharts} alt="Orionfold Flow with charts and a flowchart drawn in a document from fenced text, and the chart gallery open beside it." crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
-      <FlowDetail class="of-stage__detail of-stage__detail--bl" src={detailChartLine} alt="A line chart drawn in Flow with a direct title, highlighted series, labels, and a source line." caption="Drawn from the file, offline · Text remains the source" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
+      <FlowShot src={shotCharts} alt="Orionfold Flow's Visualization Gallery open twice: a state diagram on one side and a sequence diagram on the other, both drawn in place from fenced text." crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+      <FlowDetail class="of-stage__detail of-stage__detail--bl" src={detailChartLine} alt="A bar chart drawn in Flow with a direct title, one bar highlighted, labelled bars, and a source line." caption="Drawn from the file, offline · Text remains the source" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
     </div>
     <div class="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-[0.9fr_1.1fr]">
       <div>
@@ -25,6 +25,6 @@ import detailChartGallery from '../../../assets/flow/details/detail-chart-galler
       </div>
       <FlowDetail src={detailChartGallery} alt="Flow's chart gallery with a chart type menu, an Ask field, a rendered chart, and Revert and Apply controls." caption="Choose, ask, review, apply" sizes="(min-width: 1024px) 36rem, calc(100vw - 3rem)" />
     </div>
-    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-20 on a development build. All names and numbers in the example are invented demo data. Designed layout blocks are a separate, later goal, and are not claimed here.</p>
+    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-26 on the installed release build 1255 (v1.5). All names and numbers in the examples are Flow Guide demo material: invented demo data. Designed layout blocks are a separate, later goal, and are not claimed here.</p>
   </div>
 </section>

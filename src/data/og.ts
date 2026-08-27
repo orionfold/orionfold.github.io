@@ -42,10 +42,10 @@ export const OG_PAGES: Record<string, OgPage> = {
     // The card carries the same promise as the launch homepage H1.
     title: 'You drive the work. Flow tunes AI to your needs.',
     seed: 'home',
-    alt: 'A quota attainment chart drawn inside an Orionfold Flow document: four sales reps as horizontal bars, colored below or meeting target, each with a target marker.',
-    // Cut from the Flow Guide sales-marketing capture (3840x2100) at the OG
-    // frame's native 660x338 so the chart's own labels stay crisp, and framed
-    // so the whole chart card sits inside the visible left 540px band.
+    alt: 'The phases of a project plan drawn as a flowchart inside an Orionfold Flow document, from audit to launch, with the risk that blocks the build.',
+    // Cut from the release-build Project Plan capture (G-120, build 1255) onto
+    // the Phases flowchart, padded on the right so the whole diagram sits inside
+    // the visible left 540px band, then halved to 660x338.
     screenshot: 'src/assets/flow/og-home-shot-guide.png',
     light: true,
   },
@@ -182,11 +182,10 @@ export const OG_PAGES: Record<string, OgPage> = {
     // the canonical overview instead of reopening the old charts-only wedge.
     title: 'Conduct useful work. Flow refines. You approve.',
     seed: 'flow',
-    alt: 'A bar chart drawn inside an Orionfold Flow document, one quarter highlighted in blue against grey, with its title and source line above and below.',
-    // Cropped from the /flow/ hero picture (the Visualization Gallery), onto
-    // one finished chart. Pre-cropped to the frame's native 660x338 so the
-    // chart's own labels stay crisp, subject inside the visible left 540px
-    // band.
+    alt: 'A Gantt chart drawn inside an Orionfold Flow document: five coloured phase bars from design freeze to launch across a September to November timeline, with its title and source line.',
+    // Cropped from the /flow/ hero picture (the release-build Visualization
+    // Gallery capture) onto the Gantt card, halved to 660x338 so the Retina
+    // text lands at 1:1, the whole card inside the visible left 540px band.
     screenshot: 'src/assets/flow/og-flow-shot-charts.png',
     light: true,
   },

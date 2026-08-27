@@ -1,7 +1,7 @@
 ---
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
-import shotDomains from '../../../assets/flow/shots/flow-domains-shot.webp';
+import shotDomains from '../../../assets/flow/shots/settings-models.webp';
 import detailDomains from '../../../assets/flow/details/detail-domains.webp';
 ---
 <section class="border-t border-border/60 px-6 py-14 sm:py-20" aria-labelledby="tour-domains">
@@ -12,7 +12,7 @@ import detailDomains from '../../../assets/flow/details/detail-domains.webp';
     <p class="mt-4 text-sm leading-relaxed text-text-muted">Cost is compared before the run and observed after it. Local work records no charge because none was owed.</p>
   </div>
   <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
-    <FlowShot src={shotDomains} alt="Flow's Models settings showing four execution domains and the providers available inside each." sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+    <FlowShot src={shotDomains} alt="Flow's Models settings: provider keys held in Flow Keychain and the Local execution domain switched on with Ollama, LM Studio and Flow Runtime, beside a document that records why local models were chosen." sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
     <FlowDetail class="of-stage__detail of-stage__detail--bl" src={detailDomains} alt="Flow's Local domain enabled, stating that work stays on this Mac and showing three discovered providers offered to Smart Routing." caption="One switch per domain · Discovery never enables" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
   </div>
 </section>

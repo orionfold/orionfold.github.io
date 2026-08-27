@@ -1,0 +1,643 @@
+{
+  "$comment": "Provenance for every Flow product shot in src/assets/flow/shots/. Release rows are synced from the Flow repo by scripts/sync-flow-docs-shots.mjs (md5-checked against docs/CHANGELOG.md, encoded at native size, never resampled). Held rows are development-build captures that stay until the named release frame replaces them or the product lane shoots the gap. Guarded by scripts/test/flow-shot-provenance.test.mjs.",
+  "release": {
+    "sha": "759d858",
+    "build": 1255,
+    "version": "v1.5",
+    "installed": "2026-08-26",
+    "captured": "2026-08-26"
+  },
+  "copySource": "docs/first-time-onboarding-journey.md",
+  "shots": [
+    {
+      "name": "agency-proofread-review",
+      "source": "docs/agency/proofread-review.png",
+      "md5": "ffe1561638581658b7df288381570e71",
+      "guide": "§13",
+      "claim": "Review Changes, Proposed: the effect sentence, the permission fact row, the check pills, and Approve & Save waiting on a person.",
+      "surfaces": [
+        "/ Approval section",
+        "ChapterAgency",
+        "category cover writing-with-ai"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Re-cut the five review crops here; every element the old crops showed exists in this frame.",
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/agency-proofread-review.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 266130,
+        "sha256": "29425ff9607ac8e033468e8c1e40b94be791846407dca8300f85a56e3bd5ef5a"
+      }
+    },
+    {
+      "name": "agency-proofread-estimate",
+      "source": "docs/agency/proofread-estimate.png",
+      "md5": "3039800797672e6facade11b213e4479",
+      "guide": "§13",
+      "claim": "The editor toolbar armed, with the estimate shown before anything runs.",
+      "surfaces": [
+        "ChapterAgency",
+        "ChapterToolbar"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Frame-cropped to the document pane: the right pane is Open Page showing orionfold.com's own pre-launch banner, which must not appear inside a product shot on the site.",
+      "changelogIssues": [
+        "#298",
+        "#305"
+      ],
+      "build": "32ad5f2 · 1382",
+      "frameCrop": {
+        "left": 0,
+        "top": 0,
+        "width": 1900,
+        "height": 2032
+      },
+      "output": {
+        "file": "src/assets/flow/shots/agency-proofread-estimate.webp",
+        "width": 1900,
+        "height": 2032,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "32ad5f2 · 1382",
+        "bytes": 183966,
+        "sha256": "dcec53fe3ebb9506d23f510e75f0094797134c6b9150ba30fa0642a1a1776ea2"
+      }
+    },
+    {
+      "name": "agency-expand-with-sources-estimate",
+      "source": "docs/agency/expand-with-sources-estimate.png",
+      "md5": "a82fdac6e413f6a8501c1f44f63e1b6e",
+      "guide": "§13",
+      "claim": "Expand with Sources, estimated before it runs.",
+      "surfaces": [
+        "ChapterExpand"
+      ],
+      "defectsInFrame": [],
+      "changelogIssues": [
+        "#268"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/agency-expand-with-sources-estimate.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 307292,
+        "sha256": "31dcc87368c53c1b9a58f5a77df3c2b17bff97ace6415b8e17896e5dc7c94dc0"
+      }
+    },
+    {
+      "name": "agency-leaves-this-mac-consent",
+      "source": "docs/agency/leaves-this-mac-consent.png",
+      "md5": "e8911327743d3dac942f91dcb64de5c6",
+      "guide": "§13",
+      "claim": "The consent sheet before bytes leave the Mac: Destination: Anthropic · 894 bytes · Estimated 0.00108 USD.",
+      "surfaces": [
+        "ChapterExpand"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "The sheet is a separate window in the frame; crop it whole.",
+      "changelogIssues": [
+        "#269"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/agency-leaves-this-mac-consent.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 71,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 208788,
+        "sha256": "9219cbce23681debd938a09d1464ec8ec1a113a7b867fd089fc543632f7d9a99"
+      }
+    },
+    {
+      "name": "agency-expand-in-flight",
+      "source": "docs/agency/expand-in-flight.png",
+      "md5": "2558d3a3942ccbcf13047b1a346ad651",
+      "guide": "§13",
+      "claim": "A hosted run in flight, with the run banner and what it is doing.",
+      "surfaces": [
+        "ChapterExpand"
+      ],
+      "defectsInFrame": [],
+      "changelogIssues": [
+        "#270"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/agency-expand-in-flight.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 290366,
+        "sha256": "4bb76549454a36cb177f3fb7aa7ad9bc297536be392873cd36c1bd699840dde8"
+      }
+    },
+    {
+      "name": "agency-expand-landed-receipt",
+      "source": "docs/agency/expand-landed-receipt.png",
+      "md5": "8852e5c09ee4c99c3d83d4df480cff58",
+      "guide": "§13",
+      "claim": "The landed receipt of a real hosted run: 12 events, 0.121375 USD.",
+      "surfaces": [
+        "/ Receipts section",
+        "ChapterExpand",
+        "ChapterReceipts",
+        "category cover receipts"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Prefer this real-cost frame for the \"every run leaves a record\" claim.",
+      "changelogIssues": [
+        "#273"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/agency-expand-landed-receipt.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 512268,
+        "sha256": "83a01b815e9e5814eb31aaf9d9eb98a8134663d05e471b82d2e92a92b16c6839"
+      }
+    },
+    {
+      "name": "first-launch-chart-landed-receipts",
+      "source": "docs/first-launch/chart-landed-receipts.png",
+      "md5": "4ac857675ec31d9bc1d32dff297ad1bc",
+      "guide": "§12",
+      "claim": "The approved chart in the document, status Receipts · Current · 6.",
+      "surfaces": [
+        "/ Documents section",
+        "/flow/ gallery anchor"
+      ],
+      "defectsInFrame": [],
+      "changelogIssues": [
+        "#253",
+        "#254"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/first-launch-chart-landed-receipts.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 282534,
+        "sha256": "c92534c9456731c324e4204c1aa2cd71dcf9a6d8733e8f55e440436972179704"
+      }
+    },
+    {
+      "name": "first-launch-receipt-run-detail",
+      "source": "docs/first-launch/receipt-run-detail.png",
+      "md5": "17a8f17ac1d1ac4c230237b818970a1b",
+      "guide": "§12",
+      "claim": "A run receipt: Checks · Evidence · Cost.",
+      "surfaces": [
+        "/ Receipts section",
+        "ChapterReceipts"
+      ],
+      "defectsInFrame": [
+        "#255"
+      ],
+      "cropRule": "Evidence reads Incomplete — not enough material (#255): crop Checks and the saved-change binding, or say what the frame says; never present a scored verdict this frame does not show.",
+      "changelogIssues": [
+        "#255",
+        "#256",
+        "#257"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/first-launch-receipt-run-detail.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 302442,
+        "sha256": "21cd32898ad6e9822a4fb259d80833e25a9af6bff01323bf9600464d7e05c14a"
+      }
+    },
+    {
+      "name": "first-launch-what-flow-is-using-popover",
+      "source": "docs/first-launch/what-flow-is-using-popover.png",
+      "md5": "935f9680835cdd970d80874ae5626d2f",
+      "guide": "§7",
+      "claim": "What Flow is using: GPU 98% · 30 cores, with the sparkline.",
+      "surfaces": [
+        "ChapterResources"
+      ],
+      "defectsInFrame": [],
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/first-launch-what-flow-is-using-popover.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 299354,
+        "sha256": "c107e6a0cef42894867fd9176c8890aade4b8554fd37fcde4c102aeb61988137"
+      }
+    },
+    {
+      "name": "first-launch-flow-runtime-model-imported",
+      "source": "docs/first-launch/flow-runtime-model-imported.png",
+      "md5": "b132ad184dba0bb5d697a0f7cc1379f0",
+      "guide": "§8",
+      "claim": "Flow Runtime after an import: 20.42 GB of 50 GB used.",
+      "surfaces": [
+        "ChapterRuntime"
+      ],
+      "defectsInFrame": [
+        "#249"
+      ],
+      "cropRule": "Status line is orange; crop around it.",
+      "changelogIssues": [
+        "#249"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/first-launch-flow-runtime-model-imported.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 264510,
+        "sha256": "56331ef29ec1182a1336bc0f95e32de9193805ab66dc8bb245c98799d765c7f3"
+      }
+    },
+    {
+      "name": "first-launch-benchmarks-all-measured",
+      "source": "docs/first-launch/benchmarks-all-measured.png",
+      "md5": "d173ee473f6b4ea5b0d8f7e985d2635e",
+      "guide": "§7",
+      "claim": "All measured: Score of 100 for Balanced.",
+      "surfaces": [
+        "ChapterBenchmarks"
+      ],
+      "defectsInFrame": [],
+      "changelogIssues": [
+        "#246"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/first-launch-benchmarks-all-measured.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "759d858 · 1255",
+        "bytes": 243236,
+        "sha256": "71fc710ddae0c5abfc895c1c4c96084dbddc5dc7e052cb46c0aa5d660d77debb"
+      }
+    },
+    {
+      "name": "guide-document-gallery-project-plan-both-panes",
+      "source": "docs/guide/document-gallery-project-plan-both-panes.png",
+      "md5": "23d6646f3ed5db7c256556d9e725006a",
+      "guide": "C7",
+      "claim": "One document, two places: prose, a photo, the outcomes table, the phase flowchart, the schedule Gantt.",
+      "surfaces": [
+        "/flow/ hero (candidate)"
+      ],
+      "defectsInFrame": [
+        "#286",
+        "#287"
+      ],
+      "cropRule": "Tod/ay mid-word break and the toolbar over Target are sub-pixel at hero scale; operator decides live.",
+      "changelogIssues": [
+        "#286",
+        "#287"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/guide-document-gallery-project-plan-both-panes.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 399554,
+        "sha256": "0bfbbf9f020f1ed91d30603d6c631111fa70ab437531ccf3b0494db51508a5a0"
+      }
+    },
+    {
+      "name": "guide-visualization-gallery-state-sequence",
+      "source": "docs/guide/visualization-gallery-state-sequence.png",
+      "md5": "06c8ea8c8d31158a4896315645766c86",
+      "guide": "C3",
+      "claim": "State and sequence diagrams drawn in place from plain text.",
+      "surfaces": [
+        "/flow/ hero (fallback)",
+        "ChapterVisualize"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Clean frame.",
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/guide-visualization-gallery-state-sequence.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 266348,
+        "sha256": "cc2dd3d986b7d9860b9cd61364fd156fbc906b3a600344294631ed669ec51595"
+      }
+    },
+    {
+      "name": "guide-visualization-gallery-radar-gantt-heatmap-waterfall",
+      "source": "docs/guide/visualization-gallery-radar-gantt-heatmap-waterfall.png",
+      "md5": "0b7bbe03eed83872873281367494b4cf",
+      "guide": "C4",
+      "claim": "Charts from tables: radar, Gantt, calendar heatmap, waterfall.",
+      "surfaces": [
+        "/ hero + OG card",
+        "(gallery anchor moved to first-launch-chart-landed-receipts)"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Captured with grey traffic lights; content is clean.",
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/guide-visualization-gallery-radar-gantt-heatmap-waterfall.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 281484,
+        "sha256": "52cc5063fd2c98a38aad999090e7ce4526982f8bfb1008da14e51a53758e9213"
+      }
+    },
+    {
+      "name": "settings-smart-routing",
+      "source": "docs/settings/settings-smart-routing.png",
+      "md5": "6064d0bdda0f1647a6f8ab8fa4c900f5",
+      "guide": "F8",
+      "claim": "Smart Routing rules in order, and the one that is deciding: Stays on this Mac.",
+      "surfaces": [
+        "ChapterRouting",
+        "category cover models-and-runtime"
+      ],
+      "defectsInFrame": [
+        "#287"
+      ],
+      "cropRule": "The rule-template menu is open in frame; the rules crop excludes it.",
+      "changelogIssues": [],
+      "build": "32ad5f2 · 1382",
+      "output": {
+        "file": "src/assets/flow/shots/settings-smart-routing.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "32ad5f2 · 1382",
+        "bytes": 253572,
+        "sha256": "5cbdbfa03fbae6d476d7be45c06eb6d09c5cf8e2b4f8c6eaa2eaadbdafd4efe5"
+      }
+    },
+    {
+      "name": "settings-evidence",
+      "source": "docs/settings/settings-evidence.png",
+      "md5": "9017ef86170683f527704fcc33240430",
+      "guide": "F9",
+      "claim": "Settings ▸ Evidence: the rubric dimensions a change is measured against.",
+      "surfaces": [
+        "ChapterReceipts"
+      ],
+      "defectsInFrame": [
+        "#290"
+      ],
+      "cropRule": "Captured with grey traffic lights.",
+      "changelogIssues": [
+        "#287",
+        "#290"
+      ],
+      "build": "32ad5f2 · 1382",
+      "output": {
+        "file": "src/assets/flow/shots/settings-evidence.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "32ad5f2 · 1382",
+        "bytes": 292678,
+        "sha256": "c50511740266d0f14c60c86f812ba9ea924e555e82753d51d2b0bc5b96ff06c4"
+      }
+    },
+    {
+      "name": "editor-table-editor-annual-operating-review",
+      "source": "docs/editor/table-editor-annual-operating-review.png",
+      "md5": "b0190851d39097713a58fbe187f8faef",
+      "guide": "F2",
+      "claim": "The table editor: a grid for the table beside the page it lives on.",
+      "surfaces": [
+        "ChapterTables",
+        "category cover documents-and-files"
+      ],
+      "defectsInFrame": [
+        "#289"
+      ],
+      "cropRule": "Columns run past the pane edge; ship the reference-bar + grid crop only.",
+      "changelogIssues": [
+        "#289"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/editor-table-editor-annual-operating-review.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 264216,
+        "sha256": "071070c94a12a8f1b1399d234077b29eabbf1a6e38a00cf2aee0dd82ec4ec5d2"
+      }
+    },
+    {
+      "name": "editor-image-editor-press-release-draft",
+      "source": "docs/editor/image-editor-press-release-draft.png",
+      "md5": "4b75e7d9ecdfca87e6f043cb00e79bc3",
+      "guide": "F3",
+      "claim": "The image editor: the assets grid, the Alt text and Title fields, the folder the picture came from.",
+      "surfaces": [
+        "ChapterPictures"
+      ],
+      "defectsInFrame": [],
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/editor-image-editor-press-release-draft.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 536220,
+        "sha256": "ab16e98cfba0eac74e8d7ceee07d9ec7262342f6bf43ec4ab8b80816e2fce1d8"
+      }
+    },
+    {
+      "name": "search-best-results-and-hit",
+      "source": "docs/search/search-best-results-and-hit.png",
+      "md5": "e1e474352afefa333650436e250a9034",
+      "guide": "§15",
+      "claim": "Search: best results in the sidebar and the hit opened in the Reader.",
+      "surfaces": [
+        "ChapterSearch"
+      ],
+      "defectsInFrame": [
+        "#278",
+        "#279"
+      ],
+      "cropRule": "Crop the sidebar result column; exclude the Working With Flow row and the highlighted Welcome line, or hold for 0179.",
+      "changelogIssues": [
+        "#278",
+        "#279"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/search-best-results-and-hit.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 471506,
+        "sha256": "e1609c1d17397ff4b2c3604e216a6992482aa5b8f63f603e482bd86eb490287c"
+      }
+    },
+    {
+      "name": "editor-chart-editor-ask-and-review",
+      "source": "docs/editor/chart-editor-ask-and-review.png",
+      "md5": "37efbf88c5e555d98026185c0df6f6fc",
+      "guide": "F1",
+      "claim": "The chart editor: a Gantt chart chosen by type, an Ask field with a typed change, Chart ready for review, and the Review Changes pane beside it.",
+      "surfaces": [
+        "ChapterVisualize (detail-chart-gallery: the chapter already claims choose, ask, review, apply)"
+      ],
+      "defectsInFrame": [
+        "#288"
+      ],
+      "cropRule": "Crop the chart pane above the encoding pickers; the Colour-by picker clipping (#288) sits below the crop.",
+      "changelogIssues": [
+        "#288",
+        "#301",
+        "#302"
+      ],
+      "build": "32ad5f2 · 1382",
+      "output": {
+        "file": "src/assets/flow/shots/editor-chart-editor-ask-and-review.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "32ad5f2 · 1382",
+        "bytes": 240548,
+        "sha256": "be4a20a376dda20fd0fe10975b873020a36224ce3edc1df15456d11bb972d2fb"
+      }
+    },
+    {
+      "name": "guide-document-gallery-resume-technical-evaluation",
+      "source": "docs/guide/document-gallery-resume-technical-evaluation.png",
+      "md5": "39710bfd620f7ab37cebea6aa7913c43",
+      "guide": "C6",
+      "claim": "Documents you can copy: a resume beside a technical evaluation, both ordinary Markdown.",
+      "surfaces": [
+        "/flow/ document gallery band"
+      ],
+      "defectsInFrame": [],
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/guide-document-gallery-resume-technical-evaluation.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 83,
+        "transparentCorners": false,
+        "build": "759d858 · 1255",
+        "bytes": 482638,
+        "sha256": "26fba58f81fbfb5d54e3c3a5984d0e513603a060af5b5b29209634ed8977d16a"
+      }
+    },
+    {
+      "name": "settings-models",
+      "source": "docs/settings/settings-models.png",
+      "md5": "13ad2f90657c7406f0ad9d387f672925",
+      "build": "32ad5f2 · 1382",
+      "guide": "F12",
+      "claim": "Settings ▸ Models on the re-cut: provider keys in Flow Keychain, the Local execution domain on with Ollama, LM Studio and Flow Runtime, shared models served in place, beside the Runtime Evaluation document.",
+      "surfaces": [
+        "ChapterDomains",
+        "/ Routing section (shotDomains + detail-domains)"
+      ],
+      "defectsInFrame": [],
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/settings-models.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "32ad5f2 · 1382",
+        "bytes": 412374,
+        "sha256": "1a80b65cb15a5f4d95bbda18150304729eccd7350ea7203fab96df3d769518f9"
+      }
+    },
+    {
+      "name": "files-add-folder-sheet",
+      "source": "docs/files/add-folder-sheet.png",
+      "md5": "6bf365802a08d622e441904742d2aac9",
+      "build": "32ad5f2 · 1382",
+      "guide": "§3",
+      "claim": "The Add Folder sheet over the sidebar (request 3 of 20:53).",
+      "surfaces": [
+        "ChapterFiles"
+      ],
+      "defectsInFrame": [],
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/files-add-folder-sheet.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "32ad5f2 · 1382",
+        "bytes": 282374,
+        "sha256": "8aad546c2e3ec6376756057edbae67e0560f81ddac284287d0bab2b8f7c27677"
+      }
+    }
+  ],
+  "held": [
+    {
+      "name": "flow-editor-toolbar-blocked-shot",
+      "build": "development build (pre-release)",
+      "captured": "2026-08-18 to 2026-08-21",
+      "plan": "gap: the editor toolbar in the blocked (Reader) state (product lane); detail-toolbar-blocked",
+      "bytes": 214072
+    },
+    {
+      "name": "flow-long-documents-shot",
+      "build": "development build (pre-release)",
+      "captured": "2026-08-18 to 2026-08-21",
+      "plan": "gap: a long document with the parts/coverage line visible (product lane); ChapterLongDocs shot + detail-parts",
+      "bytes": 330196
+    },
+    {
+      "name": "flow-search-shot",
+      "build": "development build (pre-release)",
+      "captured": "2026-08-18 to 2026-08-21",
+      "plan": "gap: a Search frame after 0179 (#278/#279 visible in the release frame at shipped size); ChapterSearch whole window, detail-search already cut from the release frame",
+      "bytes": 262298
+    },
+    {
+      "name": "flow-table-editor-shot",
+      "build": "development build (pre-release)",
+      "captured": "2026-08-18 to 2026-08-21",
+      "plan": "gap: a table-editor frame after 0173 (#289 columns past the pane edge at shipped size); ChapterTables whole window, detail-grid already cut from the release frame",
+      "bytes": 233840
+    }
+  ]
+}

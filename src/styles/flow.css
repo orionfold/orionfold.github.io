@@ -411,3 +411,18 @@
   .flow-hero__copy { min-width: 0; }
   .flow-hero__title, .flow-hero__title span { max-width: 100%; }
 }
+
+/* /flow/ gallery band (G-120): six whole-window release frames in a mosaic.
+   The 2x2 anchor keeps the frames' own aspect, so every tile stays a true
+   window and the grid rows line up without cropping. Motion is transform-only
+   (no layout, no repaint of the figure surface) and off under reduced motion. */
+.flow-gallery__tile { transition: transform 0.35s ease; will-change: transform; }
+.flow-gallery__tile:hover { transform: translateY(-4px); }
+.flow-gallery__tile:focus-visible { outline: 2px solid var(--color-primary, currentColor); outline-offset: 4px; border-radius: 1rem; }
+.flow-gallery__shot { display: flex; flex-direction: column; }
+.flow-gallery__shot > div { flex: 0 0 auto; }
+.flow-gallery__shot figcaption { margin-top: auto; }
+@media (prefers-reduced-motion: reduce) {
+  .flow-gallery__tile { transition: none; }
+  .flow-gallery__tile:hover { transform: none; }
+}

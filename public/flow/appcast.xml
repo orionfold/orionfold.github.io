@@ -20,7 +20,16 @@
          Sparkle guards item selection with items.count > 0 and reads items via
          nodesForXPath, which returns an empty array rather than nil. So the
          real feed lives at the real URL today, and the app's Check for
-         Updates… tells the truth instead of erroring on a 404. -->
+         Updates… tells the truth instead of erroring on a 404.
+
+         Even empty, this file must end with the operator's signature block:
+         the app requires a signed feed and verifies the bytes before it looks
+         for items (measured 2026-08-27). The generator preserves a valid block
+         across no-op regenerations; a content change means signing again. -->
 
   </channel>
 </rss>
+<!-- sparkle-signatures:
+edSignature: uArETcb2ebrQuEUh2HOKbOn3YHGMk78N5+BSz4EUOg+TVd8ASZ20ClWVlquZzgc3Qj7DmrlLH9yGqWzNGqDRCA==
+length: 1753
+-->

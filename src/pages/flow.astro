@@ -1,6 +1,7 @@
 ---
 // Orionfold Flow flagship landing page. Rebuilt 2026-08-14 from the measured
-// capability briefs in the Flow repo (docs/reference/flow-*-source.md), split
+// capability briefs in the Flow repo (archived 2026-08-26; the journey guide
+// docs/first-time-onboarding-journey.md is now the only copy source), split
 // into an overview plus four category pages on 2026-08-20, and rewritten the
 // same day against the content-masterclass review
 // (audit-reports/content-masterclass-review-2026-08-20.md): the hero states
@@ -46,10 +47,74 @@ import { FLOW_STORYBOARD_MEASUREMENTS } from '../data/flow-measurements.ts';
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import '../styles/flow.css';
 
-// Flow Guide capture (3840x2100, light only). The hero artifact: the Welcome
-// document renders "Conduct beautiful documents" as its own H1, so the page's
-// headline and the product agree inside one frame.
-import shotGuideCharts from '../assets/flow/shots/flow-guide-charts-market-shot.webp';
+// Release-build captures (native 3238x2032, build 1255, light only; provenance
+// in src/data/flow-shot-sources.json). The hero artifact is the Visualization
+// Gallery open twice: four finished charts drawn in place, so the headline's
+// "useful work" is a finished document, not app chrome.
+import FlowShot from '../components/flow/FlowShot.astro';
+import shotFlowHero from '../assets/flow/shots/guide-visualization-gallery-radar-gantt-heatmap-waterfall.webp';
+import galleryCharts from '../assets/flow/shots/first-launch-chart-landed-receipts.webp';
+import galleryDiagrams from '../assets/flow/shots/guide-visualization-gallery-state-sequence.webp';
+import galleryChartEditor from '../assets/flow/shots/editor-chart-editor-ask-and-review.webp';
+import galleryPictures from '../assets/flow/shots/editor-image-editor-press-release-draft.webp';
+import galleryDocuments from '../assets/flow/shots/guide-document-gallery-resume-technical-evaluation.webp';
+import galleryBenchmarks from '../assets/flow/shots/first-launch-benchmarks-all-measured.webp';
+
+// The gallery band: six whole-window frames from the Flow Guide and the first
+// session on the installed release. Every tile is a real file open in Flow and
+// links to the tour chapter that explains what is on screen. Captions are
+// written from what is legible in the frame (the journey guide is the only
+// copy source), never from a capability list.
+const galleryTiles = [
+  {
+    shot: galleryCharts,
+    alt: 'A client proposal in Orionfold Flow with its fee table and a bar chart drawn in the document, the pilot phase highlighted, beside the Receipts timeline showing the run that drew it and the saved version.',
+    caption: 'The chart lands in the document · So does the receipt for the run that drew it',
+    href: '/flow/receipts/#tour-receipts',
+    span: 'lg:col-span-2 lg:row-span-2',
+    sizes: '(min-width: 1024px) 48rem, 100vw',
+  },
+  {
+    shot: galleryDiagrams,
+    alt: 'The Visualization Gallery in Orionfold Flow showing a state diagram beside a sequence diagram, both drawn from fenced text.',
+    caption: 'State and sequence diagrams · Plain text in, drawing out',
+    href: '/flow/documents-and-files/#tour-visualize',
+    span: '',
+    sizes: '(min-width: 1024px) 24rem, 100vw',
+  },
+  {
+    shot: galleryChartEditor,
+    alt: 'The Flow chart editor with a Gantt chart chosen by type, a typed request to add a workstream, and the Review Changes pane waiting for approval beside it.',
+    caption: 'Ask for a change to a chart · Review it before it lands',
+    href: '/flow/documents-and-files/#tour-visualize',
+    span: '',
+    sizes: '(min-width: 1024px) 24rem, 100vw',
+  },
+  {
+    shot: galleryPictures,
+    alt: 'A press release draft in Orionfold Flow with a photograph rendered in place, beside the image editor showing the same picture, its alt text, and the folder it came from.',
+    caption: 'Pictures with the words you wrote for them · The folder is the collection',
+    href: '/flow/documents-and-files/#tour-pictures',
+    span: '',
+    sizes: '(min-width: 1024px) 24rem, 100vw',
+  },
+  {
+    shot: galleryDocuments,
+    alt: 'A resume open beside a technical evaluation in Orionfold Flow, the evaluation carrying a photograph and a comparison table of where local models run.',
+    caption: 'A resume and a technical evaluation · Ordinary Markdown, both of them',
+    href: '/flow/documents-and-files/',
+    span: '',
+    sizes: '(min-width: 1024px) 24rem, 100vw',
+  },
+  {
+    shot: galleryBenchmarks,
+    alt: 'Flow Benchmarks after measuring five local models on this Mac, each with time to first word, reading speed, fit, and a score for Balanced, beside the Ideas board that proposed the measurement.',
+    caption: 'Five local models measured on this Mac · Scores you can re-run',
+    href: '/flow/receipts/#tour-benchmarks',
+    span: '',
+    sizes: '(min-width: 1024px) 24rem, 100vw',
+  },
+];
 
 const og = ogMeta('/flow/');
 const flowUrl = `${SITE.url}/flow/`;
@@ -271,8 +336,8 @@ const faqSchema = {
       titleId="flow-landing-title"
       titleLead="Conduct useful work."
       titleEmphasis="Flow refines. You approve."
-      shot={shotGuideCharts}
-      shotAlt="Two documents open side by side in Orionfold Flow: a Visualization Gallery showing a highlighted bar chart and a grouped bar chart with their source notes, beside a market landscape document showing a flow diagram and a photograph of a whiteboard."
+      shot={shotFlowHero}
+      shotAlt="The Visualization Gallery open twice in Orionfold Flow: a radar chart and a Gantt chart on one side, a calendar heatmap and a waterfall chart on the other, each drawn in place with its own title and source line."
       downloadSource="flow-hero"
       waitlistId="flow-hero-waitlist"
       waitlistSource="flow-hero-waitlist"
@@ -304,6 +369,28 @@ const faqSchema = {
             </article>
           ))}
         </div>
+      </div>
+    </section>
+
+    <!-- ================= GALLERY ================= -->
+    <section id="gallery" class="scroll-mt-28 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="gallery-heading">
+      <div class="mx-auto max-w-6xl">
+        <div class="max-w-3xl">
+          <p class="flow-kicker" data-animate="rise">From the Flow Guide, on the release build</p>
+          <h2 id="gallery-heading" class="of-display mt-4 text-[clamp(2.1rem,5vw,3.5rem)]" data-animate="lead">What a plain file becomes.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-text-muted">
+            Every picture here is an ordinary Markdown file open in Flow on the installed release: charts,
+            diagrams, tables, and photographs drawn in place, with the measurements and receipts behind them.
+          </p>
+        </div>
+        <div class="flow-gallery mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-animate-stagger="slow">
+          {galleryTiles.map((tile) => (
+            <a href={tile.href} class:list={['flow-gallery__tile group block', tile.span]} data-animate="rise">
+              <FlowShot src={tile.shot} alt={tile.alt} caption={tile.caption} natural sizes={tile.sizes} class="flow-gallery__shot h-full" />
+            </a>
+          ))}
+        </div>
+        <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-26 on the installed release build 1255 (v1.5). The documents are Flow Guide demo material: invented names and numbers.</p>
       </div>
     </section>
 

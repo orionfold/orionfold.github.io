@@ -9,6 +9,7 @@
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { verifyFeedSignature } from './lib/sparkle-feed.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -29,9 +30,15 @@ export function evaluateFlowReleaseBoundary({
   pricingSource,
   appcastSource,
   releaseDeclared,
+  // Optional so older callers keep working; when present, the feed's signature
+  // block is verified against it rather than merely detected.
+  releasesSource,
 }) {
   const live = exportedBoolean(launchSource, 'ORIONFOLD_FLOW_LIVE');
   const dmgUrl = exportedString(pricingSource, 'FLOW_DMG_URL');
+  const publicEdKeyBase64 = releasesSource
+    ? exportedString(releasesSource, 'FEED_PUBLIC_ED_KEY_BASE64')
+    : null;
 
   if (!live) {
     return { state: 'launch-dark', live, dmgUrl, problems: [] };
@@ -79,6 +86,13 @@ export function evaluateFlowReleaseBoundary({
 
   if (item && !/<!--\s*sparkle-signatures:[\s\S]*?edSignature:\s*[A-Za-z0-9+/=]+[\s\S]*?length:\s*\d+[\s\S]*?-->/.test(appcastSource)) {
     problems.push('the non-empty Sparkle feed has no appended signed-feed block');
+  } else if (item && publicEdKeyBase64) {
+    // A block that is present but wrong is the same failure to a user as no
+    // block at all, minus the honesty. Verify it the way the app will.
+    const verdict = verifyFeedSignature(appcastSource, publicEdKeyBase64);
+    if (!verdict.valid) {
+      problems.push(`the signed-feed block does not verify against the app's EdDSA public key (${verdict.reason})`);
+    }
   }
 
   return {
@@ -90,16 +104,18 @@ export function evaluateFlowReleaseBoundary({
 }
 
 async function main() {
-  const [launchSource, pricingSource, appcastSource] = await Promise.all([
+  const [launchSource, pricingSource, appcastSource, releasesSource] = await Promise.all([
     readFile(resolve(ROOT, 'src/data/launch.ts'), 'utf8'),
     readFile(resolve(ROOT, 'src/data/flow-pricing.ts'), 'utf8'),
     readFile(resolve(ROOT, 'public/flow/appcast.xml'), 'utf8'),
+    readFile(resolve(ROOT, 'src/data/flow-releases.ts'), 'utf8'),
   ]);
   const result = evaluateFlowReleaseBoundary({
     launchSource,
     pricingSource,
     appcastSource,
     releaseDeclared: process.env.FLOW_RELEASE_DECLARED,
+    releasesSource,
   });
 
   if (result.state === 'launch-dark') {

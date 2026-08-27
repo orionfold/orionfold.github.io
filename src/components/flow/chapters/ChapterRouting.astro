@@ -1,7 +1,7 @@
 ---
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
-import shotSmartRouting from '../../../assets/flow/shots/flow-smart-routing-shot.webp';
+import shotSmartRouting from '../../../assets/flow/shots/settings-smart-routing.webp';
 import detailRoutingDecided from '../../../assets/flow/details/detail-routing-decided.webp';
 import detailRoutingRules from '../../../assets/flow/details/detail-routing-rules.webp';
 ---
@@ -14,8 +14,8 @@ import detailRoutingRules from '../../../assets/flow/details/detail-routing-rule
       <p class="mt-4 leading-relaxed text-text-muted">A rule with no qualifying model says so. Unmeasured models are not speed-ranked, missing prices are never guessed, and rules never judge answer quality.</p>
     </div>
     <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
-      <FlowShot src={shotSmartRouting} alt="Flow's Smart Routing settings with ordered rules, live qualifying-model counts, and provider order." crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
-      <FlowDetail class="of-stage__detail of-stage__detail--br" src={detailRoutingRules} alt="Flow's ordered Smart Routing rules, including the Deciding badge and an orange no-model-qualifies state." caption="Rules decide in order · The first match applies" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
+      <FlowShot src={shotSmartRouting} alt="Flow's Smart Routing settings with ordered rules, live qualifying-model counts, and the rule-template menu open, beside a market landscape document." crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+      <FlowDetail class="of-stage__detail of-stage__detail--br" src={detailRoutingRules} alt="Flow's ordered Smart Routing rules with live counts, the Deciding badge on the first rule that matches, and Add Rule." caption="Rules decide in order · The first match applies" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
     </div>
     <div class="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-[0.9fr_1.1fr]">
       <div>
@@ -25,6 +25,6 @@ import detailRoutingRules from '../../../assets/flow/details/detail-routing-rule
       </div>
       <FlowDetail src={detailRoutingDecided} alt="Flow naming the model Smart Routing would use and the rule that decided it." caption="Model named · Deciding rule named" sizes="(min-width: 1024px) 36rem, calc(100vw - 3rem)" />
     </div>
-    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-18 on the running build. The screen carries the route and its reason together.</p>
+    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-26 on the installed release build 1255 (v1.5). The screen carries the route and its reason together.</p>
   </div>
 </section>
