@@ -108,6 +108,34 @@ export const RELEASES: FlowRelease[] = [
       "<p>What is new: Flow now writes the outcome of every update check to the system log, so if a check ever fails there is a reason to read instead of a guess. " +
       "This release also proves the road for the next ones. Every future update arrives the same way.</p>",
   },
+  {
+    // 1.5.2 (1414): the first update a user's installed 1.5.1 is OFFERED
+    // through Sparkle (1.5.1 itself was hand-installed). Every value below is
+    // from the product lane's ledger entry of 2026-08-27 10:02 PDT, verified
+    // there by `release-dmg.sh verify`, `sign_update --verify`, and a full
+    // anonymous download of the URL
+    // (sha256 68a047f215a7b9df39172c075b176cb7c70a0230764d4ddb309d907ee8f3e8eb).
+    // Website re-check 2026-08-27 10:0x PDT: `curl -I` on the URL returns 200,
+    // `content-type: application/x-apple-diskimage`, `content-length: 46352670`.
+    build: 1414,
+    shortVersion: "1.5.2",
+    published: "2026-08-27T09:57:40-07:00",
+    url: "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.2/1414/Orionfold-Flow-1.5.2-1414.dmg",
+    length: 46352670,
+    edSignature: "mJkybMNWaxq8udfs0oAkyVyltuR87U0wpaHmitqmppn+JeR/15sEOn28Xl7SbZCPc6uIvVs9vcWI3yFA9Rc2BQ==",
+    minimumSystemVersion: "26.0",
+    // One user-visible change against 1.5.1, product issue #306: a pressable
+    // "Update ready" button in the title bar when a newer Flow is waiting.
+    // Nothing else user-visible changed (product lane verified
+    // `git log dbd6c1e..340c756`). Sparkle renders this CDATA block as HTML
+    // under its own version line, so keep it short: what is new, why it
+    // helps, and the invitation to press Install.
+    notes:
+      "<p>What is new: when a newer Flow is waiting, the title bar now shows a teal Update ready button next to the version number. " +
+      "Press it to see what changed and install. Before, those words sat as plain text inside the plan pill, with nothing to press. " +
+      "The plan pill now shows your plan and nothing else.</p>" +
+      "<p>Press Install Update and Flow restarts as 1.5.2 with your documents, settings, and receipts exactly where they were.</p>",
+  },
 ];
 
 /**

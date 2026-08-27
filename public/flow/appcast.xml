@@ -11,6 +11,18 @@
     <atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="https://orionfold.com/flow/appcast.xml" rel="self" type="application/rss+xml" />
 
     <item>
+      <title>Version 1.5.2</title>
+      <pubDate>Thu, 27 Aug 2026 16:57:40 +0000</pubDate>
+      <sparkle:version>1414</sparkle:version>
+      <sparkle:shortVersionString>1.5.2</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>What is new: when a newer Flow is waiting, the title bar now shows a teal Update ready button next to the version number. Press it to see what changed and install. Before, those words sat as plain text inside the plan pill, with nothing to press. The plan pill now shows your plan and nothing else.</p><p>Press Install Update and Flow restarts as 1.5.2 with your documents, settings, and receipts exactly where they were.</p>]]></description>
+      <enclosure url="https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.2/1414/Orionfold-Flow-1.5.2-1414.dmg"
+                 length="46352670"
+                 type="application/octet-stream"
+                 sparkle:edSignature="mJkybMNWaxq8udfs0oAkyVyltuR87U0wpaHmitqmppn+JeR/15sEOn28Xl7SbZCPc6uIvVs9vcWI3yFA9Rc2BQ==" />
+    </item>
+    <item>
       <title>Version 1.5.1</title>
       <pubDate>Thu, 27 Aug 2026 14:19:00 +0000</pubDate>
       <sparkle:version>1404</sparkle:version>
@@ -25,6 +37,6 @@
   </channel>
 </rss>
 <!-- sparkle-signatures:
-edSignature: fLsOH6F/4o/pm4P2+F7XCK2EnqUqXDQjgrtrX3tkR7O0vikTNJGFCnIK9e6Datnk0Hn135FEu3wyBA/Lv7J2DA==
-length: 1862
+edSignature: FO/y7LnKPm53TIHmVa+yla5c8IlkOIOV+1mF8F3gnmK4HzQ4BMK8ffjTSpL0TPORkmSb7ocxEQz6n5ySG93xCg==
+length: 2987
 -->
