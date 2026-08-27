@@ -67,6 +67,6 @@ assert.match(seo, /tagline: 'Conduct beautiful documents with AI agency built in
 assert.match(seo, /slogan: SITE\.tagline/);
 const homeOg = og.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
 assert.match(homeOg, /title: 'You drive the work\. Flow tunes AI to your needs\.'/);
-assert.match(homeOg, /alt: '[^']*flowchart/);
+assert.match(homeOg, /alt: '[^']*What Flow is using readout[^']*trip plan/, 'home OG alt describes the installed-1382 readout card that is actually cut into the social image');
 
 console.log('home hero: daylight racing world, real Flow proof, conversion and metadata contracts pass');
