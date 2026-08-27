@@ -16,17 +16,38 @@ const appcast = (url = realDmg, { feedSigned = true } = {}) => `
 </rss>
 ${feedSigned ? '<!-- sparkle-signatures:\nedSignature: ZmVlZA==\nlength: 512\n-->' : ''}`;
 
-test('the current local launch rehearsal is mechanically blocked from deployment', () => {
+test('the real checkout can never deploy a live Flow without the operator declaration', () => {
+  // Reads the committed sources, not fixtures. Whatever rehearsal state the
+  // checkout is in, the one invariant is that no combination of local files
+  // reaches release-ready on its own: only the operator-owned repository
+  // variable FLOW_RELEASE_DECLARED can do that.
   const result = evaluateFlowReleaseBoundary({
     launchSource: read('src/data/launch.ts'),
     pricingSource: read('src/data/flow-pricing.ts'),
     appcastSource: read('public/flow/appcast.xml'),
+    releasesSource: read('src/data/flow-releases.ts'),
     releaseDeclared: undefined,
   });
-  assert.equal(result.state, 'blocked');
-  assert.match(result.problems.join('\n'), /operator release declaration/);
-  assert.match(result.problems.join('\n'), /rehearsal placeholder/);
-  assert.match(result.problems.join('\n'), /no published release item/);
+  assert.notEqual(result.state, 'release-ready');
+  if (result.live) {
+    assert.equal(result.state, 'blocked');
+    assert.match(result.problems.join('\n'), /operator release declaration/);
+  } else {
+    assert.equal(result.state, 'launch-dark');
+  }
+});
+
+test('the public CTA and the newest published release name the same DMG', () => {
+  // Both files are edited by hand on every release. The boundary only checks
+  // them when Flow is live, so this keeps them honest in the launch-dark state.
+  const pricingUrl = read('src/data/flow-pricing.ts').match(/export const FLOW_DMG_URL = "([^"]+)";/)[1];
+  const enclosureUrls = [...read('public/flow/appcast.xml').matchAll(/<enclosure\b[^>]*\burl="([^"]+)"/g)].map((m) => m[1]);
+  if (enclosureUrls.length === 0) {
+    assert.match(pricingUrl, /PLACEHOLDER/, 'with no published release the CTA must stay an obvious placeholder');
+  } else {
+    assert.equal(pricingUrl, enclosureUrls[0], 'FLOW_DMG_URL must equal the newest appcast enclosure');
+    assert.equal(new URL(pricingUrl).hostname, 'orionfold.supabase.co', 'DMG URLs go through the vanity host, never the project ref');
+  }
 });
 
 test('a launch-dark build remains deployable without release materials', () => {

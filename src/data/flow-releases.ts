@@ -54,33 +54,54 @@ export interface FlowRelease {
 /**
  * Every Flow release published to users, oldest first.
  *
- * EMPTY IS THE CORRECT STATE TODAY, and it is a deliberate choice rather than a
- * placeholder. As of 2026-08-22 nothing has ever been published with a moving
- * build number (`tools/published-builds.txt` in the app repo has no entries),
- * there is no notarized DMG at a public URL, and the EdDSA private key that
- * would sign one lives only on the operator's machine.
+ * THE CHANNEL WAS DELIBERATELY EMPTY UNTIL 2026-08-27. Nothing had shipped with
+ * a moving build number, no notarized DMG sat at a public URL, and the EdDSA
+ * private key lived only on the operator's machine. An empty channel parses
+ * cleanly and yields "you are up to date" (Sparkle's `SUAppcast.m` reads items
+ * via `nodesForXPath`, which returns an empty array rather than nil, and
+ * `SUAppcastDriver.m` guards selection with `appcast.items.count > 0`), which is
+ * why the real feed went live at the real URL before the first release existed.
  *
- * A fabricated entry would be strictly worse than none: Sparkle would fetch it,
- * fail to verify a signature we invented, and show users an error — whereas an
- * empty channel parses cleanly and yields "you are up to date". *Measured, not
- * assumed*: Sparkle's `SUAppcast.m` reads items via `nodesForXPath`, which
- * returns an empty array rather than nil for a well-formed feed with no items,
- * and `SUAppcastDriver.m` guards its selection with `appcast.items.count > 0`.
+ * SIGNED IN EVERY STATE, EMPTY INCLUDED. Measured 2026-08-27 (product lane,
+ * unified log at 01:21 PDT; confirmed in Sparkle 2.9.6 `SUAppcastDriver.m`):
+ * because the app sets `SURequireSignedFeed`, Sparkle verifies the downloaded
+ * feed bytes BEFORE it looks for items, so an unsigned feed fails every check
+ * with `SUSparkleErrorDomain code 1000`. The feed must carry the operator's
+ * signature block after every regeneration. See scripts/lib/sparkle-feed.mjs.
  *
- * So this ships the real feed at the real URL, honestly empty, which turns the
- * app's "Check for Updates…" from a fail-soft network error into a truthful
- * "no updates yet" — and lets the in-place-update half of C1865 be exercised
- * the moment the first release exists, without spending a second notarization.
- *
- * CORRECTION, MEASURED 2026-08-27 (product lane, unified log at 01:21 PDT;
- * confirmed in Sparkle 2.9.6 `SUAppcastDriver.m`): "empty needs no signature"
- * was wrong. Because the app sets `SURequireSignedFeed`, Sparkle verifies the
- * downloaded feed bytes BEFORE it looks for items, so an unsigned empty feed
- * fails every check with `SUSparkleErrorDomain code 1000`. The feed must carry
- * the operator's signature block in every state, including this one. See
- * scripts/lib/sparkle-feed.mjs and the generator for how that is kept true.
+ * WHERE EACH FIELD COMES FROM. The product lane posts every value to the
+ * flow-growth ledger in one entry after `tools/release-dmg.sh` has built,
+ * notarized, stapled and verified the DMG and the operator has signed it with
+ * Sparkle's `sign_update`. This file copies those values verbatim; nothing here
+ * is derived or guessed. The DMG host is the vanity host
+ * `orionfold.supabase.co` (decision of 2026-08-22: no project ref appears in a
+ * public URL), bucket `flow-downloads`, immutable versioned path
+ * `<shortVersion>/<build>/Orionfold-Flow-<shortVersion>-<build>.dmg`, never
+ * overwritten.
  */
-export const RELEASES: FlowRelease[] = [];
+export const RELEASES: FlowRelease[] = [
+  {
+    // 1.5.1 (1404): the first build delivered through Flow's own updater. The
+    // upgrade payload for the installed 1.5 (1382). Every value below is from
+    // the product lane's ledger entries of 2026-08-27 07:22 and 07:32 PDT,
+    // verified there by `release-dmg.sh verify`, `stat`, `shasum -a 256`,
+    // `sign_update --verify`, and a full anonymous download of the URL
+    // (sha256 d635d541b59b9827d7150676471b8f518413b89eb01d9cd72f8ae1b011d3a53f).
+    // Website re-check 2026-08-27 07:4x PDT: `curl -I` on the URL returns 200,
+    // `content-type: application/x-apple-diskimage`, `content-length: 46317167`.
+    build: 1404,
+    shortVersion: "1.5.1",
+    published: "2026-08-27T07:19:00-07:00",
+    url: "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.1/1404/Orionfold-Flow-1.5.1-1404.dmg",
+    length: 46317167,
+    edSignature: "Te2Q6L2Cp60V6iJ2UMUgh7zSbEokZfvSR6yRlls0QfdZVpjN9HnlJt5Yf8wpms62pduRDuG+rcBPu0dQgKL3Dg==",
+    minimumSystemVersion: "26.0",
+    notes:
+      "Flow 1.5.1 is the first update delivered through Flow's own updater. " +
+      "It records the result of each update check, so Settings can show you when Flow last looked for a new version and what it found. " +
+      "Nothing else changes.",
+  },
+];
 
 /**
  * The Ed25519 public key baked into the app as `SUPublicEDKey`

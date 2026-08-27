@@ -10,26 +10,21 @@
     <language>en</language>
     <atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="https://orionfold.com/flow/appcast.xml" rel="self" type="application/rss+xml" />
 
-    <!-- No releases published yet, and this is deliberate rather than a stub.
-         Nothing has shipped with a moving CFBundleVersion, no notarized DMG
-         sits at a public URL, and the EdDSA key that would sign one is not in
-         this repo. A fabricated entry would be worse than none: Sparkle would
-         download it and fail signature verification in front of a user.
-
-         An empty channel is well-formed and yields "you are up to date" —
-         Sparkle guards item selection with items.count > 0 and reads items via
-         nodesForXPath, which returns an empty array rather than nil. So the
-         real feed lives at the real URL today, and the app's Check for
-         Updates… tells the truth instead of erroring on a 404.
-
-         Even empty, this file must end with the operator's signature block:
-         the app requires a signed feed and verifies the bytes before it looks
-         for items (measured 2026-08-27). The generator preserves a valid block
-         across no-op regenerations; a content change means signing again. -->
-
+    <item>
+      <title>Version 1.5.1</title>
+      <pubDate>Thu, 27 Aug 2026 14:19:00 +0000</pubDate>
+      <sparkle:version>1404</sparkle:version>
+      <sparkle:shortVersionString>1.5.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[Flow 1.5.1 is the first update delivered through Flow's own updater. It records the result of each update check, so Settings can show you when Flow last looked for a new version and what it found. Nothing else changes.]]></description>
+      <enclosure url="https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.1/1404/Orionfold-Flow-1.5.1-1404.dmg"
+                 length="46317167"
+                 type="application/octet-stream"
+                 sparkle:edSignature="Te2Q6L2Cp60V6iJ2UMUgh7zSbEokZfvSR6yRlls0QfdZVpjN9HnlJt5Yf8wpms62pduRDuG+rcBPu0dQgKL3Dg==" />
+    </item>
   </channel>
 </rss>
 <!-- sparkle-signatures:
-edSignature: uArETcb2ebrQuEUh2HOKbOn3YHGMk78N5+BSz4EUOg+TVd8ASZ20ClWVlquZzgc3Qj7DmrlLH9yGqWzNGqDRCA==
-length: 1753
+edSignature: sKZnopH0Fsr1/mvExR68t25jhHCPbxntdXgEIBcuZMkebIoLVUBnoo8QlEUZ7HbBuOvj1nmX7HqNJK2CfZ7aDg==
+length: 1591
 -->

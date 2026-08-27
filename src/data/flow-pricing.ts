@@ -131,17 +131,21 @@ export const FLOW_LAPSE_FACTS: string[] = [
 ];
 
 // ── The download ──────────────────────────────────────────────────────────
-// PLACEHOLDER. There is no public Flow DMG yet: no release has shipped with a
-// moving CFBundleVersion, the appcast at /flow/appcast.xml is deliberately empty,
-// and the DMGs cannot live in this public repo (GitHub rejects >100MB), so they
-// need an operator-created public bucket.
+// The public, permanent HTTPS URL of the current notarized Flow DMG. This is
+// the SAME string as the newest entry's `url` in src/data/flow-releases.ts, and
+// the deploy boundary (scripts/check-flow-release-boundary.mjs) refuses a live
+// build where the two disagree. Update both together on every release.
 //
-// This constant exists so every Download CTA on the site reads from ONE place and
-// the whole launched layout can be rehearsed locally. It is deliberately obvious
-// rather than plausible, so it cannot be mistaken for a working link, and a test
-// asserts it still contains PLACEHOLDER — that guard is what must be replaced
-// before release, not merely the URL.
-export const FLOW_DMG_URL = "https://PLACEHOLDER.invalid/flow/Flow.dmg";
+// Every Download CTA on the site reads from this ONE constant. Until 2026-08-27
+// it was an obviously fake placeholder host so the launched layout could be
+// rehearsed locally without a working link; the first public package
+// (1.5.1, build 1404, ledger 2026-08-27 07:22 / 07:32 PDT) replaced it.
+//
+// The host is the vanity host in front of the public `flow-downloads` bucket,
+// never the project ref and never orionfold.com (this repo is public and GitHub
+// rejects files over 100 MB). The path is versioned and immutable, so a new
+// release is a new URL, never an overwrite.
+export const FLOW_DMG_URL = "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.1/1404/Orionfold-Flow-1.5.1-1404.dmg";
 
 /** True when the download URL is no longer the placeholder.
  *
