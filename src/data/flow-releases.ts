@@ -96,10 +96,17 @@ export const RELEASES: FlowRelease[] = [
     length: 46317167,
     edSignature: "Te2Q6L2Cp60V6iJ2UMUgh7zSbEokZfvSR6yRlls0QfdZVpjN9HnlJt5Yf8wpms62pduRDuG+rcBPu0dQgKL3Dg==",
     minimumSystemVersion: "26.0",
+    // Notes rewritten 2026-08-27 09:00 PDT on the product lane's 08:24 entry:
+    // the facts are (a) the update check's outcome is now recorded in the
+    // unified log (domain and code) so a failed check can be diagnosed, and
+    // (b) the version number. Settings shows WHAT the last check found (since
+    // 1382), not WHEN, so the old "when Flow last looked" sentence was false.
+    // Sparkle renders this CDATA block as HTML under its own version line.
     notes:
-      "Flow 1.5.1 is the first update delivered through Flow's own updater. " +
-      "It records the result of each update check, so Settings can show you when Flow last looked for a new version and what it found. " +
-      "Nothing else changes.",
+      "<p>This is the first Flow that reaches you through Flow itself. No download and nothing to drag into Applications. " +
+      "Press Install Update and Flow restarts as 1.5.1 with your documents, settings, and receipts exactly where they were.</p>" +
+      "<p>What is new: Flow now writes the outcome of every update check to the system log, so if a check ever fails there is a reason to read instead of a guess. " +
+      "This release also proves the road for the next ones. Every future update arrives the same way.</p>",
   },
 ];
 
