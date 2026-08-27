@@ -51,13 +51,14 @@ function collectRuntimeErrors(page: Page) {
   return errors;
 }
 
-for (const theme of ['light', 'dark'] as const) {
-  test(`proposal calculator and sticky summary work in ${theme} theme`, async ({ page }) => {
+// One appearance only: the theme runtime was retired (see
+// scripts/test/theme-default.test.mjs), so the calculator is exercised once.
+{
+  test('proposal calculator and sticky summary work', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
-    await page.addInitScript((value) => localStorage.setItem('of-theme', value), theme);
     await page.goto('/proposal/');
 
-    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
     const sticky = page.locator('#proposal-sticky-summary');
     await expect(sticky).toBeVisible();
     await expect(page.locator('#sticky-savings')).toHaveText('$0.00');
@@ -95,7 +96,6 @@ for (const theme of ['light', 'dark'] as const) {
 
 test('proposal sticky summary remains on-screen at mobile width', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.addInitScript(() => localStorage.setItem('of-theme', 'light'));
   await page.goto('/proposal/');
   await page.locator('[data-offer-card="proof-founding"]').click({ position: { x: 16, y: 16 } });
 

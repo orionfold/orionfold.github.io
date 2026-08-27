@@ -158,8 +158,9 @@ assert.doesNotMatch(visibleLaunchSource, /Flow Quick|global hotkey assistant/i, 
 // Curated visual proof is part of the claim ledger. Each representative asset
 // must remain a real committed bitmap rather than an empty path or tiny stub.
 for (const asset of [
+  'src/assets/flow/shots/first-launch-home-hero-welcome.webp',
+  'src/assets/flow/shots/first-launch-flow-hero-project.webp',
   'src/assets/flow/shots/guide-document-gallery-project-plan-both-panes.webp',
-  'src/assets/flow/shots/guide-visualization-gallery-radar-gantt-heatmap-waterfall.webp',
   'src/assets/flow/details/detail-result.webp',
   'src/assets/flow/details/detail-run-cost.webp',
   'src/assets/flow/details/detail-routing-rules.webp',

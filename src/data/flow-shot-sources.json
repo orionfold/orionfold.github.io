@@ -299,13 +299,63 @@
       }
     },
     {
+      "name": "first-launch-home-hero-welcome",
+      "source": "docs/first-launch/home-hero-welcome.png",
+      "md5": "55491620b33c92cffa9de9ec18796264",
+      "guide": "§3",
+      "claim": "What you land on: the Welcome document beside a finished trip plan, with the What Flow is using readout open and everything at $0.00.",
+      "surfaces": [
+        "/ hero"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Shot for the hero on the installed 1382 by the operator (ledger 2026-08-27 07:52); the popover is inside the window buffer, no mask needed.",
+      "changelogIssues": [],
+      "build": "32ad5f2 · 1382",
+      "output": {
+        "file": "src/assets/flow/shots/first-launch-home-hero-welcome.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "32ad5f2 · 1382",
+        "bytes": 480124,
+        "sha256": "26e374750ae323838f48747fc95a40bd6cfc9162500f0b4580c889d537ceba2b"
+      }
+    },
+    {
+      "name": "first-launch-flow-hero-project",
+      "source": "docs/first-launch/flow-hero-project.png",
+      "md5": "339355f094cb10a263c8ad2609653fe7",
+      "guide": "C7",
+      "claim": "One document, two places: the project plan's head on the left, its Phases flowchart, Schedule Gantt and owners table on the right.",
+      "surfaces": [
+        "/flow/ hero"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Shot for the hero on the installed 1382 by the operator (ledger 2026-08-27 07:52); a new subject, not a re-shoot of the 1255 C7 frame.",
+      "changelogIssues": [],
+      "build": "32ad5f2 · 1382",
+      "output": {
+        "file": "src/assets/flow/shots/first-launch-flow-hero-project.webp",
+        "width": 3238,
+        "height": 2032,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "32ad5f2 · 1382",
+        "bytes": 415354,
+        "sha256": "01ab3ecceac00e2a707472fc37cc75f2e923e0982902e8c7dd662174608adcc6"
+      }
+    },
+    {
       "name": "guide-document-gallery-project-plan-both-panes",
       "source": "docs/guide/document-gallery-project-plan-both-panes.png",
       "md5": "23d6646f3ed5db7c256556d9e725006a",
       "guide": "C7",
       "claim": "One document, two places: prose, a photo, the outcomes table, the phase flowchart, the schedule Gantt.",
       "surfaces": [
-        "/flow/ hero (candidate)"
+        "ChapterFiles (organizer)",
+        "detail-chart-flowchart",
+        "(was / hero until 2026-08-27; replaced by first-launch-home-hero-welcome)"
       ],
       "defectsInFrame": [
         "#286",
@@ -358,8 +408,8 @@
       "guide": "C4",
       "claim": "Charts from tables: radar, Gantt, calendar heatmap, waterfall.",
       "surfaces": [
-        "/ hero + OG card",
-        "(gallery anchor moved to first-launch-chart-landed-receipts)"
+        "/flow/ OG card (og-flow-shot-charts.png)",
+        "(was /flow/ hero until 2026-08-27; replaced by first-launch-flow-hero-project)"
       ],
       "defectsInFrame": [],
       "cropRule": "Captured with grey traffic lights; content is clean.",

@@ -153,7 +153,7 @@ assert.match(flow, /waitlistSource="flow-hero-waitlist"/, 'the hero carries its 
 // 2026-08-22, when the operator removed it entirely (see above). The hero shot
 // itself must still carry no caption.
 assert.doesNotMatch(readCopy('src/pages/flow.astro'), /Pre-launch · Freemium subscription planned · Every screen is the real build, running/, 'the pre-launch line no longer sits with the hero ask');
-assert.match(flow, /shot=\{shotFlowHero\}/, 'the /flow/ hero keeps its Flow Guide capture (the release-build Project Plan frame)');
+assert.match(flow, /shot=\{shotFlowHero\}/, 'the /flow/ hero keeps its release-build capture (the installed-1382 Project Plan frame)');
 assert.doesNotMatch(sharedHero, /caption=/, 'the shared hero shot carries no caption bar');
 assert.doesNotMatch(flow, /of-secondary-action">See the product tour/, 'no join-versus-tour fork on first paint');
 // ── Flow pricing: Base vs Pro truth boundaries ─────────────────────────────
@@ -564,7 +564,7 @@ assert.doesNotMatch(homeHero, /<FlowDetail/, 'the hero product proof carries no 
 // Flow is ~90% rendered document and ~10% chrome (operator, 2026-08-21). Both
 // front-door heroes must show the ARTIFACT; every hero shot before this date
 // showed a panel, a rail or a settings pane instead.
-assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?shot=\{shotFlowHero\}/, 'the /flow/ hero uses the Flow Guide document capture in the shared product frame');
+assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?shot=\{shotFlowHero\}/, 'the /flow/ hero uses the Project Plan document capture in the shared product frame');
 assert.match(sharedHero, /<FlowShot[\s\S]*?src=\{shot\}[\s\S]*?natural/, 'both front doors use the shared full-fit product treatment');
 for (const detailImport of ['detailDiff', 'detailChartLine', 'detailDomains', 'detailRunChecks']) {
   assert.match(home, new RegExp(`import ${detailImport} from '\\.\\./assets/flow/details/`), `${detailImport} must come from the generated crop set`);

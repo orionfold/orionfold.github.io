@@ -39,7 +39,7 @@ for (const asset of [
   'src/assets/flow/launch/flow-ideas-pit-stop-daylight-portrait.webp',
   'src/assets/flow/launch/flow-race-blueprint-daylight-wide.webp',
   'src/assets/flow/launch/flow-race-blueprint-daylight-portrait.webp',
-  'src/assets/flow/shots/guide-document-gallery-project-plan-both-panes.webp',
+  'src/assets/flow/shots/first-launch-home-hero-welcome.webp',
 ]) {
   assert.ok(existsSync(new URL(asset, root)), `${asset} exists`);
 }

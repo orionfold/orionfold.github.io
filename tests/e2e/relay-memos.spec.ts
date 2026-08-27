@@ -9,13 +9,14 @@ function collectRuntimeErrors(page: Page) {
   return errors;
 }
 
-for (const theme of ['light', 'dark'] as const) {
-  test(`diagram memo renders SVG instead of plaintext in ${theme} theme`, async ({ page }) => {
+// One appearance only: the theme runtime was retired (see
+// scripts/test/theme-default.test.mjs).
+{
+  test('diagram memo renders SVG instead of plaintext', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page);
-    await page.addInitScript((value) => localStorage.setItem('of-theme', value), theme);
     await page.goto('/relay/memos/why-relay-packs/');
 
-    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
     const diagram = page.locator('article .fn-diagram').first();
     await expect(diagram).toBeVisible();
     await expect(diagram.locator('svg')).toBeVisible();
