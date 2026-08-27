@@ -188,6 +188,13 @@ export default defineConfig({
     // /books/ai-native-platform/ is a different product and stays untouched.)
     // Astro emits a meta-refresh 301; mirror as a Cloudflare edge 301 at go-live.
     '/software/arena/': '/arena/',
+    // Flow launch email (2026-08-27): the email carries ONE short first-party
+    // link, https://orionfold.com/launch, so it reads clean in a plain-text
+    // client and needs no tracking domain. This redirect attaches the campaign
+    // UTMs on arrival, so GA4 counts every subscriber who landed from the email
+    // (medium=email lands in the Email channel group; the attribution lib keeps
+    // the values through checkout). Not in the sitemap; the target page is.
+    '/launch/': '/story/the-pit-crew-that-never-touches-the-wheel/?utm_source=launch-email&utm_medium=email&utm_campaign=flow-launch&utm_content=story',
     '/software/ai-native-platform/': '/relay/',
     // Arena Field Edition (2026-06-13): marketing campaign links use the short
     // vanity path /arena-field-edition/. It pointed at the retired detail page;
@@ -206,6 +213,7 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/og/') &&
         (RELAY_HOST_PORTABLE_LIVE || !page.endsWith(RELAY_HOST_PORTABLE_ROUTE)) &&
+        !page.endsWith('/launch/') &&
         !page.endsWith('/thanks/') &&
         !page.endsWith('/sponsor/thanks/') &&
         // /flow/welcome/ is the Flow Pro post-checkout page. Same reasoning as
