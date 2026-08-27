@@ -20,6 +20,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # A hung build must not hold the deploy lane for the default six hours.
+    timeout-minutes: 30
     env:
       # G-036: production Stripe, Supabase, Resend and private media are active
       # and passed the no-charge release rehearsal. Keep the public build's
@@ -43,8 +45,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Astro keeps its optimized-image cache under node_modules/.astro, which
+      # `npm ci` has just emptied. Restoring the newest cache turns the ~6 min
+      # image-heavy build into a mostly incremental one; a miss costs nothing.
+      - name: Restore the Astro image cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.astro
+          key: astro-image-cache-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            astro-image-cache-${{ runner.os }}-
+
       - name: Install Chromium for browser regressions
         run: npx playwright install --with-deps chromium
+
+      # Every step below is one entry of scripts/preflight.mjs, in preflight
+      # order. `npm run preflight` runs the identical chain locally and the
+      # pre-push hook refuses a push to main without proof that it passed on the
+      # pushed tree. scripts/test/preflight.test.mjs fails the moment this list
+      # and the script disagree, so the chain cannot drift apart again.
+      - name: Sweep the tree for local-only paths, key material, and mailboxes
+        run: node scripts/preflight.mjs sweep
 
       # Flow is rehearsed locally in its launched state before the product lane
       # declares release. A push must not turn that rehearsal into a public
@@ -54,19 +75,30 @@ jobs:
       - name: Verify Flow release boundary
         env:
           FLOW_RELEASE_DECLARED: ${{ vars.FLOW_RELEASE_DECLARED }}
-        run: node scripts/check-flow-release-boundary.mjs
+        run: node scripts/preflight.mjs boundary
 
       - name: Test server and commerce contracts
-        run: npm run test:deno
+        run: node scripts/preflight.mjs deno
 
       - name: Build site
-        run: npm run build
+        run: node scripts/preflight.mjs build
 
       - name: Test source and rendered-output contracts
-        run: npm run test:node
+        run: node scripts/preflight.mjs node
 
       - name: Test critical browser journeys
-        run: npm run test:e2e
+        run: node scripts/preflight.mjs e2e
+
+      # Failed browser journeys leave traces and screenshots; ship them with the
+      # run so a red deploy can be read without a rerun.
+      - name: Upload browser traces and screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-output
+          path: output/playwright/
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5

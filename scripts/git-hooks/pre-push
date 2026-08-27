@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# orionfold-website pre-push gate (installed by `npm run hooks:install`).
+#
+# A push to main deploys the public site, so it must carry proof that the
+# whole deploy chain passed on the exact tree being pushed. The proof rules
+# live in scripts/preflight.mjs (--gate): a fresh green stamp for the tree, a
+# green GitHub Pages deploy of that commit (rollbacks), or an inline run of the
+# full chain when the pushed commit is the clean working tree. Every push also
+# sweeps the pushed tree and history for local-only paths and key material.
+#
+# There is no bypass flag on purpose. `git push --no-verify` skips every hook;
+# in this repository that is an operator-only act, never an agent's.
+set -euo pipefail
+
+remote_name="$1"
+zero="0000000000000000000000000000000000000000"
+status=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "${remote_ref:-}" = "refs/heads/main" ] || continue
+  [ "$local_sha" != "$zero" ] || continue
+  echo "[pre-push] gating ${local_sha:0:7} -> ${remote_name}/main"
+  if ! node scripts/preflight.mjs --gate "$local_sha" "$remote_sha"; then
+    status=1
+  fi
+done
+
+if [ "$status" -ne 0 ]; then
+  echo "[pre-push] push to main refused; see the preflight output above." >&2
+fi
+exit "$status"

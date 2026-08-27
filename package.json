@@ -9,18 +9,21 @@
     "build:appcast": "node scripts/build-flow-appcast.mjs",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "npm run test:deno && npm run test:regression",
-    "test:node": "node --test scripts/test/*.test.mjs",
+    "test": "node scripts/preflight.mjs",
+    "test:node": "node --test --test-reporter=spec scripts/test/*.test.mjs",
     "test:deno": "deno test -A supabase/functions",
     "test:e2e": "playwright test",
-    "test:regression": "npm run build && npm run test:node && npm run test:e2e",
+    "test:regression": "node scripts/preflight.mjs",
     "export:catalog": "node --experimental-strip-types scripts/export-catalog.ts",
     "export:content": "node --experimental-strip-types scripts/export-content.ts",
     "lhci": "npx --yes @lhci/cli@0.15.1 collect && npx --yes @lhci/cli@0.15.1 upload && npx --yes @lhci/cli@0.15.1 assert",
     "prepare:relay-demo": "node scripts/prepare-relay-demo.mjs",
     "sync:relay-content": "node scripts/sync-relay-content.mjs",
     "sync:relay-demo": "node scripts/sync-relay-demo.mjs && node scripts/prepare-relay-demo.mjs",
-    "sync:relay-shots": "node scripts/sync-relay-shots.mjs"
+    "sync:relay-shots": "node scripts/sync-relay-shots.mjs",
+    "preflight": "node scripts/preflight.mjs",
+    "hooks:install": "node scripts/install-git-hooks.mjs",
+    "prepare": "node scripts/install-git-hooks.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3",
@@ -34,5 +37,8 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
