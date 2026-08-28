@@ -327,7 +327,18 @@ export const receiptOgSlug = (id: string) => `receipt-${id}`;
 export const productOgSlug = (type: string, slug: string) => `${type}-${slug}`;
 
 /** Image path + alt for a static route, used by page templates. */
+// Social networks cache the card by its image URL, and LinkedIn keeps the old
+// image even after it re-reads the page (seen 2026-08-28 after the hero
+// retitle). Versioning the URL from the card's own content gives every
+// scraper a new URL the moment the card changes, with nothing to bust by hand.
+const ogVersion = (p: OgPage): string => {
+  const src = [p.eyebrow, p.title, p.alt, p.screenshot ?? '', p.background ?? '', p.seed].join('\u0000');
+  let h = 5381;
+  for (let i = 0; i < src.length; i += 1) h = (Math.imul(h, 33) ^ src.charCodeAt(i)) >>> 0;
+  return h.toString(16).padStart(8, '0');
+};
+
 export function ogMeta(route: string): { image: string; alt: string } {
   const p = OG_PAGES[route];
-  return { image: ogPath(p.slug), alt: p.alt };
+  return { image: `${ogPath(p.slug)}?v=${ogVersion(p)}`, alt: p.alt };
 }

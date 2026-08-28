@@ -71,6 +71,10 @@ assert.match(homeOg, /alt: '[^']*What Flow is using readout[^']*trip plan/, 'hom
 // OG shot cards: the framed screenshot starts at left 660, the title block at
 // padLeft 80. Title width must stay <= 580 or a full line runs under the pane
 // (the 2026-08-28 four-line home headline exposed this at 600).
+// The static card URL is versioned from the card's content so LinkedIn, X,
+// and other scrapers pick up a retitled card without a manual cache bust.
+assert.match(og, /image: `\$\{ogPath\(p\.slug\)\}\?v=\$\{ogVersion\(p\)\}`/, 'ogMeta versions the card URL from its content');
+assert.match(read('src/layouts/Layout.astro'), /\/\\\.jpe\?g\(\\\?\|\$\)\/i\.test\(ogImage\)/, 'og:image:type ignores the version query');
 const card = read('src/lib/og/card.ts');
 assert.match(card, /hasShot \? 560 : 900/, 'OG shot-card title width stays clear of the screenshot pane');
 
