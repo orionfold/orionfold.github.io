@@ -14,10 +14,25 @@
 // brand if it is ever seen. `replace` keeps /launch out of the back-button
 // history. No Layout: this page must load nothing but the redirect (the story
 // page records the session with the UTMs).
-import { LAUNCH_LINK_TARGET } from '../data/launch-link';
+//
+// Share cards (2026-08-27, launch-day audit): link scrapers (LinkedIn, X,
+// Slack, iMessage) never run the redirect, so they read THIS document. Without
+// the tags below a forwarded /launch link rendered as a bare "Orionfold Flow"
+// with no image or summary. The values come from the story entry itself so a
+// share of /launch and a share of the story look identical, and a retitled
+// story can never leave a stale card here.
+import { getEntry } from 'astro:content';
+import { LAUNCH_LINK_STORY, LAUNCH_LINK_TARGET } from '../data/launch-link';
+import { ogPath, storyOgSlug } from '../data/og';
 
 const target = LAUNCH_LINK_TARGET;
 const canonical = new URL(target.split('?')[0], Astro.site).href;
+const storyId = LAUNCH_LINK_STORY.split('/').filter(Boolean).pop() ?? '';
+const story = await getEntry('story', storyId);
+if (!story) throw new Error(`/launch: story "${storyId}" is not in the story collection`);
+const shareTitle = `${story.data.title} · Orionfold`;
+const shareDescription = story.data.summary;
+const shareImage = new URL(ogPath(storyOgSlug(story.id)), Astro.site).href;
 ---
 
 <!doctype html>
@@ -32,6 +47,22 @@ const canonical = new URL(target.split('?')[0], Astro.site).href;
     <meta name="robots" content="noindex, nofollow" />
     <link rel="canonical" href={canonical} />
     <title>Orionfold Flow</title>
+    <meta name="description" content={shareDescription} />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Orionfold" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={shareTitle} />
+    <meta property="og:description" content={shareDescription} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:alt" content={`${story.data.title} · Orionfold story`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@manavsehgal" />
+    <meta name="twitter:title" content={shareTitle} />
+    <meta name="twitter:description" content={shareDescription} />
+    <meta name="twitter:image" content={shareImage} />
     <style>
       html { background: #f6f8f9; color: #1e293b; }
       body {

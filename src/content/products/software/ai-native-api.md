@@ -8,8 +8,8 @@
 # SSOT card was corrected to match. Copy is grade 3-5, no em-dashes, jargon glossed.
 type: software
 slug: ai-native-api
-seoTitle: 'AI Native API: run your private AI platform from code · Orionfold'
-valueProp: Run your private AI platform from your own code. Your apps can start tasks, read the results, and automate the whole loop through plain web calls.
+seoTitle: 'AI Native API docs: AI-native orchestration platform with 120+ REST calls · Orionfold'
+valueProp: Documentation for the AI Native API, 120+ REST calls across 26 areas. Run an AI-native orchestration platform (the layer that runs and coordinates your private AI agents) from your own code. Start tasks, read results, and automate the loop on your machine.
 
 chips:
   - label: Style

@@ -9,8 +9,8 @@
 # jargon glossed; the conversion point is the inline Sponsor tiers.
 type: model
 slug: saul-7b-instruct
-seoTitle: 'Saul 7B Instruct GGUF: free offline legal AI model · Orionfold'
-valueProp: Free legal AI model in GGUF. It reads contracts, filings, and case files fully offline on one desktop, so client matters never leave the room. MIT license.
+seoTitle: 'Saul-7B-Instruct-v1 GGUF model card: free offline legal LLM · Orionfold'
+valueProp: Equall's Saul 7B legal model, packed as GGUF so it runs fully offline with llama.cpp. It reads contracts, filings, and case files on one desktop, so client matters never leave the room. Free, MIT license.
 
 chips:
   - label: Field

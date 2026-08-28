@@ -31,6 +31,16 @@ test('the launch page redirects before first paint, falls back without JavaScrip
   assert.match(config, /!page\.endsWith\('\/launch\/'\)/, 'the page stays out of the sitemap');
 });
 
+test('the launch page carries share-card metadata read from the story itself', () => {
+  // Link scrapers never follow the redirect (launch-day audit, 2026-08-27):
+  // a forwarded /launch link must unfurl exactly like the story it lands on.
+  const page = read('src/pages/launch.astro');
+  assert.match(page, /getEntry\('story', storyId\)/, 'title, summary and image come from the story entry, never a copied literal');
+  for (const tag of ['og:title', 'og:description', 'og:image', 'twitter:card', 'twitter:image']) {
+    assert.match(page, new RegExp(`(?:property|name)="${escape(tag)}"`), `/launch must carry ${tag}`);
+  }
+});
+
 test('the built page carries the replace, the refresh, the clean canonical, and no sitemap entry', () => {
   const page = 'dist/launch/index.html';
   if (!existsSync(new URL(`../../${page}`, import.meta.url))) {
@@ -45,6 +55,11 @@ test('the built page carries the replace, the refresh, the clean canonical, and 
   assert.match(html, new RegExp(`rel="canonical" href="https://orionfold\\.com${escape(STORY)}"`), 'canonical is the story without UTMs');
   assert.match(html, /name="robots" content="noindex, nofollow"/);
   assert.doesNotMatch(html, /Redirecting to/, 'the Astro redirect stub is gone');
+  const storyId = STORY.split('/').filter(Boolean).pop();
+  const storyTitle = read(`src/content/story/${storyId}.md`).match(/^title: (.+)$/m)[1].trim();
+  assert.match(html, new RegExp(`property="og:title" content="${escape(storyTitle)} · Orionfold"`), 'the share title is the story title');
+  assert.match(html, new RegExp(`property="og:image" content="https://orionfold\\.com/og/story-${escape(storyId)}\\.jpg"`), 'the share image is the story OG card');
+  assert.match(html, /name="twitter:card" content="summary_large_image"/);
   const sitemap = read('dist/sitemap-0.xml');
   assert.doesNotMatch(sitemap, /\/launch\//);
 });

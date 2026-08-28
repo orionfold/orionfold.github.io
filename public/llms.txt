@@ -4,8 +4,10 @@
 > with patent-pending AI agency built in. In Flow the work happens in the
 > file, not a chat window: every AI change arrives as an exact diff you
 > approve, and every run leaves a receipt naming what ran, where it ran, and
-> what it cost. Flow is released for Mac, free to read and write in, with
-> its AI available as a paid subscription. Relay runs
+> what it cost. Flow is released for Mac (version 1.5, August 2026), free to
+> read and write in. Its AI, Flow Pro, is a paid subscription at $10 a month or
+> $96 a year, with 10 Pro Days included so anyone can try it with no credit
+> card. Relay runs
 > repeatable agent work with per-client cost receipts. Arena shows which
 > local AI wins. Relay, Arena, the models, books, and receipts are built on
 > working code. Orionfold is a member of NVIDIA Inception.
@@ -13,12 +15,22 @@
 ## Flow (flagship, released for Mac)
 - [Flow](https://orionfold.com/flow/): The full product page: real screenshots of the shipping app, measured numbers with dates (search p95 of 22.3 ms on a 10,000-note library; long-document planning linear through 620,000 characters; a billed run recorded at $0.00425; a complete two-engine local AI runtime inside the app for about 19 MiB; 34 chart types and 20 diagram types drawn in place from plain text; 140 user-visible changes shipped in the 24 days to 2026-08-21), the product tour, pricing, FAQ, and the download.
 - [Flow product tour](https://orionfold.com/flow/#tour): Fifteen chapters in four parts, each part on its own page with a shared category navigation. Every screen is a real capture of the shipping app.
+- [Flow product tour, every chapter on one page](https://orionfold.com/flow/tour/): Tour Orionfold Flow through real product screens: writing with AI, ordinary documents and files, model routing, and receipts with evidence.
+- [Flow technical specifications](https://orionfold.com/flow/specifications/): System requirements, document formats, approval-led Agency, model routes, proof, privacy boundaries, plans (Base free forever, Pro at $10 a month or $96 a year), and qualified measurements for Orionfold Flow on Mac.
 - [Flow: Writing with AI](https://orionfold.com/flow/writing-with-ai/): Approval-gated AI editing (six actions, one trust path), Expand with Sources (a model uses Flow's lookups to read the document and search your open folders, every lookup narrated live, bounded to 12 lookups, the write arriving as an approved diff with a receipt), an in-document tool strip that states scope, cost, and route before you click, and long documents improved part by part.
 - [Flow: Receipts and evidence](https://orionfold.com/flow/receipts/): Run receipts that read as one card (named checks with severity pills, an answer-first evidence score, the exact billed cost, the model binding, a timeline), an evidence gallery, and benchmarks that measure local models on your own Mac.
 - [Flow: Models and runtime](https://orionfold.com/flow/models-and-runtime/): Four execution domains (Local, LAN, Cloud prepaid, Cloud postpaid), a complete local AI runtime inside the app (about 19 MiB), and Smart Routing where your rules pick the model and the screen names the rule that did.
 - [Flow: Documents and files](https://orionfold.com/flow/documents-and-files/): On-device search whose results are citations re-checked byte for byte, a table editor, 34 chart types and 20 diagram types drawn offline from plain text in the file (Visualize proposes one after a selected table, list, or paragraph, reviewed like any edit; a chart gallery editor picks a type by the question it answers), plain folders of plain Markdown that any app can read, and a resource popover that shows what the app is using.
 - [Flow for enterprise AI owners](https://orionfold.com/flow/enterprise/): All nine adoption patterns, each tagged Today (shipped in the app) or Direction. How document-native evidence, approvals, and receipts answer enterprise questions about allocation, data classification, attribution, guardrails, evidence, routing, curation, system of record, and capturing expert judgment with consent.
 - [Flow press kit](https://orionfold.com/flow/#press): Quotable facts for journalists and analysts: status, patent-pending statement, measured numbers with dates, and the press contact.
+
+## Flow launch stories (first-person, 2026-08-22 to 2026-08-27)
+- [The Pit Crew That Never Touches the Wheel](https://orionfold.com/story/the-pit-crew-that-never-touches-the-wheel/): The launch story. One founder wanted an AI writing tool that cannot touch a document without permission; here is the race car built around that rule, and why every part of Flow starts from the driver's seat.
+- [The Edit I Never Approved](https://orionfold.com/story/the-day-i-stopped-trusting-invisible-edits/): A proofreader quietly changed code inside a note. That silent edit became Flow's first rule: AI may propose a change, but only you can save it.
+- [The Fan Was the Only Status Light](https://orionfold.com/story/where-your-ai-actually-runs/): A proofread ran a Mac hard for twelve minutes, but the app could not say which model was working or where the document had gone. Why Flow names the model, the route, and the cost on screen.
+- [The Faster Model Was the Bigger One](https://orionfold.com/story/the-fastest-model-on-your-mac/): Weeks on a small local model because it looked faster. One measurement on the same Mac proved the larger model was quicker. Why Flow benchmarks models where you run them.
+- [The Search Result That Moved](https://orionfold.com/story/a-search-result-is-a-citation/): The right search result landed on the wrong paragraph because the file had changed. Why Flow's search results are citations re-checked byte for byte.
+- [The Chart That Stayed Wrong](https://orionfold.com/story/charts-that-come-from-the-words/): A pasted chart stayed wrong for six weeks because it still looked finished. Why Flow draws charts from the words in the file, so they change when the numbers do.
 
 ## Buy
 - [Arena Field Edition](https://orionfold.com/arena/): The paid edition of the free Orionfold Arena. One installer turns an NVIDIA DGX Spark into a private AI lab with an AI research teammate (agents, domain models, and tests). It proves itself on first boot with a verifiable receipt and stays proven for a year, every update re-gated and re-receipted. The software stays free and open; what you buy is the assembled, proven team delivered turnkey. $349 founding for the first 25 licenses, then $499 one time with a 12-month kept-proven window; $149/yr renewal after year one.
