@@ -11,7 +11,7 @@ export const SITE = {
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:
-    'Orionfold Flow, patent pending: conduct beautiful documents with AI agency built in. A real capture of the Mac app showing a finished document with charts and tables drawn in place from plain Markdown.',
+    'Orionfold Flow, patent pending: Flow brings AI to documents and you keep the wheel. A real capture of the Mac app showing a finished document with charts and tables drawn in place from plain Markdown.',
   // Single light theme: address-bar tint matches the manifest background.
   themeColor: '#f6f9fc',
   license: 'Apache-2.0',

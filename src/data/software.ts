@@ -42,7 +42,7 @@ export interface SoftwareProduct extends RoadmapMeta {
 
 // Group headings + blurbs for the page sections (order = display order).
 export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }[] = [
-  { id: 'flagship', label: 'Flagship', blurb: 'Flow leads the line: conduct intelligent documents with AI agency, run repeatable agent work in Relay, and find which local AI wins in Arena.' },
+  { id: 'flagship', label: 'Flagship', blurb: 'Flow leads the line: bring AI to your documents and keep the wheel, run repeatable agent work in Relay, and find which local AI wins in Arena.' },
   { id: 'platform', label: 'The platform', blurb: 'The Arena stack and the core: a governed advisor over your documents, the memory it answers from, and the API to drive it all with code.' },
   { id: 'devtools', label: 'Developer tools', blurb: 'For builders: rerunnable proof, testing, terminals, and reusable patterns.' },
   { id: 'apps', label: 'Personal AI apps', blurb: 'Ready-to-use apps that keep your data on your machine.' },
