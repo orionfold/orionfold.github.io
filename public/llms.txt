@@ -37,7 +37,7 @@
 - [Relay](https://orionfold.com/relay/): A licensed product that runs your AI agents for real client work, all on your own machine. It shows what each client costs you, and none of your data leaves your computer. $349 founding for the first 25 licenses, then $499 one time; $149/yr renewal after year one.
 
 ## Flagship paths
-- [Flow](https://orionfold.com/flow/): Orionfold's lead flagship. Conduct beautiful documents with AI agency built in: every AI change is a diff you approve, with evidence, checks, and a receipt. Native Mac, patent pending, released as a closed-source app: reading, writing, searching and exporting your documents are free forever, and Flow's AI is a paid subscription.
+- [Flow](https://orionfold.com/flow/): Orionfold's lead flagship. Flow brings AI to documents. You keep the wheel: every AI change is a diff you approve, with evidence, checks, and a receipt. Native Mac, patent pending, released as a closed-source app: reading, writing, searching and exporting your documents are free forever, and Flow's AI is a paid subscription.
 - [Relay](https://orionfold.com/relay/): The operations layer for repeatable agent work. Run agents and client workflows from one place, keep approval in the loop, and see cost per client.
 - [Arena](https://orionfold.com/arena/): Orionfold Arena is the cockpit for local AI: run, compare, score, and train models on your own desktop. Arena Field Edition delivers the whole stack on an NVIDIA DGX Spark as a turnkey, proven lab; Cortex memory and the fieldkit toolkit are the stack around it.
 - [Workflows](https://orionfold.com/workflows/): Private Agent Starter Kits. One local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail.

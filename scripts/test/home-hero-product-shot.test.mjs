@@ -63,7 +63,7 @@ assert.match(ticker, /\[0, 1\]\.map/, 'ticker renders two identical halves');
 assert.match(ticker, /translateX\(-50%\)/, 'ticker loop lands on its identical second half');
 assert.match(ticker, /prefers-reduced-motion:\s*reduce[\s\S]*animation-play-state:\s*paused/, 'ticker pauses for reduced motion');
 
-assert.match(seo, /tagline: 'Conduct beautiful documents with AI agency built in'/);
+assert.match(seo, /tagline: 'Flow brings AI to documents\. You keep the wheel\.'/, 'the site tagline matches the home hero H1');
 assert.match(seo, /slogan: SITE\.tagline/);
 const homeOg = og.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
 assert.match(homeOg, /title: 'Flow brings AI to documents\. You keep the wheel\.'/);
