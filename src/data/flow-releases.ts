@@ -136,6 +136,38 @@ export const RELEASES: FlowRelease[] = [
       "The plan pill now shows your plan and nothing else.</p>" +
       "<p>Press Install Update and Flow restarts as 1.5.2 with your documents, settings, and receipts exactly where they were.</p>",
   },
+  {
+    // 1.5.3 (1446): the upgrade payload for installed 1.5.2 copies. Every value
+    // below is from the product lane's ledger entry of 2026-08-28 04:40 PDT,
+    // verified there by `release-dmg.sh verify`, `sign_update --verify`, and a
+    // full anonymous download of the URL
+    // (sha256 95cc71106d5cda19b787909d09b8d48f86204de41e93220d64f656ae988cd1ea).
+    // Website re-check 2026-08-28 04:4x PDT: `curl -I` on the URL returns 200,
+    // `content-type: application/x-apple-diskimage`, `content-length: 46442107`.
+    build: 1446,
+    shortVersion: "1.5.3",
+    published: "2026-08-28T04:35:36-07:00",
+    url: "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.3/1446/Orionfold-Flow-1.5.3-1446.dmg",
+    length: 46442107,
+    edSignature: "GSochnIz4NHY6vvQJoO9uAc6hWzkS/sQf7Cgm9tZBLmgvk6424JNYdgm+W7RiD/9AGqJ+KGvkA3nLfNjoKyOCA==",
+    minimumSystemVersion: "26.0",
+    // Against 1.5.2, product goal 0183 "the first week is honest": 32 commits,
+    // all about what a stranger meets in their first sessions (product lane
+    // verified `git log 340c756..0b1fea2`). The facts are the product lane's;
+    // the wording is the website's. Sparkle renders this CDATA block as HTML
+    // under its own version line.
+    notes:
+      "<p>What is new: this release cleans up the small things you meet in your first week with Flow.</p>" +
+      "<p>Reviews are honest about size. When a model's reply matches your text except for spacing, Flow says no changes needed instead of opening an empty review. " +
+      "Proofread, summarize, translate and expand now end with how many words changed out of how many.</p>" +
+      "<p>Receipts read plainly. A run on your Mac says it was free and shows $0.00. The provider is named as Flow Runtime, Ollama or LM Studio. " +
+      "Chart, summary, translation and table runs read Evidence, not scored. A string of autosaves folds into one Document saved N times row. " +
+      "After Approve and Save, the Receipts tab lands on that run.</p>" +
+      "<p>Smaller fixes: a highlight from search, a review or Ideas clears on your next click or Escape. The first heading no longer shows a raw # when a document opens. " +
+      "The notice about local models that need a Flow Runtime version stays closed once you close it. Insert Image and Insert Chart grey out when there is no document to insert into. " +
+      "The chart hover bubble leaves when your pointer does. Issue or Feature Request in Help opens a new issue with your Flow version filled in.</p>" +
+      "<p>Press Install Update and Flow restarts as 1.5.3 with your documents, settings, and receipts exactly where they were.</p>",
+  },
 ];
 
 /**

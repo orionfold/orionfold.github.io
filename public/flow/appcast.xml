@@ -11,6 +11,18 @@
     <atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="https://orionfold.com/flow/appcast.xml" rel="self" type="application/rss+xml" />
 
     <item>
+      <title>Version 1.5.3</title>
+      <pubDate>Fri, 28 Aug 2026 11:35:36 +0000</pubDate>
+      <sparkle:version>1446</sparkle:version>
+      <sparkle:shortVersionString>1.5.3</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>What is new: this release cleans up the small things you meet in your first week with Flow.</p><p>Reviews are honest about size. When a model's reply matches your text except for spacing, Flow says no changes needed instead of opening an empty review. Proofread, summarize, translate and expand now end with how many words changed out of how many.</p><p>Receipts read plainly. A run on your Mac says it was free and shows $0.00. The provider is named as Flow Runtime, Ollama or LM Studio. Chart, summary, translation and table runs read Evidence, not scored. A string of autosaves folds into one Document saved N times row. After Approve and Save, the Receipts tab lands on that run.</p><p>Smaller fixes: a highlight from search, a review or Ideas clears on your next click or Escape. The first heading no longer shows a raw # when a document opens. The notice about local models that need a Flow Runtime version stays closed once you close it. Insert Image and Insert Chart grey out when there is no document to insert into. The chart hover bubble leaves when your pointer does. Issue or Feature Request in Help opens a new issue with your Flow version filled in.</p><p>Press Install Update and Flow restarts as 1.5.3 with your documents, settings, and receipts exactly where they were.</p>]]></description>
+      <enclosure url="https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.3/1446/Orionfold-Flow-1.5.3-1446.dmg"
+                 length="46442107"
+                 type="application/octet-stream"
+                 sparkle:edSignature="GSochnIz4NHY6vvQJoO9uAc6hWzkS/sQf7Cgm9tZBLmgvk6424JNYdgm+W7RiD/9AGqJ+KGvkA3nLfNjoKyOCA==" />
+    </item>
+    <item>
       <title>Version 1.5.2</title>
       <pubDate>Thu, 27 Aug 2026 16:57:40 +0000</pubDate>
       <sparkle:version>1414</sparkle:version>
@@ -37,6 +49,6 @@
   </channel>
 </rss>
 <!-- sparkle-signatures:
-edSignature: FO/y7LnKPm53TIHmVa+yla5c8IlkOIOV+1mF8F3gnmK4HzQ4BMK8ffjTSpL0TPORkmSb7ocxEQz6n5ySG93xCg==
-length: 2987
+edSignature: HLqnhvSy6eppFCIpbu0gEqAYEpGdybNpIiTLDbcphm22PYlkkvcbrSFfbsNxI48MPclcb/vpa6hkT1zMRnEoBA==
+length: 4978
 -->
