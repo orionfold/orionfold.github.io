@@ -18,8 +18,8 @@ const meta = (html, key, value) => html.match(new RegExp(`<meta\\s+${key}="${esc
 const link = (html, rel) => html.match(new RegExp(`<link\\s+rel="${esc(rel)}"\\s+href="([^"]*)"`, 'i'))?.[1] ?? '';
 
 const routes = [
-  ['/', 'Orionfold Flow for Mac · You drive the work. Flow tunes AI to your needs.', 'You drive the work. Flow tunes AI to your needs.'],
-  ['/flow/', 'Orionfold Flow for Mac · Conduct useful work', 'Conduct useful work. Flow refines. You approve.'],
+  ['/', 'Orionfold Flow for Mac · Flow brings AI to documents. You keep the wheel.', 'Flow brings AI to documents. You keep the wheel.'],
+  ['/flow/', 'Orionfold Flow for Mac · AI proposes each change. You approve it.', 'AI proposes each change. You approve it.'],
   ['/flow/tour/', 'Orionfold Flow product tour · See Flow at work', 'See Flow at work.'],
   ['/flow/writing-with-ai/', 'Flow · Writing with AI you approve · Orionfold', 'Write with AI. Keep the final word.'],
   ['/flow/documents-and-files/', 'Flow · Documents and files that stay yours · Orionfold', 'Do more with your files. Keep them yours.'],

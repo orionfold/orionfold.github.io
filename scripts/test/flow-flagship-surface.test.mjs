@@ -92,8 +92,11 @@ assert.match(categoryShell, /<FlowSubNav active="tour" \/>/, 'the Flow category 
 // homepage so layout, type, product sizing and ticker cannot drift, while the
 // racing key art remains exclusive to the homepage and /flow/ restores its
 // original blueprint-grid background.
-assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?titleLead="Conduct useful work\."[\s\S]*?titleEmphasis="Flow refines\. You approve\."/, 'the /flow/ H1 carries the approved conducting promise');
-assert.doesNotMatch(flow, /founderQuote=|founderIntro=/, 'the /flow/ hero inherits the shared founder quote and byline');
+assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?titleLead="AI proposes each change\."[\s\S]*?titleEmphasis="You approve it\."/, 'the /flow/ H1 carries the approved proposal-and-approval promise, the mechanism behind the homepage wheel');
+// 2026-08-28: /flow/ carries its own founder quote and byline, sourced from
+// /about/, so the two front doors do not repeat one line.
+assert.match(flow, /founderQuote="One person with AI helpers can now do what used to take a whole team\. Flow is how I keep that work in documents I own"/, 'the /flow/ founder quote comes from the /about/ belief');
+assert.match(flow, /founderIntro="Manav Sehgal, founder of Orionfold\. 25 years building AI, from Xerox to Amazon\."/, 'the /flow/ byline carries the /about/ career line');
 assert.match(flow, /heroBackground="blueprint"/, 'the /flow/ hero restores the prior blueprint-grid background');
 assert.match(sharedHero, /heroBackground = 'racing'/, 'the reusable shell keeps racing artwork on by default for Home');
 assert.match(sharedHero, /flow-launch-hero__blueprint-grid[\s\S]*<FlowCapabilityTicker\s*\/>/, 'the reusable shell offers the Flow blueprint grid and always keeps the capability ticker');
@@ -112,7 +115,7 @@ assert.match(flow, /diff you approve/i, '/flow/ still states the approval promis
 // The founder line is one-of-one evidence and quotes a real published
 // sentence; it must keep its source link rather than becoming loose copy.
 assert.match(sharedHero, /\.flow-launch-hero h1\s*\{[\s\S]*font:\s*850 clamp\(3\.15rem, 7\.5vw, 7rem\)/, 'the /flow/ title inherits the homepage hero scale');
-assert.match(flow, /const FLOW_TITLE = 'Orionfold Flow for Mac · Conduct useful work'/, 'the title tag carries the approved benefit promise');
+assert.match(flow, /const FLOW_TITLE = 'Orionfold Flow for Mac · AI proposes each change\. You approve it\.'/, 'the title tag carries the approved benefit promise');
 assert.match(flow, /const FLOW_DESCRIPTION = 'Flow is a native Mac app for documents you own\. AI proposes exact changes, you approve them, and every run leaves an inspectable receipt\.'/,
   'the description answers what Flow is, how it works, and why the record matters');
 assert.match(flow, /title=\{FLOW_TITLE\}/);
@@ -529,10 +532,10 @@ const homeRaceAct = read('src/components/flow/HomeRaceCapabilityAct.astro');
 // changing the approved headline and founder quote. /flow/ still carries the
 // longer offline/control argument asserted above.
 assert.doesNotMatch(home, /Every other AI tool sends your document to a cloud/, 'the homepage hero drops the lede paragraph; the headline carries the wedge');
-assert.match(homeHero, /You drive the work\.[\s\S]*?Flow tunes AI to your needs\./, 'the homepage H1 carries the approved racing promise');
+assert.match(homeHero, /Flow brings AI to documents\.[\s\S]*?You keep the wheel\./, 'the homepage H1 carries the approved racing promise');
 assert.match(home, /Nothing changes until you say so\./, 'the approval promise survives as the homepage lead act');
-assert.match(homeHero, /I stay in the driver’s seat\. Flow tunes AI to the work in front of me[\s\S]*?Manav Sehgal, built Flow after nine years at Amazon\./, 'the shared hero carries the approved founder line and byline');
-assert.match(home, /const HOME_TITLE = 'Orionfold Flow for Mac · You drive the work\. Flow tunes AI to your needs\.'/);
+assert.match(homeHero, /Flow proofreads my drafts, draws charts from plain text, and runs free on my Mac\. Every run leaves a record I can check[\s\S]*?Manav Sehgal, built Flow after nine years at Amazon\./, 'the shared hero carries the approved founder line and byline');
+assert.match(home, /const HOME_TITLE = 'Orionfold Flow for Mac · Flow brings AI to documents\. You keep the wheel\.'/);
 assert.match(home, /const HOME_DESCRIPTION = 'Orionfold Flow brings the right AI to documents you own, proposes exact changes, and waits for your approval\. Every run leaves an inspectable receipt\.'/);
 assert.match(home, /title=\{HOME_TITLE\}/);
 assert.match(home, /description=\{HOME_DESCRIPTION\}/);
@@ -592,7 +595,7 @@ assert.doesNotMatch(home, /Most (AI )?tools|The origin story|Limitless, without 
 // The 2026-08-24 operator-approved racing headline connects user control to
 // Flow's tuning role. Guard both halves so the metaphor cannot lose either the
 // driver's agency or the product's concrete job.
-assert.match(homeHero, /You drive the work\.[\s\S]*Flow tunes AI to your needs\./, 'the hero headline names driver agency and Flow tuning');
+assert.match(homeHero, /Flow brings AI to documents\.[\s\S]*You keep the wheel\./, 'the hero headline names the document and driver agency');
 // TWO-COLUMN HERO (2026-08-21, modelled on ainative.business): copy left,
 // artifact right, so the picture sits BESIDE the promise instead of a scroll
 // below it. Guard the grid and the shot wrapper -- reverting to a stacked
@@ -615,7 +618,7 @@ assert.match(sharedHero, /class="flow-launch-hero__product home-hero__shot"/, '/
 assert.match(sharedHero, /grid-template-columns: minmax\(0, 0\.92fr\) minmax\(30rem, 1\.08fr\)/, '/flow/ inherits the homepage two-column grid');
 // The shared founder line now keeps the driver metaphor tied directly to the
 // work in front of the reader and uses one compact byline on both front doors.
-assert.match(homeHero, /I stay in the driver’s seat\. Flow tunes AI to the work in front of me[\s\S]*Manav Sehgal, built Flow after nine years at Amazon\./, 'the founder quote and byline stay shared across both front doors');
+assert.match(homeHero, /Flow proofreads my drafts, draws charts from plain text, and runs free on my Mac\. Every run leaves a record I can check[\s\S]*Manav Sehgal, built Flow after nine years at Amazon\./, 'the founder quote and byline stay shared across both front doors');
 // TRUTH RAILS for the two new bands, from the Flow capability briefs. Each of
 // these is a sentence someone will want to "tighten" into a bigger claim.
 const homeCopy = readCopy('src/pages/index.astro');
@@ -732,7 +735,7 @@ assert.match(terms, /Proprietary products, including Orionfold Flow/);
 const ogData = read('src/data/og.ts');
 const ogFlow = ogData.match(/'\/flow\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
 const ogHome = ogData.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
-assert.match(ogFlow, /title: 'Conduct useful work\. Flow refines\. You approve\.'/,
+assert.match(ogFlow, /title: 'AI proposes each change\. You approve it\.'/,
   'the Flow social card carries the overview promise');
 for (const entry of [ogFlow, ogHome]) {
   assert.match(entry, /Orionfold Flow · Patent pending/);

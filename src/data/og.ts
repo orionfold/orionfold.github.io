@@ -40,7 +40,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     slug: 'home',
     eyebrow: 'Orionfold Flow · Patent pending',
     // The card carries the same promise as the launch homepage H1.
-    title: 'You drive the work. Flow tunes AI to your needs.',
+    title: 'Flow brings AI to documents. You keep the wheel.',
     seed: 'home',
     alt: 'The What Flow is using readout open in Orionfold Flow beside a trip plan: memory, GPU, and the Flow row, then tokens and spend this session and all time, all zero and $0.00.',
     // Cut 1:1 from the installed-1382 home hero (first-launch-home-hero-welcome,
@@ -181,7 +181,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Orionfold Flow · Patent pending',
     // G-113: the social card carries the same benefit and approval rhythm as
     // the canonical overview instead of reopening the old charts-only wedge.
-    title: 'Conduct useful work. Flow refines. You approve.',
+    title: 'AI proposes each change. You approve it.',
     seed: 'flow',
     alt: 'The Schedule Gantt chart drawn inside an Orionfold Flow project plan: audit, structure, build and migrate bars across September to November, with the Migrate tooltip open.',
     // Cut from the installed-1382 /flow/ hero (first-launch-flow-hero-project,

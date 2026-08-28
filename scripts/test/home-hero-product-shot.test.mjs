@@ -11,9 +11,9 @@ const seo = read('src/data/seo.ts');
 const og = read('src/data/og.ts');
 
 assert.match(home, /<FlowLaunchHomeHero\s*\/>/, 'homepage mounts one canonical hero');
-assert.match(hero, /You drive the work\.[\s\S]*Flow tunes AI to your needs\./, 'hero keeps the accepted driver and tuning promise');
+assert.match(hero, /Flow brings AI to documents\.[\s\S]*You keep the wheel\./, 'hero keeps the accepted document and wheel promise');
 assert.match(hero, /\.flow-launch-hero h1\s*\{[\s\S]*?opacity:\s*0\.9;/, 'hero title uses the requested ten-percent transparency');
-assert.match(hero, /I stay in the driver’s seat\. Flow tunes AI to the work in front of me[\s\S]*Manav Sehgal, built Flow after nine years at Amazon\./, 'founder quote grounds the metaphor in the work and the approved founder byline');
+assert.match(hero, /Flow proofreads my drafts, draws charts from plain text, and runs free on my Mac\. Every run leaves a record I can check[\s\S]*Manav Sehgal, built Flow after nine years at Amazon\./, 'founder quote grounds the metaphor in the work and the approved founder byline');
 assert.match(hero, /padding-top: clamp\(6\.25rem, calc\(6\.5vw \+ 1\.25rem\), 7\.25rem\)/, 'desktop hero leaves a deliberate gap below the navigation');
 assert.match(hero, /flow-launch-hero__meta-row[\s\S]*margin-bottom: clamp\(0\.75rem, 1\.05vw, 1rem\)[\s\S]*flow-launch-hero__ticker[\s\S]*margin-top: clamp\(0\.75rem, 1\.4vw, 1\.25rem\)/, 'shared hero reclaims lower whitespace without pushing the ticker down');
 assert.match(hero, /flow-launch-hero__chip[^>]*>[\s\S]*?Orionfold Flow\s*<\/span>[\s\S]*flow-launch-hero__chip flow-launch-hero__chip--accent">Native Mac app<\/span>/, 'product labels keep Flow and its native Mac platform in separate pills');
@@ -66,7 +66,12 @@ assert.match(ticker, /prefers-reduced-motion:\s*reduce[\s\S]*animation-play-stat
 assert.match(seo, /tagline: 'Conduct beautiful documents with AI agency built in'/);
 assert.match(seo, /slogan: SITE\.tagline/);
 const homeOg = og.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
-assert.match(homeOg, /title: 'You drive the work\. Flow tunes AI to your needs\.'/);
+assert.match(homeOg, /title: 'Flow brings AI to documents\. You keep the wheel\.'/);
 assert.match(homeOg, /alt: '[^']*What Flow is using readout[^']*trip plan/, 'home OG alt describes the installed-1382 readout card that is actually cut into the social image');
+// OG shot cards: the framed screenshot starts at left 660, the title block at
+// padLeft 80. Title width must stay <= 580 or a full line runs under the pane
+// (the 2026-08-28 four-line home headline exposed this at 600).
+const card = read('src/lib/og/card.ts');
+assert.match(card, /hasShot \? 560 : 900/, 'OG shot-card title width stays clear of the screenshot pane');
 
 console.log('home hero: daylight racing world, real Flow proof, conversion and metadata contracts pass');

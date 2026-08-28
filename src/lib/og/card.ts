@@ -254,7 +254,8 @@ function cardTree(opts: CardOptions): El {
   // row, when the banner logo must stay clear on the right, or when a book cover sits
   // on the left.
   const titleSize = opts.title.length > 42 ? 58 : opts.title.length > 28 ? 66 : 74;
-  const titleMaxWidth = hasInset ? 480 : useBanner ? 660 : hasShot ? 600 : 900;
+  // Shot cards: padLeft 80 + 560 = 640, clear of the pane at left 660.
+  const titleMaxWidth = hasInset ? 480 : useBanner ? 660 : hasShot ? 560 : 900;
   const padLeft = hasInset ? 392 : 80;
 
   const layers: El[] = [

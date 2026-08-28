@@ -10,7 +10,7 @@
 
 **Hero findings**
 
-- The operator-approved copy pair is “You drive the work. Flow tunes AI to your needs.” with the founder quote “I stay in the driver’s seat. Flow tunes AI to the work in front of me, runs it where I choose, and changes nothing until I approve.”
+- The operator-approved copy pair is “Flow brings AI to documents. You keep the wheel.” (2026-08-28) with the founder quote “Flow proofreads my drafts, draws charts from plain text, and runs free on my Mac. Every run leaves a record I can check”.
 - The daylight landscape racing pit-stop creative remains the full-bleed desktop hero background.
 - Mobile resolves the dedicated daylight portrait crop; the racing world, Orionfold sign, headline, and primary CTA remain visible in the opening composition.
 - The separate right-side vertical campaign still/film card is absent.

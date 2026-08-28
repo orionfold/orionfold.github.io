@@ -35,9 +35,9 @@ interface Props {
 
 const {
   titleId = 'flow-launch-home-title',
-  titleLead = 'You drive the work.',
-  titleEmphasis = 'Flow tunes AI to your needs.',
-  founderQuote = 'I stay in the driver’s seat. Flow tunes AI to the work in front of me',
+  titleLead = 'Flow brings AI to documents.',
+  titleEmphasis = 'You keep the wheel.',
+  founderQuote = 'Flow proofreads my drafts, draws charts from plain text, and runs free on my Mac. Every run leaves a record I can check',
   founderIntro = 'Manav Sehgal, built Flow after nine years at Amazon.',
   shot = shotHomeHero,
   shotAlt = 'Orionfold Flow on first launch: the Welcome document on the left beside a finished trip plan on the right, with its route diagram, a bookings table and a spending donut chart, and the What Flow is using readout open showing this session cost nothing.',
@@ -99,10 +99,10 @@ const {
         <h1 id={titleId}>
           {titleLead} <em>{titleEmphasis}</em>
         </h1>
-        <p class="flow-launch-hero__founder">
-          <span>&ldquo;{founderQuote}&rdquo;,</span>
-          {founderIntro}
-        </p>
+        <figure class="flow-launch-hero__founder">
+          <blockquote><p>&ldquo;{founderQuote}&rdquo;</p></blockquote>
+          <figcaption>{founderIntro}</figcaption>
+        </figure>
 
         <div class="flow-launch-hero__actions">
           {ORIONFOLD_FLOW_LIVE ? (
@@ -273,9 +273,13 @@ const {
     font-size: 0.98rem;
     line-height: 1.6;
   }
-  .flow-launch-hero__founder span {
+  .flow-launch-hero__founder blockquote p {
     color: rgba(247, 252, 252, 0.9);
     font-style: italic;
+  }
+  .flow-launch-hero__founder figcaption {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
   }
   .flow-launch-hero__actions { max-width: 31.5rem; margin-top: 2rem; }
   .flow-launch-hero__caption {
@@ -372,7 +376,7 @@ const {
   }
   .flow-launch-hero--light h1 em { color: #087f7b; }
   .flow-launch-hero--light .flow-launch-hero__founder { color: rgba(25, 57, 63, 0.7); }
-  .flow-launch-hero--light .flow-launch-hero__founder span { color: #16343b; }
+  .flow-launch-hero--light .flow-launch-hero__founder blockquote p { color: #16343b; }
   .flow-launch-hero--light .flow-launch-hero__caption { color: rgba(25, 57, 63, 0.52); }
   @media (min-width: 920px) {
     .flow-launch-hero--light { padding-top: clamp(6.25rem, calc(6.5vw + 1.25rem), 7.25rem); }
