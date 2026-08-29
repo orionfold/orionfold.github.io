@@ -11,6 +11,18 @@
     <atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="https://orionfold.com/flow/appcast.xml" rel="self" type="application/rss+xml" />
 
     <item>
+      <title>Version 1.5.4</title>
+      <pubDate>Sat, 29 Aug 2026 01:26:38 +0000</pubDate>
+      <sparkle:version>1511</sparkle:version>
+      <sparkle:shortVersionString>1.5.4</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>What is new: this release is about your own files and folders. Flow keeps up with changes you make outside it.</p><p>Folders stay current. A file you add or change outside Flow shows up when you switch back, and the Folders header has a Refresh button that works on one click. Every folder row has Copy Path, and a folder's right-click menu is now the same as its three-dot menu.</p><p>Documents open where you left them. A document comes back on the view it was closed in, whether you opened it from the sidebar, Recents, a search hit, or a relaunch. An empty file opens in the Editor, and a new or reopened document has the cursor ready. Source view sits on the same centered column as Reader and Editor. Deleting a saved document asks first, in its own words, not the unsaved-edits prompt.</p><p>Fewer surprises. Expand tells you how big the draft will be, on the panel and on the Leaves this Mac sheet, and a long proposal shows in full. Removing a model from a provider no longer switches that provider off in Smart Routing. Long chart labels shorten with a dot-dot-dot and the full text shows on hover. A chart's hover label clears under a toolbar panel or menu. Every document toolbar tool, from Bold to the microphone, shows a short note on hover saying what it does.</p><p>Press Install Update and Flow restarts as 1.5.4 with your documents, settings, and receipts exactly where they were.</p>]]></description>
+      <enclosure url="https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.4/1511/Orionfold-Flow-1.5.4-1511.dmg"
+                 length="47236508"
+                 type="application/octet-stream"
+                 sparkle:edSignature="pIeUPM3jIDZzLhV7478hdujlfPZks8KazsBV5XXnlkndXOeBCD03lupVC3jFPRyD4Ho91v7dgu+mD/QMXxWiCA==" />
+    </item>
+    <item>
       <title>Version 1.5.3</title>
       <pubDate>Fri, 28 Aug 2026 11:35:36 +0000</pubDate>
       <sparkle:version>1446</sparkle:version>
@@ -49,6 +61,6 @@
   </channel>
 </rss>
 <!-- sparkle-signatures:
-edSignature: HLqnhvSy6eppFCIpbu0gEqAYEpGdybNpIiTLDbcphm22PYlkkvcbrSFfbsNxI48MPclcb/vpa6hkT1zMRnEoBA==
-length: 4978
+edSignature: G1sBZhgenGzBtJqf+oPeeIftPMWf2VaZN3jhGPeICF/CbC2DOkQ1uuwSLMlD2P0pHbv6VP0+ngt84dr5P+U3Cw==
+length: 7080
 -->

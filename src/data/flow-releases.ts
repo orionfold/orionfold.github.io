@@ -168,6 +168,39 @@ export const RELEASES: FlowRelease[] = [
       "The chart hover bubble leaves when your pointer does. Issue or Feature Request in Help opens a new issue with your Flow version filled in.</p>" +
       "<p>Press Install Update and Flow restarts as 1.5.3 with your documents, settings, and receipts exactly where they were.</p>",
   },
+  {
+    // 1.5.4 (1511): the upgrade payload for installed 1.5.3 copies. Every value
+    // below is from the product lane's ledger entry of 2026-08-28 18:30 PDT,
+    // verified there by `release-dmg.sh verify`, `sign_update --verify`, and a
+    // full anonymous download of the URL
+    // (sha256 68868c36fe0fe9cd3dee098127771684bde737eae3c2e41a7d781a5cdeea74ec).
+    // Website re-check 2026-08-28 19:0x PDT: a full download of the URL returned
+    // 200 with 47236508 bytes and the same sha256.
+    build: 1511,
+    shortVersion: "1.5.4",
+    published: "2026-08-28T18:26:38-07:00",
+    url: "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.4/1511/Orionfold-Flow-1.5.4-1511.dmg",
+    length: 47236508,
+    edSignature: "pIeUPM3jIDZzLhV7478hdujlfPZks8KazsBV5XXnlkndXOeBCD03lupVC3jFPRyD4Ho91v7dgu+mD/QMXxWiCA==",
+    minimumSystemVersion: "26.0",
+    // Against 1.5.3, product goal 0185 "the first week on your own files":
+    // 65 commits, 53 of them the goal's, fourteen user-visible rows all walked
+    // with the operator on 2026-08-28 (product lane verified
+    // `git log 0b1fea2..0637281`). The facts are the product lane's; the
+    // wording is the website's. Sparkle renders this CDATA block as HTML under
+    // its own version line.
+    notes:
+      "<p>What is new: this release is about your own files and folders. Flow keeps up with changes you make outside it.</p>" +
+      "<p>Folders stay current. A file you add or change outside Flow shows up when you switch back, and the Folders header has a Refresh button that works on one click. " +
+      "Every folder row has Copy Path, and a folder's right-click menu is now the same as its three-dot menu.</p>" +
+      "<p>Documents open where you left them. A document comes back on the view it was closed in, whether you opened it from the sidebar, Recents, a search hit, or a relaunch. " +
+      "An empty file opens in the Editor, and a new or reopened document has the cursor ready. Source view sits on the same centered column as Reader and Editor. " +
+      "Deleting a saved document asks first, in its own words, not the unsaved-edits prompt.</p>" +
+      "<p>Fewer surprises. Expand tells you how big the draft will be, on the panel and on the Leaves this Mac sheet, and a long proposal shows in full. " +
+      "Removing a model from a provider no longer switches that provider off in Smart Routing. Long chart labels shorten with a dot-dot-dot and the full text shows on hover. " +
+      "A chart's hover label clears under a toolbar panel or menu. Every document toolbar tool, from Bold to the microphone, shows a short note on hover saying what it does.</p>" +
+      "<p>Press Install Update and Flow restarts as 1.5.4 with your documents, settings, and receipts exactly where they were.</p>",
+  },
 ];
 
 /**

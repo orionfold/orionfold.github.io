@@ -140,13 +140,14 @@ export const FLOW_LAPSE_FACTS: string[] = [
 // it was an obviously fake placeholder host so the launched layout could be
 // rehearsed locally without a working link; the first public package
 // (1.5.1, build 1404, ledger 2026-08-27 07:22 / 07:32 PDT) replaced it;
-// 1.5.3 (build 1446, ledger 2026-08-28 04:40 PDT) is the current one.
+// 1.5.3 (build 1446, ledger 2026-08-28 04:40 PDT) followed; 1.5.4 (build 1511,
+// ledger 2026-08-28 18:30 PDT) is the current one.
 //
 // The host is the vanity host in front of the public `flow-downloads` bucket,
 // never the project ref and never orionfold.com (this repo is public and GitHub
 // rejects files over 100 MB). The path is versioned and immutable, so a new
 // release is a new URL, never an overwrite.
-export const FLOW_DMG_URL = "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.3/1446/Orionfold-Flow-1.5.3-1446.dmg";
+export const FLOW_DMG_URL = "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.4/1511/Orionfold-Flow-1.5.4-1511.dmg";
 
 /** True when the download URL is no longer the placeholder.
  *
