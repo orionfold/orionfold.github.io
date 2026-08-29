@@ -11,6 +11,18 @@
     <atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="https://orionfold.com/flow/appcast.xml" rel="self" type="application/rss+xml" />
 
     <item>
+      <title>Version 1.5.5</title>
+      <pubDate>Sat, 29 Aug 2026 21:08:48 +0000</pubDate>
+      <sparkle:version>1526</sparkle:version>
+      <sparkle:shortVersionString>1.5.5</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>What is new: this release is about knowing what Flow does with your network, and being able to show it.</p><p>The Flow Guide now lists every time Flow reaches out. Working With Flow has a new section, "What leaves your Mac", with a row for each connection: when it happens, where it goes, what is sent, and the switch that turns it off. It also says what Flow never does. No usage statistics. No crash reports. No analytics or advertising code. No hidden number that identifies your copy. No online check to keep working.</p><p>Copy Diagnostics, in the Help menu and in Settings under Flow System, writes a short block for a bug report and puts it on your clipboard. It holds your Flow and macOS versions, the kind of Mac you have, which domains are switched on, which local runtimes are serving, and a count of any crashes in the last week. No file paths, no document titles, no names. Flow shows you the exact text first, and nothing is sent anywhere. It goes where you paste it.</p><p>Nothing new leaves your Mac in this release. Flow reaches no address it did not reach before.</p><p>Press Install Update and Flow restarts as 1.5.5 with your documents, settings, and receipts exactly where they were.</p>]]></description>
+      <enclosure url="https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.5/1526/Orionfold-Flow-1.5.5-1526.dmg"
+                 length="46568398"
+                 type="application/octet-stream"
+                 sparkle:edSignature="Wm4bixihW9se3wXnYeW7J2U7C9vBJo9hKPhfTMdM4eKSu2UNyqodOEYRJQXRD5U/DOUDb4ryS2RJIOddfGbyBA==" />
+    </item>
+    <item>
       <title>Version 1.5.4</title>
       <pubDate>Sat, 29 Aug 2026 01:26:38 +0000</pubDate>
       <sparkle:version>1511</sparkle:version>
@@ -61,6 +73,6 @@
   </channel>
 </rss>
 <!-- sparkle-signatures:
-edSignature: G1sBZhgenGzBtJqf+oPeeIftPMWf2VaZN3jhGPeICF/CbC2DOkQ1uuwSLMlD2P0pHbv6VP0+ngt84dr5P+U3Cw==
-length: 7080
+edSignature: DDgO7oW0VFsdeabIy1bBQWx5ciRDoZjeHn+I5vTozq4tKUWb+9dXe56ELH0SfZeo5tRgWhYK9uwE4WrgE7VZDA==
+length: 8988
 -->

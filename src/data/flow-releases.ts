@@ -201,6 +201,41 @@ export const RELEASES: FlowRelease[] = [
       "A chart's hover label clears under a toolbar panel or menu. Every document toolbar tool, from Bold to the microphone, shows a short note on hover saying what it does.</p>" +
       "<p>Press Install Update and Flow restarts as 1.5.4 with your documents, settings, and receipts exactly where they were.</p>",
   },
+  {
+    // 1.5.5 (1526): the upgrade payload for installed 1.5.4 copies. Every value
+    // below is from the product lane's ledger entry of 2026-08-29 14:12 PDT,
+    // verified there by `release-dmg.sh verify`, two-pass notarization
+    // (app e3e27b47…, DMG 8b968448…, both Accepted and stapled), and
+    // `publish-dmg.sh sign`/`verify`.
+    // Website re-check 2026-08-29 14:11 PDT: a full anonymous download of the
+    // URL returned 200 with 46568398 bytes and sha256
+    // b2f79b5ade22de1fa8fdd3b11583beac956c74783d7e11ddb3959c296d48b90d,
+    // matching the product lane's receipt.
+    build: 1526,
+    shortVersion: "1.5.5",
+    published: "2026-08-29T14:08:48-07:00",
+    url: "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.5/1526/Orionfold-Flow-1.5.5-1526.dmg",
+    length: 46568398,
+    edSignature: "Wm4bixihW9se3wXnYeW7J2U7C9vBJo9hKPhfTMdM4eKSu2UNyqodOEYRJQXRD5U/DOUDb4ryS2RJIOddfGbyBA==",
+    minimumSystemVersion: "26.0",
+    // Against 1.5.4 (1511), product goal 0187 "What leaves your Mac": 15
+    // commits, 8 of them the goal's (product lane verified
+    // `git log 0637281..395902a`), and the two user-facing rows are the two
+    // `Unreleased` entries in the product repo's CHANGELOG. The facts are the
+    // product lane's; the wording is the website's. Sparkle renders this CDATA
+    // block as HTML under its own version line.
+    notes:
+      "<p>What is new: this release is about knowing what Flow does with your network, and being able to show it.</p>" +
+      "<p>The Flow Guide now lists every time Flow reaches out. Working With Flow has a new section, " +
+      "\"What leaves your Mac\", with a row for each connection: when it happens, where it goes, what is sent, and the switch that turns it off. " +
+      "It also says what Flow never does. No usage statistics. No crash reports. No analytics or advertising code. " +
+      "No hidden number that identifies your copy. No online check to keep working.</p>" +
+      "<p>Copy Diagnostics, in the Help menu and in Settings under Flow System, writes a short block for a bug report and puts it on your clipboard. " +
+      "It holds your Flow and macOS versions, the kind of Mac you have, which domains are switched on, which local runtimes are serving, and a count of any crashes in the last week. " +
+      "No file paths, no document titles, no names. Flow shows you the exact text first, and nothing is sent anywhere. It goes where you paste it.</p>" +
+      "<p>Nothing new leaves your Mac in this release. Flow reaches no address it did not reach before.</p>" +
+      "<p>Press Install Update and Flow restarts as 1.5.5 with your documents, settings, and receipts exactly where they were.</p>",
+  },
 ];
 
 /**
