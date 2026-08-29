@@ -23,6 +23,7 @@ const { title, dek, edition, date } = letter.data;
 const dfmt = (d: Date) =>
   new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(d);
 const dateIso = date.toISOString().slice(0, 10);
+const dateTime = date.toISOString(); // JSON-LD wants a timezone; OG meta keeps the date
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImageUrl = new URL(ogPath(letterOgSlug(letter.id)), Astro.site).href;
 
@@ -32,8 +33,8 @@ const blogPostingSchema = {
   headline: title,
   description: dek,
   image: ogImageUrl,
-  datePublished: dateIso,
-  dateModified: dateIso,
+  datePublished: dateTime,
+  dateModified: dateTime,
   author: { ...PERSON, url: `${SITE.url}/about/` },
   publisher: PUBLISHER,
   mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },

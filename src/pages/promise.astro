@@ -1,83 +1,97 @@
 ---
-// /promise/ — the Orionfold gating philosophy (Relay D5 ask, 2026-07-01). A
-// product-neutral, top-level page that publishes the standing promise the whole
-// catalog is held to: buyer-based gating + never-regress. Core/direct use stays
-// free; paid Packs sell maintained content; paid Host covers managed customer
-// operations; nothing that ever shipped free regresses to paid.
+// /promise/ — the standing promise the whole line is held to, written for
+// Flow first (the flagship since 2026-08-27), then Relay and Arena.
 //
-// Content source: strategy relay `strategy/relay/_RELAY.md` entry
-// "2026-07-01 (later-2) — Relay→Website" ask D5. The promise text is owned by
-// the site (we own the promise, Relay owns the CLI behavior it describes). The
-// concrete proof point (two engine gaps found while building Agency Pro shipped
-// free in the same release that sells the pack) and the four anti-patterns are
-// verbatim-safe-to-state facts from that entry. Voice: grade 3-5, jargon
-// explained, no em-dashes (website-copy-style).
+// History: born as the Relay D5 ask (2026-07-01): buyer-based gating +
+// never-regress. Rewritten 2026-08-29 on the operator's direction to be
+// cross-product with Flow in front. The Flow facts come from the constants the
+// pricing surface already enforces (src/data/flow-pricing.ts: FLOW_PROMISE,
+// FLOW_LAPSE_FACTS, FLOW_WITHDRAWAL_NOTICE) and from the product lane's shipped
+// Flow Guide wording (flow-growth ledger 2026-08-29 08:05: "see, switch off, or
+// whose outcome you control"). The Relay facts are the D5 entry. The Arena
+// facts are the ones /arena/ already states. Prices never appear as literals.
+// Voice: grade 3-5, jargon explained, no em-dashes (website-copy-style).
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
 import { SITE, PUBLISHER } from '../data/seo';
 import { ogMeta } from '../data/og';
+import { FLOW, formatUsd } from '../data/commerce.ts';
+import { FLOW_PROMISE, FLOW_LAPSE_FACTS, FLOW_WITHDRAWAL_NOTICE } from '../data/flow-pricing.ts';
+import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 
 const og = ogMeta('/promise/');
+
+const PROMISE_DESCRIPTION =
+  'The Orionfold promise across Flow, Relay and Arena: what is free stays free, what you own keeps working on your own machine, and you pay for the AI, the content or the upkeep, never for the right to use what is yours.';
+
+const flowPlanSentence = ORIONFOLD_FLOW_LIVE
+  ? `Flow Pro is ${formatUsd(FLOW.monthly.amount)} a month or ${formatUsd(FLOW.annual.amount)} a year, and every install starts with 10 Pro Days.`
+  : 'Flow Pro is the subscription; every install starts with 10 Pro Days.';
 
 // The three ideas that make up the promise, stated plainly up top.
 const summaryCards = [
   {
-    title: 'Core and direct use are free',
-    body: 'The engine, direct Cells, installers, schedulers, and public Cell image ship free for everyone. A managed Host right is separate and never makes the free path a trial.',
+    title: 'Free stays free',
+    body: 'Flow Base, which is reading, writing, searching, organizing and exporting your documents, is free forever. Relay Core and direct use are free. Anything that ever shipped free does not later become paid.',
   },
   {
-    title: 'You pay for content',
-    body: 'A paid pack is maintained content that uses those free capabilities: ready-made agents, blueprints, and setups we keep current for you. You are buying the upkeep, not the ability to run it.',
+    title: 'You pay for the work, not the right',
+    body: 'Flow Pro is the AI doing work: proposing changes, drawing charts, routing models. A Relay Pack is maintained content. An Arena Field Edition license is a proven, receipted year of a lab. None of them is a key to something you already had.',
   },
   {
-    title: 'Nothing regresses',
-    body: 'Anything that ever shipped free stays free. We do not move a working, free capability behind a paywall later. What you can do today, you can always do.',
+    title: 'What you own keeps working',
+    body: 'Licenses are checked on your own machine. A lapsed Flow plan leaves every document open and editable. Installed Relay packs keep running. An Arena box keeps running with your data on it.',
   },
 ];
 
-// The standing test, expanded. Each section is one plain claim + the reasoning.
+// The standing test, expanded, product by product. Flow first.
 const sections = [
   {
-    title: 'Buyer-based gating, not feature-based',
+    title: 'Flow: your documents are free forever. The AI is what you pay for.',
     paragraphs: [
-      'Most software decides what you can do by which plan you are on. We decide it by whether you bought a specific pack. That is the whole gate: one thing you own, checked once, and then the pack is yours.',
-      'There is no tier that turns the free engine into a working product. Direct use is complete and free. A Pack license adds maintained content. A Relay Host license separately covers managed customer Cells. Neither takes the free path away.',
+      `That sentence is the whole Flow deal, and the app enforces it: ${FLOW_PROMISE}`,
+      'Flow Base has no trial, no expiry, no account and nothing to buy. You can read, write, search, organize and export plain Markdown files in your own folders for as long as you like. You can also read every receipt, timeline and evidence score the AI ever produced, free, forever.',
+      `If a model runs, it is part of the subscription. Proofreading, rewriting, drawing charts and diagrams from your text, and routing work to local or cloud models are Flow Pro. ${flowPlanSentence} One license covers one person on their own Macs.`,
+      `When a plan ends, Flow says one thing, only when you ask its AI to run: “${FLOW_WITHDRAWAL_NOTICE}” Here is what a lapse does not do, each line enforced in the app rather than promised on a page:`,
+    ],
+    bullets: FLOW_LAPSE_FACTS,
+    after: 'Your license is checked on your Mac. Flow does not need a connection to use it, and it never has to check in with us to keep working.',
+  },
+  {
+    title: 'Relay: the engine is free, the packs are the content',
+    paragraphs: [
+      'Relay Core, direct Cells, installers, schedulers and the public Cell image ship free for everyone. There is no tier that turns the free engine into a working product; direct use is complete on its own.',
+      'A Pack license unlocks the premium packs you own and keeps them current: ready-made agents, blueprints and setups we maintain for you. You are buying the upkeep, not the ability to run it. A separate Relay Host license covers managed customer Cells within its signed capacity and never makes the free path a trial.',
+      'Here is a real example of free staying free. While building the first paid pack, the Agency pack, we found the engine was missing two things: packs could not add their own triggers, and blueprints could not be scheduled. We shipped both free, for every user, in the same release that put the paid pack on sale.',
+      'If a Pack license lapses, everything you installed keeps working exactly as it did; renewal is only about the year’s new and updated packs and priority support. If a Host term ends, running Cells keep running and export and recovery stay available; new managed capacity, forward paid updates and re-download stop, and compatible critical-security fixes remain included.',
     ],
   },
   {
-    title: 'Never-regress: free stays free',
+    title: 'Arena: a proven year, on a box you own',
     paragraphs: [
-      'This is the promise we hold ourselves to the hardest. If a capability ever shipped to everyone for free, it does not later become paid. We will not take something you rely on and put a price on it.',
-      'Here is a real example. While building the first paid pack, the Agency pack, we found the engine was missing two things: packs could not add their own triggers, and blueprints could not be scheduled. We shipped both of those free, for every user, in the very same release that put the paid pack on sale. The capability went to everyone. The pack is what you buy.',
-    ],
-  },
-  {
-    title: 'What a license actually gates',
-    paragraphs: [
-      'A Pack license unlocks the premium packs you own and keeps them current. A Relay Host license proves the separate right to run managed customer Cells within its signed capacity. Neither switches on Relay Core or direct Cells, and the public Cell image needs no license token.',
-      'Your packs are yours forever. If a license lapses, everything you installed keeps working exactly as it did. Renewal is only about getting the year’s new and updated packs and priority support, never about keeping what you already own.',
-      'If a Host term ends, Cells already running keep running and export and recovery remain available. New managed capacity, forward paid updates and re-download stop. Compatible critical-security fixes remain included.',
+      'Arena Field Edition turns the NVIDIA DGX Spark you own into a private AI lab. It installs in one pass, proves itself on first boot with a verifiable receipt you can read, and the twelve-month window re-gates and re-receipts the box so it stays proven.',
+      'The box is yours, your data is on it, and your license works offline. If Orionfold went away tomorrow, your lab keeps running. Every release ships with a signed record of where it came from and a full parts list, and the install is checked against a fingerprint before it runs.',
     ],
   },
   {
     title: 'What we will never do',
     paragraphs: [
-      'So the promise is concrete, here are the things we have decided against, on purpose:',
+      'So the promise is concrete, here are the things we have decided against, on purpose, for every product:',
     ],
     bullets: [
       'No database licensing. Your right to use what you own is not a row we can flip off.',
-      'No upsell banners in the command-line tool. The software you run does not nag you to buy.',
-      'No online re-validation. The license is checked offline; your software never sends your data to Orionfold, and it never has to check in with us to keep working.',
-      'No expiry that disables installed packs. When a term ends, your installed packs keep running.',
+      'No nag banners. Relay’s command-line tools never advertise. Flow tells you one thing, only at the moment you ask its AI to run without a plan, and your documents stay open and editable either way.',
+      'No online re-validation. The license is checked on your machine; your software never sends your data to Orionfold, and it never has to check in with us to keep working. Flow reaches the network only for things you can see, switch off, or whose outcome you control: checking for updates, the models and providers you add, and the Guide when you ask. As of Flow 1.5.5 it keeps no usage statistics and sends no crash reports. If a future Flow offers to share counts or crash reports, it will be a switch that starts off, with every field listed.',
+      'No expiry that disables what you installed. A lapsed Flow plan leaves every document open. Installed Relay packs keep running. An Arena box keeps running.',
     ],
   },
 ];
 ---
 <Layout
   title="Our promise: what you pay for, and what you never lose · Orionfold"
-  description="The Orionfold promise: Relay Core and direct use stay free, premium Packs and managed Host rights stay distinct, and nothing that shipped free regresses to paid."
+  description={PROMISE_DESCRIPTION}
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[
@@ -88,8 +102,7 @@ const sections = [
       url: `${SITE.url}/promise/`,
       inLanguage: 'en',
       publisher: PUBLISHER,
-      description:
-        'The Orionfold promise: Relay Core and direct use stay free, premium Packs and managed Host rights stay distinct, and nothing that shipped free regresses to paid.',
+      description: PROMISE_DESCRIPTION,
     },
     {
       '@context': 'https://schema.org',
@@ -119,14 +132,14 @@ const sections = [
               What you pay for, and what you never lose.
             </h1>
             <p data-animate class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted" style="transition-delay: 160ms">
-              Relay Core and direct use are free for everyone. Premium Packs sell maintained content. Relay Host covers managed customer operations. Anything that ships free stays free. This page is the standing promise we hold every product to.
+              Flow, Relay and Arena are built on one rule. The part you run is free or yours for good. The part you pay for is the AI’s work, maintained content, or a proven year of upkeep. Anything that ships free stays free, and nothing you own ever has to call home to keep working. This page is the standing promise we hold every product to.
             </p>
           </div>
 
           <div data-animate class="rounded-2xl border border-primary/30 bg-primary/[0.06] p-5 shadow-[0_20px_80px_-40px_rgba(0,0,0,0.75)]" style="transition-delay: 220ms">
             <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-primary/70">The short version</p>
             <p class="mt-3 text-base leading-relaxed text-text">
-              Core and direct use stay free. Packs and managed Host rights are separate. Nothing free becomes paid.
+              Free stays free. What you own keeps working on your own machine. You pay for the AI, the content or the upkeep, never for the right to use what is yours.
             </p>
           </div>
         </div>
@@ -171,6 +184,9 @@ const sections = [
                     ))}
                   </ul>
                 )}
+                {section.after && (
+                  <p class="text-base leading-relaxed text-text-muted">{section.after}</p>
+                )}
               </div>
             </section>
           ))}
@@ -178,8 +194,12 @@ const sections = [
           <div data-animate class="rounded-2xl border border-primary/30 bg-primary/[0.06] p-6 sm:p-8">
             <p class="text-base leading-relaxed text-text">
               This promise runs across the whole line. See it in practice on
+              <a href="/flow/" class="text-primary hover:text-primary/80 transition-colors">Flow</a>,
+              where the documents are free forever and the AI is the plan; on
               <a href="/relay/" class="text-primary hover:text-primary/80 transition-colors">Relay</a>,
-              where the engine is free and open and a license only adds the premium packs you own.
+              where the engine is free and open and a license only adds the packs you own; and on
+              <a href="/arena/" class="text-primary hover:text-primary/80 transition-colors">Arena</a>,
+              where every install writes a receipt you can read.
             </p>
           </div>
         </div>

@@ -239,8 +239,9 @@ assert.match(
 // on a day the reader invokes AI, so "10 days free" would be false.
 assert.doesNotMatch(pricingData, /10 days free/i, 'the grant is not a calendar countdown');
 
-// THE DOWNLOAD CTA IS ONE COMPONENT. Six surfaces render it (both heroes, the
-// shared waitlist panel, the pricing card and the nav), so the disabled state
+// THE DOWNLOAD CTA IS ONE COMPONENT. Seven surfaces render it (both heroes, the
+// shared waitlist panel, the pricing card, the nav, and the launch story's top
+// bar + Flow card, guarded in flow-launch-series), so the disabled state
 // lives in one place rather than being re-implemented per surface.
 // OPERATOR DECISION 2026-08-22 20:47: the disabled state and its "not live yet"
 // caption were removed on explicit instruction. Every surface now renders the

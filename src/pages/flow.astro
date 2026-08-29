@@ -195,6 +195,17 @@ const faqs = [
     a: 'Only if you allow it. Flow separates where AI may run into four switchable domains: Local, LAN, Cloud prepaid, and Cloud postpaid. Search is on-device, and a fallback that would leave your Mac stops and asks first.',
   },
   {
+    // Wording follows the shipped Guide clause (flow-growth ledger 2026-08-29
+    // 08:05). "Sends no crash reports" is the precise claim: Flow has no crash
+    // reporter, but 1.5.5's Help > Copy Diagnostics can READ the crash report
+    // macOS already keeps and put a summary on the clipboard, which the user
+    // pastes themselves (operator 08:12). The clipboard sentence describes
+    // 1.5.5, so this item rides with that cut unless the operator says
+    // otherwise; drop that one sentence to make it version-free again.
+    q: 'Does Flow send my documents or usage data to Orionfold?',
+    a: 'No. Flow runs on your Mac with no tracking, no usage statistics, no analytics code, and no licence check-ins, and it sends no crash reports. It reaches the network only for things you started, can switch off, or whose outcome you control: checking for updates, the models and providers you add, and the Guide when you ask for it. The Flow Guide prints that whole list, with what is sent and your switch beside each line. If something goes wrong, Flow can put a short diagnostic summary on your clipboard for you to read and paste yourself; nothing leaves your Mac until you do. If a future Flow ever offers to share counts or crash reports, it will be a switch that starts off.',
+  },
+  {
     q: 'What files does Flow use?',
     a: 'Ordinary Markdown files in ordinary folders. There is no import step or private library format. Other apps can read the same files, and deleting a file sends it to the system Trash.',
   },

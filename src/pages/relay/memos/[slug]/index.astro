@@ -62,7 +62,7 @@ const articleSchema = {
   '@type': 'BlogPosting',
   headline: title,
   description: summary,
-  datePublished: date.toISOString().slice(0, 10),
+  datePublished: date.toISOString(), // full datetime with timezone, per Rich Results Test
   author: { ...PERSON, url: `${SITE.url}/about/` },
   publisher: PUBLISHER,
   mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },

@@ -28,6 +28,7 @@ import proofPoster from '../../../assets/proof/orionfold-proof-poster.jpeg';
 import flowPitStop from '../../../assets/flow/launch/flow-ideas-pit-stop-daylight-wide.webp';
 import { ORIONFOLD_FLOW_LIVE } from '../../../data/launch.ts';
 import { FLOW_DMG_URL, FLOW_DOWNLOAD_CAPTION } from '../../../data/flow-pricing.ts';
+import FlowDownloadCta from '../../../components/flow/FlowDownloadCta.astro';
 
 const POSTER_ALT = 'Orionfold Proof poster: a laptop on a desk emitting a long signed receipt under a star constellation, with the gold title Orionfold Proof.';
 
@@ -130,6 +131,11 @@ const allStories = (await getCollection('story')).sort(
 // the authored day, not the day before in a behind-UTC build/local timezone.
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
 const dateIso = date.toISOString().slice(0, 10);
+// JSON-LD dates carry the full ISO datetime with timezone. Rich Results Test
+// (2026-08-29, live launch story) reads a date-only value as "Invalid datetime
+// value" + "missing a timezone" on both fields; the OG article: meta below keeps
+// the plain date, which is what that spec wants.
+const dateTime = date.toISOString();
 
 // Page-specific JSON-LD (N10). Layout appends these after the global
 // Organization node. BlogPosting makes each story eligible for article rich
@@ -146,8 +152,8 @@ const blogPostingSchema = {
   headline: title,
   description: summary,
   image: ogImageUrl,
-  datePublished: dateIso,
-  dateModified: dateIso,
+  datePublished: dateTime,
+  dateModified: dateTime,
   author: { ...PERSON, url: `${SITE.url}/about/` },
   publisher: PUBLISHER,
   mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
@@ -198,6 +204,16 @@ const breadcrumbSchema = {
           </div>
           <h1 class="leading-tight" style="font-size: clamp(2rem, 5vw, 3rem);">{title}</h1>
           <p class="mt-5 text-lg leading-relaxed text-text-muted">{summary}</p>
+          {flowCta && (
+            // The download story's first ask sits above the fold, before the
+            // hero picture (day-2 read 2026-08-28: 8 readers, 40s, 0 downloads
+            // with the only early ask a prose link). Same button, URL and
+            // caption as the homepage hero; its own placement id so GA4 can
+            // split it from the mid-article card and the story footer.
+            <div class="mt-7">
+              <FlowDownloadCta source={`story-top-${post.id}`} />
+            </div>
+          )}
         </header>
       )}
 

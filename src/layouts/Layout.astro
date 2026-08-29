@@ -486,13 +486,21 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
           } catch (urlErr) {
             /* unparseable href — keep the sensible default */
           }
+          // `link_id`, `link_text` and `link_url` are GA4's own built-in Link
+          // dimensions (no custom-dimension registration needed), so a report
+          // can split hero / nav / story-top / story-footer clicks by Link ID
+          // the day this deploys. `link_source` stays for the earlier reads.
+          var linkText = (link.textContent || '').replace(/\s+/g, ' ').trim();
           if (typeof window.gtag === 'function') {
-            window.gtag('event', 'file_download', {
+            var params = {
               file_name: fileName,
               file_extension: 'dmg',
               link_source: surface,
+              link_id: surface,
               link_url: href,
-            });
+            };
+            if (linkText) params.link_text = linkText;
+            window.gtag('event', 'file_download', params);
           }
         } catch (err) {
           /* Analytics must never break the download itself. The click is

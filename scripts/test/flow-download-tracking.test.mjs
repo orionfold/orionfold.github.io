@@ -45,8 +45,9 @@ function fireClick(script, element) {
   return calls;
 }
 
-const anchor = (surface, href) => ({
+const anchor = (surface, href, text) => ({
   tagName: 'A',
+  textContent: text,
   getAttribute: (name) =>
     name === 'data-flow-download' ? surface : name === 'href' ? href : null,
 });
@@ -63,6 +64,19 @@ test('a download click reports GA4 file_download with the surface that produced 
   assert.equal(name, 'file_download', 'the GA4 recommended event name is required');
   assert.equal(params.link_source, 'home-hero', 'the clicked surface must be attributable');
   assert.equal(params.file_name, 'Flow.dmg');
+  // GA4's BUILT-IN Link dimensions. `link_source` is a custom parameter and only
+  // reports once someone registers a custom dimension; `link_id` / `link_url`
+  // are standard, so the per-placement split is readable in a plain report.
+  assert.equal(params.link_id, 'home-hero', 'Link ID carries the placement for the standard GA4 report');
+  assert.equal(params.link_url, 'https://dl.example.com/flow/Flow.dmg', 'Link URL carries the href');
+});
+
+test('the visible label rides along as GA4 Link text, and an empty label is omitted rather than sent blank', async () => {
+  const script = await downloadListenerSource();
+  const labelled = fireClick(script, anchor('story-top-x', 'https://d.example/Flow.dmg', '\n  Download Flow Now\n'));
+  assert.equal(labelled[0][2].link_text, 'Download Flow Now', 'whitespace-trimmed visible label');
+  const unlabelled = fireClick(script, anchor('nav-desktop', 'https://d.example/Flow.dmg'));
+  assert.ok(!('link_text' in unlabelled[0][2]), 'no label, no parameter');
 });
 
 test('the file name is derived from the href, so it survives the real DMG URL landing', async () => {

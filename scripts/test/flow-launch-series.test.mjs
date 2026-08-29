@@ -192,6 +192,16 @@ assert.match(storyRoute, /href=\{FLOW_DMG_URL\}/, 'the Flow card points at the o
 assert.match(storyRoute, /caption=\{FLOW_DOWNLOAD_CAPTION\}/, 'the Flow card carries the shared download caption');
 assert.match(storyRoute, /ctaText: 'Download Flow Now'/, 'the Flow card uses the hero download label');
 assert.match(storyRoute, /define:vars=\{\{ flowDmgUrl: FLOW_DMG_URL/, 'inline prose links upgrade to the one canonical download URL while live');
+// Day-2 read (2026-08-28): the download story held 8 readers for 40s and sent
+// none to the package, its only early ask a prose link. The first Download bar
+// now sits under the summary, ABOVE the hero picture, gated on the same
+// flowCta as the mid-article card, with its own placement id (story-top-…) so
+// GA4 Link ID splits it from the card and the footer.
+assert.match(
+  storyRoute,
+  /titleBeforeHero && \([\s\S]*?\{summary\}<\/p>[\s\S]*?\{flowCta && \([\s\S]*?<FlowDownloadCta source=\{`story-top-\$\{post\.id\}`\} \/>[\s\S]*?<\/header>[\s\S]*?\{hero && \(/,
+  'the download story opens with a Download bar under its summary, before the hero image, attributed as story-top',
+);
 // Every story footer ends on Flow (operator 2026-08-26 10:03): no book magnet,
 // no Proof/Relay/Arena band, one Flow block between prev/next and subscribe,
 // waitlist while launch-dark and the canonical download while live.
