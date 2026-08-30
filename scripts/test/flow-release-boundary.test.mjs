@@ -4,6 +4,10 @@ import { readFileSync } from 'node:fs';
 import { evaluateFlowReleaseBoundary } from '../check-flow-release-boundary.mjs';
 
 const read = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url), 'utf8');
+// The stable CTA object (what FLOW_DMG_URL must be) and a versioned enclosure
+// (what the feed names). Since 2026-08-29 these are deliberately DIFFERENT URLs
+// — see the header of check-flow-release-boundary.mjs.
+const stableDmg = 'https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/Orionfold-Flow.dmg';
 const realDmg = 'https://downloads.orionfold.com/flow/Orionfold-Flow-1.0.0.dmg';
 const launch = (live) => `export const ORIONFOLD_FLOW_LIVE = ${live};`;
 const pricing = (url) => `export const FLOW_DMG_URL = "${url}";`;
@@ -37,17 +41,16 @@ test('the real checkout can never deploy a live Flow without the operator declar
   }
 });
 
-test('the public CTA and the newest published release name the same DMG', () => {
-  // Both files are edited by hand on every release. The boundary only checks
-  // them when Flow is live, so this keeps them honest in the launch-dark state.
+test('the public CTA in the real checkout is the permanent download object', () => {
+  // Until 2026-08-29 this asserted the CTA equalled the newest appcast
+  // enclosure, because both were hand-edited on every release. The CTA is now
+  // a stable object the product lane overwrites in place, so the assertion that
+  // actually protects users is that it never drifts back to a versioned path
+  // (which would mean the per-release edit had returned) and never leaves the
+  // download host for this public repo.
   const pricingUrl = read('src/data/flow-pricing.ts').match(/export const FLOW_DMG_URL = "([^"]+)";/)[1];
-  const enclosureUrls = [...read('public/flow/appcast.xml').matchAll(/<enclosure\b[^>]*\burl="([^"]+)"/g)].map((m) => m[1]);
-  if (enclosureUrls.length === 0) {
-    assert.match(pricingUrl, /PLACEHOLDER/, 'with no published release the CTA must stay an obvious placeholder');
-  } else {
-    assert.equal(pricingUrl, enclosureUrls[0], 'FLOW_DMG_URL must equal the newest appcast enclosure');
-    assert.equal(new URL(pricingUrl).hostname, 'orionfold.supabase.co', 'DMG URLs go through the vanity host, never the project ref');
-  }
+  assert.equal(pricingUrl, stableDmg, 'FLOW_DMG_URL must be the one permanent download URL');
+  assert.equal(new URL(pricingUrl).hostname, 'orionfold.supabase.co', 'DMG URLs go through the vanity host, never the project ref');
 });
 
 test('a launch-dark build remains deployable without release materials', () => {
@@ -83,7 +86,7 @@ test('a real package cannot substitute for the operator release declaration', ()
   assert.match(result.problems.join('\n'), /operator release declaration/);
 });
 
-test('the public CTA and the signed feed must identify the same current DMG', () => {
+test('a non-empty feed with no signed block is blocked', () => {
   const result = evaluateFlowReleaseBoundary({
     launchSource: launch(true),
     pricingSource: pricing(realDmg),
@@ -91,8 +94,37 @@ test('the public CTA and the signed feed must identify the same current DMG', ()
     releaseDeclared: 'true',
   });
   assert.equal(result.state, 'blocked');
-  assert.match(result.problems.join('\n'), /does not match FLOW_DMG_URL/);
   assert.match(result.problems.join('\n'), /no appended signed-feed block/);
+});
+
+test('the feed naming a different DMG than the CTA is no longer a failure', () => {
+  // This is the migration's whole point and is worth a test of its own, because
+  // it is the one assertion that was deliberately REMOVED. The stable CTA and a
+  // versioned enclosure differ by design; a future edit that reinstates the
+  // comparison would block every deploy, so pin the intended behaviour.
+  const result = evaluateFlowReleaseBoundary({
+    launchSource: launch(true),
+    pricingSource: pricing(stableDmg),
+    appcastSource: signedAppcast('https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.6/1563/Orionfold-Flow-1.5.6-1563.dmg'),
+    releaseDeclared: 'true',
+    releasesSource: releases(throwawayPublic),
+  });
+  assert.deepEqual(result.problems, []);
+  assert.equal(result.state, 'release-ready');
+});
+
+test('a CTA that drifts back to a versioned path is blocked', () => {
+  // The failure this replaces the enclosure check with: if someone resumes
+  // hand-editing the CTA per release, the deploy stops.
+  const result = evaluateFlowReleaseBoundary({
+    launchSource: launch(true),
+    pricingSource: pricing('https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.6/1563/Orionfold-Flow-1.5.6-1563.dmg'),
+    appcastSource: signedAppcast(),
+    releaseDeclared: 'true',
+    releasesSource: releases(throwawayPublic),
+  });
+  assert.equal(result.state, 'blocked');
+  assert.match(result.problems.join('\n'), /must be the stable download object/);
 });
 
 // ---------------------------------------------------------------------------

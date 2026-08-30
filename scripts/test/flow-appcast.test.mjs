@@ -59,17 +59,21 @@ assert.doesNotMatch(
   xml,
   /sparkle-sign-warning/,
   'the feed was signed without --disable-signing-warning, which re-serialised the XML. ' +
-  `Run \`npm run build:appcast\` and then: ${SIGN_FEED_COMMAND}`,
+  'This feed is FROZEN at build 1526 (2026-08-29) — the product lane publishes releases now. ' +
+  `Restore the committed bytes with git rather than regenerating: ${SIGN_FEED_COMMAND}`,
 );
 
 // The content half must be exactly what the generator produces from the
-// committed data. Otherwise someone hand-edited the XML and the next run of
-// `npm run build:appcast` silently reverts it (and drops the signature).
+// committed data. Since 2026-08-29 this is a FREEZE check rather than a
+// staleness check: the feed and the data are both frozen at build 1526, so any
+// divergence means someone edited one of them by hand, and the served feed the
+// installed copies poll would no longer be the operator-signed bytes.
 assert.equal(
   xml,
   renderAppcast(RELEASES),
-  'public/flow/appcast.xml content is stale or hand-edited — run `npm run build:appcast`, ' +
-  `then sign it: ${SIGN_FEED_COMMAND}`,
+  'public/flow/appcast.xml no longer matches src/data/flow-releases.ts. Both are FROZEN ' +
+  'at build 1526 (2026-08-29, ledger 20:55) — the product lane publishes releases now, so ' +
+  'the fix is to restore the committed bytes with git, NOT to regenerate and re-sign.',
 );
 
 // ---------------------------------------------------------------------------

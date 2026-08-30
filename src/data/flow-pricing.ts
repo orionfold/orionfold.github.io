@@ -146,9 +146,20 @@ export const FLOW_LAPSE_FACTS: string[] = [
 //
 // The host is the vanity host in front of the public `flow-downloads` bucket,
 // never the project ref and never orionfold.com (this repo is public and GitHub
-// rejects files over 100 MB). The path is versioned and immutable, so a new
-// release is a new URL, never an overwrite.
-export const FLOW_DMG_URL = "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/1.5.5/1526/Orionfold-Flow-1.5.5-1526.dmg";
+// rejects files over 100 MB).
+//
+// 2026-08-29 (ledger 20:55 / 21:12 PDT): THIS URL IS NOW PERMANENT AND NEVER
+// CHANGES AGAIN. It was a versioned, immutable path rewritten on every release,
+// which made the CTA a per-release edit in this repo. The product lane now
+// publishes a stable object beside the versioned ones and overwrites it on each
+// release, so the CTA always serves the current build with no edit here.
+//
+// The consequence for the deploy gate, which is the whole reason the two edits
+// shipped together: this URL no longer equals the newest appcast enclosure —
+// that is now false BY CONSTRUCTION, not a defect — so
+// scripts/check-flow-release-boundary.mjs no longer compares them. See the
+// header of that script for what replaced the comparison and why.
+export const FLOW_DMG_URL = "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/Orionfold-Flow.dmg";
 
 /** True when the download URL is no longer the placeholder.
  *

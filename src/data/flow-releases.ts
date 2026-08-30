@@ -14,9 +14,25 @@
 // URLs are NOT baked — they are fields inside each entry here and are rewritten
 // on every release, which is what lets the binary host move freely later.
 //
-// HOW TO PUBLISH A RELEASE: add an entry to RELEASES below, run
-// `npm run build:appcast`, and commit. The generator refuses anything Sparkle
-// would mis-serve. See scripts/build-flow-appcast.mjs.
+// THIS FILE IS FROZEN AS OF 2026-08-29 (ledger 20:55 / 21:12 PDT, goal 0191).
+// DO NOT ADD RELEASES HERE AND DO NOT RUN `npm run build:appcast` ON A RELEASE.
+// The product lane (orionfold-flow/scripts/flow-appcast/) now generates, signs
+// and publishes the appcast itself, to a stable object beside the DMG. The
+// website is permanently out of the per-release path: no appcast work, ever
+// again. Its generator reproduces this feed byte-for-byte (md5
+// bb5d594e1c1b548d8c3f6d08be2ee7e4), so nothing was lost in the handover.
+//
+// WHY public/flow/appcast.xml IS STILL COMMITTED. `SUFeedURL` is baked into
+// every shipped binary, so the ~8 installed copies (1.5.1–1.5.5) poll
+// https://orionfold.com/flow/appcast.xml forever. Until a Cloudflare redirect
+// sends that path at the product lane's feed, this committed file is the ONLY
+// thing answering it — deleting it now 404s every installed copy's update
+// check. It is frozen at build 1526, not maintained: newer releases reach users
+// through the product lane's feed. Delete this file and repoint /flow/ only
+// once the redirect is live and verified.
+//
+// The entries below are kept verbatim as the seed the product lane copied and
+// as the record of what this lane published; they are history, not a queue.
 
 /** One published Flow release. Every field is required for a real entry. */
 export interface FlowRelease {

@@ -3,15 +3,42 @@
 // Local launch rehearsal deliberately renders the released layout before the
 // signed package exists. That is useful for review, but it must never become an
 // accidental public release. The deployment workflow calls this script before
-// it builds. A live Flow surface therefore needs all three independent facts:
-// an operator declaration, a permanent public DMG, and a signed non-empty
-// Sparkle appcast whose current enclosure is that same DMG.
+// it builds. A live Flow surface therefore needs three independent facts: an
+// operator declaration, a permanent public DMG at the stable download URL, and
+// a signed non-empty Sparkle appcast.
+//
+// WHAT CHANGED 2026-08-29, AND WHY THE ENCLOSURE COMPARISON HAD TO GO (ledger
+// 20:55 / 21:12 PDT). This script used to require that FLOW_DMG_URL equal the
+// newest appcast enclosure. That held only while the CTA was rewritten to a new
+// versioned path on every release. The CTA is now a STABLE URL that the product
+// lane overwrites in place, so it can never again equal a versioned enclosure —
+// the old assertion would fail by construction and block every site deploy,
+// including deploys with nothing to do with Flow.
+//
+// It is deliberately NOT replaced by a sha256 comparison against the published
+// artifact. That check needs a 46 MB download at deploy time, which would make
+// an unrelated deploy fail on a network blip; and after the feed moved out of
+// this repo it would have this lane asserting, over the network, an invariant
+// that belongs to the lane that publishes it. The product lane already verifies
+// exactly that — publish-dmg.sh hashes the stable object against the versioned
+// release on every publish, and its feed step verifies the newest entry's
+// edSignature against the real bytes before rendering (ledger 21:05 / 21:12).
+//
+// So what this gate still owns is what is local and public-facing: the CTA must
+// be a real HTTPS DMG on the download host, never a placeholder, never this
+// public repo, and it must not go live without the operator declaration. Every
+// signature guarantee below is unchanged.
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { verifyFeedSignature } from './lib/sparkle-feed.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+// The one permanent download object. Kept here rather than imported so this
+// gate still fails if src/data/flow-pricing.ts is edited to point elsewhere.
+const STABLE_DMG_HOST = 'orionfold.supabase.co';
+const STABLE_DMG_PATH = '/storage/v1/object/public/flow-downloads/Orionfold-Flow.dmg';
 
 const exportedBoolean = (source, name) => {
   const match = source.match(new RegExp(`export\\s+const\\s+${name}\\s*=\\s*(true|false)\\s*;`));
@@ -68,14 +95,20 @@ export function evaluateFlowReleaseBoundary({
     }
   }
 
+  // The CTA points at the stable object the product lane overwrites on each
+  // release. Pinning the exact path is what keeps this a real assertion rather
+  // than a vague "some DMG somewhere": a versioned path here would mean the
+  // per-release CTA edit had crept back in.
+  if (parsedDmg && parsedDmg.hostname === STABLE_DMG_HOST && parsedDmg.pathname !== STABLE_DMG_PATH) {
+    problems.push(
+      `FLOW_DMG_URL must be the stable download object (${STABLE_DMG_PATH}), not a per-release versioned path`,
+    );
+  }
+
   const item = appcastSource.match(/<item>[\s\S]*?<\/item>/)?.[0] ?? '';
   if (!item) {
     problems.push('the Sparkle appcast has no published release item');
   } else {
-    const enclosureUrl = item.match(/<enclosure\b[^>]*\burl="([^"]+)"/)?.[1];
-    if (enclosureUrl !== dmgUrl) {
-      problems.push('the current appcast enclosure does not match FLOW_DMG_URL');
-    }
     if (!/\bsparkle:edSignature="[A-Za-z0-9+/=]+"/.test(item)) {
       problems.push('the current DMG has no Sparkle EdDSA signature');
     }
@@ -128,7 +161,7 @@ async function main() {
     process.exitCode = 1;
     return;
   }
-  console.log('[flow-release-boundary] pass: operator declaration, DMG, and signed appcast agree');
+  console.log('[flow-release-boundary] pass: operator declaration, stable DMG, and signed appcast agree');
 }
 
 const invokedPath = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : '';

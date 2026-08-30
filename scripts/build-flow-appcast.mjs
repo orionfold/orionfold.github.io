@@ -9,9 +9,17 @@
 // generator that refuses to emit a feed Sparkle would mis-serve is the only
 // thing that catches a defect whose entire nature is looking healthy.
 //
-// The release data lives in src/data/flow-releases.ts. To publish a release,
-// add an entry there and re-run this. Never hand-edit the XML — it is a build
-// artifact and will be overwritten.
+// RETIRED 2026-08-29 (ledger 20:55 / 21:12 PDT, goal 0191). THIS GENERATOR IS
+// NO LONGER PART OF ANY RELEASE. The product lane owns generating, signing and
+// publishing the appcast (orionfold-flow/scripts/flow-appcast/), which lets it
+// release without this repo and without running website CI to ship one XML
+// file. Running this now would overwrite a frozen, operator-signed feed with an
+// unsigned one and break every installed copy's update check, so main() refuses
+// unless FLOW_APPCAST_ALLOW_RETIRED_WRITE=1 is set deliberately.
+//
+// Kept rather than deleted because public/flow/appcast.xml is still served (see
+// src/data/flow-releases.ts for why) and this is the record of how those exact
+// bytes were produced.
 //
 // THE SIGNED-FEED CAVEAT, measured from Sparkle's own sources rather than docs.
 // The app sets `SURequireSignedFeed`, so once releases exist the feed must
@@ -230,6 +238,17 @@ ${emptyNote}${items}  </channel>
 }
 
 async function main() {
+  if (process.env.FLOW_APPCAST_ALLOW_RETIRED_WRITE !== "1") {
+    console.error("[appcast] RETIRED — refusing to write.");
+    console.error("[appcast] The product lane generates, signs and publishes the feed since 2026-08-29");
+    console.error("[appcast] (orionfold-flow/scripts/flow-appcast/). public/flow/appcast.xml here is");
+    console.error("[appcast] FROZEN at build 1526 and operator-signed; regenerating it would strip the");
+    console.error("[appcast] signature and break the update check for every installed copy.");
+    console.error("[appcast] If you genuinely need to rewrite it, set FLOW_APPCAST_ALLOW_RETIRED_WRITE=1");
+    console.error("[appcast] and re-sign it before committing.");
+    process.exit(1);
+  }
+
   const problems = validate(RELEASES);
   if (problems.length) {
     console.error("[appcast] refusing to write — Sparkle would mis-serve this feed:\n");
