@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+/* VENDORED DEMOS ARE NOT OUR SOURCE. Tailwind v4 auto-detects what to scan, and
+   it was walking public/{relay,arena}/demo/ — self-contained Next.js bundles we
+   ship as static pages but do not author. Their classnames leaked into OUR
+   stylesheet: an entire dark-appearance media block (19 rules, ~1.4KB) came
+   from their night-mode variant utilities, even though this site has had no
+   such theme since it was retired — plus ~51KB of others we never write.
+   Excluding them cut the shared bundle 184KB -> 133KB raw (29.8 -> 21.4KB
+   gzip), on all 148 pages.
+   Found 2026-08-30. Guarded by scripts/test/no-dark-theme-css.test.mjs. */
+@source not "../../public/relay/demo";
+@source not "../../public/arena/demo";
+
 /* ── Self-hosted fonts (preloaded in Layout.astro) ── */
 @font-face {
   font-family: 'Geist Sans';

@@ -86,7 +86,10 @@ const {
       </p>
       <div class="flow-launch-hero__chips">
         <span class="flow-launch-hero__chip">
-          <Image src={appIcon} alt="" width={40} height={40} class="flow-launch-hero__app-icon" loading="eager" />
+          {/* Decorative 40px badge (alt=""), deliberately NOT eager: it was
+              competing for early bandwidth with the LCP product shot below.
+              One eager image per page, and it is the LCP candidate. */}
+          <Image src={appIcon} alt="" width={40} height={40} class="flow-launch-hero__app-icon" loading="lazy" />
           Orionfold Flow
         </span>
         <span class="flow-launch-hero__chip flow-launch-hero__chip--accent">Native Mac app</span>
@@ -128,10 +131,32 @@ const {
       <aside class="flow-launch-hero__product home-hero__shot" aria-label="Real Flow product proof">
         <div class="flow-launch-hero__product-window">
           <div class="home-hero__shot-frame">
+            {/* PRIORITY IS PER BACKGROUND, and which way to go was settled by
+                the device split, not by intuition. Measured 2026-08-30:
+
+                  desktop 69.3% of users · 79.4% of events · 64.7% of key events
+                  mobile  28.8%          · 18.9%           · 17.7%
+                  (GA4 Tech details, trailing 28d, stable all month)
+
+                DESKTOP is the majority and the engaged majority (54s vs 25s),
+                and there this shot IS the LCP element — eager+high takes it to
+                ~0.9s. On mobile the LCP element is the <h1> instead, blocked on
+                font/CSS: its phase split is 88% RENDER DELAY, 0% load delay,
+                0% load time, so prioritising an image cannot help and costs a
+                measured 0.15s (3.90s -> 4.05s, deterministic over three runs).
+
+                Net: help the 69% materially, cost the 29% 0.15s on a metric no
+                image change can fix. The real mobile lever is render delay —
+                font-display and critical CSS — tracked separately, NOT here.
+
+                racing (homepage) — a full-bleed campaign photograph is the LCP
+                and already carries eager + fetchpriority=high; this shot must
+                NOT compete with it. Guarded by home-hero-product-shot.test. */}
             <FlowShot
               src={shot}
               alt={shotAlt}
               natural
+              priority={heroBackground === 'blueprint'}
               sizes="(min-width: 1280px) 54rem, (min-width: 920px) 48rem, calc(100vw - 2rem)"
             />
             <span class="home-hero__sheen" aria-hidden="true"></span>
@@ -255,7 +280,7 @@ const {
     margin-top: 0;
     opacity: 0.9;
     color: #f5fbfb;
-    font: 850 clamp(3.15rem, 7.5vw, 7rem)/0.87 var(--font-display);
+    font: 700 clamp(3.15rem, 7.5vw, 7rem)/0.87 var(--font-display);
     letter-spacing: -0.07em;
     text-wrap: balance;
     text-shadow: 0 0.08em 0.42em rgba(0, 0, 0, 0.62);

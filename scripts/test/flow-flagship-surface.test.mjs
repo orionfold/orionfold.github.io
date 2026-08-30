@@ -114,7 +114,20 @@ assert.match(flow, /offline/i, '/flow/ hero keeps the offline claim');
 assert.match(flow, /diff you approve/i, '/flow/ still states the approval promise somewhere on the page');
 // The founder line is one-of-one evidence and quotes a real published
 // sentence; it must keep its source link rather than becoming loose copy.
-assert.match(sharedHero, /\.flow-launch-hero h1\s*\{[\s\S]*font:\s*850 clamp\(3\.15rem, 7\.5vw, 7rem\)/, 'the /flow/ title inherits the homepage hero scale');
+// SCALE is the invariant here; the weight is asserted separately below because
+// the two are independent and were previously pinned together in one regex.
+assert.match(sharedHero, /\.flow-launch-hero h1\s*\{[\s\S]*font:\s*\d{3} clamp\(3\.15rem, 7\.5vw, 7rem\)/, 'the /flow/ title inherits the homepage hero scale');
+// WEIGHT MUST BE A WEIGHT THAT EXISTS. Geist Sans ships static 400/500/700 only
+// (public/fonts/geist-sans-latin-{400,500,700}-normal.woff2). Asking for 850, as
+// this rule did until 2026-08-30, makes the browser SYNTHESISE a faux-bold from
+// 700 — heavier, blurrier, and different from the real face. Geist Mono is the
+// variable font (100-900), so 800 stays legitimate there; this guard is for the
+// display family only.
+assert.match(
+  sharedHero,
+  /\.flow-launch-hero h1\s*\{[\s\S]*font:\s*(400|500|700) clamp/,
+  'the /flow/ title uses a Geist Sans weight that actually ships (400/500/700), never a synthesised one',
+);
 assert.match(flow, /const FLOW_TITLE = 'Orionfold Flow for Mac · AI proposes each change\. You approve it\.'/, 'the title tag carries the approved benefit promise');
 assert.match(flow, /const FLOW_DESCRIPTION = 'Flow is a native Mac app for documents you own\. AI proposes exact changes, you approve them, and every run leaves an inspectable receipt\.'/,
   'the description answers what Flow is, how it works, and why the record matters');

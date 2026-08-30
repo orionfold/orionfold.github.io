@@ -29,7 +29,26 @@ assert.match(hero, /flow-launch-hero__product-window[\s\S]*--flow-product-edge-b
 assert.match(hero, /flow-launch-hero__product-window > \.home-hero__shot-frame\s*\{[\s\S]*?width:\s*110%;[\s\S]*?margin-left:\s*-10%;/, 'large desktop product proof grows ten percent while staying right-anchored');
 assert.doesNotMatch(hero, /width:\s*111\.111%|clip-path:\s*inset\(-4rem 0 -4rem -4rem\)/, 'product proof is not enlarged behind a clipping mask');
 assert.doesNotMatch(hero, /Real Flow build|Live cockpit|Product evidence from the running Mac build/, 'product proof carries no badge or caption');
-assert.doesNotMatch(hero, /src=\{shot\}[\s\S]{0,260}?\bpriority\b/, 'product proof does not compete with the LCP background');
+// The product shot must not compete with the homepage's LCP, which is the
+// full-bleed campaign photograph. It was asserted as "the source never says
+// `priority` near src={shot}" — a text proxy that broke on 2026-08-30 when the
+// shared hero learned to prioritise per background. The rule it stood for is
+// unchanged; what changed is that ONE component now serves two heroes:
+//   racing (homepage)  — photo background is the LCP, shot must stay lazy
+//   blueprint (/flow/) — CSS-grid background, no image, so the SHOT is the LCP
+// So assert the condition rather than the absence: priority is bound to the
+// blueprint background, never unconditional. Rendered output for both pages is
+// verified in flow-flagship-surface.test.mjs.
+assert.doesNotMatch(
+  hero,
+  /src=\{shot\}[\s\S]{0,400}?\bpriority\b(?!=\{heroBackground === 'blueprint'\})/,
+  'product proof never takes priority unconditionally — it would compete with the homepage LCP background',
+);
+assert.match(
+  hero,
+  /src=\{shot\}[\s\S]{0,400}?priority=\{heroBackground === 'blueprint'\}/,
+  'product proof takes LCP priority only on the blueprint background (/flow/), where no background image exists',
+);
 assert.match(hero, /home-hero__shot-frame/);
 assert.match(hero, /home-hero__sheen/);
 assert.match(css, /@keyframes home-hero-float/);
