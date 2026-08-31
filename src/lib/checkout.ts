@@ -16,6 +16,15 @@ import { COMMERCE_FUNCTIONS_BASE } from "./commerce-config";
 
 const FUNCTIONS_BASE = COMMERCE_FUNCTIONS_BASE;
 
+// Delegate to the global gtag shim installed in Layout.astro (it pushes the raw
+// `arguments` object to dataLayer, which gtag.js requires — do NOT reimplement it
+// with a plain array push, which gtag.js will not process). A no-op when gtag is
+// absent, which is every non-canonical host.
+function gtag(...args: unknown[]): void {
+  const w = window as unknown as { gtag?: (...a: unknown[]) => void };
+  if (typeof w.gtag === "function") w.gtag(...args);
+}
+
 interface PostResult {
   ok: boolean;
   status: number;
@@ -55,6 +64,23 @@ export async function startCheckout(
   // session metadata — the durable ad→purchase join key (Task 4).
   const attribution = getAttribution();
   if (Object.keys(attribution).length) payload.attribution = attribution;
+
+  // GA4 `begin_checkout` (2026-08-31). Until now the site fired NOTHING when
+  // someone clicked Buy: the first trace of a checkout was the Stripe session
+  // itself, so an expired empty session could not be told apart from a bot that
+  // never had a person behind it. This is the missing half of that read — pair it
+  // with the `client_bucket` metadata the edge function now records.
+  //
+  // Fired BEFORE the network call on purpose. The success path ends in
+  // `window.location.assign`, which never returns, and a slow or failed POST is
+  // exactly the case worth seeing. So this counts INTENT (a Buy click), not a
+  // created session: begin_checkout > Stripe sessions means we lost people
+  // before Stripe, the reverse means sessions are being created without a click.
+  // Both readings are only possible because the event is unconditional here.
+  gtag("event", "begin_checkout", {
+    items: [{ item_id: lookupKey, item_name: itemId || undefined }],
+  });
+
   const { ok, data } = await postJson("create-checkout-session", payload);
   if (ok && typeof data.url === "string") {
     window.location.assign(data.url);

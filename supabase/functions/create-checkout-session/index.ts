@@ -26,6 +26,7 @@ import {
   workshopCheckoutRoutes,
 } from "../_shared/workshop-contract.ts";
 import { relayHostPriceMatches } from "../_shared/relay-host-delivery.ts";
+import { clientMetadata } from "../_shared/client-class.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
   apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
@@ -158,6 +159,19 @@ Deno.serve(async (req) => {
     // initiative even if the browser pixel is incomplete.
     const attribution = sanitizeAttribution(body.attribution);
 
+    // Client classification (2026-08-31). Three live sessions in one week expired
+    // with nothing filled in — no email, no country, no address. Two carried an
+    // answer-engine utm_source, which reads as "answer engines send buyers who
+    // abandon" ONLY if you assume a person was there. An automated client
+    // produces an identical empty session, and nothing recorded which it was.
+    // This stores a coarse bucket ("bot"/"ai-agent"/"browser"/…) derived from the
+    // caller's User-Agent, never the raw string. It is a HINT, never a gate:
+    // nothing below branches on it, so a spoofed or misread UA cannot cost anyone
+    // a purchase. Read it beside the GA4 `begin_checkout` event — a Stripe session
+    // with no matching GA4 event is the stronger automation signal, because a real
+    // browser fires both.
+    const client = clientMetadata(req.headers.get("user-agent"));
+
     // MULTI-SEAT (option (a), operator 2026-08-22). A buyer may purchase N
     // seats in one transaction and distribute the licence themselves. Stripe
     // multiplies the per-unit price by `quantity`; there is no bundle SKU.
@@ -225,6 +239,7 @@ Deno.serve(async (req) => {
     // absent key and a later audit can tell "bought one" from "pre-seats".
     if (supportsMultipleSeats(effectiveKey)) metadata.seats = String(seats);
     Object.assign(metadata, attribution);
+    Object.assign(metadata, client);
     // roadmap_item = the single/primary item (the deployed C3 webhook persists this
     // to purchases/sponsors). roadmap_items = the full comma-joined selection when
     // a sponsorship is started from the roadmap multi-select (a priority signal,
