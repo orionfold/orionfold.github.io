@@ -1,36 +1,14 @@
 ---
-// Orionfold top nav: parent mark + "Orionfold" wordmark ("fold" in primary),
-// a product-led link set, mobile hamburger, and a scroll-triggered blur.
-// Ported from the donor Nav, minus ThemeToggle and the in-nav social icon
-// (social links live in the Footer per the spec).
-// IA refocus 2026-06-22 made the top nav product-led. Models → /experts/ and
-// Books → /learn/ remain the customer-facing labels; Workflows + Adoption stay
-// footer-linked for SEO/AEO.
-// 2026-06-24: Advisor removed from the top nav (still reachable at /advisor/ and
-// footer-linked); the nav leads with the flagship products.
-// 2026-07-01: Relay (/relay/) joined the product nav. Story (/story/) stays after
-// Books behind its own divider.
-// 2026-07-01 (later): Arena repointed /cockpit/ -> /arena/ (the new flagship
-// landing page, parallel to /proof/ + /relay/). /cockpit/ stays live + footer-
-// linked (keeps its SEO equity); the /software/arena/ detail page was retired the
-// same day and 301s to /arena/ (the single canonical Arena surface).
-// 2026-07-31: Flow becomes the lead flagship. Proof remains in the footer and
-// contextual evidence surfaces but leaves the top-level product set.
-import BrandMark from './ui/BrandMark.astro';
-// 2026-08-14 Flow-flagship takeover: Models and Training moved to the footer's
-// Products column and directory band. Flow leads the flagship family with
-// Relay and Arena beside it; Books and Story follow the product divider. The
-// persistent sticky bar switched from the book magnet to the Flow waitlist
-// (same slot, same dismissal mechanics, new localStorage key so users who
-// dismissed the old book bar still see this one once). The magnet page stays
-// live and footer-linked.
+// Shared navigation: Living Documents first, then Story and Books after a dot.
+// Download intent, launch gating, and sticky-bar consent mechanics stay shared.
+import Wordmark from './ui/Wordmark.astro';
 // `divider: true` renders a separator immediately BEFORE that link.
 const links = [
-  { href: '/flow/', label: 'Flow' },
-  { href: '/relay/', label: 'Relay' },
-  { href: '/arena/', label: 'Arena' },
-  { href: '/learn/', label: 'Books', divider: true },
-  { href: '/story/', label: 'Story' },
+  { href: '/flow/', label: 'Flow', divider: false },
+  { href: '/essay/', label: 'Essay', divider: false },
+  { href: '/manifesto/', label: 'The Manifesto', divider: false },
+  { href: '/story/', label: 'Story', divider: true },
+  { href: '/learn/', label: 'Books', divider: false },
 ];
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import { FLOW_DMG_URL } from '../data/flow-pricing.ts';
@@ -61,8 +39,8 @@ const stickyCtaLabel = navCtaLabel;
     <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-6 py-1.5">
       <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
       <p class="text-center text-sm leading-tight">
-        <span class="font-semibold">You're on the Flow waitlist.</span>
-        <span class="text-text-muted">One email a week until launch, no more.</span>
+        <span id="confirm-bar-text" class="font-semibold">You're subscribed.</span>
+        <span id="confirm-bar-detail" class="text-text-muted">Thanks for joining Orionfold.</span>
       </p>
       <a
         id="confirm-bar-cta"
@@ -92,7 +70,7 @@ const stickyCtaLabel = navCtaLabel;
       >
         <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l4 4v16H6zM15 2v5h4M9 12h6M9 16h3"/><path d="M13 17l2 2 4-5"/></svg>
         {flowLive ? (
-          <span><span class="font-semibold">Orionfold Flow for Mac</span> <span class="text-text-muted">· free to use, AI is the subscription</span></span>
+          <span><span class="font-semibold">Orionfold Flow for Mac</span> <span class="text-text-muted">· Base is free forever. 10 Pro days included.</span></span>
         ) : (
           <span><span class="font-semibold">Orionfold Flow is coming to Mac</span> <span class="text-text-muted">· patent-pending AI agency for documents</span></span>
         )}
@@ -109,42 +87,35 @@ const stickyCtaLabel = navCtaLabel;
     </div>
   </div>
   <nav id="main-nav" aria-label="Main navigation" class="border-b border-transparent transition-[border-color] duration-300">
-  <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-    <a
-      href="/"
-      class="group inline-flex items-center gap-1.5 text-text transition-colors hover:text-primary -ml-1"
-      aria-label="Orionfold home"
-    >
-      <BrandMark size={32} class="h-8 w-8" />
-      <span class="text-2xl font-semibold tracking-tight leading-none">
-        <span class="text-text">Orion</span><span class="text-primary">fold</span>
-      </span>
-    </a>
+  <div class="living-nav-shell mx-auto py-5 flex items-center justify-between">
+    <Wordmark />
 
     <!-- Desktop nav -->
-    <div class="hidden md:flex items-center gap-6">
+    <div class="living-nav-links items-center">
       {links.map((link) => (
         <Fragment>
-          {link.divider && <span class="h-4 w-px bg-border" aria-hidden="true"></span>}
+          {link.divider && <span class="living-nav-divider" aria-hidden="true">·</span>}
           <a
             href={link.href}
-            class="font-mono text-xs tracking-widest text-text-muted hover:text-primary transition-colors"
+            aria-current={Astro.url.pathname === link.href ? "page" : undefined}
+            class="living-nav-link text-text-muted hover:text-primary transition-colors"
             data-astro-prefetch
           >
             {link.label}
           </a>
         </Fragment>
       ))}
+
     </div>
 
     <!-- Right cluster: primary action + mobile hamburger -->
-    <div class="flex items-center gap-4">
+    <div class="living-nav-actions flex items-center">
       <a
         href={flowDownloadHref}
-        class="hidden lg:inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 font-mono text-[0.68rem] font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90"
+        class="living-nav-cta living-nav-cta--desktop items-center justify-center rounded-full bg-primary text-accent-text transition-colors hover:bg-primary/90"
         data-astro-prefetch={flowLive ? undefined : true}
         data-flow-download={flowLive ? 'nav-desktop' : undefined}
-      >{navCtaLabel}</a>
+      >{flowLive && (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v12m-5-5 5 5 5-5M5 16v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" /></svg>)}<span>{navCtaLabel}</span></a>
       <!-- Mobile hamburger — CSS-only disclosure. A visually-hidden checkbox is
            the real control; the <label> below toggles it. The menu open/close and
            the icon swap are driven purely by `#main-nav:has(...:checked)` CSS
@@ -156,7 +127,7 @@ const stickyCtaLabel = navCtaLabel;
       <label
         for="mobile-menu-toggle"
         id="mobile-menu-btn"
-        class="md:hidden text-text-muted hover:text-primary transition-colors cursor-pointer"
+        class="text-text-muted hover:text-primary transition-colors cursor-pointer"
       >
         <svg id="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M4 6h16M4 12h16M4 18h16" />
@@ -172,15 +143,15 @@ const stickyCtaLabel = navCtaLabel;
        on every paint of the dropdown, which made it feel slow to open on real
        phones; a solid surface paints instantly. Shadow restores the depth the
        translucency used to give. Opened by the CSS at the bottom. -->
-  <div id="mobile-menu" class="hidden md:hidden border-t border-border bg-surface shadow-xl">
-    <div class="px-6 py-4 flex flex-col gap-3">
+  <div id="mobile-menu" class="hidden border-t border-border bg-surface shadow-xl">
+    <div class="living-mobile-links px-6 py-4 flex flex-col gap-3">
       {links.map((link) => (
         <Fragment>
-          {link.divider && <span class="h-px w-full bg-border my-1" aria-hidden="true"></span>}
-          <a href={link.href} class="font-mono text-sm text-text-muted hover:text-primary transition-colors py-2" data-astro-prefetch>{link.label}</a>
+          {link.divider && <span class="living-nav-divider" aria-hidden="true">·</span>}
+          <a href={link.href} class="living-nav-link text-text-muted hover:text-primary transition-colors py-2" data-astro-prefetch>{link.label}</a>
         </Fragment>
       ))}
-      <a href={flowDownloadHref} class="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 font-mono text-xs font-semibold tracking-wider text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowLive ? undefined : true} data-flow-download={flowLive ? 'nav-mobile' : undefined}>{navCtaLabel}</a>
+      <a href={flowDownloadHref} class="living-nav-cta mt-2 inline-flex items-center justify-center rounded-full bg-primary text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowLive ? undefined : true} data-flow-download={flowLive ? 'nav-mobile' : undefined}>{flowLive && (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v12m-5-5 5 5 5-5M5 16v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" /></svg>)}<span>{navCtaLabel}</span></a>
     </div>
   </div>
 </nav>
@@ -190,9 +161,9 @@ const stickyCtaLabel = navCtaLabel;
   /* CSS-only mobile menu (see the markup above). The hidden checkbox's state
      opens the dropdown and swaps the hamburger/close icons with no JavaScript,
      so the menu responds the moment the page paints. Scoped to the mobile
-     breakpoint so the desktop nav (md: and up) is never affected even if the
+     breakpoint so the desktop nav (1100px and up) is never affected even if the
      checkbox is left checked when the viewport is resized. */
-  @media (max-width: 767.98px) {
+  @media (max-width: 1099.98px) {
     #main-nav:has(#mobile-menu-toggle:checked) #mobile-menu { display: block; }
     #main-nav:has(#mobile-menu-toggle:checked) #hamburger-icon { display: none; }
     #main-nav:has(#mobile-menu-toggle:checked) #close-icon { display: block; }
@@ -200,12 +171,20 @@ const stickyCtaLabel = navCtaLabel;
 </style>
 
 <script>
+  let disposeNav: (() => void) | undefined;
   function initNav() {
+    disposeNav?.();
     // The mobile menu is a pure-CSS disclosure. This script owns the scroll blur
     // and the persistent Flow callout bar.
     const nav = document.getElementById('main-nav');
     const navWrapper = document.getElementById('nav-wrapper');
     if (!nav || !navWrapper) return;
+    const updateOffset = () => {
+      const menu = document.getElementById('mobile-menu');
+      const menuHeight = menu && getComputedStyle(menu).display !== 'none' ? menu.getBoundingClientRect().height : 0;
+      document.documentElement.style.setProperty('--of-nav-height', `${Math.ceil(navWrapper.getBoundingClientRect().height - menuHeight)}px`);
+    };
+    const resizeObserver = new ResizeObserver(updateOffset);
 
     // Scroll-triggered blur
     let scrolled = false;
@@ -226,6 +205,10 @@ const stickyCtaLabel = navCtaLabel;
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+    disposeNav = () => {
+      window.removeEventListener('scroll', onScroll);
+      resizeObserver.disconnect();
+    };
 
     // Persistent Flow waitlist bar: reveal unless the user dismissed it
     // (localStorage, persists across sessions) or the post-confirm welcome bar
@@ -256,6 +239,10 @@ const stickyCtaLabel = navCtaLabel;
         });
       }
     }
+    // Reserve the settled notice state on the first measurement. Measuring
+    // while its bar is still hidden briefly collapses the reserved hero gap.
+    resizeObserver.observe(navWrapper);
+    updateOffset();
   }
 
   initNav();

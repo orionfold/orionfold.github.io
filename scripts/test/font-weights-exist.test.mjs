@@ -76,3 +76,10 @@ assert.deepEqual(
 );
 
 console.log(`# font-weights-exist: Geist Sans ${[...sansWeights].sort().join('/')} · mono variable · no synthesised weights`);
+
+const foundation = read('src/styles/living-system.css');
+assert.ok(existsSync(new URL('public/fonts/barlow-condensed-bold.woff2', root)), 'display face ships as WOFF2');
+assert.match(foundation, /@font-face\s*\{[^}]*font-family:\s*'Barlow Condensed';[^}]*font-weight:\s*700;/, 'Barlow display uses the real bold face');
+assert.match(read('src/styles/global.css'), /--font-display:\s*"Barlow Condensed"/, 'display typography selects Barlow');
+assert.match(read('src/layouts/Layout.astro'), /barlow-condensed-bold-common\.woff2" as="font"/, 'shared display font is preloaded');
+assert.doesNotMatch(read('src/layouts/Layout.astro'), /barlow[^\n]*\.ttf/, 'display preload does not duplicate the TTF');

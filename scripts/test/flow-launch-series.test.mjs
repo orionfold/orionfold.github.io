@@ -202,18 +202,31 @@ assert.match(
   /titleBeforeHero && \([\s\S]*?\{summary\}<\/p>[\s\S]*?\{flowCta && \([\s\S]*?<FlowDownloadCta source=\{`story-top-\$\{post\.id\}`\} \/>[\s\S]*?<\/header>[\s\S]*?\{hero && \(/,
   'the download story opens with a Download bar under its summary, before the hero image, attributed as story-top',
 );
-// Every story footer ends on Flow (operator 2026-08-26 10:03): no book magnet,
-// no Proof/Relay/Arena band, one Flow block between prev/next and subscribe,
-// waitlist while launch-dark and the canonical download while live.
+// A live story has one yellow closing download in the shared footer, with its
+// original attribution. The separate waitlist block remains launch-dark only;
+// contextual mid-article downloads remain gray.
 assert.doesNotMatch(storyRoute, /MagnetBand|ProductBand/, 'the book magnet and the product band left the story footer');
-assert.match(storyRoute, /<StoryPrevNext[\s\S]*?<FlowStoryCta[\s\S]*?<StorySubscribe/, 'the footer Flow block sits between prev/next and the subscribe form');
+assert.match(storyRoute, /<StoryPrevNext[\s\S]*?\{!ORIONFOLD_FLOW_LIVE && !hasMidStoryFlowCta && \([\s\S]*?<FlowStoryCta[\s\S]*?<StorySubscribe/, 'the old footer waitlist survives only while launch-dark');
+assert.match(storyRoute, /<StorySubscribe[^>]*\/>\s*<Footer downloadSource=\{footerFlowCta\.downloadSource\} \/>/, 'the single shared closing download retains story-footer attribution');
 assert.match(storyRoute, /const hasMidStoryFlowCta = post\.id in FLOW_CTA;/, 'a story with the mid-article block does not repeat it at the foot');
 assert.match(storyRoute, /href: '\/flow\/#waitlist',\s*ctaText: 'Join the waitlist'/, 'launch-dark footer asks for the waitlist, not a download');
 assert.match(storyRoute, /href: FLOW_DMG_URL,\s*ctaText: 'Download Flow Now'/, 'live footer uses the one canonical download URL and label');
 const flowStoryCta = readFileSync(new URL('../../src/components/story/FlowStoryCta.astro', import.meta.url), 'utf8');
-assert.match(flowStoryCta, /<a href="\/flow\/" class="flow-story-cta__tour">\s*Flow Product Tour/, 'the Flow block carries a tour pill on its image into /flow/');
-assert.match(flowStoryCta, /<a href="\/flow\/" class="flow-story-cta__figure"/, 'the Flow block image opens the Flow landing page, not the package');
-assert.match(flowStoryCta, /<FlowDownloadCta source=\{downloadSource\} size="large" \/>/, 'the live Flow block reuses the home-hero download bar');
+assert.match(flowStoryCta, /<PaperCta source=\{downloadSource \?\? 'story-download'\}/, 'the Flow block preserves attribution through the shared origami download CTA');
+assert.doesNotMatch(flowStoryCta, /FlowRaceBlueprint|<Image/, 'story acquisition uses the origami CTA family');
+assert.match(flowStoryCta, /tone=\{placement === 'footer' \? 'yellow' : 'gray'\}/, 'middle story CTAs remain gray and the retained launch-dark closer is yellow');
+for (const prop of ['eyebrow', 'heading', 'description']) assert.match(flowStoryCta, new RegExp(`${prop}=\\{downloadSource \\? undefined :`), `live story ${prop} uses the shared Living Document copy`);
+const retainedWaitlist = readFileSync(new URL('../../src/components/sections/FlowWaitlist.astro', import.meta.url), 'utf8');
+assert.match(retainedWaitlist, /\{live \? \(\s*<PaperCta source=\{`\$\{source\}-download`\} tone="yellow" headingId=\{`\$\{formId\}-heading`\} \/>\s*\) : \(/, 'retained Flow closers keep their download attribution and heading IDs in one yellow band');
+assert.match(retainedWaitlist, /offer="flow-waitlist"/, 'the historical launch-dark capture offer remains intact');
+for (const file of ['src/pages/flow/tour.astro', 'src/pages/flow/enterprise.astro', 'src/components/flow/FlowCategoryPage.astro']) {
+  const caller = readFileSync(new URL('../../' + file, import.meta.url), 'utf8');
+  assert.match(caller, /<Footer showDownload=\{false\} \/>/, `${file} does not duplicate its closing download in Footer`);
+  assert.match(caller, /<FlowWaitlist placement="flow-(?:mid|enterprise)"/, `${file} retains its existing launch states`);
+}
+
+const paperCta = readFileSync(new URL('../../src/components/ui/PaperCta.astro', import.meta.url), 'utf8');
+assert.match(paperCta, /<FlowDownloadCta source=\{source\}/, 'the shared paper block uses the canonical live download control');
 const remarkCta = readFileSync(new URL('../../src/lib/products/remark-proof-cta.mjs', import.meta.url), 'utf8');
 assert.match(remarkCta, /node\.name !== 'flow-cta'/, 'the remark plugin accepts the ::flow-cta directive');
 assert.match(remarkCta, /href="\/flow\/" data-flow-inline-download/, 'inline download links fall back to /flow/ without JavaScript or when Flow is off');

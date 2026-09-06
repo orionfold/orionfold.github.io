@@ -10,26 +10,33 @@ on:
 
 permissions:
   contents: read
+  actions: read
+  deployments: read
   pages: write
   id-token: write
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     # A hung build must not hold the deploy lane for the default six hours.
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       # G-036: production Stripe, Supabase, Resend and private media are active
       # and passed the no-charge release rehearsal. Keep the public build's
       # commercial state explicit at the deployment boundary.
       PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: "true"
+      PUBLIC_SERVICE_MODE: "production"
+      PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED: ${{ vars.PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED || 'false' }}
+      PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED: ${{ vars.PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED || 'false' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -101,9 +108,67 @@ jobs:
           retention-days: 7
 
       - name: Upload artifact
+        id: pages-artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: dist/
+          retention-days: 35
+          include-hidden-files: true
+
+      # The recovery package contains these same checked bytes plus a complete
+      # file-hash manifest. Capture only after every preflight step succeeded.
+      # The separately retained compatibility artifact below is migration-only.
+      - name: Capture release provenance and file manifest
+        env:
+          RELEASE_PAGES_ARTIFACT_ID: ${{ steps.pages-artifact.outputs.artifact_id }}
+        run: node scripts/release-artifact.mjs capture --mode ci --site dist --manifest output/release/site-manifest.json
+
+      - name: Retain checked site and recovery manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-recovery-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            dist/
+            output/release/site-manifest.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 35
+
+
+      - name: Check migration recovery scope against current production
+        id: recovery-scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/migration-recovery.mjs scope --state output/release/migration-scope.json
+
+      # This runs only while production is the fixed baseline or the identical
+      # migration candidate rerun. Later unrelated releases do not manufacture
+      # an obsolete baseline recovery. Failure here blocks this main deploy.
+      - name: Reconstruct and verify migration-compatible recovery
+        if: steps.recovery-scope.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/migration-recovery.mjs prepare --state output/release/migration-scope.json --site dist --manifest output/release/site-manifest.json --bundle output/release/compatible
+
+      # Complete retention before the deploy job can request environment review.
+      - name: Retain verified migration-compatible recovery
+        if: steps.recovery-scope.outputs.eligible == 'true'
+        id: compatible-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-compatible-recovery-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: output/release/compatible/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 35
+
+      - name: Record migration recovery artifact identity
+        if: steps.recovery-scope.outputs.eligible == 'true'
+        env:
+          RECOVERY_ARTIFACT_ID: ${{ steps.compatible-artifact.outputs.artifact-id }}
+          RECOVERY_ARCHIVE_DIGEST: ${{ steps.compatible-artifact.outputs.artifact-digest }}
+        run: |
+          node --input-type=module -e 'import {appendFileSync} from "node:fs"; appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\nRecovery artifact ID: ${process.env.RECOVERY_ARTIFACT_ID}\nArchive digest: ${process.env.RECOVERY_ARCHIVE_DIGEST}\nSource run: ${process.env.GITHUB_RUN_ID}, attempt ${process.env.GITHUB_RUN_ATTEMPT}\n`);'
 
   deploy:
     needs: build

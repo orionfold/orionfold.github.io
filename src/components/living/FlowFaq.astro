@@ -1,0 +1,17 @@
+---
+import faqs from '../../data/living-faq.json';
+---
+<span id="deeper-heading" class="ls-anchor-alias" aria-hidden="true"></span>
+<span id="press-heading" class="ls-anchor-alias" aria-hidden="true"></span>
+
+<section class="ls-container ls-faq" aria-labelledby="faq-heading">
+  <h2 id="faq-heading">A FEW THINGS<br /><span class="ls-stroke">WORTH KNOWING.</span></h2>
+  <div>
+    {faqs.map(faq => (
+      <details>
+        <summary id={faq.id || undefined}>{faq.question}</summary>
+        <p>{faq.parts.map(part => 'href' in part ? <a href={part.href}>{part.text}</a> : part.text)}</p>
+      </details>
+    ))}
+  </div>
+</section>

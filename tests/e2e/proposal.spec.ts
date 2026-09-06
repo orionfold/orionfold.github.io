@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './fixtures';
 
 const consultingRequestEndpoint = 'https://orionfold.supabase.co/functions/v1/consulting-request';
 

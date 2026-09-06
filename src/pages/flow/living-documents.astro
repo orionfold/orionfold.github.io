@@ -1,0 +1,29 @@
+---
+import FlowFeaturePage from '../../components/flow/FlowFeaturePage.astro';
+import FlowDetail from '../../components/flow/FlowDetail.astro';
+import { FLOW_V16_SHOTS as shots } from '../../data/flow-v16';
+const folders = [
+  ['Stock Portfolio', 'Bring holdings, allocation, market context and headlines into one dashboard.'],
+  ['Tax Advisor', 'Organize tax inputs and estimates, with the IRS pages you choose to watch.'],
+  ['Household Budget', 'Compare spending with the plan, track income and read the savings rate.'],
+  ['Job Search', 'See applications and next steps on a timeline, with careers pages and resume files alongside.'],
+  ['Competitor Watch', 'Track your comparison table and notice changes on named public pricing pages.'],
+  ['Team Status', 'Bring each person’s update file into one table, with confidence and milestones.'],
+  ['Living Document Starter', 'Copy a folder with each construct wired once. Keep what your routine needs.'],
+];
+---
+<FlowFeaturePage slug="living-documents" title="Flow Living Documents · Work that keeps up · Orionfold" description="Build living documents from ordinary Markdown, connected data, charts and tables. Seven ready-to-use folders ship with Flow 1.6 for Mac.">
+  <section class="flow-feature-section" id="connected-to-source"><div class="flow-feature-inner flow-feature-grid">
+    <div class="flow-feature-copy"><p class="of-eyebrow">01 · Connect the source</p><h2 class="of-display">Change the data. The page follows.</h2><p>A chart or table can draw from a file in the document's folder. Change that source and Flow redraws the bound block. Your title, chart type and table layout stay yours.</p><p>Flow notices source changes as they happen, when you return to the app, on Refresh Folders and after the Night Shift. A source that changed while Flow was closed is picked up at launch.</p><p>The document remains <strong>ordinary Markdown</strong>. Its sources are files you can inspect and edit.</p></div>
+    <FlowDetail src={shots.livingPortfolio} alt="Portfolio allocation drawn as a donut chart from the newest matching local data file." caption="Real Flow 1.6 · Stock Portfolio example · Sample data, not investment advice" />
+  </div></section>
+  <section class="flow-feature-section" id="document-jobs"><div class="flow-feature-inner flow-feature-grid flow-feature-grid--reverse">
+    <div class="flow-feature-copy"><p class="of-eyebrow">02 · Give it a job</p><h2 class="of-display">The routine belongs to the document.</h2><p>Under the title, the Night Shift line tells you what the page watches, collects, lists and redraws. Open the Jobs Editor to change that work in plain fields.</p><ul><li><strong>Collect data</strong> reads a definition that says what to gather and where to save it.</li><li><strong>Watch sources</strong> compares named files, folders and HTTPS pages with the earlier copy.</li><li><strong>List a folder</strong> keeps filenames, sizes and dates in view.</li><li><strong>Overnight notes</strong> is the Pro job that asks a model on this Mac to explain the numbers.</li></ul><p>A collecting definition has a forms editor with a live row preview. You can also draft a definition from a sentence with a model on this Mac, then inspect it.</p></div>
+    <FlowDetail src={shots.livingJobs} alt="The Jobs Editor shows Collect data and Watch sources, with source fields, explanations and Save." caption="Real Flow 1.6 · Edit the document's Night Shift jobs" />
+  </div></section>
+  <section class="flow-feature-section" id="seven-starting-points"><div class="flow-feature-inner"><p class="of-eyebrow">03 · Begin with a real routine</p><h2 class="of-display">Seven folders. Room for your work.</h2><p class="mt-6 max-w-3xl text-lg leading-relaxed text-text-muted">The Flow Guide includes six worked examples and a Starter. Copy one, replace its sample inputs and follow its “How this page is built” notes.</p><div class="mt-9 grid gap-5 md:grid-cols-2">{folders.map(([name, description]) => <article class="flow-feature-card"><h3 class="text-xl font-bold">{name}</h3><p class="mt-3 leading-relaxed text-text-muted">{description}</p></article>)}</div><p class="mt-6 text-sm leading-relaxed text-text-dim">These are editable examples with sample data. They organize your work; financial and tax examples do not replace qualified advice.</p></div></section>
+  <section class="flow-feature-section" id="work-you-can-return-to"><div class="flow-feature-inner flow-feature-grid">
+    <div class="flow-feature-copy"><p class="of-eyebrow">04 · Return with context</p><h2 class="of-display">A better place to pick up tomorrow.</h2><p>The document, the data and the next step stay together. The Night Shift reports what changed in the Morning Briefing, and marks its edits for your review.</p><p>You spend less time rebuilding yesterday's context. The next decision starts with something you can read, check and change.</p><a class="of-text-action mt-6 inline-flex" href="/flow/night-shift/">See the Night Shift <span aria-hidden="true">→</span></a></div>
+    <FlowDetail src={shots.livingJobSearch} alt="A timeline shows application stages and dates in the Job Search example." caption="Real Flow 1.6 · Job Search example · Sample applications" />
+  </div></section>
+</FlowFeaturePage>

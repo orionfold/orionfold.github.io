@@ -81,11 +81,11 @@ export const FLOW_CATEGORIES: FlowCategory[] = [
     label: 'Models and runtime',
     title: 'Choose where AI runs. Every time.',
     blurb:
-      'Keep work on your Mac, use models on your network, or route to cloud providers you trust. Flow shows the place, model, rule, and cost before the run.',
+      'Keep work on your Mac or route to cloud API providers you choose. Flow shows the place, model, rule, and cost before the run.',
     proof: 'One named domain, model, deciding rule, and cost before every run.',
     pageTitle: 'Flow · Choose where AI runs · Orionfold',
     description:
-      'Run AI on your Mac, network, or chosen cloud with Orionfold Flow. Its local runtime, explicit domains, and ordered rules keep every route visible.',
+      'Run AI on your Mac or through chosen cloud API providers with Orionfold Flow. Its local runtime, explicit domains, and ordered rules keep every route visible.',
     chapters: [
       { id: 'tour-domains', label: 'Trust boundaries' },
       { id: 'tour-runtime', label: 'Owned local runtime' },

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 const accessEndpoint = 'https://orionfold.supabase.co/functions/v1/workshop-access';
 const transcript = `# Module Inspect

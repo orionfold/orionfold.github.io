@@ -1,4 +1,5 @@
 ---
+import Origami from '../ui/Origami.astro';
 // Field Edition box (Arena Field Edition launch, 2026-06). The edition-split
 // conversion point: the FREE, open Arena stays the page's spine (its "License:
 // Free and local" chip is true verbatim), and this block sits beside it as the
@@ -43,6 +44,7 @@ const enquiryHref = `/adoption/?item=${view.roadmapItemId}`;
 <section id="field-edition" class="scroll-mt-24 px-6 py-16">
   <div class="mx-auto max-w-3xl">
     <div data-animate class="rounded-2xl border border-primary/40 bg-surface-raised p-8 shadow-lg shadow-primary/5">
+      <Origami compact />
       <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">
         Get an AI team without hiring one, in the Spark you own
       </p>

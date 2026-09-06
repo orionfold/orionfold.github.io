@@ -75,7 +75,7 @@ export const FLOW_BASE_CAPABILITIES: FlowCapability[] = [
   { label: "Tables, grid view, charts", note: "Including the chart gallery" },
   { label: "Multiple folders", note: "Add as many as you like" },
   { label: "Tabs, panes, split view", note: "The whole workspace" },
-  { label: "Flow Guide", note: "The bundled 28 document guide, plus 13 assets and its updates" },
+  { label: "Flow Guide", note: "The bundled 58 document guide, plus 24 assets, including seven Living Document folders and its updates" },
   { label: "Dictation", note: "Voice input into a document" },
   { label: "Themes and settings", note: "Everything in Settings" },
   { label: "App updates", note: "Never gated by a licence, even after you cancel" },
@@ -183,4 +183,4 @@ export const FLOW_SYSTEM_REQUIREMENT = "macOS 26 or later, Apple silicon or Inte
  *
  * "Included" not "free trial", and no countdown: a Pro Day is spent only on a
  * day the reader actually invokes AI, so "10 days" would be false. */
-export const FLOW_DOWNLOAD_CAPTION = "Apple Mac. 10 Pro Days included. No credit card to use.";
+export const FLOW_DOWNLOAD_CAPTION = "For Mac OS. Base is free forever. 10 Pro days included. No credit card to use.";

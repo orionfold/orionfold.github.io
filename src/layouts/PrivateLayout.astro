@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '../styles/living-system.css';
 
 interface Props {
   title: string;
@@ -17,7 +18,7 @@ const { title, description } = Astro.props;
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen bg-surface text-text antialiased">
+  <body class="living-site living-private min-h-screen bg-surface text-text antialiased">
     <slot />
   </body>
 </html>

@@ -18,8 +18,10 @@ const meta = (html, key, value) => html.match(new RegExp(`<meta\\s+${key}="${esc
 const link = (html, rel) => html.match(new RegExp(`<link\\s+rel="${esc(rel)}"\\s+href="([^"]*)"`, 'i'))?.[1] ?? '';
 
 const routes = [
-  ['/', 'Orionfold Flow for Mac · Flow brings AI to documents. You keep the wheel.', 'Flow brings AI to documents. You keep the wheel.'],
-  ['/flow/', 'Orionfold Flow for Mac · AI proposes each change. You approve it.', 'AI proposes each change. You approve it.'],
+  ['/', 'Orionfold · Make knowledge a living thing.', 'MAKE KNOWLEDGE A LIVING THING.'],
+  ['/flow/', 'Flow for Mac · Give your work a Night Shift.', 'GIVE YOUR WORK A NIGHT SHIFT.'],
+  ['/essay/', 'Room for a Renaissance · An essay by Manav Sehgal', 'Room for a Renaissance.'],
+  ['/manifesto/', 'The Living Documents Manifesto · Orionfold', 'MAKE ROOM FOR MORE OF YOU.'],
   ['/flow/tour/', 'Orionfold Flow product tour · See Flow at work', 'See Flow at work.'],
   ['/flow/writing-with-ai/', 'Flow · Writing with AI you approve · Orionfold', 'Write with AI. Keep the final word.'],
   ['/flow/documents-and-files/', 'Flow · Documents and files that stay yours · Orionfold', 'Do more with your files. Keep them yours.'],
@@ -54,7 +56,9 @@ for (const [route, expectedTitle, expectedH1] of routes) {
   assert.equal(meta(html, 'property', 'og:url'), canonical, `${route}: Open Graph URL matches canonical`);
   assert.ok(meta(html, 'property', 'og:image'), `${route}: has a social image`);
   assert.ok(meta(html, 'property', 'og:image:alt'), `${route}: social image has descriptive alternative text`);
-  assert.doesNotMatch(html, /<meta\s+name="robots"\s+content="noindex/i, `${route}: accepted launch routes remain indexable`);
+  const isIsolated = process.env.PUBLIC_SERVICE_MODE && process.env.PUBLIC_SERVICE_MODE !== 'production';
+  if (isIsolated) assert.match(html, /<meta\s+name="robots"\s+content="noindex/i, `${route}: isolated staging stays noindex`);
+  else assert.doesNotMatch(html, /<meta\s+name="robots"\s+content="noindex/i, `${route}: production routes remain indexable`);
   assert.match(html, /<html\s+lang="en"\s+data-theme="light">/, `${route}: the public site remains light-only`);
   assert.doesNotMatch(html, /See Flow plans/, `${route}: the Flow CTA does not drift to a pricing detour`);
 
@@ -70,19 +74,17 @@ for (const [route, expectedTitle, expectedH1] of routes) {
   }
 }
 
-// The homepage racing creative carries one pill into the launch story that
-// walks the same driver / car / crew / record order (operator ask 2026-08-26).
-assert.match(htmlFor('/'), /class="flow-pit__story-link"[^>]*href="\/story\/the-pit-crew-that-never-touches-the-wheel\/"[^>]*>\s*Read the launch story/, 'the homepage racing creative links to the launch story');
+assert.match(htmlFor('/'), /href="\/story\/the-pit-crew-that-never-touches-the-wheel\/"/, 'homepage retains the Ideas origin story link');
 
 // The four-item local product rail is identical everywhere it appears and the
 // global rail remains the short product family the operator selected.
 const launchHtml = routes.map(([route]) => htmlFor(route)).join('\n');
-for (const label of ['Flow', 'Relay', 'Arena', 'Books', 'Story']) {
+for (const label of ['Flow', 'Essay', 'The Manifesto', 'Relay', 'Arena', 'Books', 'Story']) {
   assert.match(launchHtml, new RegExp(`>\\s*${esc(label)}\\s*<`), `global navigation keeps ${label}`);
 }
 for (const route of routes.filter(([route]) => route.startsWith('/flow/')).map(([route]) => route)) {
   const html = htmlFor(route);
-  for (const label of ['Overview', 'Tour', 'Tech Specs', 'Enterprise']) {
+  for (const label of route === '/flow/' ? ['Living Documents', 'Tour · 4 parts, 15 chapters', 'Tech specs', 'Enterprise'] : ['Overview', 'Tour', 'Tech Specs', 'Enterprise']) {
     assert.match(html, new RegExp(`>\\s*${esc(label)}\\s*<`), `${route}: local rail keeps ${label}`);
   }
 }
@@ -113,8 +115,8 @@ assert.doesNotMatch(sitemap, /\/flow\/ideas-in-motion\//, 'campaign-review route
 
 // One material claim ledger. These values are stable enough to market, carry
 // their qualifiers on-page, and match the accepted product authority as of the
-// G-117 rehearsal. Prepaid frontier execution remains launch priority until the
-// product operator accepts 0165; local source progress alone cannot promote it.
+// current Flow 1.6 release. Prepaid CLI execution is dark in this build;
+// unpublished provider routes stay outside the shipped feature catalog.
 const specifications = read('src/data/flow-specifications.ts');
 const materialClaims = [
   specifications,
@@ -128,13 +130,13 @@ for (const [provider, state] of [
   ['OpenAI', 'Runnable now'],
   ['OpenRouter', 'Runnable now'],
   ['LM Studio', 'Runnable now'],
-  ['Codex CLI', 'Launch priority'],
-  ['Claude Code', 'Launch priority'],
 ]) {
   assert.match(specifications, new RegExp(`provider: '${esc(provider)}'[\\s\\S]{0,180}?state: '${esc(state)}'`), `${provider}: state remains ${state}`);
 }
+assert.doesNotMatch(specifications, /provider: 'Codex CLI'|provider: 'Claude Code'|Cloud prepaid/, 'Flow 1.6 keeps dark CLI routes out of the shipped catalog');
+assert.doesNotMatch(specifications, /Around 40 MB/, 'the old payload estimate cannot stand in for the current installer');
 for (const claim of [
-  /Around 40 MB/,
+  /Models download separately/,
   /34 chart types and 20 diagram types/,
   /22\.3 ms/,
   /10,000 notes/,
@@ -144,13 +146,15 @@ for (const claim of [
 ]) {
   assert.match(materialClaims, claim, `technical claim survives: ${claim}`);
 }
-assert.match(read('src/data/flow-pricing.ts'), /Flow Guide[\s\S]*28 document guide, plus 13 assets/, 'the plan ledger carries the current bundled Guide inventory');
+assert.match(read('src/data/flow-pricing.ts'), /Flow Guide[\s\S]*58 documents?[\s\S]*24 assets/, 'the plan ledger carries the current bundled Guide inventory');
 
 const visibleLaunchSource = [
   read('src/pages/flow.astro'),
   read('src/data/flow-categories.ts'),
   read('src/data/flow-specifications.ts'),
-  read('src/components/flow/FlowLaunchHomeHero.astro'),
+  read('src/components/living/HomeHero.astro'),
+  read('src/components/living/FlowHero.astro'),
+  read('src/components/living/FlowPlans.astro'),
 ].join('\n').replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
 assert.doesNotMatch(visibleLaunchSource, /Apple Intelligence/i, 'withdrawn Apple Intelligence route is not marketed');
 assert.doesNotMatch(visibleLaunchSource, /Flow Quick|global hotkey assistant/i, 'withdrawn Flow Quick is not marketed');
@@ -165,8 +169,8 @@ for (const asset of [
   'src/assets/flow/details/detail-run-cost.webp',
   'src/assets/flow/details/detail-routing-rules.webp',
   'src/assets/flow/details/detail-grid.webp',
-  'src/assets/flow/launch/flow-ideas-pit-stop-daylight-wide.webp',
-  'src/assets/flow/launch/flow-ideas-pit-stop-daylight-portrait.webp',
+  'public/assets/living-systems/hero-home-paper-planes.webp',
+  'public/assets/living-systems/hero-flow-paper-planes.webp',
 ]) {
   const url = new URL(asset, ROOT);
   assert.ok(existsSync(url), `${asset}: curated proof exists`);

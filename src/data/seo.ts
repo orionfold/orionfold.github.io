@@ -5,15 +5,15 @@
 export const SITE = {
   name: 'Orionfold',
   url: 'https://orionfold.com',
-  tagline: 'Flow brings AI to documents. You keep the wheel.',
+  tagline: 'Make knowledge a living thing.',
   description:
-    'Orionfold Flow is the Mac app that brings AI to your documents instead of sending them to a cloud. It works with the wifi off, and every change is a diff you approve. Patent pending.',
+    'Flow Living Documents on your Mac. Files you own, changes you can review, and useful work that continues between visits. Base is free forever.',
   logo: 'https://orionfold.com/orionfold-128.png',
   ogImage: 'https://orionfold.com/og-image.png',
   ogImageAlt:
-    'Orionfold Flow, patent pending: Flow brings AI to documents and you keep the wheel. A real capture of the Mac app showing a finished document with charts and tables drawn in place from plain Markdown.',
+    'Orionfold Flow Living Documents: bold black headlines, a red highlight and origami paper planes on a warm yellow background.',
   // Single light theme: address-bar tint matches the manifest background.
-  themeColor: '#f6f9fc',
+  themeColor: '#f6f6f3',
   license: 'Apache-2.0',
   twitter: '@manavsehgal',
 };

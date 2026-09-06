@@ -1,0 +1,15 @@
+---
+/** Decorative only. Compact art occupies its own row; it never overlays a form. */
+interface Props { variant?: 'book' | 'documents' | 'planes'; compact?: boolean; side?: 'left' | 'right'; class?: string; }
+const { variant = 'book', compact = false, side = 'right', class: className = '' } = Astro.props;
+---
+<div class:list={['living-origami', `living-origami--${variant}`, `living-origami--${side}`, compact && 'living-origami--compact', className]} aria-hidden="true">
+  {compact ? <svg viewBox="0 0 180 78" fill="none" focusable="false">
+    <path d="m22 38 101-27-39 56-13-23Z" fill="#fff" stroke="#b8c3c4"/>
+    <path d="m22 38 49 6 52-33-42 40 3 16-13-23" fill="#e3e9e9"/>
+    <path d="m71 44 52-33" stroke="#829c9b"/>
+    <path d="m116 55 40-12-15 27-6-12Z" fill="#fff" stroke="#c6cfcc"/>
+    <path d="m116 55 19 3 21-15-19 20 4 7-6-12" fill="#b9d7d2"/>
+    <path d="M12 64c14 10 29 3 38-3" stroke="#0a7b77" stroke-opacity=".35" stroke-dasharray="3 5"/>
+  </svg> : <img src={variant === 'documents' ? '/assets/living-systems/hero-home-paper-planes.webp' : '/assets/living-systems/hero-flow-paper-planes.webp'} width="1642" height="958" alt="" loading="lazy" decoding="async" />}
+</div>

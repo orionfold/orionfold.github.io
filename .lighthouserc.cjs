@@ -23,6 +23,8 @@ module.exports = {
       url: [
         'http://localhost/index.html',
         'http://localhost/flow/index.html',
+        'http://localhost/essay/index.html',
+        'http://localhost/manifesto/index.html',
         'http://localhost/arena/index.html',
         'http://localhost/relay/index.html',
         'http://localhost/proof/index.html',

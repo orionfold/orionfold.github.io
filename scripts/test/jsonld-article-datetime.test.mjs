@@ -31,3 +31,10 @@ for (const file of ['src/pages/story/[slug]/index.astro', 'src/pages/receipts/[s
   assert.match(read(file), /const dateTime = date\.toISOString\(\);/, `${file}: dateTime is the untruncated ISO string`);
 }
 console.log('jsonld-article-datetime: ok');
+
+for (const file of ['src/pages/essay.astro', 'src/pages/manifesto.astro']) {
+  const src=read(file);
+  const block=src.match(/const pageSchema = (.*);/)?.[1] ?? '';
+  assert.match(block, /datePublished:'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z'/, `${file}: publication datetime includes timezone`);
+  assert.match(block, /dateModified:'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z'/, `${file}: modification datetime includes timezone`);
+}

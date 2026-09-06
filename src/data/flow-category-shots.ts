@@ -6,7 +6,7 @@
 import type { ImageMetadata } from 'astro';
 import detailResult from '../assets/flow/details/detail-result.webp';
 import detailRunCost from '../assets/flow/details/detail-run-cost.webp';
-import detailRoutingRules from '../assets/flow/details/detail-routing-rules.webp';
+import detailRoutingRules from '../assets/flow/shots/v16-settings-routing.webp';
 import detailGrid from '../assets/flow/details/detail-grid.webp';
 
 export const FLOW_CATEGORY_SHOTS: Record<string, { src: ImageMetadata; alt: string; caption: string }> = {

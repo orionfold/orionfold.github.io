@@ -1,0 +1,456 @@
+/* Living Systems foundation. Shared chrome and legacy-template primitives only.
+   Flagship composition belongs to its own scoped stylesheet. */
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('/fonts/barlow-condensed-bold.woff2') format('woff2');
+  unicode-range: U+100-113, U+116-12B, U+12D-131, U+133-137, U+139-13E, U+140-148, U+14A-14D, U+14F-17E, U+18F, U+192, U+1A0-1A1, U+1AF-1B0, U+1CD-1CE, U+1D4, U+1E5, U+1E7, U+1E9, U+1EF, U+1FF, U+218-21B, U+21F, U+228-229, U+237, U+259, U+292, U+2BB-2BC, U+2C6-2C7, U+2C9, U+2D8-2DD, U+300-304, U+306-30C, U+312-313, U+31B, U+323, U+326-328, U+335-338, U+394, U+3A9, U+3BC, U+3C0, U+1E80-1E85, U+1EA0-1EF9, U+2074-2079, U+2113, U+2122, U+2126, U+212E, U+215B-215E, U+2202, U+2206, U+220F, U+2211, U+2215, U+2219-221A, U+221E, U+222B, U+2260, U+25CA, U+27E9, U+FB01-FB02;
+}
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('/fonts/barlow-condensed-bold-common.woff2') format('woff2');
+  unicode-range: U+0, U+D, U+20-7E, U+A0-FF, U+2010, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2032-2033, U+2039-203A, U+2044, U+20A3, U+20AC, U+20BA, U+20BD, U+2212, U+2248, U+2264-2265;
+}
+:root {
+  --living-yellow: #f4d558;
+  --living-yellow-soft: #fbf3d1;
+  --living-teal: #247b80;
+  --living-red: #f24b39;
+  --living-action: #d93828;
+  --living-action-hover: #ba2d21;
+  --living-ink: #152a2d;
+  --living-gray: #eef1f2;
+  --living-line: #d6dedd;
+}
+.living-site { letter-spacing: 0; color: var(--living-ink); }
+/* Remove the full-viewport turbulence/compositing layer from every page. */
+.living-site::before { content: none; }
+.living-site h1, .living-site h2, .living-site h3, .living-site h4 {
+  font-family: var(--font-display); font-weight: 700; font-synthesis: none;
+}
+.living-site h1 { letter-spacing: -.025em; text-wrap: balance; }
+.living-site h2 { letter-spacing: -.015em; }
+.living-site h3, .living-site h4 { letter-spacing: -.008em; }
+.living-site main:not(.ls-main) > section > div > header h1,
+.living-site main:not(.ls-main) > section > header h1 { text-transform: uppercase; }
+.living-site .font-semibold, .living-site strong { font-weight: 700; }
+.living-site .of-eyebrow, .living-eyebrow {
+  color: var(--living-teal); font: 700 11px/1.5 var(--font-body);
+  letter-spacing: .14em; text-transform: uppercase;
+}
+.living-site .of-primary-action,
+.living-site :is(a,button)[class~='bg-primary'],
+.living-site :is(a,button)[class~='bg-accent'] {
+  background: var(--living-action); color: #fff;
+  border-radius: 5px; font-family: var(--font-body); font-weight: 700;
+  letter-spacing: 0; min-height: 44px; text-decoration: none;
+}
+.living-site .of-primary-action { font-size: 15px; padding: 13px 22px; }
+.living-site .of-primary-action:hover,
+.living-site :is(a,button)[class~='bg-primary']:hover,
+.living-site :is(a,button)[class~='bg-accent']:hover {
+  background: var(--living-action-hover); color: #fff; transform: none;
+}
+.living-site .of-secondary-action {
+  border-radius: 5px; font: 700 15px/1.4 var(--font-body);
+  letter-spacing: 0; color: var(--living-ink); background: transparent;
+}
+.living-site :is(a,button,input,textarea,select,summary):focus-visible {
+  outline: 3px solid var(--living-teal); outline-offset: 4px;
+}
+.living-site :is(button,a)[aria-disabled='true'], .living-site button:disabled {
+  cursor: not-allowed; opacity: .65;
+}
+/* Form actions keep the download CTA's full-strength color in every state.
+   Native disabled behavior, availability copy and the cursor still apply. */
+.living-site button[type='submit']:is([class~='bg-primary'],[class~='bg-accent']) {
+  opacity: 1;
+}
+.living-site :is(input:not([type='checkbox']):not([type='radio']),textarea,select) {
+  font-family: var(--font-body); border-radius: 5px;
+}
+.living-site input[type='checkbox'], .living-site input[type='radio'] { accent-color: var(--living-teal); }
+/* Shared wordmark: a supplied 700 face, no synthesized semibold or hover rule. */
+.living-wordmark, .living-footer .living-wordmark:hover,
+.living-site .living-wordmark:focus-visible {
+  display: inline-flex; align-items: center; gap: 9px;
+  color: var(--living-ink); text-decoration: none;
+}
+.living-wordmark__type {
+  font: 700 33px/1 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  text-transform: uppercase; letter-spacing: -.015em;
+}
+.living-wordmark__fold { color: var(--living-teal); }
+#nav-wrapper { background: rgba(248,249,250,.95); }
+#main-nav { border-bottom-color: var(--living-line); }
+#main-nav > div:first-child { min-height: 82px; padding-block: 16px; }
+/* Fixed shell dimensions keep navigation identical across the 16px flagship
+   and 18px inner-page roots. Match the existing inner-page alignment. */
+#main-nav > .living-nav-shell { width: 100%; max-width: 1280px; padding-inline: 24px; }
+#main-nav .living-nav-links { gap: 24px; }
+#main-nav .living-nav-actions { gap: 16px; }
+#main-nav .living-nav-cta { gap: 9px; padding: 10px 18px; font: 700 16px/1.5 var(--font-body); white-space: nowrap; }
+#main-nav .living-nav-cta svg { flex-shrink: 0; }
+@media (min-width:640px) {
+  #main-nav > .living-nav-shell { max-width: 1440px; padding-inline: 27px; }
+  #main-nav .living-nav-links { gap: 27px; }
+  #main-nav .living-nav-actions { gap: 18px; }
+}
+#main-nav [aria-current='page'] { color: var(--living-ink); text-decoration: underline; text-decoration-color: var(--living-red); text-underline-offset: 7px; text-decoration-thickness: 3px; }
+#main-nav .living-nav-link { font: 700 24px/1.3 var(--font-body); letter-spacing: 0; color: var(--living-ink); white-space: nowrap; }
+#main-nav .living-wordmark { flex-shrink: 0; }
+#main-nav .living-wordmark:hover { text-decoration: none; }
+.living-nav-divider { color: var(--living-teal); font: 700 24px/1 var(--font-body); }
+#main-nav .living-nav-links, #main-nav .living-nav-cta--desktop { display: none; }
+#main-nav #mobile-menu-btn { display: inline-flex; }
+#mobile-menu .living-nav-divider { padding-block: 2px; }
+@media (min-width: 1100px) {
+  #main-nav .living-nav-links { display: flex; }
+  #main-nav .living-nav-cta--desktop { display: inline-flex; }
+  #main-nav #mobile-menu-btn, #main-nav #mobile-menu-toggle, #main-nav #mobile-menu { display: none; }
+}
+#magnet-bar { background: #eaf2ef; border-color: var(--living-line); }
+#magnet-bar a, #confirm-bar { font-size: 12px; }
+#magnet-bar .font-mono { font-family: var(--font-body); font-weight: 700; color: #ba2d21; }
+#mobile-menu { max-height: calc(100dvh - 120px); overflow-y: auto; }
+#mobile-menu-toggle:focus-visible + label { outline: 3px solid var(--living-teal); outline-offset: 6px; }
+/* Yellow closes a page edge to edge; gray stays inside its content container.
+   Painted yellow bleed avoids a 100vw scrollbar. */
+.living-site .living-paper-cta {
+  --paper-cta-background: var(--living-gray);
+  position: relative; z-index: 1; isolation: isolate;
+  background: var(--paper-cta-background); color: var(--living-ink);
+  border: 0; border-radius: 0; padding: 0; margin: 0;
+  overflow: visible;
+  box-shadow: none;
+}
+.living-site .living-paper-cta--yellow {
+  --paper-cta-background: #ffeb4b;
+  overflow: hidden;
+  box-shadow: 0 0 0 100vmax var(--paper-cta-background);
+  clip-path: inset(0 -100vmax);
+}
+.living-site .living-paper-cta--gray {
+  width: 100%; max-width: 1260px; margin-inline: auto;
+  border: 1px solid var(--living-line); border-radius: 12px;
+  overflow: hidden; container-type: inline-size; container-name: paper-cta;
+}
+.living-paper-cta__inner {
+  position: relative; width: min(1120px, calc(100% - 96px)); margin-inline: auto;
+  min-height: 330px; padding-block: 62px;
+  display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(245px, .85fr);
+  align-items: center; gap: clamp(36px, 6vw, 96px);
+}
+.living-paper-cta__copy, .living-paper-cta__action { position: relative; z-index: 1; min-width: 0; }
+.living-site .living-paper-cta__copy h2 {
+  font: 700 clamp(38px, 4vw, 58px)/1.02 var(--font-display); text-transform: uppercase;
+  letter-spacing: -.018em; margin: 14px 0 20px; text-wrap: balance;
+}
+.living-site .living-paper-cta__copy > .living-eyebrow { color: #206f73; margin: 0; font: 700 11px/1.5 var(--font-body); letter-spacing: .14em; }
+.living-site .living-paper-cta__copy > p:not(.living-eyebrow) {
+  font: 400 17px/1.65 var(--font-body); margin: 0; max-width: 48ch; color: #43595b;
+}
+.living-site .living-paper-cta .of-primary-action { color: #fff; text-decoration: none; justify-content: center; }
+.living-paper-cta__action { justify-self: end; width: 100%; max-width: 310px; }
+.living-paper-cta__action .flow-download-cta > div { display: block; }
+.living-paper-cta__action .of-primary-action { display: flex; width: 100%; min-height: 58px; font-size: 17px; }
+.living-site .living-paper-cta .of-waitlist-caption {
+  font: 400 14px/1.6 var(--font-body); text-transform: none; letter-spacing: 0; white-space: normal;
+  margin: 14px 0 0; color: #43595b; max-width: 32ch;
+}
+.living-site .living-paper-cta .living-origami {
+  position: absolute; width: 235px; height: 140px; inset: -24px -42px auto auto;
+  z-index: 0; opacity: .94;
+}
+.living-site .living-paper-cta .living-origami img {
+  width: 100%; height: 100%; object-fit: contain; object-position: center;
+  mask-image: radial-gradient(ellipse at center, #000 38%, transparent 75%);
+  mix-blend-mode: multiply;
+}
+.living-closing-band { background: #ffeb4b; }
+.living-origami { pointer-events: none; }
+.living-origami:not(.living-origami--compact) img {
+  width: 100%; height: 100%; object-fit: cover; object-position: left center;
+  mask-image: linear-gradient(90deg,transparent,#000 22%); opacity: .98;
+}
+.living-origami--left { transform: scaleX(-1); }
+.living-origami--compact { width: 180px; height: 78px; margin: -12px auto 20px; }
+.living-origami--compact svg { display: block; width: 100%; height: 100%; }
+.living-story-download { padding: 0; background: transparent; }
+.living-story-download .living-paper-cta { margin: 0; }
+.living-story-download--article { width: 100%; margin: 64px 0; }
+.living-relay-band--interstitial {
+  width: 100vw; margin-inline: calc(50% - 50vw); margin-block: 64px;
+}
+.living-relay-band { padding: 24px; }
+.living-relay-band .living-paper-cta { max-width: 1120px; margin-inline: auto; }
+.living-email-surface { background: var(--living-yellow-soft); border-color: #e3d7a8; }
+/* The shared footer owns its curated groups and responsive columns. */
+.living-footer { background: #f3f5f3; }
+.living-footer-acquisition { padding: 0; }
+.living-footer .living-wordmark:hover { text-decoration: none; }
+/* Editorial and dense product evidence: real reading typography, neutral tables
+   and correctly bounded code blocks, without changing article semantics. */
+.living-site .story-prose { color: #294246; }
+.living-site .story-prose h2 { font-size: clamp(1.8rem,3.4vw,2.5rem); line-height: 1.08; margin-top: 2.4em; }
+.living-site .story-prose h3 { font-size: clamp(1.5rem,2.5vw,1.8rem); line-height: 1.18; margin-top: 1.8em; }
+.living-site .story-prose :is(p,li) { font-size: 1rem; line-height: 1.85; }
+.living-site .story-prose a { color: var(--color-accent-ink); }
+.living-site .story-prose blockquote { border-left: 4px solid var(--living-red); background: var(--living-yellow-soft); padding: 20px 24px; }
+.living-site .story-prose :is(pre,table) { font-size: .85rem; }
+.living-site .story-prose :is(th,td) { padding: 13px 16px; }
+.living-site .story-prose thead { background: #e9f0ed; }
+.living-site :is(.story-prose,.receipt-prose) :is(pre,.table-scroll) { max-width: 100%; overflow-x: auto; }
+.living-site .story-prose .not-prose h2 { margin-top: 14px; }
+.living-site .story-prose .not-prose p { font-size: 16px; line-height: 1.65; }
+.living-site .living-paper-cta section { contain: none; }
+.living-product-detail :is(#buy,#field-edition,#sponsor) { padding-block: 70px; }
+.living-product-detail :is(#buy,#field-edition) > div { border-color: var(--living-line); }
+.living-product-detail [data-code-group] [role='tab'][aria-selected='true'] { background: var(--living-yellow-soft); color: var(--living-ink); }
+.living-product-detail [data-code-group] pre { background: #f0f3f3; }
+.living-private { background: #f6f8f7; }
+.living-private h1 { font-size: clamp(2.6rem,6vw,4.2rem); }
+.living-private :is(input,select,textarea) { background: #fff; }
+/* Relay, Flow subpages, catalogs and service surfaces inherit the shared tokens
+   and action scale; their product-specific screenshots remain untouched. */
+.living-site :is(.flow-subnav,.relay-subnav) { border-color: var(--living-line); }
+.living-site .flow-download-cta__button--large { animation: none; font-family: var(--font-body); letter-spacing: 0; border-radius: 5px; }
+.living-site .flow-download-cta__button--large::after { display: none; }
+@media (min-width:768px) and (max-width:1100px) {
+  #main-nav > div:first-child { gap: 22px; }
+}
+@media (max-width:700px) {
+  .living-relay-band { padding-inline: 16px; }
+  .living-wordmark__type { font-size: 30px; }
+  #main-nav > div:first-child { padding-block: 15px; min-height: 76px; }
+  #magnet-bar .text-text-muted { display: none; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .living-site { scroll-behavior: auto; }
+  .living-site .of-primary-action { transition: none; }
+}
+.living-site:not(.ls) .living-stroke { position:relative; isolation:isolate; white-space:nowrap; }
+.living-site:not(.ls) .living-stroke::after { content:''; position:absolute; inset:auto -3px 2px; height:.12em; background:var(--living-red); transform:rotate(-1.2deg); z-index:-1; }
+
+/* Relay host acquisition preserves its real screenshot and behavior while
+   bringing its locally scoped action tokens into the shared family. */
+.living-site .relay-host-feature__canvas {
+  --host-cta-bg: var(--living-action);
+  --host-cta-hover: var(--living-action-hover);
+  --host-cta-text: #fff;
+  --host-focus: var(--living-teal);
+  --host-canvas-bg: #f0f3f2;
+  --host-canvas-border: var(--living-line);
+  --host-grid-line: transparent;
+  --host-canvas-radial: transparent;
+  --host-title-accent: var(--living-ink);
+  --host-tagline-accent: var(--living-teal);
+}
+.living-site .flow-eyebrow-chip--accent,
+.living-site :is(.flow-subnav__link,.relay-subnav__link,.arena-subnav__link) { font-weight:700; }
+
+/* The measured header includes a visible notice bar and follows dismissal,
+   viewport changes and navigation. Defaults reserve no-JS and first-paint room. */
+:root { --of-nav-height:82px; }
+html.js-ready { --of-nav-height:116px; }
+.living-site :is(main,footer) [id] { scroll-margin-top:calc(var(--of-nav-height,82px) + 20px); }
+.living-site .hero-gradient-text { background:none; -webkit-text-fill-color:var(--living-ink); color:var(--living-ink); }
+@media(max-width:700px) { html.js-ready { --of-nav-height:110px; } }
+@media(max-width:800px) {
+  .living-paper-cta__inner {
+    width: calc(100% - 40px); grid-template-columns: minmax(0, 1fr);
+    gap: 28px; min-height: 0; padding-block: 84px 42px;
+  }
+  .living-paper-cta__action { justify-self: start; max-width: 340px; }
+  .living-site .living-paper-cta__copy h2 { font-size: clamp(36px, 7vw, 48px); }
+  .living-site .living-paper-cta__copy > p:not(.living-eyebrow) { font-size: 16px; }
+  .living-site .living-paper-cta .living-origami { inset: -12px -8px auto auto; width: 160px; height: 96px; }
+}
+
+/* Inner-page grid heroes use a neutral canvas. Only decorative backgrounds
+   change; the shared primary token still colors actions and semantic accents.
+   Excluding .ls-main keeps all four authored flagship compositions intact. */
+.living-site main:not(.ls-main) :is(.flow-hero, .proposal-hero, .workshop-hero) {
+  background: linear-gradient(180deg, var(--living-gray) 0%, #f8f9f9 58%, #fff 100%);
+}
+.living-site main:not(.ls-main) :is(.flow-hero__grid, .proposal-grid, .workshop-grid) {
+  background-image:
+    linear-gradient(rgba(100, 114, 119, .12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 114, 119, .12) 1px, transparent 1px);
+}
+.living-site main:not(.ls-main) .flow-hero__glow {
+  background: radial-gradient(closest-side, rgba(100, 114, 119, .12), transparent 72%);
+}
+.living-site main:not(.ls-main) .proposal-hero > .pointer-events-none[class*="bg-primary"] {
+  background-color: rgba(100, 114, 119, .12);
+}
+
+/* CTA artwork shares the copy's top inset and reaches the band edge.
+   Its reserved space keeps the enlarged creative clear of the download. */
+.living-site .living-paper-cta .living-paper-cta__inner {
+  position: static;
+  grid-template-columns: minmax(0, 1fr) 470px;
+  align-items: start;
+}
+.living-site .living-paper-cta .living-origami {
+  width: 470px; height: 280px; inset: 62px 0 auto auto;
+}
+.living-site .living-paper-cta .living-paper-cta__action { margin-top: 304px; }
+@media (max-width: 1000px) {
+  .living-site .living-paper-cta .living-paper-cta__inner {
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .living-site .living-paper-cta .living-paper-cta__copy { order: 1; }
+  .living-site .living-paper-cta .living-origami {
+    order: 2; position: relative; inset: auto;
+    width: min(470px, 100%); height: auto; aspect-ratio: 47 / 28;
+    align-self: flex-end;
+  }
+  .living-site .living-paper-cta .living-paper-cta__action {
+    order: 3; margin-top: 0; align-self: flex-end;
+  }
+}
+@media (max-width: 800px) {
+  .living-site .living-paper-cta .living-paper-cta__inner { padding-block: 42px; }
+  .living-site .living-paper-cta .living-origami { width: min(320px, 100%); aspect-ratio: 5 / 3; }
+  .living-site .living-paper-cta .living-paper-cta__action { align-self: flex-start; }
+}
+
+/* Contained article cards stack according to their available width, even on
+   large screens, so artwork stays clear of the copy and action. */
+@container paper-cta (max-width: 1000px) {
+  .living-site .living-paper-cta--gray .living-paper-cta__inner { display: flex; flex-direction: column; gap: 24px; }
+  .living-site .living-paper-cta--gray .living-paper-cta__copy { order: 1; }
+  .living-site .living-paper-cta--gray .living-origami {
+    order: 2; position: relative; inset: auto; width: min(470px, 100%);
+    height: auto; aspect-ratio: 47 / 28; align-self: flex-end;
+  }
+  .living-site .living-paper-cta--gray .living-paper-cta__action { order: 3; margin-top: 0; align-self: flex-end; }
+}
+@media (max-width: 800px) {
+  .living-site .living-paper-cta--gray .living-origami { width: min(320px, 100%); aspect-ratio: 5 / 3; }
+  .living-site .living-paper-cta--gray .living-paper-cta__action { align-self: flex-start; }
+}
+
+/* The yellow closing band is one compact, centered row. On narrower screens,
+   the decorative art can sit behind the action instead of adding a tall row. */
+.living-site .living-paper-cta--yellow .living-paper-cta__inner {
+  position: relative; display: grid; width: min(1440px, calc(100% - 80px));
+  min-height: 0; padding-block: 28px;
+  grid-template-columns: minmax(0, 1fr) 280px 470px;
+  align-items: center; gap: 32px;
+}
+.living-site .living-paper-cta--yellow .living-paper-cta__copy { order: 1; }
+.living-site .living-paper-cta--yellow .living-paper-cta__copy h2 {
+  font-size: clamp(38px, 3.5vw, 50px); margin-block: 12px 16px;
+}
+.living-site .living-paper-cta--yellow .living-paper-cta__action {
+  order: 2; margin-top: 0; align-self: center; justify-self: center;
+}
+.living-site .living-paper-cta--yellow .living-origami {
+  order: 3; position: relative; inset: auto; transform: none;
+  width: 470px; height: 280px; align-self: center; justify-self: end;
+}
+@media (max-width: 1279px) {
+  .living-site .living-paper-cta--yellow .living-paper-cta__inner {
+    position: static; width: calc(100% - 80px); padding-block: 36px;
+    min-height: 300px; grid-template-columns: minmax(0, 1fr) 310px;
+    gap: clamp(32px, 6vw, 72px);
+  }
+  .living-site .living-paper-cta--yellow .living-origami {
+    position: absolute; inset: 50% -70px auto auto; transform: translateY(-50%);
+  }
+}
+@media (max-width: 700px) {
+  .living-site .living-paper-cta--yellow .living-paper-cta__inner {
+    width: calc(100% - 40px); grid-template-columns: minmax(0, 1fr);
+    padding-block: 32px; min-height: 0; gap: 24px;
+  }
+  .living-site .living-paper-cta--yellow .living-paper-cta__action { justify-self: start; }
+  .living-site .living-paper-cta--yellow .living-origami {
+    width: 320px; height: 192px; inset: auto -65px 22px auto; transform: none;
+  }
+}
+
+/* Interstitials share the Flow hero wash; article and wide layouts adapt to
+   their container, independently of the edge-to-edge yellow closing band. */
+.living-site .living-grid-surface {
+  background: linear-gradient(180deg, var(--living-gray) 0%, #f8f9f9 58%, #fff 100%);
+}
+.living-site .living-grid-surface::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(100, 114, 119, .12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 114, 119, .12) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 100%);
+}
+.living-site .living-paper-cta--gray .living-paper-cta__inner {
+  position: relative; display: grid; width: calc(100% - 64px);
+  min-height: 0; padding-block: 32px; gap: 28px; align-items: center;
+  grid-template-columns: minmax(0, 1fr) 240px 300px;
+}
+.living-site .living-paper-cta--gray .living-paper-cta__copy { order: 1; }
+.living-site .living-paper-cta--gray .living-paper-cta__copy h2 {
+  font-size: clamp(36px, 3vw, 44px); margin-block: 12px 16px;
+}
+.living-site .living-paper-cta--gray .living-paper-cta__copy > p:not(.living-eyebrow) {
+  font-size: 16px; line-height: 1.6;
+}
+.living-site .living-paper-cta--gray .living-paper-cta__action {
+  order: 2; margin-top: 0; align-self: center; justify-self: start;
+}
+.living-site .living-paper-cta--gray .living-origami {
+  order: 3; position: relative; inset: auto; transform: none;
+  width: 300px; height: 180px; aspect-ratio: auto;
+  align-self: center; justify-self: end; mix-blend-mode: multiply;
+}
+/* Blend the artwork wrapper with the wash/grid behind it. Blending only the
+   image cannot cross the wrapper's stacking context and leaves a pale plate. */
+.living-site .living-grid-surface .living-origami { mix-blend-mode: multiply; }
+.living-site .living-grid-surface .living-origami img {
+  mix-blend-mode: normal; filter: brightness(1.04) contrast(1.04);
+}
+@container paper-cta (max-width: 1080px) {
+  .living-site .living-paper-cta--wide .living-paper-cta__inner {
+    grid-template-columns: minmax(0, 1fr) 250px;
+  }
+  .living-site .living-paper-cta--wide .living-origami {
+    position: absolute; inset: 50% -85px auto auto; transform: translateY(-50%);
+  }
+}
+/* A compact article card gives the thesis its own row. The download and book
+   share the centered lower row, so the illustration adds no separate tier. */
+.living-site .living-paper-cta--article .living-paper-cta__inner {
+  grid-template-columns: minmax(0, 1fr) 250px; gap: 24px;
+}
+.living-site .living-paper-cta--article .living-paper-cta__copy {
+  grid-column: 1 / -1; max-width: 560px;
+}
+.living-site .living-paper-cta--article .living-paper-cta__copy h2 { font-size: 40px; }
+.living-site .living-paper-cta--article .living-paper-cta__action { grid-column: 1; grid-row: 2; }
+.living-site .living-paper-cta--article .living-origami {
+  grid-column: 2; grid-row: 2; width: 250px; height: 150px;
+}
+@container paper-cta (max-width: 640px) {
+  .living-site .living-paper-cta--gray .living-paper-cta__inner {
+    grid-template-columns: minmax(0, 1fr); gap: 24px;
+  }
+  .living-site .living-paper-cta--gray .living-paper-cta__copy,
+  .living-site .living-paper-cta--gray .living-paper-cta__action { grid-column: 1; grid-row: auto; }
+  .living-site .living-paper-cta--gray .living-origami {
+    position: absolute; inset: auto -72px 24px auto; transform: none;
+    width: 280px; height: 168px; grid-column: auto; grid-row: auto;
+  }
+}
+@container paper-cta (max-width: 420px) {
+  .living-site .living-paper-cta--gray .living-paper-cta__inner {
+    width: calc(100% - 40px); padding-block: 24px; gap: 20px;
+  }
+  .living-site .living-paper-cta--gray .living-paper-cta__copy h2 { font-size: 36px; }
+}

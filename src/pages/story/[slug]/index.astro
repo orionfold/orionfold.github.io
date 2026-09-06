@@ -91,12 +91,9 @@ const { title, date, summary, tags, hero, heroAlt } = post.data;
 
 const proofCta = PROOF_CTA[post.id as keyof typeof PROOF_CTA];
 const flowCta = ORIONFOLD_FLOW_LIVE ? FLOW_CTA[post.id as keyof typeof FLOW_CTA] : undefined;
-// Every story ends on Flow (operator 2026-08-26 10:03): the free-book magnet
-// and the tag-routed product band (Proof / Relay / Arena) left the story
-// footer, and one Flow block sits between the prev/next rail and the
-// subscribe form. Launch-dark it asks for the waitlist; live it is the same
-// download as every other Download CTA. A story that already carries the
-// mid-article `::flow-cta` block does not repeat it at the foot.
+// Live stories use the shared footer's single yellow download band, carrying
+// their original story-footer attribution. The earlier waitlist block stays
+// available while launch-dark; the historical mid-article exclusion is retained.
 const hasMidStoryFlowCta = post.id in FLOW_CTA;
 const footerFlowCta = ORIONFOLD_FLOW_LIVE
   ? {
@@ -338,10 +335,9 @@ const breadcrumbSchema = {
   <!-- Read-next/prev within the arc; renders nothing at the ends if neither neighbor exists -->
   <StoryPrevNext current={post} posts={allStories} />
 
-  <!-- The one product next step on every story: Flow. Same full-bleed block as
-       the launch story's mid-article ask, so the racing world and the download
-       label agree across the story surface. -->
-  {!hasMidStoryFlowCta && (
+  <!-- Preserve the existing launch-dark waitlist path. Live downloads use the
+       shared footer band below StorySubscribe, with the same attribution. -->
+  {!ORIONFOLD_FLOW_LIVE && !hasMidStoryFlowCta && (
     <FlowStoryCta
       image={flowPitStop}
       imageAlt="The Orionfold Flow race car in the Ideas pit stop with its crew at work and a driver reading telemetry beside the track."
@@ -358,5 +354,5 @@ const breadcrumbSchema = {
 
   <!-- Subscribe to stories (H3): same capture block as the story index -->
   <StorySubscribe class="border-t border-border" />
-  <Footer />
+  <Footer downloadSource={footerFlowCta.downloadSource} />
 </Layout>

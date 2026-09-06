@@ -6,7 +6,7 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import FlowIdeasPitStop from '../../components/flow/FlowIdeasPitStop.astro';
-import FlowIdeasReleaseCut from '../../components/flow/FlowIdeasReleaseCut.astro';
+import PaperCta from '../../components/ui/PaperCta.astro';
 import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN } from '../../data/launch.ts';
 import '../../styles/flow.css';
 
@@ -17,34 +17,34 @@ if (!ORIONFOLD_FLOW_IDEAS_CAMPAIGN) {
 const beats = [
   {
     number: '01',
-    kicker: 'On the grid',
-    title: 'One outcome. Your hands on the wheel.',
-    body: 'The story starts with your destination, not an open-ended prompt. You name the outcome and the boundaries. Flow carries the document, its context, and its rules with you.',
+    kicker: 'Frame the work',
+    title: 'One outcome. Your judgment.',
+    body: 'Name the outcome and the boundaries. Flow keeps the document, its context, and its rules together so the next step has somewhere to begin.',
   },
   {
     number: '02',
-    kicker: 'Into the pit lane',
+    kicker: 'Organize the context',
     title: 'Make the thinking visible before the work begins.',
-    body: 'The Flow Ideas launch story turns a plan into a pit stop: a focused pause where the work is inspected, divided into stations, and made legible before any specialist runs.',
+    body: 'Ideas makes a plan legible before any specialist runs. Inspect the suggested work, the evidence it will use, and what needs your approval.',
   },
   {
     number: '03',
     kicker: 'Specialist craft',
-    title: 'The right crew for each station.',
-    body: 'Each specialist has a narrow job. One checks structure. Another checks evidence. Another checks presentation. They propose and report. They do not take the wheel.',
+    title: 'The right specialist for each move.',
+    body: 'Each specialist has a narrow job. One checks structure. Another checks evidence. Another checks presentation. They propose changes for you to review.',
   },
   {
     number: '04',
     kicker: 'Release',
-    title: 'Your call puts the work back on track.',
-    body: 'The crew clears only when you approve. Flow leaves the stop carrying the result and its record, ready for the next turn without losing who decided what.',
+    title: 'Your decision develops the work.',
+    body: 'Approve the result and keep its record with the document. The next visit starts with the context of what changed and who decided.',
   },
 ];
 ---
 
 <Layout
-  title="Flow Ideas in motion · Campaign preview · Orionfold"
-  description="A daylight racing concept for Orionfold Flow Ideas: the user drives, Flow carries the work, and a specialist pit crew proposes each move before release."
+  title="Flow Ideas in motion · Orionfold"
+  description="Turn ideas into living documents: frame the outcome, organize the context, inspect a proposal, and develop the work with Flow."
   noindex={true}
 >
   <Nav />
@@ -58,11 +58,11 @@ const beats = [
       <div class="flow-ideas-story__intro">
         <p class="of-eyebrow" data-animate="rise">The launch story</p>
         <h2 id="flow-ideas-story-arc-title" class="of-display" data-animate="lead">
-          A fast car is only half a race.
+          Good work deserves a second chapter.
         </h2>
         <p class="of-lede" data-animate="rise">
-          Performance comes from a system: the driver, the machine, the crew, the timing,
-          and a shared view of what happens next. That is the arc Flow Ideas is built to explain.
+          A living practice connects intention, context, action, and reflection.
+          Flow Ideas makes the next move visible while the document keeps the thread.
         </p>
       </div>
 
@@ -80,24 +80,23 @@ const beats = [
       </ol>
     </section>
 
-    <FlowIdeasReleaseCut />
+    <div class="mx-auto max-w-6xl px-6"><PaperCta source="ideas-in-motion" /></div>
 
     <section class="flow-ideas-story__control" aria-labelledby="flow-ideas-story-control-title">
       <div>
-        <p class="of-eyebrow" data-animate="rise">The point of the metaphor</p>
+        <p class="of-eyebrow" data-animate="rise">The point of the practice</p>
         <h2 id="flow-ideas-story-control-title" class="of-display" data-animate="lead">
-          More performance. No surrender of control.
+          More possibility. Your judgment stays central.
         </h2>
       </div>
       <div class="flow-ideas-story__control-copy" data-animate="rise">
         <p>
-          Flow is not the driver and the specialist crew is not a swarm making hidden decisions.
-          The campaign works only if the person in the cockpit remains visible at every beat.
+          Flow makes the work inspectable: the source, the proposal, the approval, and the record.
+          You keep the authority to decide what belongs in the document.
         </p>
         <p>
-          The cinematic layer carries energy, speed, and craft. The product layer still has to show
-          the real screen, the real proposal, the approval, and the receipt. Atmosphere earns attention.
-          Evidence earns trust.
+          The work can grow through research, writing, and revision without losing its context.
+          Each return becomes a chance to refine it and carry the useful parts forward.
         </p>
         <a class="of-primary-action" href="/flow/">See the real Flow product <span aria-hidden="true">→</span></a>
       </div>

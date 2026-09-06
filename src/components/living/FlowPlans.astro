@@ -1,0 +1,56 @@
+---
+// Approved Living Systems composition; native Astro, no client framework.
+import FlowDownloadCta from '../flow/FlowDownloadCta.astro';
+import FlowEnterpriseContact from '../flow/FlowEnterpriseContact.astro';
+import { FLOW, formatUsd } from '../../data/commerce';
+import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
+---
+<span id="pricing-heading" class="ls-anchor-alias" aria-hidden="true"></span>
+<span id="flow-page-waitlist-heading" class="ls-anchor-alias" aria-hidden="true"></span>
+
+<section class="ls-container ls-plans" id="get-flow">
+<span class="ls-anchor-alias" id="pricing">
+</span>
+<span class="ls-anchor-alias" id="waitlist">
+</span>
+<div class="ls-section-heading">
+<p class="ls-eyebrow">START WITH THE ROUTINE</p>
+<h2>ADD THE<br/>
+<span class="ls-stroke">INTERPRETATION.</span>
+</h2>
+<p>Keep data current for free. Add model-powered work with Pro.</p>
+<p class="ls-trial-note">Start with 10 Pro Days. No credit card. Counted on days you use Pro.</p>
+</div>
+<div class="ls-plan-grid">
+<article data-plan="base">
+<span class="ls-eyebrow">FLOW BASE</span>
+<h3>A useful place<br/>to begin.</h3>
+<p class="ls-plan-price">Free forever<small>No account. No expiry. No private format.</small>
+</p>
+<ul>
+<li>Write, search, organize, chart and export</li>
+<li>Markdown, tables, pictures and diagrams</li>
+<li>Deterministic Night Shift jobs</li>
+<li>Morning Briefing and Keep/Revert review</li>
+<li>Seven living-document examples</li>
+</ul>
+<div class="ls-plan-actions"><FlowDownloadCta source="flow-living-documents" /></div>
+</article>
+<article data-plan="pro">
+<span class="ls-eyebrow">FLOW PRO</span>
+<h3>Intelligence for<br/>the continuing work.</h3>
+{ORIONFOLD_FLOW_LIVE && <p class="ls-plan-price">{formatUsd(FLOW.monthly.amount)} / month<small>Or {formatUsd(FLOW.annual.amount)} / year · one person, your own Macs</small>
+</p>}
+<ul>
+<li>Everything in Base</li>
+<li>Local Overnight notes on changed work</li>
+<li>Model-assisted data-definition drafts</li>
+<li>Model-powered Ideas actions, daytime Agency and analysis</li>
+<li>Local or configured cloud models; provider usage is separate</li>
+</ul>
+<div class="ls-plan-actions"><FlowEnterpriseContact /><p class="ls-plan-payment-note">Or pay in-app when ready.</p></div>
+</article>
+</div>
+<p class="ls-plan-note">Night Shift model work stays on your Mac. Configured cloud models remain a separate choice for daytime work.</p>
+<p class="ls-offer-footnote">When Pro ends, model-powered actions stop. Your files stay readable and editable, with no watermark or export wall. Read receipts remain accessible. <a href="/promise/">Read our promise</a> and <a href="/flow/specifications/#plans">licensing details</a>.</p>
+</section>

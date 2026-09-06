@@ -76,10 +76,14 @@ for (const [, from] of prepare.matchAll(/from: '([^']+)'/g)) {
   assert.ok(rows.has(path.basename(from, '.webp')), `prepare-flow-details cuts from ${from}, which has no provenance row`);
 }
 const og = read('src/data/og.ts');
-for (const route of ['/', '/flow/']) {
-  const block = og.match(new RegExp(`'${route.replace(/\//g, '\\/')}': \\{([\\s\\S]*?)\\n  \\}`))?.[1] ?? '';
-  assert.match(block, /screenshot: 'src\/assets\/flow\/og-[a-z-]+\.png'/, `${route} OG screenshot is a png copy under src/assets/flow/ (Satori cannot decode webp)`);
+// Flagship social cards now use approved origami; real product captures keep
+// the unchanged manifest/hash/crop rails above and remain on detailed tours.
+for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
+  const block = og.split(`'${route}': {`)[1]?.split(/\n\s*},/)[0] ?? '';
+  assert.match(block, /["']?living["']?: true/, `${route}: uses the approved Living Systems card`);
+  assert.doesNotMatch(block, /screenshot:/, `${route}: no unintended real-shot substitution`);
 }
+assert.match(read('src/lib/og/card.ts'), /hero-home-paper-planes\.png/, 'origami OG source is PNG for Satori');
 
 // ── The changelog parser reads the product lane's real format ──────────────
 const sample = [

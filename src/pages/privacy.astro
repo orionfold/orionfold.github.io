@@ -21,7 +21,7 @@ import SectionLabel from '../components/ui/SectionLabel.astro';
 import { SITE, PUBLISHER } from '../data/seo';
 import { ogMeta } from '../data/og';
 
-const lastUpdated = 'August 29, 2026';
+const lastUpdated = 'September 6, 2026';
 const og = ogMeta('/privacy/');
 
 const summaryCards = [
@@ -31,7 +31,7 @@ const summaryCards = [
   },
   {
     title: 'Requests & Purchases',
-    body: 'Newsletter and proposal forms use Supabase and Resend. Purchases are handled by Stripe; we never see your card number.',
+    body: 'Newsletter, proposal and enterprise enquiry forms use Supabase and Resend. Purchases are handled by Stripe; we never see your card number.',
   },
   {
     title: 'Local-First Software',
@@ -46,27 +46,31 @@ const sections = [
     // flow-growth ledger 2026-08-29 08:05); a test in the app holds the Guide
     // table equal to the hosts the code can reach, so if these rows ever
     // disagree with the live Guide, the Guide is right. Intro sentence is the
-    // operator's (2026-08-29 08:02). Names 1.5.5, so it ships with that cut.
+    // operator's (2026-08-29 08:02). Updated from the 1.6 Working With Flow,
+    // Night Shift and Settings briefs: local-only runtimes, key-as-switch,
+    // optional Web Lookups, watched HTTPS sources and General billing.
     title: 'The Flow app: what leaves your Mac',
     paragraphs: [
-      'The sections below are about this website and the newsletter. The Flow app on your Mac is different: it never sends your documents or your working data to Orionfold, and it never has to check in with us to keep working. Flow is built so that nothing has to leave your Mac, which makes the list of times it reaches the network short enough to print. As of Flow 1.5.5, this is all of it. Each one is something you can see, and each has a switch or you control the outcome.',
+      'The sections below are about this website and the newsletter. The Flow app on your Mac is different: it never sends your documents or your working data to Orionfold, and it never has to check in with us to keep working. Flow is built so that nothing has to leave your Mac, which makes the list of times it reaches the network short enough to print. For Flow 1.6, the connections are listed below. Each one is something you can see, and each has a switch or you control the outcome.',
     ],
     table: {
       head: ['When', 'Where', 'What is sent', 'Your switch'],
       rows: [
       ['Flow looks for a new version: at launch, then at most once every six hours', 'orionfold.com', 'The request for the update list, carrying Flow’s version and the updater’s name, as any web request does', 'Flow ▸ Check for Updates… runs it by hand'],
       ['You press Flow Guide Updates…', 'github.com (raw.githubusercontent.com, the Guide’s public home)', 'A request for the Guide’s index, then only the documents you accept', 'Only when you press it'],
-      ['You press Buy Flow Pro or Manage Plan… in Settings ▸ Billing', 'orionfold.supabase.co (Orionfold’s billing service)', 'The plan and seat count you chose, or your license file so the server can answer for it', 'Only when you press it'],
-      ['You add a model runtime on this Mac or a machine you name', 'That Mac, or the address you typed', 'Your prompt and the text you selected, when you approve a run', 'Settings ▸ Models: each domain has its own switch'],
-      ['You add a cloud provider', 'That provider', 'Your prompt and the text you selected, when you approve a run; the meter shows it first', 'Settings ▸ Models: each domain has its own switch'],
+      ['You press Buy Flow Pro or Manage Plan… in Settings ▸ General', 'orionfold.supabase.co (Orionfold’s billing service)', 'The plan and seat count you chose, or your license file so the server can answer for it', 'Only when you press it'],
+      ['You run a model through Ollama or LM Studio on this Mac', 'This Mac', 'Your prompt and the text you selected, when you approve a run', 'Settings ▸ Models ▸ On this Mac; a runtime pointed at another machine is refused'],
+      ['You add a cloud provider’s key', 'That provider', 'Your prompt and the text you selected, when you approve a run; the meter shows it first', 'Settings ▸ Models ▸ Cloud: the key is the switch; remove it to turn the provider off'],
       ['You refresh a provider’s price list, or first set up OpenRouter', 'openrouter.ai', 'A request for public prices; nothing about you', 'Only when you ask'],
       ['You import a model', 'huggingface.co', 'The download request for the model you chose', 'Only when you press it'],
       ['A document embeds an image by web address', 'That address', 'The request for the image, when the document is shown', 'Write the image into the folder instead, and nothing is fetched'],
       ['You open a web address in a pane', 'That address', 'What any browser sends to load a page', 'Only when you enter one'],
+      ['A run looks something up on the web, with Web Lookups on', 'The address the model chose', 'A request for that page, not your document; the address is chosen from what the document says', 'Settings ▸ General ▸ Web Lookups, off until you turn it on'],
+      ['Night Shift checks a watched public page', 'The HTTPS address you listed in the document’s watch job', 'A request for that page; your document text is not uploaded', 'You choose the watched sources and jobs. Overnight notes use a model on this Mac'],
       ],
     },
     after: [
-      'That is the whole list. As of Flow 1.5.5, Flow keeps no usage statistics, sends no crash reports, carries no analytics or advertising code, has no install identifier, and never checks a license online to keep working. If a future Flow offers to share counts or crash reports with Orionfold, it will be a switch that starts off, and this table will list it beside the others.',
+      'That is the whole list. Flow 1.6 keeps no usage statistics, sends no crash reports, carries no analytics or advertising code, has no install identifier, and never checks a license online to keep working. If a future Flow offers to share counts or crash reports with Orionfold, it will be a switch that starts off, and this table will list it beside the others.',
       'Need to tell us about a problem? Help ▸ Copy Diagnostics… puts a short block on the clipboard: the Flow and macOS versions, the kind of Mac, which domains are on, and the last crash’s summary if there is one, with no paths, titles or names in it. You see the exact text before it is copied, and it goes nowhere until you paste it.',
     ],
   },
@@ -87,7 +91,9 @@ const sections = [
       'Ad measurement information. When we run ads, the site uses Google Ads conversion tracking and the Meta (Facebook) Pixel to learn whether an ad click led to a purchase. These tools set cookies (Meta uses _fbp and _fbc) and read ad click ids from the page address. When you buy a book, we also report that purchase to Google and Meta from our server, using a hashed (scrambled, one-way) version of your email so the ad platforms can match it. We never send them your plain email address.',
       'Purchase information. If you buy a book, payment is handled by Stripe. Orionfold LLC receives your email address, the item you bought, and the amount paid, and uses them to deliver your files and keep purchase records. We never receive or store your card number.',
       'Newsletter information. If you subscribe, Orionfold LLC collects your email address and operational metadata used for confirmation, abuse prevention, and delivery, such as confirmation status, timestamps, IP address, and user-agent data.',
+      'Living Documents opt-in. We separately record your permission to receive Flow updates, Living Documents methods, and the AI Native Newsletter, including the exact consent text, confirmation time and signup source. This does not change an older subscription’s consent. The form promises up to one email a week and an unsubscribe link.',
       'Proposal request information. If you build and submit a product proposal, Orionfold LLC collects your full name, business email, company, selected products, requested license or seat quantities, server-calculated estimate, timestamps, and abuse-prevention metadata. If you add an optional purchase note or PO reference, Orionfold LLC also stores that text. Draft details stay in your browser until you submit.',
+      'Enterprise enquiries. If you submit Flow requirements, Orionfold LLC collects your contact name, email, company, requirements, requested license count and optional information about where you heard about us. A request identifier and an abuse-prevention fingerprint support safe retries and spam prevention. Draft details stay in the form until you submit; this form does not enroll you in a newsletter.',
       'Communications. If you email Orionfold LLC or open an issue, Orionfold LLC will receive the information you include in that message.',
       'Local software data. Orionfold software is intended to run locally by default, so workflow data, prompts, documents, and project state are generally stored on your own systems unless you intentionally connect external services.',
       'Connected provider data. If you configure model providers, APIs, or other integrations, your data may be sent directly to those providers based on your configuration.',
@@ -103,6 +109,7 @@ const sections = [
       'Confirm newsletter subscriptions and send release, product, and operational updates.',
       'Deliver purchased books and keep records of purchases.',
       'Review non-binding product proposal requests, respond about product fit, quantities, availability, and fulfillment terms, and preserve the exact estimate that was submitted.',
+      'Review enterprise requirements and contact you about Flow product fit and licensing needs.',
       'Measure whether our ads on Google and Meta lead to purchases, so we can decide where advertising is worth running.',
       'Detect abuse, spam, fraud, misuse, and security incidents.',
       'Understand aggregate usage patterns and improve the website and documentation.',
@@ -122,7 +129,7 @@ const sections = [
     ],
     bullets: [
       'Service providers such as Google Analytics, Supabase, Resend, and hosting or infrastructure vendors that help run the website and newsletter.',
-      'Supabase stores submitted proposal requests and Resend sends the details to Orionfold so Orionfold can respond. Proposal details are not sent to advertising platforms or included in public URLs.',
+      'Supabase stores submitted proposal requests and enterprise enquiries. Resend sends the details to Orionfold so Orionfold can respond. These request details are not sent to advertising platforms or included in public URLs.',
       'Payment processing by Stripe, which collects your payment details under its own privacy policy when you buy a book.',
       'Ad platforms, namely Google and Meta (Facebook), which receive purchase conversion events that include the order value and a hashed version of your email, never the plain address. Meta explains how it uses this data at facebook.com/privacy/policy.',
       'Code, model, and file distribution providers such as GitHub and Hugging Face when you download releases, models, or interact with project repositories.',
@@ -135,7 +142,7 @@ const sections = [
     paragraphs: [
       'Orionfold LLC retains personal information only for as long as reasonably necessary for the purposes described in this Policy, including delivery, abuse prevention, security, legal compliance, and recordkeeping.',
       'Newsletter subscription records are generally kept until you unsubscribe or ask for deletion, subject to backup retention and legitimate security or legal needs.',
-      'Proposal requests are kept as business records for review, abuse prevention, follow-up, and any later agreement. You may request deletion where applicable, subject to legal and recordkeeping needs.',
+      'Proposal requests and enterprise enquiries are kept as business records for review, abuse prevention, follow-up, and any later agreement. You may request deletion where applicable, subject to legal and recordkeeping needs.',
     ],
   },
   {

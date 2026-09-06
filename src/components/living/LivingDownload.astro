@@ -1,0 +1,7 @@
+---
+// Approved Living Systems composition; native Astro, no client framework.
+import FlowDownloadCta from '../flow/FlowDownloadCta.astro';
+interface Props { source: string; align?: 'left' | 'center'; }
+const {source, align = 'left'} = Astro.props;
+---
+<div class="ls-download"><FlowDownloadCta source={source} align={align} showCaption={false} /></div>

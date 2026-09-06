@@ -1,4 +1,5 @@
 ---
+import Origami from '../ui/Origami.astro';
 // Buy box (P1, spec §4/§5.4). The book conversion point: a real price (resolved
 // from the CATALOG SSOT by lookup key, never hardcoded), a Buy button wired by
 // wireCheckoutButtons(), a "Read free online" secondary, and a money-back note.
@@ -23,6 +24,7 @@ const magnetBookHref = magnetHref('book-page-cta');
 {view.lookupKey && (
   <section id="buy" class="scroll-mt-24 px-6 py-12">
     <div data-animate class="mx-auto max-w-3xl rounded-2xl border border-primary/40 bg-surface-raised p-8 shadow-lg shadow-primary/5">
+      <Origami compact />
       {showMagnet && (
         <a
           href={magnetBookHref}

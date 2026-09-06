@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './fixtures';
 
 function collectRuntimeErrors(page: Page) {
   const errors: string[] = [];

@@ -11,10 +11,11 @@
 //     step, in this order. `scripts/test/preflight.test.mjs` fails if the
 //     workflow and STEPS drift apart.
 //   - `npm run preflight` (no arguments) runs the same steps, in the same order,
-//     with the same environment, and writes a stamp keyed on the git tree hash.
+//     with the same environment, and stamps both the git tree and build settings.
 //   - The tracked pre-push hook (`scripts/git-hooks/pre-push`) refuses to push
-//     `main` unless the pushed tree carries a fresh green stamp or CI already
-//     deployed that exact commit green; otherwise it runs preflight inline.
+//     `main` unless the pushed tree carries a green stamp for the current build
+//     settings; otherwise it runs preflight inline. A past green deploy alone
+//     does not establish which repository variables it built with.
 //
 // Steps never read files from the working tree that CI cannot see (.env.local,
 // untracked files) except through the build itself; that residual gap is why
@@ -26,11 +27,18 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const STAMP_PATH = resolve(ROOT, 'output/preflight/stamp.json');
-export const DEPLOY_WORKFLOW = 'deploy.yml';
-
-// The customer-visible build state. The workflow sets the same value at job
-// level; running it here too means a local build cannot differ from Pages.
-export const BUILD_ENV = { PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: 'true' };
+// Fixed customer-visible state, also pinned at workflow job level. The two
+// launch flags are resolved separately from the same repository variables CI
+// reads; a local shell override is never evidence of their production value.
+export const BUILD_ENV = Object.freeze({
+  PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: 'true',
+  PUBLIC_SERVICE_MODE: 'production',
+});
+export const BUILD_FLAGS = Object.freeze([
+  'PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED',
+  'PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED',
+]);
+const BUILD_ENV_KEYS = [...Object.keys(BUILD_ENV), ...BUILD_FLAGS];
 
 // ---------------------------------------------------------------------------
 // Publish sweep rules. Pure functions so the contract test can pin them.
@@ -173,6 +181,64 @@ const endGroup = () => {
   if (process.env.GITHUB_ACTIONS) console.log('::endgroup::');
 };
 
+// Repository variable enumeration distinguishes an absent flag (false) from
+// unavailable credentials/network/API (unknown, so refuse to proceed).
+function lookupBuildVariables() {
+  const result = run('gh', ['variable', 'list', '--json', 'name,value'], { quiet: true });
+  if (result.status !== 0) {
+    throw new Error('Cannot read repository build variables through gh. Restore authenticated repository access before preflight; local values cannot substitute.');
+  }
+  try {
+    return JSON.parse(result.stdout);
+  } catch {
+    throw new Error('Repository build-variable lookup returned invalid JSON.');
+  }
+}
+
+/** Pure with an injected lookup. Only GitHub Actions uses workflow values. */
+export function resolveBuildEnvironment({ env = process.env, ci = env.GITHUB_ACTIONS === 'true', lookup = lookupBuildVariables } = {}) {
+  let values;
+  if (ci) {
+    values = env;
+  } else {
+    const rows = lookup();
+    if (!Array.isArray(rows) || rows.some((row) => !row || typeof row.name !== 'string' || typeof row.value !== 'string')) {
+      throw new Error('Repository build-variable lookup must return a complete variable list.');
+    }
+    if (new Set(rows.map((row) => row.name)).size !== rows.length) {
+      throw new Error('Repository build-variable lookup returned duplicate variable names.');
+    }
+    values = Object.fromEntries(rows.map(({ name, value }) => [name, value]));
+  }
+  const buildEnv = { ...BUILD_ENV };
+  for (const key of BUILD_FLAGS) {
+    // Match vars.NAME || 'false' in deploy.yml, but reject non-boolean values
+    // in either path rather than silently building an unintended gate state.
+    const value = values[key] === undefined || values[key] === '' ? 'false' : values[key];
+    if (value !== 'true' && value !== 'false') throw new Error(`${key} must be exactly "true" or "false".`);
+    buildEnv[key] = value;
+  }
+  return { buildEnv, source: ci ? 'workflow environment' : 'repository variables via gh' };
+}
+
+function validBuildEnvironment(env) {
+  return env !== null && typeof env === 'object' && !Array.isArray(env)
+    && Object.keys(env).length === BUILD_ENV_KEYS.length
+    && Object.entries(BUILD_ENV).every(([key, value]) => env[key] === value)
+    && BUILD_FLAGS.every((key) => env[key] === 'true' || env[key] === 'false');
+}
+
+export function buildEnvironmentsMatch(checked, current) {
+  return validBuildEnvironment(checked) && validBuildEnvironment(current)
+    && BUILD_ENV_KEYS.every((key) => checked[key] === current[key]);
+}
+
+function checkedBuildEnvironment() {
+  const resolved = resolveBuildEnvironment();
+  console.log(`[preflight] build settings from ${resolved.source}: ${JSON.stringify(resolved.buildEnv)}`);
+  return resolved.buildEnv;
+}
+
 // ---------------------------------------------------------------------------
 // Step implementations. Each returns { ok, detail }.
 // ---------------------------------------------------------------------------
@@ -259,10 +325,10 @@ export function resolveReleaseDeclared({ env = process.env, ci = isCI(), lookup 
   return { value: undefined, source: 'unset (gh unavailable and no local value; CI would also see unset unless the repository variable exists)' };
 }
 
-function stepBoundary() {
+function stepBoundary({ buildEnv } = {}) {
   const declared = resolveReleaseDeclared();
   console.log(`[preflight] FLOW_RELEASE_DECLARED=${declared.value ?? '<unset>'} from ${declared.source}`);
-  const env = { ...BUILD_ENV };
+  const env = { ...BUILD_ENV, ...buildEnv };
   if (declared.value === undefined) delete env.FLOW_RELEASE_DECLARED;
   else env.FLOW_RELEASE_DECLARED = declared.value;
   const result = spawnSync(process.execPath, [resolve(ROOT, 'scripts/check-flow-release-boundary.mjs')], {
@@ -273,8 +339,8 @@ function stepBoundary() {
   return { ok: result.status === 0, detail: `exit ${result.status}` };
 }
 
-const shell = (label, cmd, args, env = {}) => {
-  const result = run(cmd, args, { env: { ...BUILD_ENV, ...env } });
+const shell = (label, cmd, args, buildEnv, env = {}) => {
+  const result = run(cmd, args, { env: { ...buildEnv, ...env } });
   return { ok: result.status === 0, detail: `${label} exit ${result.status}` };
 };
 
@@ -283,14 +349,14 @@ const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 export const STEPS = [
   { name: 'sweep', title: 'Sweep the tree for local-only paths, key material, and mailboxes', run: stepSweep },
   { name: 'boundary', title: 'Verify Flow release boundary', run: stepBoundary },
-  { name: 'deno', title: 'Test server and commerce contracts', run: () => shell('deno test', 'deno', ['test', '-A', 'supabase/functions']) },
-  { name: 'build', title: 'Build site', run: () => shell('astro build', npx, ['astro', 'build']) },
+  { name: 'deno', title: 'Test server and commerce contracts', run: ({ buildEnv }) => shell('deno test', 'deno', ['test', '-A', 'supabase/functions'], buildEnv) },
+  { name: 'build', title: 'Build site', run: ({ buildEnv }) => shell('astro build', npx, ['astro', 'build'], buildEnv) },
   {
     name: 'node',
     title: 'Test source and rendered-output contracts',
-    run: () => {
+    run: ({ buildEnv }) => {
       const files = readdirSync(resolve(ROOT, 'scripts/test')).filter((f) => f.endsWith('.test.mjs')).sort().map((f) => `scripts/test/${f}`);
-      return shell('node --test', process.execPath, ['--test', '--test-reporter=spec', ...files]);
+      return shell('node --test', process.execPath, ['--test', '--test-reporter=spec', ...files], buildEnv);
     },
   },
   {
@@ -298,12 +364,12 @@ export const STEPS = [
     title: 'Test critical browser journeys',
     // CI=1 locally too: no reuse of a stale server on the Playwright port, the
     // same retry policy, and `test.only` is rejected, exactly as in the workflow.
-    run: () => shell('playwright test', npx, ['playwright', 'test'], { CI: '1' }),
+    run: ({ buildEnv }) => shell('playwright test', npx, ['playwright', 'test'], buildEnv, { CI: '1' }),
   },
 ];
 
 // ---------------------------------------------------------------------------
-// Stamp: proof that the whole chain passed on an exact tree.
+// Stamp: proof that the whole chain passed on an exact tree and build settings.
 // ---------------------------------------------------------------------------
 
 export function readStamp(path = STAMP_PATH) {
@@ -315,15 +381,18 @@ export function readStamp(path = STAMP_PATH) {
   }
 }
 
-/** A stamp proves a tree only if it was written on that tree from a clean checkout. */
-export function stampSatisfies(stamp, tree, { steps = STEPS.map((s) => s.name) } = {}) {
-  if (!stamp || stamp.tree !== tree || stamp.dirty) return false;
+/** Old tree-only stamps deliberately fail: they did not record launch flags. */
+export function stampSatisfies(stamp, tree, { buildEnv, steps = STEPS.map((s) => s.name) } = {}) {
+  if (!stamp || stamp.version !== 2 || stamp.tree !== tree || stamp.dirty !== false) return false;
+  if (!buildEnvironmentsMatch(stamp.buildEnv, buildEnv)) return false;
   return steps.every((name) => Array.isArray(stamp.steps) && stamp.steps.includes(name));
 }
 
-function writeStamp() {
+function writeStamp(buildEnv) {
   const dirty = !workingTreeIsClean();
   const stamp = {
+    version: 2,
+    buildEnv,
     tree: treeOf('HEAD'),
     head: git('rev-parse', 'HEAD'),
     dirty,
@@ -345,12 +414,6 @@ function writeStamp() {
 // Push gate (called by the pre-push hook with the pushed and remote SHAs).
 // ---------------------------------------------------------------------------
 
-function deployedGreen(sha) {
-  const result = run('gh', ['run', 'list', '--workflow', DEPLOY_WORKFLOW, '--commit', sha, '--json', 'conclusion', '--jq', '[.[] | select(.conclusion == "success")] | length'], { quiet: true });
-  if (result.status !== 0) return false;
-  return Number(result.stdout.trim()) > 0;
-}
-
 export function gate(localSha, remoteSha) {
   const zero = /^0{40}$/;
   const local = git('rev-parse', localSha);
@@ -362,22 +425,24 @@ export function gate(localSha, remoteSha) {
   if (!sweep.ok) return false;
 
   const tree = git('rev-parse', `${local}^{tree}`);
+  const buildEnv = checkedBuildEnvironment();
   const stamp = readStamp();
-  if (stampSatisfies(stamp, tree)) {
+  if (stampSatisfies(stamp, tree, { buildEnv })) {
     console.log(`[preflight] push allowed: tree ${tree.slice(0, 12)} passed preflight at ${stamp.at}`);
     return true;
   }
-  if (deployedGreen(local)) {
-    console.log(`[preflight] push allowed: ${local.slice(0, 7)} already deployed green on GitHub Pages`);
-    return true;
-  }
   if (treeOf('HEAD') === tree && workingTreeIsClean()) {
-    console.log(`[preflight] no stamp for tree ${tree.slice(0, 12)}; running the full chain before the push`);
-    return runAll();
+    console.log(`[preflight] no stamp for tree ${tree.slice(0, 12)} and current build settings; running the full chain before the push`);
+    if (!runAll({ buildEnv })) return false;
+    // A long inline run must not grant a push after repository flags changed.
+    const current = checkedBuildEnvironment();
+    if (stampSatisfies(readStamp(), tree, { buildEnv: current }) && workingTreeIsClean()) return true;
+    console.error('[preflight] push refused: tree or repository build settings changed during preflight. Rerun on the current configuration.');
+    return false;
   }
   console.error('[preflight] push refused. The pushed commit has no proof:');
-  console.error('- no green preflight stamp for its tree (run `npm run preflight` on a clean checkout of it), and');
-  console.error('- no green GitHub Pages deploy of that exact commit, and');
+  console.error('- no green preflight stamp for its tree and current build settings (run `npm run preflight` on a clean checkout of it), and');
+  console.error('- a past green deploy alone does not prove current repository build settings, and');
   console.error('- it is not the clean working tree, so preflight cannot verify it in place.');
   return false;
 }
@@ -386,7 +451,7 @@ export function gate(localSha, remoteSha) {
 // CLI.
 // ---------------------------------------------------------------------------
 
-function runSteps(names) {
+function runSteps(names, { buildEnv = checkedBuildEnvironment() } = {}) {
   for (const name of names) {
     const step = STEPS.find((s) => s.name === name);
     if (!step) {
@@ -395,7 +460,7 @@ function runSteps(names) {
     }
     group(step.title);
     const started = Date.now();
-    const result = step.run();
+    const result = step.run({ buildEnv });
     endGroup();
     const seconds = ((Date.now() - started) / 1000).toFixed(1);
     if (!result.ok) {
@@ -409,9 +474,9 @@ function runSteps(names) {
   return true;
 }
 
-function runAll() {
-  const ok = runSteps(STEPS.map((s) => s.name));
-  if (ok) writeStamp();
+function runAll({ buildEnv = checkedBuildEnvironment() } = {}) {
+  const ok = runSteps(STEPS.map((s) => s.name), { buildEnv });
+  if (ok) writeStamp(buildEnv);
   return ok;
 }
 
@@ -439,4 +504,11 @@ function main(argv) {
 }
 
 const invokedPath = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : '';
-if (import.meta.url === invokedPath) process.exit(main(process.argv.slice(2)));
+if (import.meta.url === invokedPath) {
+  try {
+    process.exit(main(process.argv.slice(2)));
+  } catch (error) {
+    console.error(`[preflight] refused: ${error.message}`);
+    process.exit(1);
+  }
+}

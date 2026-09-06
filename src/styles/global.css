@@ -12,13 +12,24 @@
 @source not "../../public/relay/demo";
 @source not "../../public/arena/demo";
 
-/* ── Self-hosted fonts (preloaded in Layout.astro) ── */
+/* Self-hosted original faces, split into a common glyph subset and a full-face
+   fallback for every remaining original codepoint. Metrics/outlines stay exact;
+   public/fonts/subsets.json records coverage, hashes and font provenance. */
 @font-face {
   font-family: 'Geist Sans';
   font-style: normal;
   font-display: swap;
   font-weight: 400;
   src: url('/fonts/geist-sans-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+100-113, U+116-12B, U+12E-137, U+139-13E, U+141-148, U+14A-14D, U+150-17E, U+18F, U+192, U+1B7, U+1CD-1CE, U+1E4-1E9, U+1EE-1EF, U+218-21B, U+237, U+259, U+292, U+2B9, U+2BC, U+2C6-2C8, U+2D8-2DD, U+300-304, U+306-308, U+30A-30C, U+312, U+326-328, U+335, U+39B, U+3A9, U+3BB, U+3C0, U+E3F, U+1E20-1E21, U+1E80-1E85, U+1E9E, U+1EBC-1EBD, U+1EF2-1EF3, U+1EF8-1EF9, U+2070, U+2074-2079, U+2080-2089, U+2107, U+2116-2117, U+2122, U+2153-2155, U+215B-215E, U+2191, U+2193, U+2195-2199, U+219D, U+21A9-21AA, U+21B0-21B1, U+21B3-21B5, U+21E4-21E5, U+21E7, U+2202, U+2206, U+220F, U+2211, U+221A, U+221E, U+222B, U+2260, U+23CE, U+240B-240C, U+2460, U+2463-2468, U+24EA, U+24FF, U+25B2-25B3, U+25B6-25B7, U+25BC-25BD, U+25C0-25C1, U+25CA, U+25CC, U+2639-263A, U+2776-277E, U+3002-3003, U+3008-3011, U+3014-3017, U+301C, U+A78B-A78C, U+FF01-FF03, U+FF05-FF0A, U+FF0C-FF0F, U+FF1A-FF1B, U+FF1F-FF20, U+FF3B-FF3D, U+FF3F, U+FF5B, U+FF5D;
+}
+@font-face {
+  font-family: 'Geist Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/geist-sans-common-400-normal.woff2') format('woff2');
+  unicode-range: U+20-7E, U+A0-FF, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2032-2033, U+2039-203A, U+2044, U+20AA, U+20AC, U+20B4, U+20B9, U+20BD, U+2190, U+2192, U+2194, U+2212, U+2248, U+2264-2265, U+2461-2462, U+25CB, U+25CF;
 }
 @font-face {
   font-family: 'Geist Sans';
@@ -33,6 +44,15 @@
   font-display: swap;
   font-weight: 700;
   src: url('/fonts/geist-sans-latin-700-normal.woff2') format('woff2');
+  unicode-range: U+100-113, U+116-12B, U+12E-137, U+139-13E, U+141-148, U+14A-14D, U+150-17E, U+18F, U+192, U+1B7, U+1CD-1CE, U+1E4-1E9, U+1EE-1EF, U+218-21B, U+237, U+259, U+292, U+2B9, U+2BC, U+2C6-2C8, U+2D8-2DD, U+300-304, U+306-308, U+30A-30C, U+312, U+326-328, U+335, U+39B, U+3A9, U+3BB, U+3C0, U+E3F, U+1E20-1E21, U+1E80-1E85, U+1E9E, U+1EBC-1EBD, U+1EF2-1EF3, U+1EF8-1EF9, U+2070, U+2074-2079, U+2080-2089, U+2107, U+2116-2117, U+2122, U+2153-2155, U+215B-215E, U+2191, U+2193, U+2195-2199, U+219D, U+21A9-21AA, U+21B0-21B1, U+21B3-21B5, U+21E4-21E5, U+21E7, U+2202, U+2206, U+220F, U+2211, U+221A, U+221E, U+222B, U+2260, U+23CE, U+240B-240C, U+2460, U+2463-2468, U+24EA, U+24FF, U+25B2-25B3, U+25B6-25B7, U+25BC-25BD, U+25C0-25C1, U+25CA, U+25CC, U+2639-263A, U+2776-277E, U+3002-3003, U+3008-3011, U+3014-3017, U+301C, U+A78B-A78C, U+FF01-FF03, U+FF05-FF0A, U+FF0C-FF0F, U+FF1A-FF1B, U+FF1F-FF20, U+FF3B-FF3D, U+FF3F, U+FF5B, U+FF5D;
+}
+@font-face {
+  font-family: 'Geist Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('/fonts/geist-sans-common-700-normal.woff2') format('woff2');
+  unicode-range: U+20-7E, U+A0-FF, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2032-2033, U+2039-203A, U+2044, U+20AA, U+20AC, U+20B4, U+20B9, U+20BD, U+2190, U+2192, U+2194, U+2212, U+2248, U+2264-2265, U+2461-2462, U+25CB, U+25CF;
 }
 @font-face {
   font-family: 'Geist Mono Variable';
@@ -42,23 +62,16 @@
   src: url('/fonts/geist-mono-latin-wght-normal.woff2') format('woff2');
 }
 
-/* ── Design Tokens — Orionfold design system v6 (DS 8260579) ──
-   Re-founded on the Orionfold design system: CYAN is the single action color
-   (was indigo OKLCH hue 260). Strategy: keep the site's existing token NAMES
-   (59 files + the Tailwind `bg-primary/90`-style utilities consume them) and
-   retarget their VALUES to Orionfold; DS-native names (accent/muted/faint/ok,
-   t1–t7, radius-of, shadow-of, fluid --space-*) are added alongside so new
-   surfaces and the categorical `.tag` system have their tokens.
-   Load-bearing rules: cyan (`primary`/`accent`) is the ONLY interactive color;
-   t1–t7 are categorical identity, never interactive; --ok/--warn/--danger are
-   functional status, never a 2nd accent. Single light theme, no toggle (the
-   donor's dark theme + toggle stay dropped — see the aligned/ round-trip log). */
+/* Living Systems semantic tokens. Brand teal belongs to identity and evidence;
+   warm yellow to paper surfaces; accessible red to primary actions. Keep
+   category and functional status tokens independent from brand/action tokens.
+   Existing token names preserve the production component contract. */
 @theme {
   /* ── surfaces (site names retargeted to Orionfold neutrals) ── */
-  --color-surface: #f9fafb;          /* page canvas (DS --bg) */
+  --color-surface: #f8f9fa;          /* page canvas (DS --bg) */
   --color-surface-raised: #ffffff;   /* cards / rows / header (DS --surface) */
   --color-surface-overlay: #ffffff;  /* overlays / popovers (DS --raised) */
-  --color-bg: #f9fafb;               /* DS-native alias of the canvas */
+  --color-bg: #f8f9fa;               /* DS-native alias of the canvas */
   --color-raised: #ffffff;
 
   /* ── text ──
@@ -73,21 +86,16 @@
   --color-muted: #555c67;            /* DS-native alias */
   --color-faint: #677080;            /* DS-native alias */
 
-  /* ── THE one action color — Tide cyan (was indigo) ── */
-  --color-primary: #0e9e98;
-  --color-primary-dim: color-mix(in oklch, #0e9e98 10%, transparent);   /* faint wash */
-  --color-primary-glow: color-mix(in oklch, #0e9e98 22%, transparent);
-  --color-accent: #0e9e98;           /* DS-native name */
-  --color-accent-hover: #0c8b86;
+  /* Primary red actions and readable inline ink. Brand teal is separately
+     defined in living-system.css; it remains available for identity/data. */
+  --color-primary: #d93828;
+  --color-primary-dim: color-mix(in oklch, #d93828 10%, transparent);
+  --color-primary-glow: color-mix(in oklch, #d93828 22%, transparent);
+  --color-accent: #d93828;
+  --color-accent-hover: #ba2d21;
   --color-accent-text: #ffffff;
-  --color-accent-soft: color-mix(in oklch, #0e9e98 10%, #ffffff);       /* feature-surface tint */
-  /* Accent INK — the accent as TYPE, not as a fill (added 2026-08-16).
-     #0e9e98 is correct behind white button text, but as small text on the page
-     canvas it measures 3.16:1 and fails AA. Every kicker, eyebrow, inline link
-     and small accent label uses this deeper cyan (4.89:1) instead. Same hue
-     family, so the brand does not shift; only the contrast does. Solid fills
-     keep --color-accent, where the ratio is measured against white. */
-  --color-accent-ink: #0a7b77;
+  --color-accent-soft: color-mix(in oklch, #d93828 10%, #ffffff);
+  --color-accent-ink: #aa2d22;
 
   /* ── status — functional only, never a 2nd accent ── */
   --color-success: #1a9e3e;
@@ -168,7 +176,7 @@
   --svg-accent-red: #c0344d;         /* danger status */
   --svg-accent-pink: #9aa1ab;
 
-  --font-display: "Geist Sans", system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
   --font-body: "Geist Sans", system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 
@@ -693,7 +701,7 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   display: block;
   font-family: var(--font-mono);
   font-size: 0.68rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.23em;
   text-transform: uppercase;
   color: var(--color-accent-ink);
@@ -1010,11 +1018,11 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   min-height: 2.75rem;
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.08em;
   transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
-/* primary → solid cyan pill (round = pressable) */
+/* Primary fill. Living Systems supplies the shared action geometry. */
 .of-primary-action {
   border-radius: var(--radius-of-pill);
   background: var(--color-accent);
@@ -1122,7 +1130,7 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   text-align: left;
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-text);
@@ -1344,7 +1352,7 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.story-prose strong { color: var(--color-text); font-weight: 600; }
+.story-prose strong { color: var(--color-text); font-weight: 700; }
 .story-prose p > code,
 .story-prose li > code {
   overflow-wrap: anywhere;
@@ -1522,7 +1530,7 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   text-align: left;
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-text);
@@ -1580,7 +1588,7 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
 .of-code__title {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-text-muted);
@@ -1596,7 +1604,7 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   border-radius: 0.4rem;
   font-family: var(--font-mono);
   font-size: 0.68rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-text-muted);
@@ -1659,4 +1667,16 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
 }
 @media (max-width: 420px) {
   .of-waitlist-caption { font-size: 0.56rem; letter-spacing: 0.04em; }
+}
+
+/* The homepage canvas reaches the native scrollbar gutter on platforms that
+   reserve one. Preserve the existing 6px width and a visible scroll thumb. */
+html:has(body.ls-page-home) {
+  scrollbar-color: #9d8e2f #ffeb4b;
+}
+html:has(body.ls-page-home)::-webkit-scrollbar-track {
+  background: #ffeb4b;
+}
+html:has(body.ls-page-home)::-webkit-scrollbar-thumb {
+  background: #9d8e2f;
 }

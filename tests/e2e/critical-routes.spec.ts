@@ -1,8 +1,14 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './fixtures';
 
 const criticalRoutes = [
   '/',
   '/flow/',
+  '/essay/',
+  '/manifesto/',
+  '/flow/tour/',
+  '/flow/night-shift/',
+  '/flow/living-documents/',
+  '/flow/settings/',
   '/flow/writing-with-ai/',
   '/flow/receipts/',
   '/flow/models-and-runtime/',
@@ -57,7 +63,7 @@ test('a stale saved dark preference no longer changes the appearance', async ({ 
   await expect(page.locator('#theme-toggle')).toHaveCount(0);
 });
 
-for (const route of ['/', '/flow/', '/flow/receipts/', '/relay/', '/relay/host/', '/relay/host/linux-vm/', '/training/relay-operator-workshop/', '/proposal/'] as const) {
+for (const route of ['/', '/flow/', '/essay/', '/manifesto/', '/flow/tour/', '/flow/receipts/', '/relay/', '/relay/host/', '/relay/host/linux-vm/', '/training/relay-operator-workshop/', '/proposal/'] as const) {
   test(`${route} has no document-level overflow at 390px`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(route);

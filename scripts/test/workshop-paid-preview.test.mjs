@@ -179,16 +179,17 @@ test('private lesson transcripts expand in place with safe navigable source link
 });
 
 test('training refunds live on a public policy page and not the workshop finish screen', async () => {
-  const [footer, refunds, access, workspace] = await Promise.all([
-    read('src/components/Footer.astro'),
+  const [catalog, workshop, refunds, access, workspace] = await Promise.all([
+    read('src/pages/training/index.astro'),
+    read('src/pages/training/relay-operator-workshop/index.astro'),
     read('src/pages/training/refunds.astro'),
     read('src/pages/training/relay-operator-workshop/access.astro'),
     read('src/pages/training/relay-operator-workshop/workspace.astro'),
   ]);
 
-  assert.match(footer, /Latest · Relay Operator Workshop/);
-  assert.match(footer, /Workshop catalog/);
-  assert.match(footer, /\/training\/refunds\//);
+  assert.match(catalog, /href="\/training\/relay-operator-workshop\/"/, 'the training catalog links to the workshop');
+  assert.match(workshop, /href="\/training\/relay-operator-workshop\/access\/"/, 'purchasers can recover workshop access');
+  assert.match(access, /href="\/training\/refunds\/"/, 'the access page keeps the public refund policy reachable');
   assert.match(refunds, /14 calendar days/);
   assert.match(refunds, /requestWorkshopLink\('refund'/);
   assert.match(refunds, /If that inbox owns an eligible workshop/);

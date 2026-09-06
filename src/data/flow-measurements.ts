@@ -35,7 +35,7 @@ const billedRun = {
 const localRuntime = {
   value: '+19.2 MiB',
   label: 'A complete local AI runtime',
-  fine: 'Two engines inside the app. About the size of twenty photos',
+  fine: 'Two engines, measured August 14, 2026 on an M3 Max. Historical payload increment, not the current installer size',
   icon: 'chip',
   tone: 'route',
 } satisfies FlowMeasurement;
@@ -49,9 +49,9 @@ const agencyCatalog = {
 } satisfies FlowMeasurement;
 
 const aiDomains = {
-  value: '4 domains',
+  value: '2 locations',
   label: 'Where AI may run',
-  fine: 'Local, LAN, Cloud prepaid, Cloud postpaid. Each has its own switch',
+  fine: 'This Mac or configured cloud API providers. Cloud keys enable those providers and token billing',
   icon: 'domains',
   tone: 'route',
 } satisfies FlowMeasurement;

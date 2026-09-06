@@ -658,6 +658,460 @@
         "bytes": 282374,
         "sha256": "8aad546c2e3ec6376756057edbae67e0560f81ddac284287d0bab2b8f7c27677"
       }
+    },
+    {
+      "name": "v16-night-settings",
+      "source": "docs/settings/settings-night-shift.png",
+      "md5": "f7db796b0a3e2f29a09d5ecb5e9f0b82",
+      "guide": "F9",
+      "claim": "Night Shift schedule, catch-up and redraw controls",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [
+        "#454"
+      ],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 540,
+        "top": 185,
+        "width": 1345,
+        "height": 730
+      },
+      "changelogIssues": [
+        "#454"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/v16-night-settings.webp",
+        "width": 1345,
+        "height": 730,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 54726,
+        "sha256": "542820f29e3d494fa4da87d55f543d39485dfb144bfb87311a3320cd3662c338"
+      }
+    },
+    {
+      "name": "v16-night-running",
+      "source": "docs/night-shift/shift-running-progress.png",
+      "md5": "9da8be39c575fc0fd4692ed3c0b18524",
+      "guide": "F9",
+      "claim": "A running shift lists document progress",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [
+        "#514"
+      ],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 2120,
+        "top": 100,
+        "width": 640,
+        "height": 400
+      },
+      "changelogIssues": [
+        "#454",
+        "#514"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/v16-night-running.webp",
+        "width": 640,
+        "height": 400,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 20942,
+        "sha256": "9d4fc56e83008e3d60fdcafae87bfb83c81b8c6f51bbc4f359b4a6da83b95367"
+      }
+    },
+    {
+      "name": "v16-night-briefing",
+      "source": "docs/night-shift/morning-briefing.png",
+      "md5": "45da1e266db7abc48a2b37372e01f1e4",
+      "guide": "F9",
+      "claim": "The Briefing explains a changed document and lists its changed source files",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [
+        "#502"
+      ],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 1200,
+        "top": 660,
+        "width": 1370,
+        "height": 935
+      },
+      "changelogIssues": [
+        "#502",
+        "#503"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/v16-night-briefing.webp",
+        "width": 1370,
+        "height": 935,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 110422,
+        "sha256": "c964f8e478983d684b5c5b5cc5975dc73afc04c2597575aad42ee7382368d073"
+      }
+    },
+    {
+      "name": "v16-night-review",
+      "source": "docs/night-shift/review-changes-keep-revert.png",
+      "md5": "5023644a17ea353f810f42f1e1d89b27",
+      "guide": "F9",
+      "claim": "Review Changes names an overnight change and offers Keep or Revert",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 1900,
+        "top": 180,
+        "width": 1310,
+        "height": 610
+      },
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/v16-night-review.webp",
+        "width": 1310,
+        "height": 610,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 60898,
+        "sha256": "05bd67feef4a2edcfb9b60beb08515753ef0a277be28af13344655b55e4fa5d2"
+      }
+    },
+    {
+      "name": "v16-living-portfolio",
+      "source": "docs/living-documents/stock-portfolio-dashboard-charts.png",
+      "md5": "8e7767a5296abf4e136b11f8bd6e0458",
+      "guide": "F9",
+      "claim": "A portfolio allocation chart bound to the newest local data capture",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 1200,
+        "top": 300,
+        "width": 1370,
+        "height": 1050
+      },
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/v16-living-portfolio.webp",
+        "width": 1370,
+        "height": 1050,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 42290,
+        "sha256": "829e3a18ddc8cfe26574141f8948639c77abdb0da1b548e522aac21fcec587dd"
+      }
+    },
+    {
+      "name": "v16-living-jobs",
+      "source": "docs/living-documents/jobs-editor-sheet.png",
+      "md5": "d68f4a187dd71436fde233d0b3f06c6e",
+      "guide": "F9",
+      "claim": "The Jobs Editor exposes Collect data and Watch sources with explained fields",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 980,
+        "top": 455,
+        "width": 1280,
+        "height": 1120
+      },
+      "changelogIssues": [
+        "#510"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/v16-living-jobs.webp",
+        "width": 1280,
+        "height": 1120,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 67352,
+        "sha256": "c6948bc914547516cb36d53147f5194c6b3791c42c14b9538c596174afe7299e"
+      }
+    },
+    {
+      "name": "v16-living-job-search",
+      "source": "docs/living-documents/job-search-dashboard.png",
+      "md5": "abb31a34676f2d0ccfe8e71c238f313f",
+      "guide": "F9",
+      "claim": "Job Search draws an application timeline from document data",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 1200,
+        "top": 1100,
+        "width": 1370,
+        "height": 815
+      },
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/v16-living-job-search.webp",
+        "width": 1370,
+        "height": 815,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 28824,
+        "sha256": "5fc44a8b2ab4576c96351b206d249980ff0a7dbf0031ebe2b1fb4cc65da5594d"
+      }
+    },
+    {
+      "name": "v16-settings-privacy",
+      "source": "docs/settings/settings-general-what-leaves-your-mac.png",
+      "md5": "b0e8868a5e6d195fef9ce89716a67508",
+      "guide": "F4",
+      "claim": "Model discovery and Web Lookups controls in General",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 540,
+        "top": 1460,
+        "width": 1345,
+        "height": 540
+      },
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/v16-settings-privacy.webp",
+        "width": 1345,
+        "height": 540,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 43894,
+        "sha256": "ed924b9d1cb637f41b42c2508b1f8d6ef771c3bb919b00a6f644ee77686e2126"
+      }
+    },
+    {
+      "name": "v16-settings-documents",
+      "source": "docs/settings/settings-documents.png",
+      "md5": "3edd9976810afc11812de177bb2bff03",
+      "guide": "F5",
+      "claim": "Document search, saving and on-device dictation controls",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 540,
+        "top": 185,
+        "width": 1345,
+        "height": 1370
+      },
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/v16-settings-documents.webp",
+        "width": 1345,
+        "height": 1370,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 72734,
+        "sha256": "c02558347abb494e2b9a0841f0e915c57abdefeba771fb3954e07c8583bf1441"
+      }
+    },
+    {
+      "name": "v16-settings-models",
+      "source": "docs/settings/settings-models.png",
+      "md5": "daabec60db7b59e0001b7ed1ab539e0a",
+      "guide": "F6",
+      "claim": "This Mac and the named Smart Routing choice in Models",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [
+        "#506"
+      ],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 540,
+        "top": 185,
+        "width": 1345,
+        "height": 520
+      },
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/v16-settings-models.webp",
+        "width": 1345,
+        "height": 520,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 34766,
+        "sha256": "35bb1002789e8774576261fef21806eacc54226adaa727165dde478bb7c0cf46"
+      }
+    },
+    {
+      "name": "v16-settings-library",
+      "source": "docs/settings/settings-models-manage-models.png",
+      "md5": "9f0f400161c5fdea9f0c2cafcdc8dad5",
+      "guide": "F6",
+      "claim": "Manage models shows models downloaded by Flow and shared from this Mac",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [
+        "#506"
+      ],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 645,
+        "top": 1240,
+        "width": 1180,
+        "height": 730
+      },
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/v16-settings-library.webp",
+        "width": 1180,
+        "height": 730,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 41432,
+        "sha256": "a4623283e5c0dc0a3282b7254d7b42d799f03bc734a0c86e9a3204ced82bcf0d"
+      }
+    },
+    {
+      "name": "v16-settings-routing",
+      "source": "docs/settings/settings-smart-routing.png",
+      "md5": "43f8388d69b35ac618ed11ec0f8433de",
+      "guide": "F7",
+      "claim": "Six routing rules and the named deciding rule",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [
+        "#498"
+      ],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 540,
+        "top": 185,
+        "width": 1345,
+        "height": 815
+      },
+      "changelogIssues": [
+        "#493",
+        "#498"
+      ],
+      "output": {
+        "file": "src/assets/flow/shots/v16-settings-routing.webp",
+        "width": 1345,
+        "height": 815,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 50146,
+        "sha256": "9ea90ac853cb51aeaa31732e72c9c159c11badb315c8f24061694046c8c1f131"
+      }
+    },
+    {
+      "name": "v16-settings-evidence",
+      "source": "docs/settings/settings-evidence.png",
+      "md5": "30c9b3fbcaf17841e9fb0e41857f607c",
+      "guide": "F8",
+      "claim": "Five weighted evidence questions and three checks",
+      "surfaces": [
+        "/flow/tour/",
+        "/flow/night-shift/",
+        "/flow/living-documents/",
+        "/flow/settings/"
+      ],
+      "defectsInFrame": [],
+      "cropRule": "Native-pixel feature crop. Excludes the licence footer, unrelated document panes, and any named defect outside the selected controls. No pixel rewriting.",
+      "build": "1f928902 · 1899",
+      "frameCrop": {
+        "left": 540,
+        "top": 185,
+        "width": 1345,
+        "height": 1080
+      },
+      "changelogIssues": [],
+      "output": {
+        "file": "src/assets/flow/shots/v16-settings-evidence.webp",
+        "width": 1345,
+        "height": 1080,
+        "cornerRadius": 0,
+        "transparentCorners": true,
+        "build": "1f928902 · 1899",
+        "bytes": 85800,
+        "sha256": "a8ba28c2a9981627061b8b922dffcfb90caa92c767c886e3cbaa3a26ebb8c090"
+      }
     }
   ],
   "held": [

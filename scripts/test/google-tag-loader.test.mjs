@@ -133,7 +133,7 @@ test('GOOGLE_ADS_ENABLED is the single switch for the AW config, the lead send_t
   const launch = await readFile(new URL('../../src/data/launch.ts', import.meta.url), 'utf8');
   const conversion = await readFile(new URL('../../src/lib/conversion.ts', import.meta.url), 'utf8');
   assert.match(launch, /export const GOOGLE_ADS_ENABLED = (true|false);/);
-  assert.match(layout, /\{GOOGLE_ADS_ENABLED && \([\s\S]*?window\.__ofAdsEnabled=true;/);
+  assert.match(layout, /\{SERVICE_MODE === 'production' && GOOGLE_ADS_ENABLED && \([\s\S]*?window\.__ofAdsEnabled=true;/);
   assert.match(layout, /if \(window\.__ofAdsEnabled\) window\.gtag\('config', 'AW-18188052159'\);/);
   assert.doesNotMatch(layout, /^\s*window\.gtag\('config', 'AW-18188052159'\);/m, 'the AW config must never run unconditionally');
   assert.match(conversion, /fireAdConversions && GOOGLE_ADS_ENABLED && GOOGLE_ADS_PURCHASE_SEND_TO/);
@@ -167,6 +167,8 @@ test('Lighthouse blocks analytics endpoints as defense in depth', () => {
   assert.deepEqual(collect.url, [
     'http://localhost/index.html',
     'http://localhost/flow/index.html',
+    'http://localhost/essay/index.html',
+    'http://localhost/manifesto/index.html',
     'http://localhost/arena/index.html',
     'http://localhost/relay/index.html',
     'http://localhost/proof/index.html',

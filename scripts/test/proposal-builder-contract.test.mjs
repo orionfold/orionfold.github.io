@@ -44,7 +44,7 @@ test('page keeps non-binding status and omits payment instructions', () => {
 
 test('navigation and sticky summary keep the proposal action visible', () => {
   // 2026-08-15 Flow takeover: the nav CTA became the Flow waitlist; the
-  // proposal path stays reachable from the footer's Explore column.
+  // proposal path stays reachable from the footer's Orionfold group.
   // 2026-08-22: that CTA now switches on ORIONFOLD_FLOW_LIVE (download once
   // Flow ships, waitlist before). What THIS test cares about is only that the
   // nav CTA still belongs to Flow rather than to the proposal builder, so it
@@ -52,7 +52,7 @@ test('navigation and sticky summary keep the proposal action visible', () => {
   assert.match(nav, /flowLive \? 'Download Flow' : 'Join the waitlist'/);
   assert.match(
     readFileSync(new URL('../../src/components/Footer.astro', import.meta.url), 'utf8'),
-    /href: '\/proposal\/', label: 'Build a proposal'/,
+    /href: '\/proposal\/', label: 'Proposal'/,
   );
   assert.match(page, /id="proposal-sticky-summary"/);
   assert.match(page, /id="sticky-selection-summary"/);

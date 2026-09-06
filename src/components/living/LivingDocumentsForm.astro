@@ -1,0 +1,24 @@
+---
+import { LIVING_DOCUMENTS_SIGNUP_ENABLED, SERVICE_UNAVAILABLE_MESSAGE, serviceEndpoint } from '../../lib/living-services';
+import { FLOW_LIVING_DOCUMENTS_CONSENT_TEXT, FLOW_LIVING_DOCUMENTS_OFFER } from '../../data/flow-consent';
+const formId = 'form-manifesto-living-documents';
+---
+<form id={formId} data-living-documents-form data-endpoint={serviceEndpoint('flow-living-documents-signup')} data-service-enabled={LIVING_DOCUMENTS_SIGNUP_ENABLED ? 'true' : 'false'} data-offer={FLOW_LIVING_DOCUMENTS_OFFER} data-consent={FLOW_LIVING_DOCUMENTS_CONSENT_TEXT} class="w-full max-w-md mx-auto" novalidate>
+  <div class="flex gap-2 flex-col sm:flex-row">
+    <label for={`${formId}-email`} class="sr-only">Email address</label>
+    <input id={`${formId}-email`} type="email" name="email" placeholder="you@example.com" required autocomplete="email" class="flex-1 bg-transparent border border-border px-4 py-3 text-text rounded-md" />
+    <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
+    <button type="submit" disabled={!LIVING_DOCUMENTS_SIGNUP_ENABLED} aria-describedby={!LIVING_DOCUMENTS_SIGNUP_ENABLED ? `${formId}-availability` : undefined} class="bg-primary text-white px-6 py-3 rounded-md font-semibold cursor-pointer disabled:cursor-not-allowed">Keep me in the loop</button>
+  </div>
+  <label for={`${formId}-consent`} class="mt-4 flex items-start gap-2 text-sm leading-relaxed text-text-muted">
+    <input id={`${formId}-consent`} name="consent" type="checkbox" required class="mt-1 shrink-0 accent-primary" />
+    <span>{FLOW_LIVING_DOCUMENTS_CONSENT_TEXT}</span>
+  </label>
+  <p class="mt-2 text-xs text-text-muted"><a href="/privacy/" class="underline underline-offset-2">Privacy policy</a></p>
+  {!LIVING_DOCUMENTS_SIGNUP_ENABLED && <p id={`${formId}-availability`} role="status" class="mt-3 text-sm text-text-muted">{SERVICE_UNAVAILABLE_MESSAGE}</p>}
+  <p id={`${formId}-error`} data-signup-error role="alert" class="hidden mt-3 text-sm text-red-700"></p>
+  <p id={`${formId}-success`} data-signup-success role="status" aria-live="polite" class="hidden mt-3 text-sm text-text"></p>
+</form>
+<script>
+  import '../../scripts/living-documents-signup';
+</script>

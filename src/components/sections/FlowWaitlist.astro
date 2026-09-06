@@ -13,6 +13,7 @@ import { FLOW_CONSENT_TEXT } from '../../data/flow-consent';
 import { magnetHref } from '../../data/magnet';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
 import FlowDownloadCta from '../flow/FlowDownloadCta.astro';
+import PaperCta from '../ui/PaperCta.astro';
 
 interface Props {
   /**
@@ -100,20 +101,7 @@ const subtext = isEnterprise
     The full panel below still serves the PRE-LAUNCH state, where there is no
     download to offer and the waitlist is the only real ask. */}
 {live ? (
-  <section
-    class:list={['flow-waitlist px-6 py-16 sm:py-24', isHome && 'flow-waitlist--home']}
-    aria-labelledby={`${formId}-heading`}
-  >
-    <div class="flow-waitlist__panel mx-auto max-w-3xl overflow-hidden rounded-[2rem] border border-primary/25 px-6 py-12 text-center sm:px-10 sm:py-16">
-      <div class="relative z-10">
-        <h2 id={`${formId}-heading`} class="text-balance text-4xl font-bold leading-[1.03] sm:text-5xl">{heading}</h2>
-        <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-text-muted">{subtext}</p>
-        <div class="mx-auto mt-9 max-w-md">
-          <FlowDownloadCta source={`${source}-download`} align="center" size="large" />
-        </div>
-      </div>
-    </div>
-  </section>
+  <PaperCta source={`${source}-download`} tone="yellow" headingId={`${formId}-heading`} />
 ) : (
 <section
   class:list={['flow-waitlist px-6 py-16 sm:py-24', isHome && 'flow-waitlist--home']}
@@ -144,7 +132,7 @@ const subtext = isEnterprise
           <ul class="flow-list mt-4 max-w-xl">
             <li>The launch note the day Flow ships for Mac.</li>
             <li>Development notes with the measured numbers and their dates, one email a week at most.</li>
-            <li>The weekly AI For Everyone digest, which you can stop any time.</li>
+            <li>The weekly AI Native Newsletter, which you can stop any time.</li>
           </ul>
         </>
       )}

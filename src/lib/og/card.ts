@@ -24,7 +24,9 @@ const fontBold = fs.readFileSync(path.join(ROOT, 'src/lib/og/fonts/Geist-Bold.tt
 // book cover for book detail pages. Read + encoded once and reused across cards.
 const BANNER_URI = `data:image/png;base64,${fs.readFileSync(path.join(ROOT, 'src/lib/og/banner.png')).toString('base64')}`;
 
+const fontDisplay = fs.readFileSync(path.join(ROOT, 'src/lib/og/fonts/BarlowCondensed-Bold.ttf'));
 const FONTS = [
+  { name: 'Barlow Condensed', data: fontDisplay, weight: 700 as const, style: 'normal' as const },
   { name: 'Geist', data: fontRegular, weight: 400 as const, style: 'normal' as const },
   { name: 'Geist', data: fontBold, weight: 700 as const, style: 'normal' as const },
 ];
@@ -58,6 +60,7 @@ export interface CardOptions {
    * teal primary). Used by the Flow flagship cards (home + /flow/).
    */
   light?: boolean;
+  living?: boolean;
   /** Absolute path to a product screenshot to frame on the right (offering cards). */
   screenshotPath?: string;
   /**
@@ -232,8 +235,29 @@ function bottomStrip(_opts: CardOptions, _titleSize: number): El {
   );
 }
 
+/** Living Systems social cards share the approved origami motif, without a product screenshot. */
+function livingCardTree(opts: CardOptions): El {
+  const art = fileDataUri(path.join(ROOT, 'public/assets/living-systems/hero-home-paper-planes.png'));
+  return h('div', { style: { display: 'flex', position: 'relative', width: 1200, height: 630, backgroundColor: '#f4d558', color: '#171918', fontFamily: 'Geist', overflow: 'hidden' } }, [
+    h('img', { src: art, width: 1200, height: 700, style: { position: 'absolute', left: 0, top: -35, width: 1200, height: 700, objectFit: 'cover' } }),
+    h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1200, height: 630, backgroundImage: 'linear-gradient(90deg, rgba(244,213,88,1) 0%, rgba(244,213,88,.96) 43%, rgba(244,213,88,0) 78%)' } }),
+    h('div', { style: { display: 'flex', flexDirection: 'column', position: 'relative', padding: '54px 64px', width: 1200, height: 630, justifyContent: 'space-between' } }, [
+      h('div', { style: { display: 'flex', fontSize: 19, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase' } }, opts.eyebrow),
+      h('div', { style: { display: 'flex', position: 'relative', width: 640, flexDirection: 'column' } }, [
+        h('div', { style: { display: 'flex', fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: opts.title.length > 35 ? 98 : 110, lineHeight: .94, textTransform: 'uppercase', letterSpacing: -1 } }, opts.title),
+        h('div', { style: { display: 'flex', width: 310, height: 13, backgroundColor: '#de3033', marginTop: 22, transform: 'rotate(-2deg)' } }),
+      ]),
+      h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }, [
+        h('div', { style: { display: 'flex', fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: 38 } }, ['Orion', h('span', { style: { color: '#247b80' } }, 'Fold')]),
+        h('div', { style: { display: 'flex', fontSize: 18 } }, 'orionfold.com'),
+      ]),
+    ]),
+  ]);
+}
+
 /** Build the Satori element tree for a card. */
 function cardTree(opts: CardOptions): El {
+  if (opts.living) return livingCardTree(opts);
   const useBanner = Boolean(opts.banner);
   const light = Boolean(opts.light);
   const hasInset = Boolean(opts.insetPath);

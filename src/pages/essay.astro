@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { ogMeta } from '../data/og';
+import { SITE, PERSON } from '../data/seo';
+import '../styles/living-base.css';
+import '../styles/living-essay.css';
+import EssayHero from '../components/living/EssayHero.astro';
+import EssayBody from '../components/living/EssayBody.astro';
+const title = "Room for a Renaissance \u00b7 An essay by Manav Sehgal";
+const description = "How knowledge that keeps working can make more room for the researcher, writer, and builder in each of us. An essay by Manav Sehgal.";
+const og = ogMeta('/essay/');
+const pageSchema = {'@context':'https://schema.org','@type':'Article',datePublished:'2026-09-06T00:00:00.000Z',dateModified:'2026-09-06T00:00:00.000Z',headline:title,description,author:PERSON,publisher:{'@type':'Organization',name:SITE.name,url:SITE.url},mainEntityOfPage:`${SITE.url}/essay/`,image:`${SITE.url}${og.image}`};
+---
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ls-page-essay" jsonLd={pageSchema} ogType="article" article={{datePublished:"2026-09-06",dateModified:"2026-09-06",author:"Manav Sehgal",section:"Living Documents"}}>
+  <Nav />
+  <main id="main" class="ls-main">
+    <EssayHero />
+    <EssayBody />
+  </main>
+  <Footer downloadSource="essay-living-documents" />
+</Layout>

@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../Nav.astro';
+import Footer from '../Footer.astro';
+import FlowSubNav from './FlowSubNav.astro';
+import FlowDetail from './FlowDetail.astro';
+import { SITE } from '../../data/seo';
+import { ogMeta } from '../../data/og';
+import { FLOW_V16_TOURS } from '../../data/flow-v16';
+import '../../styles/flow.css';
+interface Props { slug: 'living-documents' | 'night-shift' | 'settings'; title: string; description: string; }
+const { slug, title, description } = Astro.props;
+const tour = FLOW_V16_TOURS.find((item) => item.slug === slug)!;
+const href = `/flow/${slug}/`;
+const og = ogMeta(href);
+const breadcrumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+  { '@type': 'ListItem', position: 2, name: 'Flow', item: `${SITE.url}/flow/` },
+  { '@type': 'ListItem', position: 3, name: tour.label, item: `${SITE.url}${href}` },
+] };
+---
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={[breadcrumbs]}>
+  <Nav />
+  <FlowSubNav active="tour" />
+  <main class="flow-page flow-page--category flow-feature-page -mt-20 overflow-x-clip sm:-mt-24">
+    <section class="flow-hero relative px-6 pb-14 pt-32 sm:pb-20 sm:pt-40" aria-labelledby="flow-feature-title">
+      <div class="flow-hero__grid" aria-hidden="true"></div><div class="flow-hero__glow" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-6xl grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <p class="of-eyebrow">Flow 1.6 · {tour.label}</p>
+          <h1 id="flow-feature-title" class="hero-gradient-text mt-4 font-display text-[clamp(2.6rem,5.5vw,4.6rem)] font-extrabold leading-[1.03] tracking-[-0.045em]">{tour.title}</h1>
+          <p class="mt-6 text-lg leading-relaxed text-text-muted sm:text-xl">{tour.description}</p>
+          <a href="/flow/tour/" class="of-text-action mt-7 inline-flex items-center gap-2">Explore the product tour <span aria-hidden="true">→</span></a>
+        </div>
+        <FlowDetail src={tour.image} alt={tour.alt} caption="Real Flow 1.6 (1899) · Feature detail · Captured September 6, 2026" sizes="(min-width: 1024px) 34rem, calc(100vw - 3rem)" />
+      </div>
+    </section>
+    <nav class="border-y border-border/70 px-6 py-5" aria-label="Living Documents feature tours">
+      <div class="mx-auto flex max-w-6xl flex-wrap gap-x-8 gap-y-3">
+        {FLOW_V16_TOURS.map((item) => <a class="of-text-action" href={`/flow/${item.slug}/`} aria-current={item.slug === slug ? 'page' : undefined}>{item.label} <span aria-hidden="true">→</span></a>)}
+      </div>
+    </nav>
+    <slot />
+    <section class="border-t border-border/70 px-6 py-12 sm:py-16" aria-label="Explore more of Flow">
+      <div class="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2">
+        <div><p class="of-eyebrow">Make it yours</p><h2 class="of-display mt-3 text-3xl">Start with one recurring document.</h2><p class="mt-4 leading-relaxed text-text-muted">Open a folder from the Flow Guide, replace its sample data with your own, and give the Night Shift a clear job.</p></div>
+        <div class="flex flex-col justify-center gap-4"><a class="of-text-action" href="/flow/tour/">Writing, files, models and evidence <span aria-hidden="true">→</span></a><a class="of-text-action" href="/flow/specifications/">Requirements and exact limits <span aria-hidden="true">→</span></a><a class="of-text-action" href="/flow/#get-flow">Compare Base and Pro <span aria-hidden="true">→</span></a></div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+<style is:global>
+  .flow-feature-section { padding: 4.5rem 1.5rem; border-top: 1px solid var(--color-border); }
+  .flow-feature-section:nth-of-type(even) { background: color-mix(in oklch, var(--color-surface-raised) 35%, transparent); }
+  .flow-feature-inner { max-width: 72rem; margin-inline: auto; }
+  .flow-feature-grid { display: grid; align-items: center; gap: 2.5rem; }
+  .flow-feature-section h2 { margin-top: .8rem; font-size: clamp(2rem,3.5vw,3rem); line-height: 1.1; }
+  .flow-feature-copy p { margin-top: 1.25rem; color: var(--color-text-muted); font-size: 1.08rem; line-height: 1.7; }
+  .flow-feature-copy ul { margin-top: 1.25rem; display: grid; gap: .85rem; color: var(--color-text-muted); line-height: 1.6; }
+  .flow-feature-copy li { padding-left: 1.2rem; position: relative; }
+  .flow-feature-copy li::before { content: '→'; position: absolute; left: 0; color: var(--color-primary); }
+  .flow-feature-copy strong { color: var(--color-text); }
+  .flow-feature-card { border: 1px solid var(--color-border); border-radius: 1rem; padding: 1.5rem; background: var(--color-surface); }
+  @media (min-width: 1024px) { .flow-feature-grid { grid-template-columns: .9fr 1.1fr; gap: 4rem; } .flow-feature-grid--reverse > :first-child { order: 2; } }
+</style>

@@ -1,11 +1,14 @@
 ---
 import '../styles/global.css';
+import '../styles/living-system.css';
+import { SERVICE_MODE } from '../lib/living-services';
 import { SITE, ORGANIZATION } from '../data/seo';
 import { META_PIXEL_ID } from '../data/meta';
 import { META_PIXEL_ENABLED, GOOGLE_ADS_ENABLED } from '../data/launch';
 import { GOOGLE_ADS_LEAD_SEND_TO } from '../data/ads';
 
 interface Props {
+  bodyClass?: string;
   title?: string;
   description?: string;
   ogImage?: string;
@@ -23,16 +26,18 @@ interface Props {
 }
 
 const {
-  title = 'Orionfold · Prove which AI you can trust',
+  bodyClass = '',
+  title = 'Orionfold · Living Documents for work that continues',
   description = SITE.description,
   ogImage = SITE.ogImage,
   ogImageAlt = SITE.ogImageAlt,
   ogType = 'website',
-  noindex = false,
+  noindex: requestedNoindex = false,
   article,
   jsonLd,
 } = Astro.props;
 
+const noindex = SERVICE_MODE === 'production' ? requestedNoindex : true;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 // Global Organization node ships on every page so the whole site reads as one
 // entity (Orionfold LLC); page-specific schemas (passed via jsonLd) come after.
@@ -54,8 +59,10 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          beacons land quickly (Google Ads pulls a second tagmanager script when
          AW-... is configured below; the GA collect endpoint lives on
          google-analytics.com). -->
-    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
-    <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+    {SERVICE_MODE === 'production' && (
+      <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+      <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+    )}
     <!-- Google tag queue for Orionfold GA4 + Ads. The runtime hostname check is
          the primary analytics boundary: Astro's production build also powers
          localhost Lighthouse, previews and CI, so build mode cannot distinguish
@@ -71,10 +78,10 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          processing tail (G-043). The queued calls flush when the library arrives;
          on the normal path the fetch starts ~50–75ms after navigation rather
          than competing with page completion. -->
-    {GOOGLE_ADS_ENABLED && (
+    {SERVICE_MODE === 'production' && GOOGLE_ADS_ENABLED && (
       <script is:inline set:html={`window.__ofAdsEnabled=true;${GOOGLE_ADS_LEAD_SEND_TO ? `window.__ofAdsLeadSendTo=${JSON.stringify(GOOGLE_ADS_LEAD_SEND_TO)};` : ''}`} />
     )}
-    <script is:inline>
+    {SERVICE_MODE === 'production' && <script is:inline>
       /* G-042 canonical analytics gate. */
       if (window.location.hostname === 'orionfold.com') {
         window.dataLayer = window.dataLayer || [];
@@ -107,7 +114,7 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
         })();
       }
       /* G-042 canonical analytics gate end. */
-    </script>
+    </script>}
     <!-- Meta Pixel (fbq) for the 2026-Q2 Meta Ads book test. Renders only once
          META_PIXEL_ID is set in src/data/meta.ts, so the site deploys safely
          before the Events Manager setup. PageView here; Purchase fires on
@@ -137,7 +144,7 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
          event force-loads via window.__ofLoadMetaPixel?.() first, the same way
          reportPurchase does. Any future conversion event must do the same, or it
          will silently miss on fast confirms. -->
-    {META_PIXEL_ID && META_PIXEL_ENABLED && (
+    {SERVICE_MODE === 'production' && META_PIXEL_ID && META_PIXEL_ENABLED && (
       <script is:inline define:vars={{ META_PIXEL_ID }}>
         (function () {
           // Production-only, matching the GA4/Ads gate above. Without this the
@@ -244,11 +251,11 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
 
     <!-- Preload critical fonts -->
-    <link rel="preload" href="/fonts/geist-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/geist-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/geist-sans-common-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/barlow-condensed-bold-common.woff2" as="font" type="font/woff2" crossorigin>
 
     <!-- The public site is intentionally light-only. -->
-    <meta name="theme-color" content="#f9fafb" />
+    <meta name="theme-color" content="#f8f9fa" />
     <meta name="application-name" content="Orionfold" />
     <meta name="apple-mobile-web-app-title" content="Orionfold" />
     <meta name="format-detection" content="telephone=no" />
@@ -261,7 +268,7 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
     <!-- Additional head content from child pages -->
     <slot name="head" />
   </head>
-  <body class="bg-surface text-text min-h-screen">
+  <body class:list={["living-site bg-surface text-text min-h-screen", bodyClass]}>
     <slot />
 
     <!-- Capture ad attribution (utm_* / gclid / v) on landing, before any

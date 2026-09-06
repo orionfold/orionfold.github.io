@@ -25,13 +25,13 @@ export const FLOW_ENTERPRISE: EnterprisePattern[] = [
   {
     q: 'How do we control which documents AI may touch, and which AI may touch them?',
     k: 'Data classification',
-    a: 'The folder is the classification. Flow only sees folders you open, and a document cannot reach outside its folder by naming a path. Four execution domains then decide where work may run: on the Mac, on your network, or in the cloud you already pay for.',
+    a: 'The folder is the classification. Flow only sees folders you open, and a document cannot reach outside its folder by naming a path. Model work runs on this Mac or through a cloud API provider you choose. A provider key turns its cloud route on; a runtime pointed at another machine is refused.',
     tag: 'Today',
   },
   {
     q: 'How do we know who changed which part of a document, human or AI, and when?',
     k: 'Attribution',
-    a: 'Text changes two ways only: an edit you typed, or a change you approved. Every AI change arrives as an exact diff with its own approval, and the receipt records what ran. Version history keeps that boundary readable later.',
+    a: 'Daytime Agency proposes an exact diff for approval before saving. A standing Night Shift job applies the bounded changes you authorized in advance, marks them for Keep or Revert review, and records what ran. Version history keeps the changes readable later.',
     tag: 'Today',
   },
   {

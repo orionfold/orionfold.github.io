@@ -1,7 +1,6 @@
 ---
-import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
-import shotBenchmarks from '../../../assets/flow/shots/first-launch-benchmarks-all-measured.webp';
+import { FLOW_V16_SHOTS as shots } from '../../../data/flow-v16';
 import detailBenchRows from '../../../assets/flow/details/detail-benchmarks-rows.webp';
 import detailBenchMachine from '../../../assets/flow/details/detail-benchmarks-machine.webp';
 ---
@@ -12,9 +11,9 @@ import detailBenchMachine from '../../../assets/flow/details/detail-benchmarks-m
       <h3 id="tour-benchmarks" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Measure the models on the Mac you own.</h3>
       <p class="of-lede mt-5" data-animate="rise">Flow measures time to first word, reading speed, and memory fit for the local models already on your Mac. On one M3 Max, a 20.4 GB model reached its first word in 4.5 seconds while an 8.5 GB model took 10.2. File size alone would rank them backwards.</p>
     </div>
-    <div class="of-stage of-stage--pad-bottom mt-12" data-animate="plate">
-      <FlowShot src={shotBenchmarks} alt="Flow's Benchmarks screen with local models ranked from measurements made on this Mac." crop sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
-      <FlowDetail class="of-stage__detail of-stage__detail--br" src={detailBenchRows} alt="Two measured local models with time to first word, reading speed, fit, and relative scores." caption="Two models · Two different strengths" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
+    <div class="mx-auto mt-12 max-w-5xl grid gap-6 lg:grid-cols-2" data-animate="plate">
+      <FlowDetail class="mx-auto max-w-3xl" src={shots.settingsModels} alt="The Models screen names this Mac and the choice made by the Fastest measured on this Mac rule." caption="Real Flow 1.6 · Measurements live in Models · This Mac stays beside the choice" />
+      <FlowDetail  src={detailBenchRows} alt="Two measured local models with time to first word, reading speed, fit, and relative scores." caption="Historical measurement detail · August 18, 2026 · One M3 Max" sizes="(min-width: 1280px) 30rem, (min-width: 1024px) 27rem, calc(100vw - 3rem)" animate />
     </div>
     <div class="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-[0.7fr_1.3fr]">
       <FlowDetail src={detailBenchMachine} alt="The Mac beside Flow's benchmark ranking: Apple M3 Max, memory, GPU and CPU cores, and free storage." caption="The machine travels with the ranking" sizes="(min-width: 1024px) 22rem, calc(100vw - 3rem)" />

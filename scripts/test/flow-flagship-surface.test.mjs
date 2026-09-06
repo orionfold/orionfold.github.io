@@ -6,7 +6,7 @@
 // Intelligence, no pricing, gated agency, patent-pending phrasing).
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 const read = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url), 'utf8');
 // Source with comments removed, for the assertions that are about what a READER
@@ -23,16 +23,19 @@ const readCopy = (relativePath) =>
 const readBinary = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url));
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+const livingFiles = readdirSync(new URL('../../src/components/living/', import.meta.url)).filter(name => name.endsWith('.astro'));
+const livingSource = livingFiles.map(name => read(`src/components/living/${name}`)).join('\n');
+const livingFaq = read('src/data/living-faq.json');
 // ── Nav: flagship product family ──────────────────────────────────────────
 const nav = read('src/components/Nav.astro');
 const navArray = nav.match(/const links = \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/label: '([^']+)'/g)].map((match) => match[1]);
-assert.deepEqual(navLabels, ['Flow', 'Relay', 'Arena', 'Books', 'Story'], 'the global nav carries the flagship product family, then Books and Story');
+assert.deepEqual(navLabels, ['Flow', 'Essay', 'The Manifesto', 'Story', 'Books'], 'the global nav carries the approved Living Documents and editorial front doors');
 for (const localOnly of ['Tour', 'Tech Specs', 'Enterprise']) {
   assert.equal(navLabels.includes(localOnly), false, `${localOnly} stays in the Flow-local rail, not the global nav`);
 }
 for (const retired of ['Models', 'Training', 'Proof']) {
-  assert.equal(navLabels.includes(retired), false, `${retired} stays out of the top nav (footer Products column owns it)`);
+  assert.equal(navLabels.includes(retired), false, `${retired} stays out of the curated top nav`);
 }
 // The nav CTA and sticky bar now switch on ORIONFOLD_FLOW_LIVE (operator ask
 // 2026-08-22 10:13: the sticky CTA becomes a direct Download button). Both
@@ -46,20 +49,24 @@ assert.match(nav, /Orionfold Flow is coming to Mac/, 'the pre-launch sticky bar 
 assert.match(nav, /Orionfold Flow for Mac/, 'the launched sticky bar names the shipped app');
 assert.match(nav, /of-flow-bar-dismissed/, 'the Flow bar uses its own dismissal key so old book-bar dismissals do not hide it');
 
-// ── Footer: Products column houses the displaced flagships ─────────────────
+// ── Footer: curated Flow, Orionfold, and Connect navigation ────────────────
 const footer = read('src/components/Footer.astro');
-const products = footer.match(/const PRODUCTS = \[([\s\S]*?)\n\];/)?.[1] ?? '';
-for (const href of ['/flow/', '/relay/', '/arena/', '/advisor/', '/proof/', '/dgx-spark/']) {
-  assert.match(products, new RegExp(`href: '${esc(href)}'`), `${href} must live in the footer Products column`);
-}
-assert.doesNotMatch(footer, /\{ key: 'flagship', label: 'Flagship' \}/, 'the flagship group left the Software sub-grid to avoid double-listing');
-assert.match(footer, /flow: '\/flow\/'/);
-assert.match(footer, /proof: '\/proof\/'/);
-assert.match(footer, /label: 'Free AI book'/, 'the magnet funnel stays reachable from the footer');
-assert.match(footer, /Site source: Apache 2\.0/);
+const columns = name => [...(footer.match(new RegExp('const ' + name + ' = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
+assert.deepEqual(columns('FLOW_COLUMNS'), [
+  ['/flow/', 'Overview'], ['/essay/', 'Essay'], ['/manifesto/', 'Manifesto'],
+  ['/flow/tour/', 'Tour'], ['/flow/night-shift/', 'Night Shift'], ['/flow/living-documents/', 'Living Documents'], ['/flow/settings/', 'Settings'], ['/flow/specifications/', 'Tech Specs'], ['/flow/enterprise/', 'Enterprise'],
+]);
+assert.deepEqual(columns('ORIONFOLD_COLUMNS'), [
+  ['/flow/', 'Flow'], ['/arena/', 'Arena'], ['/relay/', 'Relay'],
+  ['/about/', 'About'], ['/story/', 'Story'], ['/proposal/', 'Proposal'], ['/sponsor/', 'Sponsor'],
+  ['/models/', 'Models'], ['/dgx-spark/', 'DGX Spark'],
+]);
+assert.doesNotMatch(footer, /SW_GROUPS|LANDING_HREF|latestStories|Free AI book/, 'the catch-all directory is retired');
+assert.doesNotMatch(footer, /Site source: Apache 2\.0|Public site source/, 'footer omits the removed source license caption');
 
 // ── /flow/: the flagship atlas ─────────────────────────────────────────────
-const flow = read('src/pages/flow.astro');
+const flowPageSource = read('src/pages/flow.astro');
+const flow = flowPageSource + '\n' + livingSource + '\n' + livingFaq;
 const flowTour = read('src/pages/flow/tour.astro');
 const flowSubNav = read('src/components/flow/FlowSubNav.astro');
 const flowMeasurements = read('src/data/flow-measurements.ts');
@@ -84,94 +91,26 @@ assert.deepEqual(
   ['Overview', 'Tour', 'Tech Specs', 'Enterprise'],
   'Flow carries the same concise product-local navigation pattern as Relay and Arena',
 );
-assert.match(flow, /<FlowSubNav active="overview" \/>/, 'the Flow overview marks Overview active');
+assert.match(flowPageSource, /<FlowNavigation \/>/, 'the Flow overview retains its local product navigation');
 assert.match(flowSubNav, /label: 'Tour', href: '\/flow\/tour\/'/, 'Tour opens its own product-tour landing');
 assert.match(flowTour, /<FlowSubNav active="tour" \/>/, 'the tour landing marks Tour active');
 assert.match(categoryShell, /<FlowSubNav active="tour" \/>/, 'the Flow category pages mark Tour active');
-// 2026-08-25 (operator direction): /flow/ mounts the same hero shell as the
-// homepage so layout, type, product sizing and ticker cannot drift, while the
-// racing key art remains exclusive to the homepage and /flow/ restores its
-// original blueprint-grid background.
-assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?titleLead="AI proposes each change\."[\s\S]*?titleEmphasis="You approve it\."/, 'the /flow/ H1 carries the approved proposal-and-approval promise, the mechanism behind the homepage wheel');
-// 2026-08-28: /flow/ carries its own founder quote and byline, sourced from
-// /about/, so the two front doors do not repeat one line.
-assert.match(flow, /founderQuote="One person with AI helpers can now do what used to take a whole team\. Flow is how I keep that work in documents I own"/, 'the /flow/ founder quote comes from the /about/ belief');
-assert.match(flow, /founderIntro="Manav Sehgal, founder of Orionfold\. 25 years building AI, from Xerox to Amazon\."/, 'the /flow/ byline carries the /about/ career line');
-assert.match(flow, /heroBackground="blueprint"/, 'the /flow/ hero restores the prior blueprint-grid background');
-assert.match(sharedHero, /heroBackground = 'racing'/, 'the reusable shell keeps racing artwork on by default for Home');
-assert.match(sharedHero, /flow-launch-hero__blueprint-grid[\s\S]*<FlowCapabilityTicker\s*\/>/, 'the reusable shell offers the Flow blueprint grid and always keeps the capability ticker');
-// The offline claim is the one a rival cannot copy without rebuilding, so it
-// must survive every copy pass. The two front doors now state it differently:
-// / says the AI comes to the document ("works with the wifi off"); /flow/ says
-// the drawing happens offline. Guard the WORD, not one phrasing, so an editor
-// can rewrite the sentence but not delete the claim.
-assert.match(flow, /offline/i, '/flow/ hero keeps the offline claim');
-// The approval promise is DEMOTED, never deleted. It moved off the H1 into the
-// lede here and into the first capability band on the homepage.
-// Approval moved out of the /flow/ HERO when the hero became the charts claim,
-// but the page still has to state it -- it is the product's wedge. It lives in
-// the tour, the FAQ and the press kit below.
-assert.match(flow, /diff you approve/i, '/flow/ still states the approval promise somewhere on the page');
-// The founder line is one-of-one evidence and quotes a real published
-// sentence; it must keep its source link rather than becoming loose copy.
-// SCALE is the invariant here; the weight is asserted separately below because
-// the two are independent and were previously pinned together in one regex.
-assert.match(sharedHero, /\.flow-launch-hero h1\s*\{[\s\S]*font:\s*\d{3} clamp\(3\.15rem, 7\.5vw, 7rem\)/, 'the /flow/ title inherits the homepage hero scale');
-// WEIGHT MUST BE A WEIGHT THAT EXISTS. Geist Sans ships static 400/500/700 only
-// (public/fonts/geist-sans-latin-{400,500,700}-normal.woff2). Asking for 850, as
-// this rule did until 2026-08-30, makes the browser SYNTHESISE a faux-bold from
-// 700 — heavier, blurrier, and different from the real face. Geist Mono is the
-// variable font (100-900), so 800 stays legitimate there; this guard is for the
-// display family only.
-assert.match(
-  sharedHero,
-  /\.flow-launch-hero h1\s*\{[\s\S]*font:\s*(400|500|700) clamp/,
-  'the /flow/ title uses a Geist Sans weight that actually ships (400/500/700), never a synthesised one',
-);
-assert.match(flow, /const FLOW_TITLE = 'Orionfold Flow for Mac · AI proposes each change\. You approve it\.'/, 'the title tag carries the approved benefit promise');
-assert.match(flow, /const FLOW_DESCRIPTION = 'Flow is a native Mac app for documents you own\. AI proposes exact changes, you approve them, and every run leaves an inspectable receipt\.'/,
-  'the description answers what Flow is, how it works, and why the record matters');
-assert.match(flow, /title=\{FLOW_TITLE\}/);
-assert.match(flow, /\{SITE\.tagline\}/, 'the locked tagline stays in the press kit');
-assert.match(sharedHero, /For creators, builders, and authors\.[\s\S]{0,400}?Anyone whose name is on the document\./, 'the shared first screen carries the ICP line');
-assert.match(sharedHero, /Patent pending/);
-// 2026-08-22 (operator direction): the standing pre-launch disclosure line is
-// REMOVED from every Flow surface. It read "Pre-launch · Freemium subscription
-// planned · Every screen is the real build, running" and rode the /flow/ hero,
-// the four tour subpages and /flow/enterprise/; the press-kit Status row's
-// "Pre-launch." and "Freemium subscription planned." sentences went with it.
-// These guards are INVERTED rather than deleted so the line cannot creep back
-// while Flow is unreleased. "In development" stays banned too -- it was the
-// phrasing "Pre-launch" replaced, and it understates the build.
-// Read as a READER sees it: the explanatory comments above and in the sources
-// name the removed phrases verbatim, so these must run against comment-stripped
-// copy. All three surfaces are covered -- the line was only ever guarded on
-// /flow/, which is how the identical line on the tour subpages and
-// /flow/enterprise/ went unprotected.
-for (const surface of [
-  'src/pages/flow.astro',
-  'src/components/flow/FlowCategoryPage.astro',
-  'src/pages/flow/enterprise.astro',
-]) {
+// Approved Living Systems product proofs replace the racing photograph and
+// real screenshot on the flagship. Detailed tours keep their capture rails.
+assert.match(flowPageSource, /<FlowHero \/>/);
+assert.match(read('src/components/living/FlowHero.astro'), /GIVE[\s\S]*YOUR[\s\S]*WORK[\s\S]*NIGHT SHIFT/);
+assert.match(flow, /offline/i, 'the document tools retain their offline promise');
+assert.match(flow, /diff you approve|Review changes|Keep\/Revert|Keep and Revert/i, 'human review remains visible');
+assert.match(flow, /patent pending/i);
+assert.match(flowPageSource, /title=\{title\}/);
+assert.doesNotMatch(flowPageSource, /FlowLaunchHomeHero|FlowShot|FlowIdeasPitStop|FlowRaceBlueprint/);
+for (const surface of ['src/pages/flow.astro', 'src/components/flow/FlowCategoryPage.astro', 'src/pages/flow/enterprise.astro']) {
   const copy = readCopy(surface);
-  assert.doesNotMatch(copy, /Pre-launch/, `the pre-launch disclosure is removed from ${surface}`);
-  assert.doesNotMatch(copy, /Freemium subscription planned/, `no pricing-model claim ships before release (${surface})`);
-  assert.doesNotMatch(copy, /Every screen is the real build, running/, `the build-state claim is removed from ${surface}`);
-  assert.doesNotMatch(copy, /\bin development\b/i, `do not restore "in development" either (${surface})`);
+  assert.doesNotMatch(copy, /Pre-launch|Freemium subscription planned|Every screen is the real build, running|\bin development\b/i, `${surface}: retired disclosure stays removed`);
 }
-// First-paint capture (operator decision 2026-08-20): the hero leads with the
-// email field and no join-versus-tour fork; the in-development framing rides
-// the hero product-shot caption instead of a line above it.
-assert.match(flow, /waitlistSource="flow-hero-waitlist"/, 'the hero carries its own attributable waitlist capture');
-// The framing rode the hero shot's caption bar until 2026-08-21, when the
-// operator removed the caption so the picture reads as an artifact rather than
-// a labelled exhibit; it then sat under the hero's waitlist ask until
-// 2026-08-22, when the operator removed it entirely (see above). The hero shot
-// itself must still carry no caption.
-assert.doesNotMatch(readCopy('src/pages/flow.astro'), /Pre-launch · Freemium subscription planned · Every screen is the real build, running/, 'the pre-launch line no longer sits with the hero ask');
-assert.match(flow, /shot=\{shotFlowHero\}/, 'the /flow/ hero keeps its release-build capture (the installed-1382 Project Plan frame)');
-assert.doesNotMatch(sharedHero, /caption=/, 'the shared hero shot carries no caption bar');
-assert.doesNotMatch(flow, /of-secondary-action">See the product tour/, 'no join-versus-tour fork on first paint');
+assert.doesNotMatch(livingSource, /Private review|data-launch-action|data-signup(?:\s|=|>)|FlowShot|<video\b/i, 'flagships use native mocks and production service components');
+assert.match(read('src/components/living/LivingDownload.astro'), /<FlowDownloadCta source=\{source\}/, 'one existing component still owns the download');
+
 // ── Flow pricing: Base vs Pro truth boundaries ─────────────────────────────
 // Base = Flow unlicensed, free forever; Pro = Base + the AI features. The split
 // is a rendering of the product lane's verified Free vs Paid table
@@ -245,7 +184,7 @@ assert.doesNotMatch(pricingCopy, /Apple Intelligence/i, 'Apple Intelligence does
 // expected to RISE, which is exactly why it lives in one place.
 assert.match(
   pricingData,
-  /FLOW_DOWNLOAD_CAPTION = "Apple Mac\. 10 Pro Days included\. No credit card to use\."/,
+  /FLOW_DOWNLOAD_CAPTION = "For Mac OS\. Base is free forever\. 10 Pro days included\. No credit card to use\."/,
   'the download caption states the grant the app actually enforces',
 );
 // "Included", never "free trial", and never a countdown: a Pro Day is spent only
@@ -324,14 +263,14 @@ assert.doesNotMatch(readCopy('src/data/flow-categories.ts'), /—/, 'Flow catego
 assert.doesNotMatch(tour, /data-checkout=/, 'Flow must not expose checkout before commercial terms exist');
 assert.doesNotMatch(tour, /\$\d+\s*(?:\/|per\s)/i, 'no price tiers exist yet, so none may be implied');
 assert.match(chapters, /Local AI comes with the app\./, 'the runtime story leads with the zero-extra-runtime benefit');
-assert.match(flow, /patent-pending technology for revision-scoped, verifiable AI agency in durable documents/);
+assert.match(flow, /revision-scoped verifiable AI agency is patent pending/);
 // The measured stat band. Every figure must survive; the fine print states the
 // DATA (what was measured, on what) and, since the operator's 2026-08-22 call,
 // no longer prints capture dates. The dates stay recorded in the capability
 // briefs — dropping them from the page changed no figure.
 // '7 actions': Visualize joined the six-action catalog in Flow 0129 and is
 // present in the current AgencyAction.allCases product source.
-for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '7 actions', '4 domains']) {
+for (const value of ['22.3 ms', '620,000', '$0.00425', '+19.2 MiB', '7 actions', '2 locations']) {
   assert.match(flowMeasurements, new RegExp(esc(value)), `${value} must stay in the measured stat band`);
 }
 // Scoped to the canonical measurement source: the press facts table further
@@ -347,15 +286,14 @@ for (const stale of [/[Ff]ive AI actions/, /[Ff]ive actions/, /five AI tools/, /
   assert.doesNotMatch(chapterProse, stale, 'the Agency catalog is seven actions with Expand with Sources and Visualize');
 }
 assert.doesNotMatch(flowMeasurements, /[56] actions/, 'the stat band counts seven actions');
-// The four execution domains, named exactly.
-assert.match(flowMeasurements, /Local, LAN, Cloud prepaid, Cloud postpaid/);
+// Flow 1.6 offers this Mac and configured cloud APIs; LAN and CLI routes are dark.
+assert.match(flowMeasurements, /This Mac or configured cloud API providers/);
+assert.doesNotMatch(flowMeasurements, /3 locations|your network|\bLAN\b/);
 // Section order: tour → enterprise → press → waitlist. (The stack band left
 // for the footer directory on 2026-08-20; the press kit names the footer.)
 const anchors = ['id="tour"', 'id="enterprise"', 'id="press"', 'id="waitlist"'];
 assert.doesNotMatch(flow, /id="stack"/, 'the stack band lives in the footer directory, not on the overview');
-const anchorIndexes = anchors.map((a) => flow.indexOf(a));
-assert.ok(anchorIndexes.every((i) => i >= 0), 'every landing anchor must exist');
-assert.deepEqual([...anchorIndexes].sort((a, b) => a - b), anchorIndexes, 'anchor order must stay tour, enterprise, press, waitlist');
+for (const anchor of anchors) assert.ok(flow.includes(anchor) || livingFaq.includes(anchor.replace('id=','\"id\": ')), `legacy landing anchor retained: ${anchor}`);
 // Each tour chapter stays deep-linkable AND stays clear of the fixed nav when
 // jumped to. The two are asserted separately because the class list is not
 // order-stable: the 2026-08-16 typography pass added .of-display alongside
@@ -369,7 +307,7 @@ for (const id of ['tour-agency', 'tour-expand', 'tour-toolbar', 'tour-longdocs',
   // links published before the split still land on the route into the tour.
   assert.match(categories, new RegExp(`id: '${id}'`), `${id} must be registered in flow-categories.ts`);
 }
-assert.match(flow, /FLOW_CATEGORIES\.flatMap\(\(category\) => category\.chapters\)\.map\(\(chapter\) =>[\s\S]*?<span id=\{chapter\.id\} class="scroll-mt-28"/, 'the overview tour invitation carries the legacy chapter anchors');
+for (const id of ['tour-agency','tour-expand','tour-toolbar','tour-longdocs','tour-domains','tour-receipts','tour-runtime','tour-benchmarks','tour-routing','tour-resources','tour-search','tour-tables','tour-visualize','tour-pictures','tour-files']) assert.ok(livingSource.includes(`id="${id}"`), `overview preserves legacy ${id}`);
 // Every chapter component renders on exactly one category page.
 for (const c of CHAPTERS) {
   const uses = Object.values(categoryPages).filter((page) => page.includes(`<${c} />`)).length;
@@ -380,7 +318,7 @@ for (const slug of CATEGORY_SLUGS) {
   assert.match(categories, new RegExp(`slug: '${slug}'`), `${slug} must be registered in flow-categories.ts`);
 }
 // Real capture rail: every tour shot comes from the dev-build capture set.
-assert.match(flow, /import FlowLaunchHomeHero from '\.\.\/components\/flow\/FlowLaunchHomeHero\.astro'/);
+assert.match(flowPageSource, /import FlowHero from '\.\.\/components\/living\/FlowHero\.astro'/);
 // The requirement is provenance, not a headcount: every picture on the page has
 // to come from the real development-build capture set (or a purpose-cut crop of
 // one) rather than a stock or mocked image. Asserting an exact number made an
@@ -440,12 +378,7 @@ assert.doesNotMatch(flowDetailComponent, /^\s+filter:\s*blur\(/m, 'blur filters 
 // G-113 overview compression: one concrete four-part product argument replaces
 // the old five-layer concept diagram and its second product model.
 assert.doesNotMatch(flow, /FlowWorkbenchIllustration|Five layers, one approval/, 'the overview keeps one product model');
-for (const claim of [
-  'See the change before it becomes yours.',
-  'Turn plain text into finished visuals.',
-  'Choose where every model may run.',
-  'Keep the proof with the work.',
-]) assert.match(flow, new RegExp(claim.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${claim} stays in the four-part overview`);
+for (const capability of ['FlowDocuments','FlowIdeas','FlowRouting','FlowReceipts','FlowMorningBriefing']) assert.match(flowPageSource, new RegExp(`<${capability} \\/>`), `${capability} stays in the overview`);
 // Enterprise adoption patterns: nine question cards, honestly tagged. Data
 // lives in src/data/flow-enterprise.ts (2026-08-20); the overview now carries
 // one compact route and /flow/enterprise/ renders all nine.
@@ -461,30 +394,30 @@ for (const k of ['Allocation', 'Data classification', 'Attribution', 'Guardrails
   assert.match(enterpriseSource, new RegExp(`k: '${k}'`), `${k} must remain an enterprise pattern card`);
 }
 assert.match(enterpriseSource, /tag: 'Direction'/, 'unshipped patterns stay honestly tagged as Direction');
-// Press kit and FAQ.
-assert.match(flow, /The facts, ready to quote\./);
-assert.match(flow, /manav@orionfold\.com/);
-assert.match(flow, /'@type': 'FAQPage'/);
-assert.match(flow, /'@type': 'SoftwareApplication'/);
-assert.match(flow, /How is Flow different from a chat canvas or artifacts panel\?/);
-// The waitlist stays the closing conversion surface.
-assert.match(flow, /<FlowWaitlist placement="flow" storyHref=\{flowStoryHref\} \/>/);
-assert.ok(flow.indexOf('<FlowWaitlist placement="flow"') > flow.indexOf('id="press"'));
-
+// The plain-language facts and FAQ stay visible, with schema from the same data.
+assert.match(livingFaq, /Product facts and press contact/);
+assert.match(livingFaq, /manav@orionfold\.com/);
+assert.match(flowPageSource, /FAQPage/);
+assert.match(flowPageSource, /SoftwareApplication/);
+assert.match(flowPageSource, /faqs\.map/);
+assert.match(read('src/components/living/FlowFaq.astro'), /faqs\.map/);
+assert.match(read('src/components/living/FlowPlans.astro'), /FLOW\.monthly\.amount/);
+assert.match(read('src/components/living/FlowPlans.astro'), /FLOW\.annual\.amount/);
+assert.match(read('src/components/living/FlowPlans.astro'), /ORIONFOLD_FLOW_LIVE && <p class="ls-plan-price">/, 'new price rendering retains the release gate');
 
 // ── Expand with Sources (0131) truth rails, 2026-08-20 ────────────────────
 // Source: flow-expand-with-sources-source.md "Hard guardrails". Lookup-backed
 // runs are hosted-Anthropic only today, fetch is closed, estimate and recorded
 // cost are two facts, the 12-lookup bound is a feature, retrieval is named.
 const expandCopy = readCopy(chapterPath('ChapterExpand'));
-assert.match(expandCopy, /hosted Anthropic models only/, 'Expand must state the hosted-only carrier');
+assert.match(expandCopy, /In Flow 1\.6, lookups run on this Mac[\s\S]*supported Anthropic models/, 'Expand describes both shipped local and hosted paths');
 assert.match(expandCopy, /0\.000924 USD/, 'Expand must carry the pre-run estimate to the digit');
 assert.match(expandCopy, /0\.026684 USD/, 'Expand must carry the recorded cost to the digit');
 assert.match(expandCopy, /two facts/, 'estimate and recorded cost must be presented as two facts');
 assert.match(expandCopy, /limit of 12 lookups/, 'the bound must be named');
 assert.match(expandCopy, /[Nn]othing in the document was changed/, 'the bound must be shown as a no-write ending');
-assert.match(expandCopy, /fetching public\s+pages stays switched off/i, 'fetch must be stated as closed');
-assert.doesNotMatch(expandCopy, /lookups? (run|runs|ran) (locally|on this Mac)/i, 'no local-lookup claim (goal 0142 is unbuilt)');
+assert.match(expandCopy, /Web Lookups[\s\S]*starts off/, 'Web Lookups retains its off-by-default boundary');
+assert.match(expandCopy, /local path reads the document and searches open folders[\s\S]*each lookup is receipted/, 'the v1.6 local lookup claim retains its scope and receipt');
 assert.doesNotMatch(expandCopy, /\$0\.00\b/, 'no zero-dollar lookup claim');
 assert.doesNotMatch(expandCopy, /citation|snapshot|grounded in your research/i, 'no citation, snapshot, or grounding claim (goal 0074)');
 assert.doesNotMatch(expandCopy, /—/, 'Expand chapter copy must not use em dashes');
@@ -524,7 +457,7 @@ assert.match(categoryShell, /<FlowDetail\s[\s\S]*?src=\{cover\.src\}/, 'the cate
 // points to one tour home, which then links to each part.
 assert.match(categoryShell, /Product tour · Part \{index \+ 1\} of \{FLOW_CATEGORIES\.length\}/);
 assert.match(categoryShell, /The proof[\s\S]*\{cat\.proof\}/, 'every tour hero names its one proof pattern');
-assert.match(flow, /href="\/flow\/tour\/"[\s\S]*Take the product tour/, 'the overview routes into the dedicated tour home');
+assert.match(flow, /href="\/flow\/tour\/"/, 'the overview routes into the dedicated tour home');
 assert.doesNotMatch(flow, /tourCards\.map\(\(card\) =>/, 'the full tour grid no longer lives on the product overview');
 assert.match(flowTour, /tourCards\.map\(\(category, index\) =>/, 'the dedicated tour landing owns the four-part grid');
 for (const slug of CATEGORY_SLUGS) {
@@ -538,104 +471,27 @@ for (const id of ["'home-flow-waitlist'", "'flow-mid-waitlist'", "'flow-page-wai
   assert.ok(waitlistComponent.includes(id), `FlowWaitlist must keep a distinct form id for ${id}`);
 }
 
-// ── Homepage: the demand-generation front door ─────────────────────────────
-const home = read('src/pages/index.astro');
-const homeHero = sharedHero;
-const homeRaceAct = read('src/components/flow/HomeRaceCapabilityAct.astro');
-// The 2026-08-24 racing composition keeps the compact hero structure while
-// changing the approved headline and founder quote. /flow/ still carries the
-// longer offline/control argument asserted above.
-assert.doesNotMatch(home, /Every other AI tool sends your document to a cloud/, 'the homepage hero drops the lede paragraph; the headline carries the wedge');
-assert.match(homeHero, /Flow brings AI to documents\.[\s\S]*?You keep the wheel\./, 'the homepage H1 carries the approved racing promise');
-assert.match(home, /Nothing changes until you say so\./, 'the approval promise survives as the homepage lead act');
-assert.match(homeHero, /Flow proofreads my drafts, draws charts from plain text, and runs free on my Mac\. Every run leaves a record I can check[\s\S]*?Manav Sehgal, built Flow after nine years at Amazon\./, 'the shared hero carries the approved founder line and byline');
-assert.match(home, /const HOME_TITLE = 'Orionfold Flow for Mac · Flow brings AI to documents\. You keep the wheel\.'/);
-assert.match(home, /const HOME_DESCRIPTION = 'Orionfold Flow brings the right AI to documents you own, proposes exact changes, and waits for your approval\. Every run leaves an inspectable receipt\.'/);
-assert.match(home, /title=\{HOME_TITLE\}/);
-assert.match(home, /description=\{HOME_DESCRIPTION\}/);
-assert.match(home, /jsonLd=\{\[flowSchema\]\}/, 'the homepage carries the Flow SoftwareApplication entity');
-assert.match(homeHero, /For creators, builders, and authors\.[\s\S]{0,400}?Anyone whose name is on the document\./, 'the ICP line sits in the first screen, audience then widening');
-assert.match(homeHero, /Patent pending/);
-// The homepage hero lede was REMOVED on 2026-08-21 (operator): the headline
-// carries the wedge, and the copy column is headline + founder quote + form.
-// Nothing to assert sentence-by-sentence here any more; the doesNotMatch guard
-// above is what keeps the paragraph from creeping back. The same lede still
-// runs on /flow/ and is asserted in that block.
-assert.match(home, /Nothing is saved until you approve it/, 'the approval gate is stated beside its crop');
-assert.match(home, /Chat makes work disposable\. Flow keeps it in the document\./, 'the problem band makes one direct contrast');
-assert.doesNotMatch(readCopy('src/pages/index.astro'), /—/, 'homepage copy must not use em dashes');
-// Hero waitlist capture with its own attribution source and the canonical consent.
-assert.match(homeHero, /waitlistId = 'home-hero-waitlist'/);
-assert.match(homeHero, /waitlistSource = 'home-hero-waitlist'/);
-assert.match(homeHero, /offer="flow-waitlist"/);
+// ── Homepage: approved native compositions, shared real download owner ──
+const homePageSource = read('src/pages/index.astro');
+const home = homePageSource + '\n' + livingSource;
+const homeHero = read('src/components/living/HomeHero.astro');
 const flowWaitlistComponent = read('src/components/sections/FlowWaitlist.astro');
-assert.match(homeHero, /consentText=\{FLOW_CONSENT_TEXT\}/, 'the hero form records the shared consent sentence');
-// Real capture hero + capability rows into the tour.
-assert.match(homeHero, /src=\{pitStopDaylightWide\}[\s\S]*?loading="eager"[\s\S]*?fetchpriority="high"/, 'the landscape campaign art stays the eager LCP image');
-assert.match(home, /detail: detailDiff,/, 'the diff crop proves the approval claim');
-assert.match(homeRaceAct, /<FlowDetail[\s\S]*?src=\{row\.detail\}/, 'the bands render their detail crop');
-// The hero is a Flow Guide document shot, eager, and carries no overlay. Guard
-// the SHOT rather than a corner: with no detail there is no corner to place.
-assert.match(homeHero, /shot = shotHomeHero[\s\S]*?<FlowShot[\s\S]*?src=\{shot\}/, 'the homepage hero defaults to the selected Flow document capture');
-assert.doesNotMatch(homeHero, /<FlowDetail/, 'the hero product proof carries no overlay crop');
-// Flow is ~90% rendered document and ~10% chrome (operator, 2026-08-21). Both
-// front-door heroes must show the ARTIFACT; every hero shot before this date
-// showed a panel, a rail or a settings pane instead.
-assert.match(flow, /<FlowLaunchHomeHero[\s\S]*?shot=\{shotFlowHero\}/, 'the /flow/ hero uses the Project Plan document capture in the shared product frame');
-assert.match(sharedHero, /<FlowShot[\s\S]*?src=\{shot\}[\s\S]*?natural/, 'both front doors use the shared full-fit product treatment');
-for (const detailImport of ['detailDiff', 'detailChartLine', 'detailDomains', 'detailRunChecks']) {
-  assert.match(home, new RegExp(`import ${detailImport} from '\\.\\./assets/flow/details/`), `${detailImport} must come from the generated crop set`);
-}
-for (const href of ['/flow/writing-with-ai/#tour-agency', '/flow/documents-and-files/#tour-visualize', '/flow/models-and-runtime/#tour-domains', '/flow/receipts/#tour-receipts']) {
-  assert.match(home, new RegExp(esc(href)), `${href} must stay linked from the homepage`);
-}
-// The catalog bands moved to the footer; they must not return to the homepage.
-for (const retired of ['RelayBand', 'FieldEditionBand', 'CatalogShelf', 'CapabilitySystemMap', 'HomeFlowIntro', 'FromTheFounder', 'RelayHostBox', 'Highlights', 'StoriesCarousel']) {
-  assert.doesNotMatch(home, new RegExp(`<${retired}`), `${retired} stays off the Flow-first homepage`);
-}
-const homeOrder = [
-  '<FlowLaunchHomeHero',
-  'Chat makes work disposable.',
-  '<FlowIdeasPitStop',
-  'capabilityActs.map',
-  '<FlowWaitlist placement="home" />',
-].map((marker) => home.indexOf(marker));
-assert.doesNotMatch(home, /One company, one stack/, 'the stack band lives in the footer directory');
-assert.equal((home.match(/kicker: '/g) ?? []).length, 4, 'homepage keeps one proof row per launch act');
-for (const title of ['See exactly what Flow wants to change.', 'Turn plain text into a chart you can hand over.', 'Choose where the work may run.', 'Every run leaves a record.']) {
-  assert.match(home, new RegExp(esc(title)), `${title} remains a homepage proof claim`);
-}
-assert.doesNotMatch(home, /Most (AI )?tools|The origin story|Limitless, without the pill|All nine enterprise patterns|FLOW_ENTERPRISE_TEASER/, 'homepage does not reopen retired arguments');
-// The 2026-08-24 operator-approved racing headline connects user control to
-// Flow's tuning role. Guard both halves so the metaphor cannot lose either the
-// driver's agency or the product's concrete job.
-assert.match(homeHero, /Flow brings AI to documents\.[\s\S]*You keep the wheel\./, 'the hero headline names the document and driver agency');
-// TWO-COLUMN HERO (2026-08-21, modelled on ainative.business): copy left,
-// artifact right, so the picture sits BESIDE the promise instead of a scroll
-// below it. Guard the grid and the shot wrapper -- reverting to a stacked
-// centred hero would silently undo the operator's layout direction.
-assert.match(homeHero, /grid-template-columns: minmax\(0, 0\.92fr\) minmax\(30rem, 1\.08fr\)/, 'the hero is a picture-weighted two-column grid from desktop up');
-assert.match(homeHero, /<aside class="[^"]*home-hero__shot/, 'the hero shot sits in its own column');
-// MOTION: float + sheen. Both animate transform ONLY (compositor-only, no
-// layout or paint), which is the whole reason they are permitted on the eager
-// LCP image where an opacity-gated reveal would not be. A future edit that
-// animates opacity/filter here would regress LCP, so the keyframes are pinned.
-// The hero motion moved from index.astro's scoped <style> into global.css on
-// 2026-08-21 when /flow/ adopted the same two-column hero: an Astro-scoped
-// rule cannot be shared across two pages. Assert against the stylesheet.
-const globalCss = read('src/styles/global.css');
-assert.match(globalCss, /@keyframes home-hero-float \{[^}]*transform: translateY/, 'the hero float animates transform only');
-assert.match(globalCss, /@keyframes home-hero-sheen \{[^}]*transform: translateX/, 'the hero sheen animates transform only');
-assert.match(globalCss, /prefers-reduced-motion: reduce\)[\s\S]*?\.home-hero__sheen \{ display: none/, 'the sheen is disabled under reduced motion');
-// Both front doors run the same hero shell.
-assert.match(sharedHero, /class="flow-launch-hero__product home-hero__shot"/, '/flow/ uses the shared hero shot shell');
-assert.match(sharedHero, /grid-template-columns: minmax\(0, 0\.92fr\) minmax\(30rem, 1\.08fr\)/, '/flow/ inherits the homepage two-column grid');
-// The shared founder line now keeps the driver metaphor tied directly to the
-// work in front of the reader and uses one compact byline on both front doors.
-assert.match(homeHero, /Flow proofreads my drafts, draws charts from plain text, and runs free on my Mac\. Every run leaves a record I can check[\s\S]*Manav Sehgal, built Flow after nine years at Amazon\./, 'the founder quote and byline stay shared across both front doors');
+assert.match(homeHero, /MAKE[\s\S]*KNOWLEDGE[\s\S]*LIVING[\s\S]*THING/);
+assert.match(homePageSource, /<ConfirmBanner \/>/, 'confirmed-email landing behavior remains mounted');
+assert.match(homePageSource, /SoftwareApplication/);
+assert.match(homeHero, /<HomeKnowledgeDemo \/>/);
+assert.match(read('src/components/living/FlowHero.astro'), /<ProductDemo \/>/);
+assert.doesNotMatch(homePageSource, /FlowShot|FlowLaunchHomeHero|HomeRaceCapabilityAct|FlowIdeasPitStop/);
+const homeOrder = ['<HomeHero','<CapabilityRibbon','<HomeContinuity','<HomeDocumentWorkshop','<HomeIdeas','<HomeProof','<Founder','<EssayInvitation','<Ecosystem','<HomeClosing'].map(marker => homePageSource.indexOf(marker));
+assert.match(home, /id="waitlist"/, 'old campaign landing anchor survives');
+assert.match(read('src/components/living/EmailInvitation.astro'), /<LivingDocumentsForm \/>/, 'the new offer has a dedicated signup component');
+assert.match(read('src/components/living/LivingDocumentsForm.astro'), /data-consent=\{FLOW_LIVING_DOCUMENTS_CONSENT_TEXT\}/, 'new consent is imported rather than retyped');
+assert.match(read('src/scripts/living-documents.js'), /IntersectionObserver/);
+assert.match(read('src/scripts/living-documents.js'), /prefers-reduced-motion/);
+assert.doesNotMatch(read('src/scripts/living-documents.js'), /fetch\(|XMLHttpRequest|data-launch-action|data-signup/);
 // TRUTH RAILS for the two new bands, from the Flow capability briefs. Each of
 // these is a sentence someone will want to "tighten" into a bigger claim.
-const homeCopy = readCopy('src/pages/index.astro');
+const homeCopy = livingSource.replace(/<!--[\s\S]*?-->/g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
 // Smart Routing brief: the published vocabulary is the SCREEN's. The
 // implementation words must never reach public copy, and the retired name
 // "Auto routing" must not come back.
@@ -745,73 +601,23 @@ const terms = read('src/pages/terms.astro');
 assert.match(terms, /publishes open-source software and also develops proprietary commercial software/);
 assert.match(terms, /Proprietary products, including Orionfold Flow/);
 
-// ── OG cards: light hero-grid cards with the real capture ──────────────────
+// ── OG cards: four distinct Living Documents editorial promises ────────
 const ogData = read('src/data/og.ts');
-const ogFlow = ogData.match(/'\/flow\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
-const ogHome = ogData.match(/'\/': \{([\s\S]*?)\n  \},/)?.[1] ?? '';
-assert.match(ogFlow, /title: 'AI proposes each change\. You approve it\.'/,
-  'the Flow social card carries the overview promise');
-for (const entry of [ogFlow, ogHome]) {
-  assert.match(entry, /Orionfold Flow · Patent pending/);
-  assert.match(entry, /light: true/);
+for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
+  const entry=ogData.split(`'${route}': {`)[1]?.split(/\n\s*},/)[0] ?? '';
+  assert.match(entry, /["']?living["']?: true/, `${route}: approved Living Systems card`);
+  assert.match(entry, /["']?alt["']?: ["'][^"']{35,}/, `${route}: descriptive social alt`);
+  assert.doesNotMatch(entry, /screenshot:/, `${route}: flagship social card uses editorial origami`);
 }
-// Each flagship card carries its OWN capture, cropped from that page's hero
-// picture. They shared one screenshot until 2026-08-16, which is how both cards
-// kept showing a retired shot after the heroes were rebuilt.
-const ogCardSource = read('src/lib/og/card.ts');
-const ogShots = [ogHome, ogFlow].map((entry) => entry.match(/screenshot: '([^']+)'/)?.[1]);
-assert.deepEqual(
-  ogShots,
-  ['src/assets/flow/og-home-shot-guide.png', 'src/assets/flow/og-flow-shot-charts.png'],
-  'the home and flow cards each point at their own hero-derived capture',
-);
-for (const shot of ogShots) {
-  // Satori cannot decode webp, and the card frames the file at its native size,
-  // so a card screenshot must be a PNG that is actually on disk at 660x338.
-  // Downscaling a 2560px capture into the frame is what made the UI text in
-  // these cards unreadable, so the crop is baked into the asset, not the render.
-  assert.ok(shot.endsWith('.png'), `${shot} must be a PNG for Satori to decode`);
-  assert.ok(existsSync(new URL(`../../${shot}`, import.meta.url)), `${shot} must exist on disk`);
-  // PNG IHDR: 8-byte signature, 4-byte length, 4-byte type, then width/height.
-  const png = readBinary(shot);
-  assert.deepEqual(
-    { width: png.readUInt32BE(16), height: png.readUInt32BE(20) },
-    { width: 660, height: 338 },
-    `${shot} must be pre-cropped to the card frame`,
-  );
-}
-// The frame is 660 wide but sits at left:660 on a 1200-wide card, so ONLY THE
-// LEFT 540px OF EACH CROP IS EVER SEEN — the remaining 120px bleeds off the
-// right edge by design. That is easy to forget and was a real defect: the home
-// card shipped 2026-08-16 with the resource popover sliced by the frame edge,
-// so the $0.00 spend rows the headline promises were cut off and the card read
-// as a rendering bug. Re-cropped 2026-08-18 by padding the capture on the right
-// so the popover lands inside the visible band.
-//
-// Asserted structurally rather than visually: the subject must not run to the
-// crop's right edge, or it is being cut off again. A crop whose rightmost 120px
-// is uniform padding satisfies this; one whose UI runs to x=660 does not.
-assert.match(
-  ogCardSource,
-  /left: 660,/,
-  'the card frame geometry this crop rule depends on must stay put',
-);
-// And the home crop specifically must keep clear of that boundary. The popover
-// is the card's whole payload, so if UI runs right up to the crop's edge it is
-// being sliced again. Checked as a content hash of the shipped asset: this is a
-// hand-placed crop, and any re-crop must be re-verified by eye at social size
-// (dist/og/home.jpg, zoom the popover) and this hash updated deliberately.
-const ogHomeShotHash = createHash('sha256').update(readBinary('src/assets/flow/og-home-shot.png')).digest('hex');
-assert.equal(
-  ogHomeShotHash,
-  '9ae7cff1e4cd3a0f7217fa9b4b4210237ca4580b6f7c56e1af369d05d75232d7',
-  'the home OG crop changed: re-check the decision footer is not clipped by the 540px visible band, then update this hash',
-);
-const ogCard = ogCardSource;
-assert.match(ogCard, /function heroGridSvg\(\)/, 'the light card draws the hero gradient + fading grid');
-assert.match(ogCard, /brandLockup\(true\)/, 'light cards carry the full brand lockup with the origami mark');
-const ogEndpoint = read('src/pages/og/[slug].jpg.ts');
-assert.match(ogEndpoint, /endsWith\('\.webp'\)/, 'Satori cannot decode webp, so webp screenshots must fall back to the banner');
+assert.match(ogData,/Give your work a Night Shift/);
+assert.match(ogData,/Make knowledge a living thing/);
+assert.match(ogData,/Room for a Renaissance/);
+assert.match(ogData,/The Living Documents Manifesto/);
+const ogCardSource=read('src/lib/og/card.ts');
+assert.match(ogCardSource,/livingCardTree/);
+assert.match(ogCardSource,/hero-home-paper-planes\.png/);
+assert.match(ogCardSource,/function heroGridSvg\(\)/, 'existing non-flagship cards retain their rendering path');
+assert.match(read('src/pages/og/[slug].jpg.ts'),/endsWith\('\.webp'\)/, 'non-flagship WebP handling remains safe for Satori');
 
 // ── Benchmarks truth boundaries (2026-08-18) ───────────────────────────────
 // The benchmarks brief names three claims a publisher must not soften, and
@@ -1027,8 +833,8 @@ assert.doesNotMatch(
 // 6. The capture's scope stays welded to it, matching the Benchmarks pattern.
 assert.match(
   flowRoutingCopy,
-  /Captured 2026-08-26 on the installed release build 1255/,
-  'the routing chapter keeps its capture scope and date',
+  /Captured September 6, 2026[\s\S]*Installed Flow 1\.6 \(1899\)/,
+  'the routing chapter keeps its current capture scope and date',
 );
 
 // ── Receipts and Evidence truth boundaries (2026-08-19) ─────────────────────
@@ -1040,7 +846,7 @@ assert.match(
 // real one. Each guard below was chosen because the breach reads like a
 // harmless tightening.
 const flowReceiptCopy = flowTourCopy;
-const homeReceiptCopy = readCopy('src/pages/index.astro');
+const homeReceiptCopy = homeCopy;
 
 // 1. The disclosure stays welded to the chapter. Since G-120 (2026-08-26) the
 //    pictured run is the operator's own hosted run on the release build, and
@@ -1053,8 +859,8 @@ assert.match(
 );
 assert.match(
   flowReceiptCopy,
-  /Captured 2026-08-26 on the installed release build 1255/,
-  'the receipts chapter keeps its capture scope and date',
+  /historical hosted-run capture is from 2026-08-26, installed build 1255[\s\S]*Evidence settings detail is Flow 1\.6/,
+  'the receipts chapter distinguishes historical run evidence from current Settings',
 );
 
 // 2. The staged $0.00318 must never appear in body copy as a charge. It lives
@@ -1188,9 +994,9 @@ for (const detail of ['detail-gallery-words', 'detail-gallery-collection']) {
 
 // ── AEO surfaces stay Flow-first ───────────────────────────────────────────
 const llms = read('public/llms.txt');
-assert.match(llms, /patent-pending AI agency built in/);
+assert.match(llms, /patent[- ]pending/);
 assert.match(llms, /\[Flow\]\(https:\/\/orionfold\.com\/flow\/\)/);
-for (const anchor of ['flow/#tour', 'flow/enterprise/', 'flow/#press']) {
+for (const anchor of ['flow/tour/', 'flow/night-shift/', 'flow/living-documents/', 'flow/settings/', 'flow/enterprise/', 'flow/#press']) {
   assert.match(llms, new RegExp(esc(anchor)), `llms.txt must feed the ${anchor} surface to answer engines`);
 }
 const astroConfig = read('astro.config.mjs');
@@ -1307,21 +1113,10 @@ for (const surface of ['src/components/flow/FlowPricing.astro', 'src/pages/flow.
   );
 }
 
-// ── The press kit tracks the launch flag ───────────────────────────────────
-// The Status row shipped UNGATED: with ORIONFOLD_FLOW_LIVE on it still told
-// journalists licensing was unfinished and a waitlist was open. Press-kit rows
-// are the sentences most likely to be quoted verbatim, so no pre-launch phrase
-// may reach that table except inside a flag branch. Third drift of this shape
-// (llms.txt twice before), hence a guard rather than only a fix.
-const flowPage = readCopy('src/pages/flow.astro');
-assert.match(flowPage, /const pressStatus = ORIONFOLD_FLOW_LIVE/, 'the press-kit Status row branches on the launch flag');
-assert.match(flowPage, /Status\.<\/strong> \{pressStatus\}/, 'the compact press disclosure renders the branched value, not a literal');
-const pressTable = flowPage.slice(flowPage.indexOf('id="press"'));
-for (const phrase of ['Waitlist open on this page', 'The remaining work is first-run onboarding']) {
-  for (const line of pressTable.split('\n').filter((l) => l.includes(phrase))) {
-    assert.fail(`the press kit must not state "${phrase}" outside a flag branch: ${line.trim().slice(0, 80)}`);
-  }
-}
+// The refreshed press facts make no release-state claim. Downloads retain
+// their shared release gate; no launch-dark promise can leak into the FAQ.
+assert.doesNotMatch(livingFaq, /join the waitlist|not yet released|licensing is unfinished/i);
+assert.match(downloadCta, /ORIONFOLD_FLOW_LIVE/);
 
 // ── Withdrawn features must not be sold ────────────────────────────────────
 // 2026-08-22 15:43 B11: Flow Quick is withdrawn from the first paid release
@@ -1347,4 +1142,4 @@ for (const surface of ['src/data/flow-pricing.ts', 'src/pages/flow.astro']) {
   );
 }
 
-console.log('[flow-flagship-surface] Flow leads with real captures, truthful claims, and waitlist capture; the catalog lives in the footer');
+console.log('[flow-flagship-surface] Living Systems front doors, real tour evidence, shared download and consent contracts');

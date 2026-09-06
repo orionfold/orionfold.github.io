@@ -1,0 +1,9 @@
+---
+import BrandMark from './BrandMark.astro';
+interface Props { size?: number; }
+const { size = 32 } = Astro.props;
+---
+<a href="/" class="living-wordmark" aria-label="Orionfold home">
+  <BrandMark size={size} />
+  <span class="living-wordmark__type"><span>Orion</span><span class="living-wordmark__fold">fold</span></span>
+</a>

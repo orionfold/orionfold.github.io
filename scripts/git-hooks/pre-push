@@ -2,10 +2,10 @@
 # orionfold-website pre-push gate (installed by `npm run hooks:install`).
 #
 # A push to main deploys the public site, so it must carry proof that the
-# whole deploy chain passed on the exact tree being pushed. The proof rules
-# live in scripts/preflight.mjs (--gate): a fresh green stamp for the tree, a
-# green GitHub Pages deploy of that commit (rollbacks), or an inline run of the
-# full chain when the pushed commit is the clean working tree. Every push also
+# whole deploy chain passed on the exact tree and public build settings being
+# pushed. The proof rules live in scripts/preflight.mjs (--gate): a matching
+# green stamp, or an inline run of the full chain when the pushed commit is the
+# clean working tree. A prior green deploy alone is not proof. Every push also
 # sweeps the pushed tree and history for local-only paths and key material.
 #
 # There is no bypass flag on purpose. `git push --no-verify` skips every hook;

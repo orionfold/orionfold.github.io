@@ -1,0 +1,419 @@
+/* Essay composition, preserving the approved cascade and responsive states. */
+
+.ls-paper-art {
+position: absolute;
+  inset: auto;
+  display: block;
+  pointer-events: none;
+  z-index: 0;
+}
+.ls-paper-art img {
+width: 100%;
+  height: auto;
+  max-width: none;
+}
+.ls-paper-subtle {
+width: 400px;
+  right: 0;
+  top: 0;
+  opacity: 0.19;
+  z-index: -1;
+  mask-image: radial-gradient(ellipse, #000 30%, transparent 69%);
+}
+.ls-essay-hero {
+background: #fff;
+padding: 65px 0 55px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+.ls-essay-hero h1 {
+font:
+    400 clamp(3.1rem, 5.8vw, 5.8rem)/1.05 Georgia,
+    'Times New Roman',
+    serif;
+  letter-spacing: -0.065em;
+  margin: 30px 0 34px;
+  max-width: 1060px;
+}
+.ls-essay-hero .ls-stroke:after {
+height: 0.045em;
+  bottom: -0.035em;
+}
+.ls-essay-hero > .ls-paper-subtle {
+top: 0;
+  right: -85px;
+  width: 600px;
+  opacity: 0.15;
+}
+.ls-essay-dek {
+font:
+    400 1.4rem/1.6 Georgia,
+    serif;
+  max-width: 740px;
+}
+.ls-essay-meta {
+display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 28px;
+}
+.ls-essay-meta span:first-child {
+font-weight: 700;
+  color: var(--ink);
+}
+.ls-essay-layout {
+display: grid;
+  grid-template-columns: 225px minmax(0, 745px);
+  gap: 8%;
+  align-items: start;
+  padding-top: 35px;
+  padding-bottom: 90px;
+}
+.ls-essay-toc {
+position: sticky;
+  top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 34px;
+}
+.ls-essay-toc > p {
+font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+}
+.ls-essay-toc a {
+display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #5b6d63;
+}
+.ls-essay-toc a:hover {
+color: var(--red-deep);
+}
+.ls-essay-toc a > span {
+font-size: 0.7rem;
+  color: var(--teal);
+}
+.ls-essay-toc a:last-child {
+padding-top: 24px;
+  border-top: 1px solid var(--line);
+  margin-top: 8px;
+  color: var(--ink);
+}
+.ls-essay-reading section {
+padding-top: 32px;
+  scroll-margin-top: 15px;
+}
+.ls-essay-section-number {
+font: 700 0.76rem/1 'Geist Sans';
+  color: var(--teal);
+  letter-spacing: 0.1em;
+}
+.ls-essay-reading h2 {
+font:
+    400 2.35rem/1.14 Georgia,
+    serif;
+  letter-spacing: -0.045em;
+  margin: 16px 0 28px;
+}
+.ls-essay-reading h2 .ls-stroke:after {
+height: 0.055em;
+  bottom: -0.04em;
+}
+.ls-essay-reading p {
+font:
+    400 1.15rem/1.95 Georgia,
+    'Times New Roman',
+    serif;
+  margin: 0 0 22px;
+  color: #2f3a34;
+}
+.ls-essay-reading a:not(.ls-text-link) {
+color: var(--teal);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ls-essay-reading blockquote {
+font:
+    400 2.1rem/1.4 Georgia,
+    serif;
+  letter-spacing: -0.03em;
+  margin: 38px 0 18px;
+  padding: 20px 0 20px 26px;
+  border-left: 4px solid var(--red);
+  color: #263b32;
+}
+.ls-author-note {
+margin-top: 45px;
+  padding-top: 25px;
+}
+.ls-author-note p {
+font:
+    400 0.87rem/1.75 'Geist Sans',
+    Arial,
+    sans-serif;
+  margin-bottom: 15px;
+}
+.ls-author-note .ls-text-link {
+margin-top: 15px;
+}
+.ls[data-motion='off'] * {
+animation-play-state: paused !important;
+}
+@media (max-width: 1200px) {
+.ls-container {
+width: calc(100% - 64px);
+}
+.ls-essay-layout {
+gap: 6%;
+    grid-template-columns: 190px minmax(0, 740px);
+}
+}
+@media (max-width: 950px) {
+.ls-essay-layout {
+display: block;
+    max-width: 750px;
+}
+.ls-essay-toc {
+position: static;
+    display: none;
+}
+}
+@media (max-width: 700px) {
+.ls-container {
+width: calc(100% - 40px);
+}
+.ls-essay-hero {
+padding: 40px 0;
+}
+.ls-essay-hero h1 {
+font-size: 3.6rem;
+    line-height: 1.07;
+    margin: 27px 0 32px;
+}
+.ls-essay-dek {
+font-size: 1.2rem;
+    line-height: 1.65;
+}
+.ls-essay-meta {
+gap: 15px;
+    font-size: 0.8rem;
+    margin-top: 27px;
+}
+.ls-essay-hero > .ls-paper-subtle {
+width: 400px;
+    right: -190px;
+    top: 15px;
+    opacity: 0.14;
+}
+.ls-essay-layout {
+padding-top: 20px;
+    padding-bottom: 55px;
+}
+.ls-essay-reading section {
+padding-top: 25px;
+}
+.ls-essay-reading h2 {
+font-size: 2.1rem;
+    line-height: 1.18;
+    margin-bottom: 25px;
+}
+.ls-essay-reading p {
+font-size: 1.08rem;
+    line-height: 1.9;
+    margin-bottom: 22px;
+}
+.ls-essay-reading blockquote {
+font-size: 1.7rem;
+    padding-left: 20px;
+    margin: 30px 0 12px;
+}
+.ls-author-note p {
+font: 400 0.9rem/1.7 'Geist Sans';
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.ls *,
+.ls *:before,
+.ls *:after {
+animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+}
+}
+@media print {
+.ls-essay-toc,
+.ls-paper-art {
+display: none !important;
+}
+.ls-essay-layout {
+display: block;
+    width: 100%;
+    padding: 0;
+}
+.ls-essay-hero {
+width: 100%;
+}
+.ls-essay-hero h1 {
+font-size: 38pt;
+}
+.ls-essay-reading h2 {
+break-after: avoid;
+    font-size: 20pt;
+}
+.ls-essay-reading p {
+font-size: 11pt;
+    line-height: 1.6;
+}
+.ls-essay-reading section {
+padding-top: 15px;
+}
+.ls-stroke:after {
+display: none;
+}
+}
+.ls [hidden] {
+display: none !important;
+}
+.ls-essay-related {
+border-block: 1px solid var(--line);
+  padding: 30px 0;
+  margin: 50px 0 35px;
+}
+.ls-essay-related h2 {
+font-family: 'Geist Sans';
+  font-size: 12px !important;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  margin: 0 0 15px !important;
+}
+.ls-essay-related a {
+display: block;
+  font-size: 14px;
+  margin: 12px 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ls-essay-related a svg {
+  display: inline-block; vertical-align: middle; margin-left: 4px;
+}
+.ls-paper-cta {
+position: relative;
+  isolation: isolate;
+}
+.ls-paper-cta {
+border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 38px 42px;
+  margin: 0 0 46px;
+  overflow: hidden;
+  background: #fafbf9;
+}
+.ls-paper-cta-copy {
+position: relative;
+  z-index: 1;
+  width: 58%;
+  max-width: 610px;
+}
+.ls-paper-cta .ls-eyebrow {
+font:
+    700 12px/1.6 'Geist Sans',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.12em;
+  margin: 0 0 15px;
+  color: var(--ink);
+}
+.ls-paper-cta h3 {
+font:
+    700 clamp(32px, 3.8vw, 47px)/1 'Barlow Condensed',
+    Impact,
+    sans-serif;
+  letter-spacing: -0.025em;
+  margin: 0 0 18px;
+  color: var(--ink);
+}
+.ls-paper-cta .ls-paper-cta-copy > p:not(.ls-eyebrow) {
+font:
+    400 16px/1.65 'Geist Sans',
+    Arial,
+    sans-serif;
+  margin: 0 0 23px;
+  max-width: 390px;
+  color: var(--muted);
+}
+.ls-paper-cta-interstitial {
+margin: 48px -32px;
+  padding: 36px 32px;
+}
+.ls-paper-cta-interstitial .ls-paper-cta-copy {
+width: 58%;
+}
+.ls-paper-cta-interstitial h3,
+.ls-paper-cta-article-end h3 {
+font-size: 36px;
+}
+.ls-paper-cta-article-end {
+margin: 40px 0 0;
+  padding: 32px;
+}
+@media (max-width: 700px) {
+.ls-paper-cta {
+padding: 30px 24px 172px;
+}
+.ls-paper-cta-copy,
+.ls-paper-cta-interstitial .ls-paper-cta-copy {
+width: 100%;
+    max-width: none;
+}
+.ls-paper-cta-interstitial {
+margin: 40px 0;
+}
+.ls-paper-cta h3,
+.ls-paper-cta-interstitial h3,
+.ls-paper-cta-article-end h3 {
+font-size: 36px;
+}
+}
+.ls-essay-reading em {
+color: inherit;
+  font-style: italic;
+}
+.ls-essay-reading strong {
+font-weight: 700;
+}
+.ls {
+--cta-red: #d93828;
+  --cta-red-hover: #ba2d21;
+}
+.ls-page-essay .ls-essay-hero > .ls-paper-subtle {
+opacity: 0.575;
+}
+@media (max-width: 600px) {
+.ls-page-essay .ls-essay-hero > .ls-paper-subtle {
+opacity: 0.57;
+}
+}
+.ls .ls-download {display:inline-block;position:relative;z-index:2}
+.ls .ls-download .of-primary-action {display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 23px;background:#d93828;border:1px solid #d93828;border-radius:3px;color:#fff!important;font:700 15px/1.4 'Geist Sans',Arial,sans-serif;letter-spacing:0;text-transform:none;text-decoration:none;box-shadow:none}
+.ls .ls-download .of-primary-action:hover {background:#ba2d21;border-color:#ba2d21;color:#fff!important;transform:translateY(-2px)}
+html:has(body.ls) {font-size:16px}
+.ls .ls-main {padding-top:var(--of-nav-height,82px)}
+.ls .ls-essay-toc {top:calc(var(--of-nav-height,82px) + 28px)}
+
+/* Article acquisition stays inside the reading column beside the sticky TOC. */
+.living-site .ls-essay-reading .living-paper-cta {
+  width: 100%; max-width: 100%; min-width: 0; margin: 48px 0;
+}
+
+/* The shared opaque artwork has a near-white matte; remove its gray field here. */
+.ls-page-essay .ls-essay-hero > .ls-paper-subtle img {
+  filter: brightness(1.04) contrast(1.04);
+}

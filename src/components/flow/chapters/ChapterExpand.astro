@@ -16,19 +16,20 @@ import detailSaved from '../../../assets/flow/details/detail-expand-saved.webp';
         writing still returns through the same review and approval path.
       </p>
       <p class="mt-4 text-sm leading-relaxed text-text-muted" data-animate="rise">
-        Today, lookups use hosted Anthropic models only. The text leaves your Mac, fetching public
-        pages stays switched off, and every run stops at its limit of 12 lookups or 180 seconds.
+        In Flow 1.6, lookups run on this Mac with a local model as well as through supported Anthropic models.
+        The local path reads the document and searches open folders without a provider token charge; each lookup is receipted.
+        A hosted run sends the permitted text to its provider. The run still has a limit of 12 lookups or 180 seconds.
         If it reaches that bound, nothing in the document was changed.
       </p>
     </div>
     <div class="mt-12" data-animate="plate">
-      <FlowShot src={shotBanner} alt="Orionfold Flow during Expand with Sources: a banner lists folder searches as they happen, tokens and dollars accrue in the title bar, and pause and stop remain available." caption="Every lookup narrated live · Pause or stop in one click" natural sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
+      <FlowShot src={shotBanner} alt="Orionfold Flow during Expand with Sources: a banner lists folder searches as they happen, tokens and dollars accrue in the title bar, and pause and stop remain available." caption="Historical hosted-run capture · Flow 1.5 (1255) · August 26, 2026 · Live lookup progress" natural sizes="(min-width: 1280px) 78rem, (min-width: 1024px) 64rem, 100vw" />
     </div>
     <div class="mx-auto mt-12 grid max-w-5xl gap-8 lg:grid-cols-2">
       <div>
         <p class="flow-path__num">Consent</p>
         <h4 class="mt-2 text-xl font-bold">Destination, sources, estimate, authority.</h4>
-        <p class="mt-3 text-sm leading-relaxed text-text-muted">The sheet names what will leave, where it will go, and the estimated cost to the digit. Permission is read-only and granted once.</p>
+        <p class="mt-3 text-sm leading-relaxed text-text-muted">For a hosted route, the sheet names what will leave, where it will go, and the estimated cost to the digit. Permission is read-only and granted once.</p>
         <FlowDetail class="mt-6" src={detailConsent} alt="Flow's Leaves this Mac sheet naming Anthropic, the included sources, an exact estimate, read-only authority, and Allow Once." caption="The complete bargain · Before the run" sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)" />
       </div>
       <div>
@@ -38,5 +39,6 @@ import detailSaved from '../../../assets/flow/details/detail-expand-saved.webp';
         <FlowDetail class="mt-6" src={detailSaved} alt="A Flow receipt's cost block: the recorded cost priced from the cost table, the model, the provider, and that the run went to Cloud." caption="Recorded cost · Priced from the cost table · Model, provider, and route named" sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)" glow />
       </div>
     </div>
+    <p class="mt-8 text-sm leading-relaxed text-text-dim">The screenshots show a historical hosted run. The local lookup path shipped in Flow 1.6. Web Lookups is a separate control in Settings ▸ General and starts off; when enabled, words from a document may appear in the requested address.</p>
   </div>
 </section>

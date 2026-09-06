@@ -9,6 +9,7 @@ import { SITE } from '../../data/seo';
 import { ogMeta } from '../../data/og';
 import { FLOW_CATEGORIES, flowCategoryHref } from '../../data/flow-categories';
 import { FLOW_CATEGORY_SHOTS } from '../../data/flow-category-shots';
+import { FLOW_V16_TOURS } from '../../data/flow-v16';
 import '../../styles/flow.css';
 
 const href = '/flow/tour/';
@@ -29,7 +30,7 @@ const breadcrumbs = {
 ---
 <Layout
   title="Orionfold Flow product tour · See Flow at work"
-  description="Tour Orionfold Flow through real product screens: writing with AI, ordinary documents and files, model routing, and receipts with evidence."
+  description="Tour Flow 1.6 through real screens: Living Documents, the Night Shift, six clear Settings screens, writing, files, model routing and evidence."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[breadcrumbs]}
@@ -46,12 +47,27 @@ const breadcrumbs = {
           See Flow at work.
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-[1.55] text-text-muted sm:text-xl">
-          Four focused tours. Real Flow screens. Start with the work in front of you, or follow every part in order.
+          Real Flow screens. Start with Living Documents and the Night Shift, then explore the writing, files, models and evidence underneath.
         </p>
       </div>
     </section>
 
+    <section class="border-t border-border/70 px-6 py-14 sm:py-20" aria-labelledby="flow-v16-tours">
+      <div class="mx-auto max-w-6xl">
+        <p class="of-eyebrow">Flow 1.6</p><h2 id="flow-v16-tours" class="of-display mt-3 text-4xl">Make knowledge a living thing.</h2>
+        <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">A page connected to its sources. A night shift with clear jobs. A morning you can review. See how the three parts work together.</p>
+        <div class="mt-9 grid gap-6 lg:grid-cols-3">
+          {FLOW_V16_TOURS.map((tour) => <article class="flow-cat-card of-surface flex flex-col rounded-2xl border border-border/70 p-6">
+            <a href={`/flow/${tour.slug}/`} class="flow-cat-card__plate" aria-hidden="true" tabindex="-1"><Image src={tour.image} alt={tour.alt} widths={[560, 1120]} sizes="(min-width: 1024px) 28vw, 88vw" class="flow-cat-card__thumb" loading="lazy" decoding="async" /></a>
+            <p class="mt-5 font-mono text-xs uppercase tracking-widest text-accent-ink">{tour.label}</p><h3 class="mt-3 text-2xl font-bold"><a href={`/flow/${tour.slug}/`}>{tour.title}</a></h3><p class="mt-3 flex-1 leading-relaxed text-text-muted">{tour.description}</p><a class="of-text-action mt-6" href={`/flow/${tour.slug}/`}>Explore {tour.label} <span aria-hidden="true">→</span></a>
+          </article>)}
+        </div>
+        <p class="mt-6 text-sm text-text-dim">Real product details from Flow 1.6 (1899), captured September 6, 2026. Example documents use sample data.</p>
+      </div>
+    </section>
+
     <section class="border-t border-border/70 px-6 py-14 sm:py-20" aria-label="Flow product tour parts">
+      <div class="mx-auto mb-8 max-w-6xl"><p class="of-eyebrow">The foundations</p><h2 class="of-display mt-3 text-3xl">Go deeper into the work.</h2></div>
       <div class="mx-auto grid max-w-6xl gap-4 md:grid-cols-2" data-animate-stagger>
         {tourCards.map((category, index) => (
           <article class="flow-cat-card of-surface flex flex-col rounded-2xl border border-border/70 p-6 sm:p-7" data-animate>
@@ -77,5 +93,5 @@ const breadcrumbs = {
       <FlowWaitlist placement="flow-mid" storyHref={flowStoryHref} nextHref="/flow/specifications/" nextLabel="Tech Specs" />
     </div>
   </main>
-  <Footer />
+  <Footer showDownload={false} />
 </Layout>

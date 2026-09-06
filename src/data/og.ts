@@ -29,6 +29,8 @@ export interface OgPage {
   /** Light card: hero light gradient + fading teal grid background, dark text,
    *  full brand lockup. Used by the Flow flagship cards. */
   light?: boolean;
+  /** Living Systems card with origami artwork and display typography. */
+  living?: boolean;
   /** Optional repo-relative curated hero art, used FULL-BLEED as the card background
    *  instead of the brand banner (a landing page with its own featured image, e.g.
    *  /dgx-spark/). Title legibility comes from the card's text glow. PNG/JPG only. */
@@ -36,20 +38,30 @@ export interface OgPage {
 }
 
 export const OG_PAGES: Record<string, OgPage> = {
+  '/manifesto/': {
+    "slug": "manifesto",
+    "eyebrow": "Orionfold · Eighteen ideas",
+    "title": "The Living Documents Manifesto.",
+    "seed": "manifesto",
+    "alt": "The Living Documents Manifesto: work that continues and judgment that stays yours.",
+    "living": true
+},
+  '/essay/': {
+    "slug": "essay",
+    "eyebrow": "An essay by Manav Sehgal",
+    "title": "Room for a Renaissance.",
+    "seed": "essay",
+    "alt": "Room for a Renaissance, an essay by Manav Sehgal. More room for the researcher, writer and builder in you.",
+    "living": true
+},
   '/': {
-    slug: 'home',
-    eyebrow: 'Orionfold Flow · Patent pending',
-    // The card carries the same promise as the launch homepage H1.
-    title: 'Flow brings AI to documents. You keep the wheel.',
-    seed: 'home',
-    alt: 'The What Flow is using readout open in Orionfold Flow beside a trip plan: memory, GPU, and the Flow row, then tokens and spend this session and all time, all zero and $0.00.',
-    // Cut 1:1 from the installed-1382 home hero (first-launch-home-hero-welcome,
-    // 2026-08-27): the readout popover over the trip plan's Booked table, padded
-    // on the right so the popover sits inside the visible left 540px band, then
-    // halved to 660x338 so the Retina text lands at 1:1.
-    screenshot: 'src/assets/flow/og-home-shot-guide.png',
-    light: true,
-  },
+    "slug": "home",
+    "eyebrow": "Orionfold · Living Documents",
+    "title": "Make knowledge a living thing.",
+    "seed": "home",
+    "alt": "Orionfold: Make knowledge a living thing. Origami paper planes rise from an open book on yellow.",
+    "living": true
+},
   '/advisor/': {
     slug: 'advisor',
     eyebrow: 'Advisor',
@@ -177,19 +189,13 @@ export const OG_PAGES: Record<string, OgPage> = {
     background: 'src/assets/proof/orionfold-proof-poster.jpeg',
   },
   '/flow/': {
-    slug: 'flow',
-    eyebrow: 'Orionfold Flow · Patent pending',
-    // G-113: the social card carries the same benefit and approval rhythm as
-    // the canonical overview instead of reopening the old charts-only wedge.
-    title: 'AI proposes each change. You approve it.',
-    seed: 'flow',
-    alt: 'The Schedule Gantt chart drawn inside an Orionfold Flow project plan: audit, structure, build and migrate bars across September to November, with the Migrate tooltip open.',
-    // Cut from the installed-1382 /flow/ hero (first-launch-flow-hero-project,
-    // 2026-08-27): the Schedule card with its tooltip, scaled to 0.42 and padded
-    // on the right so the WHOLE card sits inside the visible left 540px band.
-    screenshot: 'src/assets/flow/og-flow-shot-charts.png',
-    light: true,
-  },
+    "slug": "flow",
+    "eyebrow": "Flow for Mac · Living Documents",
+    "title": "Give your work a Night Shift.",
+    "seed": "flow",
+    "alt": "Flow for Mac: Give your work a Night Shift. Origami paper planes carry documents forward.",
+    "living": true
+},
   '/flow/specifications/': {
     slug: 'flow-specifications',
     eyebrow: 'Orionfold Flow · Technical specifications',
@@ -198,12 +204,27 @@ export const OG_PAGES: Record<string, OgPage> = {
     alt: 'Orionfold Flow technical specifications for compatibility, document formats, model routes, privacy boundaries, plans, and measured performance',
     light: true,
   },
+  '/flow/night-shift/': {
+    slug: 'flow-night-shift', eyebrow: 'Flow 1.6 · Night Shift',
+    title: 'Let your documents work the Night Shift.', seed: 'flow-night-shift',
+    alt: 'Flow Night Shift: scheduled work on your Mac, a Morning Briefing, and changes you can review.', living: true,
+  },
+  '/flow/living-documents/': {
+    slug: 'flow-living-documents', eyebrow: 'Flow 1.6 · Living Documents',
+    title: 'A document that keeps up.', seed: 'flow-living-documents',
+    alt: 'Flow Living Documents: seven starting folders, linked sources, live charts and tables, and reviewable changes.', living: true,
+  },
+  '/flow/settings/': {
+    slug: 'flow-settings', eyebrow: 'Flow 1.6 · Settings',
+    title: 'Your Mac. Your models. Your rules.', seed: 'flow-settings',
+    alt: 'Six Flow Settings screens put documents, models, routing, evidence and the Night Shift in view.', living: true,
+  },
   '/flow/tour/': {
     slug: 'flow-tour',
     eyebrow: 'Orionfold Flow · Product tour',
     title: 'See Flow at work',
     seed: 'flow-tour',
-    alt: 'Orionfold Flow product tour: writing with AI, ordinary files, model routing, and receipts shown through real product screens',
+    alt: 'Orionfold Flow 1.6 product tour: Night Shift, Living Documents, six Settings screens, writing with AI and receipts shown through real product screens',
     light: true,
   },
   // The four /flow/<category>/ tour pages (2026-08-20 split). Text-only cards
@@ -230,7 +251,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Orionfold Flow · Models and runtime',
     title: 'Choose where AI runs. Every time.',
     seed: 'flow-models',
-    alt: 'Orionfold Flow models and runtime: four domains, a local runtime inside the app, and rules that pick the model',
+    alt: 'Orionfold Flow models and runtime: models on your Mac, configured cloud providers, and rules that pick the model',
     light: true,
   },
   '/flow/documents-and-files/': {

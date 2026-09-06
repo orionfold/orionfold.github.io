@@ -1,0 +1,23 @@
+---
+import FlowFeaturePage from '../../components/flow/FlowFeaturePage.astro';
+import FlowDetail from '../../components/flow/FlowDetail.astro';
+import { FLOW_V16_SHOTS as shots } from '../../data/flow-v16';
+---
+<FlowFeaturePage slug="night-shift" title="Flow Night Shift · Wake up to what changed · Orionfold" description="Flow refreshes your living documents on your Mac, writes a Morning Briefing and marks overnight changes for you to keep or revert.">
+  <section class="flow-feature-section" id="set-the-shift"><div class="flow-feature-inner flow-feature-grid">
+    <div class="flow-feature-copy"><p class="of-eyebrow">01 · Set the rhythm</p><h2 class="of-display">The work has a night shift.</h2><p>Choose a window in Settings. When your Mac is plugged in and idle, Flow works the folders you have open, even with the app quit.</p><ul><li>The starting window is <strong>2:00–6:00 AM</strong>. Change it to suit your day.</li><li>Catch up on wake gives a missed night another chance. A shift does not run twice in one night.</li><li>Use <strong>Run now</strong> to watch a shift, or pause tonight from the moon menu.</li></ul></div>
+    <FlowDetail src={shots.nightRunning} alt="The Night Shift progress menu lists completed, running and waiting documents." caption="Real Flow 1.6 · A Run now session in progress · Sample Guide documents" />
+  </div></section>
+  <section class="flow-feature-section" id="morning-briefing"><div class="flow-feature-inner flow-feature-grid flow-feature-grid--reverse">
+    <div class="flow-feature-copy"><p class="of-eyebrow">02 · Read what moved</p><h2 class="of-display">One briefing. Your documents.</h2><p>The Morning Briefing lives in the Flow Guide folder. It gives each changed document a section, describes what moved and shows its changed chart or table.</p><p>Open the document or go straight to Review. <strong>Also changed</strong>, <strong>Still to review</strong> and <strong>Unchanged</strong> keep the rest of the run visible. Earlier briefings stay in History.</p></div>
+    <FlowDetail src={shots.nightBriefing} alt="A Morning Briefing section explains the Portfolio Dashboard changes and lists the changed source files." caption="Real Flow 1.6 · A changed document's Briefing section · Sample data" />
+  </div></section>
+  <section class="flow-feature-section" id="review-the-night"><div class="flow-feature-inner flow-feature-grid">
+    <div class="flow-feature-copy"><p class="of-eyebrow">03 · Keep the final word</p><h2 class="of-display">Marked changes. Reversible work.</h2><p>Overnight changes are applied and marked in the document. Review them block by block: <strong>Keep</strong> makes the change yours; <strong>Revert</strong> puts the earlier lines back.</p><p>Each overnight write is a version you can return to, with a receipt naming the run. The Night Shift only works documents that declare jobs.</p></div>
+    <FlowDetail src={shots.nightReview} alt="Review Changes identifies an applied Overnight notes change and offers Revert and Keep." caption="Real Flow 1.6 · Review an overnight change" />
+  </div></section>
+  <section class="flow-feature-section" id="base-and-pro"><div class="flow-feature-inner"><p class="of-eyebrow">What each plan adds</p><h2 class="of-display">The routine is free. Pro adds notes.</h2><div class="mt-8 grid gap-6 md:grid-cols-2">
+    <div class="flow-feature-card flow-feature-copy"><h3 class="text-2xl font-bold">Night Shift Base</h3><p>Collect data from definitions. Watch named sources. List a folder's files. Redraw bound charts and tables. Get the Morning Briefing and Review Changes.</p><p><strong>These jobs run on every plan, including Base.</strong></p></div>
+    <div class="flow-feature-card flow-feature-copy"><h3 class="text-2xl font-bold">Night Shift Pro</h3><p><strong>Overnight notes</strong> adds a few sentences about the page's numbers, written by a model on this Mac after the redraw.</p><p>Every number is checked against a source row or withheld with the number named. Notes are marked, reviewable and receipted with the model.</p></div>
+  </div><p class="mt-7 max-w-3xl leading-relaxed text-text-muted">Night Shift notes stay on this Mac. Watching an HTTPS page makes a request to the source you listed. Local work has no provider token charge; Pro is a paid Flow plan.</p></div></section>
+</FlowFeaturePage>

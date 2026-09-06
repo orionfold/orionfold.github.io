@@ -6,6 +6,10 @@ import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import {
   STEPS,
+  BUILD_ENV,
+  BUILD_FLAGS,
+  buildEnvironmentsMatch,
+  resolveBuildEnvironment,
   classifyPath,
   findEmail,
   findSecret,
@@ -24,6 +28,13 @@ test('the deploy workflow runs every preflight step, in preflight order, and not
   }
   assert.doesNotMatch(workflow, /run: npm run (?:build|test:node|test:e2e|test:deno)\b/, 'the workflow never calls a test or build script directly; parity lives in preflight');
   assert.match(workflow, /FLOW_RELEASE_DECLARED: \$\{\{ vars\.FLOW_RELEASE_DECLARED \}\}/, 'the operator declaration still comes from the repository variable');
+  for (const [name, value] of Object.entries(BUILD_ENV)) {
+    assert.ok(workflow.includes(`${name}: "${value}"`), `workflow pins ${name} exactly as local preflight does`);
+  }
+  for (const name of BUILD_FLAGS) {
+    assert.ok(workflow.includes(`${name}: \${{ vars.${name} || 'false' }}`), `workflow resolves ${name} from the same repository flag, absent means false`);
+  }
+
   assert.match(workflow, /timeout-minutes: \d+/, 'a hung build cannot hold the deploy lane for hours');
   assert.match(workflow, /if: failure\(\)[\s\S]*upload-artifact[\s\S]*output\/playwright/, 'browser traces and screenshots are uploaded when the chain fails');
 });
@@ -121,12 +132,91 @@ test('the boundary reads the repository variable locally and the workflow enviro
   assert.match(resolveReleaseDeclared({ ci: false, env: { FLOW_RELEASE_DECLARED: 'true' }, lookup: () => null }).source, /may differ/);
 });
 
-test('a stamp proves a tree only when it is the same tree, clean, and covers every step', () => {
+test('local preflight and CI resolve identical production build environments', () => {
+  for (const enterprise of ['true', 'false']) {
+    for (const signup of ['true', 'false']) {
+      const flags = {
+        PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED: enterprise,
+        PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED: signup,
+      };
+      const local = resolveBuildEnvironment({
+        ci: false,
+        env: { ...flags, PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED: enterprise === 'true' ? 'false' : 'true', PUBLIC_SERVICE_MODE: 'preview' },
+        lookup: () => Object.entries(flags).map(([name, value]) => ({ name, value })),
+      });
+      const ci = resolveBuildEnvironment({ ci: true, env: { ...BUILD_ENV, ...flags }, lookup: () => { throw new Error('CI must use its actual workflow environment'); } });
+      assert.deepEqual(local.buildEnv, { ...BUILD_ENV, ...flags }, 'repository flags override local shell values');
+      assert.deepEqual(ci.buildEnv, local.buildEnv);
+      assert.equal(local.source, 'repository variables via gh');
+      assert.equal(ci.source, 'workflow environment');
+    }
+  }
+});
+
+test('absent and empty flags match the workflow false default; unknown lookup never defaults', () => {
+  const expected = { ...BUILD_ENV, ...Object.fromEntries(BUILD_FLAGS.map((name) => [name, 'false'])) };
+  assert.deepEqual(resolveBuildEnvironment({ ci: false, env: {}, lookup: () => [] }).buildEnv, expected);
+  assert.deepEqual(resolveBuildEnvironment({ ci: true, env: {} }).buildEnv, expected);
+  assert.deepEqual(resolveBuildEnvironment({ ci: false, lookup: () => BUILD_FLAGS.map((name) => ({ name, value: '' })) }).buildEnv, expected);
+  assert.throws(() => resolveBuildEnvironment({ ci: false, env: expected, lookup: () => { throw new Error('authentication unavailable'); } }), /authentication unavailable/);
+  for (const bad of [null, undefined, {}, [{ name: BUILD_FLAGS[0] }], [{ name: BUILD_FLAGS[0], value: false }]]) {
+    assert.throws(() => resolveBuildEnvironment({ ci: false, env: expected, lookup: () => bad }), /complete variable list/);
+  }
+  assert.throws(() => resolveBuildEnvironment({ ci: false, lookup: () => [{ name: BUILD_FLAGS[0], value: 'true' }, { name: BUILD_FLAGS[0], value: 'false' }] }), /duplicate/);
+});
+
+test('build flag values must be exact booleans in both execution paths', () => {
+  for (const key of BUILD_FLAGS) {
+    for (const value of ['TRUE', ' false ', '1', true, null]) {
+      assert.throws(() => resolveBuildEnvironment({ ci: true, env: { [key]: value } }), /exactly/);
+    }
+    for (const value of ['TRUE', ' false ', '1']) {
+      assert.throws(() => resolveBuildEnvironment({ ci: false, lookup: () => [{ name: key, value }] }), /exactly/);
+    }
+  }
+});
+
+test('CI=1 alone cannot replace the repository lookup on a developer machine', () => {
+  let calls = 0;
+  const resolved = resolveBuildEnvironment({ env: { CI: '1', PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED: 'true' }, lookup: () => { calls++; return []; } });
+  assert.equal(calls, 1);
+  assert.equal(resolved.buildEnv.PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED, 'false');
+  assert.equal(resolveBuildEnvironment({ env: { GITHUB_ACTIONS: 'true', PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED: 'true' } }).buildEnv.PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED, 'true');
+});
+
+test('a stamp proves the exact tree and build environment, only from a clean checkout covering every step', () => {
   const steps = STEPS.map((s) => s.name);
   const tree = 'a'.repeat(40);
-  assert.equal(stampSatisfies({ tree, dirty: false, steps }, tree), true);
-  assert.equal(stampSatisfies({ tree, dirty: true, steps }, tree), false, 'a dirty checkout proves nothing about the committed tree');
-  assert.equal(stampSatisfies({ tree: 'b'.repeat(40), dirty: false, steps }, tree), false);
-  assert.equal(stampSatisfies({ tree, dirty: false, steps: steps.filter((s) => s !== 'e2e') }, tree), false, 'a partial run is not a proof');
-  assert.equal(stampSatisfies(null, tree), false);
+  const buildEnv = resolveBuildEnvironment({ ci: true, env: {} }).buildEnv;
+  const stamp = { version: 2, tree, dirty: false, steps, buildEnv };
+  assert.equal(stampSatisfies(stamp, tree, { buildEnv }), true);
+  assert.equal(stampSatisfies({ ...stamp, dirty: true }, tree, { buildEnv }), false);
+  assert.equal(stampSatisfies({ ...stamp, dirty: undefined }, tree, { buildEnv }), false);
+  assert.equal(stampSatisfies({ ...stamp, tree: 'b'.repeat(40) }, tree, { buildEnv }), false);
+  assert.equal(stampSatisfies({ ...stamp, steps: steps.filter((s) => s !== 'e2e') }, tree, { buildEnv }), false, 'a partial run is not proof');
+  assert.equal(stampSatisfies(null, tree, { buildEnv }), false);
+  assert.equal(stampSatisfies(stamp, tree), false, 'the current configuration must be known');
+  assert.equal(stampSatisfies({ tree, dirty: false, steps }, tree, { buildEnv }), false, 'old tree-only stamps must be rerun');
+  assert.equal(stampSatisfies({ ...stamp, version: 1 }, tree, { buildEnv }), false);
+  for (const key of BUILD_FLAGS) {
+    const changed = { ...buildEnv, [key]: 'true' };
+    assert.equal(stampSatisfies(stamp, tree, { buildEnv: changed }), false, `${key} activation invalidates a disabled-build stamp`);
+    assert.equal(stampSatisfies({ ...stamp, buildEnv: changed }, tree, { buildEnv }), false, `${key} deactivation also invalidates the old stamp`);
+  }
+});
+
+test('configuration evidence rejects missing, malformed, or unrecorded settings', () => {
+  const buildEnv = resolveBuildEnvironment({ ci: true, env: {} }).buildEnv;
+  assert.equal(buildEnvironmentsMatch(buildEnv, { ...buildEnv }), true);
+  for (const bad of [undefined, null, {}, [], { ...buildEnv, PUBLIC_SERVICE_MODE: 'preview' }, { ...buildEnv, PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: 'false' }, { ...buildEnv, PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED: true }, { ...buildEnv, extra: 'unchecked' }]) {
+    assert.equal(buildEnvironmentsMatch(bad, buildEnv), false);
+    assert.equal(buildEnvironmentsMatch(buildEnv, bad), false);
+  }
+});
+
+test('push proof cannot bypass build configuration using a past successful deploy', () => {
+  const source = read('scripts/preflight.mjs');
+  assert.doesNotMatch(source, /function deployedGreen|if \(deployedGreen|\['run', 'list'/, 'prior CI success has no captured environment evidence and cannot authorize a push');
+  assert.match(source, /stampSatisfies\(stamp, tree, \{ buildEnv \}\)/);
+  assert.match(source, /stampSatisfies\(readStamp\(\), tree, \{ buildEnv: current \}\)/, 'the inline run checks current flags again before allowing the push');
 });

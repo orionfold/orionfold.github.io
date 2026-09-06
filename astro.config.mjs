@@ -133,11 +133,18 @@ function buildLastmodMap() {
   // 2026-08-22: LAUNCH. Every Flow surface switched from waitlist to download,
   // pricing went live, and the five launch-week stories landed. A release is the
   // most material change a page can carry, so recrawl priority matters most here.
-  map['/flow/'] = '2026-08-22';
-  map['/flow/tour/'] = '2026-08-25';
-  map['/flow/specifications/'] = '2026-08-25';
+  // Living Systems material content revision, not a build-clock freshness stamp.
+  map['/flow/'] = '2026-09-06';
+  map['/essay/'] = '2026-09-06';
+  map['/manifesto/'] = '2026-09-06';
+  map['/privacy/'] = '2026-09-06';
+  map['/flow/tour/'] = '2026-09-06';
+  map['/flow/specifications/'] = '2026-09-06';
   for (const cat of ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files', 'enterprise']) {
     map[`/flow/${cat}/`] = '2026-08-22';
+  }
+  for (const page of ['night-shift', 'living-documents', 'settings', 'models-and-runtime', 'documents-and-files']) {
+    map[`/flow/${page}/`] = '2026-09-06';
   }
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
   // so it tracks the freshest date across all of them.
@@ -303,6 +310,14 @@ export default defineConfig({
       },
     }),
   ],
+  // Astro supplies dev-server headers to Vite; keep preview isolation here.
+  // Shipped commerce clients and production responses remain unchanged.
+  ...(process.env.PUBLIC_SERVICE_MODE === 'preview' ? {
+    server: { headers: {
+      'Content-Security-Policy': "connect-src 'self' ws://127.0.0.1:* ws://localhost:*; form-action 'self'",
+      'X-Robots-Tag': 'noindex, nofollow',
+    } },
+  } : {}),
   vite: {
     // Astro/Vite does not serve directory index.html files from public/ during
     // development. Bridge both committed static demos to their production-clean

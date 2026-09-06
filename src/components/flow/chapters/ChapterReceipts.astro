@@ -2,7 +2,7 @@
 import FlowShot from '../FlowShot.astro';
 import FlowDetail from '../FlowDetail.astro';
 import shotRunCard from '../../../assets/flow/shots/agency-expand-landed-receipt.webp';
-import shotEvidenceGallery from '../../../assets/flow/shots/settings-evidence.webp';
+import { FLOW_V16_SHOTS as shots } from '../../../data/flow-v16';
 import detailRunCost from '../../../assets/flow/details/detail-run-cost.webp';
 import detailRunChecks from '../../../assets/flow/details/detail-run-checks.webp';
 import detailRunBinding from '../../../assets/flow/details/detail-run-binding.webp';
@@ -35,7 +35,7 @@ import detailRunBinding from '../../../assets/flow/details/detail-run-binding.we
       <h4 class="of-display mt-4 text-[clamp(1.5rem,2.6vw,2.1rem)]">A score must say what it rests on.</h4>
       <p class="of-lede mx-auto mt-4">The Evidence gallery leads with the verdict, then checks, dimensions, coverage, uncertainty, and the recorded reason. A dimension with no measurement says Not scored.</p>
     </div>
-    <FlowShot class="mx-auto mt-10 max-w-5xl" src={shotEvidenceGallery} alt="Flow's Evidence settings: the rubric profile with five weighted dimensions a proposed change is measured against, beside a quarterly review document." crop caption="The rubric first · Five weighted dimensions, every weight visible" sizes="(min-width: 1024px) 64rem, 100vw" />
+    <FlowDetail class="mx-auto mt-10 max-w-3xl" src={shots.settingsEvidence} alt="Evidence settings in Flow 1.6 shows five weighted questions and three separate checks." caption="Real Flow 1.6 (1899) · Five weighted questions · Three checks" />
     <details class="receipts-more mx-auto mt-8 max-w-5xl">
       <summary class="receipts-more__summary">Read the receipt's truth boundaries</summary>
       <ul class="flow-list py-5">
@@ -45,7 +45,7 @@ import detailRunBinding from '../../../assets/flow/details/detail-run-binding.we
         <li>When the same model writes and judges a change, the receipt says so.</li>
       </ul>
     </details>
-    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">Captured 2026-08-26 on the installed release build 1255 (v1.5), driven by the operator. The pictured run is real: 0.121375 USD billed for claude-opus-5 through Anthropic. The $0.00425 run in the truth boundaries is a separate measured run.</p>
+    <p class="of-spec-fine mx-auto mt-8 max-w-3xl text-center uppercase tracking-[0.14em]">The historical hosted-run capture is from 2026-08-26, installed build 1255 (v1.5), driven by the operator. The Evidence settings detail is Flow 1.6 (1899), captured 2026-09-06. The pictured run is real: 0.121375 USD billed for claude-opus-5 through Anthropic. The $0.00425 run in the truth boundaries is a separate measured run.</p>
   </div>
 </section>
 

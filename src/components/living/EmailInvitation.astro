@@ -1,0 +1,19 @@
+---
+// Approved Living Systems composition; native Astro, no client framework.
+import LivingDocumentsForm from './LivingDocumentsForm.astro';
+import LivingDocumentsConfirmation from './LivingDocumentsConfirmation.astro';
+import Origami from '../ui/Origami.astro';
+---
+<div class="ls-email-invitation living-grid-surface" id="email-updates">
+  <span class="ls-anchor-alias" id="starter-kit"></span>
+  <Origami variant="book" />
+  <div class="ls-email-copy">
+    <p class="ls-eyebrow">A PRACTICE WORTH RETURNING TO</p>
+    <h3>KEEP THE METHOD<br /><span class="ls-stroke">CLOSE.</span></h3>
+    <p class="ls-email-dek">Flow updates, Living Documents methods, and the AI Native Newsletter.</p>
+  </div>
+  <div class="ls-email-form" data-cta-placement="signup">
+    <LivingDocumentsConfirmation />
+    <LivingDocumentsForm />
+  </div>
+</div>

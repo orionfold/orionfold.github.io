@@ -1,0 +1,28 @@
+---
+import Origami from './Origami.astro';
+import FlowDownloadCta from '../flow/FlowDownloadCta.astro';
+interface Props {
+  source: string; eyebrow?: string; heading?: string; headingId?: string;
+  description?: string; href?: string; label?: string;
+  variant?: 'book'|'documents'|'planes'; tone?: 'gray'|'yellow'; layout?: 'article'|'wide'; class?: string;
+}
+const defaultHeading = 'Make your next document a living one.';
+const {
+  source, eyebrow = 'OWN THE FILE. KEEP THE JUDGMENT.', heading = defaultHeading, headingId,
+  description = 'Bring your notes, sources and recurring work into a Living Document that grows with you.',
+  href, label, tone = 'gray', layout = 'wide', variant = tone === 'yellow' ? 'documents' : 'book', class: className,
+} = Astro.props;
+---
+<aside class:list={['living-paper-cta', `living-paper-cta--${tone}`, tone === 'gray' && `living-paper-cta--${layout}`, tone === 'gray' && 'living-grid-surface', 'not-prose', className]} aria-label={heading} data-download-band={tone} data-cta-layout={tone === 'gray' ? layout : 'closing'}>
+  <div class="living-paper-cta__inner">
+    <Origami variant={variant} />
+    <div class="living-paper-cta__copy">
+      <p class="living-eyebrow">{eyebrow}</p>
+      <h2 id={headingId}>{heading === defaultHeading ? <>Make your next document<br /><span class="ls-stroke living-stroke">a living one.</span></> : heading}</h2>
+      <p>{description}</p>
+    </div>
+    <div class="living-paper-cta__action">
+      {href ? <a href={href} class="of-primary-action">{label ?? heading}<span aria-hidden="true"> →</span></a> : <FlowDownloadCta source={source} />}
+    </div>
+  </div>
+</aside>

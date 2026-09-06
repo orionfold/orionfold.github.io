@@ -507,3 +507,19 @@ verify_jwt = false
 # payment completes.
 [functions.flow-checkout]
 verify_jwt = false
+
+# flow-enterprise-request: public Flow pricing enquiry intake. The handler owns
+# strict origin, feature-gate, honeypot, rate-limit and idempotency checks.
+[functions.flow-enterprise-request]
+verify_jwt = false
+
+# Separate explicit consent; legacy waitlist/confirmation functions are unchanged.
+[functions.flow-living-documents-signup]
+verify_jwt = false
+
+[functions.flow-living-documents-confirm]
+verify_jwt = false
+
+# Authenticated read-only consent receipt export; handler uses existing export auth.
+[functions.flow-living-documents-export]
+verify_jwt = false

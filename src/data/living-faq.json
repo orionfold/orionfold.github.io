@@ -1,0 +1,102 @@
+[
+  {
+    "question": "Which Macs can run Flow?",
+    "id": null,
+    "parts": [
+      {
+        "text": "macOS 26 or later, on Apple Silicon or Intel. Flow is distributed directly as a signed and notarized Mac app. Download availability follows the release cut. "
+      },
+      {
+        "text": "Read the technical requirements.",
+        "href": "/flow/specifications/"
+      }
+    ]
+  },
+  {
+    "question": "Is there a free version after the trial?",
+    "id": null,
+    "parts": [
+      {
+        "text": "Yes. Base remains free forever for reading, writing, search, organization, charts and export. Deterministic Living Document jobs and Morning Briefing are included. Model-powered Agency, definition drafting and Overnight notes require Pro, including when the model runs locally."
+      }
+    ]
+  },
+  {
+    "question": "What leaves my Mac?",
+    "id": null,
+    "parts": [
+      {
+        "text": "Local model inference stays on your Mac. A configured cloud action sends selected content to the provider you chose. Named public-source jobs make network requests; optional public Web Lookups are separate and off by default. Flow does not upload usage analytics or automatic crash reports to Orionfold, and needs no recurring online licence check to keep working. Help → Copy Diagnostics lets you inspect a summary before you choose to share it."
+      }
+    ]
+  },
+  {
+    "question": "Can a team evaluate Flow?",
+    "id": "enterprise",
+    "parts": [
+      {
+        "text": "Start with the same owned files, visible routes and inspectable changes. The enterprise page describes evaluation patterns, evidence requirements and rollout considerations. "
+      },
+      {
+        "text": "Read the enterprise guide.",
+        "href": "/flow/enterprise/"
+      }
+    ]
+  },
+  {
+    "question": "Does Flow need to stay open?",
+    "id": null,
+    "parts": [
+      {
+        "text": "No. Night Shift’s background helper can run with Flow quit. Your Mac needs to be available, plugged in and idle within your chosen window. If it misses a window, catch-up can run once after wake."
+      }
+    ]
+  },
+  {
+    "question": "Does everything run locally?",
+    "id": null,
+    "parts": [
+      {
+        "text": "Night Shift model work uses a local model. Jobs can read the public pages you name. During the day you can choose configured local or cloud model routes. Flow does not silently turn a local night into a cloud-model call."
+      }
+    ]
+  },
+  {
+    "question": "Will it change my whole document?",
+    "id": null,
+    "parts": [
+      {
+        "text": "You define the jobs and bindings. Night Shift updates declared parts, marks its changes and records receipts. Keep records your review; Revert restores the selected part. Your own later edits are protected from a blind rollback."
+      }
+    ]
+  },
+  {
+    "question": "Product facts and press contact",
+    "id": "press",
+    "parts": [
+      {
+        "text": "Flow is a native Mac app from Orionfold LLC, built by Manav Sehgal in Sacramento, California. Its revision-scoped verifiable AI agency is patent pending. For product or press questions, contact "
+      },
+      {
+        "text": "manav@orionfold.com",
+        "href": "mailto:manav@orionfold.com"
+      },
+      {
+        "text": ". "
+      },
+      {
+        "text": "Read the founder’s approval story.",
+        "href": "/story/the-day-i-stopped-trusting-invisible-edits/"
+      }
+    ]
+  },
+  {
+    "question": "Can I bring my own files?",
+    "id": null,
+    "parts": [
+      {
+        "text": "Yes. Flow works with readable Markdown files and folders. Start with your documents or copy an included example, then adapt its sources and method."
+      }
+    ]
+  }
+]

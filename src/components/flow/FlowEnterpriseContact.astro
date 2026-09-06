@@ -1,0 +1,117 @@
+---
+import { FLOW_ENTERPRISE_CONTACT_ENABLED } from '../../lib/living-services';
+---
+<button class="flow-enterprise-trigger" type="button" data-flow-enterprise-open aria-haspopup="dialog" aria-controls="flow-enterprise-dialog">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
+  Enterprise contact
+</button>
+<noscript><p>For enterprise enquiries, email <a href="mailto:manav@orionfold.com">manav@orionfold.com</a>.</p></noscript>
+
+<dialog id="flow-enterprise-dialog" class="flow-enterprise-dialog" aria-labelledby="flow-enterprise-title" aria-describedby="flow-enterprise-intro" closedby="any">
+  <div class="flow-enterprise-shell">
+    <header class="flow-enterprise-header">
+      <div>
+        <p class="flow-enterprise-eyebrow">FLOW FOR YOUR ORGANIZATION</p>
+        <h2 id="flow-enterprise-title">Enterprise contact</h2>
+      </div>
+      <button type="button" class="flow-enterprise-close" data-flow-enterprise-close aria-label="Close enterprise contact">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+      </button>
+    </header>
+    <p id="flow-enterprise-intro" class="flow-enterprise-intro">Tell us about your team and what you need from Flow.</p>
+    {!FLOW_ENTERPRISE_CONTACT_ENABLED && <p class="flow-enterprise-unavailable">Online enquiries are not available yet. Email <a href="mailto:manav@orionfold.com">manav@orionfold.com</a>.</p>}
+
+    <!-- Native dialog method is a safe no-network fallback. The bundled
+         controller enables submit only when its service configuration allows it. -->
+    <form id="flow-enterprise-form" method="dialog" novalidate>
+      <fieldset class="flow-enterprise-fields">
+        <legend class="flow-enterprise-sr-only">Enterprise requirements</legend>
+        <div class="flow-enterprise-field">
+          <label for="flow-enterprise-name">Contact name</label>
+          <input id="flow-enterprise-name" name="name" type="text" autocomplete="name" required maxlength="120" />
+        </div>
+        <div class="flow-enterprise-field">
+          <label for="flow-enterprise-email">Email</label>
+          <input id="flow-enterprise-email" name="email" type="email" autocomplete="email" required maxlength="254" />
+        </div>
+        <div class="flow-enterprise-field">
+          <label for="flow-enterprise-company">Company</label>
+          <input id="flow-enterprise-company" name="company" type="text" autocomplete="organization" required maxlength="200" />
+        </div>
+        <div class="flow-enterprise-field">
+          <label for="flow-enterprise-licenses">Number of licenses</label>
+          <input id="flow-enterprise-licenses" name="licenses" type="number" inputmode="numeric" min="1" max="100000" step="1" required />
+        </div>
+        <div class="flow-enterprise-field flow-enterprise-field--wide">
+          <label for="flow-enterprise-requirements">Requirements details</label>
+          <textarea id="flow-enterprise-requirements" name="requirements" rows="5" maxlength="6000" required></textarea>
+        </div>
+        <div class="flow-enterprise-field flow-enterprise-field--wide">
+          <label for="flow-enterprise-heard-about">Where did you hear about us? <span>(optional)</span></label>
+          <input id="flow-enterprise-heard-about" name="heardAbout" type="text" maxlength="240" />
+        </div>
+        <input class="flow-enterprise-trap" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      </fieldset>
+      <p class="flow-enterprise-privacy">We’ll use these details to respond to your enquiry. <a href="/privacy/">Privacy policy</a>.</p>
+      <p id="flow-enterprise-error" class="flow-enterprise-error" role="alert" hidden></p>
+      <p id="flow-enterprise-status" class="flow-enterprise-status" role="status" aria-live="polite"></p>
+      <button id="flow-enterprise-submit" class="flow-enterprise-submit" type="submit" disabled>Send requirements</button>
+    </form>
+    <div id="flow-enterprise-success" class="flow-enterprise-success" role="status" aria-live="polite" tabindex="-1" hidden></div>
+  </div>
+</dialog>
+
+<script>
+  import '../../scripts/flow-enterprise-contact';
+</script>
+
+<style>
+  .flow-enterprise-trigger {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 52px; padding: 14px 23px; border: 1px solid #b5c3bf;
+    border-radius: 5px; background: #fff; color: #152a2d;
+    font: 700 15px/1.4 var(--font-body); cursor: pointer;
+  }
+  .flow-enterprise-trigger:hover { background: #e9f0ed; border-color: #7d918a; }
+  .flow-enterprise-dialog {
+    width: min(720px, calc(100vw - 32px)); max-width: none;
+    max-height: calc(100dvh - 32px); margin: auto; padding: 0;
+    border: 1px solid #d6dedd; border-radius: 18px; background: #fff; color: #152a2d;
+    box-shadow: 0 24px 90px #152a2d30; overflow: auto; overscroll-behavior: contain;
+    font: 400 15px/1.55 var(--font-body); text-align: left;
+  }
+  .flow-enterprise-dialog::backdrop { background: #152a2d66; backdrop-filter: blur(5px); }
+  :global(html:has(#flow-enterprise-dialog[open])) { overflow: hidden; }
+  .flow-enterprise-shell { padding: 32px; }
+  .flow-enterprise-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+  .flow-enterprise-header .flow-enterprise-eyebrow { margin: 0 0 10px; color: #206f73; font: 700 10px/1.5 var(--font-body); letter-spacing: .12em; }
+  .flow-enterprise-header h2 { margin: 0; color: #152a2d; font: 700 44px/1.05 var(--font-display); letter-spacing: -.02em; text-transform: uppercase; }
+  .flow-enterprise-close { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; margin: -8px -8px 0 0; border: 0; border-radius: 6px; background: #f0f3f2; color: #152a2d; cursor: pointer; }
+  .flow-enterprise-close:hover { background: #e1e8e5; }
+  .flow-enterprise-dialog .flow-enterprise-intro { margin: 18px 0 24px; color: #43595b; font: 400 15px/1.6 var(--font-body); }
+  .flow-enterprise-dialog .flow-enterprise-unavailable { margin: 0 0 24px; padding: 14px 16px; border: 1px solid #d6dedd; border-radius: 8px; background: #f0f3f2; color: #43595b; font: 400 14px/1.6 var(--font-body); }
+  .flow-enterprise-dialog a { color: #206f73; text-decoration: underline; text-underline-offset: 3px; }
+  .flow-enterprise-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin: 0; padding: 0; border: 0; min-width: 0; }
+  .flow-enterprise-field { min-width: 0; }
+  .flow-enterprise-field--wide { grid-column: 1 / -1; }
+  .flow-enterprise-field label { display: block; margin-bottom: 8px; color: #152a2d; font: 700 13px/1.5 var(--font-body); }
+  .flow-enterprise-field label span { color: #526567; font-weight: 400; }
+  .flow-enterprise-field :is(input, textarea) { width: 100%; min-height: 46px; padding: 11px 12px; border: 1px solid #b9c6c2; border-radius: 6px; background: #fbfcfb; color: #152a2d; font: 400 16px/1.5 var(--font-body); box-sizing: border-box; }
+  .flow-enterprise-field textarea { min-height: 132px; resize: vertical; }
+  .flow-enterprise-field :is(input, textarea):focus-visible { outline: 3px solid #247b80; outline-offset: 2px; background: #fff; }
+  .flow-enterprise-dialog .flow-enterprise-privacy { margin: 20px 0 0; color: #526567; font: 400 13px/1.6 var(--font-body); }
+  .flow-enterprise-dialog .flow-enterprise-error { overflow-wrap: anywhere; margin: 18px 0 0; padding: 12px 14px; border: 1px solid #e2b6b1; border-radius: 6px; background: #fff3f1; color: #8f251c; font: 400 14px/1.6 var(--font-body); }
+  .flow-enterprise-dialog .flow-enterprise-status { margin: 16px 0 0; color: #43595b; font: 400 14px/1.6 var(--font-body); }
+  .flow-enterprise-status:empty { display: none; }
+  .flow-enterprise-dialog .flow-enterprise-submit { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 50px; margin-top: 24px; padding: 13px 20px; border: 1px solid var(--living-action); border-radius: 5px; background: var(--living-action); color: #fff; font: 700 15px/1.5 var(--font-body); cursor: pointer; }
+  .flow-enterprise-dialog .flow-enterprise-submit:hover:not(:disabled) { background: var(--living-action-hover); border-color: var(--living-action-hover); }
+  .flow-enterprise-dialog .flow-enterprise-submit:disabled { cursor: not-allowed; opacity: 1; }
+  .flow-enterprise-success { padding: 24px; margin-top: 24px; border: 1px solid #b7cfc4; border-radius: 10px; background: #edf5f0; color: #234f41; font: 400 17px/1.6 var(--font-body); }
+  .flow-enterprise-sr-only, .flow-enterprise-trap { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  @media (max-width: 600px) {
+    .flow-enterprise-dialog { width: calc(100vw - 20px); max-height: calc(100dvh - 20px); border-radius: 12px; }
+    .flow-enterprise-shell { padding: 24px 20px; }
+    .flow-enterprise-header h2 { font-size: 36px; }
+    .flow-enterprise-fields { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  }
+</style>

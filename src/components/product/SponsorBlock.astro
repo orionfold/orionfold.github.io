@@ -1,4 +1,5 @@
 ---
+import Origami from '../ui/Origami.astro';
 // Sponsor block (P1, spec §4/§5.4). The software/model conversion point: the
 // four sponsor tiers rendered inline (Gold highlighted), each pre-selected to
 // THIS product via itemId (`${type}:${slug}`) so the checkout metadata records
@@ -17,6 +18,7 @@ const { view } = Astro.props;
 <section id="sponsor" class="scroll-mt-24 px-6 py-16">
   <div class="mx-auto max-w-6xl">
     <div data-animate class="text-center">
+      <Origami compact />
       <h2 class="font-display text-2xl font-bold sm:text-3xl">Sponsor {view.title}</h2>
       <p class="mx-auto mt-3 max-w-xl text-text-muted">
         Back this work with a monthly tier. Your support moves your requests up the list, and Gold or Platinum earns a badge on the roadmap item you back.

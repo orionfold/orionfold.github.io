@@ -32,13 +32,23 @@ function rfc822(date: Date): string {
 }
 
 export const GET: APIRoute = async () => {
-  const posts = (await getCollection('story')).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-  );
+  const stories = (await getCollection('story')).map((post) => ({
+    url: `${SITE.url}/story/${post.id}/`, data: post.data,
+  }));
+  // The essay has one canonical URL. RSS discovery does not duplicate the body.
+  const posts = [...stories, {
+    url: `${SITE.url}/essay/`,
+    data: {
+      title: 'Room for a Renaissance',
+      summary: 'How knowledge that keeps working can make more room for the researcher, writer, and builder in each of us. An essay by Manav Sehgal.',
+      date: new Date('2026-09-06T00:00:00Z'),
+      tags: ['Living Documents', 'Essay'],
+    },
+  }].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
   const items = posts
     .map((post) => {
-      const url = `${SITE.url}/story/${post.id}/`;
+      const url = post.url;
       // guid is the permalink and isPermaLink says so, so readers dedupe on URL
       // even if a title is later edited.
       const categories = post.data.tags

@@ -42,12 +42,13 @@ export const FLOW_COMPATIBILITY_SPECIFICATIONS: FlowSpecificationRow[] = [
   },
   {
     label: 'App payload',
-    value: 'Around 40 MB',
+    value: 'Models download separately',
+    note: 'The signed installer includes the local runtime. Model storage is managed in Settings.',
   },
   {
     label: 'Local runtime',
     value: 'Included with Flow',
-    note: 'Two local inference engines account for 19.2 MiB of the app payload.',
+    note: 'Models and storage are managed together in Settings ▸ Models.',
   },
 ];
 
@@ -92,6 +93,31 @@ export const FLOW_DOCUMENT_SPECIFICATIONS: FlowSpecificationRow[] = [
     note: 'The index stays on the Mac. Opening a result returns to a byte-verified passage in the source file.',
   },
   {
+    label: 'Living Documents',
+    value: 'Seven ready-to-use Guide folders',
+    note: 'Stock Portfolio, Tax Advisor, Household Budget, Job Search, Competitor Watch, Team Status and Living Document Starter.',
+  },
+  {
+    label: 'Data bindings',
+    value: 'Charts and tables redraw from their source files',
+    note: 'Flow notices changes while running, on return, on Refresh Folders, after the Night Shift and at launch.',
+  },
+  {
+    label: 'Night Shift Base',
+    value: 'Collect, watch, list and redraw on every plan',
+    note: 'Includes the Morning Briefing and Keep or Revert in Review Changes. Runs when this Mac is plugged in and idle, even with Flow quit.',
+  },
+  {
+    label: 'Night Shift Pro',
+    value: 'Overnight notes from a model on this Mac',
+    note: 'Numbers are checked against source rows or withheld. Notes are marked, reviewable and receipted.',
+  },
+  {
+    label: 'Settings',
+    value: 'General, Documents, Models, Smart Routing, Evidence, Night Shift',
+    note: 'Six screens in Flow 1.6, with plan and licence controls inside General.',
+  },
+  {
     label: 'File safety',
     value: 'Collisions refuse; saved files move to system Trash',
     note: 'Flow never silently overwrites or renames. Folders have no Delete command.',
@@ -122,7 +148,7 @@ export const FLOW_AGENCY_SPECIFICATIONS: FlowSpecificationRow[] = [
   {
     label: 'Lookups',
     value: 'Read the document and search open folders',
-    note: 'Every lookup is shown live. Lookup-backed runs currently use supported Anthropic models.',
+    note: 'Expand with Sources runs on a model on this Mac or supported Anthropic models. Each local lookup is receipted.',
   },
   {
     label: 'Run controls',
@@ -139,8 +165,8 @@ export const FLOW_AGENCY_SPECIFICATIONS: FlowSpecificationRow[] = [
 export const FLOW_EXECUTION_SPECIFICATIONS: FlowSpecificationRow[] = [
   {
     label: 'Execution domains',
-    value: 'Local, LAN, Cloud prepaid, Cloud postpaid',
-    note: 'Each domain has its own switch.',
+    value: 'This Mac or configured cloud API providers',
+    note: 'This Mac comes first. A cloud provider is enabled by its key and bills token use separately.',
   },
   {
     label: 'Fallback',
@@ -149,8 +175,8 @@ export const FLOW_EXECUTION_SPECIFICATIONS: FlowSpecificationRow[] = [
   },
   {
     label: 'Discovery',
-    value: 'Local and consented',
-    note: 'Provider checks stay on the Mac and do not invoke a model.',
+    value: 'Find compatible models on this Mac',
+    note: 'With discovery enabled, Flow briefly opens local models and shares compatible ones with Flow Runtime.',
   },
   {
     label: 'Smart Routing',
@@ -178,9 +204,9 @@ export const FLOW_PROVIDER_SPECIFICATIONS: FlowProviderSpecification[] = [
   },
   {
     provider: 'Ollama',
-    route: 'Local or LAN',
+    route: 'Local',
     state: 'Runnable now',
-    note: 'Detected models can run directly through Flow Agency under your domain rules.',
+    note: 'Detected models on this Mac can run directly through Flow Agency. A runtime pointed at another machine is refused.',
   },
   {
     provider: 'Anthropic',
@@ -202,21 +228,9 @@ export const FLOW_PROVIDER_SPECIFICATIONS: FlowProviderSpecification[] = [
   },
   {
     provider: 'LM Studio',
-    route: 'Local or LAN',
+    route: 'Local',
     state: 'Runnable now',
     note: 'Flow can run the exact loaded text model directly through Agency without copying or sharing its weights. The receipt records LM Studio, the model, locality, and no charge for a local run.',
-  },
-  {
-    provider: 'Codex CLI',
-    route: 'Cloud prepaid',
-    state: 'Launch priority',
-    note: 'Flow can detect and verify a signed-in subscription. Ordinary Agency execution is not yet accepted.',
-  },
-  {
-    provider: 'Claude Code',
-    route: 'Cloud prepaid',
-    state: 'Launch priority',
-    note: 'Flow can detect and verify a signed-in subscription. Ordinary Agency execution is not yet accepted.',
   },
 ];
 

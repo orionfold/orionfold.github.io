@@ -17,11 +17,14 @@ const group = `code-${heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
       <h2 class="font-display text-2xl font-bold">{heading}</h2>
       <div class="mt-5 overflow-hidden rounded-xl border border-border bg-surface-raised">
         <div class="flex items-center justify-between border-b border-border px-2">
-          <div role="tablist" class="flex gap-1">
+          <div role="tablist" aria-label={heading} class="flex gap-1">
             {tabs.map((tab, i) => (
               <button
                 type="button"
                 role="tab"
+                id={`${group}-tab-${i}`}
+                aria-controls={`${group}-panel-${i}`}
+                tabindex={i === 0 ? 0 : -1}
                 data-tab={i}
                 aria-selected={i === 0 ? 'true' : 'false'}
                 class="rounded-t-md px-3 py-2 font-mono text-xs tracking-wider text-text-muted transition-colors aria-selected:text-primary aria-selected:bg-primary/5"
@@ -35,7 +38,7 @@ const group = `code-${heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
           </button>
         </div>
         {tabs.map((tab, i) => (
-          <pre data-panel={i} hidden={i !== 0} class="overflow-x-auto px-4 py-4 text-sm leading-relaxed"><code data-lang={tab.lang}>{tab.code}</code></pre>
+          <pre id={`${group}-panel-${i}`} role="tabpanel" aria-labelledby={`${group}-tab-${i}`} tabindex="0" data-panel={i} hidden={i !== 0} class="overflow-x-auto px-4 py-4 text-sm leading-relaxed"><code data-lang={tab.lang}>{tab.code}</code></pre>
         ))}
       </div>
     </div>
@@ -51,11 +54,25 @@ const group = `code-${heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
       const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
       const copyBtn = root.querySelector<HTMLButtonElement>('[data-copy]');
 
-      tabs.forEach((tab) => {
-        tab.addEventListener('click', () => {
-          const idx = tab.dataset.tab!;
-          tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === idx)));
-          panels.forEach((p) => (p.hidden = p.dataset.panel !== idx));
+      const activate = (index: number, focus = false) => {
+        tabs.forEach((tab, i) => {
+          tab.setAttribute('aria-selected', String(i === index));
+          tab.tabIndex = i === index ? 0 : -1;
+        });
+        panels.forEach((panel, i) => { panel.hidden = i !== index; });
+        if (focus) tabs[index]?.focus();
+      };
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activate(index));
+        tab.addEventListener('keydown', (event) => {
+          let next: number;
+          if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+          else if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+          else if (event.key === 'Home') next = 0;
+          else if (event.key === 'End') next = tabs.length - 1;
+          else return;
+          event.preventDefault();
+          activate(next, true);
         });
       });
 
