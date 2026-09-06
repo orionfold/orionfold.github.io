@@ -247,9 +247,12 @@ function livingCardTree(opts: CardOptions): El {
         h('div', { style: { display: 'flex', fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: opts.title.length > 35 ? 98 : 110, lineHeight: .94, textTransform: 'uppercase', letterSpacing: -1 } }, opts.title),
         h('div', { style: { display: 'flex', width: 310, height: 13, backgroundColor: '#de3033', marginTop: 22, transform: 'rotate(-2deg)' } }),
       ]),
-      h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } }, [
-        h('div', { style: { display: 'flex', fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: 38 } }, ['Orion', h('span', { style: { color: '#247b80' } }, 'Fold')]),
-        h('div', { style: { display: 'flex', fontSize: 18 } }, 'orionfold.com'),
+      h('div', { style: { display: 'flex', position: 'relative', justifyContent: 'space-between', alignItems: 'center' } }, [
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: 12 } }, [
+          h('img', { src: MARK_URI, width: 40, height: 40, style: { width: 40, height: 40 } }),
+          h('div', { style: { display: 'flex', fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: 38 } }, ['Orion', h('span', { style: { color: '#247b80' } }, 'fold')]),
+        ]),
+        h('div', { style: { display: 'flex', position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700 } }, 'orionfold.com'),
       ]),
     ]),
   ]);

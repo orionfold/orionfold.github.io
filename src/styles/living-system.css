@@ -18,6 +18,7 @@
 }
 :root {
   --living-yellow: #f4d558;
+  --living-yellow-gradient: linear-gradient(90deg, #f4d558 0%, #ffeb4b 100%);
   --living-yellow-soft: #fbf3d1;
   --living-teal: #247b80;
   --living-red: #f24b39;
@@ -119,8 +120,8 @@
 #magnet-bar .font-mono { font-family: var(--font-body); font-weight: 700; color: #ba2d21; }
 #mobile-menu { max-height: calc(100dvh - 120px); overflow-y: auto; }
 #mobile-menu-toggle:focus-visible + label { outline: 3px solid var(--living-teal); outline-offset: 6px; }
-/* Yellow closes a page edge to edge; gray stays inside its content container.
-   Painted yellow bleed avoids a 100vw scrollbar. */
+/* Yellow bands already span the page; paint their gradient in place without
+   a flat-color bleed or a 100vw layer. Gray stays inside its content container. */
 .living-site .living-paper-cta {
   --paper-cta-background: var(--living-gray);
   position: relative; z-index: 1; isolation: isolate;
@@ -131,8 +132,9 @@
 }
 .living-site .living-paper-cta--yellow {
   --paper-cta-background: #ffeb4b;
+  background-image: var(--living-yellow-gradient);
   overflow: hidden;
-  box-shadow: 0 0 0 100vmax var(--paper-cta-background);
+  box-shadow: none;
   clip-path: inset(0 -100vmax);
 }
 .living-site .living-paper-cta--gray {
@@ -172,7 +174,7 @@
   mask-image: radial-gradient(ellipse at center, #000 38%, transparent 75%);
   mix-blend-mode: multiply;
 }
-.living-closing-band { background: #ffeb4b; }
+.living-closing-band { background: var(--living-yellow-gradient); }
 .living-origami { pointer-events: none; }
 .living-origami:not(.living-origami--compact) img {
   width: 100%; height: 100%; object-fit: cover; object-position: left center;

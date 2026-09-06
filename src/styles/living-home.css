@@ -1,7 +1,7 @@
 /* Home composition, preserving the approved cascade and responsive states. */
 
 .ls-hero {
-background: var(--yellow);
+background: var(--living-yellow-gradient);
   overflow: hidden;
 }
 .ls-hero-inner {
@@ -33,7 +33,7 @@ font-size: 1.12rem;
   font-weight: 700;
 }
 .ls-hero-detail {
-font-size: 1rem;
+font-size: 0.6rem;
   line-height: 1.7;
   max-width: 390px;
   margin-top: 1rem !important;
@@ -434,7 +434,7 @@ font-size: 1.13rem;
   max-width: 430px;
 }
 .ls-closing {
-background: var(--yellow);
+background: var(--living-yellow-gradient);
   padding: 65px 0 75px;
 }
 .ls-closing > .ls-container {
@@ -530,7 +530,7 @@ margin: 0 32px;
 font-size: 1.05rem;
 }
 .ls-hero-detail {
-font-size: 0.96rem;
+font-size: 0.576rem;
 }
 }
 @media (max-width: 950px) {
@@ -607,7 +607,7 @@ font-size: 1.03rem;
     max-width: 360px;
 }
 .ls-hero-detail {
-font-size: 0.94rem;
+font-size: 0.564rem;
 }
 .ls-hero-ctas {
 max-width: none;

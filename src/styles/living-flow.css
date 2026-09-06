@@ -1,7 +1,7 @@
 /* Flow composition, preserving the approved cascade and responsive states. */
 
 .ls-hero {
-background: var(--yellow);
+background: var(--living-yellow-gradient);
   overflow: hidden;
 }
 .ls-hero-inner {
@@ -781,7 +781,7 @@ font-size: 0.98rem;
   margin-top: 18px;
 }
 .ls-closing {
-background: var(--yellow);
+background: var(--living-yellow-gradient);
   padding: 65px 0 75px;
 }
 .ls-closing > .ls-container {
