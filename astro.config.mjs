@@ -13,6 +13,7 @@ import rehypeRelayShots from './src/lib/relay/rehype-relay-shots.mjs';
 import rehypeMemoInterstitial from './src/lib/relay/rehype-memo-interstitial.mjs';
 import rehypeRelayMemoLinks from './src/lib/relay/rehype-relay-memo-links.mjs';
 import staticDemoDirIndexDev from './src/lib/static-demo-dir-index.mjs';
+import inlineLandingStyles from './src/lib/inline-landing-styles.mjs';
 
 // Build a `pathname -> YYYY-MM-DD` map for sitemap <lastmod>. lastmod is the one
 // sitemap field Google actually uses to schedule crawls, so every value here must
@@ -206,6 +207,7 @@ export default defineConfig({
     rehypePlugins: [rehypeTableScroll, rehypeRelayShots, rehypeMemoInterstitial, rehypeRelayMemoLinks],
   },
   integrations: [
+    inlineLandingStyles(),
     sitemap({
       // The /og/*.png endpoint emits social-card images, not pages — keep them
       // out of the sitemap. The post-checkout /thanks pages are noindex, so they
