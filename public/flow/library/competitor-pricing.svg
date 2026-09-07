@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="760" height="350" viewBox="0 0 760 350" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:format>image/svg+xml</dc:format>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 350
+L 760 350
+L 760 0
+L 0 0
+L 0 350
+z
+" style="fill: none"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 152 283.5
+L 676.4 283.5
+L 676.4 35
+L 152 35
+L 152 283.5
+z
+" style="fill: none"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 152 283.5
+L 152 35
+" clip-path="url(#p303b013383)" style="fill: none; stroke: #e6ece7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2"/>
+     <g id="text_1">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #6c7e76" x="152" y="304.618125" transform="rotate(-0 152 304.618125)">$0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 279.902439 283.5
+L 279.902439 35
+" clip-path="url(#p303b013383)" style="fill: none; stroke: #e6ece7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4"/>
+     <g id="text_2">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #6c7e76" x="279.902439" y="304.618125" transform="rotate(-0 279.902439 304.618125)">$3</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 407.804878 283.5
+L 407.804878 35
+" clip-path="url(#p303b013383)" style="fill: none; stroke: #e6ece7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6"/>
+     <g id="text_3">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #6c7e76" x="407.804878" y="304.618125" transform="rotate(-0 407.804878 304.618125)">$6</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 535.707317 283.5
+L 535.707317 35
+" clip-path="url(#p303b013383)" style="fill: none; stroke: #e6ece7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8"/>
+     <g id="text_4">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #6c7e76" x="535.707317" y="304.618125" transform="rotate(-0 535.707317 304.618125)">$9</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_9">
+      <path d="M 663.609756 283.5
+L 663.609756 35
+" clip-path="url(#p303b013383)" style="fill: none; stroke: #e6ece7; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10"/>
+     <g id="text_5">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #6c7e76" x="663.609756" y="304.618125" transform="rotate(-0 663.609756 304.618125)">$12</text>
+     </g>
+    </g>
+    <g id="text_6">
+     <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #6c7e76" x="414.2" y="331.231875" transform="rotate(-0 414.2 331.231875)">USD / seat / month · billed annually</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_11"/>
+     <g id="text_7">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; fill: #233a35" transform="translate(101.2275 59.208124)">Asana</text>
+      <text style="font-size: 12px; font-family: Arial, sans-serif; fill: #233a35" transform="translate(96.369375 72.645499)">Starter</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_12"/>
+     <g id="text_8">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; fill: #233a35" transform="translate(93.005625 125.070833)">ClickUp</text>
+      <text style="font-size: 12px; font-family: Arial, sans-serif; fill: #233a35" transform="translate(80.21625 138.508208)">Unlimited</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_13"/>
+     <g id="text_9">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; fill: #233a35" transform="translate(100.704375 190.933542)">Linear</text>
+      <text style="font-size: 12px; font-family: Arial, sans-serif; fill: #233a35" transform="translate(106.23 204.370917)">Basic</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_14"/>
+     <g id="text_10">
+      <text style="font-size: 12px; font-family: Arial, sans-serif; fill: #233a35" transform="translate(61.55625 256.796251)">monday.com</text>
+      <text style="font-size: 12px; font-family: Arial, sans-serif; fill: #233a35" transform="translate(106.23 270.233626)">Basic</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 152 46.295455
+L 620.549268 46.295455
+L 620.549268 74.616419
+L 152 74.616419
+z
+" clip-path="url(#p303b013383)" style="fill: #26766c"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 152 112.158163
+L 450.439024 112.158163
+L 450.439024 140.479128
+L 152 140.479128
+z
+" clip-path="url(#p303b013383)" style="fill: #89a799"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 152 178.020872
+L 578.341463 178.020872
+L 578.341463 206.341837
+L 152 206.341837
+z
+" clip-path="url(#p303b013383)" style="fill: #4c897b"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 152 243.883581
+L 535.707317 243.883581
+L 535.707317 272.204545
+L 152 272.204545
+z
+" clip-path="url(#p303b013383)" style="fill: #b8cbb9"/>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 14px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="629.92878" y="64.319062" transform="rotate(-0 629.92878 64.319062)">$10.99</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 14px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="459.818537" y="130.181771" transform="rotate(-0 459.818537 130.181771)">$7.00</text>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 14px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="587.720976" y="196.044479" transform="rotate(-0 587.720976 196.044479)">$10.00</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 14px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="545.086829" y="261.907188" transform="rotate(-0 545.086829 261.907188)">$9.00</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p303b013383">
+   <rect x="152" y="35" width="524.4" height="248.5"/>
+  </clipPath>
+ </defs>
+</svg>

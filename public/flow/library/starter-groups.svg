@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="450" height="320" viewBox="0 0 450 320" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:format>image/svg+xml</dc:format>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 320
+L 450 320
+L 450 0
+L 0 0
+L 0 320
+z
+" style="fill: none"/>
+  </g>
+  <g id="axes_1">
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="patch_2">
+    <path d="M 150.749995 267.52
+C 179.255135 267.52 206.621946 256.184294 226.77812 236.02812
+C 246.934294 215.871946 258.27 188.505138 258.27 160
+C 258.27 131.494862 246.9343 104.128054 226.778126 83.97188
+C 206.621952 63.815706 179.255135 52.48 150.749995 52.48
+L 150.749996 77.2096
+C 172.698954 77.2096 193.771403 85.938094 209.291657 101.458348
+C 224.811911 116.978602 233.5404 138.051043 233.5404 160
+C 233.5404 181.948957 224.811906 203.021398 209.291652 218.541652
+C 193.771398 234.061906 172.698954 242.7904 150.749996 242.7904
+z
+" style="fill: #26766c; stroke: #fffefa; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 150.750001 52.48
+C 122.244862 52.48 94.878067 63.815693 74.721887 83.971867
+C 54.565706 104.128041 43.23 131.494852 43.23 159.999991
+C 43.23 188.505129 54.565706 215.871946 74.72188 236.02812
+C 94.878054 256.184294 122.244858 267.52 150.749995 267.52
+L 150.749996 242.7904
+C 128.801041 242.7904 107.728602 234.061906 92.208348 218.541652
+C 76.688094 203.021398 67.9596 181.948949 67.9596 159.999993
+C 67.9596 138.051036 76.688094 116.978592 92.208353 101.458338
+C 107.728612 85.938084 128.801043 77.2096 150.750001 77.2096
+z
+" style="fill: #d7ad4e; stroke: #fffefa; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 500; font-size: 27px; font-family: Arial, sans-serif; text-anchor: middle; fill: #233a35" x="150.75" y="156.698313" transform="rotate(-0 150.75 156.698313)">400</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #6c7e76" x="150.75" y="183.74005" transform="rotate(-0 150.75 183.74005)">total amount</text>
+   </g>
+  </g>
+  <g id="text_3">
+   <text style="font-size: 13px; font-family: Arial, sans-serif; text-anchor: start; fill: #26766c" x="301.5" y="128" transform="rotate(-0 301.5 128)">●</text>
+  </g>
+  <g id="text_4">
+   <text style="font-size: 13px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="324" y="128" transform="rotate(-0 324 128)">Group A</text>
+  </g>
+  <g id="text_5">
+   <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: start; fill: #6c7e76" x="324" y="148.8" transform="rotate(-0 324 148.8)">200  ·  50%</text>
+  </g>
+  <g id="text_6">
+   <text style="font-size: 13px; font-family: Arial, sans-serif; text-anchor: start; fill: #d7ad4e" x="301.5" y="192" transform="rotate(-0 301.5 192)">●</text>
+  </g>
+  <g id="text_7">
+   <text style="font-size: 13px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="324" y="192" transform="rotate(-0 324 192)">Group B</text>
+  </g>
+  <g id="text_8">
+   <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: start; fill: #6c7e76" x="324" y="212.8" transform="rotate(-0 324 212.8)">200  ·  50%</text>
+  </g>
+ </g>
+</svg>

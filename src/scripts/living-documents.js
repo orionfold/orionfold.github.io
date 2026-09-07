@@ -1,3 +1,4 @@
+import { initFlowLibrary } from './flow-library.js';
 // Native product illustrations: offscreen/reduced-motion aware. Services are owned by shared production components.
 (() => {
   'use strict';
@@ -227,34 +228,7 @@
         showScene(scene, (scene.frame + 1) % scene.count);
       });
     }, 500);
-    const exampleTabs = [...root.querySelectorAll('[data-example-tab]')],
-      examplePanels = [...root.querySelectorAll('[data-example-panel]')];
-    function selectExample(index) {
-      exampleTabs.forEach((tab, i) => {
-        tab.setAttribute('aria-selected', String(i === index));
-        tab.tabIndex = i === index ? 0 : -1;
-      });
-      examplePanels.forEach((panel, i) => (panel.hidden = i !== index));
-      root
-        .querySelector('#example-panel')
-        ?.setAttribute('aria-labelledby', 'example-tab-' + index);
-    }
-    exampleTabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => selectExample(i));
-      tab.addEventListener('keydown', (event) => {
-        let next = i;
-        if (event.key === 'ArrowDown' || event.key === 'ArrowRight')
-          next = (i + 1) % exampleTabs.length;
-        else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft')
-          next = (i + exampleTabs.length - 1) % exampleTabs.length;
-        else if (event.key === 'Home') next = 0;
-        else if (event.key === 'End') next = exampleTabs.length - 1;
-        else return;
-        event.preventDefault();
-        selectExample(next);
-        exampleTabs[next].focus();
-      });
-    });
+    initFlowLibrary(root);
 
   }
   if (document.readyState === 'loading')

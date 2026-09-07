@@ -1,259 +1,110 @@
 ---
-// Approved Living Systems composition; native Astro, no client framework.
-
+import { livingLibrary } from '../../data/flow-library';
 ---
-<section class="ls-library" id="living-library">
-<div class="ls-container">
-<div class="ls-section-heading">
-<p class="ls-eyebrow">INCLUDED WITH FLOW</p>
-<h2>SIX EXAMPLES.<br/>ONE STARTER.<br/>
-<span class="ls-stroke">YOUR NEXT CHAPTER.</span>
-</h2>
-<p>Open a complete living document. Inspect its method. Adapt it to your own files and decisions.</p>
-</div>
-<div class="ls-library-layout">
-<div aria-label="Living document examples" aria-orientation="vertical" class="ls-example-tabs" role="tablist">
-<button aria-controls="example-panel" aria-selected="true" data-example-tab="0" id="example-tab-0" role="tab" tabindex="0">
-<span>01</span>Living Document Starter<svg aria-hidden="true" class="lucide lucide-chevron-right" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-<path d="m9 18 6-6-6-6">
-</path>
-</svg>
-</button>
-<button aria-controls="example-panel" aria-selected="false" data-example-tab="1" id="example-tab-1" role="tab" tabindex="-1">
-<span>02</span>Competitor Watch<svg aria-hidden="true" class="lucide lucide-chevron-right" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-<path d="m9 18 6-6-6-6">
-</path>
-</svg>
-</button>
-<button aria-controls="example-panel" aria-selected="false" data-example-tab="2" id="example-tab-2" role="tab" tabindex="-1">
-<span>03</span>Team Status<svg aria-hidden="true" class="lucide lucide-chevron-right" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-<path d="m9 18 6-6-6-6">
-</path>
-</svg>
-</button>
-<button aria-controls="example-panel" aria-selected="false" data-example-tab="3" id="example-tab-3" role="tab" tabindex="-1">
-<span>04</span>Job Search<svg aria-hidden="true" class="lucide lucide-chevron-right" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-<path d="m9 18 6-6-6-6">
-</path>
-</svg>
-</button>
-<button aria-controls="example-panel" aria-selected="false" data-example-tab="4" id="example-tab-4" role="tab" tabindex="-1">
-<span>05</span>Household Budget<svg aria-hidden="true" class="lucide lucide-chevron-right" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-<path d="m9 18 6-6-6-6">
-</path>
-</svg>
-</button>
-<button aria-controls="example-panel" aria-selected="false" data-example-tab="5" id="example-tab-5" role="tab" tabindex="-1">
-<span>06</span>Stock Portfolio<svg aria-hidden="true" class="lucide lucide-chevron-right" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-<path d="m9 18 6-6-6-6">
-</path>
-</svg>
-</button>
-<button aria-controls="example-panel" aria-selected="false" data-example-tab="6" id="example-tab-6" role="tab" tabindex="-1">
-<span>07</span>Tax Advisor<svg aria-hidden="true" class="lucide lucide-chevron-right" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-<path d="m9 18 6-6-6-6">
-</path>
-</svg>
-</button>
-</div>
-<div aria-labelledby="example-tab-0" class="ls-example-panel" id="example-panel" role="tabpanel" tabindex="0">
-<div data-example-panel="0">
-<div class="ls-paper-card">
-<svg aria-hidden="true" class="lucide lucide-file-text" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
-<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z">
-</path>
-<path d="M14 2v5a1 1 0 0 0 1 1h5">
-</path>
-<path d="M10 9H8">
-</path>
-<path d="M16 13H8">
-</path>
-<path d="M16 17H8">
-</path>
-</svg>
-<span>FLOW GUIDE / 01</span>
-<h3>Living Document Starter</h3>
-<div class="ls-paper-card-rule">
-</div>
-<p>Your first recurring page</p>
-<p>Start with one table, one job, one useful result.</p>
-<div class="ls-paper-card-footer">
-<span>Readable sources</span>
-<span>Declared jobs</span>
-<span>Review history</span>
-</div>
-</div>
-<p class="ls-example-description">A small complete loop you can copy, understand and grow. Start here if this is your first Living Document.</p>
-</div>
-<div data-example-panel="1" hidden="">
-<div class="ls-paper-card">
-<svg aria-hidden="true" class="lucide lucide-file-text" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
-<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z">
-</path>
-<path d="M14 2v5a1 1 0 0 0 1 1h5">
-</path>
-<path d="M10 9H8">
-</path>
-<path d="M16 13H8">
-</path>
-<path d="M16 17H8">
-</path>
-</svg>
-<span>FLOW GUIDE / 02</span>
-<h3>Competitor Watch</h3>
-<div class="ls-paper-card-rule">
-</div>
-<p>A brief that keeps watch</p>
-<p>Follow named public pages and local research files.</p>
-<div class="ls-paper-card-footer">
-<span>Readable sources</span>
-<span>Declared jobs</span>
-<span>Review history</span>
-</div>
-</div>
-<p class="ls-example-description">An adaptable example, with its data and method kept together. Bring your own records and review every consequential result.</p>
-</div>
-<div data-example-panel="2" hidden="">
-<div class="ls-paper-card">
-<svg aria-hidden="true" class="lucide lucide-file-text" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
-<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z">
-</path>
-<path d="M14 2v5a1 1 0 0 0 1 1h5">
-</path>
-<path d="M10 9H8">
-</path>
-<path d="M16 13H8">
-</path>
-<path d="M16 17H8">
-</path>
-</svg>
-<span>FLOW GUIDE / 03</span>
-<h3>Team Status</h3>
-<div class="ls-paper-card-rule">
-</div>
-<p>One view of the moving work</p>
-<p>Gather individual update files into a shared picture.</p>
-<div class="ls-paper-card-footer">
-<span>Readable sources</span>
-<span>Declared jobs</span>
-<span>Review history</span>
-</div>
-</div>
-<p class="ls-example-description">An adaptable example, with its data and method kept together. Bring your own records and review every consequential result.</p>
-</div>
-<div data-example-panel="3" hidden="">
-<div class="ls-paper-card">
-<svg aria-hidden="true" class="lucide lucide-file-text" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
-<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z">
-</path>
-<path d="M14 2v5a1 1 0 0 0 1 1h5">
-</path>
-<path d="M10 9H8">
-</path>
-<path d="M16 13H8">
-</path>
-<path d="M16 17H8">
-</path>
-</svg>
-<span>FLOW GUIDE / 04</span>
-<h3>Job Search</h3>
-<div class="ls-paper-card-rule">
-</div>
-<p>A search with a memory</p>
-<p>Keep applications, next steps and supporting notes together.</p>
-<div class="ls-paper-card-footer">
-<span>Readable sources</span>
-<span>Declared jobs</span>
-<span>Review history</span>
-</div>
-</div>
-<p class="ls-example-description">An adaptable example, with its data and method kept together. Bring your own records and review every consequential result.</p>
-</div>
-<div data-example-panel="4" hidden="">
-<div class="ls-paper-card">
-<svg aria-hidden="true" class="lucide lucide-file-text" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
-<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z">
-</path>
-<path d="M14 2v5a1 1 0 0 0 1 1h5">
-</path>
-<path d="M10 9H8">
-</path>
-<path d="M16 13H8">
-</path>
-<path d="M16 17H8">
-</path>
-</svg>
-<span>FLOW GUIDE / 05</span>
-<h3>Household Budget</h3>
-<div class="ls-paper-card-rule">
-</div>
-<p>Numbers with a home</p>
-<p>Turn your own data into a budget you can revisit.</p>
-<div class="ls-paper-card-footer">
-<span>Readable sources</span>
-<span>Declared jobs</span>
-<span>Review history</span>
-</div>
-</div>
-<p class="ls-example-description">An adaptable example, with its data and method kept together. Bring your own records and review every consequential result.</p>
-</div>
-<div data-example-panel="5" hidden="">
-<div class="ls-paper-card">
-<svg aria-hidden="true" class="lucide lucide-file-text" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
-<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z">
-</path>
-<path d="M14 2v5a1 1 0 0 0 1 1h5">
-</path>
-<path d="M10 9H8">
-</path>
-<path d="M16 13H8">
-</path>
-<path d="M16 17H8">
-</path>
-</svg>
-<span>FLOW GUIDE / 06</span>
-<h3>Stock Portfolio</h3>
-<div class="ls-paper-card-rule">
-</div>
-<p>A record you can inspect</p>
-<p>Bring holdings data, charts and your own notes into one file.</p>
-<div class="ls-paper-card-footer">
-<span>Readable sources</span>
-<span>Declared jobs</span>
-<span>Review history</span>
-</div>
-</div>
-<p class="ls-example-description">An adaptable example, with its data and method kept together. Bring your own records and review every consequential result.</p>
-</div>
-<div data-example-panel="6" hidden="">
-<div class="ls-paper-card">
-<svg aria-hidden="true" class="lucide lucide-file-text" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
-<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z">
-</path>
-<path d="M14 2v5a1 1 0 0 0 1 1h5">
-</path>
-<path d="M10 9H8">
-</path>
-<path d="M16 13H8">
-</path>
-<path d="M16 17H8">
-</path>
-</svg>
-<span>FLOW GUIDE / 07</span>
-<h3>Tax Advisor</h3>
-<div class="ls-paper-card-rule">
-</div>
-<p>Prepare a clearer picture</p>
-<p>Organize your source records for an informed conversation.</p>
-<div class="ls-paper-card-footer">
-<span>Readable sources</span>
-<span>Declared jobs</span>
-<span>Review history</span>
-</div>
-</div>
-<p class="ls-example-description">An adaptable example, with its data and method kept together. Bring your own records and review every consequential result.</p>
-</div>
-</div>
-</div>
-</div>
+<section class="ls-library" id="living-library" aria-labelledby="library-heading">
+  <div class="ls-container">
+    <div class="ls-section-heading">
+      <p class="ls-eyebrow">INCLUDED WITH FLOW</p>
+      <h2 id="library-heading">SIX EXAMPLES.<br/>ONE STARTER.<br/><span class="ls-stroke">YOUR NEXT CHAPTER.</span></h2>
+      <p>Skip the blank page. Open a complete living document, explore its charts and sources, then make it your own.</p>
+    </div>
+  </div>
+  <div class="ls-library-stage ls-container">
+    <div class="ls-library-mobile-nav">
+      <label for="library-select">Explore the seven documents</label>
+      <select id="library-select" data-example-select>
+        {livingLibrary.map((doc, i) => <option value={i}>{String(i + 1).padStart(2, '0')} / {doc.name}</option>)}
+      </select>
+    </div>
+    <div class="ls-example-tabs" role="tablist" aria-label="Living document examples" aria-orientation="horizontal">
+      {livingLibrary.map((doc, i) => (
+        <button type="button" id={`example-tab-${i}`} role="tab" data-example-tab={i} aria-controls={`example-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+          <span>{String(i + 1).padStart(2, '0')}</span><b>{doc.shortName}</b>
+        </button>
+      ))}
+    </div>
+    <div class="ls-library-viewer">
+      {livingLibrary.map((doc, i) => (
+        <div class={`ls-example-panel ls-library-${doc.key}`} id={`example-panel-${i}`} data-example-panel={i} role="tabpanel" aria-labelledby={`example-tab-${i}`} tabindex="0" hidden={i !== 0}>
+          <div class="ls-library-windowbar">
+            <span class="ls-library-app">Flow <span>/</span> Flow Guide</span>
+            <span class="ls-library-filename">{doc.file}</span>
+            <span class="ls-library-preview-label">Illustrated preview</span>
+          </div>
+          <div class="ls-library-document" id={`example-document-${i}`} role="region" aria-label={`${doc.name} document preview`} tabindex="0">
+            <div class="ls-library-page" data-example-page>
+            <header class="ls-library-doc-heading">
+              <h3>{doc.name}</h3>
+              <p class="ls-library-period">{doc.period}</p>
+            </header>
+            <div class="ls-library-composition">
+              <section class="ls-library-prose" aria-label={doc.narrative.heading}>
+                <h4>{doc.narrative.heading}</h4>
+                {doc.narrative.paragraphs.map(paragraph => <p>{paragraph}</p>)}
+                {doc.narrative.points.length > 0 && (doc.key === 'starter' ?
+                  <ol>{doc.narrative.points.map(point => <li>{point}</li>)}</ol> :
+                  <ul>{doc.narrative.points.map(point => <li>{point}</li>)}</ul>
+                )}
+              </section>
+              <section class="ls-library-detail" aria-label={doc.table.title}>
+                <h4>{doc.table.title}</h4>
+                <div class="ls-library-table-scroll" tabindex="0" role="region" aria-label={`${doc.table.title} table`}>
+                  <table>
+                    <thead><tr>{doc.table.headings.map(heading => <th scope="col">{heading}</th>)}</tr></thead>
+                    <tbody>{doc.table.rows.map(row => <tr>{row.map((cell, j) => j === 0 ? <th scope="row">{cell}</th> : <td>{cell}</td>)}</tr>)}</tbody>
+                  </table>
+                </div>
+              </section>
+              <div class="ls-library-charts">
+                {doc.charts.map(chart => (
+                  <figure class="ls-library-chart">
+                    <h4>{chart.title}</h4>
+                    <span class="ls-library-scroll-hint" aria-hidden="true">Scroll chart to explore →</span>
+                    <div class="ls-library-chart-scroll" tabindex="0" role="region" aria-label={`${chart.title} chart`}>
+                      <img src={`/flow/library/${chart.src}`} alt={chart.alt} width={chart.width} height={chart.height} loading="lazy" decoding="async" />
+                    </div>
+                    <figcaption>{chart.caption}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+            <div class="ls-library-source-note"><p>{doc.note}</p></div>
+            </div>
+            {doc.continuation.map((page, pageIndex) => (
+              <section class="ls-library-page ls-library-continuation" data-example-page aria-label={page.heading}>
+                <div class="ls-library-page-heading"><span>CONTINUED</span><span>{String(pageIndex + 2).padStart(2, '0')} / 03</span></div>
+                <h4>{page.heading}</h4>
+                <div class="ls-library-continuation-copy">
+                  {page.paragraphs.map(paragraph => <p>{paragraph}</p>)}
+                </div>
+                {page.points.length > 0 && <ul>{page.points.map(point => <li>{point}</li>)}</ul>}
+                {'table' in page && page.table && (
+                  <section class="ls-library-continuation-table" aria-label={page.table.title}>
+                    <h4>{page.table.title}</h4>
+                    <div class="ls-library-table-scroll" tabindex="0" role="region" aria-label={`${page.table.title} table`}>
+                      <table>
+                        <thead><tr>{page.table.headings.map(heading => <th scope="col">{heading}</th>)}</tr></thead>
+                        <tbody>{page.table.rows.map(row => <tr>{row.map((cell, j) => j === 0 ? <th scope="row">{cell}</th> : <td>{cell}</td>)}</tr>)}</tbody>
+                      </table>
+                    </div>
+                  </section>
+                )}
+              </section>
+            ))}
+            <footer class="ls-library-document-footer"><span>READS FROM <b>{doc.binding}</b></span><span>Readable files. A method you can inspect.</span></footer>
+          </div>
+          <div class="ls-library-caption"><p>{doc.description}</p><span>Included in Flow Base <small>Scroll inside to take over</small><button type="button" data-example-scroll aria-controls={`example-document-${i}`} aria-pressed="false">Play scroll</button></span></div>
+        </div>
+      ))}
+    </div>
+    <div class="ls-library-controls">
+      <p>Seven starting points. <span>Your files take it from here.</span></p>
+      <nav aria-label="Browse living document previews">
+        <button type="button" data-example-prev aria-label="Previous living document">Previous</button>
+        <output data-example-count aria-live="polite" aria-atomic="true">01 / 07</output>
+        <button type="button" data-example-next aria-label="Next living document">Next</button>
+      </nav>
+    </div>
+    <div class="ls-library-upgrade"><p><strong>Keep the data current with Base.</strong> Add local Overnight notes with Pro.</p><a href="#get-flow">Find your Flow <span aria-hidden="true">→</span></a></div>
+  </div>
 </section>

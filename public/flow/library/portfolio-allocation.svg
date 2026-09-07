@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="450" height="320" viewBox="0 0 450 320" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:format>image/svg+xml</dc:format>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 320
+L 450 320
+L 450 0
+L 0 0
+L 0 320
+z
+" style="fill: none"/>
+  </g>
+  <g id="axes_1">
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="patch_2">
+    <path d="M 191.222846 92.27582
+C 182.163664 82.949288 171.324529 75.534566 159.348704 70.471703
+C 147.372876 65.408839 134.502034 62.8 121.499996 62.8
+L 121.499997 85.156
+C 131.511567 85.156 141.422115 87.164806 150.643502 91.063211
+C 159.864888 94.961615 168.211021 100.670952 175.186591 107.852382
+z
+" style="fill: #26766c; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 218.699913 160.129933
+C 218.716685 147.581672 216.303379 135.148073 211.593547 123.517226
+C 206.883716 111.886379 199.965867 101.276864 191.222846 92.27582
+L 175.186591 107.852382
+C 181.918717 114.783185 187.245461 122.952512 190.872031 131.908264
+C 194.498602 140.864016 196.356848 150.437888 196.343933 160.100048
+z
+" style="fill: #468979; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 201.601873 215.059334
+C 207.126043 207.022613 211.409393 198.200093 214.307818 188.888569
+C 217.206243 179.577046 218.686878 169.882121 218.699913 160.129933
+L 196.343933 160.100048
+C 196.333896 167.609233 195.193807 175.074325 192.96202 182.244198
+C 190.730232 189.414072 187.432053 196.207412 183.178442 202.395687
+z
+" style="fill: #669889; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 162.664388 248.053011
+C 170.472816 244.402609 177.761089 239.729711 184.337267 234.157385
+C 190.913446 228.585058 196.719283 222.162664 201.601873 215.059334
+L 183.178442 202.395687
+C 179.418848 207.865251 174.948353 212.810495 169.884696 217.101186
+C 164.821038 221.391878 159.209069 224.990009 153.196579 227.800818
+z
+" style="fill: #81a899; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 112.487387 256.781264
+C 121.051533 257.578784 129.683771 257.236036 138.157723 255.762001
+C 146.631676 254.287966 154.872603 251.695638 162.664388 248.053011
+L 153.196579 227.800818
+C 147.196904 230.605641 140.85139 232.601733 134.326447 233.736741
+C 127.801504 234.871748 121.154681 235.135663 114.560288 234.521573
+z
+" style="fill: #a7c0af; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 64.869241 238.998713
+C 71.845674 243.999817 79.453955 248.054824 87.495333 251.0578
+C 95.536712 254.060776 103.940564 255.985355 112.487387 256.781264
+L 114.560288 234.521573
+C 107.979234 233.908723 101.508268 232.426798 95.316407 230.114506
+C 89.124545 227.802215 83.266169 224.679859 77.894315 220.829009
+z
+" style="fill: #d7ad4e; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 34.790478 203.923777
+C 38.308317 210.868311 42.647731 217.365158 47.715368 223.274543
+C 52.783005 229.183928 58.542261 234.463175 64.869241 238.998713
+L 77.894315 220.829009
+C 73.022541 217.336645 68.587914 213.271625 64.685833 208.721398
+C 60.783753 204.171172 57.442404 199.168599 54.733668 193.821308
+z
+" style="fill: #bc9550; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 24.316859 161.810239
+C 24.452846 169.110857 25.411062 176.37296 27.173357 183.458991
+C 28.935651 190.545021 31.490824 197.40996 34.790478 203.923777
+L 54.733668 193.821308
+C 52.192935 188.805669 50.225451 183.519666 48.868485 178.063423
+C 47.511518 172.607179 46.773691 167.01536 46.668982 161.393884
+z
+" style="fill: #8e774e; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 32.184466 121.651919
+C 29.470855 127.97212 27.435747 134.562542 26.113359 141.31235
+C 24.79097 148.062159 24.188763 154.933304 24.316859 161.810239
+L 46.668982 161.393884
+C 46.570348 156.098644 47.034047 150.807863 48.052286 145.61051
+C 49.070525 140.413158 50.637559 135.338533 52.727039 130.471977
+z
+" style="fill: #607764; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 55.772163 88.392094
+C 50.723489 93.026198 46.179034 98.181266 42.214656 103.771234
+C 38.250277 109.361202 34.888175 115.354779 32.184466 121.651919
+L 52.727039 130.471977
+C 54.808895 125.62318 57.397713 121.008125 60.450285 116.70385
+C 63.502857 112.399575 67.002086 108.430172 70.889566 104.861912
+z
+" style="fill: #394f47; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 121.500001 62.8
+C 109.435286 62.8 97.475355 65.046255 86.232792 69.423709
+C 74.990228 73.801164 64.660325 80.233784 55.772163 88.392094
+L 70.889566 104.861912
+C 77.73345 98.580013 85.687475 93.626896 94.34425 90.256256
+C 103.001024 86.885616 112.210171 85.156 121.500001 85.156
+z
+" style="fill: #dce5d9; stroke: #fffefa; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 500; font-size: 29px; font-family: Arial, sans-serif; text-anchor: middle; fill: #233a35" x="121.5" y="154.394187" transform="rotate(-0 121.5 154.394187)">10</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 12px; font-family: Arial, sans-serif; text-anchor: middle; fill: #6c7e76" x="121.5" y="174.97525" transform="rotate(-0 121.5 174.97525)">positions</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: middle; fill: #6c7e76" x="121.5" y="195.111312" transform="rotate(-0 121.5 195.111312)">+ cash</text>
+   </g>
+  </g>
+  <g id="text_4">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #26766c" x="256.5" y="51.2" transform="rotate(-0 256.5 51.2)">●</text>
+  </g>
+  <g id="text_5">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="51.2" transform="rotate(-0 276.75 51.2)">NVDA</text>
+  </g>
+  <g id="text_6">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="51.2" transform="rotate(-0 441 51.2)">$13,465</text>
+  </g>
+  <g id="text_7">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #468979" x="256.5" y="72.96" transform="rotate(-0 256.5 72.96)">●</text>
+  </g>
+  <g id="text_8">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="72.96" transform="rotate(-0 276.75 72.96)">AAPL</text>
+  </g>
+  <g id="text_9">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="72.96" transform="rotate(-0 441 72.96)">$12,998</text>
+  </g>
+  <g id="text_10">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #669889" x="256.5" y="94.72" transform="rotate(-0 256.5 94.72)">●</text>
+  </g>
+  <g id="text_11">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="94.72" transform="rotate(-0 276.75 94.72)">GOOGL</text>
+  </g>
+  <g id="text_12">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="94.72" transform="rotate(-0 441 94.72)">$10,114</text>
+  </g>
+  <g id="text_13">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #81a899" x="256.5" y="116.48" transform="rotate(-0 256.5 116.48)">●</text>
+  </g>
+  <g id="text_14">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="116.48" transform="rotate(-0 276.75 116.48)">MSFT</text>
+  </g>
+  <g id="text_15">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="116.48" transform="rotate(-0 441 116.48)">$8,943</text>
+  </g>
+  <g id="text_16">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #a7c0af" x="256.5" y="138.24" transform="rotate(-0 256.5 138.24)">●</text>
+  </g>
+  <g id="text_17">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="138.24" transform="rotate(-0 276.75 138.24)">AMZN</text>
+  </g>
+  <g id="text_18">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="138.24" transform="rotate(-0 441 138.24)">$8,924</text>
+  </g>
+  <g id="text_19">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #d7ad4e" x="256.5" y="160" transform="rotate(-0 256.5 160)">●</text>
+  </g>
+  <g id="text_20">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="160" transform="rotate(-0 276.75 160)">JPM</text>
+  </g>
+  <g id="text_21">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="160" transform="rotate(-0 441 160)">$8,906</text>
+  </g>
+  <g id="text_22">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #bc9550" x="256.5" y="181.76" transform="rotate(-0 256.5 181.76)">●</text>
+  </g>
+  <g id="text_23">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="181.76" transform="rotate(-0 276.75 181.76)">AVGO</text>
+  </g>
+  <g id="text_24">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="181.76" transform="rotate(-0 441 181.76)">$8,079</text>
+  </g>
+  <g id="text_25">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #8e774e" x="256.5" y="203.52" transform="rotate(-0 256.5 203.52)">●</text>
+  </g>
+  <g id="text_26">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="203.52" transform="rotate(-0 276.75 203.52)">BRK-B</text>
+  </g>
+  <g id="text_27">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="203.52" transform="rotate(-0 441 203.52)">$7,579</text>
+  </g>
+  <g id="text_28">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #607764" x="256.5" y="225.28" transform="rotate(-0 256.5 225.28)">●</text>
+  </g>
+  <g id="text_29">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="225.28" transform="rotate(-0 276.75 225.28)">TSLA</text>
+  </g>
+  <g id="text_30">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="225.28" transform="rotate(-0 441 225.28)">$7,140</text>
+  </g>
+  <g id="text_31">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #394f47" x="256.5" y="247.04" transform="rotate(-0 256.5 247.04)">●</text>
+  </g>
+  <g id="text_32">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="247.04" transform="rotate(-0 276.75 247.04)">META</text>
+  </g>
+  <g id="text_33">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="247.04" transform="rotate(-0 441 247.04)">$7,114</text>
+  </g>
+  <g id="text_34">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #dce5d9" x="256.5" y="268.8" transform="rotate(-0 256.5 268.8)">●</text>
+  </g>
+  <g id="text_35">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: start; fill: #233a35" x="276.75" y="268.8" transform="rotate(-0 276.75 268.8)">Cash</text>
+  </g>
+  <g id="text_36">
+   <text style="font-size: 11.5px; font-family: Arial, sans-serif; text-anchor: end; fill: #233a35" x="441" y="268.8" transform="rotate(-0 441 268.8)">$12,500</text>
+  </g>
+  <g id="text_37">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: start; fill: #6c7e76" x="276.75" y="28.8" transform="rotate(-0 276.75 28.8)">Position</text>
+  </g>
+  <g id="text_38">
+   <text style="font-size: 11px; font-family: Arial, sans-serif; text-anchor: end; fill: #6c7e76" x="441" y="28.8" transform="rotate(-0 441 28.8)">Value (USD)</text>
+  </g>
+ </g>
+</svg>

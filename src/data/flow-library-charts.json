@@ -1,0 +1,536 @@
+{
+  "description": "Sanitized example chart data from the seven released Flow Guide living documents. Figures are recorded examples, not current competitor offers, personal financial data, or a current tax calculation.",
+  "snapshot": "2026-09-02",
+  "charts": {
+    "starter-items": {
+      "document": "Living Document Starter/Living Document.md",
+      "source": "Profile.md, front matter",
+      "title": "Amount by item",
+      "subtitle": "From Profile.md",
+      "data": [
+        {
+          "name": "First item",
+          "group": "A",
+          "amount": 120
+        },
+        {
+          "name": "Second item",
+          "group": "A",
+          "amount": 80
+        },
+        {
+          "name": "Third item",
+          "group": "B",
+          "amount": 200
+        }
+      ]
+    },
+    "starter-groups": {
+      "document": "Living Document Starter/Living Document.md",
+      "source": "data/capture-*.json",
+      "title": "Amount by group",
+      "subtitle": "From the newest capture",
+      "data": [
+        {
+          "group": "A",
+          "amount": 200
+        },
+        {
+          "group": "B",
+          "amount": 200
+        }
+      ]
+    },
+    "competitor-pricing": {
+      "document": "Competitor Watch/Competitor Watch.md",
+      "source": "Competitors.md, front matter",
+      "title": "First paid tier, per seat per month",
+      "subtitle": "Published price at annual billing, $",
+      "data": [
+        {
+          "name": "Asana",
+          "entry_tier": "Starter",
+          "price_per_seat": 10.99,
+          "billing": "annual"
+        },
+        {
+          "name": "ClickUp",
+          "entry_tier": "Unlimited",
+          "price_per_seat": 7,
+          "billing": "annual"
+        },
+        {
+          "name": "Linear",
+          "entry_tier": "Basic",
+          "price_per_seat": 10,
+          "billing": "annual"
+        },
+        {
+          "name": "monday.com",
+          "entry_tier": "Basic",
+          "price_per_seat": 9,
+          "billing": "annual"
+        }
+      ]
+    },
+    "team-confidence": {
+      "document": "Team Status/Team Status.md",
+      "source": "updates/*.md, front matter",
+      "title": "How sure each area is of landing the quarter",
+      "subtitle": "Self-reported confidence, 0 to 100",
+      "data": [
+        {
+          "name": "Dana Okafor",
+          "area": "Billing",
+          "status": "green",
+          "confidence": 90,
+          "updated": "2026-09-01"
+        },
+        {
+          "name": "Marcus Chen",
+          "area": "Search",
+          "status": "amber",
+          "confidence": 60,
+          "updated": "2026-08-31"
+        },
+        {
+          "name": "Priya Raman",
+          "area": "Onboarding",
+          "status": "green",
+          "confidence": 85,
+          "updated": "2026-08-31"
+        },
+        {
+          "name": "Sam Whitaker",
+          "area": "Platform",
+          "status": "red",
+          "confidence": 35,
+          "updated": "2026-09-01"
+        }
+      ]
+    },
+    "job-timeline": {
+      "document": "Job Search/Job Search.md",
+      "source": "Applications.md, front matter",
+      "title": "Applications, from applied to the next step",
+      "subtitle": "Coloured by stage",
+      "data": [
+        {
+          "company": "Stripe",
+          "stage": "Onsite",
+          "applied": "2026-08-11",
+          "next_date": "2026-09-09"
+        },
+        {
+          "company": "Apple",
+          "stage": "Phone screen",
+          "applied": "2026-08-19",
+          "next_date": "2026-09-04"
+        },
+        {
+          "company": "Anthropic",
+          "stage": "Applied",
+          "applied": "2026-08-28",
+          "next_date": "2026-09-11"
+        },
+        {
+          "company": "Figma",
+          "stage": "Rejected",
+          "applied": "2026-07-30",
+          "next_date": "2026-08-20"
+        },
+        {
+          "company": "Linear",
+          "stage": "Take-home",
+          "applied": "2026-08-22",
+          "next_date": "2026-09-05"
+        },
+        {
+          "company": "Notion",
+          "stage": "Offer",
+          "applied": "2026-07-21",
+          "next_date": "2026-09-08"
+        }
+      ]
+    },
+    "budget-categories": {
+      "document": "Household Budget/Household Budget.md",
+      "source": "data/spending-*.json, newest capture",
+      "title": "Spent against budget, by category",
+      "subtitle": "This month, $",
+      "data": [
+        {
+          "category": "Housing",
+          "spent": 2950,
+          "budget": 2950
+        },
+        {
+          "category": "Groceries",
+          "spent": 446,
+          "budget": 900
+        },
+        {
+          "category": "Dining",
+          "spent": 198,
+          "budget": 450
+        },
+        {
+          "category": "Transport",
+          "spent": 196,
+          "budget": 420
+        },
+        {
+          "category": "Utilities",
+          "spent": 334,
+          "budget": 320
+        },
+        {
+          "category": "Health",
+          "spent": 294,
+          "budget": 350
+        },
+        {
+          "category": "Subscriptions",
+          "spent": 40,
+          "budget": 120
+        },
+        {
+          "category": "Shopping",
+          "spent": 336,
+          "budget": 400
+        },
+        {
+          "category": "Kids",
+          "spent": 1350,
+          "budget": 1400
+        },
+        {
+          "category": "Travel",
+          "spent": 0,
+          "budget": 300
+        },
+        {
+          "category": "Giving",
+          "spent": 100,
+          "budget": 200
+        },
+        {
+          "category": "Uncategorized",
+          "spent": 409,
+          "budget": 0
+        }
+      ],
+      "period": "2026-08"
+    },
+    "portfolio-allocation": {
+      "document": "Stock Portfolio/Portfolio Dashboard.md",
+      "source": "data/portfolio-*.json, newest capture",
+      "title": "Where the money sits",
+      "subtitle": "Market value by position, cash included",
+      "data": [
+        {
+          "symbol": "NVDA",
+          "value": 13465
+        },
+        {
+          "symbol": "AAPL",
+          "value": 12998
+        },
+        {
+          "symbol": "GOOGL",
+          "value": 10114
+        },
+        {
+          "symbol": "MSFT",
+          "value": 8943
+        },
+        {
+          "symbol": "AMZN",
+          "value": 8924
+        },
+        {
+          "symbol": "JPM",
+          "value": 8906
+        },
+        {
+          "symbol": "AVGO",
+          "value": 8079
+        },
+        {
+          "symbol": "BRK-B",
+          "value": 7579
+        },
+        {
+          "symbol": "TSLA",
+          "value": 7140
+        },
+        {
+          "symbol": "META",
+          "value": 7114
+        },
+        {
+          "symbol": "Cash",
+          "value": 12500
+        }
+      ],
+      "roundingNote": "Individually rounded position values sum to 105762; the source headline total is 105761. Preserve both as reported."
+    },
+    "portfolio-history": {
+      "document": "Stock Portfolio/Portfolio Dashboard.md",
+      "source": "data/portfolio-*.json, newest capture",
+      "title": "Portfolio and benchmark, indexed to 100",
+      "subtitle": "Last 22 sessions, daily closes",
+      "data": [
+        {
+          "day": "2026-08-04",
+          "line": "Portfolio",
+          "indexed": 100
+        },
+        {
+          "day": "2026-08-04",
+          "line": "S&P 500",
+          "indexed": 100
+        },
+        {
+          "day": "2026-08-05",
+          "line": "Portfolio",
+          "indexed": 99.73
+        },
+        {
+          "day": "2026-08-05",
+          "line": "S&P 500",
+          "indexed": 99.83
+        },
+        {
+          "day": "2026-08-06",
+          "line": "Portfolio",
+          "indexed": 99.89
+        },
+        {
+          "day": "2026-08-06",
+          "line": "S&P 500",
+          "indexed": 99.66
+        },
+        {
+          "day": "2026-08-07",
+          "line": "Portfolio",
+          "indexed": 100.59
+        },
+        {
+          "day": "2026-08-07",
+          "line": "S&P 500",
+          "indexed": 100.27
+        },
+        {
+          "day": "2026-08-10",
+          "line": "Portfolio",
+          "indexed": 100.46
+        },
+        {
+          "day": "2026-08-10",
+          "line": "S&P 500",
+          "indexed": 100.21
+        },
+        {
+          "day": "2026-08-11",
+          "line": "Portfolio",
+          "indexed": 99.42
+        },
+        {
+          "day": "2026-08-11",
+          "line": "S&P 500",
+          "indexed": 99.89
+        },
+        {
+          "day": "2026-08-12",
+          "line": "Portfolio",
+          "indexed": 98.93
+        },
+        {
+          "day": "2026-08-12",
+          "line": "S&P 500",
+          "indexed": 100.15
+        },
+        {
+          "day": "2026-08-13",
+          "line": "Portfolio",
+          "indexed": 99.64
+        },
+        {
+          "day": "2026-08-13",
+          "line": "S&P 500",
+          "indexed": 100.81
+        },
+        {
+          "day": "2026-08-14",
+          "line": "Portfolio",
+          "indexed": 98.87
+        },
+        {
+          "day": "2026-08-14",
+          "line": "S&P 500",
+          "indexed": 100.64
+        },
+        {
+          "day": "2026-08-17",
+          "line": "Portfolio",
+          "indexed": 97.97
+        },
+        {
+          "day": "2026-08-17",
+          "line": "S&P 500",
+          "indexed": 100.11
+        },
+        {
+          "day": "2026-08-18",
+          "line": "Portfolio",
+          "indexed": 97.26
+        },
+        {
+          "day": "2026-08-18",
+          "line": "S&P 500",
+          "indexed": 99.42
+        },
+        {
+          "day": "2026-08-19",
+          "line": "Portfolio",
+          "indexed": 97.42
+        },
+        {
+          "day": "2026-08-19",
+          "line": "S&P 500",
+          "indexed": 99.63
+        },
+        {
+          "day": "2026-08-20",
+          "line": "Portfolio",
+          "indexed": 96.46
+        },
+        {
+          "day": "2026-08-20",
+          "line": "S&P 500",
+          "indexed": 98.77
+        },
+        {
+          "day": "2026-08-21",
+          "line": "Portfolio",
+          "indexed": 96.87
+        },
+        {
+          "day": "2026-08-21",
+          "line": "S&P 500",
+          "indexed": 99.2
+        },
+        {
+          "day": "2026-08-24",
+          "line": "Portfolio",
+          "indexed": 96.68
+        },
+        {
+          "day": "2026-08-24",
+          "line": "S&P 500",
+          "indexed": 98.92
+        },
+        {
+          "day": "2026-08-25",
+          "line": "Portfolio",
+          "indexed": 97.09
+        },
+        {
+          "day": "2026-08-25",
+          "line": "S&P 500",
+          "indexed": 99.23
+        },
+        {
+          "day": "2026-08-26",
+          "line": "Portfolio",
+          "indexed": 96.89
+        },
+        {
+          "day": "2026-08-26",
+          "line": "S&P 500",
+          "indexed": 99.21
+        },
+        {
+          "day": "2026-08-27",
+          "line": "Portfolio",
+          "indexed": 98.49
+        },
+        {
+          "day": "2026-08-27",
+          "line": "S&P 500",
+          "indexed": 99.93
+        },
+        {
+          "day": "2026-08-28",
+          "line": "Portfolio",
+          "indexed": 98.78
+        },
+        {
+          "day": "2026-08-28",
+          "line": "S&P 500",
+          "indexed": 99.68
+        },
+        {
+          "day": "2026-08-31",
+          "line": "Portfolio",
+          "indexed": 98.58
+        },
+        {
+          "day": "2026-08-31",
+          "line": "S&P 500",
+          "indexed": 99.35
+        },
+        {
+          "day": "2026-09-01",
+          "line": "Portfolio",
+          "indexed": 98.04
+        },
+        {
+          "day": "2026-09-01",
+          "line": "S&P 500",
+          "indexed": 98.64
+        },
+        {
+          "day": "2026-09-02",
+          "line": "Portfolio",
+          "indexed": 98.69
+        },
+        {
+          "day": "2026-09-02",
+          "line": "S&P 500",
+          "indexed": 99.1
+        }
+      ]
+    },
+    "tax-waterfall": {
+      "document": "Tax Advisor/Tax Advisor.md",
+      "source": "data/estimate-*.json, newest capture",
+      "title": "How income becomes taxable income",
+      "subtitle": "Whole dollars",
+      "data": [
+        {
+          "step": "W-2 wages",
+          "change": 148600
+        },
+        {
+          "step": "Other income",
+          "change": 7450
+        },
+        {
+          "step": "Adjustments",
+          "change": -8550
+        },
+        {
+          "step": "Itemized deduction",
+          "change": -39600
+        },
+        {
+          "step": "Taxable income",
+          "change": 107900
+        }
+      ],
+      "taxYear": 2025
+    }
+  }
+}
