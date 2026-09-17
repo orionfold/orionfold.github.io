@@ -1,0 +1,51 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import { Content, getHeadings } from '../../../editorial/the-work-we-want-to-keep-research-notes.md';
+import { FLAGSHIP_ESSAY as essay } from '../../../data/essays';
+import { SITE, PERSON } from '../../../data/seo';
+import { ogMeta } from '../../../data/og';
+import '../../../styles/living-base.css';
+import '../../../styles/essays.css';
+
+const title = 'Research Notes · The Work We Want to Keep | Orionfold';
+const description = 'Sources, research boundaries and measured product examples behind The Work We Want to Keep, an essay on personal AI, working knowledge and human judgment.';
+const path = `${essay.href}notes/`;
+const headings = getHeadings().filter(heading => heading.depth === 2);
+const og = ogMeta(essay.href);
+const schema = [{
+  '@context': 'https://schema.org', '@type': 'WebPage',
+  name: title, description, url: `${SITE.url}${path}`,
+  datePublished: `${essay.date}T00:00:00.000Z`, dateModified: `${essay.date}T00:00:00.000Z`, author: PERSON,
+  isPartOf: { '@type': 'Article', name: essay.title, url: `${SITE.url}${essay.href}` },
+}, {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Essays', item: `${SITE.url}/essays/` },
+    { '@type': 'ListItem', position: 2, name: essay.title, item: `${SITE.url}${essay.href}` },
+    { '@type': 'ListItem', position: 3, name: 'Research notes', item: `${SITE.url}${path}` },
+  ],
+}];
+---
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-notes-page" jsonLd={schema}>
+  <Nav />
+  <main id="main" class="ls-main">
+    <header class="ed-article-hero ls-container">
+      <div class="ed-article-kicker"><a href={essay.href}>← The Work We Want to Keep</a><span>SOURCES &amp; RESEARCH NOTES</span></div>
+      <h1>The evidence<br /><em>behind the argument.</em></h1>
+      <p class="ed-article-dek">Research, measurements and their limits. A companion to the essay, for a closer look at what each source supports.</p>
+      <div class="ed-hero-bottom"><div class="ed-meta"><span>By Manav Sehgal</span><time datetime={essay.date}>{essay.dateLabel}</time></div><a href={essay.href} class="ed-download-link">Return to the essay ↗</a></div>
+    </header>
+    <div class="ed-reading-layout ls-container">
+      <aside class="ed-contents" aria-label="Research notes contents">
+        <details open><summary>IN THESE NOTES</summary><nav aria-label="Research sections">{headings.map((heading, index) => <a href={`#${heading.slug}`}><span>{String(index + 1).padStart(2, '0')}</span>{heading.text}</a>)}</nav></details>
+      </aside>
+      <article class="ed-prose" aria-label="Research notes">
+        <Content />
+        <a href={essay.href} class="ed-link ed-notes-return">Return to The Work We Want to Keep <span aria-hidden="true">↗</span></a>
+      </article>
+    </div>
+  </main>
+  <Footer showDownload={false} />
+</Layout>

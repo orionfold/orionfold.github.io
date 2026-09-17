@@ -1,15 +1,15 @@
 ---
 import '../../styles/jobs-workbench.css';
 import { JOBS_SCENARIOS } from '../../scripts/jobs-workbench.js';
-interface Props { scenario?: 'customer' | 'portfolio'; mode?: 'full' | 'review'; compact?: boolean; instanceId?: string }
-const { scenario = 'customer', mode = 'full', compact = false, instanceId } = Astro.props;
+interface Props { scenario?: 'customer' | 'portfolio'; mode?: 'full' | 'review'; compact?: boolean; instanceId?: string; disclosure?: boolean }
+const { scenario = 'customer', mode = 'full', compact = false, instanceId, disclosure = true } = Astro.props;
 const sample = JOBS_SCENARIOS[scenario];
 const portfolio = scenario === 'portfolio';
 const review = mode === 'review';
 const id = instanceId || `jobs-${scenario}-${mode}-${compact ? 'compact' : 'full'}`;
 ---
 <div class:list={['jw-demo', { 'jw-demo--compact': compact, 'jw-demo--review': review }]} data-jobs-demo data-scenario={scenario} data-mode={mode}>
-  <div class="jw-caption">{!compact && <span><i aria-hidden="true"></i> INTERACTIVE PRODUCT WALKTHROUGH</span>}<button type="button" data-action="reset">Reset <span aria-hidden="true">↺</span></button></div>
+  <div class="jw-caption">{!compact && disclosure && <span><i aria-hidden="true"></i> INTERACTIVE PRODUCT WALKTHROUGH</span>}<button type="button" data-action="reset">Reset <span aria-hidden="true">↺</span></button></div>
   <div class="jw-window">
     <div class="jw-titlebar"><span class="jw-traffic" aria-hidden="true"><i></i><i></i><i></i></span><span><img src="/logos/orionfold-mark-3d-32.png" alt="" width="20" height="20" />{sample.title}</span><span class="jw-titlebar-end">Flow 1.7</span></div>
     <div class="jw-workspace">
@@ -17,7 +17,7 @@ const id = instanceId || `jobs-${scenario}-${mode}-${compact ? 'compact' : 'full
         <div class="jw-document-meta"><span>{sample.folder}</span><span>.md</span></div>
         <h3>{sample.title}</h3>
         <p class="jw-document-dek">{portfolio ? 'Coverage first. Then the picture of what you hold.' : 'A small study. A clearer next question.'}</p>
-        <p class="jw-sample-note">{portfolio ? 'Illustrative holdings · retained 2 Sep 2026 quotes · USD. Not current prices or an investment recommendation.' : 'Fictional discovery study · one primary need per person.'}</p>
+        <p class="jw-sample-note">{portfolio ? 'Illustrative holdings · retained 2 Sep 2026 quotes · USD. Not current prices or an investment recommendation.' : disclosure ? 'Fictional discovery study · one primary need per person.' : 'One primary need per person.'}</p>
         <div class="jw-segment jw-document-view" data-review-view-toggle hidden={!review} aria-label="Review representation">
           <button type="button" data-action="view" data-value="document" aria-pressed="true">Document</button>
           <button type="button" data-action="view" data-value="exact" aria-pressed="false">Exact changes</button>
@@ -89,19 +89,19 @@ const id = instanceId || `jobs-${scenario}-${mode}-${compact ? 'compact' : 'full
         </div>
         <div class="jw-panel" data-panel="run" hidden={!review} id={`${id}-run`} role={!review ? 'tabpanel' : undefined} aria-labelledby={!review ? `${id}-run-tab` : undefined}>
           <div data-run-ready hidden={review}><p class="jw-micro">ONE BOUNDED RUN</p><h4>Refresh this document.</h4><p class="jw-panel-note">{portfolio ? 'Replay the saved quote snapshot with one cash edit. Nothing is fetched or traded.' : 'Add I12 in Edit, then let the saved Jobs refresh the needs chart and finding table.'}</p><ol class="jw-run-steps"><li>Read the declared input</li><li>Run the saved calculation</li><li>Apply changes for your review</li></ol><button class="jw-primary" type="button" data-action="run" disabled><span data-run-label>Run Jobs</span><span aria-hidden="true">→</span></button></div>
-          <div class="jw-running" data-run-progress hidden><span class="jw-running-icon" aria-hidden="true">↓</span><h4>Gather is running.</h4><p>Read input → calculate → refresh</p><div class="jw-progress" aria-hidden="true"><span></span></div><p class="jw-panel-note">Illustrated run. The next decision is yours.</p></div>
+          <div class="jw-running" data-run-progress hidden><span class="jw-running-icon" aria-hidden="true">↓</span><h4>Gather is running.</h4><p>Read input → calculate → refresh</p><div class="jw-progress" aria-hidden="true"><span></span></div><p class="jw-panel-note">{disclosure ? 'Illustrated run. The next decision is yours.' : 'The next decision is yours.'}</p></div>
           <div data-review-active hidden={!review}><p class="jw-micro">APPLIED CHANGES · <span data-pending-count>2</span> TO REVIEW</p><h4>What should stay?</h4><p class="jw-panel-note">Select a changed part in the document. Inspect it, then decide.</p><div class="jw-review-parts">
             <button type="button" data-part="chart" data-action="select" data-value="chart" aria-pressed="true"><span>{sample.partLabels.chart}</span><span data-part-status="chart">Changed</span></button>
             <button type="button" data-part="summary" data-action="select" data-value="summary" aria-pressed="false"><span>{sample.partLabels.summary}</span><span data-part-status="summary">Changed</span></button>
           </div><div class="jw-selected-summary"><strong data-selected-title>{sample.partLabels.chart}</strong><span data-selected-status>Applied · awaiting your decision</span></div><div class="jw-review-actions"><button class="jw-primary" type="button" data-action="keep">Keep selected <span aria-hidden="true">✓</span></button><button class="jw-secondary" type="button" data-action="revert">Revert selected</button></div><button type="button" class="jw-later" data-action="later">Later <span aria-hidden="true">→</span></button><p class="jw-panel-note jw-review-note">Keep records your decision. Revert restores this part. Later leaves the remaining changes applied.</p></div>
           <div class="jw-resolution" data-review-later hidden><span class="jw-resolution-icon" aria-hidden="true">◷</span><h4>Come back to it.</h4><p>Your remaining changes are still applied. The review is waiting.</p><button class="jw-primary" type="button" data-action="resume">Resume review <span aria-hidden="true">→</span></button></div>
-          <div class="jw-resolution" data-review-complete hidden><span class="jw-resolution-icon" aria-hidden="true">✓</span><h4>Your decision is kept.</h4><p data-complete-summary></p><p class="jw-panel-note">The source input is unchanged by review. A future run can refresh the outputs again.</p><button class="jw-secondary" type="button" data-action="reset">Try the walkthrough again <span aria-hidden="true">↺</span></button></div>
+          <div class="jw-resolution" data-review-complete hidden><span class="jw-resolution-icon" aria-hidden="true">✓</span><h4>Your decision is kept.</h4><p data-complete-summary></p><p class="jw-panel-note">The source input is unchanged by review. A future run can refresh the outputs again.</p><button class="jw-secondary" type="button" data-action="reset">{disclosure ? 'Try the walkthrough again' : 'Try again'} <span aria-hidden="true">↺</span></button></div>
         </div>
       </aside>
     </div>
     <div class="jw-status" role="status" aria-live="polite" aria-atomic="true"><span aria-hidden="true"></span><p data-status>{review ? '2 applied changes to review. You decide what stays.' : 'Inspect the Jobs, then make one change.'}</p></div>
   </div>
-  <p class="jw-disclosure">{portfolio ? 'Interactive illustration using a retained sample. No live prices, account access, or trades.' : 'Interactive illustration based on Flow’s bundled Customer Research documents. Changes stay in this demo.'}</p>
+  {disclosure && <p class="jw-disclosure">{portfolio ? 'Interactive illustration using a retained sample. No live prices, account access, or trades.' : 'Interactive illustration based on Flow’s bundled Customer Research documents. Changes stay in this demo.'}</p>}
   <noscript><p class="jw-disclosure">Enable JavaScript to run this interactive walkthrough.</p></noscript>
 </div>
 <script>

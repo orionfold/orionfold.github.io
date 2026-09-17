@@ -138,6 +138,7 @@ function buildLastmodMap() {
   map['/flow/'] = '2026-09-17';
   map['/essays/'] = '2026-09-17';
   map['/essays/the-work-we-want-to-keep/'] = '2026-09-17';
+  map['/essays/the-work-we-want-to-keep/notes/'] = '2026-09-17';
   map['/essay/'] = '2026-09-17';
   map['/manifesto/'] = '2026-09-17';
   map['/privacy/'] = '2026-09-16';

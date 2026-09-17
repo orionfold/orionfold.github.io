@@ -7,7 +7,7 @@ export const ESSAYS = [
     href: '/essays/the-work-we-want-to-keep/',
     date: '2026-09-17',
     dateLabel: 'September 17, 2026',
-    minutes: 35,
+    minutes: 17,
     download: '/downloads/the-work-we-want-to-keep.md',
   },
   {

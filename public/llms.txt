@@ -14,7 +14,8 @@
 - [Room for a Renaissance](https://orionfold.com/essay/): Manav Sehgal's essay on making more room for the researcher, writer and builder in each of us. The foundational essay, retained at its original canonical URL.
 
 - [Essays](https://orionfold.com/essays/): Manav Sehgal on working knowledge, human judgment and Living Documents. Two essays, each with its own canonical URL; both also appear in the Story RSS feed.
-- [The Work We Want to Keep](https://orionfold.com/essays/the-work-we-want-to-keep/): The flagship essay on personal AI, founder history and the judgment people retain. Includes a Flow Jobs walkthrough and qualified research citations.
+- [The Work We Want to Keep](https://orionfold.com/essays/the-work-we-want-to-keep/): The flagship essay on personal AI, founder history and the judgment people retain. Follows a Customer Research brief through saved Jobs, source relationships and review. Detailed evidence is retained in the companion research notes.
+- [Research notes for The Work We Want to Keep](https://orionfold.com/essays/the-work-we-want-to-keep/notes/): Supporting studies, source links, Flow development observations and their limits. A companion to the flagship essay, not a separate essay.
 
 ## Flow (flagship, released for Mac)
 - [Flow](https://orionfold.com/flow/): Flow 1.7 Living Documents for Mac: inspect saved Jobs in Edit, Run and Relations; run useful work and review each changed part. Start with 24 useful documents. Interactive product illustrations explain the workflow. Pricing, FAQ, technical specifications and the direct download remain linked.

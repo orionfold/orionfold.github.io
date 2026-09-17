@@ -1,0 +1,178 @@
+---
+import { JOBS_SCENARIOS } from '../../scripts/jobs-workbench.js';
+
+const sample = JOBS_SCENARIOS.customer;
+const needs = [
+  { label: 'Approval record', count: 5 },
+  { label: 'Portable files', count: Number(sample.chartAfter) },
+  { label: 'Faster review', count: 2 },
+  { label: 'Local access', count: 1 },
+];
+---
+
+<figure class="ej-map" aria-label="Saved input and output relationships for the Customer Research brief">
+  <div class="ej-window">
+    <div class="ej-titlebar">
+      <span class="ej-traffic" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="ej-window-title"><img src="/logos/orionfold-mark-3d-32.png" alt="" width="18" height="18" />{sample.title}</span>
+      <span class="ej-version">Flow 1.7</span>
+    </div>
+    <div class="ej-toolbar">
+      <span><strong>Jobs Workbench</strong><span aria-hidden="true">/</span>Relations</span>
+      <span class="ej-view">Jobs map</span>
+    </div>
+    <div class="ej-body">
+      <div class="ej-context"><span>{sample.folder}</span><span>Declared inputs &amp; outputs</span></div>
+      <div class="ej-chain">
+        <section class="ej-node" aria-label="Input">
+          <span class="ej-label">READ FROM</span>
+          <strong class="ej-node-title">Interview notes</strong>
+          <code class="ej-file">{sample.source}</code>
+          <div class="ej-input">
+            <span class="ej-input-label">LATEST ENTRY</span>
+            <div><strong>I12</strong><span>Portable files</span></div>
+            <p>1 person · 1 primary need</p>
+          </div>
+          <p class="ej-node-foot">{sample.inputAfter} in the source.</p>
+        </section>
+
+        <span class="ej-arrow" aria-hidden="true">
+          <svg fill="none" width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
+        </span>
+
+        <section class="ej-node ej-node--job" aria-label="Saved Job">
+          <span class="ej-label">SAVED JOB</span>
+          <strong class="ej-node-title">Group needs</strong>
+          <code class="ej-file">{sample.definition}</code>
+          <dl class="ej-steps">
+            <div><dt>Group by</dt><dd>Primary need</dd></div>
+            <div><dt>Calculate</dt><dd>Sum mentions</dd></div>
+            <div><dt>Write</dt><dd>Dated capture</dd></div>
+          </dl>
+          <p class="ej-node-foot">A saved calculation.</p>
+        </section>
+
+        <span class="ej-arrow" aria-hidden="true">
+          <svg fill="none" width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7" /></svg>
+        </span>
+
+        <section class="ej-node ej-node--output" aria-label="Dated output used by the research document">
+          <span class="ej-label">WRITE TO</span>
+          <strong class="ej-node-title">Needs, counted</strong>
+          <code class="ej-file">{sample.output}</code>
+          <table class="ej-results">
+            <caption>{sample.chartTitle} · 12 interviews</caption>
+            <thead><tr><th scope="col">Need</th><th scope="col">People</th></tr></thead>
+            <tbody>
+              {needs.map(need => <tr class:list={{ 'ej-highlight': need.label === 'Portable files' }}>
+                <th scope="row">{need.label}</th>
+                <td><span class="ej-bar" aria-hidden="true" style={`--count:${need.count}`}><i></i></span><span>{need.count}</span></td>
+              </tr>)}
+            </tbody>
+          </table>
+          <p class="ej-owner"><span>USED BY</span><strong>{sample.title}</strong><span>Table + chart</span></p>
+        </section>
+      </div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .ej-map {
+    --ej-ink: #20302d;
+    --ej-muted: #61716b;
+    --ej-line: #d9e1dc;
+    --ej-teal: #247b80;
+    --ej-purple: #827394;
+    container: essay-jobs-map / inline-size;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    color: var(--ej-ink);
+    font: 400 13px/1.5 'Geist Sans', Arial, sans-serif;
+  }
+  .ej-map *, .ej-map *::before, .ej-map *::after { box-sizing: border-box; }
+  .ej-map :is(p, dl, dd, figure) { margin: 0; }
+  .ej-map strong { font-family: 'Geist Sans', Arial, sans-serif; }
+  .ej-window { overflow: hidden; border: 1px solid #c9d3cd; border-radius: 11px; background: #f5f7f3; box-shadow: 0 18px 48px #263c3010, 0 3px 7px #263c3006; }
+  .ej-titlebar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; min-height: 44px; padding: 9px 17px; border-bottom: 1px solid var(--ej-line); background: #f1f4f0; color: #506059; font-size: 11px; }
+  .ej-window-title { display: flex; align-items: center; gap: 7px; font-weight: 700; }
+  .ej-window-title img { display: block; width: 18px; height: 18px; }
+  .ej-version { justify-self: end; font-size: 10px; }
+  .ej-traffic { display: flex; gap: 5px; }
+  .ej-traffic i { width: 8px; height: 8px; border: 1px solid #c7d0c8; border-radius: 50%; }
+  .ej-traffic i:first-child { background: #e8bbb2; border-color: #dda89e; }
+  .ej-traffic i:nth-child(2) { background: #e7d5a0; border-color: #d7c58d; }
+  .ej-traffic i:last-child { background: #b8d5b4; border-color: #a8c7a4; }
+  .ej-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 15px 22px; background: #fff; border-bottom: 1px solid var(--ej-line); font-size: 11px; color: var(--ej-muted); }
+  .ej-toolbar > span:first-child { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .ej-toolbar strong { color: var(--ej-ink); font-size: 12px; }
+  .ej-view { flex: none; padding: 4px 9px; border: 1px solid #c2d6c9; border-radius: 4px; color: #366a5d; background: #edf5ef; font-size: 10px; font-weight: 700; }
+  .ej-body { padding: 22px; }
+  .ej-context { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 7px 14px; margin-bottom: 16px; color: var(--ej-muted); font-size: 10px; }
+  .ej-chain { display: grid; grid-template-columns: minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1.16fr); align-items: stretch; }
+  .ej-node { display: flex; flex-direction: column; min-width: 0; padding: 18px 15px 16px; border: 1px solid var(--ej-line); border-radius: 7px; background: #fff; }
+  .ej-node--job { border-color: #b6cebe; background: #edf5ef; }
+  .ej-label { display: block; color: var(--ej-muted); font-size: 9px; font-weight: 700; letter-spacing: .08em; }
+  .ej-node-title { display: block; margin-top: 8px; font-size: 17px; line-height: 1.25; letter-spacing: -.025em; }
+  .ej-map .ej-file { display: block; padding: 0; margin-top: 8px; color: #526b5d; background: none; font: 400 10px/1.6 'Geist Mono Variable', ui-monospace, monospace; overflow-wrap: anywhere; }
+  .ej-input { padding: 13px 11px; margin-top: 21px; border-radius: 4px; background: #f5f7f3; }
+  .ej-input-label { display: block; font-size: 8px; font-weight: 700; letter-spacing: .07em; color: var(--ej-muted); }
+  .ej-input > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 11px; margin-top: 7px; font-size: 11px; }
+  .ej-input > div > strong { color: var(--ej-teal); }
+  .ej-map .ej-input p { margin-top: 6px; font-size: 9px; color: var(--ej-muted); }
+  .ej-map .ej-node-foot { padding-top: 20px; margin-top: auto; color: var(--ej-muted); font-size: 10px; }
+  .ej-arrow { display: flex; align-items: center; justify-content: center; color: #8b9e90; }
+  .ej-steps { display: grid; gap: 13px; padding: 22px 0 0; font-size: 11px; }
+  .ej-steps > div { display: grid; gap: 2px; }
+  .ej-steps dt { font-size: 9px; color: var(--ej-muted); }
+  .ej-steps dd { font-weight: 600; }
+  .ej-results { width: 100%; margin-top: 19px; border-collapse: collapse; color: var(--ej-ink); font-size: 9px; }
+  .ej-results caption { text-align: left; color: var(--ej-muted); font-size: 9px; padding-bottom: 7px; }
+  .ej-results thead { font-size: 8px; color: var(--ej-muted); }
+  .ej-results th { text-align: left; font-weight: 400; }
+  .ej-results thead th:last-child { text-align: right; }
+  .ej-results td, .ej-results th { padding: 6px 0; }
+  .ej-results tbody th { white-space: nowrap; padding-right: 10px; }
+  .ej-results td { display: flex; align-items: center; gap: 8px; justify-content: flex-end; font-variant-numeric: tabular-nums; }
+  .ej-results td > span:last-child { width: 9px; text-align: right; }
+  .ej-bar { flex: 1; min-width: 20px; max-width: 50px; height: 3px; background: #eef0eb; }
+  .ej-bar > i { display: block; width: calc(var(--count) * 20%); height: 100%; background: var(--ej-purple); border-radius: 2px; }
+  .ej-highlight { color: var(--ej-teal); }
+  .ej-highlight th, .ej-highlight td { font-weight: 700; }
+  .ej-highlight .ej-bar > i { background: var(--ej-teal); }
+  .ej-map .ej-owner { display: grid; gap: 3px; margin-top: 15px; padding: 10px; background: #f1f5ef; border-radius: 4px; }
+  .ej-owner > span:first-child { font-size: 8px; letter-spacing: .07em; color: var(--ej-muted); }
+  .ej-owner strong { font-size: 11px; }
+  .ej-owner > span:last-child { color: var(--ej-muted); font-size: 9px; }
+  @container essay-jobs-map (max-width: 720px) {
+    .ej-body { padding: 20px 17px; }
+    .ej-chain { grid-template-columns: minmax(0,1fr); }
+    .ej-arrow { height: 32px; }
+    .ej-arrow svg { transform: rotate(90deg); }
+    .ej-node { padding: 18px; }
+    .ej-node-title { font-size: 19px; }
+    .ej-input { margin-top: 16px; }
+    .ej-steps { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; padding-top: 18px; }
+    .ej-results { font-size: 11px; }
+    .ej-results caption { font-size: 10px; }
+    .ej-results thead { font-size: 9px; }
+    .ej-results td, .ej-results th { padding-block: 7px; }
+    .ej-results td { gap: 16px; }
+    .ej-bar { max-width: 110px; }
+    .ej-map .ej-owner { grid-template-columns: 1fr auto; align-items: baseline; gap: 3px 10px; padding: 12px; }
+    .ej-owner > span:first-child { grid-column: 1 / -1; }
+  }
+  @container essay-jobs-map (max-width: 390px) {
+    .ej-titlebar { grid-template-columns: 37px 1fr; gap: 8px; padding-inline: 12px; }
+    .ej-window-title { justify-self: center; margin-right: 28px; }
+    .ej-version { display: none; }
+    .ej-toolbar { padding: 13px 15px; gap: 10px; }
+    .ej-toolbar > span:first-child { gap: 5px; }
+    .ej-toolbar strong { font-size: 11px; }
+    .ej-view { font-size: 9px; padding-inline: 6px; }
+    .ej-body { padding: 17px 13px; }
+    .ej-node { padding: 16px; }
+    .ej-steps { gap: 9px; font-size: 10px; }
+  }
+</style>

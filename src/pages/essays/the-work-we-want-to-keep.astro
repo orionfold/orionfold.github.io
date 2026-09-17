@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import JobsWorkbenchDemo from '../../components/living/JobsWorkbenchDemo.astro';
+import EssayJobsMap from '../../components/living/EssayJobsMap.astro';
 import PaperCta from '../../components/ui/PaperCta.astro';
 import { Content as Opening, getHeadings as openingHeadings } from '../../editorial/the-work-we-want-to-keep-opening.md';
 import { Content as WorkingKnowledge, getHeadings as workingHeadings } from '../../editorial/the-work-we-want-to-keep-working-knowledge.md';
@@ -23,6 +24,7 @@ const schema = [
     '@context': 'https://schema.org', '@type': 'Article',
     headline: essay.title, description: essay.description,
     datePublished: published, dateModified: published,
+    timeRequired: `PT${essay.minutes}M`,
     author: PERSON, publisher: PUBLISHER,
     mainEntityOfPage: `${SITE.url}${essay.href}`,
     image: `${SITE.url}${og.image}`,
@@ -44,7 +46,7 @@ const schema = [
       <div class="ed-article-kicker"><a href="/essays/">← Essays</a><span>02 / PERSONAL AI &amp; WORKING KNOWLEDGE</span></div>
       <h1>The Work<br />We Want <em>to Keep.</em></h1>
       <p class="ed-article-dek">{essay.subtitle}</p>
-      <div class="ed-hero-bottom"><div class="ed-meta"><a href="/about/">By Manav Sehgal</a><time datetime={essay.date}>{essay.dateLabel}</time><span>{essay.minutes} minute read</span></div><a href={essay.download} download class="ed-download-link">Save the essay ↓</a></div>
+      <div class="ed-hero-bottom"><div class="ed-meta"><a href="/about/">By Manav Sehgal</a><time datetime={essay.date}>{essay.dateLabel}</time><span>{essay.minutes} minute read</span></div><div class="ed-reading-links"><a href="#essay-first-job" class="ed-download-link">See a document at work ↓</a><a href={essay.download} download class="ed-download-link">Save the essay ↓</a></div></div>
       <img class="ed-article-paper" src="/assets/living-systems/hero-flow-paper-planes.webp" alt="" width="1642" height="958" decoding="async" />
     </header>
 
@@ -60,23 +62,30 @@ const schema = [
       </aside>
       <article class="ed-prose" aria-label={essay.title}>
         <Opening />
+        <section id="essay-first-job" class="ed-product-scene" aria-labelledby="essay-first-job-heading" data-essay-illustration>
+          <div class="ed-scene-intro"><p class="ls-eyebrow">01 / GIVE THE WORK A PLACE TO CONTINUE</p><h2 id="essay-first-job-heading">One new interview.<br /><em>A brief you can return to.</em><sup><a href="#essay-illustration-note" aria-label="About the product illustrations">*</a></sup></h2><p>Add an interview, run the saved Job, then inspect what changed in the chart and finding table.</p></div>
+          <JobsWorkbenchDemo scenario="customer" instanceId="essay-first-job" disclosure={false} />
+          <p id="essay-illustration-note" class="ed-illustration-note" role="note"><span aria-hidden="true">*</span> Product illustrations use fictional Customer Research data. They explain Flow’s workflow; interactions here do not change your files.</p>
+        </section>
         <PaperCta layout="article" class="ed-paper-cta"
           source="essay-work-we-want-to-keep-workshop" headingId="essay-cta-workshop"
-          heading="Build your own AI workshop." eyebrow="PERSONAL AI, ON YOUR TERMS"
-          description="Keep your sources, questions and Jobs together on your Mac. Choose the work you want AI to do, and keep the judgment yours." />
-        <WorkingKnowledge />
-        <PaperCta layout="article" class="ed-paper-cta"
-          source="essay-work-we-want-to-keep-first-job" headingId="essay-cta-first-job"
           heading="Give one document a job." eyebrow="START WITH USEFUL WORK"
-          description="Start with a Living Document, make your own copy, and run one useful Job. Inspect the result before deciding what comes next." />
+          description="Open Customer Research in Flow, make your own copy and inspect its saved Jobs. Begin with one question you already want to answer." />
+        <WorkingKnowledge />
+        <section id="essay-jobs-map" class="ed-product-scene ed-product-scene--map" aria-labelledby="essay-jobs-map-heading" data-essay-illustration>
+          <div class="ed-scene-intro"><p class="ls-eyebrow">02 / KEEP THE REASONS WITH THE RESULT</p><h2 id="essay-jobs-map-heading">A clear route<br /><em>back to the source.</em></h2><p>The input, the saved calculation and the document that uses its result belong to one piece of work.</p></div>
+          <EssayJobsMap />
+        </section>
         <BeforeReview />
-        <section class="ed-review-demo" aria-labelledby="essay-review-demo-heading">
-          <p class="ls-eyebrow">EXPLORE THE DECISION</p>
-          <h2 id="essay-review-demo-heading">The work can move.<br /><em>The judgment stays yours.</em></h2>
-          <p class="ed-demo-intro">Explore how a change connects to the document it affects. This interactive illustration uses sample data to explain the review; the native captures above show the released app.</p>
-          <JobsWorkbenchDemo scenario="portfolio" mode="review" />
+        <section id="essay-review-decision" class="ed-product-scene" aria-labelledby="essay-review-decision-heading" data-essay-illustration>
+          <div class="ed-scene-intro"><p class="ls-eyebrow">03 / DECIDE WHAT STAYS</p><h2 id="essay-review-decision-heading">The numbers changed.<br /><em>The decision is yours.</em></h2><p>Two changes are applied to the brief. Inspect either part, keep or revert it, or leave the decision for later.</p></div>
+          <JobsWorkbenchDemo scenario="customer" mode="review" instanceId="essay-review-decision" disclosure={false} />
           <a href="/flow/#jobs-workbench" class="ed-link">Explore Jobs in Flow <span aria-hidden="true">↗</span></a>
         </section>
+        <PaperCta layout="article" class="ed-paper-cta"
+          source="essay-work-we-want-to-keep-first-job" headingId="essay-cta-first-job"
+          heading="Return to work you understand." eyebrow="YOUR FILES. YOUR JUDGMENT."
+          description="Keep the sources, the work and the next decision together. Start with a Living Document on your Mac." />
         <AfterReview />
         <div class="ed-endmark" aria-hidden="true">◆</div>
         <PaperCta layout="article" class="ed-paper-cta"
@@ -86,6 +95,7 @@ const schema = [
         <section class="ed-author-bio" aria-label="About the author">
           <p><strong>Manav Sehgal</strong> builds Orionfold Flow and researches practical AI systems. His work spans document systems, risk analytics, cloud architecture and AI products.</p>
           <a href="/story/why-i-folded-orionfold/">Read the founding story ↗</a>
+          <a href="/essays/the-work-we-want-to-keep/notes/">Research notes and evidence ↗</a>
         </section>
       </article>
     </div>
@@ -95,5 +105,5 @@ const schema = [
       <div><p>{ESSAYS[1].subtitle}</p><a href="/essay/" class="ed-link">Return to the first argument <span aria-hidden="true">↗</span></a><a href="/essays/" class="ed-all-link">All essays →</a></div>
     </section>
   </main>
-  <Footer downloadSource="essay-work-we-want-to-keep" />
+  <Footer showDownload={false} />
 </Layout>
