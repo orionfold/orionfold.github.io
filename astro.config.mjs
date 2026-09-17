@@ -135,19 +135,17 @@ function buildLastmodMap() {
   // pricing went live, and the five launch-week stories landed. A release is the
   // most material change a page can carry, so recrawl priority matters most here.
   // Living Systems material content revision, not a build-clock freshness stamp.
-  map['/flow/'] = '2026-09-17';
-  map['/essays/'] = '2026-09-17';
-  map['/essays/the-work-we-want-to-keep/'] = '2026-09-17';
-  map['/essay/'] = '2026-09-17';
-  map['/manifesto/'] = '2026-09-17';
-  map['/privacy/'] = '2026-09-16';
-  map['/flow/tour/'] = '2026-09-17';
-  map['/flow/specifications/'] = '2026-09-17';
+  map['/flow/'] = '2026-09-06';
+  map['/essay/'] = '2026-09-06';
+  map['/manifesto/'] = '2026-09-06';
+  map['/privacy/'] = '2026-09-06';
+  map['/flow/tour/'] = '2026-09-06';
+  map['/flow/specifications/'] = '2026-09-06';
   for (const cat of ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files', 'enterprise']) {
     map[`/flow/${cat}/`] = '2026-08-22';
   }
   for (const page of ['night-shift', 'living-documents', 'settings', 'models-and-runtime', 'documents-and-files']) {
-    map[`/flow/${page}/`] = '2026-09-17';
+    map[`/flow/${page}/`] = '2026-09-06';
   }
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
   // so it tracks the freshest date across all of them.
@@ -225,7 +223,6 @@ export default defineConfig({
         // id, and it has nothing to offer search. It does not end in /thanks/,
         // so it needs naming here explicitly.
         !page.endsWith('/flow/welcome/') &&
-        !page.endsWith('/flow/confirm/') &&
         // The Flow Ideas concept route is a noindex campaign-review surface,
         // not a public Story entry. Keep it out of discovery in every build;
         // a later accepted launch story can own its own indexable route.

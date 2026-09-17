@@ -27,7 +27,7 @@ const guids = [...xml.matchAll(/<guid isPermaLink="true">([^<]+)<\/guid>/g)].map
 assert.equal(guids.length, items.length, 'every item needs a guid so readers can dedupe');
 assert.equal(new Set(guids).size, guids.length, 'guids must be unique');
 for (const guid of guids) {
-  assert.match(guid, /^https:\/\/orionfold\.com\/(?:story\/[a-z0-9-]+|essays\/[a-z0-9-]+|essay)\/$/, `guid must be an absolute canonical story URL: ${guid}`);
+  assert.match(guid, /^https:\/\/orionfold\.com\/(?:story\/[a-z0-9-]+|essay)\/$/, `guid must be an absolute canonical story URL: ${guid}`);
 }
 // Relative links break in every feed reader; absolute is the whole contract.
 assert.doesNotMatch(xml, /<link>\/story\//, 'item links must be absolute, never root-relative');
@@ -63,5 +63,3 @@ for (const page of ['dist/index.html', 'dist/story/index.html']) {
 console.log(`[story-rss-feed] ${items.length} stories in a well-formed, escaped, newest-first RSS 2.0 feed`);
 
 assert.equal(guids.filter(url => url === 'https://orionfold.com/essay/').length, 1, 'one canonical essay RSS entry');
-
-assert.equal(guids.filter(url => url === 'https://orionfold.com/essays/the-work-we-want-to-keep/').length, 1, 'one canonical flagship essay RSS entry');

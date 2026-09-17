@@ -3,7 +3,7 @@ import { expect, test, type Page } from './fixtures';
 
 const endpoint = 'http://127.0.0.1:4325/functions/v1/flow-living-documents-signup';
 const formSelector = '[data-living-documents-form]';
-const consent = 'Send me Flow updates, Living Documents Jobs, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time.';
+const consent = 'Send me Flow updates, Living Documents methods, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time.';
 
 // Render the built form with its real controller, synthetic loopback transport,
 // and an explicit gate. No request may reach an external email provider.
@@ -101,6 +101,7 @@ for (const width of [1440, 390]) {
     await page.evaluate(async () => { await document.fonts.ready; });
     const bar = page.locator('#confirm-bar');
     await expect(bar).toBeVisible();
+    await expect(bar).toHaveCSS('background-color', 'rgb(236, 252, 203)');
     await expect(bar.locator('#confirm-bar-text')).toHaveText('Thanks for subscribing to the Flow email newsletter.');
     await expect(bar.locator('#confirm-bar-detail')).toBeHidden();
     await expect(bar.locator('#confirm-bar-cta')).toBeHidden();
@@ -149,6 +150,7 @@ test('already and failed Flow links show a closable bar without new-lead measure
     await page.goto(`/?living-documents-confirmed=${state}`);
     const bar = page.locator('#confirm-bar');
     await expect(bar).toBeVisible();
+    if (state === 'already') await expect(bar).toHaveCSS('background-color', 'rgb(236, 252, 203)');
     await expect(bar.locator('#confirm-bar-text')).toHaveText(state === 'already' ? "You're already subscribed to the Flow email newsletter." : "That confirmation link didn't work.");
     await expect(bar.locator('#confirm-bar-cta')).toBeHidden();
     expect(await confirmationEvents(page)).toEqual([]);
@@ -162,29 +164,3 @@ test('already and failed Flow links show a closable bar without new-lead measure
   }
 });
 
-test('an already-issued Jobs site link confirms by GET and returns home without a third click', async ({ page }) => {
-  const token = 'a'.repeat(64);
-  const requests: { method: string; token: string | null }[] = [];
-  await page.route('https://orionfold.supabase.co/functions/v1/flow-living-documents-confirm?*', async route => {
-    const request = route.request();
-    requests.push({ method: request.method(), token: new URL(request.url()).searchParams.get('token') });
-    await route.fulfill({ status: 303, headers: { location: 'http://127.0.0.1:4325/?living-documents-confirmed=1' } });
-  });
-  await captureConfirmationEvents(page);
-  await page.goto(`/flow/confirm/?token=${token}`);
-  await expect(page).toHaveURL('http://127.0.0.1:4325/');
-  await expect(page.locator('#confirm-bar')).toBeVisible();
-  await expect(page.locator('#confirm-bar-text')).toHaveText('Thanks for subscribing to the Flow email newsletter.');
-  await expect(page.getByRole('button', { name: 'Confirm subscription', exact: true })).toHaveCount(0);
-  expect(requests).toEqual([{ method: 'GET', token }]);
-  expect(await confirmationEvents(page)).toEqual([['event', 'confirmed_lead', { offer: 'flow-living-documents-v1', form_source: 'manifesto-living-documents' }]]);
-});
-
-test('legacy confirmation acknowledgement does not enter the Living Documents measurement path', async ({ page }) => {
-  await captureConfirmationEvents(page);
-  await page.goto('/?confirmed=already');
-  await expect(page.locator('#confirm-toast')).toBeVisible();
-  await expect(page.locator('#confirm-toast-text')).toHaveText("You're already on the list.");
-  expect(await confirmationEvents(page)).toEqual([]);
-  expect(await page.evaluate(() => sessionStorage.getItem('of-living-documents-confirmed'))).toBeNull();
-});

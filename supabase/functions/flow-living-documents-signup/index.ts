@@ -7,8 +7,6 @@ import { serviceEnvironment } from "../_shared/service-environment.ts";
 import {
   canonicalPayload,
   confirmationEmail,
-  type ConfirmationEmailVersion,
-  confirmationUrl,
   type SignupInput,
 } from "./contract.ts";
 import { createSignupHandler } from "./handler.ts";
@@ -74,28 +72,7 @@ async function prepare(input: SignupInput, request: Request) {
   if (typeof row.result !== "string" || !Number.isInteger(row.claim_version)) {
     throw new Error("invalid_reservation");
   }
-  let emailVersion: ConfirmationEmailVersion = 1;
-  if (row.result === "send") {
-    // Only a fresh first claim adopts the new email. In-flight requests from
-    // the previous deployment keep version 1 through retries, byte-for-byte.
-    const version = await db().rpc(
-      "flow_living_documents_confirmation_email_version",
-      {
-        p_request_id: input.requestId,
-        p_claim_version: Number(row.claim_version),
-      },
-    );
-    if (version.error || (version.data !== 1 && version.data !== 2)) {
-      throw new Error("email_version_unavailable");
-    }
-    emailVersion = version.data;
-  }
-  return {
-    result: row.result,
-    claimVersion: Number(row.claim_version),
-    token,
-    emailVersion,
-  };
+  return { result: row.result, claimVersion: Number(row.claim_version), token };
 }
 async function suppressed(email: string) {
   const matches = await readLivingDocumentSuppressions(
@@ -107,22 +84,11 @@ async function suppressed(email: string) {
   );
   return matches.has(email);
 }
-async function deliver(
-  input: SignupInput,
-  token: string,
-  emailVersion: ConfirmationEmailVersion,
-): Promise<string> {
+async function deliver(input: SignupInput, token: string): Promise<string> {
   const footer = await footerForEmail(db(), input.email);
   const { subject, text } = confirmationEmail(
-    confirmationUrl(
-      serviceEnvironment(),
-      token,
-      input.consent_text,
-      emailVersion,
-    ),
+    `${serviceEnvironment().functionsBase}/flow-living-documents-confirm?token=${token}`,
     footer,
-    input.consent_text,
-    emailVersion,
   );
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",

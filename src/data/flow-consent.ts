@@ -7,4 +7,4 @@ export const FLOW_CONSENT_TEXT =
 
 // Separate affirmative permission; historical Flow waitlist consent remains unchanged.
 export const FLOW_LIVING_DOCUMENTS_OFFER = 'flow-living-documents-v1';
-export const FLOW_LIVING_DOCUMENTS_CONSENT_TEXT = 'Send me Flow updates, Living Documents Jobs, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time.';
+export const FLOW_LIVING_DOCUMENTS_CONSENT_TEXT = 'Send me Flow updates, Living Documents methods, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time.';

@@ -27,8 +27,8 @@ import FlowProof from '../components/living/FlowProof.astro';
 import FlowPlans from '../components/living/FlowPlans.astro';
 import FlowFaq from '../components/living/FlowFaq.astro';
 import FlowClosing from '../components/living/FlowClosing.astro';
-const title = "Flow for Mac \u00b7 Give your documents work to do.";
-const description = "Flow 1.7 for Mac. Start with 24 useful documents, inspect and run their Jobs, then review each changed part. Your files. Your judgment. Base is free.";
+const title = "Flow for Mac \u00b7 Give your work a Night Shift.";
+const description = "Flow Living Documents bring recurring jobs, living data, local notes and a Morning Briefing to files you own. Base is free forever.";
 const og = ogMeta('/flow/');
 const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication',name:'Orionfold Flow',applicationCategory:'ProductivityApplication',operatingSystem:'macOS',description,url:`${SITE.url}/flow/`,image:`${SITE.url}${og.image}`,author:PERSON,brand:{'@type':'Brand',name:'Orionfold'}};
 const faqSchema = {
@@ -41,9 +41,9 @@ const faqSchema = {
   <main id="main" class="ls-main">
     <FlowHero />
     <FlowNavigation />
-    <FlowDataDefinition />
     <FlowRhythm />
     <FlowRhythmNote />
+    <FlowDataDefinition />
     <FlowDocumentAnchors />
     <FlowDocuments />
     <FlowIdeasAnchors />

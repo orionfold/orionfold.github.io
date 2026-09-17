@@ -2,13 +2,11 @@
 
 This signup and `flow-living-documents-confirm` form a separate affirmative-consent flow. Existing waitlist offers, confirmation URLs, mail delivery, commerce and global suppression handlers are unchanged.
 
-The permission is: **Send me Flow updates, Living Documents Jobs, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time.** Offer `flow-living-documents-v1`; source `manifesto-living-documents`.
+The permission is: **Send me Flow updates, Living Documents methods, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time.** Offer `flow-living-documents-v1`; source `manifesto-living-documents`.
 
-The original migration creates `flow_living_documents_subscriptions` and `flow_living_documents_signup_attempts`. Only the service role can read them. Writes go through restricted transactional functions. The browser sends a UUID, email, exact consent and affirmative boolean, fixed offer/source, optional honeypot and allowlisted attribution. Unknown fields are discarded.
+The migration creates `flow_living_documents_subscriptions` and `flow_living_documents_signup_attempts`. Only the service role can read them. Writes go through three restricted transactional functions. The browser sends a UUID, email, exact consent and affirmative boolean, fixed offer/source, optional honeypot and allowlisted attribution. Unknown fields are discarded.
 
-Confirmation tokens are opaque HMAC outputs. The email link confirms the subscription and redirects to the homepage, where the existing top banner briefly thanks the subscriber. It closes after eight seconds or when dismissed, then restores Download Flow. There is no extra confirmation button. New links go directly to the confirmation function; `/flow/confirm/` is only a silent compatibility redirect for previously issued links.
-
-Only SHA256 hashes are stored. First confirmation clears the active token hash and retains a receipt hash; a repeated valid click returns `already` without changing consent or timestamps. Both first use and replay expire at the original seven-day boundary and respect normalized global suppression. HEAD and explicitly marked prefetch requests do not confirm. Ordinary GET follows the requested email-link confirmation behavior; unmarked automated link scanners can also follow it. The unchanged unsubscribe service remains authoritative.
+Confirmation tokens are opaque HMAC outputs. Only their SHA256 hash is retained in the database. Confirmation expires after seven days and atomically consumes the hash. Opening a confirmation URL renders a native form without changing consent; pressing its confirmation button submits a POST. Global suppressions prevent reservation, delivery and confirmation. The unchanged unsubscribe service remains authoritative.
 
 Delivery uses a one-minute reservation lease, a maximum of three attempts per request UUID within one hour, and a stable Resend idempotency key. Five new requests per IP fingerprint or email per hour. Failed or uncertain provider/database results return an error, never a false delivered message. The client retains its UUID across retries until the payload changes or a completed acknowledgement arrives.
 
@@ -26,14 +24,3 @@ Marketing reads confirmed rows by `(updated_at, id)`, imports idempotently by su
 Run the handler tests and type checks with Deno. `verify-database.sql` is an isolated PostgreSQL acceptance script enclosed in a rollback transaction; it never sends an email. Real database/role and controlled delivery acceptance are required before activation.
 
 Suppression identity is matched case-insensitively with surrounding spaces removed for this offer only. Migration `20260906020000_normalize_flow_living_documents_suppressions.sql` adds a read-only service-role RPC and updates this offer's reservation/confirmation predicates; the original migration and legacy suppression writers remain unchanged. Deploy that migration before the updated signup/export adapters. A pre-send RPC error prevents delivery. `verify-suppression-normalization.sql` is a rollback-only acceptance check covering mixed-case historical rows, late suppression before send/confirmation, an unsuppressed control and RPC access/input bounds.
-
-
-## Jobs terminology and earlier consent
-
-Current forms request **Living Documents Jobs**. The signup contract accepts exactly that sentence and the earlier **Living Documents methods** sentence. It preserves the submitted sentence in storage, the canonical retry payload, and every confirmation email. Old retries keep their original email body, token, and provider idempotency key. Existing confirmed subscriptions and historical rows are not rewritten or re-enrolled.
-
-Migration `20260917010000_allow_flow_living_documents_jobs_consent.sql` changes only the consent-text check to permit the two exact sentences. Migration `20260917020000_add_flow_confirmation_replay_receipts.sql` adds consumed-hash receipts, the result-aware confirmation RPC, and persisted email-template versions. Apply the database changes before deploying their adapters. Keep the existing boolean confirmation RPC for earlier callers.
-
-Email version 1 preserves the earlier body and link exactly for outstanding retries. Version 2 uses a direct email confirmation link and the instruction “Click to confirm your subscription:”. A restricted RPC marks version 2 only on a fresh first sending claim; later claims retain their stored version. No table-write privilege is added. The consent sentence, canonical request hash, token and provider idempotency key remain stable.
-
-`verify-consent-versions.sql` and `flow-living-documents-confirm/verify-replay-database.sql` verify exact consent, replay, expiry, suppression, version bounds, claim ownership and role access inside rollback transactions. They send no email. Controlled production delivery and click-to-notification acceptance remain release prerequisites. Inspect actual repository variables and backend activation; default-off source code does not establish production state. Preserve existing activation and deploy only the two related handlers. The website banner must be available before the confirmation handler starts returning its homepage acknowledgement namespace.

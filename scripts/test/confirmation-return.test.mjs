@@ -1,15 +1,81 @@
-import assert from 'node:assert/strict';
-import test from 'node:test';
-import { existsSync, readFileSync } from 'node:fs';
-import vm from 'node:vm';
-import { transform } from 'esbuild';
-const read = path => readFileSync(new URL('../../' + path, import.meta.url), 'utf8');
-const source = read('src/scripts/living-documents-confirmation.ts');
-const { code } = await transform(source.replace(/import[^;]+;/, '').replace('export function', 'function'), { loader: 'ts' });
-const redirectSource = read('src/scripts/living-documents-confirmation-redirect.ts');
-const { code: redirectCode } = await transform(redirectSource.replace('export function', 'function'), { loader: 'ts' });
-const endpoint = 'https://orionfold.supabase.co/functions/v1/flow-living-documents-confirm';
-function fixture(query, { stored = {}, storageFails = false, pathname = '/' } = {}) {
+import assert from "node:assert/strict";
+import test from "node:test";
+import { readFileSync } from "node:fs";
+import vm from "node:vm";
+import { transform } from "esbuild";
+const source = readFileSync(
+  new URL(
+    "../../src/scripts/living-documents-confirmation.ts",
+    import.meta.url,
+  ),
+  "utf8",
+).replace(/import[^;]+;/, "");
+const { code } = await transform(source, { loader: "ts" });
+function fixture(query) {
+  const copy = { textContent: "" };
+  const panel = {
+    querySelector: () => copy,
+    classList: { remove() {} },
+    focus() {},
+  };
+  const events = [];
+  const location = {
+    pathname: "/manifesto/",
+    search: query,
+    hash: "#email-updates",
+  };
+  const context = vm.createContext({
+    FLOW_LIVING_DOCUMENTS_OFFER: "flow-living-documents-v1",
+    URLSearchParams,
+    location,
+    document: { querySelector: () => panel, addEventListener() {} },
+    history: {
+      replaceState(_state, _title, url) {
+        const u = new URL(url, "https://orionfold.com");
+        location.search = u.search;
+        location.hash = u.hash;
+      },
+    },
+    window: { gtag: (...args) => events.push(args) },
+  });
+  return { run: () => vm.runInContext(code, context), copy, events, location };
+}
+test("dedicated success return counts once and preserves unrelated query and fragment", () => {
+  const f = fixture("?living-documents-confirmed=1&utm_source=email");
+  f.run();
+  assert.equal(f.events.length, 1);
+  assert.equal(f.events[0][1], "confirmed_lead");
+  assert.equal(f.events[0][2].offer, "flow-living-documents-v1");
+  assert.equal(f.events[0][2].form_source, "manifesto-living-documents");
+  assert.equal(f.location.search, "?utm_source=email");
+  assert.equal(f.location.hash, "#email-updates");
+  assert.match(f.copy.textContent, /AI Native Newsletter/);
+  f.run();
+  assert.equal(f.events.length, 1);
+});
+test("unavailable confirmation acknowledges without counting a lead", () => {
+  const f = fixture("?living-documents-confirmed=error");
+  f.run();
+  assert.equal(f.events.length, 0);
+  assert.match(f.copy.textContent, /unavailable/);
+  assert.equal(f.location.search, "");
+});
+test("legacy confirmation queries and banner state are untouched", () => {
+  for (
+    const query of ["?confirmed=1", "?confirmed=already", "?confirmed=error"]
+  ) {
+    const f = fixture(query);
+    f.run();
+    assert.equal(f.events.length, 0);
+    assert.equal(f.copy.textContent, "");
+    assert.equal(f.location.search, query);
+  }
+});
+
+// Passive homepage adapter: the existing panel controller and tests above remain unchanged.
+const bannerSource = readFileSync(new URL('../../src/scripts/living-documents-confirmation-banner.ts', import.meta.url), 'utf8');
+const { code: bannerCode } = await transform(bannerSource.replace(/import[^;]+;/, '').replace('export function', 'function'), { loader: 'ts' });
+function bannerFixture(query, { stored = {}, storageFails = false, pathname = '/' } = {}) {
   function element() {
     const classes = new Set(['hidden']);
     const listeners = new Map();
@@ -42,13 +108,12 @@ function fixture(query, { stored = {}, storageFails = false, pathname = '/' } = 
     window: { gtag: (...args) => events.push(JSON.parse(JSON.stringify(args))), fbq: (...args) => pixelEvents.push(JSON.parse(JSON.stringify(args))) },
   });
   return {
-    run: () => vm.runInContext(code + '\nacknowledgeLivingDocumentsConfirmation();', context),
-    redirect: (enabled = true) => vm.runInContext(redirectCode + `\nredirectLegacyLivingConfirmation(${JSON.stringify(endpoint)}, ${enabled});`, context),
+    run: () => vm.runInContext(bannerCode + '\nacknowledgeLivingDocumentsConfirmation();', context),
     nodes, events, pixelEvents, location, storage, local, timers, redirects,
   };
 }
 test('Flow success uses the existing bar, counts once, and preserves attribution and legacy query fields', () => {
-  const f = fixture('?living-documents-confirmed=1&utm_source=email&confirmed=already');
+  const f = bannerFixture('?living-documents-confirmed=1&utm_source=email&confirmed=already');
   assert.equal(f.run(), true);
   assert.equal(f.nodes['confirm-bar'].classList.contains('hidden'), false);
   assert.equal(f.nodes['confirm-bar-text'].textContent, 'Thanks for subscribing to the Flow email newsletter.');
@@ -71,7 +136,7 @@ test('Flow success uses the existing bar, counts once, and preserves attribution
 });
 test('the Flow acknowledgement auto-dismisses after eight seconds or closes immediately', () => {
   for (const state of ['1', 'already', 'error']) {
-    const f = fixture(`?living-documents-confirmed=${state}`);
+    const f = bannerFixture(`?living-documents-confirmed=${state}`);
     f.run();
     const [timer] = [...f.timers.values()];
     assert.equal(timer.delay, 8000);
@@ -82,7 +147,7 @@ test('the Flow acknowledgement auto-dismisses after eight seconds or closes imme
     assert.equal(f.nodes['magnet-bar'].inert, false);
     assert.equal(f.nodes['magnet-bar'].attributes.has('aria-hidden'), false);
     assert.equal(f.nodes['magnet-bar'].dataset.confirmationCovered, undefined);
-    const manual = fixture(`?living-documents-confirmed=${state}`);
+    const manual = bannerFixture(`?living-documents-confirmed=${state}`);
     manual.run();
     manual.nodes['confirm-bar-close'].click();
     assert.equal(manual.nodes['confirm-bar'].classList.contains('hidden'), true);
@@ -94,7 +159,7 @@ test('the Flow acknowledgement auto-dismisses after eight seconds or closes imme
 });
 test('already and error acknowledge without confirmed-lead or ad conversion events', () => {
   for (const state of ['already', 'error']) {
-    const f = fixture(`?living-documents-confirmed=${state}`);
+    const f = bannerFixture(`?living-documents-confirmed=${state}`);
     assert.equal(f.run(), true);
     assert.equal(f.nodes['confirm-bar'].dataset.confirmationState, state);
     assert.equal(f.events.length, 0);
@@ -105,7 +170,7 @@ test('already and error acknowledge without confirmed-lead or ad conversion even
 });
 test('legacy confirmations and invalid or ambiguous namespaced states are untouched', () => {
   for (const query of ['?confirmed=1', '?confirmed=already', '?confirmed=error&error=expired', '?living-documents-confirmed=unknown', '?living-documents-confirmed=1&living-documents-confirmed=error']) {
-    const f = fixture(query, { stored: { 'of-confirm-welcome': '1', 'of-confirm-welcome-dismissed': '1' } });
+    const f = bannerFixture(query, { stored: { 'of-confirm-welcome': '1', 'of-confirm-welcome-dismissed': '1' } });
     assert.equal(f.run(), false);
     assert.equal(f.location.search, query);
     assert.equal(f.events.length, 0);
@@ -114,39 +179,9 @@ test('legacy confirmations and invalid or ambiguous namespaced states are untouc
   }
 });
 test('storage restrictions do not suppress the thank-you or its dismissal', () => {
-  const f = fixture('?living-documents-confirmed=1', { storageFails: true });
+  const f = bannerFixture('?living-documents-confirmed=1', { storageFails: true });
   assert.equal(f.run(), true);
   assert.equal(f.nodes['confirm-bar'].classList.contains('hidden'), false);
   f.nodes['confirm-bar-close'].click();
   assert.equal(f.nodes['confirm-bar'].classList.contains('hidden'), true);
-});
-test('old site email links silently continue to the GET confirmation endpoint', () => {
-  const token = 'a'.repeat(64);
-  const f = fixture(`?token=${token}&utm_source=email`, { pathname: '/flow/confirm/' });
-  f.redirect();
-  assert.deepEqual(f.redirects, [`${endpoint}?token=${token}`]);
-  assert.equal(f.location.search, '');
-  assert.equal(f.location.hash, '');
-  assert.equal(f.events.length, 0);
-});
-test('invalid, ambiguous, and preview tokens never reach a confirmation endpoint', () => {
-  for (const query of ['', '?token=bad', `?token=${'A'.repeat(64)}`, `?token=${'a'.repeat(64)}&token=${'b'.repeat(64)}`]) {
-    const f = fixture(query, { pathname: '/flow/confirm/' });
-    f.redirect();
-    assert.deepEqual(f.redirects, ['/?living-documents-confirmed=error']);
-  }
-  const f = fixture(`?token=${'a'.repeat(64)}`, { pathname: '/flow/confirm/' });
-  f.redirect(false);
-  assert.deepEqual(f.redirects, ['/?living-documents-confirmed=error']);
-});
-test('the old site route has no authored confirmation screen, form, or analytics shell', () => {
-  const page = read('src/pages/flow/confirm.astro');
-  assert.match(page, /name="robots" content="noindex, nofollow"/);
-  assert.match(page, /name="referrer" content="no-referrer"/);
-  assert.doesNotMatch(page, /import Layout|<form|<button|<h1|gtag|fbq|googletagmanager|google-analytics|Return to email updates/);
-  assert.match(page, /redirectLegacyLivingConfirmation\(serviceEndpoint\('flow-living-documents-confirm'\), SERVICE_ACTIONS_ENABLED\)/);
-  assert.doesNotMatch(source + redirectSource, /fetch\(|requestSubmit\(|\.submit\(/);
-  assert.equal(existsSync(new URL('../../src/components/living/LivingDocumentsConfirmation.astro', import.meta.url)), false);
-  assert.doesNotMatch(read('src/components/living/EmailInvitation.astro'), /LivingDocumentsConfirmation/);
-  assert.match(read('src/components/ui/ConfirmBanner.astro'), /if \(acknowledgeLivingDocumentsConfirmation\(\)\) return;/);
 });

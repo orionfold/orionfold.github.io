@@ -30,7 +30,7 @@ const livingFaq = read('src/data/living-faq.json');
 const nav = read('src/components/Nav.astro');
 const navArray = nav.match(/const links = \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/label: '([^']+)'/g)].map((match) => match[1]);
-assert.deepEqual(navLabels, ['Flow', 'Essays', 'The Manifesto', 'Story', 'Books'], 'the global nav carries the approved Living Documents and editorial front doors');
+assert.deepEqual(navLabels, ['Flow', 'Essay', 'The Manifesto', 'Story', 'Books'], 'the global nav carries the approved Living Documents and editorial front doors');
 for (const localOnly of ['Tour', 'Tech Specs', 'Enterprise']) {
   assert.equal(navLabels.includes(localOnly), false, `${localOnly} stays in the Flow-local rail, not the global nav`);
 }
@@ -53,7 +53,7 @@ assert.match(nav, /of-flow-bar-dismissed/, 'the Flow bar uses its own dismissal 
 const footer = read('src/components/Footer.astro');
 const columns = name => [...(footer.match(new RegExp('const ' + name + ' = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
 assert.deepEqual(columns('FLOW_COLUMNS'), [
-  ['/flow/', 'Overview'], ['/essays/', 'Essays'], ['/manifesto/', 'Manifesto'],
+  ['/flow/', 'Overview'], ['/essay/', 'Essay'], ['/manifesto/', 'Manifesto'],
   ['/flow/tour/', 'Tour'], ['/flow/night-shift/', 'Night Shift'], ['/flow/living-documents/', 'Living Documents'], ['/flow/settings/', 'Settings'], ['/flow/specifications/', 'Tech Specs'], ['/flow/enterprise/', 'Enterprise'],
 ]);
 assert.deepEqual(columns('ORIONFOLD_COLUMNS'), [
@@ -98,7 +98,7 @@ assert.match(categoryShell, /<FlowSubNav active="tour" \/>/, 'the Flow category 
 // Approved Living Systems product proofs replace the racing photograph and
 // real screenshot on the flagship. Detailed tours keep their capture rails.
 assert.match(flowPageSource, /<FlowHero \/>/);
-assert.match(read('src/components/living/FlowHero.astro'), /GIVE[\s\S]*YOUR[\s\S]*DOCUMENTS[\s\S]*WORK TO DO/);
+assert.match(read('src/components/living/FlowHero.astro'), /GIVE[\s\S]*YOUR[\s\S]*WORK[\s\S]*NIGHT SHIFT/);
 assert.match(flow, /offline/i, 'the document tools retain their offline promise');
 assert.match(flow, /diff you approve|Review changes|Keep\/Revert|Keep and Revert/i, 'human review remains visible');
 assert.match(flow, /patent pending/i);
@@ -480,9 +480,9 @@ assert.match(homeHero, /MAKE[\s\S]*KNOWLEDGE[\s\S]*LIVING[\s\S]*THING/);
 assert.match(homePageSource, /<ConfirmBanner \/>/, 'confirmed-email landing behavior remains mounted');
 assert.match(homePageSource, /SoftwareApplication/);
 assert.match(homeHero, /<HomeKnowledgeDemo \/>/);
-assert.match(read('src/components/living/FlowHero.astro'), /<JobsWorkbenchDemo compact \/>/);
+assert.match(read('src/components/living/FlowHero.astro'), /<ProductDemo \/>/);
 assert.doesNotMatch(homePageSource, /FlowShot|FlowLaunchHomeHero|HomeRaceCapabilityAct|FlowIdeasPitStop/);
-const homeOrder = ['<HomeHero','<CapabilityRibbon','<HomeContinuity','<FlagshipEssayInvitation','<HomeDocumentWorkshop','<HomeIdeas','<HomeProof','<Founder','<Ecosystem','<HomeClosing'].map(marker => homePageSource.indexOf(marker));
+const homeOrder = ['<HomeHero','<CapabilityRibbon','<HomeContinuity','<HomeDocumentWorkshop','<HomeIdeas','<HomeProof','<Founder','<EssayInvitation','<Ecosystem','<HomeClosing'].map(marker => homePageSource.indexOf(marker));
 assert.match(home, /id="waitlist"/, 'old campaign landing anchor survives');
 assert.match(read('src/components/living/EmailInvitation.astro'), /<LivingDocumentsForm \/>/, 'the new offer has a dedicated signup component');
 assert.match(read('src/components/living/LivingDocumentsForm.astro'), /data-consent=\{FLOW_LIVING_DOCUMENTS_CONSENT_TEXT\}/, 'new consent is imported rather than retyped');
@@ -609,7 +609,7 @@ for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
   assert.match(entry, /["']?alt["']?: ["'][^"']{35,}/, `${route}: descriptive social alt`);
   assert.doesNotMatch(entry, /screenshot:/, `${route}: flagship social card uses editorial origami`);
 }
-assert.match(ogData,/Give your documents work to do/);
+assert.match(ogData,/Give your work a Night Shift/);
 assert.match(ogData,/Make knowledge a living thing/);
 assert.match(ogData,/Room for a Renaissance/);
 assert.match(ogData,/The Living Documents Manifesto/);

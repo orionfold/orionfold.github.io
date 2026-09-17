@@ -15,7 +15,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SITE } from '../../data/seo';
-import { ESSAYS } from '../../data/essays';
 
 /** Escape the five XML predefined entities. Order matters: & must go first. */
 function xmlEscape(value: string): string {
@@ -36,13 +35,16 @@ export const GET: APIRoute = async () => {
   const stories = (await getCollection('story')).map((post) => ({
     url: `${SITE.url}/story/${post.id}/`, data: post.data,
   }));
-  // Canonical essay URLs also appear here without duplicating their bodies.
-  const essays = ESSAYS.map(essay => ({
-    url: `${SITE.url}${essay.href}`,
-    data: { title: essay.title, summary: essay.description,
-      date: new Date(`${essay.date}T00:00:00Z`), tags: ['Living Documents', 'Essay'] },
-  }));
-  const posts = [...stories, ...essays].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  // The essay has one canonical URL. RSS discovery does not duplicate the body.
+  const posts = [...stories, {
+    url: `${SITE.url}/essay/`,
+    data: {
+      title: 'Room for a Renaissance',
+      summary: 'How knowledge that keeps working can make more room for the researcher, writer, and builder in each of us. An essay by Manav Sehgal.',
+      date: new Date('2026-09-06T00:00:00Z'),
+      tags: ['Living Documents', 'Essay'],
+    },
+  }].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
   const items = posts
     .map((post) => {
@@ -76,7 +78,7 @@ export const GET: APIRoute = async () => {
   <channel>
     <title>Orionfold Story</title>
     <link>${SITE.url}/story/</link>
-    <description>Essays and building-in-public notes on working knowledge, what we shipped, and what we learned.</description>
+    <description>Building in public: short, honest notes on what we shipped, what broke, and what we learned along the way.</description>
     <language>en-us</language>
     <copyright>Orionfold LLC</copyright>
     <lastBuildDate>${rfc822(newest)}</lastBuildDate>

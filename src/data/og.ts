@@ -46,16 +46,6 @@ export const OG_PAGES: Record<string, OgPage> = {
     "alt": "The Living Documents Manifesto: work that continues and judgment that stays yours.",
     "living": true
 },
-  '/essays/': {
-    slug: 'essays', eyebrow: 'Orionfold · Essays',
-    title: 'Work worth keeping. Ideas worth following.', seed: 'essays',
-    alt: 'Orionfold essays by Manav Sehgal on working knowledge, human judgment and Living Documents.', living: true,
-  },
-  '/essays/the-work-we-want-to-keep/': {
-    slug: 'the-work-we-want-to-keep', eyebrow: 'An essay by Manav Sehgal',
-    title: 'The Work We Want to Keep.', seed: 'the-work-we-want-to-keep',
-    alt: 'The Work We Want to Keep, an essay by Manav Sehgal on personal AI, working knowledge and human judgment.', living: true,
-  },
   '/essay/': {
     "slug": "essay",
     "eyebrow": "An essay by Manav Sehgal",
@@ -201,9 +191,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/': {
     "slug": "flow",
     "eyebrow": "Flow for Mac · Living Documents",
-    "title": "Give your documents work to do.",
+    "title": "Give your work a Night Shift.",
     "seed": "flow",
-    "alt": "Flow for Mac: Give your documents work to do. Origami paper planes carry documents forward.",
+    "alt": "Flow for Mac: Give your work a Night Shift. Origami paper planes carry documents forward.",
     "living": true
 },
   '/flow/specifications/': {
@@ -215,17 +205,17 @@ export const OG_PAGES: Record<string, OgPage> = {
     light: true,
   },
   '/flow/night-shift/': {
-    slug: 'flow-night-shift', eyebrow: 'Flow 1.7 · Night Shift',
+    slug: 'flow-night-shift', eyebrow: 'Flow 1.6 · Night Shift',
     title: 'Let your documents work the Night Shift.', seed: 'flow-night-shift',
     alt: 'Flow Night Shift: scheduled work on your Mac, a Morning Briefing, and changes you can review.', living: true,
   },
   '/flow/living-documents/': {
-    slug: 'flow-living-documents', eyebrow: 'Flow 1.7 · Living Documents',
+    slug: 'flow-living-documents', eyebrow: 'Flow 1.6 · Living Documents',
     title: 'A document that keeps up.', seed: 'flow-living-documents',
-    alt: 'Flow Living Documents: 24 starting documents, linked sources, live charts and tables, and reviewable changes.', living: true,
+    alt: 'Flow Living Documents: seven starting folders, linked sources, live charts and tables, and reviewable changes.', living: true,
   },
   '/flow/settings/': {
-    slug: 'flow-settings', eyebrow: 'Flow 1.7 · Settings',
+    slug: 'flow-settings', eyebrow: 'Flow 1.6 · Settings',
     title: 'Your Mac. Your models. Your rules.', seed: 'flow-settings',
     alt: 'Six Flow Settings screens put documents, models, routing, evidence and the Night Shift in view.', living: true,
   },
@@ -234,7 +224,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Orionfold Flow · Product tour',
     title: 'See Flow at work',
     seed: 'flow-tour',
-    alt: 'Orionfold Flow 1.7 product tour: Night Shift, Living Documents, six Settings screens, writing with AI and receipts shown through real product screens',
+    alt: 'Orionfold Flow 1.6 product tour: Night Shift, Living Documents, six Settings screens, writing with AI and receipts shown through real product screens',
     light: true,
   },
   // The four /flow/<category>/ tour pages (2026-08-20 split). Text-only cards

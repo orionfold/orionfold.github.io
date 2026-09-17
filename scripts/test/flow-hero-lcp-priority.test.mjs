@@ -16,6 +16,6 @@ for(const [route,kind,priority] of [['index.html','home','low'],['flow/index.htm
  assert.match(art[0],/width="1642"/);assert.match(art[0],/height="958"/);
  assert.match(main,new RegExp(`<source[^>]+srcset="/assets/living-systems/hero-${kind}-paper-planes\\.webp"`));
  assert.doesNotMatch(main,/first-launch-home-hero|first-launch-flow-hero|pit-stop-daylight|FlowShot/);
- assert.match(hero,kind === 'home' ? /data-demo=/ : /data-jobs-demo/,'hero uses the native interactive model');
+ assert.match(main,/data-demo=/,'hero uses the native interactive model');
 }
 console.log('# measured per-route origami priority, eager delivery and stable dimensions pass');

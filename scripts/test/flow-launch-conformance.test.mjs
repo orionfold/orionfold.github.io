@@ -19,7 +19,7 @@ const link = (html, rel) => html.match(new RegExp(`<link\\s+rel="${esc(rel)}"\\s
 
 const routes = [
   ['/', 'Orionfold · Make knowledge a living thing.', 'MAKE KNOWLEDGE A LIVING THING.'],
-  ['/flow/', 'Flow for Mac · Give your documents work to do.', 'GIVE YOUR DOCUMENTS WORK TO DO.'],
+  ['/flow/', 'Flow for Mac · Give your work a Night Shift.', 'GIVE YOUR WORK A NIGHT SHIFT.'],
   ['/essay/', 'Room for a Renaissance · An essay by Manav Sehgal', 'Room for a Renaissance.'],
   ['/manifesto/', 'The Living Documents Manifesto · Orionfold', 'MAKE ROOM FOR MORE OF YOU.'],
   ['/flow/tour/', 'Orionfold Flow product tour · See Flow at work', 'See Flow at work.'],
@@ -79,7 +79,7 @@ assert.match(htmlFor('/'), /href="\/story\/the-pit-crew-that-never-touches-the-w
 // The four-item local product rail is identical everywhere it appears and the
 // global rail remains the short product family the operator selected.
 const launchHtml = routes.map(([route]) => htmlFor(route)).join('\n');
-for (const label of ['Flow', 'Essays', 'The Manifesto', 'Relay', 'Arena', 'Books', 'Story']) {
+for (const label of ['Flow', 'Essay', 'The Manifesto', 'Relay', 'Arena', 'Books', 'Story']) {
   assert.match(launchHtml, new RegExp(`>\\s*${esc(label)}\\s*<`), `global navigation keeps ${label}`);
 }
 for (const route of routes.filter(([route]) => route.startsWith('/flow/')).map(([route]) => route)) {

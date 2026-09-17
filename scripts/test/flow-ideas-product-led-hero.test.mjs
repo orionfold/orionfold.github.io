@@ -4,7 +4,7 @@ const read = path => readFileSync(new URL(`../../${path}`, import.meta.url),'utf
 for (const [page,hero,art] of [['index','HomeHero','home'],['flow','FlowHero','flow']]) {
  const route=read(`src/pages/${page}.astro`), composition=read(`src/components/living/${hero}.astro`);
  assert.match(route,new RegExp(`<${hero} \\/>`));
- assert.match(composition,page === 'index' ? /<HomeKnowledgeDemo \/>/ : /<JobsWorkbenchDemo compact \/>/);
+ assert.match(composition,page === 'index' ? /<HomeKnowledgeDemo \/>/ : /<ProductDemo \/>/);
  assert.match(composition,new RegExp(`hero-${art}-paper-planes\\.webp`));
  assert.doesNotMatch(route+composition,/FlowShot|FlowLaunchHomeHero|home-variants|data-home-variant|FlowRaceBlueprint|<video/);
  const bytes=statSync(new URL(`../../public/assets/living-systems/hero-${art}-paper-planes.webp`,import.meta.url)).size;

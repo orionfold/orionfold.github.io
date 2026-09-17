@@ -4,7 +4,15 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 // Existing live-source baseline bbbf645. Intentional future commerce changes
 // must explicitly review and update this release parity receipt.
+const ADAPTER_IMPORT = "  import { acknowledgeLivingDocumentsConfirmation } from '../../scripts/living-documents-confirmation-banner';\n";
+const ADAPTER_GUARD = "    // Living Documents confirmations use this same bar without changing the\n    // legacy confirmed parameter, welcome storage, or conversion controller.\n    if (acknowledgeLivingDocumentsConfirmation()) return;\n";
 const hashes = {
+  "supabase/functions/flow-living-documents-signup/contract.ts": "473ca76aaf9bfebc54e8f69885b36803b6cc7fefbc233e67519b38f6f8aceaf6",
+  "supabase/functions/flow-living-documents-confirm/handler.ts": "2adc7f1f5de3baf8ec9378b6aa66377633030c2d9e8b14a65db142f302e88010",
+  "src/data/flow-consent.ts": "6e44a1b365eee3646adf7cd038fa3a3a4e78fbdb1578cadb3125e9672b2342aa",
+  "src/components/living/EmailInvitation.astro": "53d5c30c484f91a47f6069baa32e0f4dbed15ccc3e21b3eb830b82c6d28aed2d",
+  "src/components/living/LivingDocumentsConfirmation.astro": "50fc49a6c3750ca287dac22101f93a76a6312f4d15925fb92e6ebfb074686cf7",
+  "src/scripts/living-documents-confirmation.ts": "437c0ef33057ce5979fa096c5643e5872119db2dc9c794ba87662f3d1115f9a4",
   "src/lib/commerce-config.ts":
     "e81dbc5ff26cfec92c6b4b51c2ef4ebccd335b89eed4cf568c0791d64bc5069c",
   "src/lib/checkout.ts":
@@ -136,11 +144,9 @@ test("redesign preserves existing live payment, licensing, email and legacy capt
   for (const [path, expected] of Object.entries(hashes)) {
     let source = readFileSync(new URL("../../" + path, import.meta.url), "utf8");
     if (path === "src/components/ui/ConfirmBanner.astro") {
-      // The approved Living Documents return reuses the bar through one
-      // separately tested adapter. Keep hashing the exact original legacy UI
-      // and confirmed-parameter controller after removing only that addition.
-      source = source.replace("  import { acknowledgeLivingDocumentsConfirmation } from '../../scripts/living-documents-confirmation';\n", "")
-        .replace("    // Living Documents confirmations use this same bar without changing the\n    // legacy confirmed parameter, welcome storage, or conversion controller.\n    if (acknowledgeLivingDocumentsConfirmation()) return;\n", "");
+      // Remove exactly the passive adapter; the legacy controller must retain
+      // its original release hash and remains responsible for ?confirmed=.
+      source = source.replace(ADAPTER_IMPORT, "").replace(ADAPTER_GUARD, "");
     }
     assert.equal(
       createHash("sha256").update(source).digest("hex"),
@@ -148,4 +154,13 @@ test("redesign preserves existing live payment, licensing, email and legacy capt
       path,
     );
   }
+});
+
+test("passive homepage adapter is the only addition to the legacy banner", () => {
+  const source = readFileSync(new URL("../../src/components/ui/ConfirmBanner.astro", import.meta.url), "utf8");
+  assert.equal(source.split(ADAPTER_IMPORT).length, 2);
+  assert.equal(source.split(ADAPTER_GUARD).length, 2);
+  const nav = readFileSync(new URL("../../src/components/Nav.astro", import.meta.url), "utf8");
+  assert.match(nav, /href: '\/essay\/', label: 'Essay'/);
+  assert.doesNotMatch(nav, /href: '\/essays\/'/);
 });

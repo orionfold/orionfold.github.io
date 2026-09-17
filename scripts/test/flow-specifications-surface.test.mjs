@@ -40,7 +40,7 @@ for (const provider of ['Flow Runtime', 'Ollama', 'Anthropic', 'OpenAI', 'OpenRo
 
 assert.match(data, /provider: 'LM Studio'[\s\S]*state: 'Runnable now'[\s\S]*exact loaded text model directly through Agency[\s\S]*without copying or sharing its weights/, 'LM Studio follows the operator-accepted G-0164 direct Agency path');
 assert.doesNotMatch(data, /provider: 'Codex CLI'|provider: 'Claude Code'|Cloud prepaid|Local or LAN|your network/, 'dark CLI and LAN routes stay outside the shipped provider catalog');
-assert.match(data, /24 Living Documents in four categories/, 'v1.7 states the released starter document count');
+assert.match(data, /Seven ready-to-use Guide folders/, 'v1.6 states the shipped folder count');
 assert.match(data, /Night Shift Base[\s\S]*Collect, watch, list and redraw on every plan/, 'routine jobs remain available on Base');
 assert.match(data, /Night Shift Pro[\s\S]*Overnight notes from a model on this Mac/, 'Pro adds local overnight notes');
 
@@ -69,6 +69,6 @@ assert.match(page, /<FlowSubNav active="specs" \/>/, 'the technical specificatio
 assert.match(nav, /flowLive \? FLOW_DMG_URL : '\/flow\/#waitlist'/, 'the shared nav keeps the direct launch CTA and the pre-launch waitlist branch');
 assert.doesNotMatch(nav, /See Flow plans/, 'the Flow CTA does not become a pricing detour');
 assert.match(og, /'\/flow\/specifications\/': {[\s\S]*slug: 'flow-specifications'/, 'the route has a social card source');
-assert.match(config, /map\['\/flow\/specifications\/'\] = '2026-09-17'/, 'the route has an honest sitemap date');
+assert.match(config, /map\['\/flow\/specifications\/'\] = '2026-09-06'/, 'the route has an honest sitemap date');
 
 console.log('flow specifications surface regression: pass');

@@ -30,7 +30,7 @@ const breadcrumbs = {
 ---
 <Layout
   title="Orionfold Flow product tour · See Flow at work"
-  description="Tour Flow 1.7: 24 Living Documents, Jobs in the Workbench, reviewable changes and model choices. Explore writing, files, routing and evidence."
+  description="Tour Flow 1.6 through real screens: Living Documents, the Night Shift, six clear Settings screens, writing, files, model routing and evidence."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[breadcrumbs]}
@@ -54,15 +54,15 @@ const breadcrumbs = {
 
     <section class="border-t border-border/70 px-6 py-14 sm:py-20" aria-labelledby="flow-v16-tours">
       <div class="mx-auto max-w-6xl">
-        <p class="of-eyebrow">Flow 1.7</p><h2 id="flow-v16-tours" class="of-display mt-3 text-4xl">Make knowledge a living thing.</h2>
-        <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">A document you own. Jobs you can inspect in the Workbench. Changes you decide to keep. See how the three parts work together.</p>
+        <p class="of-eyebrow">Flow 1.6</p><h2 id="flow-v16-tours" class="of-display mt-3 text-4xl">Make knowledge a living thing.</h2>
+        <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">A page connected to its sources. A night shift with clear jobs. A morning you can review. See how the three parts work together.</p>
         <div class="mt-9 grid gap-6 lg:grid-cols-3">
           {FLOW_V16_TOURS.map((tour) => <article class="flow-cat-card of-surface flex flex-col rounded-2xl border border-border/70 p-6">
             <a href={`/flow/${tour.slug}/`} class="flow-cat-card__plate" aria-hidden="true" tabindex="-1"><Image src={tour.image} alt={tour.alt} widths={[560, 1120]} sizes="(min-width: 1024px) 28vw, 88vw" class="flow-cat-card__thumb" loading="lazy" decoding="async" /></a>
             <p class="mt-5 font-mono text-xs uppercase tracking-widest text-accent-ink">{tour.label}</p><h3 class="mt-3 text-2xl font-bold"><a href={`/flow/${tour.slug}/`}>{tour.title}</a></h3><p class="mt-3 flex-1 leading-relaxed text-text-muted">{tour.description}</p><a class="of-text-action mt-6" href={`/flow/${tour.slug}/`}>Explore {tour.label} <span aria-hidden="true">→</span></a>
           </article>)}
         </div>
-        <p class="mt-6 text-sm text-text-dim">These product details show Flow 1.7 (2173), captured September 16, 2026. Example documents use sample data. Earlier detail images in the deeper tour are dated where shown.</p>
+        <p class="mt-6 text-sm text-text-dim">Real product details from Flow 1.6 (1899), captured September 6, 2026. Example documents use sample data.</p>
       </div>
     </section>
 

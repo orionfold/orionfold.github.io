@@ -19,7 +19,7 @@ function setup(overrides: Partial<ConfirmDependencies> = {}) {
     confirm: async (hash) => {
       calls.push("confirm");
       assertEquals(hash, "b".repeat(64));
-      return "confirmed";
+      return true;
     },
     ...overrides,
   });
@@ -35,54 +35,35 @@ function post(raw = token, origin = "https://service.test") {
     body: new URLSearchParams({ token: raw }),
   });
 }
-Deno.test("email-link GET confirms and returns to the homepage notification", async () => {
+Deno.test("email-link GET is scanner-safe and cannot consume consent", async () => {
   const { handler, calls } = setup();
   const response = await handler(new Request(`${url}?token=${token}`));
-  assertEquals(response.status, 303);
-  assertEquals(calls, ["hash", "confirm"]);
-  assertEquals(
-    response.headers.get("Location"),
-    "https://orionfold.com/?living-documents-confirmed=1",
-  );
-  assertEquals(await response.text(), "");
-  assert(response.headers.get("Referrer-Policy") === "no-referrer");
-  assert(response.headers.get("X-Robots-Tag")?.includes("noindex"));
-  assertEquals(response.headers.get("Cache-Control"), "no-store");
-});
-Deno.test("confirmation links cannot replace the fixed site destination or carry duplicate tokens", async () => {
-  const { handler, calls } = setup({
-    site: () => "https://stage.example.test",
-  });
-  const response = await handler(
-    new Request(`${url}?token=${token}&redirect=https://evil.test`),
-  );
-  assertEquals(
-    response.headers.get("Location"),
-    "https://stage.example.test/?living-documents-confirmed=1",
-  );
-  const invalid = await handler(
-    new Request(`${url}?token=${token}&token=${token}`),
-  );
+  assertEquals(response.status, 200);
+  assertEquals(calls, []);
+  const html = await response.text();
+  assert(html.includes('method="post"'));
   assert(
-    invalid.headers.get("Location")?.includes(
-      "living-documents-confirmed=error",
+    html.includes(
+      'action="https://service.test/functions/v1/flow-living-documents-confirm"',
     ),
   );
-  assertEquals(calls, ["hash", "confirm"]);
+  assert(html.includes("Confirm subscription"));
+  assert(response.headers.get("Referrer-Policy") === "no-referrer");
+  assert(response.headers.get("X-Robots-Tag")?.includes("noindex"));
 });
-Deno.test("legacy POST confirmation hashes token and redirects only to dedicated return namespace", async () => {
+Deno.test("explicit confirmation hashes token and redirects only to dedicated return namespace", async () => {
   const { handler, calls } = setup();
   const response = await handler(post());
   assertEquals(response.status, 303);
   assertEquals(calls, ["hash", "confirm"]);
   assertEquals(
     response.headers.get("Location"),
-    "https://orionfold.com/?living-documents-confirmed=1",
+    "https://orionfold.com/manifesto/?living-documents-confirmed=1#email-updates",
   );
   assert(!response.headers.get("Location")?.includes(token));
 });
-Deno.test("expired and suppressed token returns the same unavailable state", async () => {
-  const { handler } = setup({ confirm: async () => "invalid" });
+Deno.test("expired, replayed and suppressed token returns the same unavailable state", async () => {
+  const { handler } = setup({ confirm: async () => false });
   const response = await handler(post());
   assert(
     response.headers.get("Location")?.includes(
@@ -107,29 +88,5 @@ Deno.test("confirmation database failure remains an error rather than claiming c
 Deno.test("disabled confirmation does not access tokens", async () => {
   const { handler, calls } = setup({ enabled: () => false });
   assertEquals((await handler(post())).status, 503);
-  assertEquals(calls, []);
-});
-
-Deno.test("a previously confirmed link returns already without a new conversion", async () => {
-  const { handler } = setup({ confirm: async () => "already" });
-  const response = await handler(new Request(`${url}?token=${token}`));
-  assertEquals(response.status, 303);
-  assertEquals(
-    response.headers.get("Location"),
-    "https://orionfold.com/?living-documents-confirmed=already",
-  );
-});
-Deno.test("HEAD and explicit prefetch do not confirm", async () => {
-  const { handler, calls } = setup();
-  for (
-    const init of [{ method: "HEAD" }, { headers: { Purpose: "prefetch" } }, {
-      headers: { "Sec-Purpose": "prefetch;prerender" },
-    }] as RequestInit[]
-  ) {
-    assertEquals(
-      (await handler(new Request(`${url}?token=${token}`, init))).status,
-      204,
-    );
-  }
   assertEquals(calls, []);
 });
