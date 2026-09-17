@@ -262,7 +262,7 @@
 html.js-ready { --of-nav-height:116px; }
 .living-site :is(main,footer) [id] { scroll-margin-top:calc(var(--of-nav-height,82px) + 20px); }
 .living-site .hero-gradient-text { background:none; -webkit-text-fill-color:var(--living-ink); color:var(--living-ink); }
-@media(max-width:700px) { html.js-ready { --of-nav-height:110px; } }
+@media(max-width:700px) { html.js-ready { --of-nav-height:126px; } }
 @media(max-width:800px) {
   .living-paper-cta__inner {
     width: calc(100% - 40px); grid-template-columns: minmax(0, 1fr);
