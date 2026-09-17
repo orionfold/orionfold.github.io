@@ -3,7 +3,7 @@ import { expect, test, type Page } from './fixtures';
 
 const endpoint = 'http://127.0.0.1:4325/functions/v1/flow-living-documents-signup';
 const formSelector = '[data-living-documents-form]';
-const consent = 'Send me Flow updates, Living Documents methods, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time.';
+const consent = 'Send me Flow updates, Living Documents Jobs, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time.';
 
 // Render the built form with its real controller, synthetic loopback transport,
 // and an explicit gate. No request may reach an external email provider.
@@ -69,4 +69,24 @@ test('disabled new opt-in remains inert even if submit is dispatched', async ({ 
   await form.dispatchEvent('submit');
   await expect(form.locator('[data-signup-error]')).toHaveText('Email updates are not available yet.');
   expect(requests).toHaveLength(0);
+});
+
+test('confirmation entry removes its token and waits for an explicit native POST', async ({ page }) => {
+  const token = 'a'.repeat(64);
+  const requests: { method: string; token: string | null }[] = [];
+  await page.route('https://orionfold.supabase.co/functions/v1/flow-living-documents-confirm', async route => {
+    const request = route.request();
+    requests.push({ method: request.method(), token: new URLSearchParams(request.postData() ?? '').get('token') });
+    await route.fulfill({ status: 200, contentType: 'text/html', body: '<h1>Synthetic confirmation received</h1>' });
+  });
+  await page.goto(`/flow/confirm/?token=${token}`);
+  await expect(page).toHaveURL('http://127.0.0.1:4325/flow/confirm/');
+  await expect(page.locator('[data-living-confirmation-copy]')).toHaveText('Confirm your subscription to the updates listed in your email.');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+  await expect(page.locator('meta[name="referrer"]')).toHaveAttribute('content', 'no-referrer');
+  await expect(page.locator('script[src^="https:"]')).toHaveCount(0);
+  expect(requests).toHaveLength(0);
+  await page.getByRole('button', { name: 'Confirm subscription', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Synthetic confirmation received' })).toBeVisible();
+  expect(requests).toEqual([{ method: 'POST', token }]);
 });

@@ -161,14 +161,20 @@ test.describe('product stage overlays', () => {
   }
 });
 
-// Flow 1.6 shows three distinct Settings shots in four standalone crop placements
-// (including the category hero). Protect their real loaded image and matte.
+// The current tour retains three historical Settings placements and adds the
+// released 1.7 Models Workbench. Protect every loaded image, caption and matte.
 for (const viewport of [DESKTOP, MOBILE]) {
-  test(`v1.6 model Settings crops remain readable at ${viewport.width}px`, async ({ page }) => {
+  test(`model Settings crops remain readable at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto('/flow/models-and-runtime/');
     await page.evaluate(() => document.fonts.ready);
-    const details = page.locator('.flow-detail:has(img[src*="v16-settings-"])');
+    const historical = page.locator('.flow-detail:has(img[src*="v16-settings-"])');
+    const workbench = page.locator('.flow-detail:has(img[src*="v17-settings-models"])');
+    await expect(historical).toHaveCount(3);
+    await expect(workbench).toHaveCount(1);
+    await expect(workbench.locator('figcaption')).toContainText('Flow 1.7 (2173)');
+    await expect(workbench.locator('figcaption')).toContainText('This Mac’s configuration');
+    const details = page.locator('.flow-detail:has(img[src*="v16-settings-"], img[src*="v17-settings-models"])');
     await expect(details).toHaveCount(4);
     for (const detail of await details.all()) {
       await detail.scrollIntoViewIfNeeded();
@@ -197,20 +203,109 @@ test.describe('Living Systems native product stage', () => {
         await page.emulateMedia({reducedMotion:'reduce'});
         await page.goto(route);
         await expect(page.locator('main .flow-shot')).toHaveCount(0);
-        const demo=page.locator('[data-demo]').first();
+        const demo=route === '/'
+          ? page.locator('[data-demo="home-knowledge"]')
+          : page.locator('.ls-hero-flow .jw-demo--compact[data-jobs-demo]');
+        await expect(demo).toHaveCount(1);
         await expect(demo).toBeVisible();
-        const window=demo.locator('.ls-glass-window');
+        const window=demo.locator(route === '/' ? '.ls-glass-window' : '.jw-window');
         await expect(window).not.toHaveCSS('box-shadow','none');
         const positions=await page.evaluate(()=>({nav:document.querySelector('#nav-wrapper')!.getBoundingClientRect().bottom,hero:document.querySelector('main .ls-eyebrow')!.getBoundingClientRect().top,overflow:document.documentElement.scrollWidth>innerWidth+1}));
         expect(positions.hero).toBeGreaterThanOrEqual(positions.nav);
         expect(positions.overflow).toBe(false);
-        await demo.locator('[data-demo-next]').click();
-        await demo.locator('[data-demo-next]').click();
-        await demo.locator('[data-demo-next]').click();
-        await demo.locator('[data-demo-keep]').click();
-        await expect(demo).toHaveAttribute('data-step','4');
-        await demo.locator('[data-demo-replay]').click();
-        await expect(demo).toHaveAttribute('data-step','0');
+        if (route === '/') {
+          await demo.locator('[data-demo-next]').click();
+          await demo.locator('[data-demo-next]').click();
+          await demo.locator('[data-demo-next]').click();
+          await demo.locator('[data-demo-keep]').click();
+          await expect(demo).toHaveAttribute('data-step','4');
+          await demo.locator('[data-demo-replay]').click();
+          await expect(demo).toHaveAttribute('data-step','0');
+        } else {
+          await expect(demo).toHaveAttribute('data-scenario','customer');
+          await expect(demo).toHaveAttribute('data-phase','ready');
+          await expect(demo.locator('.jw-document')).toHaveCount(1);
+          await expect(demo.locator('.jw-workbench')).toHaveCount(1);
+          await expect(demo.locator('.jw-disclosure').first()).toContainText('Changes stay in this demo.');
+          const logo=demo.locator('.jw-titlebar img');
+          await expect.poll(() => logo.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+          const layout=await demo.evaluate(el => {
+            const box=(selector: string) => {
+              const r=el.querySelector(selector)!.getBoundingClientRect();
+              return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};
+            };
+            return {window:box('.jw-window'),document:box('.jw-document'),workbench:box('.jw-workbench')};
+          });
+          expect(layout.window.left).toBeGreaterThanOrEqual(0);
+          expect(layout.window.right).toBeLessThanOrEqual(width);
+          if (width === 1440) {
+            expect(layout.document.right).toBeLessThanOrEqual(layout.workbench.left + 1);
+            expect(Math.abs(layout.document.top-layout.workbench.top)).toBeLessThanOrEqual(1);
+          } else {
+            expect(layout.document.bottom).toBeLessThanOrEqual(layout.workbench.top + 1);
+          }
+
+          // The compact hero is the real Jobs interaction: keyboard tabs,
+          // changed input, an applied update, then independent part decisions.
+          const edit=demo.getByRole('tab',{name:'Edit',exact:true});
+          const relations=demo.getByRole('tab',{name:'Relations',exact:true});
+          await edit.focus();
+          await edit.press('End');
+          await expect(relations).toBeFocused();
+          await expect(relations).toHaveAttribute('aria-selected','true');
+          await expect(demo.locator('[data-relations-view="map"]')).toBeVisible();
+          await relations.press('Home');
+          await expect(edit).toBeFocused();
+          await expect(edit).toHaveAttribute('aria-selected','true');
+          const run=demo.locator('[data-panel="edit"] [data-action="run"]');
+          await expect(run).toBeDisabled();
+          const input=demo.locator('[data-action="input"]');
+          await input.focus();
+          await input.press('Enter');
+          await expect(demo.locator('[data-input-value]')).toHaveText('12 interviews');
+          await expect(run).toBeEnabled();
+          await run.focus();
+          await run.press('Enter');
+          await expect(demo).toHaveAttribute('data-phase','review');
+          await expect(demo.locator('[data-review-active] h4')).toBeFocused();
+          await expect(demo.locator('[data-chart-value]')).toHaveText('4');
+          await expect(demo.locator('[data-pending-count]')).toHaveText('2');
+          const exact=demo.locator('[data-action="view"][data-value="exact"]');
+          await exact.focus();
+          await exact.press('Enter');
+          await expect(demo.locator('[data-exact-view]')).toBeVisible();
+          await expect(demo.locator('[data-diff-before]')).toHaveText('3');
+          await expect(demo.locator('[data-diff-after]')).toHaveText('4');
+          const keep=demo.locator('[data-action="keep"]');
+          await keep.focus();
+          await keep.press('Enter');
+          await expect(demo.locator('.jw-chart [data-part-status]')).toHaveText('Kept');
+          await expect(demo.locator('[data-pending-count]')).toHaveText('1');
+          const later=demo.locator('[data-action="later"]');
+          await later.focus();
+          await later.press('Enter');
+          await expect(demo).toHaveAttribute('data-phase','later');
+          const resume=demo.locator('[data-action="resume"]');
+          await expect(resume).toBeFocused();
+          await resume.press('Enter');
+          await expect(demo.locator('[data-review-active] h4')).toBeFocused();
+          const revert=demo.locator('[data-action="revert"]');
+          await revert.focus();
+          await revert.press('Enter');
+          await expect(demo).toHaveAttribute('data-phase','complete');
+          await expect(demo.locator('[data-review-complete] h4')).toBeFocused();
+          await expect(demo.locator('[data-complete-summary]')).toHaveText('Review complete. 1 kept · 1 reverted. Source input retained.');
+          await expect(demo.locator('[data-chart-value]')).toHaveText('4');
+          await expect(demo.locator('[data-summary-value]')).toHaveText('Portable files: 3');
+          await expect(demo.locator('[data-source-note]')).toContainText('12 interviews in the source.');
+          const reset=demo.locator('.jw-caption [data-action="reset"]');
+          await reset.focus();
+          await reset.press('Enter');
+          await expect(demo).toHaveAttribute('data-phase','ready');
+          await expect(demo.locator('[data-input-value]')).toHaveText('11 interviews');
+          await expect(demo.locator('[data-chart-value]')).toHaveText('3');
+          await expect(run).toBeDisabled();
+        }
         await expect(page.locator('body')).toHaveAttribute('data-motion','off');
       });
     }
