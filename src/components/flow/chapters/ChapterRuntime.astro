@@ -1,7 +1,7 @@
 ---
 import FlowDetail from '../FlowDetail.astro';
 import { FLOW_RUNTIME_COMPARISON } from '../../../data/flow-specifications';
-import { FLOW_V16_SHOTS as shots } from '../../../data/flow-v16';
+import { FLOW_V17_SHOTS as shots } from '../../../data/flow-v16';
 ---
 <section class="flow-runtime border-t border-border/60 bg-surface-raised/30 px-6 py-14 sm:py-20" aria-labelledby="tour-runtime">
   <div class="mx-auto max-w-6xl">
@@ -10,6 +10,7 @@ import { FLOW_V16_SHOTS as shots } from '../../../data/flow-v16';
         <p class="of-eyebrow" data-animate="rise">Flow Runtime</p>
         <h3 id="tour-runtime" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">Local AI comes with the app.</h3>
         <p class="of-lede mt-5" data-animate="rise">Install Flow and use a compatible model already on your Mac, or download one in Models. Flow Runtime is included with the app. Your writing actions still pass through review before they change the file.</p>
+        <p class="mt-4 leading-relaxed text-text-muted">First launch opens the Guide's Welcome page. Ideas shows models and keys found on your Mac; choose which to use. A selected shell key is copied into Flow's Keychain only after you choose Use selected.</p>
         <p class="mt-4 leading-relaxed text-text-muted">With local discovery enabled, compatible models found through Ollama and LM Studio are shared with Flow Runtime automatically. They stay where they are. A loaded LM Studio text model can also run Agency directly.</p>
         <p class="mt-4 text-xs leading-relaxed text-text-dim">Measured 2026-08-14 on one M3 Max. Across 399 network samples, generation stayed on loopback.</p>
         <aside class="mt-7 rounded-2xl border border-primary/30 bg-surface p-5">
@@ -22,7 +23,7 @@ import { FLOW_V16_SHOTS as shots } from '../../../data/flow-v16';
       <div class="grid gap-4 sm:grid-cols-2">
         <div class="of-surface rounded-2xl border border-border/70 p-6"><p class="font-display text-3xl font-bold text-primary">2 engines</p><p class="mt-2 text-sm leading-relaxed text-text-muted">Both common local model formats on a Mac.</p></div>
         <div class="of-surface rounded-2xl border border-border/70 p-6"><p class="font-display text-3xl font-bold text-primary">0 bytes</p><p class="mt-2 text-sm leading-relaxed text-text-muted">Re-downloaded when Flow used a compatible 4.7 GB model already on disk.</p></div>
-        <FlowDetail class="sm:col-span-2" src={shots.settingsLibrary} alt="Flow Runtime separating downloaded models from compatible models shared in place from Ollama and LM Studio." caption="What Flow holds · What Flow borrows · Nothing copied" sizes="(min-width: 1024px) 34rem, calc(100vw - 3rem)" glow />
+        <FlowDetail class="sm:col-span-2" src={shots.modelsWorkbench} alt="Flow 1.7 Models settings in the Workbench, showing the local runtime, downloaded models and their storage allowance." caption="Flow 1.7 (2173) · Models and storage · This Mac’s configuration" sizes="(min-width: 1024px) 34rem, calc(100vw - 3rem)" glow />
       </div>
     </div>
   </div>

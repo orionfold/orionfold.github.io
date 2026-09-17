@@ -1,0 +1,47 @@
+---
+import LivingDocumentsConfirmation from '../../components/living/LivingDocumentsConfirmation.astro';
+import { SITE } from '../../data/seo';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="description" content="Confirm the Flow email updates you requested." />
+    <link rel="canonical" href={`${SITE.url}/flow/confirm/`} />
+    <title>Confirm your Flow email updates · Orionfold</title>
+  </head>
+  <body>
+    <main>
+      <a class="confirmation-brand" href="/"><img src="/logos/orionfold-mark-3d-32.png" alt="" width="32" height="32" /><span>Orionfold</span></a>
+      <p class="confirmation-eyebrow">ONE LAST STEP</p>
+      <h1>Confirm your<br />email updates.</h1>
+      <LivingDocumentsConfirmation confirmToken />
+      <noscript><p>Enable JavaScript to prepare your confirmation button. Opening this page does not confirm your subscription.</p></noscript>
+      <p class="confirmation-help">Need a new link? <a href="/manifesto/#email-updates">Return to email updates.</a></p>
+    </main>
+  </body>
+</html>
+<style is:global>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f6f8f3; color: #20302d; font: 400 16px/1.7 system-ui, sans-serif; }
+  main { width: min(540px, calc(100% - 40px)); margin: 9vh auto; padding: 30px; border: 1px solid #d7dfd3; border-radius: 10px; background: #fff; }
+  a { color: #247b80; text-underline-offset: 4px; }
+  .confirmation-brand { display: inline-flex; gap: 8px; align-items: center; color: #20302d; text-decoration: none; font-size: 23px; font-weight: 700; }
+  .confirmation-brand img { display: block; }
+  .confirmation-eyebrow { margin-top: 35px; color: #61756a; font-size: 10px; font-weight: 700; letter-spacing: .13em; }
+  h1 { margin: 10px 0 25px; font-size: clamp(32px, 7vw, 45px); line-height: 1.12; letter-spacing: -.045em; }
+  [data-living-confirmation] { margin-block: 0 20px; outline-offset: 5px; }
+  [data-living-confirmation-copy] { font-size: 15px; }
+  [data-living-confirmation-form] { margin-top: 24px; }
+  [data-living-confirmation-form] p, .confirmation-help, noscript { font-size: 12px; color: #61756a; }
+  button { width: 100%; padding: 14px 20px; min-height: 48px; border: 1px solid #247b80; border-radius: 5px; background: #247b80; color: white; font: 700 15px/1.5 system-ui, sans-serif; cursor: pointer; }
+  button:hover { background: #1d666a; }
+  :is(a,button):focus-visible { outline: 3px solid #247b80; outline-offset: 4px; }
+  .confirmation-help { padding-top: 20px; border-top: 1px solid #e0e6dc; }
+  .hidden, [hidden] { display: none !important; }
+  @media (max-width: 420px) { main { padding: 24px; margin-block: 35px; } }
+</style>

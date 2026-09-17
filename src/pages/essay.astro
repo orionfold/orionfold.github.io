@@ -11,12 +11,13 @@ import EssayBody from '../components/living/EssayBody.astro';
 const title = "Room for a Renaissance \u00b7 An essay by Manav Sehgal";
 const description = "How knowledge that keeps working can make more room for the researcher, writer, and builder in each of us. An essay by Manav Sehgal.";
 const og = ogMeta('/essay/');
-const pageSchema = {'@context':'https://schema.org','@type':'Article',datePublished:'2026-09-06T00:00:00.000Z',dateModified:'2026-09-06T00:00:00.000Z',headline:title,description,author:PERSON,publisher:{'@type':'Organization',name:SITE.name,url:SITE.url},mainEntityOfPage:`${SITE.url}/essay/`,image:`${SITE.url}${og.image}`};
+const pageSchema = {'@context':'https://schema.org','@type':'Article',datePublished:'2026-09-06T00:00:00.000Z',dateModified:'2026-09-17T00:00:00.000Z',headline:title,description,author:PERSON,publisher:{'@type':'Organization',name:SITE.name,url:SITE.url},mainEntityOfPage:`${SITE.url}/essay/`,image:`${SITE.url}${og.image}`};
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ls-page-essay" jsonLd={pageSchema} ogType="article" article={{datePublished:"2026-09-06",dateModified:"2026-09-06",author:"Manav Sehgal",section:"Living Documents"}}>
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ls-page-essay" jsonLd={pageSchema} ogType="article" article={{datePublished:"2026-09-06",dateModified:"2026-09-17",author:"Manav Sehgal",section:"Living Documents"}}>
   <Nav />
   <main id="main" class="ls-main">
     <EssayHero />
+    <div class="ls-essay-series"><a href="/essays/">← All essays</a><p>First published September 6, 2026, alongside Flow 1.6. Continue with <a href="/essays/the-work-we-want-to-keep/">The Work We Want to Keep</a>, on human judgment and the work we choose to carry forward.</p></div>
     <EssayBody />
   </main>
   <Footer downloadSource="essay-living-documents" />

@@ -417,3 +417,5 @@ html:has(body.ls) {font-size:16px}
 .ls-page-essay .ls-essay-hero > .ls-paper-subtle img {
   filter: brightness(1.04) contrast(1.04);
 }
+
+.ls-essay-series{max-width:760px;margin:0 auto 3rem;padding:0 24px;font:14px/1.7 'Geist Sans',Arial,sans-serif;color:var(--color-ink-muted,#526059)}.ls-essay-series>a{font-weight:700}.ls-essay-series p{margin-top:12px}.ls-essay-series a{text-decoration:underline;text-underline-offset:3px}

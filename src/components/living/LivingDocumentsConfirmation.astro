@@ -1,8 +1,17 @@
 ---
-// Dedicated query namespace: legacy ?confirmed= links and analytics stay untouched.
+// Existing success returns stay on the manifesto; only the dedicated, analytics-free
+// confirmation route renders a native POST form for an unconsumed token.
+import { SERVICE_ACTIONS_ENABLED, serviceEndpoint } from '../../lib/living-services';
+interface Props { confirmToken?: boolean }
+const { confirmToken = false } = Astro.props;
 ---
-<div data-living-confirmation role="status" aria-live="polite" tabindex="-1" class="hidden mb-6 rounded-md border border-border bg-white/80 p-5">
+<div data-living-confirmation data-confirm-token={String(confirmToken)} data-actions-enabled={String(SERVICE_ACTIONS_ENABLED)} role="status" aria-live="polite" tabindex="-1" class="hidden mb-6 rounded-md border border-border bg-white/80 p-5">
   <p data-living-confirmation-copy class="text-base leading-relaxed"></p>
+  {confirmToken && <form data-living-confirmation-form method="post" action={serviceEndpoint('flow-living-documents-confirm')} hidden>
+    <input type="hidden" name="token" data-living-confirmation-token />
+    <button type="submit">Confirm subscription</button>
+    <p>Did not request this? Close this page. Nothing changes until you confirm.</p>
+  </form>}
 </div>
 <script>
  import '../../scripts/living-documents-confirmation';

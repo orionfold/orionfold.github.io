@@ -1,0 +1,11 @@
+---
+import { FLAGSHIP_ESSAY as essay } from '../../data/essays';
+import '../../styles/essays.css';
+---
+<section class="ed-home-invitation ls-container" aria-labelledby="home-flagship-essay-heading" data-cta-placement="flagship-essay-invitation">
+  <div class="ed-home-invitation-top"><p class="ls-eyebrow">THE THINKING BEHIND FLOW / ESSAY 02</p><a href="/essays/">All essays ↗</a></div>
+  <div class="ed-home-invitation-grid">
+    <div><h2 id="home-flagship-essay-heading"><a href={essay.href}>The Work<br />We Want <em>to Keep.</em></a></h2><p class="ed-home-byline">An essay by Manav Sehgal</p></div>
+    <div class="ed-home-invitation-copy"><p>{essay.subtitle}</p><p>Yesterday’s research. The reason behind a decision. The freedom to begin again. A personal AI workshop should help us carry more of that forward.</p><a class="ed-link ed-link-primary" href={essay.href}>Read the latest essay <span aria-hidden="true">↗</span></a><a class="ed-first-link" href="/essay/">Begin with Room for a Renaissance →</a></div>
+  </div>
+</section>

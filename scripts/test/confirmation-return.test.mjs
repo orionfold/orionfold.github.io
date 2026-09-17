@@ -11,16 +11,19 @@ const source = readFileSync(
   "utf8",
 ).replace(/import[^;]+;/, "");
 const { code } = await transform(source, { loader: "ts" });
-function fixture(query) {
+function fixture(query, { tokenPage = false, enabled = true } = {}) {
   const copy = { textContent: "" };
+  const field = { value: "" };
+  const form = { hidden: true, submit() { assert.fail("opening a link cannot submit consent"); }, requestSubmit() { assert.fail("confirmation requires an explicit user action"); } };
   const panel = {
-    querySelector: () => copy,
+    dataset: { confirmToken: String(tokenPage), actionsEnabled: String(enabled) },
+    querySelector: selector => selector === "[data-living-confirmation-form]" ? form : selector === "[data-living-confirmation-token]" ? field : copy,
     classList: { remove() {} },
     focus() {},
   };
   const events = [];
   const location = {
-    pathname: "/manifesto/",
+    pathname: tokenPage ? "/flow/confirm/" : "/manifesto/",
     search: query,
     hash: "#email-updates",
   };
@@ -38,7 +41,7 @@ function fixture(query) {
     },
     window: { gtag: (...args) => events.push(args) },
   });
-  return { run: () => vm.runInContext(code, context), copy, events, location };
+  return { run: () => vm.runInContext(code, context), copy, events, location, form, field };
 }
 test("dedicated success return counts once and preserves unrelated query and fragment", () => {
   const f = fixture("?living-documents-confirmed=1&utm_source=email");
@@ -70,4 +73,52 @@ test("legacy confirmation queries and banner state are untouched", () => {
     assert.equal(f.copy.textContent, "");
     assert.equal(f.location.search, query);
   }
+});
+
+
+test("dedicated token page prepares a native form without confirming or counting a lead", () => {
+  const token = "a".repeat(64);
+  const f = fixture(`?token=${token}&utm_source=email`, { tokenPage: true });
+  f.run();
+  assert.equal(f.form.hidden, false);
+  assert.equal(f.field.value, token);
+  assert.equal(f.location.search, "?utm_source=email", "opaque token is removed from the address before interaction");
+  assert.equal(f.events.length, 0);
+  assert.match(f.copy.textContent, /exact email permission/);
+  f.run();
+  assert.equal(f.form.hidden, false, "a repeated page initializer preserves the prepared form");
+  assert.equal(f.field.value, token);
+  assert.equal(f.events.length, 0);
+});
+
+test("missing, malformed and ambiguous query tokens cannot prepare a confirmation", () => {
+  for (const query of ["", "?token=bad", `?token=${"A".repeat(64)}`, `?token=${"a".repeat(64)}&token=${"b".repeat(64)}`]) {
+    const f = fixture(query, { tokenPage: true });
+    f.run();
+    assert.equal(f.form.hidden, true);
+    assert.equal(f.field.value, "");
+    assert.equal(f.events.length, 0);
+    assert.equal(f.location.search, "");
+    assert.match(f.copy.textContent, /unavailable/);
+  }
+});
+
+test("a token in a preview cannot expose a live confirmation action", () => {
+  const f = fixture(`?token=${"a".repeat(64)}`, { tokenPage: true, enabled: false });
+  f.run();
+  assert.equal(f.form.hidden, true);
+  assert.equal(f.field.value, "");
+  assert.equal(f.events.length, 0);
+  assert.match(f.copy.textContent, /preview/);
+});
+
+test("the token route is standalone, non-indexable and free of analytics loaders", () => {
+  const page = readFileSync(new URL("../../src/pages/flow/confirm.astro", import.meta.url), "utf8");
+  const component = readFileSync(new URL("../../src/components/living/LivingDocumentsConfirmation.astro", import.meta.url), "utf8");
+  assert.match(page, /name="robots" content="noindex, nofollow"/);
+  assert.match(page, /name="referrer" content="no-referrer"/);
+  assert.doesNotMatch(page, /import Layout|gtag|fbq|googletagmanager|google-analytics/);
+  assert.match(page, /<LivingDocumentsConfirmation confirmToken/);
+  assert.match(component, /method="post" action=\{serviceEndpoint\('flow-living-documents-confirm'\)\}/);
+  assert.doesNotMatch(source, /fetch\(|requestSubmit\(|\.submit\(/);
 });

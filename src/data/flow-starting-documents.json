@@ -1,0 +1,878 @@
+{
+  "release": {
+    "version": "1.7",
+    "build": 2173,
+    "source": "4448b1a6",
+    "guideVersion": "1.13.0",
+    "sourceManifestSha256": "9b74baa0db62220743642cda074de13cf49200d7c84705bac1d62cc205f0dded"
+  },
+  "categories": [
+    {
+      "id": "research-markets",
+      "label": "Research & Markets"
+    },
+    {
+      "id": "business-teams",
+      "label": "Business & Teams"
+    },
+    {
+      "id": "personal-money",
+      "label": "Personal & Money"
+    },
+    {
+      "id": "learn-flow",
+      "label": "Learn Flow"
+    }
+  ],
+  "documents": [
+    {
+      "category": "research-markets",
+      "entry": "AI Personal Assistants Market Watch/AI Personal Assistants Market Watch.md",
+      "featured": true,
+      "name": "AI Personal Assistants Market Watch",
+      "summary": "Follow the assistant market through sourced signals, comparisons and research decisions.",
+      "title": "AI Personal Assistants Market Watch",
+      "id": "ai-personal-assistants-market-watch",
+      "excerpt": "Eight selected products and twelve dated primary-source cards give this example a research cohort. Compare the signals, keep publisher-described capabilities distinct from hands-on findings, and decide what merits attention.",
+      "headings": [
+        "Start here",
+        "Research question and scope",
+        "What merits attention",
+        "Market interpretation"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "reconcile-against-folder",
+          "label": "List a folder’s files"
+        },
+        {
+          "kind": "expand-with-sources",
+          "label": "Expand with Sources"
+        }
+      ],
+      "files": [
+        "Assistant Comparison Narrative.md",
+        "Assistant Market Inputs.md",
+        "Assistant Market Refresh.md",
+        "Assistant Research Playbook.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "6f672bd4aa76bedb38935d5c02f02deaf74bc55cfbbb55d1d4d1108931b49d83"
+    },
+    {
+      "category": "business-teams",
+      "entry": "Business Review/Business Review.md",
+      "featured": false,
+      "name": "Business Review",
+      "summary": "Quarterly close, operating review and a decision pack from your own numbers.",
+      "title": "Business Review",
+      "id": "business-review",
+      "excerpt": "The fictional full-year review reports $19.2M of revenue. Changing Q4 revenue from 5.7 to 6.0 raises the calculated annual total to $19.5M; the authored conclusions still need review.",
+      "headings": [
+        "Growth is healthy; the next decision is how to sustain it",
+        "The review pack"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Annual Review.md",
+        "Business Review Refresh.md",
+        "Decision Record.md",
+        "Quarterly Close.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "225e6af0010f8824ada2fa6c8a74633d51bd6cd9a16a5bf881daa9dbfdcab197"
+    },
+    {
+      "category": "learn-flow",
+      "entry": "Charts Gallery/Charts Gallery.md",
+      "featured": false,
+      "name": "Charts Gallery",
+      "summary": "Every chart and diagram Flow draws, driven from an editable table you own.",
+      "title": "Charts Gallery",
+      "id": "charts-gallery",
+      "excerpt": "An editable four-row table drives a bar chart and a donut. Browse 34 chart forms and 20 Mermaid forms, with fictional teaching data and notes on reading each visual honestly.",
+      "headings": [
+        "Find the right form",
+        "Read the marks honestly"
+      ],
+      "jobs": [],
+      "files": [
+        "Charts — Comparisons.md",
+        "Charts — Composition.md",
+        "Charts — Distributions.md",
+        "Charts — Goals and Plans.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "caa1c67870679a1d0ee5c87ecd1631e5988057f38fd94eb0c3c1585885166fbe"
+    },
+    {
+      "category": "research-markets",
+      "entry": "Competitor Watch/Competitor Watch.md",
+      "featured": false,
+      "name": "Competitor Watch",
+      "summary": "Dated competitor observations, refreshed evidence and changes worth reviewing.",
+      "title": "Competitor Watch",
+      "id": "competitor-watch",
+      "excerpt": "Keep dated competitor observations beside the decisions they inform. Named public sources can be refreshed; a changed source gives you something to investigate, without deciding the response for you.",
+      "headings": [
+        "This week's decision",
+        "Decision context",
+        "Evidence at a glance",
+        "Packaging lens"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "reconcile-against-folder",
+          "label": "List a folder’s files"
+        },
+        {
+          "kind": "expand-with-sources",
+          "label": "Expand with Sources"
+        }
+      ],
+      "files": [
+        "Comparison Narrative.md",
+        "Competitors.md",
+        "Founder Briefing.md",
+        "Founder Decisions.md"
+      ],
+      "richPreview": "competitor",
+      "sourceSha256": "0e9bb8a89c367448fc06c71d9e22ebddabb025c36978bc912fd5ad1d89ce0716"
+    },
+    {
+      "category": "research-markets",
+      "entry": "Customer Research/Research Brief.md",
+      "featured": false,
+      "name": "Customer Research",
+      "summary": "Interview coding, observations and the research questions they answer.",
+      "title": "Research Brief",
+      "id": "customer-research",
+      "excerpt": "The fictional study codes eleven interviews. Add a twelfth interview with Portable files as its need: the calculated count becomes four. The small, biased sample does not estimate market prevalence.",
+      "headings": [
+        "Approval records are the leading coded need, within a small biased sample",
+        "What to do with the finding"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Interview Register.md",
+        "Interview Synthesis.md",
+        "Market Hypotheses.md",
+        "Research Refresh.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "6e54adde9c692fb4bd20afb7dc942ec9f946a497a12ef9e31cf437eec2c86ad9"
+    },
+    {
+      "category": "learn-flow",
+      "entry": "Flow Handbook/Using Flow.md",
+      "featured": false,
+      "name": "Flow Handbook",
+      "summary": "How Flow's tools, Jobs and the Night Shift work, page by page.",
+      "title": "Using Flow",
+      "id": "flow-handbook",
+      "excerpt": "Ordinary text, tables, links and images remain readable in other editors. Flow’s chart, Mermaid and living-data blocks stay in the Markdown file; other readers may show their source.",
+      "headings": [
+        "Read, work and keep the result",
+        "Plain text, with structure"
+      ],
+      "jobs": [],
+      "files": [
+        "Night Shift Handbook.md",
+        "Workspace Library.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "867011167731933f4e734fca0316bc9b2d0d10fdad650143aad06abe55d05f28"
+    },
+    {
+      "category": "business-teams",
+      "entry": "Health Evidence/Health Evidence.md",
+      "featured": false,
+      "name": "Health Evidence",
+      "summary": "Aggregate service counts and an operational evidence review.",
+      "title": "Health Evidence",
+      "id": "health-evidence",
+      "excerpt": "Compare missed-appointment counts with their denominators in a fictional operational review. A downward series does not establish that a change to reminder wording caused the result.",
+      "headings": [
+        "Did the latest week change the question?",
+        "Read the rate alongside the count",
+        "Pool the underlying appointments, not the percentages",
+        "What the evidence can carry"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        }
+      ],
+      "files": [
+        "Health Evidence Refresh.md",
+        "Health Evidence Settings.md",
+        "Health Evidence Sources.md",
+        "inputs/health-operations-2026-09-05.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "d3e6b8392f3fd753ba5d3346bb716e5682de8a139fc17fc831cc93a800182a9a"
+    },
+    {
+      "category": "personal-money",
+      "entry": "Household Budget/Household Budget.md",
+      "featured": true,
+      "name": "Household Budget",
+      "summary": "Turn your spending inputs into current totals and a useful monthly review.",
+      "title": "Household Budget",
+      "id": "household-budget",
+      "excerpt": "Two fictional statements contain 79 rows. The example keeps uncategorized spending visible and distinguishes a cash-flow surplus from a transfer to savings. It is a dated sample, not a bank connection.",
+      "headings": [
+        "The month at a glance",
+        "Categories against their budgets",
+        "The last months, stacked",
+        "How the month accumulated"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "reconcile-against-folder",
+          "label": "List a folder’s files"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Budget Profile.md",
+        "Budget Refresh.md"
+      ],
+      "richPreview": "budget",
+      "sourceSha256": "dbdaca6d38dd569f760b1a0dd7e22dde19dc09e7bd8fee0edea2b6f2462185f6"
+    },
+    {
+      "category": "personal-money",
+      "entry": "Insurance Renewal/Insurance Renewal.md",
+      "featured": false,
+      "name": "Insurance Renewal",
+      "summary": "Renewal packet, quotation changes and the questions for your broker.",
+      "title": "Insurance Renewal",
+      "id": "insurance-renewal",
+      "excerpt": "A fictional design studio keeps expiring premiums, quotations and missing documents together. A pending quote is not zero, and two prices do not establish equivalent protection.",
+      "headings": [
+        "Put the missing documents first",
+        "Compare the quoted prices without hiding the gap",
+        "Leave time for the conversation",
+        "Bring three questions to the broker"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        }
+      ],
+      "files": [
+        "Insurance Renewal Refresh.md",
+        "Insurance Renewal Settings.md",
+        "Insurance Renewal Sources.md",
+        "inputs/insurance-snapshot-2026-09-05.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "01c7ffaa9a63dedfc2a8b7f8e21ec299562c756a58350ddf4770dfe326f1012e"
+    },
+    {
+      "category": "research-markets",
+      "entry": "Investment Research/Diligence Brief.md",
+      "featured": false,
+      "name": "Investment Research",
+      "summary": "Management claims, missing evidence and the diligence questions that remain.",
+      "title": "Diligence Brief",
+      "id": "investment-research",
+      "excerpt": "The fictional Larkspur Robotics memo asks whether sales can succeed beyond the CEO. Management claims, missing operating evidence and the next diligence questions remain separate.",
+      "headings": [
+        "Sales transferability is the first question to investigate",
+        "The memo is an argument to test"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Diligence Refresh.md",
+        "Diligence Register.md",
+        "Larkspur Memo.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "bbfe267b46887513755fa5987d53bd2333986583362d2c382b2f78cf759645bf"
+    },
+    {
+      "category": "personal-money",
+      "entry": "Job Search/Job Search.md",
+      "featured": false,
+      "name": "Job Search",
+      "summary": "Applications, next actions and evidence-based tailoring.",
+      "title": "Job Search",
+      "id": "job-search",
+      "excerpt": "A fictional offer deadline falls before another interview. The tracker keeps both dates visible, alongside missing written terms and the resume used. No application or message is sent by this example.",
+      "headings": [
+        "The pipeline",
+        "The tracker",
+        "Prep",
+        "Resume versions"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "reconcile-against-folder",
+          "label": "List a folder’s files"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Applications.md",
+        "Job Search Refresh.md",
+        "Priya Resume.md",
+        "resumes/Resume — Base Version.md"
+      ],
+      "richPreview": "job",
+      "sourceSha256": "bae5791210d8adcd377fa7da4e768d3b4a55757d5b55fc6fa331193a0a54b779"
+    },
+    {
+      "category": "business-teams",
+      "entry": "Legal Matter/Legal Matter.md",
+      "featured": false,
+      "name": "Legal Matter",
+      "summary": "A factual chronology, a source index and the evidence still missing.",
+      "title": "Legal Matter",
+      "id": "legal-matter",
+      "excerpt": "The fictional file contains arrival counts of fifty-five and sixty cartons. Preserve both with their source records until they are reconciled. The chronology prepares factual review; it does not settle the dispute.",
+      "headings": [
+        "Read the chronology, then the records",
+        "The evidence does not yet answer the central question",
+        "Packet completeness"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        }
+      ],
+      "files": [
+        "Legal Matter Refresh.md",
+        "Legal Matter Settings.md",
+        "Legal Matter Sources.md",
+        "inputs/legal-snapshot-2026-09-05.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "517e96510a957e48382cf888fbeed3d0ebf42114eb78ccade221bfd8826a5c26"
+    },
+    {
+      "category": "learn-flow",
+      "entry": "Living Document Starter/Living Document.md",
+      "featured": false,
+      "name": "Living Document Starter",
+      "summary": "Your own small recurring project, with the smallest useful Jobs.",
+      "title": "Living Document",
+      "id": "living-document-starter",
+      "excerpt": "A fictional onboarding plan allocates 400 of 500 available minutes across three items. Bound views follow changes to the plan and source note; the surrounding written assessment stays yours to revise.",
+      "headings": [
+        "The pulse",
+        "Work that earns its place in the plan",
+        "Context on file",
+        "Source inventory"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "reconcile-against-folder",
+          "label": "List a folder’s files"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Profile.md",
+        "Starter Refresh.md",
+        "entries/Example Entry.md"
+      ],
+      "richPreview": "starter",
+      "sourceSha256": "aac8a4843fbb2d247eddab0f175a5f4ac591ad579a55fa5fdd169dc516336d2d"
+    },
+    {
+      "category": "business-teams",
+      "entry": "Marketing Campaign/Campaign Desk.md",
+      "featured": false,
+      "name": "Marketing Campaign",
+      "summary": "Editorial calendar, campaign review and a draft announcement in one desk.",
+      "title": "Campaign Desk",
+      "id": "marketing-campaign",
+      "excerpt": "A fictional October plan alternates two essays with two working notes. The customer-workflow essay still needs evidence before becoming a credible draft. An editorial calendar does not publish the pieces.",
+      "headings": [
+        "Four useful pieces; one still needs its evidence",
+        "Still to publish",
+        "Give each piece a different purpose"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Campaign Performance.md",
+        "Campaign Refresh.md",
+        "Campaign Strategy.md",
+        "Editorial Calendar.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "1b705a5e0e6836908859e6bb28621f549b76536a5174e53eea4262308dc59e50"
+    },
+    {
+      "category": "learn-flow",
+      "entry": "Model Arena/Model Arena.md",
+      "featured": false,
+      "name": "Model Arena",
+      "summary": "Published model comparisons and a record of your own evaluation.",
+      "title": "Model Arena",
+      "id": "model-arena",
+      "excerpt": "Dated recommendations and measurements sit together. Compare warm generation speed under its stated conditions; speed is not answer quality. Editing this copy does not change Flow’s runtime recommendations.",
+      "headings": [
+        "Published recommendations",
+        "Warm throughput leaderboard",
+        "Response and resource telemetry",
+        "Quality and eligibility"
+      ],
+      "jobs": [],
+      "files": [
+        "AI Work Budget.md",
+        "Local Runtime Evaluation.md",
+        "Model Comparisons.md",
+        "Model Evidence.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "4d5d79209f758a39f562f141f8d839ae204af3383c61f7afcf4e27a1bebd6427"
+    },
+    {
+      "category": "research-markets",
+      "entry": "NVIDIA Company Research/NVIDIA Company Research.md",
+      "featured": true,
+      "name": "NVIDIA Company Research",
+      "summary": "Understand one company through three sections, three sources and a focused research question.",
+      "title": "NVIDIA Company Research",
+      "id": "nvidia-company-research",
+      "excerpt": "Three retained sources support three sections and one focused company question. The September 15, 2026 brief keeps reported facts, company claims and your interpretation distinct.",
+      "headings": [
+        "Company brief",
+        "Reported momentum",
+        "What to watch"
+      ],
+      "jobs": [
+        {
+          "kind": "expand-with-sources",
+          "label": "Expand with Sources"
+        }
+      ],
+      "files": [
+        "sources/S1-quarterly-filing.md",
+        "sources/S2-inference-platform.md",
+        "sources/S3-open-model-ecosystem.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "21e30fba11cb6448a76574ade2b161872d1617ce265aaa81fa4e5184e14360f3"
+    },
+    {
+      "category": "business-teams",
+      "entry": "Product Launch/Launch Readiness.md",
+      "featured": false,
+      "name": "Product Launch",
+      "summary": "Milestones, blockers and the launch decisions still open.",
+      "title": "Launch Readiness",
+      "id": "product-launch",
+      "excerpt": "In this fictional website relaunch, the CMS decision blocks build work. The schedule exposes overlapping migration and build, while the decision about proceeding remains open.",
+      "headings": [
+        "The CMS decision is the dependency to resolve first",
+        "Blocked work"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Launch Brief.md",
+        "Launch Milestones.md",
+        "Launch Plan.md",
+        "Launch Refresh.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "a3d177178265ae4b40870234b141d50e2e113db2e05e1e5f9fa64af3d658f41b"
+    },
+    {
+      "category": "business-teams",
+      "entry": "Sales Account/Account Brief.md",
+      "featured": false,
+      "name": "Sales Account",
+      "summary": "Discovery, requirements, meeting preparation and the proposal for one account.",
+      "title": "Account Brief",
+      "id": "sales-account",
+      "excerpt": "The fictional Meridian Retail opportunity has a useful next meeting: resolve export and Windows-review questions before sending a final proposal. The draft’s scope and exclusions remain visible.",
+      "headings": [
+        "Resolve the handover questions before sending a final proposal",
+        "Questions for the meeting",
+        "What is ready"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Account Discovery.md",
+        "Account Refresh.md",
+        "Account Requirements.md",
+        "Meridian Proposal.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "6458091dd35ac102cb3eeb134bc83bab005a898308e90a12e653f6d9705ba48f"
+    },
+    {
+      "category": "personal-money",
+      "entry": "Stock Portfolio/Portfolio Dashboard.md",
+      "featured": true,
+      "name": "Stock Portfolio",
+      "summary": "Holdings, quote coverage and concentration, refreshed from your own files.",
+      "title": "Portfolio Dashboard",
+      "id": "stock-portfolio",
+      "excerpt": "Start with quote coverage and concentration in an illustrative holdings snapshot. The saved prices are dated, and the sample allocation is not a recommendation. Check source dates before making a decision.",
+      "headings": [
+        "Coverage before totals",
+        "At a glance",
+        "Holdings",
+        "Allocation"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "reconcile-against-folder",
+          "label": "List a folder’s files"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Headlines Refresh.md",
+        "Holdings.md",
+        "Portfolio Refresh.md"
+      ],
+      "richPreview": "stock",
+      "sourceSha256": "06a7a3574a88fe15f137432603123c53d74e7e10a2c9d1b4371c7b362eafbf54"
+    },
+    {
+      "category": "business-teams",
+      "entry": "Supplier Review/Supplier Review.md",
+      "featured": false,
+      "name": "Supplier Review",
+      "summary": "Renewal offers, spending and the service terms left unresolved.",
+      "title": "Supplier Review",
+      "id": "supplier-review",
+      "excerpt": "Three fictional renewals separate offered annual fees from variable purchases. Unresolved service terms stay beside prices; a lower offered fee is not a realized saving.",
+      "headings": [
+        "See the movement within each relationship",
+        "The price question is only half the review",
+        "Variable purchases are a different measure"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        }
+      ],
+      "files": [
+        "Supplier Review Refresh.md",
+        "Supplier Review Settings.md",
+        "Supplier Review Sources.md",
+        "inputs/supplier-snapshot-2026-09-05.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "3a347b9005d1be8a1b20a02e0d74e5ce5f48106f01769d17be26fe9fb220e03b"
+    },
+    {
+      "category": "business-teams",
+      "entry": "Support Knowledge/Support Knowledge.md",
+      "featured": false,
+      "name": "Support Knowledge",
+      "summary": "Repeated questions, stale articles and proposed answers.",
+      "title": "Support Knowledge",
+      "id": "support-knowledge",
+      "excerpt": "Repeated questions and an article’s state determine a review queue for a fictional scheduling product. The proposed wording is authored sample content; the collecting job maintains the queue.",
+      "headings": [
+        "The current review candidate",
+        "Where the sample questions cluster",
+        "A small library with a visible gap",
+        "Work the queue, not just the chart"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        }
+      ],
+      "files": [
+        "Support Knowledge Refresh.md",
+        "Support Knowledge Settings.md",
+        "Support Knowledge Sources.md",
+        "inputs/support-snapshot-2026-09-05.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "bb43845616a2202b558d0e5d3745290bb71222a93c3128b9d5185e3df617ff72"
+    },
+    {
+      "category": "personal-money",
+      "entry": "Tax Advisor/Tax Advisor.md",
+      "featured": false,
+      "name": "Tax Advisor",
+      "summary": "Tax-year inputs, a bounded estimate and questions for your preparer.",
+      "title": "Tax Advisor",
+      "id": "tax-advisor",
+      "excerpt": "A fictional federal-return review keeps entered figures beside missing evidence and preparer questions. Its dated refund estimate is not an approved return or a current refund claim.",
+      "headings": [
+        "Input basis before the result",
+        "The return, roughly",
+        "From wages to taxable income",
+        "Tax by bracket"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "reconcile-against-folder",
+          "label": "List a folder’s files"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Tax Estimate Basis.md",
+        "Tax Profile.md",
+        "Tax Refresh.md",
+        "inputs/W-2 — Example Employer.md"
+      ],
+      "richPreview": "tax",
+      "sourceSha256": "bc00f63158462a1b32b307852af79bc704f01368eaafbc3072fc71541e0c2079"
+    },
+    {
+      "category": "business-teams",
+      "entry": "Team Status/Team Status.md",
+      "featured": true,
+      "name": "Team Status",
+      "summary": "Keep a team's progress, blockers and next steps together.",
+      "title": "Team Status",
+      "id": "team-status",
+      "excerpt": "Four fictional update files feed a team table and confidence chart. Change the example confidence from 35 to 45: the row and bar change, while the blocker and approval decision remain unresolved.",
+      "headings": [
+        "Decisions needed",
+        "The team this week",
+        "Confidence",
+        "The quarter"
+      ],
+      "jobs": [
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "reconcile-against-folder",
+          "label": "List a folder’s files"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Development Review.md",
+        "Plan.md",
+        "Team Measurement Notes.md",
+        "Team Review Decisions.md"
+      ],
+      "richPreview": "team",
+      "sourceSha256": "205f758e7a5abfc74aed58fa1e9fdfd7a9f812000092327f3e06feb25bcb51a4"
+    },
+    {
+      "category": "personal-money",
+      "entry": "Travel Planner/Portugal Itinerary.md",
+      "featured": false,
+      "name": "Travel Planner",
+      "summary": "Itinerary, reservations to check and a travel budget.",
+      "title": "Portugal Itinerary",
+      "id": "travel-planner",
+      "excerpt": "A fictional ten-night Portugal plan keeps an itinerary, budget and a shortlist together. The Douro night remains open until transport and cancellation terms are checked; no stay is booked.",
+      "headings": [
+        "Five stops, with one night left deliberately open",
+        "A budget you can revise",
+        "Before anything is booked"
+      ],
+      "jobs": [
+        {
+          "kind": "gather",
+          "label": "Collect data"
+        },
+        {
+          "kind": "keep-sources-fresh",
+          "label": "Watch sources"
+        },
+        {
+          "kind": "overnight-notes",
+          "label": "Overnight notes"
+        }
+      ],
+      "files": [
+        "Travel Plan.md",
+        "Travel Refresh.md"
+      ],
+      "richPreview": null,
+      "sourceSha256": "4631e435392f69719b4aa7ad43f04f15df293bf942fdab61c455aaa2f972ceb2"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { ESSAYS } from '../../data/essays';
+import { SITE, PERSON } from '../../data/seo';
+import { ogMeta } from '../../data/og';
+import '../../styles/living-base.css';
+import '../../styles/essays.css';
+
+const [latest, first] = ESSAYS;
+const title = 'Essays on Personal AI and Working Knowledge | Orionfold';
+const description = 'Essays by Manav Sehgal on personal AI, Living Documents, and a working life with more room for inquiry, ownership, and human judgment.';
+const og = ogMeta('/essays/');
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Essays on personal AI and working knowledge',
+  description,
+  url: `${SITE.url}/essays/`,
+  author: PERSON,
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: ESSAYS.map((essay, index) => ({
+      '@type': 'ListItem', position: index + 1,
+      item: { '@type': 'Article', name: essay.title, url: `${SITE.url}${essay.href}` },
+    })),
+  },
+};
+---
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page" jsonLd={schema}>
+  <Nav />
+  <main id="main" class="ls-main">
+    <header class="ed-hub-intro ls-container">
+      <p class="ls-eyebrow">ESSAYS / MANAV SEHGAL</p>
+      <div class="ed-hub-heading">
+        <h1>Ideas worth<br /><em>carrying forward.</em></h1>
+        <p>On personal AI, working knowledge, and the freedom to decide what our tools should do for us.</p>
+      </div>
+    </header>
+
+    <section class="ed-feature ls-container" aria-labelledby="latest-essay-heading">
+      <div class="ed-feature-label"><span>02 / THE LATEST ESSAY</span><span>PERSONAL AI · HUMAN JUDGMENT</span></div>
+      <div class="ed-feature-grid">
+        <div class="ed-feature-copy">
+          <h2 id="latest-essay-heading"><a href={latest.href}>The Work<br />We Want<br /><em>to Keep.</em></a></h2>
+          <p class="ed-feature-dek">{latest.subtitle}</p>
+          <p class="ed-feature-excerpt">Yesterday’s research should be a place to begin again. A document can retain the question, its Jobs and the right to question the result. This is the argument behind the next chapter of Flow.</p>
+          <div class="ed-meta"><span>By Manav Sehgal</span><time datetime={latest.date}>{latest.dateLabel}</time><span>{latest.minutes} minute read</span></div>
+          <a href={latest.href} class="ed-link ed-link-primary">Read the essay <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="ed-feature-art">
+          <img src="/assets/living-systems/hero-flow-paper-planes.webp" alt="" width="1642" height="958" decoding="async" />
+          <div class="ed-feature-thought"><span>THE FILE SAVED THE WORDS.</span><p>We still have to<br /><em>recover the work.</em></p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ed-companion ls-container" aria-labelledby="first-essay-heading">
+      <div class="ed-companion-index" aria-hidden="true">01</div>
+      <div class="ed-companion-copy">
+        <p class="ls-eyebrow">WHERE THE ARGUMENT BEGAN</p>
+        <h2 id="first-essay-heading"><a href={first.href}>{first.title}</a></h2>
+        <p>{first.subtitle}</p>
+        <div class="ed-meta"><time datetime={first.date}>{first.dateLabel}</time><span>{first.minutes} minute read</span></div>
+      </div>
+      <a href={first.href} class="ed-link">Read the first essay <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="ed-author-context ls-container" aria-labelledby="essays-author-heading">
+      <div><p class="ls-eyebrow">THE PERSON BEHIND THE WORK</p><h2 id="essays-author-heading">A personal desk.<br /><em>A larger possibility.</em></h2></div>
+      <div><p>I’m Manav Sehgal, founder of Orionfold. My work has taken me through document systems, risk analytics, cloud architecture and AI products. These essays ask what useful intelligence should make possible for the person at the desk.</p><p>The essays develop the argument. <a href="/manifesto/">The Living Documents Manifesto</a> names the principles. <a href="/flow/">Flow</a> puts them to work.</p><a href="/story/why-i-folded-orionfold/" class="ed-link">Read the founding story <span aria-hidden="true">↗</span></a></div>
+    </section>
+  </main>
+  <Footer showDownload={false} />
+</Layout>

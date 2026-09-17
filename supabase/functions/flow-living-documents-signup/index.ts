@@ -7,6 +7,7 @@ import { serviceEnvironment } from "../_shared/service-environment.ts";
 import {
   canonicalPayload,
   confirmationEmail,
+  confirmationUrl,
   type SignupInput,
 } from "./contract.ts";
 import { createSignupHandler } from "./handler.ts";
@@ -87,8 +88,9 @@ async function suppressed(email: string) {
 async function deliver(input: SignupInput, token: string): Promise<string> {
   const footer = await footerForEmail(db(), input.email);
   const { subject, text } = confirmationEmail(
-    `${serviceEnvironment().functionsBase}/flow-living-documents-confirm?token=${token}`,
+    confirmationUrl(serviceEnvironment(), token, input.consent_text),
     footer,
+    input.consent_text,
   );
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",

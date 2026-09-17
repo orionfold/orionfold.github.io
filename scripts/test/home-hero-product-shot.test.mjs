@@ -12,7 +12,7 @@ for(const control of ['data-demo-next','data-demo-replay','data-demo-keep','data
 assert.match(demo,/data-demo-state/);
 assert.match(demo,/data-knowledge-graph/, 'homepage renders a knowledge diagram');
 assert.doesNotMatch(demo,/ls-mini-chart/, 'homepage no longer duplicates the Flow bar chart');
-assert.match(read('src/components/living/FlowHero.astro'), /<ProductDemo \/>/, 'Flow keeps its existing product illustration');
+assert.match(read('src/components/living/FlowHero.astro'), /<JobsWorkbenchDemo compact \/>/, 'Flow 1.7 keeps its hero interactive with the compact Jobs Workbench');
 assert.match(demo, /src="\/logos\/orionfold-mark-3d-32\.png"/, 'native mock reuses the shared small brand mark');
 assert.doesNotMatch(demo, /living-systems\/orionfold-mark\.png/, 'no duplicate oversized 24px illustration logo');
 assert.match(css,/backdrop-filter:/);

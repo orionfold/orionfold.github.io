@@ -65,8 +65,8 @@ export const FLOW_DOCUMENT_SPECIFICATIONS: FlowSpecificationRow[] = [
   },
   {
     label: 'Workspace',
-    value: 'Multiple folders, two panes, tabs, and restored layout',
-    note: 'Each folder keeps its own tree. Tabs can move between panes, and the workspace returns after relaunch.',
+    value: 'Multiple folders, document tabs and a Workbench',
+    note: 'One primary document surface with Jobs, Sources, History or Settings in the Workbench beside it. The Workbench remembers its width.',
   },
   {
     label: 'Document views',
@@ -94,8 +94,8 @@ export const FLOW_DOCUMENT_SPECIFICATIONS: FlowSpecificationRow[] = [
   },
   {
     label: 'Living Documents',
-    value: 'Seven ready-to-use Guide folders',
-    note: 'Stock Portfolio, Tax Advisor, Household Budget, Job Search, Competitor Watch, Team Status and Living Document Starter.',
+    value: '24 Living Documents in four categories',
+    note: 'Search the chooser or begin with five featured documents. Create an independent copy with its inputs and assets, then inspect its Jobs.',
   },
   {
     label: 'Data bindings',
@@ -105,7 +105,7 @@ export const FLOW_DOCUMENT_SPECIFICATIONS: FlowSpecificationRow[] = [
   {
     label: 'Night Shift Base',
     value: 'Collect, watch, list and redraw on every plan',
-    note: 'Includes the Morning Briefing and Keep or Revert in Review Changes. Runs when this Mac is plugged in and idle, even with Flow quit.',
+    note: 'Includes the Morning Briefing and Keep, Revert or Later in Review Changes. Scheduled work runs when this Mac is plugged in and idle, even with Flow quit; Run Jobs starts the open document’s saved work.',
   },
   {
     label: 'Night Shift Pro',
@@ -115,7 +115,7 @@ export const FLOW_DOCUMENT_SPECIFICATIONS: FlowSpecificationRow[] = [
   {
     label: 'Settings',
     value: 'General, Documents, Models, Smart Routing, Evidence, Night Shift',
-    note: 'Six screens in Flow 1.6, with plan and licence controls inside General.',
+    note: 'Six categories in the Workbench, with search and plan and licence controls inside General.',
   },
   {
     label: 'File safety',

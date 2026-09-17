@@ -35,21 +35,40 @@ function post(raw = token, origin = "https://service.test") {
     body: new URLSearchParams({ token: raw }),
   });
 }
-Deno.test("email-link GET is scanner-safe and cannot consume consent", async () => {
+Deno.test("old email-link GET redirects to the site without looking up or consuming consent", async () => {
   const { handler, calls } = setup();
   const response = await handler(new Request(`${url}?token=${token}`));
-  assertEquals(response.status, 200);
+  assertEquals(response.status, 303);
   assertEquals(calls, []);
-  const html = await response.text();
-  assert(html.includes('method="post"'));
-  assert(
-    html.includes(
-      'action="https://service.test/functions/v1/flow-living-documents-confirm"',
-    ),
+  assertEquals(
+    response.headers.get("Location"),
+    `https://orionfold.com/flow/confirm/?token=${token}`,
   );
-  assert(html.includes("Confirm subscription"));
+  assertEquals(await response.text(), "");
   assert(response.headers.get("Referrer-Policy") === "no-referrer");
   assert(response.headers.get("X-Robots-Tag")?.includes("noindex"));
+  assertEquals(response.headers.get("Cache-Control"), "no-store");
+});
+Deno.test("confirmation links cannot replace the fixed site destination or carry duplicate tokens", async () => {
+  const { handler, calls } = setup({
+    site: () => "https://stage.example.test",
+  });
+  const response = await handler(
+    new Request(`${url}?token=${token}&redirect=https://evil.test`),
+  );
+  assertEquals(
+    response.headers.get("Location"),
+    `https://stage.example.test/flow/confirm/?token=${token}`,
+  );
+  const invalid = await handler(
+    new Request(`${url}?token=${token}&token=${token}`),
+  );
+  assert(
+    invalid.headers.get("Location")?.includes(
+      "living-documents-confirmed=error",
+    ),
+  );
+  assertEquals(calls, []);
 });
 Deno.test("explicit confirmation hashes token and redirects only to dedicated return namespace", async () => {
   const { handler, calls } = setup();

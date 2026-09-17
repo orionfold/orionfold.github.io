@@ -27,12 +27,12 @@ const breadcrumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList
       <div class="flow-hero__grid" aria-hidden="true"></div><div class="flow-hero__glow" aria-hidden="true"></div>
       <div class="relative mx-auto max-w-6xl grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
-          <p class="of-eyebrow">Flow 1.6 · {tour.label}</p>
+          <p class="of-eyebrow">Flow 1.7 · {tour.label}</p>
           <h1 id="flow-feature-title" class="hero-gradient-text mt-4 font-display text-[clamp(2.6rem,5.5vw,4.6rem)] font-extrabold leading-[1.03] tracking-[-0.045em]">{tour.title}</h1>
           <p class="mt-6 text-lg leading-relaxed text-text-muted sm:text-xl">{tour.description}</p>
           <a href="/flow/tour/" class="of-text-action mt-7 inline-flex items-center gap-2">Explore the product tour <span aria-hidden="true">→</span></a>
         </div>
-        <FlowDetail src={tour.image} alt={tour.alt} caption="Real Flow 1.6 (1899) · Feature detail · Captured September 6, 2026" sizes="(min-width: 1024px) 34rem, calc(100vw - 3rem)" />
+        <FlowDetail src={tour.image} alt={tour.alt} caption={tour.caption} sizes="(min-width: 1024px) 34rem, calc(100vw - 3rem)" />
       </div>
     </section>
     <nav class="border-y border-border/70 px-6 py-5" aria-label="Living Documents feature tours">
@@ -43,7 +43,7 @@ const breadcrumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList
     <slot />
     <section class="border-t border-border/70 px-6 py-12 sm:py-16" aria-label="Explore more of Flow">
       <div class="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2">
-        <div><p class="of-eyebrow">Make it yours</p><h2 class="of-display mt-3 text-3xl">Start with one recurring document.</h2><p class="mt-4 leading-relaxed text-text-muted">Open a folder from the Flow Guide, replace its sample data with your own, and give the Night Shift a clear job.</p></div>
+        <div><p class="of-eyebrow">Make it yours</p><h2 class="of-display mt-3 text-3xl">Start with one recurring document.</h2><p class="mt-4 leading-relaxed text-text-muted">Choose Start with useful work, create your own copy, and inspect its Jobs in the Workbench. Replace the sample inputs before relying on the result.</p></div>
         <div class="flex flex-col justify-center gap-4"><a class="of-text-action" href="/flow/tour/">Writing, files, models and evidence <span aria-hidden="true">→</span></a><a class="of-text-action" href="/flow/specifications/">Requirements and exact limits <span aria-hidden="true">→</span></a><a class="of-text-action" href="/flow/#get-flow">Compare Base and Pro <span aria-hidden="true">→</span></a></div>
       </div>
     </section>

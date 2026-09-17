@@ -30,11 +30,11 @@ A notebook is a generous invention. An observation, a diagram, a calculation, an
 
 The modern working document can offer that same generosity. An argument can sit beside its source table, a chart, a diagram, and an image. In Flow, these views grow from readable content in the file. Editing a cell or changing a chart can remain part of working on the page. The [documents and files tour](https://orionfold.com/flow/documents-and-files/) explains that foundation.
 
-But a useful page also contains an invisible half. Somebody knows which sources matter, how the numbers fit together, what deserves attention, and which conclusion requires a decision. When the page travels without that method, its next reader inherits a reconstruction job. A month later, that reader may be its author.
+But a useful page also contains an invisible half. Somebody knows which sources matter, how the numbers fit together, what deserves attention, and which conclusion requires a decision. When the page travels without that approach, its next reader inherits a reconstruction job. A month later, that reader may be its author.
 
-A Living Document gives the method a home. In Flow, a document can name files, folders, and public web sources, collect and shape data, and bind its charts and tables to the resulting files. Standing jobs describe what should happen again. The updated page gives a person something to understand and revise.
+A Living Document gives recurring Jobs a home. In Flow, a document can name files, folders, and public web sources, collect and shape data, and bind its charts and tables to the resulting files. Saved Jobs describe what should happen again. The updated page gives a person something to understand and revise.
 
-This makes an old question newly useful: what would let me return to this work with my curiosity intact? The answer might be a refreshed table, a source check, or a clear account of why an update could not run. Flow provides editors for jobs and data definitions, including previews. A local model can draft a definition from a sentence for you to review. The method remains yours to author or accept.
+This makes an old question newly useful: what would let me return to this work with my curiosity intact? The answer might be a refreshed table, a source check, or a clear account of why an update could not run. Flow provides editors for Jobs and data definitions, including previews. A local model can draft a definition from a sentence for you to review. The Jobs remain yours to author or accept.
 
 <a id="the-morning-is-the-product"></a>
 
@@ -76,7 +76,7 @@ Gallup’s July 2026 workplace report found that, among US employees using AI, 5
 
 I expect recurring work to become more accessible too. The question is what it will ask of us. Twenty overnight updates can become twenty new obligations. A tool that keeps finding work for its owner may leave the day feeling smaller.
 
-The unit of progress should be a responsibility maintained well. Can I return to the research brief without reconstructing it? Is the operating review easier to question? Has the method earned enough confidence that I spend less time supervising each routine?
+The unit of progress should be a responsibility maintained well. Can I return to the research brief without reconstructing it? Is the operating review easier to question? Have its Jobs earned enough confidence that I spend less time supervising each routine?
 
 Sometimes the best result is no change. A source check finds nothing new. A draft is withheld because a number could not be traced. A job stops and explains what it needs. Restraint belongs inside the definition of useful work.
 
@@ -88,7 +88,7 @@ The attention returned need not become another task. It can become reading outsi
 
 ## Own the work and its boundaries
 
-A file is a simple kind of independence. You can keep it, copy it, and return to it later. As a document begins doing work, ownership must also cover the method, the inputs, and the authority to act.
+A file is a simple kind of independence. You can keep it, copy it, and return to it later. As a document begins doing work, ownership must also cover the Jobs, the inputs, and the authority to act.
 
 Flow starts with Markdown files in folders you choose, without importing them into a private library. Jobs and data definitions stay with the work; receipts preserve its record. Another editor will not run Flow’s jobs, but it can read the words. Search and links help you find your way back through your own material.
 
@@ -112,7 +112,7 @@ The bridge between a large ambition and a useful document is a small practice. F
 
 **Leave a receipt.** Run a cycle and inspect what happened. Read the changed part alongside its sources and checks. Notice what failed and what stayed unchanged. Keep or revert the result. A receipt helps the future you understand the choice the present you made.
 
-**Develop the practice.** Return for a second cycle. Correct the definition that was too broad. Remove the update that added noise. Keep the comparison that helped you see something. A method becomes valuable through the care accumulated in it.
+**Develop the practice.** Return for a second cycle. Correct the definition that was too broad. Remove the update that added noise. Keep the comparison that helped you see something. A practice becomes valuable through the care accumulated in it.
 
 Flow includes seven Living Document examples as starting points. Their sources and definitions are available to explore and adapt. None can choose your purpose for you. FOLD is a way to make that purpose durable enough to test, then carry what you learn into the next cycle.
 
@@ -124,11 +124,11 @@ An experienced researcher knows which distinctions a beginner may miss. An edito
 
 A book can explain them. A template can preserve their shape. A Living Document could carry some of that expertise as a practice: sources, definitions, examples, and review criteria that a reader can inspect and adapt while doing real work.
 
-Some is an essential qualification. Judgment cannot be fully packaged. A useful method reveals its assumptions and makes clear where interpretation begins. It leaves room for the learner’s experience to change it. Its value may lie as much in the mistakes it anticipates as the steps it performs.
+Some is an essential qualification. Judgment cannot be fully packaged. A useful approach reveals its assumptions and makes clear where interpretation begins. It leaves room for the learner’s experience to change it. Its value may lie as much in the mistakes it anticipates as the steps it performs.
 
-This is a future I want to explore: richer domain methods and documents that cooperate through declared relationships. These are future possibilities, not a claim about Flow’s current feature set. They should grow from individual documents that people already find useful. A change in one brief must not silently rewrite conclusions elsewhere.
+This is a future I want to explore: richer domain practices and documents that cooperate through declared relationships. These are future possibilities, not a claim about Flow’s current feature set. They should grow from individual documents that people already find useful. A change in one brief must not silently rewrite conclusions elsewhere.
 
-There is a personal possibility here as well. The researcher’s care can improve the writer’s argument. The builder’s experiment can give the researcher a better question. A method preserved between them gives curiosity more chances to compound.
+There is a personal possibility here as well. The researcher’s care can improve the writer’s argument. The builder’s experiment can give the researcher a better question. A practice carried between them gives curiosity more chances to compound.
 
 The lasting asset is the practice a person has refined, together with the work and reasons they chose to keep. As models improve, that asset should become more useful and remain something its owner can carry forward.
 
@@ -142,7 +142,7 @@ Flow brings standing work into readable files you own, runs Night Shift on your 
 
 It will not fit every task. Some work depends on systems the document cannot access. Some changes require a conversation before any update makes sense. Sometimes a calendar reminder and a few minutes of direct work are sufficient.
 
-Even a well-chosen Living Document can begin with poor sources or a mistaken definition. The method will need editing. The question for the second cycle is whether the work becomes easier to maintain and the result easier to understand.
+Even a well-chosen Living Document can begin with poor sources or a mistaken definition. Its Jobs will need editing. The question for the second cycle is whether the work becomes easier to maintain and the result easier to understand.
 
 The studies in this essay provide context for that design challenge. They do not establish that Flow improves productivity, accuracy, or creativity. Those are outcomes we must examine through actual use. The person returning to their own document is the one who can judge whether the routine has earned its place.
 

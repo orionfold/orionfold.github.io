@@ -16,9 +16,9 @@ async function loadOg(contents) {
   return import(`data:text/javascript;base64,${Buffer.from(result.outputFiles[0].text).toString('base64')}`);
 }
 
-const livingRoutes = ['/', '/essay/', '/flow/', '/flow/living-documents/', '/flow/night-shift/', '/flow/settings/', '/manifesto/'];
+const livingRoutes = ['/', '/essay/', '/essays/', '/essays/the-work-we-want-to-keep/', '/flow/', '/flow/living-documents/', '/flow/night-shift/', '/flow/settings/', '/manifesto/'];
 
-test('Living renderer revisions refresh all seven card URLs without changing other cards', async () => {
+test('Living renderer revisions refresh all living card URLs without changing other cards', async () => {
   const revision = /const LIVING_OG_RENDERER_VERSION = '([^']+)';/;
   assert.match(source, revision);
   const current = await loadOg(source);

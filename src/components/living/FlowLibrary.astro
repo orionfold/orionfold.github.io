@@ -1,17 +1,20 @@
 ---
 import { livingLibrary } from '../../data/flow-library';
+import StartWithUsefulWork from './StartWithUsefulWork.astro';
 ---
 <section class="ls-library" id="living-library" aria-labelledby="library-heading">
   <div class="ls-container">
     <div class="ls-section-heading">
       <p class="ls-eyebrow">INCLUDED WITH FLOW</p>
-      <h2 id="library-heading">SIX EXAMPLES.<br/>ONE STARTER.<br/><span class="ls-stroke">YOUR NEXT CHAPTER.</span></h2>
-      <p>Skip the blank page. Open a complete living document, explore its charts and sources, then make it your own.</p>
+      <h2 id="library-heading">24 USEFUL<br/>STARTING DOCUMENTS.<br/><span class="ls-stroke">YOUR NEXT CHAPTER.</span></h2>
+      <p>Start with a responsibility you recognize. Explore four categories, inspect a document's Jobs, and make a copy for your own work.</p>
     </div>
   </div>
-  <div class="ls-library-stage ls-container">
+  <StartWithUsefulWork />
+  <div class="ls-library-stage ls-container" id="curated-document-previews">
+    <div class="ls-curated-heading"><h3>Explore seven illustrated examples.</h3><p>A closer look at selected documents, with sample data, sources and charts.</p></div>
     <div class="ls-library-mobile-nav">
-      <label for="library-select">Explore the seven documents</label>
+      <label for="library-select">Explore seven illustrated examples</label>
       <select id="library-select" data-example-select>
         {livingLibrary.map((doc, i) => <option value={i}>{String(i + 1).padStart(2, '0')} / {doc.name}</option>)}
       </select>
@@ -91,14 +94,14 @@ import { livingLibrary } from '../../data/flow-library';
                 )}
               </section>
             ))}
-            <footer class="ls-library-document-footer"><span>READS FROM <b>{doc.binding}</b></span><span>Readable files. A method you can inspect.</span></footer>
+            <footer class="ls-library-document-footer"><span>READS FROM <b>{doc.binding}</b></span><span>Readable files. Jobs you can inspect.</span></footer>
           </div>
           <div class="ls-library-caption"><p>{doc.description}</p><span>Included in Flow Base <small>Scroll inside to take over</small><button type="button" data-example-scroll aria-controls={`example-document-${i}`} aria-pressed="false">Play scroll</button></span></div>
         </div>
       ))}
     </div>
     <div class="ls-library-controls">
-      <p>Seven starting points. <span>Your files take it from here.</span></p>
+      <p>Seven illustrated previews. <span>24 documents in Flow.</span></p>
       <nav aria-label="Browse living document previews">
         <button type="button" data-example-prev aria-label="Previous living document">Previous</button>
         <output data-example-count aria-live="polite" aria-atomic="true">01 / 07</output>

@@ -42,25 +42,25 @@ import { initFlowLibrary } from './flow-library.js';
       'That note is back.',
     ];
     const knowledge = {
-      states: ['Ready for tonight', 'Reading your sources', 'Connecting the themes', 'Ready for your review', 'Connection kept', 'Connection reverted'],
-      titles: ['Your ideas, still growing.', 'Sources become connections.', 'A new link to consider.', 'Decide what belongs.', 'Your judgment, recorded.', 'The earlier note is back.'],
-      bottom: ['2 sources named · Ready for tonight', 'Sources linked to their themes', '1 proposed connection · Draft note', '1 proposed connection · Your call', 'Connection kept · Decision recorded', 'Earlier version restored'],
-      graph: ['2 named sources · Ready to connect', 'Source-backed themes connected', 'Dashed link: a proposal to review', 'Follow the sources. Decide on the link.', 'Connection kept in this illustration', 'Source-backed themes remain'],
+      states: ['Ready when you are', 'Reading your Jobs', 'Diagram proposed', 'Waiting for your decision', 'Diagram approved', 'Proposal declined'],
+      titles: ['Make your Jobs visible.', 'The steps are in your words.', 'A visual to consider.', 'Decide what belongs.', 'Your Jobs, made visible.', 'Your writing stays as it was.'],
+      bottom: ['Research Jobs · Manual visualization', 'Selected section: Evidence to decision', 'Mermaid proposal · Not applied', 'Your approval comes first', 'Diagram added in this illustration', 'Proposal declined · Document unchanged'],
+      graph: ['Research Jobs · Ready to visualize', 'Question, sources, evidence, comparison', 'Proposed diagram · Not applied', 'Review the proposal. Make the call.', 'Diagram approved in this illustration', 'Proposal declined · Original Jobs remain'],
       notes: [
-        'Your named notes stay in Markdown. Flow will propose a connection for you to review.',
-        'Your notes mention trust. Your reading returns to memory. Their sources stay in view.',
-        'Proposed: trust grows when useful context is remembered. Follow both sources, then decide.',
-        'Proposed: trust grows when useful context is remembered. Follow both sources, then decide.',
-        'Kept: connect trust and memory. The link and your decision stay with the document.',
-        'Previous note: trust and memory are separate themes. The proposed link has been reverted.',
+        'The selected section describes your research Jobs. Visualize proposes a diagram for your review.',
+        'Start with a question and permitted inputs. Record dated claims and limitations, then compare the evidence.',
+        'Proposed: show the path from question and sources to evidence, comparison, and your decision.',
+        'Review the proposed diagram against your saved Jobs. Nothing is added until you approve.',
+        'Approved: the diagram sits with your Jobs. The decision to investigate, act, watch, or ignore stays yours.',
+        'Declined: the proposed diagram is discarded. Your original Jobs are unchanged.',
       ],
       events: [
-        ['Read the sources you named', 'Connect themes in Mermaid', 'Review a proposed connection'],
-        ['Two named sources read', 'Trust and memory mapped', 'A connection is taking shape'],
-        ['Source links preserved', 'One new connection proposed', 'Overnight note drafted locally'],
-        ['Source links preserved', 'Dashed connection marked', 'Your judgment comes next'],
-        ['Source links preserved', 'Connection kept', 'Your decision recorded'],
-        ['Source links preserved', 'Proposed connection removed', 'Earlier note restored'],
+        ['Read the selected section', 'Propose a Mermaid diagram', 'Approve or decline the proposal'],
+        ['Research Jobs selected', 'Evidence to decision in view', 'Original writing preserved'],
+        ['Jobs visualized', 'Diagram proposed', 'Document unchanged so far'],
+        ['Jobs remain in view', 'Proposal ready to inspect', 'Your approval comes first'],
+        ['Original Jobs preserved', 'Diagram approved', 'Your judgment stays yours'],
+        ['Original Jobs preserved', 'Proposal declined', 'No diagram added'],
       ],
     };
     function show(d, n) {
@@ -68,7 +68,7 @@ import { initFlowLibrary } from './flow-library.js';
       d.el.dataset.step = String(n);
       const isKnowledge = d.el.dataset.demoNarrative === 'knowledge';
       d.el.querySelector('[data-demo-state]').textContent = (isKnowledge ? knowledge.states : states)[n];
-      d.el.querySelector('[data-demo-time]').textContent = times[n];
+      d.el.querySelector('[data-demo-time]').textContent = isKnowledge ? String(Math.min(n + 1, 4)).padStart(2, '0') : times[n];
       d.el.querySelector('[data-demo-title]').textContent = (isKnowledge ? knowledge.titles : titles)[n];
       d.el.querySelector('[data-demo-bottom]').textContent = isKnowledge ? knowledge.bottom[n] :
         n < 3
@@ -79,7 +79,7 @@ import { initFlowLibrary } from './flow-library.js';
             ][n]
           : '3 marked changes · Review the note';
       d.el.querySelector('[data-demo-review-label]').textContent = isKnowledge
-        ? (n < 3 ? 'Proposed connections need your review.' : 'Review this part: Proposed connection') :
+        ? (n < 3 ? 'The proposal waits for your approval.' : 'Review this proposal: Evidence to decision') :
         n < 3
           ? 'Changes will be marked for review.'
           : 'Review this part: Overnight note';
@@ -87,10 +87,10 @@ import { initFlowLibrary } from './flow-library.js';
         revert = d.el.querySelector('[data-demo-revert]');
       keep.disabled = n !== 3;
       revert.disabled = n !== 3;
-      keep.textContent = n === 4 ? 'Kept' : 'Keep';
-      revert.textContent = n === 5 ? 'Reverted' : 'Revert';
+      keep.textContent = isKnowledge ? (n === 4 ? 'Approved' : 'Approve') : (n === 4 ? 'Kept' : 'Keep');
+      revert.textContent = isKnowledge ? (n === 5 ? 'Declined' : 'Decline') : (n === 5 ? 'Reverted' : 'Revert');
       d.el.querySelector('[data-demo-decision]').textContent = isKnowledge
-        ? (n === 4 ? 'Connection kept. Your decision is recorded in this illustration.' : n === 5 ? 'Earlier diagram and note restored. Named sources remain.' : '') :
+        ? (n === 4 ? 'Diagram approved and added in this illustration.' : n === 5 ? 'Proposal declined. Your original Jobs remain unchanged.' : '') :
         n === 4
           ? 'Note kept. The decision is recorded in this illustration.'
           : n === 5
@@ -103,7 +103,7 @@ import { initFlowLibrary } from './flow-library.js';
       if (isKnowledge) {
         d.el.querySelector('[data-knowledge-status]').textContent = knowledge.graph[n];
         d.el.querySelectorAll('[data-knowledge-event-copy]').forEach((el, i) => { el.textContent = knowledge.events[n][i]; });
-        const graphDescription = n === 0 ? 'Two named sources, Notes and Reading, ready to connect.' : n === 1 || n === 5 ? 'Notes link to trust; reading links to memory. No proposed connection is kept.' : n === 4 ? 'Notes link to trust; reading links to memory. The connection between trust, memory and living work was kept.' : 'Notes link to trust; reading links to memory. A dashed connection between trust, memory and living work is proposed for review.';
+        const graphDescription = n === 0 ? 'Question and permitted sources begin the saved research Jobs.' : n === 1 || n === 5 ? 'Question and sources lead to evidence and comparison. No diagram has been approved.' : n === 4 ? 'The approved diagram connects the research Jobs to a human decision.' : 'A diagram from question and sources through evidence and comparison to your decision awaits approval.';
         d.el.querySelector('[data-knowledge-graph]').setAttribute('aria-label', `Illustrative Mermaid diagram. ${graphDescription}`);
       }
       d.el
@@ -115,6 +115,7 @@ import { initFlowLibrary } from './flow-library.js';
     }
     demos.forEach((d) => {
       show(d, 0);
+      ['pointerdown', 'focusin'].forEach(event => d.el.addEventListener(event, () => { d.automatic = false; }));
       d.el.querySelector('[data-demo-next]').addEventListener('click', () => {
         d.automatic = false;
         show(d, Math.min(d.step + 1, 3));
@@ -150,10 +151,11 @@ import { initFlowLibrary } from './flow-library.js';
       tick++;
       demos.forEach((d) => {
         if (!d.visible || !d.automatic) return;
-        const wait = d.step === 3 ? 16 : 6;
+        if (d.step >= 3) { d.automatic = false; return; }
+        const wait = 6;
         if (tick - d.last >= wait) {
           d.last = tick;
-          show(d, d.step === 3 ? 0 : d.step + 1);
+          show(d, d.step + 1);
         }
       });
     }, 500);

@@ -5,19 +5,22 @@
 > arrive for review; Night Shift runs within authority you set in advance.
 > A Morning Briefing shows the results, changes and receipts to keep or revert.
 > Base is free forever. Pro is $10/month or $96/year, with 10 Pro days included
-> and no credit card to use. The Living Documents launch accompanies Flow v1.6.
+> and no credit card to use. Flow 1.7 brings Jobs into the Workbench beside your document.
 > Relay provides repeatable agent work with cost receipts. Arena evaluates local
 > AI. Orionfold is a member of NVIDIA Inception.
 
 ## Living Documents
 - [The Living Documents Manifesto](https://orionfold.com/manifesto/): Eighteen ideas for work that continues and judgment that stays yours, with interactive workflow illustrations, evidence and primary-source citations.
-- [Room for a Renaissance](https://orionfold.com/essay/): Manav Sehgal's essay on making more room for the researcher, writer and builder in each of us. One canonical essay, also discoverable through the Story RSS feed.
+- [Room for a Renaissance](https://orionfold.com/essay/): Manav Sehgal's essay on making more room for the researcher, writer and builder in each of us. The foundational essay, retained at its original canonical URL.
+
+- [Essays](https://orionfold.com/essays/): Manav Sehgal on working knowledge, human judgment and Living Documents. Two essays, each with its own canonical URL; both also appear in the Story RSS feed.
+- [The Work We Want to Keep](https://orionfold.com/essays/the-work-we-want-to-keep/): The flagship essay on personal AI, founder history and the judgment people retain. Includes a Flow Jobs walkthrough and qualified research citations.
 
 ## Flow (flagship, released for Mac)
-- [Flow](https://orionfold.com/flow/): Living Documents for Mac: recurring jobs, living data, Night Shift and a Morning Briefing. Interactive product illustrations explain the workflow. Pricing, FAQ, technical specifications and the direct download remain linked.
-- [Flow product tour](https://orionfold.com/flow/tour/): Explore Flow 1.6 through real product captures. Start with Night Shift, Living Documents and the six Settings screens, then explore writing, files, models and receipts.
+- [Flow](https://orionfold.com/flow/): Flow 1.7 Living Documents for Mac: inspect saved Jobs in Edit, Run and Relations; run useful work and review each changed part. Start with 24 useful documents. Interactive product illustrations explain the workflow. Pricing, FAQ, technical specifications and the direct download remain linked.
+- [Flow product tour](https://orionfold.com/flow/tour/): Explore Flow 1.7 through real product captures. Start with Night Shift, Living Documents and the six Settings screens, then explore writing, files, models and receipts.
 - [Flow: Night Shift](https://orionfold.com/flow/night-shift/): Schedule work while your Mac is plugged in and idle. Flow can be open or quit. Review a Morning Briefing and keep or revert changes. Base includes deterministic jobs; Pro adds local model-powered Overnight notes.
-- [Flow: Living Documents](https://orionfold.com/flow/living-documents/): Seven Guide folders cover Stock Portfolio, Tax Advisor, Household Budget, Job Search, Competitor Watch, Team Status and a starter to copy. File-bound charts and tables refresh from their sources; jobs and collecting definitions stay with the document.
+- [Flow: Living Documents](https://orionfold.com/flow/living-documents/): Start with useful work offers 24 documents in four categories, with five featured choices. The website also presents seven curated document previews. File-bound charts and tables refresh from their sources; Jobs and collecting definitions stay with the document. Completed Jobs apply changes before review; Keep records a decision, Revert restores the selected output part, and Later leaves applied changes pending.
 - [Flow: Settings](https://orionfold.com/flow/settings/): Six screens: General, Documents, Models, Smart Routing, Evidence and Night Shift. See where models run, manage local models, and set a Night Shift window.
 - [Flow technical specifications](https://orionfold.com/flow/specifications/): System requirements, document formats, approval-led Agency, model routes, proof, privacy boundaries, plans (Base free forever, Pro at $10 a month or $96 a year), and qualified measurements for Orionfold Flow on Mac.
 - [Flow: Writing with AI](https://orionfold.com/flow/writing-with-ai/): Approval-gated AI editing (seven actions, one trust path), Expand with Sources (a model uses Flow's lookups to read the document and search your open folders, every lookup narrated live, bounded to 12 lookups, the write arriving as an approved diff with a receipt), an in-document tool strip that states scope, cost, and route before you click, and long documents improved part by part.

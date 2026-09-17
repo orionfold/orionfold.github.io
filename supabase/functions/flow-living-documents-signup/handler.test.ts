@@ -5,7 +5,10 @@ import {
 import {
   ACCEPTED_MESSAGE,
   canonicalPayload,
+  confirmationEmail,
+  confirmationUrl,
   CONSENT_TEXT,
+  LEGACY_CONSENT_TEXT,
   OFFER,
   parseSignup,
   type SignupInput,
@@ -194,4 +197,136 @@ Deno.test("unavailable suppression snapshot cannot deliver a confirmation", asyn
   });
   assertEquals((await handler(request())).status, 502);
   assert(!calls.includes("deliver"));
+});
+
+Deno.test("current and legacy consent remain verbatim in storage input, payload identity and email", () => {
+  const url = "https://service.test/confirm?token=" + "a".repeat(64);
+  const footer = "Test unsubscribe footer";
+  const parsedInputs: SignupInput[] = [];
+  for (const consent of [CONSENT_TEXT, LEGACY_CONSENT_TEXT]) {
+    const parsed = parseSignup({ ...input, consent_text: consent });
+    assert(parsed !== null && parsed !== "honeypot");
+    assertEquals(parsed.consent_text, consent);
+    const message = confirmationEmail(url, footer, parsed.consent_text);
+    assertEquals(
+      message.subject,
+      "Confirm your Flow updates and AI Native Newsletter",
+    );
+    assertEquals(
+      message.text,
+      `Confirm the email updates you requested:\n\n${consent}\n\nOpen this link, then select Confirm subscription:\n${url}\n\nThe link expires in seven days. If you did not request this, you can ignore this email.\n\n${footer}`,
+    );
+    parsedInputs.push(parsed);
+  }
+  assert(
+    canonicalPayload(parsedInputs[0]) !== canonicalPayload(parsedInputs[1]),
+  );
+  assertEquals(
+    canonicalPayload(parsedInputs[1]),
+    JSON.stringify({
+      email,
+      offer: OFFER,
+      consent: LEGACY_CONSENT_TEXT,
+      source: SOURCE,
+      attribution: { utm_campaign: "living" },
+    }),
+    "the legacy canonical payload remains byte-identical for retry hashes",
+  );
+  assertEquals(
+    parseSignup({ ...input, consent_text: CONSENT_TEXT + " " }),
+    null,
+  );
+  assertEquals(
+    parseSignup({
+      ...input,
+      consent_text: LEGACY_CONSENT_TEXT + " More emails.",
+    }),
+    null,
+  );
+});
+
+Deno.test("old and new retries deliver the exact permission accepted by each request", async () => {
+  for (const consent of [LEGACY_CONSENT_TEXT, CONSENT_TEXT]) {
+    const prepared: string[] = [];
+    const delivered: string[] = [];
+    const { handler } = setup({
+      prepare: async (parsed) => {
+        prepared.push(canonicalPayload(parsed));
+        return {
+          result: "send",
+          claimVersion: prepared.length,
+          token: "a".repeat(64),
+        };
+      },
+      deliver: async (parsed, token) => {
+        delivered.push(
+          confirmationEmail(
+            confirmationUrl(
+              {
+                site: "https://orionfold.com",
+                functionsBase: "https://service.test/functions/v1",
+              },
+              token,
+              parsed.consent_text,
+            ),
+            "Test footer",
+            parsed.consent_text,
+          ).text,
+        );
+        if (delivered.length === 1) {
+          throw new Error("uncertain provider response");
+        }
+        return "provider-receipt";
+      },
+    });
+    const body = { ...input, consent_text: consent };
+    assertEquals((await handler(request(body))).status, 502);
+    assertEquals((await handler(request(body))).status, 202);
+    assertEquals(prepared.length, 2);
+    assertEquals(prepared[0], prepared[1]);
+    assertEquals(delivered[0], delivered[1]);
+    assert(delivered[1].includes(consent));
+  }
+});
+
+Deno.test("legacy retry links remain byte-identical while new Jobs links use the site's HTML confirmation page", () => {
+  const token = "b".repeat(64);
+  const environment = {
+    site: "https://orionfold.com",
+    functionsBase: "https://orionfold.supabase.co/functions/v1",
+  };
+  const oldUrl =
+    `https://orionfold.supabase.co/functions/v1/flow-living-documents-confirm?token=${token}`;
+  assertEquals(
+    confirmationUrl(environment, token, LEGACY_CONSENT_TEXT),
+    oldUrl,
+  );
+  assertEquals(
+    confirmationUrl(environment, token, CONSENT_TEXT),
+    `https://orionfold.com/flow/confirm/?token=${token}`,
+  );
+  const oldEmail = confirmationEmail(
+    oldUrl,
+    "Stable footer",
+    LEGACY_CONSENT_TEXT,
+  );
+  assertEquals(
+    confirmationEmail(
+      confirmationUrl(environment, token, LEGACY_CONSENT_TEXT),
+      "Stable footer",
+      LEGACY_CONSENT_TEXT,
+    ),
+    oldEmail,
+  );
+  assertEquals(
+    confirmationUrl(
+      {
+        site: "https://stage.example.test",
+        functionsBase: "https://stage-service.example.test/functions/v1",
+      },
+      token,
+      CONSENT_TEXT,
+    ),
+    `https://stage.example.test/flow/confirm/?token=${token}`,
+  );
 });
