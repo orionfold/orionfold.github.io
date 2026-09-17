@@ -203,7 +203,7 @@ Deno.test("current and legacy consent remain verbatim in storage input, payload 
   const url = "https://service.test/confirm?token=" + "a".repeat(64);
   const footer = "Test unsubscribe footer";
   const parsedInputs: SignupInput[] = [];
-  for (const consent of [CONSENT_TEXT, LEGACY_CONSENT_TEXT]) {
+  for (const consent of [CONSENT_TEXT, LEGACY_CONSENT_TEXT] as const) {
     const parsed = parseSignup({ ...input, consent_text: consent });
     assert(parsed !== null && parsed !== "honeypot");
     assertEquals(parsed.consent_text, consent);
@@ -329,4 +329,46 @@ Deno.test("legacy retry links remain byte-identical while new Jobs links use the
     ),
     `https://stage.example.test/flow/confirm/?token=${token}`,
   );
+});
+
+Deno.test("version 2 emails confirm in one click for either exact consent", () => {
+  const token = "c".repeat(64);
+  const environment = {
+    site: "https://orionfold.com",
+    functionsBase: "https://service.test/functions/v1",
+  };
+  for (const consent of [CONSENT_TEXT, LEGACY_CONSENT_TEXT] as const) {
+    const url = confirmationUrl(environment, token, consent, 2);
+    assertEquals(
+      url,
+      `https://service.test/functions/v1/flow-living-documents-confirm?token=${token}`,
+    );
+    const email = confirmationEmail(url, "Stable footer", consent, 2);
+    assert(email.text.includes(`\n${consent}\n`));
+    assert(email.text.includes(`Click to confirm your subscription:\n${url}`));
+    assert(!email.text.includes("then select"));
+    assert(!email.text.includes("/flow/confirm/"));
+  }
+});
+Deno.test("delivery uses the persisted email version through uncertain retries", async () => {
+  for (const emailVersion of [1, 2] as const) {
+    let claims = 0;
+    const versions: number[] = [];
+    const { handler } = setup({
+      prepare: async () => ({
+        result: "send",
+        claimVersion: ++claims,
+        token: "a".repeat(64),
+        emailVersion,
+      }),
+      deliver: async (_input, _token, version) => {
+        versions.push(version);
+        if (versions.length === 1) throw new Error("uncertain delivery");
+        return "provider-receipt";
+      },
+    });
+    assertEquals((await handler(request())).status, 502);
+    assertEquals((await handler(request())).status, 202);
+    assertEquals(versions, [emailVersion, emailVersion]);
+  }
 });

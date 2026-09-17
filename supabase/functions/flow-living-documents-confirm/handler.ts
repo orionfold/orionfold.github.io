@@ -7,7 +7,7 @@ export interface ConfirmDependencies {
   site(): string;
   functionsBase(): string;
   hash(token: string): Promise<string>;
-  confirm(tokenHash: string): Promise<boolean>;
+  confirm(tokenHash: string): Promise<"confirmed" | "already" | "invalid">;
 }
 const headers = {
   "Content-Type": "text/plain; charset=utf-8",
@@ -33,8 +33,7 @@ export function createConfirmHandler(deps: ConfirmDependencies) {
       new Response(null, {
         status: 303,
         headers: {
-          Location:
-            `${site}/manifesto/?living-documents-confirmed=${state}#email-updates`,
+          Location: `${site}/?living-documents-confirmed=${state}`,
           "Cache-Control": "no-store",
           "Referrer-Policy": "no-referrer",
           "X-Robots-Tag": "noindex",
@@ -47,22 +46,41 @@ export function createConfirmHandler(deps: ConfirmDependencies) {
       });
     }
     const url = new URL(request.url);
+    // HEAD and explicit prefetch requests are not the recipient following a link.
+    if (
+      request.method === "HEAD" ||
+      /prefetch/i.test(
+        request.headers.get("Sec-Purpose") || request.headers.get("Purpose") ||
+          "",
+      )
+    ) {
+      return new Response(null, { status: 204, headers });
+    }
+    const confirm = async (token: string) => {
+      const result = await deps.confirm(await deps.hash(token));
+      return redirect(
+        result === "confirmed"
+          ? "1"
+          : result === "already"
+          ? "already"
+          : "error",
+      );
+    };
     if (request.method === "GET") {
       const tokens = url.searchParams.getAll("token");
       if (tokens.length !== 1 || !TOKEN.test(tokens[0])) {
         return redirect("error");
       }
-      // Supabase's shared domain serves GET HTML as plain text. Hand old email
-      // links to the static site; only an explicit native form POST can confirm.
-      return new Response(null, {
-        status: 303,
-        headers: {
-          Location: `${site}/flow/confirm/?token=${tokens[0]}`,
-          "Cache-Control": "no-store",
-          "Referrer-Policy": "no-referrer",
-          "X-Robots-Tag": "noindex, nofollow",
-        },
-      });
+      // Following the email link is the second opt-in. The homepage acknowledges
+      // the result in its existing dismissible bar, without another action.
+      try {
+        return await confirm(tokens[0]);
+      } catch {
+        return new Response(
+          "Email confirmation is temporarily unavailable. Please try your email link again.",
+          { status: 503, headers },
+        );
+      }
     }
     if (request.method !== "POST") {
       return new Response("Method not allowed", { status: 405, headers });
@@ -83,9 +101,7 @@ export function createConfirmHandler(deps: ConfirmDependencies) {
         return redirect("error");
       }
       const token = tokens[0];
-      return redirect(
-        await deps.confirm(await deps.hash(token)) ? "1" : "error",
-      );
+      return await confirm(token);
     } catch {
       return new Response(
         "We could not confirm your subscription. Please retry.",

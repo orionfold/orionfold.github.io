@@ -25,11 +25,14 @@ const handler = createConfirmHandler({
     ).join(""),
   confirm: async (tokenHash) => {
     const { data, error } = await db().rpc(
-      "confirm_flow_living_documents_subscription",
+      "confirm_flow_living_documents_subscription_result",
       { p_token_hash: tokenHash },
     );
     if (error) throw new Error("confirmation_unavailable");
-    return data === true;
+    if (data !== "confirmed" && data !== "already" && data !== "invalid") {
+      throw new Error("invalid_confirmation_result");
+    }
+    return data;
   },
 });
 if (import.meta.main) Deno.serve(handler);

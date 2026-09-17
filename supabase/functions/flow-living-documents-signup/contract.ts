@@ -5,6 +5,7 @@ export const CONSENT_TEXT =
 export const LEGACY_CONSENT_TEXT =
   "Send me Flow updates, Living Documents methods, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time.";
 export type ConsentText = typeof CONSENT_TEXT | typeof LEGACY_CONSENT_TEXT;
+export type ConfirmationEmailVersion = 1 | 2;
 function isConsentText(value: unknown): value is ConsentText {
   return value === CONSENT_TEXT || value === LEGACY_CONSENT_TEXT;
 }
@@ -83,15 +84,16 @@ export function canonicalPayload(input: SignupInput): string {
     ),
   });
 }
-// Keep the old endpoint URL for legacy retry bodies and provider idempotency.
-// New Jobs subscriptions use the site's dedicated page, where HTML can render.
+// Version 1 preserves already-issued email bodies for provider idempotency.
+// Version 2 confirms directly from the email link for either consent sentence.
 export function confirmationUrl(
   environment: { site: string; functionsBase: string },
   token: string,
   consentText: ConsentText,
+  emailVersion: ConfirmationEmailVersion = 1,
 ): string {
   if (!TOKEN.test(token)) throw new Error("invalid_confirmation_token");
-  return consentText === LEGACY_CONSENT_TEXT
+  return emailVersion === 2 || consentText === LEGACY_CONSENT_TEXT
     ? `${environment.functionsBase}/flow-living-documents-confirm?token=${token}`
     : `${environment.site}/flow/confirm/?token=${token}`;
 }
@@ -100,11 +102,15 @@ export function confirmationEmail(
   url: string,
   footer: string,
   consentText: ConsentText,
+  emailVersion: ConfirmationEmailVersion = 1,
 ): { subject: string; text: string } {
   return {
     subject: "Confirm your Flow updates and AI Native Newsletter",
-    text:
-      `Confirm the email updates you requested:\n\n${consentText}\n\nOpen this link, then select Confirm subscription:\n${url}\n\nThe link expires in seven days. If you did not request this, you can ignore this email.\n\n${footer}`,
+    text: `Confirm the email updates you requested:\n\n${consentText}\n\n${
+      emailVersion === 2
+        ? "Click to confirm your subscription:"
+        : "Open this link, then select Confirm subscription:"
+    }\n${url}\n\nThe link expires in seven days. If you did not request this, you can ignore this email.\n\n${footer}`,
   };
 }
 export async function readLimitedBody(

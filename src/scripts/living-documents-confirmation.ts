@@ -1,54 +1,59 @@
 import { FLOW_LIVING_DOCUMENTS_OFFER } from "../data/flow-consent";
-function acknowledge() {
+
+/** Acknowledge a completed email-link confirmation in the existing navigation bar. */
+export function acknowledgeLivingDocumentsConfirmation(): boolean {
   const params = new URLSearchParams(location.search);
-  const panel = document.querySelector<HTMLElement>(
-    "[data-living-confirmation]",
-  );
-  const copy = panel?.querySelector<HTMLElement>(
-    "[data-living-confirmation-copy]",
-  );
-  if (!panel || !copy) return;
-  if (panel.dataset?.confirmToken === "true") {
-    if (panel.dataset.tokenPrepared === "true") return;
-    panel.dataset.tokenPrepared = "true";
-    const values = params.getAll("token");
-    const token = values.length === 1 && /^[a-f0-9]{64}$/.test(values[0])
-      ? values[0] : null;
-    params.delete("token");
-    history.replaceState({}, "", `${location.pathname}${params.size ? "?" + params.toString() : ""}${location.hash}`);
-    const form = panel.querySelector<HTMLFormElement>("[data-living-confirmation-form]");
-    const field = panel.querySelector<HTMLInputElement>("[data-living-confirmation-token]");
-    if (token && form && field && panel.dataset.actionsEnabled === "true") {
-      field.value = token;
-      form.hidden = false;
-      copy.textContent = "Confirm your subscription to the updates listed in your email.";
-    } else {
-      if (form) form.hidden = true;
-      if (field) field.value = "";
-      copy.textContent = token && panel.dataset.actionsEnabled !== "true"
-        ? "Confirmation is unavailable in this preview. Use the link in your email on the live website."
-        : "This confirmation link is unavailable. Request a new link from email updates.";
-    }
-    panel.classList.remove("hidden");
-    panel.focus({ preventScroll: true });
-    return;
+  const states = params.getAll("living-documents-confirmed");
+  if (states.length !== 1 || !["1", "already", "error"].includes(states[0])) return false;
+  const state = states[0];
+  const bar = document.getElementById("confirm-bar");
+  const text = document.getElementById("confirm-bar-text");
+  const detail = document.getElementById("confirm-bar-detail");
+  const close = document.getElementById("confirm-bar-close");
+  const cta = document.getElementById("confirm-bar-cta");
+  const magnet = document.getElementById("magnet-bar");
+  if (!bar || !text || !detail) return false;
+
+  text.textContent = state === "1" ? "Thanks for subscribing to the Flow email newsletter."
+    : state === "already" ? "You're already subscribed to the Flow email newsletter."
+    : "That confirmation link didn't work.";
+  detail.hidden = true;
+  if (cta) cta.hidden = true;
+  bar.dataset.confirmationState = state;
+  bar.classList.remove("hidden");
+  if (magnet) {
+    magnet.classList.remove("hidden");
+    magnet.dataset.confirmationCovered = "true";
+    magnet.inert = true;
+    magnet.setAttribute("aria-hidden", "true");
   }
-  const state = params.get("living-documents-confirmed");
-  if (state !== "1" && state !== "error") return;
-  copy.textContent = state === "1"
-    ? "You're subscribed to Flow updates, Living Documents Jobs, and the AI Native Newsletter. Up to one email a week. Unsubscribe any time."
-    : "That confirmation link is unavailable or has already been used. If you still need to subscribe, request a new link below.";
-  panel.classList.remove("hidden");
-  panel.focus({ preventScroll: true });
+  // A past dismissal must not prevent the permanent download from returning.
+  try { localStorage.removeItem("of-flow-bar-dismissed"); } catch {}
+
+  // This offer owns only its namespaced parameter. Legacy confirmations and
+  // attribution remain available to their existing controllers.
   params.delete("living-documents-confirmed");
-  history.replaceState(
-    {},
-    "",
-    `${location.pathname}${
-      params.size ? "?" + params.toString() : ""
-    }${location.hash}`,
-  );
-  if (state !== "1") return;
+  history.replaceState({}, "", `${location.pathname}${params.size ? "?" + params.toString() : ""}${location.hash}`);
+
+  let timer: ReturnType<typeof setTimeout>;
+  const dismiss = () => {
+    clearTimeout(timer);
+    bar.classList.add("hidden");
+    delete bar.dataset.confirmationState;
+    if (magnet) {
+      delete magnet.dataset.confirmationCovered;
+      magnet.inert = false;
+      magnet.removeAttribute("aria-hidden");
+      magnet.classList.remove("hidden");
+    }
+  };
+  close?.addEventListener("click", dismiss, { once: true });
+  timer = setTimeout(dismiss, 8000);
+  if (state === "1") reportLivingConfirmedLead();
+  return true;
+}
+
+function reportLivingConfirmedLead() {
   const analytics = window as typeof window & {
     gtag?: (...args: unknown[]) => void;
     fbq?: (...args: unknown[]) => void;
@@ -64,17 +69,11 @@ function acknowledge() {
       form_source: "manifesto-living-documents",
     });
     if (analytics.__ofAdsLeadSendTo) {
-      analytics.gtag?.("event", "conversion", {
-        send_to: analytics.__ofAdsLeadSendTo,
-      });
+      analytics.gtag?.("event", "conversion", { send_to: analytics.__ofAdsLeadSendTo });
     }
   } catch {}
   try {
     analytics.__ofLoadMetaPixel?.();
-    analytics.fbq?.("track", "Lead", {
-      content_name: FLOW_LIVING_DOCUMENTS_OFFER,
-    });
+    analytics.fbq?.("track", "Lead", { content_name: FLOW_LIVING_DOCUMENTS_OFFER });
   } catch {}
 }
-acknowledge();
-document.addEventListener("astro:page-load", acknowledge);

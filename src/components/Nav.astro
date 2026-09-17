@@ -30,6 +30,7 @@ const stickyCtaLabel = navCtaLabel;
 
 ---
 <div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
+  <div id="nav-notice-slot">
   <!-- Post-confirm welcome bar (success state). Takes the SAME top slot as the
        waitlist magnet bar and replaces it after a confirmed signup (the magnet
        bar controller suppresses itself while this is showing). Hidden by
@@ -85,6 +86,7 @@ const stickyCtaLabel = navCtaLabel;
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
       </button>
     </div>
+  </div>
   </div>
   <nav id="main-nav" aria-label="Main navigation" class="border-b border-transparent transition-[border-color] duration-300">
   <div class="living-nav-shell mx-auto py-5 flex items-center justify-between">
@@ -158,6 +160,18 @@ const stickyCtaLabel = navCtaLabel;
 </div>
 
 <style is:global>
+  /* The download bar keeps its layout box while the confirmation occupies its
+     slot, so dismissal restores the download without moving the navigation. */
+  #nav-notice-slot { position: relative; }
+  #confirm-bar[data-confirmation-state] { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  #confirm-bar[data-confirmation-state="1"],
+  #confirm-bar[data-confirmation-state="already"] { background-color: #ecfccb; border-color: #d9f99d; }
+  #confirm-bar[data-confirmation-state] > div { width: 100%; }
+  #confirm-bar[data-confirmation-state] p { min-width: 0; text-wrap: balance; }
+  #magnet-bar[data-confirmation-covered] { visibility: hidden; pointer-events: none; }
+  @media (max-width: 700px) {
+    #magnet-bar > div { min-height: 48px; }
+  }
   /* CSS-only mobile menu (see the markup above). The hidden checkbox's state
      opens the dropdown and swaps the hamburger/close icons with no JavaScript,
      so the menu responds the moment the page paints. Scoped to the mobile
@@ -230,14 +244,16 @@ const stickyCtaLabel = navCtaLabel;
           return new URLSearchParams(location.search).get('confirmed') === '1'
             || sessionStorage.getItem('of-confirm-welcome') === '1';
         } catch (e) { return false; } })();
-      if (!dismissed && !converted) {
+      const confirmationNotice = ['1', 'already', 'error'].includes(new URLSearchParams(location.search).get('living-documents-confirmed') || '')
+        || document.getElementById('confirm-bar')?.classList.contains('hidden') === false;
+      if (!dismissed && !converted && !confirmationNotice) {
         magnetBar.classList.remove('hidden');
-        const closeBtn = document.getElementById('magnet-bar-close');
-        closeBtn && closeBtn.addEventListener('click', () => {
-          try { localStorage.setItem(DISMISSED, '1'); } catch (e) {}
-          magnetBar.classList.add('hidden');
-        });
       }
+      const closeBtn = document.getElementById('magnet-bar-close');
+      closeBtn && closeBtn.addEventListener('click', () => {
+        try { localStorage.setItem(DISMISSED, '1'); } catch (e) {}
+        magnetBar.classList.add('hidden');
+      });
     }
     // Reserve the settled notice state on the first measurement. Measuring
     // while its bar is still hidden briefly collapses the reserved hero gap.

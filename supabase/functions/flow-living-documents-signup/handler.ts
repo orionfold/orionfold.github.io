@@ -1,5 +1,6 @@
 import {
   ACCEPTED_MESSAGE,
+  type ConfirmationEmailVersion,
   parseSignup,
   readLimitedBody,
   type SignupInput,
@@ -10,9 +11,20 @@ export interface SignupDependencies {
   prepare(
     input: SignupInput,
     request: Request,
-  ): Promise<{ result: string; claimVersion: number; token: string }>;
+  ): Promise<
+    {
+      result: string;
+      claimVersion: number;
+      token: string;
+      emailVersion?: ConfirmationEmailVersion;
+    }
+  >;
   suppressed(email: string): Promise<boolean>;
-  deliver(input: SignupInput, token: string): Promise<string>;
+  deliver(
+    input: SignupInput,
+    token: string,
+    emailVersion: ConfirmationEmailVersion,
+  ): Promise<string>;
   finish(
     requestId: string,
     claimVersion: number,
@@ -108,7 +120,11 @@ export function createSignupHandler(deps: SignupDependencies) {
         await deps.finish(input.requestId, claim.claimVersion, null);
         return reply(202, { message: ACCEPTED_MESSAGE });
       }
-      const providerId = await deps.deliver(input, claim.token);
+      const providerId = await deps.deliver(
+        input,
+        claim.token,
+        claim.emailVersion ?? 1,
+      );
       if (
         !providerId ||
         !(await deps.finish(input.requestId, claim.claimVersion, providerId))

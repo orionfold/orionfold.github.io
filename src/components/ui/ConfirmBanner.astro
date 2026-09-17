@@ -34,7 +34,11 @@
 </div>
 
 <script>
+  import { acknowledgeLivingDocumentsConfirmation } from '../../scripts/living-documents-confirmation';
   (function () {
+    // Living Documents confirmations use this same bar without changing the
+    // legacy confirmed parameter, welcome storage, or conversion controller.
+    if (acknowledgeLivingDocumentsConfirmation()) return;
     var WELCOME = 'of-confirm-welcome';
     var DISMISSED = 'of-confirm-welcome-dismissed';
     var params = new URLSearchParams(location.search);

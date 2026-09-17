@@ -28,19 +28,21 @@ test('New writing has timezone-qualified Article dates and a named author',()=>{
  }
  assert.equal((built('/manifesto/').match(/data-principle="true"/g)||[]).length,18,'all eighteen principles are server-rendered');
 });
-test('Authored pages share the design system; demos, redirects and private confirmation stay separate',()=>{
+test('Authored pages share the design system; demos and silent legacy redirects stay separate',()=>{
  let checked=0;
  function visit(dir){for(const name of readdirSync(dir)){const p=path.join(dir,name);if(statSync(p).isDirectory())visit(p);else if(p.endsWith('.html')){
   const rel=p.replaceAll('\\','/');if(/\/dist\/(arena|relay)\/demo\//.test(rel))continue;
-  const html=readFileSync(p,'utf8');if(/http-equiv="refresh"/i.test(html))continue;
+  const html=readFileSync(p,'utf8');
   if(rel.endsWith('/dist/flow/confirm/index.html')){
-   // A token-bearing entry page intentionally omits the analytics-bearing shell.
+   // Previously issued site links bridge silently to email-link confirmation.
    assert.match(html,/<meta name="robots" content="noindex, nofollow"/);
    assert.match(html,/<meta name="referrer" content="no-referrer"/);
    assert.doesNotMatch(html,/<script[^>]+src="https?:/);
-   assert.match(html,/data-living-confirmation-form method="post"/);
+   assert.doesNotMatch(html,/<form|<button|<h1|data-living-confirmation-form|Return to email updates/);
+   assert.match(html,/http-equiv="refresh" content="0;url=\/\?living-documents-confirmed=error"/);
    continue;
   }
+  if(/http-equiv="refresh"/i.test(html))continue;
   assert.match(html,/<body[^>]*class="[^"]*\bliving-site\b/,rel);checked++;
  }}}
  visit(new URL('dist',root).pathname);assert.ok(checked>130,`covered ${checked} authored pages`);

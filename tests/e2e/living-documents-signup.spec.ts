@@ -71,22 +71,120 @@ test('disabled new opt-in remains inert even if submit is dispatched', async ({ 
   expect(requests).toHaveLength(0);
 });
 
-test('confirmation entry removes its token and waits for an explicit native POST', async ({ page }) => {
+async function captureConfirmationEvents(page: Page) {
+  await page.addInitScript(() => {
+    const analytics = window as typeof window & { __confirmationEvents: unknown[][]; gtag: (...args: unknown[]) => void };
+    analytics.__confirmationEvents = [];
+    analytics.gtag = (...args: unknown[]) => analytics.__confirmationEvents.push(args);
+  });
+}
+async function confirmationEvents(page: Page) {
+  return page.evaluate(() => (window as typeof window & { __confirmationEvents: unknown[][] }).__confirmationEvents);
+}
+
+for (const width of [1440, 390]) {
+  test(`Flow confirmation returns to the familiar dismissing bar at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.clock.install({ time: new Date('2026-09-17T12:00:00Z') });
+    await page.clock.pauseAt(new Date('2026-09-17T12:00:01Z'));
+    await captureConfirmationEvents(page);
+    await page.goto('/');
+    await page.evaluate(async () => { await document.fonts.ready; });
+    const slot = page.locator('#nav-notice-slot');
+    const navigation = page.locator('#main-nav');
+    await expect(page.locator('#magnet-bar')).toBeVisible();
+    const originalSlot = await slot.boundingBox();
+    const originalNav = await navigation.boundingBox();
+    await page.evaluate(() => localStorage.setItem('of-flow-bar-dismissed', '1'));
+    await page.goto('/?living-documents-confirmed=1&utm_source=email');
+    await page.evaluate(async () => { await document.fonts.ready; });
+    const bar = page.locator('#confirm-bar');
+    await expect(bar).toBeVisible();
+    await expect(bar.locator('#confirm-bar-text')).toHaveText('Thanks for subscribing to the Flow email newsletter.');
+    await expect(bar.locator('#confirm-bar-detail')).toBeHidden();
+    await expect(bar.locator('#confirm-bar-cta')).toBeHidden();
+    await expect(page.locator('#magnet-bar')).toBeHidden();
+    await expect(page.locator('#magnet-bar')).toHaveAttribute('aria-hidden', 'true');
+    const activeSlot = await slot.boundingBox();
+    const activeNav = await navigation.boundingBox();
+    expect(Math.abs(activeSlot!.height - originalSlot!.height)).toBeLessThanOrEqual(1);
+    expect(Math.abs(activeNav!.y - originalNav!.y)).toBeLessThanOrEqual(1);
+    const noticeText = await bar.locator('p').boundingBox();
+    const notice = await bar.boundingBox();
+    expect(noticeText!.y).toBeGreaterThanOrEqual(notice!.y);
+    expect(noticeText!.y + noticeText!.height).toBeLessThanOrEqual(notice!.y + notice!.height);
+    expect(await page.evaluate(() => localStorage.getItem('of-flow-bar-dismissed'))).toBeNull();
+    await expect(page.locator('[data-living-confirmation-form]')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Confirm subscription', exact: true })).toHaveCount(0);
+    await expect(page).toHaveURL('http://127.0.0.1:4325/?utm_source=email');
+    expect(await confirmationEvents(page)).toEqual([['event', 'confirmed_lead', { offer: 'flow-living-documents-v1', form_source: 'manifesto-living-documents' }]]);
+    expect(await page.evaluate(() => sessionStorage.getItem('of-confirm-welcome'))).toBeNull();
+    expect(await page.evaluate(() => sessionStorage.getItem('of-confirm-welcome-dismissed'))).toBeNull();
+    await page.clock.runFor(7900);
+    await expect(bar).toBeVisible();
+    await page.clock.runFor(200);
+    await expect(bar).toBeHidden();
+    await expect(page.locator('#magnet-bar')).toBeVisible();
+    await expect(page.locator('#magnet-bar')).not.toHaveAttribute('aria-hidden', 'true');
+    await expect(page.locator('#magnet-bar a')).toHaveAttribute('href', /flow-downloads\/Orionfold-Flow\.dmg/);
+    const restoredSlot = await slot.boundingBox();
+    const restoredNav = await navigation.boundingBox();
+    expect(Math.abs(restoredSlot!.height - activeSlot!.height)).toBeLessThanOrEqual(1);
+    expect(Math.abs(restoredNav!.y - activeNav!.y)).toBeLessThanOrEqual(1);
+    // Registration must survive initial suppression by a confirmation notice.
+    await page.locator('#magnet-bar-close').click();
+    await expect(page.locator('#magnet-bar')).toBeHidden();
+    expect(await page.evaluate(() => localStorage.getItem('of-flow-bar-dismissed'))).toBe('1');
+    await page.reload();
+    await expect(bar).toBeHidden();
+    expect(await confirmationEvents(page)).toEqual([]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)).toBe(false);
+  });
+}
+
+test('already and failed Flow links show a closable bar without new-lead measurement', async ({ page }) => {
+  await captureConfirmationEvents(page);
+  for (const state of ['already', 'error']) {
+    await page.goto(`/?living-documents-confirmed=${state}`);
+    const bar = page.locator('#confirm-bar');
+    await expect(bar).toBeVisible();
+    await expect(bar.locator('#confirm-bar-text')).toHaveText(state === 'already' ? "You're already subscribed to the Flow email newsletter." : "That confirmation link didn't work.");
+    await expect(bar.locator('#confirm-bar-cta')).toBeHidden();
+    expect(await confirmationEvents(page)).toEqual([]);
+    const before = await page.locator('#main-nav').boundingBox();
+    await bar.getByRole('button', { name: 'Dismiss', exact: true }).click();
+    await expect(bar).toBeHidden();
+    await expect(page.locator('#magnet-bar')).toBeVisible();
+    const after = await page.locator('#main-nav').boundingBox();
+    expect(Math.abs(after!.y - before!.y)).toBeLessThanOrEqual(1);
+    await expect(page).toHaveURL('http://127.0.0.1:4325/');
+  }
+});
+
+test('an already-issued Jobs site link confirms by GET and returns home without a third click', async ({ page }) => {
   const token = 'a'.repeat(64);
   const requests: { method: string; token: string | null }[] = [];
-  await page.route('https://orionfold.supabase.co/functions/v1/flow-living-documents-confirm', async route => {
+  await page.route('https://orionfold.supabase.co/functions/v1/flow-living-documents-confirm?*', async route => {
     const request = route.request();
-    requests.push({ method: request.method(), token: new URLSearchParams(request.postData() ?? '').get('token') });
-    await route.fulfill({ status: 200, contentType: 'text/html', body: '<h1>Synthetic confirmation received</h1>' });
+    requests.push({ method: request.method(), token: new URL(request.url()).searchParams.get('token') });
+    await route.fulfill({ status: 303, headers: { location: 'http://127.0.0.1:4325/?living-documents-confirmed=1' } });
   });
+  await captureConfirmationEvents(page);
   await page.goto(`/flow/confirm/?token=${token}`);
-  await expect(page).toHaveURL('http://127.0.0.1:4325/flow/confirm/');
-  await expect(page.locator('[data-living-confirmation-copy]')).toHaveText('Confirm your subscription to the updates listed in your email.');
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
-  await expect(page.locator('meta[name="referrer"]')).toHaveAttribute('content', 'no-referrer');
-  await expect(page.locator('script[src^="https:"]')).toHaveCount(0);
-  expect(requests).toHaveLength(0);
-  await page.getByRole('button', { name: 'Confirm subscription', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Synthetic confirmation received' })).toBeVisible();
-  expect(requests).toEqual([{ method: 'POST', token }]);
+  await expect(page).toHaveURL('http://127.0.0.1:4325/');
+  await expect(page.locator('#confirm-bar')).toBeVisible();
+  await expect(page.locator('#confirm-bar-text')).toHaveText('Thanks for subscribing to the Flow email newsletter.');
+  await expect(page.getByRole('button', { name: 'Confirm subscription', exact: true })).toHaveCount(0);
+  expect(requests).toEqual([{ method: 'GET', token }]);
+  expect(await confirmationEvents(page)).toEqual([['event', 'confirmed_lead', { offer: 'flow-living-documents-v1', form_source: 'manifesto-living-documents' }]]);
+});
+
+test('legacy confirmation acknowledgement does not enter the Living Documents measurement path', async ({ page }) => {
+  await captureConfirmationEvents(page);
+  await page.goto('/?confirmed=already');
+  await expect(page.locator('#confirm-toast')).toBeVisible();
+  await expect(page.locator('#confirm-toast-text')).toHaveText("You're already on the list.");
+  expect(await confirmationEvents(page)).toEqual([]);
+  expect(await page.evaluate(() => sessionStorage.getItem('of-living-documents-confirmed'))).toBeNull();
 });

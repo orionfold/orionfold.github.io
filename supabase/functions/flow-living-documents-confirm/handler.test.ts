@@ -19,7 +19,7 @@ function setup(overrides: Partial<ConfirmDependencies> = {}) {
     confirm: async (hash) => {
       calls.push("confirm");
       assertEquals(hash, "b".repeat(64));
-      return true;
+      return "confirmed";
     },
     ...overrides,
   });
@@ -35,14 +35,14 @@ function post(raw = token, origin = "https://service.test") {
     body: new URLSearchParams({ token: raw }),
   });
 }
-Deno.test("old email-link GET redirects to the site without looking up or consuming consent", async () => {
+Deno.test("email-link GET confirms and returns to the homepage notification", async () => {
   const { handler, calls } = setup();
   const response = await handler(new Request(`${url}?token=${token}`));
   assertEquals(response.status, 303);
-  assertEquals(calls, []);
+  assertEquals(calls, ["hash", "confirm"]);
   assertEquals(
     response.headers.get("Location"),
-    `https://orionfold.com/flow/confirm/?token=${token}`,
+    "https://orionfold.com/?living-documents-confirmed=1",
   );
   assertEquals(await response.text(), "");
   assert(response.headers.get("Referrer-Policy") === "no-referrer");
@@ -58,7 +58,7 @@ Deno.test("confirmation links cannot replace the fixed site destination or carry
   );
   assertEquals(
     response.headers.get("Location"),
-    `https://stage.example.test/flow/confirm/?token=${token}`,
+    "https://stage.example.test/?living-documents-confirmed=1",
   );
   const invalid = await handler(
     new Request(`${url}?token=${token}&token=${token}`),
@@ -68,21 +68,21 @@ Deno.test("confirmation links cannot replace the fixed site destination or carry
       "living-documents-confirmed=error",
     ),
   );
-  assertEquals(calls, []);
+  assertEquals(calls, ["hash", "confirm"]);
 });
-Deno.test("explicit confirmation hashes token and redirects only to dedicated return namespace", async () => {
+Deno.test("legacy POST confirmation hashes token and redirects only to dedicated return namespace", async () => {
   const { handler, calls } = setup();
   const response = await handler(post());
   assertEquals(response.status, 303);
   assertEquals(calls, ["hash", "confirm"]);
   assertEquals(
     response.headers.get("Location"),
-    "https://orionfold.com/manifesto/?living-documents-confirmed=1#email-updates",
+    "https://orionfold.com/?living-documents-confirmed=1",
   );
   assert(!response.headers.get("Location")?.includes(token));
 });
-Deno.test("expired, replayed and suppressed token returns the same unavailable state", async () => {
-  const { handler } = setup({ confirm: async () => false });
+Deno.test("expired and suppressed token returns the same unavailable state", async () => {
+  const { handler } = setup({ confirm: async () => "invalid" });
   const response = await handler(post());
   assert(
     response.headers.get("Location")?.includes(
@@ -107,5 +107,29 @@ Deno.test("confirmation database failure remains an error rather than claiming c
 Deno.test("disabled confirmation does not access tokens", async () => {
   const { handler, calls } = setup({ enabled: () => false });
   assertEquals((await handler(post())).status, 503);
+  assertEquals(calls, []);
+});
+
+Deno.test("a previously confirmed link returns already without a new conversion", async () => {
+  const { handler } = setup({ confirm: async () => "already" });
+  const response = await handler(new Request(`${url}?token=${token}`));
+  assertEquals(response.status, 303);
+  assertEquals(
+    response.headers.get("Location"),
+    "https://orionfold.com/?living-documents-confirmed=already",
+  );
+});
+Deno.test("HEAD and explicit prefetch do not confirm", async () => {
+  const { handler, calls } = setup();
+  for (
+    const init of [{ method: "HEAD" }, { headers: { Purpose: "prefetch" } }, {
+      headers: { "Sec-Purpose": "prefetch;prerender" },
+    }] as RequestInit[]
+  ) {
+    assertEquals(
+      (await handler(new Request(`${url}?token=${token}`, init))).status,
+      204,
+    );
+  }
   assertEquals(calls, []);
 });
