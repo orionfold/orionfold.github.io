@@ -21,7 +21,7 @@ function acknowledge() {
     if (token && form && field && panel.dataset.actionsEnabled === "true") {
       field.value = token;
       form.hidden = false;
-      copy.textContent = "Confirm the exact email permission described in the confirmation email you received. Your recorded permission stays as requested.";
+      copy.textContent = "Confirm your subscription to the updates listed in your email.";
     } else {
       if (form) form.hidden = true;
       if (field) field.value = "";

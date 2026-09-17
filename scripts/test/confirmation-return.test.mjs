@@ -84,7 +84,7 @@ test("dedicated token page prepares a native form without confirming or counting
   assert.equal(f.field.value, token);
   assert.equal(f.location.search, "?utm_source=email", "opaque token is removed from the address before interaction");
   assert.equal(f.events.length, 0);
-  assert.match(f.copy.textContent, /exact email permission/);
+  assert.equal(f.copy.textContent, "Confirm your subscription to the updates listed in your email.");
   f.run();
   assert.equal(f.form.hidden, false, "a repeated page initializer preserves the prepared form");
   assert.equal(f.field.value, token);
