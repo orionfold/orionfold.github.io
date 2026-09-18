@@ -39,6 +39,9 @@ function fixture({ reducedMotion = false, narrative = 'knowledge' } = {}) {
   const events = Array.from({ length: 3 }, element);
   demo.querySelectorAll = selector => selector === '[data-demo-stage]' ? stages : selector === '[data-knowledge-event-copy]' ? events : [];
   const root = element();
+  const art = { style: {} };
+  const hero = { querySelector: selector => selector === '.ls-paper-art' ? art : null };
+  root.querySelector = selector => selector === '.ls-hero' ? hero : null;
   root.querySelectorAll = selector => selector === '[data-demo]' ? [demo] : [];
   const document = { ...element(), readyState: 'complete', hidden: false, querySelector: selector => selector === '.ls' ? root : null };
   const media = { ...element(), matches: reducedMotion };
@@ -57,9 +60,13 @@ function fixture({ reducedMotion = false, narrative = 'knowledge' } = {}) {
     },
     initFlowLibrary(received) { assert.strictEqual(received, root); libraryInitializations++; },
   };
+  context.window.IntersectionObserver = context.IntersectionObserver;
   runInNewContext(source, context, { filename: 'living-documents.js' });
   return {
-    demo, root, document,
+    demo, root, document, art,
+    heroVisible(visible = true) {
+      observers.find(item => item.targets.includes(hero)).callback([{ target: hero, isIntersecting: visible }]);
+    },
     get step() { return Number(demo.dataset.step); },
     get libraryInitializations() { return libraryInitializations; },
     node(selector) { return demo.querySelector(selector); },
@@ -73,6 +80,20 @@ function fixture({ reducedMotion = false, narrative = 'knowledge' } = {}) {
     reduce(value) { media.matches = value; media.emit('change', { matches: value }); },
   };
 }
+
+test('decorative hero drift pauses outside view, in a background tab and with reduced motion', () => {
+  const view = fixture();
+  assert.equal(view.art.style.animationPlayState, 'paused');
+  view.heroVisible(); assert.equal(view.art.style.animationPlayState, 'running');
+  view.heroVisible(false); assert.equal(view.art.style.animationPlayState, 'paused');
+  view.heroVisible();
+  view.document.hidden = true; view.document.emit('visibilitychange');
+  assert.equal(view.art.style.animationPlayState, 'paused');
+  view.document.hidden = false; view.document.emit('visibilitychange');
+  assert.equal(view.art.style.animationPlayState, 'running');
+  view.reduce(true); assert.equal(view.art.style.animationPlayState, 'paused');
+  view.reduce(false); assert.equal(view.art.style.animationPlayState, 'running');
+});
 
 test('autoplay reaches the decision and cannot approve, decline, or restart it', () => {
   for (const narrative of ['knowledge', 'product']) {

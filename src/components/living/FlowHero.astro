@@ -1,6 +1,9 @@
 ---
 // Approved Living Systems composition; native Astro, no client framework.
 import JobsWorkbenchDemo from './JobsWorkbenchDemo.astro';
+// Match the artwork's overflow width, tablet cap and desktop grid. The full
+// approved image remains available when the rendered width and DPR need it.
+const artSizes = '(max-width: 700px) calc(155vw - 62px), (max-width: 1100px) min(1050px, calc(125vw - 80px)), (max-width: 1200px) calc(88.45vw - 74.298px), calc(min(87.139423vw, 1254.807692px) - 6.09976vw - 27.884615px)';
 ---
 <section class="ls-hero ls-hero-flow">
 <div class="ls-hero-inner">
@@ -29,7 +32,7 @@ import JobsWorkbenchDemo from './JobsWorkbenchDemo.astro';
 </div>
 <div class="ls-hero-media">
 <picture class="ls-paper-art">
-<source srcset="/assets/living-systems/hero-flow-paper-planes.webp" type="image/webp"/>
+<source sizes={artSizes} srcset="/assets/living-systems/hero-flow-paper-planes-640.webp 640w, /assets/living-systems/hero-flow-paper-planes-960.webp 960w, /assets/living-systems/hero-flow-paper-planes-1152.webp 1152w, /assets/living-systems/hero-flow-paper-planes.webp 1642w" type="image/webp"/>
 <img alt="" fetchpriority="high" height="958" src="/assets/living-systems/hero-flow-paper-planes.png" width="1642"/>
 </picture><div class="ls-hero-workbench"><JobsWorkbenchDemo compact /></div></div>
 </div>

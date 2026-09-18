@@ -109,9 +109,25 @@ function navigationHarness(options) {
     panel.hidden = index !== 0;
     return panel;
   });
-  const readers = panels.map(() => Object.assign(element(), {
-    scrollTop: 0, scrollHeight: 2800, clientHeight: 448, querySelector: () => null,
-  }));
+  const measurements = panels.map(() => ({ pageReads: 0, viewportReads: 0, writes: [] }));
+  const readers = panels.map((_, index) => {
+    const measurement = measurements[index];
+    const page = { get scrollHeight() { measurement.pageReads++; return 900; } };
+    const properties = new Map();
+    const reader = Object.assign(element(), {
+      scrollTop: 0, scrollHeight: 2800,
+      querySelector: selector => selector === '[data-example-page]' ? page : null,
+      style: {
+        removeProperty(name) { properties.delete(name); },
+        setProperty(name, value) { properties.set(name, value); measurement.writes.push([name, value]); },
+        getPropertyValue(name) { return properties.get(name) ?? ''; },
+      },
+    });
+    Object.defineProperty(reader, 'clientHeight', {
+      get() { measurement.viewportReads++; return 448; },
+    });
+    return reader;
+  });
   const scrollButtons = panels.map(() => element({}, { 'aria-pressed': 'false' }));
   panels.forEach((panel, index) => {
     panel.querySelector = selector => selector === '.ls-library-document' ? readers[index]
@@ -132,7 +148,7 @@ function navigationHarness(options) {
     querySelector(selector) { return groups.get(selector)?.[0] ?? null; },
   };
   return {
-    root, tabs, panels, select, prev, next, count, readers, scrollButtons, clock,
+    root, tabs, panels, select, prev, next, count, readers, scrollButtons, clock, measurements,
     get focused() { return focused; },
     assertSelected(index) {
       assert.deepEqual(tabs.map(tab => tab.getAttribute('aria-selected')), documentNames.map((_, i) => String(i === index)));
@@ -231,6 +247,66 @@ test('library native select synchronizes tabs, panels, arrows and count', async 
   harness.assertSelected(5);
   harness.prev.emit('click');
   harness.assertSelected(4);
+});
+
+test('library defers initial and offscreen-resize sizing until the reader approaches once', async () => {
+  const harness = await setup({ intersectionObserver: true });
+  const sizingObserver = harness.clock.observers.find(observer => observer.options.rootMargin);
+  assert.equal(sizingObserver.options.rootMargin, '400px 0px', 'document geometry is prepared before viewport entry');
+  assert.deepEqual([...sizingObserver.targets], [harness.readers[0]], 'the document is observed instead of the whole page');
+  harness.clock.view.emit('resize');
+  assert.ok(harness.measurements.every(measurement => measurement.pageReads === 0 && measurement.viewportReads === 0),
+    'startup and an offscreen resize perform no layout reads');
+  sizingObserver.callback([{ target: harness.readers[0], isIntersecting: false }]);
+  assert.equal(harness.measurements[0].pageReads, 0);
+  sizingObserver.callback([{ target: harness.readers[0], isIntersecting: true }]);
+  assert.equal(harness.measurements[0].pageReads, 1);
+  assert.equal(harness.measurements[0].viewportReads, 1);
+  assert.equal(harness.readers[0].style.getPropertyValue('--ls-library-page-height'), '900px');
+  assert.equal(harness.clock.pendingFrames, 0, 'approaching does not start playback');
+  assert.equal(sizingObserver.targets.size, 0, 'the completed preparation disconnects its observer');
+  sizingObserver.callback([{ target: harness.readers[0], isIntersecting: true }]);
+  assert.equal(harness.measurements[0].pageReads, 1, 'a queued duplicate entry does not measure twice');
+  harness.clock.view.emit('resize');
+  assert.equal(harness.measurements[0].pageReads, 2, 'an initialized reader still recalculates on resize');
+  harness.destroy();
+});
+
+test('library first selection and Play size immediately without waiting for viewport callbacks', async () => {
+  for (const action of ['selection', 'play']) {
+    const harness = await setup({ intersectionObserver: true });
+    const index = action === 'selection' ? 2 : 0;
+    if (action === 'selection') harness.tabs[index].emit('click');
+    else harness.scrollButtons[index].emit('click');
+    assert.equal(harness.measurements[index].pageReads, 1, `${action} prepares the requested document once`);
+    assert.equal(harness.readers[index].style.getPropertyValue('--ls-library-page-height'), '900px');
+    assert.equal(harness.clock.pendingFrames, 1, `${action} starts its first reading pass synchronously`);
+    const sizingObserver = harness.clock.observers.find(observer => observer.options.rootMargin);
+    assert.equal(sizingObserver.targets.size, 0);
+    sizingObserver.callback([{ target: harness.readers[0], isIntersecting: true }]);
+    assert.equal(harness.measurements[index].pageReads, 1, 'late preparation cannot repeat an interactive measurement');
+    harness.assertSelected(index);
+    harness.destroy();
+  }
+});
+
+test('library actual visibility sizes before autoplay even if its preparation callback is pending', async () => {
+  const harness = await setup({ intersectionObserver: true });
+  const playbackObserver = harness.clock.observers.find(observer => observer.options.threshold === 0.5);
+  playbackObserver.callback([{ target: harness.readers[0], isIntersecting: true, intersectionRatio: 0.5 }]);
+  assert.equal(harness.measurements[0].pageReads, 1);
+  assert.equal(harness.readers[0].style.getPropertyValue('--ls-library-page-height'), '900px');
+  assert.equal(harness.clock.pendingFrames, 1);
+  harness.destroy();
+});
+
+test('library observer fallback retains immediate geometry and resize behavior', async () => {
+  const harness = await setup();
+  assert.equal(harness.measurements[0].pageReads, 1, 'without observation, the initial reader is ready immediately');
+  assert.equal(harness.readers[0].style.getPropertyValue('--ls-library-page-height'), '900px');
+  harness.clock.view.emit('resize');
+  assert.equal(harness.measurements[0].pageReads, 2);
+  harness.destroy();
 });
 
 async function scrollerHarness(distance = 280, options) {

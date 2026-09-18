@@ -63,6 +63,8 @@ export function initFlowLibrary(root) {
   const view = root.ownerDocument?.defaultView;
   let isPlaying = false;
   let manuallyPaused = false;
+  let hasSizedDocument = false;
+  let sizeObserver = null;
   const visibleReaders = new Set();
   const scroller = view ? createDocumentScroller(view, playing => {
     isPlaying = playing;
@@ -78,6 +80,8 @@ export function initFlowLibrary(root) {
     if (!reader) return;
     const firstPage = reader.querySelector('[data-example-page]');
     if (!firstPage) return;
+    hasSizedDocument = true;
+    sizeObserver?.disconnect();
     reader.style.removeProperty('--ls-library-page-height');
     const height = Math.max(firstPage.scrollHeight, reader.clientHeight);
     reader.style.setProperty('--ls-library-page-height', `${height}px`);
@@ -94,7 +98,7 @@ export function initFlowLibrary(root) {
     panels.forEach((panel, i) => { panel.hidden = i !== selected; });
     if (select) select.value = String(selected);
     if (count) count.textContent = `${String(selected + 1).padStart(2, '0')} / ${String(tabs.length).padStart(2, '0')}`;
-    sizeDocument(readers[selected]);
+    if (reveal || !view?.IntersectionObserver) sizeDocument(readers[selected]);
     if (reveal) {
       panels[selected].scrollIntoView({ block: 'start', behavior: 'instant' });
       scroller?.start(readers[selected]);
@@ -127,13 +131,23 @@ export function initFlowLibrary(root) {
   readers.forEach((reader, i) => {
     if (!reader) return;
     for (const event of ['wheel', 'pointerdown', 'touchstart', 'keydown']) {
-      reader.addEventListener(event, () => { manuallyPaused = true; scroller?.stop(); }, { passive: true });
+      reader.addEventListener(event, () => {
+        if (!hasSizedDocument) sizeDocument(reader);
+        manuallyPaused = true;
+        scroller?.stop();
+      }, { passive: true });
     }
-    scrollButtons[i]?.addEventListener('click', () => { manuallyPaused = !scroller?.toggle(reader); });
+    scrollButtons[i]?.addEventListener('click', () => {
+      if (!hasSizedDocument) sizeDocument(reader);
+      manuallyPaused = !scroller?.toggle(reader);
+    });
   });
   function resumeVisibleReader() {
     const reader = readers[selected];
-    if (visibleReaders.has(reader) && !manuallyPaused && !isPlaying) scroller?.start(reader, true, true);
+    if (visibleReaders.has(reader) && !manuallyPaused && !isPlaying) {
+      if (!hasSizedDocument) sizeDocument(reader);
+      scroller?.start(reader, true, true);
+    }
   }
   const observer = view?.IntersectionObserver ? new view.IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -146,14 +160,25 @@ export function initFlowLibrary(root) {
     });
   }, { threshold: 0.5 }) : null;
   readers.forEach(reader => { if (reader) observer?.observe(reader); });
+  // The below-fold preview keeps live controls without measuring its pages at startup.
+  if (view?.IntersectionObserver && readers[selected]) {
+    sizeObserver = new view.IntersectionObserver(entries => {
+      if (!hasSizedDocument && entries.some(entry => entry.isIntersecting)) sizeDocument(readers[selected]);
+    }, { rootMargin: '400px 0px', threshold: 0 });
+    sizeObserver.observe(readers[selected]);
+  }
   view?.document.addEventListener('visibilitychange', resumeVisibleReader);
   view?.addEventListener('focus', resumeVisibleReader);
-  const onResize = () => { scroller?.stop(); sizeDocument(readers[selected]); };
+  const onResize = () => {
+    scroller?.stop();
+    if (hasSizedDocument) sizeDocument(readers[selected]);
+  };
   view?.addEventListener('resize', onResize);
   show(selected);
   return () => {
     scroller?.destroy();
     observer?.disconnect();
+    sizeObserver?.disconnect();
     view?.removeEventListener('resize', onResize);
     view?.removeEventListener('focus', resumeVisibleReader);
     view?.document.removeEventListener('visibilitychange', resumeVisibleReader);

@@ -17,6 +17,23 @@ import { initFlowLibrary } from './flow-library.js';
       paused = e.matches;
       setMotion();
     });
+    // Preserve the animation's position while the artwork cannot be seen.
+    const hero = root.querySelector('.ls-hero');
+    const heroArt = hero?.querySelector('.ls-paper-art');
+    if (heroArt && window.IntersectionObserver) {
+      let heroVisible = false;
+      const syncHeroMotion = () => {
+        heroArt.style.animationPlayState = heroVisible && !document.hidden && !paused ? 'running' : 'paused';
+      };
+      const heroObserver = new IntersectionObserver(entries => {
+        heroVisible = entries.some(entry => entry.isIntersecting);
+        syncHeroMotion();
+      });
+      heroObserver.observe(hero);
+      document.addEventListener('visibilitychange', syncHeroMotion);
+      motionQuery.addEventListener('change', syncHeroMotion);
+      syncHeroMotion();
+    }
     const demos = [...root.querySelectorAll('[data-demo]')].map((el) => ({
       el,
       step: 0,

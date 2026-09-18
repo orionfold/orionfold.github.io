@@ -162,12 +162,14 @@ for (const hostname of ['localhost', '127.0.0.1', 'orionfold.github.io', 'previe
   });
 }
 
-test('Lighthouse blocks analytics endpoints as defense in depth', () => {
+test('Lighthouse covers launch routes with repeated mobile runs and blocked analytics', () => {
   const collect = lighthouseConfig.ci.collect;
   assert.deepEqual(collect.url, [
     'http://localhost/index.html',
     'http://localhost/flow/index.html',
     'http://localhost/essay/index.html',
+    'http://localhost/essays/index.html',
+    'http://localhost/essays/the-work-we-want-to-keep/index.html',
     'http://localhost/manifesto/index.html',
     'http://localhost/arena/index.html',
     'http://localhost/relay/index.html',
@@ -177,10 +179,26 @@ test('Lighthouse blocks analytics endpoints as defense in depth', () => {
     'http://localhost/models/index.html',
   ]);
   assert.equal(collect.numberOfRuns, 3);
+  assert.equal(collect.settings.formFactor, 'mobile');
+  assert.equal(collect.settings.throttlingMethod, 'devtools');
   assert.deepEqual(collect.settings.blockedUrlPatterns, [
     '*googletagmanager.com/*',
     '*google-analytics.com/*',
     '*googleadservices.com/*',
     '*doubleclick.net/*',
   ]);
+});
+
+test('the essay hub and flagship inherit global guards and existing discovery budgets', () => {
+  for (const path of ['/essays/index.html', '/essays/the-work-we-want-to-keep/index.html']) {
+    const url = `http://localhost:4173${path}`;
+    const assertions = Object.assign({}, ...lighthouseConfig.ci.assert.assertMatrix
+      .filter(entry => new RegExp(entry.matchingUrlPattern).test(url))
+      .map(entry => entry.assertions));
+
+    assert.deepEqual(assertions['categories:seo'], ['error', { minScore: 1.0 }], path);
+    assert.deepEqual(assertions['categories:performance'], ['error', { minScore: 0.75 }], path);
+    assert.deepEqual(assertions['largest-contentful-paint'], ['warn', { maxNumericValue: 2800 }], path);
+    assert.deepEqual(assertions['cumulative-layout-shift'], ['warn', { maxNumericValue: 0.1 }], path);
+  }
 });

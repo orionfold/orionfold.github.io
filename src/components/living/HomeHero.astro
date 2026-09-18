@@ -1,6 +1,9 @@
 ---
 // Approved Living Systems composition; native Astro, no client framework.
 import HomeKnowledgeDemo from './HomeKnowledgeDemo.astro';
+// Match the artwork's overflow width, tablet cap and desktop grid (including
+// the 1440px container cap). Density selection must not soften Retina art.
+const artSizes = '(max-width: 700px) calc(150vw - 60px), (max-width: 1100px) min(1050px, calc(125vw - 80px)), (max-width: 1200px) calc(79.3vw - 66.612px), calc(min(78.125vw, 1125px) - 5.46875vw - 25px)';
 ---
 <section class="ls-hero">
 <div class="ls-hero-inner">
@@ -28,7 +31,7 @@ import HomeKnowledgeDemo from './HomeKnowledgeDemo.astro';
 </div>
 <div class="ls-hero-media">
 <picture class="ls-paper-art">
-<source srcset="/assets/living-systems/hero-home-paper-planes.webp" type="image/webp"/>
+<source sizes={artSizes} srcset="/assets/living-systems/hero-home-paper-planes-640.webp 640w, /assets/living-systems/hero-home-paper-planes-960.webp 960w, /assets/living-systems/hero-home-paper-planes-1152.webp 1152w, /assets/living-systems/hero-home-paper-planes.webp 1642w" type="image/webp"/>
 <img alt="" fetchpriority="low" height="958" src="/assets/living-systems/hero-home-paper-planes.png" width="1642"/>
 </picture><HomeKnowledgeDemo /></div>
 </div>

@@ -2,8 +2,9 @@
  * Lighthouse CI config (M2 — lab perf). Audits the built `dist/` with a local
  * static server, mobile form factor, and DEVTOOLS (measured) throttling — not
  * the default `simulate`, which inflates LCP by tying it to TTI (see the
- * `chrome-mcp-perf-caveats` memory + the D2 baseline). The 8 URLs are the key
- * landing-page portfolio: home, four product hubs, books, story, and models.
+ * `chrome-mcp-perf-caveats` memory + the D2 baseline). The 12 URLs cover home,
+ * four product hubs, both essays, the essay hub, manifesto, books, story,
+ * and models.
  *
  * Local run:   npm run lhci  (collect → upload → assert; upload BEFORE assert
  *              so audit-reports/lhci/ refreshes even on a red budget run —
@@ -24,6 +25,8 @@ module.exports = {
         'http://localhost/index.html',
         'http://localhost/flow/index.html',
         'http://localhost/essay/index.html',
+        'http://localhost/essays/index.html',
+        'http://localhost/essays/the-work-we-want-to-keep/index.html',
         'http://localhost/manifesto/index.html',
         'http://localhost/arena/index.html',
         'http://localhost/relay/index.html',
@@ -76,10 +79,11 @@ module.exports = {
           },
         },
         {
-          // ── Tight tier: homepage and discovery hubs. The 0.75 floor retains
+          // ── Tight tier: homepage, discovery hubs, and the flagship essay.
+          //    The 0.75 floor retains
           //    the data-animate-on-LCP net (that bug ties LCP to TTI and tanks
-          //    the score far below any sane floor). Local 8-route baseline: 0.97–0.98. ──
-          matchingUrlPattern: '(localhost:\\d+/index\\.html|/(books|story|models)/index\\.html)$',
+          //    the score far below any sane floor). Historical local baseline: 0.97–0.98. ──
+          matchingUrlPattern: '(localhost:\\d+/index\\.html|/(books|story|models|essays|essays/the-work-we-want-to-keep)/index\\.html)$',
           assertions: {
             'categories:performance': ['error', { minScore: 0.75 }], // CI-proven guard retained until the new matrix has runner history
             'largest-contentful-paint': ['warn', { maxNumericValue: 2800 }], // new local baseline 1.99–2.25s + headroom
@@ -90,7 +94,7 @@ module.exports = {
           //    image-heavy ceiling until the new matrix has runner history. ──
           matchingUrlPattern: '/(flow|arena|relay|proof)/index\\.html$',
           assertions: {
-            'categories:performance': ['error', { minScore: 0.65 }], // local 8-route baseline 0.97–0.98
+            'categories:performance': ['error', { minScore: 0.65 }], // historical local baseline 0.97–0.98
             'largest-contentful-paint': ['warn', { maxNumericValue: 4500 }], // new local baseline 1.82–2.14s; runner calibration pending
           },
         },
