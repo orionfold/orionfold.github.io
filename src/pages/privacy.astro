@@ -21,7 +21,7 @@ import SectionLabel from '../components/ui/SectionLabel.astro';
 import { SITE, PUBLISHER } from '../data/seo';
 import { ogMeta } from '../data/og';
 
-const lastUpdated = 'September 16, 2026';
+const lastUpdated = 'September 21, 2026';
 const og = ogMeta('/privacy/');
 
 const summaryCards = [
@@ -49,9 +49,15 @@ const sections = [
     // operator's (2026-08-29 08:02). Updated from the 1.6 Working With Flow,
     // Night Shift and Settings briefs: local-only runtimes, key-as-switch,
     // optional Web Lookups, watched HTTPS sources and General billing.
+    // Updated 2026-09-21 for Flow 1.8 (flow-growth ledger 2026-09-21 00:55):
+    // 1.8 is the first build whose telemetry transport actually runs in a
+    // downloaded copy, so the anonymized night-run share is now a real row.
+    // Both switches ship ON; the old "a switch that starts off" pledge and
+    // the "keeps no usage statistics" line were falsified by that release
+    // and are gone. Facts are the product lane's; wording is the website's.
     title: 'The Flow app: what leaves your Mac',
     paragraphs: [
-      'The sections below are about this website and the newsletter. The Flow app on your Mac is different: it never sends your documents or your working data to Orionfold, and it never has to check in with us to keep working. Flow is built so that nothing has to leave your Mac, which makes the list of times it reaches the network short enough to print. For Flow 1.6, the connections are listed below. Each one is something you can see, and each has a switch or you control the outcome.',
+      'The sections below are about this website and the newsletter. The Flow app on your Mac is different: it never sends your documents or your working data to Orionfold, and it never has to check in with us to keep working. Flow is built so your work stays on your Mac, which makes the list of times it reaches the network short enough to print. For Flow 1.8, the connections are listed below. Each one is something you can see, and each has a switch or you control the outcome.',
     ],
     table: {
       head: ['When', 'Where', 'What is sent', 'Your switch'],
@@ -67,10 +73,12 @@ const sections = [
       ['You open a web address in a pane', 'That address', 'What any browser sends to load a page', 'Only when you enter one'],
       ['A run looks something up on the web, with Web Lookups on', 'The address the model chose', 'A request for that page, not your document; the address is chosen from what the document says', 'Settings ▸ General ▸ Web Lookups, off until you turn it on'],
       ['Night Shift checks a watched public page', 'The HTTPS address you listed in the document’s watch job', 'A request for that page; your document text is not uploaded', 'You choose the watched sources and jobs. Overnight notes use a model on this Mac'],
+      ['After a night run, Flow shares anonymized counts about how Flow itself was used, for one finished day at a time', 'Orionfold’s measurement service', 'Counts and timings only: which features ran, which settings were on, how long model work and review took, plus the schema version, the day, the Flow version and a rough memory size. No document text, no file names or paths, no account, no license, and no number that identifies your copy', 'Settings ▸ Observations ▸ What leaves this Mac. Two switches, both on to begin with: one stops the sharing, the other stops the recording as well'],
       ],
     },
     after: [
-      'That is the whole list. Flow 1.6 keeps no usage statistics, sends no crash reports, carries no analytics or advertising code, has no install identifier, and never checks a license online to keep working. If a future Flow offers to share counts or crash reports with Orionfold, it will be a switch that starts off, and this table will list it beside the others.',
+      'That is the whole list. Flow sends no crash reports, carries no analytics or advertising code, has no install identifier, and never checks a license online to keep working.',
+      'The last row is the one thing Flow shares about itself, and it is worth being exact about. It is counts, not content: how many times a feature ran, which settings were on, how long the model and your review took. It is never the words in your documents, and it carries nothing that ties a day back to you or to one copy of Flow. It covers one finished day at a time and never the day in progress, so nothing is sent on the day you install Flow. Before anything leaves, Flow shows you the exact text it would send. Both switches start on, and turning sharing off also stops a day that was prepared but not yet sent.',
       'Need to tell us about a problem? Help ▸ Copy Diagnostics… puts a short block on the clipboard: the Flow and macOS versions, the kind of Mac, which domains are on, and the last crash’s summary if there is one, with no paths, titles or names in it. You see the exact text before it is copied, and it goes nowhere until you paste it.',
     ],
   },

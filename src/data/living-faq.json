@@ -26,7 +26,7 @@
     "id": null,
     "parts": [
       {
-        "text": "Local model inference stays on your Mac. A configured cloud action sends selected content to the provider you chose. Named public-source jobs make network requests; optional public Web Lookups are separate and off by default. Flow does not upload usage analytics or automatic crash reports to Orionfold, and needs no recurring online licence check to keep working. Help → Copy Diagnostics lets you inspect a summary before you choose to share it."
+        "text": "Local model inference stays on your Mac. A configured cloud action sends selected content to the provider you chose. Named public-source jobs make network requests; optional public Web Lookups are separate and off by default. Flow 1.8 shares anonymized counts about how Flow itself was used — which features ran, which settings were on, and how long model work and review took — for one finished day at a time. It never includes your document text, your file names or anything that identifies your copy, and two switches in Settings ▸ Observations turn it off. Flow sends no automatic crash reports and needs no recurring online licence check to keep working. Help → Copy Diagnostics lets you inspect a summary before you choose to share it."
       }
     ]
   },

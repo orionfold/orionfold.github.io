@@ -261,9 +261,12 @@ export const FLOW_PROOF_SPECIFICATIONS: FlowSpecificationRow[] = [
     note: 'Retrieval records what was read. Evidence records what was assessed. One never stands in for the other.',
   },
   {
-    label: 'Private telemetry',
-    value: 'Stays on the Mac',
-    note: 'Flow does not send product-use telemetry to Orionfold.',
+    // Flow 1.8 turned this from a never into a bounded yes: the transport now
+    // runs in a downloaded build and both switches ship on (flow-growth
+    // ledger 2026-09-21 00:55). Counts only, one finished day at a time.
+    label: 'Product telemetry',
+    value: 'Anonymized counts, switchable',
+    note: 'Flow shares how features were used and how long work took, never your document text and nothing that identifies your copy. Two switches in Settings ▸ Observations turn it off.',
   },
 ];
 

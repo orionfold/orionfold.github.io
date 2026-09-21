@@ -3,7 +3,16 @@
 // Flow first (the flagship since 2026-08-27), then Relay and Arena.
 //
 // History: born as the Relay D5 ask (2026-07-01): buyer-based gating +
-// never-regress. Rewritten 2026-08-29 on the operator's direction to be
+// never-regress. Updated 2026-09-21 for Flow 1.8: the bullet under "What we
+// will never do" used to say Flow kept no usage statistics and that any future
+// sharing would start off. 1.8 ships anonymized night-run sharing default-on
+// (flow-growth ledger 2026-09-21 00:55), so both halves were false. That bullet
+// is back to the promise Flow does keep (no online re-validation, documents and
+// working data never sent), and the telemetry itself is disclosed in the Flow
+// section's own note, where a reader meets it as a fact about the product
+// rather than as an exception buried in a list of nevers.
+// Guarded by scripts/test/flow-telemetry-disclosure.test.mjs.
+// Rewritten 2026-08-29 on the operator's direction to be
 // cross-product with Flow in front. The Flow facts come from the constants the
 // pricing surface already enforces (src/data/flow-pricing.ts: FLOW_PROMISE,
 // FLOW_LAPSE_FACTS, FLOW_WITHDRAWAL_NOTICE) and from the product lane's shipped
@@ -58,6 +67,18 @@ const sections = [
     ],
     bullets: FLOW_LAPSE_FACTS,
     after: 'Your license is checked on your Mac. Flow does not need a connection to use it, and it never has to check in with us to keep working.',
+    // Flow 1.8 is the first build that sends anything about itself, so the page
+    // says so in the Flow section rather than burying it in a "never do" list
+    // (flow-growth ledger 2026-09-21 00:55). Counts, never content.
+    note: {
+      title: 'What Flow tells us about itself',
+      paragraphs: [
+        'Your documents never leave your Mac for us. Your document text, your file names and what you use Flow to work on are not something we can see. That does not change.',
+        'What Flow does send, starting with version 1.8, is a short anonymized count of how Flow itself behaved: which features ran, which settings were on, and how long the model work and your review took. It is numbers about the app, never your document text, and it carries nothing that identifies your copy of Flow or ties a day back to you.',
+        'It covers one finished day at a time and never the day you are in, so the day you install Flow sends nothing at all. Flow shows you the exact text before it goes. Both switches live together in Settings ▸ Observations, under the heading What leaves this Mac, and both start on: one stops the sharing, the other stops Flow keeping the counts at all.',
+        'We turned this on by default because a tool nobody measures is a tool we improve by guessing. If you would rather we did not, one click is enough, and Flow works exactly the same either way.',
+      ],
+    },
   },
   {
     title: 'Relay: the engine is free, the packs are the content',
@@ -83,7 +104,7 @@ const sections = [
     bullets: [
       'No database licensing. Your right to use what you own is not a row we can flip off.',
       'No nag banners. Relay’s command-line tools never advertise. Flow tells you one thing, only at the moment you ask its AI to run without a plan, and your documents stay open and editable either way.',
-      'No online re-validation. The license is checked on your machine; your software never sends your data to Orionfold, and it never has to check in with us to keep working. Flow reaches the network only for things you can see, switch off, or whose outcome you control: checking for updates, the models and providers you add, and the Guide when you ask. As of Flow 1.5.5 it keeps no usage statistics and sends no crash reports. If a future Flow offers to share counts or crash reports, it will be a switch that starts off, with every field listed.',
+      'No online re-validation. The license is checked on your machine, and your software never has to check in with us to keep working. Your documents and your working data are never sent to Orionfold. Flow reaches the network only for things you can see, switch off, or whose outcome you control.',
       'No expiry that disables what you installed. A lapsed Flow plan leaves every document open. Installed Relay packs keep running. An Arena box keeps running.',
     ],
   },
@@ -186,6 +207,18 @@ const sections = [
                 )}
                 {section.after && (
                   <p class="text-base leading-relaxed text-text-muted">{section.after}</p>
+                )}
+                {section.note && (
+                  <div class="mt-6 rounded-xl border border-border/70 bg-surface/70 p-5 sm:p-6">
+                    <h3 class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-primary/80">
+                      {section.note.title}
+                    </h3>
+                    <div class="mt-3 space-y-3">
+                      {section.note.paragraphs.map((paragraph) => (
+                        <p class="text-sm leading-relaxed text-text-muted">{paragraph}</p>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
             </section>
