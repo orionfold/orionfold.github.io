@@ -476,37 +476,12 @@ verify_jwt = false
 [functions.suppressions-export]
 verify_jwt = false
 
-# flow-billing-portal (0127 A2): opens the Stripe Billing Portal for a Flow
-# subscriber, called from inside the Mac app's Settings ▸ Billing. The app POSTs
-# the verbatim bytes of its `.license.json` and we verify OUR OWN Ed25519
-# signature over them — the signature IS the credential, so verify_jwt off like
-# the other signature-gated callbacks. A platform apikey on top would be a
-# second secret the signed app does not carry, for no second guarantee.
-# MUST also deploy with --no-verify-jwt (this file alone does not do it).
-[functions.flow-billing-portal]
-verify_jwt = false
-
-# flow-license-refresh (0127 A2): re-signs a Flow subscriber's licence envelope
-# with the term their renewals have already extended in the database. Same
-# licence-as-credential gate as flow-billing-portal, same reasoning, same
-# --no-verify-jwt requirement on deploy.
-# WIDENED 2026-08-22 (orionfold-flow 12:36): also accepts `{"session_id":"cs_…"}`
-# so a buyer mid-purchase, who has no envelope yet, can poll for the licence the
-# Stripe webhook is about to write. Both keys are bearer secrets of the same
-# weight, which is why the no-header decision is unchanged by the addition.
-[functions.flow-license-refresh]
-verify_jwt = false
-
-# flow-checkout (0127, contract 2026-08-22 10:50): starts a Flow Pro
-# subscription from inside the Mac app. The caller is by definition an
-# unlicensed Base user, so there is no licence to sign with and no account to
-# authenticate — verify_jwt MUST be false here and the deploy MUST pass
-# --no-verify-jwt, or every caller would also need a platform apikey the signed
-# app does not carry. Unauthenticated is safe because the endpoint mints nothing
-# of value: a public Stripe Checkout URL, and a claim that is worthless until a
-# payment completes.
-[functions.flow-checkout]
-verify_jwt = false
+# flow-checkout, flow-billing-portal and flow-license-refresh MOVED to the
+# orionfold-flow product repo on 2026-09-26 (Step A of the Flow licensing split,
+# ops ledger 0027/0034/0036). They are deployed from there under the same names,
+# with verify_jwt off. Never re-add them here: both repos deploy to this one
+# project by function name, so a website deploy would silently replace
+# orionfold-flow's code.
 
 # flow-enterprise-request: public Flow pricing enquiry intake. The handler owns
 # strict origin, feature-gate, honeypot, rate-limit and idempotency checks.

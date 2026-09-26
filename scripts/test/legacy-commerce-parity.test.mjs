@@ -41,14 +41,10 @@ const hashes = {
     "6471ddfaa8aba2497f6a5c9711217355c071fdf4741137a1eb5de3e0b4b0a149",
   "supabase/functions/order-status/index.ts":
     "888f63fb6be9bce8c5f118214580ea335a6cab3c30cf7af69a6f2f8223a78c35",
-  "supabase/functions/flow-billing-portal/index.ts":
-    "04d76e4bf5e7ba04c50b937670098776f43e53d34544dfd7d45033f5746a857f",
   "supabase/functions/unsubscribe/index.ts":
     "61a4ebd969de93c7221802607d000c27fc07b4e641c2ddd3b56b243df366928d",
   "supabase/functions/suppressions-export/index.ts":
     "5a131008988ecb9cc9c50ca4aa9ac8bbd34111e8d0ef6d7af6755cb035dfde63",
-  "supabase/functions/flow-checkout/index.ts":
-    "0e8a36831545085d751868e4fb43db619d3390cbd57b151e6d41c89a37c6b233",
   "supabase/functions/reply-unsubscribe/index.ts":
     "01d035e5e17192ea19ac34ca320c8743abe4596bf97cdb68fc50acc9b645e266",
   "supabase/functions/consulting-request/contract.ts":
@@ -129,8 +125,6 @@ const hashes = {
     "a40b7aa7f2f09d5e999f1ed689d590cc739c2df8be8c160b8aab9061231730bd",
   "supabase/functions/enquiry-submit/index.ts":
     "2413029286045f4ec34328a988329e897d0e9da5a4fdb9d9ca6d0a330defecc6",
-  "supabase/functions/flow-license-refresh/index.ts":
-    "5c87d020d364c4c67e06ebb91337dbd70fa020d10647afcd94f615723ddfdf6d",
 };
 test("redesign preserves existing live payment, licensing, email and legacy capture modules byte for byte", () => {
   for (const [path, expected] of Object.entries(hashes)) {

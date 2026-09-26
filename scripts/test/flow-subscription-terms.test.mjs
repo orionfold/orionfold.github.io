@@ -39,8 +39,5 @@ test("the terms page has a Flow Pro subscriptions section with the approved sent
   assert.ok(terms.includes(REFUND));
 });
 
-test("the Flow checkout shows the plan's terms above the Pay button", () => {
-  const fn = read("supabase/functions/flow-checkout/index.ts");
-  assert.match(fn, /import \{ flowSubscriptionTerms \} from "\.\.\/_shared\/flow-license-email\.ts";/);
-  assert.match(fn, /custom_text: \{\s*submit: \{ message: flowSubscriptionTerms\(plan === "annual" \? "year" : "month"\) \},/);
-});
+// The Flow checkout message above the Pay button moved with flow-checkout to the
+// orionfold-flow repo (2026-09-26, Step A); its guard lives there now.
