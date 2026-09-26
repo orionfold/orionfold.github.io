@@ -6,9 +6,9 @@
 // Flow. Found 2026-09-25 (ops ledger 2314); the operator approved the terms
 // wording below the same night (ops ledger 2326).
 //
-// The terms sentences are the operator's approved wording, verbatim. They
-// deliberately name no cancel location until the billing portal is proven live
-// with a real purchase, and make no claim about how long the licence lasts.
+// The terms sentences are the operator's approved wording, verbatim, including
+// the cancel location (approved 2026-09-25 23:38, ops ledger 2338). They make no
+// claim about how long the licence lasts.
 import { getCatalogItem } from "./catalog.ts";
 
 const FLOW_ANNUAL_LABEL = getCatalogItem("license_orionfold_flow_annual")?.label;
@@ -20,7 +20,8 @@ export function flowRenewalPeriod(productLabel: string): "month" | "year" {
 
 /** The approved subscription terms, for the plan this email is about. */
 export function flowSubscriptionTerms(period: "month" | "year"): string {
-  return `Flow Pro renews every ${period} until you cancel. Cancel anytime; ` +
+  return `Flow Pro renews every ${period} until you cancel. ` +
+    "Cancel anytime in Flow, Settings ▸ Billing ▸ Manage\u00a0Plan…; " +
     "Flow Pro stays on until the end of the period you've paid for. " +
     "Subscription payments are not refunded, except where the law requires it.";
 }
@@ -29,7 +30,9 @@ export function flowSubscriptionTerms(period: "month" | "year"): string {
 export function wrapText(paragraph: string, width = 64): string {
   const lines: string[] = [];
   let line = "";
-  for (const word of paragraph.split(/\s+/).filter(Boolean)) {
+  // Breaks only on ordinary spaces, so a UI label joined with a no-break space
+  // ("Manage\u00a0Plan…") never splits across two lines.
+  for (const word of paragraph.split(/[ \t\n\r]+/).filter(Boolean)) {
     if (line && line.length + 1 + word.length > width) {
       lines.push(line);
       line = word;

@@ -17,10 +17,11 @@ Deno.test("each Flow plan renews on its own period", () => {
 });
 
 Deno.test("the Flow email carries the approved terms verbatim", () => {
-  const text = email(MONTHLY).replace(/\s+/g, " ");
+  const text = email(MONTHLY).replace(/[ \t\n\r]+/g, " ").replace(/\u00a0/g, " ");
   assertStringIncludes(
     text,
-    "Cancel anytime; Flow Pro stays on until the end of the period you've paid for. " +
+    "Cancel anytime in Flow, Settings ▸ Billing ▸ Manage Plan…; " +
+      "Flow Pro stays on until the end of the period you've paid for. " +
       "Subscription payments are not refunded, except where the law requires it.",
   );
 });
@@ -35,7 +36,7 @@ Deno.test("the Flow email carries the licence and says how Flow gets it", () => 
 
 Deno.test("the Flow email is not Arena's and promises nothing unapproved", () => {
   const text = email(ANNUAL);
-  for (const banned of ["DGX Spark", "getarena", "Arena", "12 months", "Settings", "Billing", "Manage Plan", "—"]) {
+  for (const banned of ["DGX Spark", "getarena", "Arena", "12 months", "—"]) {
     assert(!text.includes(banned), `Flow email must not contain "${banned}"`);
   }
 });
@@ -49,5 +50,11 @@ Deno.test("every line of the Flow email is hard-wrapped like the other licence e
   for (const label of [MONTHLY, ANNUAL]) {
     const body = email(label).split("\n").filter((line) => !line.startsWith("http"));
     for (const line of body) assert(line.length <= 64, `line too long (${line.length}): ${line}`);
+  }
+});
+
+Deno.test("the Manage Plan button name never splits across lines", () => {
+  for (const label of [MONTHLY, ANNUAL]) {
+    assertStringIncludes(email(label), "Manage\u00a0Plan…");
   }
 });
