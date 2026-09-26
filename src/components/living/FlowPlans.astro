@@ -4,6 +4,7 @@ import FlowDownloadCta from '../flow/FlowDownloadCta.astro';
 import FlowEnterpriseContact from '../flow/FlowEnterpriseContact.astro';
 import { FLOW, formatUsd } from '../../data/commerce';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
+import { FLOW_CANCEL_TERMS } from '../../data/flow-pricing';
 ---
 <span id="pricing-heading" class="ls-anchor-alias" aria-hidden="true"></span>
 <span id="flow-page-waitlist-heading" class="ls-anchor-alias" aria-hidden="true"></span>
@@ -19,7 +20,7 @@ import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
 <span class="ls-stroke">INTERPRETATION.</span>
 </h2>
 <p>Keep data current for free. Add model-powered work with Pro.</p>
-<p class="ls-trial-note">Start with 10 Pro Days. No credit card. Counted on days you use Pro.</p>
+<p class="ls-trial-note">Try every Pro feature free for 10 Pro Days. A Pro Day only counts on a day you use Pro. No credit card. Subscribe when you're ready.</p>
 </div>
 <div class="ls-plan-grid">
 <article data-plan="base">
@@ -52,5 +53,5 @@ import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
 </article>
 </div>
 <p class="ls-plan-note">Night Shift model work stays on your Mac. Configured cloud models remain a separate choice for daytime work.</p>
-<p class="ls-offer-footnote">When Pro ends, model-powered actions stop. Your files stay readable and editable, with no watermark or export wall. Read receipts remain accessible. <a href="/promise/">Read our promise</a> and <a href="/flow/specifications/#plans">licensing details</a>.</p>
+<p class="ls-offer-footnote">{FLOW_CANCEL_TERMS} When Pro ends, model-powered actions stop. Your files stay readable and editable, with no watermark or export wall. Read receipts remain accessible. <a href="/promise/">Read our promise</a> and <a href="/flow/specifications/#plans">licensing details</a>.</p>
 </section>

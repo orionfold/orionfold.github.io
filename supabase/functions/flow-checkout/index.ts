@@ -52,6 +52,7 @@ import {
 } from "../_shared/catalog.ts";
 import { getCorsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { flowStripeSecretKey } from "../_shared/flow-stripe.ts";
+import { flowSubscriptionTerms } from "../_shared/flow-license-email.ts";
 import { CLAIM_TTL_SECONDS, mintClaim } from "../_shared/license-claim.ts";
 
 const stripe = new Stripe(flowStripeSecretKey(), {
@@ -186,6 +187,12 @@ Deno.serve(async (req) => {
       success_url: `${SITE_URL}/flow/welcome/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/flow/#pricing`,
       allow_promotion_codes: true,
+      // The approved subscription terms, shown above the Pay button: renewal,
+      // where to cancel, and no refunds (ops ledger 2026-09-25 2326 + 2338).
+      // Same sentences as the licence email, from one shared function.
+      custom_text: {
+        submit: { message: flowSubscriptionTerms(plan === "annual" ? "year" : "month") },
+      },
       // The claim digest rides in metadata so the webhook can attach it to the
       // licence row it writes, without this endpoint needing to know when that
       // happens. Stripe caps a metadata value at 500 chars; a hex digest is 64.

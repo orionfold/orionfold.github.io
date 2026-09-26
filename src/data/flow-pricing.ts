@@ -120,6 +120,17 @@ export const FLOW_PRO_CAPABILITIES: FlowCapability[] = [
   { label: "Generate new evidence", note: "Running a fresh evaluation is an AI run" },
 ];
 
+/** Flow's subscription terms, the operator's approved wording (ops ledger
+ * 2026-09-25 2326, cancel location approved 2338). Cancel only, no refunds, and
+ * Pro stays on through the paid period, which is exactly what the live Stripe
+ * billing portal does. The Flow checkout and the licence email carry the same
+ * sentences from supabase/functions/_shared/flow-license-email.ts. */
+export const FLOW_TRIAL_TERMS = "Try every Pro feature free for 10 Pro Days. Subscribe when you're ready.";
+export const FLOW_CANCEL_TERMS =
+  "Flow Pro renews every month, or every year on the annual plan, until you cancel. " +
+  "Cancel anytime in Flow, Settings ▸ Billing ▸ Manage\u00a0Plan…; Flow Pro stays on until the end of the period you've paid for. " +
+  "Subscription payments are not refunded, except where the law requires it.";
+
 /** What Pro does NOT take away when it lapses. Each line is enforced, not
  * promised: the product lane verified them by exercising the document path with
  * the trial backdated, not by reading a flag. */
