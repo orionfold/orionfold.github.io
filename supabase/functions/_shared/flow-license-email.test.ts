@@ -11,8 +11,9 @@ const email = (label: string) => flowLicenseEmailText(label, "OF-FLOW-000123", L
 Deno.test("each Flow plan renews on its own period", () => {
   assertEquals(flowRenewalPeriod(MONTHLY), "month");
   assertEquals(flowRenewalPeriod(ANNUAL), "year");
-  assertStringIncludes(email(MONTHLY), "Flow Pro renews every month until you cancel.");
-  assertStringIncludes(email(ANNUAL), "Flow Pro renews every year until you cancel.");
+  const flat = (text: string) => text.replace(/\s+/g, " ");
+  assertStringIncludes(flat(email(MONTHLY)), "Flow Pro renews every month until you cancel.");
+  assertStringIncludes(flat(email(ANNUAL)), "Flow Pro renews every year until you cancel.");
 });
 
 Deno.test("the Flow email carries the approved terms verbatim", () => {
@@ -42,4 +43,11 @@ Deno.test("the Flow email is not Arena's and promises nothing unapproved", () =>
 Deno.test("the webhook maps Flow to its own email, not the Arena fallback", async () => {
   const webhook = await Deno.readTextFile(new URL("../stripe-webhook/index.ts", import.meta.url));
   assert(/"orionfold-flow": flowLicenseEmailText,/.test(webhook), "LICENSE_EMAIL_TEXT must map orionfold-flow");
+});
+
+Deno.test("every line of the Flow email is hard-wrapped like the other licence emails", () => {
+  for (const label of [MONTHLY, ANNUAL]) {
+    const body = email(label).split("\n").filter((line) => !line.startsWith("http"));
+    for (const line of body) assert(line.length <= 64, `line too long (${line.length}): ${line}`);
+  }
 });

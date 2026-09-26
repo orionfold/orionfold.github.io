@@ -25,28 +25,40 @@ export function flowSubscriptionTerms(period: "month" | "year"): string {
     "Subscription payments are not refunded, except where the law requires it.";
 }
 
+/** Hard-wrap a paragraph to the width the rest of the licence emails use. */
+export function wrapText(paragraph: string, width = 64): string {
+  const lines: string[] = [];
+  let line = "";
+  for (const word of paragraph.split(/\s+/).filter(Boolean)) {
+    if (line && line.length + 1 + word.length > width) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = line ? `${line} ${word}` : word;
+    }
+  }
+  if (line) lines.push(line);
+  return lines.join("\n");
+}
+
 export function flowLicenseEmailText(
   productLabel: string,
   licenseId: string,
   installUrl: string,
   footer: string,
 ): string {
-  return `Thank you for subscribing to ${productLabel}.
-
-Your license number is ${licenseId}. Your license file is attached
-to this email. Keep it somewhere safe.
-
-Flow picks up your license by itself after checkout. If it did
-not, open Flow, choose "Add Licence…", and pick the attached file.
-
-If the attachment is missing, this private link downloads the same
-file. It works for 7 days:
-
-${installUrl}
-
-About your subscription: ${flowSubscriptionTerms(flowRenewalPeriod(productLabel))}
-
-If you have a question, just reply to this email.
-
-${footer}`;
+  // Every prose paragraph is wrapped by the same function, so a longer licence
+  // number or plan name can never push a line past the width. The link and the
+  // footer are left as they are: a wrapped URL stops being clickable.
+  const prose = (paragraph: string) => wrapText(paragraph);
+  return [
+    prose(`Thank you for subscribing to ${productLabel}.`),
+    prose(`Your license number is ${licenseId}. Your license file is attached to this email. Keep it somewhere safe.`),
+    prose('Flow picks up your license by itself after checkout. If it did not, open Flow, choose "Add Licence…", and pick the attached file.'),
+    prose("If the attachment is missing, this private link downloads the same file. It works for 7 days:"),
+    installUrl,
+    prose(`About your subscription: ${flowSubscriptionTerms(flowRenewalPeriod(productLabel))}`),
+    prose("If you have a question, just reply to this email."),
+    footer,
+  ].join("\n\n");
 }
