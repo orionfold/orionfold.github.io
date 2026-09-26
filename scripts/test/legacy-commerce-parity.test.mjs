@@ -28,7 +28,7 @@ const hashes = {
   "supabase/functions/stripe-webhook/README.md":
     "3dc979e50e9067927cb718d270998c5b02ccea08d3f0647e397c10bb0d54d9d5",
   "supabase/functions/stripe-webhook/index.ts":
-    "3ac941ab1613158db925756181f7beb869569db47583f52d87a7e48305f5e664",
+    "30c855aa9a7adb9ba45996b046470998131cbf949d2510205d510647c2a71192",
   "supabase/functions/workshop-refund/index.ts":
     "edded72b304add0968687aea9bb48b33d2a6f4623053b947b57d68246771cd07",
   "supabase/functions/relay-host-request/index.ts":

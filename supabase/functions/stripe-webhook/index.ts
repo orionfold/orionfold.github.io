@@ -1177,12 +1177,20 @@ async function fulfillSponsor(session: Stripe.Checkout.Session) {
  *
  * No new license is signed or emailed. The envelope the buyer already installed
  * stays valid — its `expires_at` is what moves.
+ *
+ * ONCE PER INVOICE (2026-09-26). The extension adds on top of the current expiry,
+ * so applying the same invoice twice (a Stripe re-delivery, or two handlers
+ * during a webhook cutover) would grant two periods for one payment. The write
+ * goes through `apply_subscription_invoice_extension`, which records the invoice
+ * id under a UNIQUE key and moves the licence in one transaction; a repeat is a
+ * logged no-op.
  */
 async function extendSubscriptionLicense(
   // deno-lint-ignore no-explicit-any
   db: any,
   subscriptionId: string,
   lookupKey: string,
+  invoiceId: string,
 ) {
   const current = await db.from("fe_entitlements")
     .select("id,expires_at")
@@ -1203,15 +1211,17 @@ async function extendSubscriptionLicense(
   const expiresAt = extendedExpiry(lookupKey, current.data.expires_at, new Date());
   if (!expiresAt) return;
 
-  const { error } = await db.from("fe_entitlements")
-    .update({
-      expires_at: expiresAt,
-      status: "active",
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", current.data.id);
+  const { data: applied, error } = await db.rpc("apply_subscription_invoice_extension", {
+    p_invoice_id: invoiceId,
+    p_entitlement_id: current.data.id,
+    p_expires_at: expiresAt,
+  });
   if (error) throw error;
-  console.log(`Extended ${lookupKey} license ${current.data.id} to ${expiresAt}`);
+  if (applied === false) {
+    console.log(`Invoice ${invoiceId} already extended ${lookupKey} license ${current.data.id}; skipped`);
+    return;
+  }
+  console.log(`Extended ${lookupKey} license ${current.data.id} to ${expiresAt} (invoice ${invoiceId})`);
 }
 
 async function onInvoicePaid(invoice: Stripe.Invoice, api: Stripe = stripe) {
@@ -1243,7 +1253,7 @@ async function onInvoicePaid(invoice: Stripe.Invoice, api: Stripe = stripe) {
   // the term runs out. This must happen BEFORE the Relay-host early return,
   // which is scoped to that one perpetual SKU.
   if (shouldExtendSubscriptionTerm(invoice.billing_reason, lookupKey)) {
-    await extendSubscriptionLicense(db, subscriptionId, lookupKey!);
+    await extendSubscriptionLicense(db, subscriptionId, lookupKey!, invoice.id);
     return;
   }
 
