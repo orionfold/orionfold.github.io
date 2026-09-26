@@ -47,6 +47,7 @@ import {
 import { sendMetaPurchase } from "../_shared/meta-capi.ts";
 import { BOOK_FILES_BUCKET, brandedUrl, sendBookEmail, signBookFiles } from "../_shared/book-files.ts";
 import { footerForEmail } from "../_shared/email-footer.ts";
+import { flowLicenseEmailText } from "../_shared/flow-license-email.ts";
 import {
   refundDeadline,
   WORKSHOP_ACCESS_TTL_SECONDS,
@@ -1062,6 +1063,8 @@ const LICENSE_EMAIL_TEXT: Record<
   "orionfold-proof": proofLicenseEmailText,
   "orionfold-relay": relayLicenseEmailText,
   "orionfold-relay-host": relayHostLicenseEmailText,
+  // Without this entry a Flow buyer fell back to Arena's DGX Spark setup copy.
+  "orionfold-flow": flowLicenseEmailText,
 };
 
 async function fulfillBook(session: Stripe.Checkout.Session) {
