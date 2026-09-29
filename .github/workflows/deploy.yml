@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # A hung build must not hold the deploy lane for the default six hours.
     timeout-minutes: 45
     env:
@@ -56,7 +56,7 @@ jobs:
       # `npm ci` has just emptied. Restoring the newest cache turns the ~6 min
       # image-heavy build into a mostly incremental one; a miss costs nothing.
       - name: Restore the Astro image cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: node_modules/.astro
           key: astro-image-cache-${{ runner.os }}-${{ github.sha }}
@@ -100,7 +100,7 @@ jobs:
       # run so a red deploy can be read without a rerun.
       - name: Upload browser traces and screenshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-output
           path: output/playwright/
@@ -124,7 +124,7 @@ jobs:
         run: node scripts/release-artifact.mjs capture --mode ci --site dist --manifest output/release/site-manifest.json
 
       - name: Retain checked site and recovery manifest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: site-recovery-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -154,7 +154,7 @@ jobs:
       - name: Retain verified migration-compatible recovery
         if: steps.recovery-scope.outputs.eligible == 'true'
         id: compatible-artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: site-compatible-recovery-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: output/release/compatible/
@@ -172,7 +172,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

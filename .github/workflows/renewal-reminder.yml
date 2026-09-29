@@ -8,7 +8,7 @@ on:
   workflow_dispatch: {}
 jobs:
   send:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: POST to renewal-reminder edge function
         run: |
