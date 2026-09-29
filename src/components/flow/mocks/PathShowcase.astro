@@ -1,0 +1,59 @@
+---
+// One Flow path, drawn the way Flow's own Home draws it (App Store layout:
+// a hero card, then visual cards): name, who it is for, three steps, the
+// before → Flow → after diagram and the benefit pills, plus a live mock of
+// the document the path ends with and the walk's headline measurement.
+// Replaces screenshot thumbnails on the homepage, /flow/ and the Paths hub.
+import PathDiagram from './PathDiagram.astro';
+import DocMock from './DocMock.astro';
+import { ArrowRightIcon } from '../../../lib/flow-icons';
+import { HUE, SHOWCASE } from '../../../data/flow-path-showcase';
+import { pathHref, type PathEntry } from '../../../lib/flow/paths';
+import '../../../styles/flow-mocks.css';
+
+interface Props { entry: PathEntry; variant?: 'hero' | 'visual'; headingLevel?: 'h2' | 'h3' }
+const { entry, variant = 'visual', headingLevel = 'h3' } = Astro.props;
+const path = SHOWCASE[entry.id];
+if (!path) throw new Error(`Flow path ${entry.id}: no showcase entry in src/data/flow-path-showcase.ts`);
+const { stat } = entry.data;
+const H = headingLevel;
+const href = pathHref(entry.id);
+---
+<article class:list={['ps', `ps--${variant}`]} style={`--ps-tint:${HUE[path.hue]}`}>
+  {variant === 'hero' ? (
+    <>
+      <div class="ps-copy">
+        <p class="fp-meta">{path.chip} · Featured path</p>
+        <H class="ps-name"><a class="ps-link" href={href}>{path.title}</a></H>
+        <p class="ps-per">{path.persona}</p>
+        <p class="ps-sum">{entry.data.summary}</p>
+        <ol class="ps-steps">{path.steps.map((s) => <li>{s}</li>)}</ol>
+        <div class="ps-pills">{path.benefits.map((b) => <span>{b}</span>)}</div>
+        {stat.value && <p class="ps-stat"><b>{stat.value}</b>{stat.label}</p>}
+        <span class="ps-open" aria-hidden="true">Read the walkthrough<ArrowRightIcon class="lk-arrow" size={14} stroke-width={2.25} aria-hidden="true" /></span>
+      </div>
+      <div class="ps-media">
+        <PathDiagram path={path} />
+        <DocMock path={path} size="panel" />
+      </div>
+    </>
+  ) : (
+    <>
+      <div class="ps-thumb" aria-hidden="true"><DocMock path={path} size="card" blocks={path.thumb} /></div>
+      <div class="ps-copy">
+        <p class="fp-meta">{path.chip}</p>
+        <H class="ps-name"><a class="ps-link" href={href}>{path.title}</a></H>
+        <p class="ps-per">{path.persona}</p>
+        <p class="ps-sum ps-sum--sm">{entry.data.summary}</p>
+      </div>
+      <PathDiagram path={path} compact />
+      <div class="ps-pills">{path.benefits.map((b) => <span>{b}</span>)}</div>
+      {stat.value && <p class="ps-stat"><b>{stat.value}</b>{stat.label}</p>}
+    </>
+  )}
+</article>
+<script>
+  import { initFlowMocks } from '../../../scripts/flow-mocks.js';
+  initFlowMocks();
+  document.addEventListener('astro:after-swap', () => initFlowMocks());
+</script>

@@ -1680,3 +1680,19 @@ html:has(body.ls-page-home)::-webkit-scrollbar-track {
 html:has(body.ls-page-home)::-webkit-scrollbar-thumb {
   background: #9d8e2f;
 }
+
+/* ── Flow vocabulary (2026-09-29) ──
+   A label from Flow's own screens used inside a sentence ("tick I accept
+   changes", "press Add Folder"). Emitted by remarkFlowTerms, flowTermsHtml
+   and the FlowTerm component, so it lives here, not in a scoped style. */
+.flow-term {
+  color: #0b6f6a;
+  background: rgba(14, 158, 152, 0.09);
+  border-radius: 4px;
+  padding: 0 0.22em;
+  font-style: normal;
+  font-weight: 600;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+strong .flow-term, .flow-term strong { font-weight: 700; }

@@ -1,33 +1,41 @@
 ---
-// Approved Living Systems composition; native Astro, no client framework.
+// /flow/ product toolbar under the hero: jumps to sections on this page, a
+// divider, then the other Flow pages. Lucide icons (the site's one icon set).
+import Play from '@lucide/astro/icons/play';
+import Route from '@lucide/astro/icons/route';
+import LibraryBig from '@lucide/astro/icons/library-big';
+import FileText from '@lucide/astro/icons/file-text';
+import Bot from '@lucide/astro/icons/bot';
+import ArrowLeftRight from '@lucide/astro/icons/arrow-left-right';
+import Compass from '@lucide/astro/icons/compass';
+import Cpu from '@lucide/astro/icons/cpu';
+import Building from '@lucide/astro/icons/building';
 
+// In the order the sections appear as you scroll.
+const onPage = [
+  { href: '#paths-home', label: 'Paths', Icon: Route },
+  { href: '#jobs-workbench', label: 'Try Jobs', Icon: Play },
+  { href: '#how-it-works', label: 'Living Documents', Icon: FileText },
+  { href: '#agents-reviewed', label: 'Agents', Icon: Bot },
+  { href: '#import-publish', label: 'Import and Publish', Icon: ArrowLeftRight },
+  { href: '#living-library', label: 'Library', Icon: LibraryBig },
+];
+const pages = [
+  { href: '/flow/tour/', label: 'Tour', Icon: Compass },
+  { href: '/flow/specifications/', label: 'Tech specs', Icon: Cpu },
+  { href: '/flow/enterprise/', label: 'Enterprise', Icon: Building },
+];
 ---
 <span id="flow-capability-ticker-title" class="ls-anchor-alias" aria-hidden="true"></span>
 
 <nav aria-label="Flow product navigation" class="ls-product-subnav">
-<a href="#jobs-workbench">Try Jobs</a>
-<a href="#paths-home">Paths</a>
-<a href="#living-library">Library</a>
-<a href="#how-it-works">Living Documents</a>
-<a href="/flow/tour/">Tour · 4 parts, 15 chapters <svg aria-hidden="true" class="lucide lucide-arrow-up-right" fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg">
-<path d="M7 7h10v10">
-</path>
-<path d="M7 17 17 7">
-</path>
-</svg>
-</a>
-<a href="/flow/specifications/">Tech specs <svg aria-hidden="true" class="lucide lucide-arrow-up-right" fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg">
-<path d="M7 7h10v10">
-</path>
-<path d="M7 17 17 7">
-</path>
-</svg>
-</a>
-<a href="/flow/enterprise/">Enterprise <svg aria-hidden="true" class="lucide lucide-arrow-up-right" fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg">
-<path d="M7 7h10v10">
-</path>
-<path d="M7 17 17 7">
-</path>
-</svg>
-</a>
+  <div class="ls-subnav-bar">
+    <div class="ls-subnav-group" aria-label="On this page" role="group">
+      {onPage.map(({ href, label, Icon }) => <a href={href}><Icon size={16} stroke-width={1.9} aria-hidden="true" /><span>{label}</span></a>)}
+    </div>
+    <span class="ls-subnav-divider" aria-hidden="true"></span>
+    <div class="ls-subnav-group" aria-label="More Flow pages" role="group">
+      {pages.map(({ href, label, Icon }) => <a href={href}><Icon size={16} stroke-width={1.9} aria-hidden="true" /><span>{label}</span></a>)}
+    </div>
+  </div>
 </nav>

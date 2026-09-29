@@ -84,7 +84,7 @@ for (const label of ['Flow', 'Essays', 'The Manifesto', 'Relay', 'Arena', 'Books
 }
 for (const route of routes.filter(([route]) => route.startsWith('/flow/')).map(([route]) => route)) {
   const html = htmlFor(route);
-  for (const label of route === '/flow/' ? ['Living Documents', 'Tour · 4 parts, 15 chapters', 'Tech specs', 'Enterprise'] : ['Overview', 'Tour', 'Tech Specs', 'Enterprise']) {
+  for (const label of route === '/flow/' ? ['Living Documents', 'Tour', 'Tech specs', 'Enterprise'] : ['Overview', 'Tour', 'Tech Specs', 'Enterprise']) {
     assert.match(html, new RegExp(`>\\s*${esc(label)}\\s*<`), `${route}: local rail keeps ${label}`);
   }
 }

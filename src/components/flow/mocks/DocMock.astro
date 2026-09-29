@@ -1,0 +1,134 @@
+---
+// A Flow window holding one document, drawn natively (no screenshot). It plays
+// Flow's loop in stages when it scrolls into view: 1 the run starts, 2 the
+// proposal arrives (new numbers, a drafted passage, a diff), 3 you tick
+// "I accept changes", 4 it is saved with its receipt. src/scripts/flow-mocks.js
+// drives the stages; reduced motion shows the saved state at once. Clicking
+// the review bar steps it by hand.
+import { HUE, type PathShowcase, type DocBlock } from '../../../data/flow-path-showcase';
+
+interface Props { path: PathShowcase; size?: 'hero' | 'panel' | 'card'; blocks?: number[]; label?: string }
+const { path, size = 'panel', blocks, label } = Astro.props;
+const doc = path.doc;
+const tint = HUE[path.hue];
+const shown: DocBlock[] = blocks ? blocks.map((i) => doc.blocks[i]).filter(Boolean) : doc.blocks;
+const withBar = size !== 'card';
+
+function linePoints(values: number[], min: number, max: number, width = 300, height = 96, slots = values.length) {
+  const step = width / Math.max(1, slots - 1);
+  return values.map((v, i) => `${(i * step).toFixed(1)},${(height - ((v - min) / (max - min)) * height).toFixed(1)}`).join(' ');
+}
+const fmt = (n: number) => n.toLocaleString('en-US');
+---
+<figure class:list={['dm', `dm--${size}`]} style={`--dm-tint:${tint}`} data-flow-mock aria-label={label ?? `${doc.title}, a document in Flow`}>
+  <div class="dm-window">
+    <div class="dm-bar" aria-hidden="true">
+      <span class="dm-lights"><i></i><i></i><i></i></span>
+      <span class="dm-title"><img src="/logos/orionfold-mark-3d-32.png" alt="" width="16" height="16" />{doc.file}</span>
+      <span class="dm-mode">Reader</span>
+    </div>
+    <div class="dm-body">
+      <p class="dm-crumb" aria-hidden="true">{doc.folder} <span>/</span> {doc.file}</p>
+      <p class="dm-h">{doc.title}</p>
+      <p class="dm-dek">{doc.dek}</p>
+      {shown.map((b) => (
+        b.kind === 'kpis' ? (
+          <div class="dm-kpis">{b.items.map((k) => (
+            <div><span>{k.label}</span><b>{k.after ? <><em class="dm-was">{k.value}</em><em class="dm-now">{k.after}</em></> : k.value}</b>{k.delta && <small>{k.delta}</small>}</div>
+          ))}</div>
+        ) : b.kind === 'bars' ? (() => {
+          const max = Math.max(...b.items.map((i) => Math.max(i.value, i.after ?? 0)));
+          return (
+            <div class="dm-block dm-bars">
+              <p class="dm-cap">{b.title}</p>
+              {b.items.map((i, n) => (
+                <div class:list={['dm-barrow', i.hi && 'is-hi']} style={`--w:${(i.value / max) * 100}%;--w2:${((i.after ?? i.value) / max) * 100}%;--d:${n * 90}ms`}>
+                  <span>{i.label}</span><span class="dm-track"><i></i></span>
+                  <b>{i.after ? <><em class="dm-was">{fmt(i.value)}</em><em class="dm-now">{fmt(i.after)}</em></> : fmt(i.value)}</b>
+                </div>
+              ))}
+            </div>
+          );
+        })() : b.kind === 'line' ? (
+          <div class="dm-block dm-line">
+            <p class="dm-cap">{b.title}</p>
+            <svg viewBox="-6 -8 312 120" preserveAspectRatio="none" aria-hidden="true">
+              {[0, 1, 2].map((g) => <line class="dm-grid" x1="0" x2="300" y1={g * 48} y2={g * 48} />)}
+              <polyline class="dm-area" points={`0,96 ${linePoints(b.values, b.min, b.max)} 300,96`} />
+              <polyline class="dm-path" points={linePoints(b.values, b.min, b.max)} />
+              {linePoints(b.values, b.min, b.max).split(' ').map((pt, i) => { const [x, y] = pt.split(','); return <g class:list={['dm-dot', i === b.values.length - 1 && 'is-last']}><line class="dm-dot-ring" x1={x} y1={y} x2={x} y2={y} /><line class="dm-dot-core" x1={x} y1={y} x2={x} y2={y} /></g>; })}
+            </svg>
+            <div class="dm-axis" aria-hidden="true">{b.labels.map((l) => <span>{l}</span>)}</div>
+          </div>
+        ) : b.kind === 'table' ? (
+          <div class="dm-block dm-table">
+            {b.title && <p class="dm-cap">{b.title}</p>}
+            <table><thead><tr>{b.head.map((h) => <th>{h}</th>)}</tr></thead>
+              <tbody>{b.rows.map((r, i) => <tr class:list={[b.changed?.includes(i) && 'is-changed']}>{r.map((c) => <td>{c}</td>)}</tr>)}</tbody></table>
+          </div>
+        ) : b.kind === 'prose' ? (
+          <p class:list={['dm-block', 'dm-prose', b.proposed && 'is-proposed']}>{b.text}{b.cites && Array.from({ length: b.cites }, (_, i) => <sup>{i + 1}</sup>)}</p>
+        ) : b.kind === 'diff' ? (
+          <div class="dm-block dm-diff">
+            <p class="dm-cap">{b.title}</p>
+            {b.pairs.map((p, n) => <p style={`--d:${n * 120}ms`}><del>{p.before}</del><ins>{p.after}</ins></p>)}
+          </div>
+        ) : b.kind === 'callout' ? (
+          <div class:list={['dm-block', 'dm-callout', `dm-callout--${b.tone}`]}><b>{b.title}</b><span>{b.text}</span></div>
+        ) : b.kind === 'diagram' ? (
+          <div class="dm-block dm-flowchart">
+            <p class="dm-cap">{b.title}</p>
+            <div>{b.nodes.map((n, i) => <><span style={`--d:${i * 140}ms`}>{n}</span>{i < b.nodes.length - 1 && <i aria-hidden="true"></i>}</>)}</div>
+          </div>
+        ) : b.kind === 'picture' ? (
+          <figure class="dm-block dm-picture">
+            <svg viewBox="0 0 320 120" aria-hidden="true">
+              <defs><linearGradient id={`sky-${path.slug}-${size}`} x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ffe7b8" /><stop offset="1" stop-color="#fdf7ec" /></linearGradient></defs>
+              <rect width="320" height="120" fill={`url(#sky-${path.slug}-${size})`} />
+              <circle cx="252" cy="34" r="16" fill="#ffc659" />
+              <path d="M0 86 L40 60 L78 78 L120 48 L168 80 L210 58 L262 82 L320 62 V120 H0Z" fill="#cfe3d8" />
+              <path d="M0 98 Q80 84 160 96 T320 92 V120 H0Z" fill="#9cc6b2" />
+              <rect x="0" y="104" width="320" height="16" fill="#58706a" />
+              <path d="M0 112 H320" stroke="#e7efe9" stroke-width="1.5" stroke-dasharray="10 8" />
+              <g class="dm-rider">
+                <circle cx="118" cy="98" r="11" fill="none" stroke="#1d2a28" stroke-width="3" />
+                <circle cx="154" cy="98" r="11" fill="none" stroke="#1d2a28" stroke-width="3" />
+                <path d="M118 98 L132 80 L150 80 L154 98 M132 80 L140 98 L118 98 M148 74 L152 80" fill="none" stroke={tint} stroke-width="3.2" stroke-linejoin="round" />
+                <rect x="126" y="84" width="10" height="7" rx="2" fill="#1d2a28" />
+                <path d="M136 76 L142 58 L150 72 L146 76" fill="#22524d" />
+                <circle cx="143" cy="52" r="5.5" fill="#6b4a3a" />
+                <path d="M137 49 Q143 42 149 49 Z" fill={tint} />
+              </g>
+            </svg>
+            <figcaption>{b.caption}</figcaption>
+          </figure>
+        ) : b.kind === 'bilingual' ? (
+          <div class="dm-block dm-bilingual">
+            <p><span class="dm-lang">EN</span>{b.left}<sup>3</sup></p>
+            <p class="dm-es"><span class="dm-lang">ES</span>{b.right}<sup>3</sup></p>
+            <small>{b.notes} of {b.notes} footnotes kept</small>
+          </div>
+        ) : b.kind === 'consent' ? (
+          <div class="dm-block dm-consent">
+            <p class="dm-cap">Before the agent runs</p>
+            <dl>{b.rows.map(([k, v]) => <><dt>{k}</dt><dd>{v}</dd></>)}</dl>
+            <span class="dm-allow">{b.action}</span>
+          </div>
+        ) : b.kind === 'tree' ? (
+          <ul class="dm-block dm-tree">{b.items.map((t) => <li style={`--depth:${t.depth}`} class:list={[t.open && 'is-open']}>{t.name}</li>)}</ul>
+        ) : b.kind === 'chips' ? (
+          <div class="dm-block dm-chips">{b.items.map((c, n) => <span style={`--d:${n * 110}ms`}>{c}</span>)}</div>
+        ) : null
+      ))}
+    </div>
+    {withBar && (
+      <button type="button" class="dm-review" data-mock-step aria-label="Step through the review">
+        <span class="dm-r dm-r0"><i class="dm-dot-ready"></i>Ready · Run</span>
+        <span class="dm-r dm-r1"><i class="dm-spin"></i>Running · Flow Runtime</span>
+        <span class="dm-r dm-r2"><b>Review Changes</b>{doc.review}</span>
+        <span class="dm-r dm-r3"><i class="dm-check"></i><span class="flow-term">I accept changes</span><em>Approve &amp; Save</em></span>
+        <span class="dm-r dm-r4"><i class="dm-saved"></i><b>Saved</b>{doc.receipt}</span>
+      </button>
+    )}
+  </div>
+</figure>

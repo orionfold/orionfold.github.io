@@ -8,6 +8,7 @@ import remarkDirective from 'remark-directive';
 import remarkAsciinema from './src/lib/products/remark-asciinema.mjs';
 import remarkProofCta from './src/lib/products/remark-proof-cta.mjs';
 import remarkCodeBlock from './src/lib/prose/remark-code-block.mjs';
+import { remarkFlowTerms } from './src/lib/flow/flow-terms.mjs';
 import rehypeTableScroll from './src/lib/products/rehype-table-scroll.mjs';
 import rehypeRelayShots from './src/lib/relay/rehype-relay-shots.mjs';
 import rehypeMemoInterstitial from './src/lib/relay/rehype-memo-interstitial.mjs';
@@ -228,7 +229,7 @@ export default defineConfig({
     '/arena-field-edition/': '/arena/',
   },
   markdown: {
-    remarkPlugins: [remarkDirective, remarkAsciinema, remarkProofCta, remarkCodeBlock],
+    remarkPlugins: [remarkDirective, remarkAsciinema, remarkProofCta, remarkCodeBlock, remarkFlowTerms],
     rehypePlugins: [rehypeTableScroll, rehypeRelayShots, rehypeMemoInterstitial, rehypeRelayMemoLinks],
   },
   integrations: [

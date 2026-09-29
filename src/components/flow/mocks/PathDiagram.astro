@@ -1,0 +1,65 @@
+---
+// Before → Flow → after, as Flow's own Home draws it (PathDiagramView): up to
+// three input marks, the Markdown page (or a capability) in the path's hue,
+// up to two outputs, two arrows that can carry a capability, three captions.
+// Every glyph is Lucide (src/lib/flow-icons.ts). File marks are Lucide's
+// outline page with the extension written in, never a vendor's logo; the
+// outline stays transparent so the card shows through the fold.
+import { HUE, type PathShowcase, type Mark, type Capability } from '../../../data/flow-path-showcase';
+import { MARK_ICON, CAPABILITY_ICON, FileIcon, ChevronRightIcon, STROKE } from '../../../lib/flow-icons';
+
+interface Props { path: PathShowcase; compact?: boolean }
+const { path, compact = false } = Astro.props;
+const d = path.diagram;
+const tint = HUE[path.hue];
+const FILE_MARKS: Mark[] = ['pdf', 'xlsx', 'pptx', 'docx', 'md', 'csv'];
+const MIDDLE_CAP: Record<string, Capability> = { review: 'review', router: 'router', jobs: 'jobs' };
+const centreCap = MIDDLE_CAP[d.middle];
+const CentreIcon = centreCap ? CAPABILITY_ICON[centreCap] : null;
+const size = compact ? 'sm' : 'lg';
+const px = compact
+  ? { file: 34, mark: 22, cap: 12, centre: 26, head: 16 }
+  : { file: 44, mark: 30, cap: 15, centre: 36, head: 20 };
+const markOf = (m: Mark) => FILE_MARKS.includes(m) ? { kind: 'file' as const, label: m.toUpperCase() }
+  : m === 'flow' ? { kind: 'flow' as const }
+  : { kind: 'icon' as const, Icon: MARK_ICON[m as keyof typeof MARK_ICON] };
+const ins = d.in.slice(0, 3).map(markOf);
+const outs = d.out.slice(0, 2).map(markOf);
+// Small cards keep the arrow long and legible; the capability rides on the
+// arrow only where there is room for it (the lead card and path pages).
+const [CapIn, CapOut] = [d.through[0], d.through[1]].map((c) => (c && !compact ? CAPABILITY_ICON[c] : null));
+---
+<div class:list={['pd', `pd--${size}`]} style={`--pd-tint:${tint}`} role="img" aria-label={`${d.captions[0]}, then ${d.captions[1]}, then ${d.captions[2]}`}>
+  <div class="pd-row">
+    <div class="pd-marks pd-marks--in">
+      {ins.map((k) => k.kind === 'file'
+        ? <span class="pd-file"><FileIcon size={px.file} stroke-width={STROKE.file} aria-hidden="true" /><b>{k.label}</b></span>
+        : k.kind === 'flow' ? <span class="pd-mark"><img src="/logos/orionfold-mark-3d-32.png" alt="" width={px.mark} height={px.mark} /></span>
+        : <span class="pd-mark"><k.Icon size={px.mark} stroke-width={STROKE.mark} aria-hidden="true" /></span>)}
+    </div>
+    <span class="pd-arrow" aria-hidden="true">
+      <i class="pd-shaft"></i>
+      {CapIn && <i class="pd-cap"><CapIn size={px.cap} stroke-width={STROKE.cap} /></i>}
+      {CapIn && <i class="pd-shaft"></i>}
+      <ChevronRightIcon class="pd-head" size={px.head} stroke-width={STROKE.cap} />
+    </span>
+    {CentreIcon ? (
+      <span class="pd-centre pd-centre--cap"><CentreIcon size={px.centre} stroke-width={STROKE.mark} aria-hidden="true" /></span>
+    ) : (
+      <span class="pd-centre pd-page"><b>M↓</b><i></i><i></i><i></i><em aria-hidden="true"><s></s><s></s><s></s></em></span>
+    )}
+    <span class="pd-arrow" aria-hidden="true">
+      <i class="pd-shaft"></i>
+      {CapOut && <i class="pd-cap"><CapOut size={px.cap} stroke-width={STROKE.cap} /></i>}
+      {CapOut && <i class="pd-shaft"></i>}
+      <ChevronRightIcon class="pd-head" size={px.head} stroke-width={STROKE.cap} />
+    </span>
+    <div class="pd-marks pd-marks--out">
+      {outs.map((k) => k.kind === 'file'
+        ? <span class="pd-file is-out"><FileIcon size={px.file} stroke-width={STROKE.file} aria-hidden="true" /><b>{k.label}</b></span>
+        : k.kind === 'flow' ? <span class="pd-mark is-out"><img src="/logos/orionfold-mark-3d-32.png" alt="" width={px.mark} height={px.mark} /></span>
+        : <span class="pd-mark is-out"><k.Icon size={px.mark} stroke-width={STROKE.mark} aria-hidden="true" /></span>)}
+    </div>
+    {d.captions.map((c, i) => <span class="pd-caption" style={`grid-column:${i * 2 + 1}`} aria-hidden="true"><span>{c}</span></span>)}
+  </div>
+</div>

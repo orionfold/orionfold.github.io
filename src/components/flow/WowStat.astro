@@ -1,0 +1,91 @@
+---
+// A "Why Flow" band between sections: one quotable measurement (or three),
+// each linked to the path walk it came from. Data: src/data/flow-wow.ts.
+// The right side carries a vanishing blueprint grid (CSS only, no image) so a
+// single figure still reads as a balanced band.
+import { WOW } from '../../data/flow-wow';
+import { pathHref } from '../../lib/flow/paths';
+import { ArrowRightIcon } from '../../lib/flow-icons';
+
+interface Props { ids: string[]; eyebrow?: string; tone?: 'paper' | 'ink' }
+const { ids, eyebrow = 'WHY FLOW / MEASURED ON A MAC', tone = 'paper' } = Astro.props;
+const points = ids.map((id) => WOW[id]).filter(Boolean);
+const row = points.length > 1;
+---
+<aside class:list={['wow', `wow--${tone}`, row ? 'wow--row' : 'wow--one']} aria-label="Measured in Flow 2.0 path walks">
+  <div class="wow-grid" aria-hidden="true"><i></i></div>
+  <div class="wow-inner ls-container">
+    <p class="wow-eyebrow">{eyebrow}</p>
+    <div class="wow-items">
+      {points.map((p) => (
+        <figure class="wow-item">
+          <b class="wow-value">{p.value}</b>
+          <div class="wow-quote">
+            <blockquote><p>{p.line}</p></blockquote>
+            <figcaption>
+              <cite>From the walk</cite>
+              <a class="wow-cta" href={pathHref(p.path)}>{p.pathLabel}<ArrowRightIcon size={15} stroke-width={2.25} aria-hidden="true" /></a>
+            </figcaption>
+          </div>
+        </figure>
+      ))}
+    </div>
+  </div>
+</aside>
+<style>
+  .wow { --wow-accent: var(--red-deep, #ba2d21); --wow-link: var(--teal, #247b80); --wow-line: 36 123 128; position: relative; overflow: hidden; isolation: isolate; padding: 64px 0; border-block: 1px solid var(--line, #d5dbd6); background: #fffdf2; }
+  .wow--ink { --wow-accent: #ffcf5c; --wow-link: #8fd6cf; --wow-line: 143 214 207; background: #13201f; border-color: #13201f; color: #eef4f1; }
+
+  /* Vanishing blueprint grid: a floor plane tilted away from the reader,
+     fading to a horizon on the right and to nothing behind the copy. */
+  .wow-grid { position: absolute; inset: 0 0 0 38%; z-index: -1; perspective: 520px; perspective-origin: 62% 18%; pointer-events: none;
+    mask-image: linear-gradient(90deg, transparent, #000 34%), linear-gradient(180deg, transparent 4%, #000 46%);
+    mask-composite: intersect; -webkit-mask-composite: source-in; }
+  .wow-grid i { position: absolute; left: -30%; right: -30%; top: 30%; height: 190%; transform: rotateX(64deg); transform-origin: 50% 0;
+    background-image:
+      linear-gradient(rgb(var(--wow-line) / .34) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--wow-line) / .34) 1px, transparent 1px),
+      linear-gradient(rgb(var(--wow-line) / .14) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--wow-line) / .14) 1px, transparent 1px);
+    background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+    mask-image: linear-gradient(180deg, transparent, #000 22%, #000 60%, transparent); }
+  .wow--row .wow-grid { inset-inline-start: 50%; opacity: .7; }
+
+  .wow-inner { position: relative; display: grid; gap: 22px; }
+  :global(.ls) .wow-eyebrow { font-size: .68rem; font-weight: 700; letter-spacing: .14em; color: var(--wow-accent); }
+  .wow-items { display: grid; gap: 36px; }
+  .wow--one .wow-items { max-width: 820px; }
+  .wow--row .wow-items { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+  .wow-item { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 12px 36px; }
+  .wow--row .wow-item { grid-template-columns: 1fr; align-content: start; }
+  .wow-value { font: 700 clamp(3.4rem, 7vw, 5.8rem)/.86 var(--font-display, 'Geist Sans'); letter-spacing: -.01em; color: var(--wow-accent); white-space: nowrap; }
+  .wow--row .wow-value { font-size: clamp(2.8rem, 5vw, 4rem); }
+
+  /* The line reads as a quote: a hanging open-quote mark, curly quotes, and
+     a credit line naming the walk it came from. */
+  .wow-quote { position: relative; display: grid; gap: 18px; padding-left: 30px; }
+  .wow-quote::before { content: '\201C'; position: absolute; left: -4px; top: -.32em; font: 700 4.2rem/1 Georgia, 'Times New Roman', serif; color: var(--wow-accent); opacity: .85; }
+  .wow-quote blockquote { margin: 0; }
+  :global(.ls) .wow-quote blockquote p { margin: 0; max-width: 36ch; font: 500 clamp(1.2rem, 2vw, 1.55rem)/1.36 'Geist Sans', Arial, sans-serif; letter-spacing: -.012em; text-wrap: pretty; }
+  :global(.ls) .wow-quote blockquote p::after { content: '\201D'; }
+  :global(.ls) .wow--row .wow-quote blockquote p { font-size: 1.08rem; line-height: 1.45; }
+  .wow--row .wow-item { grid-template-rows: auto 1fr; }
+  .wow--row .wow-quote { grid-template-rows: 1fr auto; margin-top: 14px; padding-left: 24px; }
+  .wow--row .wow-quote::before { font-size: 3.2rem; left: -2px; top: -.26em; }
+  /* In a row, credit over button, so all three cards end on the same line. */
+  .wow--row .wow-quote figcaption { flex-direction: column; align-items: flex-start; gap: 8px; }
+
+  .wow-quote figcaption { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+  .wow-quote cite { font-size: .7rem; font-style: normal; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .62; }
+  .wow-cta { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1.5px solid var(--wow-link); border-radius: 999px; background: color-mix(in srgb, var(--wow-link) 4%, transparent); color: var(--wow-link); font-size: .86rem; font-weight: 700; line-height: 1.1; transition: background .2s, color .2s; }
+  .wow-cta:hover, .wow-cta:focus-visible { background: var(--wow-link); color: #fff; }
+  .wow--ink .wow-cta:hover, .wow--ink .wow-cta:focus-visible { color: #13201f; }
+  .wow-cta:focus-visible { outline: 2px solid var(--wow-link); outline-offset: 3px; }
+
+  @media (max-width: 760px) {
+    .wow { padding: 48px 0; }
+    .wow-item { grid-template-columns: 1fr; }
+    .wow-grid { inset-inline-start: 20%; opacity: .55; }
+  }
+</style>

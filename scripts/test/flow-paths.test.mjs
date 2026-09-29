@@ -3,7 +3,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import yaml from 'js-yaml';
-import { publishBody, splitArticle } from '../sync-flow-paths.mjs';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import sharp from 'sharp';
+import { maskParity, publishBody, splitArticle } from '../sync-flow-paths.mjs';
 
 const root = new URL('../../', import.meta.url);
 const read = (p) => readFileSync(new URL(p, root), 'utf8');
@@ -83,4 +87,23 @@ test('llms.txt lists every published path', () => {
   const llms = read('public/llms.txt');
   assert.match(llms, /\(https:\/\/orionfold\.com\/flow\/paths\/\)/);
   for (const { slug } of published) assert.match(llms, new RegExp(`/flow/paths/${slug}/\\)`), `llms.txt lists ${slug}`);
+});
+
+test('maskParity refuses a sharper original that still shows what the ops copy masked', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'mask-parity-'));
+  const noise = (w, h) => {
+    const buf = Buffer.alloc(w * h * 3);
+    for (let i = 0; i < buf.length; i++) buf[i] = (i * 7919) % 251;
+    return sharp(buf, { raw: { width: w, height: h, channels: 3 } });
+  };
+  const white = { create: { width: 96, height: 96, channels: 3, background: '#ffffff' } };
+  // The ops copy: a flat painted-out area. A masked original stays flat; a leaky one has detail there.
+  const ops = path.join(dir, 'ops.png');
+  const masked = path.join(dir, 'masked.png');
+  const leaky = path.join(dir, 'leaky.png');
+  await sharp(white).png().toFile(ops);
+  await sharp({ create: { width: 192, height: 192, channels: 3, background: '#ffffff' } }).png().toFile(masked);
+  await noise(192, 192).png().toFile(leaky);
+  assert.equal(await maskParity(ops, masked), true);
+  assert.equal(await maskParity(ops, leaky), false);
 });

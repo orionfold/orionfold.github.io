@@ -621,7 +621,7 @@ width: 100%;
 }
 .ls-morning-rows > button[aria-pressed='true'] {
 border-color: var(--teal);
-  box-shadow: inset 3px 0 var(--teal);
+  background: #eef6f5;
 }
 .ls-morning-rows svg {
 color: #718868;
@@ -1115,7 +1115,7 @@ width: 100%;
 }
 .ls-boundary-choices button[aria-pressed='true'] {
 border-color: var(--teal);
-  box-shadow: inset 3px 0 var(--teal);
+  box-shadow: inset 0 0 0 1px var(--teal);
 }
 .ls-boundary-choices button > svg {
 color: var(--teal);
@@ -1344,7 +1344,8 @@ min-height: 89px;
   margin-top: 30px;
   text-align: center;
   background: #fff;
-  border-left: 3px solid var(--red);
+  border: 1px solid #ecd2cd;
+  border-radius: 10px;
   padding: 20px 30px;
 }
 .ls-hours-caption p {
@@ -1587,9 +1588,9 @@ flex-shrink: 0;
   margin-top: 3px;
 }
 .ls-why-stat {
-border-left: 2px solid var(--red);
-  padding-left: 24px;
+  padding-top: 14px;
   margin-top: 11px;
+  background: linear-gradient(var(--red), var(--red)) top left / 44px 3px no-repeat;
 }
 .ls-why-stat strong {
 font: 700 53px/1.08 'Barlow Condensed';
@@ -2427,3 +2428,5 @@ opacity: 0.5275;
 .ls .ls-email-form label input {flex:none}
 html:has(body.ls) {font-size:16px}
 .ls .ls-main {padding-top:var(--of-nav-height,82px)}
+/* Mock title bars: title sits after the window dots (no trailing label). */
+.ls-scene-chrome > b { margin-right: auto; }

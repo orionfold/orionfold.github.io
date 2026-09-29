@@ -3,14 +3,19 @@
 // Story and Books moved to the footer (operator 2026-09-28). Download intent,
 // launch gating, and sticky-bar consent mechanics stay shared.
 import Wordmark from './ui/Wordmark.astro';
-import { publishedCompare, compareHref } from '../lib/flow/paths';
-// "Compare" appears only once at least one page is routed, and carries its
-// pages as a small dropdown (desktop) or indented sub-links (mobile).
-const compare = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.tool, kind: p.data.kind, line: p.data.line }));
-const links: { href: string; label: string; children?: typeof compare }[] = [
+import { publishedCompare, compareHref, publishedPaths, pathHref } from '../lib/flow/paths';
+import { SHOWCASE } from '../data/flow-path-showcase';
+import { ArrowRightIcon } from '../lib/flow-icons';
+// "Paths" and "Compare" carry their pages as a small dropdown (desktop) or
+// indented sub-links (mobile). Paths lists the first five in the site's order;
+// Compare appears only once at least one page is routed.
+type NavChild = { href: string; label: string; tag: string; line: string };
+const paths: NavChild[] = (await publishedPaths()).slice(0, 5).map((p) => ({ href: pathHref(p.id), label: p.data.path, tag: p.data.chip.toUpperCase(), line: SHOWCASE[p.id]?.hook ?? p.data.persona }));
+const compare: NavChild[] = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.tool, tag: p.data.kind === 'switch' ? 'SWITCH' : 'PAIR', line: p.data.line }));
+const links: { href: string; label: string; children?: NavChild[]; all?: string }[] = [
   { href: '/flow/', label: 'Flow' },
-  { href: '/flow/paths/', label: 'Paths' },
-  ...(compare.length ? [{ href: '/flow/compare/', label: 'Compare', children: compare }] : []),
+  { href: '/flow/paths/', label: 'Paths', ...(paths.length ? { children: paths, all: 'All paths' } : {}) },
+  ...(compare.length ? [{ href: '/flow/compare/', label: 'Compare', children: compare, all: 'All comparisons' }] : []),
   { href: '/essays/', label: 'Essays' },
   { href: '/manifesto/', label: 'The Manifesto' },
 ];
@@ -76,7 +81,7 @@ const stickyCtaLabel = navCtaLabel;
       >
         <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l4 4v16H6zM15 2v5h4M9 12h6M9 16h3"/><path d="M13 17l2 2 4-5"/></svg>
         {flowLive ? (
-          <span><span class="font-semibold">Orionfold Flow for Mac</span> <span class="text-text-muted">· Base is free forever. 10 Pro days included.</span></span>
+          <span><span class="font-semibold">Orionfold Flow for Mac</span> <span class="text-text-muted">· Base is free forever.</span></span>
         ) : (
           <span><span class="font-semibold">Orionfold Flow is coming to Mac</span> <span class="text-text-muted">· patent-pending AI agency for documents</span></span>
         )}
@@ -113,8 +118,9 @@ const stickyCtaLabel = navCtaLabel;
           <div class="living-nav-dd-menu">
             <div class="living-nav-dd-panel">
               {link.children.map((c) => (
-                <a href={c.href}><span class="living-nav-dd-kind">{c.kind === 'switch' ? 'SWITCH' : 'PAIR'}</span><b>{c.label}</b><small>{c.line}</small></a>
+                <a href={c.href}><span class="living-nav-dd-kind">{c.tag}</span><b>{c.label}</b><small>{c.line}</small></a>
               ))}
+              {link.all && <a class="living-nav-dd-all" href={link.href}>{link.all}<ArrowRightIcon size={14} stroke-width={2.25} aria-hidden="true" style="display:inline-block;margin-left:4px;vertical-align:-2px" /></a>}
             </div>
           </div>
         </div>
@@ -196,12 +202,15 @@ const stickyCtaLabel = navCtaLabel;
   .living-nav-dd { position: relative; }
   .living-nav-dd-menu { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); padding-top: 12px; z-index: 60; }
   .living-nav-dd:hover .living-nav-dd-menu, .living-nav-dd:focus-within .living-nav-dd-menu { display: block; }
-  .living-nav-dd-panel { display: grid; gap: 2px; min-width: 300px; padding: 10px; background: #fff; border: 1px solid #d5dbd6; border-radius: 10px; box-shadow: 0 18px 40px #152a2d22; }
-  .living-nav-dd-panel a { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; padding: 9px 10px; border-radius: 7px; color: #171c1a; }
+  .living-nav-dd-panel { display: grid; grid-template-columns: auto 1fr; gap: 2px 0; min-width: 360px; padding: 10px; background: #fff; border: 1px solid #d5dbd6; border-radius: 10px; box-shadow: 0 18px 40px #152a2d22; }
+  /* Rows share the panel's columns (subgrid), so every tag and title lines up
+     to the widest tag in that menu. */
+  .living-nav-dd-panel a { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; column-gap: 12px; row-gap: 2px; padding: 9px 10px; border-radius: 7px; color: #171c1a; }
   .living-nav-dd-panel a:hover, .living-nav-dd-panel a:focus-visible { background: #fff6c9; }
   .living-nav-dd-panel b { font-size: .95rem; line-height: 1.2; }
-  .living-nav-dd-panel small { grid-column: 1 / -1; font-size: .78rem; line-height: 1.4; color: #56635e; }
-  .living-nav-dd-kind { align-self: center; font-size: .56rem; font-weight: 700; letter-spacing: .1em; color: #ba2d21; }
+  .living-nav-dd-panel small { grid-column: 2; font-size: .78rem; line-height: 1.4; color: #56635e; }
+  .living-nav-dd-kind { align-self: baseline; font-size: .56rem; font-weight: 700; letter-spacing: .1em; color: #ba2d21; }
+  .living-nav-dd-panel a.living-nav-dd-all { display: block; margin-top: 4px; border-top: 1px solid #e6ebe7; border-radius: 0 0 7px 7px; font-size: .84rem; font-weight: 600; color: #0e7f7a; }
   .living-nav-sublink { padding-left: 1.1rem; font-size: .92em; }
   @media (max-width: 700px) {
     #magnet-bar > div { min-height: 48px; }

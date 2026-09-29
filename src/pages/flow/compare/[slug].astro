@@ -7,13 +7,14 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
-import PathCard from '../../../components/flow/paths/PathCard.astro';
+import PathShowcase from '../../../components/flow/mocks/PathShowcase.astro';
 import { publishedCompare, publishedPaths, compareHref, pathHref, type CompareEntry } from '../../../lib/flow/paths';
 import { compareOgSlug, ogPath } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
 import '../../../styles/flow-paths.css';
+import { flowTermsHtml } from '../../../lib/flow/flow-terms.mjs';
 
 export async function getStaticPaths() {
   const pages = await publishedCompare();
@@ -82,15 +83,15 @@ const schema = [
               <tr>
                 <th scope="row">{r.topic}</th>
                 <td>{r.them}{r.source && <small>Source: <a href={r.source.href} rel="noopener">{r.source.label}</a>, checked {r.source.checked}</small>}</td>
-                <td>{r.flow}{r.path && pathName(r.path) && <small>Shown in: <a href={pathHref(r.path)}>{pathName(r.path)}</a></small>}</td>
+                <td><Fragment set:html={flowTermsHtml(r.flow)} />{r.path && pathName(r.path) && <small>Shown in: <a href={pathHref(r.path)}>{pathName(r.path)}</a></small>}</td>
               </tr>
             ))}
           </tbody>
         </table>
         <Content />
-        {start && <div class="fp-start"><PathCard entry={start} /></div>}
+        {start && <div class="fp-start"><PathShowcase entry={start} /></div>}
         <h2 id="what-flow-is-not">What Flow is not</h2>
-        <ul class="fp-not">{d.notFlow.map((n) => <li>{n}</li>)}</ul>
+        <ul class="fp-not">{d.notFlow.map((n) => <li set:html={flowTermsHtml(n)} />)}</ul>
         <h2 id="sources">Sources</h2>
         <ul class="fp-not">{d.sources.map((s) => <li><a href={s.href} rel="noopener">{s.label}</a>, checked {s.checked}</li>)}</ul>
         <div id="try-flow">

@@ -1,0 +1,102 @@
+---
+// Flow 2.0: your own Claude Code or Codex, reviewed. Three native panes play
+// in stages (src/scripts/flow-mocks.js): the consent sheet, the agent at work,
+// the exact changes waiting for Keep or Revert. Figures from the review-agents
+// walk (orionfold-flow articles/03-review-agents). An agent run on a
+// subscription is a cloud run, so nothing here says "on your Mac".
+import FlowTerm from './FlowTerm.astro';
+import '../../styles/flow-mocks.css';
+interface Props { id?: string }
+const { id = 'agents-reviewed' } = Astro.props;
+---
+<section id={id} class="ar ls-container" aria-labelledby={`${id}-heading`}>
+  <div class="ar-head">
+    <div>
+      <p class="ls-eyebrow">NEW IN FLOW 2.0 / AGENTS, REVIEWED</p>
+      <h2 id={`${id}-heading`}>LET THE AGENT WRITE.<br /><span class="ls-stroke">YOU SIGN OFF.</span></h2>
+    </div>
+    <div class="ls-episode-dek">
+      <p>Your coding agent can edit docs all day. For prose there is no pull request between the agent and the file. Flow is that step. Run Claude Code or Codex on the plan you already pay for, and every edit lands in <FlowTerm>Review Changes</FlowTerm> first.</p>
+      <p>In our walk, Codex fixed a 239-word pricing page in 26.7 seconds. The file on disk did not change until we pressed approve.</p>
+    </div>
+  </div>
+  <figure class="dm ar-stage" style="--dm-tint:#0f8fb3" data-flow-mock aria-label="An agent run in Flow: the consent sheet, the agent's edits, then the exact changes waiting for Keep or Revert">
+    <div class="ar-panes">
+      <div class="ar-pane ar-consent">
+        <p class="ar-step">1 · Before it runs</p>
+        <p class="ar-title">Leaves this Mac</p>
+        <dl>
+          <dt>Agent</dt><dd>Codex CLI · Codex subscription</dd>
+          <dt>What it may do</dt><dd>Full access · Agent Desk</dd>
+          <dt>Cost</dt><dd>Included in a subscription you already pay for</dd>
+        </dl>
+        <span class="ar-allow">Allow Once</span>
+      </div>
+      <div class="ar-pane ar-term">
+        <p class="ar-step">2 · The agent works</p>
+        <pre aria-hidden="true"><span class="ar-l1">› proofread pricing.md</span><span class="ar-l2">  reading Agent Desk/pricing.md</span><span class="ar-l3">  3 edits proposed</span><span class="ar-l4">  21,831 tokens in · 485 out</span><span class="ar-l5">✓ done in 26.7 s</span></pre>
+      </div>
+      <div class="ar-pane ar-changes">
+        <p class="ar-step">3 · You decide</p>
+        <p class="ar-title">Exact changes · 3 lines</p>
+        <ul>
+          <li style="--d:0ms"><del>buisness</del><ins>business</ins><span>Keep</span></li>
+          <li style="--d:140ms"><del>definately</del><ins>definitely</ins><span>Keep</span></li>
+          <li style="--d:280ms"><del>get started with</del><ins>get started with,</ins><span>Keep</span></li>
+        </ul>
+        <p class="ar-foot">6 words added or removed; original: 239 words.</p>
+      </div>
+    </div>
+    <button type="button" class="dm-review" data-mock-step aria-label="Step through the agent run">
+      <span class="dm-r dm-r0"><i class="dm-dot-ready"></i>Agent Desk · waiting</span>
+      <span class="dm-r dm-r1"><i class="dm-spin"></i>Codex is working · file untouched</span>
+      <span class="dm-r dm-r2"><b>Review Changes</b>3 edits wait for you</span>
+      <span class="dm-r dm-r3"><i class="dm-check"></i><span class="flow-term">I accept changes</span><em>Approve &amp; Save</em></span>
+      <span class="dm-r dm-r4"><i class="dm-saved"></i><b>Saved</b>History keeps the run and both versions</span>
+    </button>
+  </figure>
+</section>
+<script>
+  import { initFlowMocks } from '../../scripts/flow-mocks.js';
+  initFlowMocks();
+  document.addEventListener('astro:after-swap', () => initFlowMocks());
+</script>
+<style>
+  .ar { padding-block: 96px 88px; display: grid; gap: 40px; }
+  .ar-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: end; }
+  :global(.ls) .ar-head h2 { margin-top: 12px; }
+  :global(.ls) .ar-head .ls-episode-dek p + p { margin-top: 12px; }
+  .ar-stage { border: 1px solid #cfd6d3; border-radius: 14px; overflow: hidden; background: #f5f7f6; box-shadow: 0 26px 60px #152a2d1c; }
+  .ar-panes { display: grid; grid-template-columns: 1fr 1.1fr 1.1fr; gap: 1px; background: #dde3df; }
+  .ar-pane { display: grid; gap: 10px; align-content: start; padding: 22px; background: #fff; min-height: 250px; transition: opacity .4s; }
+  :global(.ls) .ar-pane p { margin: 0; }
+  :global(.ls) .ar-step { font-size: .64rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #6b7672; }
+  :global(.ls) .ar-title { font: 700 1.05rem/1.2 'Geist Sans', Arial, sans-serif; }
+  .ar-consent dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; font-size: .78rem; }
+  .ar-consent dt { color: #6b7672; }
+  .ar-consent dd { margin: 0; font-weight: 500; }
+  .ar-allow { justify-self: start; padding: 6px 14px; border-radius: 7px; background: var(--dm-tint); color: #fff; font-size: .78rem; font-weight: 700; transition: transform .15s, filter .3s; }
+  .ar-stage.is-s1 .ar-allow { filter: brightness(.82); transform: scale(.96); }
+  .ar-term { background: #11191a; color: #cfe3de; }
+  :global(.ls) .ar-term .ar-step { color: #7f9a95; }
+  .ar-term pre { margin: 0; display: grid; gap: 6px; font: 500 .8rem/1.5 'Geist Mono', ui-monospace, monospace; white-space: pre-wrap; }
+  .ar-term pre span { opacity: 0; transform: translateY(4px); transition: opacity .3s, transform .3s; }
+  .ar-stage.is-s1 .ar-l1 { opacity: 1; transform: none; transition-delay: 0s; }
+  .ar-stage.is-s1 .ar-l2 { opacity: 1; transform: none; transition-delay: .35s; }
+  .ar-stage.is-s1 .ar-l3 { opacity: 1; transform: none; transition-delay: .7s; }
+  .ar-stage.is-s1 .ar-l4 { opacity: 1; transform: none; transition-delay: 1s; color: #ffcf5c; }
+  .ar-stage.is-s2 .ar-l5 { opacity: 1; transform: none; color: #6fe0a7; }
+  .ar-changes ul { margin: 0; padding: 0 !important; list-style: none; display: grid; gap: 8px; }
+  .ar-changes li { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; font: 500 .8rem/1.4 'Geist Mono', ui-monospace, monospace; opacity: .25; transition: opacity .4s var(--d); }
+  .ar-stage.is-s2 .ar-changes li { opacity: 1; }
+  .ar-changes del { padding: 1px 6px; border-radius: 4px; background: #fde5e2; color: #a2271c; }
+  .ar-changes ins { padding: 1px 6px; border-radius: 4px; background: #dff3e7; color: #146a3f; text-decoration: none; }
+  .ar-changes li span { margin-left: auto; padding: 2px 9px; border-radius: 99px; border: 1px solid #cfd6d3; font: 700 .66rem/1.4 'Geist Sans', Arial, sans-serif; color: #3b4541; transition: background .3s, color .3s, border-color .3s; }
+  .ar-stage.is-s3 .ar-changes li span { background: #2fa36b; border-color: #2fa36b; color: #fff; }
+  .ar-stage.is-s4 .ar-changes del { display: none; }
+  :global(.ls) .ar-foot { font-size: .72rem; color: #6b7672; }
+  @media (max-width: 900px) {
+    .ar-head, .ar-panes { grid-template-columns: 1fr; }
+    .ar-pane { min-height: 0; }
+  }
+</style>

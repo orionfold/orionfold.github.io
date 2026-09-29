@@ -8,7 +8,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
-import PathCard from '../../../components/flow/paths/PathCard.astro';
+import PathShowcase from '../../../components/flow/mocks/PathShowcase.astro';
 import { publishedPaths, pathHref, EVIDENCE_NOTE, type PathEntry } from '../../../lib/flow/paths';
 import { flowPathOgSlug, ogPath } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
@@ -60,7 +60,7 @@ const schema = [
       <h1>{d.title}</h1>
       <p class="ed-article-dek">{d.dek}</p>
       <div class="ed-hero-bottom"><div class="ed-meta"><span>Path: {d.path}</span><span>Walked on Flow {release}</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#try-this-path" class="ed-download-link">Try this path ↓</a></div></div>
-      <figure class="fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>
+      <figure class="fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>
     </header>
 
     <div class="ed-reading-layout fp-layout ls-container">
@@ -101,7 +101,7 @@ const schema = [
     {others.length > 0 && (
       <section class="fp-section ls-container" aria-labelledby="more-paths">
         <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">MORE PATHS</p><h2 id="more-paths">Another job,<br /><span class="ls-stroke">walked the same way.</span></h2></div><a class="fp-all" href="/flow/paths/">All paths →</a></div>
-        <div class="fp-grid-3">{others.slice(0, 3).map((p) => <PathCard entry={p} />)}</div>
+        <div class="ps-grid">{others.slice(0, 3).map((p) => <PathShowcase entry={p} />)}</div>
       </section>
     )}
   </main>

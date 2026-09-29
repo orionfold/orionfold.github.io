@@ -1,0 +1,75 @@
+---
+// Flow 2.0: bring work in, send it out. Office files and PDFs become
+// Markdown you can edit and review (Flow Import); a document or a folder
+// becomes a PDF, a deck, an ebook or a website (Flow Publish). Both are
+// add-ons to Flow Pro; the Markdown documents themselves stay free.
+// Deliverables named are from the investor-update and campaign walks.
+interface Props { id?: string }
+const { id = 'import-publish' } = Astro.props;
+const IN = ['Word', 'Excel', 'PowerPoint', 'PDF'];
+const OUT = ['PDF', 'Word', 'Excel', 'PowerPoint', 'EPUB', 'Web page'];
+---
+<section id={id} class="io ls-container" aria-labelledby={`${id}-heading`}>
+  <div class="io-head">
+    <p class="ls-eyebrow">NEW IN FLOW 2.0 / IMPORT AND PUBLISH</p>
+    <h2 id={`${id}-heading`}>THE FILES YOU GET.<br /><span class="ls-stroke">THE FILES THEY WANT.</span></h2>
+    <p class="io-dek">Clients send decks and PDFs. Investors want slides. Flow turns what arrives into Markdown you can edit, check and keep, then publishes the finished page in the format each reader expects. In our walks, one update became a 13-slide PowerPoint deck, and one launch post became a Word file and a web page.</p>
+  </div>
+  <div class="io-flow" data-flow-mock aria-label="Word, Excel, PowerPoint and PDF files flow into one Markdown document, which publishes as PDF, Word, Excel, PowerPoint, EPUB or a web page">
+    <ul class="io-col io-in">{IN.map((f, i) => <li style={`--i:${i}`}><span class="io-ext">{f === 'PowerPoint' ? 'PPTX' : f === 'Excel' ? 'XLSX' : f === 'Word' ? 'DOCX' : 'PDF'}</span>{f}</li>)}</ul>
+    <div class="io-wire io-wire--in" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="io-doc">
+      <p class="io-doc-bar"><span></span><span></span><span></span>Investor Update.md</p>
+      <p class="io-doc-h">Tidewell investor update</p>
+      <div class="io-doc-lines"><i></i><i></i><i></i></div>
+      <div class="io-doc-bars"><i style="--h:52%"></i><i style="--h:58%"></i><i style="--h:66%"></i><i style="--h:76%"></i><i style="--h:84%"></i><i style="--h:94%"></i></div>
+      <p class="io-doc-note">Plain Markdown. Yours to edit, search and keep.</p>
+    </div>
+    <div class="io-wire io-wire--out" aria-hidden="true"><i></i><i></i><i></i></div>
+    <ul class="io-col io-out">{OUT.map((f, i) => <li style={`--i:${i}`}>{f}</li>)}</ul>
+  </div>
+  <div class="io-cards">
+    <div><b>Flow Import</b><p>Word, Excel, PowerPoint and PDF become Markdown. A preview comes first, and the Workbench lists what came in and what stayed behind.</p></div>
+    <div><b>Flow Publish</b><p>One document or a whole folder, as a PDF, Word, Excel, PowerPoint, EPUB or a website, with charts and pictures.</p></div>
+    <div><b>What they cost</b><p>Each is an add-on to Flow Pro, at $10 a month or $96 a year. Your 10 Pro Days cover both while you try. Markdown stays free.</p></div>
+  </div>
+</section>
+<style>
+  .io { padding-block: 96px 88px; display: grid; gap: 40px; }
+  .io-head { display: grid; gap: 14px; max-width: 760px; }
+  :global(.ls) .io-dek { font-size: 1.04rem; line-height: 1.6; color: var(--muted); }
+  .io-flow { display: grid; grid-template-columns: 1fr 80px 1.3fr 80px 1fr; align-items: center; padding: 36px; border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(180deg, #f7faf9, #fff); }
+  .io-col { margin: 0; padding: 0 !important; list-style: none; display: grid; gap: 8px; }
+  .io-col li { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; background: #fff; font-size: .88rem; font-weight: 600; opacity: 0; transform: translateX(-8px); transition: opacity .4s calc(var(--i) * 90ms), transform .4s calc(var(--i) * 90ms); }
+  .io-out li { transform: translateX(8px); color: #0b6f6a; border-color: #bfe1dc; background: #f3faf9; }
+  .io-flow.is-live .io-in li, .io-flow.is-s2 .io-out li { opacity: 1; transform: none; }
+  .io-ext { padding: 2px 5px; border-radius: 4px; background: #eef1ef; font: 700 .6rem/1.3 'Geist Mono', ui-monospace, monospace; color: #56635e; }
+  .io-wire { position: relative; height: 120px; }
+  .io-wire i { position: absolute; left: 8px; right: 8px; height: 2px; background: repeating-linear-gradient(90deg, #0e9e98 0 6px, transparent 6px 12px); background-size: 24px 2px; opacity: .55; }
+  .io-wire i:nth-child(1) { top: 30%; } .io-wire i:nth-child(2) { top: 50%; } .io-wire i:nth-child(3) { top: 70%; }
+  .io-flow.is-s1 .io-wire--in i, .io-flow.is-s2 .io-wire--out i { animation: io-march 1s linear infinite; opacity: 1; }
+  @keyframes io-march { to { background-position: 24px 0; } }
+  .io-doc { display: grid; gap: 12px; padding: 0 0 18px; border: 1px solid #cfd6d3; border-radius: 12px; background: #fff; box-shadow: 0 20px 44px #152a2d1c; overflow: hidden; }
+  :global(.ls) .io-doc p { margin: 0; }
+  .io-doc-bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid #e3e7e4; background: #f5f6f4; font-size: .72rem; font-weight: 600; color: #2b3431; }
+  .io-doc-bar span { width: 9px; height: 9px; border-radius: 50%; background: #ff5f57; }
+  .io-doc-bar span:nth-child(2) { background: #febc2e; } .io-doc-bar span:nth-child(3) { background: #28c840; margin-right: 8px; }
+  :global(.ls) .io-doc-h { padding: 0 18px; font: 700 1.15rem/1.2 'Geist Sans', Arial, sans-serif; }
+  .io-doc-lines { display: grid; gap: 6px; padding: 0 18px; }
+  .io-doc-lines i { height: 6px; border-radius: 3px; background: #e7ecea; }
+  .io-doc-lines i:nth-child(2) { width: 86%; } .io-doc-lines i:nth-child(3) { width: 64%; }
+  .io-doc-bars { display: flex; align-items: flex-end; gap: 8px; height: 70px; padding: 0 18px; }
+  .io-doc-bars i { flex: 1; height: 8%; border-radius: 4px 4px 0 0; background: #d9731a; opacity: .85; transition: height .8s cubic-bezier(.2,.8,.2,1); }
+  .io-flow.is-s1 .io-doc-bars i { height: var(--h); }
+  :global(.ls) .io-doc-note { padding: 0 18px; font-size: .74rem; color: #6b7672; }
+  .io-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .io-cards div { display: grid; gap: 8px; align-content: start; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+  .io-cards b { font-size: .95rem; }
+  :global(.ls) .io-cards p { margin: 0; font-size: .9rem; line-height: 1.5; color: var(--muted); }
+  @media (max-width: 900px) {
+    .io-flow { grid-template-columns: 1fr; gap: 14px; padding: 20px; }
+    .io-wire { height: 28px; transform: rotate(90deg); width: 28px; justify-self: center; }
+    .io-cards { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { .io-flow * { animation: none !important; transition: none !important; } }
+</style>

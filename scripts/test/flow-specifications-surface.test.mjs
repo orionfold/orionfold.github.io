@@ -59,7 +59,7 @@ assert.match(measurements, /value: '7 actions'[\s\S]*label: 'The Agency catalog'
 assert.match(stableMeasurements, /agencyCatalog/, 'the seven-action catalog reaches technical measurements through the canonical object');
 
 assert.match(flow, /<FlowNavigation \/>/, 'the overview renders its Flow-local discovery rail');
-assert.match(read('src/components/living/FlowNavigation.astro'), /href="\/flow\/specifications\/">Tech specs/, 'the overview routes technical readers to the dedicated page');
+assert.match(read('src/components/living/FlowNavigation.astro'), /href: '\/flow\/specifications\/', label: 'Tech specs'/, 'the overview routes technical readers to the dedicated page');
 assert.doesNotMatch(nav, /Specifications|Tech Specs/, 'technical specifications stay out of the global menu');
 assert.doesNotMatch(nav, /label: 'Tour'|label: 'Enterprise'/, 'Flow-specific destinations stay out of the global menu');
 assert.match(read('src/components/Footer.astro'), /href: '\/relay\/', label: 'Relay'/, 'Relay remains in the shared Orionfold footer');

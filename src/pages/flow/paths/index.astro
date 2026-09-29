@@ -3,7 +3,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
-import PathCard from '../../../components/flow/paths/PathCard.astro';
+import PathShowcase from '../../../components/flow/mocks/PathShowcase.astro';
 import CompareBand from '../../../components/flow/paths/CompareBand.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
 import { publishedPaths, publishedCompare, pathHref } from '../../../lib/flow/paths';
@@ -49,12 +49,8 @@ const schema = [
     </header>
     {lead && (
       <section class="ls-container" aria-label="Featured path">
-        <div class="fp-grid"><PathCard entry={lead} variant="lead" headingLevel="h2" /><div class="fp-stack">{rest.slice(0, 2).map((p) => <PathCard entry={p} headingLevel="h2" />)}</div></div>
-      </section>
-    )}
-    {rest.length > 2 && (
-      <section class="fp-section ls-container" aria-label="More paths" style="padding-top:28px">
-        <div class="fp-grid-3">{rest.slice(2).map((p) => <PathCard entry={p} headingLevel="h2" />)}</div>
+        <PathShowcase entry={lead} variant="hero" headingLevel="h2" />
+        {rest.length > 0 && <div class="ps-grid">{rest.map((p) => <PathShowcase entry={p} headingLevel="h2" />)}</div>}
       </section>
     )}
     {hasCompare && (

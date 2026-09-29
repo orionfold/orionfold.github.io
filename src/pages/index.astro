@@ -12,11 +12,11 @@ import HomeContinuity from '../components/living/HomeContinuity.astro';
 import PathsSection from '../components/flow/paths/PathsSection.astro';
 import HomeDocumentWorkshop from '../components/living/HomeDocumentWorkshop.astro';
 import HomeIdeas from '../components/living/HomeIdeas.astro';
-import HomeProof from '../components/living/HomeProof.astro';
-import Founder from '../components/living/Founder.astro';
 import FlagshipEssayInvitation from '../components/living/FlagshipEssayInvitation.astro';
-import Ecosystem from '../components/living/Ecosystem.astro';
 import HomeClosing from '../components/living/HomeClosing.astro';
+import FlowAgentsReviewed from '../components/flow/FlowAgentsReviewed.astro';
+import FlowInOut from '../components/flow/FlowInOut.astro';
+import WowStat from '../components/flow/WowStat.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
 const title = "Orionfold \u00b7 Make knowledge a living thing.";
 const description = "Flow Living Documents on your Mac. Files you own, changes you can review, and useful work that continues between visits.";
@@ -30,13 +30,16 @@ const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication
     <HomeHero />
     <CapabilityRibbon />
     <PathsSection id="home-paths" />
+    <WowStat ids={['brief43', 'agent', 'figures']} />
     <HomeContinuity />
     <FlagshipEssayInvitation />
     <HomeDocumentWorkshop />
+    <WowStat ids={['refresh']} />
     <HomeIdeas />
-    <HomeProof />
-    <Founder />
-    <Ecosystem />
+    <FlowAgentsReviewed id="home-agents" />
+    <WowStat ids={['watch']} tone="ink" />
+    <FlowInOut id="home-import-publish" />
+    <WowStat ids={['cents']} />
     <HomeClosing />
   </main>
   <Footer showDownload={false} />

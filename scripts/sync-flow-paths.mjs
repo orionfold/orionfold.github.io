@@ -5,15 +5,21 @@
 //   - the article text: ~/orionfold-flow/articles/<NN>-<slug>/ARTICLE.md
 //   - the shots: ~/orionfold/ops/shared/flow-articles/<slug>/*.png. These are the
 //     copies the product lane cleared for ops, downscaled to 1920 px with the
-//     licensee footer masked. Never take shots from the product repo's own
-//     shots/ folder: those are unmasked.
+//     licensee footer masked. They decide WHICH shots may be published and
+//     what must be masked.
+//   - the full-resolution originals: ~/orionfold-flow/articles/<NN>-<slug>/shots/.
+//     The product lane masks these in place (articles/_inputs/mask.py), so they
+//     are used for sharpness, but only after a mask-parity check: every region
+//     painted flat in the ops copy must be flat in the original too. A shot that
+//     fails the check, or has no original, falls back to the ops copy.
 //
 // For each article it writes:
 //   1. src/content/paths/<slug>.md. The body is the article, verbatim, minus
 //      its H1 (the title lives in front matter), its italic standfirst (becomes
 //      `dek`), every "not for publication" section, and every "not yet released"
 //      build update. Image links are rewritten to the encoded shots.
-//   2. src/assets/flow/paths/<slug>/<shot>.webp, encoded at 1600 px wide, plus
+//   2. src/assets/flow/paths/<slug>/<shot>.webp, encoded at up to 2400 px wide
+//      (sharp at 2x for the ~1200 px the page shows), plus
 //      card.jpg (the card shot at 1200 px) for the path's social card.
 //
 // Front matter has two owners. The product fields (title, path, persona,
@@ -36,8 +42,8 @@ const ARTICLES = process.env.FLOW_ARTICLES ?? path.join(HOME, 'orionfold-flow', 
 const SHOTS = process.env.FLOW_ARTICLE_SHOTS ?? path.join(HOME, 'orionfold', 'ops', 'shared', 'flow-articles');
 const CONTENT_DIR = fileURLToPath(new URL('../src/content/paths/', import.meta.url));
 const ASSET_DIR = fileURLToPath(new URL('../src/assets/flow/paths/', import.meta.url));
-const SHOT_WIDTH = 1600;
-const WEBP_QUALITY = 88;
+const SHOT_WIDTH = 2400;
+const WEBP_QUALITY = 90;
 
 const PRODUCT_FIELDS = ['title', 'path', 'persona', 'drafted', 'build', 'data'];
 
@@ -100,6 +106,46 @@ function seedSiteFields(dek, heroShot) {
   };
 }
 
+const BLOCK = 12;
+
+/** Grayscale pixels of an image, resized to width × height. */
+async function gray(file, width, height) {
+  const { data } = await sharp(file).resize(width, height, { fit: 'fill' }).grayscale().raw().toBuffer({ resolveWithObject: true });
+  return data;
+}
+
+function blockStd(px, width, x0, y0) {
+  let sum = 0, sq = 0;
+  for (let y = y0; y < y0 + BLOCK; y++) for (let x = x0; x < x0 + BLOCK; x++) { const v = px[y * width + x]; sum += v; sq += v * v; }
+  const n = BLOCK * BLOCK;
+  return Math.sqrt(Math.max(0, sq / n - (sum / n) ** 2));
+}
+
+/**
+ * True when every flat (masked-looking) block of the ops copy is also flat in
+ * the original: nothing the product lane painted out for ops shows up in the
+ * higher-resolution file.
+ */
+export async function maskParity(opsFile, originalFile) {
+  const { width, height } = await sharp(opsFile).metadata();
+  const [a, b] = await Promise.all([gray(opsFile, width, height), gray(originalFile, width, height)]);
+  for (let y = 0; y + BLOCK <= height; y += BLOCK) {
+    for (let x = 0; x + BLOCK <= width; x += BLOCK) {
+      if (blockStd(a, width, x, y) < 0.6 && blockStd(b, width, x, y) > 12) return false;
+    }
+  }
+  return true;
+}
+
+/** The sharpest source cleared for this shot: the parity-checked original, else the ops copy. */
+async function shotSource(opsFile, originalFile) {
+  if (!existsSync(originalFile)) return opsFile;
+  const [o, r] = await Promise.all([sharp(opsFile).metadata(), sharp(originalFile).metadata()]);
+  if (r.width <= o.width) return opsFile;
+  if (Math.abs(r.width / r.height - o.width / o.height) > 0.01) return opsFile;
+  return (await maskParity(opsFile, originalFile)) ? originalFile : opsFile;
+}
+
 async function encodeShot(src, dest) {
   await sharp(src)
     .resize({ width: SHOT_WIDTH, withoutEnlargement: true })
@@ -129,11 +175,14 @@ async function syncOne(dir, { released }) {
 
   const shotDir = path.join(SHOTS, slug);
   const needed = new Set([...published.shots, site.cardShot].filter(Boolean));
+  const lowRes = [];
   mkdirSync(path.join(ASSET_DIR, slug), { recursive: true });
   for (const name of needed) {
     const src = path.join(shotDir, `${name}.png`);
     if (!existsSync(src)) throw new Error(`${slug}: shot ${name}.png is not in ${shotDir}`);
-    await encodeShot(src, path.join(ASSET_DIR, slug, `${name}.webp`));
+    const best = await shotSource(src, path.join(ARTICLES, dir, 'shots', `${name}.png`));
+    if (best === src) lowRes.push(name);
+    await encodeShot(best, path.join(ASSET_DIR, slug, `${name}.webp`));
   }
   // The social card frames the card shot, and Satori cannot decode webp.
   await sharp(path.join(shotDir, `${site.cardShot}.png`))
@@ -144,7 +193,7 @@ async function syncOne(dir, { released }) {
   mkdirSync(CONTENT_DIR, { recursive: true });
   const fm = yaml.dump(front2, { lineWidth: -1, quotingType: '"' });
   writeFileSync(target, `---\n${fm}---\n\n${published.body}`);
-  return { slug, shots: needed.size, draft: front2.draft === true };
+  return { slug, shots: needed.size, lowRes, draft: front2.draft === true };
 }
 
 async function main() {
@@ -155,7 +204,8 @@ async function main() {
   for (const dir of dirs) {
     if (only && !dir.endsWith(only)) continue;
     const r = await syncOne(dir, { released });
-    console.log(`${r.slug}: ${r.shots} shots${r.draft ? ' (draft, not routed)' : ''}`);
+    const low = r.lowRes.length ? `; ops copy used for ${r.lowRes.join(', ')}` : '';
+    console.log(`${r.slug}: ${r.shots} shots${low}${r.draft ? ' (draft, not routed)' : ''}`);
   }
 }
 

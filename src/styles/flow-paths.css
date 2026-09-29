@@ -34,7 +34,8 @@
 .ls .fp-card-body p + p, .ls .fp-mini p + p, .ls .fp-tools p + p { margin-top: 0; }
 .fp-all { font-size: .88rem; font-weight: 700; color: var(--red-deep); white-space: nowrap; }
 .fp-all:hover { color: var(--teal); }
-.fp-sub { margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--line); font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.fp-sub { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.ls .fp-sub { margin-top: 72px; }
 
 .fp-tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
 .fp-tools a { display: grid; gap: 10px; align-content: start; padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); }
@@ -129,19 +130,19 @@
 .ls .fp-chips button { border: 1px solid #d6dcda; background: #fff; border-radius: 999px; padding: 6px 12px; font-size: .78rem; font-weight: 500; line-height: 1; color: #34494b; cursor: pointer; }
 .ls .fp-chips button[aria-pressed="true"] { background: #1f7a74; border-color: #1f7a74; color: #fff; }
 .ls .fp-chips button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
-.fp-feat { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; align-items: center; background: #eaf4f7; border: 1px solid #cde3ea; border-radius: 12px; padding: 18px 20px; }
+.fp-feat { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 24px; align-items: start; background: linear-gradient(180deg, color-mix(in srgb, var(--ps-tint, #0e9e98) 11%, #fff), #fff 75%); border: 1px solid color-mix(in srgb, var(--ps-tint, #0e9e98) 25%, #fff); border-radius: 12px; padding: 20px 22px; }
+.fp-feat-copy { display: grid; gap: 10px; align-content: start; }
+.fp-feat-media { display: grid; gap: 14px; }
+.ls .fp-feat-copy p { margin: 0; }
 .fp-feat[hidden] { display: none; }
-.ls .fp-feat-name { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
-.ls .fp-feat-per { margin: 3px 0 10px; font-size: .75rem; color: #5b6d6e; }
-.fp-feat ol { margin: 0 0 14px; padding-left: 18px; list-style: decimal; font-size: .8rem; line-height: 1.7; color: #27393b; }
+.ls .fp-feat-name { font-size: 1.3rem; font-weight: 700; line-height: 1.2; }
+.ls .fp-feat-per { margin: -6px 0 0; font-size: .8rem; color: #5b6d6e; }
 .fp-feat-read { font-size: .8rem; font-weight: 700; color: var(--red-deep); }
 .fp-feat-read:hover { color: var(--teal); }
-.fp-feat img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; border: 1px solid #cfdfe5; border-radius: 8px; background: #fff; }
 .fp-addons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
 .fp-addons div { border: 1px solid #e0e5e3; border-radius: 9px; padding: 10px 12px; background: #fff; font-size: .72rem; line-height: 1.45; color: #4a5c5e; }
 .fp-addons b { display: block; margin-bottom: 2px; color: #1f7fb0; font-size: .8rem; }
 .fp-addons small { display: block; margin-top: 6px; font-size: .66rem; color: #7a8a8b; }
-.ls .fp-app-caption { margin-top: 14px; font-size: .8rem; line-height: 1.5; color: var(--muted); }
 @media (max-width: 1000px) {
   .fp-app-body, .fp-feat { grid-template-columns: 1fr; }
   .fp-app-side { display: none; }

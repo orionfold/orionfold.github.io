@@ -25,6 +25,9 @@ import FlowLibrary from '../components/living/FlowLibrary.astro';
 import PathsHomeMock from '../components/flow/paths/PathsHomeMock.astro';
 import CompareSection from '../components/flow/paths/CompareSection.astro';
 import FlowProof from '../components/living/FlowProof.astro';
+import FlowAgentsReviewed from '../components/flow/FlowAgentsReviewed.astro';
+import FlowInOut from '../components/flow/FlowInOut.astro';
+import WowStat from '../components/flow/WowStat.astro';
 import FlowPlans from '../components/living/FlowPlans.astro';
 import FlowFaq from '../components/living/FlowFaq.astro';
 import FlowClosing from '../components/living/FlowClosing.astro';
@@ -43,17 +46,24 @@ const faqSchema = {
     <FlowHero />
     <FlowNavigation />
     <PathsHomeMock />
+    <WowStat ids={['brief43', 'figures', 'footnotes']} />
     <FlowDataDefinition />
+    <WowStat ids={['refresh']} />
     <FlowRhythm />
     <FlowDocumentAnchors />
     <FlowDocuments />
     <FlowIdeasAnchors />
     <FlowIdeas />
+    <FlowAgentsReviewed />
+    <WowStat ids={['tokens']} tone="ink" />
     <FlowRoutingAnchors />
     <FlowRouting />
+    <WowStat ids={['cents']} />
     <FlowReceiptsAnchors />
     <FlowReceipts />
     <FlowMorningBriefing />
+    <WowStat ids={['watch', 'market']} />
+    <FlowInOut />
     <FlowEverydayCraft />
     <CompareSection />
     <FlowLibrary />

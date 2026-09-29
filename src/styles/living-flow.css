@@ -95,6 +95,7 @@ background: #fbfbf8;
 .ls-hero-flow .ls-hero-inner {
 min-height: 755px;
   padding-top: 80px;
+  padding-bottom: 42px;
 }
 .ls-hero-flow .ls-hero-copy h1 {
 font-size: clamp(4.5rem, 6.8vw, 7.25rem);
@@ -108,7 +109,8 @@ font-size: 1.05rem;
 .ls-hero-flow .ls-hero-media > .ls-paper-art {
 left: -22%;
   width: 145%;
-  top: -72px;
+  /* Raised so the lead plane is cut in half by the nav edge. */
+  top: -212px;
   transform-origin: 10% 70%;
   mask-image: radial-gradient(ellipse at center, #000 48%, transparent 76%);
 }
@@ -1843,8 +1845,8 @@ font-size: 9px;
 min-height: 75px;
   margin-top: 22px;
   padding: 15px 13px;
-  background: #fff;
-  border-left: 3px solid var(--red);
+  background: #fbefec;
+  border-radius: 8px;
   font-size: 10px;
 }
 .ls-route-result p {
@@ -1978,7 +1980,7 @@ width: 100%;
 }
 .ls-morning-rows > button[aria-pressed='true'] {
 border-color: var(--teal);
-  box-shadow: inset 3px 0 var(--teal);
+  background: #eef6f5;
 }
 .ls-morning-rows svg {
 color: #718868;
@@ -2062,20 +2064,46 @@ display: inline-flex;
   gap: 5px;
   text-decoration: underline;
 }
+/* The /flow/ toolbar: page sections, a divider, then other Flow pages. */
 .ls-product-subnav {
-display: flex;
+  display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 25px;
-  padding: 18px 20px;
-  border-block: 1px solid var(--line);
-  font-size: 11px;
-  background: var(--paper);
+  padding: 72px 20px 36px;
 }
-.ls-product-subnav a {
-display: flex;
-  gap: 6px;
+.ls-subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 1px 0 #fff inset, 0 6px 18px #152a2d0d;
+}
+.ls-subnav-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; }
+.ls-subnav-divider { align-self: stretch; width: 1px; margin: 6px 4px; background: var(--line); }
+.ls-product-subnav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background .15s ease, color .15s ease, transform .1s ease;
+}
+.ls-product-subnav a svg { flex: none; color: var(--muted); transition: color .15s ease; }
+.ls-product-subnav a:hover { background: #fff6c9; color: var(--ink); }
+.ls-product-subnav a:hover svg { color: var(--teal); }
+.ls-product-subnav a:active { transform: scale(.96); background: #ffeea0; }
+.ls-product-subnav a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+@media (max-width: 760px) {
+  .ls-subnav-divider { width: 100%; height: 1px; margin: 2px 8px; align-self: auto; }
 }
 .ls-craft-gallery {
 padding-block: 80px;
@@ -2090,11 +2118,6 @@ font-size: 15px;
   color: var(--muted);
   max-width: 780px;
 }
-.ls-capture-note {
-font-size: 10px;
-  color: var(--muted);
-  margin-top: 16px !important;
-}
 .ls-craft-details {
 display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2102,7 +2125,6 @@ display: grid;
   margin-top: 35px;
 }
 .ls-craft-details details {
-border-bottom: 1px solid var(--line);
   padding-bottom: 15px;
 }
 .ls-craft-details summary {
@@ -3124,7 +3146,6 @@ html:has(body.ls) {font-size:16px}
 .ls-library-app { color: #284d45; font-weight: 700; white-space: nowrap; }
 .ls-library-app > span { margin: 0 9px; color: #859486; font-weight: 400; }
 .ls-library-filename { font-weight: 500; }
-.ls-library-preview-label { font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; white-space: nowrap; }
 .ls-library-document { height: 448px; overflow: auto; padding: 24px 30px 0; scrollbar-width: thin; scrollbar-color: #9cafa0 #edf1e9; scroll-padding: 20px; }
 .ls-library-page { min-height: var(--ls-library-page-height, 0px); display: flow-root; padding-bottom: 28px; }
 .ls-library-continuation { display: flex; flex-direction: column; border-top: 1px solid #dce1d6; padding-top: 28px; }
@@ -3166,7 +3187,7 @@ html:has(body.ls) {font-size:16px}
 .ls-library-chart img[src$='groups.svg'], .ls-library-chart img[src$='allocation.svg'] { min-width: 300px; max-width: 450px; }
 .ls-library-chart figcaption { font-size: 11px; color: #617064; line-height: 1.5; }
 .ls-library-scroll-hint { display: none; }
-.ls-library-source-note { border-left: 2px solid #91a784; padding: 10px 16px; margin-top: 24px; max-width: 82ch; background: #f2f5eb; }
+.ls-library-source-note { padding: 12px 16px; margin-top: 24px; max-width: 82ch; border-radius: 8px; background: linear-gradient(135deg, #eef3e5, #f7f9f2 75%); }
 .ls-library-source-note p { font-size: 12px; color: #465e4f; line-height: 1.65; }
 .ls-library-document-footer { display: flex; justify-content: space-between; gap: 14px; padding: 16px 0; margin-top: 24px; border-top: 1px solid #dde3d7; color: #66776b; font-size: 10px; }
 .ls-library-document-footer b { color: #456350; font-weight: 500; margin-left: 7px; }
@@ -3175,7 +3196,7 @@ html:has(body.ls) {font-size:16px}
 .ls-library-competitor .ls-library-prose { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0 34px; }
 .ls-library-competitor .ls-library-prose h4 { grid-column: 1 / -1; }
 .ls-library-competitor .ls-library-prose ul { grid-column: 2; grid-row: 2 / 4; }
-.ls-library-team .ls-library-prose ul { border-left: 2px solid #c59c53; padding: 12px 16px 12px 30px; background: #fcf6e9; }
+.ls-library-team .ls-library-prose ul { border: 1px solid #ead9b4; border-radius: 8px; padding: 12px 16px 12px 30px; background: #fcf6e9; }
 .ls-library-job .ls-library-composition { grid-template-areas: 'prose table' 'charts charts'; grid-template-columns: 1.1fr 1fr; }
 .ls-library-job .ls-library-charts { border-top: 1px solid #dde3d7; padding-top: 22px; }
 .ls-library-stock .ls-library-composition { grid-template-areas: 'prose prose' 'charts charts' 'table table'; }
@@ -3219,7 +3240,6 @@ html:has(body.ls) {font-size:16px}
   .ls-library-viewer { border-radius: 12px; margin-top: 0; }
   .ls-library-windowbar { gap: 10px; padding: 12px 16px; font-size: 10px; }
   .ls-library-filename { display: none; }
-  .ls-library-preview-label { font-size: 8px; }
   .ls-library-document { height: 465px; padding: 23px 18px 0; }
   .ls-library-continuation-copy { display: block; }
   .ls-library-continuation p { font-size: 13px; }
@@ -3266,4 +3286,7 @@ html:has(body.ls) {font-size:16px}
 .ls-jobs-caption{font-size:.8rem;color:var(--muted);max-width:800px;margin:18px auto 0!important;text-align:center}
 @media(max-width:1100px){.ls-hero-flow .ls-hero-copy h1{font-size:clamp(3.7rem,8.2vw,6rem)}.ls-hero-flow .ls-hero-media{padding-top:130px}}
 @media(max-width:700px){.ls-hero-flow .ls-hero-copy h1{font-size:clamp(3.6rem,16vw,6rem)}.ls-jobs-episode{padding-top:64px;padding-bottom:48px}.ls-jobs-intro{grid-template-columns:1fr;gap:24px}.ls-hero-flow .ls-hero-media{padding-top:150px}.ls-hero-workbench{margin:0}}
-@media(min-width:1101px){.ls-hero-flow .ls-hero-media{padding-top:110px}}
+/* Desktop: the mock's top edge lines up with the top of the title. */
+@media(min-width:1101px){.ls-hero-flow .ls-hero-media{padding-top:62px}}
+/* Mock title bars: title sits after the window dots (no trailing label). */
+.ls-scene-chrome > b { margin-right: auto; }

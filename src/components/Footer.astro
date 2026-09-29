@@ -6,6 +6,7 @@ import Wordmark from './ui/Wordmark.astro';
 import PaperCta from './ui/PaperCta.astro';
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch';
 import { publishedPaths, publishedCompare, pathHref, compareHref } from '../lib/flow/paths';
+import { ArrowRightIcon } from '../lib/flow-icons';
 interface Props { showDownload?: boolean; downloadSource?: string; }
 const { showDownload = true, downloadSource = 'footer-download' } = Astro.props;
 
@@ -24,13 +25,10 @@ const FLOW_COLUMNS = [
     { href: '/flow/enterprise/', label: 'Enterprise' },
   ],
 ];
-const PATH_COLUMNS = [
-  (await publishedPaths()).map((p) => ({ href: pathHref(p.id), label: p.data.path })),
-  [
-    { href: '/flow/paths/', label: 'All paths' },
-    ...(await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.kind === 'switch' ? `Flow vs ${p.data.tool}` : `Flow with ${p.data.tool}` })),
-  ],
-];
+// Paths and Compare each list their pages, then end on an "All …" link
+// styled as the group's call to action.
+const PATHS = (await publishedPaths()).map((p) => ({ href: pathHref(p.id), label: p.data.path }));
+const COMPARE = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.kind === 'switch' ? `Flow vs ${p.data.tool}` : `Flow with ${p.data.tool}` }));
 const ORIONFOLD_COLUMNS = [
   [
     { href: '/flow/', label: 'Flow' },
@@ -67,10 +65,24 @@ const year = new Date().getFullYear();
     </nav>
     <nav class="living-footer-group" aria-labelledby="footer-paths-heading">
       <h2 id="footer-paths-heading">Paths</h2>
-      <div class="living-footer-link-columns living-footer-link-columns--flow">
-        {PATH_COLUMNS.map(column => <ul>{column.map(link => <li><a href={link.href}>{link.label}</a></li>)}</ul>)}
+      <div class="living-footer-link-columns living-footer-link-columns--paths">
+        <ul>
+          {PATHS.map(link => <li><a href={link.href}>{link.label}</a></li>)}
+          <li><a class="living-footer-all" href="/flow/paths/">All paths<ArrowRightIcon size={14} stroke-width={2.25} aria-hidden="true" /></a></li>
+        </ul>
       </div>
     </nav>
+    {COMPARE.length > 0 && (
+      <nav class="living-footer-group" aria-labelledby="footer-compare-heading">
+        <h2 id="footer-compare-heading">Compare</h2>
+        <div class="living-footer-link-columns living-footer-link-columns--paths">
+          <ul>
+            {COMPARE.map(link => <li><a href={link.href}>{link.label}</a></li>)}
+            <li><a class="living-footer-all" href="/flow/compare/">All comparisons<ArrowRightIcon size={14} stroke-width={2.25} aria-hidden="true" /></a></li>
+          </ul>
+        </div>
+      </nav>
+    )}
     <nav class="living-footer-group" aria-labelledby="footer-orionfold-heading">
       <h2 id="footer-orionfold-heading">Orionfold</h2>
       <div class="living-footer-link-columns living-footer-link-columns--orionfold">
@@ -109,7 +121,7 @@ const year = new Date().getFullYear();
     color: var(--living-ink); font: 400 14px/1.55 var(--font-body);
   }
   .living-footer-menu {
-    display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 2.4fr) minmax(0, 3fr) minmax(132px, 1fr);
+    display: grid; grid-auto-flow: column; grid-auto-columns: max-content; justify-content: space-between;
     gap: 40px; padding-block: 56px 48px;
   }
   .living-footer-group { min-width: 0; }
@@ -119,8 +131,13 @@ const year = new Date().getFullYear();
     text-transform: uppercase;
   }
   .living-footer-link-columns { display: grid; gap: 24px; }
-  .living-footer-link-columns--flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .living-footer-link-columns--orionfold { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .living-footer-link-columns--flow { grid-template-columns: repeat(2, max-content); column-gap: 28px; }
+  /* Orionfold's short labels take only their width, so Paths gets the room
+     to keep every path title on one line. */
+  .living-footer-link-columns--orionfold { grid-template-columns: repeat(3, max-content); column-gap: 22px; }
+  .living-footer-link-columns--paths { grid-template-columns: max-content; }
+  .living-footer-link-columns--paths a { white-space: nowrap; }
+  .living-footer-link-columns a.living-footer-all { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; color: var(--living-teal); font-weight: 700; }
   .living-footer-link-columns ul { margin: 0; padding: 0; min-width: 0; list-style: none; }
   .living-footer-link-columns li { margin: 0; }
   .living-footer-link-columns a {
@@ -143,8 +160,8 @@ const year = new Date().getFullYear();
   .living-footer-utility p { margin: 0; color: #43595b; font: 400 13px/1.55 var(--font-body); }
   .living-footer-legal { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
   .living-footer-legal a { color: #43595b; font: 400 13px/1.55 var(--font-body); text-decoration: none; padding-block: 6px; }
-  @media (max-width: 1100px) {
-    .living-footer-menu { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 36px; }
+  @media (max-width: 1240px) {
+    .living-footer-menu { grid-auto-flow: row; grid-template-columns: repeat(2, max-content); justify-content: start; gap: 36px 72px; }
     .living-footer-group--connect { grid-column: 1 / -1; }
   }
   @media (max-width: 600px) {
@@ -153,6 +170,8 @@ const year = new Date().getFullYear();
     .living-footer-group--connect { grid-column: auto; }
     .living-footer-group h2 { font-size: 28px; margin-bottom: 16px; }
     .living-footer-link-columns { gap: 14px; }
+    .living-footer-link-columns--paths { grid-template-columns: minmax(0, 1fr); }
+    .living-footer-link-columns--paths a { white-space: normal; }
     .living-footer-utility { flex-direction: column; align-items: flex-start; gap: 18px; }
   }
 </style>

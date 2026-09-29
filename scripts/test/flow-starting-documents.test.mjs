@@ -123,7 +123,7 @@ test('the seven rich previews stay separate and receive only mapped selections',
   assert.match(library, /data-example-scroll/);
   assert.deepEqual(documents.filter(document => document.richPreview).map(document => document.richPreview).sort(), ['budget','competitor','job','starter','stock','tax','team']);
   const component = read('src/components/living/StartWithUsefulWork.astro');
-  assert.match(component, /Illustration only\. No files created or Jobs run\./);
+  assert.doesNotMatch(component, /Illustration only/, 'the sample disclaimer lives once, under the homepage mock (2026-09-29)');
   assert.match(component, /data-starting-original/);
   assert.match(component, /data-starting-copy-preview hidden/);
 });

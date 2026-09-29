@@ -57,7 +57,6 @@
 .ls-starting-copy-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 27px; }
 .ls-starting-copy-actions :is(button,a) { font-size: 12px; font-weight: 700; color: #285a47; text-decoration: underline; text-underline-offset: 4px; min-height: 34px; }
 .ls-starting-footer { display: flex; align-items: center; justify-content: space-between; gap: 22px; padding: 15px 24px; border-top: 1px solid #dce1d4; background: #f5f7ef; font-size: 11px; line-height: 1.7; color: #566a54; }
-.ls-starting-footer > span { font-size: 10px; }
 .ls-starting-no-selection { padding: 55px 25px; color: #50664f; }
 .ls-starting-no-selection p { font-size: 21px; line-height: 1.4; font-weight: 700; }
 .ls-starting-no-selection span { display: block; margin-top: 15px; font-size: 14px; line-height: 1.7; }

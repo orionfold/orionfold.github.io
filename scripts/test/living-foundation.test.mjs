@@ -31,13 +31,14 @@ test('shared shell retains semantic metadata and private-page protections', () =
   const footer = read('src/components/Footer.astro');
   assert.doesNotMatch(footer, /getCollection|detailKeySet|softwareLinks|latestStories/, 'curated footer does not load the removed directory');
   assert.match(footer, /showDownload && ORIONFOLD_FLOW_LIVE && <PaperCta source=\{downloadSource\} tone="yellow" \/>/, 'the single closing CTA preserves gating and attribution');
-  assert.equal((footer.match(/<h2 id="footer-/g) ?? []).length, 4, 'the menu has exactly four headings');
-  for (const heading of ['Flow', 'Paths', 'Orionfold', 'Connect']) assert.match(footer, new RegExp('>' + heading + '<\/h2>'));
+  assert.equal((footer.match(/<h2 id="footer-/g) ?? []).length, 5, 'the menu has exactly five headings (Compare added 2026-09-29)');
+  for (const heading of ['Flow', 'Paths', 'Compare', 'Orionfold', 'Connect']) assert.match(footer, new RegExp('>' + heading + '<\/h2>'));
   assert.match(footer, /href="https:\/\/www\.linkedin\.com\/in\/manavsehgal\/"/);
   assert.doesNotMatch(footer, /youtube\.com/);
   assert.match(footer, /<Wordmark size=\{28\} \/>/);
   for (const href of ['/promise/', '/terms/', '/privacy/']) assert.ok(footer.includes("href: '" + href + "'"));
   assert.doesNotMatch(footer, /Site source: Apache/);
+  for (const all of ['href="/flow/paths/">All paths', 'href="/flow/compare/">All comparisons']) assert.ok(footer.includes(all), `footer ends its group with ${all}`);
 });
 
 test('primary CTA palette clears normal-text AA contrast, distinct from editorial red', () => {

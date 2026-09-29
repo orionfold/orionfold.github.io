@@ -1,0 +1,132 @@
+---
+// /flow/ hero: month one of the recurring client brief, drawn natively and
+// played in stages (src/scripts/flow-mocks.js): 1 the brief's Jobs refresh the
+// figures, 2 Expand with Sources proposes a cited paragraph, 3 you tick
+// "I accept changes", 4 it is saved with its receipt. Figures are the walk's
+// fictional client files (orionfold-flow articles/01-recurring-client-brief):
+// the 43 s draft, 4 sources cited, $0.00 on a model on the Mac.
+import '../../../styles/flow-mocks.css';
+import { PlayIcon } from '../../../lib/flow-icons';
+
+const LINE = { labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'], values: [91.2, 92.0, 90.4, 93.1, 94.0, 95.3], min: 89.5, max: 96.5 };
+const W = 300, H = 90;
+const pt = (v: number, i: number) => [((i * W) / (LINE.values.length - 1)), H - ((v - LINE.min) / (LINE.max - LINE.min)) * H];
+const before = LINE.values.slice(0, 5).map((v, i) => pt(v, i).map((n) => n.toFixed(1)).join(',')).join(' ');
+const all = LINE.values.map((v, i) => pt(v, i).map((n) => n.toFixed(1)).join(',')).join(' ');
+const [ax, ay] = pt(LINE.values[5], 5);
+const KPIS = [
+  { label: 'On time', was: '94.0%', now: '95.3%' },
+  { label: 'Cost per parcel', was: '$4.58', now: '$4.49' },
+  { label: 'Damage claims', was: '0.65%', now: '0.58%' },
+];
+---
+<figure class="dm dm--hero fh" style="--dm-tint:#0e9e98" data-flow-mock aria-label="Flow drafting a client brief: the figures refresh, a cited paragraph is proposed, and it is saved only after you accept it">
+  <div class="dm-window">
+    <div class="dm-bar" aria-hidden="true">
+      <span class="dm-lights"><i></i><i></i><i></i></span>
+      <span class="dm-title"><img src="/logos/orionfold-mark-3d-32.png" alt="" width="16" height="16" />Client Brief.md</span>
+      <span class="dm-mode">Editor</span>
+    </div>
+    <div class="fh-tools" aria-hidden="true">
+      <span class="fh-run"><PlayIcon size={11} stroke-width={2.5} />Run</span>
+      <span class="fh-route"><i></i>Flow Runtime · on this Mac</span>
+      <span class="fh-jobs">Jobs: gather · check · Expand with Sources</span>
+    </div>
+    <div class="fh-panes">
+      <div class="dm-body">
+        <p class="dm-crumb">Client Brief <span>/</span> Client Brief.md</p>
+        <p class="dm-h">Cascadia Freight steering brief</p>
+        <p class="dm-dek">Pinecrest Partners · monthly brief · August 2026</p>
+        <div class="dm-kpis">{KPIS.map((k) => <div><span>{k.label}</span><b><em class="dm-was">{k.was}</em><em class="dm-now">{k.now}</em></b></div>)}</div>
+        <div class="dm-block dm-line fh-line">
+          <p class="dm-cap">On-time delivery (%)</p>
+          <svg viewBox="-6 -8 312 106" preserveAspectRatio="none" aria-hidden="true">
+            {[0, 1, 2].map((g) => <line class="dm-grid" x1="0" x2="300" y1={g * 45} y2={g * 45} />)}
+            <polyline class="dm-area" points={`0,${H} ${all} ${W},${H}`} />
+            <polyline class="dm-path fh-was" points={before} />
+            <polyline class="dm-path fh-now" points={all} />
+            <g class="dm-dot is-last fh-aug"><line class="dm-dot-ring" x1={ax} y1={ay} x2={ax} y2={ay} /><line class="dm-dot-core" x1={ax} y1={ay} x2={ax} y2={ay} /></g>
+          </svg>
+          <div class="dm-axis" aria-hidden="true">{LINE.labels.map((l) => <span>{l}</span>)}</div>
+        </div>
+        <p class="dm-cap fh-sec">This month</p>
+        <p class="dm-block dm-prose is-proposed">On-time delivery reached 95.3% in August<sup>1</sup> and cost per parcel fell to $4.49.<sup>2</sup> Boise ran at 91.9% against a 93% target.<sup>3</sup> A second-shift pilot would cost $42k over eight weeks.<sup>4</sup></p>
+      </div>
+      <aside class="fh-inspect" aria-hidden="true">
+        <p class="fh-inspect-h">Review Changes</p>
+        <div class="fh-card fh-c0"><b>Ready</b><span>Four client files, imported as Markdown.</span></div>
+        <div class="fh-card fh-c1"><b>Figures refreshed</b><span>The table redraws from the new workbook in under half a second.</span></div>
+        <div class="fh-card fh-c2"><b>This month</b><span>Expanded from 4 sources. 265 words, was 19. 4 sources cited.</span><em class="fh-tab">Exact changes</em></div>
+        <label class="fh-accept"><i class="dm-check"></i><span class="flow-term">I accept changes</span></label>
+        <span class="fh-approve">Approve &amp; Save</span>
+        <div class="fh-receipt">
+          <b>Saved</b>
+          <span>43 s · Flow Runtime · on this Mac</span>
+          <span>Model cost $0.00</span>
+          <span class="fh-checks">unsupported-citations ✓ · human-review ✓</span>
+        </div>
+      </aside>
+    </div>
+    <button type="button" class="dm-review" data-mock-step aria-label="Step through the review">
+      <span class="dm-r dm-r0"><i class="dm-dot-ready"></i>Ready · press Run</span>
+      <span class="dm-r dm-r1"><i class="dm-spin"></i>Jobs refresh the figures</span>
+      <span class="dm-r dm-r2"><b>Review Changes</b>A cited draft waits for you</span>
+      <span class="dm-r dm-r3"><i class="dm-check"></i><span class="flow-term">I accept changes</span><em>Approve &amp; Save</em></span>
+      <span class="dm-r dm-r4"><i class="dm-saved"></i><b>Saved</b>43 s · on this Mac · $0.00</span>
+    </button>
+  </div>
+</figure>
+<script>
+  import { initFlowMocks } from '../../../scripts/flow-mocks.js';
+  initFlowMocks();
+  document.addEventListener('astro:after-swap', () => initFlowMocks());
+</script>
+<style is:global>
+  .fh .dm-now { transition-delay: 0s; }
+  /* In the hero, the figures refresh at stage 1 (Jobs), before the draft. */
+  .fh.is-s1 .dm-was { position: absolute; opacity: 0; }
+  .fh.is-s1 .dm-now { position: static; opacity: 1; color: var(--dm-tint); }
+  .fh-tools { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid #e3e7e4; background: #fbfcfb; font-size: .68rem; color: #56635e; white-space: nowrap; overflow: hidden; }
+  .fh-run { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 6px; background: #fff; border: 1px solid #d5dbd6; font-weight: 700; color: #171c1a; transition: background .3s, color .3s, border-color .3s; }
+  .fh-run svg { fill: currentColor; }
+  .fh.is-s1:not(.is-s2) .fh-run { background: var(--dm-tint); border-color: var(--dm-tint); color: #fff; }
+  .fh-route { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 99px; background: #e8f3f1; color: #0b6f6a; font-weight: 600; }
+  .fh-route i { width: 6px; height: 6px; border-radius: 50%; background: #2fa36b; }
+  .fh-jobs { overflow: hidden; text-overflow: ellipsis; }
+  .fh-panes { display: grid; grid-template-columns: minmax(0, 1fr) 208px; }
+  .fh .dm-body { border-right: 1px solid #e3e7e4; }
+  .ls .fh-sec { margin: 2px 0 -4px; }
+  .fh-line svg { height: 92px; }
+  .fh-was { opacity: 1; transition: opacity .4s ease; }
+  .fh-now { opacity: 0; transition: opacity .6s ease .15s; }
+  .fh-aug { opacity: 0 !important; transition: opacity .4s ease .5s !important; }
+  .fh.is-s1 .fh-was { opacity: 0; }
+  .fh.is-s1 .fh-now { opacity: 1; }
+  .fh.is-s1 .fh-aug { opacity: 1 !important; }
+  .fh .dm-area { opacity: 0; }
+  .fh.is-s1 .dm-area { opacity: 1; }
+  .fh-inspect { display: grid; gap: 8px; align-content: start; padding: 16px 14px; background: #f8f9f8; font-size: .68rem; line-height: 1.4; }
+  .ls .fh-inspect p { margin: 0; }
+  .ls .fh-inspect-h { font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6b7672; }
+  .fh-card { display: grid; gap: 3px; padding: 9px 10px; border: 1px solid #e3e7e4; border-radius: 8px; background: #fff; color: #3b4541; opacity: .35; transition: opacity .35s, border-color .35s, box-shadow .35s; }
+  .fh-card b { font-size: .7rem; color: #171c1a; }
+  .fh-c0 { opacity: 1; }
+  .fh.is-s1 .fh-c0 { opacity: .45; }
+  .fh.is-s1 .fh-c1 { opacity: 1; }
+  .fh.is-s2 .fh-c1 { opacity: .45; }
+  .fh.is-s2 .fh-c2 { opacity: 1; border-color: #2fa36b; }
+  .fh-tab { justify-self: start; margin-top: 3px; padding: 2px 7px; border-radius: 5px; background: #eef1ef; font-size: .62rem; font-weight: 700; color: #3b4541; }
+  .fh-accept { display: flex; align-items: center; gap: 7px; padding: 4px 2px; opacity: .35; transition: opacity .3s; }
+  .fh.is-s2 .fh-accept { opacity: 1; }
+  .fh-approve { justify-self: stretch; padding: 7px 10px; border-radius: 7px; background: #d9dfdb; color: #fff; font-weight: 700; text-align: center; transition: background .3s; }
+  .fh.is-s3 .fh-approve { background: var(--dm-tint); }
+  .fh-receipt { display: grid; gap: 2px; padding: 9px 10px; border-radius: 8px; background: #e7f6ee; color: #1f5c3f; opacity: 0; transform: translateY(6px); transition: opacity .4s, transform .4s; }
+  .fh-receipt b { color: #146a3f; font-size: .72rem; }
+  .fh-checks { font: 600 .6rem/1.4 'Geist Mono', ui-monospace, monospace; }
+  .fh.is-s4 .fh-receipt { opacity: 1; transform: none; }
+  @media (max-width: 760px) {
+    .fh-panes { grid-template-columns: 1fr; }
+    .fh-inspect { display: none; }
+    .fh-jobs { display: none; }
+  }
+</style>

@@ -32,6 +32,6 @@ for(const [route,kind,priority] of [['index.html','home','low'],['flow/index.htm
   if (width < 1642) assert.ok(readFileSync(file).length < originalBytes, 'responsive artwork saves bytes');
  }
  assert.doesNotMatch(main,/first-launch-home-hero|first-launch-flow-hero|pit-stop-daylight|FlowShot/);
- assert.match(hero,kind === 'home' ? /data-demo=/ : /data-jobs-demo/,'hero uses the native interactive model');
+ assert.match(hero,kind === 'home' ? /data-demo=/ : /data-flow-mock/,'hero uses the native interactive model');
 }
 console.log('# measured per-route origami priority, eager delivery and stable dimensions pass');

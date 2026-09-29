@@ -78,32 +78,18 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/flow/');
-    const compact = page.locator('[data-jobs-demo].jw-demo--compact');
     const full = page.locator('#jobs-workbench [data-jobs-demo]');
-    await expect(page.locator('[data-jobs-demo]')).toHaveCount(2);
-    for (const demo of [compact, full]) {
-      await expect(demo).toHaveAttribute('data-jobs-ready', 'true');
-      await expect(demo).toHaveAttribute('data-phase', 'ready');
-      await expect(demo.locator('[data-input-value]')).toHaveText('11 interviews');
-      await expect(demo.locator('[data-chart-value]')).toHaveText('3');
-      await expect(demo.locator('[data-summary-value]')).toHaveText('Portable files: 3');
-      await expect(demo.locator('[data-panel="edit"] [data-action="run"]')).toBeDisabled();
-    }
-    await expect(compact.locator('.jw-caption')).not.toContainText('INTERACTIVE PRODUCT WALKTHROUGH');
-    await expect(compact.locator('.jw-caption [data-action="reset"]')).toBeVisible();
-
-    // The compact hero is a working instance, not a remote control for the full demo.
-    await compact.locator('[data-action="input"]').click();
-    await expect(compact.locator('[data-input-value]')).toHaveText('12 interviews');
-    await expect(compact.locator('[data-chart-value]')).toHaveText('3');
-    await compact.locator('[data-panel="edit"] [data-action="run"]').click();
-    await expect(compact).toHaveAttribute('data-phase', 'review');
-    await expect(compact.locator('[data-chart-value]')).toHaveText('4');
-    await expect(compact.locator('[data-summary-value]')).toHaveText('Portable files: 4');
-    await expect(compact.locator('[data-pending-count]')).toHaveText('2');
+    await expect(page.locator('[data-jobs-demo]')).toHaveCount(1);
+    await expect(full).toHaveAttribute('data-jobs-ready', 'true');
     await expect(full).toHaveAttribute('data-phase', 'ready');
     await expect(full.locator('[data-input-value]')).toHaveText('11 interviews');
     await expect(full.locator('[data-chart-value]')).toHaveText('3');
+    await expect(full.locator('[data-summary-value]')).toHaveText('Portable files: 3');
+    await expect(full.locator('[data-panel="edit"] [data-action="run"]')).toBeDisabled();
+    // Disclaimers are said once, in the hero (operator 2026-09-29).
+    await expect(full.locator('.jw-caption')).not.toContainText('INTERACTIVE PRODUCT WALKTHROUGH');
+    await expect(full.locator('.jw-disclosure')).toHaveCount(0);
+    await expect(full.locator('.jw-caption [data-action="reset"]')).toBeVisible();
 
     await full.getByRole('tab', { name: 'Relations', exact: true }).click();
     await expect(full.getByRole('tab', { name: 'Relations', exact: true })).toHaveAttribute('aria-selected', 'true');
@@ -159,9 +145,6 @@ for (const width of [1440, 390]) {
     await expect(full.locator('[data-summary-value]')).toHaveText('Portable files: 4');
     await expect(full.locator('.jw-output[data-part="summary"]')).toHaveAttribute('data-decision', 'pending');
     await expect(full.locator('[data-status]')).toHaveText('Review paused. Remaining changes are still applied.');
-    await expect(compact).toHaveAttribute('data-phase', 'review');
-    await expect(compact.locator('[data-chart-value]')).toHaveText('4');
-    await expect(compact.locator('[data-pending-count]')).toHaveText('2');
 
     await full.locator('[data-action="resume"]').click();
     await expect(full.locator('[data-review-active] h4')).toBeFocused();
@@ -173,18 +156,10 @@ for (const width of [1440, 390]) {
     await expect(full.locator('[data-summary-value]')).toHaveText('Portable files: 4');
     await expect(full.locator('[data-input-value]')).toHaveText('12 interviews');
 
-    await compact.locator('[data-action="keep"]').click();
-    await expect(compact.locator('[data-pending-count]')).toHaveText('1');
-    await expect(compact.locator('[data-chart-value]')).toHaveText('4');
-    await compact.locator('[data-action="keep"]').click();
-    await expect(compact).toHaveAttribute('data-phase', 'complete');
-    await expect(compact.locator('[data-complete-summary]')).toContainText('2 kept · 0 reverted');
-    await compact.locator('.jw-caption [data-action="reset"]').click();
-    await expect(compact).toHaveAttribute('data-phase', 'ready');
-    await expect(compact.locator('[data-input-value]')).toHaveText('11 interviews');
-    await expect(compact.locator('[data-chart-value]')).toHaveText('3');
-    await expect(full).toHaveAttribute('data-phase', 'complete');
-    await expect(full.locator('[data-summary-value]')).toHaveText('Portable files: 4');
+    await full.locator('.jw-caption [data-action="reset"]').click();
+    await expect(full).toHaveAttribute('data-phase', 'ready');
+    await expect(full.locator('[data-input-value]')).toHaveText('11 interviews');
+    await expect(full.locator('[data-chart-value]')).toHaveText('3');
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)).toBe(false);
   });
 }

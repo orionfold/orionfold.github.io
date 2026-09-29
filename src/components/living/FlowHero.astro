@@ -1,6 +1,6 @@
 ---
 // Approved Living Systems composition; native Astro, no client framework.
-import JobsWorkbenchDemo from './JobsWorkbenchDemo.astro';
+import FlowHeroMock from '../flow/mocks/FlowHeroMock.astro';
 // Match the artwork's overflow width, tablet cap and desktop grid. The full
 // approved image remains available when the rendered width and DPR need it.
 const artSizes = '(max-width: 700px) calc(155vw - 62px), (max-width: 1100px) min(1050px, calc(125vw - 80px)), (max-width: 1200px) calc(88.45vw - 74.298px), calc(min(87.139423vw, 1254.807692px) - 6.09976vw - 27.884615px)';
@@ -12,7 +12,7 @@ const artSizes = '(max-width: 700px) calc(155vw - 62px), (max-width: 1100px) min
 <h1 id="flow-landing-title">GIVE YOUR<br/>DOCUMENTS<br/>
 <span class="ls-stroke">WORK TO DO.</span>
 </h1>
-<p class="ls-hero-description">Start with a useful document. See what its Jobs will do. Run them when you’re ready, then decide what stays.</p>
+<p class="ls-hero-description">Start from a path. Flow drafts with a source on every claim, and nothing changes until you say yes. In our walk, a cited client brief took 43 seconds on a MacBook, at $0.00 in model cost.</p>
 <div class="ls-hero-ctas">
 <a class="ls-button" href="#get-flow">Download Flow Now<svg aria-hidden="true" class="lucide lucide-arrow-right" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
 <path d="M5 12h14">
@@ -34,12 +34,6 @@ const artSizes = '(max-width: 700px) calc(155vw - 62px), (max-width: 1100px) min
 <picture class="ls-paper-art">
 <source sizes={artSizes} srcset="/assets/living-systems/hero-flow-paper-planes-640.webp 640w, /assets/living-systems/hero-flow-paper-planes-960.webp 960w, /assets/living-systems/hero-flow-paper-planes-1152.webp 1152w, /assets/living-systems/hero-flow-paper-planes.webp 1642w" type="image/webp"/>
 <img alt="" fetchpriority="high" height="958" src="/assets/living-systems/hero-flow-paper-planes.png" width="1642"/>
-</picture><div class="ls-hero-workbench"><JobsWorkbenchDemo compact /></div></div>
-</div>
-<div class="ls-hero-foot">
-<span>Free Base · 10 Pro Days · No credit card</span>
-<span>Native to your Mac</span>
-<span>Readable Markdown files</span>
-<span>Receipted. Reversible.</span>
+</picture><div class="ls-hero-workbench"><FlowHeroMock /></div></div>
 </div>
 </section>

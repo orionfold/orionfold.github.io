@@ -2,7 +2,7 @@
 import '../../styles/jobs-workbench.css';
 import { JOBS_SCENARIOS } from '../../scripts/jobs-workbench.js';
 interface Props { scenario?: 'customer' | 'portfolio'; mode?: 'full' | 'review'; compact?: boolean; instanceId?: string; disclosure?: boolean }
-const { scenario = 'customer', mode = 'full', compact = false, instanceId, disclosure = true } = Astro.props;
+const { scenario = 'customer', mode = 'full', compact = false, instanceId, disclosure = false } = Astro.props;
 const sample = JOBS_SCENARIOS[scenario];
 const portfolio = scenario === 'portfolio';
 const review = mode === 'review';
@@ -102,7 +102,7 @@ const id = instanceId || `jobs-${scenario}-${mode}-${compact ? 'compact' : 'full
     <div class="jw-status" role="status" aria-live="polite" aria-atomic="true"><span aria-hidden="true"></span><p data-status>{review ? '2 applied changes to review. You decide what stays.' : 'Inspect the Jobs, then make one change.'}</p></div>
   </div>
   {disclosure && <p class="jw-disclosure">{portfolio ? 'Interactive illustration using a retained sample. No live prices, account access, or trades.' : 'Interactive illustration based on Flow’s bundled Customer Research documents. Changes stay in this demo.'}</p>}
-  <noscript><p class="jw-disclosure">Enable JavaScript to run this interactive walkthrough.</p></noscript>
+  <noscript><p class="jw-disclosure">Enable JavaScript to try this.</p></noscript>
 </div>
 <script>
   import { initJobsWorkbenchDemos } from '../../scripts/jobs-workbench.js';
