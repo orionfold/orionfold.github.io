@@ -89,6 +89,24 @@ test('llms.txt lists every published path', () => {
   for (const { slug } of published) assert.match(llms, new RegExp(`/flow/paths/${slug}/\\)`), `llms.txt lists ${slug}`);
 });
 
+test('llms.txt lists the Compare hub and every compare page', () => {
+  const llms = read('public/llms.txt');
+  assert.match(llms, /\(https:\/\/orionfold\.com\/flow\/compare\/\)/);
+  for (const f of readdirSync(new URL('../../src/content/compare/', import.meta.url)).filter((n) => n.endsWith('.md'))) {
+    const slug = f.replace(/\.md$/, '');
+    assert.match(llms, new RegExp(`/flow/compare/${slug}/\\)`), `llms.txt lists ${slug}`);
+  }
+});
+
+test('path and compare pages fit search-result titles and descriptions', async () => {
+  const { fitTitle, fitDescription } = await import('../../src/lib/flow/seo-meta.ts');
+  assert.equal(fitTitle('Short title · Orionfold', 'Fallback'), 'Short title · Orionfold');
+  assert.equal(fitTitle('x'.repeat(80), 'Fallback'), 'Fallback');
+  const long = 'First sentence is long enough to count as a real opening line for a page. ' + 'Second sentence keeps going and going well past the limit for a search snippet here.';
+  assert.ok(fitDescription(long).length <= 160);
+  assert.ok(fitDescription(long).endsWith('.'));
+});
+
 test('maskParity refuses a sharper original that still shows what the ops copy masked', async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'mask-parity-'));
   const noise = (w, h) => {

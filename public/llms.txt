@@ -39,6 +39,13 @@
 - [A launch post where every number points at its source, in two languages](https://orionfold.com/flow/paths/campaign-with-proof/): A launch post where every figure has a footnote, translated to Spanish with footnotes kept, published as a Word file and a web page.
 - [Your repo, your git, your approval, and the drift Flow cannot see yet](https://orionfold.com/flow/paths/docs-true-to-code/): Open a repository in place, proofread its spec on the Mac, publish a PDF. The page says plainly that Flow did not notice the spec contradicts the code.
 
+## Flow Compare (moving from, or pairing with, another tool)
+- [Flow Compare](https://orionfold.com/flow/compare/): Side-by-side pages for people coming from another tool. Each one lists what moves, what stays, the Flow path to start with, what Flow is not, and dated sources for every claim about the other tool.
+- [Flow vs Notion](https://orionfold.com/flow/compare/notion/): Notion keeps work in its cloud and bills AI by seat or credits. Flow keeps each document as a plain Markdown file on your Mac and can run AI on the Mac itself. Flow is Mac only.
+- [Flow vs Obsidian](https://orionfold.com/flow/compare/obsidian/): Both keep notes as Markdown files on your disk. Flow adds Jobs that redo the routine parts of a document, and every AI change waits for your approval.
+- [Flow with Claude Code](https://orionfold.com/flow/compare/claude-code/): Use Claude Code for the work and Flow to review the documents it writes and keep a history. The path was walked with Codex; Claude Code on it is not yet verified.
+- [Flow with Codex](https://orionfold.com/flow/compare/codex/): Run Codex on the ChatGPT plan you already have. Flow makes its document edits wait for review line by line and keeps a record of every run.
+
 ## Flow launch stories (first-person, 2026-08-22 to 2026-08-27)
 - [The Pit Crew That Never Touches the Wheel](https://orionfold.com/story/the-pit-crew-that-never-touches-the-wheel/): The launch story. One founder wanted an AI writing tool that cannot touch a document without permission; here is the race car built around that rule, and why every part of Flow starts from the driver's seat.
 - [The Edit I Never Approved](https://orionfold.com/story/the-day-i-stopped-trusting-invisible-edits/): A proofreader quietly changed code inside a note. That silent edit became Flow's first rule: AI may propose a change, but only you can save it.

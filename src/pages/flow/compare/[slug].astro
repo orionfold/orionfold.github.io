@@ -3,6 +3,7 @@
 // Every claim about the other tool carries a dated source; every row links the
 // path that proves Flow's side.
 import { render } from 'astro:content';
+import { fitTitle, fitDescription } from '../../../lib/flow/seo-meta';
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
@@ -31,6 +32,8 @@ const dateIso = d.updated.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.updated);
 const canonical = `${SITE.url}${compareHref(entry.id)}`;
 const ogImage = ogPath(compareOgSlug(entry.id));
+const seoTitle = fitTitle(`${d.title} · Orionfold`, `Flow ${d.kind === 'switch' ? 'vs' : 'with'} ${d.tool} · Compare · Orionfold`);
+const seoDescription = fitDescription(d.dek);
 const sections = [
   { slug: 'side-by-side', text: 'Side by side' },
   ...headings.filter((h) => h.depth === 2),
@@ -57,7 +60,7 @@ const schema = [
   },
 ];
 ---
-<Layout title={`${d.title} · Orionfold`} description={d.dek} ogImage={ogImage} ogImageAlt={`Flow compared with ${d.tool}: what moves, what stays, and the path to start with`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Compare', tags: ['Flow 2.0', d.tool] }}>
+<Layout title={seoTitle} description={seoDescription} ogImage={ogImage} ogImageAlt={`Flow compared with ${d.tool}: what moves, what stays, and the path to start with`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Compare', tags: ['Flow 2.0', d.tool] }}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero ls-container">
