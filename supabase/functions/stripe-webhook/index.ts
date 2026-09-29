@@ -13,6 +13,7 @@
 // Auth is the Stripe signature, not a JWT — so this function runs with
 // verify_jwt = false (see supabase/config.toml). See STRIPE-HANDOFF.md §5.
 
+import { dispatchWebsiteCommerceEvent } from "../_shared/website-event-ownership.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
@@ -76,7 +77,7 @@ const stripeClientFor = (secretKey: string) =>
 const stripe = stripeClientFor(Deno.env.get("STRIPE_SECRET_KEY") ?? "");
 
 // Flow's sandbox client, built only when its key is configured (see
-// ../_shared/flow-stripe.ts for why Flow gets its own credential). A verified
+// the retained rollback path until Product verifies the cutover). A verified
 // TEST event must be answered with the TEST key: retrieving a sandbox
 // subscription with the live key is a 404, so the key has to follow the event.
 const FLOW_SECRET_KEY = Deno.env.get("STRIPE_FLOW_SECRET_KEY")?.trim() ?? "";
@@ -256,37 +257,44 @@ Deno.serve(async (req) => {
 
   // The client for THIS event's account, threaded to the handlers that call the
   // Stripe API. A test event answered with the live key 404s on every retrieve.
-  const api = clientForEvent(event);
+  const verifiedEvent = event;
+  const api = clientForEvent(verifiedEvent);
 
   try {
-    switch (event.type) {
-      case "checkout.session.completed":
-        await onCheckoutCompleted(event.data.object as Stripe.Checkout.Session, api);
-        break;
-      case "checkout.session.async_payment_succeeded":
-        await onCheckoutCompleted(event.data.object as Stripe.Checkout.Session, api);
-        break;
-      case "refund.created":
-      case "refund.updated":
-      case "refund.failed":
-        await onRefundChanged(event.data.object as Stripe.Refund, api);
-        break;
-      case "invoice.paid":
-        await onInvoicePaid(event.data.object as Stripe.Invoice, api);
-        break;
-      case "invoice.payment_failed":
-        await onInvoicePaymentFailed(event.data.object as Stripe.Invoice);
-        break;
-      case "customer.subscription.updated":
-        await onSubscriptionUpdated(event.data.object as Stripe.Subscription);
-        break;
-      case "customer.subscription.deleted":
-        await onSubscriptionDeleted(event.data.object as Stripe.Subscription);
-        break;
-      default:
-        // Other event types are acknowledged but not acted on.
-        break;
-    }
+    const skipped = await dispatchWebsiteCommerceEvent(verifiedEvent, {
+      checkoutPrices: async (id) => (await api.checkout.sessions.listLineItems(id, { limit: 100 })).data.map((item: Stripe.LineItem) => item.price),
+      priceLookupKey: async (id) => (await api.prices.retrieve(id)).lookup_key,
+    }, async () => {
+      switch (verifiedEvent.type) {
+        case "checkout.session.completed":
+          await onCheckoutCompleted(verifiedEvent.data.object as Stripe.Checkout.Session, api);
+          break;
+        case "checkout.session.async_payment_succeeded":
+          await onCheckoutCompleted(verifiedEvent.data.object as Stripe.Checkout.Session, api);
+          break;
+        case "refund.created":
+        case "refund.updated":
+        case "refund.failed":
+          await onRefundChanged(verifiedEvent.data.object as Stripe.Refund, api);
+          break;
+        case "invoice.paid":
+          await onInvoicePaid(verifiedEvent.data.object as Stripe.Invoice, api);
+          break;
+        case "invoice.payment_failed":
+          await onInvoicePaymentFailed(verifiedEvent.data.object as Stripe.Invoice);
+          break;
+        case "customer.subscription.updated":
+          await onSubscriptionUpdated(verifiedEvent.data.object as Stripe.Subscription);
+          break;
+        case "customer.subscription.deleted":
+          await onSubscriptionDeleted(verifiedEvent.data.object as Stripe.Subscription);
+          break;
+        default:
+          // Other event types are acknowledged but not acted on.
+          break;
+      }
+    });
+    if (skipped) console.log("Product-owned Flow event skipped", event.id, event.type);
   } catch (err) {
     // Log and 500 so Stripe retries (the handlers are idempotent, so a retry is safe).
     console.error(`Handler error for ${event.type}:`, err);

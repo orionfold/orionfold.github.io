@@ -4,6 +4,7 @@
 // to the company (website, software, models, newsletter, services), and the
 // contact/domain swapped to manav@orionfold.com. The page-level JSON-LD uses the
 // shared PUBLISHER from src/data/seo.ts (S11 DRYed it out of an S10 inline copy).
+import { FLOW_CANCEL_TERMS, FLOW_ADDON_TERMS, FLOW_TRIAL_TERMS } from '../data/flow-pricing';
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -145,10 +146,12 @@ const sections = [
     ],
   },
   {
-    title: '17. Flow Pro Subscriptions',
+    title: '17. Flow Subscriptions and Add-ons',
     paragraphs: [
-      'Flow Base is free. Flow Pro is a paid subscription, billed monthly or yearly through Stripe. You can try every Pro feature free for 10 Pro Days before you pay.',
-      'Your subscription renews at the end of each billing period until you cancel. Cancel anytime in Flow, Settings ▸ Billing ▸ Manage\u00a0Plan…; Flow Pro stays on until the end of the period you\u2019ve paid for. Subscription payments are not refunded, except where the law requires it.',
+      'Flow Base keeps Markdown reading, editing and saving free. Flow Pro is a paid subscription, billed monthly or yearly through Stripe. Flow Import and Flow Publish are optional paid add-ons to Pro.',
+      FLOW_CANCEL_TERMS,
+      FLOW_ADDON_TERMS,
+      FLOW_TRIAL_TERMS,
       'If Pro ends, your documents stay yours. They stay readable and editable, and past receipts stay readable.',
     ],
   },

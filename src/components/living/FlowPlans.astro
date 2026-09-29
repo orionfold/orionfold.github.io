@@ -4,7 +4,7 @@ import FlowDownloadCta from '../flow/FlowDownloadCta.astro';
 import FlowEnterpriseContact from '../flow/FlowEnterpriseContact.astro';
 import { FLOW, formatUsd } from '../../data/commerce';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
-import { FLOW_CANCEL_TERMS } from '../../data/flow-pricing';
+import { FLOW_CANCEL_TERMS, FLOW_TRIAL_TERMS, FLOW_ADDONS, FLOW_ADDON_TERMS } from '../../data/flow-pricing';
 ---
 <span id="pricing-heading" class="ls-anchor-alias" aria-hidden="true"></span>
 <span id="flow-page-waitlist-heading" class="ls-anchor-alias" aria-hidden="true"></span>
@@ -20,7 +20,7 @@ import { FLOW_CANCEL_TERMS } from '../../data/flow-pricing';
 <span class="ls-stroke">INTERPRETATION.</span>
 </h2>
 <p>Keep data current for free. Add model-powered work with Pro.</p>
-<p class="ls-trial-note">Try every Pro feature free for 10 Pro Days. A Pro Day only counts on a day you use Pro. No credit card. Subscribe when you're ready.</p>
+<p class="ls-trial-note">{FLOW_TRIAL_TERMS} A Pro Day counts when you use a paid feature. No credit card.</p>
 </div>
 <div class="ls-plan-grid">
 <article data-plan="base">
@@ -29,7 +29,7 @@ import { FLOW_CANCEL_TERMS } from '../../data/flow-pricing';
 <p class="ls-plan-price">Free forever<small>No account. No expiry. No private format.</small>
 </p>
 <ul>
-<li>Write, search, organize, chart and export</li>
+<li>Write, search, organize and chart Markdown</li>
 <li>Markdown, tables, pictures and diagrams</li>
 <li>Deterministic Jobs and Night Shift</li>
 <li>Morning Briefing and Keep/Revert review</li>
@@ -52,6 +52,17 @@ import { FLOW_CANCEL_TERMS } from '../../data/flow-pricing';
 <div class="ls-plan-actions"><FlowEnterpriseContact /><p class="ls-plan-payment-note">Or pay in-app when ready.</p></div>
 </article>
 </div>
+<div class="ls-plan-addons">
+<h3>Add-ons to Flow Pro</h3>
+{FLOW_ADDONS.map((addon) => <p><strong>{addon.name}</strong> — {addon.description}</p>)}
+<p>{FLOW_ADDON_TERMS}</p>
+</div>
 <p class="ls-plan-note">Night Shift model work stays on your Mac. Configured cloud models remain a separate choice for daytime work.</p>
-<p class="ls-offer-footnote">{FLOW_CANCEL_TERMS} When Pro ends, model-powered actions stop. Your files stay readable and editable, with no watermark or export wall. Read receipts remain accessible. <a href="/promise/">Read our promise</a> and <a href="/flow/specifications/#plans">licensing details</a>.</p>
+<p class="ls-offer-footnote">{FLOW_CANCEL_TERMS} When Pro ends, model-powered actions stop. Your Markdown files stay readable and editable. Import and Publish require their add-ons after the trial. Read receipts remain accessible. <a href="/promise/">Read our promise</a> and <a href="/flow/specifications/#plans">licensing details</a>.</p>
 </section>
+
+<style>
+.ls-plan-addons { margin-top: 1.5rem; padding: 1.5rem; border: 1px solid var(--line); border-radius: 1rem; }
+.ls-plan-addons h3 { margin: 0 0 1rem; font-size: 1.2rem; }
+.ls-plan-addons p { margin: .75rem 0 0; line-height: 1.6; }
+</style>

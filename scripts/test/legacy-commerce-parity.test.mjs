@@ -28,7 +28,7 @@ const hashes = {
   "supabase/functions/stripe-webhook/README.md":
     "3dc979e50e9067927cb718d270998c5b02ccea08d3f0647e397c10bb0d54d9d5",
   "supabase/functions/stripe-webhook/index.ts":
-    "30c855aa9a7adb9ba45996b046470998131cbf949d2510205d510647c2a71192",
+    "ae44cb3f6b06d1c2a09f103b5a3997a7455ea2092ed99efa7aa90efdcf964baf",
   "supabase/functions/workshop-refund/index.ts":
     "edded72b304add0968687aea9bb48b33d2a6f4623053b947b57d68246771cd07",
   "supabase/functions/relay-host-request/index.ts":
@@ -85,10 +85,6 @@ const hashes = {
     "07c9a06a6d346bae6ebd3381c54e9fc0e74be63c946a32ec62823402731dea5f",
   "supabase/functions/_shared/license-payload.ts":
     "b0956e68d918c0f51e1d4c774dfe50bf2ff3440c84f82e43cbaf1caa07b55e4e",
-  "supabase/functions/_shared/flow-stripe.ts":
-    "6d6da54f2640832b92cb22893bfa723e310937b42247f68bc767078a7d471877",
-  "supabase/functions/_shared/license-claim.ts":
-    "3f31cfa5449a5b872e87f24eae62e570c4f7d4262cee63b58314b3a5785011da",
   "supabase/functions/_shared/email-tokens.ts":
     "46cfcfe89e8adcee7e8cba747147cf20fd4fd49821fd99ba6d1a8d9d4a73aedf",
   "supabase/functions/_shared/workshop-token.ts":

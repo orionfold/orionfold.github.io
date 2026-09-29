@@ -233,8 +233,8 @@ assert.match(
 // THE LAPSE PROMISE is quoted from the app's own withdrawal notice, so the page
 // reuses a sentence the binary enforces rather than paraphrasing it.
 assert.match(pricingData, /Your text wasn't checked\. Subscribe to keep using Flow's AI features/, "the app's own withdrawal sentence is quoted verbatim");
-assert.match(pricingData, /Your documents are free forever\. The AI is what you pay for\./);
-// Documents stay free when the grant is spent: no locks, no export wall.
+assert.match(pricingData, /Your Markdown stays free\. Pro and its add-ons extend what you can do\./);
+// Markdown stays free when the grant is spent; format add-ons remain paid.
 assert.match(pricingCopy, /you keep your work/i);
 
 // One consent sentence, one module (src/data/flow-consent.ts): every Flow

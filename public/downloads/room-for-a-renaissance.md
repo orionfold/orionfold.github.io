@@ -98,7 +98,7 @@ Daytime model work offers an explicit choice of place. Flow includes a local run
 
 Night Shift’s model work stays on the Mac, without quietly substituting a hosted model. Declared public web sources still require network requests. A useful routine should make these ordinary conditions understandable.
 
-Ownership extends to the business model. Flow Base keeps reading, writing, searching, organizing, charts, diagrams, and exporting free, along with deterministic Night Shift maintenance. Model-powered actions belong to Pro, including those using a local model. If a subscription ends, the documents remain open and editable, and existing receipts remain readable. Your knowledge should remain available as your circumstances change.
+Ownership extends to the business model. Flow Base keeps reading, writing, searching, organizing, charts, diagrams, and saving Markdown free, along with deterministic Night Shift maintenance. Model-powered actions belong to Pro, including those using a local model. Flow Import and Flow Publish are separate paid add-ons to Pro. If a subscription ends, Markdown stays open and editable, and existing receipts remain readable. Your knowledge should remain available as your circumstances change.
 
 <a id="start-with-the-document-you-already-reopen"></a>
 

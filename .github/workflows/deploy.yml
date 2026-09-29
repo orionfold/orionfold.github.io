@@ -77,8 +77,8 @@ jobs:
       # Flow is rehearsed locally in its launched state before the product lane
       # declares release. A push must not turn that rehearsal into a public
       # placeholder download. The repository variable is an operator-owned
-      # declaration; the script independently requires a real DMG and a signed,
-      # non-empty appcast that names the same package.
+      # declaration; Website checks the permanent DMG and redirect contract.
+      # Product owns release artifacts and signed-feed verification.
       - name: Verify Flow release boundary
         env:
           FLOW_RELEASE_DECLARED: ${{ vars.FLOW_RELEASE_DECLARED }}

@@ -27,7 +27,7 @@ import SectionLabel from '../components/ui/SectionLabel.astro';
 import { SITE, PUBLISHER } from '../data/seo';
 import { ogMeta } from '../data/og';
 import { FLOW, formatUsd } from '../data/commerce.ts';
-import { FLOW_PROMISE, FLOW_LAPSE_FACTS, FLOW_WITHDRAWAL_NOTICE } from '../data/flow-pricing.ts';
+import { FLOW_PROMISE, FLOW_LAPSE_FACTS, FLOW_WITHDRAWAL_NOTICE, FLOW_ADDON_TERMS, FLOW_TRIAL_TERMS } from '../data/flow-pricing.ts';
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 
 const og = ogMeta('/promise/');
@@ -42,12 +42,12 @@ const flowPlanSentence = ORIONFOLD_FLOW_LIVE
 // The three ideas that make up the promise, stated plainly up top.
 const summaryCards = [
   {
-    title: 'Free stays free',
-    body: 'Flow Base, which is reading, writing, searching, organizing and exporting your documents, is free forever. Relay Core and direct use are free. Anything that ever shipped free does not later become paid.',
+    title: 'Markdown stays free',
+    body: 'Flow Base, which is reading, writing, searching, organizing and saving Markdown, is free forever. Relay Core and direct use are free. Flow Import and Flow Publish are paid add-ons to Pro.',
   },
   {
     title: 'You pay for the work, not the right',
-    body: 'Flow Pro is the AI doing work: proposing changes, drawing charts, routing models. A Relay Pack is maintained content. An Arena Field Edition license is a proven, receipted year of a lab. None of them is a key to something you already had.',
+    body: 'Flow Pro is the AI doing work: proposing changes, drawing charts, routing models. A Relay Pack is maintained content. An Arena Field Edition license is a proven, receipted year of a lab. Flow Import and Flow Publish add file conversion and publishing to Pro.',
   },
   {
     title: 'What you own keeps working',
@@ -58,12 +58,13 @@ const summaryCards = [
 // The standing test, expanded, product by product. Flow first.
 const sections = [
   {
-    title: 'Flow: your documents are free forever. The AI is what you pay for.',
+    title: 'Flow: Markdown stays free. Choose the work you need.',
     paragraphs: [
       `That sentence is the whole Flow deal, and the app enforces it: ${FLOW_PROMISE}`,
-      'Flow Base has no trial, no expiry, no account and nothing to buy. You can read, write, search, organize and export plain Markdown files in your own folders for as long as you like. You can also read every receipt, timeline and evidence score the AI ever produced, free, forever.',
+      'Flow Base has no trial, no expiry, no account and nothing to buy. You can read, write, search, organize and save plain Markdown files in your own folders for as long as you like. You can also read every receipt, timeline and evidence score the AI ever produced, free, forever.',
       `If a model runs, it is part of the subscription. Proofreading, rewriting, drawing charts and diagrams from your text, and routing work to local or cloud models are Flow Pro. ${flowPlanSentence} One license covers one person on their own Macs.`,
-      `When a plan ends, Flow says one thing, only when you ask its AI to run: “${FLOW_WITHDRAWAL_NOTICE}” Here is what a lapse does not do, each line enforced in the app rather than promised on a page:`,
+      `Flow Import brings Word, Excel, PowerPoint and PDF into Markdown. Flow Publish produces PDF, GitHub Pages, EPUB, Word, Excel and PowerPoint. ${FLOW_ADDON_TERMS} ${FLOW_TRIAL_TERMS}`,
+      `When Pro ends and you ask its AI to run, Flow says: “${FLOW_WITHDRAWAL_NOTICE}” Here is what a lapse does not do, each line enforced in the app rather than promised on a page:`,
     ],
     bullets: FLOW_LAPSE_FACTS,
     after: 'Your license is checked on your Mac. Flow does not need a connection to use it, and it never has to check in with us to keep working.',
@@ -228,7 +229,7 @@ const sections = [
             <p class="text-base leading-relaxed text-text">
               This promise runs across the whole line. See it in practice on
               <a href="/flow/" class="text-primary hover:text-primary/80 transition-colors">Flow</a>,
-              where the documents are free forever and the AI is the plan; on
+              where Markdown stays free and paid features have named plans; on
               <a href="/relay/" class="text-primary hover:text-primary/80 transition-colors">Relay</a>,
               where the engine is free and open and a license only adds the packs you own; and on
               <a href="/arena/" class="text-primary hover:text-primary/80 transition-colors">Arena</a>,

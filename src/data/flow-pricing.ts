@@ -1,53 +1,17 @@
-// Flow's Base/Pro capability split — the website's rendering of the product
-// lane's verified table. Every row below is a capability the SHIPPED binary
-// places on that side of the line, not an intention.
-//
-// REVISED 2026-08-22 from the 09:55 PDT B11 report, which corrected the original
-// 01:14 table in five rows after the operator walked the product lane through
-// the split four times. Two of those rows had promised free what is actually
-// paid, which is the direction that generates refund requests. This file is the
-// 09:55 version; do NOT rebuild it from the 01:14 entry.
-//
-// THE GOVERNING RULE, and it settles most questions without a table lookup:
-//
-//     If a model runs, it is Pro.
-//     The record of what a model did is Base to read, Pro to produce.
-//
-// That second clause is the part a feature list hides: Receipts and Evidence do
-// not sit on one side. A Base user SEES receipts, timeline, evidence scores and
-// guardrail enforcement, populated and permanent. What they cannot do is produce
-// more of them. That asymmetry is the actual upgrade argument.
-//
-// WHY THIS FILE EXISTS SEPARATELY FROM commerce.ts: the Base/Pro split is a
-// CAPABILITY axis, not a price axis. Base has no SKU, no price, no entitlement
-// string and no webhook path, because Base is the ABSENCE of an entitlement —
-// the state the app's one gate already produces. commerce.ts owns the two Pro
-// SKUs; this file owns what each side can do.
-//
-// ONE GATE. The product lane verified there is exactly one permission seam in
-// the whole product: `LicensedAgencyRunner`, a decorator over the AgencyRunner
-// protocol, reading one mapping (`TrialTerm.isAgencyPermitted`). Everything past
-// it is Pro; everything else is Base by construction. That is why this table can
-// be published without becoming a maintenance liability: it is a rendering of one
-// boolean, not a list of scattered decisions that could drift.
-//
-// TRIPWIRE: the product lane treats any change to their table as a website-lane
-// NOTIFICATION, not an FYI, precisely because a published comparison table is a
-// sharper tripwire than a prose brief. If a B11 entry moves a capability across
-// the line, change it HERE and the page follows.
+// Website presentation of Product's Flow capability contract (2.0 add-ons).
+// Markdown stays free; Pro enables AI; Import and Publish are separate add-ons.
+// Product owns enforcement, checkout and billing. B11 reports drive copy updates.
 
-/** The promise the whole split is built around. Quoted from the product lane. */
-export const FLOW_PROMISE = "Your documents are free forever. The AI is what you pay for.";
+/** Website summary of the Product-owned Markdown, Pro and add-on split. */
+export const FLOW_PROMISE = "Your Markdown stays free. Pro and its add-ons extend what you can do.";
 
 /** Verbatim from the app's own withdrawal notice, so the page reuses a sentence
  * the binary enforces rather than a marketing paraphrase of it. */
 export const FLOW_WITHDRAWAL_NOTICE =
   "Your text wasn't checked. Subscribe to keep using Flow's AI features — your documents stay open and editable either way.";
 
-/** The rule that settles most Base/Pro questions without a table lookup, and the
- * asymmetry that is the real upgrade argument. Quoted from the product lane's
- * 2026-08-22 09:55 B11 report. */
-export const FLOW_SPLIT_RULE = "If a model runs, it is part of the subscription.";
+/** Product 2.0 capability split; add-ons require the Pro subscription. */
+export const FLOW_SPLIT_RULE = "AI work needs Flow Pro. Import and Publish are separate add-ons that need Pro.";
 
 /** The read/produce split, stated for a reader rather than for a table. */
 export const FLOW_TASTER_NOTE =
@@ -61,7 +25,7 @@ export interface FlowCapability {
 /** Base — Flow unlicensed. No trial, no expiry, no account, no SKU.
  * Verified by C1857, which does NOT read a flag: it exercises the real document
  * path with entitlement resolved to `.lapsed` and asserts open, edit, save,
- * search and export all still work. */
+ * search and Markdown saving all still work. */
 export const FLOW_BASE_CAPABILITIES: FlowCapability[] = [
   { label: "Markdown editor", note: "Full editing, GFM, tables, footnotes, code blocks, images" },
   { label: "Reader", note: "Rendered view of any document" },
@@ -70,7 +34,7 @@ export const FLOW_BASE_CAPABILITIES: FlowCapability[] = [
   // nothing to run and stays free. The product lane calls it a hook: it is a
   // reason not to switch to another free editor.
   { label: "Search by meaning", note: "Finds related notes, not just matching words" },
-  { label: "Open, edit, save, export", note: "The whole document lifecycle" },
+  { label: "Open, edit and save Markdown", note: "Your files stay in your own folders" },
   { label: "Wiki links and navigation", note: "Links, backlinks, folder tree" },
   { label: "Tables, grid view, charts", note: "Including the chart gallery" },
   { label: "Multiple folders", note: "Add as many as you like" },
@@ -120,56 +84,30 @@ export const FLOW_PRO_CAPABILITIES: FlowCapability[] = [
   { label: "Generate new evidence", note: "Running a fresh evaluation is an AI run" },
 ];
 
-/** Flow's subscription terms, the operator's approved wording (ops ledger
- * 2026-09-25 2326, cancel location approved 2338). Cancel only, no refunds, and
- * Pro stays on through the paid period, which is exactly what the live Stripe
- * billing portal does. The Flow checkout and the licence email carry the same
- * sentences from supabase/functions/_shared/flow-license-email.ts. */
-export const FLOW_TRIAL_TERMS = "Try every Pro feature free for 10 Pro Days. Subscribe when you're ready.";
+/** Website wording follows the approved plan-wide terms. Product owns the
+ * equivalent checkout and transactional-email wording. */
+export const FLOW_ADDONS = [
+  { name: "Flow Import", description: "Import Word, Excel, PowerPoint and PDF into Markdown." },
+  { name: "Flow Publish", description: "Publish PDF, GitHub Pages, EPUB, Word, Excel and PowerPoint." },
+];
+export const FLOW_ADDON_TERMS = "Each add-on is $10/month or $96/year per seat and needs Flow Pro. Add or remove it in Flow’s Billing settings. Cancelling Pro also ends its add-ons.";
+export const FLOW_TRIAL_TERMS = "Try every paid feature, including Import and Publish, free for 10 Pro Days. Subscribe when you're ready.";
 export const FLOW_CANCEL_TERMS =
-  "Flow Pro renews every month, or every year on the annual plan, until you cancel. " +
-  "Cancel anytime in Flow, Settings ▸ Billing ▸ Manage\u00a0Plan…; Flow Pro stays on until the end of the period you've paid for. " +
-  "Subscription payments are not refunded, except where the law requires it.";
+  "Billed every month, or every year on the annual plan, until you cancel. " +
+  "Cancel anytime in Flow, Settings ▸ Billing ▸ Manage Plan. " +
+  "Your plan stays on until the paid period ends. No refunds, except where the law requires.";
 
 /** What Pro does NOT take away when it lapses. Each line is enforced, not
  * promised: the product lane verified them by exercising the document path with
  * the trial backdated, not by reading a flag. */
 export const FLOW_LAPSE_FACTS: string[] = [
   "No document locks and no read only mode",
-  "No export wall and no watermark",
+  "Markdown editing and saving stay free; Import and Publish need their add-ons",
   "Your files stay plain Markdown in your own folders",
   "App updates keep arriving, including security fixes",
 ];
 
-// ── The download ──────────────────────────────────────────────────────────
-// The public, permanent HTTPS URL of the current notarized Flow DMG. This is
-// the SAME string as the newest entry's `url` in src/data/flow-releases.ts, and
-// the deploy boundary (scripts/check-flow-release-boundary.mjs) refuses a live
-// build where the two disagree. Update both together on every release.
-//
-// Every Download CTA on the site reads from this ONE constant. Until 2026-08-27
-// it was an obviously fake placeholder host so the launched layout could be
-// rehearsed locally without a working link; the first public package
-// (1.5.1, build 1404, ledger 2026-08-27 07:22 / 07:32 PDT) replaced it;
-// 1.5.3 (build 1446, ledger 2026-08-28 04:40 PDT) and 1.5.4 (build 1511,
-// ledger 2026-08-28 18:30 PDT) followed; 1.5.5 (build 1526, ledger 2026-08-29
-// 14:12 PDT) is the current one.
-//
-// The host is the vanity host in front of the public `flow-downloads` bucket,
-// never the project ref and never orionfold.com (this repo is public and GitHub
-// rejects files over 100 MB).
-//
-// 2026-08-29 (ledger 20:55 / 21:12 PDT): THIS URL IS NOW PERMANENT AND NEVER
-// CHANGES AGAIN. It was a versioned, immutable path rewritten on every release,
-// which made the CTA a per-release edit in this repo. The product lane now
-// publishes a stable object beside the versioned ones and overwrites it on each
-// release, so the CTA always serves the current build with no edit here.
-//
-// The consequence for the deploy gate, which is the whole reason the two edits
-// shipped together: this URL no longer equals the newest appcast enclosure —
-// that is now false BY CONSTRUCTION, not a defect — so
-// scripts/check-flow-release-boundary.mjs no longer compares them. See the
-// header of that script for what replaced the comparison and why.
+// Permanent download object maintained by Product; Website never edits it per release.
 export const FLOW_DMG_URL = "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/Orionfold-Flow.dmg";
 
 /** True when the download URL is no longer the placeholder.

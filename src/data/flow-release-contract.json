@@ -1,0 +1,5 @@
+{
+  "appcastUrl": "https://orionfold.com/flow/appcast.xml",
+  "appcastRedirectStatus": 301,
+  "appcastTarget": "https://orionfold.supabase.co/storage/v1/object/public/flow-downloads/appcast.xml"
+}

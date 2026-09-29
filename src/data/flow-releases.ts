@@ -1,40 +1,5 @@
-// Orionfold Flow's published releases — the source of truth for the Sparkle
-// appcast served at https://orionfold.com/flow/appcast.xml.
-//
-// WHY THIS FILE EXISTS RATHER THAN A HAND-EDITED XML. Sparkle decides "is there
-// an update" by comparing `CFBundleVersion`, and it reports "you are up to
-// date" SILENTLY when that number does not increase. Every Flow build before
-// 0127 A4 shipped `CFBundleVersion` 1, so a feed published against them would
-// have told every user forever that nothing was available, with no error and no
-// log line. A generated feed with checked assertions is the answer to a failure
-// whose whole nature is that it looks healthy.
-//
-// THE FEED URL IS A ONE-WAY DOOR. `SUFeedURL` is baked into the notarized
-// bundle, so moving it strands every copy already installed. The DMG download
-// URLs are NOT baked — they are fields inside each entry here and are rewritten
-// on every release, which is what lets the binary host move freely later.
-//
-// THIS FILE IS FROZEN AS OF 2026-08-29 (ledger 20:55 / 21:12 PDT, goal 0191).
-// DO NOT ADD RELEASES HERE AND DO NOT RUN `npm run build:appcast` ON A RELEASE.
-// The product lane (orionfold-flow/scripts/flow-appcast/) now generates, signs
-// and publishes the appcast itself, to a stable object beside the DMG. The
-// website is permanently out of the per-release path: no appcast work, ever
-// again. Its generator reproduces this feed byte-for-byte (md5
-// bb5d594e1c1b548d8c3f6d08be2ee7e4), so nothing was lost in the handover.
-//
-// WHY public/flow/appcast.xml IS STILL COMMITTED. `SUFeedURL` is baked into
-// every shipped binary, so the ~8 installed copies (1.5.1–1.5.5) poll
-// https://orionfold.com/flow/appcast.xml forever. Until a Cloudflare redirect
-// sends that path at the product lane's feed, this committed file is the ONLY
-// thing answering it — deleting it now 404s every installed copy's update
-// check. It is frozen at build 1526, not maintained: newer releases reach users
-// through the product lane's feed. Delete this file and repoint /flow/ only
-// once the redirect is live and verified.
-//
-// The entries below are kept verbatim as the seed the product lane copied and
-// as the record of what this lane published; they are history, not a queue.
-
-/** One published Flow release. Every field is required for a real entry. */
+// Historical release notes only. Product owns current releases and the signed bucket feed.
+// These records preserve what each old release said; they are not a deployment input.
 export interface FlowRelease {
   /**
    * `CFBundleVersion` — what Sparkle actually compares. Derived by the release
@@ -51,7 +16,7 @@ export interface FlowRelease {
    *
    * NOT the website: this repo is PUBLIC and GitHub hard-rejects files over
    * 100 MB, so binaries live on a public bucket fronted by a vanity host. The
-   * appcast (a few KB of text) is the only part that belongs in `public/`.
+   * current feed and DMGs are owned and published by Product.
    */
   url: string;
   /** Exact byte length of the DMG. Sparkle checks it before extraction. */
@@ -67,34 +32,7 @@ export interface FlowRelease {
   notes?: string;
 }
 
-/**
- * Every Flow release published to users, oldest first.
- *
- * THE CHANNEL WAS DELIBERATELY EMPTY UNTIL 2026-08-27. Nothing had shipped with
- * a moving build number, no notarized DMG sat at a public URL, and the EdDSA
- * private key lived only on the operator's machine. An empty channel parses
- * cleanly and yields "you are up to date" (Sparkle's `SUAppcast.m` reads items
- * via `nodesForXPath`, which returns an empty array rather than nil, and
- * `SUAppcastDriver.m` guards selection with `appcast.items.count > 0`), which is
- * why the real feed went live at the real URL before the first release existed.
- *
- * SIGNED IN EVERY STATE, EMPTY INCLUDED. Measured 2026-08-27 (product lane,
- * unified log at 01:21 PDT; confirmed in Sparkle 2.9.6 `SUAppcastDriver.m`):
- * because the app sets `SURequireSignedFeed`, Sparkle verifies the downloaded
- * feed bytes BEFORE it looks for items, so an unsigned feed fails every check
- * with `SUSparkleErrorDomain code 1000`. The feed must carry the operator's
- * signature block after every regeneration. See scripts/lib/sparkle-feed.mjs.
- *
- * WHERE EACH FIELD COMES FROM. The product lane posts every value to the
- * flow-growth ledger in one entry after `tools/release-dmg.sh` has built,
- * notarized, stapled and verified the DMG and the operator has signed it with
- * Sparkle's `sign_update`. This file copies those values verbatim; nothing here
- * is derived or guessed. The DMG host is the vanity host
- * `orionfold.supabase.co` (decision of 2026-08-22: no project ref appears in a
- * public URL), bucket `flow-downloads`, immutable versioned path
- * `<shortVersion>/<build>/Orionfold-Flow-<shortVersion>-<build>.dmg`, never
- * overwritten.
- */
+/** Frozen release history through 1.5.5; current release authority is Product. */
 export const RELEASES: FlowRelease[] = [
   {
     // 1.5.1 (1404): the first build delivered through Flow's own updater. The
@@ -253,31 +191,3 @@ export const RELEASES: FlowRelease[] = [
       "<p>Press Install Update and Flow restarts as 1.5.5 with your documents, settings, and receipts exactly where they were.</p>",
   },
 ];
-
-/**
- * The Ed25519 public key baked into the app as `SUPublicEDKey`
- * (`~/orionfold-flow/App/Info.plist`, generated by the operator 2026-08-22).
- * Public by nature: it ships inside every Flow bundle. Its private half lives
- * in the operator's login Keychain and nowhere else. The feed test and the
- * deploy boundary verify `public/flow/appcast.xml` against this, so a feed
- * signed with any other key is caught here rather than by a user's app.
- */
-export const FEED_PUBLIC_ED_KEY_BASE64 = "/K2Wh4mOYlD7J1AHqlGgzN6v4aRpEhMg9QmCCBoRlXE=";
-
-/** The channel's title, as shown by Sparkle in some update UIs. */
-export const FEED_TITLE = "Orionfold Flow";
-
-/**
- * The feed's own canonical URL. Baked into the app as `SUFeedURL` and settled
- * with the product lane on 2026-08-22; changing it strands every installed copy.
- */
-export const FEED_URL = "https://orionfold.com/flow/appcast.xml";
-
-/** Where a human goes to read about Flow. */
-export const FEED_LINK = "https://orionfold.com/flow/";
-
-/** The most recently published release, or null when nothing has shipped. */
-export function latestRelease(releases: FlowRelease[] = RELEASES): FlowRelease | null {
-  if (releases.length === 0) return null;
-  return releases.reduce((best, r) => (r.build > best.build ? r : best));
-}
