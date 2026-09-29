@@ -82,6 +82,8 @@
 /* ── Compare comparison ──────────────────────────────── */
 .fp-compare { width: 100%; border-collapse: collapse; font-family: 'Geist Sans', Arial, sans-serif; font-size: .88rem; line-height: 1.5; margin: 24px 0 36px; }
 .fp-compare th, .fp-compare td { padding: 12px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+/* The next section's divider closes the table; no second rule under the last row. */
+.fp-compare tbody tr:last-child > * { border-bottom: 0; }
 .fp-compare thead th { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .fp-compare tbody th { font-weight: 700; width: 22%; }
 .fp-compare a { color: var(--teal); text-decoration: underline; }
