@@ -1,9 +1,11 @@
 ---
-// Three curated navigation groups. Product catalogs and stories own their
-// detail-page discovery; the shared footer stays concise on every route.
+// Four curated navigation groups. Product catalogs and stories own their
+// detail-page discovery; the Paths group lists every published Flow path and
+// Compare page, so a new path reaches the footer without an edit here.
 import Wordmark from './ui/Wordmark.astro';
 import PaperCta from './ui/PaperCta.astro';
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch';
+import { publishedPaths, publishedCompare, pathHref, compareHref } from '../lib/flow/paths';
 interface Props { showDownload?: boolean; downloadSource?: string; }
 const { showDownload = true, downloadSource = 'footer-download' } = Astro.props;
 
@@ -22,6 +24,13 @@ const FLOW_COLUMNS = [
     { href: '/flow/enterprise/', label: 'Enterprise' },
   ],
 ];
+const PATH_COLUMNS = [
+  (await publishedPaths()).map((p) => ({ href: pathHref(p.id), label: p.data.path })),
+  [
+    { href: '/flow/paths/', label: 'All paths' },
+    ...(await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.kind === 'switch' ? `Flow vs ${p.data.tool}` : `Flow with ${p.data.tool}` })),
+  ],
+];
 const ORIONFOLD_COLUMNS = [
   [
     { href: '/flow/', label: 'Flow' },
@@ -31,6 +40,7 @@ const ORIONFOLD_COLUMNS = [
   [
     { href: '/about/', label: 'About' },
     { href: '/story/', label: 'Story' },
+    { href: '/learn/', label: 'Books' },
     { href: '/proposal/', label: 'Proposal' },
     { href: '/sponsor/', label: 'Sponsor' },
   ],
@@ -53,6 +63,12 @@ const year = new Date().getFullYear();
       <h2 id="footer-flow-heading">Flow</h2>
       <div class="living-footer-link-columns living-footer-link-columns--flow">
         {FLOW_COLUMNS.map(column => <ul>{column.map(link => <li><a href={link.href}>{link.label}</a></li>)}</ul>)}
+      </div>
+    </nav>
+    <nav class="living-footer-group" aria-labelledby="footer-paths-heading">
+      <h2 id="footer-paths-heading">Paths</h2>
+      <div class="living-footer-link-columns living-footer-link-columns--flow">
+        {PATH_COLUMNS.map(column => <ul>{column.map(link => <li><a href={link.href}>{link.label}</a></li>)}</ul>)}
       </div>
     </nav>
     <nav class="living-footer-group" aria-labelledby="footer-orionfold-heading">
@@ -93,8 +109,8 @@ const year = new Date().getFullYear();
     color: var(--living-ink); font: 400 14px/1.55 var(--font-body);
   }
   .living-footer-menu {
-    display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) minmax(132px, 1fr);
-    gap: 48px; padding-block: 56px 48px;
+    display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 2.4fr) minmax(0, 3fr) minmax(132px, 1fr);
+    gap: 40px; padding-block: 56px 48px;
   }
   .living-footer-group { min-width: 0; }
   .living-footer-group h2 {
@@ -127,7 +143,7 @@ const year = new Date().getFullYear();
   .living-footer-utility p { margin: 0; color: #43595b; font: 400 13px/1.55 var(--font-body); }
   .living-footer-legal { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
   .living-footer-legal a { color: #43595b; font: 400 13px/1.55 var(--font-body); text-decoration: none; padding-block: 6px; }
-  @media (max-width: 900px) {
+  @media (max-width: 1100px) {
     .living-footer-menu { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 36px; }
     .living-footer-group--connect { grid-column: 1 / -1; }
   }

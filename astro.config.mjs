@@ -105,6 +105,28 @@ function buildLastmodMap() {
     /* no memos dir -> skip */
   }
 
+  // Flow Paths + Compare (Flow 2.0 series): a path's date is the day the
+  // product lane walked and wrote it (`drafted:`); a Compare page carries its
+  // own `updated:`. Draft paths are not routed, so they are skipped here too.
+  for (const [dir, urlBase, re] of [
+    ['paths', '/flow/paths/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
+    ['compare', '/flow/compare/', /^updated:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
+  ]) {
+    let files;
+    try {
+      files = readdirSync(new URL(`${dir}/`, CONTENT));
+    } catch {
+      continue;
+    }
+    for (const f of files) {
+      if (!f.endsWith('.md')) continue;
+      const txt = readFileSync(new URL(`${dir}/${f}`, CONTENT), 'utf8');
+      if (/^draft:\s*true/m.test(txt)) continue;
+      const d = firstDate(txt, re);
+      if (d) map[`${urlBase}${f.replace(/\.md$/, '')}/`] = d;
+    }
+  }
+
   // Listing hubs inherit the freshest date among their children.
   const freshestUnder = (prefix) =>
     Object.entries(map)
@@ -112,7 +134,7 @@ function buildLastmodMap() {
       .map(([, v]) => v)
       .sort()
       .at(-1);
-  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/']) {
+  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/', '/flow/paths/', '/flow/compare/']) {
     const d = freshestUnder(hub);
     if (d) map[hub] = d;
   }

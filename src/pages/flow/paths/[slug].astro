@@ -1,0 +1,109 @@
+---
+// /flow/paths/<slug>/ — one Flow 2.0 path, walked end to end by the product
+// lane. The body is the lane's article, verbatim (scripts/sync-flow-paths.mjs);
+// the hero, the receipt rail and the CTA are the website's.
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import PaperCta from '../../../components/ui/PaperCta.astro';
+import PathCard from '../../../components/flow/paths/PathCard.astro';
+import { publishedPaths, pathHref, EVIDENCE_NOTE, type PathEntry } from '../../../lib/flow/paths';
+import { flowPathOgSlug, ogPath } from '../../../data/og';
+import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
+import '../../../styles/living-base.css';
+import '../../../styles/essays.css';
+import '../../../styles/flow-paths.css';
+
+export async function getStaticPaths() {
+  const paths = await publishedPaths();
+  return paths.map((entry) => ({ params: { slug: entry.id }, props: { entry, others: paths.filter((p) => p.id !== entry.id) } }));
+}
+
+const { entry, others } = Astro.props as { entry: PathEntry; others: PathEntry[] };
+const { Content, headings } = await render(entry);
+const d = entry.data;
+const sections = headings.filter((h) => h.depth === 2);
+const release = d.build.match(/Flow (\d+\.\d+\.\d+)/)?.[1] ?? '2.0';
+const dateIso = d.drafted.toISOString().slice(0, 10);
+const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
+const canonical = `${SITE.url}${pathHref(entry.id)}`;
+const ogImage = ogPath(flowPathOgSlug(entry.id));
+const description = d.summary;
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'Article',
+    headline: d.title, description: d.dek,
+    datePublished: `${dateIso}T00:00:00.000Z`, dateModified: `${dateIso}T00:00:00.000Z`,
+    author: PERSON, publisher: PUBLISHER,
+    mainEntityOfPage: canonical, url: canonical,
+    image: `${SITE.url}${ogImage}`,
+    about: { '@type': 'SoftwareApplication', name: 'Orionfold Flow', operatingSystem: 'macOS', softwareVersion: release },
+    isPartOf: { '@type': 'CollectionPage', name: 'Flow Paths', url: `${SITE.url}/flow/paths/` },
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Flow', item: `${SITE.url}/flow/` },
+      { '@type': 'ListItem', position: 2, name: 'Paths', item: `${SITE.url}/flow/paths/` },
+      { '@type': 'ListItem', position: 3, name: d.path, item: canonical },
+    ],
+  },
+];
+---
+<Layout title={`${d.title} · Flow Paths · Orionfold`} description={description} ogImage={ogImage} ogImageAlt={`${d.path}, a Flow 2.0 path walked end to end`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Paths', tags: ['Flow 2.0', d.chip, d.path] }}>
+  <Nav />
+  <main id="main" class="ls-main">
+    <header class="ed-article-hero fp-hero ls-container">
+      <div class="ed-article-kicker"><a href="/flow/paths/">← All paths</a><span>FLOW {release} PATH / {d.chip.toUpperCase()}{d.persona !== d.chip && ` · ${d.persona.toUpperCase()}`}</span></div>
+      <h1>{d.title}</h1>
+      <p class="ed-article-dek">{d.dek}</p>
+      <div class="ed-hero-bottom"><div class="ed-meta"><span>Path: {d.path}</span><span>Walked on Flow {release}</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#try-this-path" class="ed-download-link">Try this path ↓</a></div></div>
+      <figure class="fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>
+    </header>
+
+    <div class="ed-reading-layout fp-layout ls-container">
+      <aside class="ed-contents fp-rail" aria-label="Path contents and receipt">
+        <details open>
+          <summary>IN THIS PATH</summary>
+          <nav aria-label="Sections">
+            {sections.map((h, i) => <a href={`#${h.slug}`}><span>{String(i + 1).padStart(2, '0')}</span>{h.text}</a>)}
+          </nav>
+        </details>
+        <div class="fp-receipt">
+          <p>THE RECEIPT</p>
+          <dl>
+            {d.receipt.map((r) => (
+              <div><dt>{r.label}</dt><dd>{r.value}<span class:list={['fp-tag', `fp-tag--${r.evidence}`]} title={EVIDENCE_NOTE[r.evidence]}>{r.evidence}</span></dd></div>
+            ))}
+          </dl>
+          <p class="fp-receipt-note">Every number carries a label. <a href="#evidence">See the full evidence table</a>.</p>
+        </div>
+        <a class="fp-try" href="#try-this-path">Try this path in Flow →</a>
+      </aside>
+      <article class="ed-prose fp-prose" aria-label={d.title}>
+        <Content />
+        <div class="fp-colophon">
+          <p><strong>Walked on:</strong> {d.build}.</p>
+          <p><strong>Data:</strong> {d.data}</p>
+          <p>Written by the Flow product team from the walk's own records. Numbers are labelled verified, derived, assumed or unknown.</p>
+        </div>
+        <div id="try-this-path">
+          <PaperCta layout="article" class="ed-paper-cta"
+            source={`flow-path-${entry.id}`} headingId="path-cta"
+            eyebrow="TRY THIS PATH IN FLOW" heading={`Open “${d.path}” on your Mac.`}
+            description={`In Flow ${release}, Home ▸ ${d.chip} ▸ ${d.path} ▸ Open. Your copy lands in a folder of its own, with the example files to try it on.`} />
+        </div>
+      </article>
+    </div>
+
+    {others.length > 0 && (
+      <section class="fp-section ls-container" aria-labelledby="more-paths">
+        <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">MORE PATHS</p><h2 id="more-paths">Another job,<br /><span class="ls-stroke">walked the same way.</span></h2></div><a class="fp-all" href="/flow/paths/">All paths →</a></div>
+        <div class="fp-grid-3">{others.slice(0, 3).map((p) => <PathCard entry={p} />)}</div>
+      </section>
+    )}
+  </main>
+  <Footer showDownload={false} />
+</Layout>

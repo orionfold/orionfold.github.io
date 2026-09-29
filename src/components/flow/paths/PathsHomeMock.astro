@@ -1,0 +1,61 @@
+---
+// An HTML recreation of the Flow 2.0 Home screen ("What are you working on?").
+// One chip per published path; choosing a chip swaps the featured path and its
+// "Read the walkthrough" link. Screens and add-on copy follow Flow 2.0.3.
+import { Image } from 'astro:assets';
+import { publishedPaths, pathHref, pathShot } from '../../../lib/flow/paths';
+import '../../../styles/flow-paths.css';
+
+const paths = await publishedPaths();
+const lead = paths.find((p) => p.data.featured) ?? paths[0];
+const ADDONS = [
+  { name: 'Flow Pro', body: 'Flow thinks with you. Ask, Jobs, Night Shift and Smart Routing, on the models you choose, on this Mac or hosted.', price: '$10 a month or $96 a year' },
+  { name: 'Flow Import', body: 'Turn Word, Excel, PowerPoint and PDFs into documents you can edit, search and keep current.', price: '$10 a month or $96 a year · Needs Flow Pro' },
+  { name: 'Flow Publish', body: 'Publish as a PDF, website, ebook, Word, Excel or PowerPoint file, with charts and pictures.', price: '$10 a month or $96 a year · Needs Flow Pro' },
+];
+---
+{lead && (
+  <section id="paths-home" class="fp-section ls-container" aria-labelledby="paths-home-heading">
+    <div class="fp-head">
+      <div class="fp-heading">
+        <p class="ls-eyebrow">FLOW 2.0 / START FROM A PATH</p>
+        <h2 id="paths-home-heading">What are you<br /><span class="ls-stroke">working on?</span></h2>
+        <p>Flow 2.0 opens on Paths: ready folders for real jobs. Pick one to see where it starts, then read the walkthrough with every screen.</p>
+      </div>
+      <a class="fp-all" href="/flow/paths/">All paths →</a>
+    </div>
+    <div class="fp-app" data-paths-home>
+      <div class="fp-app-bar"><span aria-hidden="true"><i></i><i></i><i></i></span><span>Welcome to Flow</span></div>
+      <div class="fp-app-body">
+        <div class="fp-app-side" aria-hidden="true"><p>Recents</p><span class="on">Home</span><span>Client Brief</span><span>Market Watch</span><p>Folders</p><span>Flow Guide</span><span>Agent Desk</span><span>Product Launch</span><span>Campaign</span></div>
+        <div class="fp-app-main">
+          <p class="fp-app-title">What are you working on?</p>
+          <p class="fp-app-hint">Take a path, or go straight to a Living Document.</p>
+          <div class="fp-chips" role="group" aria-label="Paths by kind of work">
+            {paths.map((p) => <button type="button" data-chip={p.id} aria-pressed={String(p === lead)}>{p.data.chip}</button>)}
+          </div>
+          {paths.map((p) => (
+            <div class="fp-feat" data-panel={p.id} hidden={p !== lead}>
+              <div>
+                <p class="fp-feat-name">{p.data.path}</p>
+                <p class="fp-feat-per">{p.data.persona}</p>
+                <ol>{p.data.steps.map((s) => <li>{s}</li>)}</ol>
+                <a class="fp-feat-read" href={pathHref(p.id)}>Read the walkthrough →</a>
+              </div>
+              <Image src={pathShot(p.id, p.data.cardShot)} alt={`${p.data.path} in Flow 2.0`} widths={[480, 720]} sizes="(max-width: 1000px) 100vw, 420px" loading="lazy" />
+            </div>
+          ))}
+          <div class="fp-addons">
+            {ADDONS.map((a) => <div><b>{a.name}</b>{a.body}<small>{a.price}</small></div>)}
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="fp-app-caption">An interactive recreation of the Flow 2.0 Home screen, as shipped in Flow 2.0.3. The path examples use fictional data. Clicking here does not change any file.</p>
+  </section>
+)}
+<script>
+  import { initPathsHome } from '../../../scripts/paths-home.js';
+  initPathsHome();
+  document.addEventListener('astro:after-swap', () => initPathsHome());
+</script>

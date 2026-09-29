@@ -8,7 +8,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { renderOgCard, type CardOptions } from '../../lib/og/card';
-import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug, receiptOgSlug } from '../../data/og';
+import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug, receiptOgSlug, flowPathOgSlug, compareOgSlug } from '../../data/og';
+import { publishedPaths, publishedCompare } from '../../lib/flow/paths';
 import { toProductView, coverKey } from '../../lib/product/detail';
 
 // Book detail OG cards frame the portrait cover on the left over the banner.
@@ -159,7 +160,27 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
   });
 
-  return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts, ...fromReceipts];
+  // Flow paths: the Flow light card with the path's own card shot framed on the
+  // right (src/assets/flow/paths/<id>/card.jpg, written by sync-flow-paths.mjs).
+  const fromPaths = (await publishedPaths()).map((entry) => {
+    const shot = path.join(process.cwd(), 'src/assets/flow/paths', entry.id, 'card.jpg');
+    return {
+      params: { slug: flowPathOgSlug(entry.id) },
+      props: {
+        title: entry.data.title,
+        eyebrow: `Flow 2.0 · Path · ${entry.data.chip}`,
+        seed: entry.id,
+        light: true,
+        ...(fs.existsSync(shot) ? { screenshotPath: shot } : { banner: true }),
+      } satisfies CardOptions,
+    };
+  });
+  const fromCompare = (await publishedCompare()).map((entry) => ({
+    params: { slug: compareOgSlug(entry.id) },
+    props: { title: entry.data.title, eyebrow: `Compare · Flow and ${entry.data.tool}`, seed: entry.id, living: true } satisfies CardOptions,
+  }));
+
+  return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts, ...fromReceipts, ...fromPaths, ...fromCompare];
 };
 
 export const GET: APIRoute = async ({ props }) => {

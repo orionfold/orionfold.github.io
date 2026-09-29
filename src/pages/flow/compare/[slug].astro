@@ -1,0 +1,105 @@
+---
+// /flow/compare/<slug>/ — how Flow sits next to a tool the reader already uses.
+// Every claim about the other tool carries a dated source; every row links the
+// path that proves Flow's side.
+import { render } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import PaperCta from '../../../components/ui/PaperCta.astro';
+import PathCard from '../../../components/flow/paths/PathCard.astro';
+import { publishedCompare, publishedPaths, compareHref, pathHref, type CompareEntry } from '../../../lib/flow/paths';
+import { compareOgSlug, ogPath } from '../../../data/og';
+import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
+import '../../../styles/living-base.css';
+import '../../../styles/essays.css';
+import '../../../styles/flow-paths.css';
+
+export async function getStaticPaths() {
+  const pages = await publishedCompare();
+  return pages.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: CompareEntry };
+const { Content, headings } = await render(entry);
+const d = entry.data;
+const paths = await publishedPaths();
+const pathName = (slug: string) => paths.find((p) => p.id === slug)?.data.path;
+const start = paths.find((p) => p.id === d.startWith);
+const dateIso = d.updated.toISOString().slice(0, 10);
+const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.updated);
+const canonical = `${SITE.url}${compareHref(entry.id)}`;
+const ogImage = ogPath(compareOgSlug(entry.id));
+const sections = [
+  { slug: 'side-by-side', text: 'Side by side' },
+  ...headings.filter((h) => h.depth === 2),
+  { slug: 'what-flow-is-not', text: 'What Flow is not' },
+  { slug: 'sources', text: 'Sources' },
+];
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'Article',
+    headline: d.title, description: d.dek,
+    datePublished: `${dateIso}T00:00:00.000Z`, dateModified: `${dateIso}T00:00:00.000Z`,
+    author: PERSON, publisher: PUBLISHER, mainEntityOfPage: canonical, url: canonical,
+    image: `${SITE.url}${ogImage}`,
+    about: [{ '@type': 'SoftwareApplication', name: 'Orionfold Flow', operatingSystem: 'macOS' }, { '@type': 'SoftwareApplication', name: d.tool }],
+    citation: d.sources.map((s) => s.href),
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Flow', item: `${SITE.url}/flow/` },
+      { '@type': 'ListItem', position: 2, name: 'Compare', item: `${SITE.url}/flow/compare/` },
+      { '@type': 'ListItem', position: 3, name: `Flow and ${d.tool}`, item: canonical },
+    ],
+  },
+];
+---
+<Layout title={`${d.title} · Orionfold`} description={d.dek} ogImage={ogImage} ogImageAlt={`Flow compared with ${d.tool}: what moves, what stays, and the path to start with`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Compare', tags: ['Flow 2.0', d.tool] }}>
+  <Nav />
+  <main id="main" class="ls-main">
+    <header class="ed-article-hero fp-hero ls-container">
+      <div class="ed-article-kicker"><a href="/flow/compare/">← Compare</a><span>COMPARE / {d.tool.toUpperCase()} · {d.kind === 'switch' ? 'SWITCH' : 'PAIR'}</span></div>
+      <h1>{d.title}</h1>
+      <p class="ed-article-dek">{d.dek}</p>
+      <div class="ed-hero-bottom"><div class="ed-meta"><span>Sources checked</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#try-flow" class="ed-download-link">Try Flow ↓</a></div></div>
+    </header>
+
+    <div class="ed-reading-layout fp-layout ls-container">
+      <aside class="ed-contents fp-rail" aria-label="Page contents">
+        <details open>
+          <summary>ON THIS PAGE</summary>
+          <nav aria-label="Sections">{sections.map((h, i) => <a href={`#${h.slug}`}><span>{String(i + 1).padStart(2, '0')}</span>{h.text}</a>)}</nav>
+        </details>
+      </aside>
+      <article class="ed-prose fp-prose" aria-label={d.title}>
+        <h2 id="side-by-side">Side by side</h2>
+        <table class="fp-compare">
+          <thead><tr><th scope="col">Topic</th><th scope="col">{d.tool}</th><th scope="col">Flow</th></tr></thead>
+          <tbody>
+            {d.rows.map((r) => (
+              <tr>
+                <th scope="row">{r.topic}</th>
+                <td>{r.them}{r.source && <small>Source: <a href={r.source.href} rel="noopener">{r.source.label}</a>, checked {r.source.checked}</small>}</td>
+                <td>{r.flow}{r.path && pathName(r.path) && <small>Shown in: <a href={pathHref(r.path)}>{pathName(r.path)}</a></small>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <Content />
+        {start && <div class="fp-start"><PathCard entry={start} /></div>}
+        <h2 id="what-flow-is-not">What Flow is not</h2>
+        <ul class="fp-not">{d.notFlow.map((n) => <li>{n}</li>)}</ul>
+        <h2 id="sources">Sources</h2>
+        <ul class="fp-not">{d.sources.map((s) => <li><a href={s.href} rel="noopener">{s.label}</a>, checked {s.checked}</li>)}</ul>
+        <div id="try-flow">
+          <PaperCta layout="article" class="ed-paper-cta" source={`flow-compare-${entry.id}`} headingId="flow-compare-cta"
+            eyebrow={`FOR ${d.tool.toUpperCase()} USERS`} heading={start ? `Start with “${start.data.path}.”` : 'Try Flow on your Mac.'}
+            description="Download Flow, open a path on Home, and try it on the example files first. Your documents stay plain files on your Mac." />
+        </div>
+      </article>
+    </div>
+  </main>
+  <Footer showDownload={false} />
+</Layout>

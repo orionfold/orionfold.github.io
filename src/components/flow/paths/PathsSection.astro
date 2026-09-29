@@ -1,0 +1,37 @@
+---
+// "Paths" band for the homepage and /flow/: the featured path as a lead card,
+// the next four as mini rows, then the Compare band.
+import PathCard from './PathCard.astro';
+import CompareBand from './CompareBand.astro';
+import { publishedPaths, publishedCompare } from '../../../lib/flow/paths';
+import '../../../styles/flow-paths.css';
+
+interface Props { id?: string; eyebrow?: string; showFor?: boolean; }
+const { id = 'flow-paths', eyebrow = 'NEW IN FLOW 2.0 / PATHS', showFor = true } = Astro.props;
+const paths = await publishedPaths();
+const lead = paths.find((p) => p.data.featured) ?? paths[0];
+const rest = paths.filter((p) => p !== lead).slice(0, 4);
+const hasCompare = showFor && (await publishedCompare()).length > 0;
+---
+{lead && (
+  <section id={id} class="fp-section ls-container" aria-labelledby={`${id}-heading`}>
+    <div class="fp-head">
+      <div class="fp-heading">
+        <p class="ls-eyebrow">{eyebrow}</p>
+        <h2 id={`${id}-heading`}>Real work.<br /><span class="ls-stroke">Walked end to end.</span></h2>
+        <p>Each path is a real job done in Flow on a Mac, one step at a time. You see the time it took, what it cost, and what we could not check.</p>
+      </div>
+      <a class="fp-all" href="/flow/paths/">All paths →</a>
+    </div>
+    <div class="fp-grid">
+      <PathCard entry={lead} variant="lead" />
+      <div class="fp-stack">{rest.map((p) => <PathCard entry={p} variant="mini" />)}</div>
+    </div>
+    {hasCompare && (
+      <>
+        <h3 class="fp-sub">Coming from another tool?</h3>
+        <CompareBand />
+      </>
+    )}
+  </section>
+)}

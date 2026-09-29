@@ -1,0 +1,22 @@
+---
+// The four Compare pages as a band of cards. Renders nothing when no page is
+// routed yet (every page waits for operator copy approval).
+import { compareHref, publishedCompare } from '../../../lib/flow/paths';
+import '../../../styles/flow-paths.css';
+
+interface Props { headingLevel?: 'h2' | 'h3'; }
+const { headingLevel = 'h3' } = Astro.props;
+const H = headingLevel;
+const pages = await publishedCompare();
+---
+{pages.length > 0 && (
+  <div class="fp-tools">
+    {pages.map((p) => (
+      <a href={compareHref(p.id)}>
+        <span class="fp-kind">{p.data.kind === 'switch' ? 'Switch' : 'Pair'}</span>
+        <H class="fp-title">{p.data.tool}</H>
+        <p>{p.data.line}</p>
+      </a>
+    ))}
+  </div>
+)}

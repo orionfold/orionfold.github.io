@@ -1,0 +1,71 @@
+---
+// /flow/paths/ — every published Flow 2.0 path.
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import PathCard from '../../../components/flow/paths/PathCard.astro';
+import CompareBand from '../../../components/flow/paths/CompareBand.astro';
+import PaperCta from '../../../components/ui/PaperCta.astro';
+import { publishedPaths, publishedCompare, pathHref } from '../../../lib/flow/paths';
+import { ogMeta } from '../../../data/og';
+import { SITE, PERSON } from '../../../data/seo';
+import '../../../styles/living-base.css';
+import '../../../styles/essays.css';
+import '../../../styles/flow-paths.css';
+
+const paths = await publishedPaths();
+const [lead, ...rest] = paths;
+const hasCompare = (await publishedCompare()).length > 0;
+const title = 'Flow Paths: real work, walked end to end | Orionfold';
+const description = 'Flow 2.0 paths, each a real job done in Flow on a Mac: the steps, the time, the cost, and what we could not check.';
+const og = ogMeta('/flow/paths/');
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'CollectionPage',
+    name: 'Flow Paths', description, url: `${SITE.url}/flow/paths/`, author: PERSON,
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: paths.map((p, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'Article', name: p.data.title, url: `${SITE.url}${pathHref(p.id)}` } })),
+    },
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Flow', item: `${SITE.url}/flow/` },
+      { '@type': 'ListItem', position: 2, name: 'Paths', item: `${SITE.url}/flow/paths/` },
+    ],
+  },
+];
+---
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page fp-page" jsonLd={schema}>
+  <Nav />
+  <main id="main" class="ls-main">
+    <header class="ed-hub-intro ls-container">
+      <p class="ls-eyebrow">FLOW 2.0 / PATHS</p>
+      <div class="ed-hub-heading">
+        <h1>Real work.<br /><em>Walked end to end.</em></h1>
+        <p>Each path starts on Flow’s Home screen and ends with something you can send. We walked every step on a Mac and wrote down the time, the cost, and what we could not check.</p>
+      </div>
+    </header>
+    {lead && (
+      <section class="ls-container" aria-label="Featured path">
+        <div class="fp-grid"><PathCard entry={lead} variant="lead" headingLevel="h2" /><div class="fp-stack">{rest.slice(0, 2).map((p) => <PathCard entry={p} headingLevel="h2" />)}</div></div>
+      </section>
+    )}
+    {rest.length > 2 && (
+      <section class="fp-section ls-container" aria-label="More paths" style="padding-top:28px">
+        <div class="fp-grid-3">{rest.slice(2).map((p) => <PathCard entry={p} headingLevel="h2" />)}</div>
+      </section>
+    )}
+    {hasCompare && (
+      <section class="fp-section ls-container" aria-labelledby="flow-compare-heading">
+        <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">COMPARE</p><h2 id="flow-compare-heading">Bring the work.<br /><span class="ls-stroke">Keep your tools.</span></h2><p>Moving from a notes app, or pairing Flow with the coding agent you already pay for.</p></div><a class="fp-all" href="/flow/compare/">All Compare →</a></div>
+        <CompareBand />
+      </section>
+    )}
+    <div class="ls-container" style="padding-bottom:88px">
+      <PaperCta source="flow-paths-index" eyebrow="EVERY PATH IS ON FLOW’S HOME SCREEN" heading="Pick the job you already do." description="Open Flow, choose a path on Home, and try it on the example files first. Your copy is yours to change." />
+    </div>
+  </main>
+  <Footer showDownload={false} />
+</Layout>

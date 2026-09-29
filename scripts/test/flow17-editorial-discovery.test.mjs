@@ -158,6 +158,6 @@ test('the launch preview preserves downloads while extending sitemap and AI disc
     assert.match(html, /flow-downloads\/Orionfold-Flow\.dmg/);
     assert.match(html, /data-theme="light"/);
   }
-  assert.match(built('/flow/'), /MEET FLOW 1\.7/);
+  assert.match(built('/flow/'), /MEET FLOW 2\.0/);
   assert.match(built('/flow/'), /data-jobs-demo/);
 });

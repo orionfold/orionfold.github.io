@@ -28,9 +28,13 @@ const livingSource = livingFiles.map(name => read(`src/components/living/${name}
 const livingFaq = read('src/data/living-faq.json');
 // ── Nav: flagship product family ──────────────────────────────────────────
 const nav = read('src/components/Nav.astro');
-const navArray = nav.match(/const links = \[([\s\S]*?)\n\];/)?.[1] ?? '';
+const navArray = nav.match(/const links[^=]*= \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/label: '([^']+)'/g)].map((match) => match[1]);
-assert.deepEqual(navLabels, ['Flow', 'Essays', 'The Manifesto', 'Story', 'Books'], 'the global nav carries the approved Living Documents and editorial front doors');
+assert.deepEqual(navLabels, ['Flow', 'Paths', 'Compare', 'Essays', 'The Manifesto'], 'the global nav carries Flow, its Paths and Compare pages, and the editorial front doors');
+// Operator 2026-09-28: Story and Books moved from the main nav to the footer.
+for (const moved of ['Story', 'Books']) {
+  assert.equal(navLabels.includes(moved), false, `${moved} lives in the footer, not the main nav`);
+}
 for (const localOnly of ['Tour', 'Tech Specs', 'Enterprise']) {
   assert.equal(navLabels.includes(localOnly), false, `${localOnly} stays in the Flow-local rail, not the global nav`);
 }
@@ -49,7 +53,9 @@ assert.match(nav, /Orionfold Flow is coming to Mac/, 'the pre-launch sticky bar 
 assert.match(nav, /Orionfold Flow for Mac/, 'the launched sticky bar names the shipped app');
 assert.match(nav, /of-flow-bar-dismissed/, 'the Flow bar uses its own dismissal key so old book-bar dismissals do not hide it');
 
-// ── Footer: curated Flow, Orionfold, and Connect navigation ────────────────
+// ── Footer: curated Flow, Paths, Orionfold, and Connect navigation ─────────
+// Books follows Story in the Orionfold column since it left the main nav.
+// The Paths group lists the published paths from the collection.
 const footer = read('src/components/Footer.astro');
 const columns = name => [...(footer.match(new RegExp('const ' + name + ' = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
 assert.deepEqual(columns('FLOW_COLUMNS'), [
@@ -58,7 +64,7 @@ assert.deepEqual(columns('FLOW_COLUMNS'), [
 ]);
 assert.deepEqual(columns('ORIONFOLD_COLUMNS'), [
   ['/flow/', 'Flow'], ['/arena/', 'Arena'], ['/relay/', 'Relay'],
-  ['/about/', 'About'], ['/story/', 'Story'], ['/proposal/', 'Proposal'], ['/sponsor/', 'Sponsor'],
+  ['/about/', 'About'], ['/story/', 'Story'], ['/learn/', 'Books'], ['/proposal/', 'Proposal'], ['/sponsor/', 'Sponsor'],
   ['/models/', 'Models'], ['/dgx-spark/', 'DGX Spark'],
 ]);
 assert.doesNotMatch(footer, /SW_GROUPS|LANDING_HREF|latestStories|Free AI book/, 'the catch-all directory is retired');

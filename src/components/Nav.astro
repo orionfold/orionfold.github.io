@@ -1,15 +1,20 @@
 ---
-// Shared navigation: Living Documents first, then Story and Books after a dot.
-// Download intent, launch gating, and sticky-bar consent mechanics stay shared.
+// Shared navigation: Flow, its Paths and Compare pages, then the essays.
+// Story and Books moved to the footer (operator 2026-09-28). Download intent,
+// launch gating, and sticky-bar consent mechanics stay shared.
 import Wordmark from './ui/Wordmark.astro';
-// `divider: true` renders a separator immediately BEFORE that link.
-const links = [
-  { href: '/flow/', label: 'Flow', divider: false },
-  { href: '/essays/', label: 'Essays', divider: false },
-  { href: '/manifesto/', label: 'The Manifesto', divider: false },
-  { href: '/story/', label: 'Story', divider: true },
-  { href: '/learn/', label: 'Books', divider: false },
+import { publishedCompare, compareHref } from '../lib/flow/paths';
+// "Compare" appears only once at least one page is routed, and carries its
+// pages as a small dropdown (desktop) or indented sub-links (mobile).
+const compare = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.tool, kind: p.data.kind, line: p.data.line }));
+const links: { href: string; label: string; children?: typeof compare }[] = [
+  { href: '/flow/', label: 'Flow' },
+  { href: '/flow/paths/', label: 'Paths' },
+  ...(compare.length ? [{ href: '/flow/compare/', label: 'Compare', children: compare }] : []),
+  { href: '/essays/', label: 'Essays' },
+  { href: '/manifesto/', label: 'The Manifesto' },
 ];
+const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/flow/' && Astro.url.pathname.startsWith(href));
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import { FLOW_DMG_URL } from '../data/flow-pricing.ts';
 
@@ -94,18 +99,34 @@ const stickyCtaLabel = navCtaLabel;
 
     <!-- Desktop nav -->
     <div class="living-nav-links items-center">
-      {links.map((link) => (
-        <Fragment>
-          {link.divider && <span class="living-nav-divider" aria-hidden="true">·</span>}
+      {links.map((link) => link.children ? (
+        <div class="living-nav-dd">
           <a
             href={link.href}
-            aria-current={Astro.url.pathname === link.href ? "page" : undefined}
+            aria-current={isCurrent(link.href) ? "page" : undefined}
+            aria-haspopup="true"
             class="living-nav-link text-text-muted hover:text-primary transition-colors"
             data-astro-prefetch
           >
             {link.label}
           </a>
-        </Fragment>
+          <div class="living-nav-dd-menu">
+            <div class="living-nav-dd-panel">
+              {link.children.map((c) => (
+                <a href={c.href}><span class="living-nav-dd-kind">{c.kind === 'switch' ? 'SWITCH' : 'PAIR'}</span><b>{c.label}</b><small>{c.line}</small></a>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <a
+          href={link.href}
+          aria-current={isCurrent(link.href) ? "page" : undefined}
+          class="living-nav-link text-text-muted hover:text-primary transition-colors"
+          data-astro-prefetch
+        >
+          {link.label}
+        </a>
       ))}
 
     </div>
@@ -149,8 +170,10 @@ const stickyCtaLabel = navCtaLabel;
     <div class="living-mobile-links px-6 py-4 flex flex-col gap-3">
       {links.map((link) => (
         <Fragment>
-          {link.divider && <span class="living-nav-divider" aria-hidden="true">·</span>}
           <a href={link.href} class="living-nav-link text-text-muted hover:text-primary transition-colors py-2" data-astro-prefetch>{link.label}</a>
+          {link.children?.map((c) => (
+            <a href={c.href} class="living-nav-link living-nav-sublink text-text-muted hover:text-primary transition-colors py-1" data-astro-prefetch>{c.label}</a>
+          ))}
         </Fragment>
       ))}
       <a href={flowDownloadHref} class="living-nav-cta mt-2 inline-flex items-center justify-center rounded-full bg-primary text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowLive ? undefined : true} data-flow-download={flowLive ? 'nav-mobile' : undefined}>{flowLive && (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v12m-5-5 5 5 5-5M5 16v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" /></svg>)}<span>{navCtaLabel}</span></a>
@@ -169,6 +192,17 @@ const stickyCtaLabel = navCtaLabel;
   #confirm-bar[data-confirmation-state] > div { width: 100%; }
   #confirm-bar[data-confirmation-state] p { min-width: 0; text-wrap: balance; }
   #magnet-bar[data-confirmation-covered] { visibility: hidden; pointer-events: none; }
+  /* "Compare" dropdown: opens on hover or keyboard focus, no script. */
+  .living-nav-dd { position: relative; }
+  .living-nav-dd-menu { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); padding-top: 12px; z-index: 60; }
+  .living-nav-dd:hover .living-nav-dd-menu, .living-nav-dd:focus-within .living-nav-dd-menu { display: block; }
+  .living-nav-dd-panel { display: grid; gap: 2px; min-width: 300px; padding: 10px; background: #fff; border: 1px solid #d5dbd6; border-radius: 10px; box-shadow: 0 18px 40px #152a2d22; }
+  .living-nav-dd-panel a { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; padding: 9px 10px; border-radius: 7px; color: #171c1a; }
+  .living-nav-dd-panel a:hover, .living-nav-dd-panel a:focus-visible { background: #fff6c9; }
+  .living-nav-dd-panel b { font-size: .95rem; line-height: 1.2; }
+  .living-nav-dd-panel small { grid-column: 1 / -1; font-size: .78rem; line-height: 1.4; color: #56635e; }
+  .living-nav-dd-kind { align-self: center; font-size: .56rem; font-weight: 700; letter-spacing: .1em; color: #ba2d21; }
+  .living-nav-sublink { padding-left: 1.1rem; font-size: .92em; }
   @media (max-width: 700px) {
     #magnet-bar > div { min-height: 48px; }
   }

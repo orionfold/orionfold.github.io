@@ -327,4 +327,70 @@ const relayApi = defineCollection({
     }),
 });
 
-export const collections = { story, productDetail, letters, receipts, relayDocs, memos, relayApi };
+
+// Flow Paths — the Flow product lane's customer-path walkthroughs, published at
+// /flow/paths/<slug>/. Written by scripts/sync-flow-paths.mjs from the product
+// repo's articles/<NN>-<slug>/ARTICLE.md (text) and the ops-cleared shots. The
+// body is verbatim; the product fields are refreshed on every sync and the
+// website fields (order through receipt) are kept. A new path is one synced .md
+// plus its shots; it arrives as draft: true and is not routed until curated.
+const evidence = z.enum(['verified', 'derived', 'assumed', 'unknown']);
+const paths = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/paths' }),
+  schema: ({ image }) =>
+    z.object({
+      // Product fields (from the article's own front matter).
+      title: z.string(),
+      path: z.string(), // the path's name on Flow's Home screen
+      persona: z.string(),
+      drafted: z.coerce.date(),
+      build: z.string(), // the build it was walked on, named on the page
+      data: z.string(), // what is fictional
+      dek: z.string(),
+      hero: image(),
+      heroAlt: z.string(),
+      source: z.string(),
+      // Website fields.
+      order: z.number(),
+      featured: z.boolean().default(false),
+      draft: z.boolean().default(false),
+      chip: z.string(), // the Home chip that shows the path (Founders, Clients, …)
+      summary: z.string(), // card copy
+      stat: z.object({ value: z.string(), label: z.string() }),
+      steps: z.array(z.string()),
+      cardShot: z.string(), // shot name under src/assets/flow/paths/<slug>/
+      receipt: z.array(z.object({ label: z.string(), value: z.string(), evidence })),
+    }),
+});
+
+// Compare — how Flow sits next to a tool the reader already uses, at
+// /flow/compare/<slug>/. Website-authored. Every competitor claim carries a dated,
+// linked source, and every comparison row links the path that proves Flow's
+// side.
+const compare = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/compare' }),
+  schema: () =>
+    z.object({
+      tool: z.string(), // Notion, Obsidian, Claude Code, Codex
+      kind: z.enum(['switch', 'pair']), // move from it, or use Flow beside it
+      order: z.number(),
+      title: z.string(),
+      dek: z.string(),
+      line: z.string(), // one-line pitch for nav and cards
+      updated: z.coerce.date(),
+      rows: z.array(
+        z.object({
+          topic: z.string(),
+          them: z.string(),
+          flow: z.string(),
+          path: z.string().optional(), // path slug that proves the Flow side
+          source: z.object({ label: z.string(), href: z.string(), checked: z.string() }).optional(),
+        }),
+      ),
+      startWith: z.string(), // path slug to begin with
+      notFlow: z.array(z.string()), // what Flow is not
+      sources: z.array(z.object({ label: z.string(), href: z.string(), checked: z.string() })),
+    }),
+});
+
+export const collections = { story, productDetail, letters, receipts, relayDocs, memos, relayApi, paths, compare };

@@ -1,0 +1,20 @@
+---
+// "Compare" band for /flow/. Renders nothing until a page is routed.
+import CompareBand from './CompareBand.astro';
+import { publishedCompare } from '../../../lib/flow/paths';
+import '../../../styles/flow-paths.css';
+const hasCompare = (await publishedCompare()).length > 0;
+---
+{hasCompare && (
+  <section id="compare" class="fp-section ls-container" aria-labelledby="flow-compare-heading">
+    <div class="fp-head">
+      <div class="fp-heading">
+        <p class="ls-eyebrow">COMPARE</p>
+        <h2 id="flow-compare-heading">Bring the work.<br /><span class="ls-stroke">Keep your tools.</span></h2>
+        <p>Moving from a notes app, or pairing Flow with the coding agent you already pay for. Each page says what moves, what stays, and the path to start with.</p>
+      </div>
+      <a class="fp-all" href="/flow/compare/">All Compare →</a>
+    </div>
+    <CompareBand />
+  </section>
+)}

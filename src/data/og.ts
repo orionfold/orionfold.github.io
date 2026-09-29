@@ -206,6 +206,16 @@ export const OG_PAGES: Record<string, OgPage> = {
     "alt": "Flow for Mac: Give your documents work to do. Origami paper planes carry documents forward.",
     "living": true
 },
+  '/flow/paths/': {
+    slug: 'flow-paths', eyebrow: 'Flow 2.0 · Paths',
+    title: 'Real work. Walked end to end.', seed: 'flow-paths',
+    alt: 'Flow 2.0 Paths: real work walked end to end on a Mac, with the time, the cost and the evidence for every step.', living: true,
+  },
+  '/flow/compare/': {
+    slug: 'compare', eyebrow: 'Flow 2.0 · Compare',
+    title: 'Coming from another tool?', seed: 'compare',
+    alt: 'Compare Flow with Notion, Obsidian, Claude Code and Codex: what moves, what stays, and the path to start with.', living: true,
+  },
   '/flow/specifications/': {
     slug: 'flow-specifications',
     eyebrow: 'Orionfold Flow · Technical specifications',
@@ -350,6 +360,11 @@ export const letterOgSlug = (id: string) => `letter-${id}`;
 // letter-<id> so a receipt card can't collide with the static '/receipts/'
 // index card or any other route. The OG endpoint emits /og/receipt-<id>.jpg.
 export const receiptOgSlug = (id: string) => `receipt-${id}`;
+
+// OG card slugs for a Flow path and a Compare page, namespaced like the
+// receipt cards. The endpoint emits /og/flow-path-<id>.jpg and /og/flow-compare-<id>.jpg.
+export const flowPathOgSlug = (id: string) => `flow-path-${id}`;
+export const compareOgSlug = (id: string) => `flow-compare-${id}`;
 
 // OG card slug for a product detail page (P8). Namespaced by type so a model
 // slug (slugify(title)) can't collide with a software/book slug, and so none of

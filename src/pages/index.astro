@@ -9,6 +9,7 @@ import '../styles/living-home.css';
 import HomeHero from '../components/living/HomeHero.astro';
 import CapabilityRibbon from '../components/living/CapabilityRibbon.astro';
 import HomeContinuity from '../components/living/HomeContinuity.astro';
+import PathsSection from '../components/flow/paths/PathsSection.astro';
 import HomeDocumentWorkshop from '../components/living/HomeDocumentWorkshop.astro';
 import HomeIdeas from '../components/living/HomeIdeas.astro';
 import HomeProof from '../components/living/HomeProof.astro';
@@ -28,6 +29,7 @@ const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication
   <main id="main" class="ls-main">
     <HomeHero />
     <CapabilityRibbon />
+    <PathsSection id="home-paths" />
     <HomeContinuity />
     <FlagshipEssayInvitation />
     <HomeDocumentWorkshop />
