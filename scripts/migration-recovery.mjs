@@ -56,6 +56,14 @@ export async function observeCurrent(api, ownRunId) {
     requireValue([RELEASE_WORKFLOW, RECOVERY_WORKFLOW].includes(run.path), 'Current Pages workflow is not allowlisted.');
     validateRunIdentity(run, deployment.sha, run.path);
     requireValue(String(run.id) === runId && String(run.run_attempt) === String(job.run_attempt), 'Deployment attempt identity differs.');
+    // Cancelling while environment approval is pending creates an error
+    // deployment with no runner or steps. It cannot have promoted any bytes.
+    // Require the bound attempt and job to both be cancelled; missing evidence
+    // or any assigned runner/step must still fail closed below.
+    if (status.state !== 'success' && run.status === 'completed' && run.conclusion === 'cancelled' &&
+        job.status === 'completed' && job.conclusion === 'cancelled' &&
+        job.runner_id === 0 && job.runner_name === '' &&
+        Array.isArray(job.steps) && job.steps.length === 0) continue;
     const stepName = run.path === RELEASE_WORKFLOW ? 'Deploy to GitHub Pages' : 'Deploy verified recovery to GitHub Pages';
     const steps = job.steps?.filter(step => step.name === stepName);
     requireValue(steps?.length === 1, 'Cannot identify the Pages promotion step.');

@@ -54,6 +54,43 @@ test('a post-promotion job failure cannot hide served bytes, while an uncertain 
   await assert.rejects(observeCurrent(api, '999'), /job identity differs/);
 });
 
+test('cancellation before approval skips only a bound cancelled attempt with no runner or steps', async () => {
+  const cancelledJob = { id: 901, run_id: 101, run_attempt: 1, head_sha: sha,
+    status: 'completed', conclusion: 'cancelled', runner_id: 0, runner_name: '', steps: [] };
+  const records = {
+    '/deployments?environment=github-pages&per_page=100': [{ id: 201, sha, environment: 'github-pages' }, { id: 200, sha, environment: 'github-pages' }],
+    '/deployments/201/statuses?per_page=1': [{ state: 'error', log_url: `https://github.com/${RELEASE_REPOSITORY}/actions/runs/101/job/901` }],
+    '/deployments/200/statuses?per_page=1': [status('success')],
+    '/actions/jobs/901': cancelledJob,
+    '/actions/runs/101/attempts/1': { ...run(), id: 101, conclusion: 'cancelled' },
+    '/actions/jobs/900': { id: 900, run_id: 100, run_attempt: 1, head_sha: sha, steps: [{ name: 'Deploy to GitHub Pages', status: 'completed', conclusion: 'success' }] },
+    '/actions/runs/100/attempts/1': run(),
+  };
+  const observe = value => observeCurrent(async path => {
+    assert.ok(value[path], 'Unexpected API path ' + path);
+    return structuredClone(value[path]);
+  }, '999');
+  assert.equal((await observe(records)).deploymentId, '200');
+  for (const change of [
+    r => r['/actions/jobs/901'].runner_id = 123,
+    r => r['/actions/jobs/901'].runner_name = 'assigned-runner',
+    r => delete r['/actions/jobs/901'].runner_id,
+    r => delete r['/actions/jobs/901'].steps,
+    r => r['/actions/jobs/901'].steps = [{ name: 'Set up job', conclusion: 'success' }],
+    r => r['/actions/jobs/901'].steps = [{ name: 'Deploy to GitHub Pages', status: 'completed', conclusion: 'cancelled' }],
+    r => r['/actions/jobs/901'].status = 'in_progress',
+    r => r['/actions/jobs/901'].conclusion = 'failure',
+    r => r['/actions/jobs/901'].head_sha = 'f'.repeat(40),
+    r => r['/actions/runs/101/attempts/1'].conclusion = 'failure',
+    r => r['/actions/runs/101/attempts/1'].status = 'in_progress',
+    r => r['/actions/runs/101/attempts/1'].run_attempt = 2,
+    r => r['/deployments/201/statuses?per_page=1'][0].state = 'success',
+  ]) {
+    const value = structuredClone(records); change(value);
+    await assert.rejects(observe(value));
+  }
+});
+
 test('fixed ancestor baseline scope allows this migration and exact rerun but skips unrelated production', () => {
   assert.equal(migrationScope({ ...current(), sourceSha: RECOVERY_BASELINE_SHA }, sha, true, true).eligible, true);
   assert.equal(migrationScope(current(), sha, true, true).eligible, true);
