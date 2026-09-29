@@ -1,6 +1,7 @@
 ---
 // Approved Living Systems composition; native Astro, no client framework.
 import FlowDownloadCta from '../flow/FlowDownloadCta.astro';
+import { FLOW_COUNTS } from '../../lib/flow/flow-counts';
 import FlowEnterpriseContact from '../flow/FlowEnterpriseContact.astro';
 import { FLOW, formatUsd } from '../../data/commerce';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
@@ -33,7 +34,7 @@ import { FLOW_CANCEL_TERMS, FLOW_TRIAL_TERMS, FLOW_ADDONS, FLOW_ADDON_TERMS } fr
 <li>Markdown, tables, pictures and diagrams</li>
 <li>Deterministic Jobs and Night Shift</li>
 <li>Morning Briefing and Keep/Revert review</li>
-<li>26 Living Documents and 12 paths to start from</li>
+<li>{FLOW_COUNTS.livingDocuments} Living Documents and {FLOW_COUNTS.paths} paths to start from</li>
 </ul>
 <div class="ls-plan-actions"><FlowDownloadCta source="flow-living-documents" /></div>
 </article>

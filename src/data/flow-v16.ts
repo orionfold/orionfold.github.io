@@ -4,6 +4,7 @@
 // Source briefs: docs/night-shift/night-shift.md,
 // docs/living-documents/living-documents.md and docs/settings/settings.md.
 // Product-shot provenance and native crop geometry: flow-shot-sources.json.
+import { FLOW_COUNTS } from '../lib/flow/flow-counts';
 import nightSettings from '../assets/flow/shots/v16-night-settings.webp';
 import nightRunning from '../assets/flow/shots/v16-night-running.webp';
 import nightBriefing from '../assets/flow/shots/v16-night-briefing.webp';
@@ -24,7 +25,7 @@ import modelsWorkbench from '../assets/flow/shots/v17-settings-models.webp';
 export const FLOW_V16_SHOTS = { nightSettings, nightRunning, nightBriefing, nightReview, livingPortfolio, livingJobs, livingJobSearch, settingsPrivacy, settingsDocuments, settingsModels, settingsLibrary, settingsRouting, settingsEvidence };
 export const FLOW_V17_SHOTS = { jobsMap, reviewChart, modelsWorkbench };
 export const FLOW_V16_TOURS = [
-  { slug: 'living-documents', label: 'Living Documents', title: 'A document that keeps up.', description: 'Start with 24 Living Documents. Inspect their Jobs, connect data to charts and tables, and review the work in files you own.', image: jobsMap, alt: 'Flow 1.7 shows a document beside the Jobs Workbench and its declared inputs and outputs.', caption: 'Flow 1.7 (2173) · Jobs in the Workbench · Illustrative portfolio example' },
+  { slug: 'living-documents', label: 'Living Documents', title: 'A document that keeps up.', description: `Start with ${FLOW_COUNTS.livingDocuments} Living Documents. Inspect their Jobs, connect data to charts and tables, and review the work in files you own.`, image: jobsMap, alt: 'Flow 1.7 shows a document beside the Jobs Workbench and its declared inputs and outputs.', caption: 'Flow 1.7 (2173) · Jobs in the Workbench · Illustrative portfolio example' },
   { slug: 'night-shift', label: 'The Night Shift', title: 'Wake up to what changed.', description: 'Set the jobs and the hours. Return to a Morning Briefing and marked changes. Keep a change, revert that part, or decide later.', image: reviewChart, alt: 'Flow 1.7 highlights a selected chart beside its applied-change review.', caption: 'Flow 1.7 (2173) · Review Changes · Illustrative portfolio data' },
   { slug: 'settings', label: 'Settings', title: 'Your Mac. Your choices.', description: 'Keep Settings beside your document. Inspect models, storage and measurements, and choose what can leave your Mac.', image: modelsWorkbench, alt: 'Flow 1.7 Models settings in the Workbench, with separate document and Night Shift model picks.', caption: 'Flow 1.7 (2173) · Models in the Workbench · This Mac’s configuration' },
 ] as const;

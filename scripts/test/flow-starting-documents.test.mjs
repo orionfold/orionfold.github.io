@@ -117,7 +117,7 @@ test('browser wiring exposes the correct document and safe copy text without fil
 test('the seven rich previews stay separate and receive only mapped selections', () => {
   const library = read('src/components/living/FlowLibrary.astro');
   assert.match(library, /<StartWithUsefulWork \/>/);
-  assert.match(library, /26 LIVING<br\/>DOCUMENTS\. 12 PATHS\./);
+  assert.match(library, /\{FLOW_COUNTS\.livingDocuments\} LIVING<br\/>DOCUMENTS\. \{FLOW_COUNTS\.paths\} PATHS\./);
   assert.match(library, /Explore seven illustrated examples/);
   assert.match(library, /data-example-tab/);
   assert.match(library, /data-example-scroll/);

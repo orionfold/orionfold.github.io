@@ -7,6 +7,7 @@
 // _SPECS/2026-05-25-125727_og-and-featured-image-pipeline.md.
 
 import { SITE } from './seo';
+import { FLOW_COUNTS } from '../lib/flow/flow-counts';
 import { RELAY_HOST_PORTABLE_LIVE } from './relay-host-portable';
 
 const relayHostPortablePositioning = import.meta.env.DEV || RELAY_HOST_PORTABLE_LIVE;
@@ -232,7 +233,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/living-documents/': {
     slug: 'flow-living-documents', eyebrow: 'Flow 1.7 · Living Documents',
     title: 'A document that keeps up.', seed: 'flow-living-documents',
-    alt: 'Flow Living Documents: 24 starting documents, linked sources, live charts and tables, and reviewable changes.', living: true,
+    alt: `Flow Living Documents: ${FLOW_COUNTS.livingDocuments} starting documents, linked sources, live charts and tables, and reviewable changes.`, living: true,
   },
   '/flow/settings/': {
     slug: 'flow-settings', eyebrow: 'Flow 1.7 · Settings',

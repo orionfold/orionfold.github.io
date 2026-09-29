@@ -1,4 +1,5 @@
 import type { FlowCapability } from './flow-pricing';
+import { FLOW_COUNTS, countWord } from '../lib/flow/flow-counts';
 import {
   FLOW_BASE_CAPABILITIES,
   FLOW_PRO_CAPABILITIES,
@@ -94,7 +95,7 @@ export const FLOW_DOCUMENT_SPECIFICATIONS: FlowSpecificationRow[] = [
   },
   {
     label: 'Living Documents',
-    value: '24 Living Documents in four categories',
+    value: `${FLOW_COUNTS.livingDocuments} Living Documents in ${countWord(FLOW_COUNTS.categories)} categories`,
     note: 'Search the chooser or begin with five featured documents. Create an independent copy with its inputs and assets, then inspect its Jobs.',
   },
   {

@@ -6,6 +6,7 @@ import Footer from '../../components/Footer.astro';
 import FlowSubNav from '../../components/flow/FlowSubNav.astro';
 import FlowWaitlist from '../../components/sections/FlowWaitlist.astro';
 import { SITE } from '../../data/seo';
+import { FLOW_COUNTS } from '../../lib/flow/flow-counts';
 import { ogMeta } from '../../data/og';
 import { FLOW_CATEGORIES, flowCategoryHref } from '../../data/flow-categories';
 import { FLOW_CATEGORY_SHOTS } from '../../data/flow-category-shots';
@@ -30,7 +31,7 @@ const breadcrumbs = {
 ---
 <Layout
   title="Orionfold Flow product tour · See Flow at work"
-  description="Tour Flow 1.7: 24 Living Documents, Jobs in the Workbench, reviewable changes and model choices. Explore writing, files, routing and evidence."
+  description={`Tour Flow: ${FLOW_COUNTS.livingDocuments} Living Documents, Jobs in the Workbench, reviewable changes and model choices. Explore writing, files, routing and evidence.`}
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[breadcrumbs]}

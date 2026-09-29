@@ -40,7 +40,7 @@ for (const provider of ['Flow Runtime', 'Ollama', 'Anthropic', 'OpenAI', 'OpenRo
 
 assert.match(data, /provider: 'LM Studio'[\s\S]*state: 'Runnable now'[\s\S]*exact loaded text model directly through Agency[\s\S]*without copying or sharing its weights/, 'LM Studio follows the operator-accepted G-0164 direct Agency path');
 assert.doesNotMatch(data, /provider: 'Codex CLI'|provider: 'Claude Code'|Cloud prepaid|Local or LAN|your network/, 'dark CLI and LAN routes stay outside the shipped provider catalog');
-assert.match(data, /24 Living Documents in four categories/, 'v1.7 states the released starter document count');
+assert.match(data, /\$\{FLOW_COUNTS\.livingDocuments\} Living Documents in \$\{countWord\(FLOW_COUNTS\.categories\)\} categories/, 'the starter document count comes from src/data/flow-counts.json');
 assert.match(data, /Night Shift Base[\s\S]*Collect, watch, list and redraw on every plan/, 'routine jobs remain available on Base');
 assert.match(data, /Night Shift Pro[\s\S]*Overnight notes from a model on this Mac/, 'Pro adds local overnight notes');
 

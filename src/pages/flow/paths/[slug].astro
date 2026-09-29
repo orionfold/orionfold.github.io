@@ -26,7 +26,9 @@ const { entry, others } = Astro.props as { entry: PathEntry; others: PathEntry[]
 const { Content, headings } = await render(entry);
 const d = entry.data;
 const sections = headings.filter((h) => h.depth === 2);
-const release = d.build.match(/Flow (\d+\.\d+\.\d+)/)?.[1] ?? '2.0';
+// Name the release line only: the walks run on dev builds, which the
+// "Walked on:" line below spells out in full.
+const release = d.build.match(/Flow (\d+\.\d+)/)?.[1] ?? '2.0';
 const dateIso = d.drafted.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
 const canonical = `${SITE.url}${pathHref(entry.id)}`;
@@ -61,7 +63,7 @@ const schema = [
       <div class="ed-article-kicker"><a href="/flow/paths/">← All paths</a><span>FLOW {release} PATH / {d.chip.toUpperCase()}{d.persona !== d.chip && ` · ${d.persona.toUpperCase()}`}</span></div>
       <h1>{d.title}</h1>
       <p class="ed-article-dek">{d.dek}</p>
-      <div class="ed-hero-bottom"><div class="ed-meta"><span>Path: {d.path}</span><span>Walked on Flow {release}</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#try-this-path" class="ed-download-link">Try this path ↓</a></div></div>
+      <div class="ed-hero-bottom"><div class="ed-meta"><span>Path: {d.path}</span><span>Walked on Flow</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#try-this-path" class="ed-download-link">Try this path ↓</a></div></div>
       <figure class="fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>
     </header>
 

@@ -33,6 +33,7 @@ Internal.
 ## Evidence
 
 | Claim | Value | Label |
+| Tier needed for this path | — | unknown |
 `;
 
 test('publishBody drops the H1, lifts the dek and hero, and rewrites shots', () => {
@@ -46,6 +47,7 @@ test('publishBody drops the H1, lifts the dek and hero, and rewrites shots', () 
   assert.doesNotMatch(out.body, /not for publication|Internal\./);
   assert.doesNotMatch(out.body, /Update: build 0249-1/, 'an unreleased build update stays out');
   assert.match(out.body, /## Evidence/);
+  assert.doesNotMatch(out.body, /Tier needed/, 'a plan-tier evidence row stays out (no path is labelled free or paid)');
 });
 
 test('publishBody includes a build update once that build is released', () => {
@@ -68,6 +70,9 @@ test('every published path is complete and honest about its build', () => {
     for (const r of front.receipt) assert.ok(['verified', 'derived', 'assumed', 'unknown'].includes(r.evidence), `${slug}: ${r.label} carries an evidence label`);
     assert.match(body, /^## Evidence$/m, `${slug} keeps its evidence table`);
     assert.doesNotMatch(body, /not for publication|not yet released/i, `${slug} carries no internal section`);
+    // Operator 2026-09-29: no path is labelled free or paid; any model run is Pro.
+    assert.doesNotMatch(body, /^\|\s*Tier\b/im, `${slug} carries no plan-tier row`);
+    assert.doesNotMatch(body, /\b(proofread|review|jobs?|ask)\w*[^.\n]{0,40}\b(is|are) free\b/i, `${slug} never calls a model step free`);
     for (const shot of [front.cardShot, ...[...body.matchAll(/paths\/[^/]+\/([\w.-]+)\.webp\)/g)].map((m) => m[1])]) {
       assert.ok(existsSync(new URL(`src/assets/flow/paths/${slug}/${shot}.webp`, root)), `${slug}: ${shot}.webp exists`);
     }

@@ -1,13 +1,14 @@
 ---
 import { livingLibrary } from '../../data/flow-library';
 import StartWithUsefulWork from './StartWithUsefulWork.astro';
+import { FLOW_COUNTS, countWord } from '../../lib/flow/flow-counts';
 ---
 <section class="ls-library" id="living-library" aria-labelledby="library-heading">
   <div class="ls-container">
     <div class="ls-section-heading">
       <p class="ls-eyebrow">INCLUDED WITH FLOW</p>
-      <h2 id="library-heading">26 LIVING<br/>DOCUMENTS. 12 PATHS.<br/><span class="ls-stroke">YOUR NEXT CHAPTER.</span></h2>
-      <p>Start with a responsibility you recognize. Explore four categories, inspect a document's Jobs, and make a copy for your own work.</p>
+      <h2 id="library-heading">{FLOW_COUNTS.livingDocuments} LIVING<br/>DOCUMENTS. {FLOW_COUNTS.paths} PATHS.<br/><span class="ls-stroke">YOUR NEXT CHAPTER.</span></h2>
+      <p>Start with a responsibility you recognize. Explore {countWord(FLOW_COUNTS.categories)} categories, inspect a document's Jobs, and make a copy for your own work.</p>
     </div>
   </div>
   <StartWithUsefulWork />
@@ -100,7 +101,7 @@ import StartWithUsefulWork from './StartWithUsefulWork.astro';
       ))}
     </div>
     <div class="ls-library-controls">
-      <p>Seven illustrated previews. <span>24 documents in Flow.</span></p>
+      <p>Seven illustrated previews. <span>{FLOW_COUNTS.livingDocuments} documents in Flow.</span></p>
       <nav aria-label="Browse living document previews">
         <button type="button" data-example-prev aria-label="Previous living document">Previous</button>
         <output data-example-count aria-live="polite" aria-atomic="true">01 / 07</output>

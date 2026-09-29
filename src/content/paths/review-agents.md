@@ -134,5 +134,4 @@ Second, the subscription route makes that overhead someone else's problem. Flow 
 | Cloud equivalents | Opus 5.5 $0.097; Sonnet 5 $0.048 | derived | `ModelPricing.swift` v4 (verified 2026-09-22) × the token counts |
 | Five pages a day ≈ a small subscription a month | ~$14.50/month at Opus 5.5 rates | derived | 5 × 30 × $0.097; no subscription price asserted |
 | Terminal-run attribution "Changed outside Flow" | — | not witnessed | shipped per Guide Changelog; see reviewer notes |
-| Tier needed for this path | — | unknown | dev build holds a Pro licence |
 | Human review time | 131 s (Flow's estimate) | unknown as a human figure | Flow's foreground estimate; not a measured person |

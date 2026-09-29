@@ -108,7 +108,7 @@ Proofreading a spec on an open model saves a fraction of a cent per run. As in t
 
 **Can Flow keep my docs in sync with my code?** Not yet. It proofreads and expands prose, and every change is one you approve. It does not yet check a document against source files or a changelog.
 
-**What do I need?** Proofread and review are free. Publishing needs Flow Pro and Flow Publish ($10 a month each, or $96 a year).
+**What do I need?** Flow Pro to proofread and review, and Flow Publish to publish ($10 a month each, or $96 a year).
 
 ## Evidence
 

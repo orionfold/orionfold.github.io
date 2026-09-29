@@ -59,6 +59,8 @@ export function splitArticle(text) {
  * - drops the H1 and returns the first italic paragraph as `dek`
  * - drops "## … (not for publication)" sections
  * - drops "## Update: build <b> (… not yet released)" unless <b> is released
+ * - drops evidence rows about the plan tier a path needs (operator
+ *   2026-09-29: the site labels no path free or paid)
  * - rewrites shots/<name>.png to the encoded asset path
  */
 export function publishBody(body, { slug, released = [] }) {
@@ -71,6 +73,7 @@ export function publishBody(body, { slug, released = [] }) {
     return true;
   });
   let out = kept.join('\n');
+  out = out.replace(/^\|\s*Tier\b[^\n]*\n/gim, '');
   out = out.replace(/^\s*# .+\n+/, '');
   // The opening shot becomes the page hero, so it leaves the body.
   let hero = null;
