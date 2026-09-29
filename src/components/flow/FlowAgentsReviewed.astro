@@ -75,7 +75,7 @@ const { id = 'agents-reviewed' } = Astro.props;
   .ar-consent dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; font-size: .78rem; }
   .ar-consent dt { color: #6b7672; }
   .ar-consent dd { margin: 0; font-weight: 500; }
-  .ar-allow { justify-self: start; padding: 6px 14px; border-radius: 7px; background: var(--dm-tint); color: #fff; font-size: .78rem; font-weight: 700; transition: transform .15s, filter .3s; }
+  .ar-allow { justify-self: start; padding: 6px 14px; border-radius: 7px; background: color-mix(in srgb, var(--dm-tint) 72%, #000); color: #fff; font-size: .78rem; font-weight: 700; transition: transform .15s, filter .3s; }
   .ar-stage.is-s1 .ar-allow { filter: brightness(.82); transform: scale(.96); }
   .ar-term { background: #11191a; color: #cfe3de; }
   :global(.ls) .ar-term .ar-step { color: #7f9a95; }

@@ -127,7 +127,7 @@
 .fp-app-side .on { background: #e3eeec; color: #12514d; font-weight: 600; }
 .fp-app-main { padding: 22px 26px; }
 .ls .fp-app-title { font-size: 1.3rem; font-weight: 700; line-height: 1.1; }
-.ls .fp-app-hint { margin: 4px 0 14px; font-size: .78rem; color: #6a7b7c; }
+.ls .fp-app-hint { margin: 4px 0 14px; font-size: .78rem; color: #56676a; }
 .fp-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
 .ls .fp-chips button { border: 1px solid #d6dcda; background: #fff; border-radius: 999px; padding: 6px 12px; font-size: .78rem; font-weight: 500; line-height: 1; color: #34494b; cursor: pointer; }
 .ls .fp-chips button[aria-pressed="true"] { background: #1f7a74; border-color: #1f7a74; color: #fff; }
@@ -143,8 +143,8 @@
 .fp-feat-read:hover { color: var(--teal); }
 .fp-addons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
 .fp-addons div { border: 1px solid #e0e5e3; border-radius: 9px; padding: 10px 12px; background: #fff; font-size: .72rem; line-height: 1.45; color: #4a5c5e; }
-.fp-addons b { display: block; margin-bottom: 2px; color: #1f7fb0; font-size: .8rem; }
-.fp-addons small { display: block; margin-top: 6px; font-size: .66rem; color: #7a8a8b; }
+.fp-addons b { display: block; margin-bottom: 2px; color: #1a6a93; font-size: .8rem; }
+.fp-addons small { display: block; margin-top: 6px; font-size: .66rem; color: #5d6c6d; }
 @media (max-width: 1000px) {
   .fp-app-body, .fp-feat { grid-template-columns: 1fr; }
   .fp-app-side { display: none; }
