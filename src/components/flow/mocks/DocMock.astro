@@ -110,7 +110,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           </div>
         ) : b.kind === 'consent' ? (
           <div class="dm-block dm-consent">
-            <p class="dm-cap">Before the agent runs</p>
+            <p class="dm-cap">{b.title ?? 'Before the agent runs'}</p>
             <dl>{b.rows.map(([k, v]) => <><dt>{k}</dt><dd>{v}</dd></>)}</dl>
             <span class="dm-allow">{b.action}</span>
           </div>

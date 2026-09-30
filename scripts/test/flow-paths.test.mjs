@@ -7,7 +7,8 @@ import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
-import { maskParity, publishBody, splitArticle } from '../sync-flow-paths.mjs';
+import { maskParity, publishBody, shotDirFor, splitArticle } from '../sync-flow-paths.mjs';
+import { mkdirSync } from 'node:fs';
 
 const root = new URL('../../', import.meta.url);
 const read = (p) => readFileSync(new URL(p, root), 'utf8');
@@ -129,4 +130,20 @@ test('maskParity refuses a sharper original that still shows what the ops copy m
   await noise(192, 192).png().toFile(leaky);
   assert.equal(await maskParity(ops, masked), true);
   assert.equal(await maskParity(ops, leaky), false);
+});
+
+test('shotDirFor finds an ops shot folder named after the full path title', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'shots-'));
+  mkdirSync(path.join(root, 'weekly-issue-then-the-book'));
+  mkdirSync(path.join(root, 'investor-update'));
+  assert.equal(shotDirFor('weekly-issue', root), path.join(root, 'weekly-issue-then-the-book'));
+  assert.equal(shotDirFor('investor-update', root), path.join(root, 'investor-update'));
+  assert.equal(shotDirFor('missing', root), path.join(root, 'missing'));
+});
+
+test('publishBody rewrites a generated .jpg picture like a .png shot', () => {
+  const out = publishBody('# T\n\n*Dek.*\n\n![Home](shots/01-home.png)\n\nText.\n\n![Cover](shots/15-generated-cover.jpg)\n', { slug: 'manuscript-to-book' });
+  assert.deepEqual(out.shots, ['01-home', '15-generated-cover']);
+  assert.match(out.body, /\]\(\.\.\/\.\.\/assets\/flow\/paths\/manuscript-to-book\/15-generated-cover\.webp\)/);
+  assert.doesNotMatch(out.body, /\.jpg\)/);
 });

@@ -47,6 +47,24 @@ const WEBP_QUALITY = 90;
 
 const PRODUCT_FIELDS = ['title', 'path', 'persona', 'drafted', 'build', 'data'];
 
+/**
+ * The ops shot folder for a slug. The product lane sometimes names it after
+ * the full path title (weekly-issue → weekly-issue-then-the-book), so an exact
+ * match wins and otherwise the one folder that starts with `<slug>-` is used.
+ */
+export function shotDirFor(slug, root = SHOTS) {
+  const exact = path.join(root, slug);
+  if (existsSync(exact)) return exact;
+  const matches = existsSync(root) ? readdirSync(root).filter((d) => d.startsWith(`${slug}-`)) : [];
+  if (matches.length !== 1) return exact;
+  return path.join(root, matches[0]);
+}
+
+/** A shot's file name in a folder: screen captures are .png, a generated picture may be .jpg. */
+function shotFile(dir, name) {
+  return ['png', 'jpg', 'jpeg'].map((ext) => `${name}.${ext}`).find((f) => existsSync(path.join(dir, f))) ?? null;
+}
+
 /** Split an ARTICLE.md into its front matter object and body text. */
 export function splitArticle(text) {
   const m = text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -61,7 +79,7 @@ export function splitArticle(text) {
  * - drops "## Update: build <b> (… not yet released)" unless <b> is released
  * - drops evidence rows about the plan tier a path needs (operator
  *   2026-09-29: the site labels no path free or paid)
- * - rewrites shots/<name>.png to the encoded asset path
+ * - rewrites shots/<name>.png (or .jpg, a generated picture) to the encoded asset path
  */
 export function publishBody(body, { slug, released = [] }) {
   const sections = body.split(/\n(?=## )/);
@@ -82,12 +100,12 @@ export function publishBody(body, { slug, released = [] }) {
     dek = text.trim();
     return '';
   });
-  out = out.replace(/^!\[([^\]]*)\]\((?:\.\.\/shared\/flow-articles\/[^/]+\/|shots\/)([\w.-]+)\.png\)\n+/, (_, alt, name) => {
+  out = out.replace(/^!\[([^\]]*)\]\((?:\.\.\/shared\/flow-articles\/[^/]+\/|shots\/)([\w.-]+)\.(?:png|jpe?g)\)\n+/, (_, alt, name) => {
     hero = { alt, name };
     return '';
   });
   const shots = hero ? [hero.name] : [];
-  out = out.replace(/\]\((?:\.\.\/shared\/flow-articles\/[^/]+\/|shots\/)([\w.-]+)\.png\)/g, (_, name) => {
+  out = out.replace(/\]\((?:\.\.\/shared\/flow-articles\/[^/]+\/|shots\/)([\w.-]+)\.(?:png|jpe?g)\)/g, (_, name) => {
     shots.push(name);
     return `](../../assets/flow/paths/${slug}/${name}.webp)`;
   });
@@ -176,19 +194,20 @@ async function syncOne(dir, { released }) {
     ...site,
   };
 
-  const shotDir = path.join(SHOTS, slug);
+  const shotDir = shotDirFor(slug);
   const needed = new Set([...published.shots, site.cardShot].filter(Boolean));
   const lowRes = [];
   mkdirSync(path.join(ASSET_DIR, slug), { recursive: true });
   for (const name of needed) {
-    const src = path.join(shotDir, `${name}.png`);
-    if (!existsSync(src)) throw new Error(`${slug}: shot ${name}.png is not in ${shotDir}`);
-    const best = await shotSource(src, path.join(ARTICLES, dir, 'shots', `${name}.png`));
+    const file = shotFile(shotDir, name);
+    if (!file) throw new Error(`${slug}: shot ${name} (.png or .jpg) is not in ${shotDir}`);
+    const src = path.join(shotDir, file);
+    const best = await shotSource(src, path.join(ARTICLES, dir, 'shots', file));
     if (best === src) lowRes.push(name);
     await encodeShot(best, path.join(ASSET_DIR, slug, `${name}.webp`));
   }
   // The social card frames the card shot, and Satori cannot decode webp.
-  await sharp(path.join(shotDir, `${site.cardShot}.png`))
+  await sharp(path.join(shotDir, shotFile(shotDir, site.cardShot)))
     .resize({ width: 1200 })
     .jpeg({ quality: 82, mozjpeg: true })
     .toFile(path.join(ASSET_DIR, slug, 'card.jpg'));

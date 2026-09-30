@@ -8,7 +8,7 @@
 // Tier pills are deliberately left out: the manifest's "free" marks disagree
 // with the rule that any model run is Pro, so the site shows benefits only.
 
-export type Hue = 'teal' | 'blue' | 'cyan' | 'indigo' | 'purple' | 'orange' | 'mint';
+export type Hue = 'teal' | 'blue' | 'cyan' | 'indigo' | 'purple' | 'orange' | 'mint' | 'yellow' | 'brown' | 'green' | 'red';
 export type Mark = 'pdf' | 'xlsx' | 'pptx' | 'docx' | 'md' | 'csv' | 'code' | 'folder' | 'web' | 'terminal' | 'claude' | 'openai' | 'dictation' | 'history' | 'epub' | 'chart' | 'model' | 'flow';
 export type Capability = 'sources' | 'jobs' | 'review' | 'publish' | 'ask' | 'night' | 'picture' | 'router';
 
@@ -20,6 +20,10 @@ export const HUE: Record<Hue, string> = {
   purple: '#8a4fc7',
   orange: '#d9731a',
   mint: '#15a37a',
+  yellow: '#b07d05',
+  brown: '#8a5a3c',
+  green: '#2f8a3e',
+  red: '#cf3f36',
 };
 
 /** One stage-aware block inside a mocked Flow document. `at` is the stage it appears. */
@@ -34,7 +38,7 @@ export type DocBlock =
   | { kind: 'diagram'; title: string; nodes: string[] }
   | { kind: 'picture'; scene: 'commuter'; caption: string }
   | { kind: 'bilingual'; left: string; right: string; notes: number }
-  | { kind: 'consent'; rows: [string, string][]; action: string }
+  | { kind: 'consent'; title?: string; rows: [string, string][]; action: string }
   | { kind: 'tree'; items: { name: string; depth: number; open?: boolean }[] }
   | { kind: 'chips'; items: string[] };
 
@@ -226,6 +230,98 @@ export const SHOWCASE: Record<string, PathShowcase> = {
       ],
       review: '38 words added or removed; original: 142 words.',
       receipt: '~6 s · Gemma 4 E4B · on this Mac · $0.00',
+    },
+  },
+  'weekly-issue': {
+    slug: 'weekly-issue',
+    thumb: [0, 1],
+    title: 'The weekly issue, then the book',
+    persona: 'Creators',
+    hook: 'Your issues as files. Your year as a book.',
+    chip: 'Writing',
+    hue: 'yellow',
+    steps: ['Dictate the issue; draft it with Expand', 'Describe Picture writes the alt text', 'Collect the issues into an EPUB'],
+    benefits: ['Ownership', 'Time'],
+    diagram: { in: ['dictation', 'md'], middle: 'issue', out: ['epub'], through: ['picture', 'publish'], captions: ['Voice and notes', 'This week’s issue', 'A book of the year'] },
+    doc: {
+      folder: 'Newsletter Archive', file: 'issues/Issue 03.md',
+      title: 'The Harbour Letter, issue 3', dek: 'Writing in the open · spoken, then filled out from the notes',
+      blocks: [
+        { kind: 'prose', text: '40 readers and 11 replies in the first week. 9 drafts since August, at 3.4 replies each. 2 corrections, 0 unsubscribes.', cites: 1 },
+        { kind: 'callout', tone: 'brief', title: 'Alt text, from Describe Picture', text: 'A stylized scene depicts a small red boat in the foreground with several other boats in the background under a pale sun.' },
+        { kind: 'tree', items: [{ name: 'A Year of the Harbour Letter.epub', depth: 0, open: true }, { name: 'Cover', depth: 1 }, { name: 'Contents', depth: 1 }, { name: 'Issue 01', depth: 1 }, { name: 'Issue 02', depth: 1 }, { name: 'Issue 03', depth: 1 }] },
+      ],
+      review: '145 words added or removed; original: 114 words.',
+      receipt: '~14 s · Gemma 4 E4B · on this Mac · $0.00',
+    },
+  },
+  'account-brief': {
+    slug: 'account-brief',
+    thumb: [0, 1],
+    title: 'Account brief before the call',
+    persona: 'Sellers',
+    hook: 'Know what changed before the call.',
+    chip: 'Clients',
+    hue: 'brown',
+    steps: ['Import the lead sheet from Excel', 'Run Jobs to refresh the account', 'Publish Excel with every source kept'],
+    benefits: ['Time', 'Trust'],
+    diagram: { in: ['xlsx', 'md'], middle: 'jobs', out: ['xlsx'], through: [], captions: ['Lead sheet', 'Jobs refresh it', 'Brief for the call'] },
+    doc: {
+      folder: 'Sales Account', file: 'Account Brief.md',
+      title: 'Meridian Retail account brief', dek: 'Refreshed from the lead sheet before Discovery 04',
+      blocks: [
+        { kind: 'table', title: 'Questions for the meeting', head: ['Id', 'Question', 'Owner'], rows: [['R4', 'Windows reviewers', 'Mara'], ['R6', 'Store-cluster roll-up', 'Elliot']], changed: [1] },
+        { kind: 'diff', title: 'Exact changes · 1 out, 1 in', pairs: [{ before: 'R3 · Export for counsel · Open', after: 'R6 · Store-cluster roll-up · Open' }], note: 'R3 was answered. R4 is unchanged.' },
+        { kind: 'chips', items: ['Source file on every row', 'Captured on every row', 'README sheet'] },
+      ],
+      review: '2 awaiting a decision · 4 of 4 completed.',
+      receipt: '~17 s · Qwen 3.8 27B · on this Mac · $0.00',
+    },
+  },
+  'portfolio-explains-itself': {
+    slug: 'portfolio-explains-itself',
+    thumb: [0, 1],
+    title: 'A portfolio that explains itself',
+    persona: 'Investors',
+    hook: 'Your holdings, explained on your Mac.',
+    chip: 'Money',
+    hue: 'green',
+    steps: ['Import your holdings from a spreadsheet', 'Gather quotes; the charts redraw from your own files', 'Overnight notes describe the tables on a model on this Mac'],
+    benefits: ['Privacy', 'Ownership'],
+    diagram: { in: ['xlsx', 'web'], middle: 'dashboard', out: ['chart', 'model'], through: ['jobs', 'night'], captions: ['Holdings, quotes', 'A dashboard', 'Notes on this Mac'] },
+    doc: {
+      folder: 'Stock Portfolio', file: 'Portfolio Dashboard.md',
+      title: 'Portfolio dashboard', dek: 'Fictional lots · public prices, 30 September 2026 · not investment advice',
+      blocks: [
+        { kind: 'kpis', items: [{ label: 'Value', value: '111,233' }, { label: 'Day change', value: '510' }, { label: 'Gain on cost', value: '16%' }] },
+        { kind: 'bars', title: 'Largest holdings', items: [{ label: 'NVDA', value: 17294, hi: true }, { label: 'AAPL', value: 13305 }, { label: 'GOOGL', value: 10434 }] },
+        { kind: 'callout', tone: 'watch', title: 'Overnight note', text: 'The first draft was refused: one number could not be traced to the data. The second draft traced 14 of 14.' },
+      ],
+      review: '11 changes: 10 views redrawn and the note.',
+      receipt: '~2 min 21 s · Qwen 3.8 27B · on this Mac · $0.00',
+    },
+  },
+  'manuscript-to-book': {
+    slug: 'manuscript-to-book',
+    thumb: [0, 1],
+    title: 'Manuscript to book',
+    persona: 'Authors',
+    hook: 'Proofread on your Mac. A book you own.',
+    chip: 'Writing',
+    hue: 'red',
+    steps: ['Import the Word manuscript', 'Proofread chapter by chapter', 'Generate a cover and publish the EPUB'],
+    benefits: ['Ownership', 'Cost'],
+    diagram: { in: ['docx'], middle: 'book', out: ['epub'], through: ['review', 'picture'], captions: ['Word manuscript', 'Proofread', 'Book and cover'] },
+    doc: {
+      folder: 'Manuscript', file: 'chapters/The ferryman’s ledger.md',
+      title: 'The ferryman’s ledger', dek: 'The Estuary · chapter 3, imported from Word',
+      blocks: [
+        { kind: 'diff', title: 'Proofread · 3 fixes', pairs: [{ before: 'writen', after: 'written' }, { before: 'Their were', after: 'There were' }, { before: 'it’s painter', after: 'its painter' }], note: 'Nothing else changed.' },
+        { kind: 'consent', title: 'Before anything leaves this Mac', rows: [['Service', 'OpenRouter · Gemini 3.1 Flash Lite Image'], ['What leaves this Mac', 'Title, subtitle, author, one sentence'], ['Estimated cost', '0.0336 USD a picture']], action: 'Allow Once' },
+        { kind: 'tree', items: [{ name: 'The Estuary.epub', depth: 0, open: true }, { name: 'Cover', depth: 1 }, { name: 'Contents', depth: 1 }, { name: 'Chapter 01', depth: 1 }, { name: 'Chapter 02', depth: 1 }, { name: 'The ferryman’s ledger', depth: 1 }] },
+      ],
+      review: '3 fixes on 3 lines. The rest of the chapter is unchanged.',
+      receipt: '~9 s · Gemma 4 E4B · on this Mac · $0.00',
     },
   },
 };
