@@ -9,17 +9,33 @@ dek: "A Notion export in, a folder of Markdown you own out: pages that link to e
 hero: ../../assets/flow/paths/leave-rented-notes/01-home-own-your-notes.webp
 heroAlt: "Home: Leave rented notes, under Own your notes"
 source: orionfold-flow articles/05-leave-rented-notes/ARTICLE.md
-order: 99
+order: 11
 featured: false
-draft: true
-chip: ""
-summary: "A Notion export in, a folder of Markdown you own out: pages that link to each other, a meeting note tidied by an open model on the laptop, and nothing changed until you approved it. About 6 seconds of model time, for $0.00."
+draft: false
+chip: Own your notes
+summary: A Notion export in. A folder of Markdown you own out, with links that open pages, and a meeting note tidied on your Mac.
 stat:
-  value: ""
-  label: ""
-steps: []
-cardShot: 01-home-own-your-notes
-receipt: []
+  value: 6 s
+  label: Proofread on this Mac, $0.00
+steps:
+  - Add the Notion export as a folder
+  - Let Flow pick a model on this Mac
+  - Approve each AI edit
+cardShot: 10-exact-changes
+receipt:
+  - label: Links between pages
+    value: Open in Flow
+    evidence: verified
+  - label: Proofread on the laptop
+    value: ≈6 s
+    evidence: verified
+  - label: Facts kept after proofread
+    value: All of them
+    evidence: verified
+  - label: Model cost
+    value: $0.00, on this Mac
+    evidence: verified
+caveat: In Flow 2.0.3, the current release, a link between Notion pages opens a web tab that cannot load. We walked a newer build with the fix (#806). That fix is not in a release yet.
 ---
 
 ## The press release we would want to write

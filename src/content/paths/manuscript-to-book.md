@@ -12,7 +12,7 @@ source: orionfold-flow articles/11-manuscript-to-book/ARTICLE.md
 order: 10
 featured: false
 draft: false
-chip: Writing
+chip: Authors
 summary: A Word chapter in. A proofread chapter and an EPUB with a drawn cover out, and every fix waits for your yes.
 stat:
   value: 3 fixes
@@ -52,7 +52,7 @@ The book is a folder of Markdown files. It is not a document locked inside a pub
 2. **Proofread proposes and you decide.** `gemma-4-e4b` on Flow Runtime proposed three corrections: *writen → written*, *Their were → There were*, and *it's painter → its painter*. The exact diff showed nothing else changed. One Keep saved them.
 3. **Publish binds the folder.** File ▸ Publish Folder… on `chapters` built a 3-chapter EPUB with a contents page. *Generate…* drew a cover from our title, subtitle, author and one sentence of description.
 
-**One caution before you start.** In this build, two steps of this path can go wrong around Publish. After Publish Folder… one chapter lost its title and author lines (#836). A paid cover can also vanish if you switch tabs before keeping it (#837). Both are explained under Step three, with what to do.
+**One caution before you start.** In this build, one chapter lost its title and author lines while we were getting ready to publish (#836, since fixed), and a paid cover can vanish if you switch tabs before keeping it (#837). Both are explained under Step three, with what to do.
 
 ## The job
 
@@ -128,7 +128,7 @@ Keep wrote the picture into the book's folder at 08:22:23 PDT as `chapters/asset
 
 *Save EPUB…* wrote `The Estuary.epub` at 08:23:23 PDT: **256,405 bytes**, titled *The Estuary*, with a cover page, the cover image, a title page, a contents page, the three chapters in order, and an "About this book" page. That last page lists each chapter with its word count and how many history records back it. The saved book carries all three corrections.
 
-**The second trap, and the one to watch for.** Between the Keep of the proofread and the save of the book, the chapter we had imported lost its front matter. That is its `title:` and `author:` lines, and nothing else in it. The loss appeared the moment File ▸ Publish Folder… was chosen with that chapter open in the editor. Its tab gained the unsaved dot, and Flow saved the change four seconds later without a history record. The ribbon then read "Receipts stale". The book was not harmed: the chapter's title comes from its file name. It has no author line, because the lost field was the only one. This is filed as #836, sev1, because it silently changed a document. **Until it is fixed, close a chapter before choosing Publish Folder…, and check its first lines afterwards.** We saw it once and have not yet reproduced it.
+**The second trap, and the one to watch for.** Between the Keep of the proofread and the save of the book, the chapter we had imported lost its front matter. That is its `title:` and `author:` lines, and nothing else in it. We first saw the loss just as File ▸ Publish Folder… was chosen with that chapter open in the editor. Its tab gained the unsaved dot, and Flow saved the change four seconds later as an ordinary edit. The ribbon then read "Receipts stale". The book was not harmed: the chapter's title comes from its file name. It has no author line, because the lost field was the only one. It was filed as #836, sev1, because it changed a document without anyone meaning to. Reproducing it later showed that Publish was not the cause. With the caret on the blank line under the title, two presses of Backspace deleted the whole title-and-author block. Flow's next build refuses that edit: the properties change only through their own row. **On 2.0.3, keep Backspace away from the line just under a chapter's title, and check its first lines before you publish.**
 
 ## The deliverable
 
@@ -173,6 +173,7 @@ The honest reading: the text work is small and runs locally. A chapter of 256 wo
 | Corrections | writen→written, Their→There, it's→its; nothing else | verified | shot 08; `.flow-review` `packets/0` base vs proposed |
 | Kept | Approve & Save 08:06:31; `document.change` 15:06:31.961Z; disk holds the three fixes | verified | `date`; receipts; `grep` |
 | Front matter lost | 08:08:30 rewrite, 1,387 → 1,323 B, `title:`/`author:` gone, no receipt after 15:06:33Z | verified | `ls -laT`; `head`; receipts |
+| Cause of the loss | Two Backspaces under the properties row delete the block; Publish Folder… alone does not | verified (09-30, builds 0249-17 and 0249-18) | webprobe keydowns; file size and md5 |
 | Wrong folder | first Publish Folder…: "Flow · 106 documents in 11 sections · 22 charts" | verified | capture 08:08:44 |
 | Right folder | "chapters · Folder · 3 documents · 351 words · 7 files" | verified | shot 10 |
 | Consent | OpenRouter, Gemini 3.1 Flash Lite Image, 2 items ≈654 bytes, estimated 0.0336 USD | verified | shot 12 |

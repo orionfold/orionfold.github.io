@@ -360,6 +360,11 @@ const paths = defineCollection({
       steps: z.array(z.string()),
       cardShot: z.string(), // shot name under src/assets/flow/paths/<slug>/
       receipt: z.array(z.object({ label: z.string(), value: z.string(), evidence })),
+      // What a reader on the released build sees differently from the walk,
+      // when the walk ran on a dev build carrying a fix no release has yet.
+      caveat: z.string().optional(),
+      // The site reworded the title; the sync keeps it (see sync-flow-paths.mjs).
+      titleLocked: z.boolean().optional(),
     }),
 });
 
@@ -371,7 +376,7 @@ const compare = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/compare' }),
   schema: () =>
     z.object({
-      tool: z.string(), // Notion, Obsidian, Claude Code, Codex
+      tool: z.string(), // Notion, Obsidian, Claude Code, Codex, Canva
       kind: z.enum(['switch', 'pair']), // move from it, or use Flow beside it
       order: z.number(),
       title: z.string(),

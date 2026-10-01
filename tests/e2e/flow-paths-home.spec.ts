@@ -14,8 +14,9 @@ for (const width of [1440, 390]) {
     await expect(agents).toHaveAttribute('aria-pressed', 'true');
     await expect(visible).toHaveCount(1);
     await expect(visible.getByRole('link', { name: /Read the walkthrough/ })).toHaveAttribute('href', '/flow/paths/review-agents/');
-    // A draft path never reaches the built site.
-    await expect(demo.getByRole('button', { name: 'Teams' })).toHaveCount(0);
+    // One chip per path, and no two chips share a label.
+    const labels = await demo.locator('[data-chip]').allTextContents();
+    expect(labels.length).toBe(new Set(labels).size);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(0);
   });
@@ -26,15 +27,27 @@ test('a path page renders its receipt and links back to all paths', async ({ pag
   await expect(page.locator('h1')).toHaveText('The investor update that reads the market for you');
   await expect(page.locator('.fp-receipt dd').first()).toContainText('79 s');
   await expect(page.locator('#evidence')).toBeVisible();
-  const status = await page.request.get('/flow/paths/status-from-what-you-have/');
-  expect(status.status()).toBe(404);
+  await expect(page.locator('.fp-caveat')).toHaveCount(0);
+  // A walk on a dev build names what the released build does differently.
+  await page.goto('/flow/paths/weekly-issue/');
+  await expect(page.locator('.fp-caveat')).toContainText('2.0.3');
 });
 
 test('Compare pages are linked from the nav and each row cites a source', async ({ page }) => {
   await page.goto('/flow/compare/');
   const cards = page.locator('.fp-tools a');
-  await expect(cards).toHaveCount(4);
+  await expect(cards).toHaveCount(5);
   await expect(page.locator('#main-nav .living-nav-links .living-nav-dd > a[href="/flow/compare/"]')).toHaveText('Compare');
+  // The hub previews each page: three sourced rows per tool, the paths the
+  // pages start with, and the limits that hold everywhere.
+  const tools = page.locator('.fc-tool');
+  await expect(tools).toHaveCount(5);
+  for (const tool of await tools.all()) {
+    await expect(tool.locator('.fp-compare tbody tr')).toHaveCount(3);
+    await expect(tool.locator('a.fp-all')).toHaveAttribute('href', /^\/flow\/compare\/[a-z-]+\/$/);
+  }
+  await expect(page.locator('.fc-start .ps')).not.toHaveCount(0);
+  await expect(page.locator('.fc-not li')).toHaveCount(5);
   await page.goto('/flow/compare/notion/');
   const rows = page.locator('.fp-compare tbody tr');
   expect(await rows.count()).toBeGreaterThanOrEqual(4);
@@ -50,7 +63,7 @@ test('the Paths nav item carries a dropdown of the first five paths', async ({ p
   const items = dd.locator('.living-nav-dd-panel a[href^="/flow/paths/"]:not(.living-nav-dd-all)');
   await expect(items).toHaveCount(5);
   await expect(dd.locator('.living-nav-dd-all')).toHaveAttribute('href', '/flow/paths/');
-  // A draft path never reaches the menu on the built site.
+  // Only the first five by order; the sixth waits on All paths.
   await expect(dd.locator('a[href="/flow/paths/status-from-what-you-have/"]')).toHaveCount(0);
 });
 

@@ -25,7 +25,8 @@
 // Front matter has two owners. The product fields (title, path, persona,
 // drafted, build, data) are refreshed from the article on every sync. The
 // website fields (order, featured, chip, summary, stat, steps, cardShot,
-// receipt, draft, …) are kept from the existing .md. A new article arrives
+// receipt, draft, caveat, …) are kept from the existing .md, and so is the
+// title when titleLocked is set. A new article arrives
 // with draft: true and must be curated before it is routed.
 //
 //   node scripts/sync-flow-paths.mjs                # sync every article
@@ -193,6 +194,9 @@ async function syncOne(dir, { released }) {
     source: `orionfold-flow articles/${dir}/ARTICLE.md`,
     ...site,
   };
+  // The website may reword a title to keep it true of the released build
+  // (operator 2026-09-30); titleLocked keeps that wording across syncs.
+  if (existing?.titleLocked) front2.title = existing.title;
 
   const shotDir = shotDirFor(slug);
   const needed = new Set([...published.shots, site.cardShot].filter(Boolean));

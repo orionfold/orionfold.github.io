@@ -8,7 +8,7 @@
 // Tier pills are deliberately left out: the manifest's "free" marks disagree
 // with the rule that any model run is Pro, so the site shows benefits only.
 
-export type Hue = 'teal' | 'blue' | 'cyan' | 'indigo' | 'purple' | 'orange' | 'mint' | 'yellow' | 'brown' | 'green' | 'red';
+export type Hue = 'teal' | 'blue' | 'cyan' | 'indigo' | 'purple' | 'orange' | 'mint' | 'yellow' | 'brown' | 'green' | 'red' | 'pink';
 export type Mark = 'pdf' | 'xlsx' | 'pptx' | 'docx' | 'md' | 'csv' | 'code' | 'folder' | 'web' | 'terminal' | 'claude' | 'openai' | 'dictation' | 'history' | 'epub' | 'chart' | 'model' | 'flow';
 export type Capability = 'sources' | 'jobs' | 'review' | 'publish' | 'ask' | 'night' | 'picture' | 'router';
 
@@ -24,6 +24,7 @@ export const HUE: Record<Hue, string> = {
   brown: '#8a5a3c',
   green: '#2f8a3e',
   red: '#cf3f36',
+  pink: '#c2477f',
 };
 
 /** One stage-aware block inside a mocked Flow document. `at` is the stage it appears. */
@@ -261,7 +262,7 @@ export const SHOWCASE: Record<string, PathShowcase> = {
     title: 'Account brief before the call',
     persona: 'Sellers',
     hook: 'Know what changed before the call.',
-    chip: 'Clients',
+    chip: 'Sellers',
     hue: 'brown',
     steps: ['Import the lead sheet from Excel', 'Run Jobs to refresh the account', 'Publish Excel with every source kept'],
     benefits: ['Time', 'Trust'],
@@ -307,7 +308,7 @@ export const SHOWCASE: Record<string, PathShowcase> = {
     title: 'Manuscript to book',
     persona: 'Authors',
     hook: 'Proofread on your Mac. A book you own.',
-    chip: 'Writing',
+    chip: 'Authors',
     hue: 'red',
     steps: ['Import the Word manuscript', 'Proofread chapter by chapter', 'Generate a cover and publish the EPUB'],
     benefits: ['Ownership', 'Cost'],
@@ -322,6 +323,29 @@ export const SHOWCASE: Record<string, PathShowcase> = {
       ],
       review: '3 fixes on 3 lines. The rest of the chapter is unchanged.',
       receipt: '~9 s · Gemma 4 E4B · on this Mac · $0.00',
+    },
+  },
+  'life-admin-handled': {
+    slug: 'life-admin-handled',
+    thumb: [0, 1],
+    title: 'Life admin, handled',
+    persona: 'Tax · budget · insurance · travel',
+    hook: 'Your month, from your bank’s export.',
+    chip: 'Life',
+    hue: 'pink',
+    steps: ['Make a copy of the Household Budget', 'Replace the sample statements with your own', 'Run Jobs to redraw this month’s totals'],
+    benefits: ['Time', 'Privacy'],
+    diagram: { in: ['csv', 'folder'], middle: 'budget', out: ['chart'], through: ['jobs'], captions: ['Your statements', 'This month’s review', 'Totals that redraw'] },
+    doc: {
+      folder: 'Household Budget', file: 'Household Budget.md',
+      title: 'Household budget, September', dek: 'Harbor Credit Union statement · a fictional household',
+      blocks: [
+        { kind: 'kpis', items: [{ label: 'Spent', value: '$6,916' }, { label: 'Plan', value: '$7,810' }, { label: 'Savings rate', value: '29.4%' }] },
+        { kind: 'bars', title: 'Travel against its budget ($)', items: [{ label: 'Budget', value: 300 }, { label: 'Spent', value: 386, hi: true }] },
+        { kind: 'callout', tone: 'ask', title: 'No rule could place these', text: '2 lines, $445: a vet visit and a Zelle payment. Name these first.' },
+      ],
+      review: '8 changes: the charts, the tables and the notes.',
+      receipt: '~1 s totals · Qwen 3.8 27B notes · on this Mac · $0.00',
     },
   },
 };

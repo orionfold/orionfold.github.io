@@ -82,11 +82,16 @@ test('every published path is complete and honest about its build', () => {
   }
 });
 
-test('Status from what you already have stays a draft until the PDF reader default is decided (#802)', () => {
-  // Its title says none of the files leaves the Mac, but PDF Import defaults to
-  // a cloud reader. Lift this only when the operator clears the wording.
+test('Status from what you already have promises only what 2.0.3 keeps (#802)', () => {
+  // PDF Import on 2.0.3 starts on a hosted reader, so the title may not say
+  // nothing leaves the Mac. Operator 2026-09-30: "everything stays on the Mac,
+  // unless you consent". The sync keeps this wording (titleLocked).
   const status = entries.find((e) => e.slug === 'status-from-what-you-have');
-  if (status) assert.equal(status.front.draft, true);
+  assert.ok(status, 'the status path exists');
+  assert.equal(status.front.titleLocked, true);
+  assert.doesNotMatch(status.front.title, /none of them leaves/i);
+  assert.match(status.front.title, /unless you say yes/);
+  assert.match(status.front.caveat, /2\.0\.3/);
 });
 
 test('llms.txt lists every published path', () => {
@@ -146,4 +151,9 @@ test('publishBody rewrites a generated .jpg picture like a .png shot', () => {
   assert.deepEqual(out.shots, ['01-home', '15-generated-cover']);
   assert.match(out.body, /\]\(\.\.\/\.\.\/assets\/flow\/paths\/manuscript-to-book\/15-generated-cover\.webp\)/);
   assert.doesNotMatch(out.body, /\.jpg\)/);
+});
+
+test('no two paths share a Home chip label, drafts included', () => {
+  const chips = entries.map((e) => e.front.chip).filter(Boolean);
+  assert.equal(chips.length, new Set(chips).size, `duplicate chip in ${chips.join(', ')}`);
 });

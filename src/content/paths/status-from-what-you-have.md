@@ -1,5 +1,5 @@
 ---
-title: This week's status from the files you already have, and none of them leaves the Mac
+title: "This week's status from the files you already have: everything stays on your Mac unless you say yes"
 path: Status from what you already have
 persona: Knowledge workers
 drafted: "2026-09-28"
@@ -11,7 +11,8 @@ heroAlt: "Home: Status from what you already have, the Teams path"
 source: orionfold-flow articles/04-status-from-what-you-have/ARTICLE.md
 order: 6
 featured: false
-draft: true
+draft: false
+titleLocked: true
 chip: Teams
 summary: A vendor’s Word update, a sprint review PDF and your notes in. A six-point status out, approved by you, saved as a Word file.
 stat:
@@ -35,6 +36,7 @@ receipt:
   - label: Human review time
     value: not measured
     evidence: unknown
+caveat: In Flow 2.0.3, the current release, File ▸ Import of a PDF on this path starts on a hosted reader. Pick On this Mac yourself to keep the file on your Mac. We walked a newer build where On this Mac is the default (#802). That fix is not in a release yet.
 ---
 
 ## The press release we would want to write

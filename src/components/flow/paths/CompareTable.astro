@@ -1,0 +1,27 @@
+---
+// The side-by-side rows of a Compare page: each claim about the other tool
+// carries a dated source, and Flow's side links the path that shows it. The
+// hub shows the first few rows of each page; the page shows them all.
+import { publishedPaths, pathHref, type CompareEntry } from '../../../lib/flow/paths';
+import { flowTermsHtml } from '../../../lib/flow/flow-terms.mjs';
+import '../../../styles/flow-paths.css';
+
+interface Props { entry: CompareEntry; limit?: number }
+const { entry, limit } = Astro.props;
+const d = entry.data;
+const rows = limit ? d.rows.slice(0, limit) : d.rows;
+const paths = await publishedPaths();
+const pathName = (slug: string) => paths.find((p) => p.id === slug)?.data.path;
+---
+<table class="fp-compare">
+  <thead><tr><th scope="col">Topic</th><th scope="col">{d.tool}</th><th scope="col">Flow</th></tr></thead>
+  <tbody>
+    {rows.map((r) => (
+      <tr>
+        <th scope="row">{r.topic}</th>
+        <td>{r.them}{r.source && <small>Source: <a href={r.source.href} rel="noopener">{r.source.label}</a>, checked {r.source.checked}</small>}</td>
+        <td><Fragment set:html={flowTermsHtml(r.flow)} />{r.path && pathName(r.path) && <small>Shown in: <a href={pathHref(r.path)}>{pathName(r.path)}</a></small>}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>

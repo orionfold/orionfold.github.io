@@ -63,6 +63,7 @@ const schema = [
       <div class="ed-article-kicker"><a href="/flow/paths/">← All paths</a><span>FLOW {release} PATH / {d.chip.toUpperCase()}{d.persona !== d.chip && ` · ${d.persona.toUpperCase()}`}</span></div>
       <h1>{d.title}</h1>
       <p class="ed-article-dek">{d.dek}</p>
+      {d.caveat && <p class="fp-caveat"><b>On the released build:</b> {d.caveat}</p>}
       <div class="ed-hero-bottom"><div class="ed-meta"><span>Path: {d.path}</span><span>Walked on Flow</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#try-this-path" class="ed-download-link">Try this path ↓</a></div></div>
       <figure class="fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>
     </header>

@@ -215,7 +215,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/compare/': {
     slug: 'compare', eyebrow: 'Flow 2.0 · Compare',
     title: 'Coming from another tool?', seed: 'compare',
-    alt: 'Compare Flow with Notion, Obsidian, Claude Code and Codex: what moves, what stays, and the path to start with.', living: true,
+    alt: 'Compare Flow with Notion, Obsidian, Claude Code, Codex and Canva: what moves, what stays, and the path to start with.', living: true,
   },
   '/flow/specifications/': {
     slug: 'flow-specifications',

@@ -9,7 +9,8 @@ import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
 import PathShowcase from '../../../components/flow/mocks/PathShowcase.astro';
-import { publishedCompare, publishedPaths, compareHref, pathHref, type CompareEntry } from '../../../lib/flow/paths';
+import CompareTable from '../../../components/flow/paths/CompareTable.astro';
+import { publishedCompare, publishedPaths, compareHref, type CompareEntry } from '../../../lib/flow/paths';
 import { compareOgSlug, ogPath } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 import '../../../styles/living-base.css';
@@ -26,7 +27,6 @@ const { entry } = Astro.props as { entry: CompareEntry };
 const { Content, headings } = await render(entry);
 const d = entry.data;
 const paths = await publishedPaths();
-const pathName = (slug: string) => paths.find((p) => p.id === slug)?.data.path;
 const start = paths.find((p) => p.id === d.startWith);
 const dateIso = d.updated.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.updated);
@@ -79,18 +79,7 @@ const schema = [
       </aside>
       <article class="ed-prose fp-prose" aria-label={d.title}>
         <h2 id="side-by-side">Side by side</h2>
-        <table class="fp-compare">
-          <thead><tr><th scope="col">Topic</th><th scope="col">{d.tool}</th><th scope="col">Flow</th></tr></thead>
-          <tbody>
-            {d.rows.map((r) => (
-              <tr>
-                <th scope="row">{r.topic}</th>
-                <td>{r.them}{r.source && <small>Source: <a href={r.source.href} rel="noopener">{r.source.label}</a>, checked {r.source.checked}</small>}</td>
-                <td><Fragment set:html={flowTermsHtml(r.flow)} />{r.path && pathName(r.path) && <small>Shown in: <a href={pathHref(r.path)}>{pathName(r.path)}</a></small>}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <CompareTable entry={entry} />
         <Content />
         {start && <div class="fp-start"><PathShowcase entry={start} /></div>}
         <h2 id="what-flow-is-not">What Flow is not</h2>

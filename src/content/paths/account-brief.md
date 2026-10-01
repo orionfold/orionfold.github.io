@@ -12,7 +12,7 @@ source: orionfold-flow articles/09-account-brief/ARTICLE.md
 order: 7
 featured: false
 draft: false
-chip: Clients
+chip: Sellers
 summary: A lead sheet in. An account brief that redraws itself before each call out, and an Excel workbook where every row names its source.
 stat:
   value: 17 s

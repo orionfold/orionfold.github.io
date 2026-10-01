@@ -11,7 +11,7 @@ heroAlt: "Home: The weekly issue, then the book, under Writing"
 source: orionfold-flow articles/08-weekly-issue/ARTICLE.md
 order: 9
 featured: false
-draft: true
+draft: false
 chip: Writing
 summary: A spoken draft in. A finished issue with figures from your notes and alt text on its picture out, and the year of issues bound into an EPUB.
 stat:
@@ -35,6 +35,7 @@ receipt:
   - label: Model cost
     value: $0.00, on this Mac
     evidence: verified
+caveat: In Flow 2.0.3, the current release, choosing the issue’s own picture as the cover gives “No cover”, and the EPUB leaves the picture out. We walked a newer build with the fix (#814). That fix is not in a release yet.
 ---
 
 ## The press release we would want to write
