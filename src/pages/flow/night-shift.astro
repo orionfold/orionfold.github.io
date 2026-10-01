@@ -1,10 +1,12 @@
 ---
 import FlowFeaturePage from '../../components/flow/FlowFeaturePage.astro';
+import FlowReel from '../../components/flow/FlowReel.astro';
 import FlowDetail from '../../components/flow/FlowDetail.astro';
 import { FLOW_V16_SHOTS as shots } from '../../data/flow-v16';
 import reviewChart from '../../assets/flow/shots/v17-review-selected-chart.webp';
 ---
 <FlowFeaturePage slug="night-shift" title="Flow Night Shift · Wake up to what changed · Orionfold" description="Flow refreshes your living documents on your Mac, writes a Morning Briefing and marks overnight changes for you to keep or revert.">
+  <FlowReel id="night-shift-reel" heading="Jobs that run while you sleep." lede="A short reel. Your documents get jobs, Flow works them on your Mac at night, and in the morning you review what changed." />
   <section class="flow-feature-section" id="set-the-shift"><div class="flow-feature-inner flow-feature-grid">
     <div class="flow-feature-copy"><p class="of-eyebrow">01 · Set the rhythm</p><h2 class="of-display">The work has a night shift.</h2><p>Choose a window in Settings. When your Mac is plugged in and idle, Flow works the folders you have open, even with the app quit.</p><ul><li>The starting window is <strong>2:00–6:00 AM</strong>. Change it to suit your day.</li><li>Catch up on wake gives a missed night another chance. A shift does not run twice in one night.</li><li>Use <strong>Run now</strong> to watch a shift, or pause tonight from the moon menu.</li></ul></div>
     <FlowDetail src={shots.nightRunning} alt="An earlier Night Shift progress menu lists completed, running and waiting documents." caption="Earlier progress detail · Flow 1.6 (1899) · Sample Guide documents" />

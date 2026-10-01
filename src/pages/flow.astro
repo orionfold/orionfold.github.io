@@ -32,6 +32,8 @@ import WowStat from '../components/flow/WowStat.astro';
 import FlowPlans from '../components/living/FlowPlans.astro';
 import FlowFaq from '../components/living/FlowFaq.astro';
 import FlowClosing from '../components/living/FlowClosing.astro';
+import FlowReel from '../components/flow/FlowReel.astro';
+import { flowReelSchema } from '../data/flow-reel';
 const title = "Flow for Mac \u00b7 Give your documents work to do.";
 const description = `Flow 2.0 for Mac. Start from a path or one of ${FLOW_COUNTS.livingDocuments} Living Documents, run their Jobs, then review each changed part. Your files. Your judgment. Base is free.`;
 const og = ogMeta('/flow/');
@@ -40,12 +42,15 @@ const faqSchema = {
   "@context": "https://schema.org", "@type": "FAQPage",
   mainEntity: faqs.map(faq => ({"@type":"Question",name:faq.question,acceptedAnswer:{"@type":"Answer",text:faq.parts.map(part => part.text).join("")}})),
 };
+const reelLede = 'Give a document a job. Flow runs it on your Mac, even overnight. Then you keep or undo each change.';
+const reelSchema = flowReelSchema(SITE.url, reelLede);
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ls-page-flow" jsonLd={[pageSchema, faqSchema]}>
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ls-page-flow" jsonLd={[pageSchema, faqSchema, reelSchema]}>
   <Nav />
   <main id="main" class="ls-main">
     <FlowHero />
     <FlowNavigation />
+    <FlowReel heading="See Flow work in about a minute." lede={reelLede} />
     <PathsHomeMock />
     <WowStat ids={['brief43', 'figures', 'footnotes']} />
     <FlowDataDefinition />

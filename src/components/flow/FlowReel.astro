@@ -1,0 +1,68 @@
+---
+// The Flow introduction reel (YouTube). Click to play: the page shows a local
+// poster and loads nothing from YouTube until the visitor presses play, then
+// swaps in the privacy-enhanced (youtube-nocookie) player. Data: FLOW_REEL.
+import { Image } from 'astro:assets';
+import Play from '@lucide/astro/icons/play';
+import { FLOW_REEL } from '../../data/flow-reel';
+
+interface Props { id?: string; eyebrow?: string; heading: string; lede: string }
+const { id = 'flow-reel', eyebrow = FLOW_REEL.eyebrow, heading, lede } = Astro.props;
+const { youtubeId, title, durationLabel, poster, posterAlt } = FLOW_REEL;
+const watchUrl = `https://www.youtube.com/watch?v=${youtubeId}`;
+---
+<section id={id} class="reel" aria-labelledby={`${id}-title`}>
+  <div class="reel-inner">
+    <div class="reel-copy">
+      <p class="reel-eyebrow">{eyebrow}</p>
+      <h2 id={`${id}-title`} class="reel-title">{heading}</h2>
+      <p class="reel-lede">{lede}</p>
+      <a class="reel-link" href={watchUrl} rel="noopener" target="_blank">Watch on YouTube</a>
+    </div>
+    <div class="reel-frame" data-reel={youtubeId} data-reel-title={title}>
+      <button type="button" class="reel-play" aria-label={`Play the video: ${title} (${durationLabel})`}>
+        <Image src={poster} alt={posterAlt} widths={[640, 960, 1280]} sizes="(min-width: 960px) 58vw, 92vw" loading="lazy" decoding="async" class="reel-poster" />
+        <span class="reel-badge"><Play size={18} stroke-width={2.4} aria-hidden="true" /><span>Play · {durationLabel}</span></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  for (const frame of document.querySelectorAll<HTMLElement>('[data-reel]')) {
+    frame.querySelector('button')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${frame.dataset.reel}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+      iframe.title = frame.dataset.reelTitle ?? 'Flow video';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      iframe.allowFullscreen = true;
+      iframe.className = 'reel-player';
+      frame.replaceChildren(iframe);
+      iframe.focus();
+    }, { once: true });
+  }
+</script>
+
+<style>
+  .reel { padding: 72px 0; border-block: 1px solid var(--line, #d5dbd6); background: var(--teal-pale, #e8f2ef); }
+  .reel-inner { width: min(1200px, calc(100% - 32px)); margin-inline: auto; display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 960px) { .reel-inner { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; } }
+
+  .reel-copy { display: grid; gap: 14px; justify-items: start; }
+  .reel-copy > * { margin: 0; }
+  .reel-eyebrow { font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--teal, #247b80); }
+  .reel-title { font: 700 clamp(1.9rem, 3.6vw, 2.8rem)/1.08 var(--font-display, 'Geist Sans'), Arial, sans-serif; letter-spacing: -.02em; color: var(--ink, #171c1a); text-wrap: balance; }
+  .reel-lede { max-width: 42ch; font-size: 1.08rem; line-height: 1.55; color: var(--ink, #171c1a); text-wrap: pretty; }
+  .reel-link { font-weight: 700; color: var(--teal, #247b80); text-decoration: underline; text-underline-offset: 3px; }
+
+  .reel-frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 14px; border: 1px solid var(--line, #d5dbd6); background: #13201f; box-shadow: 0 18px 44px -24px rgb(19 32 31 / .45); }
+  .reel-play { all: unset; position: absolute; inset: 0; cursor: pointer; display: block; }
+  .reel-play:focus-visible { outline: 3px solid var(--teal, #247b80); outline-offset: 3px; }
+  .reel-poster { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
+  .reel-play:hover .reel-poster { transform: scale(1.015); }
+  .reel-badge { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px; background: #13201f; color: #fff; font-weight: 700; font-size: 1rem; box-shadow: 0 10px 24px -10px rgb(0 0 0 / .55); transition: background .2s ease; }
+  .reel-play:hover .reel-badge, .reel-play:focus-visible .reel-badge { background: var(--teal, #247b80); }
+  .reel-frame :global(.reel-player) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  @media (prefers-reduced-motion: reduce) { .reel-poster, .reel-badge { transition: none; } .reel-play:hover .reel-poster { transform: none; } }
+</style>
