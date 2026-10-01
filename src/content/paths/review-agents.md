@@ -116,6 +116,14 @@ Second, the subscription route makes that overhead someone else's problem. Flow 
 
 **Can I undo a change after keeping it?** History keeps every saved version, with the receipt of the run that made it.
 
+## Update: build 0249-1 (2026-09-28, in Flow 2.1)
+
+These shipped in **Flow 2.1** (build 3020, 30 September 2026). They were checked on a pre-release build (0249-1) on 28 September, against this same run's receipts; the walk above describes 2.0.3.
+
+- **The agent is named (#784).** History's run card reads *Run by · Codex*, and the proposal's row says "Run by Codex". The saved change is still credited to Flow, which wrote the text you approved. The card's "marked with the agent's name" holds on the proposal and in History.
+- **"Included" is recorded (#786).** History ▸ Cost reads "Included in a subscription you already pay for." ![History for the Codex run on build 0249-1](../../assets/flow/paths/review-agents/0249-history-cost.webp)
+- **Review ▸ Document paints only changed lines (#785).** Not re-checked on screen: the proposal was already approved.
+
 ## Evidence
 
 | Claim | Value | Label | Source |

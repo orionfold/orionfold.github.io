@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { FLOW_VERSION } from '../../lib/flow/flow-release';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
 import FlowSubNav from './FlowSubNav.astro';
@@ -27,7 +28,7 @@ const breadcrumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList
       <div class="flow-hero__grid" aria-hidden="true"></div><div class="flow-hero__glow" aria-hidden="true"></div>
       <div class="relative mx-auto max-w-6xl grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
-          <p class="of-eyebrow">Flow 1.7 · {tour.label}</p>
+          <p class="of-eyebrow">Flow {FLOW_VERSION} · {tour.label}</p>
           <h1 id="flow-feature-title" class="hero-gradient-text mt-4 font-display text-[clamp(2.6rem,5.5vw,4.6rem)] font-extrabold leading-[1.03] tracking-[-0.045em]">{tour.title}</h1>
           <p class="mt-6 text-lg leading-relaxed text-text-muted sm:text-xl">{tour.description}</p>
           <a href="/flow/tour/" class="of-text-action mt-7 inline-flex items-center gap-2">Explore the product tour <span aria-hidden="true">→</span></a>

@@ -54,6 +54,9 @@ test('publishBody drops the H1, lifts the dek and hero, and rewrites shots', () 
 test('publishBody includes a build update once that build is released', () => {
   const out = publishBody(ARTICLE, { slug: 'demo', released: ['0249-1'] });
   assert.match(out.body, /## Update: build 0249-1/);
+  assert.doesNotMatch(out.body, /not yet released/, 'a released update no longer says it is unreleased');
+  const named = publishBody(ARTICLE, { slug: 'demo', released: ['0249-1'], releasedIn: '2.1' });
+  assert.match(named.body, /## Update: build 0249-1 \(2026-09-28, in Flow 2\.1\)/);
 });
 
 const dir = new URL('src/content/paths/', root);
@@ -66,7 +69,7 @@ const published = entries.filter((e) => !e.front.draft);
 test('every published path is complete and honest about its build', () => {
   assert.ok(published.length >= 5, 'the five walked paths are published');
   for (const { slug, front, body } of published) {
-    assert.match(front.build, /Flow 2\.0\.\d+/, `${slug} names the build it was walked on`);
+    assert.match(front.build, /Flow \d+\.\d+(\.\d+)?/, `${slug} names the build it was walked on`);
     assert.ok(front.receipt.length >= 3, `${slug} has a receipt card`);
     for (const r of front.receipt) assert.ok(['verified', 'derived', 'assumed', 'unknown'].includes(r.evidence), `${slug}: ${r.label} carries an evidence label`);
     assert.match(body, /^## Evidence$/m, `${slug} keeps its evidence table`);
@@ -91,7 +94,17 @@ test('Status from what you already have promises only what 2.0.3 keeps (#802)', 
   assert.equal(status.front.titleLocked, true);
   assert.doesNotMatch(status.front.title, /none of them leaves/i);
   assert.match(status.front.title, /unless you say yes/);
-  assert.match(status.front.caveat, /2\.0\.3/);
+  assert.match(status.front.caveat, /blank/);
+});
+
+test('caveats name no version, so a release never leaves one stale', () => {
+  for (const { slug, front } of entries) {
+    if (front.caveat) assert.doesNotMatch(front.caveat, /\b\d+\.\d+(\.\d+)?\b|not in a release/, `${slug} caveat`);
+  }
+  // Open issues the released build still has (orionfold-flow ledger 2026-09-30-2219).
+  for (const [slug, issue] of [['docs-true-to-code', '#782'], ['status-from-what-you-have', '#321'], ['leave-rented-notes', '#321']]) {
+    assert.match(entries.find((e) => e.slug === slug).front.caveat ?? '', new RegExp(issue), `${slug} keeps its open-issue caveat`);
+  }
 });
 
 test('llms.txt lists every published path', () => {

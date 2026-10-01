@@ -36,7 +36,7 @@ receipt:
   - label: Human review time
     value: not measured
     evidence: unknown
-caveat: In Flow 2.0.3, the current release, File ▸ Import of a PDF on this path starts on a hosted reader. Pick On this Mac yourself to keep the file on your Mac. We walked a newer build where On this Mac is the default (#802). That fix is not in a release yet.
+caveat: A document can stay blank for 3 to 5 seconds when it first opens. Wait a moment and it appears (#321).
 ---
 
 ## The press release we would want to write

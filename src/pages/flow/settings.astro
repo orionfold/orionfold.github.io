@@ -1,5 +1,6 @@
 ---
 import FlowFeaturePage from '../../components/flow/FlowFeaturePage.astro';
+import { FLOW_VERSION } from '../../lib/flow/flow-release';
 import FlowDetail from '../../components/flow/FlowDetail.astro';
 import { FLOW_V16_SHOTS as shots } from '../../data/flow-v16';
 import modelsShot from '../../assets/flow/shots/v17-settings-models.webp';
@@ -12,7 +13,7 @@ const sections = [
   { id: 'night-shift', name: 'Night Shift', title: 'Set the hours. Keep the controls.', body: 'Choose tonight’s window, catch up on wake and decide whether bound charts and tables redraw as data changes. The readiness line tells you whether this Mac is ready.', detail: 'Runs tonight works when the Mac is plugged in and idle, even with Flow closed. Use Run now to watch progress and open the Morning Briefing to review the result.', image: shots.nightSettings, alt: 'Night Shift settings shows the schedule and readiness for background work.' },
 ];
 ---
-<FlowFeaturePage slug="settings" title="Flow Settings · Your Mac, models and document work · Orionfold" description="Explore Flow 1.7 Settings in the Workbench: General, Documents, Models, Smart Routing, Evidence and Night Shift. Keep the document beside your choices.">
+<FlowFeaturePage slug="settings" title="Flow Settings · Your Mac, models and document work · Orionfold" description={`Explore Flow ${FLOW_VERSION} Settings in the Workbench: General, Documents, Models, Smart Routing, Evidence and Night Shift. Keep the document beside your choices.`}>
   <section class="flow-feature-section"><div class="flow-feature-inner"><p class="of-eyebrow">Your choices, beside the work</p><h2 class="of-display">Six categories. One Workbench.</h2><p class="mt-6 max-w-3xl text-lg leading-relaxed text-text-muted">Settings opens in the Workbench beside your document, with a category menu and search. Find plan and licence controls in General, editing and saving in Documents, providers and measurements in Models, and checks in Evidence.</p><p class="mt-6 max-w-3xl text-lg leading-relaxed text-text-muted">First launch opens the Guide's Welcome page without a setup form. Start with useful work, inspect what Ideas found on your Mac, and return to Settings when you want to change a choice.</p><nav class="mt-8 flex flex-wrap gap-5" aria-label="Settings categories">{sections.map((section) => <a class="of-text-action" href={`#${section.id}`}>{section.name} <span aria-hidden="true">→</span></a>)}</nav></div></section>
   {sections.map((section, index) => <section class="flow-feature-section scroll-mt-28" id={section.id}><div class:list={['flow-feature-inner flow-feature-grid', index % 2 === 1 && 'flow-feature-grid--reverse']}><div class="flow-feature-copy"><p class="of-eyebrow">0{index + 1} · {section.name}</p><h2 class="of-display">{section.title}</h2><p>{section.body}</p><p>{section.detail}</p></div><FlowDetail src={section.image} alt={section.alt} caption={section.caption ?? `Earlier ${section.name} detail · Flow 1.6 (1899) · September 6, 2026`} /></div></section>)}
 </FlowFeaturePage>

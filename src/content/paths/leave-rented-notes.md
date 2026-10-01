@@ -35,7 +35,7 @@ receipt:
   - label: Model cost
     value: $0.00, on this Mac
     evidence: verified
-caveat: In Flow 2.0.3, the current release, a link between Notion pages opens a web tab that cannot load. We walked a newer build with the fix (#806). That fix is not in a release yet.
+caveat: A document can stay blank for 3 to 5 seconds when it first opens. Wait a moment and it appears (#321).
 ---
 
 ## The press release we would want to write

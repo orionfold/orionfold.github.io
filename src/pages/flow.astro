@@ -4,6 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { ogMeta } from '../data/og';
 import { FLOW_COUNTS } from '../lib/flow/flow-counts';
+import { FLOW_VERSION } from '../lib/flow/flow-release';
 import { SITE, PERSON } from '../data/seo';
 import '../styles/living-base.css';
 import '../styles/living-flow.css';
@@ -35,7 +36,7 @@ import FlowClosing from '../components/living/FlowClosing.astro';
 import FlowReel from '../components/flow/FlowReel.astro';
 import { flowReelSchema } from '../data/flow-reel';
 const title = "Flow for Mac \u00b7 Give your documents work to do.";
-const description = `Flow 2.0 for Mac. Start from a path or one of ${FLOW_COUNTS.livingDocuments} Living Documents, run their Jobs, then review each changed part. Your files. Your judgment. Base is free.`;
+const description = `Flow ${FLOW_VERSION} for Mac. Start from a path or one of ${FLOW_COUNTS.livingDocuments} Living Documents, run their Jobs, then review each changed part. Your files. Your judgment. Base is free.`;
 const og = ogMeta('/flow/');
 const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication',name:'Orionfold Flow',applicationCategory:'ProductivityApplication',operatingSystem:'macOS',description,url:`${SITE.url}/flow/`,image:`${SITE.url}${og.image}`,author:PERSON,brand:{'@type':'Brand',name:'Orionfold'}};
 const faqSchema = {

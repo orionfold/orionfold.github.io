@@ -129,6 +129,17 @@ You choose the local model for a different reason. The client's operations repor
 
 **What if a figure is wrong?** Every sentence's footnote opens the file it came from, and History shows each version of the brief and who wrote it: you, a Job, or an outside editor.
 
+## Update: build 0249-1 (2026-09-28, in Flow 2.1)
+
+These shipped in **Flow 2.1** (build 3020, 30 September 2026). They were checked on a pre-release build (0249-1) on 28 September; the walk above describes 2.0.3.
+
+- **PDF import keeps every line (#774).** Both Cascadia reports now come in whole: August's "…0.58% of shipments." and all three lines of September's Headline. A line that still went missing would be named under *Left out*. Checked through the Import route with the real PDFs (C3790), not on screen.
+- **Run no longer refuses its own draft (#775).** A draft step now waits only for a change someone else made, and it waits *before* the model runs. On 0249-1, two runs applied the folder list and the date stamp and added nothing to Review.
+- **A local model's lookup reply that cannot be read is asked for once more (#789).** In the 0249-1 check the draft did not finish because the lookup reply failed its format twice; 2.1 tells the model why and asks again.
+- **Published footnotes read 1, 2, 3 (#777).** In PDF, web and EPUB the numbers follow first use, and a repeat keeps its number. Word keeps one note per source. Checked on this brief's published HTML and Word file; the PDF was not re-rendered on screen.
+- **Import takes several files at once (#779).**
+- **Also fixed:** Review opens on the change still waiting (#776, seen on screen); the Jobs banner names the step and why it ended (#780, seen); publishing no longer edits the brief, because its choices now sit in `Client Brief.md.flow-publish` (#778).
+
 ## Evidence
 
 | Claim | Value | Label | Source |

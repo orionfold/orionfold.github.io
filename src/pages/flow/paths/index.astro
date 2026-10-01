@@ -8,6 +8,7 @@ import CompareBand from '../../../components/flow/paths/CompareBand.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
 import { publishedPaths, publishedCompare, pathHref } from '../../../lib/flow/paths';
 import { ogMeta } from '../../../data/og';
+import { FLOW_VERSION } from '../../../lib/flow/flow-release';
 import { SITE, PERSON } from '../../../data/seo';
 import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
@@ -17,7 +18,7 @@ const paths = await publishedPaths();
 const [lead, ...rest] = paths;
 const hasCompare = (await publishedCompare()).length > 0;
 const title = 'Flow Paths: real work, walked end to end | Orionfold';
-const description = 'Flow 2.0 paths, each a real job done in Flow on a Mac: the steps, the time, the cost, and what we could not check.';
+const description = `Flow ${FLOW_VERSION} paths, each a real job done in Flow on a Mac: the steps, the time, the cost, and what we could not check.`;
 const og = ogMeta('/flow/paths/');
 const schema = [
   {
@@ -41,7 +42,7 @@ const schema = [
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-hub-intro ls-container">
-      <p class="ls-eyebrow">FLOW 2.0 / PATHS</p>
+      <p class="ls-eyebrow">FLOW {FLOW_VERSION} / PATHS</p>
       <div class="ed-hub-heading">
         <h1>Real work.<br /><em>Walked end to end.</em></h1>
         <p>Each path starts on Flow’s Home screen and ends with something you can send. We walked every step on a Mac and wrote down the time, the cost, and what we could not check.</p>

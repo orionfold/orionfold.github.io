@@ -12,7 +12,7 @@ const { ids, eyebrow = 'WHY FLOW / MEASURED ON A MAC', tone = 'paper' } = Astro.
 const points = ids.map((id) => WOW[id]).filter(Boolean);
 const row = points.length > 1;
 ---
-<aside class:list={['wow', `wow--${tone}`, row ? 'wow--row' : 'wow--one']} aria-label="Measured in Flow 2.0 path walks">
+<aside class:list={['wow', `wow--${tone}`, row ? 'wow--row' : 'wow--one']} aria-label="Measured in Flow path walks">
   <div class="wow-grid" aria-hidden="true"><i></i></div>
   <div class="wow-inner ls-container">
     <p class="wow-eyebrow">{eyebrow}</p>

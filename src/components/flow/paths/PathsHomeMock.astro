@@ -1,10 +1,11 @@
 ---
-// The Flow 2.0 Home screen ("What are you working on?"), drawn natively.
+// The Flow Home screen ("What are you working on?"), drawn natively.
 // One chip per published path; choosing a chip swaps the featured path: its
 // steps, its before → Flow → after diagram and a live mock of the document
 // it ends with (charts, tables, a diff, a picture), which plays Flow's review
 // loop. Add-on copy follows Flow 2.0.3.
 import { publishedPaths, pathHref } from '../../../lib/flow/paths';
+import { FLOW_VERSION } from '../../../lib/flow/flow-release';
 import { SHOWCASE, HUE } from '../../../data/flow-path-showcase';
 import PathDiagram from '../mocks/PathDiagram.astro';
 import { ArrowRightIcon } from '../../../lib/flow-icons';
@@ -24,9 +25,9 @@ const ADDONS = [
   <section id="paths-home" class="fp-section ls-container" aria-labelledby="paths-home-heading">
     <div class="fp-head">
       <div class="fp-heading">
-        <p class="ls-eyebrow">FLOW 2.0 / START FROM A PATH</p>
+        <p class="ls-eyebrow">FLOW {FLOW_VERSION} / START FROM A PATH</p>
         <h2 id="paths-home-heading">What are you<br /><span class="ls-stroke">working on?</span></h2>
-        <p>Flow 2.0 opens on Paths: ready folders for real jobs. Pick one to see where it starts, then read the walkthrough with every screen.</p>
+        <p>Flow {FLOW_VERSION} opens on Paths: ready folders for real jobs. Pick one to see where it starts, then read the walkthrough with every screen.</p>
       </div>
       <a class="fp-all" href="/flow/paths/">All paths<ArrowRightIcon class="lk-arrow" size={14} stroke-width={2.25} aria-hidden="true" /></a>
     </div>

@@ -1,4 +1,5 @@
 ---
+import { FLOW_VERSION } from '../../lib/flow/flow-release';
 // Flow 2.0: bring work in, send it out. Office files and PDFs become
 // Markdown you can edit and review (Flow Import); a document or a folder
 // becomes a PDF, a deck, an ebook or a website (Flow Publish). Both are
@@ -11,7 +12,7 @@ const OUT = ['PDF', 'Word', 'Excel', 'PowerPoint', 'EPUB', 'Web page'];
 ---
 <section id={id} class="io ls-container" aria-labelledby={`${id}-heading`}>
   <div class="io-head">
-    <p class="ls-eyebrow">NEW IN FLOW 2.0 / IMPORT AND PUBLISH</p>
+    <p class="ls-eyebrow">FLOW {FLOW_VERSION} / IMPORT AND PUBLISH</p>
     <h2 id={`${id}-heading`}>THE FILES YOU GET.<br /><span class="ls-stroke">THE FILES THEY WANT.</span></h2>
     <p class="io-dek">Clients send decks and PDFs. Investors want slides. Flow turns what arrives into Markdown you can edit, check and keep, then publishes the finished page in the format each reader expects. In our walks, one update became a 13-slide PowerPoint deck, and one launch post became a Word file and a web page.</p>
   </div>

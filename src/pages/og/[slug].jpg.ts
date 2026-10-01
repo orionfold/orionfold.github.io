@@ -4,6 +4,7 @@
 // build these materialize as dist/og/<slug>.jpg (dist/ is gitignored, so they are
 // CI-only). Page templates point og:image at /og/<slug>.jpg via ogMeta()/storyOgSlug().
 import type { APIRoute, GetStaticPaths } from 'astro';
+import { FLOW_VERSION } from '../../lib/flow/flow-release';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
@@ -168,7 +169,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       params: { slug: flowPathOgSlug(entry.id) },
       props: {
         title: entry.data.title,
-        eyebrow: `Flow 2.0 · Path · ${entry.data.chip}`,
+        eyebrow: `Flow ${FLOW_VERSION} · Path · ${entry.data.chip}`,
         seed: entry.id,
         light: true,
         ...(fs.existsSync(shot) ? { screenshotPath: shot } : { banner: true }),

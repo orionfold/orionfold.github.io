@@ -3,6 +3,7 @@
 // lane. The body is the lane's article, verbatim (scripts/sync-flow-paths.mjs);
 // the hero, the receipt rail and the CTA are the website's.
 import { render } from 'astro:content';
+import { FLOW_VERSION } from '../../../lib/flow/flow-release';
 import { fitTitle, fitDescription } from '../../../lib/flow/seo-meta';
 import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
@@ -26,9 +27,9 @@ const { entry, others } = Astro.props as { entry: PathEntry; others: PathEntry[]
 const { Content, headings } = await render(entry);
 const d = entry.data;
 const sections = headings.filter((h) => h.depth === 2);
-// Name the release line only: the walks run on dev builds, which the
-// "Walked on:" line below spells out in full.
-const release = d.build.match(/Flow (\d+\.\d+)/)?.[1] ?? '2.0';
+// Name the current release: readers open the path in it. The dev build
+// each walk ran on is spelled out in full on the "Walked on:" line below.
+const release = FLOW_VERSION;
 const dateIso = d.drafted.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
 const canonical = `${SITE.url}${pathHref(entry.id)}`;
@@ -56,7 +57,7 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.path}, a Flow 2.0 path walked end to end`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Paths', tags: ['Flow 2.0', d.chip, d.path] }}>
+<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.path}, a Flow path walked end to end`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Paths', tags: [`Flow ${FLOW_VERSION}`, d.chip, d.path] }}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero ls-container">

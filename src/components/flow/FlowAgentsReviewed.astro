@@ -5,6 +5,7 @@
 // walk (orionfold-flow articles/03-review-agents). An agent run on a
 // subscription is a cloud run, so nothing here says "on your Mac".
 import FlowTerm from './FlowTerm.astro';
+import { FLOW_VERSION } from '../../lib/flow/flow-release';
 import '../../styles/flow-mocks.css';
 interface Props { id?: string }
 const { id = 'agents-reviewed' } = Astro.props;
@@ -12,7 +13,7 @@ const { id = 'agents-reviewed' } = Astro.props;
 <section id={id} class="ar ls-container" aria-labelledby={`${id}-heading`}>
   <div class="ar-head">
     <div>
-      <p class="ls-eyebrow">NEW IN FLOW 2.0 / AGENTS, REVIEWED</p>
+      <p class="ls-eyebrow">FLOW {FLOW_VERSION} / AGENTS, REVIEWED</p>
       <h2 id={`${id}-heading`}>LET THE AGENT WRITE.<br /><span class="ls-stroke">YOU SIGN OFF.</span></h2>
     </div>
     <div class="ls-episode-dek">

@@ -38,6 +38,9 @@ import path from 'node:path';
 import yaml from 'js-yaml';
 import sharp from 'sharp';
 
+// The released version names an included update ("…, in Flow 2.1").
+const FLOW_RELEASE = JSON.parse(readFileSync(new URL('../src/data/flow-release.json', import.meta.url), 'utf8'));
+
 const HOME = process.env.HOME ?? '';
 const ARTICLES = process.env.FLOW_ARTICLES ?? path.join(HOME, 'orionfold-flow', 'articles');
 const SHOTS = process.env.FLOW_ARTICLE_SHOTS ?? path.join(HOME, 'orionfold', 'ops', 'shared', 'flow-articles');
@@ -77,12 +80,13 @@ export function splitArticle(text) {
  * Turn the article body into the published body.
  * - drops the H1 and returns the first italic paragraph as `dek`
  * - drops "## … (not for publication)" sections
- * - drops "## Update: build <b> (… not yet released)" unless <b> is released
+ * - drops "## Update: build <b> (… not yet released)" unless <b> is released;
+ *   a released one names the release instead ("…, in Flow 2.1")
  * - drops evidence rows about the plan tier a path needs (operator
  *   2026-09-29: the site labels no path free or paid)
  * - rewrites shots/<name>.png (or .jpg, a generated picture) to the encoded asset path
  */
-export function publishBody(body, { slug, released = [] }) {
+export function publishBody(body, { slug, released = [], releasedIn = null }) {
   const sections = body.split(/\n(?=## )/);
   const kept = sections.filter((section) => {
     const heading = section.startsWith('## ') ? section.split('\n', 1)[0] : '';
@@ -90,7 +94,7 @@ export function publishBody(body, { slug, released = [] }) {
     const update = heading.match(/^## Update: build ([\w.-]+)/i);
     if (update && !released.includes(update[1])) return false;
     return true;
-  });
+  }).map((section) => section.replace(/^(## Update: build [^\n]*?),? not yet released\)/, (_, head) => (releasedIn ? `${head}, in Flow ${releasedIn})` : `${head})`)));
   let out = kept.join('\n');
   out = out.replace(/^\|\s*Tier\b[^\n]*\n/gim, '');
   out = out.replace(/^\s*# .+\n+/, '');
@@ -175,10 +179,10 @@ async function encodeShot(src, dest) {
     .toFile(dest);
 }
 
-async function syncOne(dir, { released }) {
+async function syncOne(dir, { released, releasedIn }) {
   const slug = dir.replace(/^\d+-/, '');
   const { front, body } = splitArticle(readFileSync(path.join(ARTICLES, dir, 'ARTICLE.md'), 'utf8'));
-  const published = publishBody(body, { slug, released });
+  const published = publishBody(body, { slug, released, releasedIn });
 
   const target = path.join(CONTENT_DIR, `${slug}.md`);
   const existing = existsSync(target) ? splitArticle(readFileSync(target, 'utf8')).front : null;
@@ -229,7 +233,7 @@ async function main() {
   const dirs = readdirSync(ARTICLES).filter((d) => /^\d+-/.test(d) && existsSync(path.join(ARTICLES, d, 'ARTICLE.md')));
   for (const dir of dirs) {
     if (only && !dir.endsWith(only)) continue;
-    const r = await syncOne(dir, { released });
+    const r = await syncOne(dir, { released, releasedIn: FLOW_RELEASE.version });
     const low = r.lowRes.length ? `; ops copy used for ${r.lowRes.join(', ')}` : '';
     console.log(`${r.slug}: ${r.shots} shots${low}${r.draft ? ' (draft, not routed)' : ''}`);
   }

@@ -138,6 +138,15 @@ The case for running it locally is different. The update draws on the founder's 
 
 **Is the deck ready to send?** It is a clean, sourced deck in the Report theme. Most founders will restyle it. The figures and footnotes are what carry over.
 
+## Update: build 0249-1 (2026-09-28, in Flow 2.1)
+
+These shipped in **Flow 2.1** (build 3020, 30 September 2026). They were checked on a pre-release build (0249-1) on 28 September; the walk above describes 2.0.3.
+
+- **Run no longer refuses its own draft (#775).** See the client brief's update: the run's own changes no longer hold the draft step, which waits only for someone else's change, before the model runs.
+- **The deck's notes are one per source (#787).** Published from this update: 11 notes for 11 sources, and no empty "Sources for this section" line. PDF, web and Word number the same way (#777). Checked on the published files, not on screen.
+- **Expand by hand leaves the front matter alone (#788).** With nothing selected it works on the body only. It still picks its sources by the section's words, so the Job route in the article stays the one to use.
+- **Publish no longer edits the update (#783):** its choices sit in `Investor Update.md.flow-publish`.
+
 ## Evidence
 
 | Claim | Value | Label | Source |

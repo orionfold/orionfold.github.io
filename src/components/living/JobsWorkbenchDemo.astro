@@ -1,5 +1,6 @@
 ---
 import '../../styles/jobs-workbench.css';
+import { FLOW_VERSION } from '../../lib/flow/flow-release';
 import { JOBS_SCENARIOS } from '../../scripts/jobs-workbench.js';
 interface Props { scenario?: 'customer' | 'portfolio'; mode?: 'full' | 'review'; compact?: boolean; instanceId?: string; disclosure?: boolean }
 const { scenario = 'customer', mode = 'full', compact = false, instanceId, disclosure = false } = Astro.props;
@@ -11,7 +12,7 @@ const id = instanceId || `jobs-${scenario}-${mode}-${compact ? 'compact' : 'full
 <div class:list={['jw-demo', { 'jw-demo--compact': compact, 'jw-demo--review': review }]} data-jobs-demo data-scenario={scenario} data-mode={mode}>
   <div class="jw-caption">{!compact && disclosure && <span><i aria-hidden="true"></i> INTERACTIVE PRODUCT WALKTHROUGH</span>}<button type="button" data-action="reset">Reset <span aria-hidden="true">↺</span></button></div>
   <div class="jw-window">
-    <div class="jw-titlebar"><span class="jw-traffic" aria-hidden="true"><i></i><i></i><i></i></span><span><img src="/logos/orionfold-mark-3d-32.png" alt="" width="20" height="20" />{sample.title}</span><span class="jw-titlebar-end">Flow 1.7</span></div>
+    <div class="jw-titlebar"><span class="jw-traffic" aria-hidden="true"><i></i><i></i><i></i></span><span><img src="/logos/orionfold-mark-3d-32.png" alt="" width="20" height="20" />{sample.title}</span><span class="jw-titlebar-end">Flow {FLOW_VERSION}</span></div>
     <div class="jw-workspace">
       <div class="jw-document">
         <div class="jw-document-meta"><span>{sample.folder}</span><span>.md</span></div>

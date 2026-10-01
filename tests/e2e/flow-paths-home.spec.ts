@@ -28,9 +28,11 @@ test('a path page renders its receipt and links back to all paths', async ({ pag
   await expect(page.locator('.fp-receipt dd').first()).toContainText('79 s');
   await expect(page.locator('#evidence')).toBeVisible();
   await expect(page.locator('.fp-caveat')).toHaveCount(0);
-  // A walk on a dev build names what the released build does differently.
+  // A path names what the released build still does differently.
+  await page.goto('/flow/paths/status-from-what-you-have/');
+  await expect(page.locator('.fp-caveat')).toContainText('blank for 3 to 5 seconds');
   await page.goto('/flow/paths/weekly-issue/');
-  await expect(page.locator('.fp-caveat')).toContainText('2.0.3');
+  await expect(page.locator('.fp-caveat')).toHaveCount(0);
 });
 
 test('Compare pages are linked from the nav and each row cites a source', async ({ page }) => {

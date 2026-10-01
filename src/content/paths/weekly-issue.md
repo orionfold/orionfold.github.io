@@ -35,7 +35,6 @@ receipt:
   - label: Model cost
     value: $0.00, on this Mac
     evidence: verified
-caveat: In Flow 2.0.3, the current release, choosing the issue’s own picture as the cover gives “No cover”, and the EPUB leaves the picture out. We walked a newer build with the fix (#814). That fix is not in a release yet.
 ---
 
 ## The press release we would want to write

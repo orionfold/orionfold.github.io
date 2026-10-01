@@ -8,6 +8,7 @@
 
 import { SITE } from './seo';
 import { FLOW_COUNTS } from '../lib/flow/flow-counts';
+import { FLOW_VERSION } from '../lib/flow/flow-release';
 import { RELAY_HOST_PORTABLE_LIVE } from './relay-host-portable';
 
 const relayHostPortablePositioning = import.meta.env.DEV || RELAY_HOST_PORTABLE_LIVE;
@@ -208,12 +209,12 @@ export const OG_PAGES: Record<string, OgPage> = {
     "living": true
 },
   '/flow/paths/': {
-    slug: 'flow-paths', eyebrow: 'Flow 2.0 · Paths',
+    slug: 'flow-paths', eyebrow: `Flow ${FLOW_VERSION} · Paths`,
     title: 'Real work. Walked end to end.', seed: 'flow-paths',
-    alt: 'Flow 2.0 Paths: real work walked end to end on a Mac, with the time, the cost and the evidence for every step.', living: true,
+    alt: 'Flow Paths: real work walked end to end on a Mac, with the time, the cost and the evidence for every step.', living: true,
   },
   '/flow/compare/': {
-    slug: 'compare', eyebrow: 'Flow 2.0 · Compare',
+    slug: 'compare', eyebrow: `Flow ${FLOW_VERSION} · Compare`,
     title: 'Coming from another tool?', seed: 'compare',
     alt: 'Compare Flow with Notion, Obsidian, Claude Code, Codex and Canva: what moves, what stays, and the path to start with.', living: true,
   },
@@ -226,17 +227,17 @@ export const OG_PAGES: Record<string, OgPage> = {
     light: true,
   },
   '/flow/night-shift/': {
-    slug: 'flow-night-shift', eyebrow: 'Flow 1.7 · Night Shift',
+    slug: 'flow-night-shift', eyebrow: `Flow ${FLOW_VERSION} · Night Shift`,
     title: 'Let your documents work the Night Shift.', seed: 'flow-night-shift',
     alt: 'Flow Night Shift: scheduled work on your Mac, a Morning Briefing, and changes you can review.', living: true,
   },
   '/flow/living-documents/': {
-    slug: 'flow-living-documents', eyebrow: 'Flow 1.7 · Living Documents',
+    slug: 'flow-living-documents', eyebrow: `Flow ${FLOW_VERSION} · Living Documents`,
     title: 'A document that keeps up.', seed: 'flow-living-documents',
     alt: `Flow Living Documents: ${FLOW_COUNTS.livingDocuments} starting documents, linked sources, live charts and tables, and reviewable changes.`, living: true,
   },
   '/flow/settings/': {
-    slug: 'flow-settings', eyebrow: 'Flow 1.7 · Settings',
+    slug: 'flow-settings', eyebrow: `Flow ${FLOW_VERSION} · Settings`,
     title: 'Your Mac. Your models. Your rules.', seed: 'flow-settings',
     alt: 'Six Flow Settings screens put documents, models, routing, evidence and the Night Shift in view.', living: true,
   },
@@ -245,7 +246,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Orionfold Flow · Product tour',
     title: 'See Flow at work',
     seed: 'flow-tour',
-    alt: 'Orionfold Flow 1.7 product tour: Night Shift, Living Documents, six Settings screens, writing with AI and receipts shown through real product screens',
+    alt: `Orionfold Flow ${FLOW_VERSION} product tour: Night Shift, Living Documents, six Settings screens, writing with AI and receipts shown through real product screens`,
     light: true,
   },
   // The four /flow/<category>/ tour pages (2026-08-20 split). Text-only cards

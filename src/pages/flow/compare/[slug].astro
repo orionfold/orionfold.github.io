@@ -3,6 +3,7 @@
 // Every claim about the other tool carries a dated source; every row links the
 // path that proves Flow's side.
 import { render } from 'astro:content';
+import { FLOW_VERSION } from '../../../lib/flow/flow-release';
 import { fitTitle, fitDescription } from '../../../lib/flow/seo-meta';
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
@@ -60,7 +61,7 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={seoDescription} ogImage={ogImage} ogImageAlt={`Flow compared with ${d.tool}: what moves, what stays, and the path to start with`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Compare', tags: ['Flow 2.0', d.tool] }}>
+<Layout title={seoTitle} description={seoDescription} ogImage={ogImage} ogImageAlt={`Flow compared with ${d.tool}: what moves, what stays, and the path to start with`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Compare', tags: [`Flow ${FLOW_VERSION}`, d.tool] }}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero ls-container">

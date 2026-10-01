@@ -13,6 +13,7 @@ order: 5
 featured: false
 draft: false
 chip: Code
+caveat: Flow does not yet check a document against the code it describes on its own, so it will not warn you when they drift apart (#782). Ask can compare them when you name the file.
 summary: Open a repository in place, proofread its docs on your Mac, and publish a PDF. Every change is an ordinary git edit.
 stat:
   value: 4 s
@@ -41,7 +42,7 @@ receipt:
 
 **Builders can now keep their specs and README true to the code without handing their repository to anyone.** Flow opens the repo folder in place, proposes every documentation change as a diff you keep or revert, leaves your git history alone, and publishes a site or a PDF.
 
-Half of that is true today, measured below. The half in the title of the path, *stay true to the code*, is not: on this build, Flow does not compare a document with the code it describes. We recommend the website does not publish this path's claim until it does (ISSUES #782).
+Half of that is true today, measured below. The half in the title of the path, *stay true to the code*, is not: Flow 2.1 does not compare a document with the code it describes on its own (ISSUES #782, open). Ask can, partly, when you name the file: see the update below.
 
 ## The answer first
 
@@ -77,7 +78,7 @@ It proposed four fixes: *can not* → *cannot*, *an other* → *another*, *days*
 
 We asked the question the path exists to answer, three ways.
 
-**Ask (⌘K)** took "Does the Rules section agree with the CHANGELOG? List every mismatch." as a request to *propose Jobs changes*, tried twice, and stopped: "Flow could not use the proposed Jobs." (#781)
+On 2.0.3, **Ask (⌘K)** took "Does the Rules section agree with the CHANGELOG? List every mismatch." as a request to *propose Jobs changes*, tried twice, and stopped: "Flow could not use the proposed Jobs." (#781)
 
 ![Ask treating a question as a Jobs edit](../../assets/flow/paths/docs-true-to-code/05-ask.webp)
 
@@ -106,9 +107,17 @@ Proofreading a spec on an open model saves a fraction of a cent per run. As in t
 
 **Does Flow commit to my repo?** No. Changes are ordinary edits; `git status` shows them, and you commit. Flow's own records sit beside the file (`.flow-receipts`, `.flow-review`), so add them to `.gitignore` if you don't want them tracked.
 
-**Can Flow keep my docs in sync with my code?** Not yet. It proofreads and expands prose, and every change is one you approve. It does not yet check a document against source files or a changelog.
+**Can Flow keep my docs in sync with my code?** Partly. Ask it, naming the file; Flow answers from both, and every change is still one you approve. No Job checks a document against source files or a changelog on its own yet.
 
 **What do I need?** Flow Pro to proofread and review, and Flow Publish to publish ($10 a month each, or $96 a year).
+
+## Update: build 0249-1 (2026-09-28, in Flow 2.1)
+
+These shipped in **Flow 2.1** (build 3020, 30 September 2026). They were checked on a pre-release build (0249-1) on 28 September; the walk above describes 2.0.3.
+
+- **Ask answers the question now (#781).** The same prompt, "Does the Rules section agree with the CHANGELOG? List every mismatch.", read the spec and `CHANGELOG.md` and answered on Gemma 4 E4B on this Mac: the Rules say 60 requests a minute, the changelog says it rose to 120. It missed the other two drifts we planted, the port (8080 vs 8000) and the missing `/export.csv`. So Flow sees some drift when you ask and name the file. No Job yet checks a spec against code by itself (#782, open). ![Ask answering from the spec and the changelog](../../assets/flow/paths/docs-true-to-code/0249-ask-answer.webp)
+- **Publish no longer edits the file (#783).** Its choices now sit in `scheduling-spec.md.flow-publish`, beside `.flow-receipts`, so `git diff` of the spec stays clean. It is still a new untracked file in `git status`.
+- **Proofread's highlight marks only changed lines (#785).** Not re-checked on screen.
 
 ## Evidence
 

@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { FLOW_VERSION } from '../../lib/flow/flow-release';
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
@@ -55,7 +56,7 @@ const breadcrumbs = {
 
     <section class="border-t border-border/70 px-6 py-14 sm:py-20" aria-labelledby="flow-v16-tours">
       <div class="mx-auto max-w-6xl">
-        <p class="of-eyebrow">Flow 1.7</p><h2 id="flow-v16-tours" class="of-display mt-3 text-4xl">Make knowledge a living thing.</h2>
+        <p class="of-eyebrow">Flow {FLOW_VERSION}</p><h2 id="flow-v16-tours" class="of-display mt-3 text-4xl">Make knowledge a living thing.</h2>
         <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">A document you own. Jobs you can inspect in the Workbench. Changes you decide to keep. See how the three parts work together.</p>
         <div class="mt-9 grid gap-6 lg:grid-cols-3">
           {FLOW_V16_TOURS.map((tour) => <article class="flow-cat-card of-surface flex flex-col rounded-2xl border border-border/70 p-6">

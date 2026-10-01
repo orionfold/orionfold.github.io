@@ -2,13 +2,14 @@
 // "Paths" band for the homepage and /flow/: the featured path as a lead card,
 // the next four as mini rows, then the Compare band.
 import PathShowcase from '../mocks/PathShowcase.astro';
+import { FLOW_VERSION } from '../../../lib/flow/flow-release';
 import CompareBand from './CompareBand.astro';
 import { publishedPaths, publishedCompare } from '../../../lib/flow/paths';
 import '../../../styles/flow-paths.css';
 import { ArrowRightIcon } from '../../../lib/flow-icons';
 
 interface Props { id?: string; eyebrow?: string; showFor?: boolean; }
-const { id = 'flow-paths', eyebrow = 'NEW IN FLOW 2.0 / PATHS', showFor = true } = Astro.props;
+const { id = 'flow-paths', eyebrow = `FLOW ${FLOW_VERSION} / PATHS`, showFor = true } = Astro.props;
 const paths = await publishedPaths();
 const lead = paths.find((p) => p.data.featured) ?? paths[0];
 const rest = paths.filter((p) => p !== lead).slice(0, 3);

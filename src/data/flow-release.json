@@ -1,0 +1,9 @@
+{
+  "source": {
+    "feed": "https://orionfold.com/flow/appcast.xml",
+    "read": "2026-09-30"
+  },
+  "version": "2.1",
+  "release": "2.1",
+  "build": "3020"
+}

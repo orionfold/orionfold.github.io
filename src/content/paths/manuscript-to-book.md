@@ -98,7 +98,7 @@ The corrections were kept at 08:06:31 PDT, after reading the diff. The saved cha
 
 ![The chapter after the proofread was kept](../../assets/flow/paths/manuscript-to-book/09-kept.webp)
 
-**What the README promises, and what you get.** The README says Review Changes "lets you keep each one or leave your voice as it is". In this build the three corrections come as one proposal with one Keep. You can read each line in *Exact changes*, but you cannot keep two and leave the third. The proposal also says "in the selected text" when nothing was selected. Both are filed as #841. On this chapter it did not matter, because all three corrections were right.
+**What the README promises, and what you get.** The README says **Proofread** "proposes the chapter's corrections together, and **Review Changes** shows each one before you keep them — or discard the proposal and leave your voice as it is". That is what happened: the three corrections came as one proposal with one Keep, and each line was readable in *Exact changes*. You keep the proposal or discard it; you cannot keep two and leave the third. On 2.0.3 the proposal also said "in the selected text" when nothing was selected (#841, fixed in Flow 2.1). On this chapter it did not matter, because all three corrections were right.
 
 ## Step three: generate a cover and publish the EPUB
 

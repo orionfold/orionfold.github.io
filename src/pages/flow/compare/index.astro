@@ -1,6 +1,7 @@
 ---
 // /flow/compare/ — every Compare page.
 import Layout from '../../../layouts/Layout.astro';
+import { FLOW_VERSION } from '../../../lib/flow/flow-release';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import CompareBand from '../../../components/flow/paths/CompareBand.astro';
@@ -46,7 +47,7 @@ const schema = {
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-hub-intro ls-container">
-      <p class="ls-eyebrow">FLOW 2.0 / COMPARE</p>
+      <p class="ls-eyebrow">FLOW {FLOW_VERSION} / COMPARE</p>
       <div class="ed-hub-heading">
         <h1>Bring the work.<br /><em>Keep your tools.</em></h1>
         <p>Moving from a notes app, or pairing Flow with a coding agent or design tool you already pay for. Each page says what moves, what stays, and what Flow is not.</p>
