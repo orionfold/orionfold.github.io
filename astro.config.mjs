@@ -39,6 +39,25 @@ function buildLastmodMap() {
     const d = firstDate(txt, /^date:\s*['"]?(\d{4}-\d{2}-\d{2})/m);
     if (d) map[`/story/${f.replace(/\.md$/, '')}/`] = d;
   }
+  // Receipts and letters carry the same `date:` publish stamp as stories.
+  for (const [dir, urlBase] of [
+    ['receipts', '/receipts/'],
+    ['letters', '/letter/'],
+  ]) {
+    let files;
+    try {
+      files = readdirSync(new URL(`${dir}/`, CONTENT));
+    } catch {
+      continue;
+    }
+    for (const f of files) {
+      if (!f.endsWith('.md')) continue;
+      const txt = readFileSync(new URL(`${dir}/${f}`, CONTENT), 'utf8');
+      if (/^draft:\s*true/m.test(txt)) continue;
+      const d = firstDate(txt, /^date:\s*['"]?(\d{4}-\d{2}-\d{2})/m);
+      if (d) map[`${urlBase}${f.replace(/\.md$/, '')}/`] = d;
+    }
+  }
   // Products: src/content/products/<type>/<slug>.md -> /<type>/<slug>/
   const products = new URL('products/', CONTENT);
   for (const type of ['software', 'models', 'books']) {
@@ -135,7 +154,7 @@ function buildLastmodMap() {
       .map(([, v]) => v)
       .sort()
       .at(-1);
-  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/', '/flow/paths/', '/flow/compare/']) {
+  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/', '/flow/paths/', '/flow/compare/', '/receipts/', '/letter/']) {
     const d = freshestUnder(hub);
     if (d) map[hub] = d;
   }
@@ -158,7 +177,8 @@ function buildLastmodMap() {
   // pricing went live, and the five launch-week stories landed. A release is the
   // most material change a page can carry, so recrawl priority matters most here.
   // Living Systems material content revision, not a build-clock freshness stamp.
-  map['/flow/'] = '2026-09-17';
+  // 2026-09-30: intro reel added and the page moved to Flow 2.1.
+  map['/flow/'] = '2026-09-30';
   map['/essays/'] = '2026-09-17';
   map['/essays/the-work-we-want-to-keep/'] = '2026-09-17';
   map['/essays/the-work-we-want-to-keep/notes/'] = '2026-09-17';
@@ -173,6 +193,7 @@ function buildLastmodMap() {
   for (const page of ['night-shift', 'living-documents', 'settings', 'models-and-runtime', 'documents-and-files']) {
     map[`/flow/${page}/`] = '2026-09-17';
   }
+  map['/flow/night-shift/'] = '2026-09-30'; // intro reel added
   // The /relay/ landing surfaces the whole cluster (docs + api + memos + demo),
   // so it tracks the freshest date across all of them.
   const relayFreshest = freshestUnder('/relay/');
@@ -214,6 +235,10 @@ export default defineConfig({
     // so they get no redirect. At go-live, mirror this as a Cloudflare 301 rule
     // (this static redirect is a meta-refresh page, weaker than an edge 301).
     '/roadmap/': '/adoption/',
+    // GSC 404s with real successors (2026-10-01 indexing read): the DGX book's
+    // pre-rename slug (54d3fe8c) and a singular /book/ typo of the business book.
+    '/books/field-notes/': '/books/ai-research-on-nvidia-dgx-spark/',
+    '/book/ai-native-business/': '/books/ai-native-business/',
     // Three-flagship consolidation (2026-07-01): the legacy /software/arena/ and
     // /software/ai-native-platform/ detail pages were retired in favor of the
     // canonical /arena/ and /relay/ landings (single buy surface per flagship).
