@@ -13,7 +13,8 @@ import DocMock from '../mocks/DocMock.astro';
 import '../../../styles/flow-paths.css';
 import '../../../styles/flow-mocks.css';
 
-const paths = (await publishedPaths()).filter((p) => SHOWCASE[p.id]);
+// Only the paths Flow's Home really offers; a walk from an empty folder is not one.
+const paths = (await publishedPaths()).filter((p) => SHOWCASE[p.id] && p.data.onHome);
 const lead = paths.find((p) => p.data.featured) ?? paths[0];
 const ADDONS = [
   { name: 'Flow Pro', body: 'Flow thinks with you. Ask, Jobs, Night Shift and Smart Routing, on the models you choose, on this Mac or hosted.', price: '$10 a month or $96 a year' },

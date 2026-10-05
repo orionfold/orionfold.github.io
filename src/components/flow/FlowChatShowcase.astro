@@ -1,0 +1,503 @@
+---
+// Flow Chat, Flow 2.2's flagship: the 54-minute book walk drawn natively and
+// played in five steps (idea, brief, sourced draft, pictures, EPUB). Each step
+// names the engine that ran it, so the mock shows Flow choosing between a
+// frontier model on a subscription, a cloud API on your key, and this Mac.
+// Every figure is from the walk (orionfold-flow articles/15-chat-ebook-rewalk,
+// published at /flow/paths/write-a-book-in-flow-chat/) and labelled there.
+// Steps advance on their own while in view; a step tab takes over by hand.
+// Reduced motion rests on the finished book.
+import MessageSquareText from '@lucide/astro/icons/message-square-text';
+import Folder from '@lucide/astro/icons/folder';
+import FileText from '@lucide/astro/icons/file-text';
+import Globe from '@lucide/astro/icons/globe';
+import Search from '@lucide/astro/icons/search';
+import ImageIcon from '@lucide/astro/icons/image';
+import Laptop from '@lucide/astro/icons/laptop';
+import Cloud from '@lucide/astro/icons/cloud';
+import Sparkles from '@lucide/astro/icons/sparkles';
+import Undo2 from '@lucide/astro/icons/undo-2';
+import Check from '@lucide/astro/icons/check';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import ArrowUp from '@lucide/astro/icons/arrow-up';
+import ShieldCheck from '@lucide/astro/icons/shield-check';
+import { Image } from 'astro:assets';
+import chapterPicture from '../../assets/flow/chat/chapter-three-picture.webp';
+
+interface Props { id?: string; tone?: 'home' | 'flow' }
+const { id = 'flow-chat', tone = 'flow' } = Astro.props;
+
+const PATH = '/flow/paths/write-a-book-in-flow-chat/';
+// The release Flow Chat arrived in: a fixed fact, not the current version.
+const CHAT_SINCE = '2.2';
+
+// engine: sub = frontier model on a subscription, api = cloud API on your key,
+// mac = on this Mac. The route line is what Chat prints under the message box.
+const STEPS = [
+  { tab: 'The idea', engine: 'sub', route: 'Claude Code › Claude subscription', meta: 'about 25 s' },
+  { tab: 'Research brief', engine: 'sub', route: 'Claude Code › Claude subscription · web search', meta: 'about 1.5 min' },
+  { tab: 'Sourced draft', engine: 'sub', route: 'Claude Code › Claude subscription', meta: 'about 2 min' },
+  { tab: 'Pictures', engine: 'api', route: 'OpenRouter › picture model · your key', meta: '$0.0336 a picture' },
+  { tab: 'The ebook', engine: 'mac', route: 'Flow Publish › on this Mac', meta: 'about a second' },
+];
+
+const ENGINES = [
+  { key: 'sub', icon: Sparkles, name: 'Frontier model', how: 'on the plan you already pay for', ex: 'Claude Code or Codex subscription' },
+  { key: 'api', icon: Cloud, name: 'Cloud API', how: 'on your own key, with a receipt', ex: 'OpenRouter, OpenAI, Anthropic' },
+  { key: 'mac', icon: Laptop, name: 'This Mac', how: 'local, private, $0.00', ex: 'Flow Runtime, Ollama, LM Studio' },
+];
+---
+<section id={id} class={`fc ls-container fc--${tone}`} aria-labelledby={`${id}-title`}>
+  <div class="fc-head">
+    <div>
+      <p class="ls-eyebrow fc-eyebrow"><span class="fc-new">New in Flow {CHAT_SINCE}</span> Flow Chat</p>
+      <h2 id={`${id}-title`}>TALK TO YOUR FOLDER.<br /><span class="ls-stroke">GET A FINISHED BOOK.</span></h2>
+    </div>
+    <div class="fc-dek">
+      <p>Flow Chat sits beside your document. Tell it what you want in plain words. It writes notes, searches the web, and runs Flow's actions.</p>
+      <p>Each step goes to the right engine: a frontier model on the plan you already pay for, a cloud API for pictures, or a model on your Mac. Every change waits for your yes, and every reply has Undo.</p>
+    </div>
+  </div>
+
+  <figure class="fc-mock" data-fc aria-label="Flow Chat writing a book: one idea becomes an outline, a research brief, a sourced chapter you approve, pictures, and an EPUB">
+    <div class="fc-tabs" role="tablist" aria-label="Steps of the book walk">
+      {STEPS.map((s, i) => (
+        <button type="button" role="tab" class="fc-tab" data-fc-go={i} aria-selected={i === 0 ? 'true' : 'false'}>
+          <span class="fc-tab-n">{i + 1}</span>
+          <span class="fc-tab-t">{s.tab}</span>
+          <i class="fc-tab-bar" aria-hidden="true"></i>
+        </button>
+      ))}
+    </div>
+
+    <div class="fc-window">
+      <div class="fc-bar" aria-hidden="true">
+        <span class="fc-lights"><i></i><i></i><i></i></span>
+        <span class="fc-title">
+          <span data-fc-show="0">README</span>
+          <span data-fc-show="1 2">What Agents Actually Did</span>
+          <span data-fc-show="3">Model or Harness</span>
+          <span data-fc-show="4">Publish · Agents and Harness</span>
+        </span>
+        <span class="fc-review-pill" data-fc-show="2"><i></i>1 change to review</span>
+      </div>
+
+      <div class="fc-panes">
+        <aside class="fc-side" aria-hidden="true">
+          <p class="fc-side-h">Folders</p>
+          <p class="fc-folder"><Folder size={13} />Flow Guide</p>
+          <p class="fc-folder is-open"><Folder size={13} />Agents and Harness</p>
+          <p class="fc-file" data-fc-from="0"><FileText size={12} />README</p>
+          <p class="fc-file is-cur" data-fc-from="1"><FileText size={12} />What Agents Actually Did</p>
+          <p class="fc-file" data-fc-from="3" data-fc-only="3"><FileText size={12} />Model or Harness</p>
+          <p class="fc-file" data-fc-from="4"><FileText size={12} />Ten Harnesses Compared</p>
+          <p class="fc-file" data-fc-from="4"><FileText size={12} />Model or Harness</p>
+        </aside>
+
+        <div class="fc-doc" aria-hidden="true">
+          <!-- 0: the README -->
+          <div class="fc-page" data-fc-show="0">
+            <p class="fc-h1">Agents and Harness</p>
+            <p class="fc-sub">How much of an AI agent's misbehaviour comes from the model, and how much from the harness that runs it.</p>
+            <p class="fc-quote">AI agents are getting out of control … and I want to know how much of that is the model and how much is the harness that runs it.</p>
+            <p class="fc-h2">Proposed outline</p>
+            <ol class="fc-ol">
+              <li class="fc-grow" style="--d:0"><b>What Agents Actually Did:</b> a record, from primary sources, of what AI agents have actually done.</li>
+              <li class="fc-grow" style="--d:1"><b>Ten Harnesses Compared:</b> Claude Code, Codex, Gemini CLI and seven more, on the controls that matter.</li>
+              <li class="fc-grow" style="--d:2"><b>Model or Harness:</b> each incident traced back to the harness that ran it.</li>
+            </ol>
+          </div>
+          <!-- 1: the research brief -->
+          <div class="fc-page" data-fc-show="1">
+            <p class="fc-h1">What Agents Actually Did</p>
+            <p class="fc-h2">Research brief</p>
+            <p class="fc-prop fc-grow" style="--d:0"><b>Working argument:</b> Over the past twelve months, AI agents have moved from forecast risk to recorded incident.</p>
+            <p class="fc-prop fc-grow" style="--d:1"><b>Scope 1.</b> The Hugging Face and OpenAI incident (May to August 2026). Build the timeline from both sides.</p>
+            <table class="fc-table fc-grow" style="--d:2">
+              <thead><tr><th>Source</th><th>Link</th></tr></thead>
+              <tbody>
+                <tr><td>Hugging Face, security incident disclosure</td><td>huggingface.co/blog/…</td></tr>
+                <tr><td>OpenAI, the incident and the road ahead</td><td>openai.com/index/…</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- 2: the sourced draft, in review -->
+          <div class="fc-page" data-fc-show="2">
+            <p class="fc-h1">What Agents Actually Did</p>
+            <p class="fc-h2">1. The Hugging Face and OpenAI incident</p>
+            <p class="fc-prop fc-grow" style="--d:0">On 16 July 2026 Hugging Face disclosed that attackers reached its dataset processing.<sup>1</sup> OpenAI's account followed on 26 August.<sup>2</sup></p>
+            <p class="fc-prop fc-grow" style="--d:1">The 21 July statement itself has not been read for this draft, and the chapter says so.<sup>3</sup></p>
+            <div class="fc-decide fc-grow" style="--d:2">
+              <span class="fc-decide-stat">2,184 words added or removed · footnoted</span>
+              <span class="fc-accept"><i class="fc-box"><Check size={10} stroke-width={3} /></i>I accept changes</span>
+              <span class="fc-approve">Approve &amp; Save</span>
+            </div>
+          </div>
+          <!-- 3: a picture placed after the chapter's opening -->
+          <div class="fc-page" data-fc-show="3">
+            <p class="fc-h1">Model or Harness</p>
+            <p class="fc-line fc-pic-lead">Working argument: better harness defaults would have stopped or contained most of the incidents in chapter 1, but they would not have removed the model behaviours underneath.</p>
+            <div class="fc-pic fc-grow" style="--d:0">
+              <Image src={chapterPicture} alt="" widths={[480, 760, 1200]} sizes="(max-width: 760px) 92vw, 560px" loading="lazy" decoding="async" />
+              <span class="fc-pic-cap">Drawn in the walk for chapter three · OpenRouter · $0.0336</span>
+            </div>
+          </div>
+          <!-- 4: publish -->
+          <div class="fc-page fc-pub" data-fc-show="4">
+            <div class="fc-cover fc-grow" style="--d:0">
+              <span class="fc-cover-t">AGENTS AND HARNESS</span>
+              <span class="fc-cover-ai">AI</span>
+              <span class="fc-cover-a">MANAV SEHGAL</span>
+            </div>
+            <div class="fc-pub-side">
+              <p class="fc-h2">EPUB · A book for Apple Books and other readers</p>
+              <ul class="fc-pub-list">
+                <li class="fc-grow" style="--d:1"><Check size={12} stroke-width={3} />Cover drawn from one sentence · $0.0336</li>
+                <li class="fc-grow" style="--d:1"><Check size={12} stroke-width={3} />Title page and introduction</li>
+                <li class="fc-grow" style="--d:2"><Check size={12} stroke-width={3} />Contents and 3 chapters</li>
+                <li class="fc-grow" style="--d:3"><Check size={12} stroke-width={3} />Every link a public page</li>
+              </ul>
+              <span class="fc-save fc-grow" style="--d:4">Saved · Agents and Harness.epub · 1.17 MB</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="fc-chat">
+          <div class="fc-chat-tabs" aria-hidden="true">
+            <span class="is-on"><MessageSquareText size={13} />Chat</span><span>Jobs</span><span>Sources</span><span>History</span>
+          </div>
+          <p class="fc-chat-h" aria-hidden="true">Chat · Agents and Harness</p>
+          <div class="fc-thread" aria-live="polite">
+            <!-- 0 -->
+            <div class="fc-msg fc-you" data-fc-from="0">I'm writing a short book called <i>Agents and Harness</i>. Create a README with the title, a one-line subtitle, my idea quoted exactly, and an outline of three chapters. Don't create the chapters or run anything yet.</div>
+            <div class="fc-msg fc-flow" data-fc-from="0" data-fc-late>I made a README for Agents and Harness: the title, a one-line subtitle, your idea, and a three-chapter outline. I haven't created any chapters or run anything.
+              <span class="fc-row"><em>New</em><b>README</b><span>Kept</span><span class="fc-undo"><Undo2 size={11} />Undo</span></span>
+            </div>
+            <!-- 1 -->
+            <div class="fc-msg fc-you" data-fc-from="1">Create chapter 1 from the outline and turn it into a research brief.</div>
+            <div class="fc-run" data-fc-from="1" data-fc-only="1">
+              <span><Globe size={11} />Searched the web for "Hugging Face OpenAI agent incident 2026"</span>
+              <span><Search size={11} />Searched your folders for "agent incident"</span>
+            </div>
+            <div class="fc-msg fc-flow" data-fc-from="1" data-fc-late>The brief is in Review: a working argument, your idea in your words, five parts of scope, honesty rules, and a Sources table of real links.
+              <span class="fc-row"><em>Started</em><b>What Agents Actually Did</b><span>Ready in Review</span></span>
+            </div>
+            <!-- 2 -->
+            <div class="fc-msg fc-you" data-fc-from="2">Expand What Agents Actually Did with its sources.</div>
+            <div class="fc-msg fc-flow" data-fc-from="2" data-fc-late>The draft is waiting in Review. Check that every claim has a date and a source link before you keep it.
+              <span class="fc-row"><em>Edited</em><b>What Agents Actually Did</b><span>Shown in Review</span><span class="fc-undo"><Undo2 size={11} />Undo</span></span>
+            </div>
+            <!-- 3 -->
+            <div class="fc-msg fc-you" data-fc-from="3">Draw a picture for each chapter. Chapter 3: tracing an incident back to the model or the harness.</div>
+            <div class="fc-msg fc-flow" data-fc-from="3" data-fc-late>Three pictures, each placed after its chapter's opening paragraph.
+              <span class="fc-row fc-row--cost"><em>Receipt</em><b>3 pictures · OpenRouter</b><span>$0.10</span></span>
+            </div>
+            <!-- 4 -->
+            <div class="fc-msg fc-flow fc-done" data-fc-from="4" data-fc-late>
+              <b>The book is done.</b>
+              <span class="fc-tally"><span><b>54</b>min</span><span><b>3</b>chapters</span><span><b>7.8k</b>words</span><span><b>$0.17</b>images</span></span>
+            </div>
+          </div>
+          <div class="fc-compose" aria-hidden="true">
+            <span>Reply…</span><i><ArrowUp size={12} stroke-width={2.5} /></i>
+          </div>
+          <p class="fc-route" aria-live="polite">
+            {STEPS.map((s, i) => (
+              <span class={`fc-route-i fc-route--${s.engine}`} data-fc-show={String(i)}><i></i>{s.route}<em>{s.meta}</em></span>
+            ))}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc-engines" aria-label="Which engine ran this step">
+      {ENGINES.map((e) => (
+        <div class={`fc-engine fc-engine--${e.key}`} data-fc-engine={e.key}>
+          <span class="fc-engine-ic"><e.icon size={16} /></span>
+          <span class="fc-engine-t"><b>{e.name}</b><span>{e.how}</span></span>
+        </div>
+      ))}
+      <div class="fc-engine fc-engine--you">
+        <span class="fc-engine-ic"><ShieldCheck size={16} /></span>
+        <span class="fc-engine-t"><b>You decide</b><span>review, keep, or undo</span></span>
+      </div>
+    </div>
+    <figcaption class="fc-cap">Drawn from our real walk on a Flow {CHAT_SINCE} review build: an empty folder to a finished EPUB in 54 minutes. Messages and text shortened. <a href={PATH}>Read the whole walk, with every number labelled</a>.</figcaption>
+  </figure>
+
+  <div class="fc-orch">
+    <div class="fc-orch-copy">
+      <p class="ls-eyebrow">One chat. Every engine.</p>
+      <p class="fc-orch-h">Flow runs real document work across the models you already have.</p>
+      <p>A book, a client brief, an investor update. Flow Chat breaks the job into steps and sends each one where it fits best. You see the route and the cost before and after, and paid runs stay inside a monthly budget you set.</p>
+    </div>
+    <ul class="fc-orch-list">
+      <li><span class="fc-orch-ic fc-engine--sub"><Sparkles size={18} /></span><b>Frontier models on your subscription</b><span>Run Claude Code or Codex on the plan you already pay for. Our book's writing and research ran there, at no extra cost.</span></li>
+      <li><span class="fc-orch-ic fc-engine--api"><Cloud size={18} /></span><b>Cloud APIs on your own key</b><span>OpenRouter, OpenAI or Anthropic. The book's pictures and cover were five runs through OpenRouter for $0.17, each with a receipt.</span></li>
+      <li><span class="fc-orch-ic fc-engine--mac"><Laptop size={18} /></span><b>Local models on this Mac</b><span>Flow Runtime, Ollama or LM Studio. Proofread, summarize and overnight Jobs at $0.00, and nothing leaves the Mac.</span></li>
+      <li><span class="fc-orch-ic fc-engine--you"><ShieldCheck size={18} /></span><b>Two models, judged blind</b><span>Proof Run sends one step to a model on your Mac and one in the cloud. A third picks the better result, and that one waits in Review.</span></li>
+    </ul>
+    <div class="fc-orch-links">
+      <a class="ls-button" href={PATH}>See the book walk<ArrowRight size={18} /></a>
+      <a class="ls-text-link" href="/flow/paths/">All paths<ArrowRight size={17} /></a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const STEP_MS = [4200, 4600, 5200, 4400, 6200];
+
+  function init(root: ParentNode = document) {
+    for (const el of root.querySelectorAll<HTMLElement>('[data-fc]:not([data-fc-ready])')) {
+      el.dataset.fcReady = '';
+      const tabs = [...el.querySelectorAll<HTMLButtonElement>('[data-fc-go]')];
+      const engines = [...el.querySelectorAll<HTMLElement>('[data-fc-engine]')];
+      const engineOf = ['sub', 'sub', 'sub', 'api', 'mac'];
+      const last = tabs.length - 1;
+      let step = 0;
+      let timer: number | undefined;
+      let manual = false;
+
+      const set = (n: number) => {
+        step = n;
+        el.dataset.step = String(n);
+        el.querySelectorAll<HTMLElement>('[data-fc-show]').forEach((x) => { x.hidden = !x.dataset.fcShow!.split(' ').includes(String(n)); });
+        el.querySelectorAll<HTMLElement>('[data-fc-from]').forEach((x) => {
+          const from = Number(x.dataset.fcFrom);
+          const only = x.dataset.fcOnly;
+          x.hidden = only != null ? n !== Number(only) : n < from;
+          x.classList.toggle('is-now', from === n);
+        });
+        tabs.forEach((t, i) => {
+          t.setAttribute('aria-selected', String(i === n));
+          t.classList.toggle('is-past', i < n);
+        });
+        engines.forEach((e) => e.classList.toggle('is-on', e.dataset.fcEngine === engineOf[n]));
+        // Follow the thread down as the late reply lands, like Chat does.
+        const thread = el.querySelector<HTMLElement>('.fc-thread');
+        const follow = () => { if (thread) thread.scrollTo({ top: thread.scrollHeight }); };
+        [0, 120, STEP_MS[n] * 0.3 + 80, STEP_MS[n] * 0.3 + 500].forEach((t) => window.setTimeout(follow, t));
+        el.style.setProperty('--fc-ms', `${STEP_MS[n]}ms`);
+        el.classList.remove('is-tick');
+        void el.offsetWidth;
+        el.classList.add('is-tick');
+      };
+
+      const play = () => {
+        if (manual || timer) return;
+        timer = window.setTimeout(function tick() {
+          set(step === last ? 0 : step + 1);
+          timer = window.setTimeout(tick, STEP_MS[step]);
+        }, STEP_MS[step]);
+      };
+      const pause = () => { window.clearTimeout(timer); timer = undefined; };
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => {
+        manual = true;
+        el.classList.add('is-manual');
+        pause();
+        set(i);
+      }));
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced || !('IntersectionObserver' in window)) {
+        el.classList.add('is-manual');
+        set(last);
+        continue;
+      }
+      set(0);
+      new IntersectionObserver((entries) => {
+        for (const e of entries) e.isIntersecting ? play() : pause();
+      }, { threshold: 0.35 }).observe(el);
+    }
+  }
+  init();
+  document.addEventListener('astro:after-swap', () => init());
+</script>
+
+<style>
+  .fc { padding-block: 92px 84px; border-bottom: 1px solid var(--line); }
+  .fc-head { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: end; margin-bottom: 40px; }
+  .fc-eyebrow { display: flex; align-items: center; gap: 12px; }
+  .fc-new { padding: 3px 9px; border-radius: 99px; background: var(--yellow); color: var(--ink); letter-spacing: .08em; }
+  .fc h2 { font: 700 clamp(42px, 5vw, 76px)/.95 'Barlow Condensed', Arial, sans-serif; letter-spacing: -.018em; margin: 18px 0 0; }
+  .fc-dek { font-size: 16px; color: var(--muted); max-width: 560px; }
+  .fc-dek p + p { margin-top: .8rem; }
+
+  /* Step tabs */
+  .fc-mock { margin: 0; }
+  .fc-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+  .fc-tab { position: relative; display: flex; align-items: center; gap: 9px; padding: 11px 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--muted); font-size: 14px; font-weight: 700; text-align: left; cursor: pointer; overflow: hidden; transition: border-color .2s, color .2s, background .2s; }
+  .fc-tab:hover { border-color: var(--ink); color: var(--ink); }
+  .fc-tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .fc-tab-n { display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; font-size: 12px; }
+  .fc-tab-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fc-tab-bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--red); }
+  .fc-tab[aria-selected='true'] { border-color: var(--ink); color: var(--ink); background: var(--paper); }
+  .fc-tab[aria-selected='true'] .fc-tab-n { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .fc-tab.is-past { color: var(--ink); }
+  .fc-tab.is-past .fc-tab-n { background: var(--teal-pale); border-color: var(--teal); color: var(--teal); }
+  .fc-tab.is-past .fc-tab-bar { width: 100%; background: var(--teal); }
+  .fc.is-tick .fc-tab[aria-selected='true'] .fc-tab-bar,
+  [data-fc].is-tick .fc-tab[aria-selected='true'] .fc-tab-bar { animation: fc-bar var(--fc-ms, 4s) linear forwards; }
+  [data-fc].is-manual .fc-tab[aria-selected='true'] .fc-tab-bar { animation: none; width: 100%; }
+  @keyframes fc-bar { from { width: 0; } to { width: 100%; } }
+
+  /* Window */
+  .fc-window { border: 1px solid #cfd6d1; border-radius: 14px; background: #fff; box-shadow: 0 30px 60px -28px #17201c40, 0 2px 6px #17201c10; overflow: hidden; }
+  .fc-bar { display: flex; align-items: center; gap: 14px; height: 42px; padding: 0 16px; border-bottom: 1px solid #e3e7e4; background: #f7f8f7; font-size: 13px; font-weight: 600; }
+  .fc-lights { display: flex; gap: 7px; }
+  .fc-lights i { width: 11px; height: 11px; border-radius: 50%; background: #f2605a; }
+  .fc-lights i:nth-child(2) { background: #f6be4f; }
+  .fc-lights i:nth-child(3) { background: #5fc55a; }
+  .fc-title { flex: 1; }
+  .fc-review-pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 99px; background: #fff6d6; color: #7a5a00; font-size: 12px; }
+  .fc-review-pill i { width: 7px; height: 7px; border-radius: 50%; background: #e0a800; animation: fc-pulse 1.4s ease-in-out infinite; }
+  .fc-panes { display: grid; grid-template-columns: 190px minmax(0, 1fr) 360px; height: 470px; }
+
+  .fc-side { padding: 16px 12px; border-right: 1px solid #e3e7e4; background: #fafbfa; font-size: 13px; color: #3b4541; }
+  .fc-side p { display: flex; align-items: center; gap: 7px; margin: 0 0 6px; padding: 4px 8px; border-radius: 6px; white-space: nowrap; overflow: hidden; }
+  .fc-side-h { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6b7672; }
+  .fc-folder.is-open { color: var(--teal); font-weight: 700; }
+  .fc-file { padding-left: 22px !important; animation: fc-in .4s ease both; }
+  .fc-file.is-cur { background: #e3eefc; }
+
+  .fc-doc { position: relative; padding: 26px 32px; overflow: hidden; }
+  .fc-page { display: grid; gap: 12px; align-content: start; }
+  .fc-h1 { font: 700 26px/1.1 'Barlow Condensed', Arial, sans-serif; letter-spacing: -.01em; }
+  .fc-h2 { font-size: 15px; font-weight: 700; margin-top: 4px !important; }
+  .fc-sub { color: var(--muted); font-size: 14px; }
+  .fc-quote { padding-left: 12px; border-left: 3px solid #d5dbd6; color: #56635e; font-size: 14px; font-style: italic; }
+  .fc-ol { margin: 0; padding-left: 20px; list-style: decimal; display: grid; gap: 8px; font-size: 14px; }
+  .fc-line { font-size: 14px; }
+  .fc-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .fc-table th, .fc-table td { padding: 7px 9px; border: 1px solid #e0e5e1; text-align: left; }
+  .fc-table th { background: #f4f6f4; }
+  .fc-table td:last-child { color: #2a62c9; }
+  .fc-prop { padding: 6px 9px; border-radius: 4px; background: #fdeeb6; font-size: 14px; }
+  .fc-prop sup { color: #2a62c9; font-weight: 700; }
+  .fc-decide { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 6px; padding: 10px 12px; border: 1px solid #e3e7e4; border-radius: 9px; background: #fbfcfb; font-size: 13px; }
+  .fc-decide-stat { flex: 1; color: var(--muted); font-weight: 600; }
+  .fc-accept { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; }
+  .fc-box { display: grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #9aa5a0; color: transparent; transition: all .3s; }
+  .fc-approve { padding: 6px 12px; border-radius: 7px; background: #d9dfdb; color: #fff; font-weight: 700; transition: background .3s; }
+  [data-fc].is-tick[data-step='2'] .fc-box { animation: fc-tickbox .3s ease calc(var(--fc-ms) * .55) forwards; }
+  [data-fc].is-tick[data-step='2'] .fc-approve { animation: fc-approve .3s ease calc(var(--fc-ms) * .62) forwards; }
+  [data-fc].is-manual[data-step='2'] .fc-box { background: #0e9e98; border-color: #0e9e98; color: #fff; animation: none; }
+  [data-fc].is-manual[data-step='2'] .fc-approve { background: #0e9e98; animation: none; }
+  @keyframes fc-tickbox { to { background: #0e9e98; border-color: #0e9e98; color: #fff; } }
+  @keyframes fc-approve { to { background: #0e9e98; } }
+  .fc-pic { position: relative; border-radius: 10px; overflow: hidden; }
+  .fc-pic :global(img) { display: block; width: 100%; height: 250px; object-fit: cover; object-position: 50% 40%; }
+  .fc-pic-cap { position: absolute; left: 10px; bottom: 10px; padding: 3px 8px; border-radius: 5px; background: #000a; color: #fff; font-size: 12px; }
+  .fc-pub { grid-template-columns: 170px 1fr; gap: 24px; align-items: start; }
+  .fc-cover { display: grid; justify-items: center; align-content: space-between; text-align: center; aspect-ratio: 2 / 3; padding: 16px 12px 12px; border-radius: 3px 8px 8px 3px; background: radial-gradient(circle at 50% 52%, #7d4fd6 0 9%, #3a2a6a 22%, #161b33 48%), #161b33; color: #e8a25c; box-shadow: 8px 10px 22px -10px #17201c80, inset 4px 0 0 #0004; }
+  .fc-cover-t { font: 700 24px/1 'Barlow Condensed', Arial, sans-serif; letter-spacing: .03em; }
+  .fc-cover-ai { display: grid; place-items: center; width: 46px; height: 46px; border: 2px solid #e8a25c; border-radius: 10px; background: #2a1f4f; color: #fff; font: 700 20px/1 'Barlow Condensed', Arial, sans-serif; box-shadow: 0 0 0 10px #e8a25c22, 0 0 30px 8px #9b6cff66; }
+  .fc-cover-a { font: 700 13px/1 'Barlow Condensed', Arial, sans-serif; letter-spacing: .08em; }
+  .fc-pub-side { display: grid; gap: 12px; }
+  .fc-pub-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+  .fc-pub-list li { display: flex; align-items: center; gap: 8px; }
+  .fc-pub-list :global(svg) { color: #2fa36b; }
+  .fc-save { justify-self: start; padding: 8px 12px; border-radius: 8px; background: #e7f6ee; color: #146a3f; font-size: 13px; font-weight: 700; }
+
+  /* Chat pane */
+  .fc-chat { display: flex; flex-direction: column; min-height: 0; border-left: 1px solid #e3e7e4; background: #fff; }
+  .fc-chat-tabs { display: flex; gap: 14px; padding: 12px 16px 8px; font-size: 12px; color: #8a9490; }
+  .fc-chat-tabs span { display: inline-flex; align-items: center; gap: 5px; }
+  .fc-chat-tabs .is-on { color: #2a62c9; font-weight: 700; }
+  .fc-chat-h { padding: 0 16px 8px; border-bottom: 1px solid #eef1ef; font-size: 12px; color: #6b7672; }
+  .fc-thread { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 14px 14px 8px; scrollbar-width: none; }
+  .fc-thread::-webkit-scrollbar { display: none; }
+  .fc-msg { font-size: 13px; line-height: 1.45; }
+  .fc-you { align-self: flex-end; max-width: 86%; padding: 8px 11px; border-radius: 12px 12px 4px 12px; background: #eef1f4; }
+  .fc-flow { display: grid; gap: 7px; color: #222a27; }
+  .fc-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 6px 9px; border-radius: 7px; background: #f4f6f4; font-size: 11.5px; color: #6b7672; }
+  .fc-row em { font-style: normal; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .fc-row b { color: #2a62c9; font-weight: 600; }
+  .fc-undo { display: inline-flex; align-items: center; gap: 3px; margin-left: auto; padding: 2px 7px; border: 1px solid #d5dbd6; border-radius: 5px; background: #fff; color: #3b4541; font-weight: 600; }
+  .fc-row--cost { background: #fff4ec; }
+  .fc-row--cost span:last-child { margin-left: auto; color: #a8481c; font-weight: 700; }
+  .fc-run { display: grid; gap: 4px; padding: 8px 10px; border-radius: 8px; background: #f7f8f7; font-size: 11.5px; color: #56635e; }
+  .fc-run span { display: flex; align-items: center; gap: 6px; }
+  .fc-run span:nth-child(2) { animation-delay: .9s; }
+  .fc-done { padding: 10px 11px; border-radius: 10px; background: #e7f6ee; }
+  .fc-tally { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .fc-tally span { display: grid; font-size: 11px; color: #3b6b52; }
+  .fc-tally b { font: 700 22px/1 'Barlow Condensed', Arial, sans-serif; color: #146a3f; }
+  .fc-compose { display: flex; align-items: center; justify-content: space-between; margin: 6px 14px 6px; padding: 8px 8px 8px 12px; border: 1px solid #dfe4e0; border-radius: 10px; font-size: 13px; color: #9aa5a0; }
+  .fc-compose i { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #c9d0cc; color: #fff; }
+  .fc-route { min-height: 34px; padding: 0 14px 12px; font-size: 11.5px; }
+  .fc-route-i { display: flex; align-items: center; gap: 7px; color: #3b4541; font-weight: 600; animation: fc-in .35s ease both; }
+  .fc-route-i i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--fc-c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--fc-c) 20%, transparent); }
+  .fc-route-i em { margin-left: auto; font-style: normal; color: #6b7672; font-weight: 500; white-space: nowrap; }
+
+  /* Engines strip */
+  .fc-engine--sub { --fc-c: #7a4fd6; }
+  .fc-engine--api { --fc-c: #e0702a; }
+  .fc-engine--mac { --fc-c: #2fa36b; }
+  .fc-engine--you { --fc-c: var(--teal); }
+  .fc-route--sub { --fc-c: #7a4fd6; }
+  .fc-route--api { --fc-c: #e0702a; }
+  .fc-route--mac { --fc-c: #2fa36b; }
+  .fc-engines { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+  .fc-engine { display: flex; align-items: center; gap: 11px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px; background: #fff; opacity: .55; transition: opacity .3s, border-color .3s, box-shadow .3s, transform .3s; }
+  .fc-engine-ic { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 8px; background: color-mix(in srgb, var(--fc-c) 12%, #fff); color: var(--fc-c); }
+  .fc-engine-t { display: grid; font-size: 12.5px; line-height: 1.3; color: var(--muted); }
+  .fc-engine-t b { font-size: 14px; color: var(--ink); }
+  .fc-engine.is-on { opacity: 1; border-color: var(--fc-c); box-shadow: 0 8px 20px -12px var(--fc-c); transform: translateY(-2px); }
+  .fc-engine--you { opacity: 1; }
+  .fc-cap { margin-top: 14px; font-size: 13px; color: var(--muted); }
+  .fc-cap a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--red); color: var(--ink); font-weight: 600; }
+
+  /* Orchestration band */
+  .fc-orch { display: grid; grid-template-columns: 1fr 1.5fr; gap: 28px 56px; margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--line); }
+  .fc-orch-copy { display: grid; gap: 14px; align-content: start; color: var(--muted); font-size: 15px; }
+  .fc-orch-copy p + p { margin-top: 0; }
+  .fc-orch-copy .ls-eyebrow { color: var(--ink); }
+  .fc-orch-h { font: 700 clamp(28px, 2.6vw, 38px)/1.02 'Barlow Condensed', Arial, sans-serif; color: var(--ink); }
+  .fc-orch-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .fc-orch-list li { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); font-size: 14px; color: var(--muted); }
+  .fc-orch-list b { color: var(--ink); font-size: 15px; }
+  .fc-orch-list li > span:last-child { grid-column: 2; }
+  .fc-orch-ic { grid-row: span 2; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: color-mix(in srgb, var(--fc-c) 12%, #fff); color: var(--fc-c); }
+  .fc-orch-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 22px; }
+
+  /* Motion */
+  .is-now { animation: fc-in .45s ease both; }
+  .is-now[data-fc-late] { animation-delay: calc(var(--fc-ms, 4s) * .3); }
+  .fc-run.is-now span { animation: fc-in .4s ease both; }
+  .fc-grow { animation: fc-in .45s ease both; animation-delay: calc(.35s + var(--d, 0) * .35s); }
+  @keyframes fc-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes fc-pulse { 50% { opacity: .35; } }
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) {
+    .is-now, .fc-grow, .fc-file, .fc-route-i, .fc-run span, .fc-review-pill i { animation: none !important; }
+  }
+
+  @media (max-width: 1100px) {
+    .fc-panes { grid-template-columns: minmax(0, 1fr) 330px; }
+    .fc-side { display: none; }
+    .fc-orch { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 1000px) {
+    .fc-head { grid-template-columns: 1fr; gap: 20px; }
+    .fc-engines { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    .fc { padding-block: 56px; }
+    .fc-tabs { display: flex; overflow-x: auto; scrollbar-width: none; margin-inline: -4px; padding: 2px 4px; }
+    .fc-tab { flex: none; }
+    .fc-panes { grid-template-columns: 1fr; grid-template-rows: 190px 380px; height: auto; }
+    .fc-doc { padding: 16px 18px; border-bottom: 1px solid #e3e7e4; }
+    .fc-chat { border-left: 0; }
+    .fc-pub { grid-template-columns: 96px 1fr; gap: 14px; }
+    .fc-cover-t { font-size: 15px; }
+    .fc-cover-ai { width: 30px; height: 30px; font-size: 14px; box-shadow: none; }
+    .fc-cover-a { font-size: 9px; }
+    .fc-pic :global(img) { height: 140px; }
+    .fc-pic-lead { display: none; }
+    .fc-orch-list { grid-template-columns: 1fr; }
+    .fc-review-pill { display: none; }
+  }
+</style>

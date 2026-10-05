@@ -72,6 +72,30 @@ export interface PathShowcase {
 }
 
 export const SHOWCASE: Record<string, PathShowcase> = {
+  'write-a-book-in-flow-chat': {
+    slug: 'write-a-book-in-flow-chat',
+    thumb: [0, 2],
+    title: 'An idea to an ebook, through Flow Chat',
+    persona: 'Authors starting from a blank page',
+    hook: 'Talk to an empty folder. Get a sourced book.',
+    chip: 'Chat',
+    hue: 'purple',
+    steps: ['Tell Chat the idea, get the outline', 'Brief, expand and review each chapter', 'Add pictures and a cover, publish the EPUB'],
+    benefits: ['Time', 'Trust'],
+    diagram: { in: ['md', 'claude', 'web'], middle: 'review', out: ['epub'], through: ['sources', 'picture'], captions: ['One idea', 'Chat, sources, review', 'A finished ebook'] },
+    doc: {
+      folder: 'Agents and Harness', file: 'What Agents Actually Did.md',
+      title: 'What Agents Actually Did', dek: 'Agents and Harness · chapter 1 · written through Flow Chat',
+      blocks: [
+        { kind: 'callout', tone: 'brief', title: 'Research brief', text: 'Over the past twelve months, AI agents have moved from forecast risk to recorded incident.' },
+        { kind: 'table', title: 'Sources', head: ['Source', 'Date'], rows: [['Hugging Face, security incident disclosure', '16 July 2026'], ['OpenAI, the incident and the road ahead', '26 August 2026']] },
+        { kind: 'prose', text: 'A dated timeline, built from both sides, with a footnote on every line. It says plainly which statements it could not read.', cites: 2, proposed: true },
+        { kind: 'tree', items: [{ name: 'Agents and Harness.epub', depth: 0, open: true }, { name: 'Cover', depth: 1 }, { name: 'Introduction', depth: 1 }, { name: 'What Agents Actually Did', depth: 1 }, { name: 'Ten Harnesses Compared', depth: 1 }, { name: 'Model or Harness', depth: 1 }] },
+      ],
+      review: '2,184 words added or removed; original: 729 words. Run by Claude Code.',
+      receipt: 'About 2 min · Claude subscription, included · pictures $0.0336 each',
+    },
+  },
   'recurring-client-brief': {
     slug: 'recurring-client-brief',
     thumb: [0, 1],

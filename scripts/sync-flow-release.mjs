@@ -17,11 +17,12 @@ const FEED = 'https://orionfold.com/flow/appcast.xml';
 
 // The llms.txt phrases that name the current version. The test
 // (scripts/test/flow-release.test.mjs) checks each one against the JSON.
+// Not "On Flow 2.0.3, …": a caveat names the build it was found on, and
+// rewriting it once invented 2.1.3, then 2.2.3 (2026-10-05).
 export const LLMS_VERSION_PHRASES = [
   /(\[Flow\]\(https:\/\/orionfold\.com\/flow\/\): Flow )\d+\.\d+( Living Documents for Mac)/,
   /(## Flow Paths \(Flow )\d+\.\d+( walkthroughs)/,
   /(Real jobs you can do in Flow )\d+\.\d+( on a Mac)/,
-  /(\. On Flow )\d+\.\d+(\.)/g,
 ];
 
 export function readNewestRelease(xml) {

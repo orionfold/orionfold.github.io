@@ -34,6 +34,7 @@ import FlowPlans from '../components/living/FlowPlans.astro';
 import FlowFaq from '../components/living/FlowFaq.astro';
 import FlowClosing from '../components/living/FlowClosing.astro';
 import FlowReel from '../components/flow/FlowReel.astro';
+import FlowChatShowcase from '../components/flow/FlowChatShowcase.astro';
 import { flowReelSchema } from '../data/flow-reel';
 const title = "Flow for Mac \u00b7 Give your documents work to do.";
 const description = `Flow ${FLOW_VERSION} for Mac. Start from a path or one of ${FLOW_COUNTS.livingDocuments} Living Documents, run their Jobs, then review each changed part. Your files. Your judgment. Base is free.`;
@@ -51,6 +52,7 @@ const reelSchema = flowReelSchema(SITE.url, reelLede);
   <main id="main" class="ls-main">
     <FlowHero />
     <FlowNavigation />
+    <FlowChatShowcase />
     <FlowReel heading="See Flow work in about a minute." lede={reelLede} />
     <PathsHomeMock />
     <WowStat ids={['brief43', 'figures', 'footnotes']} />

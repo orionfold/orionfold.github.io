@@ -74,3 +74,10 @@ test('the Flow front doors read the version from the JSON', () => {
     assert.match(read(file), /FLOW_VERSION/, `${file} uses FLOW_VERSION`);
   }
 });
+
+test('the version phrases never rewrite a three-part build a caveat names', () => {
+  const line = 'Approved before it changed. On Flow 2.0.3, links between Notion pages do not open yet.';
+  const out = LLMS_VERSION_PHRASES.reduce((t, re) => t.replace(re, '$19.9$2'), line);
+  assert.equal(out, line, 'a patch version like 2.0.3 is a fact about that build');
+  assert.doesNotMatch(readFileSync(new URL('../../public/llms.txt', import.meta.url), 'utf8'), /On Flow 2\.[12]\.3,/, 'no invented 2.1.3 or 2.2.3');
+});

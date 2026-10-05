@@ -7,7 +7,6 @@ import { SITE, PERSON } from '../data/seo';
 import '../styles/living-base.css';
 import '../styles/living-home.css';
 import HomeHero from '../components/living/HomeHero.astro';
-import CapabilityRibbon from '../components/living/CapabilityRibbon.astro';
 import HomeContinuity from '../components/living/HomeContinuity.astro';
 import PathsSection from '../components/flow/paths/PathsSection.astro';
 import HomeDocumentWorkshop from '../components/living/HomeDocumentWorkshop.astro';
@@ -17,6 +16,7 @@ import HomeClosing from '../components/living/HomeClosing.astro';
 import FlowAgentsReviewed from '../components/flow/FlowAgentsReviewed.astro';
 import FlowInOut from '../components/flow/FlowInOut.astro';
 import WowStat from '../components/flow/WowStat.astro';
+import FlowChatShowcase from '../components/flow/FlowChatShowcase.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
 const title = "Orionfold \u00b7 Make knowledge a living thing.";
 const description = "Flow Living Documents on your Mac. Files you own, changes you can review, and useful work that continues between visits.";
@@ -28,7 +28,7 @@ const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication
   <ConfirmBanner />
   <main id="main" class="ls-main">
     <HomeHero />
-    <CapabilityRibbon />
+    <FlowChatShowcase id="home-flow-chat" tone="home" />
     <PathsSection id="home-paths" />
     <WowStat ids={['brief43', 'agent', 'figures']} />
     <HomeContinuity />

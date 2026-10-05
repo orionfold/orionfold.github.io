@@ -7,7 +7,7 @@ import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
-import { maskParity, publishBody, shotDirFor, splitArticle } from '../sync-flow-paths.mjs';
+import { maskParity, publishBody, shotDirFor, slugForDir, splitArticle } from '../sync-flow-paths.mjs';
 import { mkdirSync } from 'node:fs';
 
 const root = new URL('../../', import.meta.url);
@@ -72,7 +72,7 @@ test('every published path is complete and honest about its build', () => {
     assert.match(front.build, /Flow \d+\.\d+(\.\d+)?/, `${slug} names the build it was walked on`);
     assert.ok(front.receipt.length >= 3, `${slug} has a receipt card`);
     for (const r of front.receipt) assert.ok(['verified', 'derived', 'assumed', 'unknown'].includes(r.evidence), `${slug}: ${r.label} carries an evidence label`);
-    assert.match(body, /^## Evidence$/m, `${slug} keeps its evidence table`);
+    assert.match(body, /^## (Evidence|The numbers)$/m, `${slug} keeps its evidence table`);
     assert.doesNotMatch(body, /not for publication|not yet released/i, `${slug} carries no internal section`);
     // Operator 2026-09-29: no path is labelled free or paid; any model run is Pro.
     assert.doesNotMatch(body, /^\|\s*Tier\b/im, `${slug} carries no plan-tier row`);
@@ -169,4 +169,23 @@ test('publishBody rewrites a generated .jpg picture like a .png shot', () => {
 test('no two paths share a Home chip label, drafts included', () => {
   const chips = entries.map((e) => e.front.chip).filter(Boolean);
   assert.equal(chips.length, new Set(chips).size, `duplicate chip in ${chips.join(', ')}`);
+});
+
+test('slugForDir strips the number, and a re-walk publishes under its path slug', () => {
+  assert.equal(slugForDir('11-manuscript-to-book'), 'manuscript-to-book');
+  assert.equal(slugForDir('15-chat-ebook-rewalk'), 'write-a-book-in-flow-chat');
+});
+
+test('the Flow Chat book walk names Flow 2.2 and never claims a Home path (operator 2026-10-05)', () => {
+  const book = entries.find((e) => e.slug === 'write-a-book-in-flow-chat');
+  assert.ok(book, 'the book walk exists');
+  assert.equal(book.front.release, '2.2');
+  // Flow 2.2's Home manifest has no such path; the page must not say "Home ▸ …".
+  assert.equal(book.front.onHome, false);
+  // The site rewrote the body in its own voice; a resync must not overwrite it.
+  assert.equal(book.front.bodyLocked, true);
+  const home = readFileSync(new URL('src/components/flow/paths/PathsHomeMock.astro', root), 'utf8');
+  assert.match(home, /p\.data\.onHome/, 'the Home mock only shows paths that are on Home');
+  const routing = readFileSync(new URL('src/components/living/FlowRouting.astro', root), 'utf8');
+  assert.doesNotMatch(routing, /Every AI step in our path walks ran on the Mac/, 'the book walk ran on a subscription and OpenRouter');
 });

@@ -29,7 +29,7 @@ const d = entry.data;
 const sections = headings.filter((h) => h.depth === 2);
 // Name the current release: readers open the path in it. The dev build
 // each walk ran on is spelled out in full on the "Walked on:" line below.
-const release = FLOW_VERSION;
+const release = d.release ?? FLOW_VERSION;
 const dateIso = d.drafted.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
 const canonical = `${SITE.url}${pathHref(entry.id)}`;
@@ -98,8 +98,10 @@ const schema = [
         <div id="try-this-path">
           <PaperCta layout="article" class="ed-paper-cta"
             source={`flow-path-${entry.id}`} headingId="path-cta"
-            eyebrow="TRY THIS PATH IN FLOW" heading={`Open “${d.path}” on your Mac.`}
-            description={`In Flow ${release}, Home ▸ ${d.chip} ▸ ${d.path} ▸ Open. Your copy lands in a folder of its own, with the example files to try it on.`} />
+            eyebrow="TRY THIS PATH IN FLOW" heading={d.onHome ? `Open “${d.path}” on your Mac.` : `Start “${d.path}” on your Mac.`}
+            description={d.onHome
+              ? `In Flow ${release}, Home ▸ ${d.chip} ▸ ${d.path} ▸ Open. Your copy lands in a folder of its own, with the example files to try it on.`
+              : `In Flow ${release}, open an empty folder, choose it in the sidebar, and tell Flow Chat your idea. The steps above show each message we sent.`} />
         </div>
       </article>
     </div>

@@ -365,6 +365,12 @@ const paths = defineCollection({
       caveat: z.string().optional(),
       // The site reworded the title; the sync keeps it (see sync-flow-paths.mjs).
       titleLocked: z.boolean().optional(),
+      // The site rewrote the body in its own voice; the sync leaves the file alone.
+      bodyLocked: z.boolean().optional(),
+      // The release a reader needs, when it is newer than the site's version file.
+      release: z.string().optional(),
+      // False when the walk starts from an empty folder, not a path on Flow's Home.
+      onHome: z.boolean().default(true),
     }),
 });
 

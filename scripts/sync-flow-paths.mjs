@@ -51,6 +51,15 @@ const WEBP_QUALITY = 90;
 
 const PRODUCT_FIELDS = ['title', 'path', 'persona', 'drafted', 'build', 'data'];
 
+// A product article folder the website publishes under a customer-facing slug,
+// with the ops shot folder it reads from (article 15 was a re-walk).
+const RENAMED = { '15-chat-ebook-rewalk': { slug: 'write-a-book-in-flow-chat', shots: 'idea-to-ebook-all-in-chat' } };
+
+/** The public slug for a product article folder: NN-<slug>, unless renamed above. */
+export function slugForDir(dir) {
+  return RENAMED[dir]?.slug ?? dir.replace(/^\d+-/, '');
+}
+
 /**
  * The ops shot folder for a slug. The product lane sometimes names it after
  * the full path title (weekly-issue → weekly-issue-then-the-book), so an exact
@@ -180,7 +189,7 @@ async function encodeShot(src, dest) {
 }
 
 async function syncOne(dir, { released, releasedIn }) {
-  const slug = dir.replace(/^\d+-/, '');
+  const slug = slugForDir(dir);
   const { front, body } = splitArticle(readFileSync(path.join(ARTICLES, dir, 'ARTICLE.md'), 'utf8'));
   const published = publishBody(body, { slug, released, releasedIn });
 
@@ -201,8 +210,14 @@ async function syncOne(dir, { released, releasedIn }) {
   // The website may reword a title to keep it true of the released build
   // (operator 2026-09-30); titleLocked keeps that wording across syncs.
   if (existing?.titleLocked) front2.title = existing.title;
+  // The operator may have the website rewrite a body in the site's voice
+  // (2026-10-05); bodyLocked keeps that text, its dek and its product fields.
+  if (existing?.bodyLocked) {
+    console.log(`${slug}: bodyLocked, kept as written; diff the article by hand`);
+    return { slug, shots: 0, lowRes: [], draft: existing.draft === true };
+  }
 
-  const shotDir = shotDirFor(slug);
+  const shotDir = shotDirFor(RENAMED[dir]?.shots ?? slug);
   const needed = new Set([...published.shots, site.cardShot].filter(Boolean));
   const lowRes = [];
   mkdirSync(path.join(ASSET_DIR, slug), { recursive: true });
@@ -232,7 +247,7 @@ async function main() {
   const released = args.includes('--released') ? args[args.indexOf('--released') + 1].split(',') : [];
   const dirs = readdirSync(ARTICLES).filter((d) => /^\d+-/.test(d) && existsSync(path.join(ARTICLES, d, 'ARTICLE.md')));
   for (const dir of dirs) {
-    if (only && !dir.endsWith(only)) continue;
+    if (only && !dir.endsWith(only) && slugForDir(dir) !== only) continue;
     const r = await syncOne(dir, { released, releasedIn: FLOW_RELEASE.version });
     const low = r.lowRes.length ? `; ops copy used for ${r.lowRes.join(', ')}` : '';
     console.log(`${r.slug}: ${r.shots} shots${low}${r.draft ? ' (draft, not routed)' : ''}`);
