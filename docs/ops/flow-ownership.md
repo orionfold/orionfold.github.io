@@ -8,8 +8,11 @@ The Website webhook acknowledges Flow checkout, invoice and subscription events
 without dispatching Website fulfilment. `website-event-ownership.ts` matches the
 six exact Pro, Import and Publish lookup keys after signature verification.
 Price-resolution failures take the existing retry path. Other products retain
-their handlers. Retained legacy Flow branches are a temporary rollback path;
-remove them only after the product endpoint's live single-delivery verification.
+their handlers. The legacy Flow branches (sandbox client and signing secret,
+licence-id and email mappings, subscription renewal and status sync, the admin
+hand-issue mapping) were removed after the skip logged all four Flow events of
+the 2026-10-01 live walk while the product endpoint fulfilled alone (0248 P1).
+Flow's SKUs stay in the catalog for display prices only.
 
 Project secrets are shared by name across functions. Removing a Website reader
 does not authorize deleting or rotating Product's Flow secrets. Shared signing

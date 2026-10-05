@@ -14,6 +14,9 @@ const record = (value: unknown): RecordValue =>
   value && typeof value === "object" ? value as RecordValue : {};
 const keyFrom = (value: unknown) => record(record(value).metadata).lookup_key;
 const isFlow = (key: unknown) => typeof key === "string" && FLOW_KEYS.has(key);
+
+/** True for a lookup key whose sale the Flow product repo fulfils. */
+export const isProductOwnedFlowKey = (key: string) => isFlow(key);
 const data = (value: unknown): unknown[] => {
   const rows = record(value).data;
   return Array.isArray(rows) ? rows : [];

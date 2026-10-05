@@ -173,3 +173,27 @@ Deno.test("non-Flow invoice/subscription still dispatches and lookup failures ne
   );
   assertEquals(calls, 2);
 });
+
+// 0248 P1: the Flow product repo fulfils Flow on its own endpoint. Website keeps
+// only the skip above; no Flow credential, licence id, email or renewal branch.
+Deno.test("website functions carry no retained Flow fulfilment", async () => {
+  const read = (path: string) =>
+    Deno.readTextFile(new URL(path, import.meta.url));
+  const webhook = await read("../stripe-webhook/index.ts");
+  for (
+    const retired of [
+      "STRIPE_FLOW_SECRET_KEY",
+      "STRIPE_FLOW_WEBHOOK_SECRET",
+      "next_flow_license_id",
+      "flow-license-email",
+      "subscription-license",
+      "apply_subscription_invoice_extension",
+    ]
+  ) {
+    assertEquals(webhook.includes(retired), false, `stripe-webhook: ${retired}`);
+  }
+  const admin = await read("../admin-issue-license/index.ts");
+  assertEquals(admin.includes("orionfold-flow"), false, "admin-issue-license");
+  const catalog = await read("./catalog.ts");
+  assertEquals(catalog.includes('"orionfold-flow"'), false, "catalog family");
+});

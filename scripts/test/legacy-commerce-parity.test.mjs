@@ -28,7 +28,7 @@ const hashes = {
   "supabase/functions/stripe-webhook/README.md":
     "3dc979e50e9067927cb718d270998c5b02ccea08d3f0647e397c10bb0d54d9d5",
   "supabase/functions/stripe-webhook/index.ts":
-    "ae44cb3f6b06d1c2a09f103b5a3997a7455ea2092ed99efa7aa90efdcf964baf",
+    "dc30bad21b0a8b301fd18edbd0370102e1306c476b4d7e24fda2ad0f41d97eaf",
   "supabase/functions/workshop-refund/index.ts":
     "edded72b304add0968687aea9bb48b33d2a6f4623053b947b57d68246771cd07",
   "supabase/functions/relay-host-request/index.ts":
@@ -67,8 +67,6 @@ const hashes = {
     "542b12b6df1571c51506ea1ed202259fc837bf9c83b6c1dbdd9f3326ec509658",
   "supabase/functions/_shared/book-files.ts":
     "2158a6ebc27cdb2894d0e93cb661a7082c8f2763753d6742094ac761c2242c7e",
-  "supabase/functions/_shared/license-credential.ts":
-    "09c80e9b48f692822f8dc38ff58848a1426368265aed61b04d34c8eeafe528fc",
   "supabase/functions/_shared/lead-input.ts":
     "06f3d5e049b37ed0985b6b21be4358b40d264238efdee378cab8dfb939f16618",
   "supabase/functions/_shared/workshop-delivery.ts":
@@ -79,8 +77,6 @@ const hashes = {
     "62d74d10757ffec8be0cfc763e13d3ea0202506a1db036a5993728b4cce06a63",
   "supabase/functions/_shared/license-conformance-v1.json":
     "5d14894108689eaec5a547f14678e9b0703bb8da5dc963ede17c540e3e94a9a3",
-  "supabase/functions/_shared/subscription-license.ts":
-    "60bc948cca7e5f4e8971bd772b5504ae024d7bd39f344b65c7da000d071dcfe5",
   "supabase/functions/_shared/workshop-state.ts":
     "07c9a06a6d346bae6ebd3381c54e9fc0e74be63c946a32ec62823402731dea5f",
   "supabase/functions/_shared/license-payload.ts":
@@ -103,16 +99,14 @@ const hashes = {
     "9f6f05894a9d7024909cbcda2bc8cbe72a5de0621f62e140c3b8189a40db218c",
   "supabase/functions/_shared/cors.ts":
     "e93592447887b94d1420bca20496aec4318933b13cffcc896bd3606ab78010c1",
-  "supabase/functions/_shared/license-reissue.ts":
-    "09aa4987c8d92564519344be3f8f282e182bdfa9eaa5792c63973ddec1e53e20",
   "supabase/functions/_shared/relay-host-delivery.ts":
     "e91a9f040a0e557d9d641b5acca2f80b5e21fefc8c3f2433f3f7cf021980103d",
   "supabase/functions/_shared/workshop-contract.ts":
     "d6e4a13b3a4d249dc2081d4675850c5cdf388d4b2d69220056a9bb579f947312",
   "supabase/functions/_shared/catalog.ts":
-    "24d36c3bf656843aee177ae6b1505df14190fd1023c1002f2f716781d5e2264c",
+    "208399bfe20be6df238b73dd3e32b7c7923cde492e38d932282f63d3a5e8a535",
   "supabase/functions/admin-issue-license/index.ts":
-    "4cd10a290d6de927fde5940d819a0a33657b07c5721bcbe28ee65680f526e6d9",
+    "bb3dd36b3e22038d07cef234d3137dae094aa774f7262b376bb44663cca063ea",
   "supabase/functions/workshop-access/index.ts":
     "44af082eb89300776831240283117bad83adff8e72f6f8c11b86f9e17a246eab",
   "supabase/functions/confirm-email/index.ts":

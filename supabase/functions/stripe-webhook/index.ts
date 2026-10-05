@@ -20,7 +20,6 @@ import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 import {
   getCatalogItem,
   clampSeats,
-  licenseFamilyForLookupKey,
   licenseProductForLookupKey,
   RELAY_HOST_LOOKUP_KEY,
   STRIPE_API_VERSION,
@@ -39,16 +38,9 @@ import {
   licenseTerm,
   LICENSE_KEY_ID,
 } from "../_shared/license-payload.ts";
-import {
-  extendedExpiry,
-  isSubscriptionLookupKey,
-  shouldExtendSubscriptionTerm,
-  subscriptionLicenseStatus,
-} from "../_shared/subscription-license.ts";
 import { sendMetaPurchase } from "../_shared/meta-capi.ts";
 import { BOOK_FILES_BUCKET, brandedUrl, sendBookEmail, signBookFiles } from "../_shared/book-files.ts";
 import { footerForEmail } from "../_shared/email-footer.ts";
-import { flowLicenseEmailText } from "../_shared/flow-license-email.ts";
 import {
   refundDeadline,
   WORKSHOP_ACCESS_TTL_SECONDS,
@@ -72,32 +64,16 @@ const stripeClientFor = (secretKey: string) =>
     appInfo: { name: "orionfold-website", url: "https://orionfold.com" },
   });
 
-// The LIVE client. Used for signature verification (which needs a client but not
-// a matching key) and as the default for every event from the live account.
+// The LIVE client, used for signature verification and every handler. Flow's
+// sandbox client and signing secret left with Flow's commerce (0248 P1): the
+// product-owned endpoint fulfils Flow, and this one only skips its events.
 const stripe = stripeClientFor(Deno.env.get("STRIPE_SECRET_KEY") ?? "");
-
-// Flow's sandbox client, built only when its key is configured (see
-// the retained rollback path until Product verifies the cutover). A verified
-// TEST event must be answered with the TEST key: retrieving a sandbox
-// subscription with the live key is a 404, so the key has to follow the event.
-const FLOW_SECRET_KEY = Deno.env.get("STRIPE_FLOW_SECRET_KEY")?.trim() ?? "";
-const flowStripe = FLOW_SECRET_KEY ? stripeClientFor(FLOW_SECRET_KEY) : null;
-
-/** The client matching the account a VERIFIED event came from.
- *
- * `event.livemode` is signed data, not a caller-supplied hint. Passed explicitly
- * down the handler chain rather than swapped on a module binding: two concurrent
- * requests share one isolate, so a mutable module client could let a live event
- * be processed with the test key. */
-const clientForEvent = (event: Stripe.Event) =>
-  event.livemode === false && flowStripe ? flowStripe : stripe;
 
 // Deno runs on Web Crypto (no Node `crypto`), so signature verification must be
 // the ASYNC path with a SubtleCrypto provider. `constructEvent` (sync) throws here.
 const cryptoProvider = Stripe.createSubtleCryptoProvider();
 
 const WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET") ?? "";
-const FLOW_WEBHOOK_SECRET = Deno.env.get("STRIPE_FLOW_WEBHOOK_SECRET")?.trim() ?? "";
 // BOOK_FILES_BUCKET, DOWNLOAD_TTL_SECONDS, brandedUrl, signBookFiles,
 // bookEmailText and sendBookEmail now live in ../_shared/book-files.ts so the
 // free magnet rail (confirm-email) delivers through the same path.
@@ -131,9 +107,6 @@ const LICENSE_ID_RPC: Record<string, string> = {
   "orionfold-proof": "next_proof_license_id",
   "orionfold-relay": "next_relay_license_id",
   "orionfold-relay-host": "next_relay_host_license_id",
-  // Flow, the first SUBSCRIPTION-shaped product. Drawn once at first purchase;
-  // renewals extend the same license rather than minting a new id.
-  "orionfold-flow": "next_flow_license_id",
 };
 
 function supabaseAdmin() {
@@ -215,70 +188,46 @@ Deno.serve(async (req) => {
   // RAW body — any reserialization (e.g. req.json()) breaks the HMAC.
   const body = await req.text();
 
-  // TWO signing secrets, tried in order (Flow sandbox testing, 2026-08-22).
-  // Flow is exercised end to end against the Stripe SANDBOX while books,
-  // sponsors, Relay and Proof keep running against the live account. Supabase
-  // secrets are PROJECT-wide, so repointing the shared secret at test mode would
-  // stop live fulfilment for all of them — a real book buyer would pay and
-  // receive nothing. Instead this endpoint accepts EITHER secret and lets the
-  // HMAC decide which account sent the event.
-  //
-  // Safe because a signature is not a claim: Stripe's HMAC is derived from the
-  // secret, so a live-account event CANNOT verify against the Flow secret, or
-  // the reverse. Trying both widens which accounts we accept; it never weakens
-  // what a verified signature proves. With STRIPE_FLOW_WEBHOOK_SECRET unset this
-  // collapses to exactly the previous single-secret behaviour.
-  const signingSecrets = [...new Set([WEBHOOK_SECRET, FLOW_WEBHOOK_SECRET].filter(Boolean))];
-  if (signingSecrets.length === 0) {
+  if (!WEBHOOK_SECRET) {
     console.error("No webhook signing secret configured");
     return new Response("Invalid signature", { status: 400 });
   }
 
-  let event: Stripe.Event | undefined;
-  let lastError: Error | undefined;
-  for (const secret of signingSecrets) {
-    try {
-      event = await stripe.webhooks.constructEventAsync(
-        body,
-        signature,
-        secret,
-        undefined,
-        cryptoProvider,
-      );
-      break;
-    } catch (err) {
-      lastError = err as Error;
-    }
-  }
-  if (!event) {
-    console.error("Signature verification failed:", lastError?.message);
+  let event: Stripe.Event;
+  try {
+    event = await stripe.webhooks.constructEventAsync(
+      body,
+      signature,
+      WEBHOOK_SECRET,
+      undefined,
+      cryptoProvider,
+    );
+  } catch (err) {
+    console.error("Signature verification failed:", (err as Error).message);
     return new Response("Invalid signature", { status: 400 });
   }
 
-  // The client for THIS event's account, threaded to the handlers that call the
-  // Stripe API. A test event answered with the live key 404s on every retrieve.
   const verifiedEvent = event;
-  const api = clientForEvent(verifiedEvent);
 
   try {
     const skipped = await dispatchWebsiteCommerceEvent(verifiedEvent, {
-      checkoutPrices: async (id) => (await api.checkout.sessions.listLineItems(id, { limit: 100 })).data.map((item: Stripe.LineItem) => item.price),
-      priceLookupKey: async (id) => (await api.prices.retrieve(id)).lookup_key,
+      checkoutPrices: async (id) => (await stripe.checkout.sessions.listLineItems(id, { limit: 100 })).data.map((item: Stripe.LineItem) => item.price),
+      priceLookupKey: async (id) => (await stripe.prices.retrieve(id)).lookup_key,
     }, async () => {
       switch (verifiedEvent.type) {
         case "checkout.session.completed":
-          await onCheckoutCompleted(verifiedEvent.data.object as Stripe.Checkout.Session, api);
+          await onCheckoutCompleted(verifiedEvent.data.object as Stripe.Checkout.Session);
           break;
         case "checkout.session.async_payment_succeeded":
-          await onCheckoutCompleted(verifiedEvent.data.object as Stripe.Checkout.Session, api);
+          await onCheckoutCompleted(verifiedEvent.data.object as Stripe.Checkout.Session);
           break;
         case "refund.created":
         case "refund.updated":
         case "refund.failed":
-          await onRefundChanged(verifiedEvent.data.object as Stripe.Refund, api);
+          await onRefundChanged(verifiedEvent.data.object as Stripe.Refund);
           break;
         case "invoice.paid":
-          await onInvoicePaid(verifiedEvent.data.object as Stripe.Invoice, api);
+          await onInvoicePaid(verifiedEvent.data.object as Stripe.Invoice);
           break;
         case "invoice.payment_failed":
           await onInvoicePaymentFailed(verifiedEvent.data.object as Stripe.Invoice);
@@ -672,7 +621,7 @@ async function issueAndDeliverLicense(
     replacesLicenseId?: string | null;
     term?: { issuedAt: string; notBefore: string; expiresAt: string };
     hostIdentity?: { ref: string; kind: "organization" | "individual"; displayName: string };
-    /** The Stripe client for this event's account (live, or Flow's sandbox). */
+    /** The Stripe client; tests may inject one. */
     api?: Stripe;
   },
 ) {
@@ -1071,8 +1020,6 @@ const LICENSE_EMAIL_TEXT: Record<
   "orionfold-proof": proofLicenseEmailText,
   "orionfold-relay": relayLicenseEmailText,
   "orionfold-relay-host": relayHostLicenseEmailText,
-  // Without this entry a Flow buyer fell back to Arena's DGX Spark setup copy.
-  "orionfold-flow": flowLicenseEmailText,
 };
 
 async function fulfillBook(session: Stripe.Checkout.Session) {
@@ -1174,64 +1121,6 @@ async function fulfillSponsor(session: Stripe.Checkout.Session) {
   if (error) throw error;
 }
 
-/**
- * Push a subscription license's term out by the period a paid invoice covers.
- *
- * Reads the current `expires_at` so an EARLY renewal is additive rather than
- * lossy (the user keeps days they already paid for) while a LAPSED subscriber's
- * new term starts from now instead of being eaten by dead time. The arithmetic
- * lives in `_shared/subscription-license.ts` and is unit-tested there; this
- * function only does the database round trip.
- *
- * No new license is signed or emailed. The envelope the buyer already installed
- * stays valid — its `expires_at` is what moves.
- *
- * ONCE PER INVOICE (2026-09-26). The extension adds on top of the current expiry,
- * so applying the same invoice twice (a Stripe re-delivery, or two handlers
- * during a webhook cutover) would grant two periods for one payment. The write
- * goes through `apply_subscription_invoice_extension`, which records the invoice
- * id under a UNIQUE key and moves the licence in one transaction; a repeat is a
- * logged no-op.
- */
-async function extendSubscriptionLicense(
-  // deno-lint-ignore no-explicit-any
-  db: any,
-  subscriptionId: string,
-  lookupKey: string,
-  invoiceId: string,
-) {
-  const current = await db.from("fe_entitlements")
-    .select("id,expires_at")
-    .eq("stripe_subscription_id", subscriptionId)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  if (current.error) throw current.error;
-  if (!current.data) {
-    // The first invoice can beat checkout.session.completed. That race is the
-    // reason `subscription_create` is excluded upstream, so reaching here means
-    // a cycle invoice for a subscription we never issued against — worth a log,
-    // not a throw: retrying the webhook cannot conjure the missing row.
-    console.log("Subscription renewal with no issued license yet:", subscriptionId);
-    return;
-  }
-
-  const expiresAt = extendedExpiry(lookupKey, current.data.expires_at, new Date());
-  if (!expiresAt) return;
-
-  const { data: applied, error } = await db.rpc("apply_subscription_invoice_extension", {
-    p_invoice_id: invoiceId,
-    p_entitlement_id: current.data.id,
-    p_expires_at: expiresAt,
-  });
-  if (error) throw error;
-  if (applied === false) {
-    console.log(`Invoice ${invoiceId} already extended ${lookupKey} license ${current.data.id}; skipped`);
-    return;
-  }
-  console.log(`Extended ${lookupKey} license ${current.data.id} to ${expiresAt} (invoice ${invoiceId})`);
-}
-
 async function onInvoicePaid(invoice: Stripe.Invoice, api: Stripe = stripe) {
   const subscriptionId = invoiceSubscriptionId(invoice);
   if (!subscriptionId) return; // not a subscription invoice
@@ -1253,17 +1142,6 @@ async function onInvoicePaid(invoice: Stripe.Invoice, api: Stripe = stripe) {
     : null;
   const lookupKey = expandedLookupKey ??
     (linePriceId ? (await api.prices.retrieve(linePriceId)).lookup_key : null);
-
-  // SUBSCRIPTION-SHAPED LICENSES (Flow, 2026-08-22). A subscription license is
-  // never re-issued per cycle: the SAME signed envelope stays valid and each
-  // paid invoice pushes its `expires_at` out by the period just paid for.
-  // Cancellation therefore needs no revocation — the extensions simply stop and
-  // the term runs out. This must happen BEFORE the Relay-host early return,
-  // which is scoped to that one perpetual SKU.
-  if (shouldExtendSubscriptionTerm(invoice.billing_reason, lookupKey)) {
-    await extendSubscriptionLicense(db, subscriptionId, lookupKey!, invoice.id);
-    return;
-  }
 
   if (!shouldIssueRelayHostRenewal(invoice.billing_reason, lookupKey, RELAY_HOST_LOOKUP_KEY)) return;
 
@@ -1374,43 +1252,6 @@ async function updateLatestRelayHostSubscriptionStatus(
   if (updated.error) throw updated.error;
 }
 
-/**
- * Sync a subscription license's `status` from the Stripe subscription.
- *
- * Deliberately does NOT touch `expires_at`: the term is paid-for time, and a
- * status change is not a refund. A canceled subscriber keeps the period they
- * already paid for and lapses when it runs out, which is both fairer and
- * simpler than backdating an expiry.
- *
- * Product-scoped by the family, not hardcoded, so the next subscription product
- * needs no new function here.
- */
-async function updateSubscriptionLicenseStatus(
-  sub: Stripe.Subscription,
-  status: string,
-) {
-  const lookupKey = sub.metadata?.lookup_key ?? sub.items?.data?.[0]?.price?.lookup_key ?? null;
-  if (!lookupKey || !isSubscriptionLookupKey(lookupKey)) return;
-  const family = licenseFamilyForLookupKey(lookupKey);
-  if (!family) return;
-
-  const db = supabaseAdmin();
-  const latest = await db.from("fe_entitlements")
-    .select("id")
-    .eq("product", family.product)
-    .eq("stripe_subscription_id", sub.id)
-    .is("refunded_at", null)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  if (latest.error) throw latest.error;
-  if (!latest.data) return;
-  const updated = await db.from("fe_entitlements")
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq("id", latest.data.id);
-  if (updated.error) throw updated.error;
-}
-
 async function onSubscriptionUpdated(sub: Stripe.Subscription) {
   const tier = sub.metadata?.tier ?? sub.items?.data?.[0]?.price?.lookup_key?.replace("sponsor_", "") ?? null;
   const lookupKey = sub.metadata?.lookup_key ?? sub.items?.data?.[0]?.price?.lookup_key ?? null;
@@ -1430,7 +1271,6 @@ async function onSubscriptionUpdated(sub: Stripe.Subscription) {
   if (error) throw error;
   const hostStatus = relayHostLifecycleStatus(sub.status);
   await updateLatestRelayHostSubscriptionStatus(sub.id, hostStatus);
-  await updateSubscriptionLicenseStatus(sub, subscriptionLicenseStatus(sub.status));
 }
 
 async function onSubscriptionDeleted(sub: Stripe.Subscription) {
@@ -1440,6 +1280,4 @@ async function onSubscriptionDeleted(sub: Stripe.Subscription) {
     .eq("stripe_subscription_id", sub.id);
   if (error) throw error;
   await updateLatestRelayHostSubscriptionStatus(sub.id, "canceled");
-  // The license keeps its paid-for `expires_at` and lapses on its own.
-  await updateSubscriptionLicenseStatus(sub, "canceled");
 }

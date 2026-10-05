@@ -417,17 +417,6 @@ export const LICENSE_FAMILIES: Record<string, LicenseFamily> = {
     renewal: "license_orionfold_proof_renewal",
     foundingSeats: FOUNDING_SEATS,
   },
-  // Flow: the first subscription family. Two SKUs, no founding cohort, no
-  // separate renewal. `periodMonths` is what each paid invoice extends
-  // `expires_at` by, so a canceled subscription simply stops extending and the
-  // license lapses on its own rather than needing a revocation.
-  "orionfold-flow": {
-    product: "orionfold-flow",
-    term: "subscription",
-    monthly: "license_orionfold_flow_monthly",
-    annual: "license_orionfold_flow_annual",
-    periodMonths: { monthly: 1, annual: 12 },
-  },
   "orionfold-relay": {
     product: "orionfold-relay",
     founding: "license_orionfold_relay_founding",
@@ -448,19 +437,6 @@ export function licenseFamilyForLookupKey(lookupKey: string): LicenseFamily | un
       f.monthly === lookupKey ||
       f.annual === lookupKey,
   );
-}
-
-/**
- * Months of access one paid invoice grants, for a subscription family's SKU.
- * The webhook extends `expires_at` by this on `invoice.paid`. Returns
- * undefined for a perpetual family, whose term is KEPT_PROVEN_MONTHS instead.
- */
-export function subscriptionPeriodMonths(lookupKey: string): number | undefined {
-  const family = licenseFamilyForLookupKey(lookupKey);
-  if (!family || !isSubscriptionFamily(family) || !family.periodMonths) return undefined;
-  if (lookupKey === family.monthly) return family.periodMonths.monthly;
-  if (lookupKey === family.annual) return family.periodMonths.annual;
-  return undefined;
 }
 
 /**
@@ -573,17 +549,6 @@ export function licenseProductForLookupKey(
         entitlements: ["proven-matrix-images", "signed-update-channel"],
         // Arena carries the founding-25/standard edition badge.
         edition: editionForLookupKey(lookupKey) ?? "standard",
-      };
-    case "orionfold-flow":
-      return {
-        product: "orionfold-flow",
-        tier: "subscription",
-        // The entitlement string the APP compiles in as
-        // `LicenseVerifier.requiredEntitlement`. One signing key covers the
-        // whole constellation, so this string is the only thing separating
-        // products: a Flow license missing it is refused by a correctly
-        // working app. Verified against orionfold-flow, 2026-08-21.
-        entitlements: ["product:orionfold-flow"],
       };
     case "orionfold-proof":
       return {

@@ -15,6 +15,7 @@
 // without a sequence fails here rather than in front of the first buyer.
 import { assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { CATALOG, licenseProductForLookupKey } from "./catalog.ts";
+import { isProductOwnedFlowKey } from "./website-event-ownership.ts";
 
 /** Mirrors stripe-webhook's LICENSE_ID_RPC. Kept in sync by this test's twin
  * assertion below, which fails if the webhook's copy drifts from this one. */
@@ -23,12 +24,13 @@ const LICENSE_ID_RPC: Record<string, string> = {
   "orionfold-proof": "next_proof_license_id",
   "orionfold-relay": "next_relay_license_id",
   "orionfold-relay-host": "next_relay_host_license_id",
-  "orionfold-flow": "next_flow_license_id",
 };
 
 Deno.test("every licensed catalog SKU resolves to a mapped license-id sequence", () => {
-  const licensed = Object.entries(CATALOG).filter(([, item]) =>
-    (item as { kind?: string }).kind === "license"
+  // Flow's SKUs stay in CATALOG for display prices only; the Flow product repo
+  // fulfils them and this webhook skips their events, so they need no sequence.
+  const licensed = Object.entries(CATALOG).filter(([key, item]) =>
+    (item as { kind?: string }).kind === "license" && !isProductOwnedFlowKey(key)
   );
   assert(licensed.length > 0, "the catalog should contain licensed SKUs");
 
