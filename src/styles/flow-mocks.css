@@ -228,8 +228,49 @@
 .ps-thumb::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: linear-gradient(transparent, color-mix(in srgb, var(--ps-tint) 7%, #f5f6f4)); pointer-events: none; }
 
 @media (max-width: 900px) {
-  .ps--hero { grid-template-columns: 1fr; padding: 22px; }
+  /* minmax(0, …) so the diagram and mock shrink to the card, not the reverse. */
+  .ps--hero { grid-template-columns: minmax(0, 1fr); padding: 22px; }
   .dm-bilingual { grid-template-columns: 1fr; }
+}
+/* Phones: the large diagram takes the compact sizes and its captions wrap
+   inside their column; the document window tightens its padding. */
+@media (max-width: 560px) {
+  .ps--hero { gap: 24px; padding: 18px 16px; }
+  .ls .ps-name { font-size: 1.3rem; }
+  .pd--lg { --pd-head: 16px; }
+  .pd--lg .pd-row, .pd--sm .pd-row { grid-template-columns: auto minmax(18px, 1fr) auto minmax(18px, 1fr) auto; }
+  .pd--lg .pd-marks { gap: 4px; }
+  .pd--lg .pd-file svg { width: 34px; height: 34px; }
+  .pd--lg .pd-file + .pd-file { margin-left: -9px; }
+  .pd--lg .pd-file b { top: 57%; font-size: 7.5px; letter-spacing: 0; }
+  .pd--lg .pd-mark svg, .pd--lg .pd-mark img { width: 22px; height: 22px; }
+  .pd--lg .pd-arrow, .pd--sm .pd-arrow { padding: 0 3px; }
+  .pd--lg .pd-cap { width: 22px; height: 22px; margin: 0 2px; box-shadow: 0 0 0 3px color-mix(in srgb, var(--pd-tint) 14%, transparent); }
+  .pd--lg .pd-cap svg { width: 12px; height: 12px; }
+  .pd--lg .pd-head { width: 16px; height: 16px; }
+  .pd--lg .pd-centre { width: 52px; height: 64px; }
+  .pd--lg .pd-page { padding: 8px; gap: 4px; }
+  .pd--lg .pd-page b { font-size: 10px; }
+  .pd--lg .pd-centre--cap { width: 52px; height: 52px; border-radius: 13px; }
+  .pd--lg .pd-centre--cap svg { width: 26px; height: 26px; }
+  .pd-caption { width: auto; max-width: 100%; }
+  .pd-caption span { flex: 1 1 auto; white-space: normal; font-size: .68rem; }
+  .dm-body { padding: 14px 14px; gap: 10px; }
+  .ls .dm-h { font-size: 1.1rem; }
+  .dm-kpis { grid-template-columns: repeat(auto-fit, minmax(78px, 1fr)); gap: 6px; }
+  .dm-kpis div { padding: 7px 8px; min-width: 0; }
+  .dm-kpis b { font-size: 1rem; }
+  .dm-bar { gap: 8px; }
+  .dm-mode { display: none; }
+  .dm-r { gap: 6px; }
+  .dm-r em { padding: 4px 8px; }
+}
+/* Small phones (320px class): give the arrows less room before the marks. */
+@media (max-width: 400px) {
+  .pd--lg .pd-row, .pd--sm .pd-row { grid-template-columns: auto minmax(10px, 1fr) auto minmax(10px, 1fr) auto; }
+  .pd--lg .pd-arrow, .pd--sm .pd-arrow { padding: 0 1px; }
+  .pd--lg .pd-cap, .pd--sm .pd-cap { margin: 0 1px; }
+  .dm-body { padding: 12px 11px; }
 }
 /* The review bar stays clickable above the card's full-surface link. */
 .ps .dm-review { z-index: 2; }

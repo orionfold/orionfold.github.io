@@ -146,11 +146,18 @@
 .fp-addons b { display: block; margin-bottom: 2px; color: #1a6a93; font-size: .8rem; }
 .fp-addons small { display: block; margin-top: 6px; font-size: .66rem; color: #5d6c6d; }
 @media (max-width: 1000px) {
-  .fp-app-body, .fp-feat { grid-template-columns: 1fr; }
+  .fp-app-body, .fp-feat { grid-template-columns: minmax(0, 1fr); }
   .fp-app-side { display: none; }
   .fp-addons { grid-template-columns: 1fr; }
 }
-@media (max-width: 560px) { .fp-app-main { padding: 16px; } }
+@media (max-width: 560px) {
+  .fp-app-main { padding: 16px; }
+  .fp-feat { padding: 16px 14px; }
+}
+@media (max-width: 400px) {
+  .fp-app-main { padding: 14px 12px; }
+  .fp-feat { padding: 14px 10px; }
+}
 .ls .fp-start { margin: 8px 0 40px; max-width: 420px; }
 .ls .fp-prose > h2#side-by-side { margin-top: 0; border-top: 0; padding-top: 0; }
 
