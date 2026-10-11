@@ -158,6 +158,8 @@
 .dm-consent dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font-size: .7rem; }
 .dm-consent dt { color: #6b7672; }
 .dm-consent dd { margin: 0; font-weight: 600; }
+.dm-remember { display: flex; align-items: center; gap: 6px; margin-top: 9px; font-size: .66rem; color: #3b4541; }
+.dm-remember i { flex: none; width: 10px; height: 10px; border: 1px solid #b8c3c9; border-radius: 3px; background: #fff; }
 .dm-allow { display: inline-block; margin-top: 9px; padding: 4px 12px; border-radius: 6px; background: var(--dm-tint); color: #fff; font-size: .68rem; font-weight: 700; transition: transform .15s ease, filter .3s ease; }
 .dm.is-s1 .dm-allow { filter: brightness(.85); transform: scale(.96); }
 

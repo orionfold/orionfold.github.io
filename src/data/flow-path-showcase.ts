@@ -39,7 +39,7 @@ export type DocBlock =
   | { kind: 'diagram'; title: string; nodes: string[] }
   | { kind: 'picture'; scene: 'commuter'; caption: string }
   | { kind: 'bilingual'; left: string; right: string; notes: number }
-  | { kind: 'consent'; title?: string; rows: [string, string][]; action: string }
+  | { kind: 'consent'; title?: string; rows: [string, string][]; remember?: string; action: string }
   | { kind: 'tree'; items: { name: string; depth: number; open?: boolean }[] }
   | { kind: 'chips'; items: string[] };
 
@@ -157,7 +157,7 @@ export const SHOWCASE: Record<string, PathShowcase> = {
       folder: 'Agent Desk', file: 'pricing.md',
       title: 'Lumen Invoicing pricing', dek: 'Agent Desk · 239 words · proofread by Codex',
       blocks: [
-        { kind: 'consent', rows: [['Agent', 'Codex CLI · Codex subscription'], ['What it may do', 'Full access · Agent Desk'], ['Cost', 'Included in a subscription you already pay for']], action: 'Allow Once' },
+        { kind: 'consent', rows: [['Agent', 'Codex CLI · Codex subscription'], ['What it may do', 'Full access · Agent Desk'], ['Cost', 'Included in a subscription you already pay for']], remember: 'Codex CLI · Codex subscription', action: 'Allow Once' },
         { kind: 'diff', title: 'Exact changes · 3 lines', pairs: [{ before: 'buisness', after: 'business' }, { before: 'definately', after: 'definitely' }, { before: 'get started with', after: 'get started with,' }] },
         { kind: 'bars', title: 'What the agent carried', items: [{ label: 'Words on the page', value: 239 }, { label: 'Tokens sent in', value: 21831, hi: true }] },
       ],
@@ -342,7 +342,7 @@ export const SHOWCASE: Record<string, PathShowcase> = {
       title: 'The ferryman’s ledger', dek: 'The Estuary · chapter 3, imported from Word',
       blocks: [
         { kind: 'diff', title: 'Proofread · 3 fixes', pairs: [{ before: 'writen', after: 'written' }, { before: 'Their were', after: 'There were' }, { before: 'it’s painter', after: 'its painter' }], note: 'Nothing else changed.' },
-        { kind: 'consent', title: 'Before anything leaves this Mac', rows: [['Service', 'OpenRouter · Gemini 3.1 Flash Lite Image'], ['What leaves this Mac', 'Title, subtitle, author, one sentence'], ['Estimated cost', '0.0336 USD a picture']], action: 'Allow Once' },
+        { kind: 'consent', title: 'Before anything leaves this Mac', rows: [['Service', 'OpenRouter · Gemini 3.1 Flash Lite Image'], ['What leaves this Mac', 'Title, subtitle, author, one sentence'], ['Estimated cost', '0.0336 USD a picture']], remember: 'OpenRouter · Gemini 3.1 Flash Lite Image', action: 'Allow Once' },
         { kind: 'tree', items: [{ name: 'The Estuary.epub', depth: 0, open: true }, { name: 'Cover', depth: 1 }, { name: 'Contents', depth: 1 }, { name: 'Chapter 01', depth: 1 }, { name: 'Chapter 02', depth: 1 }, { name: 'The ferryman’s ledger', depth: 1 }] },
       ],
       review: '3 fixes on 3 lines. The rest of the chapter is unchanged.',

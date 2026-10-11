@@ -5,7 +5,7 @@ order: 3
 title: "Flow with Claude Code: your agent writes, you review, the record stays"
 dek: "Claude Code is a strong agent for code and files. Flow is where the documents it helps write can wait for your review and keep a history. We walked this path with Codex; Claude Code on it is not yet verified by us."
 line: "Use Claude Code for the work. Use Flow to review the documents and keep the record."
-updated: 2026-09-28
+updated: 2026-10-10
 startWith: review-agents
 rows:
   - topic: "What it is for"
@@ -58,7 +58,7 @@ Flow puts a review step in between. You still use Claude Code. Flow is where the
 This is how it went on our walk, where we used Codex. The steps are the same for any agent Flow supports, but we have not run them with Claude Code yet.
 
 1. **Pick the agent and the folder.** In Flow's model switcher you pick your subscription. Flow lists Claude Code and Codex, signed in on your Mac, on the plans you already have.
-2. **Read the terms first.** Before the run starts, one sheet names the agent, the folder it may work in, and the cost. For a subscription run, the cost reads *Included*. Nothing runs until you press Allow Once.
+2. **Read the terms first.** Before the run starts, one sheet names the agent, the folder it may work in, and the cost. For a subscription run, the cost reads *Included*. The first time, nothing runs until you press Allow Once. If you tick *Don't ask again*, later runs to that agent skip the sheet. You can undo that in Settings.
 3. **Review the exact lines.** The agent's answer arrives as a proposal. *Exact changes* shows each added and removed line. On our walk, the file on disk kept its old version until we approved.
 4. **Keep the record.** History shows the run, the checks it passed, and the model that did the work.
 

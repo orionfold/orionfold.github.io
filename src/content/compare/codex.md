@@ -5,7 +5,7 @@ order: 4
 title: "Flow with Codex: your agent proposes, you decide, the record stays"
 dek: "Codex does the work on the ChatGPT plan you already have. Flow makes its edits to your documents wait for your review, line by line, and keeps a record of every run."
 line: "Run Codex on your plan. Review its edits in Flow before they touch the file."
-updated: 2026-09-28
+updated: 2026-10-10
 startWith: review-agents
 rows:
   - topic: "What it is for"
@@ -58,7 +58,7 @@ Flow gives those documents a review step and a record. Codex still does the work
 This is the walk we ran, with Codex on our own ChatGPT plan.
 
 1. **Pick Codex.** In Flow's model switcher we chose *Codex subscription*. If you have the ChatGPT desktop app but never installed the Codex command line tool, Flow's release notes say it finds the Codex that comes with the app.
-2. **Read the terms first.** Before anything ran, one sheet named the agent (Codex), the folder it could work in, and the cost: *Included in a subscription you already pay for*. Nothing ran until we pressed Allow Once.
+2. **Read the terms first.** Before anything ran, one sheet named the agent (Codex), the folder it could work in, and the cost: *Included in a subscription you already pay for*. Nothing ran until we pressed Allow Once. Since Flow 2.2 the sheet also has a *Don't ask again* box. It starts unticked, so the first run always asks.
 3. **Review the exact lines.** 26.7 seconds later, the proposal was waiting. *Exact changes* showed three edited lines on a 239-word page. The file on disk kept its old version until we ticked *I accept changes* and approved.
 4. **Keep the record.** History showed the run, its checks, and the model, `codex-cli/subscription`.
 

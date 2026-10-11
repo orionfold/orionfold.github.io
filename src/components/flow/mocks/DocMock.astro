@@ -112,6 +112,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <div class="dm-block dm-consent">
             <p class="dm-cap">{b.title ?? 'Before the agent runs'}</p>
             <dl>{b.rows.map(([k, v]) => <><dt>{k}</dt><dd>{v}</dd></>)}</dl>
+            {b.remember && <span class="dm-remember"><i aria-hidden="true"></i>Don’t ask again for {b.remember}</span>}
             <span class="dm-allow">{b.action}</span>
           </div>
         ) : b.kind === 'tree' ? (

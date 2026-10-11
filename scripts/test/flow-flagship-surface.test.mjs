@@ -1045,7 +1045,7 @@ assert.match(
 
 // The catalog card carries the roadmap status the rest of the site implies.
 const softwareData = read('src/data/software.ts');
-assert.match(softwareData, /import \{ ORIONFOLD_FLOW_LIVE \} from '\.\/launch'/, 'the Flow card reads the launch flag');
+assert.match(softwareData, /import \{ ORIONFOLD_FLOW_LIVE \} from '\.\/launch\.ts'/, 'the Flow card reads the launch flag');
 assert.match(softwareData, /status: ORIONFOLD_FLOW_LIVE \? 'active' : 'planned'/, 'a released Flow is not still roadmap-planned');
 assert.match(softwareData, /eyebrow: ORIONFOLD_FLOW_LIVE \? 'Lead flagship · Out now for Mac' : 'Lead flagship · In development'/);
 

@@ -17,7 +17,7 @@
 // `poster-variety-feedback`). The real product screenshots are kept in the repo as
 // compositing material but the in-card cover is the poster.
 import type { RoadmapMeta } from './roadmap-types';
-import { ORIONFOLD_FLOW_LIVE } from './launch';
+import { ORIONFOLD_FLOW_LIVE } from './launch.ts';
 
 export type SoftwareGroup = 'flagship' | 'platform' | 'apps' | 'intel' | 'devtools';
 export type CoverType = 'screenshot' | 'logo' | 'motif' | 'poster';

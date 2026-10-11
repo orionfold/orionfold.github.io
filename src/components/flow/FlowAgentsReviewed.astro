@@ -31,6 +31,7 @@ const { id = 'agents-reviewed' } = Astro.props;
           <dt>What it may do</dt><dd>Full access · Agent Desk</dd>
           <dt>Cost</dt><dd>Included in a subscription you already pay for</dd>
         </dl>
+        <span class="ar-remember"><i aria-hidden="true"></i>Don’t ask again for Codex CLI · Codex subscription</span>
         <span class="ar-allow">Allow Once</span>
       </div>
       <div class="ar-pane ar-term">
@@ -76,6 +77,8 @@ const { id = 'agents-reviewed' } = Astro.props;
   .ar-consent dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; font-size: .78rem; }
   .ar-consent dt { color: #6b7672; }
   .ar-consent dd { margin: 0; font-weight: 500; }
+  .ar-remember { display: flex; align-items: center; gap: 7px; font-size: .74rem; color: #3b4541; }
+  .ar-remember i { flex: none; width: 12px; height: 12px; border: 1px solid #b8c3c9; border-radius: 3px; background: #fff; }
   .ar-allow { justify-self: start; padding: 6px 14px; border-radius: 7px; background: color-mix(in srgb, var(--dm-tint) 72%, #000); color: #fff; font-size: .78rem; font-weight: 700; transition: transform .15s, filter .3s; }
   .ar-stage.is-s1 .ar-allow { filter: brightness(.82); transform: scale(.96); }
   .ar-term { background: #11191a; color: #cfe3de; }

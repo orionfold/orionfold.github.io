@@ -6,10 +6,10 @@
 // `story` content collection and use storyOgSlug(). See
 // _SPECS/2026-05-25-125727_og-and-featured-image-pipeline.md.
 
-import { SITE } from './seo';
+import { SITE } from './seo.ts';
 import { FLOW_COUNTS } from '../lib/flow/flow-counts';
 import { FLOW_VERSION } from '../lib/flow/flow-release';
-import { RELAY_HOST_PORTABLE_LIVE } from './relay-host-portable';
+import { RELAY_HOST_PORTABLE_LIVE } from './relay-host-portable.ts';
 
 const relayHostPortablePositioning = import.meta.env.DEV || RELAY_HOST_PORTABLE_LIVE;
 
