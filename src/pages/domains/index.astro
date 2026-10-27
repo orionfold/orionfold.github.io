@@ -1,0 +1,176 @@
+---
+// /domains/: Flow Domains, the Flow launch surface. The headline is the
+// operator's selected line; the audience, business model and comparisons
+// follow the Flow PR/FAQ (private, 2026-10-26) inside its own limits:
+// the buyer is a subject matter expert serving their own clients, publishing
+// has no per-Domain fee (it needs Pro plus the Publish add-on), publishing does not bring customers, Claude Code and
+// Codex pair with Flow, and Flow MCP (Settings ▸ General ▸ Your agents) is in Flow; code complete 2026-10-27, it ships with the release. Every walk number
+// comes from the AI Consulting Starter journals via the launch article.
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import PaperCta from '../../components/ui/PaperCta.astro';
+import DomainAnatomy from '../../components/flow/domains/DomainAnatomy.astro';
+import DomainJourney from '../../components/flow/domains/DomainJourney.astro';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import { publishedDomainArticles, domainArticleHref } from '../../lib/flow/domains';
+import { ogMeta } from '../../data/og';
+import { SITE, PERSON } from '../../data/seo';
+import '../../styles/living-base.css';
+import '../../styles/essays.css';
+import '../../styles/flow-paths.css';
+import '../../styles/domains.css';
+
+const [launch] = await publishedDomainArticles();
+const title = 'Flow Domains: your expertise as a living system | Orionfold';
+const description = 'Turn the method you use with clients into a Flow Domain: living documents you co-author with any AI, review, publish to GitHub and keep current for every client.';
+const og = ogMeta('/domains/');
+
+const PAINS = [
+  { k: 'Every client starts from a blank chat.', v: 'Your method lives in your head, old decks and a dozen past conversations. On each new job you explain it to the AI again.' },
+  { k: 'Last month’s fix is gone.', v: 'You corrected the AI on a client job. The next session does not know. The lesson stays in that one file.' },
+  { k: 'The draft is fast. Checking it is not.', v: 'AI writes in seconds. Then you spend the evening making sure it says what you mean before a client sees it.' },
+];
+const TIMELINE = [
+  { t: '10:55', k: 'An empty folder', v: 'Chat is ready before any document exists.' },
+  { t: '11:09', k: 'The front page', v: 'Chat writes the README in the author’s voice: 788 words, 2 claims marked to check.' },
+  { t: '11:32', k: 'An old AI chat, cleaned up', v: '24 Amazon mechanisms come in with their links, then get 14 sources.' },
+  { t: '18:45', k: 'The first figure', v: 'Ideas picks a Skill. About a minute later, a stepped figure waits in Review.' },
+  { t: '00:32', k: 'The next document', v: 'The Mechanisms Primer, built from the author’s own pages in under 2.5 minutes.' },
+  { t: 'Day 2', k: 'Review cuts the path', v: 'Six documents become four, and every page that pointed at the old path follows.' },
+  { t: '21:31', k: 'Published', v: 'Publish ▸ GitHub Repository: 6 files sent, nothing else touched.' },
+  { t: '21:54', k: 'An update reaches a reader', v: 'A licence is added. The reader’s copy shows the change to review.' },
+];
+const LOOP = ['Your know-how', 'Co-author with AI', 'Your Domain', 'Apply it to a client task', 'Review and deliver', 'Write the lesson back'].map((label, i, all) => {
+  const turn = (i / all.length) * Math.PI * 2 - Math.PI / 2;
+  return { label, x: 210 + 150 * Math.cos(turn), y: 210 + 150 * Math.sin(turn), deg: (i / all.length) * 360 - 90 };
+});
+const ROLES = ['AI and management consultants', 'Learning designers and trainers', 'Research and insights experts', 'Fractional CFOs and finance advisors', 'Accounting and tax advisors', 'People Ops advisors', 'Architects and technical authors'];
+const FORMATS = [
+  { k: 'A GitHub repository', v: 'Readers bring the folder into Flow with one address, and get your updates as changes they review.', walked: true },
+  { k: 'A GitHub Pages site', v: 'A website for your method. Figures play step by step.' },
+  { k: 'PDF and EPUB', v: 'A guide or a book in a form every client can open.' },
+  { k: 'Word, Excel and PowerPoint', v: 'Deliverables your client’s team already works in.' },
+];
+const PAIRS = [
+  { k: 'Claude Code and Codex', v: 'Use the subscription you already pay for as a route inside Flow. With Flow MCP, they can also work from your Domains in Terminal.' },
+  { k: 'Obsidian and Notion', v: 'Keep your notes and your team space where they are. Try one client project as a folder in Flow first.' },
+  { k: 'Canva', v: 'Prepare and review the words, numbers and sources in Flow. Finish the design in Canva.' },
+  { k: 'General agents', v: 'Hermes Agent or OpenClaw suit work across many tools and channels. Flow is for work that ends in a document you put your name on.' },
+];
+const FAQ = [
+  { q: 'What is a Flow Domain?', a: 'A folder of living documents that carries your method: what you know, the sources behind it, worked examples, and tools a reader can use on their own work. It carries your name, a version and a licence, and every file is plain Markdown you own.' },
+  { q: 'Do I need to code?', a: 'No. You write with Chat, add figures and tables with Skills and Elements, review every change, and publish from a menu. The one-time setup is a GitHub account and a token for publishing.' },
+  { q: 'What does it cost to publish a Domain?', a: 'Publishing needs Flow Pro ($10 a month) and the Publish add-on ($10 a month). There is no fee per Domain, so publish as many as you like. Bringing a Domain in needs Flow Pro and the Import add-on. Any AI you use follows the terms of the service you connect.' },
+  { q: 'Can my clients use it without Flow?', a: 'Yes. They can read the website, the PDF or the EPUB, or open the Office files. In Flow they also get Chat on the Domain, figures they can press and step through, and your updates.' },
+  { q: 'What happens to client material?', a: 'Your documents stay in your files. Before a run leaves your Mac, Flow shows where it is going and asks. Publishing is a separate step you take yourself, so check the files and the repository’s visibility first.' },
+  { q: 'Will publishing a Domain bring me clients?', a: 'Not on its own. Publishing gives people a way to find and use your work. You still need a clear offer, the right clients and a reason for them to choose you. Flow does not promise leads or revenue.' },
+];
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'CollectionPage',
+    name: 'Flow Domains', description, url: `${SITE.url}/domains/`, author: PERSON,
+    mainEntity: { '@type': 'ItemList', itemListElement: [{ '@type': 'ListItem', position: 1, item: { '@type': 'Article', name: launch.data.title, url: `${SITE.url}${domainArticleHref(launch.id)}` } }] },
+  },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Domains', item: `${SITE.url}/domains/` }] },
+];
+---
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page fp-page dm-page" jsonLd={schema}>
+  <Nav />
+  <main id="main" class="ls-main">
+    <header class="ed-hub-intro dm-hero ls-container">
+      <p class="ls-eyebrow dm-eyebrow">FLOW / DOMAINS</p>
+      <h1>Easily co-author with any AI once,<br /><em>one-click publish as AI system everywhere.</em></h1>
+      <div class="dm-hero-foot">
+        <p>A Flow Domain turns the method you use with clients into a folder of living documents: your know-how, your sources, and tools your clients use on their own work. Build it in Flow with the AI you already pay for, review every change, and publish it to GitHub. Clients bring it in with one address, and each update reaches them as a change they review.</p>
+        <div class="dm-ctas">
+          <a class="ls-button" href={domainArticleHref(launch.id)}>Read the launch story<ArrowRight size={18} /></a>
+          <a class="ls-text-link" href={launch.data.repo}>Get AI Consulting Starter<ArrowUpRight size={17} /></a>
+        </div>
+      </div>
+    </header>
+
+    <section class="dm-section ls-container" aria-labelledby="dm-pain">
+      <div class="dm-head"><p class="ls-eyebrow">THE PROBLEM</p><h2 id="dm-pain">You have the method.<br /><span class="ls-stroke">It keeps starting over.</span></h2></div>
+      <ul class="dm-pains">{PAINS.map((p) => <li><b>{p.k}</b><span>{p.v}</span></li>)}</ul>
+      <p class="dm-bridge">A Domain keeps your method, its sources and your corrections in one place, so the next client starts from what you already learned.</p>
+    </section>
+
+    <section class="dm-section ls-container" aria-labelledby="dm-what">
+      <div class="dm-head"><p class="ls-eyebrow">WHAT A DOMAIN IS</p><h2 id="dm-what">One folder.<br /><span class="ls-stroke">Everything you know about the job.</span></h2><p class="dm-sub">Here is the first one, file by file, as it sits on GitHub.</p></div>
+      <DomainAnatomy repo={launch.data.repo} />
+    </section>
+
+    <section class="dm-section ls-container" aria-labelledby="dm-how">
+      <div class="dm-head"><p class="ls-eyebrow">HOW IT MOVES</p><h2 id="dm-how">Built in Flow.<br /><span class="ls-stroke">Kept current for every reader.</span></h2></div>
+      <DomainJourney />
+    </section>
+
+    <section class="dm-section ls-container" aria-labelledby="dm-first">
+      <div class="dm-head"><p class="ls-eyebrow">THE FIRST DOMAIN</p><h2 id="dm-first">An empty folder<br /><span class="ls-stroke">to GitHub in a few hours.</span></h2><p class="dm-sub">AI Consulting Starter turns nine years of Amazon mechanisms into a path for adopting AI. The hands-on work took about three hours across two days, and no run cost anything on top of a Claude subscription.</p></div>
+      <div class="dm-first">
+        <ol class="dm-time">{TIMELINE.map((s) => <li><time>{s.t}</time><span><b>{s.k}</b>{s.v}</span></li>)}</ol>
+        <a class="dm-story" href={domainArticleHref(launch.id)}>
+          <Image src={launch.data.hero} alt="" widths={[640, 960, 1280]} sizes="(max-width: 900px) 92vw, 600px" loading="lazy" />
+          <span class="dm-story-t"><small>THE LAUNCH STORY · {launch.data.minutes} MIN READ</small><b>{launch.data.title}</b><em>Read it<ArrowRight size={16} /></em></span>
+        </a>
+      </div>
+    </section>
+
+    <section class="dm-section ls-container" aria-labelledby="dm-yours">
+      <div class="dm-head"><p class="ls-eyebrow">YOUR SERVICE</p><h2 id="dm-yours">Your expertise.<br /><span class="ls-stroke">Your clients. Your brand.</span></h2></div>
+      <div class="dm-model">
+        <figure class="dm-loop" aria-label="The loop: your know-how, co-author with AI, your Domain, apply it to a client task, review and deliver, write the lesson back, and around again">
+          <svg viewBox="0 0 420 420" aria-hidden="true">
+            <circle class="dm-loop-ring" cx="210" cy="210" r="150" />
+            <circle class="dm-loop-run" cx="210" cy="210" r="150" />
+            {LOOP.map((n) => <circle class="dm-loop-dot" cx={n.x} cy={n.y} r="7" />)}
+          </svg>
+          {LOOP.map((n) => <span class="dm-loop-node" style={`left:${(n.x / 4.2).toFixed(2)}%;top:${(n.y / 4.2).toFixed(2)}%`}>{n.label}</span>)}
+          <span class="dm-loop-mid"><b>One source</b>every client job makes it better</span>
+        </figure>
+        <div class="dm-terms">
+          <div><b>You subscribe to Flow. Your clients pay you.</b><span>You set the offer, the price and the terms. Flow is not in between you and your clients.</span></div>
+          <div><b>No fee per Domain.</b><span>Publishing needs Flow Pro and the Publish add-on, $10 a month each. Then publish as many Domains as you like. AI runs follow the terms of the service you connect.</span></div>
+          <div><b>The method stays yours.</b><span>Plain files in your own repository, under the licence you choose, with your name on them.</span></div>
+        </div>
+      </div>
+      <div class="dm-roles">
+        <p>Built first for consultants who help businesses adopt AI. It fits any expert with a method they apply again and again:</p>
+        <ul>{ROLES.map((r) => <li>{r}</li>)}</ul>
+      </div>
+    </section>
+
+    <section class="dm-section ls-container" aria-labelledby="dm-formats">
+      <div class="dm-head"><p class="ls-eyebrow">ONE SOURCE</p><h2 id="dm-formats">One source.<br /><span class="ls-stroke">Many ways to deliver.</span></h2><p class="dm-sub">Chat on the Domain and its interactive tools stay in Flow. Exported files are for reading and delivery.</p></div>
+      <ul class="dm-formats">{FORMATS.map((f) => <li class:list={[f.walked && 'is-walked']}><b>{f.k}</b><span>{f.v}</span>{f.walked && <small>Walked end to end for the first Domain</small>}</li>)}</ul>
+    </section>
+
+    <section class="dm-section ls-container" aria-labelledby="dm-pair">
+      <div class="dm-head"><p class="ls-eyebrow">KEEP YOUR TOOLS</p><h2 id="dm-pair">Keep the tools<br /><span class="ls-stroke">you already trust.</span></h2><p class="dm-sub">Flow picks a sensible model for each run and shows it before it starts. Switch when cost, quality or speed matters more. Your Domain and your review stay the same, whichever model does the work.</p></div>
+      <ul class="dm-pairs">{PAIRS.map((p) => <li><b>{p.k}</b><span>{p.v}</span></li>)}</ul>
+      <p class="dm-compare"><a href="/flow/compare/">See the side-by-side comparisons<ArrowRight size={16} /></a></p>
+    </section>
+
+    <section class="dm-next" aria-labelledby="dm-mcp">
+      <div class="ls-container dm-next-in">
+        <p class="ls-eyebrow">FLOW MCP · YOUR AGENTS</p>
+        <h2 id="dm-mcp">Your agents,<br /><span>on your Domains.</span></h2>
+        <p>In Settings ▸ General ▸ Your agents, open Flow to the Claude Code or Codex you run in Terminal, as Read or Read and propose. Your agent can read a Domain's summary and reading order, read and search its documents, and read a skill's method, then apply your method to the work it does for you. A document it proposes comes back to Review Changes under its name, and Flow keeps a log of each call. The door is open only while Flow is.</p>
+      </div>
+    </section>
+
+    <section class="dm-section ls-container" aria-labelledby="dm-faq">
+      <div class="dm-head"><p class="ls-eyebrow">QUESTIONS</p><h2 id="dm-faq">Before you<br /><span class="ls-stroke">build your first.</span></h2></div>
+      <div class="dm-faq">{FAQ.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}</div>
+    </section>
+
+    <div class="ls-container" style="padding-bottom:88px">
+      <PaperCta source="flow-domains-index" eyebrow="START WITH AI CONSULTING STARTER" heading="Bring the first Domain into Flow." description="Download Flow, choose File ▸ New from GitHub…, and paste the address of AI Consulting Starter. Then pick one real client task and work along the path." />
+    </div>
+  </main>
+  <Footer showDownload={false} />
+</Layout>

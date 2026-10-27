@@ -1,11 +1,11 @@
 ---
 tool: Codex
 kind: pair
-order: 4
+order: 5
 title: "Flow with Codex: your agent proposes, you decide, the record stays"
-dek: "Codex does the work on the ChatGPT plan you already have. Flow makes its edits to your documents wait for your review, line by line, and keeps a record of every run."
+dek: "Hand Codex a pricing page or a memo, and see exactly what it changed before it goes out. Codex runs on the ChatGPT plan you already have. Flow holds its edits for review, line by line, and keeps a record of every run."
 line: "Run Codex on your plan. Review its edits in Flow before they touch the file."
-updated: 2026-10-10
+updated: 2026-10-27
 startWith: review-agents
 rows:
   - topic: "What it is for"
@@ -17,12 +17,12 @@ rows:
     them: "In its default Auto setting, Codex can read files, make edits and run commands in the workspace without asking. It asks before it edits outside the workspace or uses the network."
     flow: "When Codex runs from a Flow action, its answer comes back as a proposal. The run took 27 seconds. In our walk, the file on disk kept its old version until we approved."
     path: review-agents
-    source: { label: "Codex docs: Agent approvals and security", href: "https://learn.chatgpt.com/docs/agent-approvals-security", checked: "2026-09-28" }
+    source: { label: "Codex docs: Agent approvals and security", href: "https://learn.chatgpt.com/docs/agent-approvals-security", checked: "2026-10-27" }
   - topic: "What you pay"
     them: "Codex is included in the ChatGPT Free, Go, Plus, Pro, Business, Edu and Enterprise plans. You can also use an API key, which is charged at API rates."
     flow: "Flow ran Codex on our ChatGPT plan. The consent sheet said Included, and Flow charged nothing for the run."
     path: review-agents
-    source: { label: "Codex docs: Pricing", href: "https://learn.chatgpt.com/docs/pricing", checked: "2026-09-28" }
+    source: { label: "Codex docs: Pricing", href: "https://learn.chatgpt.com/docs/pricing", checked: "2026-10-27" }
   - topic: "Seeing what changed"
     them: "Codex can review code changes and fix issues as part of its work."
     flow: "Flow's review shows the exact lines Codex changed. In our walk that was three: a comma and two spelling fixes. Everything else was marked unchanged."
@@ -32,7 +32,7 @@ rows:
     them: "Codex runs in a sandbox that decides what it can reach. The approval setting decides when it stops and asks you."
     flow: "History recorded the run, the checks it passed, and the model that did the work, codex-cli/subscription. The version we wrote earlier from a terminal was marked as the work of an outside writer."
     path: review-agents
-    source: { label: "Codex docs: Agent approvals and security", href: "https://learn.chatgpt.com/docs/agent-approvals-security", checked: "2026-09-28" }
+    source: { label: "Codex docs: Agent approvals and security", href: "https://learn.chatgpt.com/docs/agent-approvals-security", checked: "2026-10-27" }
 notFlow:
   - "Flow is not a coding agent and does not replace Codex. It works beside it."
   - "With Full access, Codex runs with your own settings. Flow's sheet says the agent can read and change files Flow does not see, and Flow records what the agent reports, not what Flow watched."
@@ -41,15 +41,19 @@ notFlow:
   - "Flow is a Mac app only, and agent runs need Flow Pro once your 10 Pro Days are used."
 sources:
   - { label: "Codex docs: Overview", href: "https://learn.chatgpt.com/docs", checked: "2026-09-28" }
-  - { label: "Codex docs: Agent approvals and security", href: "https://learn.chatgpt.com/docs/agent-approvals-security", checked: "2026-09-28" }
-  - { label: "Codex docs: Pricing", href: "https://learn.chatgpt.com/docs/pricing", checked: "2026-09-28" }
+  - { label: "Codex docs: Agent approvals and security", href: "https://learn.chatgpt.com/docs/agent-approvals-security", checked: "2026-10-27" }
+  - { label: "Codex docs: Pricing", href: "https://learn.chatgpt.com/docs/pricing", checked: "2026-10-27" }
 ---
 
 ## Why pair them
 
-Codex is fast and it is everywhere you work: the [ChatGPT desktop app, the command line, your code editor and the web](https://learn.chatgpt.com/docs). It comes with [most ChatGPT plans](https://learn.chatgpt.com/docs/pricing), so many people already pay for it.
+**The job.** Say you hand small writing jobs to Codex all day: tighten the pricing page, fix the FAQ, update the changelog. It is everywhere you work, in the [ChatGPT desktop app, the command line, your code editor and the web](https://learn.chatgpt.com/docs), and it comes with [most ChatGPT plans](https://learn.chatgpt.com/docs/pricing).
 
-By default, Codex [can read, edit and run commands in your workspace without asking](https://learn.chatgpt.com/docs/agent-approvals-security). That is what makes it quick. For code, git and pull requests give you a place to read each change. For a pricing page, a README or a client memo, there is often nothing between the agent and the file.
+**The moment.** Then the change is about to go out. The page ships, or the memo goes to a client. Before it does, you want to see exactly what the agent changed.
+
+**Your choices.** For code, git and a pull request show you each change, and that works for documents kept in a repo too. You can switch Codex to a stricter approval setting so it asks more often. You can read the diff yourself afterwards. Or you can run Codex from Flow, where its change waits for you. If git already covers your documents, keep it.
+
+**What breaks.** By default, Codex [can read, edit and run commands in your workspace without asking](https://learn.chatgpt.com/docs/agent-approvals-security). That is what makes it quick. But for a pricing page, a README or a client memo, there is often nothing between the agent and the file.
 
 Flow gives those documents a review step and a record. Codex still does the work. Flow is where the change waits for you.
 

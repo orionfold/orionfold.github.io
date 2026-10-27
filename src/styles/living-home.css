@@ -415,7 +415,6 @@ background: #eef0ec;
 }
 .ls-essay-invitation {
 padding: 75px 0 90px;
-  border-top: 2px solid var(--ink);
   display: grid;
   grid-template-columns: 1.15fr 0.8fr;
   column-gap: 7%;
@@ -1799,3 +1798,9 @@ html:has(body.ls) {font-size:16px}
 [data-demo-narrative='knowledge'] .ls-demo-controls button:disabled {opacity:1;background:#e7ece5;border-color:#b7c5ba;color:#586b63;cursor:default}
 /* Mock title bars: title sits after the window dots (no trailing label). */
 .ls-scene-chrome > b { margin-right: auto; }
+/* Domains hero (2026-10-27): the Domain mock sits in the media column's flow,
+   its top edge level with the title, as the Flow hero's workbench does. */
+.ls-page-home .ls-hero-workbench { position: relative; z-index: 2; width: 100%; min-width: 0; }
+@media (min-width: 1101px) { .ls-page-home .ls-hero-media { padding-top: 62px; } }
+@media (max-width: 1100px) { .ls-page-home .ls-hero-media { padding-top: 130px; } }
+@media (max-width: 700px) { .ls-page-home .ls-hero-media { padding-top: 150px; } }

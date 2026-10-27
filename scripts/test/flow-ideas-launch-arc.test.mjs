@@ -4,7 +4,9 @@ const read = path => readFileSync(new URL(`../../${path}`, import.meta.url),'utf
 const home=read('src/pages/index.astro'),flow=read('src/pages/flow.astro');
 assert.doesNotMatch(home+flow,/FlowIdeasPitStop|HomeRaceCapabilityAct|FlowRaceBlueprint|home-variants/);
 assert.doesNotMatch(read('src/components/Nav.astro'),/theme-toggle|lockedTheme|data-theme-lock|of-theme/);
-const homeSections=['HomeHero','HomeContinuity','FlagshipEssayInvitation','HomeDocumentWorkshop','HomeIdeas','HomeClosing'];
+// Operator 2026-10-26: the continuity, workshop and ideas bands left the homepage.
+const homeSections=['HomeHero','FlagshipEssayInvitation','HomeClosing'];
+assert.doesNotMatch(home,/HomeContinuity|HomeDocumentWorkshop|HomeIdeas|ids=\{\['cents'\]\}/);
 const positions=homeSections.map(name=>home.indexOf(`<${name} />`));
 assert.ok(positions.every(i=>i>=0));assert.deepEqual([...positions].sort((a,b)=>a-b),positions);
 for(const name of ['FlowRhythm','FlowDocuments','FlowIdeas','FlowRouting','FlowReceipts','FlowMorningBriefing','FlowEverydayCraft','FlowLibrary','FlowPlans','FlowFaq'])assert.ok(flow.includes(`<${name} />`));

@@ -190,7 +190,7 @@ test('the Flow Chat book walk names Flow 2.2 and never claims a Home path (opera
   assert.doesNotMatch(routing, /Every AI step in our path walks ran on the Mac/, 'the book walk ran on a subscription and OpenRouter');
 });
 
-test('Flow 3.0 feature walks are launch-ready articles with their own starting steps', () => {
+test('The Flow 3.0 feature walks are launch-ready articles with their own starting steps', () => {
   const slugs = ['the-canvas', 'diagrams-draw-anywhere', 'a-checklist-you-can-sign'];
   for (const slug of slugs) {
     const entry = entries.find((e) => e.slug === slug);
@@ -199,9 +199,10 @@ test('Flow 3.0 feature walks are launch-ready articles with their own starting s
     assert.equal(entry.front.release, '3.0');
     assert.equal(entry.front.onHome, false, 'a feature is not a fictional Home path');
     assert.equal(entry.front.bodyLocked, true, 'curation survives a product-source sync');
-    assert.match(entry.front.startInstructions, /Flow 3\.0.*Guide/);
+    assert.match(entry.front.startInstructions, /^In Flow, .*Guide/);
+    assert.doesNotMatch(entry.body + entry.front.startInstructions, /Flow 3\.0/, 'Flow 3.0 pages say just "Flow" (operator, 2026-10-27)');
     assert.doesNotMatch(entry.body, /coming soon|next release|press release we would want|feature.s promise|not yet released/i);
-    assert.match(entry.body, /More Flow 3\.0 walks/);
+    assert.match(entry.body, /More Flow walks/);
     for (const sibling of slugs.filter((s) => s !== slug)) assert.match(entry.body, new RegExp(`/flow/paths/${sibling}/`));
   }
   const canvas = entries.find((e) => e.slug === 'the-canvas');

@@ -8,3 +8,8 @@ import release from '../../data/flow-release.json';
 
 export const FLOW_RELEASE = release;
 export const FLOW_VERSION = release.version;
+
+// How copy names the release a page was walked on. Flow 3.0 pages say
+// just "Flow" (operator, 2026-10-27); earlier releases keep their number.
+export const flowName = (release?: string) =>
+  !release || release.startsWith('3.0') ? 'Flow' : `Flow ${release}`;

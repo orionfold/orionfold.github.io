@@ -3,13 +3,13 @@ tool: Notion
 kind: switch
 order: 1
 title: "Flow for Notion users: your pages as files on your own Mac"
-dek: "Notion keeps your work in its cloud and bills AI by the seat or by credits. Flow keeps each document as a plain Markdown file on your Mac and can run AI on the Mac itself."
+dek: "An investor update you redo every month? Keep Notion for the team and move that one update into Flow: plain Markdown files on your Mac, a footnote on every claim, and AI that can run on the Mac itself."
 line: "Keep your pages as files you own, with AI that can run on your Mac."
-updated: 2026-09-28
+updated: 2026-10-27
 startWith: investor-update
 rows:
   - topic: "Where your work lives"
-    them: "Notion stores everything in the cloud. Notion is hosted by AWS, and it keeps backups of your pages on its servers."
+    them: "Notion stores everything in the cloud. Notion is hosted by AWS, and it keeps backups of your pages on its servers. In the desktop and phone apps, you can download pages to use offline."
     flow: "Each document is a plain Markdown file in a folder on your Mac. Other apps can open the same files. The documents themselves are free to open, edit and save, on any plan."
     path: recurring-client-brief
     source: { label: "Notion Help: Security practices at Notion", href: "https://www.notion.com/help/security-and-privacy", checked: "2026-09-28" }
@@ -17,12 +17,17 @@ rows:
     them: "Notion AI uses outside AI model providers. Notion says those providers keep no data for Enterprise plan workspaces."
     flow: "Flow Runtime runs open models on the Mac itself. In our investor update walk, the founder's metrics never left the laptop, and the model cost was $0.00. You can also use a hosted model with your own key. Flow names the model and the estimated price first."
     path: investor-update
-    source: { label: "Notion pricing", href: "https://www.notion.com/pricing", checked: "2026-09-28" }
+    source: { label: "Notion pricing", href: "https://www.notion.com/pricing", checked: "2026-10-27" }
   - topic: "What AI costs"
-    them: "Full Notion Agent comes with the Business plan, $20 per member a month when paid yearly. Free and Plus get a trial of AI. Custom Agents are free to try, then $10 per 1,000 monthly Notion credits."
+    them: "Full Notion Agent comes with the Business plan, $20 per seat a month when paid yearly. Free and Plus get a trial of AI. Custom Agents are free to try, then $10 per 1,000 monthly Notion credits."
     flow: "Flow Pro adds the AI for $10 a month or $96 a year. A run on your Mac adds no model cost. Import and Publish are add-ons to Pro, at $10 a month or $96 a year each."
     path: investor-update
-    source: { label: "Notion pricing", href: "https://www.notion.com/pricing", checked: "2026-09-28" }
+    source: { label: "Notion pricing", href: "https://www.notion.com/pricing", checked: "2026-10-27" }
+  - topic: "AI that works on its own"
+    them: "On Business and Enterprise plans, Custom Agents can run on a schedule or when something happens, like a new comment. An Activity tab records each run, and version history shows who changed what."
+    flow: "Jobs are plain text at the top of a document, and you press Run. In our investor update walk, a saved Job checked seven sources and found the one that had changed. Each AI change waits as a proposal until you accept it."
+    path: investor-update
+    source: { label: "Notion Help: Custom Agents", href: "https://www.notion.com/help/custom-agents", checked: "2026-10-27" }
   - topic: "Working with others"
     them: "Many people can edit the same Notion page at once, and edits and comments show up for everyone right away."
     flow: "Flow is built for one person reviewing AI work. A draft arrives as a proposal with a footnote on each claim. Nothing enters the document until you tick I accept changes."
@@ -46,7 +51,9 @@ notFlow:
 sources:
   - { label: "Notion Help: Security practices at Notion", href: "https://www.notion.com/help/security-and-privacy", checked: "2026-09-28" }
   - { label: "Notion Help: Back up your Notion data", href: "https://www.notion.com/help/back-up-your-data", checked: "2026-09-28" }
-  - { label: "Notion pricing", href: "https://www.notion.com/pricing", checked: "2026-09-28" }
+  - { label: "Notion pricing", href: "https://www.notion.com/pricing", checked: "2026-10-27" }
+  - { label: "Notion Help: Custom Agents", href: "https://www.notion.com/help/custom-agents", checked: "2026-10-27" }
+  - { label: "Notion Help: Use pages offline", href: "https://www.notion.com/help/use-pages-offline", checked: "2026-10-27" }
   - { label: "Notion Help: Collaborate with people", href: "https://www.notion.com/help/collaborate-with-people", checked: "2026-09-28" }
   - { label: "Notion Help: Export your content", href: "https://www.notion.com/help/export-your-content", checked: "2026-09-28" }
   - { label: "Notion desktop apps", href: "https://www.notion.com/desktop", checked: "2026-09-28" }
@@ -54,15 +61,21 @@ sources:
 
 ## What changes
 
-Notion is good at shared work. Many people can [edit the same page at once](https://www.notion.com/help/collaborate-with-people), and it runs on your desktop and your phone. If your team lives in one workspace together, that is a real strength.
+**The job.** Say you send investors an update every month. The numbers sit in a workbook. The market section is whatever you read that week. Notion is a good place to write it, most of all if your team works there with you. Many people can [edit the same page at once](https://www.notion.com/help/collaborate-with-people), and it runs on your desktop and your phone, [even offline](https://www.notion.com/help/use-pages-offline).
 
-Flow is built for a different job. It is for one person who makes documents with AI and wants to trust them.
+**The moment.** Then the month ends, and the update is due again. The numbers need copying in again. The market section needs fresh sources, and every claim in it needs a link you can stand behind.
 
-The first change is where your work lives. In Notion, [everything is stored in the cloud](https://www.notion.com/help/back-up-your-data). In Flow, each document is a plain Markdown file in a folder on your Mac. Markdown is simple text with a few marks for headings and lists. Any text app can open it. If you stop paying for Flow, the files are still yours, and they still open.
+**Your choices.** You can keep writing it by hand in Notion. You can use Notion's own AI. On the Business plan, [Custom Agents](https://www.notion.com/help/custom-agents) can run on a schedule, and an Activity tab records what each run did. You can export the update's pages, work on them in Flow, and keep Notion for the team. If what you do today works well enough, keep it.
 
-The second change is how AI is paid for. On [Notion's pricing page](https://www.notion.com/pricing), the full Notion Agent comes with the Business plan, and Custom Agents run on credits after a free try. Flow Pro is $10 a month or $96 a year. When the AI runs on your Mac through Flow Runtime, a run costs nothing extra. You can still use a hosted model with your own key. Flow tells you the model and the estimated price before it runs.
+**What breaks.** The hard part is the market section. A competitor's price quoted from memory. A launch that turns out to be US-only. A claim with no link. Investors notice. Checking each sentence against its source is the slow part.
 
-The third change is proof. When Flow drafts, the draft comes with a footnote on each claim, and it waits for you. You read the exact words and accept them or throw them away. Flow keeps a record of every run: which model, how many tokens, and what it cost.
+## What Flow adds
+
+The first change is where your work lives. In Notion, [everything is stored in the cloud](https://www.notion.com/help/back-up-your-data), with copies you can download for offline use. In Flow, each document is a plain Markdown file in a folder on your Mac. Markdown is simple text with a few marks for headings and lists. Any text app can open it. If you stop paying for Flow, the files are still yours, and they still open.
+
+The second change is proof. When Flow drafts, the draft comes with a footnote on each claim, and it waits for you. You read the exact words and accept them or throw them away. Flow keeps a record of every run: which model, how many tokens, and what it cost.
+
+The third change is how AI is paid for. On [Notion's pricing page](https://www.notion.com/pricing), the full Notion Agent comes with the Business plan, and Custom Agents run on credits after a free try. Flow Pro is $10 a month or $96 a year. When the AI runs on your Mac through Flow Runtime, a run costs nothing extra. You can still use a hosted model with your own key. Flow tells you the model and the estimated price before it runs.
 
 ## Moving your work
 

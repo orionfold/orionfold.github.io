@@ -70,7 +70,8 @@ test('no page, component or data file hardcodes a current Flow version', () => {
 });
 
 test('the Flow front doors read the version from the JSON', () => {
-  for (const file of ['src/components/living/FlowHero.astro', 'src/pages/flow.astro', 'src/data/og.ts', 'src/pages/og/[slug].jpg.ts', 'src/pages/flow/paths/[slug].astro']) {
+  // The Flow hero names no version since it pitches Elements (operator 2026-10-27).
+  for (const file of ['src/pages/flow.astro', 'src/data/og.ts', 'src/pages/og/[slug].jpg.ts', 'src/pages/flow/paths/[slug].astro']) {
     assert.match(read(file), /FLOW_VERSION/, `${file} uses FLOW_VERSION`);
   }
 });
@@ -82,7 +83,7 @@ test('the Paths hub spans releases while each walkthrough names its own release'
   assert.doesNotMatch(hub, /^(?:const|\s*<p)[^\n]*Flow \d+\.\d+/m);
   const article = read('src/pages/flow/paths/[slug].astro');
   assert.match(article, /const release = d\.release \?\? FLOW_VERSION/);
-  assert.match(article, /tags: \[`Flow \$\{release\}`/);
+  assert.match(article, /tags: \[flowName\(release\)/);
 });
 
 test('the version phrases never rewrite a three-part build a caveat names', () => {

@@ -12,6 +12,7 @@ import PaperCta from '../../../components/ui/PaperCta.astro';
 import PathShowcase from '../../../components/flow/mocks/PathShowcase.astro';
 import CompareTable from '../../../components/flow/paths/CompareTable.astro';
 import { publishedCompare, publishedPaths, compareHref, type CompareEntry } from '../../../lib/flow/paths';
+import { publishedDomainArticles, domainArticleHref } from '../../../lib/flow/domains';
 import { compareOgSlug, ogPath } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 import '../../../styles/living-base.css';
@@ -29,6 +30,8 @@ const { Content, headings } = await render(entry);
 const d = entry.data;
 const paths = await publishedPaths();
 const start = paths.find((p) => p.id === d.startWith);
+// A page can start from a Domain instead of a path (Custom GPTs and Projects).
+const startDomain = start ? undefined : (await publishedDomainArticles()).find((a) => a.id === d.startWith);
 const dateIso = d.updated.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.updated);
 const canonical = `${SITE.url}${compareHref(entry.id)}`;
@@ -89,8 +92,9 @@ const schema = [
         <ul class="fp-not">{d.sources.map((s) => <li><a href={s.href} rel="noopener">{s.label}</a>, checked {s.checked}</li>)}</ul>
         <div id="try-flow">
           <PaperCta layout="article" class="ed-paper-cta" source={`flow-compare-${entry.id}`} headingId="flow-compare-cta"
-            eyebrow={`FOR ${d.tool.toUpperCase()} USERS`} heading={start ? `Start with “${start.data.path}.”` : 'Try Flow on your Mac.'}
-            description="Download Flow, open a path on Home, and try it on the example files first. Your documents stay plain files on your Mac." />
+            eyebrow={`FOR ${d.tool.toUpperCase()} USERS`} heading={start ? `Start with “${start.data.path}.”` : startDomain ? `Start with “${startDomain.data.domain}.”` : 'Try Flow on your Mac.'}
+            description={startDomain ? `Read how ${startDomain.data.domain} was built in Flow, then bring it in with File ▸ New from GitHub… and try its method on your own work.` : 'Download Flow, open a path on Home, and try it on the example files first. Your documents stay plain files on your Mac.'}
+            {...(startDomain ? { href: domainArticleHref(startDomain.id), label: 'Read how it was built' } : {})} />
         </div>
       </article>
     </div>

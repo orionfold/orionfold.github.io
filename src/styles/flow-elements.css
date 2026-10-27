@@ -11,7 +11,8 @@
 .fe-browser { padding-bottom: 72px; }
 /* The articles lead straight from the intro; the gallery follows them. */
 .ls .fe-hub-intro + .fp-section { padding-top: 24px; }
-.ls .fe-browser .fp-head { margin-bottom: 8px; }
+.ls .fe-section-label { margin-bottom: 18px; }
+.ls .fe-browser .fe-section-label { margin-bottom: 6px; }
 .fe-b-bar { position: sticky; top: var(--of-nav-height, 82px); z-index: 5; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; padding: 14px 0; background: var(--paper, #fff); border-bottom: 1px solid var(--line); }
 .fe-b-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
 .fe-b-tabs button { display: inline-flex; gap: 8px; align-items: center; padding: 9px 16px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font: 500 .9rem/1 'Geist Sans', Arial, sans-serif; color: var(--ink); cursor: pointer; }

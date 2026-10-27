@@ -38,23 +38,57 @@ test('a path page renders its receipt and links back to all paths', async ({ pag
 test('Compare pages are linked from the nav and each row cites a source', async ({ page }) => {
   await page.goto('/flow/compare/');
   const cards = page.locator('.fp-tools a');
-  await expect(cards).toHaveCount(5);
+  await expect(cards).toHaveCount(8);
   await expect(page.locator('#main-nav .living-nav-links .living-nav-dd > a[href="/flow/compare/"]')).toHaveText('Compare');
   // The hub previews each page: three sourced rows per tool, the paths the
   // pages start with, and the limits that hold everywhere.
   const tools = page.locator('.fc-tool');
-  await expect(tools).toHaveCount(5);
+  await expect(tools).toHaveCount(8);
   for (const tool of await tools.all()) {
     await expect(tool.locator('.fp-compare tbody tr')).toHaveCount(3);
     await expect(tool.locator('a.fp-all')).toHaveAttribute('href', /^\/flow\/compare\/[a-z-]+\/$/);
   }
   await expect(page.locator('.fc-start .ps')).not.toHaveCount(0);
+  // The Custom GPTs page starts from a Domain, not a path.
+  await expect(page.locator('.fc-domain-start a')).toHaveAttribute('href', '/domains/ai-consulting-starter/');
   await expect(page.locator('.fc-not li')).toHaveCount(5);
   await page.goto('/flow/compare/notion/');
   const rows = page.locator('.fp-compare tbody tr');
   expect(await rows.count()).toBeGreaterThanOrEqual(4);
   for (const row of await rows.all()) await expect(row.locator('td').first()).toContainText('Source:');
   await expect(page.locator('#sources + ul a').first()).toHaveAttribute('href', /^https:\/\//);
+});
+
+// Every Compare page opens on the job, the moment, the choices and what
+// breaks, and fits a phone without any box running past the screen edge.
+for (const slug of ['notion', 'obsidian', 'custom-gpts', 'claude-code', 'codex', 'hermes-openclaw', 'word', 'canva']) {
+  test(`Compare ${slug} leads with the job and fits a phone`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    const response = await page.goto(`/flow/compare/${slug}/`);
+    expect(response?.status()).toBe(200);
+    for (const lead of ['The job.', 'The moment.', 'Your choices.', 'What breaks.']) await expect(page.locator('main strong', { hasText: lead })).toHaveCount(1);
+    const over = await page.evaluate(() => [...document.querySelectorAll('main *')].filter((el) => {
+      if (el.closest('table, .fp-compare, .living-origami')) return false; // the CTA's paper art bleeds by design
+      const b = el.getBoundingClientRect();
+      return b.width > 0 && b.right > innerWidth + 1;
+    }).map((el) => el.className).slice(0, 5));
+    expect(over).toEqual([]);
+  });
+}
+
+test('every nav menu shows at most its top five, then its All link', async ({ page }) => {
+  // Design rule (operator 2026-10-27): a dropdown never lists more than five.
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/flow/compare/');
+  const menus = page.locator('#main-nav .living-nav-dd');
+  expect(await menus.count()).toBeGreaterThan(0);
+  for (const dd of await menus.all()) {
+    const items = dd.locator('.living-nav-dd-panel a:not(.living-nav-dd-all)');
+    expect(await items.count()).toBeLessThanOrEqual(5);
+    await expect(dd.locator('.living-nav-dd-all')).toHaveCount(1);
+  }
+  const compare = menus.filter({ has: page.locator('> a[href="/flow/compare/"]') });
+  await expect(compare.locator('a[href="/flow/compare/word/"]')).toHaveCount(0);
 });
 
 test('the Paths nav item carries a dropdown of the first five paths', async ({ page }) => {
@@ -79,7 +113,8 @@ test('Compare sets Flow vocabulary apart from ordinary copy', async ({ page }) =
   expect(color).not.toBe(body);
 });
 
-for (const route of ['/', '/flow/paths/']) {
+// Paths live on /flow/ only (operator 2026-10-27: no section on both front doors).
+for (const route of ['/flow/paths/']) {
   test(`${route} shows path mocks and the captured feature walks`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(route);
@@ -98,7 +133,8 @@ for (const slug of ['the-canvas', 'diagrams-draw-anywhere', 'a-checklist-you-can
     const response = await page.goto(`/flow/paths/${slug}/`);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('.ed-article-kicker')).toContainText('FLOW 3.0');
+    await expect(page.locator('.ed-article-kicker')).toContainText('FLOW PATH');
+    await expect(page.locator('main')).not.toContainText('Flow 3.0');
     await expect(page.locator('#try-this-path')).toContainText('Guide');
     await expect(page.locator('#try-this-path')).not.toContainText('open an empty folder');
     const href = await page.locator('.fp-receipt-note a').getAttribute('href');

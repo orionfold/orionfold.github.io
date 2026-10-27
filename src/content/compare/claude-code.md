@@ -1,11 +1,11 @@
 ---
 tool: Claude Code
 kind: pair
-order: 3
+order: 4
 title: "Flow with Claude Code: your agent writes, you review, the record stays"
-dek: "Claude Code is a strong agent for code and files. Flow is where the documents it helps write can wait for your review and keep a history. We walked this path with Codex; Claude Code on it is not yet verified by us."
+dek: "Hand Claude Code a pricing page or a memo, and see exactly what it changed before it goes out. Flow holds the edit for your review and keeps the record. We walked this path with Codex; Claude Code on it is not yet verified by us."
 line: "Use Claude Code for the work. Use Flow to review the documents and keep the record."
-updated: 2026-10-10
+updated: 2026-10-27
 startWith: review-agents
 rows:
   - topic: "What it is for"
@@ -17,7 +17,7 @@ rows:
     them: "Claude Code has permission settings. In its Manual mode it asks before it edits or writes a file, and before most shell commands."
     flow: "Before an agent run starts, one sheet names the agent, the folder it may work in, and the cost. Its answer comes back as a proposal, shown line by line. In our Codex walk, the file on disk did not change until we approved."
     path: review-agents
-    source: { label: "Claude Code docs: Configure permissions", href: "https://code.claude.com/docs/en/permissions", checked: "2026-09-28" }
+    source: { label: "Claude Code docs: Configure permissions", href: "https://code.claude.com/docs/en/permissions", checked: "2026-10-27" }
   - topic: "Going back"
     them: "Claude Code checkpoints let you rewind its own file edits in a session. They do not track files changed by shell commands, and the docs say to keep using git for lasting history."
     flow: "History keeps every saved version of a document, with the receipt of the run that made it. It names the model and marks a version written from outside Flow as the work of an outside writer."
@@ -27,7 +27,7 @@ rows:
     them: "Claude Code is included in the Claude Pro plan ($17 a month paid yearly, or $20 monthly) and in Max plans (from $100 a month)."
     flow: "Flow can run Claude Code on the plan you already have, so Flow adds no second AI bill for that run. We saw this with Codex, where Flow charged nothing. We have not yet verified the Claude Code route on this path."
     path: review-agents
-    source: { label: "Claude pricing", href: "https://claude.com/pricing", checked: "2026-09-28" }
+    source: { label: "Claude pricing", href: "https://claude.com/pricing", checked: "2026-10-27" }
   - topic: "Work on files outside a project"
     them: "Claude Code works directly with git. It stages changes, writes commit messages and opens pull requests."
     flow: "Plenty of writing never goes through a pull request. Flow's 2.0 release notes say that when Claude Code changes a document Flow has open, Flow shows it as Changed by Claude Code, with Keep and Revert. We have not yet watched this happen on a walked path."
@@ -40,16 +40,20 @@ notFlow:
   - "Flow is a Mac app only, and agent runs need Flow Pro once your 10 Pro Days are used."
 sources:
   - { label: "Claude Code docs: Overview", href: "https://code.claude.com/docs/en/overview", checked: "2026-09-28" }
-  - { label: "Claude Code docs: Configure permissions", href: "https://code.claude.com/docs/en/permissions", checked: "2026-09-28" }
+  - { label: "Claude Code docs: Configure permissions", href: "https://code.claude.com/docs/en/permissions", checked: "2026-10-27" }
   - { label: "Claude Code docs: Checkpointing", href: "https://code.claude.com/docs/en/checkpointing", checked: "2026-09-28" }
-  - { label: "Claude pricing", href: "https://claude.com/pricing", checked: "2026-09-28" }
+  - { label: "Claude pricing", href: "https://claude.com/pricing", checked: "2026-10-27" }
 ---
 
 ## Why pair them
 
-Claude Code is very good at its job. It [reads a whole project, edits files and runs commands](https://code.claude.com/docs/en/overview), and it asks before it acts in its [Manual mode](https://code.claude.com/docs/en/permissions). For code, you also have git and pull requests, so every change can be read before it ships.
+**The job.** Say you hand small writing jobs to Claude Code all day: tighten the pricing page, fix the FAQ, update the changelog. It [reads a whole project, edits files and runs commands](https://code.claude.com/docs/en/overview), and in its [Manual mode](https://code.claude.com/docs/en/permissions) it asks before it edits a file.
 
-A lot of the writing an agent helps with is not code. A pricing page, a README, a client memo, a changelog. Those often go from the agent straight into the file, and you only find out what changed if you go and look.
+**The moment.** Then the change is about to go out. The page ships, or the memo goes to a client. Before it does, you want to see exactly what the agent changed.
+
+**Your choices.** For code, git and a pull request show you each change, and that works for documents kept in a repo too. You can read the diff in the terminal. You can rewind the agent's own edits with Claude Code's [checkpoints](https://code.claude.com/docs/en/checkpointing). Or you can run the agent from Flow, where its change waits for you. If git already covers your documents, keep it.
+
+**What breaks.** A lot of writing never goes through a pull request. A pricing page, a README or a client memo often goes from the agent straight into the file, and you only find out what changed if you go and look. Checkpoints do not track files changed by shell commands.
 
 Flow puts a review step in between. You still use Claude Code. Flow is where the document lives, where the agent's change waits for you, and where the record of who wrote what is kept.
 

@@ -28,9 +28,11 @@ const livingSource = livingFiles.map(name => read(`src/components/living/${name}
 const livingFaq = read('src/data/living-faq.json');
 // ── Nav: flagship product family ──────────────────────────────────────────
 const nav = read('src/components/Nav.astro');
-const navArray = nav.match(/const links[^=]*= \[([\s\S]*?)\n\];/)?.[1] ?? '';
+const navArray = nav.match(/const links[^=]*= \[([\s\S]*?)\n\]/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/label: '([^']+)'/g)].map((match) => match[1]);
-assert.deepEqual(navLabels, ['Flow', 'Paths', 'Elements', 'Compare', 'Essays'], 'the global nav carries Flow, its Paths, Elements and Compare pages, and the essays');
+assert.deepEqual(navLabels, ['Flow', 'Domains', 'Paths', 'Elements', 'Compare'], 'the global nav carries Flow, its Domains, then its Paths, Elements and Compare pages');
+// Operator 2026-10-26: Essays left the nav for the footer.
+assert.match(read('src/components/Footer.astro'), /href: '\/essays\/', label: 'Essays'/, 'the footer keeps Essays');
 // Operator 2026-10-26: the manifesto is essay 03, reached from /essays/, not the nav or footer.
 assert.doesNotMatch(nav + read('src/components/Footer.astro'), /href: '\/manifesto\/'/, 'the manifesto lives with the essays, not in the nav or footer');
 assert.match(read('src/data/essays.ts'), /number: '03',[\s\S]*?href: '\/manifesto\/',[\s\S]*?date: '2026-09-06'/, 'the manifesto is essay 03 at its original URL and date');
@@ -62,7 +64,7 @@ assert.match(nav, /of-flow-bar-dismissed/, 'the Flow bar uses its own dismissal 
 const footer = read('src/components/Footer.astro');
 const columns = name => [...(footer.match(new RegExp('const ' + name + ' = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
 assert.deepEqual(columns('FLOW_COLUMNS'), [
-  ['/flow/', 'Overview'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
+  ['/flow/', 'Overview'], ['/domains/', 'Domains'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
   ['/flow/tour/', 'Tour'], ['/flow/night-shift/', 'Night Shift'], ['/flow/living-documents/', 'Living Documents'], ['/flow/settings/', 'Settings'], ['/flow/specifications/', 'Tech Specs'], ['/flow/enterprise/', 'Enterprise'],
 ]);
 assert.deepEqual(columns('ORIONFOLD_COLUMNS'), [
@@ -107,7 +109,7 @@ assert.match(categoryShell, /<FlowSubNav active="tour" \/>/, 'the Flow category 
 // Approved Living Systems product proofs replace the racing photograph and
 // real screenshot on the flagship. Detailed tours keep their capture rails.
 assert.match(flowPageSource, /<FlowHero \/>/);
-assert.match(read('src/components/living/FlowHero.astro'), /GIVE[\s\S]*YOUR[\s\S]*DOCUMENTS[\s\S]*WORK TO DO/);
+assert.match(read('src/components/living/FlowHero.astro'), /PRESS ⌘5\.[\s\S]*SEE IT[\s\S]*DRAWN\./, 'the Flow hero pitches Elements (operator 2026-10-27)');
 assert.match(flow, /offline/i, 'the document tools retain their offline promise');
 assert.match(flow, /diff you approve|Review changes|Keep\/Revert|Keep and Revert/i, 'human review remains visible');
 assert.match(flow, /patent pending/i);
@@ -485,14 +487,14 @@ const homePageSource = read('src/pages/index.astro');
 const home = homePageSource + '\n' + livingSource;
 const homeHero = read('src/components/living/HomeHero.astro');
 const flowWaitlistComponent = read('src/components/sections/FlowWaitlist.astro');
-assert.match(homeHero, /MAKE[\s\S]*KNOWLEDGE[\s\S]*LIVING[\s\S]*THING/);
+assert.match(homeHero, /TURN WHAT[\s\S]*YOU KNOW[\s\S]*INTO A[\s\S]*DOMAIN/, 'the homepage hero pitches Flow Domains (operator 2026-10-27)');
 assert.match(homePageSource, /<ConfirmBanner \/>/, 'confirmed-email landing behavior remains mounted');
 assert.match(homePageSource, /SoftwareApplication/);
-assert.match(homeHero, /<HomeKnowledgeDemo \/>/);
-assert.match(read('src/components/living/FlowHero.astro'), /<FlowHeroMock \/>/);
+assert.match(homeHero, /<HomeHeroDomainMock \/>/);
+assert.match(read('src/components/living/FlowHero.astro'), /<FlowHeroElementsMock \/>/);
 assert.doesNotMatch(homePageSource, /FlowShot|FlowLaunchHomeHero|HomeRaceCapabilityAct|FlowIdeasPitStop|<Ecosystem|<HomeProof|<Founder/, 'Practice, measurements and builder bands were removed from the homepage 2026-09-29');
 assert.doesNotMatch(homePageSource, /<CapabilityRibbon/, 'the capability ribbon left the homepage 2026-10-05 (operator)');
-const homeOrder = ['<HomeHero','<HomeContinuity','<FlagshipEssayInvitation','<HomeDocumentWorkshop','<HomeIdeas','<HomeClosing'].map(marker => homePageSource.indexOf(marker));
+const homeOrder = ['<HomeHero','<FlagshipEssayInvitation','<HomeClosing'].map(marker => homePageSource.indexOf(marker));
 assert.match(home, /id="waitlist"/, 'old campaign landing anchor survives');
 assert.match(read('src/components/living/EmailInvitation.astro'), /<LivingDocumentsForm \/>/, 'the new offer has a dedicated signup component');
 assert.match(read('src/components/living/LivingDocumentsForm.astro'), /data-consent=\{FLOW_LIVING_DOCUMENTS_CONSENT_TEXT\}/, 'new consent is imported rather than retyped');
@@ -619,8 +621,8 @@ for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
   assert.match(entry, /["']?alt["']?: ["'][^"']{35,}/, `${route}: descriptive social alt`);
   assert.doesNotMatch(entry, /screenshot:/, `${route}: flagship social card uses editorial origami`);
 }
-assert.match(ogData,/Give your documents work to do/);
-assert.match(ogData,/Make knowledge a living thing/);
+assert.match(ogData,/Pick a card\. See it drawn\./);
+assert.match(ogData,/Turn what you know into a Domain\./);
 assert.match(ogData,/Room for a Renaissance/);
 assert.match(ogData,/The Researcher, Writer and Builder in You/);
 const ogCardSource=read('src/lib/og/card.ts');

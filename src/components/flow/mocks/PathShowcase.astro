@@ -10,6 +10,7 @@ import DocMock from './DocMock.astro';
 import { ArrowRightIcon } from '../../../lib/flow-icons';
 import { HUE, SHOWCASE } from '../../../data/flow-path-showcase';
 import { pathHref, pathShot, type PathEntry } from '../../../lib/flow/paths';
+import { flowName } from '../../../lib/flow/flow-release';
 import '../../../styles/flow-mocks.css';
 
 interface Props { entry: PathEntry; variant?: 'hero' | 'visual'; headingLevel?: 'h2' | 'h3' }
@@ -25,7 +26,7 @@ const href = pathHref(entry.id);
     <>
       <div class="ps-capture"><Image src={pathShot(entry.id, entry.data.cardShot)} alt={`${entry.data.path}, captured during the walkthrough`} widths={[600, 1200]} sizes="(max-width: 900px) 100vw, 600px" loading={variant === 'hero' ? 'eager' : 'lazy'} /></div>
       <div class="ps-copy">
-        <p class="fp-meta">Flow {entry.data.release} · {entry.data.chip}</p>
+        <p class="fp-meta">{flowName(entry.data.release)} · {entry.data.chip}</p>
         <H class="ps-name"><a class="ps-link" href={href}>{entry.data.title}</a></H>
         <p class="ps-per">{entry.data.persona}</p>
         <p class="ps-sum ps-sum--sm">{entry.data.summary}</p>

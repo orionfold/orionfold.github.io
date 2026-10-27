@@ -119,10 +119,6 @@
 /* The accent rule marks the STEP COPY, so it has to travel with the text
    column rather than sit on the row: on alternating rows the text moves to
    the right, and a row-level border would strand the rule beside a picture. */
-.flow-path__copy {
-  padding-left: 1.15rem;
-  border-left: 2px solid color-mix(in oklch, var(--color-primary) 30%, var(--color-border));
-}
 @media (min-width: 900px) {
   .flow-path__step {
     grid-template-columns: 0.82fr 1.18fr;

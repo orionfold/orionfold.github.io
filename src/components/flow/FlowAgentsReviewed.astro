@@ -5,7 +5,6 @@
 // walk (orionfold-flow articles/03-review-agents). An agent run on a
 // subscription is a cloud run, so nothing here says "on your Mac".
 import FlowTerm from './FlowTerm.astro';
-import { FLOW_VERSION } from '../../lib/flow/flow-release';
 import '../../styles/flow-mocks.css';
 interface Props { id?: string }
 const { id = 'agents-reviewed' } = Astro.props;
@@ -13,12 +12,13 @@ const { id = 'agents-reviewed' } = Astro.props;
 <section id={id} class="ar ls-container" aria-labelledby={`${id}-heading`}>
   <div class="ar-head">
     <div>
-      <p class="ls-eyebrow">FLOW {FLOW_VERSION} / AGENTS, REVIEWED</p>
+      <p class="ls-eyebrow">FLOW / AGENTS, REVIEWED</p>
       <h2 id={`${id}-heading`}>LET THE AGENT WRITE.<br /><span class="ls-stroke">YOU SIGN OFF.</span></h2>
     </div>
     <div class="ls-episode-dek">
       <p>Your coding agent can edit docs all day. For prose there is no pull request between the agent and the file. Flow is that step. Run Claude Code or Codex on the plan you already pay for, and every edit lands in <FlowTerm>Review Changes</FlowTerm> first.</p>
       <p>In our walk, Codex fixed a 239-word pricing page in 26.7 seconds. The file on disk did not change until we pressed approve.</p>
+      <p>It works the other way too. In Settings ▸ General ▸ Your agents, open Flow to the Claude Code or Codex you run in Terminal, as Read or Read and propose. Your agent can list, read and search those folders, and read a Domain's reading order or a skill's method. A document it proposes arrives in <FlowTerm>Review Changes</FlowTerm> under its name. In our walk it read <em>Changed by Claude Code · 1 line added</em>. The door is open only while Flow is, and Flow itself sends nothing anywhere.</p>
     </div>
   </div>
   <figure class="dm ar-stage" style="--dm-tint:#0f8fb3" data-flow-mock aria-label="An agent run in Flow: the consent sheet, the agent's edits, then the exact changes waiting for Keep or Revert">

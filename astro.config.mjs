@@ -134,6 +134,7 @@ function buildLastmodMap() {
     ['paths', '/flow/paths/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
     ['compare', '/flow/compare/', /^updated:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
     ['elements', '/flow/elements/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
+    ['domains', '/domains/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
   ]) {
     let files;
     try {
@@ -157,7 +158,7 @@ function buildLastmodMap() {
       .map(([, v]) => v)
       .sort()
       .at(-1);
-  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/', '/flow/paths/', '/flow/compare/', '/flow/elements/', '/receipts/', '/letter/']) {
+  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/', '/flow/paths/', '/flow/compare/', '/flow/elements/', '/domains/', '/receipts/', '/letter/']) {
     const d = freshestUnder(hub);
     if (d) map[hub] = d;
   }

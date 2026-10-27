@@ -203,36 +203,38 @@ test.describe('Living Systems native product stage', () => {
         await page.emulateMedia({reducedMotion:'reduce'});
         await page.goto(route);
         await expect(page.locator('main .flow-shot')).toHaveCount(0);
+        // Operator 2026-10-27: the homepage hero is a Domain mock, the Flow
+        // hero an Elements mock; both buttons read Download Flow Now.
         const demo=route === '/'
-          ? page.locator('[data-demo="home-knowledge"]')
-          : page.locator('.ls-hero-flow [data-flow-mock]');
+          ? page.locator('.ls-hero .dm--hero.hd')
+          : page.locator('.ls-hero-flow .dm--hero.fe');
         await expect(demo).toHaveCount(1);
         await expect(demo).toBeVisible();
-        const window=demo.locator(route === '/' ? '.ls-glass-window' : '.dm-window');
+        await expect(page.locator('.ls-hero .ls-button')).toHaveText('Download Flow Now');
+        const window=demo.locator(route === '/' ? '.dm-window.hd-you' : '.dm-window');
         await expect(window).not.toHaveCSS('box-shadow','none');
         const positions=await page.evaluate(()=>({nav:document.querySelector('#nav-wrapper')!.getBoundingClientRect().bottom,hero:document.querySelector('main .ls-eyebrow')!.getBoundingClientRect().top,overflow:document.documentElement.scrollWidth>innerWidth+1}));
         expect(positions.hero).toBeGreaterThanOrEqual(positions.nav);
         expect(positions.overflow).toBe(false);
+        const heroBox=await window.boundingBox();
+        expect(heroBox!.x).toBeGreaterThanOrEqual(0);
+        expect(heroBox!.x + heroBox!.width).toBeLessThanOrEqual(width);
         if (route === '/') {
-          await demo.locator('[data-demo-next]').click();
-          await demo.locator('[data-demo-next]').click();
-          await demo.locator('[data-demo-next]').click();
-          await demo.locator('[data-demo-keep]').click();
-          await expect(demo).toHaveAttribute('data-step','4');
-          await demo.locator('[data-demo-replay]').click();
-          await expect(demo).toHaveAttribute('data-step','0');
+          await expect(demo).toContainText('AI Consulting Starter');
+          // The story steps by hand: the last step's update can be taken.
+          const story=page.locator('.hd-story');
+          await story.locator('[data-story-go="4"]').click();
+          await story.getByRole('button',{name:'Update Selected'}).click();
+          await expect(story.locator('.hd-out-update')).toBeVisible();
+          await expect(story).toHaveAttribute('data-choice','update');
         } else {
-          // The hero is a native mock of Flow's loop. Reduced motion rests on
-          // the saved state with its receipt; the review bar still steps it.
-          await expect(demo).toHaveAttribute('data-stage','4');
-          await expect(demo.locator('.fh-receipt')).toContainText('43 s');
-          await expect(demo.locator('.fh-receipt')).toContainText('$0.00');
-          await expect(demo.locator('.flow-term').first()).toHaveText('I accept changes');
-          const heroBox=await demo.locator('.dm-window').boundingBox();
-          expect(heroBox!.x).toBeGreaterThanOrEqual(0);
-          expect(heroBox!.x + heroBox!.width).toBeLessThanOrEqual(width);
-          await demo.locator('[data-mock-step]').click();
-          await expect(demo).toHaveAttribute('data-stage','0');
+          await expect(demo).toContainText('Field-Notes Diagram');
+          await expect(demo).toContainText('CHASING RECEIPTS: 96 OF 312 HOURS');
+          const story=page.locator('.fe-story');
+          await story.locator('[data-story-go="4"]').click();
+          await story.getByRole('button',{name:'Undo'}).click();
+          await expect(story.locator('.fe-out-undo')).toBeVisible();
+          await expect(story.locator('.fe-fig')).toBeHidden();
 
           // The full Jobs demo further down is the real Jobs interaction.
           const jobs=page.locator('#jobs-workbench [data-jobs-demo]');
@@ -329,30 +331,7 @@ test.describe('Living Systems native product stage', () => {
 test('editorial compositions keep their desktop grids and all manifesto principles', async ({page}) => {
   await page.setViewportSize({width:1440,height:1000});
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
-  await page.evaluate(() => document.fonts.ready);
-  const ideas = await page.locator('#home-flow-ideas-pit-stop').evaluate(section => {
-    let previous = section.previousElementSibling;
-    while (previous && previous.tagName !== 'SECTION') previous = previous.previousElementSibling;
-    const box = (element: Element) => {
-      const {left,right,top,bottom,width,height} = element.getBoundingClientRect();
-      return {left,right,top,bottom,width,height};
-    };
-    return {
-      section: box(section),
-      copy: box(section.querySelector('.ls-episode-copy')!),
-      mock: box(section.querySelector('figure')!),
-      previousSection: box(previous!),
-      previousMock: box(previous!.querySelector('figure')!),
-    };
-  });
-  expect(Math.abs(ideas.section.width - ideas.previousSection.width), 'Ideas keeps the width of its preceding peer').toBeLessThanOrEqual(2);
-  expect(Math.abs(ideas.mock.width - ideas.previousMock.width), 'Ideas keeps the same generous product-mock column').toBeLessThanOrEqual(2);
-  expect(ideas.copy.left, 'Ideas copy begins in the left column').toBeLessThanOrEqual(ideas.section.left + 2);
-  expect(ideas.copy.right, 'Ideas copy sits to the left of the mock').toBeLessThan(ideas.mock.left);
-  expect(ideas.mock.width, 'mock has the wider column instead of an empty anchor consuming it').toBeGreaterThan(ideas.copy.width);
-  const overlap = Math.min(ideas.copy.bottom, ideas.mock.bottom) - Math.max(ideas.copy.top, ideas.mock.top);
-  expect(overlap, 'copy and mock share one row instead of landing in separate grid rows').toBeGreaterThanOrEqual(Math.min(ideas.copy.height, ideas.mock.height) * 0.9);
+  // The homepage Ideas band and its grid check left with the band (operator 2026-10-26).
   await page.goto('/essay/');
   await expect(page.locator('.ls-essay-layout')).toHaveCSS('display','grid');
   await expect(page.locator('.ls-essay-hero h1')).toHaveCSS('font-family', /Georgia/);

@@ -3,9 +3,9 @@ tool: Obsidian
 kind: switch
 order: 2
 title: "Flow for Obsidian users: same Markdown files, documents that do work"
-dek: "Obsidian and Flow both keep your notes as Markdown files on your own disk. Flow adds Jobs that redo the routine parts of a document, and every AI change waits for your yes."
+dek: "A brief you redo every month? Keep your Markdown files and your vault. Flow adds Jobs that redo the routine part, and every AI change waits for your yes."
 line: "Keep your Markdown files. Add documents that redo their own routine work."
-updated: 2026-09-28
+updated: 2026-10-27
 startWith: recurring-client-brief
 rows:
   - topic: "Where your notes live"
@@ -17,20 +17,20 @@ rows:
     them: "The Obsidian app is free, with no sign-up. Sync is $4 per user a month paid yearly, or $5 monthly. Publish is $8 per site a month paid yearly, or $10 monthly."
     flow: "Reading, writing and saving Markdown in Flow is free. Flow Pro adds the AI for $10 a month or $96 a year. Import and Publish are add-ons to Pro, at $10 a month or $96 a year each."
     path: recurring-client-brief
-    source: { label: "Obsidian pricing", href: "https://obsidian.md/pricing", checked: "2026-09-28" }
+    source: { label: "Obsidian pricing", href: "https://obsidian.md/pricing", checked: "2026-10-27" }
   - topic: "Links between notes"
     them: "Obsidian links notes with double square brackets. Its Backlinks and Graph view plugins show how notes connect."
     flow: "Flow also has wiki links and backlinks. We have not yet checked Flow against a real Obsidian vault."
     source: { label: "Obsidian Help: Link notes", href: "https://obsidian.md/help/link-notes", checked: "2026-09-28" }
   - topic: "Adding new abilities"
-    them: "Community plugins, built by other users, add features. Obsidian warns that they run third-party code that could do harm, and you must turn off Restricted Mode to install one."
+    them: "Community plugins, built by other users, add features. Obsidian starts in Restricted Mode, so no plugin code runs until you turn it off. It scans every plugin version for malware and security problems."
     flow: "Jobs, drafting with sources, import and publish are built into Flow. When AI changes a document, the change shows line by line and waits for you to keep or revert it."
     path: campaign-with-proof
-    source: { label: "Obsidian Help: Community plugins", href: "https://obsidian.md/help/community-plugins", checked: "2026-09-28" }
+    source: { label: "Obsidian Help: Plugin security", href: "https://obsidian.md/help/plugin-security", checked: "2026-10-27" }
   - topic: "Where you can use it"
     them: "Obsidian runs on Windows, Mac and Linux, and on iOS and Android."
-    flow: "Flow is a Mac app only."
-    source: { label: "Obsidian download", href: "https://obsidian.md/download", checked: "2026-09-28" }
+    flow: "Flow is a Mac app only. If you work on Windows, Linux or a phone too, Obsidian fits that and Flow does not."
+    source: { label: "Obsidian download", href: "https://obsidian.md/download", checked: "2026-10-27" }
 notFlow:
   - "We have not opened an Obsidian vault in Flow yet. We do not know how your plugins' extra syntax, embeds or settings will look there."
   - "Flow does not run Obsidian plugins. Whatever a plugin does for you today, check that Flow does it before you move."
@@ -38,23 +38,32 @@ notFlow:
   - "The AI features need Flow Pro once your 10 Pro Days are used. Markdown stays free."
 sources:
   - { label: "Obsidian Help: How Obsidian stores data", href: "https://obsidian.md/help/data-storage", checked: "2026-09-28" }
-  - { label: "Obsidian pricing", href: "https://obsidian.md/pricing", checked: "2026-09-28" }
+  - { label: "Obsidian pricing", href: "https://obsidian.md/pricing", checked: "2026-10-27" }
   - { label: "Obsidian Help: Link notes", href: "https://obsidian.md/help/link-notes", checked: "2026-09-28" }
   - { label: "Obsidian Help: Backlinks", href: "https://obsidian.md/help/plugins/backlinks", checked: "2026-09-28" }
   - { label: "Obsidian Help: Graph view", href: "https://obsidian.md/help/plugins/graph", checked: "2026-09-28" }
-  - { label: "Obsidian Help: Community plugins", href: "https://obsidian.md/help/community-plugins", checked: "2026-09-28" }
-  - { label: "Obsidian download", href: "https://obsidian.md/download", checked: "2026-09-28" }
+  - { label: "Obsidian Help: Community plugins", href: "https://obsidian.md/help/community-plugins", checked: "2026-10-27" }
+  - { label: "Obsidian Help: Plugin security", href: "https://obsidian.md/help/plugin-security", checked: "2026-10-27" }
+  - { label: "Obsidian download", href: "https://obsidian.md/download", checked: "2026-10-27" }
 ---
 
 ## What changes
 
-Obsidian got a big thing right. Your notes are [plain Markdown files in a folder on your own computer](https://obsidian.md/help/data-storage). The app is [free](https://obsidian.md/pricing), it runs almost everywhere, and a huge set of community plugins lets you shape it your way. Flow agrees with the first part. Your files should be yours.
+**The job.** Say you send a client a brief every month. It takes the latest figures from their files, says what moved, and shows where each claim came from. Obsidian is a good home for that note. Your notes are [plain Markdown files in a folder on your own computer](https://obsidian.md/help/data-storage), the app is [free](https://obsidian.md/pricing), and it runs on almost every device you own.
 
-What Flow adds is a different kind of document. In Flow, a document can carry Jobs. A Job is a short, plain-text instruction at the top of the file, like "collect the figures from these files" or "draft this section from these sources." You press Run and the Jobs do the routine part again. The steps that need no AI finish in under a second. A step that needs AI can run on an open model on your Mac through Flow Runtime, at no model cost.
+**The moment.** Then next month's files arrive, and the brief is due again. The figures need collecting again. You have to find what changed. Every sentence with a number in it needs checking against the new files.
+
+**Your choices.** You can keep doing it by hand in Obsidian. You can add plugins or templates to do part of it. You can paste the files into an AI chat and check what comes back. Or you can move just this one brief into Flow and keep Obsidian for everything else. If what you do today works well enough, keep it.
+
+**What breaks.** The hard part is not writing the brief. It is redoing it: finding the files that changed, collecting the figures again, and checking that each claim still matches its source. That is the part Flow takes on.
+
+## What Flow adds
+
+In Flow, a document can carry Jobs. A Job is a short, plain-text instruction at the top of the file, like "collect the figures from these files" or "draft this section from these sources." You press Run and the Jobs redo the routine part. In our walk, the steps that need no AI finished in under half a second. The draft ran on an open model on the Mac through Flow Runtime, for $0.00.
 
 Nothing the AI writes goes straight into your file. It arrives as a proposal. You see the exact lines that would change, with a footnote on each claim, and you keep it or throw it away. Flow also keeps a History of each saved version and who wrote it: you, a Job, or another app.
 
-Plugins in Obsidian can do a lot too. The difference is who you trust. Obsidian itself warns that [community plugins run third-party code that could do harm](https://obsidian.md/help/community-plugins). In Flow, the parts that touch your writing are built in, and each change waits for you.
+Owning your files is not the difference. Obsidian already gives you that, and Flow agrees. Plugins are not the difference either. Obsidian [starts in Restricted Mode](https://obsidian.md/help/plugin-security), so no plugin code runs until you allow it, and it scans every plugin version. The difference is the redo: a document that does its own routine work again, then waits for your yes.
 
 ## Moving your work
 

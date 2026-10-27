@@ -9,9 +9,10 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { renderOgCard, type CardOptions } from '../../lib/og/card';
-import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug, receiptOgSlug, flowPathOgSlug, compareOgSlug, flowElementsOgSlug } from '../../data/og';
+import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug, receiptOgSlug, flowPathOgSlug, compareOgSlug, flowElementsOgSlug, domainOgSlug } from '../../data/og';
 import { publishedPaths, publishedCompare } from '../../lib/flow/paths';
 import { publishedElementArticles } from '../../lib/flow/elements';
+import { publishedDomainArticles } from '../../lib/flow/domains';
 import { toProductView, coverKey } from '../../lib/product/detail';
 
 // Book detail OG cards frame the portrait cover on the left over the banner.
@@ -189,7 +190,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       params: { slug: flowElementsOgSlug(entry.id) },
       props: {
         title: entry.data.title,
-        eyebrow: `Flow ${entry.data.release} · Elements · ${entry.data.category}`,
+        eyebrow: `Flow · Elements · ${entry.data.category}`,
         seed: entry.id,
         light: true,
         ...(fs.existsSync(shot) ? { screenshotPath: shot } : { banner: true }),
@@ -197,7 +198,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
   });
 
-  return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts, ...fromReceipts, ...fromPaths, ...fromCompare, ...fromElements];
+  // Flow Domains: the launch article's card, framed on its hero shot.
+  const fromDomains = (await publishedDomainArticles()).map((entry) => {
+    const shot = path.join(process.cwd(), 'src/assets/flow/domains', entry.id, 'card.jpg');
+    return {
+      params: { slug: domainOgSlug(entry.id) },
+      props: {
+        title: entry.data.title,
+        eyebrow: `Flow · Domains · ${entry.data.domain}`,
+        seed: entry.id,
+        light: true,
+        ...(fs.existsSync(shot) ? { screenshotPath: shot } : { banner: true }),
+      } satisfies CardOptions,
+    };
+  });
+
+  return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts, ...fromReceipts, ...fromPaths, ...fromCompare, ...fromElements, ...fromDomains];
 };
 
 export const GET: APIRoute = async ({ props }) => {

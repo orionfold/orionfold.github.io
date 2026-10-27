@@ -6,7 +6,7 @@
 .ls .ed-hub-heading h1 { font: 400 clamp(3.7rem, 6.5vw, 6.6rem)/1.02 var(--ed-serif); letter-spacing: -.055em; }
 .ed-hub-heading h1 em, .ed-feature h2 em, .ed-article-hero h1 em, .ed-home-invitation h2 em, .ed-next-essay h2 em { font-weight: 400; color: var(--teal); }
 .ls .ed-hub-heading > p { max-width: 340px; margin-bottom: .5rem; color: var(--muted); font-size: 1.1rem; line-height: 1.7; }
-.ls .ed-feature { overflow: hidden; background: #f7f4e9; border-top: 3px solid var(--ink); padding: 27px 44px 0; }
+.ls .ed-feature { overflow: hidden; background: #f7f4e9; padding: 30px 44px 0; }
 .ed-feature-label { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 23px; border-bottom: 1px solid #d8d5c9; font-size: .69rem; font-weight: 700; letter-spacing: .12em; }
 .ed-feature-grid { display: grid; grid-template-columns: 1fr .92fr; gap: 30px; }
 .ed-feature-copy { padding: 37px 0 45px; position: relative; z-index: 1; }
@@ -72,7 +72,7 @@
 .ed-native-figure picture, .ed-native-figure img { display: block; width: 100%; }
 .ed-native-figure figcaption { color: var(--muted); font-size: .77rem; line-height: 1.7; padding: 15px 10px 0; }
 .ed-image-hint { color: var(--teal); }
-.ls .ed-review-demo { margin: 60px -50px; padding: 29px 28px; background: #f4f6ef; border-top: 2px solid var(--teal); font-family: 'Geist Sans', Arial, sans-serif; }
+.ls .ed-review-demo { margin: 60px -50px; padding: 29px 28px; background: #f4f6ef; font-family: 'Geist Sans', Arial, sans-serif; }
 .ls .ed-review-demo h2 { font: 400 clamp(1.7rem, 3vw, 2.65rem)/1.15 var(--ed-serif); letter-spacing: -.04em; margin: 14px 0 19px; }
 .ls .ed-demo-intro { font-size: .9rem; line-height: 1.7; color: var(--muted); margin-bottom: 25px; }
 .ed-review-demo .ed-link { margin-top: 22px; }
@@ -102,7 +102,7 @@
 .ed-next-essay p:not(.ls-eyebrow) { font: 400 1.12rem/1.7 var(--ed-serif); margin-bottom: 22px; }
 .ed-all-link { display: block; margin-top: 22px; font-size: .8rem; color: var(--muted) !important; }
 
-.ls .ed-home-invitation { margin-block: 60px; padding: 29px 44px 42px; border-top: 3px solid var(--ink); background: #f7f4e9; --ed-serif: Georgia, 'Times New Roman', serif; }
+.ls .ed-home-invitation { margin-block: 60px; padding: 32px 44px 42px; background: #f7f4e9; --ed-serif: Georgia, 'Times New Roman', serif; }
 .ed-home-invitation-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-bottom: 24px; border-bottom: 1px solid #d8d5c9; }
 .ed-home-invitation-top > a { font-size: .78rem; font-weight: 700; }
 .ed-home-invitation-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 7%; padding-top: 33px; }

@@ -36,7 +36,7 @@ bodyLocked: true
 titleLocked: true
 release: '3.0'
 onHome: false
-startInstructions: In Flow 3.0, open the Flow Guide’s Charts Gallery and a Diagrams page. Copy a starter into your document’s Editor, switch to Reader, then use Copy as image or File ▸ Publish… ▸ Show preview.
+startInstructions: In Flow, open the Flow Guide’s Charts Gallery and a Diagrams page. Copy a starter into your document’s Editor, switch to Reader, then use Copy as image or File ▸ Publish… ▸ Show preview.
 ---
 
 ## What Flow does
@@ -111,7 +111,7 @@ The document's Jobs can draw a diagram with nothing open. A **Visualize** step t
 | Overnight run drawing a diagram |, | verified in the suite, not in a live night | the night renderer's tests pass; no overnight run was made this day |
 | PDF, EPUB and Word files saved |, | not done | the PDF preview was read; no file was saved in this walk |
 
-## More Flow 3.0 walks
+## More Flow walks
 
 - [One brief, three ways](/flow/paths/the-canvas/)
 - [A checklist you can sign, inside the document](/flow/paths/a-checklist-you-can-sign/)

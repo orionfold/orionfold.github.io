@@ -1,0 +1,36 @@
+/* Hero stories (src/scripts/hero-story.js): a Flow window that plays a short
+   walk in steps. The controls under the window are the site's, not Flow's. */
+.hs { --hs-ink: #171c1a; --hs-muted: #56635e; --hs-line: #e3e7e4; --hs-blue: #2f6fed; --hs-teal: #0e9e98; position: relative; }
+.hs-controls { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.hs-steps { display: flex; flex: 1; min-width: 0; gap: 6px; }
+.hs .hs-step { position: relative; flex: 1; min-width: 0; padding: 7px 8px 6px; border: 1px solid #d7ddda; border-radius: 8px; background: #ffffffd9; color: var(--hs-muted); font: 500 .7rem/1.2 'Geist Sans', Arial, sans-serif; text-align: left; cursor: pointer; overflow: hidden; }
+.hs-step b { display: block; font: 700 .58rem/1 var(--font-mono, ui-monospace, monospace); letter-spacing: .06em; color: #8a948f; margin-bottom: 3px; }
+.hs .hs-step span { display: block; font-size: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hs-step::before { content: ''; position: absolute; inset: 0; z-index: -1; transform-origin: left; transform: scaleX(0); background: color-mix(in srgb, var(--hs-teal) 9%, #fff); }
+.hs .hs-step { isolation: isolate; }
+.hs-step.is-done { color: var(--hs-ink); }
+.hs-step.is-on { border-color: var(--hs-teal); background: #fff; color: var(--hs-ink); }
+.hs-step.is-on b { color: var(--hs-teal); }
+.hs.is-playing .hs-step.is-on::before { animation: hs-fill var(--hs-dur, 4s) linear forwards; }
+.hs-step:focus-visible, .hs-play:focus-visible, .hs [data-story-act]:focus-visible { outline: 2px solid var(--hs-blue); outline-offset: 2px; }
+.hs-play { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #d7ddda; border-radius: 50%; background: #fff; color: var(--hs-ink); cursor: pointer; }
+.hs-play .hs-i-pause { display: none; }
+.hs.is-playing .hs-play .hs-i-pause { display: block; }
+.hs.is-playing .hs-play .hs-i-play { display: none; }
+.hs-note { margin: 8px 0 0; font-size: .7rem; color: var(--hs-muted); }
+@keyframes hs-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes hs-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes hs-pop { 0% { opacity: 0; transform: translate(-50%, 8px) scale(.9); } 18%, 70% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -6px) scale(.98); } }
+@keyframes hs-press { 0%, 60% { transform: none; box-shadow: 0 0 0 0 #2f6fed55; } 70% { transform: scale(.94); box-shadow: 0 0 0 6px #2f6fed33; } 100% { transform: none; box-shadow: 0 0 0 0 #2f6fed00; } }
+@keyframes hs-type { from { max-width: 0; } to { max-width: 100%; } }
+@keyframes hs-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes hs-blink { 50% { opacity: 0; } }
+@media (max-width: 560px) {
+  .hs .hs-step span { display: none; }
+  .hs .hs-step { flex: none; width: 34px; text-align: center; padding: 8px 0; }
+  .hs-step b { margin: 0; }
+  .hs-steps { gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs *, .hs *::before, .hs *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; transition: none !important; }
+}

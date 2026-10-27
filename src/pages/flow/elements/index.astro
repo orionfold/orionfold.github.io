@@ -54,12 +54,12 @@ const schema = [
     </header>
 
     <section class="fp-section ls-container" aria-labelledby="fe-read-heading">
-      <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">THE ARTICLES</p><h2 id="fe-read-heading">Walked on a real plan,<br /><span class="ls-stroke">one group at a time.</span></h2></div></div>
-      <CategoryCards articles={articles} leadTour />
+      <p class="ls-eyebrow fe-section-label" id="fe-read-heading">THE ARTICLES</p>
+      <CategoryCards articles={articles} headingLevel="h2" leadTour />
     </section>
 
     <section class="fe-browser ls-container" data-fe-browser aria-labelledby="fe-all-heading">
-      <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">THE ELEMENTS</p><h2 id="fe-all-heading">All {total} cards,<br /><span class="ls-stroke">one search away.</span></h2></div></div>
+      <p class="ls-eyebrow fe-section-label" id="fe-all-heading">THE ELEMENTS</p>
       <div class="fe-b-bar">
         <div class="fe-b-tabs" role="tablist" aria-label="Element groups">
           {ELEMENT_CATEGORIES.map((c, i) => (

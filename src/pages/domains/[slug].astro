@@ -1,0 +1,104 @@
+---
+// /domains/<slug>/ — a Domain's launch article: how it was built in Flow,
+// published to GitHub and brought in by a reader. Written by the website lane
+// from the product lane's session journals and shots; the reading layout,
+// rail and CTA follow the Paths articles.
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import { fitTitle, fitDescription } from '../../lib/flow/seo-meta';
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import PaperCta from '../../components/ui/PaperCta.astro';
+import { publishedDomainArticles, domainArticleHref, type DomainArticle } from '../../lib/flow/domains';
+import { domainOgSlug, ogPath } from '../../data/og';
+import { SITE, PERSON, PUBLISHER } from '../../data/seo';
+import '../../styles/living-base.css';
+import '../../styles/essays.css';
+import '../../styles/flow-paths.css';
+import '../../styles/domains.css';
+
+export async function getStaticPaths() {
+  const articles = await publishedDomainArticles();
+  return articles.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: DomainArticle };
+const { Content, headings } = await render(entry);
+const d = entry.data;
+const sections = headings.filter((h) => h.depth === 2);
+const numbers = sections.find((h) => h.text === 'The numbers');
+const dateIso = d.drafted.toISOString().slice(0, 10);
+const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
+const canonical = `${SITE.url}${domainArticleHref(entry.id)}`;
+const ogImage = ogPath(domainOgSlug(entry.id));
+const seoTitle = fitTitle(`${d.title} · Flow Domains · Orionfold`, `${d.domain}, built in Flow · Flow Domains · Orionfold`);
+const FACTS = [
+  { label: 'Files', value: `${d.files} Markdown files, ${d.size}` },
+  { label: 'Licence', value: d.licence },
+  { label: 'Hands-on time', value: 'About 3 hours, over two days' },
+  { label: 'AI spend', value: '$0 on top of a Claude subscription' },
+  { label: 'Walked', value: d.walked.replace(/-/g, '‑') },
+];
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'Article',
+    headline: d.title, description: d.description,
+    datePublished: `${dateIso}T00:00:00.000Z`, dateModified: `${dateIso}T00:00:00.000Z`,
+    author: PERSON, publisher: PUBLISHER,
+    mainEntityOfPage: canonical, url: canonical,
+    image: `${SITE.url}${ogImage}`,
+    about: [
+      { '@type': 'SoftwareApplication', name: 'Orionfold Flow', operatingSystem: 'macOS', softwareVersion: d.release },
+      { '@type': 'CreativeWork', name: d.domain, url: d.repo, license: 'https://creativecommons.org/licenses/by/4.0/', author: PERSON },
+    ],
+    isPartOf: { '@type': 'CollectionPage', name: 'Flow Domains', url: `${SITE.url}/domains/` },
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Domains', item: `${SITE.url}/domains/` },
+      { '@type': 'ListItem', position: 2, name: d.domain, item: canonical },
+    ],
+  },
+];
+---
+<Layout title={seoTitle} description={fitDescription(d.description)} ogImage={ogImage} ogImageAlt={`${d.domain}, a Flow Domain built in Flow and published to GitHub`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page dm-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Domains', tags: ['Flow', 'Flow Domains', d.domain] }}>
+  <Nav />
+  <main id="main" class="ls-main">
+    <header class="ed-article-hero fp-hero ls-container">
+      <div class="ed-article-kicker"><a href="/domains/">← Domains</a><span>FLOW DOMAIN / {d.domain.toUpperCase()} · THE LAUNCH STORY</span></div>
+      <h1>{d.title}</h1>
+      <p class="ed-article-dek">{d.dek}</p>
+      <div class="ed-hero-bottom"><div class="ed-meta"><span>By Manav Sehgal</span><span>{d.minutes} min read</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href={d.repo} class="ed-download-link">Get the Domain on GitHub ↗</a></div></div>
+      <figure class="fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>
+    </header>
+
+    <div class="ed-reading-layout fp-layout ls-container">
+      <aside class="ed-contents fp-rail" aria-label="Article contents and the Domain's facts">
+        <details open>
+          <summary>IN THIS STORY</summary>
+          <nav aria-label="Sections">
+            {sections.map((h, i) => <a href={`#${h.slug}`}><span>{String(i + 1).padStart(2, '0')}</span>{h.text}</a>)}
+          </nav>
+        </details>
+        <div class="fp-receipt">
+          <p>THE DOMAIN</p>
+          <dl>{FACTS.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl>
+          {numbers && <p class="fp-receipt-note">Every number is labelled. <a href={`#${numbers.slug}`}>See the table</a>.</p>}
+        </div>
+        <a class="fp-try" href="#bring-it-in">Bring it into Flow →</a>
+      </aside>
+      <article class="ed-prose fp-prose" aria-label={d.title}>
+        <Content />
+        <div id="bring-it-in">
+          <PaperCta layout="article" class="ed-paper-cta"
+            source={`flow-domain-${entry.id}`} headingId="domain-cta"
+            eyebrow="BRING IT INTO FLOW" heading={`Open ${d.domain} on your Mac.`}
+            description={`In Flow, choose File ▸ New from GitHub…, paste the folder's address from GitHub and press Add. The ${d.files} files land in a folder of their own, and the next update arrives as a change you review. Bringing a Domain in needs Flow Pro and the Import add-on, $10 a month each.`} />
+        </div>
+      </article>
+    </div>
+  </main>
+  <Footer showDownload={false} />
+</Layout>

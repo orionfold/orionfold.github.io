@@ -3,7 +3,7 @@
 // lane. The body is the lane's article, verbatim (scripts/sync-flow-paths.mjs);
 // the hero, the receipt rail and the CTA are the website's.
 import { render } from 'astro:content';
-import { FLOW_VERSION } from '../../../lib/flow/flow-release';
+import { FLOW_VERSION, flowName } from '../../../lib/flow/flow-release';
 import { fitTitle, fitDescription } from '../../../lib/flow/seo-meta';
 import { Image } from 'astro:assets';
 import Layout from '../../../layouts/Layout.astro';
@@ -58,11 +58,11 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.path}, a Flow path walked end to end`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Paths', tags: [`Flow ${release}`, d.chip, d.path] }}>
+<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.path}, a Flow path walked end to end`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Paths', tags: [flowName(release), d.chip, d.path] }}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero ls-container">
-      <div class="ed-article-kicker"><a href="/flow/paths/">← All paths</a><span>FLOW {release} PATH / {d.chip.toUpperCase()}{d.persona !== d.chip && ` · ${d.persona.toUpperCase()}`}</span></div>
+      <div class="ed-article-kicker"><a href="/flow/paths/">← All paths</a><span>{flowName(release).toUpperCase()} PATH / {d.chip.toUpperCase()}{d.persona !== d.chip && ` · ${d.persona.toUpperCase()}`}</span></div>
       <h1>{d.title}</h1>
       <p class="ed-article-dek">{d.dek}</p>
       {d.caveat && <p class="fp-caveat"><b>On the released build:</b> {d.caveat}</p>}
@@ -101,8 +101,8 @@ const schema = [
             source={`flow-path-${entry.id}`} headingId="path-cta"
             eyebrow="TRY THIS PATH IN FLOW" heading={d.onHome ? `Open “${d.path}” on your Mac.` : `Start “${d.path}” on your Mac.`}
             description={d.startInstructions ?? (d.onHome
-              ? `In Flow ${release}, Home ▸ ${d.chip} ▸ ${d.path} ▸ Open. Your copy lands in a folder of its own, with the example files to try it on.`
-              : `In Flow ${release}, open an empty folder, choose it in the sidebar, and tell Flow Chat your idea. The steps above show each message we sent.`)} />
+              ? `In ${flowName(release)}, Home ▸ ${d.chip} ▸ ${d.path} ▸ Open. Your copy lands in a folder of its own, with the example files to try it on.`
+              : `In ${flowName(release)}, open an empty folder, choose it in the sidebar, and tell Flow Chat your idea. The steps above show each message we sent.`)} />
         </div>
       </article>
     </div>

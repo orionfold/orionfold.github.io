@@ -456,4 +456,30 @@ const elementItems = defineCollection({
     }),
 });
 
-export const collections = { story, productDetail, letters, receipts, relayDocs, memos, relayApi, paths, compare, elements, elementItems };
+// Domains: launch articles for /domains/ — how a Flow Domain was built in
+// Flow, published to GitHub and brought in by a reader. Written by the website
+// lane from the product lane's together-use journals and shots (operator
+// 2026-10-27), and handed back to the product lane through the ops ledger.
+const domains = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/domains' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      domain: z.string(), // the Domain the article is about
+      dek: z.string(),
+      description: z.string(),
+      drafted: z.coerce.date(),
+      walked: z.string(),
+      release: z.string(), // the Flow release the article is written for
+      hero: image(),
+      heroAlt: z.string(),
+      repo: z.string().url(), // the Domain's folder on GitHub
+      files: z.number(),
+      size: z.string(),
+      licence: z.string(),
+      minutes: z.number(),
+      draft: z.boolean().default(false),
+    }),
+});
+
+export const collections = { story, productDetail, letters, receipts, relayDocs, memos, relayApi, paths, compare, elements, elementItems, domains };

@@ -9,6 +9,7 @@ import CompareTable from '../../../components/flow/paths/CompareTable.astro';
 import PathShowcase from '../../../components/flow/mocks/PathShowcase.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
 import { publishedCompare, publishedPaths, compareHref } from '../../../lib/flow/paths';
+import { publishedDomainArticles, domainArticleHref } from '../../../lib/flow/domains';
 import { ogMeta } from '../../../data/og';
 import { SITE, PERSON } from '../../../data/seo';
 import '../../../styles/living-base.css';
@@ -19,10 +20,13 @@ const pages = await publishedCompare();
 const paths = await publishedPaths();
 // Each page names the path to start with; show each such path once.
 const starts = [...new Set(pages.map((p) => p.data.startWith))].map((id) => paths.find((p) => p.id === id)).filter((p) => p !== undefined);
+// A page can start from a Domain instead (Custom GPTs and Projects).
+const domains = await publishedDomainArticles();
+const domainStarts = [...new Set(pages.map((p) => p.data.startWith))].map((id) => domains.find((a) => a.id === id)).filter((a) => a !== undefined);
 const startFor = (id: string) => pages.filter((p) => p.data.startWith === id).map((p) => p.data.tool);
 const groups = [
-  { kind: 'switch', eyebrow: 'SWITCH', heading: 'Bring your notes.', stroke: 'Keep them as files.', text: 'Coming from a notes app. What moves, what stays the same, and what you give up.' },
-  { kind: 'pair', eyebrow: 'PAIR', heading: 'Use both.', stroke: 'Each does its part.', text: 'Flow works beside the coding agent or design tool you already pay for. It does not replace them.' },
+  { kind: 'switch', eyebrow: 'SWITCH', heading: 'Move one job.', stroke: 'Keep the rest.', text: 'Coming from a notes app or a custom AI. Move one job you do again and again, and keep the tool for everything else. What moves, what stays the same, and what you give up.' },
+  { kind: 'pair', eyebrow: 'PAIR', heading: 'Use both.', stroke: 'Each does its part.', text: 'Flow works beside the agent, writing app or design tool you already pay for. It does not replace them.' },
 ].map((g) => ({ ...g, pages: pages.filter((p) => p.data.kind === g.kind) })).filter((g) => g.pages.length > 0);
 const rowCount = pages.reduce((n, p) => n + p.data.rows.length, 0);
 const sourceCount = new Set(pages.flatMap((p) => p.data.rows.map((r) => r.source?.href).filter(Boolean))).size;
@@ -35,8 +39,8 @@ const notFlow = [
   'Flow does not check your docs against your code. It proofreads and drafts prose, and you approve each change.',
   'The AI features need Flow Pro once your 10 Pro Days are used. Reading, writing and saving Markdown stays free.',
 ];
-const title = 'Compare Flow with Notion, Obsidian, Claude Code, Codex and Canva | Orionfold';
-const description = 'Coming to Flow from another tool? What moves, what stays, and the path to start with, with a dated source for every claim.';
+const title = 'Compare Flow with Notion, Obsidian, Custom GPTs, Word, agents and Canva | Orionfold';
+const description = 'Pick one job you redo often. See how it goes in the tool you use now, your real choices, and what Flow adds, with a dated source for every claim.';
 const og = ogMeta('/flow/compare/');
 const schema = {
   '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Compare', description, url: `${SITE.url}/flow/compare/`, author: PERSON,
@@ -50,7 +54,7 @@ const schema = {
       <p class="ls-eyebrow">FLOW {FLOW_VERSION} / COMPARE</p>
       <div class="ed-hub-heading">
         <h1>Bring the work.<br /><em>Keep your tools.</em></h1>
-        <p>Moving from a notes app, or pairing Flow with a coding agent or design tool you already pay for. Each page says what moves, what stays, and what Flow is not.</p>
+        <p>Start from one job you do again and again: a monthly brief, an investor update, a launch post, an agent's edit. Each page shows that job in the tool you use now, your real choices, including staying put, what Flow adds, and what Flow is not.</p>
       </div>
     </header>
     <section class="ls-container" aria-label="Compare">
@@ -82,7 +86,7 @@ const schema = {
     ))}
     {starts.length > 0 && (
       <section class="fp-section ls-container" aria-labelledby="fc-start">
-        <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">START WITH A PATH</p><h2 id="fc-start">Don’t take our word.<br /><span class="ls-stroke">Watch it walked.</span></h2><p>Each Compare page names the path that shows Flow’s side. We walked every step on a Mac and wrote down the time and the cost.</p></div><a class="fp-all" href="/flow/paths/">All paths →</a></div>
+        <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">START WITH A PATH</p><h2 id="fc-start">Don’t take our word.<br /><span class="ls-stroke">Watch it walked.</span></h2><p>Most Compare pages name the path that shows Flow’s side. We walked every step on a Mac and wrote down the time and the cost. Where we have not walked a tool, its page says so.</p></div><a class="fp-all" href="/flow/paths/">All paths →</a></div>
         <div class="ps-grid">
           {starts.map((p) => (
             <div class="fc-start">
@@ -91,6 +95,9 @@ const schema = {
             </div>
           ))}
         </div>
+        {domainStarts.map((a) => (
+          <p class="fc-domain-start"><span class="fp-kind">For {startFor(a.id).join(' and ')} users</span> Start with the <a href={domainArticleHref(a.id)}>{a.data.domain}</a> Domain: how it was built in Flow, published to GitHub and brought in by a reader.</p>
+        ))}
       </section>
     )}
     <section class="fp-section ls-container" aria-labelledby="fc-not">

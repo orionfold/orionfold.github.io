@@ -1,0 +1,566 @@
+---
+// Flow Elements on the homepage: one plain plan, drawn up in five steps. The
+// document is the Elements tour's own (Harbor Close Plan, a fictional plan
+// written for the walk, orionfold-flow articles/19 to 21). Ideas' five
+// suggestions, the Field-Notes figure and the Next steps table are what Flow
+// made in that walk; the options chart is drawn from the numbers the plan
+// itself states (Visualize ran on "Where the time goes" in the walk), and the
+// caption says so. Steps advance on their own while in view; a step tab takes
+// over by hand. Reduced motion rests on the last step.
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import Check from '@lucide/astro/icons/check';
+import Lightbulb from '@lucide/astro/icons/lightbulb';
+import Sparkles from '@lucide/astro/icons/sparkles';
+import ChevronRight from '@lucide/astro/icons/chevron-right';
+import ChevronDown from '@lucide/astro/icons/chevron-down';
+import Laptop from '@lucide/astro/icons/laptop';
+import { ELEMENT_CATEGORIES, elementDrawing, elementArticleHref } from '../../lib/flow/elements';
+
+interface Props { id?: string }
+const { id = 'flow-elements' } = Astro.props;
+
+const ALL = ELEMENT_CATEGORIES.flatMap((c) => c.items);
+const card = (key: string) => {
+  const hit = ALL.find((i) => i.card === key);
+  if (!hit) throw new Error(`FlowElementsShowcase: no element ${key}`);
+  return { ...hit, svg: elementDrawing(key) };
+};
+
+const STEPS = [
+  { tab: 'Your plan, in words' },
+  { tab: 'Ideas suggests' },
+  { tab: 'A chart' },
+  { tab: 'A drawn figure' },
+  { tab: 'A table, from a list' },
+];
+
+// Ideas' five suggestions in the walk, one per section, in the plan's order.
+const IDEAS = [
+  { skill: card('skill-delegation-map'), section: 'How the monthly close works', why: 'Priya, Tomás and Dana each in a lane, with the hand-offs.' },
+  { skill: card('skill-field-notes-diagram'), section: 'Where the time goes', why: 'Four step timings that add to 312 hours.' },
+  { skill: card('skill-option-comparison'), section: 'Options for chasing receipts', why: 'Email, the portal and Receiptly side by side.' },
+  { skill: card('skill-register'), section: 'Risks', why: 'Three risks, each with an owner and a check.' },
+  { skill: card('skill-roadmap'), section: 'Next steps', why: 'Four dated steps, 7 November to February.' },
+];
+
+const SKILLS = ['skill-decision-brief', 'skill-delegation-map', 'skill-field-notes-diagram', 'skill-option-comparison', 'skill-register', 'skill-roadmap'].map(card);
+const AGENCY = ['agency-proofread', 'agency-summarize', 'agency-text-to-table', 'agency-visualize', 'agency-sign-off'].map(card);
+const KINDS = ['kind-bar-chart', 'kind-grouped-bar-chart', 'kind-stacked-bar-chart', 'kind-lollipop-chart', 'kind-bullet-chart', 'kind-kpi-card'].map(card);
+const visualize = card('agency-visualize');
+const fieldNotes = card('skill-field-notes-diagram');
+const toTable = card('agency-text-to-table');
+
+// The four groups, as links into their articles.
+const GROUPS = [
+  { slug: 'components', n: 15, label: 'Components', line: 'blocks a document can hold', on: [] as number[], icon: card('component-approval-card') },
+  { slug: 'agency', n: 12, label: 'Agency', line: 'actions on your words', on: [4], icon: toTable },
+  { slug: 'skills', n: 19, label: 'Skills', line: 'methods that draw your case', on: [1, 3], icon: fieldNotes },
+  { slug: 'chart-kinds', n: 54, label: 'Chart and diagram kinds', line: 'switch kinds, keep the data', on: [2], icon: card('kind-bar-chart') },
+];
+const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-ic" style="--fx-t:${c.tint};--fx-s:${size}px">${c.svg}</span>`;
+---
+<section id={id} class="fx ls-container" aria-labelledby={`${id}-title`}>
+  <div class="fx-head">
+    <div>
+      <p class="ls-eyebrow fx-eyebrow">Flow Elements</p>
+      <h2 id={`${id}-title`}>WRITE IT IN WORDS.<br /><span class="ls-stroke">SEE IT DRAWN.</span></h2>
+    </div>
+    <div class="fx-dek">
+      <p>Press ⌘5 and Elements opens beside your document. It holds a card for every block, action, skill and chart kind Flow can add, each with a small drawing.</p>
+      <p>You don't have to know which one fits. Ideas reads your sections and names one for each. Whatever a card adds waits in Review Changes until you keep it.</p>
+    </div>
+  </div>
+
+  <figure class="fx-mock" data-fx aria-label="Flow Elements on a plain plan: Ideas suggests a skill for each section, then a chart, a drawn figure and a table are added from the plan's own text, each waiting for review">
+    <div class="fx-tabs" role="tablist" aria-label="Steps of the Elements walk">
+      {STEPS.map((s, i) => (
+        <button type="button" role="tab" class="fx-tab" data-fx-go={i} aria-selected={i === 0 ? 'true' : 'false'}>
+          <span class="fx-tab-n"><i class="fx-tab-ring" aria-hidden="true"></i>{i + 1}</span>
+          <span class="fx-tab-t">{s.tab}</span>
+        </button>
+      ))}
+    </div>
+
+    <div class="fx-window">
+      <div class="fx-bar" aria-hidden="true">
+        <span class="fx-lights"><i></i><i></i><i></i></span>
+        <span class="fx-title">Harbor Close Plan</span>
+        <span class="fx-pill" data-fx-from="2"><i></i>1 change to review</span>
+      </div>
+
+      <div class="fx-panes">
+        <!-- Elements (⌘5) -->
+        <aside class="fx-el" aria-hidden="true">
+          <p class="fx-el-h">Elements <kbd>⌘5</kbd></p>
+          <div data-fx-show="0 1 3">
+            <p class="fx-grp"><ChevronRight size={12} />Components <b>15</b></p>
+            <p class="fx-grp"><ChevronRight size={12} />Agency <b>12</b></p>
+            <p class="fx-grp is-open"><ChevronDown size={12} />Skills <b>19</b></p>
+            {SKILLS.map((s) => (
+              <p class:list={['fx-card', s.card === fieldNotes.card && 'fx-card--fn', IDEAS.some((x) => x.skill.card === s.card) && 'fx-card--idea']}>
+                <Fragment set:html={icon(s)} /><span><b>{s.name}</b><small>{s.line}</small></span>
+              </p>
+            ))}
+          </div>
+          <div data-fx-show="2">
+            <p class="fx-grp is-open"><ChevronDown size={12} />Comparison and ranking</p>
+            {KINDS.map((k, i) => (
+              <p class:list={['fx-card', i === 0 && 'is-on']}>
+                <Fragment set:html={icon(k)} /><span><b>{k.name}</b></span>{i === 0 && <Check size={13} stroke-width={3} class="fx-tick" />}
+              </p>
+            ))}
+            <p class="fx-grp"><ChevronRight size={12} />Change over time</p>
+            <p class="fx-grp"><ChevronRight size={12} />Part of a whole</p>
+          </div>
+          <div data-fx-show="4">
+            <p class="fx-grp"><ChevronRight size={12} />Components <b>15</b></p>
+            <p class="fx-grp is-open"><ChevronDown size={12} />Agency <b>12</b></p>
+            <p class="fx-el-route">27 words · selection · Claude subscription</p>
+            {AGENCY.map((a) => (
+              <p class:list={['fx-card', a.card === toTable.card && 'is-on']}>
+                <Fragment set:html={icon(a)} /><span><b>{a.name}</b><small>{a.line}</small></span>
+              </p>
+            ))}
+          </div>
+        </aside>
+
+        <!-- The plan -->
+        <div class="fx-doc" aria-hidden="true">
+          <div class="fx-page" data-fx-page>
+            <p class="fx-h1">Harbor Close Plan</p>
+            <p class="fx-p fx-muted">A fictional four-person firm that closes the books for thirty small clients each month.</p>
+
+            <div class="fx-sec" data-fx-sec="0">
+              <p class="fx-h2"><span>How the monthly close works</span><Fragment set:html={icon(IDEAS[0].skill, 18)} /></p>
+              <p class="fx-p">Priya reconciles the bank and card lines against the ledger, then Tomás chases any receipt that is missing. Priya drafts the summary, and Dana reviews it and sends it by the fifth working day.</p>
+            </div>
+
+            <div class="fx-sec" data-fx-sec="1" data-fx-target="3">
+              <p class="fx-h2"><span>Where the time goes</span><Fragment set:html={icon(IDEAS[1].skill, 18)} /></p>
+              <p class="fx-p fx-sel" data-fx-sel="3">Last quarter the team logged 312 hours on closes. Reconciliation took 140 hours, chasing receipts took 96 hours, drafting summaries took 48 hours and review took 28 hours. Chasing receipts is the step clients complain about most.</p>
+              <div class="fx-add fx-fig" data-fx-from="3">
+                <svg viewBox="0 0 600 330" role="img" aria-label="">
+                  <text class="fx-fig-eye" x="24" y="40">HOURS ON CLOSES · LAST QUARTER</text>
+                  <g class="fx-fig-s1">
+                    <text class="fx-fig-l" x="24" y="98">Reconciliation</text><rect class="fx-fig-b" x="190" y="79" width="300" height="28" /><text class="fx-fig-v" x="500" y="98">140 hours</text>
+                    <text class="fx-fig-l" x="24" y="198">Drafting</text><rect class="fx-fig-b" x="190" y="179" width="102.86" height="28" style="--d:1" /><text class="fx-fig-v" x="302.86" y="198">48 hours</text>
+                    <text class="fx-fig-l" x="24" y="248">Review</text><rect class="fx-fig-b" x="190" y="229" width="60" height="28" style="--d:2" /><text class="fx-fig-v" x="260" y="248">28 hours</text>
+                  </g>
+                  <g class="fx-fig-s2">
+                    <rect class="fx-fig-wash" x="12" y="123" width="576" height="40" />
+                    <text class="fx-fig-l fx-fig-thesis" x="24" y="148">Chasing</text><rect class="fx-fig-b fx-fig-bt" x="190" y="129" width="205.71" height="28" /><text class="fx-fig-v" x="405.71" y="148">96 hours</text>
+                    <text class="fx-fig-v fx-fig-cap" x="24" y="300">CHASING RECEIPTS: 96 OF 312 HOURS, THE MOST COMPLAINTS</text>
+                  </g>
+                </svg>
+                <span class="fx-add-tag"><Fragment set:html={icon(fieldNotes, 14)} /><span>Field-Notes Diagram · step <b class="fx-fig-step"></b> of 2 · proposed</span></span>
+              </div>
+            </div>
+
+            <div class="fx-sec" data-fx-sec="2" data-fx-target="2">
+              <p class="fx-h2"><span>Options for chasing receipts</span><Fragment set:html={icon(IDEAS[2].skill, 18)} /></p>
+              <p class="fx-p fx-sel" data-fx-sel="2">Keep email, which stays at about 96 hours a quarter. Use the client portal, which needs a week of setup and should halve the chase. Or buy Receiptly at $12 a client a month, which should cut the chase by three quarters.</p>
+              <div class="fx-add fx-chart" data-fx-from="2">
+                <p class="fx-chart-t">Chase hours a quarter, by option</p>
+                <div class="fx-bars">
+                  <span class="fx-bar-row" style="--v:96;--d:0"><b>Email</b><i></i><em>about 96</em></span>
+                  <span class="fx-bar-row" style="--v:48;--d:1"><b>Portal</b><i></i><em>about 48</em></span>
+                  <span class="fx-bar-row fx-bar-row--hi" style="--v:24;--d:2"><b>Receiptly</b><i></i><em>about 24</em></span>
+                </div>
+                <span class="fx-add-tag"><Fragment set:html={icon(visualize, 14)} /><span>Visualize · bar chart · proposed</span></span>
+              </div>
+            </div>
+
+            <div class="fx-sec" data-fx-sec="3">
+              <p class="fx-h2"><span>Risks</span><Fragment set:html={icon(IDEAS[3].skill, 18)} /></p>
+              <p class="fx-p">Two of the largest clients have never logged in to the portal. Receiptly is a young company. Any change during the January close lands on the busiest month.</p>
+            </div>
+
+            <div class="fx-sec" data-fx-sec="4" data-fx-target="4">
+              <p class="fx-h2"><span>Next steps</span><Fragment set:html={icon(IDEAS[4].skill, 18)} /></p>
+              <ol class="fx-ol fx-sel" data-fx-sel="4">
+                <li>Dana asks the five largest clients which option they would use, by 7 November.</li>
+                <li>Tomás sets up the portal for two pilot clients in the week of 10 November.</li>
+                <li>Priya measures the chase hours for those two clients in the November close.</li>
+                <li>The team decides on 1 December and switches everyone over in February.</li>
+              </ol>
+              <div class="fx-add" data-fx-from="4">
+                <table class="fx-table">
+                  <thead><tr><th>Step</th><th>Who</th><th>Action</th><th>When</th></tr></thead>
+                  <tbody>
+                    <tr style="--d:0"><td>1</td><td>Dana</td><td>Asks the five largest clients which option they would use</td><td>By 7 November</td></tr>
+                    <tr style="--d:1"><td>2</td><td>Tomás</td><td>Sets up the portal for two pilot clients</td><td>Week of 10 November</td></tr>
+                    <tr style="--d:2"><td>3</td><td>Priya</td><td>Measures the chase hours</td><td>November close</td></tr>
+                    <tr style="--d:3"><td>4</td><td>The team</td><td>Decides, then switches everyone over</td><td>1 December, February</td></tr>
+                  </tbody>
+                </table>
+                <span class="fx-add-tag"><Fragment set:html={icon(toTable, 14)} /><span>Convert Text to Table · proposed</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ideas, then Review Changes -->
+        <div class="fx-side" aria-live="polite">
+          <div class="fx-side-tabs" aria-hidden="true">
+            <span class="fx-side-tab" data-fx-show="0 1"><Lightbulb size={13} />Ideas <kbd>⌘3</kbd></span>
+            <span class="fx-side-tab" data-fx-show="2 3 4"><Check size={13} />Review Changes</span>
+          </div>
+
+          <div class="fx-pane" data-fx-show="0">
+            <div class="fx-notice fx-in">
+              <p class="fx-k">What Flow noticed</p>
+              <p class="fx-notice-t">Find skills for 5 sections of Harbor Close Plan</p>
+              <p class="fx-notice-p">They have the points, numbers or dates a skill works from. Nothing changes until you run one.</p>
+              <span class="fx-btn fx-btn--press"><Sparkles size={13} />Suggest Ideas</span>
+            </div>
+            <p class="fx-note fx-in" style="--d:2"><Laptop size={12} />Counted on this Mac, before any model ran.</p>
+          </div>
+
+          <div class="fx-pane" data-fx-show="1">
+            <p class="fx-run fx-in"><Sparkles size={12} />5 ideas · about 18 s · Claude subscription, no extra cost</p>
+            {IDEAS.map((x, i) => (
+              <div class="fx-idea fx-in" style={`--d:${i + 1}`}>
+                <Fragment set:html={icon(x.skill, 26)} />
+                <span><b>Run {x.skill.name}</b> on “{x.section}”<small>{x.why}</small></span>
+              </div>
+            ))}
+          </div>
+
+          <div class="fx-pane" data-fx-show="2">
+            <div class="fx-rev fx-in">
+              <p class="fx-k">Visualize · Agency</p>
+              <p class="fx-rev-t">Adds a bar chart with 3 data rows after the selected text.</p>
+              <p class="fx-rev-p">Drawn from the plan's own numbers. Switch it to any of the chart kinds in Elements and the data comes along.</p>
+            </div>
+            <div class="fx-decide fx-in" style="--d:2"><span class="fx-state">Proposed</span><span class="fx-btn fx-btn--ghost">Discard</span><span class="fx-btn fx-btn--keep">Keep</span></div>
+          </div>
+
+          <div class="fx-pane" data-fx-show="3">
+            <div class="fx-idea fx-idea--run fx-in">
+              <Fragment set:html={icon(fieldNotes, 26)} />
+              <span><b>Run Field-Notes Diagram</b> on “Where the time goes”</span>
+            </div>
+            <ul class="fx-checks fx-in" style="--d:1">
+              <li><Check size={12} stroke-width={3} />46 words to read</li>
+              <li><Check size={12} stroke-width={3} />5 numbers to work with</li>
+              <li><Check size={12} stroke-width={3} />Included in your subscription</li>
+            </ul>
+            <div class="fx-rev fx-in" style="--d:3">
+              <p class="fx-rev-t">Adds Field-Notes Diagram after the selected text. It holds 1 figure.</p>
+              <p class="fx-rev-p">Every bar drawn to its value, built in two steps. Ready in about 50 s.</p>
+            </div>
+            <div class="fx-decide fx-in" style="--d:4"><span class="fx-state">Proposed</span><span class="fx-btn fx-btn--ghost">Discard</span><span class="fx-btn fx-btn--keep">Keep</span></div>
+          </div>
+
+          <div class="fx-pane" data-fx-show="4">
+            <div class="fx-rev fx-in">
+              <p class="fx-k">Convert Text to Table · Agency</p>
+              <p class="fx-rev-t">A table with the columns the list implied: Step, Who, Action, When.</p>
+              <p class="fx-rev-p">The four numbered steps become four rows. A paragraph with no rows in it says so before you press the card.</p>
+            </div>
+            <div class="fx-decide fx-in" style="--d:2"><span class="fx-state">Proposed</span><span class="fx-btn fx-btn--ghost">Discard</span><span class="fx-btn fx-btn--keep">Keep</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fx-groups">
+      {GROUPS.map((g) => (
+        <a class="fx-group" href={elementArticleHref(g.slug)} data-fx-on={g.on.join(' ')}>
+          <Fragment set:html={icon(g.icon, 30)} />
+          <span><b>{g.n} {g.label.toLowerCase()}</b><small>{g.line}</small></span>
+        </a>
+      ))}
+    </div>
+    <figcaption class="fx-cap">Drawn from our Elements walk on a fictional plan. Ideas' five suggestions, the figure and the table are what Flow made in the walk; the chart is drawn here from the plan's own numbers. Text shortened. <a href={elementArticleHref('tour')}>Read the walk, with every number labelled</a>.</figcaption>
+  </figure>
+
+  <div class="fx-links">
+    <a class="ls-button" href="/flow/elements/">See all 100 elements<ArrowRight size={18} /></a>
+    <a class="ls-text-link" href={elementArticleHref('tour')}>The Elements tour<ArrowRight size={17} /></a>
+  </div>
+</section>
+
+<script>
+  const STEP_MS = [4600, 6200, 5600, 7000, 6000];
+
+  function init(root: ParentNode = document) {
+    for (const el of root.querySelectorAll<HTMLElement>('[data-fx]:not([data-fx-ready])')) {
+      el.dataset.fxReady = '';
+      const tabs = [...el.querySelectorAll<HTMLButtonElement>('[data-fx-go]')];
+      const doc = el.querySelector<HTMLElement>('.fx-doc')!;
+      const page = el.querySelector<HTMLElement>('[data-fx-page]')!;
+      const last = tabs.length - 1;
+      let step = 0;
+      let timer: number | undefined;
+      let manual = false;
+
+      // Scroll the plan to the step's section: its heading near the top, or
+      // far enough down that what the card added is fully in view.
+      const focus = (n: number) => {
+        const target = page.querySelector<HTMLElement>(`[data-fx-target="${n}"]`);
+        const max = Math.max(0, page.scrollHeight - doc.clientHeight);
+        let y = 0;
+        if (target) {
+          y = target.offsetTop - 18;
+          const added = target.querySelector<HTMLElement>(`[data-fx-from="${n}"]`);
+          if (added) {
+            // Both offsets are measured from the pane (.fx-doc is the positioned parent).
+            const top = added.offsetTop;
+            const bottom = top + added.offsetHeight;
+            y = added.offsetHeight + 36 > doc.clientHeight ? top - 12 : Math.max(y, bottom + 18 - doc.clientHeight);
+          }
+        }
+        page.style.transform = `translateY(${-Math.min(max, Math.max(0, y))}px)`;
+      };
+
+      const set = (n: number) => {
+        step = n;
+        el.dataset.step = String(n);
+        el.querySelectorAll<HTMLElement>('[data-fx-show]').forEach((x) => { x.hidden = !x.dataset.fxShow!.split(' ').includes(String(n)); });
+        el.querySelectorAll<HTMLElement>('[data-fx-from]').forEach((x) => { x.hidden = n < Number(x.dataset.fxFrom); });
+        el.querySelectorAll<HTMLElement>('[data-fx-sel]').forEach((x) => x.classList.toggle('is-sel', x.dataset.fxSel === String(n)));
+        el.querySelectorAll<HTMLElement>('[data-fx-on]').forEach((x) => x.classList.toggle('is-on', x.dataset.fxOn!.split(' ').includes(String(n))));
+        tabs.forEach((t, i) => {
+          t.setAttribute('aria-selected', String(i === n));
+          t.classList.toggle('is-past', i < n);
+        });
+        el.style.setProperty('--fx-ms', `${STEP_MS[n]}ms`);
+        el.classList.remove('is-tick');
+        void el.offsetWidth;
+        el.classList.add('is-tick');
+        requestAnimationFrame(() => focus(n));
+      };
+
+      const play = () => {
+        if (manual || timer) return;
+        timer = window.setTimeout(function tick() {
+          set(step === last ? 0 : step + 1);
+          timer = window.setTimeout(tick, STEP_MS[step]);
+        }, STEP_MS[step]);
+      };
+      const pause = () => { window.clearTimeout(timer); timer = undefined; };
+
+      tabs.forEach((t, i) => t.addEventListener('click', () => {
+        manual = true;
+        el.classList.add('is-manual');
+        pause();
+        set(i);
+      }));
+      addEventListener('resize', () => focus(step));
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced || !('IntersectionObserver' in window)) {
+        el.classList.add('is-manual');
+        set(last);
+        continue;
+      }
+      set(0);
+      new IntersectionObserver((entries) => {
+        for (const e of entries) e.isIntersecting ? play() : pause();
+      }, { threshold: 0.35 }).observe(el);
+    }
+  }
+  init();
+  document.addEventListener('astro:after-swap', () => init());
+</script>
+
+<style>
+  .fx { padding-block: 92px 84px; border-bottom: 1px solid var(--line); }
+  .fx-head { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: end; margin-bottom: 40px; }
+  .fx-eyebrow { display: flex; align-items: center; gap: 12px; }
+  .fx h2 { font: 700 clamp(42px, 5vw, 76px)/.95 'Barlow Condensed', Arial, sans-serif; letter-spacing: -.018em; margin: 18px 0 0; }
+  .fx-dek { font-size: 16px; color: var(--muted); max-width: 560px; }
+  .fx-dek p + p { margin-top: .8rem; }
+
+  /* A card's drawing, in its tint */
+  .fx :global(.fx-ic) { flex: none; display: grid; place-items: center; width: var(--fx-s); height: var(--fx-s); border-radius: calc(var(--fx-s) * .26); color: var(--fx-t); background: color-mix(in srgb, var(--fx-t) 10%, #fff); }
+  .fx :global(.fx-ic svg) { width: 68%; height: 68%; overflow: visible; }
+
+  /* Step tabs */
+  .fx-mock { margin: 0; }
+  .fx-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+  .fx-tab { position: relative; display: flex; align-items: center; gap: 9px; padding: 11px 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--muted); font-size: 14px; font-weight: 700; text-align: left; cursor: pointer; overflow: hidden; transition: border-color .2s, color .2s, background .2s; }
+  .fx-tab:hover { border-color: var(--ink); color: var(--ink); }
+  .fx-tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .fx-tab-n { position: relative; display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; font-size: 12px; }
+  /* The step's time runs as a ring round its number, never as a bar on one
+     edge of the tab (no one-edge accents: operator 2026-10-27). */
+  @property --fx-p { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+  .fx-tab-ring { position: absolute; inset: -5px; border-radius: 50%; background: conic-gradient(var(--red) var(--fx-p), transparent 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); }
+  .fx-tab-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fx-tab[aria-selected='true'] { border-color: var(--ink); color: var(--ink); background: var(--paper); }
+  .fx-tab[aria-selected='true'] .fx-tab-n { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .fx-tab.is-past { color: var(--ink); }
+  .fx-tab.is-past .fx-tab-n { background: var(--teal-pale); border-color: var(--teal); color: var(--teal); }
+  [data-fx].is-tick .fx-tab[aria-selected='true'] .fx-tab-ring { animation: fx-ring var(--fx-ms, 5s) linear forwards; }
+  [data-fx].is-manual .fx-tab-ring { display: none; }
+  @keyframes fx-ring { to { --fx-p: 100%; } }
+
+  /* Window */
+  .fx-window { border: 1px solid #cfd6d1; border-radius: 14px; background: #fff; box-shadow: 0 30px 60px -28px #17201c40, 0 2px 6px #17201c10; overflow: hidden; }
+  .fx-bar { display: flex; align-items: center; gap: 14px; height: 42px; padding: 0 16px; border-bottom: 1px solid #e3e7e4; background: #f7f8f7; font-size: 13px; font-weight: 500; }
+  .fx-lights { display: flex; gap: 7px; }
+  .fx-lights i { width: 11px; height: 11px; border-radius: 50%; background: #f2605a; }
+  .fx-lights i:nth-child(2) { background: #f6be4f; }
+  .fx-lights i:nth-child(3) { background: #5fc55a; }
+  .fx-title { flex: 1; }
+  .fx-pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 99px; background: #fff6d6; color: #7a5a00; font-size: 12px; }
+  .fx-pill i { width: 7px; height: 7px; border-radius: 50%; background: #e0a800; animation: fx-pulse 1.4s ease-in-out infinite; }
+  .fx-panes { display: grid; grid-template-columns: 236px minmax(0, 1fr) 320px; height: 500px; }
+  kbd { padding: 1px 5px; border: 1px solid #d5dbd6; border-radius: 4px; background: #fff; font: 500 10.5px/1.3 'Geist Sans', Arial, sans-serif; color: #6b7672; }
+
+  /* Elements panel */
+  .fx-el { padding: 14px 10px; border-right: 1px solid #e3e7e4; background: #fafbfa; font-size: 12.5px; color: #3b4541; overflow: hidden; }
+  .fx-el p { margin: 0; }
+  .fx-el-h { display: flex; align-items: center; justify-content: space-between; padding: 0 6px 10px; font-size: 13px; font-weight: 700; color: var(--ink); }
+  .fx-grp { display: flex; align-items: center; gap: 5px; padding: 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #6b7672; }
+  .fx-grp b { margin-left: auto; font-weight: 500; letter-spacing: 0; }
+  .fx-grp.is-open { color: var(--ink); }
+  .fx-el-route { padding: 2px 6px 8px; font-size: 11px; color: #6b7672; }
+  .fx-card { display: flex; align-items: center; gap: 9px; padding: 6px; border-radius: 8px; transition: background .3s, box-shadow .3s; }
+  .fx-card span { display: grid; min-width: 0; }
+  .fx-card b { font-size: 12.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fx-card small { font-size: 11px; line-height: 1.3; color: #6b7672; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fx-card.is-on { background: #e3eefc; box-shadow: inset 0 0 0 1px #b9d0f5; }
+  .fx-tick { margin-left: auto; color: #2a62c9; }
+  [data-fx][data-step='1'] .fx-card--idea { background: #fff8dc; }
+  [data-fx][data-step='3'] .fx-card--fn { background: #e3eefc; box-shadow: inset 0 0 0 1px #b9d0f5; }
+
+  /* The plan */
+  .fx-doc { position: relative; overflow: hidden; }
+  .fx-doc::after { content: ''; position: absolute; inset: auto 0 0; height: 40px; background: linear-gradient(#fff0, #fff); pointer-events: none; }
+  .fx-page { display: grid; gap: 10px; padding: 24px 34px 60px; transition: transform .8s cubic-bezier(.4, 0, .2, 1); }
+  .fx-h1 { font: 700 27px/1.1 'Barlow Condensed', Arial, sans-serif; letter-spacing: -.01em; }
+  .fx-h2 { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 15px; font-weight: 700; }
+  .fx-h2 :global(.fx-ic) { opacity: 0; transform: scale(.6); transition: opacity .35s, transform .35s; }
+  [data-fx][data-step='1'] .fx-h2 :global(.fx-ic) { opacity: 1; transform: none; }
+  /* Each section's skill lands with its idea in the Ideas pane. */
+  [data-fx][data-step='1'] .fx-sec:nth-of-type(1) .fx-h2 :global(.fx-ic) { transition-delay: .65s; }
+  [data-fx][data-step='1'] .fx-sec:nth-of-type(2) .fx-h2 :global(.fx-ic) { transition-delay: 1.1s; }
+  [data-fx][data-step='1'] .fx-sec:nth-of-type(3) .fx-h2 :global(.fx-ic) { transition-delay: 1.55s; }
+  [data-fx][data-step='1'] .fx-sec:nth-of-type(4) .fx-h2 :global(.fx-ic) { transition-delay: 2s; }
+  [data-fx][data-step='1'] .fx-sec:nth-of-type(5) .fx-h2 :global(.fx-ic) { transition-delay: 2.45s; }
+  .fx-sec { display: grid; gap: 8px; }
+  .fx-p { font-size: 14px; line-height: 1.55; color: #222a27; }
+  .fx-muted { color: var(--muted); }
+  .fx-ol { margin: 0; padding-left: 20px; list-style: decimal; display: grid; gap: 4px; font-size: 14px; line-height: 1.5; }
+  .fx-sel { border-radius: 4px; transition: background .4s, opacity .4s; }
+  .fx-sel.is-sel { background: #d8e6fb; box-shadow: 0 0 0 4px #d8e6fb; }
+  [data-fx][data-step='4'] .fx-ol.is-sel { opacity: .45; text-decoration: line-through; text-decoration-color: #c4554d; background: #fbe4e1; box-shadow: 0 0 0 4px #fbe4e1; }
+
+  /* What a card adds: proposed, in place */
+  .fx-add { position: relative; display: grid; gap: 8px; padding: 14px 14px 12px; border-radius: 10px; background: #f3faf6; border: 1px solid #bfe2cd; animation: fx-in .5s ease both; }
+  .fx-add-tag { display: inline-flex; align-items: center; gap: 6px; justify-self: start; padding: 3px 8px 3px 4px; border-radius: 6px; background: #fff; font-size: 11.5px; font-weight: 500; color: #3b6b52; }
+  .fx-chart-t { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #3b4541; }
+  .fx-bars { display: grid; gap: 8px; }
+  .fx-bar-row { display: grid; grid-template-columns: 74px minmax(0, 1fr) 70px; align-items: center; gap: 10px; font-size: 12.5px; }
+  .fx-bar-row b { font-weight: 500; }
+  .fx-bar-row i { display: block; height: 20px; width: calc(var(--v) / 96 * 100%); border-radius: 0 5px 5px 0; background: linear-gradient(90deg, #6959f0, #8d82f5); transform-origin: left; animation: fx-grow .9s cubic-bezier(.3, .7, .3, 1) both; animation-delay: calc(.35s + var(--d) * .25s); }
+  .fx-bar-row--hi i { background: linear-gradient(90deg, #0e9e98, #3cc4bd); }
+  .fx-bar-row em { font-style: normal; color: #56635e; }
+  .fx-fig { background: #fff; }
+  .fx-fig svg { display: block; width: 100%; height: auto; }
+  .fx-fig text { font-family: ui-monospace, Menlo, monospace; }
+  .fx-fig-eye { font-size: 15px; letter-spacing: .18em; fill: #5b6170; }
+  .fx-fig-l { font-size: 16px; font-weight: 500; fill: #1d2230; }
+  .fx-fig-thesis { font-weight: 700; fill: #0e9e98; }
+  .fx-fig-v { font-size: 13px; fill: #5b6170; }
+  .fx-fig-cap { font-size: 12.5px; letter-spacing: .04em; }
+  .fx-fig-b { fill: #2b5fc430; stroke: #2b5fc4; stroke-width: 1; transform-box: fill-box; transform-origin: left center; animation: fx-grow .7s ease-out both; animation-delay: calc(.4s + var(--d, 0) * .12s); }
+  .fx-fig-bt { fill: #0e9e9840; stroke: #0e9e98; stroke-width: 2; }
+  .fx-fig-wash { fill: #0e9e98; fill-opacity: .08; }
+  /* The figure builds in two steps, like Flow's: the thesis bar lands second,
+     halfway through the step (sooner when a viewer picked the step). */
+  [data-fx] { --fx-s2: calc(var(--fx-ms, 7s) * .5); }
+  [data-fx].is-manual { --fx-s2: 1.6s; }
+  .fx-fig-s2 { opacity: 0; }
+  .fx-fig-step::after { content: '1'; }
+  [data-fx].is-tick[data-step='3'] .fx-fig-s2 { animation: fx-fade .5s ease var(--fx-s2) forwards; }
+  [data-fx].is-tick[data-step='3'] .fx-fig-s2 .fx-fig-b { animation-delay: var(--fx-s2); }
+  [data-fx].is-tick[data-step='3'] .fx-fig-step::after { animation: fx-step 0s linear var(--fx-s2) forwards; }
+  [data-fx]:not([data-step='3']) .fx-fig-s2 { opacity: 1; animation: none; }
+  [data-fx]:not([data-step='3']) .fx-fig-step::after { content: '2'; animation: none; }
+  @keyframes fx-step { to { content: '2'; } }
+  .fx-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 12px; }
+  .fx-table th, .fx-table td { padding: 6px 8px; border: 1px solid #dfe5e1; text-align: left; vertical-align: top; }
+  .fx-table th { background: #f4f6f4; font-weight: 700; }
+  .fx-table tbody tr { animation: fx-in .4s ease both; animation-delay: calc(.4s + var(--d) * .22s); }
+
+  /* Ideas and Review */
+  .fx-side { display: flex; flex-direction: column; gap: 10px; min-height: 0; padding: 12px 14px; border-left: 1px solid #e3e7e4; overflow: hidden; }
+  .fx-side-tabs { padding-bottom: 8px; border-bottom: 1px solid #eef1ef; }
+  .fx-side-tab { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: #2a62c9; }
+  .fx-pane { display: grid; gap: 10px; align-content: start; }
+  .fx-k { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6b7672; }
+  .fx-notice { display: grid; gap: 7px; padding: 13px; border: 1px solid #e3e7e4; border-radius: 10px; background: #fffdf3; }
+  .fx-notice-t { font-size: 14.5px; font-weight: 700; line-height: 1.3; }
+  .fx-notice-p, .fx-rev-p { font-size: 12.5px; line-height: 1.45; color: #56635e; }
+  .fx-btn { display: inline-flex; align-items: center; gap: 6px; justify-self: start; padding: 6px 11px; border-radius: 7px; background: #2a62c9; color: #fff; font-size: 12.5px; font-weight: 700; }
+  .fx-btn--press { animation: fx-press .5s ease calc(var(--fx-ms, 5s) * .72) both; }
+  [data-fx].is-manual .fx-btn--press { animation: none; }
+  .fx-btn--ghost { background: #fff; color: #3b4541; box-shadow: inset 0 0 0 1px #d5dbd6; }
+  .fx-btn--keep { background: #c9d0cc; transition: background .3s; }
+  [data-fx].is-tick .fx-btn--keep { animation: fx-keep .3s ease calc(var(--fx-ms, 5s) * .78) forwards; }
+  [data-fx].is-manual .fx-btn--keep { background: #0e9e98; animation: none; }
+  .fx-note { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #3b6b52; }
+  .fx-run { display: flex; align-items: center; gap: 6px; padding: 7px 9px; border-radius: 8px; background: #f3f0fd; font-size: 11.5px; font-weight: 500; color: #4b3aa8; }
+  .fx-idea { display: flex; gap: 10px; align-items: flex-start; padding: 9px; border: 1px solid #e3e7e4; border-radius: 9px; background: #fff; font-size: 12.5px; line-height: 1.35; }
+  .fx-idea span { display: grid; gap: 2px; }
+  .fx-idea small { font-size: 11.5px; color: #6b7672; }
+  .fx-idea--run { border-color: #b9d0f5; background: #f2f7fe; }
+  .fx-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; font-size: 12.5px; }
+  .fx-checks li { display: flex; align-items: center; gap: 7px; }
+  .fx-checks :global(svg) { color: #2fa36b; }
+  .fx-rev { display: grid; gap: 6px; padding: 12px; border: 1px solid #e3e7e4; border-radius: 10px; }
+  .fx-rev-t { font-size: 13.5px; font-weight: 700; line-height: 1.35; }
+  .fx-decide { display: flex; align-items: center; gap: 8px; }
+  .fx-state { flex: 1; font-size: 12px; font-weight: 700; color: #7a5a00; }
+  .fx-in { animation: fx-in .45s ease both; animation-delay: calc(.2s + var(--d, 0) * .45s); }
+
+  /* The four groups */
+  .fx-groups { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+  .fx-group { display: flex; align-items: center; gap: 11px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); transition: border-color .3s, box-shadow .3s, transform .3s; }
+  .fx-group span { display: grid; font-size: 12.5px; line-height: 1.3; color: var(--muted); }
+  .fx-group b { font-size: 14px; color: var(--ink); }
+  .fx-group:hover, .fx-group.is-on { border-color: var(--ink); box-shadow: 0 8px 20px -14px #17201c80; transform: translateY(-2px); }
+  .fx-cap { margin-top: 14px; font-size: 13px; color: var(--muted); }
+  .fx-cap a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--red); color: var(--ink); font-weight: 500; }
+  .fx-links { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; margin-top: 32px; }
+
+  @keyframes fx-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes fx-fade { to { opacity: 1; } }
+  @keyframes fx-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes fx-pulse { 50% { opacity: .35; } }
+  @keyframes fx-press { 40% { transform: scale(.94); background: #1d4ea6; } 100% { transform: none; } }
+  @keyframes fx-keep { to { background: #0e9e98; } }
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) {
+    .fx-in, .fx-add, .fx-tab-ring, .fx-table tbody tr, .fx-bar-row i, .fx-fig-b, .fx-pill i, .fx-btn--press { animation: none !important; }
+    .fx-page, .fx-h2 :global(.fx-ic) { transition: none !important; }
+    .fx-fig-s2 { opacity: 1 !important; animation: none !important; }
+    .fx-fig-step::after { content: '2' !important; animation: none !important; }
+  }
+
+  @media (max-width: 1100px) {
+    .fx-panes { grid-template-columns: minmax(0, 1fr) 300px; }
+    .fx-el { display: none; }
+  }
+  @media (max-width: 1000px) {
+    .fx-head { grid-template-columns: 1fr; gap: 20px; }
+    .fx-groups { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    .fx { padding-block: 56px; }
+    .fx-tabs { display: flex; overflow-x: auto; scrollbar-width: none; margin-inline: -4px; padding: 2px 4px; }
+    .fx-tab { flex: none; }
+    .fx-panes { grid-template-columns: 1fr; grid-template-rows: 390px auto; height: auto; }
+    .fx-page { padding: 16px 18px 40px; }
+    .fx-side { min-height: 250px; border-left: 0; border-top: 1px solid #e3e7e4; }
+    .fx-pill { display: none; }
+    .fx-groups { grid-template-columns: 1fr; }
+    .fx-table { font-size: 11px; }
+    .fx-table th, .fx-table td { padding: 4px 5px; }
+    .fx-table th:first-child, .fx-table td:first-child { display: none; }
+  }
+</style>

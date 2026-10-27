@@ -1,0 +1,96 @@
+---
+// Flow's canvas (0261, accepted 2026-10-18): one surface, three lenses on a
+// document. The shots and numbers are from the walk published at
+// /flow/paths/the-canvas/ (orionfold-flow articles/16-the-canvas): the Guide's
+// fictional Client Brief, refreshed by its Jobs in 71 s. The lenses step on
+// their own while in view (src/scripts/hero-story.js); a lens tab takes over.
+import { Image } from 'astro:assets';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import Play from '@lucide/astro/icons/play';
+import Pause from '@lucide/astro/icons/pause';
+import connections from '../../assets/flow/paths/the-canvas/07-canvas-after-the-run.webp';
+import evidence from '../../assets/flow/paths/the-canvas/08-evidence-on-the-brief.webp';
+import history from '../../assets/flow/paths/the-canvas/09-history-derived-from.webp';
+import '../../styles/hero-story.css';
+
+interface Props { id?: string }
+const { id = 'flow-canvas' } = Astro.props;
+const PATH = '/flow/paths/the-canvas/';
+const LENSES = [
+  {
+    name: 'Connections', key: '⌥⌘3', src: connections,
+    title: 'What it rests on.',
+    body: 'The brief sits in the middle. On the left are the four things it rests on. Below are the two files its new section cites. On the right is the README that links to it.',
+    alt: 'Canvas, Connections: the brief in the middle; Rests on 4 to the left; Links from here 2, the two imported files the new section cites; Links here 1',
+  },
+  {
+    name: 'Evidence', key: '⌥⌘4', src: evidence,
+    title: 'What each sentence cites.',
+    body: 'Each cited sentence is underlined and joined to its source in the margin. Client Figures is cited by 12 sentences, and the August Board Deck by 2. Evidence shows what a sentence cites, not whether the source agrees.',
+    alt: 'Evidence over the expanded brief: cited sentences underlined and joined to their source cards in the margin, Client Figures cited by 12 sentences and August Board Deck by 2',
+  },
+  {
+    name: 'History', key: '⌥⌘Y', src: history,
+    title: 'Where the words came from.',
+    body: 'Derived from 3 documents, with 22 receipts and 4 saved versions. Show History plays the versions back. Step through them with the arrow keys or a two-finger swipe.',
+    alt: 'The History tab beside the canvas: 22 receipts, 4 saved versions, Derived from 3 documents, paraphrased; a timeline of 23 events with the run and its saved version',
+  },
+];
+---
+<section id={id} class="fcv ls-container" aria-labelledby={`${id}-heading`}>
+  <div class="fcv-head">
+    <div>
+      <p class="ls-eyebrow">FLOW / CANVAS</p>
+      <h2 id={`${id}-heading`}>SEE WHERE EVERY<br /><span class="ls-stroke">WORD CAME FROM.</span></h2>
+    </div>
+    <div class="ls-episode-dek">
+      <p>Press <b>Canvas</b> in the document toolbar. The page becomes a map of where its words came from: the files it rests on, the source behind each sentence, and every saved version.</p>
+      <p>In our walk, a client brief's Jobs refreshed it in 71 seconds. The canvas then showed which files the new section cites, sentence by sentence.</p>
+      <p class="fcv-link"><a href={PATH}>Walk through One brief, three ways<ArrowRight size={16} /></a></p>
+    </div>
+  </div>
+
+  <div class="hs fcv-stage" data-story data-durations="6000,6000,6000" data-story-scene="0">
+    <div class="fcv-frame">
+      {LENSES.map((l, i) => (
+        <figure class="fcv-lens" style={`--i:${i}`} data-lens={i}>
+          <Image src={l.src} alt={l.alt} widths={[800, 1200, 1600, 2000, 2400]} sizes="(max-width: 900px) 94vw, 1000px" quality={90} loading="lazy" decoding="async" />
+          <figcaption><b>{l.name} <kbd>{l.key}</kbd></b><strong>{l.title}</strong>{l.body}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="hs-controls">
+      <button type="button" class="hs-play" data-story-toggle aria-pressed="false" aria-label="Play the story"><Play size={14} class="hs-i-play" /><Pause size={14} class="hs-i-pause" /></button>
+      <div class="hs-steps" role="group" aria-label="Canvas lenses">
+        {LENSES.map((l, i) => <button type="button" class="hs-step" data-story-go={i}><b>0{i + 1}</b><span>{l.name}</span></button>)}
+      </div>
+      <span class="sr-only" data-story-status aria-live="polite"></span>
+    </div>
+    <p class="hs-note">Shots from our walk on the Flow Guide's fictional Client Brief.</p>
+  </div>
+</section>
+
+<script>
+  import '../../scripts/hero-story.js';
+</script>
+
+<style>
+  .fcv { padding-block: 96px 88px; display: grid; gap: 40px; border-top: 1px solid var(--line); }
+  .fcv-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: end; }
+  :global(.ls) .fcv-head h2 { margin-top: 12px; }
+  :global(.ls) .fcv-head .ls-episode-dek p + p { margin-top: 12px; }
+  .fcv-link a { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+  .fcv-frame { display: grid; }
+  .fcv-lens { grid-area: 1 / 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 15rem); gap: 28px; align-items: center; margin: 0; opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility 0s .5s; }
+  .fcv-lens :global(img) { display: block; width: 100%; height: auto; border: 1px solid #cfd6d3; border-radius: 12px; box-shadow: 0 24px 56px #152a2d1f, 0 4px 12px #152a2d12; }
+  .fcv-lens figcaption { display: grid; gap: 8px; font-size: .95rem; line-height: 1.55; color: var(--muted, #56635e); }
+  .fcv-lens figcaption b { display: flex; align-items: center; gap: 8px; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--teal, #0e9e98); }
+  .fcv-lens kbd { padding: 1px 6px; border: 1px solid #d8ddda; border-radius: 4px; background: #fff; font: 500 .7rem/1.4 var(--font-mono, ui-monospace, monospace); color: #56635e; letter-spacing: 0; }
+  .fcv-lens figcaption strong { font-size: 1.3rem; line-height: 1.2; color: var(--ink, #171c1a); }
+  .fcv-stage[data-story-scene="0"] [data-lens="0"], .fcv-stage[data-story-scene="1"] [data-lens="1"], .fcv-stage[data-story-scene="2"] [data-lens="2"] { opacity: 1; visibility: visible; transition: opacity .5s ease; }
+  .fcv-stage .hs-controls { max-width: 560px; }
+  @media (max-width: 900px) {
+    .fcv-head { grid-template-columns: 1fr; gap: 20px; }
+    .fcv-lens { grid-template-columns: 1fr; gap: 16px; align-items: start; }
+  }
+</style>

@@ -4,7 +4,11 @@ const read = path => readFileSync(new URL(`../../${path}`, import.meta.url),'utf
 for (const [page,hero,art] of [['index','HomeHero','home'],['flow','FlowHero','flow']]) {
  const route=read(`src/pages/${page}.astro`), composition=read(`src/components/living/${hero}.astro`);
  assert.match(route,new RegExp(`<${hero} \\/>`));
- assert.match(composition,page === 'index' ? /<HomeKnowledgeDemo \/>/ : /<FlowHeroMock \/>/);
+ // Operator 2026-10-27: the homepage hero pitches Flow Domains, the /flow/ hero
+ // Flow Elements, and both buttons read Download Flow Now.
+ assert.match(composition,page === 'index' ? /<HomeHeroDomainMock \/>/ : /<FlowHeroElementsMock \/>/);
+ assert.match(composition,/>Download Flow Now</);
+ assert.match(composition,/data-flow-download=\{ORIONFOLD_FLOW_LIVE \? '(home|flow)-hero' : undefined\}/);
  assert.match(composition,new RegExp(`hero-${art}-paper-planes\\.webp`));
  assert.doesNotMatch(route+composition,/FlowShot|FlowLaunchHomeHero|home-variants|data-home-variant|FlowRaceBlueprint|<video/);
  const bytes=statSync(new URL(`../../public/assets/living-systems/hero-${art}-paper-planes.webp`,import.meta.url)).size;

@@ -1,6 +1,7 @@
 ---
-// Shared navigation: Flow, its Paths and Compare pages, then the essays.
-// The manifesto is essay 03 now and is reached from /essays/ (operator 2026-10-26).
+// Shared navigation: Flow, its Domains (Flow 3.0's launch surface, operator
+// 2026-10-27), then its Paths, Elements and Compare pages.
+// The essays (the manifesto is essay 03) live in the footer (operator 2026-10-26).
 // Story and Books moved to the footer (operator 2026-09-28). Download intent,
 // launch gating, and sticky-bar consent mechanics stay shared.
 import Wordmark from './ui/Wordmark.astro';
@@ -9,8 +10,10 @@ import { SHOWCASE } from '../data/flow-path-showcase';
 import { ArrowRightIcon } from '../lib/flow-icons';
 import { NAV_ELEMENTS, elementHref, elementDrawing } from '../lib/flow/elements';
 // "Paths" and "Compare" carry their pages as a small dropdown (desktop) or
-// indented sub-links (mobile). Paths lists the first five in the site's order;
-// Compare appears only once at least one page is routed.
+// indented sub-links (mobile); Compare appears only once a page is routed.
+// Every menu shows at most its top five, in the site's order, and the rest
+// wait behind its "All …" link (design rule, operator 2026-10-27).
+const NAV_MENU_MAX = 5;
 type NavChild = { href: string; label: string; tag: string; line: string; thumb?: { svg: string; tint: string } };
 const paths: NavChild[] = (await publishedPaths()).slice(0, 5).map((p) => ({ href: pathHref(p.id), label: p.data.path, tag: p.data.chip.toUpperCase(), line: SHOWCASE[p.id]?.hook ?? p.data.persona }));
 // Elements lists five elements by their sidebar drawing (operator 2026-10-26).
@@ -18,11 +21,11 @@ const elements: NavChild[] = NAV_ELEMENTS.map((e) => ({ href: elementHref(e), la
 const compare: NavChild[] = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.tool, tag: p.data.kind === 'switch' ? 'SWITCH' : 'PAIR', line: p.data.line }));
 const links: { href: string; label: string; children?: NavChild[]; all?: string }[] = [
   { href: '/flow/', label: 'Flow' },
+  { href: '/domains/', label: 'Domains' },
   { href: '/flow/paths/', label: 'Paths', ...(paths.length ? { children: paths, all: 'All paths' } : {}) },
   { href: '/flow/elements/', label: 'Elements', children: elements, all: 'All 100 elements' },
   ...(compare.length ? [{ href: '/flow/compare/', label: 'Compare', children: compare, all: 'All comparisons' }] : []),
-  { href: '/essays/', label: 'Essays' },
-];
+].map((l) => (l.children ? { ...l, children: l.children.slice(0, NAV_MENU_MAX) } : l));
 const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/flow/' && Astro.url.pathname.startsWith(href));
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
 import { FLOW_DMG_URL } from '../data/flow-pricing.ts';

@@ -36,7 +36,7 @@ bodyLocked: true
 titleLocked: true
 release: '3.0'
 onHome: false
-startInstructions: In Flow 3.0, open a copy of the Flow Guide’s Client Brief workspace. Use its Jobs ribbon, open Chat in the Workbench, then choose Canvas in the document toolbar.
+startInstructions: In Flow, open a copy of the Flow Guide’s Client Brief workspace. Use its Jobs ribbon, open Chat in the Workbench, then choose Canvas in the document toolbar.
 ---
 
 ## Watch the walkthrough
@@ -159,7 +159,7 @@ History says *Derived from 3 documents*, with *35 receipts · 4 saved versions* 
 | Decisions after the hand run | 2 awaiting a decision; run progress 5 of 5 | verified (shot 05) |
 | Steps that needed anything outside Flow | 0 | verified (journal) |
 
-## More Flow 3.0 walks
+## More Flow walks
 
 - [Diagrams that draw anywhere](/flow/paths/diagrams-draw-anywhere/)
 - [A checklist you can sign, inside the document](/flow/paths/a-checklist-you-can-sign/)

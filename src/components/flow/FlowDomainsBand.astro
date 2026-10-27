@@ -1,0 +1,42 @@
+---
+// Flow Domains on the homepage (operator 2026-10-27): the method an expert uses
+// with clients, as a few Markdown files, written with an AI co-author and
+// published once. On the other side it wakes up with all of Flow, for a client
+// in Flow or their agent through Flow. The hero already plays the round trip,
+// so this band shows the payload (DomainPayload); /domains/ keeps the journey.
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import DomainPayload from './domains/DomainPayload.astro';
+import { publishedDomainArticles, domainArticleHref } from '../../lib/flow/domains';
+interface Props { id?: string }
+const { id = 'flow-domains' } = Astro.props;
+const [launch] = await publishedDomainArticles();
+---
+{launch && (
+  <section id={id} class="fd ls-container" aria-labelledby={`${id}-heading`}>
+    <div class="fd-head">
+      <div>
+        <p class="ls-eyebrow">FLOW DOMAINS</p>
+        <h2 id={`${id}-heading`}><span class="fd-l1">YOUR METHOD IN 75 KB.</span><br /><span class="ls-stroke fd-l2">ALL OF FLOW ON CLIENT SIDE.</span></h2>
+      </div>
+      <div class="ls-episode-dek">
+        <p>A Domain is the method you use with clients, as a folder of plain Markdown files. You write it with your AI as co-author, and you keep or undo each change it makes. {launch.data.domain} is 6 files and 75 KB.</p>
+        <p>Those few files carry a lot. In your client's Flow they open with figures, tables and checklists drawn, and with skills and Jobs ready to run. Their agent can read your method through Flow too. Publish again, and every client gets a change to review, file by file.</p>
+        <p class="fd-links"><a href="/domains/">See Flow Domains<ArrowRight size={16} /></a><a href={domainArticleHref(launch.id)}>How {launch.data.domain} was built<ArrowRight size={16} /></a></p>
+      </div>
+    </div>
+    <DomainPayload />
+  </section>
+)}
+
+<style>
+  .fd { padding-block: 96px 88px; display: grid; gap: 40px; border-top: 1px solid var(--line); }
+  .fd-head { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: end; }
+  :global(.ls) .fd-head h2 { margin-top: 12px; }
+  /* The first sentence stays on one line (operator 2026-10-27); phones scale it to fit. */
+  .fd-l1 { white-space: nowrap; font-size: min(1em, 11.2vw); }
+  :global(.ls) .fd-head h2 { text-wrap: balance; }
+  :global(.ls) .fd-head .ls-episode-dek p + p { margin-top: 12px; }
+  .fd-links { display: flex; flex-wrap: wrap; gap: 10px 24px; }
+  .fd-links a { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+  @media (max-width: 900px) { .fd-head { grid-template-columns: 1fr; gap: 20px; } }
+</style>

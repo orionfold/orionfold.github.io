@@ -58,11 +58,11 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.title}, from Flow Elements`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page fe-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Elements', tags: [`Flow ${d.release}`, 'Elements', d.category] }}>
+<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.title}, from Flow Elements`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page fe-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Elements', tags: ['Flow', 'Elements', d.category] }}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero fe-hero ls-container">
-      <div class="ed-article-kicker"><a href="/flow/elements/">← All elements</a><span>FLOW {d.release} ELEMENTS / {d.category.toUpperCase()}</span></div>
+      <div class="ed-article-kicker"><a href="/flow/elements/">← All elements</a><span>FLOW ELEMENTS / {d.category.toUpperCase()}</span></div>
       <h1>{d.title}</h1>
       <p class="ed-article-dek">{items.length ? d.summary : d.dek}</p>
       <div class="ed-hero-bottom"><div class="ed-meta"><span>{items.length ? `${items.length} elements` : 'The tour'}</span><span>Walked on Flow</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#how-it-works" class="ed-download-link">How it works ↓</a></div></div>
@@ -94,7 +94,7 @@ const schema = [
           <PaperCta layout="article" class="ed-paper-cta"
             source={`flow-elements-${entry.id}`} headingId="elements-cta"
             eyebrow="TRY IT IN FLOW" heading="Press ⌘5 and pick a card."
-            description={`In Flow ${d.release}, open a document and press ⌘5 to open Elements. Select a passage, press a card, and decide what to keep in Review Changes.`} />
+            description={`In Flow, open a document and press ⌘5 to open Elements. Select a passage, press a card, and decide what to keep in Review Changes.`} />
         </div>
       </article>
     </div>

@@ -68,10 +68,10 @@ export const OG_PAGES: Record<string, OgPage> = {
 },
   '/': {
     "slug": "home",
-    "eyebrow": "Orionfold · Living Documents",
-    "title": "Make knowledge a living thing.",
+    "eyebrow": "Orionfold Flow · Domains",
+    "title": "Turn what you know into a Domain.",
     "seed": "home",
-    "alt": "Orionfold: Make knowledge a living thing. Origami paper planes rise from an open book on yellow.",
+    "alt": "Orionfold Flow: Turn what you know into a Domain. Origami paper planes rise from an open book on yellow.",
     "living": true
 },
   '/advisor/': {
@@ -202,16 +202,21 @@ export const OG_PAGES: Record<string, OgPage> = {
   },
   '/flow/': {
     "slug": "flow",
-    "eyebrow": "Flow for Mac · Living Documents",
-    "title": "Give your documents work to do.",
+    "eyebrow": "Flow for Mac · Elements",
+    "title": "Pick a card. See it drawn.",
     "seed": "flow",
-    "alt": "Flow for Mac: Give your documents work to do. Origami paper planes carry documents forward.",
+    "alt": "Flow for Mac: Pick a card. See it drawn. Origami paper planes carry documents forward.",
     "living": true
 },
   '/flow/paths/': {
     slug: 'flow-paths', eyebrow: `Flow ${FLOW_VERSION} · Paths`,
     title: 'Real work. Walked end to end.', seed: 'flow-paths',
     alt: 'Flow Paths: real work walked end to end on a Mac, with the time, the cost and the evidence for every step.', living: true,
+  },
+  '/domains/': {
+    slug: 'flow-domains', eyebrow: 'Flow for Mac · Domains',
+    title: 'Co-author with any AI once. Publish everywhere.', seed: 'flow-domains',
+    alt: 'Flow Domains: an expert’s method as a folder of living documents, co-authored with AI, published to GitHub and kept current for every reader.', living: true,
   },
   '/flow/elements/': {
     slug: 'flow-elements', eyebrow: 'Flow for Mac · Elements',
@@ -373,6 +378,7 @@ export const receiptOgSlug = (id: string) => `receipt-${id}`;
 export const flowPathOgSlug = (id: string) => `flow-path-${id}`;
 export const compareOgSlug = (id: string) => `flow-compare-${id}`;
 export const flowElementsOgSlug = (id: string) => `flow-elements-${id}`;
+export const domainOgSlug = (id: string) => `flow-domain-${id}`;
 
 // OG card slug for a product detail page (P8). Namespaced by type so a model
 // slug (slugify(title)) can't collide with a software/book slug, and so none of

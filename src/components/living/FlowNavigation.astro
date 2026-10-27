@@ -5,22 +5,26 @@ import Play from '@lucide/astro/icons/play';
 import Route from '@lucide/astro/icons/route';
 import LibraryBig from '@lucide/astro/icons/library-big';
 import FileText from '@lucide/astro/icons/file-text';
-import Bot from '@lucide/astro/icons/bot';
-import ArrowLeftRight from '@lucide/astro/icons/arrow-left-right';
+import MessageSquareText from '@lucide/astro/icons/message-square-text';
+import Network from '@lucide/astro/icons/network';
 import Compass from '@lucide/astro/icons/compass';
 import Cpu from '@lucide/astro/icons/cpu';
 import Building from '@lucide/astro/icons/building';
+import Shapes from '@lucide/astro/icons/shapes';
+import FolderGit from '@lucide/astro/icons/folder-git-2';
 
 // In the order the sections appear as you scroll.
 const onPage = [
+  { href: '#flow-chat', label: 'Chat', Icon: MessageSquareText },
+  { href: '#flow-canvas', label: 'Canvas', Icon: Network },
   { href: '#paths-home', label: 'Paths', Icon: Route },
   { href: '#jobs-workbench', label: 'Try Jobs', Icon: Play },
   { href: '#how-it-works', label: 'Living Documents', Icon: FileText },
-  { href: '#agents-reviewed', label: 'Agents', Icon: Bot },
-  { href: '#import-publish', label: 'Import and Publish', Icon: ArrowLeftRight },
   { href: '#living-library', label: 'Library', Icon: LibraryBig },
 ];
 const pages = [
+  { href: '/flow/elements/', label: 'Elements', Icon: Shapes },
+  { href: '/domains/', label: 'Domains', Icon: FolderGit },
   { href: '/flow/tour/', label: 'Tour', Icon: Compass },
   { href: '/flow/specifications/', label: 'Tech specs', Icon: Cpu },
   { href: '/flow/enterprise/', label: 'Enterprise', Icon: Building },

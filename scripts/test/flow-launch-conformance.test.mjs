@@ -18,8 +18,8 @@ const meta = (html, key, value) => html.match(new RegExp(`<meta\\s+${key}="${esc
 const link = (html, rel) => html.match(new RegExp(`<link\\s+rel="${esc(rel)}"\\s+href="([^"]*)"`, 'i'))?.[1] ?? '';
 
 const routes = [
-  ['/', 'Orionfold · Make knowledge a living thing.', 'MAKE KNOWLEDGE A LIVING THING.'],
-  ['/flow/', 'Flow for Mac · Give your documents work to do.', 'GIVE YOUR DOCUMENTS WORK TO DO.'],
+  ['/', 'Orionfold Flow · Turn what you know into a Domain.', 'TURN WHAT YOU KNOW INTO A DOMAIN.'],
+  ['/flow/', 'Flow for Mac · Press ⌘5. See it drawn.', 'PRESS ⌘5. SEE IT DRAWN.'],
   ['/essay/', 'Room for a Renaissance · An essay by Manav Sehgal', 'Room for a Renaissance.'],
   ['/manifesto/', 'The Researcher, Writer and Builder in You · An essay by Manav Sehgal', 'THE RESEARCHER, WRITER AND BUILDER IN YOU.'],
   ['/flow/tour/', 'Orionfold Flow product tour · See Flow at work', 'See Flow at work.'],
@@ -74,7 +74,8 @@ for (const [route, expectedTitle, expectedH1] of routes) {
   }
 }
 
-assert.match(htmlFor('/'), /href="\/story\/the-pit-crew-that-never-touches-the-wheel\/"/, 'homepage retains the Ideas origin story link');
+// The homepage Ideas band left 2026-10-26 (operator); the origin story stays linked from /story/.
+assert.match(htmlFor('/story/'), /href="\/story\/the-pit-crew-that-never-touches-the-wheel\/"/, 'the Ideas origin story stays linked from the story index');
 
 // The four-item local product rail is identical everywhere it appears and the
 // global rail remains the short product family the operator selected.

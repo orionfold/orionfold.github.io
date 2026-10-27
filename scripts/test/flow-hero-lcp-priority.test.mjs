@@ -32,6 +32,7 @@ for(const [route,kind,priority] of [['index.html','home','low'],['flow/index.htm
   if (width < 1642) assert.ok(readFileSync(file).length < originalBytes, 'responsive artwork saves bytes');
  }
  assert.doesNotMatch(main,/first-launch-home-hero|first-launch-flow-hero|pit-stop-daylight|FlowShot/);
- assert.match(hero,kind === 'home' ? /data-demo=/ : /data-flow-mock/,'hero uses the native interactive model');
+ // Operator 2026-10-27: native mocks of Domains (home) and Elements (Flow).
+ assert.match(hero,kind === 'home' ? /class="dm dm--hero hd"/ : /class="dm dm--hero fe"/,'hero uses a native product mock');
 }
 console.log('# measured per-route origami priority, eager delivery and stable dimensions pass');

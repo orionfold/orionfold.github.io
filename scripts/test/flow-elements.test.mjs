@@ -104,3 +104,19 @@ test('component snippets are coloured as YAML, and prose inline-code styling sta
   assert.match(read('src/styles/essays.css'), /\.ed-prose :not\(pre\) > code \{/, 'the inline-code box only styles inline code');
   assert.doesNotMatch(read('src/styles/flow-elements.css'), /inset 3px 0 0/, 'no left-edge bar on the chosen element');
 });
+
+test('Elements is shown on the homepage right under the hero, with the walk’s own plan', { skip: !existsSync(new URL('dist/index.html', root)) }, () => {
+  // Operator 2026-10-27: "move flow elements section ... to home, below hero". No
+  // section is on both pages, so /flow/ keeps only its Elements hero and links out.
+  const page = read('src/pages/index.astro');
+  const order = ['<HomeHero', '<FlowElementsShowcase', '<FlowDomainsBand'].map((m) => page.indexOf(m));
+  assert.ok(order.every((i) => i > 0) && order[0] < order[1] && order[1] < order[2], 'Elements sits between the hero and Domains');
+  assert.doesNotMatch(read('src/pages/flow.astro'), /<FlowElementsShowcase/);
+  const src = read('src/components/flow/FlowElementsShowcase.astro');
+  // The Ideas suggestions, the figure's hours and the table are the walk's; the caption says what is drawn here.
+  for (const fact of ['about 18 s', '140 hours', '96 hours', '48 hours', '28 hours', 'Step</th><th>Who</th><th>Action</th><th>When', 'the chart is drawn here from the plan']) assert.ok(src.includes(fact), fact);
+  assert.doesNotMatch(src, /54 chart types|AI-generated/i);
+  const home = built('/');
+  assert.equal((home.match(/data-fx-go=/g) ?? []).length, 5, 'five steps');
+  for (const slug of ['components', 'agency', 'skills', 'chart-kinds', 'tour']) assert.ok(home.includes(`href="/flow/elements/${slug}/"`), `links ${slug}`);
+});

@@ -1,0 +1,182 @@
+---
+// A Domain from publisher to consumer (operator 2026-10-27): you and your AI
+// write the method, it travels as a few Markdown files, and on the other side
+// it wakes up in a client's Flow or reaches their agent through Flow. Every
+// number is from the AI Consulting Starter walk (src/content/domains/
+// ai-consulting-starter.md): 788 words and 2 claims to check from Chat, 6
+// files and 75 KB, CC BY 4.0, and a first-launch Flow where the README's
+// figure played all four steps with no model run. The agent's four actions are
+// the walk's "Your agents, on your Domains". It plays once in view; without JS
+// or with reduced motion it rests on the finished picture.
+import UserRound from '@lucide/astro/icons/user-round';
+import Bot from '@lucide/astro/icons/bot';
+import Terminal from '@lucide/astro/icons/terminal';
+import Folder from '@lucide/astro/icons/folder';
+import FileText from '@lucide/astro/icons/file-text';
+import Check from '@lucide/astro/icons/check';
+import Shapes from '@lucide/astro/icons/shapes';
+import Sparkles from '@lucide/astro/icons/sparkles';
+import RefreshCw from '@lucide/astro/icons/refresh-cw';
+import FileCheck from '@lucide/astro/icons/file-check';
+import Upload from '@lucide/astro/icons/upload';
+
+const FILES = ['README', 'Mechanisms Primer', 'Amazon Mechanisms and Practices', 'Press Release FAQ for AI project', 'Pilot to Scale', 'Flow PR-FAQ'];
+const WAKES = [
+  { Icon: Shapes, name: 'Elements', line: 'Figures, tables and checklists draw. The README’s figure plays all four steps, with no model run.' },
+  { Icon: Sparkles, name: 'Skills', line: 'The skills your method uses are ready to run on their own work.' },
+  { Icon: RefreshCw, name: 'Jobs', line: 'A Job refreshes a document from their own files when they ask.' },
+  { Icon: FileCheck, name: 'Updates', line: 'Your next publish arrives as a change they review, file by file.' },
+];
+const AGENT = ['Reads the summary and reading order', 'Searches the documents', 'Uses your method in its own work', 'Sends what it writes to Review Changes'];
+---
+<figure class="dp" data-dp aria-label="A Domain from publisher to consumer: you and your AI write the method, it travels as 6 Markdown files of 75 KB, and it wakes up in your client's Flow or reaches their agent through Flow">
+  <!-- Publisher -->
+  <div class="dp-card dp-pub" style="--d:0">
+    <p class="dp-tag">Publisher</p>
+    <p class="dp-who"><span class="dp-av dp-av--you"><UserRound size={14} /></span><span><b>You</b>The method is yours</span></p>
+    <p class="dp-who"><span class="dp-av dp-av--ai"><Bot size={14} /></span><span><b>Your AI</b>Co-writes in Chat</span></p>
+    <ul class="dp-log">
+      <li style="--i:0"><Check size={12} stroke-width={3} /><span>Chat wrote the README: 788 words, 2 claims marked to check</span></li>
+      <li style="--i:1"><Check size={12} stroke-width={3} /><span>A skill drew its figure. You kept it.</span></li>
+      <li style="--i:2"><Upload size={12} /><span>Publish ▸ GitHub Repository</span></li>
+    </ul>
+  </div>
+
+  <div class="dp-wire dp-wire--a" aria-hidden="true"><i></i><span>Publish</span></div>
+
+  <!-- The payload -->
+  <div class="dp-card dp-pay" style="--d:1">
+    <p class="dp-tag">The Domain</p>
+    <p class="dp-folder"><Folder size={14} /><b>ai-consulting-starter</b></p>
+    <ul class="dp-files">
+      {FILES.map((f, i) => <li style={`--i:${i}`}><FileText size={12} /><span>{f}.md</span></li>)}
+    </ul>
+    <p class="dp-size"><b>6 files · 75 KB</b><span>CC BY 4.0</span></p>
+    <p class="dp-small">Plain Markdown, lighter than one photo from your phone. It opens in any editor.</p>
+  </div>
+
+  <div class="dp-wire dp-wire--b" aria-hidden="true"><i></i><span>One address</span></div>
+
+  <!-- Consumers -->
+  <div class="dp-out">
+    <div class="dp-card dp-flow" style="--d:2">
+      <p class="dp-tag">Your client, in Flow</p>
+      <ul class="dp-wakes">
+        {WAKES.map(({ Icon, name, line }, i) => <li style={`--i:${i}`}><span class="dp-ic"><Icon size={14} /></span><span><b>{name}</b>{line}</span></li>)}
+      </ul>
+    </div>
+    <div class="dp-card dp-agent" style="--d:3">
+      <p class="dp-tag">Their agent, through Flow</p>
+      <p class="dp-term-h"><Terminal size={13} />Claude Code or Codex</p>
+      <ul class="dp-term">
+        {AGENT.map((a, i) => <li style={`--i:${i}`}>{a}</li>)}
+      </ul>
+    </div>
+  </div>
+</figure>
+
+<script>
+  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-dp]').forEach((el) => {
+    if (REDUCED || !('IntersectionObserver' in window)) return;
+    el.classList.add('is-armed');
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      el.classList.add('is-in');
+      io.disconnect();
+    }, { threshold: 0.3 });
+    io.observe(el);
+  });
+</script>
+
+<style>
+  .dp { --ink: #171c1a; --mut: #56635e; --line: #d7ddda; --teal: #0e9e98; --blue: #2f6fed; display: grid; grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr) 64px minmax(0, 1.15fr); align-items: center; margin: 0; }
+  :global(.ls) .dp p, :global(.ls) .dp ul { margin: 0; }
+  .dp ul { padding: 0; list-style: none; }
+  .dp-card { display: grid; gap: 10px; align-content: start; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: 0 18px 44px #152a2d14, 0 3px 10px #152a2d0d; font-size: .82rem; line-height: 1.45; color: var(--mut); }
+  .dp-tag { justify-self: start; padding: 2px 9px; border-radius: 99px; background: #eef1ef; font: 700 .64rem/1.5 var(--font-mono, ui-monospace, monospace); letter-spacing: .08em; text-transform: uppercase; color: #3b4541; }
+
+  /* Publisher */
+  .dp-who { display: flex; align-items: center; gap: 10px; }
+  .dp-who > span:last-child { display: grid; line-height: 1.3; }
+  .dp-who b { color: var(--ink); }
+  .dp-av { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; }
+  .dp-av--you { background: #171c1a; color: #fff; }
+  .dp-av--ai { background: #e3ecfd; color: #1f4fb8; }
+  .dp-log { display: grid; gap: 6px; padding-top: 10px !important; border-top: 1px solid #eceeed; }
+  .dp-log li { display: flex; gap: 7px; align-items: flex-start; color: #2b3431; }
+  .dp-log li :global(svg) { flex: none; margin-top: 3px; color: #15835c; }
+  .dp-log li:last-child { font-weight: 700; color: #1f4fb8; }
+  .dp-log li:last-child :global(svg) { color: #1f4fb8; }
+
+  /* The wires between the cards */
+  .dp-wire { position: relative; display: grid; place-items: center; height: 100%; min-height: 40px; }
+  .dp-wire i { position: absolute; left: 6px; right: 6px; top: 50%; height: 2px; background: repeating-linear-gradient(90deg, #b9c4c0 0 6px, #b9c4c000 6px 11px); }
+  .dp-wire i::after { content: ''; position: absolute; right: -2px; top: -4px; width: 8px; height: 10px; background: #b9c4c0; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+  .dp-wire span { position: relative; margin-top: -30px; font: 500 .62rem/1 var(--font-mono, ui-monospace, monospace); color: #6b7672; white-space: nowrap; }
+  .dp-wire::after { content: ''; position: absolute; left: 6px; top: calc(50% - 5px); width: 12px; height: 12px; border-radius: 4px; background: var(--teal); box-shadow: 0 0 0 4px #0e9e9826; opacity: 0; }
+
+  /* The payload */
+  .dp-pay { background: #fbfcfb; }
+  .dp-folder { display: flex; align-items: center; gap: 7px; color: var(--ink); }
+  .dp-folder :global(svg) { color: var(--teal); }
+  .dp-files { display: grid; gap: 2px; padding-left: 8px !important; font: .74rem/1.4 var(--font-mono, ui-monospace, monospace); color: #2b3431; }
+  .dp-files li { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .dp-files li span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dp-files li :global(svg) { flex: none; color: #8a948f; }
+  .dp-size { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding-top: 10px; border-top: 1px solid #eceeed; }
+  .dp-size b { font-size: 1.25rem; line-height: 1.1; color: var(--ink); }
+  .dp-size span { font: 500 .66rem/1 var(--font-mono, ui-monospace, monospace); color: #6b7672; }
+  .dp-small { font-size: .74rem; }
+
+  /* Consumers */
+  .dp-out { display: grid; gap: 14px; }
+  .dp-wakes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dp-wakes li { display: flex; gap: 8px; align-items: flex-start; padding: 8px; border: 1px solid #e3e7e4; border-radius: 10px; background: #fff; font-size: .74rem; line-height: 1.4; }
+  .dp-wakes li > span:last-child { display: grid; gap: 1px; }
+  .dp-wakes b { color: var(--ink); font-size: .8rem; }
+  .dp-ic { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: #e5f4f1; color: #0b7a74; }
+  .dp-term-h { display: flex; align-items: center; gap: 7px; font-weight: 700; color: var(--ink); }
+  .dp-term { display: grid; gap: 4px; padding: 10px 12px !important; border-radius: 10px; background: #171c1a; font: .72rem/1.45 var(--font-mono, ui-monospace, monospace); color: #d9e2de; }
+  .dp-term li::before { content: '› '; color: #5fd3c9; }
+  .dp-term li:last-child { color: #8fe0b5; }
+
+  /* It plays once in view: cards rise in order, the payload travels, Flow lights up. */
+  .dp.is-armed:not(.is-in) :is(.dp-card, .dp-wire) { opacity: 0; }
+  .dp.is-in .dp-card { animation: dp-rise .6s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--d) * .7s); }
+  .dp.is-in .dp-wire { animation: dp-fade .4s ease both; }
+  .dp.is-in .dp-wire--a { animation-delay: .5s; }
+  .dp.is-in .dp-wire--b { animation-delay: 1.2s; }
+  .dp.is-in .dp-wire i { animation: dp-draw .6s ease both; }
+  .dp.is-in .dp-wire--a i { animation-delay: .5s; }
+  .dp.is-in .dp-wire--b i { animation-delay: 1.2s; }
+  .dp.is-in .dp-wire::after { animation: dp-travel 2.4s cubic-bezier(.5,0,.3,1) infinite; }
+  .dp.is-in .dp-wire--a::after { animation-delay: 1s; }
+  .dp.is-in .dp-wire--b::after { animation-delay: 2.2s; }
+  .dp.is-in .dp-log li { animation: dp-fade .35s ease both; animation-delay: calc(.3s + var(--i) * .25s); }
+  .dp.is-in .dp-files li { animation: dp-fade .3s ease both; animation-delay: calc(.9s + var(--i) * .08s); }
+  .dp.is-in .dp-wakes li { animation: dp-light 1s ease both; animation-delay: calc(1.9s + var(--i) * .35s); }
+  .dp.is-in .dp-term li { animation: dp-fade .3s ease both; animation-delay: calc(2.8s + var(--i) * .3s); }
+  @keyframes dp-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes dp-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes dp-draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes dp-travel { 0% { opacity: 0; left: 6px; } 15% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; left: calc(100% - 18px); } }
+  @keyframes dp-light { 0% { opacity: 0; transform: scale(.96); } 40% { opacity: 1; transform: none; border-color: var(--teal); box-shadow: 0 0 0 4px #0e9e981f; } 100% { opacity: 1; border-color: #e3e7e4; box-shadow: none; } }
+
+  @media (max-width: 1100px) {
+    .dp { grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr); }
+    .dp-out { grid-column: 1 / -1; grid-template-columns: 1.3fr 1fr; margin-top: 14px; }
+    .dp-wire--b { display: none; }
+  }
+  @media (max-width: 760px) {
+    .dp { grid-template-columns: minmax(0, 1fr); }
+    .dp-wire { height: 44px; }
+    .dp-wire i { left: 50%; right: auto; top: 4px; bottom: 4px; width: 2px; height: auto; background: repeating-linear-gradient(180deg, #b9c4c0 0 6px, #b9c4c000 6px 11px); }
+    .dp-wire i::after { right: auto; left: -4px; top: auto; bottom: -2px; width: 10px; height: 8px; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+    .dp-wire span { margin: 0 0 0 96px; }
+    .dp-wire::after { display: none; }
+    .dp-wire--b { display: grid; }
+    .dp-out { grid-template-columns: minmax(0, 1fr); margin-top: 0; }
+    .dp-wakes { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

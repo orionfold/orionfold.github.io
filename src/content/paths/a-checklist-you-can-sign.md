@@ -36,7 +36,7 @@ bodyLocked: true
 titleLocked: true
 release: '3.0'
 onHome: false
-startInstructions: In Flow 3.0, open a copy of the Flow Guide’s Client Brief workspace and read its Acceptance section. To draft your own card, select deliverables in the Editor and choose Agency ▸ Sign-off.
+startInstructions: In Flow, open a copy of the Flow Guide’s Client Brief workspace and read its Acceptance section. To draft your own card, select deliverables in the Editor and choose Agency ▸ Sign-off.
 ---
 
 ## What Flow does
@@ -110,7 +110,7 @@ The Workbench's **History** tab lists the signature as its own event, with the a
 | Items drafted; items drawn | 4; 3, one named as unreadable | verified · the card in Review Changes and the exact change |
 | Pages in the published brief | 6 | verified · the PDF preview's page numbers |
 
-## More Flow 3.0 walks
+## More Flow walks
 
 - [One brief, three ways](/flow/paths/the-canvas/)
 - [Diagrams that draw anywhere](/flow/paths/diagrams-draw-anywhere/)

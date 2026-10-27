@@ -1,33 +1,33 @@
 ---
 tool: Canva
 kind: pair
-order: 5
+order: 8
 title: "Flow with Canva: the words and numbers in Flow, the design in Canva"
-dek: "Canva makes things look good. Flow makes sure the words and numbers are right, with a source on every figure and your yes before anything changes. Use both."
+dek: "A launch post full of numbers, due on a set date? Check the words and numbers in Flow, with a source on every figure and your yes before anything changes. Then design it in Canva."
 line: "Use Canva for the design. Use Flow for the words and numbers behind it."
-updated: 2026-09-30
+updated: 2026-10-27
 startWith: campaign-with-proof
 rows:
   - topic: "What it is for"
     them: "Canva is a design tool with more than 1,000 design types and 1.6 million templates on the free plan. Canva Docs is its visual document editor."
     flow: "Flow is a Mac app for the words and numbers: briefs, launch posts, updates. Each one is a Markdown file in a folder you choose, with a review step and a History."
     path: campaign-with-proof
-    source: { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-09-30" }
+    source: { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-10-27" }
   - topic: "Writing with AI"
-    them: "Magic Write writes copy from a prompt. It can also rewrite, shorten, fix spelling or change the voice of text you already have."
+    them: "Canva AI can write, refine and summarize text in Canva Docs. In Suggesting mode, a teammate's edits show up for you to accept or reject."
     flow: "Expand with Sources drafts from your own files and puts a footnote on every figure. In our campaign walk, 25 of 25 figures matched their sources, and the draft waited for our approval."
     path: campaign-with-proof
-    source: { label: "Canva Help: Use Magic Write to generate text", href: "https://www.canva.com/help/use-magic-write/", checked: "2026-09-30" }
+    source: { label: "Canva Help: Use Canva AI to generate, refine, and summarize docs", href: "https://www.canva.com/help/canva-writing-assistant/", checked: "2026-10-27" }
   - topic: "Where your work lives"
     them: "Canva keeps your designs in its cloud: 5 GB of storage on the free plan and 100 GB on Pro. Canva Offline makes designs available without a connection."
     flow: "Each document is a plain Markdown file in a folder on your Mac. Other apps can open the same files."
     path: recurring-client-brief
-    source: { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-09-30" }
+    source: { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-10-27" }
   - topic: "What it costs"
     them: "Canva Free is $0 with up to 20 AI uses. Canva Pro is US$144 a year for one person, with 10 times the AI of Free. Canva Business is US$250 a year per person."
     flow: "Flow Pro adds the AI for $10 a month or $96 a year. A run on your Mac adds no model cost: our campaign walk cost $0.00. Import and Publish are add-ons to Pro, at $10 a month or $96 a year each."
     path: campaign-with-proof
-    source: { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-09-30" }
+    source: { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-10-27" }
   - topic: "Moving work between them"
     them: "Canva imports PowerPoint files in the desktop browser, as a beta. Its help page says charts, SmartArt, 3D objects and WordArt are ignored on import."
     flow: "Flow Publish writes PowerPoint, Word, PDF and web pages. In our investor update walk, Flow published a PowerPoint deck. We have not yet opened a Flow file in Canva."
@@ -43,9 +43,11 @@ notFlow:
   - "Flow is built for one person reviewing AI work. Canva Docs lets many people edit together at once."
   - "Flow is a Mac app only, and its AI features need Flow Pro once your 10 Pro Days are used."
 sources:
-  - { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-09-30" }
+  - { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-10-27" }
   - { label: "Canva Docs", href: "https://www.canva.com/docs/", checked: "2026-09-30" }
   - { label: "Canva Help: Use Magic Write to generate text", href: "https://www.canva.com/help/use-magic-write/", checked: "2026-09-30" }
+  - { label: "Canva Help: Use Canva AI to generate, refine, and summarize docs", href: "https://www.canva.com/help/canva-writing-assistant/", checked: "2026-10-27" }
+  - { label: "Canva Help: Collaborate, share, and publish your Canva Docs", href: "https://www.canva.com/help/share-publish-docs/", checked: "2026-10-27" }
   - { label: "Canva Help: Choose the right download file type", href: "https://www.canva.com/help/download-file-types/", checked: "2026-09-30" }
   - { label: "Canva Help: Import PowerPoint presentations", href: "https://www.canva.com/help/powerpoint-import/", checked: "2026-09-30" }
   - { label: "Canva for Mac", href: "https://www.canva.com/download/mac/", checked: "2026-09-30" }
@@ -53,11 +55,15 @@ sources:
 
 ## Why pair them
 
-Canva is where a launch post, a one-pager or a deck gets its look. It has [templates for more than 1,000 kinds of design](https://www.canva.com/pricing/), and [Magic Write](https://www.canva.com/help/use-magic-write/) can write or rewrite the text inside them.
+**The job.** Say you are launching a campaign. You have a one-page brief, last quarter's results in a spreadsheet, and a post that has to go out in English and Spanish. Canva is where that post gets its look, with [templates for more than 1,000 kinds of design](https://www.canva.com/pricing/).
 
-What Canva does not do is check the words against your own files. When a post gives a number, nothing in the design shows where that number came from.
+**The moment.** The post has numbers in it, and it goes out on a set date. Before it ships, each figure has to match the spreadsheet, in both languages.
 
-Flow is for that part. It drafts from your own files, puts a footnote on every figure, and waits for your yes before anything changes. Canva still does the design. Flow is where the words and numbers get checked first.
+**Your choices.** You can write it right in Canva. [Canva AI](https://www.canva.com/help/canva-writing-assistant/) can draft and refine text in Canva Docs, and [Suggesting mode](https://www.canva.com/help/share-publish-docs/) lets a teammate propose edits you accept or reject. You can write in a doc or a spreadsheet and paste the text in. Or you can check the words and numbers in Flow first, then design in Canva. If the way you do it now works well enough, keep it.
+
+**What breaks.** The risk is copying figures from the spreadsheet by hand. One swapped digit and the post is wrong, in two languages. Checking every number against its file is a chore done at the end, if at all.
+
+Flow is for that part. It drafts from your own files, puts a footnote on every figure that points to the file it came from, and waits for your yes before anything changes. Canva still does the design.
 
 ## How they could work together
 

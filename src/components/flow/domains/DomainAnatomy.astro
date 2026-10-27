@@ -1,0 +1,59 @@
+---
+// What a Flow Domain is, drawn from the first one: AI Consulting Starter's
+// published folder (orionfold/flow, flow-domains/ai-consulting-starter, six
+// Markdown files, CC BY 4.0). Each file lists what it carries, with Flow's
+// own Elements drawings; the four traits on the right are what make a folder
+// a Domain. Native HTML, no screenshot.
+import { elementDrawing } from '../../../lib/flow/elements';
+import Folder from '@lucide/astro/icons/folder-open';
+import FileText from '@lucide/astro/icons/file-text';
+import Github from '@lucide/astro/icons/git-branch';
+
+interface Props { repo: string }
+const { repo } = Astro.props;
+const tint: Record<string, string> = {
+  'skill-visual-explainer': '#8f3b8f', 'skill-isometric-figure': '#0086f9', 'component-approval-card': '#0170f5',
+  'component-table': '#0070f5', 'component-sources': '#0070f5', 'component-callout': '#0070f5', 'skill-guided-exercise': '#ffa23e',
+};
+const chip = (card: string, label: string) => ({ svg: elementDrawing(card), tint: tint[card], label });
+const FILES = [
+  { n: '', name: 'README', role: 'The front page: who it is for, what you will have at the end, the path.', chips: [chip('skill-visual-explainer', 'Stepped figure'), chip('skill-isometric-figure', 'Map of the path')] },
+  { n: '1', name: 'Mechanisms Primer', role: 'What a mechanism is, how to spot a missing one, how to build one.', chips: [chip('component-approval-card', 'Checklist'), chip('component-table', 'Tables'), chip('skill-visual-explainer', 'Stepped figure')] },
+  { n: '2', name: 'Amazon Mechanisms and Practices', role: '24 mechanisms described in public, each with a source.', chips: [chip('component-table', 'Reference table'), chip('component-sources', 'Sources'), chip('component-callout', 'Marked to check')] },
+  { n: '3', name: 'Press Release FAQ for AI project', role: 'Work backwards from the customer before you build.', chips: [chip('component-table', 'Template'), chip('skill-visual-explainer', 'Review figure')] },
+  { n: '4', name: 'Pilot to Scale', role: 'Run a pilot that answers a real question, then take it to production.', chips: [chip('component-table', 'Pilot card'), chip('component-approval-card', 'Readiness check')] },
+  { n: '', name: 'Flow PR-FAQ', role: 'A worked example: the PR/FAQ for Flow’s own launch.', chips: [chip('component-callout', 'Worked example')] },
+];
+const TRAITS = [
+  { k: 'Plain files you own', v: 'Every document is Markdown in a folder. It opens in any editor and lives in your GitHub, not ours.' },
+  { k: 'Tools, not only text', v: 'Figures a reader steps through, checklists they tick, tables they fill in for their own work.' },
+  { k: 'Sources and open questions', v: 'Claims link to where they came from. What is not checked yet is marked, and counted, until you answer it.' },
+  { k: 'An author, a version, a licence', v: 'Readers see who wrote it and which version they hold. Updates arrive as changes they review.' },
+];
+---
+<figure class="da" aria-label="Anatomy of a Flow Domain: the AI Consulting Starter folder and its six documents">
+  <div class="da-folder">
+    <div class="da-folder-head">
+      <span class="da-folder-ic"><Folder size={18} /></span>
+      <span class="da-folder-t"><b>AI Consulting Starter</b><small>by Manav Sehgal · CC BY 4.0 · 6 files, 75 KB</small></span>
+      <a class="da-repo" href={repo}><Github size={14} />orionfold/flow</a>
+    </div>
+    <ol class="da-files">
+      {FILES.map((f) => (
+        <li class:list={['da-file', f.n === '' && 'da-file--aside']}>
+          <span class="da-n" aria-hidden="true">{f.n || <FileText size={14} />}</span>
+          <span class="da-body">
+            <b>{f.name}<i>.md</i></b>
+            <small>{f.role}</small>
+            <span class="da-chips">
+              {f.chips.map((c) => <span class="da-chip"><span class="da-ic" style={`--da-t:${c.tint}`} set:html={c.svg} />{c.label}</span>)}
+            </span>
+          </span>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <ul class="da-traits">
+    {TRAITS.map((t, i) => <li><span class="da-tn">{String(i + 1).padStart(2, '0')}</span><b>{t.k}</b><span>{t.v}</span></li>)}
+  </ul>
+</figure>

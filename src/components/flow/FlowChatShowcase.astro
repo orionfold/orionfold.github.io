@@ -50,7 +50,7 @@ const ENGINES = [
 <section id={id} class={`fc ls-container fc--${tone}`} aria-labelledby={`${id}-title`}>
   <div class="fc-head">
     <div>
-      <p class="ls-eyebrow fc-eyebrow"><span class="fc-new">New in Flow {CHAT_SINCE}</span> Flow Chat</p>
+      <p class="ls-eyebrow fc-eyebrow">Flow Chat</p>
       <h2 id={`${id}-title`}>TALK TO YOUR FOLDER.<br /><span class="ls-stroke">GET A FINISHED BOOK.</span></h2>
     </div>
     <div class="fc-dek">
@@ -63,9 +63,8 @@ const ENGINES = [
     <div class="fc-tabs" role="tablist" aria-label="Steps of the book walk">
       {STEPS.map((s, i) => (
         <button type="button" role="tab" class="fc-tab" data-fc-go={i} aria-selected={i === 0 ? 'true' : 'false'}>
-          <span class="fc-tab-n">{i + 1}</span>
+          <span class="fc-tab-n"><i class="fc-tab-ring" aria-hidden="true"></i>{i + 1}</span>
           <span class="fc-tab-t">{s.tab}</span>
-          <i class="fc-tab-bar" aria-hidden="true"></i>
         </button>
       ))}
     </div>
@@ -319,7 +318,6 @@ const ENGINES = [
   .fc { padding-block: 92px 84px; border-bottom: 1px solid var(--line); }
   .fc-head { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: end; margin-bottom: 40px; }
   .fc-eyebrow { display: flex; align-items: center; gap: 12px; }
-  .fc-new { padding: 3px 9px; border-radius: 99px; background: var(--yellow); color: var(--ink); letter-spacing: .08em; }
   .fc h2 { font: 700 clamp(42px, 5vw, 76px)/.95 'Barlow Condensed', Arial, sans-serif; letter-spacing: -.018em; margin: 18px 0 0; }
   .fc-dek { font-size: 16px; color: var(--muted); max-width: 560px; }
   .fc-dek p + p { margin-top: .8rem; }
@@ -330,18 +328,19 @@ const ENGINES = [
   .fc-tab { position: relative; display: flex; align-items: center; gap: 9px; padding: 11px 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--muted); font-size: 14px; font-weight: 700; text-align: left; cursor: pointer; overflow: hidden; transition: border-color .2s, color .2s, background .2s; }
   .fc-tab:hover { border-color: var(--ink); color: var(--ink); }
   .fc-tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
-  .fc-tab-n { display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; font-size: 12px; }
+  .fc-tab-n { position: relative; display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; font-size: 12px; }
+  /* The step's time runs as a ring round its number, never as a bar on one
+     edge of the tab (no one-edge accents: operator 2026-10-27). */
+  @property --fc-p { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+  .fc-tab-ring { position: absolute; inset: -5px; border-radius: 50%; background: conic-gradient(var(--red) var(--fc-p), transparent 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); }
   .fc-tab-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .fc-tab-bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--red); }
   .fc-tab[aria-selected='true'] { border-color: var(--ink); color: var(--ink); background: var(--paper); }
   .fc-tab[aria-selected='true'] .fc-tab-n { background: var(--ink); border-color: var(--ink); color: #fff; }
   .fc-tab.is-past { color: var(--ink); }
   .fc-tab.is-past .fc-tab-n { background: var(--teal-pale); border-color: var(--teal); color: var(--teal); }
-  .fc-tab.is-past .fc-tab-bar { width: 100%; background: var(--teal); }
-  .fc.is-tick .fc-tab[aria-selected='true'] .fc-tab-bar,
-  [data-fc].is-tick .fc-tab[aria-selected='true'] .fc-tab-bar { animation: fc-bar var(--fc-ms, 4s) linear forwards; }
-  [data-fc].is-manual .fc-tab[aria-selected='true'] .fc-tab-bar { animation: none; width: 100%; }
-  @keyframes fc-bar { from { width: 0; } to { width: 100%; } }
+  [data-fc].is-tick .fc-tab[aria-selected='true'] .fc-tab-ring { animation: fc-ring var(--fc-ms, 4s) linear forwards; }
+  [data-fc].is-manual .fc-tab-ring { display: none; }
+  @keyframes fc-ring { to { --fc-p: 100%; } }
 
   /* Window */
   .fc-window { border: 1px solid #cfd6d1; border-radius: 14px; background: #fff; box-shadow: 0 30px 60px -28px #17201c40, 0 2px 6px #17201c10; overflow: hidden; }
@@ -472,7 +471,7 @@ const ENGINES = [
   @keyframes fc-pulse { 50% { opacity: .35; } }
   [hidden] { display: none !important; }
   @media (prefers-reduced-motion: reduce) {
-    .is-now, .fc-grow, .fc-file, .fc-route-i, .fc-run span, .fc-review-pill i { animation: none !important; }
+    .is-now, .fc-grow, .fc-file, .fc-tab-ring, .fc-route-i, .fc-run span, .fc-review-pill i { animation: none !important; }
   }
 
   @media (max-width: 1100px) {
