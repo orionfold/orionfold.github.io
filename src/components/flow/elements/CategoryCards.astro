@@ -1,18 +1,30 @@
 ---
 // The Elements articles as cards, each shown by a strip of its own drawings
-// rather than a scaled-down screenshot.
+// rather than a scaled-down screenshot. With `leadTour` the tour spans the
+// row on its own and the four category articles sit in one even row below.
 import ElementIcon from './ElementIcon.astro';
 import { ELEMENT_CATEGORIES, elementArticleHref, type ElementArticle } from '../../../lib/flow/elements';
-interface Props { articles: ElementArticle[]; headingLevel?: 'h2' | 'h3' }
-const { articles, headingLevel: H = 'h3' } = Astro.props;
+interface Props { articles: ElementArticle[]; headingLevel?: 'h2' | 'h3'; leadTour?: boolean }
+const { articles, headingLevel: H = 'h3', leadTour = false } = Astro.props;
 const drawn = (slug: string) => ELEMENT_CATEGORIES.find((c) => c.slug === slug)?.items ?? [];
 // The tour's strip samples every category.
 const tourStrip = ELEMENT_CATEGORIES.flatMap((c) => c.items.slice(0, 2));
+const leadStrip = ELEMENT_CATEGORIES.flatMap((c) => c.items.slice(0, 4));
 ---
 <div class="fe-cats">
   {articles.map((a) => {
-    const items = a.id === 'tour' ? tourStrip : drawn(a.id);
-    return (
+    const lead = leadTour && a.id === 'tour';
+    const items = a.id === 'tour' ? (lead ? leadStrip : tourStrip) : drawn(a.id);
+    return lead ? (
+      <a class="fe-cat fe-cat--lead" href={elementArticleHref(a.id)}>
+        <div class="fe-cat-copy">
+          <p class="fp-meta">Start here · The tour</p>
+          <H class="fe-cat-title">{a.data.title}</H>
+          <p>{a.data.summary}</p>
+        </div>
+        <div class="fe-cat-strip" aria-hidden="true">{items.map((i) => <ElementIcon card={i.card} tint={i.tint} size={46} />)}</div>
+      </a>
+    ) : (
       <a class="fe-cat" href={elementArticleHref(a.id)}>
         <div class="fe-cat-strip" aria-hidden="true">{items.slice(0, 8).map((i) => <ElementIcon card={i.card} tint={i.tint} size={34} />)}</div>
         <p class="fp-meta">{a.id === 'tour' ? 'Start here · The tour' : `${items.length} ${a.data.category.toLowerCase()}`}</p>

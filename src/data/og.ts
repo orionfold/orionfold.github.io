@@ -215,7 +215,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   },
   '/flow/elements/': {
     slug: 'flow-elements', eyebrow: 'Flow for Mac · Elements',
-    title: 'Everything a document can take.', seed: 'flow-elements',
+    title: 'Every element. One card at a time.', seed: 'flow-elements',
     alt: 'Flow Elements: every block, action, skill and chart kind in Flow, each as a card with a small drawing.', living: true,
   },
   '/flow/compare/': {

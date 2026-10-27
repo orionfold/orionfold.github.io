@@ -8,7 +8,10 @@
 
 /* ── Landing: the group browser ────────────────────────── */
 .ls .fe-hub-intro { padding-bottom: 36px; }
-.fe-browser { padding-bottom: 24px; }
+.fe-browser { padding-bottom: 72px; }
+/* The articles lead straight from the intro; the gallery follows them. */
+.ls .fe-hub-intro + .fp-section { padding-top: 24px; }
+.ls .fe-browser .fp-head { margin-bottom: 8px; }
 .fe-b-bar { position: sticky; top: var(--of-nav-height, 82px); z-index: 5; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; padding: 14px 0; background: var(--paper, #fff); border-bottom: 1px solid var(--line); }
 .fe-b-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
 .fe-b-tabs button { display: inline-flex; gap: 8px; align-items: center; padding: 9px 16px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font: 500 .9rem/1 'Geist Sans', Arial, sans-serif; color: var(--ink); cursor: pointer; }
@@ -43,12 +46,20 @@
 .fe-browser.is-searching .fe-b-group:not([hidden]), .ls .fe-browser.is-searching .fe-grid { display: contents; }
 
 /* ── The articles, as strips of their own drawings ─────── */
-.ls .fe-cats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 18px; }
+/* Four to a row (the set is a tour and four groups), two by two on a tablet,
+   one on a phone; a lead tour spans the row above. */
+.ls .fe-cats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
 .fe-cat { display: grid; gap: 10px; align-content: start; padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink); transition: box-shadow .2s, transform .2s; }
 .fe-cat:hover { transform: translateY(-3px); box-shadow: 0 14px 34px #152a2d18; }
-.fe-cat-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+/* One row of whole drawings: the ones that do not fit drop out, never wrap. */
+.fe-cat-strip { display: grid; grid-template-columns: repeat(auto-fill, 34px); grid-auto-rows: 34px; gap: 6px; height: 34px; overflow: hidden; margin-bottom: 6px; }
 .ls .fe-cat .fe-cat-title { font: 700 1.3rem/1.08 var(--font-display); text-transform: uppercase; }
 .ls .fe-cat p:last-child { font-size: .9rem; line-height: 1.5; color: var(--muted); }
+.fe-cat--lead { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 40px; align-items: center; padding: 32px 36px; }
+.fe-cat-copy { display: grid; gap: 10px; }
+.ls .fe-cat--lead .fe-cat-title { font-size: clamp(1.6rem, 2.6vw, 2.2rem); }
+.ls .fe-cat--lead .fe-cat-copy p:last-child { max-width: 52ch; font-size: 1rem; }
+.fe-cat--lead .fe-cat-strip { display: grid; grid-template-columns: repeat(8, 46px); grid-auto-rows: 46px; height: auto; gap: 10px; justify-content: end; margin: 0; }
 
 /* ── Article: the element viewer ───────────────────────── */
 .ls .fe-hero { padding-bottom: 8px; }
@@ -86,6 +97,17 @@
 .fe-how { border-top: 1px solid var(--line); padding-top: 56px; }
 .ls .fe-how-dek { font: 400 1.2rem/1.6 var(--ed-serif, Georgia, serif); color: var(--ink); }
 .fe-prose h2, .fe-prose h3 { scroll-margin-top: calc(var(--of-nav-height, 82px) + 16px); }
+
+@media (max-width: 1100px) {
+  .ls .fe-cats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fe-cat--lead { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .fe-cat--lead .fe-cat-strip { justify-content: start; }
+}
+@media (max-width: 600px) {
+  .ls .fe-cats { grid-template-columns: minmax(0, 1fr); }
+  .fe-cat--lead { padding: 22px; }
+  .fe-cat--lead .fe-cat-strip { grid-template-columns: repeat(auto-fill, 46px); grid-auto-rows: 46px; height: 102px; overflow: hidden; }
+}
 
 @media (max-width: 900px) {
   .fe-viewer { grid-template-columns: minmax(0, 1fr); gap: 20px; }

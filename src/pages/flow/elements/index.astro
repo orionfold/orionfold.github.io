@@ -1,7 +1,8 @@
 ---
 // /flow/elements/ — every element in Flow's Elements sidebar, the twin of
-// /flow/paths/. One group shows at a time, or every match for a search; each
-// element opens in its category page's viewer (/flow/elements/<cat>/#<el>).
+// /flow/paths/. The articles lead; below them one group shows at a time, or
+// every match for a search; each element opens in its category page's viewer
+// (/flow/elements/<cat>/#<el>).
 // Without the script every group shows, in order.
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
@@ -47,12 +48,18 @@ const schema = [
     <header class="ed-hub-intro fe-hub-intro ls-container">
       <p class="ls-eyebrow">FLOW / ELEMENTS</p>
       <div class="ed-hub-heading">
-        <h1>Everything a document can take.<br /><em>One card at a time.</em></h1>
+        <h1>Every element.<br /><em>One card at a time.</em></h1>
         <p>Press ⌘5 in Flow and the Elements panel opens. Here are all {total} of its cards. Pick one to see what it takes and what it draws.</p>
       </div>
     </header>
 
-    <section class="fe-browser ls-container" data-fe-browser aria-label="All elements">
+    <section class="fp-section ls-container" aria-labelledby="fe-read-heading">
+      <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">THE ARTICLES</p><h2 id="fe-read-heading">Walked on a real plan,<br /><span class="ls-stroke">one group at a time.</span></h2></div></div>
+      <CategoryCards articles={articles} leadTour />
+    </section>
+
+    <section class="fe-browser ls-container" data-fe-browser aria-labelledby="fe-all-heading">
+      <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">THE ELEMENTS</p><h2 id="fe-all-heading">All {total} cards,<br /><span class="ls-stroke">one search away.</span></h2></div></div>
       <div class="fe-b-bar">
         <div class="fe-b-tabs" role="tablist" aria-label="Element groups">
           {ELEMENT_CATEGORIES.map((c, i) => (
@@ -91,11 +98,6 @@ const schema = [
         );
       })}
       </div>
-    </section>
-
-    <section class="fp-section ls-container" aria-labelledby="fe-read-heading">
-      <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">THE ARTICLES</p><h2 id="fe-read-heading">Walked on a real plan,<br /><span class="ls-stroke">one group at a time.</span></h2></div></div>
-      <CategoryCards articles={articles} />
     </section>
 
     <div class="ls-container" style="padding-bottom:88px">
