@@ -1,0 +1,8 @@
+---
+// One element's drawing, as the app draws it on its sidebar card: the app's
+// SVG template in the card's tint, on a tinted tile.
+import { elementDrawing } from '../../../lib/flow/elements';
+interface Props { card: string; tint: string; size?: number; class?: string }
+const { card, tint, size = 40, class: cls } = Astro.props;
+---
+<span class:list={['fe-icon', cls]} style={`--fe-tint:${tint};--fe-size:${size}px`} set:html={elementDrawing(card)} />

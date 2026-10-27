@@ -30,7 +30,7 @@ const livingFaq = read('src/data/living-faq.json');
 const nav = read('src/components/Nav.astro');
 const navArray = nav.match(/const links[^=]*= \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/label: '([^']+)'/g)].map((match) => match[1]);
-assert.deepEqual(navLabels, ['Flow', 'Paths', 'Compare', 'Essays'], 'the global nav carries Flow, its Paths and Compare pages, and the essays');
+assert.deepEqual(navLabels, ['Flow', 'Paths', 'Elements', 'Compare', 'Essays'], 'the global nav carries Flow, its Paths, Elements and Compare pages, and the essays');
 // Operator 2026-10-26: the manifesto is essay 03, reached from /essays/, not the nav or footer.
 assert.doesNotMatch(nav + read('src/components/Footer.astro'), /href: '\/manifesto\/'/, 'the manifesto lives with the essays, not in the nav or footer');
 assert.match(read('src/data/essays.ts'), /number: '03',[\s\S]*?href: '\/manifesto\/',[\s\S]*?date: '2026-09-06'/, 'the manifesto is essay 03 at its original URL and date');
@@ -62,7 +62,7 @@ assert.match(nav, /of-flow-bar-dismissed/, 'the Flow bar uses its own dismissal 
 const footer = read('src/components/Footer.astro');
 const columns = name => [...(footer.match(new RegExp('const ' + name + ' = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
 assert.deepEqual(columns('FLOW_COLUMNS'), [
-  ['/flow/', 'Overview'], ['/essays/', 'Essays'],
+  ['/flow/', 'Overview'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
   ['/flow/tour/', 'Tour'], ['/flow/night-shift/', 'Night Shift'], ['/flow/living-documents/', 'Living Documents'], ['/flow/settings/', 'Settings'], ['/flow/specifications/', 'Tech Specs'], ['/flow/enterprise/', 'Enterprise'],
 ]);
 assert.deepEqual(columns('ORIONFOLD_COLUMNS'), [

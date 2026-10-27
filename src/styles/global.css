@@ -1625,6 +1625,10 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
 .of-code__copy-icon {
   flex: none;
 }
+/* Living Systems pages reset every button to `font: inherit` (serif in prose). */
+.ls .of-code__copy {
+  font: 700 0.68rem/1 var(--font-mono);
+}
 
 /* Caption bar: renders only when the author set caption="..." (no empty bars). */
 .of-code__caption {
@@ -1650,6 +1654,9 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   word-break: break-word;
   overflow-x: auto; /* fallback: unbreakable tokens still scroll, never overflow */
   tab-size: 2;
+  /* The <pre>'s own line box sets the spacing; match the code, not the prose. */
+  font-size: 0.85rem;
+  line-height: 1.6;
 }
 .of-code > pre.astro-code code {
   /* shiki lines are spans; keep them flowing so pre-wrap can break them. */

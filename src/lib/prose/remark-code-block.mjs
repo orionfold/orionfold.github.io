@@ -28,6 +28,7 @@
 // markdown, so it is unaffected.
 
 import { visit } from 'unist-util-visit';
+import { FLOWUI_BLOCK_LANG, isFlowuiBlock } from './flowui-grammar.mjs';
 
 const LANG_LABELS = {
   bash: 'Terminal', sh: 'Terminal', shell: 'Terminal', zsh: 'Terminal', console: 'Terminal',
@@ -87,6 +88,8 @@ export default function remarkCodeBlock() {
       const lang = node.lang || '';
       const title = meta.title || labelForLang(lang);
       const caption = meta.caption;
+      // Still titled Markdown; coloured as the YAML it holds.
+      if (isFlowuiBlock(lang, node.value)) node.lang = FLOWUI_BLOCK_LANG;
 
       const bar =
         '<div class="of-code__bar">' +

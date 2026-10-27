@@ -64,7 +64,7 @@
 .ed-prose > h2:first-of-type { margin-top: 40px; }
 .ed-prose p a, .ed-prose li a { color: var(--teal); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
 .ed-prose a:hover { color: var(--red-deep); }
-.ed-prose code { font: .86em/1.6 'Geist Mono Variable', monospace; background: #f1f3ed; border-radius: 3px; padding: .08em .22em; }
+.ed-prose :not(pre) > code { font: .86em/1.6 'Geist Mono Variable', monospace; background: #f1f3ed; border-radius: 3px; padding: .08em .22em; }
 .ed-prose strong { font-weight: 700; }
 .ls .ed-native-figure { margin: 42px -50px 44px; font-family: 'Geist Sans', Arial, sans-serif; }
 .ed-native-figure > a { display: block; border-radius: 14px; box-shadow: 0 7px 36px #1a30221a; background: #edf1ec; overflow: hidden; border: 1px solid #d6ddd5; }

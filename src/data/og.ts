@@ -213,6 +213,11 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Real work. Walked end to end.', seed: 'flow-paths',
     alt: 'Flow Paths: real work walked end to end on a Mac, with the time, the cost and the evidence for every step.', living: true,
   },
+  '/flow/elements/': {
+    slug: 'flow-elements', eyebrow: 'Flow for Mac · Elements',
+    title: 'Everything a document can take.', seed: 'flow-elements',
+    alt: 'Flow Elements: every block, action, skill and chart kind in Flow, each as a card with a small drawing.', living: true,
+  },
   '/flow/compare/': {
     slug: 'compare', eyebrow: `Flow ${FLOW_VERSION} · Compare`,
     title: 'Coming from another tool?', seed: 'compare',
@@ -367,6 +372,7 @@ export const receiptOgSlug = (id: string) => `receipt-${id}`;
 // receipt cards. The endpoint emits /og/flow-path-<id>.jpg and /og/flow-compare-<id>.jpg.
 export const flowPathOgSlug = (id: string) => `flow-path-${id}`;
 export const compareOgSlug = (id: string) => `flow-compare-${id}`;
+export const flowElementsOgSlug = (id: string) => `flow-elements-${id}`;
 
 // OG card slug for a product detail page (P8). Namespaced by type so a model
 // slug (slugify(title)) can't collide with a software/book slug, and so none of

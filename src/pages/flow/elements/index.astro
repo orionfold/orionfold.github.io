@@ -1,0 +1,156 @@
+---
+// /flow/elements/ — every element in Flow's Elements sidebar, the twin of
+// /flow/paths/. One group shows at a time, or every match for a search; each
+// element opens in its category page's viewer (/flow/elements/<cat>/#<el>).
+// Without the script every group shows, in order.
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import PaperCta from '../../../components/ui/PaperCta.astro';
+import ElementIcon from '../../../components/flow/elements/ElementIcon.astro';
+import CategoryCards from '../../../components/flow/elements/CategoryCards.astro';
+import { publishedElementArticles, elementArticleHref, elementHref, ELEMENT_CATEGORIES } from '../../../lib/flow/elements';
+import { ogMeta } from '../../../data/og';
+import { SITE, PERSON } from '../../../data/seo';
+import '../../../styles/living-base.css';
+import '../../../styles/essays.css';
+import '../../../styles/flow-paths.css';
+import '../../../styles/flow-elements.css';
+
+const articles = await publishedElementArticles();
+const bySlug = Object.fromEntries(articles.map((a) => [a.id, a]));
+const total = ELEMENT_CATEGORIES.reduce((n, c) => n + c.items.length, 0);
+const title = 'Flow Elements: every block, action, skill and chart kind | Orionfold';
+const description = `All ${total} Flow Elements in one place: blocks a document can hold, actions on your words, skills that draw your case, and chart kinds.`;
+const og = ogMeta('/flow/elements/');
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'CollectionPage',
+    name: 'Flow Elements', description, url: `${SITE.url}/flow/elements/`, author: PERSON,
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: articles.map((a, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'Article', name: a.data.title, url: `${SITE.url}${elementArticleHref(a.id)}` } })),
+    },
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Flow', item: `${SITE.url}/flow/` },
+      { '@type': 'ListItem', position: 2, name: 'Elements', item: `${SITE.url}/flow/elements/` },
+    ],
+  },
+];
+---
+<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page fp-page fe-page" jsonLd={schema}>
+  <Nav />
+  <main id="main" class="ls-main">
+    <header class="ed-hub-intro fe-hub-intro ls-container">
+      <p class="ls-eyebrow">FLOW / ELEMENTS</p>
+      <div class="ed-hub-heading">
+        <h1>Everything a document can take.<br /><em>One card at a time.</em></h1>
+        <p>Press ⌘5 in Flow and the Elements panel opens. Here are all {total} of its cards. Pick one to see what it takes and what it draws.</p>
+      </div>
+    </header>
+
+    <section class="fe-browser ls-container" data-fe-browser aria-label="All elements">
+      <div class="fe-b-bar">
+        <div class="fe-b-tabs" role="tablist" aria-label="Element groups">
+          {ELEMENT_CATEGORIES.map((c, i) => (
+            <button type="button" role="tab" id={`fe-tab-${c.slug}`} aria-controls={`fe-group-${c.slug}`} aria-selected={i === 0 ? 'true' : 'false'} data-fe-group-tab={c.slug}>
+              {c.label}<b>{c.items.length}</b>
+            </button>
+          ))}
+        </div>
+        <label class="fe-b-search">
+          <span class="sr-only">Find an element</span>
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          <input type="search" placeholder="Find an element, e.g. timeline" autocomplete="off" data-fe-search />
+        </label>
+      </div>
+      <p class="fe-b-status" data-fe-status aria-live="polite"></p>
+      <div class="fe-b-groups">
+      {ELEMENT_CATEGORIES.map((c) => {
+        const article = bySlug[c.slug];
+        return (
+          <div class="fe-b-group" id={`fe-group-${c.slug}`} role="tabpanel" aria-labelledby={`fe-tab-${c.slug}`} data-fe-group={c.slug}>
+            <div class="fe-b-group-head">
+              <h2>{c.label}</h2>
+              {article && <p>{article.data.summary} <a href={elementArticleHref(c.slug)}>Open the {c.label.toLowerCase()} →</a></p>}
+            </div>
+            <ul class="fe-grid">
+              {c.items.map((item) => (
+                <li data-fe-item data-fe-text={`${item.name} ${item.line} ${item.group ?? ''} ${c.label}`.toLowerCase()}>
+                  <a class="fe-tile" href={elementHref({ category: c.slug, anchor: item.anchor })}>
+                    <ElementIcon card={item.card} tint={item.tint} size={44} />
+                    <span><b>{item.name}</b><small>{item.line}</small><i>{c.label}</i></span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+      </div>
+    </section>
+
+    <section class="fp-section ls-container" aria-labelledby="fe-read-heading">
+      <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">THE ARTICLES</p><h2 id="fe-read-heading">Walked on a real plan,<br /><span class="ls-stroke">one group at a time.</span></h2></div></div>
+      <CategoryCards articles={articles} />
+    </section>
+
+    <div class="ls-container" style="padding-bottom:88px">
+      <PaperCta source="flow-elements-index" eyebrow="TRY ONE ON YOUR MAC" heading="Open Elements with ⌘5." description="Open a document you already have, press ⌘5, and press a card. Whatever it adds waits in Review Changes until you keep it." />
+    </div>
+  </main>
+  <Footer showDownload={false} />
+</Layout>
+<script>
+  // One group at a time; a search shows every match across the groups.
+  for (const browser of document.querySelectorAll<HTMLElement>('[data-fe-browser]')) {
+    const tabs = [...browser.querySelectorAll<HTMLButtonElement>('[data-fe-group-tab]')];
+    const groups = [...browser.querySelectorAll<HTMLElement>('[data-fe-group]')];
+    const search = browser.querySelector<HTMLInputElement>('[data-fe-search]')!;
+    const status = browser.querySelector<HTMLElement>('[data-fe-status]')!;
+    let current = tabs[0].dataset.feGroupTab!;
+    browser.dataset.js = 'on';
+    const render = () => {
+      const q = search.value.trim().toLowerCase();
+      browser.classList.toggle('is-searching', q.length > 0);
+      let shown = 0;
+      for (const g of groups) {
+        const items = [...g.querySelectorAll<HTMLElement>('[data-fe-item]')];
+        let n = 0;
+        for (const it of items) {
+          const hit = !q || it.dataset.feText!.includes(q);
+          it.hidden = !hit;
+          if (hit) n += 1;
+        }
+        g.hidden = q ? n === 0 : g.dataset.feGroup !== current;
+        if (!g.hidden) shown += n;
+      }
+      for (const t of tabs) t.setAttribute('aria-selected', String(!q && t.dataset.feGroupTab === current));
+      status.textContent = q ? (shown ? `${shown} element${shown === 1 ? '' : 's'} match “${search.value.trim()}”.` : `No element matches “${search.value.trim()}”.`) : '';
+    };
+    for (const t of tabs) {
+      t.addEventListener('click', () => {
+        current = t.dataset.feGroupTab!;
+        search.value = '';
+        render();
+        try { sessionStorage.setItem('fe-group', current); } catch {}
+      });
+    }
+    tabs.forEach((t, i) => t.addEventListener('keydown', (e) => {
+      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!step) return;
+      const next = tabs[(i + step + tabs.length) % tabs.length];
+      next.focus();
+      next.click();
+    }));
+    search.addEventListener('input', render);
+    try {
+      const saved = sessionStorage.getItem('fe-group');
+      if (saved && tabs.some((t) => t.dataset.feGroupTab === saved)) current = saved;
+    } catch {}
+    render();
+  }
+</script>

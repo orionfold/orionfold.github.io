@@ -9,8 +9,9 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { renderOgCard, type CardOptions } from '../../lib/og/card';
-import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug, receiptOgSlug, flowPathOgSlug, compareOgSlug } from '../../data/og';
+import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug, receiptOgSlug, flowPathOgSlug, compareOgSlug, flowElementsOgSlug } from '../../data/og';
 import { publishedPaths, publishedCompare } from '../../lib/flow/paths';
+import { publishedElementArticles } from '../../lib/flow/elements';
 import { toProductView, coverKey } from '../../lib/product/detail';
 
 // Book detail OG cards frame the portrait cover on the left over the banner.
@@ -181,7 +182,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
     props: { title: entry.data.title, eyebrow: `Compare · Flow and ${entry.data.tool}`, seed: entry.id, living: true } satisfies CardOptions,
   }));
 
-  return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts, ...fromReceipts, ...fromPaths, ...fromCompare];
+  // Flow Elements: the same light card, framed on the article's card shot.
+  const fromElements = (await publishedElementArticles()).map((entry) => {
+    const shot = path.join(process.cwd(), 'src/assets/flow/elements', entry.id, 'card.jpg');
+    return {
+      params: { slug: flowElementsOgSlug(entry.id) },
+      props: {
+        title: entry.data.title,
+        eyebrow: `Flow ${entry.data.release} · Elements · ${entry.data.category}`,
+        seed: entry.id,
+        light: true,
+        ...(fs.existsSync(shot) ? { screenshotPath: shot } : { banner: true }),
+      } satisfies CardOptions,
+    };
+  });
+
+  return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts, ...fromReceipts, ...fromPaths, ...fromCompare, ...fromElements];
 };
 
 export const GET: APIRoute = async ({ props }) => {

@@ -1,0 +1,828 @@
+{
+  "categories": [
+    {
+      "slug": "components",
+      "label": "Components",
+      "items": [
+        {
+          "name": "Approval Card",
+          "anchor": "approval-card",
+          "card": "component-approval-card",
+          "line": "A checklist a person ticks and signs off.",
+          "group": null,
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Form",
+          "anchor": "form",
+          "card": "component-form",
+          "line": "Fields a reader fills in, and one act Flow records after asking.",
+          "group": null,
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Job Form",
+          "anchor": "job-form",
+          "card": "component-job-form",
+          "line": "A Form whose button sets up a Job for this document.",
+          "group": null,
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Table",
+          "anchor": "table",
+          "card": "component-table",
+          "line": "A table drawn from the rows the block names; the first row's keys are the columns.",
+          "group": null,
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Chart",
+          "anchor": "chart",
+          "card": "component-chart",
+          "line": "A chart drawn in place from a readable body: the chart's type, title, rows and which field goes on which axis.",
+          "group": null,
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Diagram",
+          "anchor": "diagram",
+          "card": "component-diagram",
+          "line": "A diagram drawn from its text, in Mermaid's language.",
+          "group": null,
+          "tint": "#0371f5"
+        },
+        {
+          "name": "Image",
+          "anchor": "image",
+          "card": "component-image",
+          "line": "A picture from the document's folder, with the sentence a screen reader says (required) and an optional caption.",
+          "group": null,
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Diff",
+          "anchor": "diff",
+          "card": "component-diff",
+          "line": "Exact changes, drawn the way Review Changes draws them, red for removed and green for added.",
+          "group": null,
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Folder",
+          "anchor": "folder",
+          "card": "component-folder",
+          "line": "A folder's files as a table.",
+          "group": null,
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Callout",
+          "anchor": "callout",
+          "card": "component-callout",
+          "line": "A note or a warning in the Reader's own style: a bar, a mark and the word, so the kind never rests on colour alone.",
+          "group": null,
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Change Summary",
+          "anchor": "change-summary",
+          "card": "component-change-summary",
+          "line": "What changed in this document lately, in History's words, newest first, with who and which day beside each line and Show in History for the rest.",
+          "group": null,
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Sources",
+          "anchor": "sources",
+          "card": "component-sources",
+          "line": "What this document was made from, as History records it: each source, how it was used and when, with a changed source marked.",
+          "group": null,
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Section",
+          "anchor": "section",
+          "card": "component-section",
+          "line": "Section groups components under a title.",
+          "group": null,
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Hero",
+          "anchor": "hero",
+          "card": "component-hero",
+          "line": "Hero holds exactly two, side by side at every width: a chart beside the figures it rests on stays a pair even in a narrow window.",
+          "group": null,
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Bento",
+          "anchor": "bento",
+          "card": "component-bento",
+          "line": "Bento holds two or more, two across at most, and stacks when the column is narrow.",
+          "group": null,
+          "tint": "#0170f5"
+        }
+      ]
+    },
+    {
+      "slug": "agency",
+      "label": "Agency",
+      "items": [
+        {
+          "name": "Proofread",
+          "anchor": "proofread",
+          "card": "agency-proofread",
+          "line": "Fixes spelling, grammar and punctuation; shows every change",
+          "group": null,
+          "tint": "#0086f9"
+        },
+        {
+          "name": "Summarize",
+          "anchor": "summarize",
+          "card": "agency-summarize",
+          "line": "Condenses the text to its points",
+          "group": null,
+          "tint": "#cb10d5"
+        },
+        {
+          "name": "Translate",
+          "anchor": "translate",
+          "card": "agency-translate",
+          "line": "Rewrites the text in another language",
+          "group": null,
+          "tint": "#00c0c8"
+        },
+        {
+          "name": "Convert Text to Table",
+          "anchor": "convert-text-to-table",
+          "card": "agency-text-to-table",
+          "line": "Turns prose into a table",
+          "group": null,
+          "tint": "#ffa23f"
+        },
+        {
+          "name": "Convert Table to Text",
+          "anchor": "convert-table-to-text",
+          "card": "agency-table-to-text",
+          "line": "Turns a table into prose",
+          "group": null,
+          "tint": "#ff3d77"
+        },
+        {
+          "name": "Expand with Sources",
+          "anchor": "expand-with-sources",
+          "card": "agency-expand-with-sources",
+          "line": "Grows a draft from its sources, citing each",
+          "group": null,
+          "tint": "#00cb48"
+        },
+        {
+          "name": "Research Brief",
+          "anchor": "research-brief",
+          "card": "agency-research-brief",
+          "line": "Turns an idea into the brief a draft is written from",
+          "group": null,
+          "tint": "#00b8d8"
+        },
+        {
+          "name": "Visualize",
+          "anchor": "visualize",
+          "card": "agency-visualize",
+          "line": "Proposes a chart or diagram from the selected text",
+          "group": null,
+          "tint": "#6959f0"
+        },
+        {
+          "name": "Sign-off",
+          "anchor": "sign-off",
+          "card": "agency-sign-off",
+          "line": "Drafts an Approval Card from the selected text",
+          "group": null,
+          "tint": "#b08900"
+        },
+        {
+          "name": "Form",
+          "anchor": "form",
+          "card": "agency-form",
+          "line": "Drafts a form with one act from the selected text",
+          "group": null,
+          "tint": "#ff4461"
+        },
+        {
+          "name": "Describe Picture",
+          "anchor": "describe-picture",
+          "card": "agency-describe-picture",
+          "line": "Writes alt text for the picture under the caret",
+          "group": null,
+          "tint": "#ad7c5a"
+        },
+        {
+          "name": "Generate Picture",
+          "anchor": "generate-picture",
+          "card": "agency-generate-picture",
+          "line": "Makes a picture from the selected text",
+          "group": null,
+          "tint": "#00c9b2"
+        }
+      ]
+    },
+    {
+      "slug": "skills",
+      "label": "Skills",
+      "items": [
+        {
+          "name": "Architecture Diagram",
+          "anchor": "architecture-diagram",
+          "card": "skill-architecture-diagram",
+          "line": "The parts of a system, where they run, and what flows between.",
+          "group": null,
+          "tint": "#6959f0"
+        },
+        {
+          "name": "Decision Brief",
+          "anchor": "decision-brief",
+          "card": "skill-decision-brief",
+          "line": "The decision, the options, a recommendation and its sources.",
+          "group": null,
+          "tint": "#cb10d5"
+        },
+        {
+          "name": "Delegation Map",
+          "anchor": "delegation-map",
+          "card": "skill-delegation-map",
+          "line": "Who does each step, and where the work changes hands.",
+          "group": null,
+          "tint": "#00c0c8"
+        },
+        {
+          "name": "Field-Notes Diagram",
+          "anchor": "field-notes-diagram",
+          "card": "skill-field-notes-diagram",
+          "line": "A technical idea's numbers drawn to scale, field-notes style.",
+          "group": null,
+          "tint": "#a84f1e"
+        },
+        {
+          "name": "Guided Exercise",
+          "anchor": "guided-exercise",
+          "card": "skill-guided-exercise",
+          "line": "A passage turned into steps a learner works through and signs.",
+          "group": null,
+          "tint": "#ffa23e"
+        },
+        {
+          "name": "Isometric Figure",
+          "anchor": "isometric-figure",
+          "card": "skill-isometric-figure",
+          "line": "A layered stack in depth; press a layer to read what it does.",
+          "group": null,
+          "tint": "#0086f9"
+        },
+        {
+          "name": "Landscape Map",
+          "anchor": "landscape-map",
+          "card": "skill-landscape-map",
+          "line": "Who is in a market or field, grouped, with each one's source.",
+          "group": null,
+          "tint": "#00cb48"
+        },
+        {
+          "name": "Opportunity Map",
+          "anchor": "opportunity-map",
+          "card": "skill-opportunity-map",
+          "line": "Initiatives placed by value and effort, with the case for each.",
+          "group": null,
+          "tint": "#ff2a6b"
+        },
+        {
+          "name": "Option Comparison",
+          "anchor": "option-comparison",
+          "card": "skill-option-comparison",
+          "line": "Options side by side on the facts that tell them apart.",
+          "group": null,
+          "tint": "#00b8d8"
+        },
+        {
+          "name": "Path Card",
+          "anchor": "path-card",
+          "card": "skill-path-card",
+          "line": "A feature on one card: who it is for, the steps, the path, proof.",
+          "group": null,
+          "tint": "#216b40"
+        },
+        {
+          "name": "Product Mock",
+          "anchor": "product-mock",
+          "card": "skill-product-mock",
+          "line": "A user journey played out in a mock of the product's window.",
+          "group": null,
+          "tint": "#851f4d"
+        },
+        {
+          "name": "Register",
+          "anchor": "register",
+          "card": "skill-register",
+          "line": "Risks, issues or decisions logged with an owner and a check.",
+          "group": null,
+          "tint": "#ff3252"
+        },
+        {
+          "name": "Roadmap",
+          "anchor": "roadmap",
+          "card": "skill-roadmap",
+          "line": "Work laid out over time, by workstream, with its milestones.",
+          "group": null,
+          "tint": "#ad7c5a"
+        },
+        {
+          "name": "Scenario Model",
+          "anchor": "scenario-model",
+          "card": "skill-scenario-model",
+          "line": "Low, base and high cases from stated ranges, and a choice.",
+          "group": null,
+          "tint": "#00c9b2"
+        },
+        {
+          "name": "Scorecard",
+          "anchor": "scorecard",
+          "card": "skill-scorecard",
+          "line": "Each candidate scored against weighted criteria, then signed off.",
+          "group": null,
+          "tint": "#b08900"
+        },
+        {
+          "name": "System Explainer",
+          "anchor": "system-explainer",
+          "card": "skill-system-explainer",
+          "line": "A system's parts, its flows, and what a failure changes.",
+          "group": null,
+          "tint": "#4a6078"
+        },
+        {
+          "name": "Value Model",
+          "anchor": "value-model",
+          "card": "skill-value-model",
+          "line": "The value a change creates, from its stated assumptions.",
+          "group": null,
+          "tint": "#6b7f19"
+        },
+        {
+          "name": "Visual Explainer",
+          "anchor": "visual-explainer",
+          "card": "skill-visual-explainer",
+          "line": "One idea from the text, drawn so it builds step by step.",
+          "group": null,
+          "tint": "#8f3b8f"
+        },
+        {
+          "name": "Workflow Path",
+          "anchor": "workflow-path",
+          "card": "skill-workflow-path",
+          "line": "A workflow drawn as what goes in, the work, and what comes out.",
+          "group": null,
+          "tint": "#1f3b84"
+        }
+      ]
+    },
+    {
+      "slug": "chart-kinds",
+      "label": "Chart and diagram kinds",
+      "items": [
+        {
+          "name": "Bar chart",
+          "anchor": "bar-chart",
+          "card": "kind-bar-chart",
+          "line": "Compare a modest set of amounts on one shared unit.",
+          "group": "Comparison and ranking",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Grouped bar chart",
+          "anchor": "grouped-bar-chart",
+          "card": "kind-grouped-bar-chart",
+          "line": "Compare the same categories under two or three conditions.",
+          "group": "Comparison and ranking",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Stacked bar chart",
+          "anchor": "stacked-bar-chart",
+          "card": "kind-stacked-bar-chart",
+          "line": "Compare totals and their components together.",
+          "group": "Comparison and ranking",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Lollipop chart",
+          "anchor": "lollipop-chart",
+          "card": "kind-lollipop-chart",
+          "line": "Keep a longer category list light while preserving individual amounts.",
+          "group": "Comparison and ranking",
+          "tint": "#0271f5"
+        },
+        {
+          "name": "Bar table",
+          "anchor": "bar-table",
+          "card": "kind-bar-table",
+          "line": "Read exact values alongside their relative size.",
+          "group": "Comparison and ranking",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Pyramid chart",
+          "anchor": "pyramid-chart",
+          "card": "kind-pyramid-chart",
+          "line": "Compare two cohorts across the same bands.",
+          "group": "Comparison and ranking",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Bullet chart",
+          "anchor": "bullet-chart",
+          "card": "kind-bullet-chart",
+          "line": "Compare an actual value with its own target.",
+          "group": "Comparison and ranking",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "KPI card",
+          "anchor": "kpi-card",
+          "card": "kind-kpi-card",
+          "line": "Give one important measure a clear value, unit and comparison.",
+          "group": "Comparison and ranking",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Line chart",
+          "anchor": "line-chart",
+          "card": "kind-line-chart",
+          "line": "Compare observations in time order.",
+          "group": "Change over time",
+          "tint": "#0270f5"
+        },
+        {
+          "name": "Area chart",
+          "anchor": "area-chart",
+          "card": "kind-area-chart",
+          "line": "Emphasize the amount of a volume or balance over time.",
+          "group": "Change over time",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Streamgraph",
+          "anchor": "streamgraph",
+          "card": "kind-streamgraph",
+          "line": "Explore how several parts change over time.",
+          "group": "Change over time",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Range area chart",
+          "anchor": "range-area-chart",
+          "card": "kind-range-area-chart",
+          "line": "Show a supplied lower and upper range.",
+          "group": "Change over time",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Sparkline",
+          "anchor": "sparkline",
+          "card": "kind-sparkline",
+          "line": "Place a compact trend beside a statement.",
+          "group": "Change over time",
+          "tint": "#0571f5"
+        },
+        {
+          "name": "Slope chart",
+          "anchor": "slope-chart",
+          "card": "kind-slope-chart",
+          "line": "Compare exactly two named periods for each item.",
+          "group": "Change over time",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Bump chart",
+          "anchor": "bump-chart",
+          "card": "kind-bump-chart",
+          "line": "Track rank changes across periods.",
+          "group": "Change over time",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Connected scatter plot",
+          "anchor": "connected-scatter-plot",
+          "card": "kind-connected-scatter-plot",
+          "line": "Follow one entity through time on two quantitative axes.",
+          "group": "Change over time",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Candlestick chart",
+          "anchor": "candlestick-chart",
+          "card": "kind-candlestick-chart",
+          "line": "Show an opening value, high, low and closing value for each period.",
+          "group": "Change over time",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Calendar heatmap",
+          "anchor": "calendar-heatmap",
+          "card": "kind-calendar-heatmap",
+          "line": "Read daily rhythm across weeks and months.",
+          "group": "Change over time",
+          "tint": "#2780f6"
+        },
+        {
+          "name": "Waterfall chart",
+          "anchor": "waterfall-chart",
+          "card": "kind-waterfall-chart",
+          "line": "Reconcile an opening amount through signed movements to a closing amount.",
+          "group": "Composition and flow",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Pie chart",
+          "anchor": "pie-chart",
+          "card": "kind-pie-chart",
+          "line": "Show a few nonnegative parts of a single meaningful whole.",
+          "group": "Composition and flow",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Donut chart",
+          "anchor": "donut-chart",
+          "card": "kind-donut-chart",
+          "line": "Use a compact part-to-whole view with a clear total nearby.",
+          "group": "Composition and flow",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Rose chart",
+          "anchor": "rose-chart",
+          "card": "kind-rose-chart",
+          "line": "Explore ordered cyclical categories such as weekdays.",
+          "group": "Composition and flow",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Radar chart",
+          "anchor": "radar-chart",
+          "card": "kind-radar-chart",
+          "line": "Compare a few profiles on shared criteria.",
+          "group": "Composition and flow",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Gantt chart",
+          "anchor": "gantt-chart",
+          "card": "kind-gantt-chart",
+          "line": "Show authored start and finish dates, overlaps and handovers.",
+          "group": "Composition and flow",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Scatter plot",
+          "anchor": "scatter-plot",
+          "card": "kind-scatter-plot",
+          "line": "Look for a relationship between two measures on the same rows.",
+          "group": "Distribution and relationship",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Regression",
+          "anchor": "regression",
+          "card": "kind-regression",
+          "line": "Summarize the fitted relationship between two numeric measures.",
+          "group": "Distribution and relationship",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Histogram",
+          "anchor": "histogram",
+          "card": "kind-histogram",
+          "line": "Inspect the distribution of one measure.",
+          "group": "Distribution and relationship",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Density plot",
+          "anchor": "density-plot",
+          "card": "kind-density-plot",
+          "line": "Compare smoothed distribution shapes.",
+          "group": "Distribution and relationship",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "ECDF plot",
+          "anchor": "ecdf-plot",
+          "card": "kind-ecdf-plot",
+          "line": "Ask what share of observations is at or below a threshold.",
+          "group": "Distribution and relationship",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Boxplot",
+          "anchor": "boxplot",
+          "card": "kind-boxplot",
+          "line": "Compare medians, quartiles and flagged outliers across groups.",
+          "group": "Distribution and relationship",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Violin plot",
+          "anchor": "violin-plot",
+          "card": "kind-violin-plot",
+          "line": "Compare the shape of distributions, including possible multiple peaks.",
+          "group": "Distribution and relationship",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Strip plot",
+          "anchor": "strip-plot",
+          "card": "kind-strip-plot",
+          "line": "Show every observation in a modest sample.",
+          "group": "Distribution and relationship",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Ranged dot plot",
+          "anchor": "ranged-dot-plot",
+          "card": "kind-ranged-dot-plot",
+          "line": "Compare two observations for each item with less ink than paired bars.",
+          "group": "Distribution and relationship",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Heatmap",
+          "anchor": "heatmap",
+          "card": "kind-heatmap",
+          "line": "Inspect a matrix of two categories and a numeric measure.",
+          "group": "Distribution and relationship",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Flowchart",
+          "anchor": "flowchart",
+          "card": "kind-flowchart",
+          "line": "Explain steps and decisions, including the paths a person can take.",
+          "group": "Diagrams",
+          "tint": "#0270f5"
+        },
+        {
+          "name": "Sequence diagram",
+          "anchor": "sequence-diagram",
+          "card": "kind-sequence-diagram",
+          "line": "Show actors exchanging messages in order.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "State diagram",
+          "anchor": "state-diagram",
+          "card": "kind-state-diagram",
+          "line": "Define allowed states and the events between them.",
+          "group": "Diagrams",
+          "tint": "#0271f5"
+        },
+        {
+          "name": "Class diagram",
+          "anchor": "class-diagram",
+          "card": "kind-class-diagram",
+          "line": "Describe conceptual entities, their fields and relationships.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Entity-relationship diagram",
+          "anchor": "entity-relationship-diagram",
+          "card": "kind-entity-relationship-diagram",
+          "line": "Describe records, keys and relationships.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Gantt (diagram)",
+          "anchor": "gantt-diagram",
+          "card": "kind-gantt-diagram",
+          "line": "Write a dependency-oriented schedule as text.",
+          "group": "Diagrams",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "User journey",
+          "anchor": "user-journey",
+          "card": "kind-user-journey",
+          "line": "Summarize a sequence of tasks and an explicitly subjective experience rating.",
+          "group": "Diagrams",
+          "tint": "#0270f5"
+        },
+        {
+          "name": "Pie (diagram)",
+          "anchor": "pie-diagram",
+          "card": "kind-pie-diagram",
+          "line": "Show a few embedded amounts within a diagram.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Quadrant chart",
+          "anchor": "quadrant-chart",
+          "card": "kind-quadrant-chart",
+          "line": "Discuss items scored on two explicit axes.",
+          "group": "Diagrams",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Timeline",
+          "anchor": "timeline",
+          "card": "kind-timeline",
+          "line": "Present dated milestones in order.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Mindmap",
+          "anchor": "mindmap",
+          "card": "kind-mindmap",
+          "line": "Turn a nested outline into a navigable conceptual structure.",
+          "group": "Diagrams",
+          "tint": "#0371f5"
+        },
+        {
+          "name": "Git graph",
+          "anchor": "git-graph",
+          "card": "kind-git-graph",
+          "line": "Explain a small branch-and-merge history.",
+          "group": "Diagrams",
+          "tint": "#0371f5"
+        },
+        {
+          "name": "Sankey diagram",
+          "anchor": "sankey-diagram",
+          "card": "kind-sankey-diagram",
+          "line": "Follow amounts between named stages.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "XY chart (diagram)",
+          "anchor": "xy-chart-diagram",
+          "card": "kind-xy-chart-diagram",
+          "line": "Combine simple embedded bar and line series using one explained axis.",
+          "group": "Diagrams",
+          "tint": "#0170f5"
+        },
+        {
+          "name": "Block diagram",
+          "anchor": "block-diagram",
+          "card": "kind-block-diagram",
+          "line": "Arrange a small set of components to explain responsibilities.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Requirement diagram",
+          "anchor": "requirement-diagram",
+          "card": "kind-requirement-diagram",
+          "line": "Connect an authored requirement to its proposed verification and components.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "C4 context diagram",
+          "anchor": "c4-context-diagram",
+          "card": "kind-c4-context-diagram",
+          "line": "Show people, a system and its external neighbours.",
+          "group": "Diagrams",
+          "tint": "#0270f5"
+        },
+        {
+          "name": "Kanban board",
+          "anchor": "kanban-board",
+          "card": "kind-kanban-board",
+          "line": "Group an authored task list by status.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Architecture diagram",
+          "anchor": "architecture-diagram",
+          "card": "kind-architecture-diagram",
+          "line": "Describe services, stores and deployment groups.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        },
+        {
+          "name": "Packet diagram",
+          "anchor": "packet-diagram",
+          "card": "kind-packet-diagram",
+          "line": "Describe the bit layout of a fictional binary header.",
+          "group": "Diagrams",
+          "tint": "#0070f5"
+        }
+      ]
+    }
+  ]
+}

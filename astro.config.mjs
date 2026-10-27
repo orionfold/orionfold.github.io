@@ -8,6 +8,7 @@ import remarkDirective from 'remark-directive';
 import remarkAsciinema from './src/lib/products/remark-asciinema.mjs';
 import remarkProofCta from './src/lib/products/remark-proof-cta.mjs';
 import remarkCodeBlock from './src/lib/prose/remark-code-block.mjs';
+import { flowuiBlockLangs } from './src/lib/prose/flowui-grammar.mjs';
 import remarkDirectiveTimes from './src/lib/prose/remark-directive-times.mjs';
 import { remarkFlowTerms } from './src/lib/flow/flow-terms.mjs';
 import rehypeTableScroll from './src/lib/products/rehype-table-scroll.mjs';
@@ -132,6 +133,7 @@ function buildLastmodMap() {
   for (const [dir, urlBase, re] of [
     ['paths', '/flow/paths/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
     ['compare', '/flow/compare/', /^updated:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
+    ['elements', '/flow/elements/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
   ]) {
     let files;
     try {
@@ -155,7 +157,7 @@ function buildLastmodMap() {
       .map(([, v]) => v)
       .sort()
       .at(-1);
-  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/', '/flow/paths/', '/flow/compare/', '/receipts/', '/letter/']) {
+  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/', '/flow/paths/', '/flow/compare/', '/flow/elements/', '/receipts/', '/letter/']) {
     const d = freshestUnder(hub);
     if (d) map[hub] = d;
   }
@@ -258,6 +260,7 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkDirective, remarkDirectiveTimes, remarkAsciinema, remarkProofCta, remarkCodeBlock, remarkFlowTerms],
     rehypePlugins: [rehypeTableScroll, rehypeRelayShots, rehypeMemoInterstitial, rehypeRelayMemoLinks],
+    shikiConfig: { langs: flowuiBlockLangs() },
   },
   integrations: [
     inlineLandingStyles(),

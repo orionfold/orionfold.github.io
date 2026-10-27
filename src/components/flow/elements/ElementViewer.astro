@@ -1,0 +1,110 @@
+---
+// A category's elements, one at a time: the list on the left (a chip row on a
+// phone), the chosen element's own section on the right. Every panel is in
+// the HTML; the script shows one and follows the address bar, so
+// /flow/elements/skills/#roadmap opens Roadmap without scrolling past the
+// other eighteen. Without the script every panel shows, in order.
+import { render } from 'astro:content';
+import ElementIcon from './ElementIcon.astro';
+import type { ElementItem } from '../../../lib/flow/elements';
+interface Props { items: ElementItem[]; label: string; intro?: string }
+const { items, label, intro } = Astro.props;
+const rendered = await Promise.all(items.map(async (item) => ({ item, Content: (await render(item)).Content })));
+const groups: { name: string | null; items: ElementItem[] }[] = [];
+for (const item of items) {
+  const last = groups.at(-1);
+  if (last && last.name === item.data.group) last.items.push(item);
+  else groups.push({ name: item.data.group, items: [item] });
+}
+const sharers = (item: ElementItem) => items.filter((o) => o !== item && o.data.section && o.data.section === item.data.section).map((o) => o.data.name);
+---
+<script is:inline>document.documentElement.classList.add('fe-js');</script>
+<section class="fe-viewer ls-container" data-fe-viewer aria-label={`${label}, one at a time`}>
+  <nav class="fe-v-list" aria-label={`${label} list`}>
+    {intro && <p class="fe-v-intro">{intro}</p>}
+    {groups.map((g) => (
+      <div class="fe-v-group">
+        {g.name && <p class="fe-v-group-name">{g.name}</p>}
+        {g.items.map((item) => (
+          <a href={`#${item.data.anchor}`} data-fe-tab={item.data.anchor}>
+            <ElementIcon card={item.data.card} tint={item.data.tint} size={26} />
+            <span>{item.data.name}</span>
+          </a>
+        ))}
+      </div>
+    ))}
+  </nav>
+  <div class="fe-v-panels">
+    {rendered.map(({ item, Content }, i) => {
+      const prev = items[i - 1];
+      const next = items[i + 1];
+      const shared = sharers(item);
+      return (
+        <article class="fe-v-panel" id={item.data.anchor} data-fe-panel aria-labelledby={`${item.data.anchor}-name`}>
+          <header class="fe-v-head">
+            <ElementIcon card={item.data.card} tint={item.data.tint} size={72} />
+            <div>
+              <p class="fe-v-kicker">{label}{item.data.group && ` · ${item.data.group}`}<span>{i + 1} of {items.length}</span></p>
+              <h2 id={`${item.data.anchor}-name`}>{item.data.name}</h2>
+              <p class="fe-v-line">{item.data.line}</p>
+            </div>
+          </header>
+          {item.data.facts.length > 0 && (
+            <dl class="fe-v-facts">
+              {item.data.facts.map((f) => <div><dt>{f.label}</dt><dd set:html={f.value.replace(/\*([^*]+)\*/g, '<em>$1</em>')} /></div>)}
+            </dl>
+          )}
+          {shared.length > 0 && <p class="fe-v-shared">The walk covers {item.data.name} together with {shared.join(' and ')}.</p>}
+          <div class="ed-prose fp-prose fe-prose fe-v-body"><Content /></div>
+          <footer class="fe-v-step">
+            {prev ? <a href={`#${prev.data.anchor}`} data-fe-step>← {prev.data.name}</a> : <span />}
+            {next ? <a href={`#${next.data.anchor}`} data-fe-step>{next.data.name} →</a> : <span />}
+          </footer>
+        </article>
+      );
+    })}
+  </div>
+</section>
+<script>
+  // Show one panel at a time and keep the address bar in step with it.
+  for (const viewer of document.querySelectorAll<HTMLElement>('[data-fe-viewer]')) {
+    const panels = [...viewer.querySelectorAll<HTMLElement>('[data-fe-panel]')];
+    const tabs = [...viewer.querySelectorAll<HTMLAnchorElement>('[data-fe-tab]')];
+    const ids = new Set(panels.map((p) => p.id));
+    viewer.dataset.js = 'on';
+    const show = (id: string, { focus = false } = {}) => {
+      if (!ids.has(id)) id = panels[0].id;
+      for (const p of panels) p.hidden = p.id !== id;
+      for (const t of tabs) {
+        const on = t.dataset.feTab === id;
+        if (on) t.setAttribute('aria-current', 'true');
+        else t.removeAttribute('aria-current');
+        if (on) t.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+      const panel = panels.find((p) => p.id === id)!;
+      if (focus) {
+        // Bring the panel's top into view only when it is off screen.
+        const top = panel.getBoundingClientRect().top;
+        if (top < 80 || top > innerHeight * 0.6) viewer.scrollIntoView({ block: 'start' });
+      }
+    };
+    const fromHash = () => decodeURIComponent(location.hash.slice(1));
+    show(fromHash());
+    // A deep link lands on the viewer, not halfway down a panel.
+    if (ids.has(fromHash())) requestAnimationFrame(() => viewer.scrollIntoView({ block: 'start' }));
+    viewer.addEventListener('click', (event) => {
+      const link = (event.target as Element).closest<HTMLAnchorElement>('[data-fe-tab], [data-fe-step]');
+      if (!link) return;
+      event.preventDefault();
+      const id = link.hash.slice(1);
+      history.replaceState(null, '', `#${id}`);
+      show(id, { focus: true });
+    });
+    addEventListener('hashchange', () => {
+      if (ids.has(fromHash())) {
+        show(fromHash());
+        viewer.scrollIntoView({ block: 'start' });
+      }
+    });
+  }
+</script>

@@ -7,15 +7,19 @@ import Wordmark from './ui/Wordmark.astro';
 import { publishedCompare, compareHref, publishedPaths, pathHref } from '../lib/flow/paths';
 import { SHOWCASE } from '../data/flow-path-showcase';
 import { ArrowRightIcon } from '../lib/flow-icons';
+import { NAV_ELEMENTS, elementHref, elementDrawing } from '../lib/flow/elements';
 // "Paths" and "Compare" carry their pages as a small dropdown (desktop) or
 // indented sub-links (mobile). Paths lists the first five in the site's order;
 // Compare appears only once at least one page is routed.
-type NavChild = { href: string; label: string; tag: string; line: string };
+type NavChild = { href: string; label: string; tag: string; line: string; thumb?: { svg: string; tint: string } };
 const paths: NavChild[] = (await publishedPaths()).slice(0, 5).map((p) => ({ href: pathHref(p.id), label: p.data.path, tag: p.data.chip.toUpperCase(), line: SHOWCASE[p.id]?.hook ?? p.data.persona }));
+// Elements lists five elements by their sidebar drawing (operator 2026-10-26).
+const elements: NavChild[] = NAV_ELEMENTS.map((e) => ({ href: elementHref(e), label: e.name, tag: e.categoryLabel.toUpperCase(), line: e.line, thumb: { svg: elementDrawing(e.card), tint: e.tint } }));
 const compare: NavChild[] = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.tool, tag: p.data.kind === 'switch' ? 'SWITCH' : 'PAIR', line: p.data.line }));
 const links: { href: string; label: string; children?: NavChild[]; all?: string }[] = [
   { href: '/flow/', label: 'Flow' },
   { href: '/flow/paths/', label: 'Paths', ...(paths.length ? { children: paths, all: 'All paths' } : {}) },
+  { href: '/flow/elements/', label: 'Elements', children: elements, all: 'All 100 elements' },
   ...(compare.length ? [{ href: '/flow/compare/', label: 'Compare', children: compare, all: 'All comparisons' }] : []),
   { href: '/essays/', label: 'Essays' },
 ];
@@ -118,7 +122,9 @@ const stickyCtaLabel = navCtaLabel;
           <div class="living-nav-dd-menu">
             <div class="living-nav-dd-panel">
               {link.children.map((c) => (
-                <a href={c.href}><span class="living-nav-dd-kind">{c.tag}</span><b>{c.label}</b><small>{c.line}</small></a>
+                c.thumb
+                  ? <a href={c.href} class="living-nav-dd-has-thumb"><span class="living-nav-dd-thumb" style={`--dd-tint:${c.thumb.tint}`} set:html={c.thumb.svg} /><b>{c.label}</b><small>{c.line}</small></a>
+                  : <a href={c.href}><span class="living-nav-dd-kind">{c.tag}</span><b>{c.label}</b><small>{c.line}</small></a>
               ))}
               {link.all && <a class="living-nav-dd-all" href={link.href}>{link.all}<ArrowRightIcon size={14} stroke-width={2.25} aria-hidden="true" style="display:inline-block;margin-left:4px;vertical-align:-2px" /></a>}
             </div>
@@ -209,6 +215,8 @@ const stickyCtaLabel = navCtaLabel;
   .living-nav-dd-panel a:hover, .living-nav-dd-panel a:focus-visible { background: #fff6c9; }
   .living-nav-dd-panel b { font-size: .95rem; line-height: 1.2; }
   .living-nav-dd-panel small { grid-column: 2; font-size: .78rem; line-height: 1.4; color: #56635e; }
+  .living-nav-dd-thumb { grid-row: span 2; align-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9px; color: var(--dd-tint); background: color-mix(in srgb, var(--dd-tint) 9%, #fff); }
+  .living-nav-dd-thumb svg { width: 26px; height: 26px; }
   .living-nav-dd-kind { align-self: baseline; font-size: .56rem; font-weight: 700; letter-spacing: .1em; color: #ba2d21; }
   .living-nav-dd-panel a.living-nav-dd-all { display: block; margin-top: 4px; border-top: 1px solid #e6ebe7; border-radius: 0 0 7px 7px; font-size: .84rem; font-weight: 600; color: #0e7f7a; }
   .living-nav-sublink { padding-left: 1.1rem; font-size: .92em; }

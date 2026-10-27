@@ -173,7 +173,7 @@ export async function maskParity(opsFile, originalFile) {
 }
 
 /** The sharpest source cleared for this shot: the parity-checked original, else the ops copy. */
-async function shotSource(opsFile, originalFile) {
+export async function shotSource(opsFile, originalFile) {
   if (!existsSync(originalFile)) return opsFile;
   const [o, r] = await Promise.all([sharp(opsFile).metadata(), sharp(originalFile).metadata()]);
   if (r.width <= o.width) return opsFile;
@@ -181,7 +181,7 @@ async function shotSource(opsFile, originalFile) {
   return (await maskParity(opsFile, originalFile)) ? originalFile : opsFile;
 }
 
-async function encodeShot(src, dest) {
+export async function encodeShot(src, dest) {
   await sharp(src)
     .resize({ width: SHOT_WIDTH, withoutEnlargement: true })
     .webp({ quality: WEBP_QUALITY, preset: 'text' })

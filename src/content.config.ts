@@ -406,4 +406,54 @@ const compare = defineCollection({
     }),
 });
 
-export const collections = { story, productDetail, letters, receipts, relayDocs, memos, relayApi, paths, compare };
+// Elements — the Flow product lane's Elements set (articles 19–23) at
+// /flow/elements/<slug>/: a tour, then one article per sidebar category.
+// Written by scripts/sync-flow-elements.mjs, which also writes the element
+// index (src/data/flow-elements.json) the landing page and nav read.
+const elements = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/elements' }),
+  schema: ({ image }) =>
+    z.object({
+      // Product fields (from the article's own front matter).
+      title: z.string(),
+      feature: z.string(),
+      persona: z.string(),
+      drafted: z.coerce.date(),
+      build: z.string(),
+      data: z.string(),
+      dek: z.string(),
+      hero: image(),
+      heroAlt: z.string(),
+      source: z.string(),
+      // Website fields.
+      order: z.number(),
+      category: z.string(), // the sidebar section the article covers
+      summary: z.string(), // card copy
+      cardShot: z.string(), // shot name under src/assets/flow/elements/<slug>/
+      release: z.string(), // the Flow release the article is written for
+      draft: z.boolean().default(false),
+      titleLocked: z.boolean().optional(),
+    }),
+});
+
+// One element of the Elements set: its own section of the category article,
+// shown one at a time by the page's element viewer.
+const elementItems = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/element-items' }),
+  schema: () =>
+    z.object({
+      category: z.string(),
+      name: z.string(),
+      anchor: z.string(),
+      card: z.string(),
+      line: z.string(),
+      group: z.string().nullable(),
+      order: z.number(),
+      facts: z.array(z.object({ label: z.string(), value: z.string() })),
+      section: z.string().nullable(),
+      shared: z.boolean(),
+      tint: z.string(),
+    }),
+});
+
+export const collections = { story, productDetail, letters, receipts, relayDocs, memos, relayApi, paths, compare, elements, elementItems };
