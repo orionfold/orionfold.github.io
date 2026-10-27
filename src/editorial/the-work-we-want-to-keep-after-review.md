@@ -48,7 +48,7 @@ A model can be replaced. A routine can be retired. An application can become uns
 
 The larger possibility is a working life with more continuity. Research can inform writing without another long reconstruction. A product decision can retain its reasons while the builder returns to making the product. A recurring responsibility can remain legible while its owner turns to business, family, curiosity or rest.
 
-The [Living Documents Manifesto](/manifesto/) calls this rhythm FOLD: Frame the outcome, Organize the routine, Leave a receipt, Develop the practice. The document holds the question. A Job carries selected work forward. The person's judgment gives it a direction worth continuing.
+[The Researcher, Writer and Builder in You](/manifesto/), the essay first published as the Living Documents Manifesto, calls this rhythm FOLD: Frame the outcome, Organize the routine, Leave a receipt, Develop the practice. The document holds the question. A Job carries selected work forward. The person's judgment gives it a direction worth continuing.
 
 Choose a document you already have reason to reopen. Give it a small responsibility and inputs you can explain. Run it once. Inspect the result. Keep what is useful. Then decide whether another cycle would help.
 

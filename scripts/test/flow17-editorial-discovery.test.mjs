@@ -45,7 +45,7 @@ test('the editorial hub and both essays retain distinct, discoverable canonical 
   }
   const collection = schemas(hub).find(s => s['@type'] === 'CollectionPage');
   assert.deepEqual(collection.mainEntity.itemListElement.map(i => i.item.url), [
-    `https://orionfold.com${essay}`, 'https://orionfold.com/essay/',
+    `https://orionfold.com${essay}`, 'https://orionfold.com/essay/', 'https://orionfold.com/manifesto/',
   ]);
   const a = schemas(article).find(s => s['@type'] === 'Article');
   assert.equal(a.mainEntityOfPage, `https://orionfold.com${essay}`);

@@ -10,11 +10,11 @@
 > AI. Orionfold is a member of NVIDIA Inception.
 
 ## Living Documents
-- [The Living Documents Manifesto](https://orionfold.com/manifesto/): Eighteen ideas for work that continues and judgment that stays yours, with interactive workflow illustrations, evidence and primary-source citations.
 - [Room for a Renaissance](https://orionfold.com/essay/): Manav Sehgal's essay on making more room for the researcher, writer and builder in each of us. The foundational essay, retained at its original canonical URL.
 
-- [Essays](https://orionfold.com/essays/): Manav Sehgal on working knowledge, human judgment and Living Documents. Two essays, each with its own canonical URL; both also appear in the Story RSS feed.
+- [Essays](https://orionfold.com/essays/): Manav Sehgal on working knowledge, human judgment and Living Documents. Three essays, each with its own canonical URL; all also appear in the Story RSS feed.
 - [The Work We Want to Keep](https://orionfold.com/essays/the-work-we-want-to-keep/): The flagship essay on personal AI, founder history and the judgment people retain. Follows a Customer Research brief through saved Jobs, source relationships and review. Detailed evidence is retained in the companion research notes.
+- [The Researcher, Writer and Builder in You](https://orionfold.com/manifesto/): Essay 03, first published as The Living Documents Manifesto. Eighteen ideas for work that continues and judgment that stays yours, with interactive workflow illustrations, evidence and primary-source citations.
 - [Research notes for The Work We Want to Keep](https://orionfold.com/essays/the-work-we-want-to-keep/notes/): Supporting studies, source links, Flow development observations and their limits. A companion to the flagship essay, not a separate essay.
 
 ## Flow (flagship, released for Mac)

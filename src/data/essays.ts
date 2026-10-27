@@ -1,3 +1,6 @@
+// Essays: the flagship (latest) first, then the rest in series order. 03 was
+// first published as The Living Documents Manifesto and keeps its /manifesto/
+// address and its September 6 publication date.
 export const ESSAYS = [
   {
     number: '02',
@@ -20,6 +23,17 @@ export const ESSAYS = [
     dateLabel: 'September 6, 2026',
     minutes: 13,
     download: '/downloads/room-for-a-renaissance.md',
+  },
+  {
+    number: '03',
+    title: 'The Researcher, Writer and Builder in You',
+    subtitle: 'Eighteen ideas for letting your documents carry the routine.',
+    description: 'Manav Sehgal on Living Documents: eighteen ideas for work that continues, judgment that stays yours, and the researcher, writer and builder in you.',
+    href: '/manifesto/',
+    date: '2026-09-06',
+    dateLabel: 'September 6, 2026',
+    minutes: 13,
+    download: undefined,
   },
 ] as const;
 

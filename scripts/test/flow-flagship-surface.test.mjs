@@ -30,7 +30,10 @@ const livingFaq = read('src/data/living-faq.json');
 const nav = read('src/components/Nav.astro');
 const navArray = nav.match(/const links[^=]*= \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/label: '([^']+)'/g)].map((match) => match[1]);
-assert.deepEqual(navLabels, ['Flow', 'Paths', 'Compare', 'Essays', 'The Manifesto'], 'the global nav carries Flow, its Paths and Compare pages, and the editorial front doors');
+assert.deepEqual(navLabels, ['Flow', 'Paths', 'Compare', 'Essays'], 'the global nav carries Flow, its Paths and Compare pages, and the essays');
+// Operator 2026-10-26: the manifesto is essay 03, reached from /essays/, not the nav or footer.
+assert.doesNotMatch(nav + read('src/components/Footer.astro'), /href: '\/manifesto\/'/, 'the manifesto lives with the essays, not in the nav or footer');
+assert.match(read('src/data/essays.ts'), /number: '03',[\s\S]*?href: '\/manifesto\/',[\s\S]*?date: '2026-09-06'/, 'the manifesto is essay 03 at its original URL and date');
 // Operator 2026-09-28: Story and Books moved from the main nav to the footer.
 for (const moved of ['Story', 'Books']) {
   assert.equal(navLabels.includes(moved), false, `${moved} lives in the footer, not the main nav`);
@@ -59,7 +62,7 @@ assert.match(nav, /of-flow-bar-dismissed/, 'the Flow bar uses its own dismissal 
 const footer = read('src/components/Footer.astro');
 const columns = name => [...(footer.match(new RegExp('const ' + name + ' = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
 assert.deepEqual(columns('FLOW_COLUMNS'), [
-  ['/flow/', 'Overview'], ['/essays/', 'Essays'], ['/manifesto/', 'Manifesto'],
+  ['/flow/', 'Overview'], ['/essays/', 'Essays'],
   ['/flow/tour/', 'Tour'], ['/flow/night-shift/', 'Night Shift'], ['/flow/living-documents/', 'Living Documents'], ['/flow/settings/', 'Settings'], ['/flow/specifications/', 'Tech Specs'], ['/flow/enterprise/', 'Enterprise'],
 ]);
 assert.deepEqual(columns('ORIONFOLD_COLUMNS'), [
@@ -619,7 +622,7 @@ for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
 assert.match(ogData,/Give your documents work to do/);
 assert.match(ogData,/Make knowledge a living thing/);
 assert.match(ogData,/Room for a Renaissance/);
-assert.match(ogData,/The Living Documents Manifesto/);
+assert.match(ogData,/The Researcher, Writer and Builder in You/);
 const ogCardSource=read('src/lib/og/card.ts');
 assert.match(ogCardSource,/livingCardTree/);
 assert.match(ogCardSource,/hero-home-paper-planes\.png/);

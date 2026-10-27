@@ -42,10 +42,10 @@ export interface OgPage {
 export const OG_PAGES: Record<string, OgPage> = {
   '/manifesto/': {
     "slug": "manifesto",
-    "eyebrow": "Orionfold · Eighteen ideas",
-    "title": "The Living Documents Manifesto.",
+    "eyebrow": "An essay by Manav Sehgal",
+    "title": "The Researcher, Writer and Builder in You.",
     "seed": "manifesto",
-    "alt": "The Living Documents Manifesto: work that continues and judgment that stays yours.",
+    "alt": "The Researcher, Writer and Builder in You, an essay by Manav Sehgal first published as The Living Documents Manifesto: work that continues and judgment that stays yours.",
     "living": true
 },
   '/essays/': {

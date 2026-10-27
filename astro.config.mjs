@@ -180,11 +180,12 @@ function buildLastmodMap() {
   // Living Systems material content revision, not a build-clock freshness stamp.
   // 2026-09-30: intro reel added and the page moved to Flow 2.1.
   map['/flow/'] = '2026-09-30';
-  map['/essays/'] = '2026-09-17';
+  // 2026-10-26: the manifesto joined the essays as essay 03.
+  map['/essays/'] = '2026-10-26';
   map['/essays/the-work-we-want-to-keep/'] = '2026-09-17';
   map['/essays/the-work-we-want-to-keep/notes/'] = '2026-09-17';
-  map['/essay/'] = '2026-09-17';
-  map['/manifesto/'] = '2026-09-17';
+  map['/essay/'] = '2026-10-26';
+  map['/manifesto/'] = '2026-10-26';
   map['/privacy/'] = '2026-09-16';
   map['/flow/tour/'] = '2026-09-17';
   map['/flow/specifications/'] = '2026-09-17';

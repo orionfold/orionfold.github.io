@@ -1,5 +1,6 @@
 ---
 // Shared navigation: Flow, its Paths and Compare pages, then the essays.
+// The manifesto is essay 03 now and is reached from /essays/ (operator 2026-10-26).
 // Story and Books moved to the footer (operator 2026-09-28). Download intent,
 // launch gating, and sticky-bar consent mechanics stay shared.
 import Wordmark from './ui/Wordmark.astro';
@@ -17,7 +18,6 @@ const links: { href: string; label: string; children?: NavChild[]; all?: string 
   { href: '/flow/paths/', label: 'Paths', ...(paths.length ? { children: paths, all: 'All paths' } : {}) },
   ...(compare.length ? [{ href: '/flow/compare/', label: 'Compare', children: compare, all: 'All comparisons' }] : []),
   { href: '/essays/', label: 'Essays' },
-  { href: '/manifesto/', label: 'The Manifesto' },
 ];
 const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/flow/' && Astro.url.pathname.startsWith(href));
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';

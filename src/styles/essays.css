@@ -1,6 +1,6 @@
 /* The essays share the site's light paper palette and a quieter reading face. */
 .ed-page .ls-main { padding-top: var(--of-nav-height, 82px); }
-.ed-page, .ed-home-invitation { --ed-serif: Georgia, 'Times New Roman', serif; }
+.ed-page, .ed-home-invitation, .ed-next-essay { --ed-serif: Georgia, 'Times New Roman', serif; }
 .ls .ed-hub-intro { padding-block: 70px 48px; }
 .ed-hub-heading { display: grid; grid-template-columns: 1.55fr 1fr; gap: 7%; align-items: end; margin-top: 25px; }
 .ls .ed-hub-heading h1 { font: 400 clamp(3.7rem, 6.5vw, 6.6rem)/1.02 var(--ed-serif); letter-spacing: -.055em; }

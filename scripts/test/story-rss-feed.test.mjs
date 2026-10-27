@@ -27,7 +27,7 @@ const guids = [...xml.matchAll(/<guid isPermaLink="true">([^<]+)<\/guid>/g)].map
 assert.equal(guids.length, items.length, 'every item needs a guid so readers can dedupe');
 assert.equal(new Set(guids).size, guids.length, 'guids must be unique');
 for (const guid of guids) {
-  assert.match(guid, /^https:\/\/orionfold\.com\/(?:story\/[a-z0-9-]+|essays\/[a-z0-9-]+|essay)\/$/, `guid must be an absolute canonical story URL: ${guid}`);
+  assert.match(guid, /^https:\/\/orionfold\.com\/(?:story\/[a-z0-9-]+|essays\/[a-z0-9-]+|essay|manifesto)\/$/, `guid must be an absolute canonical story URL: ${guid}`);
 }
 // Relative links break in every feed reader; absolute is the whole contract.
 assert.doesNotMatch(xml, /<link>\/story\//, 'item links must be absolute, never root-relative');

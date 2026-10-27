@@ -156,7 +156,7 @@ Living Documents offer one practical piece of that possibility. You close a page
 
 Some work should remain finished. A poem can keep its last line. A letter can belong to the day it was written. A Living Document earns its name through the responsibility it serves. We should be as free to end a routine as to begin one.
 
-Choose one document you already reopen. Give it a purpose, a small job, and a result you can judge. Let it complete a cycle. Keep what helps. Revise what does not. The [Living Documents Manifesto](/manifesto/) is the short expression of this conviction; the practice begins in a file of your own.
+Choose one document you already reopen. Give it a purpose, a small job, and a result you can judge. Let it complete a cycle. Keep what helps. Revise what does not. Essay 03, [The Researcher, Writer and Builder in You](/manifesto/), is the short expression of this conviction; the practice begins in a file of your own.
 
 [Download Flow Now](https://orionfold.com/flow/). Base is free forever. 10 Pro days included. No credit card to use.
 
