@@ -8,7 +8,6 @@ import CompareBand from '../../../components/flow/paths/CompareBand.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
 import { publishedPaths, publishedCompare, pathHref } from '../../../lib/flow/paths';
 import { ogMeta } from '../../../data/og';
-import { FLOW_VERSION } from '../../../lib/flow/flow-release';
 import { SITE, PERSON } from '../../../data/seo';
 import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
@@ -18,7 +17,7 @@ const paths = await publishedPaths();
 const [lead, ...rest] = paths;
 const hasCompare = (await publishedCompare()).length > 0;
 const title = 'Flow Paths: real work, walked end to end | Orionfold';
-const description = `Flow ${FLOW_VERSION} paths, each a real job done in Flow on a Mac: the steps, the time, the cost, and what we could not check.`;
+const description = 'Flow workflows, each a real job done on a Mac: the steps, the time, the cost, and what we could not check.';
 const og = ogMeta('/flow/paths/');
 const schema = [
   {
@@ -42,10 +41,10 @@ const schema = [
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-hub-intro ls-container">
-      <p class="ls-eyebrow">FLOW {FLOW_VERSION} / PATHS</p>
+      <p class="ls-eyebrow">FLOW / PATHS</p>
       <div class="ed-hub-heading">
         <h1>Real work.<br /><em>Walked end to end.</em></h1>
-        <p>Most paths start on Flow’s Home screen, and the newest starts from an empty folder and Flow Chat. Each one ends with something you can send. We walked every step on a Mac and wrote down the time, the cost, and what we could not check.</p>
+        <p>Start with a path on Flow’s Home screen, an idea in Chat, or a document you already have. These walks cover the work, the review, and the record it leaves. We tried each workflow on a Mac and wrote down the time, the cost, and what we could not check.</p>
       </div>
     </header>
     {lead && (
@@ -61,7 +60,7 @@ const schema = [
       </section>
     )}
     <div class="ls-container" style="padding-bottom:88px">
-      <PaperCta source="flow-paths-index" eyebrow="EVERY PATH IS ON FLOW’S HOME SCREEN" heading="Pick the job you already do." description="Open Flow, choose a path on Home, and try it on the example files first. Your copy is yours to change." />
+      <PaperCta source="flow-paths-index" eyebrow="TRY THE WORK ON YOUR MAC" heading="Pick the job you already do." description="Choose a walkthrough and follow its starting steps. Try the Guide’s example files first, then bring your own work." />
     </div>
   </main>
   <Footer showDownload={false} />

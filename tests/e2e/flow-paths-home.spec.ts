@@ -80,14 +80,35 @@ test('Compare sets Flow vocabulary apart from ordinary copy', async ({ page }) =
 });
 
 for (const route of ['/', '/flow/paths/']) {
-  test(`${route} shows paths as native showcase mocks, not screenshots`, async ({ page }) => {
+  test(`${route} shows path mocks and the captured feature walks`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(route);
     const cards = page.locator('.ps');
     expect(await cards.count()).toBeGreaterThanOrEqual(4);
-    await expect(cards.locator('img[src*="/flow/paths/"], img[src*="flow%2Fpaths"]')).toHaveCount(0);
-    await expect(page.locator('.ps--hero [data-flow-mock]').first()).toHaveAttribute('data-stage', '4');
+    await expect(cards.locator('.ps-capture img')).toHaveCount(route === '/' ? 2 : 3);
+    if (route === '/') await expect(page.locator('.ps--hero [data-flow-mock]').first()).toHaveAttribute('data-stage', '4');
+    else await expect(page.locator('.ps--hero .ps-capture img')).toBeVisible();
     for (const link of await cards.locator('a.ps-link').all()) await expect(link).toHaveAttribute('href', /^\/flow\/paths\/[a-z-]+\/$/);
+  });
+}
+
+for (const slug of ['the-canvas', 'diagrams-draw-anywhere', 'a-checklist-you-can-sign']) {
+  test(`Flow 3.0 ${slug} has working evidence and workflow-specific starting steps`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    const response = await page.goto(`/flow/paths/${slug}/`);
+    expect(response?.status()).toBe(200);
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('.ed-article-kicker')).toContainText('FLOW 3.0');
+    await expect(page.locator('#try-this-path')).toContainText('Guide');
+    await expect(page.locator('#try-this-path')).not.toContainText('open an empty folder');
+    const href = await page.locator('.fp-receipt-note a').getAttribute('href');
+    expect(href).toBe('#the-numbers');
+    await expect(page.locator(href!)).toHaveCount(1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+    if (slug === 'the-canvas') {
+      await expect(page.locator('video')).toHaveAttribute('controls', '');
+      await expect(page.locator('video track')).toHaveCount(0);
+    }
   });
 }
 

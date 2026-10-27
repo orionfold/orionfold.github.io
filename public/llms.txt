@@ -104,3 +104,7 @@
 ## Optional
 - [Privacy](https://orionfold.com/privacy/): How we handle data.
 - [Terms](https://orionfold.com/terms/): Terms of use.
+
+- [One brief, three ways](https://orionfold.com/flow/paths/the-canvas/) — Flow 3.0: Jobs, Chat, and the canvas.
+- [Diagrams that draw anywhere](https://orionfold.com/flow/paths/diagrams-draw-anywhere/) — Flow 3.0 diagrams in the Reader, clipboard and PDF preview.
+- [A checklist you can sign](https://orionfold.com/flow/paths/a-checklist-you-can-sign/) — Flow 3.0 acceptance cards and their records.

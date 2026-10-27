@@ -371,6 +371,8 @@ const paths = defineCollection({
       release: z.string().optional(),
       // False when the walk starts from an empty folder, not a path on Flow's Home.
       onHome: z.boolean().default(true),
+      // Feature walks can start from the Guide or an existing document.
+      startInstructions: z.string().optional(),
     }),
 });
 

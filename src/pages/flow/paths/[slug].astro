@@ -27,6 +27,7 @@ const { entry, others } = Astro.props as { entry: PathEntry; others: PathEntry[]
 const { Content, headings } = await render(entry);
 const d = entry.data;
 const sections = headings.filter((h) => h.depth === 2);
+const evidenceSection = sections.find((h) => /^(Evidence|The numbers)$/.test(h.text));
 // Name the current release: readers open the path in it. The dev build
 // each walk ran on is spelled out in full on the "Walked on:" line below.
 const release = d.release ?? FLOW_VERSION;
@@ -57,7 +58,7 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.path}, a Flow path walked end to end`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Paths', tags: [`Flow ${FLOW_VERSION}`, d.chip, d.path] }}>
+<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.path}, a Flow path walked end to end`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Paths', tags: [`Flow ${release}`, d.chip, d.path] }}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero ls-container">
@@ -84,7 +85,7 @@ const schema = [
               <div><dt>{r.label}</dt><dd>{r.value}<span class:list={['fp-tag', `fp-tag--${r.evidence}`]} title={EVIDENCE_NOTE[r.evidence]}>{r.evidence}</span></dd></div>
             ))}
           </dl>
-          <p class="fp-receipt-note">Every number carries a label. <a href="#evidence">See the full evidence table</a>.</p>
+          <p class="fp-receipt-note">Every number carries a label. {evidenceSection && <><a href={`#${evidenceSection.slug}`}>See the full evidence table</a>.</>}</p>
         </div>
         <a class="fp-try" href="#try-this-path">Try this path in Flow →</a>
       </aside>
@@ -99,9 +100,9 @@ const schema = [
           <PaperCta layout="article" class="ed-paper-cta"
             source={`flow-path-${entry.id}`} headingId="path-cta"
             eyebrow="TRY THIS PATH IN FLOW" heading={d.onHome ? `Open “${d.path}” on your Mac.` : `Start “${d.path}” on your Mac.`}
-            description={d.onHome
+            description={d.startInstructions ?? (d.onHome
               ? `In Flow ${release}, Home ▸ ${d.chip} ▸ ${d.path} ▸ Open. Your copy lands in a folder of its own, with the example files to try it on.`
-              : `In Flow ${release}, open an empty folder, choose it in the sidebar, and tell Flow Chat your idea. The steps above show each message we sent.`} />
+              : `In Flow ${release}, open an empty folder, choose it in the sidebar, and tell Flow Chat your idea. The steps above show each message we sent.`)} />
         </div>
       </article>
     </div>

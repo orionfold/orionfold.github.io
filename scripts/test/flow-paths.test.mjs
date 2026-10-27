@@ -69,7 +69,7 @@ const published = entries.filter((e) => !e.front.draft);
 test('every published path is complete and honest about its build', () => {
   assert.ok(published.length >= 5, 'the five walked paths are published');
   for (const { slug, front, body } of published) {
-    assert.match(front.build, /Flow \d+\.\d+(\.\d+)?/, `${slug} names the build it was walked on`);
+    assert.match(front.build, /Flow (?:\d+\.\d+(?:\.\d+)?|review builds? \d{4}-\d+)/, `${slug} names the release or review build it was walked on`);
     assert.ok(front.receipt.length >= 3, `${slug} has a receipt card`);
     for (const r of front.receipt) assert.ok(['verified', 'derived', 'assumed', 'unknown'].includes(r.evidence), `${slug}: ${r.label} carries an evidence label`);
     assert.match(body, /^## (Evidence|The numbers)$/m, `${slug} keeps its evidence table`);
@@ -188,4 +188,26 @@ test('the Flow Chat book walk names Flow 2.2 and never claims a Home path (opera
   assert.match(home, /p\.data\.onHome/, 'the Home mock only shows paths that are on Home');
   const routing = readFileSync(new URL('src/components/living/FlowRouting.astro', root), 'utf8');
   assert.doesNotMatch(routing, /Every AI step in our path walks ran on the Mac/, 'the book walk ran on a subscription and OpenRouter');
+});
+
+test('Flow 3.0 feature walks are launch-ready articles with their own starting steps', () => {
+  const slugs = ['the-canvas', 'diagrams-draw-anywhere', 'a-checklist-you-can-sign'];
+  for (const slug of slugs) {
+    const entry = entries.find((e) => e.slug === slug);
+    assert.ok(entry, `${slug} exists`);
+    assert.equal(entry.front.draft, false);
+    assert.equal(entry.front.release, '3.0');
+    assert.equal(entry.front.onHome, false, 'a feature is not a fictional Home path');
+    assert.equal(entry.front.bodyLocked, true, 'curation survives a product-source sync');
+    assert.match(entry.front.startInstructions, /Flow 3\.0.*Guide/);
+    assert.doesNotMatch(entry.body, /coming soon|next release|press release we would want|feature.s promise|not yet released/i);
+    assert.match(entry.body, /More Flow 3\.0 walks/);
+    for (const sibling of slugs.filter((s) => s !== slug)) assert.match(entry.body, new RegExp(`/flow/paths/${sibling}/`));
+  }
+  const canvas = entries.find((e) => e.slug === 'the-canvas');
+  assert.match(canvas.body, /<video controls preload="none"/);
+  assert.doesNotMatch(canvas.body, /<track\b/);
+  for (const asset of ['one-brief-three-ways.mp4', 'poster.jpg']) assert.ok(existsSync(new URL(`public/flow/articles/the-canvas/${asset}`, root)));
+  const checklist = entries.find((e) => e.slug === 'a-checklist-you-can-sign');
+  assert.match(checklist.body, /first timing unresolved/);
 });
