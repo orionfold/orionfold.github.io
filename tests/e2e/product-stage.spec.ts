@@ -220,7 +220,7 @@ test.describe('Living Systems native product stage', () => {
         expect(heroBox!.x).toBeGreaterThanOrEqual(0);
         expect(heroBox!.x + heroBox!.width).toBeLessThanOrEqual(width);
         if (route === '/') {
-          await expect(demo).toContainText('AI Consulting Starter');
+          await expect(demo).toContainText('AI Consulting');
           // The story steps by hand: the last step's update can be taken.
           const story=page.locator('.hd-story');
           await story.locator('[data-story-go="4"]').click();

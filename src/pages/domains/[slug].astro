@@ -1,6 +1,6 @@
 ---
 // /domains/<slug>/ — a Domain article. The launch story tells how AI
-// Consulting Starter was built in Flow, published to GitHub and brought in by
+// Consulting was built in Flow, published to GitHub and brought in by
 // a reader, from the product lane's session journals and shots. A blueprint
 // (G-135) shows an expert in one role what their own Domain could hold and how
 // they would build it, with the launch story as the walkthrough; nothing in a
@@ -40,14 +40,14 @@ const dateIso = d.drafted.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
 const canonical = `${SITE.url}${domainArticleHref(entry.id)}`;
 const ogImage = ogPath(domainOgSlug(entry.id));
-const seoTitle = fitTitle(`${d.title} · Flow Domains · Orionfold`, `${d.domain}, built in Flow · Flow Domains · Orionfold`);
+const seoTitle = fitTitle(`${d.title} · Flow Domains · Orionfold`, blueprint ? `${d.domain}, a Flow Domain blueprint · Flow Domains · Orionfold` : `${d.domain}, built in Flow · Flow Domains · Orionfold`);
 const FACTS = blueprint
   ? [
       { label: 'Status', value: 'A blueprint. Not built yet.' },
       { label: 'For', value: d.role },
       { label: 'Documents planned', value: `${d.blueprint!.length}, every one plain Markdown` },
       { label: 'To publish', value: 'Flow Pro and the Publish add-on' },
-      { label: 'The walkthrough', value: walkthrough ? walkthrough.data.domain : 'AI Consulting Starter' },
+      { label: 'The walkthrough', value: walkthrough ? walkthrough.data.domain : 'AI Consulting' },
     ]
   : [
       { label: 'Files', value: `${d.files} Markdown files, ${d.size}` },
@@ -116,7 +116,7 @@ const schema = [
             ? <PaperCta layout="article" class="ed-paper-cta"
                 source={`flow-domain-${entry.id}`} headingId="domain-cta"
                 eyebrow="BUILD YOUR DOMAIN" heading={`Start ${d.domain} on your Mac.`}
-                description={`Download Flow, add an empty folder and name it. Chat is ready before any document exists. Follow the AI Consulting Starter walkthrough step by step, with your own know-how as the source. Writing with Chat needs Flow Pro. Publishing to GitHub needs the Publish add-on too.`} />
+                description={`Download Flow, add an empty folder and name it. Chat is ready before any document exists. Follow the AI Consulting walkthrough step by step, with your own know-how as the source. Writing with Chat needs Flow Pro. Publishing to GitHub needs the Publish add-on too.`} />
             : <PaperCta layout="article" class="ed-paper-cta"
                 source={`flow-domain-${entry.id}`} headingId="domain-cta"
                 eyebrow="BRING IT INTO FLOW" heading={`Open ${d.domain} on your Mac.`}

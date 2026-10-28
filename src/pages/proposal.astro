@@ -196,7 +196,7 @@ const proposalSchema = {
             <p id="document-state">Draft · not submitted</p>
           </div>
           <div class="document-title">
-            <p class="font-mono text-xs uppercase tracking-[0.16em] text-text-dim">Proposal <span id="document-number">Not assigned</span> · version <span id="document-version">Draft</span></p>
+            <p class="document-meta">Proposal <span id="document-number">Not assigned</span> · version <span id="document-version">Draft</span></p>
             <h2>Orionfold product proposal</h2>
             <p>Prepared <span id="document-date"></span> for <strong id="document-customer">Customer details pending</strong></p>
           </div>
@@ -234,10 +234,8 @@ const proposalSchema = {
       id="proposal-sticky-summary"
       class="pp-sticky"
       aria-label="Current proposal selections and estimate"
-      role="status"
-      aria-live="polite"
     >
-      <div class="pp-sticky-inner ls-container">
+      <div class="pp-sticky-inner ls-container" role="status" aria-live="polite">
         <div>
           <p class="ls-eyebrow">Your proposal</p>
           <p id="sticky-selection-summary">Select a product</p>
@@ -465,6 +463,7 @@ const proposalSchema = {
   .document-title { margin: 2.5rem 0; }
   .document-title h2 { margin-top: .65rem; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.05; letter-spacing: -.035em; }
   .document-title > p:last-child { margin-top: .75rem; color: #6b7280; }
+  .document-meta { font: .75rem/1.5 var(--font-mono); text-transform: uppercase; letter-spacing: .16em; color: #6b7280; }
   .proposal-document section { margin-top: 2rem; break-inside: avoid; }
   .proposal-document section > h3 { border-bottom: 1px solid #e5e9f0; padding-bottom: .55rem; font-size: 1.1rem; }
   .proposal-document section > p { margin-top: .85rem; color: #4c5563; line-height: 1.65; white-space: pre-wrap; }

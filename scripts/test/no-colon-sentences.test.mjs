@@ -14,7 +14,7 @@ const dist = (route) => new URL(`dist${route}index.html`, root);
 const hasDist = existsSync(dist('/'));
 
 const ROUTES = [
-  '/', '/flow/', '/domains/', '/domains/ai-consulting-starter/', '/domains/learning-design-starter/', '/domains/research-synthesis-starter/', '/domains/finance-advisory-starter/', '/domains/accounting-advisory-starter/', '/flow/paths/', '/flow/compare/',
+  '/', '/flow/', '/domains/', '/domains/ai-consulting/', '/domains/learning-design/', '/domains/research-synthesis/', '/domains/finance-advisory/', '/domains/accounting-advisory/', '/flow/paths/', '/flow/compare/',
   '/flow/compare/notion/', '/flow/compare/obsidian/', '/flow/compare/custom-gpts/', '/flow/compare/claude-code/',
   '/flow/compare/codex/', '/flow/compare/hermes-openclaw/', '/flow/compare/word/', '/flow/compare/canva/',
 ];
@@ -34,12 +34,12 @@ const ALLOWED = [
   'Proposed outline What Agents Actually Did: a record',
   'Flow Domains: your expertise as a living system',
   'Flow Paths: real work, walked end to end',
-  'From an empty folder to GitHub: how AI Consulting Starter',
+  'From an empty folder to GitHub: how AI Consulting',
   // The four Domain blueprints' titles (G-135), the same shape as the launch story's.
-  'Teach the way you teach, every time: a blueprint for Learning Design Starter',
-  'From transcripts to a decision, your way: a blueprint for Research Synthesis Starter',
-  'The board pack that remembers your judgment: a blueprint for Finance Advisory Starter',
-  'A close your clients can read: a blueprint for Accounting Advisory Starter',
+  'Teach the way you teach, every time: a blueprint for Learning Design',
+  'From transcripts to a decision, your way: a blueprint for Research Synthesis',
+  'The board pack that remembers your judgment: a blueprint for Finance Advisory',
+  'A close your clients can read: a blueprint for Accounting Advisory',
   'Flow with Canva: the words and numbers',
   'Flow with Claude Code: your agent writes',
   'Flow with Codex: your agent proposes',
@@ -49,7 +49,7 @@ const ALLOWED = [
   'Flow for Obsidian users: same Markdown files',
   'Flow with Word: check the work',
   'Source: Claude Code docs: Overview',
-  'Start with the AI Consulting Starter Domain',
+  'Start with the AI Consulting Domain',
   // The mock's proposed book outline, as Flow wrote it in the walk.
   'Model or Harness: each incident traced back',
   // A path summary synced from the product's article (sync-flow-paths); owned upstream.

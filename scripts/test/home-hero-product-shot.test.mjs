@@ -11,8 +11,8 @@ assert.match(hero, /<HomeHeroDomainMock \/>/);
 assert.match(hero, /href="\/domains\/"/);
 assert.match(hero, /<picture[\s\S]*hero-home-paper-planes\.webp/);
 assert.doesNotMatch(page+hero, /FlowShot|pit-stop-daylight|FlowRaceBlueprint|<video/);
-// The Domain mock's words are the AI Consulting Starter walk's own.
-for (const fact of ['AI Consulting Starter', '6 files · 75 KB', 'CC BY 4.0', 'You have not changed this one, so replacing it loses nothing.', 'Update Selected']) assert.ok(mock.includes(fact), fact);
+// The Domain mock's words are the AI Consulting walk's own.
+for (const fact of ['AI Consulting', '6 files · 75 KB', 'CC BY 4.0', 'You have not changed this one, so replacing it loses nothing.', 'Update Selected']) assert.ok(mock.includes(fact), fact);
 // Operator 2026-10-27: the client's copy renders exactly as published, so both
 // windows draw the README and its figure from the same words.
 assert.equal((mock.match(/\{P1\}/g) ?? []).length, 2, 'both windows show the same opening');

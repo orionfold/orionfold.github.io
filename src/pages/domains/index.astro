@@ -9,7 +9,7 @@
 // for your own agents (Flow MCP, Settings ▸ General ▸ Your agents) is a Pro
 // feature (operator 2026-10-28); publishing does not bring customers; Claude
 // Code and Codex pair with Flow. Every walk number comes from the AI
-// Consulting Starter journals via the launch article.
+// Consulting journals via the launch article.
 import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
@@ -34,7 +34,7 @@ const articles = await publishedDomainArticles();
 const [launch] = articles;
 const blueprints = articles.filter(isBlueprint);
 const title = 'Flow Domains: your expertise as a living system | Orionfold';
-const description = 'Turn the method you use with clients into a Flow Domain. Co-author living documents with any AI, review them, publish to GitHub and keep them current for every client.';
+const description = 'Turn the method you use with clients into a Flow Domain. Co-author living documents with any AI, review them, publish to GitHub and keep them current.';
 const og = ogMeta('/domains/');
 
 const PAINS = [
@@ -110,7 +110,7 @@ const schema = [
         <p>A Flow Domain turns the method you use with clients into a folder of living documents. They hold your know-how, your sources, and tools your clients use on their own work. Build it in Flow with the AI you already pay for, review every change, and publish it to GitHub. Clients bring it in with one address, and each update reaches them as a change they review.</p>
         <div class="dm-ctas">
           <a class="ls-button" href={domainArticleHref(launch.id)}>Read the launch story<ArrowRight size={18} /></a>
-          <a class="ls-text-link" href={launch.data.repo}>Get AI Consulting Starter<ArrowUpRight size={17} /></a>
+          <a class="ls-text-link" href={launch.data.repo}>Get AI Consulting<ArrowUpRight size={17} /></a>
         </div>
       </div>
     </header>
@@ -138,7 +138,7 @@ const schema = [
     <FlowDomainsBand id="dm-how" self />
 
     <section class="dm-section ls-container" aria-labelledby="dm-first">
-      <div class="dm-head"><p class="ls-eyebrow">THE FIRST DOMAIN</p><h2 id="dm-first">An empty folder<br /><span class="ls-stroke">to GitHub in a few hours.</span></h2><p class="dm-sub">AI Consulting Starter turns nine years of Amazon mechanisms into a path for adopting AI. The hands-on work took about three hours across two days, and no run cost anything on top of a Claude subscription.</p></div>
+      <div class="dm-head"><p class="ls-eyebrow">THE FIRST DOMAIN</p><h2 id="dm-first">An empty folder<br /><span class="ls-stroke">to GitHub in a few hours.</span></h2><p class="dm-sub">AI Consulting turns nine years of Amazon mechanisms into a path for adopting AI. The hands-on work took about three hours across two days, and no run cost anything on top of a Claude subscription.</p></div>
       <div class="dm-first">
         <ol class="dm-time">{TIMELINE.map((s) => <Fragment>{s.day && <li class="dm-day" aria-label={s.day}><span>{s.day}</span></li>}<li>{s.t ? <time>{s.t}</time> : <span class="dm-time-blank" aria-hidden="true"></span>}<span><b>{s.k}</b>{s.v}</span></li></Fragment>)}</ol>
         <a class="dm-story" href={domainArticleHref(launch.id)}>
@@ -220,7 +220,7 @@ const schema = [
     </section>
 
     <div class="ls-container" style="padding-bottom:88px">
-      <PaperCta source="flow-domains-index" eyebrow="START WITH AI CONSULTING STARTER" heading="Bring the first Domain into Flow." description="Download Flow, choose File ▸ New from GitHub…, and paste the address of AI Consulting Starter. Then pick one real client task and work along the path." />
+      <PaperCta source="flow-domains-index" eyebrow="START WITH AI CONSULTING" heading="Bring the first Domain into Flow." description="Download Flow, choose File ▸ New from GitHub…, and paste the address of AI Consulting. Then pick one real client task and work along the path." />
     </div>
   </main>
   <Footer showDownload={false} />

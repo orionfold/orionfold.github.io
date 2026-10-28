@@ -21,7 +21,7 @@ import '../../../styles/flow-elements.css';
 const articles = await publishedElementArticles();
 const bySlug = Object.fromEntries(articles.map((a) => [a.id, a]));
 const total = ELEMENT_CATEGORIES.reduce((n, c) => n + c.items.length, 0);
-const title = 'Flow Elements: every block, action, skill and chart kind | Orionfold';
+const title = 'Flow Elements: blocks, actions, skills and chart kinds | Orionfold';
 const description = `All ${total} Flow Elements in one place: blocks a document can hold, actions on your words, skills that draw your case, and chart kinds.`;
 const og = ogMeta('/flow/elements/');
 const schema = [

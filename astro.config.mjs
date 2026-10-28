@@ -240,6 +240,13 @@ export default defineConfig({
     // so they get no redirect. At go-live, mirror this as a Cloudflare 301 rule
     // (this static redirect is a meta-refresh page, weaker than an edge 301).
     '/roadmap/': '/adoption/',
+    // Domains lost their "Starter" suffix on 2026-10-28 before the first push;
+    // the product lane's ledger and Flow Guide drafts carried the old routes.
+    '/domains/ai-consulting-starter/': '/domains/ai-consulting/',
+    '/domains/learning-design-starter/': '/domains/learning-design/',
+    '/domains/research-synthesis-starter/': '/domains/research-synthesis/',
+    '/domains/finance-advisory-starter/': '/domains/finance-advisory/',
+    '/domains/accounting-advisory-starter/': '/domains/accounting-advisory/',
     // GSC 404s with real successors (2026-10-01 indexing read): the DGX book's
     // pre-rename slug (54d3fe8c) and a singular /book/ typo of the business book.
     '/books/field-notes/': '/books/ai-research-on-nvidia-dgx-spark/',

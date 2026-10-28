@@ -52,7 +52,7 @@
 .ed-contents { position: sticky; top: 130px; align-self: start; font-size: .75rem; padding-bottom: 25px; max-height: calc(100vh - 160px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .ed-contents summary { font-size: .68rem; letter-spacing: .12em; font-weight: 700; padding-bottom: 20px; }
 .ed-contents nav { display: grid; gap: 13px; }
-.ed-contents nav a { display: grid; grid-template-columns: 18px 1fr; gap: 8px; color: var(--muted); line-height: 1.5; }
+.ed-contents nav a { display: grid; grid-template-columns: 18px 1fr; gap: 8px; padding-block: 3px; color: var(--muted); line-height: 1.5; }
 .ed-contents nav a:hover { color: var(--teal); }
 .ed-contents nav a > span { color: var(--teal); font-size: .62rem; margin-top: 2px; }
 .ls .ed-contents-series { display: block; border-top: 1px solid var(--line); margin-top: 28px; padding-top: 22px; line-height: 1.6; }

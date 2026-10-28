@@ -13,7 +13,7 @@ order: 0
 featured: false
 draft: false
 chip: Canvas
-summary: Configure Jobs, ask Flow Chat, then trace the result through Connections, Evidence and History.
+summary: Configure Jobs, ask Flow Chat, then trace the result through Connections, Evidence and History. Two routes to one brief, with sources, time and cost recorded.
 stat:
   value: 71 s
   label: Jobs run to review ready

@@ -1,5 +1,5 @@
 // Flow Domains (/domains/): the Flow 3.0 launch surface and its launch story,
-// written by the website lane from the product lane's AI Consulting Starter
+// written by the website lane from the product lane's AI Consulting
 // journals and shots (operator 2026-10-27). The landing follows the Flow 3.0
 // PR/FAQ's limits: no per-Domain fee (Pro plus the Publish add-on), publishing brings no customers
 // by itself, Flow MCP is described as it works, from its changelog.
@@ -12,11 +12,11 @@ const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
 const built = (route) => read(`dist${route}index.html`);
 const hasDist = existsSync(new URL('dist/domains/index.html', root));
 // G-135: the four blueprints, in the PR/FAQ's order after the launch story.
-const BLUEPRINTS = ['learning-design-starter', 'research-synthesis-starter', 'finance-advisory-starter', 'accounting-advisory-starter'];
+const BLUEPRINTS = ['learning-design', 'research-synthesis', 'finance-advisory', 'accounting-advisory'];
 const PRIVATE = /DGH42|Harun|BeneFACT|Boardy|take rate|marketplace for Domains|Batista|Hardman|Stevens|Hopper|Marasigan/i;
 
 test('the launch story is written for Flow 3.0 from the walk, with every shot on disk and every number labelled', () => {
-  const md = read('src/content/domains/ai-consulting-starter.md');
+  const md = read('src/content/domains/ai-consulting.md');
   assert.match(md, /^release: "3\.0"$/m);
   assert.match(md, /^repo: https:\/\/github\.com\/orionfold\/flow\/tree\/main\/flow-domains\/ai-consulting-starter$/m);
   assert.doesNotMatch(md, /—/, 'no em-dashes');
@@ -28,7 +28,7 @@ test('the launch story is written for Flow 3.0 from the walk, with every shot on
   assert.ok(rows.length >= 10);
   for (const r of rows) assert.match(r, /\| (verified|derived):/, `labelled: ${r.slice(0, 60)}`);
   for (const fact of ['788', '49 links', '14 public pages', '1,624 words', '6 files sent', 'No licence stated', 'CC BY 4.0', '$0']) assert.ok(md.includes(fact), fact);
-  assert.ok(existsSync(new URL('src/assets/flow/domains/ai-consulting-starter/card.jpg', root)), 'the OG card has a jpg, not a webp');
+  assert.ok(existsSync(new URL('src/assets/flow/domains/ai-consulting/card.jpg', root)), 'the OG card has a jpg, not a webp');
 });
 
 test('the four blueprints invite an expert to build, on public signals only, and never claim a walk', () => {
@@ -51,8 +51,8 @@ test('the four blueprints invite an expert to build, on public signals only, and
     assert.ok(rows.length >= 6, `${slug}: at least six signals`);
     for (const r of rows) assert.match(r, /\| source: \[[^\]]+\]\(https?:\/\/[^)]+\),( published \d{4}(-\d{2}(-\d{2})?)?,)? checked 2026-\d{2}-\d{2} \|$/, `labelled and dated: ${r.slice(0, 70)}`);
     assert.match(body, /help\.openai\.com\/en\/articles\/20001519/, `${slug}: the forcing event, with its source`);
-    // The walkthrough is the AI Consulting Starter story, linked at the hands-on steps.
-    assert.ok((body.match(/\/domains\/ai-consulting-starter\/#/g) ?? []).length >= 4, `${slug} points at the walkthrough's steps`);
+    // The walkthrough is the AI Consulting story, linked at the hands-on steps.
+    assert.ok((body.match(/\/domains\/ai-consulting\/#/g) ?? []).length >= 4, `${slug} points at the walkthrough's steps`);
     // Pricing stays the guarded truth; the reused shots are captioned as the Domain they show.
     assert.match(body, /Bringing any Domain into Flow is free on Base\./);
     assert.match(body, /Publishing to GitHub needs the Publish add-on too/);
@@ -60,7 +60,7 @@ test('the four blueprints invite an expert to build, on public signals only, and
     assert.match(body, /Publishing does not bring clients on its own\./);
     for (const m of body.matchAll(/!\[([^\]]*)\]\((\.\.\/\.\.\/assets\/flow\/domains\/[^)]+)\)/g)) {
       assert.ok(existsSync(new URL(`src/content/domains/${m[2]}`, root)), `${m[2]} exists`);
-      assert.match(m[1], /Shown on AI Consulting Starter/, `${slug}: a reused shot says which Domain it shows`);
+      assert.match(m[1], /Shown on AI Consulting/, `${slug}: a reused shot says which Domain it shows`);
     }
     assert.ok(existsSync(new URL(`src/assets/flow/domains/${slug}/card.jpg`, root)), `${slug} has a card.jpg for the OG pipeline`);
   }
@@ -103,7 +103,7 @@ test('the landing keeps the PR/FAQ’s promises and limits', () => {
 });
 
 test('every surface prices a Domain the way the product gates it', () => {
-  for (const rel of ['src/pages/domains/[slug].astro', 'src/content/domains/ai-consulting-starter.md', 'src/content/compare/custom-gpts.md', 'public/llms.txt', 'src/components/flow/FlowDomainsBand.astro']) {
+  for (const rel of ['src/pages/domains/[slug].astro', 'src/content/domains/ai-consulting.md', 'src/content/compare/custom-gpts.md', 'public/llms.txt', 'src/components/flow/FlowDomainsBand.astro']) {
     const text = read(rel);
     assert.doesNotMatch(text, /bring\w* (a Domain|one) in needs/i, `${rel}: a pull is free on Base`);
     assert.doesNotMatch(text, /Domain in needs Flow Pro and the Import/i, rel);
@@ -120,13 +120,13 @@ test('every surface prices a Domain the way the product gates it', () => {
 
 test('the built pages link the Domain, the story and each other, and the nav leads with Domains', { skip: !hasDist }, () => {
   const land = built('/domains/');
-  assert.ok(land.includes('href="/domains/ai-consulting-starter/"'));
+  assert.ok(land.includes('href="/domains/ai-consulting/"'));
   assert.ok(land.includes('href="https://github.com/orionfold/flow/tree/main/flow-domains/ai-consulting-starter"'));
   assert.match(land, /"@type":"FAQPage"/);
   // Operator 2026-10-27: How it moves became the homepage's Flow Domains band.
   assert.match(land, /data-dp/, 'the Domain payload band');
   assert.doesNotMatch(land, /data-dj-go=/);
-  const story = built('/domains/ai-consulting-starter/');
+  const story = built('/domains/ai-consulting/');
   assert.match(story, /"@type":"Article"/);
   assert.ok(story.includes('href="/domains/"'));
   assert.equal((story.match(/<article[\s\S]*?<\/article>/)[0].match(/<img [^>]*alt="[^"]+"/g) ?? []).length, 14, 'the walk’s fourteen shots, each described');
@@ -136,14 +136,16 @@ test('the built pages link the Domain, the story and each other, and the nav lea
   // G-135: the Domains menu lists the five in the site's order, then All Domains;
   // the landing features the launch story and cards the four blueprints.
   const menu = land.match(/<div class="living-nav-dd">\s*<a[^>]*href="\/domains\/"[\s\S]*?living-nav-dd-all[^>]*>[^<]*/)[0];
-  assert.deepEqual([...menu.matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]), ['AI Consulting Starter', 'Learning Design Starter', 'Research Synthesis Starter', 'Finance Advisory Starter', 'Accounting Advisory Starter']);
+  assert.deepEqual([...menu.matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]), ['AI Consulting', 'Learning Design', 'Research Synthesis', 'Finance Advisory', 'Accounting Advisory']);
   assert.match(menu, /living-nav-dd-all[^>]*>All Domains/);
   const cards = land.match(/<ul class="dm-cards">[\s\S]*?<\/ul>/)[0];
   for (const slug of BLUEPRINTS) assert.ok(cards.includes(`href="/domains/${slug}/"`), `${slug} is a card`);
-  assert.doesNotMatch(cards, /ai-consulting-starter/, 'the launch story stays featured, not carded');
+  assert.doesNotMatch(cards, /ai-consulting/, 'the launch story stays featured, not carded');
   for (const slug of BLUEPRINTS) {
     const page = built(`/domains/${slug}/`);
     assert.match(page, /· A BLUEPRINT</, `${slug} is headed as a blueprint`);
+    assert.doesNotMatch(page, /<title>[^<]*built in Flow/, `${slug}: the title never says the Domain was built`);
+    assert.match(page, /<title>[^<]*blueprint[^<]*<\/title>/i, `${slug}: the title says blueprint`);
     assert.match(page, /class="da da--blueprint"/, `${slug}: the hero is the planned folder, drawn`);
     assert.match(page, /<dt>Status<\/dt><dd>A blueprint\. Not built yet\.<\/dd>/);
     assert.doesNotMatch(page.match(/<header[\s\S]*?<\/header>/)[0], /github\.com\/orionfold/, `${slug}: no repository link, nothing is published`);

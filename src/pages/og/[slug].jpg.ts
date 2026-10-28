@@ -4,7 +4,6 @@
 // build these materialize as dist/og/<slug>.jpg (dist/ is gitignored, so they are
 // CI-only). Page templates point og:image at /og/<slug>.jpg via ogMeta()/storyOgSlug().
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { FLOW_VERSION } from '../../lib/flow/flow-release';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
@@ -171,7 +170,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       params: { slug: flowPathOgSlug(entry.id) },
       props: {
         title: entry.data.title,
-        eyebrow: `Flow ${FLOW_VERSION} · Path · ${entry.data.chip}`,
+        eyebrow: `Flow · Path · ${entry.data.chip}`,
         seed: entry.id,
         light: true,
         ...(fs.existsSync(shot) ? { screenshotPath: shot } : { banner: true }),
@@ -180,7 +179,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   });
   const fromCompare = (await publishedCompare()).map((entry) => ({
     params: { slug: compareOgSlug(entry.id) },
-    props: { title: entry.data.title, eyebrow: `Compare · Flow and ${entry.data.tool}`, seed: entry.id, living: true } satisfies CardOptions,
+    // The card carries the pairing only (the clause before the colon); the
+    // eyebrow names the tool and the long H1 would clip at this type size.
+    props: { title: entry.data.title.replace(/:.*$/, ''), eyebrow: `Compare · Flow and ${entry.data.tool}`, seed: entry.id, living: true } satisfies CardOptions,
   }));
 
   // Flow Elements: the same light card, framed on the article's card shot.

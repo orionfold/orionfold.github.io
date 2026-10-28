@@ -70,7 +70,7 @@ const schema = [
 
     {items.length > 0
       ? <ElementViewer items={items} label={d.category} />
-      : <section class="ls-container fe-tour-cats" aria-label="The four groups"><CategoryCards articles={others} /></section>}
+      : <section class="ls-container fe-tour-cats" aria-label="The four groups"><CategoryCards articles={others} headingLevel="h2" /></section>}
 
     <div class="ed-reading-layout fp-layout fe-how ls-container" id="how-it-works">
       <aside class="ed-contents fp-rail" aria-label="Article contents">
@@ -102,7 +102,7 @@ const schema = [
     {items.length > 0 && (
       <section class="fp-section ls-container" aria-labelledby="more-elements">
         <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">MORE ELEMENTS</p><h2 id="more-elements">Another group,<br /><span class="ls-stroke">walked the same way.</span></h2></div><a class="fp-all" href="/flow/elements/">All elements →</a></div>
-        <CategoryCards articles={others} />
+        <CategoryCards articles={others} headingLevel="h2" />
       </section>
     )}
   </main>

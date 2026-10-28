@@ -3,10 +3,10 @@ tool: Custom GPTs and Claude Projects
 kind: switch
 order: 3
 title: "Flow for experts with a custom GPT or a Claude Project: your method as files you own"
-dek: "You put your method into a custom GPT or a Claude Project so clients could use it. A Flow Domain holds the same method as plain Markdown files you own, published to GitHub, with each update reaching readers as a change they review."
+dek: "You put your method into a custom GPT or a Claude Project so clients could use it. A Flow Domain holds the same method as plain Markdown files you own. It is published to GitHub, and each update reaches readers as a change they review."
 line: "Keep your method as files you own, and publish each update as a change to review."
 updated: 2026-10-27
-startWith: ai-consulting-starter
+startWith: ai-consulting
 rows:
   - topic: "What it is for"
     them: "A custom GPT is a version of ChatGPT with its own instructions and files. A Claude Project is a workspace with its own chats and a knowledge base of files you upload."
@@ -14,7 +14,7 @@ rows:
     source: { label: "Claude Help: What are projects?", href: "https://support.claude.com/en/articles/9517075-what-are-projects", checked: "2026-10-27" }
   - topic: "Where your method lives"
     them: "Your instructions and files live inside ChatGPT or Claude, next to the chats that use them."
-    flow: "AI Consulting Starter is six Markdown files, 75 KB, in a folder on the author's Mac. The same files sit on GitHub, where anyone can read every one."
+    flow: "AI Consulting is six Markdown files, 75 KB, in a folder on the author's Mac. The same files sit on GitHub, where anyone can read every one."
     source: { label: "Claude Help: What are projects?", href: "https://support.claude.com/en/articles/9517075-what-are-projects", checked: "2026-10-27" }
   - topic: "Sharing it"
     them: "An existing custom GPT can be shared by link, with a workspace, or in the GPT Store. Personal ChatGPT accounts (Free, Go, Plus and Pro) can no longer make or publish new GPTs. A Claude Project can be shared only inside a Team or Enterprise organization."
@@ -73,12 +73,12 @@ Flow has no importer for a custom GPT or a Claude Project. The way over is by ha
 
 1. Copy your GPT's instructions, or your Project's instructions, into a Markdown file in a new Flow folder.
 2. Add the files you uploaded as knowledge. Flow can import Word, PDF and other files into Markdown.
-3. Shape the folder into a path. Give it a front page, a few documents in order, and a worked example. AI Consulting Starter is one model to follow.
+3. Shape the folder into a path. Give it a front page, a few documents in order, and a worked example. AI Consulting is one model to follow.
 
 We have not yet moved a real GPT or Project into Flow. Keep the original until you have checked the new folder against it.
 
 ## The Domain to start with
 
-Read [how AI Consulting Starter was built](/domains/ai-consulting-starter/). Manav Sehgal turned nine years of Amazon mechanisms into six documents in about three hours of hands-on work. He published them to GitHub. A reader brought them in with one address and got the next update as a change to review.
+Read [how AI Consulting was built](/domains/ai-consulting/). Manav Sehgal turned nine years of Amazon mechanisms into six documents in about three hours of hands-on work. He published them to GitHub. A reader brought them in with one address and got the next update as a change to review.
 
 Publishing a Domain needs Flow Pro and the Publish add-on. Bringing one in is free on Base, and Chat on it needs Flow Pro. There is no fee per Domain. Your 10 Pro Days cover them while you try.

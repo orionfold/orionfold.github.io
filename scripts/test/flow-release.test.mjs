@@ -71,7 +71,10 @@ test('no page, component or data file hardcodes a current Flow version', () => {
 
 test('the Flow front doors read the version from the JSON', () => {
   // The Flow hero names no version since it pitches Elements (operator 2026-10-27).
-  for (const file of ['src/pages/flow.astro', 'src/data/og.ts', 'src/pages/og/[slug].jpg.ts', 'src/pages/flow/paths/[slug].astro']) {
+  // The OG endpoint names none either since 2026-10-28: a path card's eyebrow is
+  // "Flow · Path · <chip>" like Elements and Domains, and the hardcoded-version
+  // sweep above still covers that file.
+  for (const file of ['src/pages/flow.astro', 'src/data/og.ts', 'src/pages/flow/paths/[slug].astro']) {
     assert.match(read(file), /FLOW_VERSION/, `${file} uses FLOW_VERSION`);
   }
 });

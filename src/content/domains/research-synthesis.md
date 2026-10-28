@@ -1,6 +1,6 @@
 ---
-title: "From transcripts to a decision, your way: a blueprint for Research Synthesis Starter"
-domain: Research Synthesis Starter
+title: "From transcripts to a decision, your way: a blueprint for Research Synthesis"
+domain: Research Synthesis
 kind: blueprint
 role: Market research and insights consultants
 hook: "Your way of turning interviews into evidence a client can decide on, with the standards you hold yourself to."
@@ -8,7 +8,7 @@ icon: skill-decision-brief
 tint: "#cb10d5"
 order: 3
 dek: "You take forty transcripts and hand back one decision. The method is yours, the coding frame is yours, and the standards you work to are in your head and a dozen past reports. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is an invitation."
-description: "A blueprint for a Flow Domain for market research and insights consultants. The documents it would hold, the market signals behind it, and how to build, apply and publish it in Flow, with the AI Consulting Starter walkthrough as the guide."
+description: "A blueprint for a Flow Domain for market research and insights consultants. What it would hold, the signals behind it, and how to build it in Flow."
 drafted: "2026-10-28"
 release: "3.0"
 blueprint:
@@ -39,7 +39,7 @@ minutes: 8
 
 You are the person a client calls when they have a decision to make and the answer is in what customers say. You run the interviews, or you read the transcripts someone else ran, and you hand back evidence a leadership team can act on. You have a method for it. It is in your head, in a coding frame you keep adapting, and in the standards you hold to without ever writing them down.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting Starter](/domains/ai-consulting-starter/), and its launch story is the walkthrough for every step below. The point of this page is to show you what yours could hold, and to ask you to build it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. The point of this page is to show you what yours could hold, and to ask you to build it.
 
 ## The opportunity
 
@@ -82,17 +82,17 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 
 ## How you build it in Flow
 
-The [AI Consulting Starter story](/domains/ai-consulting-starter/) walks every one of these steps on a real screen. Follow it with your own material.
+The [AI Consulting story](/domains/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
 
-1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/domains/ai-consulting-starter/#an-empty-folder-and-chat-already-in-it).
-2. **Ask Chat for the README.** Describe who the Domain is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/domains/ai-consulting-starter/#a-front-page-in-the-authors-voice).
-3. **Bring in what you already have.** Your coding frame, a past report with the client's details removed, the code of conduct page you cite. New from Web Page turns a page or a shared AI chat into a document with its links kept. See [an old AI chat became a reference](/domains/ai-consulting-starter/#an-old-ai-chat-became-a-reference).
+1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/domains/ai-consulting/#an-empty-folder-and-chat-already-in-it).
+2. **Ask Chat for the README.** Describe who the Domain is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/domains/ai-consulting/#a-front-page-in-the-authors-voice).
+3. **Bring in what you already have.** Your coding frame, a past report with the client's details removed, the code of conduct page you cite. New from Web Page turns a page or a shared AI chat into a document with its links kept. See [an old AI chat became a reference](/domains/ai-consulting/#an-old-ai-chat-became-a-reference).
 4. **Let Ideas pick a Skill.** Press Suggest on your Method document. Ideas reads the sections and names a Skill for each, a Workflow Path for the steps, a Decision Brief for the template. A figure or a form waits in Review Changes until you keep it.
 
-![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting Starter, the only Domain built so far](../../assets/flow/domains/ai-consulting-starter/04-ideas-suggest.webp)
+![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Domain built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
 
-5. **Ask Chat for the next document with your own pages as sources.** The Standards document can be written from your Method and the code you follow. Repeat until the path is done. See [the next document, from his own pages](/domains/ai-consulting-starter/#the-next-document-from-his-own-pages).
-6. **Review every change.** When you merge two steps or rename a document, every page that pointed at it follows. See [Review changed the plan, and the source followed](/domains/ai-consulting-starter/#review-changed-the-plan-and-the-source-followed).
+5. **Ask Chat for the next document with your own pages as sources.** The Standards document can be written from your Method and the code you follow. Repeat until the path is done. See [the next document, from his own pages](/domains/ai-consulting/#the-next-document-from-his-own-pages).
+6. **Review every change.** When you merge two steps or rename a document, every page that pointed at it follows. See [Review changed the plan, and the source followed](/domains/ai-consulting/#review-changed-the-plan-and-the-source-followed).
 
 ## Apply it to a client job
 
@@ -104,11 +104,11 @@ With the Standards document open, you can answer the question every buyer now as
 
 When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Domain in with File, then New from GitHub, and the folder's address.
 
-![Publish open on a Domain in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting Starter](../../assets/flow/domains/ai-consulting-starter/09-published-to-github.webp)
+![Publish open on a Domain in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
 
 When you refine the coding frame and publish again, every reader's copy shows the update as a change they review. They keep their own edits. Nothing is replaced behind their back.
 
-![Flow's update sheet for a Domain a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting Starter](../../assets/flow/domains/ai-consulting-starter/12-update-sheet.webp)
+![Flow's update sheet for a Domain a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
 
 The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and PowerPoint files for the client's team. Chat on the Domain, and the figures a reader steps through, stay in Flow.
 
@@ -118,4 +118,4 @@ Bringing any Domain into Flow is free on Base. Writing with Chat, and Chat on a 
 
 ## Start here
 
-Read the [walkthrough](/domains/ai-consulting-starter/) once, end to end. Then add an empty folder in Flow, name it, and describe your method to Chat in three sentences. The README it writes is the first document of your Domain. If you want to talk it through first, the [Domains page](/domains/) has one email address and four questions.
+Read the [walkthrough](/domains/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your method to Chat in three sentences. The README it writes is the first document of your Domain. If you want to talk it through first, the [Domains page](/domains/) has one email address and four questions.

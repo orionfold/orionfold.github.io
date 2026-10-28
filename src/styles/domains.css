@@ -71,7 +71,7 @@
 .da-file--aside .da-n { background: #eef1ef; color: var(--muted); }
 .da-body { display: grid; gap: 4px; min-width: 0; }
 .da-body b { font-size: .98rem; }
-.da-body b i { font-style: normal; font-weight: 400; color: #9aa5a0; }
+.da-body b i { font-style: normal; font-weight: 400; color: var(--muted); }
 .da-body small { font-size: .86rem; line-height: 1.45; color: var(--muted); }
 .da-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .da-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px 3px 3px; border: 1px solid var(--line); border-radius: 99px; background: #fff; font-size: .74rem; font-weight: 500; color: #3b4541; }

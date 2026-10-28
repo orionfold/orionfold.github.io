@@ -11,7 +11,7 @@ heroAlt: "A bar chart open in its editor beside the Elements panel: Comparison a
 source: orionfold-flow articles/23-elements-chart-kinds/ARTICLE.md
 order: 4
 category: Chart and diagram kinds
-summary: Fifty-four chart and diagram kinds, each with the data it takes. Switch kinds and keep your data.
+summary: Fifty-four chart and diagram kinds, each with the data it takes. Switch kinds and keep your data, on your Mac, with no model involved.
 cardShot: 01-kinds-panel
 release: "3.0"
 draft: false
