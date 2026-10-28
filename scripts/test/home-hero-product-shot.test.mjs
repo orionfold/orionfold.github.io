@@ -4,8 +4,9 @@ const read = path => readFileSync(new URL(`../../${path}`, import.meta.url),'utf
 const page=read('src/pages/index.astro'), hero=read('src/components/living/HomeHero.astro');
 const mock=read('src/components/flow/mocks/HomeHeroDomainMock.astro'), css=read('src/styles/living-base.css')+read('src/styles/living-home.css');
 assert.match(page, /<HomeHero \/>/);
-// Operator 2026-10-27: the homepage hero pitches Flow Domains.
-assert.match(hero, /TURN WHAT[\s\S]*YOU KNOW[\s\S]*INTO A[\s\S]*DOMAIN/);
+// Operator 2026-10-27: the homepage hero pitches Flow Domains; the headline
+// says your method, written in plain words, becomes something AI runs.
+assert.match(hero, /WRITE HOW[\s\S]*YOU WORK\.[\s\S]*AI[\s\S]*RUNS IT\./);
 assert.match(hero, /<HomeHeroDomainMock \/>/);
 assert.match(hero, /href="\/domains\/"/);
 assert.match(hero, /<picture[\s\S]*hero-home-paper-planes\.webp/);

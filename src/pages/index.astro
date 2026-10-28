@@ -13,8 +13,10 @@ import HomeClosing from '../components/living/HomeClosing.astro';
 import FlowElementsShowcase from '../components/flow/FlowElementsShowcase.astro';
 import WowStat from '../components/flow/WowStat.astro';
 import FlowDomainsBand from '../components/flow/FlowDomainsBand.astro';
+import FlowCanvasShowcase from '../components/flow/FlowCanvasShowcase.astro';
+import PathsSection from '../components/flow/paths/PathsSection.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
-const title = "Orionfold Flow \u00b7 Turn what you know into a Domain.";
+const title = "Orionfold Flow \u00b7 Write how you work. AI runs it.";
 const description = "Flow for Mac helps consultants and experts turn their method into a Domain. Write it with your AI, publish it to GitHub, and each client gets your updates to review.";
 const og = ogMeta('/');
 const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication',name:'Orionfold Flow',applicationCategory:'ProductivityApplication',operatingSystem:'macOS',description,url:`${SITE.url}/flow/`,image:`${SITE.url}${og.image}`,author:PERSON,brand:{'@type':'Brand',name:'Orionfold'}};
@@ -27,6 +29,8 @@ const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication
     <FlowElementsShowcase id="home-elements" />
     <FlowDomainsBand id="home-domains" />
     <WowStat ids={['brief43', 'agent']} />
+    <FlowCanvasShowcase id="home-canvas" />
+    <PathsSection id="home-paths" showFor={false} />
     <CompareSection />
     <FlagshipEssayInvitation />
     <WowStat ids={['watch']} tone="ink" />

@@ -69,9 +69,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     "slug": "home",
     "eyebrow": "Orionfold Flow · Domains",
-    "title": "Turn what you know into a Domain.",
+    "title": "Write how you work. AI runs it.",
     "seed": "home",
-    "alt": "Orionfold Flow: Turn what you know into a Domain. Origami paper planes rise from an open book on yellow.",
+    "alt": "Orionfold Flow Domains: Write how you work. AI runs it. Origami paper planes rise from an open book on yellow.",
     "living": true
 },
   '/advisor/': {
@@ -203,9 +203,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/flow/': {
     "slug": "flow",
     "eyebrow": "Flow for Mac · Elements",
-    "title": "Pick a card. See it drawn.",
+    "title": "Describe it. Flow draws it.",
     "seed": "flow",
-    "alt": "Flow for Mac: Pick a card. See it drawn. Origami paper planes carry documents forward.",
+    "alt": "Flow for Mac: Describe it. Flow draws it. Origami paper planes carry documents forward.",
     "living": true
 },
   '/flow/paths/': {

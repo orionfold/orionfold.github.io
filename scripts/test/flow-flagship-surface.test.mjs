@@ -109,7 +109,7 @@ assert.match(categoryShell, /<FlowSubNav active="tour" \/>/, 'the Flow category 
 // Approved Living Systems product proofs replace the racing photograph and
 // real screenshot on the flagship. Detailed tours keep their capture rails.
 assert.match(flowPageSource, /<FlowHero \/>/);
-assert.match(read('src/components/living/FlowHero.astro'), /PRESS ⌘5\.[\s\S]*SEE IT[\s\S]*DRAWN\./, 'the Flow hero pitches Elements (operator 2026-10-27)');
+assert.match(read('src/components/living/FlowHero.astro'), /DESCRIBE IT\.[\s\S]*FLOW[\s\S]*DRAWS IT\./, 'the Flow hero pitches Elements (operator 2026-10-27)');
 // Operator 2026-10-27 removed the /flow/ Base band that carried it; the tour keeps the promise.
 assert.match(tour, /offline/i, 'the document tools retain their offline promise');
 assert.match(flow, /diff you approve|Review changes|Keep\/Revert|Keep and Revert/i, 'human review remains visible');
@@ -489,7 +489,7 @@ const homePageSource = read('src/pages/index.astro');
 const home = homePageSource + '\n' + livingSource;
 const homeHero = read('src/components/living/HomeHero.astro');
 const flowWaitlistComponent = read('src/components/sections/FlowWaitlist.astro');
-assert.match(homeHero, /TURN WHAT[\s\S]*YOU KNOW[\s\S]*INTO A[\s\S]*DOMAIN/, 'the homepage hero pitches Flow Domains (operator 2026-10-27)');
+assert.match(homeHero, /WRITE HOW[\s\S]*YOU WORK\.[\s\S]*AI[\s\S]*RUNS IT\./, 'the homepage hero pitches Flow Domains (operator 2026-10-27)');
 assert.match(homePageSource, /<ConfirmBanner \/>/, 'confirmed-email landing behavior remains mounted');
 assert.match(homePageSource, /SoftwareApplication/);
 assert.match(homeHero, /<HomeHeroDomainMock \/>/);
@@ -623,8 +623,8 @@ for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
   assert.match(entry, /["']?alt["']?: ["'][^"']{35,}/, `${route}: descriptive social alt`);
   assert.doesNotMatch(entry, /screenshot:/, `${route}: flagship social card uses editorial origami`);
 }
-assert.match(ogData,/Pick a card\. See it drawn\./);
-assert.match(ogData,/Turn what you know into a Domain\./);
+assert.match(ogData,/Describe it\. Flow draws it\./);
+assert.match(ogData,/Write how you work\. AI runs it\./);
 assert.match(ogData,/Room for a Renaissance/);
 assert.match(ogData,/The Researcher, Writer and Builder in You/);
 const ogCardSource=read('src/lib/og/card.ts');

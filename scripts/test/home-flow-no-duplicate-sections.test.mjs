@@ -10,7 +10,9 @@ const body = (p) => {
   const src = read(p);
   return src.slice(src.indexOf('<main'), src.indexOf('</main>'));
 };
-const sections = (html) => new Set([...html.matchAll(/<([A-Z]\w+)[\s/>]/g)].map((m) => m[1]).filter((c) => c !== 'WowStat'));
+// Operator 2026-10-27: Canvas is shown on both pages on purpose.
+const SHARED_ON_PURPOSE = new Set(['WowStat', 'FlowCanvasShowcase']);
+const sections = (html) => new Set([...html.matchAll(/<([A-Z]\w+)[\s/>]/g)].map((m) => m[1]).filter((c) => !SHARED_ON_PURPOSE.has(c)));
 const stats = (html) => [...html.matchAll(/<WowStat ids=\{\[([^\]]*)\]/g)].flatMap((m) => m[1].match(/'[^']+'/g) ?? []);
 
 const home = body('src/pages/index.astro');
@@ -37,4 +39,9 @@ test('/flow/ links only to sections it has, and Canvas has one', () => {
 test('the homepage keeps Elements and drops Agents and Import & Publish (operator 2026-10-27)', () => {
   assert.match(home, /<FlowElementsShowcase id="home-elements" \/>/);
   assert.doesNotMatch(home, /<FlowAgentsReviewed|<FlowInOut/);
+});
+
+test('the homepage also shows Canvas and the Paths lead card plus three (operator 2026-10-27)', () => {
+  assert.match(home, /<FlowCanvasShowcase id="home-canvas" \/>/);
+  assert.match(home, /<PathsSection id="home-paths" showFor=\{false\} \/>/);
 });
