@@ -55,71 +55,6 @@
 .da-traits b { font-size: 1rem; }
 .da-traits span:last-child { font-size: .9rem; line-height: 1.5; color: var(--muted); }
 
-/* ── The journey between two Macs ─────────────────────── */
-.dj { margin: 0; }
-.dj-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
-.dj-tab { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--muted); font-size: 14px; font-weight: 700; text-align: left; cursor: pointer; transition: border-color .2s, color .2s, background .2s; }
-.dj-tab:hover { border-color: var(--ink); color: var(--ink); }
-.dj-tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
-.dj-tab-n { position: relative; display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; font-size: 12px; }
-.dj-tab[aria-selected='true'] { border-color: var(--ink); color: var(--ink); background: var(--paper); }
-.dj-tab[aria-selected='true'] .dj-tab-n { background: var(--ink); border-color: var(--ink); color: #fff; }
-.dj-tab.is-past { color: var(--ink); }
-.dj-tab.is-past .dj-tab-n { background: var(--teal-pale); border-color: var(--teal); color: var(--teal); }
-/* The step's time runs as a ring round its number, never as an edge bar. */
-@property --dj-p { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
-.dj-ring { position: absolute; inset: -5px; border-radius: 50%; background: conic-gradient(var(--red) var(--dj-p), transparent 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); }
-.dj.is-tick .dj-tab[aria-selected='true'] .dj-ring { animation: dj-ring var(--dj-ms, 5s) linear forwards; }
-.dj.is-manual .dj-ring { display: none; }
-@keyframes dj-ring { to { --dj-p: 100%; } }
-
-.dj-stage { display: grid; grid-template-columns: minmax(0, 1fr) 70px minmax(0, 1fr) 70px minmax(0, 1fr); align-items: stretch; min-height: 360px; padding: 26px; border: 1px solid #cfd6d1; border-radius: 16px; background: linear-gradient(#fafbf9, #f3f5f1); }
-.dj-mac, .dj-hub { display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid #dfe4e0; border-radius: 12px; background: #fff; box-shadow: 0 16px 30px -24px #17201c40; }
-.dj-hub { background: #fbfbff; border-color: #d9dcf0; }
-.ls .dj-who { display: flex; align-items: center; gap: 7px; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.ls .dj-folder { display: flex; align-items: center; gap: 7px; font-size: .86rem; font-weight: 700; color: var(--teal); }
-.ls .dj-files { display: grid; gap: 4px; margin: 0; padding: 0 0 0 6px; list-style: none; }
-.dj-f { display: flex; align-items: center; gap: 7px; padding: 4px 7px; border-radius: 6px; font-size: .8rem; color: #2a332f; }
-.dj-f span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dj-ok { color: #2fa36b; opacity: 0; }
-.dj-edit { flex: none; padding: 1px 7px; border-radius: 99px; background: #fff3cf; font-size: .66rem; font-style: normal; font-weight: 700; color: #7a5a00; }
-/* Build: each file arrives, then is kept. */
-.dj[data-step='0'] .dj-mac:first-child .dj-f { animation: dj-in .4s ease both; animation-delay: calc(.3s + var(--i) * .5s); }
-.dj[data-step='0'] .dj-mac:first-child .dj-ok { animation: dj-fade .3s ease both; animation-delay: calc(.6s + var(--i) * .5s); }
-.dj:not([data-step='0']) .dj-ok { opacity: 1; }
-.dj.is-manual .dj-f, .dj.is-manual .dj-ok { animation: none !important; opacity: 1; }
-.ls .dj-note { margin-top: auto; font-size: .8rem; color: var(--muted); }
-.ls .dj-btn { align-self: flex-start; margin-top: auto; padding: 7px 12px; border-radius: 8px; background: #2a62c9; color: #fff; font-size: .78rem; font-weight: 700; }
-.ls .dj-path { font-size: .82rem; line-height: 1.45; color: var(--muted); }
-.dj-path b { color: var(--ink); }
-.ls .dj-commits { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.dj-commits li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; padding: 9px 10px; border: 1px solid #e3e5f2; border-radius: 9px; background: #fff; font-size: .78rem; animation: dj-in .45s ease both; }
-.dj-commits li > svg { grid-row: span 2; margin-top: 2px; color: #5b5fc7; }
-.dj-commits b { font-family: ui-monospace, Menlo, monospace; color: #5b5fc7; }
-.dj-commits small { color: var(--muted); }
-.ls .dj-empty { margin: auto 0; font-size: .82rem; color: #9aa5a0; text-align: center; }
-.dj-sheet { display: grid; gap: 4px; padding: 13px; border: 1px solid #dfe4e0; border-radius: 11px; background: #fbfcfb; box-shadow: 0 10px 24px -16px #17201c50; font-size: .78rem; color: #3b4541; animation: dj-in .45s ease both; }
-.ls .dj-sheet p { margin: 0; }
-.ls .dj-sheet-t { font-size: .86rem; font-weight: 700; color: var(--ink); }
-.ls .dj-quiet { color: var(--muted); }
-.dj-add { justify-self: end; margin-top: 6px; padding: 5px 11px; border-radius: 7px; background: #2a62c9; color: #fff; font-weight: 700; }
-.dj-pulled { display: grid; gap: 6px; animation: dj-in .45s ease both; }
-.dj-dot { width: 9px; height: 9px; margin-left: auto; border-radius: 50%; background: #2a62c9; box-shadow: 0 0 0 4px #2a62c933; animation: dj-pulse 1.4s ease-in-out infinite; }
-.dj-files--mini .dj-more { padding-left: 7px; font-size: .74rem; color: var(--muted); }
-/* The wires: files travel along them while a step sends them. */
-.dj-wire { position: relative; align-self: center; height: 2px; margin: 0 6px; background: repeating-linear-gradient(90deg, #b9c2bd 0 6px, transparent 6px 11px); }
-.dj-wire i { position: absolute; top: -4px; left: 0; width: 10px; height: 10px; border-radius: 3px; background: var(--teal); opacity: 0; }
-.dj[data-step='1'] .dj-wire--a i, .dj[data-step='2'] .dj-wire--b i, .dj[data-step='3'] .dj-wire i { animation: dj-travel 1.6s ease-in-out infinite; }
-.dj-wire i:nth-child(2) { animation-delay: .3s !important; }
-.dj-wire i:nth-child(3) { animation-delay: .6s !important; }
-.dj-cap { margin-top: 14px; font-size: 13px; color: var(--muted); }
-.dj-cap a { color: var(--ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 3px; }
-@keyframes dj-travel { 0% { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: calc(100% - 10px); opacity: 0; } }
-@keyframes dj-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-@keyframes dj-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes dj-pulse { 50% { opacity: .4; } }
-.dj [hidden] { display: none !important; }
-
 /* ── The first Domain ─────────────────────────────────── */
 .dm-first { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px; align-items: start; }
 .ls .dm-time { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
@@ -181,20 +116,15 @@
 .ls .dm-faq p { margin-top: 10px; font-size: .94rem; line-height: 1.55; color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
-  .dj *, .dm-loop-run { animation: none !important; }
-  .dj-ok, .dj-f { opacity: 1 !important; }
+  .dm-loop-run { animation: none !important; }
 }
 @media (max-width: 1100px) {
-  .dj-stage { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 14px; }
-  .dj-wire { justify-self: center; width: 2px; height: 28px; margin: 0; background: repeating-linear-gradient(180deg, #b9c2bd 0 6px, transparent 6px 11px); }
-  .dj-wire i { left: -4px !important; }
   .dm-formats, .dm-pairs { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
 @media (max-width: 900px) {
   .dm-hero-foot, .da, .dm-first, .dm-model, .dm-next-in { grid-template-columns: minmax(0, 1fr); }
   .ls .dm-pains, .dm-faq { grid-template-columns: minmax(0, 1fr); }
   .dm-story { position: static; }
-  .dj-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) {
   .dm-section { padding-block: 52px; }

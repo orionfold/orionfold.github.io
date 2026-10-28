@@ -110,7 +110,8 @@ assert.match(categoryShell, /<FlowSubNav active="tour" \/>/, 'the Flow category 
 // real screenshot on the flagship. Detailed tours keep their capture rails.
 assert.match(flowPageSource, /<FlowHero \/>/);
 assert.match(read('src/components/living/FlowHero.astro'), /PRESS ⌘5\.[\s\S]*SEE IT[\s\S]*DRAWN\./, 'the Flow hero pitches Elements (operator 2026-10-27)');
-assert.match(flow, /offline/i, 'the document tools retain their offline promise');
+// Operator 2026-10-27 removed the /flow/ Base band that carried it; the tour keeps the promise.
+assert.match(tour, /offline/i, 'the document tools retain their offline promise');
 assert.match(flow, /diff you approve|Review changes|Keep\/Revert|Keep and Revert/i, 'human review remains visible');
 assert.match(flow, /patent pending/i);
 assert.match(flowPageSource, /title=\{title\}/);
@@ -389,7 +390,8 @@ assert.doesNotMatch(flowDetailComponent, /^\s+filter:\s*blur\(/m, 'blur filters 
 // G-113 overview compression: one concrete four-part product argument replaces
 // the old five-layer concept diagram and its second product model.
 assert.doesNotMatch(flow, /FlowWorkbenchIllustration|Five layers, one approval/, 'the overview keeps one product model');
-for (const capability of ['FlowDocuments','FlowIdeas','FlowRouting','FlowReceipts','FlowMorningBriefing']) assert.match(flowPageSource, new RegExp(`<${capability} \\/>`), `${capability} stays in the overview`);
+// Operator 2026-10-27 removed the Documents, Ideas, Routing, Receipts and Morning bands; their old #tour-* anchors stay.
+for (const anchors of ['FlowDocumentAnchors','FlowIdeasAnchors','FlowRoutingAnchors','FlowReceiptsAnchors']) assert.match(flowPageSource, new RegExp(`<${anchors} \\/>`), `${anchors} keeps old deep links landing`);
 // Enterprise adoption patterns: nine question cards, honestly tagged. Data
 // lives in src/data/flow-enterprise.ts (2026-08-20); the overview now carries
 // one compact route and /flow/enterprise/ renders all nine.

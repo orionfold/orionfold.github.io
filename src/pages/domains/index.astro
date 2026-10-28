@@ -12,7 +12,7 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import PaperCta from '../../components/ui/PaperCta.astro';
 import DomainAnatomy from '../../components/flow/domains/DomainAnatomy.astro';
-import DomainJourney from '../../components/flow/domains/DomainJourney.astro';
+import FlowDomainsBand from '../../components/flow/FlowDomainsBand.astro';
 import ArrowRight from '@lucide/astro/icons/arrow-right';
 import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
 import { publishedDomainArticles, domainArticleHref } from '../../lib/flow/domains';
@@ -104,10 +104,7 @@ const schema = [
       <DomainAnatomy repo={launch.data.repo} />
     </section>
 
-    <section class="dm-section ls-container" aria-labelledby="dm-how">
-      <div class="dm-head"><p class="ls-eyebrow">HOW IT MOVES</p><h2 id="dm-how">Built in Flow.<br /><span class="ls-stroke">Kept current for every reader.</span></h2></div>
-      <DomainJourney />
-    </section>
+    <FlowDomainsBand id="dm-how" self />
 
     <section class="dm-section ls-container" aria-labelledby="dm-first">
       <div class="dm-head"><p class="ls-eyebrow">THE FIRST DOMAIN</p><h2 id="dm-first">An empty folder<br /><span class="ls-stroke">to GitHub in a few hours.</span></h2><p class="dm-sub">AI Consulting Starter turns nine years of Amazon mechanisms into a path for adopting AI. The hands-on work took about three hours across two days, and no run cost anything on top of a Claude subscription.</p></div>

@@ -47,7 +47,9 @@ test('the built pages link the Domain, the story and each other, and the nav lea
   assert.ok(land.includes('href="/domains/ai-consulting-starter/"'));
   assert.ok(land.includes('href="https://github.com/orionfold/flow/tree/main/flow-domains/ai-consulting-starter"'));
   assert.match(land, /"@type":"FAQPage"/);
-  assert.equal((land.match(/data-dj-go=/g) ?? []).length, 4, 'four journey steps');
+  // Operator 2026-10-27: How it moves became the homepage's Flow Domains band.
+  assert.match(land, /data-dp/, 'the Domain payload band');
+  assert.doesNotMatch(land, /data-dj-go=/);
   const story = built('/domains/ai-consulting-starter/');
   assert.match(story, /"@type":"Article"/);
   assert.ok(story.includes('href="/domains/"'));

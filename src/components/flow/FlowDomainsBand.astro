@@ -7,8 +7,9 @@
 import ArrowRight from '@lucide/astro/icons/arrow-right';
 import DomainPayload from './domains/DomainPayload.astro';
 import { publishedDomainArticles, domainArticleHref } from '../../lib/flow/domains';
-interface Props { id?: string }
-const { id = 'flow-domains' } = Astro.props;
+// On /domains/ itself (self) the band leaves out its link to that page.
+interface Props { id?: string; self?: boolean }
+const { id = 'flow-domains', self = false } = Astro.props;
 const [launch] = await publishedDomainArticles();
 ---
 {launch && (
@@ -21,7 +22,7 @@ const [launch] = await publishedDomainArticles();
       <div class="ls-episode-dek">
         <p>A Domain is the method you use with clients, as a folder of plain Markdown files. You write it with your AI as co-author, and you keep or undo each change it makes. {launch.data.domain} is 6 files and 75 KB.</p>
         <p>Those few files carry a lot. In your client's Flow they open with figures, tables and checklists drawn, and with skills and Jobs ready to run. Their agent can read your method through Flow too. Publish again, and every client gets a change to review, file by file.</p>
-        <p class="fd-links"><a href="/domains/">See Flow Domains<ArrowRight size={16} /></a><a href={domainArticleHref(launch.id)}>How {launch.data.domain} was built<ArrowRight size={16} /></a></p>
+        <p class="fd-links">{!self && <a href="/domains/">See Flow Domains<ArrowRight size={16} /></a>}<a href={domainArticleHref(launch.id)}>How {launch.data.domain} was built<ArrowRight size={16} /></a></p>
       </div>
     </div>
     <DomainPayload />

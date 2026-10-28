@@ -9,7 +9,9 @@ const homeSections=['HomeHero','FlagshipEssayInvitation','HomeClosing'];
 assert.doesNotMatch(home,/HomeContinuity|HomeDocumentWorkshop|HomeIdeas|ids=\{\['cents'\]\}/);
 const positions=homeSections.map(name=>home.indexOf(`<${name} />`));
 assert.ok(positions.every(i=>i>=0));assert.deepEqual([...positions].sort((a,b)=>a-b),positions);
-for(const name of ['FlowRhythm','FlowDocuments','FlowIdeas','FlowRouting','FlowReceipts','FlowMorningBriefing','FlowEverydayCraft','FlowLibrary','FlowPlans','FlowFaq'])assert.ok(flow.includes(`<${name} />`));
+for(const name of ['FlowLibrary','FlowPlans','FlowFaq'])assert.ok(flow.includes(`<${name} />`));
+// Operator 2026-10-27: these seven /flow/ sections were removed.
+for(const name of ['FlowRhythm','FlowDocuments','FlowIdeas','FlowRouting','FlowReceipts','FlowMorningBriefing','FlowEverydayCraft'])assert.ok(!flow.includes(`<${name} />`),name);
 const concept=read('src/pages/flow/ideas-in-motion.astro');
 assert.match(concept,/if \(!ORIONFOLD_FLOW_IDEAS_CAMPAIGN\)/,'historical concept remains gated');
 assert.match(concept,/noindex=\{true\}/);

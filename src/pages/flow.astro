@@ -11,18 +11,11 @@ import '../styles/living-flow.css';
 import faqs from '../data/living-faq.json';
 import FlowHero from '../components/living/FlowHero.astro';
 import FlowNavigation from '../components/living/FlowNavigation.astro';
-import FlowRhythm from '../components/living/FlowRhythm.astro';
 import FlowDataDefinition from '../components/living/FlowDataDefinition.astro';
 import FlowDocumentAnchors from '../components/living/FlowDocumentAnchors.astro';
-import FlowDocuments from '../components/living/FlowDocuments.astro';
 import FlowIdeasAnchors from '../components/living/FlowIdeasAnchors.astro';
-import FlowIdeas from '../components/living/FlowIdeas.astro';
 import FlowRoutingAnchors from '../components/living/FlowRoutingAnchors.astro';
-import FlowRouting from '../components/living/FlowRouting.astro';
 import FlowReceiptsAnchors from '../components/living/FlowReceiptsAnchors.astro';
-import FlowReceipts from '../components/living/FlowReceipts.astro';
-import FlowMorningBriefing from '../components/living/FlowMorningBriefing.astro';
-import FlowEverydayCraft from '../components/living/FlowEverydayCraft.astro';
 import FlowLibrary from '../components/living/FlowLibrary.astro';
 import PathsHomeMock from '../components/flow/paths/PathsHomeMock.astro';
 import FlowProof from '../components/living/FlowProof.astro';
@@ -57,20 +50,13 @@ const reelSchema = flowReelSchema(SITE.url, reelLede);
     <PathsHomeMock />
     <WowStat ids={['figures', 'footnotes']} />
     <FlowDataDefinition />
-    <WowStat ids={['refresh']} />
-    <FlowRhythm />
+    <WowStat ids={['refresh', 'cents', 'market']} />
+    {/* Old links into removed sections (operator 2026-10-27) still land here. */}
+    <span id="how-it-works" class="ls-anchor-alias" aria-hidden="true"></span><span id="flow-overview-heading" class="ls-anchor-alias" aria-hidden="true"></span><span id="tour" class="ls-anchor-alias" aria-hidden="true"></span><span id="gallery" class="ls-anchor-alias" aria-hidden="true"></span>
     <FlowDocumentAnchors />
-    <FlowDocuments />
     <FlowIdeasAnchors />
-    <FlowIdeas />
     <FlowRoutingAnchors />
-    <FlowRouting />
-    <WowStat ids={['cents']} />
     <FlowReceiptsAnchors />
-    <FlowReceipts />
-    <FlowMorningBriefing />
-    <WowStat ids={['market']} />
-    <FlowEverydayCraft />
     <FlowLibrary />
     <FlowProof />
     <FlowPlans />
