@@ -1,6 +1,12 @@
 ---
 title: "From an empty folder to GitHub: how AI Consulting Starter was built in Flow"
 domain: AI Consulting Starter
+kind: launch
+role: AI and management consultants
+hook: "Nine years of Amazon mechanisms, built into a Domain and published to GitHub in a few hours."
+icon: skill-isometric-figure
+tint: "#0086f9"
+order: 1
 dek: "Manav Sehgal turned nine years of Amazon mechanisms into a Flow Domain. It is six living documents, written with Chat, drawn with Skills, reviewed line by line and published to GitHub. A reader brought it in with one address and got the next update as a change to review. The hands-on work took about three hours, and no run cost anything on top of a Claude subscription."
 description: "How AI Consulting Starter, the first Flow Domain, was built in Flow from an empty folder, published to GitHub and brought in by a reader who then got its update as a review."
 drafted: "2026-10-27"

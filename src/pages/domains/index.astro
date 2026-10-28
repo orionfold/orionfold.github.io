@@ -19,7 +19,8 @@ import DomainAnatomy from '../../components/flow/domains/DomainAnatomy.astro';
 import FlowDomainsBand from '../../components/flow/FlowDomainsBand.astro';
 import ArrowRight from '@lucide/astro/icons/arrow-right';
 import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
-import { publishedDomainArticles, domainArticleHref } from '../../lib/flow/domains';
+import { publishedDomainArticles, domainArticleHref, isBlueprint } from '../../lib/flow/domains';
+import { elementDrawing } from '../../lib/flow/elements';
 import { ogMeta } from '../../data/og';
 import { SITE, PERSON } from '../../data/seo';
 import '../../styles/living-base.css';
@@ -27,7 +28,11 @@ import '../../styles/essays.css';
 import '../../styles/flow-paths.css';
 import '../../styles/domains.css';
 
-const [launch] = await publishedDomainArticles();
+// The launch story stays featured; the blueprints (G-135) render as cards
+// below it, in the PR/FAQ's order, each an invitation to build.
+const articles = await publishedDomainArticles();
+const [launch] = articles;
+const blueprints = articles.filter(isBlueprint);
 const title = 'Flow Domains: your expertise as a living system | Orionfold';
 const description = 'Turn the method you use with clients into a Flow Domain. Co-author living documents with any AI, review them, publish to GitHub and keep them current for every client.';
 const og = ogMeta('/domains/');
@@ -88,7 +93,7 @@ const schema = [
   {
     '@context': 'https://schema.org', '@type': 'CollectionPage',
     name: 'Flow Domains', description, url: `${SITE.url}/domains/`, author: PERSON,
-    mainEntity: { '@type': 'ItemList', itemListElement: [{ '@type': 'ListItem', position: 1, item: { '@type': 'Article', name: launch.data.title, url: `${SITE.url}${domainArticleHref(launch.id)}` } }] },
+    mainEntity: { '@type': 'ItemList', itemListElement: articles.map((a, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'Article', name: a.data.title, url: `${SITE.url}${domainArticleHref(a.id)}` } })) },
   },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Domains', item: `${SITE.url}/domains/` }] },
@@ -142,6 +147,25 @@ const schema = [
         </a>
       </div>
     </section>
+
+    {blueprints.length > 0 && (
+      <section class="dm-section ls-container" aria-labelledby="dm-blueprints">
+        <div class="dm-head"><p class="ls-eyebrow">BLUEPRINTS</p><h2 id="dm-blueprints">Your expertise<br /><span class="ls-stroke">has a Domain in it.</span></h2><p class="dm-sub">Four blueprints for four kinds of expert. Each one shows what a Domain for that work would hold and how you would build it, with the launch story as the walkthrough. None of them is built yet. The next one could be yours.</p></div>
+        <ul class="dm-cards">
+          {blueprints.map((b) => (
+            <li>
+              <a href={domainArticleHref(b.id)} style={`--dm-tint:${b.data.tint}`}>
+                <span class="dm-card-ic" set:html={elementDrawing(b.data.icon)} />
+                <small>BLUEPRINT · {b.data.role.toUpperCase()}</small>
+                <b>{b.data.domain}</b>
+                <span class="dm-card-line">{b.data.hook}</span>
+                <em>Read the blueprint<ArrowRight size={16} /></em>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
     <section class="dm-section ls-container" aria-labelledby="dm-yours">
       <div class="dm-head"><p class="ls-eyebrow">YOUR SERVICE</p><h2 id="dm-yours">Your expertise.<br /><span class="ls-stroke">Your clients. Your brand.</span></h2></div>

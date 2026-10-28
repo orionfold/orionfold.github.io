@@ -14,7 +14,7 @@ const dist = (route) => new URL(`dist${route}index.html`, root);
 const hasDist = existsSync(dist('/'));
 
 const ROUTES = [
-  '/', '/flow/', '/domains/', '/domains/ai-consulting-starter/', '/flow/paths/', '/flow/compare/',
+  '/', '/flow/', '/domains/', '/domains/ai-consulting-starter/', '/domains/learning-design-starter/', '/domains/research-synthesis-starter/', '/domains/finance-advisory-starter/', '/domains/accounting-advisory-starter/', '/flow/paths/', '/flow/compare/',
   '/flow/compare/notion/', '/flow/compare/obsidian/', '/flow/compare/custom-gpts/', '/flow/compare/claude-code/',
   '/flow/compare/codex/', '/flow/compare/hermes-openclaw/', '/flow/compare/word/', '/flow/compare/canva/',
 ];
@@ -35,6 +35,11 @@ const ALLOWED = [
   'Flow Domains: your expertise as a living system',
   'Flow Paths: real work, walked end to end',
   'From an empty folder to GitHub: how AI Consulting Starter',
+  // The four Domain blueprints' titles (G-135), the same shape as the launch story's.
+  'Teach the way you teach, every time: a blueprint for Learning Design Starter',
+  'From transcripts to a decision, your way: a blueprint for Research Synthesis Starter',
+  'The board pack that remembers your judgment: a blueprint for Finance Advisory Starter',
+  'A close your clients can read: a blueprint for Accounting Advisory Starter',
   'Flow with Canva: the words and numbers',
   'Flow with Claude Code: your agent writes',
   'Flow with Codex: your agent proposes',

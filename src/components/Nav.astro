@@ -9,6 +9,7 @@ import { publishedCompare, compareHref, publishedPaths, pathHref } from '../lib/
 import { SHOWCASE } from '../data/flow-path-showcase';
 import { ArrowRightIcon } from '../lib/flow-icons';
 import { NAV_ELEMENTS, elementHref, elementDrawing } from '../lib/flow/elements';
+import { publishedDomainArticles, domainArticleHref } from '../lib/flow/domains';
 // "Paths" and "Compare" carry their pages as a small dropdown (desktop) or
 // indented sub-links (mobile); Compare appears only once a page is routed.
 // Every menu shows at most its top five, in the site's order, and the rest
@@ -18,10 +19,12 @@ type NavChild = { href: string; label: string; tag: string; line: string; thumb?
 const paths: NavChild[] = (await publishedPaths()).slice(0, 5).map((p) => ({ href: pathHref(p.id), label: p.data.path, tag: p.data.chip.toUpperCase(), line: SHOWCASE[p.id]?.hook ?? p.data.persona }));
 // Elements lists five elements by their sidebar drawing (operator 2026-10-26).
 const elements: NavChild[] = NAV_ELEMENTS.map((e) => ({ href: elementHref(e), label: e.name, tag: e.categoryLabel.toUpperCase(), line: e.line, thumb: { svg: elementDrawing(e.card), tint: e.tint } }));
+// Domains (G-135): the launch story first, then the blueprints in the PR/FAQ's order.
+const domains: NavChild[] = (await publishedDomainArticles()).map((d) => ({ href: domainArticleHref(d.id), label: d.data.domain, tag: d.data.kind === 'launch' ? 'LAUNCH STORY' : 'BLUEPRINT', line: d.data.hook, thumb: { svg: elementDrawing(d.data.icon), tint: d.data.tint } }));
 const compare: NavChild[] = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.tool, tag: p.data.kind === 'switch' ? 'SWITCH' : 'PAIR', line: p.data.line }));
 const links: { href: string; label: string; children?: NavChild[]; all?: string }[] = [
   { href: '/flow/', label: 'Flow' },
-  { href: '/domains/', label: 'Domains' },
+  { href: '/domains/', label: 'Domains', children: domains, all: 'All Domains' },
   { href: '/flow/paths/', label: 'Paths', ...(paths.length ? { children: paths, all: 'All paths' } : {}) },
   { href: '/flow/elements/', label: 'Elements', children: elements, all: 'All 100 elements' },
   ...(compare.length ? [{ href: '/flow/compare/', label: 'Compare', children: compare, all: 'All comparisons' }] : []),

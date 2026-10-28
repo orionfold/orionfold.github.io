@@ -44,7 +44,9 @@ test('the nav shows five Elements with their drawings, and the footer links the 
   const all = index.categories.flatMap((c) => c.items.map((i) => i.card));
   for (const p of picks) assert.ok(all.includes(p), `${p} is a real element`);
   const home = built('/');
-  assert.equal((home.match(/class="living-nav-dd-thumb"/g) ?? []).length, 5, 'five thumbnails in the Elements dropdown');
+  // Domains carries thumbs too (G-135), so count inside the Elements menu.
+  const elementsMenu = home.match(/<div class="living-nav-dd">\s*<a[^>]*href="\/flow\/elements\/"[\s\S]*?living-nav-dd-all/)?.[0] ?? '';
+  assert.equal((elementsMenu.match(/class="living-nav-dd-thumb"/g) ?? []).length, 5, 'five thumbnails in the Elements dropdown');
   assert.match(home, /href="\/flow\/elements\/"[^>]*>\s*Elements/);
   assert.match(read('src/components/Footer.astro'), /href: '\/flow\/elements\/', label: 'Elements'/);
 });

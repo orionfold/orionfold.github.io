@@ -1,8 +1,12 @@
 ---
-// /domains/<slug>/ — a Domain's launch article: how it was built in Flow,
-// published to GitHub and brought in by a reader. Written by the website lane
-// from the product lane's session journals and shots; the reading layout,
-// rail and CTA follow the Paths articles.
+// /domains/<slug>/ — a Domain article. The launch story tells how AI
+// Consulting Starter was built in Flow, published to GitHub and brought in by
+// a reader, from the product lane's session journals and shots. A blueprint
+// (G-135) shows an expert in one role what their own Domain could hold and how
+// they would build it, with the launch story as the walkthrough; nothing in a
+// blueprint was built or walked, so its hero is the planned folder drawn by
+// DomainAnatomy and its rail carries no walk facts. The reading layout, rail
+// and CTA follow the Paths articles.
 import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import { fitTitle, fitDescription } from '../../lib/flow/seo-meta';
@@ -10,7 +14,8 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import PaperCta from '../../components/ui/PaperCta.astro';
-import { publishedDomainArticles, domainArticleHref, type DomainArticle } from '../../lib/flow/domains';
+import DomainAnatomy from '../../components/flow/domains/DomainAnatomy.astro';
+import { publishedDomainArticles, domainArticleHref, isBlueprint, type DomainArticle } from '../../lib/flow/domains';
 import { domainOgSlug, ogPath } from '../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../data/seo';
 import '../../styles/living-base.css';
@@ -20,26 +25,37 @@ import '../../styles/domains.css';
 
 export async function getStaticPaths() {
   const articles = await publishedDomainArticles();
-  return articles.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  const launch = articles.find((a) => a.data.kind === 'launch');
+  return articles.map((entry) => ({ params: { slug: entry.id }, props: { entry, launch } }));
 }
 
-const { entry } = Astro.props as { entry: DomainArticle };
+const { entry, launch } = Astro.props as { entry: DomainArticle; launch?: DomainArticle };
 const { Content, headings } = await render(entry);
 const d = entry.data;
+const blueprint = isBlueprint(entry);
+const walkthrough = launch && launch.id !== entry.id ? launch : undefined;
 const sections = headings.filter((h) => h.depth === 2);
-const numbers = sections.find((h) => h.text === 'The numbers');
+const numbers = sections.find((h) => h.text === (blueprint ? 'The signals' : 'The numbers'));
 const dateIso = d.drafted.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
 const canonical = `${SITE.url}${domainArticleHref(entry.id)}`;
 const ogImage = ogPath(domainOgSlug(entry.id));
 const seoTitle = fitTitle(`${d.title} · Flow Domains · Orionfold`, `${d.domain}, built in Flow · Flow Domains · Orionfold`);
-const FACTS = [
-  { label: 'Files', value: `${d.files} Markdown files, ${d.size}` },
-  { label: 'Licence', value: d.licence },
-  { label: 'Hands-on time', value: 'About 3 hours, over two days' },
-  { label: 'AI spend', value: '$0 on top of a Claude subscription' },
-  { label: 'Walked', value: d.walked.replace(/-/g, '‑') },
-];
+const FACTS = blueprint
+  ? [
+      { label: 'Status', value: 'A blueprint. Not built yet.' },
+      { label: 'For', value: d.role },
+      { label: 'Documents planned', value: `${d.blueprint!.length}, every one plain Markdown` },
+      { label: 'To publish', value: 'Flow Pro and the Publish add-on' },
+      { label: 'The walkthrough', value: walkthrough ? walkthrough.data.domain : 'AI Consulting Starter' },
+    ]
+  : [
+      { label: 'Files', value: `${d.files} Markdown files, ${d.size}` },
+      { label: 'Licence', value: d.licence! },
+      { label: 'Hands-on time', value: 'About 3 hours, over two days' },
+      { label: 'AI spend', value: '$0 on top of a Claude subscription' },
+      { label: 'Walked', value: d.walked!.replace(/-/g, '‑') },
+    ];
 const schema = [
   {
     '@context': 'https://schema.org', '@type': 'Article',
@@ -50,7 +66,7 @@ const schema = [
     image: `${SITE.url}${ogImage}`,
     about: [
       { '@type': 'SoftwareApplication', name: 'Orionfold Flow', operatingSystem: 'macOS', softwareVersion: d.release },
-      { '@type': 'CreativeWork', name: d.domain, url: d.repo, license: 'https://creativecommons.org/licenses/by/4.0/', author: PERSON },
+      ...(blueprint ? [] : [{ '@type': 'CreativeWork', name: d.domain, url: d.repo, license: 'https://creativecommons.org/licenses/by/4.0/', author: PERSON }]),
     ],
     isPartOf: { '@type': 'CollectionPage', name: 'Flow Domains', url: `${SITE.url}/domains/` },
   },
@@ -63,21 +79,25 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={fitDescription(d.description)} ogImage={ogImage} ogImageAlt={`${d.domain}, a Flow Domain built in Flow and published to GitHub`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page dm-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Domains', tags: ['Flow', 'Flow Domains', d.domain] }}>
+<Layout title={seoTitle} description={fitDescription(d.description)} ogImage={ogImage} ogImageAlt={blueprint ? `${d.domain}, a blueprint for a Flow Domain` : `${d.domain}, a Flow Domain built in Flow and published to GitHub`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page dm-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Domains', tags: ['Flow', 'Flow Domains', d.domain] }}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero ls-container">
-      <div class="ed-article-kicker"><a href="/domains/">← Domains</a><span>FLOW DOMAIN / {d.domain.toUpperCase()} · THE LAUNCH STORY</span></div>
+      <div class="ed-article-kicker"><a href="/domains/">← Domains</a><span>FLOW DOMAIN / {d.domain.toUpperCase()} · {blueprint ? 'A BLUEPRINT' : 'THE LAUNCH STORY'}</span></div>
       <h1>{d.title}</h1>
       <p class="ed-article-dek">{d.dek}</p>
-      <div class="ed-hero-bottom"><div class="ed-meta"><span>By Manav Sehgal</span><span>{d.minutes} min read</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href={d.repo} class="ed-download-link">Get the Domain on GitHub ↗</a></div></div>
-      <figure class="fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>
+      <div class="ed-hero-bottom"><div class="ed-meta"><span>By Manav Sehgal</span><span>{d.minutes} min read</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links">{blueprint
+        ? walkthrough && <a href={domainArticleHref(walkthrough.id)} class="ed-download-link">Read the walkthrough →</a>
+        : <a href={d.repo} class="ed-download-link">Get the Domain on GitHub ↗</a>}</div></div>
+      {blueprint
+        ? <div class="dm-blueprint-hero"><DomainAnatomy blueprint name={d.domain} by={`for ${d.role[0].toLowerCase()}${d.role.slice(1)}`} files={d.blueprint!} label={`${d.domain}, a blueprint: the ${d.blueprint!.length} documents the Domain would hold`} /></div>
+        : <figure class="fp-heroshot"><Image src={d.hero!} alt={d.heroAlt!} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>}
     </header>
 
     <div class="ed-reading-layout fp-layout ls-container">
       <aside class="ed-contents fp-rail" aria-label="Article contents and the Domain's facts">
         <details open>
-          <summary>IN THIS STORY</summary>
+          <summary>{blueprint ? 'IN THIS BLUEPRINT' : 'IN THIS STORY'}</summary>
           <nav aria-label="Sections">
             {sections.map((h, i) => <a href={`#${h.slug}`}><span>{String(i + 1).padStart(2, '0')}</span>{h.text}</a>)}
           </nav>
@@ -87,15 +107,20 @@ const schema = [
           <dl>{FACTS.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl>
           {numbers && <p class="fp-receipt-note">Every number is labelled. <a href={`#${numbers.slug}`}>See the table</a>.</p>}
         </div>
-        <a class="fp-try" href="#bring-it-in">Bring it into Flow →</a>
+        <a class="fp-try" href="#bring-it-in">{blueprint ? 'Start building →' : 'Bring it into Flow →'}</a>
       </aside>
       <article class="ed-prose fp-prose" aria-label={d.title}>
         <Content />
         <div id="bring-it-in">
-          <PaperCta layout="article" class="ed-paper-cta"
-            source={`flow-domain-${entry.id}`} headingId="domain-cta"
-            eyebrow="BRING IT INTO FLOW" heading={`Open ${d.domain} on your Mac.`}
-            description={`In Flow, choose File ▸ New from GitHub…, paste the folder's address from GitHub and press Add. The ${d.files} files land in a folder of their own, and the next update arrives as a change you review. Bringing a Domain in is free on Base. Chat on it needs Flow Pro.`} />
+          {blueprint
+            ? <PaperCta layout="article" class="ed-paper-cta"
+                source={`flow-domain-${entry.id}`} headingId="domain-cta"
+                eyebrow="BUILD YOUR DOMAIN" heading={`Start ${d.domain} on your Mac.`}
+                description={`Download Flow, add an empty folder and name it. Chat is ready before any document exists. Follow the AI Consulting Starter walkthrough step by step, with your own know-how as the source. Writing with Chat needs Flow Pro. Publishing to GitHub needs the Publish add-on too.`} />
+            : <PaperCta layout="article" class="ed-paper-cta"
+                source={`flow-domain-${entry.id}`} headingId="domain-cta"
+                eyebrow="BRING IT INTO FLOW" heading={`Open ${d.domain} on your Mac.`}
+                description={`In Flow, choose File ▸ New from GitHub…, paste the folder's address from GitHub and press Add. The ${d.files} files land in a folder of their own, and the next update arrives as a change you review. Bringing a Domain in is free on Base. Chat on it needs Flow Pro.`} />}
         </div>
       </article>
     </div>

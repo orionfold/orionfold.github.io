@@ -466,19 +466,46 @@ const domains = defineCollection({
     z.object({
       title: z.string(),
       domain: z.string(), // the Domain the article is about
+      // 'launch': a Domain that exists, was walked and published (the launch
+      // story carries its repo, files and walk). 'blueprint': a Domain an
+      // expert in that role could build; nothing exists yet, so no repo, no
+      // walk and no walk numbers (G-135, operator 2026-10-28).
+      kind: z.enum(['launch', 'blueprint']).default('launch'),
+      role: z.string(), // the expert the Domain is for, e.g. "Learning designers and trainers"
+      hook: z.string(), // one line for the nav menu and the landing cards
+      icon: z.string(), // the Flow Elements card whose drawing stands for the Domain
+      tint: z.string(), // its colour, from the Elements set
+      order: z.number(), // the site's order after the launch story (PR/FAQ ranks)
       dek: z.string(),
       description: z.string(),
       drafted: z.coerce.date(),
-      walked: z.string(),
+      walked: z.string().optional(),
       release: z.string(), // the Flow release the article is written for
-      hero: image(),
-      heroAlt: z.string(),
-      repo: z.string().url(), // the Domain's folder on GitHub
-      files: z.number(),
-      size: z.string(),
-      licence: z.string(),
+      hero: image().optional(),
+      heroAlt: z.string().optional(),
+      repo: z.string().url().optional(), // the Domain's folder on GitHub
+      files: z.number().optional(),
+      size: z.string().optional(),
+      licence: z.string().optional(),
+      // A blueprint's planned folder, file by file, drawn by DomainAnatomy:
+      // each document with its job and the Elements it would hold.
+      blueprint: z
+        .array(z.object({ n: z.string().default(''), name: z.string(), role: z.string(), chips: z.array(z.tuple([z.string(), z.string()])) }))
+        .optional(),
       minutes: z.number(),
       draft: z.boolean().default(false),
+    })
+    .superRefine((d, ctx) => {
+      if (d.kind === 'launch') {
+        for (const k of ['walked', 'repo', 'files', 'size', 'licence', 'hero', 'heroAlt'] as const) {
+          if (d[k] === undefined) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `a launch story needs ${k}` });
+        }
+      } else {
+        for (const k of ['walked', 'repo', 'files', 'size', 'licence'] as const) {
+          if (d[k] !== undefined) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `a blueprint has no ${k}; nothing was built or walked` });
+        }
+        if (!d.blueprint?.length) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'a blueprint lists the documents its Domain would hold' });
+      }
     }),
 });
 

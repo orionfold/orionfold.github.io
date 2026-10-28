@@ -1,29 +1,42 @@
 ---
-// What a Flow Domain is, drawn from the first one: AI Consulting Starter's
-// published folder (orionfold/flow, flow-domains/ai-consulting-starter, six
-// Markdown files, CC BY 4.0). Each file lists what it carries, with Flow's
-// own Elements drawings; the four traits on the right are what make a folder
-// a Domain. Native HTML, no screenshot.
-import { elementDrawing } from '../../../lib/flow/elements';
+// What a Flow Domain is, drawn file by file with Flow's own Elements drawings.
+// By default it draws the first one, AI Consulting Starter's published folder
+// (orionfold/flow, flow-domains/ai-consulting-starter, six Markdown files,
+// CC BY 4.0). A blueprint article passes its own planned documents instead
+// (G-135): the same figure, headed as a blueprint, with no repository link
+// because nothing is built yet. The four traits on the right are what make a
+// folder a Domain. Native HTML, no screenshot.
+import { elementDrawing, ALL_ELEMENTS } from '../../../lib/flow/elements';
 import Folder from '@lucide/astro/icons/folder-open';
 import FileText from '@lucide/astro/icons/file-text';
 import Github from '@lucide/astro/icons/git-branch';
+import PencilRuler from '@lucide/astro/icons/pencil-ruler';
 
-interface Props { repo: string }
-const { repo } = Astro.props;
-const tint: Record<string, string> = {
-  'skill-visual-explainer': '#8f3b8f', 'skill-isometric-figure': '#0086f9', 'component-approval-card': '#0170f5',
-  'component-table': '#0070f5', 'component-sources': '#0070f5', 'component-callout': '#0070f5', 'skill-guided-exercise': '#ffa23e',
-};
-const chip = (card: string, label: string) => ({ svg: elementDrawing(card), tint: tint[card], label });
-const FILES = [
-  { n: '', name: 'README', role: 'The front page. Who it is for, what you will have at the end, and the path.', chips: [chip('skill-visual-explainer', 'Stepped figure'), chip('skill-isometric-figure', 'Map of the path')] },
-  { n: '1', name: 'Mechanisms Primer', role: 'What a mechanism is, how to spot a missing one, how to build one.', chips: [chip('component-approval-card', 'Checklist'), chip('component-table', 'Tables'), chip('skill-visual-explainer', 'Stepped figure')] },
-  { n: '2', name: 'Amazon Mechanisms and Practices', role: '24 mechanisms described in public, each with a source.', chips: [chip('component-table', 'Reference table'), chip('component-sources', 'Sources'), chip('component-callout', 'Marked to check')] },
-  { n: '3', name: 'Press Release FAQ for AI project', role: 'Work backwards from the customer before you build.', chips: [chip('component-table', 'Template'), chip('skill-visual-explainer', 'Review figure')] },
-  { n: '4', name: 'Pilot to Scale', role: 'Run a pilot that answers a real question, then take it to production.', chips: [chip('component-table', 'Pilot card'), chip('component-approval-card', 'Readiness check')] },
-  { n: '', name: 'Flow PR-FAQ', role: 'A worked example. The PR/FAQ for Flow’s own launch.', chips: [chip('component-callout', 'Worked example')] },
-];
+type Chip = [card: string, label: string];
+interface FileRow { n?: string; name: string; role: string; chips: Chip[] }
+interface Props { repo?: string; name?: string; by?: string; meta?: string; files?: FileRow[]; blueprint?: boolean; label?: string }
+const {
+  repo,
+  name = 'AI Consulting Starter',
+  by = 'by Manav Sehgal',
+  files = DEFAULT_FILES(),
+  blueprint = false,
+  meta = blueprint ? `${files.length} documents planned` : 'CC BY 4.0 · 6 files, 75 KB',
+  label = 'Anatomy of a Flow Domain: the AI Consulting Starter folder and its six documents',
+} = Astro.props;
+const tintOf = (card: string) => ALL_ELEMENTS.find((e) => e.card === card)?.tint ?? '#0070f5';
+const chip = (card: string, label: string) => ({ svg: elementDrawing(card), tint: tintOf(card), label });
+function DEFAULT_FILES(): FileRow[] {
+  return [
+    { n: '', name: 'README', role: 'The front page. Who it is for, what you will have at the end, and the path.', chips: [['skill-visual-explainer', 'Stepped figure'], ['skill-isometric-figure', 'Map of the path']] },
+    { n: '1', name: 'Mechanisms Primer', role: 'What a mechanism is, how to spot a missing one, how to build one.', chips: [['component-approval-card', 'Checklist'], ['component-table', 'Tables'], ['skill-visual-explainer', 'Stepped figure']] },
+    { n: '2', name: 'Amazon Mechanisms and Practices', role: '24 mechanisms described in public, each with a source.', chips: [['component-table', 'Reference table'], ['component-sources', 'Sources'], ['component-callout', 'Marked to check']] },
+    { n: '3', name: 'Press Release FAQ for AI project', role: 'Work backwards from the customer before you build.', chips: [['component-table', 'Template'], ['skill-visual-explainer', 'Review figure']] },
+    { n: '4', name: 'Pilot to Scale', role: 'Run a pilot that answers a real question, then take it to production.', chips: [['component-table', 'Pilot card'], ['component-approval-card', 'Readiness check']] },
+    { n: '', name: 'Flow PR-FAQ', role: 'A worked example. The PR/FAQ for Flow’s own launch.', chips: [['component-callout', 'Worked example']] },
+  ];
+}
+const FILES = files.map((f) => ({ ...f, n: f.n ?? '', chips: f.chips.map(([c, l]) => chip(c, l)) }));
 const TRAITS = [
   { k: 'Plain files you own', v: 'Every document is Markdown in a folder. It opens in any editor and lives in your GitHub, not ours.' },
   { k: 'Tools, not only text', v: 'Figures a reader steps through, checklists they tick, tables they fill in for their own work.' },
@@ -31,12 +44,12 @@ const TRAITS = [
   { k: 'An author, a version, a licence', v: 'Readers see who wrote it and which version they hold. Updates arrive as changes they review.' },
 ];
 ---
-<figure class="da" aria-label="Anatomy of a Flow Domain: the AI Consulting Starter folder and its six documents">
+<figure class:list={['da', blueprint && 'da--blueprint']} aria-label={label}>
   <div class="da-folder">
     <div class="da-folder-head">
       <span class="da-folder-ic"><Folder size={18} /></span>
-      <span class="da-folder-t"><b>AI Consulting Starter</b><small>by Manav Sehgal · CC BY 4.0 · 6 files, 75 KB</small></span>
-      <a class="da-repo" href={repo}><Github size={14} />orionfold/flow</a>
+      <span class="da-folder-t"><b>{name}</b><small>{by} · {meta}</small></span>
+      {repo ? <a class="da-repo" href={repo}><Github size={14} />orionfold/flow</a> : <span class="da-repo da-repo--plan"><PencilRuler size={14} />Blueprint</span>}
     </div>
     <ol class="da-files">
       {FILES.map((f) => (
