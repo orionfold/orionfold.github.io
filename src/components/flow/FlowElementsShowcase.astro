@@ -1,12 +1,14 @@
 ---
-// Flow Elements on the homepage: one plain plan, drawn up in five steps. The
+// Flow Elements on the homepage: one plain plan, drawn up in six steps. The
 // document is the Elements tour's own (Harbor Close Plan, a fictional plan
 // written for the walk, orionfold-flow articles/19 to 21). Ideas' five
-// suggestions, the Field-Notes figure and the Next steps table are what Flow
-// made in that walk; the options chart is drawn from the numbers the plan
-// itself states (Visualize ran on "Where the time goes" in the walk), and the
-// caption says so. Steps advance on their own while in view; a step tab takes
-// over by hand. Reduced motion rests on the last step.
+// suggestions, the Field-Notes figure, the Spanish translation, the sign-off
+// card and the Next steps table are what Flow made in that walk, in that order
+// and each a different kind of thing: a skill's figure, an action that rewrites
+// your words, a component drafted from them, and a list turned into a table
+// (operator 2026-10-27: Elements are much richer than charts; no two steps
+// look alike). The walk discarded the translation, so its step presses Discard. Steps advance on their own while in view; a step tab takes over by
+// hand. Reduced motion rests on the last step.
 import ArrowRight from '@lucide/astro/icons/arrow-right';
 import Check from '@lucide/astro/icons/check';
 import Lightbulb from '@lucide/astro/icons/lightbulb';
@@ -29,8 +31,9 @@ const card = (key: string) => {
 const STEPS = [
   { tab: 'Your plan, in words' },
   { tab: 'Ideas suggests' },
-  { tab: 'A chart' },
   { tab: 'A drawn figure' },
+  { tab: 'In another language' },
+  { tab: 'A sign-off card' },
   { tab: 'A table, from a list' },
 ];
 
@@ -44,18 +47,21 @@ const IDEAS = [
 ];
 
 const SKILLS = ['skill-decision-brief', 'skill-delegation-map', 'skill-field-notes-diagram', 'skill-option-comparison', 'skill-register', 'skill-roadmap'].map(card);
-const AGENCY = ['agency-proofread', 'agency-summarize', 'agency-text-to-table', 'agency-visualize', 'agency-sign-off'].map(card);
-const KINDS = ['kind-bar-chart', 'kind-grouped-bar-chart', 'kind-stacked-bar-chart', 'kind-lollipop-chart', 'kind-bullet-chart', 'kind-kpi-card'].map(card);
-const visualize = card('agency-visualize');
+const AGENCY = ['agency-proofread', 'agency-summarize', 'agency-translate', 'agency-text-to-table', 'agency-visualize', 'agency-sign-off'].map(card);
 const fieldNotes = card('skill-field-notes-diagram');
 const toTable = card('agency-text-to-table');
+const translate = card('agency-translate');
+const signOff = card('agency-sign-off');
+// Which Agency card each step presses, and what the panel's heading read in the walk.
+const PRESSED: Record<string, number> = { [translate.card]: 3, [signOff.card]: 4, [toTable.card]: 5 };
+const ROUTE = [[3, '46 words'], [4, '52 words'], [5, '27 words']] as const;
 
 // The four groups, as links into their articles.
 const GROUPS = [
-  { slug: 'components', n: 15, label: 'Components', line: 'blocks a document can hold', on: [] as number[], icon: card('component-approval-card') },
-  { slug: 'agency', n: 12, label: 'Agency', line: 'actions on your words', on: [4], icon: toTable },
-  { slug: 'skills', n: 19, label: 'Skills', line: 'methods that draw your case', on: [1, 3], icon: fieldNotes },
-  { slug: 'chart-kinds', n: 54, label: 'Chart and diagram kinds', line: 'switch kinds, keep the data', on: [2], icon: card('kind-bar-chart') },
+  { slug: 'components', n: 15, label: 'Components', line: 'blocks a document can hold', on: [4], icon: card('component-approval-card') },
+  { slug: 'agency', n: 12, label: 'Agency', line: 'actions on your words', on: [3, 4, 5], icon: toTable },
+  { slug: 'skills', n: 19, label: 'Skills', line: 'methods that draw your case', on: [1, 2], icon: fieldNotes },
+  { slug: 'chart-kinds', n: 54, label: 'Chart and diagram kinds', line: 'switch kinds, keep the data', on: [] as number[], icon: card('kind-bar-chart') },
 ];
 const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-ic" style="--fx-t:${c.tint};--fx-s:${size}px">${c.svg}</span>`;
 ---
@@ -71,7 +77,7 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
     </div>
   </div>
 
-  <figure class="fx-mock" data-fx aria-label="Flow Elements on a plain plan: Ideas suggests a skill for each section, then a chart, a drawn figure and a table are added from the plan's own text, each waiting for review">
+  <figure class="fx-mock" data-fx aria-label="Flow Elements on a plain plan: Ideas suggests a skill for each section, then a drawn figure, a Spanish translation, a sign-off card and a table are made from the plan's own text, each waiting for review">
     <div class="fx-tabs" role="tablist" aria-label="Steps of the Elements walk">
       {STEPS.map((s, i) => (
         <button type="button" role="tab" class="fx-tab" data-fx-go={i} aria-selected={i === 0 ? 'true' : 'false'}>
@@ -92,7 +98,7 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
         <!-- Elements (⌘5) -->
         <aside class="fx-el" aria-hidden="true">
           <p class="fx-el-h">Elements <kbd>⌘5</kbd></p>
-          <div data-fx-show="0 1 3">
+          <div data-fx-show="0 1 2">
             <p class="fx-grp"><ChevronRight size={12} />Components <b>15</b></p>
             <p class="fx-grp"><ChevronRight size={12} />Agency <b>12</b></p>
             <p class="fx-grp is-open"><ChevronDown size={12} />Skills <b>19</b></p>
@@ -102,22 +108,12 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
               </p>
             ))}
           </div>
-          <div data-fx-show="2">
-            <p class="fx-grp is-open"><ChevronDown size={12} />Comparison and ranking</p>
-            {KINDS.map((k, i) => (
-              <p class:list={['fx-card', i === 0 && 'is-on']}>
-                <Fragment set:html={icon(k)} /><span><b>{k.name}</b></span>{i === 0 && <Check size={13} stroke-width={3} class="fx-tick" />}
-              </p>
-            ))}
-            <p class="fx-grp"><ChevronRight size={12} />Change over time</p>
-            <p class="fx-grp"><ChevronRight size={12} />Part of a whole</p>
-          </div>
-          <div data-fx-show="4">
+          <div data-fx-show="3 4 5">
             <p class="fx-grp"><ChevronRight size={12} />Components <b>15</b></p>
             <p class="fx-grp is-open"><ChevronDown size={12} />Agency <b>12</b></p>
-            <p class="fx-el-route">27 words · selection · Claude subscription</p>
+            {ROUTE.map(([n, words]) => <p class="fx-el-route" data-fx-show={String(n)}>{words} · selection · Claude subscription</p>)}
             {AGENCY.map((a) => (
-              <p class:list={['fx-card', a.card === toTable.card && 'is-on']}>
+              <p class="fx-card" data-fx-on={PRESSED[a.card] ?? ''}>
                 <Fragment set:html={icon(a)} /><span><b>{a.name}</b><small>{a.line}</small></span>
               </p>
             ))}
@@ -135,10 +131,14 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
               <p class="fx-p">Priya reconciles the bank and card lines against the ledger, then Tomás chases any receipt that is missing. Priya drafts the summary, and Dana reviews it and sends it by the fifth working day.</p>
             </div>
 
-            <div class="fx-sec" data-fx-sec="1" data-fx-target="3">
+            <div class="fx-sec" data-fx-sec="1" data-fx-target="2 3">
               <p class="fx-h2"><span>Where the time goes</span><Fragment set:html={icon(IDEAS[1].skill, 18)} /></p>
-              <p class="fx-p fx-sel" data-fx-sel="3">Last quarter the team logged 312 hours on closes. Reconciliation took 140 hours, chasing receipts took 96 hours, drafting summaries took 48 hours and review took 28 hours. Chasing receipts is the step clients complain about most.</p>
-              <div class="fx-add fx-fig" data-fx-from="3">
+              <p class="fx-p fx-sel" data-fx-sel="2" data-fx-show="0 1 2 4 5">Last quarter the team logged 312 hours on closes. Reconciliation took 140 hours, chasing receipts took 96 hours, drafting summaries took 48 hours and review took 28 hours. Chasing receipts is the step clients complain about most.</p>
+              <div class="fx-es" data-fx-show="3">
+                <p class="fx-p">El trimestre pasado, el equipo registró 312 horas en cierres. La conciliación llevó 140 horas, la búsqueda de recibos llevó 96 horas, la redacción de resúmenes llevó 48 horas y la revisión llevó 28 horas. La búsqueda de recibos es el paso del que más se quejan los clientes.</p>
+                <span class="fx-add-tag"><Fragment set:html={icon(translate, 14)} /><span>Translate · Spanish · proposed</span></span>
+              </div>
+              <div class="fx-add fx-fig" data-fx-from="2">
                 <svg viewBox="0 0 600 330" role="img" aria-label="">
                   <text class="fx-fig-eye" x="24" y="40">HOURS ON CLOSES · LAST QUARTER</text>
                   <g class="fx-fig-s1">
@@ -156,34 +156,36 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
               </div>
             </div>
 
-            <div class="fx-sec" data-fx-sec="2" data-fx-target="2">
+            <div class="fx-sec" data-fx-sec="2">
               <p class="fx-h2"><span>Options for chasing receipts</span><Fragment set:html={icon(IDEAS[2].skill, 18)} /></p>
-              <p class="fx-p fx-sel" data-fx-sel="2">Keep email, which stays at about 96 hours a quarter. Use the client portal, which needs a week of setup and should halve the chase. Or buy Receiptly at $12 a client a month, which should cut the chase by three quarters.</p>
-              <div class="fx-add fx-chart" data-fx-from="2">
-                <p class="fx-chart-t">Chase hours a quarter, by option</p>
-                <div class="fx-bars">
-                  <span class="fx-bar-row" style="--v:96;--d:0"><b>Email</b><i></i><em>about 96</em></span>
-                  <span class="fx-bar-row" style="--v:48;--d:1"><b>Portal</b><i></i><em>about 48</em></span>
-                  <span class="fx-bar-row fx-bar-row--hi" style="--v:24;--d:2"><b>Receiptly</b><i></i><em>about 24</em></span>
-                </div>
-                <span class="fx-add-tag"><Fragment set:html={icon(visualize, 14)} /><span>Visualize · bar chart · proposed</span></span>
+              <p class="fx-p">Keep email, which stays at about 96 hours a quarter. Use the client portal, which needs a week of setup and should halve the chase. Or buy Receiptly at $12 a client a month, which should cut the chase by three quarters.</p>
+            </div>
+
+            <div class="fx-sec" data-fx-sec="3" data-fx-target="4">
+              <p class="fx-h2"><span>Risks</span><Fragment set:html={icon(IDEAS[3].skill, 18)} /></p>
+              <p class="fx-p fx-sel" data-fx-sel="4">Two of the largest clients have never logged in to the portal. Receiptly is a young company. Any change during the January close lands on the busiest month, so Dana owns the decision to wait until February if setup slips.</p>
+              <div class="fx-add fx-blk" data-fx-from="4">
+                <p class="fx-blk-t">Receiptly portal risks</p>
+                <p class="fx-blk-s">Dana · decision to wait until February if setup slips</p>
+                <ul class="fx-ticks">
+                  {['Two of our largest clients have never logged in to the portal', 'Receiptly is a young company and could be acquired', 'Any change during the January close lands on the busiest month', 'Dana owns the decision to wait until February if setup slips'].map((t, i) => <li class="fx-in" style={`--d:${i}`}><i></i>{t}</li>)}
+                </ul>
+                <p class="fx-blk-l">Accepted by</p><span class="fx-field"></span>
+                <p class="fx-blk-l">Note (optional)</p><span class="fx-field"></span>
+                <span class="fx-blk-btn">Sign off</span>
+                <span class="fx-add-tag"><Fragment set:html={icon(signOff, 14)} /><span>Approval Card · 4 items, 2 fields · proposed</span></span>
               </div>
             </div>
 
-            <div class="fx-sec" data-fx-sec="3">
-              <p class="fx-h2"><span>Risks</span><Fragment set:html={icon(IDEAS[3].skill, 18)} /></p>
-              <p class="fx-p">Two of the largest clients have never logged in to the portal. Receiptly is a young company. Any change during the January close lands on the busiest month.</p>
-            </div>
-
-            <div class="fx-sec" data-fx-sec="4" data-fx-target="4">
+            <div class="fx-sec" data-fx-sec="4" data-fx-target="5">
               <p class="fx-h2"><span>Next steps</span><Fragment set:html={icon(IDEAS[4].skill, 18)} /></p>
-              <ol class="fx-ol fx-sel" data-fx-sel="4">
+              <ol class="fx-ol fx-sel" data-fx-sel="5">
                 <li>Dana asks the five largest clients which option they would use, by 7 November.</li>
                 <li>Tomás sets up the portal for two pilot clients in the week of 10 November.</li>
                 <li>Priya measures the chase hours for those two clients in the November close.</li>
                 <li>The team decides on 1 December and switches everyone over in February.</li>
               </ol>
-              <div class="fx-add" data-fx-from="4">
+              <div class="fx-add" data-fx-from="5">
                 <table class="fx-table">
                   <thead><tr><th>Step</th><th>Who</th><th>Action</th><th>When</th></tr></thead>
                   <tbody>
@@ -203,7 +205,7 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
         <div class="fx-side" aria-live="polite">
           <div class="fx-side-tabs" aria-hidden="true">
             <span class="fx-side-tab" data-fx-show="0 1"><Lightbulb size={13} />Ideas <kbd>⌘3</kbd></span>
-            <span class="fx-side-tab" data-fx-show="2 3 4"><Check size={13} />Review Changes</span>
+            <span class="fx-side-tab" data-fx-show="2 3 4 5"><Check size={13} />Review Changes</span>
           </div>
 
           <div class="fx-pane" data-fx-show="0">
@@ -227,15 +229,6 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
           </div>
 
           <div class="fx-pane" data-fx-show="2">
-            <div class="fx-rev fx-in">
-              <p class="fx-k">Visualize · Agency</p>
-              <p class="fx-rev-t">Adds a bar chart with 3 data rows after the selected text.</p>
-              <p class="fx-rev-p">Drawn from the plan's own numbers. Switch it to any of the chart kinds in Elements and the data comes along.</p>
-            </div>
-            <div class="fx-decide fx-in" style="--d:2"><span class="fx-state">Proposed</span><span class="fx-btn fx-btn--ghost">Discard</span><span class="fx-btn fx-btn--keep">Keep</span></div>
-          </div>
-
-          <div class="fx-pane" data-fx-show="3">
             <div class="fx-idea fx-idea--run fx-in">
               <Fragment set:html={icon(fieldNotes, 26)} />
               <span><b>Run Field-Notes Diagram</b> on “Where the time goes”</span>
@@ -252,7 +245,25 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
             <div class="fx-decide fx-in" style="--d:4"><span class="fx-state">Proposed</span><span class="fx-btn fx-btn--ghost">Discard</span><span class="fx-btn fx-btn--keep">Keep</span></div>
           </div>
 
+          <div class="fx-pane" data-fx-show="3">
+            <div class="fx-rev fx-in">
+              <p class="fx-k">Translate · Agency</p>
+              <p class="fx-rev-t">Translate the selected text into Spanish. 96 words added or removed; original: 46 words.</p>
+              <p class="fx-rev-p">Every number stays as it was. The card's menu holds 11 languages. Ready in 8 s.</p>
+            </div>
+            <div class="fx-decide fx-decide--discard fx-in" style="--d:2"><span class="fx-state">Proposed</span><span class="fx-btn fx-btn--ghost">Discard</span><span class="fx-btn fx-btn--keep">Keep</span></div>
+          </div>
+
           <div class="fx-pane" data-fx-show="4">
+            <div class="fx-rev fx-in">
+              <p class="fx-k">Sign-off · Agency</p>
+              <p class="fx-rev-t">Adds an acceptance checklist after the selected text. Draws an Approval Card with 4 items and 2 fields.</p>
+              <p class="fx-rev-p">Signing writes one record beside the document. The text never changes. Ready in 7 s.</p>
+            </div>
+            <div class="fx-decide fx-in" style="--d:2"><span class="fx-state">Proposed</span><span class="fx-btn fx-btn--ghost">Discard</span><span class="fx-btn fx-btn--keep">Keep</span></div>
+          </div>
+
+          <div class="fx-pane" data-fx-show="5">
             <div class="fx-rev fx-in">
               <p class="fx-k">Convert Text to Table · Agency</p>
               <p class="fx-rev-t">A table with the columns the list implied: Step, Who, Action, When.</p>
@@ -272,7 +283,7 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
         </a>
       ))}
     </div>
-    <figcaption class="fx-cap">Drawn from our Elements walk on a fictional plan. Ideas' five suggestions, the figure and the table are what Flow made in the walk; the chart is drawn here from the plan's own numbers. Text shortened. <a href={elementArticleHref('tour')}>Read the walk, with every number labelled</a>.</figcaption>
+    <figcaption class="fx-cap">Drawn from our Elements walk on a fictional plan. Ideas' five suggestions, the figure, the Spanish, the sign-off card and the table are what Flow made in the walk. Text shortened. <a href={elementArticleHref('tour')}>Read the walk, with every number labelled</a>.</figcaption>
   </figure>
 
   <div class="fx-links">
@@ -282,7 +293,7 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
 </section>
 
 <script>
-  const STEP_MS = [4600, 6200, 5600, 7000, 6000];
+  const STEP_MS = [4600, 6200, 7000, 5600, 5600, 6000];
 
   function init(root: ParentNode = document) {
     for (const el of root.querySelectorAll<HTMLElement>('[data-fx]:not([data-fx-ready])')) {
@@ -298,7 +309,7 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
       // Scroll the plan to the step's section: its heading near the top, or
       // far enough down that what the card added is fully in view.
       const focus = (n: number) => {
-        const target = page.querySelector<HTMLElement>(`[data-fx-target="${n}"]`);
+        const target = page.querySelector<HTMLElement>(`[data-fx-target~="${n}"]`);
         const max = Math.max(0, page.scrollHeight - doc.clientHeight);
         let y = 0;
         if (target) {
@@ -379,7 +390,7 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
 
   /* Step tabs */
   .fx-mock { margin: 0; }
-  .fx-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+  .fx-tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
   .fx-tab { position: relative; display: flex; align-items: center; gap: 9px; padding: 11px 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--muted); font-size: 14px; font-weight: 700; text-align: left; cursor: pointer; overflow: hidden; transition: border-color .2s, color .2s, background .2s; }
   .fx-tab:hover { border-color: var(--ink); color: var(--ink); }
   .fx-tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
@@ -452,13 +463,27 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
   /* What a card adds: proposed, in place */
   .fx-add { position: relative; display: grid; gap: 8px; padding: 14px 14px 12px; border-radius: 10px; background: #f3faf6; border: 1px solid #bfe2cd; animation: fx-in .5s ease both; }
   .fx-add-tag { display: inline-flex; align-items: center; gap: 6px; justify-self: start; padding: 3px 8px 3px 4px; border-radius: 6px; background: #fff; font-size: 11.5px; font-weight: 500; color: #3b6b52; }
-  .fx-chart-t { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #3b4541; }
-  .fx-bars { display: grid; gap: 8px; }
-  .fx-bar-row { display: grid; grid-template-columns: 74px minmax(0, 1fr) 70px; align-items: center; gap: 10px; font-size: 12.5px; }
-  .fx-bar-row b { font-weight: 500; }
-  .fx-bar-row i { display: block; height: 20px; width: calc(var(--v) / 96 * 100%); border-radius: 0 5px 5px 0; background: linear-gradient(90deg, #6959f0, #8d82f5); transform-origin: left; animation: fx-grow .9s cubic-bezier(.3, .7, .3, 1) both; animation-delay: calc(.35s + var(--d) * .25s); }
-  .fx-bar-row--hi i { background: linear-gradient(90deg, #0e9e98, #3cc4bd); }
-  .fx-bar-row em { font-style: normal; color: #56635e; }
+  /* A component drafted into the plan: Form or Approval Card, as Review shows it */
+  .fx-es { display: grid; gap: 8px; justify-items: start; }
+  .fx-es .fx-p { padding: 2px 4px; margin: 0 -4px; border-radius: 4px; background: #fdecb0; animation: fx-in .5s ease both; }
+  .fx-add.fx-blk { display: block; padding: 16px 18px 14px; border: 2px solid #2b5fc4; border-radius: 10px; background: #fff; }
+  .fx-blk-t { font-size: 15px; font-weight: 700; color: #1f2623; }
+  .fx-blk-s { margin-top: 2px; font-size: 12.5px; color: #56635e; }
+  .fx-blk-l { margin-top: 10px; font-size: 12px; color: #56635e; }
+  .fx-ticks { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 6px; font-size: 13px; color: #1f2623; }
+  .fx-ticks { margin-top: 10px; }
+  .fx-ticks li { display: flex; align-items: center; gap: 9px; }
+  .fx-ticks i { flex: none; width: 14px; height: 14px; border: 1.5px solid #8a948f; background: #fff; }
+  .fx-ticks i { border-radius: 3px; }
+  .fx-field { display: block; height: 26px; margin-top: 4px; border: 1px solid #d5dbd8; border-radius: 6px; background: #fbfcfb; }
+  .fx-blk-btn { display: inline-block; margin: 12px 0 2px; padding: 6px 13px; border-radius: 6px; background: #2b5fc4; color: #fff; font-size: 13px; font-weight: 500; }
+  @media (max-width: 700px) {
+    .fx-add.fx-blk { padding: 12px 14px 10px; }
+    .fx-blk-s { display: none; }
+    .fx-blk-l { margin-top: 7px; }
+    .fx-ticks { gap: 4px; font-size: 12.5px; line-height: 1.35; }
+    .fx-field { height: 20px; }
+  }
   .fx-fig { background: #fff; }
   .fx-fig svg { display: block; width: 100%; height: auto; }
   .fx-fig text { font-family: ui-monospace, Menlo, monospace; }
@@ -476,11 +501,11 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
   [data-fx].is-manual { --fx-s2: 1.6s; }
   .fx-fig-s2 { opacity: 0; }
   .fx-fig-step::after { content: '1'; }
-  [data-fx].is-tick[data-step='3'] .fx-fig-s2 { animation: fx-fade .5s ease var(--fx-s2) forwards; }
-  [data-fx].is-tick[data-step='3'] .fx-fig-s2 .fx-fig-b { animation-delay: var(--fx-s2); }
-  [data-fx].is-tick[data-step='3'] .fx-fig-step::after { animation: fx-step 0s linear var(--fx-s2) forwards; }
-  [data-fx]:not([data-step='3']) .fx-fig-s2 { opacity: 1; animation: none; }
-  [data-fx]:not([data-step='3']) .fx-fig-step::after { content: '2'; animation: none; }
+  [data-fx].is-tick[data-step='2'] .fx-fig-s2 { animation: fx-fade .5s ease var(--fx-s2) forwards; }
+  [data-fx].is-tick[data-step='2'] .fx-fig-s2 .fx-fig-b { animation-delay: var(--fx-s2); }
+  [data-fx].is-tick[data-step='2'] .fx-fig-step::after { animation: fx-step 0s linear var(--fx-s2) forwards; }
+  [data-fx]:not([data-step='2']) .fx-fig-s2 { opacity: 1; animation: none; }
+  [data-fx]:not([data-step='2']) .fx-fig-step::after { content: '2'; animation: none; }
   @keyframes fx-step { to { content: '2'; } }
   .fx-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 12px; }
   .fx-table th, .fx-table td { padding: 6px 8px; border: 1px solid #dfe5e1; text-align: left; vertical-align: top; }
@@ -503,6 +528,9 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
   .fx-btn--keep { background: #c9d0cc; transition: background .3s; }
   [data-fx].is-tick .fx-btn--keep { animation: fx-keep .3s ease calc(var(--fx-ms, 5s) * .78) forwards; }
   [data-fx].is-manual .fx-btn--keep { background: #0e9e98; animation: none; }
+  [data-fx] .fx-decide--discard .fx-btn--keep { background: #c9d0cc; animation: none; }
+  [data-fx].is-tick .fx-decide--discard .fx-btn--ghost { animation: fx-discard .3s ease calc(var(--fx-ms, 5s) * .78) forwards; }
+  [data-fx].is-manual .fx-decide--discard .fx-btn--ghost { animation: none; }
   .fx-note { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #3b6b52; }
   .fx-run { display: flex; align-items: center; gap: 6px; padding: 7px 9px; border-radius: 8px; background: #f3f0fd; font-size: 11.5px; font-weight: 500; color: #4b3aa8; }
   .fx-idea { display: flex; gap: 10px; align-items: flex-start; padding: 9px; border: 1px solid #e3e7e4; border-radius: 9px; background: #fff; font-size: 12.5px; line-height: 1.35; }
@@ -534,9 +562,10 @@ const icon = (c: { svg: string; tint: string }, size = 22) => `<span class="fx-i
   @keyframes fx-pulse { 50% { opacity: .35; } }
   @keyframes fx-press { 40% { transform: scale(.94); background: #1d4ea6; } 100% { transform: none; } }
   @keyframes fx-keep { to { background: #0e9e98; } }
+  @keyframes fx-discard { to { background: #1f2623; color: #fff; box-shadow: none; } }
   [hidden] { display: none !important; }
   @media (prefers-reduced-motion: reduce) {
-    .fx-in, .fx-add, .fx-tab-ring, .fx-table tbody tr, .fx-bar-row i, .fx-fig-b, .fx-pill i, .fx-btn--press { animation: none !important; }
+    .fx-in, .fx-add, .fx-tab-ring, .fx-table tbody tr, .fx-fig-b, .fx-pill i, .fx-btn--press { animation: none !important; }
     .fx-page, .fx-h2 :global(.fx-ic) { transition: none !important; }
     .fx-fig-s2 { opacity: 1 !important; animation: none !important; }
     .fx-fig-step::after { content: '2' !important; animation: none !important; }
