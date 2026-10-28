@@ -9,7 +9,7 @@ dek: "We started with an empty folder, one question, and a Claude subscription w
 hero: ../../assets/flow/paths/write-a-book-in-flow-chat/01-blank-folder-ready.webp
 heroAlt: An empty folder selected, and Flow Chat asking what to write in it
 source: orionfold-flow articles/15-chat-ebook-rewalk/ARTICLE.md
-order: 0
+order: 0.3
 featured: false
 draft: false
 chip: Chat

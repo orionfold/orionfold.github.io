@@ -11,7 +11,10 @@ const showDrafts = import.meta.env.DEV;
 
 export async function publishedPaths(): Promise<PathEntry[]> {
   const all = await getCollection('paths', (entry) => showDrafts || !entry.data.draft);
-  return all.sort((a, b) => a.data.order - b.data.order);
+  // Ties fall to the newer walk, then the id, so the hub's lead card never
+  // depends on the order the content store happened to hand the entries back
+  // (two paths at order 0 flipped the lead between two builds on 2026-10-28).
+  return all.sort((a, b) => a.data.order - b.data.order || b.data.drafted.getTime() - a.data.drafted.getTime() || a.id.localeCompare(b.id));
 }
 
 export async function publishedCompare(): Promise<CompareEntry[]> {
