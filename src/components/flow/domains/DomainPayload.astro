@@ -80,12 +80,15 @@ const AGENT = ['Reads the summary and reading order', 'Searches the documents', 
   document.querySelectorAll<HTMLElement>('[data-dp]').forEach((el) => {
     if (REDUCED || !('IntersectionObserver' in window)) return;
     el.classList.add('is-armed');
-    const io = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-      el.classList.add('is-in');
-      io.disconnect();
-    }, { threshold: 0.3 });
+    // Never leave the figure blank (review 2026-10-28, A4): reveal it when it
+    // comes into view, when it is already in view at load, or after 1.5 s
+    // regardless (print, full-page capture, a tall phone viewport).
+    const reveal = () => { el.classList.add('is-in'); io.disconnect(); clearTimeout(fallback); };
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) reveal(); }, { threshold: 0.3 });
     io.observe(el);
+    const r = el.getBoundingClientRect();
+    if (r.top < window.innerHeight && r.bottom > 0) reveal();
+    const fallback = setTimeout(reveal, 1500);
   });
 </script>
 

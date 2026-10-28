@@ -136,4 +136,4 @@ With **Flow MCP**, the Claude Code or Codex you run in Terminal can use your Dom
 
 ## Try it
 
-Get [AI Consulting Starter on GitHub](https://github.com/orionfold/flow/tree/main/flow-domains/ai-consulting-starter). In Flow, choose **File ▸ New from GitHub…**, paste the folder's address and press **Add**. Bringing a Domain in needs Flow Pro and the Import add-on, $10 a month each. Start with the Mechanisms Primer, pick one real customer task, and work along the path to a PR/FAQ for it.
+Get [AI Consulting Starter on GitHub](https://github.com/orionfold/flow/tree/main/flow-domains/ai-consulting-starter). In Flow, choose **File ▸ New from GitHub…**, paste the folder's address and press **Add**. Bringing a Domain in is free on Base; Chat on it needs Flow Pro. Start with the Mechanisms Primer, pick one real customer task, and work along the path to a PR/FAQ for it.

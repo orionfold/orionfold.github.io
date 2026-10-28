@@ -1,11 +1,15 @@
 ---
-// /domains/: Flow Domains, the Flow launch surface. The headline is the
-// operator's selected line; the audience, business model and comparisons
-// follow the Flow PR/FAQ (private, 2026-10-26) inside its own limits:
-// the buyer is a subject matter expert serving their own clients, publishing
-// has no per-Domain fee (it needs Pro plus the Publish add-on), publishing does not bring customers, Claude Code and
-// Codex pair with Flow, and Flow MCP (Settings ▸ General ▸ Your agents) is in Flow; code complete 2026-10-27, it ships with the release. Every walk number
-// comes from the AI Consulting Starter journals via the launch article.
+// /domains/: Flow Domains, the Flow launch surface. The H1 is the plain
+// promise (review 2026-10-28); the operator's selected line (PR/FAQ,
+// 2026-10-26) rides under it as the tagline. The audience, business model and
+// comparisons follow the Flow PR/FAQ inside its own limits: the buyer is a
+// subject matter expert serving their own clients; publishing has no
+// per-Domain fee (it needs Pro plus the Publish add-on); bringing a Domain in
+// is free on Base and Chat on it needs Pro (product 0284, DR-023); the door
+// for your own agents (Flow MCP, Settings ▸ General ▸ Your agents) is a Pro
+// feature (operator 2026-10-28); publishing does not bring customers; Claude
+// Code and Codex pair with Flow. Every walk number comes from the AI
+// Consulting Starter journals via the launch article.
 import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
@@ -33,21 +37,33 @@ const PAINS = [
   { k: 'Last month’s fix is gone.', v: 'You corrected the AI on a client job. The next session does not know. The lesson stays in that one file.' },
   { k: 'The draft is fast. Checking it is not.', v: 'AI writes in seconds. Then you spend the evening making sure it says what you mean before a client sees it.' },
 ];
+// Two days, as the walk journals record them (October 25 and 26, 2026); the
+// Primer landed at 00:32 on the night of day one.
 const TIMELINE = [
-  { t: '10:55', k: 'An empty folder', v: 'Chat is ready before any document exists.' },
+  { day: 'Day 1 · October 25', t: '10:55', k: 'An empty folder', v: 'Chat is ready before any document exists.' },
   { t: '11:09', k: 'The front page', v: 'Chat writes the README in the author’s voice: 788 words, 2 claims marked to check.' },
   { t: '11:32', k: 'An old AI chat, cleaned up', v: '24 Amazon mechanisms come in with their links, then get 14 sources.' },
   { t: '18:45', k: 'The first figure', v: 'Ideas picks a Skill. About a minute later, a stepped figure waits in Review.' },
-  { t: '00:32', k: 'The next document', v: 'The Mechanisms Primer, built from the author’s own pages in under 2.5 minutes.' },
-  { t: 'Day 2', k: 'Review cuts the path', v: 'Six documents become four, and every page that pointed at the old path follows.' },
+  { t: '00:32', k: 'The next document, past midnight', v: 'The Mechanisms Primer, built from the author’s own pages in under 2.5 minutes.' },
+  { day: 'Day 2 · October 26', t: '', k: 'Review cuts the path', v: 'Six documents become four, and every page that pointed at the old path follows.' },
   { t: '21:31', k: 'Published', v: 'Publish ▸ GitHub Repository: 6 files sent, nothing else touched.' },
   { t: '21:54', k: 'An update reaches a reader', v: 'A licence is added. The reader’s copy shows the change to review.' },
 ];
+// Earn a conversation (review 2026-10-28, A5): one email, the four PULL
+// fields, no form and no backend. manav@orionfold.com is the public contact.
+const TALK = `mailto:manav@orionfold.com?subject=${encodeURIComponent('My first Domain')}&body=${encodeURIComponent('The client job I would build a Domain for:\n\nWhen it is due:\n\nWhat I use for it today:\n\nWhat gets in the way:\n')}`;
+// Why now (review 2026-10-28, A1): the forcing event the Compare page already
+// documents, with its dated source, surfaced where the SME lands.
+const NOW = {
+  source: { label: 'OpenAI Help: Custom GPT retirement and migration FAQ', href: 'https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq', checked: '2026-10-27' },
+};
 const LOOP = ['Your know-how', 'Co-author with AI', 'Your Domain', 'Apply it to a client task', 'Review and deliver', 'Write the lesson back'].map((label, i, all) => {
   const turn = (i / all.length) * Math.PI * 2 - Math.PI / 2;
   return { label, x: 210 + 150 * Math.cos(turn), y: 210 + 150 * Math.sin(turn), deg: (i / all.length) * 360 - 90 };
 });
-const ROLES = ['AI and management consultants', 'Learning designers and trainers', 'Research and insights experts', 'Fractional CFOs and finance advisors', 'Accounting and tax advisors', 'People Ops advisors', 'Architects and technical authors'];
+// One relevant reader (review 2026-10-28, G5): the first buyer, then the two
+// nearest roles from the lane's ICP list (ranks 2 and 4).
+const ROLES = ['AI and management consultants', 'Learning designers and trainers', 'Fractional CFOs and finance advisors'];
 const FORMATS = [
   { k: 'A GitHub repository', v: 'Readers bring the folder into Flow with one address, and get your updates as changes they review.', walked: true },
   { k: 'A GitHub Pages site', v: 'A website for your method. Figures play step by step.' },
@@ -55,7 +71,7 @@ const FORMATS = [
   { k: 'Word, Excel and PowerPoint', v: 'Deliverables your client’s team already works in.' },
 ];
 const PAIRS = [
-  { k: 'Claude Code and Codex', v: 'Use the subscription you already pay for as a route inside Flow. With Flow MCP, they can also work from your Domains in Terminal.' },
+  { k: 'Claude Code and Codex', v: 'Use the subscription you already pay for as a route inside Flow. With Flow MCP, a Pro feature, they can also work from your Domains in Terminal.' },
   { k: 'Obsidian and Notion', v: 'Keep your notes and your team space where they are. Try one client project as a folder in Flow first.' },
   { k: 'Canva', v: 'Prepare and review the words, numbers and sources in Flow. Finish the design in Canva.' },
   { k: 'General agents', v: 'Hermes Agent or OpenClaw suit work across many tools and channels. Flow is for work that ends in a document you put your name on.' },
@@ -63,7 +79,7 @@ const PAIRS = [
 const FAQ = [
   { q: 'What is a Flow Domain?', a: 'A folder of living documents that carries your method: what you know, the sources behind it, worked examples, and tools a reader can use on their own work. It carries your name, a version and a licence, and every file is plain Markdown you own.' },
   { q: 'Do I need to code?', a: 'No. You write with Chat, add figures and tables with Skills and Elements, review every change, and publish from a menu. The one-time setup is a GitHub account and a token for publishing.' },
-  { q: 'What does it cost to publish a Domain?', a: 'Publishing needs Flow Pro ($10 a month) and the Publish add-on ($10 a month). There is no fee per Domain, so publish as many as you like. Bringing a Domain in needs Flow Pro and the Import add-on. Any AI you use follows the terms of the service you connect.' },
+  { q: 'What does it cost to publish a Domain?', a: 'Publishing needs Flow Pro ($10 a month) and the Publish add-on ($10 a month). There is no fee per Domain, so publish as many as you like. Bringing a Domain in is free on Base. Chat on it, and the door for your own agents, need Flow Pro. Any AI you use follows the terms of the service you connect.' },
   { q: 'Can my clients use it without Flow?', a: 'Yes. They can read the website, the PDF or the EPUB, or open the Office files. In Flow they also get Chat on the Domain, figures they can press and step through, and your updates.' },
   { q: 'What happens to client material?', a: 'Your documents stay in your files. Before a run leaves your Mac, Flow shows where it is going and asks. Publishing is a separate step you take yourself, so check the files and the repository’s visibility first.' },
   { q: 'Will publishing a Domain bring me clients?', a: 'Not on its own. Publishing gives people a way to find and use your work. You still need a clear offer, the right clients and a reason for them to choose you. Flow does not promise leads or revenue.' },
@@ -83,7 +99,8 @@ const schema = [
   <main id="main" class="ls-main">
     <header class="ed-hub-intro dm-hero ls-container">
       <p class="ls-eyebrow dm-eyebrow">FLOW / DOMAINS</p>
-      <h1>Easily co-author with any AI once,<br /><em>one-click publish as AI system everywhere.</em></h1>
+      <h1>Write your method once.<br /><em>Every client gets the living version.</em></h1>
+      <p class="dm-tagline">Easily co-author with any AI once, one-click publish as AI system everywhere.</p>
       <div class="dm-hero-foot">
         <p>A Flow Domain turns the method you use with clients into a folder of living documents: your know-how, your sources, and tools your clients use on their own work. Build it in Flow with the AI you already pay for, review every change, and publish it to GitHub. Clients bring it in with one address, and each update reaches them as a change they review.</p>
         <div class="dm-ctas">
@@ -99,6 +116,15 @@ const schema = [
       <p class="dm-bridge">A Domain keeps your method, its sources and your corrections in one place, so the next client starts from what you already learned.</p>
     </section>
 
+    <section class="dm-section ls-container" aria-labelledby="dm-now">
+      <div class="dm-head"><p class="ls-eyebrow">WHY NOW</p><h2 id="dm-now">The GPT you built<br /><span class="ls-stroke">retires on December 11.</span></h2></div>
+      <div class="dm-now">
+        <p>OpenAI is retiring custom GPTs on December 11, 2026. A GPT can move to a ChatGPT plugin, but the plugin starts private and your users do not get it on their own. On a personal plan you can no longer make a new one. A Claude Project stays inside Claude.</p>
+        <p>A Domain is plain Markdown files in your own GitHub. Build it once in Flow with the AI you already use, and publish it when it is ready. If you ever stop using Flow, the files still open anywhere.</p>
+        <p class="dm-now-links"><a href="/flow/compare/custom-gpts/">Flow for custom GPT and Claude Project users<ArrowRight size={16} /></a><a class="dm-now-src" href={NOW.source.href}>Source: {NOW.source.label}, checked {NOW.source.checked}<ArrowUpRight size={14} /></a></p>
+      </div>
+    </section>
+
     <section class="dm-section ls-container" aria-labelledby="dm-what">
       <div class="dm-head"><p class="ls-eyebrow">WHAT A DOMAIN IS</p><h2 id="dm-what">One folder.<br /><span class="ls-stroke">Everything you know about the job.</span></h2><p class="dm-sub">Here is the first one, file by file, as it sits on GitHub.</p></div>
       <DomainAnatomy repo={launch.data.repo} />
@@ -109,7 +135,7 @@ const schema = [
     <section class="dm-section ls-container" aria-labelledby="dm-first">
       <div class="dm-head"><p class="ls-eyebrow">THE FIRST DOMAIN</p><h2 id="dm-first">An empty folder<br /><span class="ls-stroke">to GitHub in a few hours.</span></h2><p class="dm-sub">AI Consulting Starter turns nine years of Amazon mechanisms into a path for adopting AI. The hands-on work took about three hours across two days, and no run cost anything on top of a Claude subscription.</p></div>
       <div class="dm-first">
-        <ol class="dm-time">{TIMELINE.map((s) => <li><time>{s.t}</time><span><b>{s.k}</b>{s.v}</span></li>)}</ol>
+        <ol class="dm-time">{TIMELINE.map((s) => <Fragment>{s.day && <li class="dm-day" aria-label={s.day}><span>{s.day}</span></li>}<li>{s.t ? <time>{s.t}</time> : <span class="dm-time-blank" aria-hidden="true"></span>}<span><b>{s.k}</b>{s.v}</span></li></Fragment>)}</ol>
         <a class="dm-story" href={domainArticleHref(launch.id)}>
           <Image src={launch.data.hero} alt="" widths={[640, 960, 1280]} sizes="(max-width: 900px) 92vw, 600px" loading="lazy" />
           <span class="dm-story-t"><small>THE LAUNCH STORY · {launch.data.minutes} MIN READ</small><b>{launch.data.title}</b><em>Read it<ArrowRight size={16} /></em></span>
@@ -139,6 +165,10 @@ const schema = [
         <p>Built first for consultants who help businesses adopt AI. It fits any expert with a method they apply again and again:</p>
         <ul>{ROLES.map((r) => <li>{r}</li>)}</ul>
       </div>
+      <div class="dm-talk">
+        <div><b>Talk about your first Domain.</b><span>Email Manav the client job you would build it for, when it is due, what you use today, and what gets in the way. You get one reply, not a list.</span></div>
+        <a class="ls-button dm-talk-btn" href={TALK}>Write to Manav<ArrowRight size={18} /></a>
+      </div>
     </section>
 
     <section class="dm-section ls-container" aria-labelledby="dm-formats">
@@ -156,7 +186,7 @@ const schema = [
       <div class="ls-container dm-next-in">
         <p class="ls-eyebrow">FLOW MCP · YOUR AGENTS</p>
         <h2 id="dm-mcp">Your agents,<br /><span>on your Domains.</span></h2>
-        <p>In Settings ▸ General ▸ Your agents, open Flow to the Claude Code or Codex you run in Terminal, as Read or Read and propose. Your agent can read a Domain's summary and reading order, read and search its documents, and read a skill's method, then apply your method to the work it does for you. A document it proposes comes back to Review Changes under its name, and Flow keeps a log of each call. The door is open only while Flow is.</p>
+        <p>In Settings ▸ General ▸ Your agents, open Flow to the Claude Code or Codex you run in Terminal, as Read or Read and propose. Your agent can read a Domain's summary and reading order, read and search its documents, and read a skill's method, then apply your method to the work it does for you. A document it proposes comes back to Review Changes under its name, and Flow keeps a log of each call. The door is open only while Flow is, and it needs Flow Pro.</p>
       </div>
     </section>
 

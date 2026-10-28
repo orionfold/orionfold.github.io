@@ -7,8 +7,10 @@
 /* ── Hero ─────────────────────────────────────────────── */
 .ls .dm-hero { padding-bottom: 48px; }
 .dm-eyebrow { display: flex; align-items: center; gap: 12px; }
-.ls .dm-hero h1 { max-width: 15ch; margin: 22px 0 0; font: 400 clamp(2.7rem, 5.6vw, 5.4rem)/1 var(--ed-serif, Georgia, serif); letter-spacing: -.045em; }
+.ls .dm-hero h1 { max-width: 16ch; margin: 22px 0 0; font: 400 clamp(2.7rem, 5.6vw, 5.4rem)/1 var(--ed-serif, Georgia, serif); letter-spacing: -.045em; }
 .ls .dm-hero h1 em { color: var(--teal); }
+/* The operator's selected line (PR/FAQ, 2026-10-26) rides under the promise. */
+.ls .dm-tagline { max-width: 44ch; margin: 20px 0 0; font: italic 400 clamp(1.15rem, 1.6vw, 1.4rem)/1.35 var(--ed-serif, Georgia, serif); letter-spacing: -.01em; color: var(--muted); }
 .dm-hero-foot { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px 56px; align-items: end; margin-top: 36px; }
 .ls .dm-hero-foot p { max-width: 62ch; font-size: 1.05rem; line-height: 1.6; color: var(--muted); }
 .dm-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; }
@@ -24,6 +26,14 @@
 .dm-pains b { font: 400 1.45rem/1.15 var(--ed-serif, Georgia, serif); letter-spacing: -.02em; color: var(--ink); }
 .dm-pains span { font-size: .95rem; line-height: 1.55; color: var(--muted); }
 .ls .dm-bridge { max-width: 60ch; margin-top: 28px; font: 400 1.25rem/1.5 var(--ed-serif, Georgia, serif); color: var(--ink); }
+
+/* ── Why now ──────────────────────────────────────────── */
+.dm-now { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 48px; max-width: 1040px; }
+.ls .dm-now p { margin: 0; font: 400 1.2rem/1.5 var(--ed-serif, Georgia, serif); color: var(--ink); }
+.ls .dm-now .dm-now-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; font-family: inherit; font-size: .95rem; font-weight: 700; }
+.dm-now-links a { display: inline-flex; align-items: center; gap: 6px; }
+.dm-now-links .dm-now-src { font-weight: 500; color: var(--muted); }
+@media (max-width: 900px) { .dm-now { grid-template-columns: minmax(0, 1fr); } }
 
 /* ── Anatomy of a Domain ──────────────────────────────── */
 .da { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 28px; align-items: start; margin: 0; }
@@ -62,6 +72,15 @@
 .dm-time time { font: 700 1.15rem/1.3 var(--dm-display); color: var(--teal); }
 .dm-time span { display: grid; gap: 2px; font-size: .9rem; line-height: 1.45; color: var(--muted); }
 .dm-time b { font-size: .98rem; color: var(--ink); }
+.dm-time .dm-day { grid-template-columns: 1fr; padding: 22px 0 8px; border-bottom: 0; }
+.dm-time .dm-day span { font: 700 .78rem/1.2 var(--font-sans, inherit); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
+.dm-time .dm-day + li { border-top: 1px solid var(--line); }
+.dm-time-blank { display: block; }
+.dm-talk { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px 32px; align-items: center; margin-top: 40px; padding: 22px 26px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); }
+.dm-talk > div { display: grid; gap: 4px; }
+.dm-talk b { font-size: 1.05rem; }
+.dm-talk span { font-size: .92rem; line-height: 1.5; color: var(--muted); }
+.dm-talk-btn { justify-self: start; white-space: nowrap; }
 .dm-story { position: sticky; top: calc(var(--of-nav-height, 82px) + 20px); display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: #fff; color: var(--ink); transition: box-shadow .2s, transform .2s; }
 .dm-story:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -20px #17201c50; }
 .dm-story img { display: block; width: 100%; height: auto; border-bottom: 1px solid var(--line); }
@@ -122,7 +141,7 @@
   .dm-formats, .dm-pairs { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
 @media (max-width: 900px) {
-  .dm-hero-foot, .da, .dm-first, .dm-model, .dm-next-in { grid-template-columns: minmax(0, 1fr); }
+  .dm-hero-foot, .da, .dm-first, .dm-model, .dm-next-in, .dm-talk { grid-template-columns: minmax(0, 1fr); }
   .ls .dm-pains, .dm-faq { grid-template-columns: minmax(0, 1fr); }
   .dm-story { position: static; }
 }

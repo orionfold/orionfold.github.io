@@ -17,12 +17,18 @@ const [launch] = await publishedDomainArticles();
     <div class="fd-head">
       <div>
         <p class="ls-eyebrow">FLOW DOMAINS</p>
-        <h2 id={`${id}-heading`}><span class="fd-l1">YOUR METHOD IN 75 KB.</span><br /><span class="ls-stroke fd-l2">ALL OF FLOW ON CLIENT SIDE.</span></h2>
+        <h2 id={`${id}-heading`}><span class="fd-l1">YOUR METHOD IN 75 KB.</span><br /><span class="ls-stroke fd-l2">ALIVE IN YOUR CLIENT'S FLOW.</span></h2>
       </div>
       <div class="ls-episode-dek">
-        <p>A Domain is the method you use with clients, as a folder of plain Markdown files. You write it with your AI as co-author, and you keep or undo each change it makes. {launch.data.domain} is 6 files and 75 KB.</p>
-        <p>Those few files carry a lot. In your client's Flow they open with figures, tables and checklists drawn, and with skills and Jobs ready to run. Their agent can read your method through Flow too. Publish again, and every client gets a change to review, file by file.</p>
-        <p class="fd-links">{!self && <a href="/domains/">See Flow Domains<ArrowRight size={16} /></a>}<a href={domainArticleHref(launch.id)}>How {launch.data.domain} was built<ArrowRight size={16} /></a></p>
+        {self ? (
+          <p>From your Mac to your client's Flow, or to their agent through Flow. {launch.data.domain} travels as 6 files and 75 KB.</p>
+        ) : (
+          <Fragment>
+            <p>{launch.data.domain} travels as 6 files and 75 KB of plain Markdown. In a client's Flow those files open with figures, tables and checklists drawn, and with skills and Jobs ready to run. Their agent can read your method through Flow too. Publish again, and every client gets a change to review.</p>
+            <p>Built a custom GPT for clients? OpenAI retires custom GPTs on December 11, 2026. A Domain is files you keep.</p>
+          </Fragment>
+        )}
+        <p class="fd-links">{!self && <a href="/domains/">See Flow Domains<ArrowRight size={16} /></a>}<a href={domainArticleHref(launch.id)}>How {launch.data.domain} was built<ArrowRight size={16} /></a>{!self && <a href="/flow/compare/custom-gpts/">Flow for custom GPT users<ArrowRight size={16} /></a>}</p>
       </div>
     </div>
     <DomainPayload />

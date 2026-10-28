@@ -209,7 +209,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     "living": true
 },
   '/flow/paths/': {
-    slug: 'flow-paths', eyebrow: `Flow ${FLOW_VERSION} · Paths`,
+    slug: 'flow-paths', eyebrow: 'Flow · Paths',
     title: 'Real work. Walked end to end.', seed: 'flow-paths',
     alt: 'Flow Paths: real work walked end to end on a Mac, with the time, the cost and the evidence for every step.', living: true,
   },
@@ -224,7 +224,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     alt: 'Flow Elements: every block, action, skill and chart kind in Flow, each as a card with a small drawing.', living: true,
   },
   '/flow/compare/': {
-    slug: 'compare', eyebrow: `Flow ${FLOW_VERSION} · Compare`,
+    slug: 'compare', eyebrow: 'Flow · Compare',
     title: 'Coming from another tool?', seed: 'compare',
     alt: 'Compare Flow with Notion, Obsidian, Claude Code, Codex and Canva: what moves, what stays, and the path to start with.', living: true,
   },

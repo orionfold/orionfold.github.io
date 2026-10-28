@@ -88,7 +88,7 @@ export const FLOW_PRO_CAPABILITIES: FlowCapability[] = [
  * equivalent checkout and transactional-email wording. */
 export const FLOW_ADDONS = [
   { name: "Flow Import", description: "Import Word, Excel, PowerPoint and PDF into Markdown." },
-  { name: "Flow Publish", description: "Publish PDF, GitHub Pages, EPUB, Word, Excel and PowerPoint." },
+  { name: "Flow Publish", description: "Publish PDF, GitHub Pages, EPUB, Word, Excel and PowerPoint, and a Domain to a GitHub repository." },
 ];
 export const FLOW_ADDON_TERMS = "Each add-on is $10/month or $96/year per seat and needs Flow Pro. Add or remove it in Flow’s Billing settings. Cancelling Pro also ends its add-ons.";
 export const FLOW_TRIAL_TERMS = "Try every paid feature, including Import and Publish, free for 10 Pro Days. Subscribe when you're ready.";

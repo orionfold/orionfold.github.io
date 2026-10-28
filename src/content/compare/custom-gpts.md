@@ -30,7 +30,7 @@ rows:
     source: { label: "OpenAI Help: Custom GPT retirement and migration FAQ", href: "https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq", checked: "2026-10-27" }
   - topic: "What it costs"
     them: "Claude Projects come with every Claude plan, and free accounts can make five. Claude Pro is $17 a month paid yearly, or $20 monthly."
-    flow: "Publishing a Domain needs Flow Pro and the Publish add-on, $10 a month each. There is no fee per Domain. Bringing one in needs Flow Pro and the Import add-on."
+    flow: "Publishing a Domain needs Flow Pro and the Publish add-on, $10 a month each. There is no fee per Domain. Bringing one in is free on Base; Chat on it needs Flow Pro."
     source: { label: "Claude pricing", href: "https://claude.com/pricing", checked: "2026-10-27" }
   - topic: "Where your clients use it"
     them: "Clients use a custom GPT or a Claude Project inside ChatGPT or Claude, on the web, on desktop and on their phones."
@@ -40,7 +40,7 @@ notFlow:
   - "A Domain is not a chatbot your clients open in a browser. To use Chat on a Domain, a reader needs Flow on a Mac."
   - "Flow has no importer for a custom GPT or a Claude Project. You bring your instructions and files over yourself, as Markdown."
   - "Flow does not find you clients. Publishing a Domain does not bring customers on its own. You set the offer, the price and the terms."
-  - "Flow is a Mac app only. Publishing needs Flow Pro and the Publish add-on, and bringing a Domain in needs Flow Pro and the Import add-on."
+  - "Flow is a Mac app only. Publishing needs Flow Pro and the Publish add-on. Bringing a Domain in is free on Base; Chat on it needs Flow Pro."
 sources:
   - { label: "OpenAI Help: Custom GPT retirement and migration FAQ", href: "https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq", checked: "2026-10-27" }
   - { label: "OpenAI Help: Sharing and publishing GPTs", href: "https://help.openai.com/en/articles/8798878-sharing-and-publishing-gpts", checked: "2026-10-27" }
@@ -81,4 +81,4 @@ We have not yet moved a real GPT or Project into Flow. Keep the original until y
 
 Read [how AI Consulting Starter was built](/domains/ai-consulting-starter/). Manav Sehgal turned nine years of Amazon mechanisms into six documents in about three hours of hands-on work. He published them to GitHub. A reader brought them in with one address and got the next update as a change to review.
 
-Publishing a Domain needs Flow Pro and the Publish add-on, and bringing one in needs Flow Pro and the Import add-on. There is no fee per Domain. Your 10 Pro Days cover them while you try.
+Publishing a Domain needs Flow Pro and the Publish add-on. Bringing one in is free on Base, and Chat on it needs Flow Pro. There is no fee per Domain. Your 10 Pro Days cover them while you try.
