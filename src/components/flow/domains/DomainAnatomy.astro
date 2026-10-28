@@ -17,12 +17,12 @@ const tint: Record<string, string> = {
 };
 const chip = (card: string, label: string) => ({ svg: elementDrawing(card), tint: tint[card], label });
 const FILES = [
-  { n: '', name: 'README', role: 'The front page: who it is for, what you will have at the end, the path.', chips: [chip('skill-visual-explainer', 'Stepped figure'), chip('skill-isometric-figure', 'Map of the path')] },
+  { n: '', name: 'README', role: 'The front page. Who it is for, what you will have at the end, and the path.', chips: [chip('skill-visual-explainer', 'Stepped figure'), chip('skill-isometric-figure', 'Map of the path')] },
   { n: '1', name: 'Mechanisms Primer', role: 'What a mechanism is, how to spot a missing one, how to build one.', chips: [chip('component-approval-card', 'Checklist'), chip('component-table', 'Tables'), chip('skill-visual-explainer', 'Stepped figure')] },
   { n: '2', name: 'Amazon Mechanisms and Practices', role: '24 mechanisms described in public, each with a source.', chips: [chip('component-table', 'Reference table'), chip('component-sources', 'Sources'), chip('component-callout', 'Marked to check')] },
   { n: '3', name: 'Press Release FAQ for AI project', role: 'Work backwards from the customer before you build.', chips: [chip('component-table', 'Template'), chip('skill-visual-explainer', 'Review figure')] },
   { n: '4', name: 'Pilot to Scale', role: 'Run a pilot that answers a real question, then take it to production.', chips: [chip('component-table', 'Pilot card'), chip('component-approval-card', 'Readiness check')] },
-  { n: '', name: 'Flow PR-FAQ', role: 'A worked example: the PR/FAQ for Flow’s own launch.', chips: [chip('component-callout', 'Worked example')] },
+  { n: '', name: 'Flow PR-FAQ', role: 'A worked example. The PR/FAQ for Flow’s own launch.', chips: [chip('component-callout', 'Worked example')] },
 ];
 const TRAITS = [
   { k: 'Plain files you own', v: 'Every document is Markdown in a folder. It opens in any editor and lives in your GitHub, not ours.' },

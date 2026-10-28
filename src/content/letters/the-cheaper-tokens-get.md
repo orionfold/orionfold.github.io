@@ -17,13 +17,13 @@ Now look at the bills. Menlo Ventures, which surveys large companies on what the
 
 The answer is the new way we use AI. Old AI answered one question at a time. The new kind, the "agent" kind, works on its own across many steps. It reads files, runs tools, checks its own work, and tries again. One task now burns ten or a hundred times the tokens it used to. So even as each token gets cheaper, you use so many more that the bill goes up, not down.
 
-Economists have a name for this, from a coal study back in 1865. It is called Jevons paradox: make a thing cheaper, and people use so much more of it that they end up spending more. AI tokens are a textbook case.
+Economists have a name for this, from a coal study back in 1865. It is called Jevons paradox. Make a thing cheaper, and people use so much more of it that they end up spending more. AI tokens are a textbook case.
 
 It is not just theory. This month, TechCrunch reported that Uber spent its entire 2026 AI coding budget by April, with token use per developer up about eighteen times in nine months [3]. The meter just keeps running.
 
 ## I watched this from the inside
 
-For almost nine years I helped build the cloud that sends those bills. The model is simple, and for the seller it is wonderful: you rent, you never own, and the meter never stops. Every experiment, every retry, every step an agent takes is another charge. So teams do the natural thing. They play it safe. They run fewer tests. They hold back the very thing that makes AI good, which is trying many things and learning from the ones that fail.
+For almost nine years I helped build the cloud that sends those bills. The model is simple, and for the seller it is wonderful. You rent, you never own, and the meter never stops. Every experiment, every retry, every step an agent takes is another charge. So teams do the natural thing. They play it safe. They run fewer tests. They hold back the very thing that makes AI good, which is trying many things and learning from the ones that fail.
 
 That is the trap I left to fix.
 

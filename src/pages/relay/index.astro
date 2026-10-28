@@ -127,7 +127,7 @@ const relayHostSchema = {
 const freeVsPaid = [
   { free: 'The full engine and command-line tool, forever', paid: 'Premium packs you own' },
   { free: 'Run your own copy, your data stays on your machine', paid: 'One license unlocks every premium pack, not one at a time' },
-  { free: 'All 21 agents and 15 service templates', paid: 'The agency pack: real-estate and nonprofit agents, blueprints, and a customer setup' },
+  { free: 'All 21 agents and 15 service templates', paid: 'The agency pack, with real-estate and nonprofit agents, blueprints, and a customer setup' },
   { free: 'Build apps, track per-client cost, add free and open packs', paid: 'New packs and pack updates for 12 months' },
 ];
 
@@ -215,7 +215,7 @@ const operatingModel = [
 
 // The five gaps every AI agency hits (README), retuned to plain voice.
 const gaps = [
-  { title: 'Many steps, one run', body: 'Real client work is a chain: take it in, do it, check it, send it. Relay runs the whole sequence with checkpoints, so you are not gluing steps together by hand.' },
+  { title: 'Many steps, one run', body: 'Real client work is a chain. Take it in, do it, check it, send it. Relay runs the whole sequence with checkpoints, so you are not gluing steps together by hand.' },
   { title: 'Your words, the agent’s work', body: 'You think in clients, services, and deliverables. Agents think in prompts. Projects, agents, and blueprints give both a shared language.' },
   { title: 'The whole life of a job', body: 'A deliverable needs scheduling, retries, a way to pick up where it left off, cost tracking, and a record. Relay carries all of it.' },
   { title: 'Trust and sign-off', body: 'Agents that read client files and draft client-facing work need guardrails. Relay routes every result through your approval and keeps the trail funders and stakeholders ask for.' },
@@ -493,7 +493,7 @@ const trust = [
           <p class="font-mono text-xs uppercase tracking-wider text-text-dim">Install</p>
           <pre class="mt-2 overflow-x-auto font-mono text-sm text-primary"><code>npm i -g orionfold-relay</code></pre>
           <p class="mt-3 text-sm text-text-muted">
-            Or run it without installing: <span class="font-mono text-primary">npx orionfold-relay</span>.
+            Or run it without installing, with <span class="font-mono text-primary">npx orionfold-relay</span>.
             Then <span class="font-mono text-primary">relay</span> is your command.
           </p>
         </div>
@@ -628,7 +628,7 @@ const trust = [
           The free engine is not a trial or a cut-down version. It is a complete operations layer you
           can run for real. A Pack license adds premium packs and their updates. Relay Host is shown
           separately below because it covers managed customer operations, not image access or a hidden
-          core feature. This is a promise we hold every product to: read
+          core feature. This is a promise we hold every product to. Read
           <a href="/promise/" class="text-primary hover:text-primary/80 transition-colors">how our gating works</a>.
         </p>
       </div>
@@ -646,7 +646,7 @@ const trust = [
         <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Packs by job</p>
         <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
           A pack is a ready-made setup you drop in with one command instead of building it yourself.
-          Your license adds it: run <span class="font-mono text-primary">relay pack add</span> with your
+          Your license adds it. Run <span class="font-mono text-primary">relay pack add</span> with your
           own private link and it installs. Packs are grouped by the job you are doing, not the title you hold.
         </p>
 

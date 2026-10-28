@@ -10,7 +10,7 @@ startWith: ai-consulting-starter
 rows:
   - topic: "What it is for"
     them: "A custom GPT is a version of ChatGPT with its own instructions and files. A Claude Project is a workspace with its own chats and a knowledge base of files you upload."
-    flow: "A Flow Domain is a folder of plain Markdown files that carries your method: what you know, its sources, worked examples and tools. You build it in Flow with the AI you already use."
+    flow: "A Flow Domain is a folder of plain Markdown files that carries your method. It holds what you know, its sources, worked examples and tools. You build it in Flow with the AI you already use."
     source: { label: "Claude Help: What are projects?", href: "https://support.claude.com/en/articles/9517075-what-are-projects", checked: "2026-10-27" }
   - topic: "Where your method lives"
     them: "Your instructions and files live inside ChatGPT or Claude, next to the chats that use them."
@@ -25,7 +25,7 @@ rows:
     flow: "When you publish an update, the reader's copy shows a blue dot. The sheet lists which files changed and checks each one against the reader's copy. The reader picks what comes in."
     source: { label: "Claude Help: Create and manage projects", href: "https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects", checked: "2026-10-27" }
   - topic: "What is changing"
-    them: "OpenAI is retiring custom GPTs on December 11, 2026. A GPT can move to a ChatGPT plugin: its instructions become a skill and its files carry over. The plugin starts private, and the GPT's users do not get it automatically."
+    them: "OpenAI is retiring custom GPTs on December 11, 2026. A GPT can move to a ChatGPT plugin. Its instructions become a skill and its files carry over. The plugin starts private, and the GPT's users do not get it automatically."
     flow: "A Domain is plain files. If you stop using Flow, they still open in any text app, and the copy on GitHub stays where you put it."
     source: { label: "OpenAI Help: Custom GPT retirement and migration FAQ", href: "https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq", checked: "2026-10-27" }
   - topic: "What it costs"
@@ -51,7 +51,7 @@ sources:
 
 ## What changes
 
-**The job.** Say you serve clients with a method of your own: the way you review a plan, write a proposal, or run a launch. You want it in a form your clients can use with AI, not only in your head. Many experts build a custom GPT or a [Claude Project](https://support.claude.com/en/articles/9517075-what-are-projects) for this, and both are quick to set up.
+**The job.** Say you serve clients with a method of your own. It might be the way you review a plan, write a proposal, or run a launch. You want it in a form your clients can use with AI, not only in your head. Many experts build a custom GPT or a [Claude Project](https://support.claude.com/en/articles/9517075-what-are-projects) for this, and both are quick to set up.
 
 **The moment.** Then you learn something new from a client, and the method changes. Every client who has a copy now has an old one. The next client signs on next week and needs the current one.
 
@@ -73,7 +73,7 @@ Flow has no importer for a custom GPT or a Claude Project. The way over is by ha
 
 1. Copy your GPT's instructions, or your Project's instructions, into a Markdown file in a new Flow folder.
 2. Add the files you uploaded as knowledge. Flow can import Word, PDF and other files into Markdown.
-3. Shape the folder into a path: a front page, a few documents in order, and a worked example. AI Consulting Starter is one model to follow.
+3. Shape the folder into a path. Give it a front page, a few documents in order, and a worked example. AI Consulting Starter is one model to follow.
 
 We have not yet moved a real GPT or Project into Flow. Keep the original until you have checked the new folder against it.
 

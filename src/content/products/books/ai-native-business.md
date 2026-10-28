@@ -112,7 +112,7 @@ step, with real code behind every idea.
 ## What you will learn
 
 It starts with why the old way of organizing a company is breaking, then walks
-you through a working design: how to turn a goal into clear tasks, run many of
+you through a working design. You learn how to turn a goal into clear tasks, run many of
 them at once, build flows that run on their own, and give the whole team one
 shared memory. By the end you have seen a real business that helps build itself.
 

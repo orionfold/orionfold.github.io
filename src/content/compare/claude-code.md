@@ -10,7 +10,7 @@ startWith: review-agents
 rows:
   - topic: "What it is for"
     them: "Claude Code is an agentic coding tool. It reads your codebase, edits files, runs commands, and works with git. It runs in the terminal, in code editors, in a desktop app and in the browser."
-    flow: "Flow is a Mac app for documents: pricing pages, READMEs, client memos, briefs. Each one is a Markdown file in a folder you choose, with a review step and a History."
+    flow: "Flow is a Mac app for documents, such as pricing pages, READMEs, client memos and briefs. Each one is a Markdown file in a folder you choose, with a review step and a History."
     path: review-agents
     source: { label: "Claude Code docs: Overview", href: "https://code.claude.com/docs/en/overview", checked: "2026-09-28" }
   - topic: "Asking before a change"
@@ -47,7 +47,7 @@ sources:
 
 ## Why pair them
 
-**The job.** Say you hand small writing jobs to Claude Code all day: tighten the pricing page, fix the FAQ, update the changelog. It [reads a whole project, edits files and runs commands](https://code.claude.com/docs/en/overview), and in its [Manual mode](https://code.claude.com/docs/en/permissions) it asks before it edits a file.
+**The job.** Say you hand small writing jobs to Claude Code all day. Tighten the pricing page, fix the FAQ, update the changelog. It [reads a whole project, edits files and runs commands](https://code.claude.com/docs/en/overview), and in its [Manual mode](https://code.claude.com/docs/en/permissions) it asks before it edits a file.
 
 **The moment.** Then the change is about to go out. The page ships, or the memo goes to a client. Before it does, you want to see exactly what the agent changed.
 
@@ -66,9 +66,9 @@ This is how it went on our walk, where we used Codex. The steps are the same for
 3. **Review the exact lines.** The agent's answer arrives as a proposal. *Exact changes* shows each added and removed line. On our walk, the file on disk kept its old version until we approved.
 4. **Keep the record.** History shows the run, the checks it passed, and the model that did the work.
 
-One more thing we measured: the agent sent 21,831 tokens in to proofread a 239-word page. Tokens are the small pieces of text a model reads and writes. An agent carries its own working notes, not just your page. On a pay-per-token key, that extra is what you pay for. On a plan you already have, Flow adds no second meter for the run.
+We measured one more thing. The agent sent 21,831 tokens in to proofread a 239-word page. Tokens are the small pieces of text a model reads and writes. An agent carries its own working notes, not just your page. On a pay-per-token key, that extra is what you pay for. On a plan you already have, Flow adds no second meter for the run.
 
-Be clear on one point. With Full access, the agent uses its own settings, and Flow says so in the sheet: it can read and change files Flow does not see. Flow controls only what Flow itself does. Choose the folder with that in mind.
+Be clear on one point. With Full access, the agent uses its own settings, and Flow says so in the sheet. It can read and change files Flow does not see. Flow controls only what Flow itself does. Choose the folder with that in mind.
 
 ## The path to start with
 

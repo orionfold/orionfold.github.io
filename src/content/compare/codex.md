@@ -25,7 +25,7 @@ rows:
     source: { label: "Codex docs: Pricing", href: "https://learn.chatgpt.com/docs/pricing", checked: "2026-10-27" }
   - topic: "Seeing what changed"
     them: "Codex can review code changes and fix issues as part of its work."
-    flow: "Flow's review shows the exact lines Codex changed. In our walk that was three: a comma and two spelling fixes. Everything else was marked unchanged."
+    flow: "Flow's review shows the exact lines Codex changed. In our walk that was three. A comma and two spelling fixes. Everything else was marked unchanged."
     path: review-agents
     source: { label: "Codex docs: Overview", href: "https://learn.chatgpt.com/docs", checked: "2026-09-28" }
   - topic: "Keeping the record"
@@ -47,7 +47,7 @@ sources:
 
 ## Why pair them
 
-**The job.** Say you hand small writing jobs to Codex all day: tighten the pricing page, fix the FAQ, update the changelog. It is everywhere you work, in the [ChatGPT desktop app, the command line, your code editor and the web](https://learn.chatgpt.com/docs), and it comes with [most ChatGPT plans](https://learn.chatgpt.com/docs/pricing).
+**The job.** Say you hand small writing jobs to Codex all day. Tighten the pricing page, fix the FAQ, update the changelog. It is everywhere you work, in the [ChatGPT desktop app, the command line, your code editor and the web](https://learn.chatgpt.com/docs), and it comes with [most ChatGPT plans](https://learn.chatgpt.com/docs/pricing).
 
 **The moment.** Then the change is about to go out. The page ships, or the memo goes to a client. Before it does, you want to see exactly what the agent changed.
 
@@ -68,7 +68,7 @@ This is the walk we ran, with Codex on our own ChatGPT plan.
 
 One number is worth knowing. Codex sent 21,831 tokens in to proofread that 239-word page. Tokens are the small pieces of text a model reads and writes. An agent carries its own working notes, not just your page. On a pay-per-token key, that extra is what you pay for, about ten cents a pass at top-tier prices. On a plan you already have, the plan absorbs it, and Flow adds no second meter.
 
-One caution. With Full access, Codex uses its own settings. Flow's sheet says so: the agent can read and change files Flow does not see. Flow controls only what Flow itself does, so choose the folder with care.
+One caution. With Full access, Codex uses its own settings. Flow's sheet says so. The agent can read and change files Flow does not see. Flow controls only what Flow itself does, so choose the folder with care.
 
 ## The path to start with
 

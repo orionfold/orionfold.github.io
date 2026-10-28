@@ -157,7 +157,7 @@ export const speedRows: SpeedRow[] = [
 ];
 
 export const speedCaveat =
-  'Straight talk: those big hosted models are far smarter than our small one, and some speed-chip services are faster still. The WOW is the dead heat on raw typing speed from a model on your own desk that never sends your data out.';
+  'Straight talk. Those big hosted models are far smarter than our small one, and some speed-chip services are faster still. The WOW is the dead heat on raw typing speed from a model on your own desk that never sends your data out.';
 
 // The headline receipts. Each pairs our number with the world it beats, and
 // points at a public page where the work lives.

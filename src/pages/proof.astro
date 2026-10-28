@@ -77,7 +77,7 @@ const howToSchema = {
   '@type': 'HowTo',
   name: 'Rerun an Orionfold Proof receipt',
   description:
-    'How Orionfold Proof turns a claim into a receipt you can rerun: configure the test, run it on the models you are weighing, then decide from the scored result.',
+    'How Orionfold Proof turns a claim into a receipt you can rerun. Configure the test, run it on the models you are weighing, then decide from the scored result.',
   step: [
     {
       '@type': 'HowToStep',
@@ -97,7 +97,7 @@ const howToSchema = {
       '@type': 'HowToStep',
       position: 3,
       name: 'Decide',
-      text: 'Read the scored receipt: which model passed, which refused, which missed. The receipt is the proof you can hand to anyone to rerun.',
+      text: 'Read the scored receipt. It shows which model passed, which refused, which missed. The receipt is the proof you can hand to anyone to rerun.',
       url: `${proofUrl}#what-it-does`,
     },
   ],
@@ -122,7 +122,7 @@ const icps = [
     icon: '<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
     points: [
       'Run local and cloud models against the same locked test.',
-      'Read one scored receipt: which passed, which refused, which made things up.',
+      'Read one scored receipt. See which passed, which refused, which made things up.',
       'No account, no per-word bill. It runs on the machine in front of you.',
     ],
     accent: false,
@@ -380,7 +380,7 @@ const receiptTasters = Object.fromEntries(
         <div class="mx-auto max-w-3xl">
           <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Proof in the field</p>
           <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-            Every receipt above has a story behind it: the test we locked, the run, and what we found.
+            Every receipt above has a story behind it. The test we locked, the run, and what we found.
             Here are the field notes, each one a thing you can rerun yourself.
           </p>
           <ul class="grid gap-3" data-animate-stagger>
@@ -484,7 +484,7 @@ const receiptTasters = Object.fromEntries(
       <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
         <p class="font-display text-2xl leading-snug">Proof you can rerun. An AI team you can own.</p>
         <p class="mt-4 text-base leading-relaxed text-text-muted">
-          The receipts are the reason to believe. The payoff is what they earn: a private AI team
+          The receipts are the reason to believe. The payoff is what they earn, a private AI team
           that runs on the Spark you already own, with no cloud account and no per-word bills. The
           full story of why is in the
           <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/letter/">letter from the founder</a>.

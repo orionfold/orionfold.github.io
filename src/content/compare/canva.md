@@ -10,7 +10,7 @@ startWith: campaign-with-proof
 rows:
   - topic: "What it is for"
     them: "Canva is a design tool with more than 1,000 design types and 1.6 million templates on the free plan. Canva Docs is its visual document editor."
-    flow: "Flow is a Mac app for the words and numbers: briefs, launch posts, updates. Each one is a Markdown file in a folder you choose, with a review step and a History."
+    flow: "Flow is a Mac app for the words and numbers, such as briefs, launch posts and updates. Each one is a Markdown file in a folder you choose, with a review step and a History."
     path: campaign-with-proof
     source: { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-10-27" }
   - topic: "Writing with AI"
@@ -25,7 +25,7 @@ rows:
     source: { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-10-27" }
   - topic: "What it costs"
     them: "Canva Free is $0 with up to 20 AI uses. Canva Pro is US$144 a year for one person, with 10 times the AI of Free. Canva Business is US$250 a year per person."
-    flow: "Flow Pro adds the AI for $10 a month or $96 a year. A run on your Mac adds no model cost: our campaign walk cost $0.00. Import and Publish are add-ons to Pro, at $10 a month or $96 a year each."
+    flow: "Flow Pro adds the AI for $10 a month or $96 a year. A run on your Mac adds no model cost. Our campaign walk cost $0.00. Import and Publish are add-ons to Pro, at $10 a month or $96 a year each."
     path: campaign-with-proof
     source: { label: "Canva pricing", href: "https://www.canva.com/pricing/", checked: "2026-10-27" }
   - topic: "Moving work between them"

@@ -42,9 +42,9 @@ export interface SoftwareProduct extends RoadmapMeta {
 
 // Group headings + blurbs for the page sections (order = display order).
 export const softwareGroups: { id: SoftwareGroup; label: string; blurb: string }[] = [
-  { id: 'flagship', label: 'Flagship', blurb: 'Flow leads the line: bring AI to your documents and keep the wheel, run repeatable agent work in Relay, and find which local AI wins in Arena.' },
-  { id: 'platform', label: 'The platform', blurb: 'The Arena stack and the core: a governed advisor over your documents, the memory it answers from, and the API to drive it all with code.' },
-  { id: 'devtools', label: 'Developer tools', blurb: 'For builders: rerunnable proof, testing, terminals, and reusable patterns.' },
+  { id: 'flagship', label: 'Flagship', blurb: 'Flow leads the line. Bring AI to your documents and keep the wheel, run repeatable agent work in Relay, and find which local AI wins in Arena.' },
+  { id: 'platform', label: 'The platform', blurb: 'The Arena stack and the core. A governed advisor over your documents, the memory it answers from, and the API to drive it all with code.' },
+  { id: 'devtools', label: 'Developer tools', blurb: 'For builders. Rerunnable proof, testing, terminals, and reusable patterns.' },
   { id: 'apps', label: 'Personal AI apps', blurb: 'Ready-to-use apps that keep your data on your machine.' },
   { id: 'intel', label: 'Intelligence & research', blurb: 'Tools that turn the fast-moving AI world into clear answers.' },
 ];
@@ -104,7 +104,7 @@ export const software: SoftwareProduct[] = [
     group: 'devtools',
     eyebrow: 'Trust, proven',
     title: 'Orionfold Proof',
-    body: 'The tool behind the receipts. It runs on your own machine, points at your own task, and tries each AI model or setup you are weighing. It scores them on a rubric you set and hands back a signed receipt: which one won, at what cost, with what failures. Rerun it any time.',
+    body: 'The tool behind the receipts. It runs on your own machine, points at your own task, and tries each AI model or setup you are weighing. It scores them on a rubric you set and hands back a signed receipt. It says which one won, at what cost, with what failures. Rerun it any time.',
     pills: ['Runs local', 'Signed receipts', 'Rerunnable', 'Private'],
     href: '/proof/',
     ctaText: 'See Proof',
@@ -135,7 +135,7 @@ export const software: SoftwareProduct[] = [
     group: 'platform',
     eyebrow: 'Memory layer',
     title: 'Orionfold Cortex',
-    body: 'A second brain that lives on your own desktop. It indexes your notes, stamps where every fact came from, and grades its own memory: a rebuild that would make recall worse is caught, not shipped. Your documents never leave your machine.',
+    body: 'A second brain that lives on your own desktop. It indexes your notes, stamps where every fact came from, and grades its own memory. A rebuild that would make recall worse is caught, not shipped. Your documents never leave your machine.',
     pills: ['Runs local', 'Recall gate', 'Provenance', 'Private'],
     href: 'https://ainative.business/cortex/',
     ctaText: 'See Cortex',
@@ -252,7 +252,7 @@ export const software: SoftwareProduct[] = [
     group: 'devtools',
     eyebrow: 'Open toolbox',
     title: 'fieldkit',
-    body: 'A Python toolbox of patterns we proved on a small AI desktop. It covers the whole job: faster replies, search over your own files, scoring, training, and shipping models. Use just the parts you need.',
+    body: 'A Python toolbox of patterns we proved on a small AI desktop. It covers the whole job. Faster replies, search over your own files, scoring, training, and shipping models. Use just the parts you need.',
     pills: ['Open source', 'Python', 'Proven on Spark'],
     href: 'https://ainative.business/fieldkit/',
     ctaText: 'Get fieldkit',

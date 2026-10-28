@@ -14,7 +14,7 @@ rows:
     path: status-from-what-you-have
     source: { label: "Microsoft Support: Welcome to Copilot in Word", href: "https://support.microsoft.com/en-us/word/welcome-to-copilot-in-word", checked: "2026-10-27" }
   - topic: "Writing from your own files"
-    them: "Copilot can draft from a file you pick: type / and choose the file. When you ask, it adds citations to the files it used."
+    them: "Copilot can draft from a file you pick. Type / and choose the file. When you ask, it adds citations to the files it used."
     flow: "In our status walk, Flow read a vendor's Word update and a sprint review PDF on the Mac, and checked 16 figures against the PDF's own page."
     path: status-from-what-you-have
     source: { label: "Microsoft Support: Draft and add content with Copilot in Word", href: "https://support.microsoft.com/en-us/word/copilot/draft-and-add-content-with-copilot-in-word", checked: "2026-10-27" }

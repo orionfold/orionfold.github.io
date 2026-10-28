@@ -10,7 +10,7 @@ startWith: review-agents
 rows:
   - topic: "What it is for"
     them: "Both are free, open-source agents under the MIT licence. Hermes Agent works in chat apps like Telegram, Slack and WhatsApp, in a terminal and in a desktop app. OpenClaw runs on your own hardware and works in more than 20 chat apps, a Mac app and a browser panel."
-    flow: "Flow is a Mac app for documents: briefs, memos, pricing pages. Each one is a Markdown file in a folder you choose, with a review step and a History."
+    flow: "Flow is a Mac app for documents, such as briefs, memos and pricing pages. Each one is a Markdown file in a folder you choose, with a review step and a History."
     path: review-agents
     source: { label: "OpenClaw docs", href: "https://docs.openclaw.ai/", checked: "2026-10-27" }
   - topic: "Which AI it uses"
@@ -63,7 +63,7 @@ sources:
 
 ## Why pair them
 
-**The job.** Say you run a general agent for your business. It answers in your chat apps, works across your tools, and some of what it makes is a document: a weekly report, a client memo, a proposal. [Hermes Agent](https://hermes-agent.nousresearch.com/) and [OpenClaw](https://docs.openclaw.ai/) are both free, open source and able to run on your own machine.
+**The job.** Say you run a general agent for your business. It answers in your chat apps, works across your tools, and some of what it makes is a document, such as a weekly report, a client memo or a proposal. [Hermes Agent](https://hermes-agent.nousresearch.com/) and [OpenClaw](https://docs.openclaw.ai/) are both free, open source and able to run on your own machine.
 
 **The moment.** Then the document is about to go to a client. Before it does, you want to read exactly what the agent wrote, and know which model wrote it.
 

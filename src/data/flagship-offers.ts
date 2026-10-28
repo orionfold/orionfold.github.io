@@ -27,7 +27,7 @@ export const flagshipOffers: FlagshipOffer[] = [
     buyer: 'Founders and operators who need answers from their own body of work that they can audit, not just trust.',
     status: 'Live: first Advisor shipped',
     proof: [
-      { label: 'Advisor product page', href: '/software/advisor/', note: 'The shipped Advisor: citations, refusals, receipts.' },
+      { label: 'Advisor product page', href: '/software/advisor/', note: 'The shipped Advisor, with citations, refusals and receipts.' },
       { label: 'Advisor model on Hugging Face', href: 'https://huggingface.co/Orionfold/Advisor-GGUF', note: 'The promoted trained model, free to download.' },
       { label: 'Adoption map', href: '/adoption/#ask', note: 'Sponsor an Advisor over your own corpus.' },
     ],

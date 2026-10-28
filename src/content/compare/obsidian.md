@@ -55,26 +55,26 @@ sources:
 
 **Your choices.** You can keep doing it by hand in Obsidian. You can add plugins or templates to do part of it. You can paste the files into an AI chat and check what comes back. Or you can move just this one brief into Flow and keep Obsidian for everything else. If what you do today works well enough, keep it.
 
-**What breaks.** The hard part is not writing the brief. It is redoing it: finding the files that changed, collecting the figures again, and checking that each claim still matches its source. That is the part Flow takes on.
+**What breaks.** The hard part is not writing the brief. It is redoing it. That means finding the files that changed, collecting the figures again, and checking that each claim still matches its source. That is the part Flow takes on.
 
 ## What Flow adds
 
 In Flow, a document can carry Jobs. A Job is a short, plain-text instruction at the top of the file, like "collect the figures from these files" or "draft this section from these sources." You press Run and the Jobs redo the routine part. In our walk, the steps that need no AI finished in under half a second. The draft ran on an open model on the Mac through Flow Runtime, for $0.00.
 
-Nothing the AI writes goes straight into your file. It arrives as a proposal. You see the exact lines that would change, with a footnote on each claim, and you keep it or throw it away. Flow also keeps a History of each saved version and who wrote it: you, a Job, or another app.
+Nothing the AI writes goes straight into your file. It arrives as a proposal. You see the exact lines that would change, with a footnote on each claim, and you keep it or throw it away. Flow also keeps a History of each saved version and who wrote it, whether you, a Job, or another app.
 
-Owning your files is not the difference. Obsidian already gives you that, and Flow agrees. Plugins are not the difference either. Obsidian [starts in Restricted Mode](https://obsidian.md/help/plugin-security), so no plugin code runs until you allow it, and it scans every plugin version. The difference is the redo: a document that does its own routine work again, then waits for your yes.
+Owning your files is not the difference. Obsidian already gives you that, and Flow agrees. Plugins are not the difference either. Obsidian [starts in Restricted Mode](https://obsidian.md/help/plugin-security), so no plugin code runs until you allow it, and it scans every plugin version. The difference is the redo. A document does its own routine work again, then waits for your yes.
 
 ## Moving your work
 
 Because both apps use Markdown files on disk, there should be very little to move. In Flow, click **Add Folder** in the sidebar and choose your vault's folder. Flow opens it where it sits. It does not copy or convert your files.
 
-We have to be plain about this part: we have not walked an Obsidian vault in Flow yet. Obsidian links notes with [double square brackets](https://obsidian.md/help/link-notes), and Flow reads wiki links and backlinks too. But a real vault often holds plugin syntax, embeds and settings that Flow has never seen. We do not know yet how those will look.
+We have to be plain about this part. We have not walked an Obsidian vault in Flow yet. Obsidian links notes with [double square brackets](https://obsidian.md/help/link-notes), and Flow reads wiki links and backlinks too. But a real vault often holds plugin syntax, embeds and settings that Flow has never seen. We do not know yet how those will look.
 
-A safe way to try it: make a copy of your vault, or pick one small folder, and open that in Flow first. Keep using Obsidian for everything else until you have checked your own notes.
+There is a safe way to try it. Make a copy of your vault, or pick one small folder, and open that in Flow first. Keep using Obsidian for everything else until you have checked your own notes.
 
 ## The path to start with
 
-Start with [the recurring client brief](/flow/paths/recurring-client-brief/). It shows the thing Obsidian users most often build by hand: a document you remake every month. In our walk, Flow read a client's files into Markdown, then drafted 265 words with a footnote on every sentence in 43 seconds, on the laptop, for $0.00. The next month, new files went in and Run was pressed. The figures table redrew in under half a second, and a new cited draft followed in 45 seconds.
+Start with [the recurring client brief](/flow/paths/recurring-client-brief/). It shows the thing Obsidian users most often build by hand, a document you remake every month. In our walk, Flow read a client's files into Markdown, then drafted 265 words with a footnote on every sentence in 43 seconds, on the laptop, for $0.00. The next month, new files went in and Run was pressed. The figures table redrew in under half a second, and a new cited draft followed in 45 seconds.
 
 That path uses Import and Publish, which are add-ons to Flow Pro. Your 10 Pro Days cover them while you try.

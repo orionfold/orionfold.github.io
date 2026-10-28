@@ -41,10 +41,10 @@ const privacyNote = consentText.replace(' See our privacy policy.', '');
 
 // What's in the book — marketing-finalized outcome bullets (relay 2026-06-28 §5.2).
 const insideBullets = [
-  'How an AI-native company is actually structured: the shift from a hierarchy of people to an organization that runs on intelligence.',
-  'Where AI does the work, not just the talking: how to refine your data, build your own tools, reuse what works, and put models to the test.',
-  'How the pieces hold together at scale: institutional memory so nothing is relearned, agents that coordinate, and a governance layer you can trust.',
-  'Where this is all heading: world models, systems that build their own systems, and what an AI-native business looks like a few years out.',
+  'How an AI-native company is actually structured. The shift from a hierarchy of people to an organization that runs on intelligence.',
+  'Where AI does the work, not just the talking. How to refine your data, build your own tools, reuse what works, and put models to the test.',
+  'How the pieces hold together at scale. Institutional memory so nothing is relearned, agents that coordinate, and a governance layer you can trust.',
+  'Where this is all heading. World models, systems that build their own systems, and what an AI-native business looks like a few years out.',
 ];
 
 // Objection-as-header blocks (relay 2026-06-28 §5.3). These double as the
@@ -62,8 +62,8 @@ const objections = [
   {
     q: 'What is Orionfold Flow?',
     a: ORIONFOLD_FLOW_LIVE
-      ? 'Flow is our Mac app for the person doing the work: it brings AI to your documents, and you stay the one who approves what changes. The book shows you how an AI-native business is shaped. Flow is the tool for the writing, research, and reporting that shape asks of you. Reading, writing, searching and saving Markdown stay free. AI work needs Flow Pro; Flow Import and Flow Publish are separate paid add-ons to Pro.'
-      : 'Flow is the Mac app we are building for the person doing the work: it brings AI to your documents, and you stay the one who approves what changes. The book shows you how an AI-native business is shaped. Flow is the tool for the writing, research, and reporting that shape asks of you. It is in development as a freemium subscription, so there is nothing to buy today.',
+      ? 'Flow is our Mac app for the person doing the work. It brings AI to your documents, and you stay the one who approves what changes. The book shows you how an AI-native business is shaped. Flow is the tool for the writing, research, and reporting that shape asks of you. Reading, writing, searching and saving Markdown stay free. AI work needs Flow Pro; Flow Import and Flow Publish are separate paid add-ons to Pro.'
+      : 'Flow is the Mac app we are building for the person doing the work. It brings AI to your documents, and you stay the one who approves what changes. The book shows you how an AI-native business is shaped. Flow is the tool for the writing, research, and reporting that shape asks of you. It is in development as a freemium subscription, so there is nothing to buy today.',
   },
   {
     q: 'Is this a sales pitch in disguise?',
@@ -206,7 +206,7 @@ const faqSchema = {
           <div>
             <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Flow tools the work</p>
             <p class="mt-3 leading-relaxed text-text-muted">
-              Orionfold Flow is our Mac app for the knowledge worker: it brings AI
+              Orionfold Flow is our Mac app for the knowledge worker. It brings AI
               to your documents, and you stay the one who approves what changes.
               {ORIONFOLD_FLOW_LIVE
                 ? ' Markdown stays free. AI work needs Pro; Import and Publish are add-ons.'

@@ -3,7 +3,7 @@ tool: Notion
 kind: switch
 order: 1
 title: "Flow for Notion users: your pages as files on your own Mac"
-dek: "An investor update you redo every month? Keep Notion for the team and move that one update into Flow: plain Markdown files on your Mac, a footnote on every claim, and AI that can run on the Mac itself."
+dek: "An investor update you redo every month? Keep Notion for the team and move that one update into Flow. You get plain Markdown files on your Mac, a footnote on every claim, and AI that can run on the Mac itself."
 line: "Keep your pages as files you own, with AI that can run on your Mac."
 updated: 2026-10-27
 startWith: investor-update
@@ -73,7 +73,7 @@ sources:
 
 The first change is where your work lives. In Notion, [everything is stored in the cloud](https://www.notion.com/help/back-up-your-data), with copies you can download for offline use. In Flow, each document is a plain Markdown file in a folder on your Mac. Markdown is simple text with a few marks for headings and lists. Any text app can open it. If you stop paying for Flow, the files are still yours, and they still open.
 
-The second change is proof. When Flow drafts, the draft comes with a footnote on each claim, and it waits for you. You read the exact words and accept them or throw them away. Flow keeps a record of every run: which model, how many tokens, and what it cost.
+The second change is proof. When Flow drafts, the draft comes with a footnote on each claim, and it waits for you. You read the exact words and accept them or throw them away. Flow keeps a record of every run. It notes which model, how many tokens, and what it cost.
 
 The third change is how AI is paid for. On [Notion's pricing page](https://www.notion.com/pricing), the full Notion Agent comes with the Business plan, and Custom Agents run on credits after a free try. Flow Pro is $10 a month or $96 a year. When the AI runs on your Mac through Flow Runtime, a run costs nothing extra. You can still use a hosted model with your own key. Flow tells you the model and the estimated price before it runs.
 

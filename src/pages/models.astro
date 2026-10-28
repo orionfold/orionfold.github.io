@@ -80,7 +80,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
         <div class="mb-6">
           <SectionLabel text="Patent Strategist" />
           <p class="mt-2 max-w-2xl leading-relaxed text-text-muted">
-            This model reads and reasons about patents fully offline. Built with the NeMo toolkit, it comes in two formats: ready-to-run files, or a small add-on patch for builders.
+            This model reads and reasons about patents fully offline. Built with the NeMo toolkit, it comes in two formats. Ready-to-run files, or a small add-on patch for builders.
           </p>
         </div>
         {patentSplit.lead && <ModelCard {...patentSplit.lead} cover={resolveCover(patentSplit.lead.cover)} detailHref={detailHrefFor(patentSplit.lead.title)} featured />}
