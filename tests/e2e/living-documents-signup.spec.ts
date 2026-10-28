@@ -93,10 +93,10 @@ for (const width of [1440, 390]) {
     await page.evaluate(async () => { await document.fonts.ready; });
     const slot = page.locator('#nav-notice-slot');
     const navigation = page.locator('#main-nav');
-    await expect(page.locator('#magnet-bar')).toBeVisible();
-    const originalSlot = await slot.boundingBox();
+    // The Download Flow strip left the notice slot on 2026-10-28; the
+    // confirmation bar now owns the slot and lays out in flow.
+    await expect(page.locator('#magnet-bar')).toHaveCount(0);
     const originalNav = await navigation.boundingBox();
-    await page.evaluate(() => localStorage.setItem('of-flow-bar-dismissed', '1'));
     await page.goto('/?living-documents-confirmed=1&utm_source=email');
     await page.evaluate(async () => { await document.fonts.ready; });
     const bar = page.locator('#confirm-bar');
@@ -104,17 +104,14 @@ for (const width of [1440, 390]) {
     await expect(bar.locator('#confirm-bar-text')).toHaveText('Thanks for subscribing to the Flow email newsletter.');
     await expect(bar.locator('#confirm-bar-detail')).toBeHidden();
     await expect(bar.locator('#confirm-bar-cta')).toBeHidden();
-    await expect(page.locator('#magnet-bar')).toBeHidden();
-    await expect(page.locator('#magnet-bar')).toHaveAttribute('aria-hidden', 'true');
     const activeSlot = await slot.boundingBox();
     const activeNav = await navigation.boundingBox();
-    expect(Math.abs(activeSlot!.height - originalSlot!.height)).toBeLessThanOrEqual(1);
-    expect(Math.abs(activeNav!.y - originalNav!.y)).toBeLessThanOrEqual(1);
+    expect(activeSlot!.height).toBeGreaterThanOrEqual(30);
+    expect(activeNav!.y).toBeGreaterThanOrEqual(originalNav!.y + activeSlot!.height - 1);
     const noticeText = await bar.locator('p').boundingBox();
     const notice = await bar.boundingBox();
     expect(noticeText!.y).toBeGreaterThanOrEqual(notice!.y);
     expect(noticeText!.y + noticeText!.height).toBeLessThanOrEqual(notice!.y + notice!.height);
-    expect(await page.evaluate(() => localStorage.getItem('of-flow-bar-dismissed'))).toBeNull();
     await expect(page.locator('[data-living-confirmation-form]')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Confirm subscription', exact: true })).toHaveCount(0);
     await expect(page).toHaveURL('http://127.0.0.1:4325/?utm_source=email');
@@ -125,17 +122,8 @@ for (const width of [1440, 390]) {
     await expect(bar).toBeVisible();
     await page.clock.runFor(200);
     await expect(bar).toBeHidden();
-    await expect(page.locator('#magnet-bar')).toBeVisible();
-    await expect(page.locator('#magnet-bar')).not.toHaveAttribute('aria-hidden', 'true');
-    await expect(page.locator('#magnet-bar a')).toHaveAttribute('href', /flow-downloads\/Orionfold-Flow\.dmg/);
-    const restoredSlot = await slot.boundingBox();
     const restoredNav = await navigation.boundingBox();
-    expect(Math.abs(restoredSlot!.height - activeSlot!.height)).toBeLessThanOrEqual(1);
-    expect(Math.abs(restoredNav!.y - activeNav!.y)).toBeLessThanOrEqual(1);
-    // Registration must survive initial suppression by a confirmation notice.
-    await page.locator('#magnet-bar-close').click();
-    await expect(page.locator('#magnet-bar')).toBeHidden();
-    expect(await page.evaluate(() => localStorage.getItem('of-flow-bar-dismissed'))).toBe('1');
+    expect(Math.abs(restoredNav!.y - originalNav!.y)).toBeLessThanOrEqual(1);
     await page.reload();
     await expect(bar).toBeHidden();
     expect(await confirmationEvents(page)).toEqual([]);
@@ -155,9 +143,8 @@ test('already and failed Flow links show a closable bar without new-lead measure
     const before = await page.locator('#main-nav').boundingBox();
     await bar.getByRole('button', { name: 'Dismiss', exact: true }).click();
     await expect(bar).toBeHidden();
-    await expect(page.locator('#magnet-bar')).toBeVisible();
     const after = await page.locator('#main-nav').boundingBox();
-    expect(Math.abs(after!.y - before!.y)).toBeLessThanOrEqual(1);
+    expect(before!.y - after!.y).toBeGreaterThanOrEqual(29);
     await expect(page).toHaveURL('http://127.0.0.1:4325/');
   }
 });

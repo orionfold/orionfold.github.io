@@ -22,6 +22,7 @@ const page = readFileSync(pagePath, 'utf8');
 const nav = readFileSync(navPath, 'utf8');
 const card = readFileSync(cardPath, 'utf8');
 const plans = readFileSync(plansPath, 'utf8');
+const css = readFileSync(new URL('../../src/styles/proposal.css', import.meta.url), 'utf8');
 const fn = readFileSync(functionPath, 'utf8');
 const delivery = readFileSync(deliveryPath, 'utf8');
 const migration = readFileSync(migrationPath, 'utf8');
@@ -29,6 +30,9 @@ const customerConfirmationMigration = readFileSync(customerConfirmationMigration
 
 test('/proposal/ is canonical and the former page does not ship', () => {
   assert.equal(existsSync(pagePath), true);
+  assert.match(page, /bodyClass="ls pp-page"/, 'the page sits on the Living Systems system');
+  assert.match(page, /hero-flow-paper-planes/, 'the paper planes fly on the proposal hero');
+  assert.doesNotMatch(page, /bg-surface-raised|text-text-muted|rounded-2xl/, 'no leftover utility styling');
   assert.equal(existsSync(oldPagePath), false);
   assert.match(page, /ogMeta\('\/proposal\/'\)/);
   assert.doesNotMatch(page, /\/consulting\//);
@@ -69,14 +73,15 @@ test('navigation and sticky summary keep the proposal action visible', () => {
 
 test('product cards toggle through a full-card native checkbox label while preserving the details link', () => {
   // The card is one component (G-134) shared by the Flow section and the matrix.
-  assert.match(card, /class="offer-card relative/);
-  assert.match(card, /class="offer-checkbox peer sr-only"/);
-  assert.match(card, /class="offer-hit-area absolute inset-0 z-10 cursor-pointer rounded-2xl"/);
+  // Living Systems restyle (operator 2026-10-28 11:36): pp-card, styled in src/styles/proposal.css.
+  assert.match(card, /class:list=\{\["pp-card", featured && "pp-card-featured"\]\}/);
+  assert.match(card, /class="pp-card-check pp-sr-only"/);
+  assert.match(card, /class="pp-card-hit" aria-hidden="true"/);
   assert.match(card, /for=\{`offer-\$\{offer\.id\}`\}/);
-  assert.match(card, /class="relative z-20 text-sm text-primary hover:underline" href=\{offer\.href\}/);
-  assert.match(card, /\.offer-card:has\(\.offer-checkbox:checked\)/);
+  assert.match(card, /class="ls-text-link pp-card-link" href=\{offer\.href\}/);
+  assert.match(css, /\.pp-card:has\(\.pp-card-check:checked\)/);
   assert.doesNotMatch(page, /card\.classList\.toggle\('is-selected'/);
-  assert.equal((page.match(/<ProposalOfferCard offer=\{offer\} maxQuantity=\{MAX_PROPOSAL_QUANTITY\} \/>/g) ?? []).length, 2, 'both the Flow section and the matrix render the shared card');
+  assert.equal((page.match(/<ProposalOfferCard offer=\{offer\} maxQuantity=\{MAX_PROPOSAL_QUANTITY\}/g) ?? []).length, 2, 'both the Flow section and the matrix render the shared card');
 });
 
 test('every product card exposes a server-bounded license or seat quantity', () => {
@@ -114,10 +119,14 @@ test('Flow seats open the proposal, priced from the catalog, with the Domains fa
   assert.match(page, /\{formatUsd\(FLOW\.annual\.amount\)\} a year/);
   assert.match(page, /\{formatUsd\(FLOW\.monthly\.amount\)\} a month/);
   assert.doesNotMatch(page.slice(flowAt, matrixAt), /\$\d/, 'the Flow section types no price');
-  assert.match(page, /Bringing a Domain in from GitHub is free on Base\./);
-  assert.match(page, /Chat on a Domain, and the door for your own agents, need Flow Pro\./);
-  assert.match(page, /Publishing a Domain needs Flow Pro and the Publish add-on\./);
-  assert.match(page, /There is no fee per Domain\./);
+  // Bento: the Pro seat leads as a full-width tile, the two add-ons share the row below (operator 2026-10-28 11:34).
+  assert.match(page, /featured=\{index === 0\}/);
+  assert.match(card, /featured && "pp-card-featured"/);
+  assert.match(css, /\.pp-card-featured \{ grid-column: 1 \/ -1; \}/);
+  assert.doesNotMatch(page, /Flow Domains on a proposal/, 'the Domains aside was removed; the facts live on the cards');
+  assert.match(flow[0].freeBoundary, /Bringing a Domain in from GitHub is free on Base/);
+  assert.match(flow[2].worksWith, /Publishing a Domain needs Pro and Publish together/);
+  assert.match(flow[2].notFor, /no fee per Domain/);
   assert.match(page, /Flow lines are yearly subscriptions, one seat per person\./);
   assert.match(page, /Set the licenses, Flow seats or workshop seats/);
 

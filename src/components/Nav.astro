@@ -43,16 +43,16 @@ import { FLOW_DMG_URL } from '../data/flow-pricing.ts';
 const flowLive = ORIONFOLD_FLOW_LIVE;
 const flowDownloadHref = flowLive ? FLOW_DMG_URL : '/flow/#waitlist';
 const navCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
-const stickyCtaLabel = navCtaLabel;
+// The top notice bar (Download Flow strip) was removed 2026-10-28 11:39 on the
+// operator's call; the nav carries two actions instead, Get Proposal beside
+// the Download button.
 
 ---
 <div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
   <div id="nav-notice-slot">
-  <!-- Post-confirm welcome bar (success state). Takes the SAME top slot as the
-       waitlist magnet bar and replaces it after a confirmed signup (the magnet
-       bar controller suppresses itself while this is showing). Hidden by
-       default; ConfirmBanner's script reveals it (session-persistent via
-       sessionStorage). See src/components/ui/ConfirmBanner.astro. -->
+  <!-- Post-confirm welcome bar (success state). Takes the top notice slot after
+       a confirmed signup. Hidden by default; ConfirmBanner's script reveals it
+       (session-persistent via sessionStorage). See src/components/ui/ConfirmBanner.astro. -->
   <div id="confirm-bar" role="status" aria-live="polite" class="hidden border-b border-primary/20 bg-primary/[0.07] text-text">
     <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-6 py-1.5">
       <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
@@ -68,34 +68,6 @@ const stickyCtaLabel = navCtaLabel;
       >Explore Flow <span class="inline-block transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span></a>
       <button
         id="confirm-bar-close"
-        type="button"
-        aria-label="Dismiss"
-        class="-mr-1 shrink-0 cursor-pointer rounded p-0.5 text-text-dim transition-colors hover:text-text"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
-      </button>
-    </div>
-  </div>
-  <!-- Persistent Flow waitlist sticky bar. Hidden by default; the controller
-       script reveals it unless dismissed (localStorage) or the post-confirm
-       welcome bar is active (the welcome bar owns this slot then). -->
-  <div id="magnet-bar" class="hidden border-b border-primary/20 bg-primary/[0.07] text-text">
-    <div class="mx-auto flex max-w-7xl items-center justify-center gap-3 px-6 py-1.5">
-      <a
-        href={flowDownloadHref}
-        class="group inline-flex items-center gap-2 text-center text-sm leading-tight transition-colors hover:text-primary"
-        data-flow-download={flowLive ? 'nav-sticky-bar' : undefined}
-      >
-        <svg class="shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l4 4v16H6zM15 2v5h4M9 12h6M9 16h3"/><path d="M13 17l2 2 4-5"/></svg>
-        {flowLive ? (
-          <span><span class="font-semibold">Orionfold Flow for Mac</span> <span class="text-text-muted">· Base is free forever.</span></span>
-        ) : (
-          <span><span class="font-semibold">Orionfold Flow is coming to Mac</span> <span class="text-text-muted">· patent-pending AI agency for documents</span></span>
-        )}
-        <span class="font-mono text-primary transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">{stickyCtaLabel} &rarr;</span>
-      </a>
-      <button
-        id="magnet-bar-close"
         type="button"
         aria-label="Dismiss"
         class="-mr-1 shrink-0 cursor-pointer rounded p-0.5 text-text-dim transition-colors hover:text-text"
@@ -149,6 +121,13 @@ const stickyCtaLabel = navCtaLabel;
     <!-- Right cluster: primary action + mobile hamburger -->
     <div class="living-nav-actions flex items-center">
       <a
+        href="/proposal/"
+        class="living-nav-cta living-nav-cta--desktop living-nav-cta--secondary items-center justify-center rounded-full border border-border bg-surface text-text transition-colors hover:bg-surface-raised"
+        aria-label="Get Proposal"
+        title="Get Proposal"
+        data-astro-prefetch
+      ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg><span>Get Proposal</span></a>
+      <a
         href={flowDownloadHref}
         class="living-nav-cta living-nav-cta--desktop items-center justify-center rounded-full bg-primary text-accent-text transition-colors hover:bg-primary/90"
         data-astro-prefetch={flowLive ? undefined : true}
@@ -192,21 +171,21 @@ const stickyCtaLabel = navCtaLabel;
         </Fragment>
       ))}
       <a href={flowDownloadHref} class="living-nav-cta mt-2 inline-flex items-center justify-center rounded-full bg-primary text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowLive ? undefined : true} data-flow-download={flowLive ? 'nav-mobile' : undefined}>{flowLive && (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v12m-5-5 5 5 5-5M5 16v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" /></svg>)}<span>{navCtaLabel}</span></a>
+      <a href="/proposal/" class="living-nav-cta living-nav-cta--secondary inline-flex items-center justify-center rounded-full border border-border bg-surface text-text transition-colors hover:bg-surface-raised" data-astro-prefetch><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg><span>Get Proposal</span></a>
     </div>
   </div>
 </nav>
 </div>
 
 <style is:global>
-  /* The download bar keeps its layout box while the confirmation occupies its
-     slot, so dismissal restores the download without moving the navigation. */
+  /* The confirmation bar owns the notice slot (the download strip that used to
+     reserve its box left on 2026-10-28), so it lays out in flow. */
   #nav-notice-slot { position: relative; }
-  #confirm-bar[data-confirmation-state] { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  #confirm-bar[data-confirmation-state] { display: flex; align-items: center; justify-content: center; min-height: 34px; }
   #confirm-bar[data-confirmation-state="1"],
   #confirm-bar[data-confirmation-state="already"] { background-color: #ecfccb; border-color: #d9f99d; }
   #confirm-bar[data-confirmation-state] > div { width: 100%; }
   #confirm-bar[data-confirmation-state] p { min-width: 0; text-wrap: balance; }
-  #magnet-bar[data-confirmation-covered] { visibility: hidden; pointer-events: none; }
   /* "Compare" dropdown: opens on hover or keyboard focus, no script. */
   .living-nav-dd { position: relative; }
   .living-nav-dd-menu { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); padding-top: 12px; z-index: 60; }
@@ -223,9 +202,6 @@ const stickyCtaLabel = navCtaLabel;
   .living-nav-dd-kind { align-self: baseline; font-size: .56rem; font-weight: 700; letter-spacing: .1em; color: #ba2d21; }
   .living-nav-dd-panel a.living-nav-dd-all { display: block; margin-top: 4px; border-top: 1px solid #e6ebe7; border-radius: 0 0 7px 7px; font-size: .84rem; font-weight: 600; color: #0e7f7a; }
   .living-nav-sublink { padding-left: 1.1rem; font-size: .92em; }
-  @media (max-width: 700px) {
-    #magnet-bar > div { min-height: 48px; }
-  }
   /* CSS-only mobile menu (see the markup above). The hidden checkbox's state
      opens the dropdown and swaps the hamburger/close icons with no JavaScript,
      so the menu responds the moment the page paints. Scoped to the mobile
@@ -278,37 +254,6 @@ const stickyCtaLabel = navCtaLabel;
       resizeObserver.disconnect();
     };
 
-    // Persistent Flow waitlist bar: reveal unless the user dismissed it
-    // (localStorage, persists across sessions) or the post-confirm welcome bar
-    // is showing (they already converted, so don't stack two bars). New key for
-    // the Flow era so old book-bar dismissals don't suppress it.
-    const magnetBar = document.getElementById('magnet-bar');
-    if (magnetBar) {
-      const DISMISSED = 'of-flow-bar-dismissed';
-      let dismissed = false;
-      try { dismissed = localStorage.getItem(DISMISSED) === '1'; } catch (e) {}
-      // The converted state can arrive two ways depending on script order: the
-      // fresh ?confirmed=1 URL (this controller may run before ConfirmBanner
-      // stores it and cleans the URL) or the sessionStorage flag ConfirmBanner
-      // persisted on an earlier load. Honor both, else the two bars stack.
-      // A converted visitor never sees the signup pitch again this session,
-      // even after dismissing or acting on the welcome bar.
-      const converted =
-        (() => { try {
-          return new URLSearchParams(location.search).get('confirmed') === '1'
-            || sessionStorage.getItem('of-confirm-welcome') === '1';
-        } catch (e) { return false; } })();
-      const confirmationNotice = ['1', 'already', 'error'].includes(new URLSearchParams(location.search).get('living-documents-confirmed') || '')
-        || document.getElementById('confirm-bar')?.classList.contains('hidden') === false;
-      if (!dismissed && !converted && !confirmationNotice) {
-        magnetBar.classList.remove('hidden');
-      }
-      const closeBtn = document.getElementById('magnet-bar-close');
-      closeBtn && closeBtn.addEventListener('click', () => {
-        try { localStorage.setItem(DISMISSED, '1'); } catch (e) {}
-        magnetBar.classList.add('hidden');
-      });
-    }
     // Reserve the settled notice state on the first measurement. Measuring
     // while its bar is still hidden briefly collapses the reserved hero gap.
     resizeObserver.observe(navWrapper);

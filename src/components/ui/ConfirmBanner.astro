@@ -1,10 +1,9 @@
 ---
 // Post-confirmation landing UI. The confirm-email edge function redirects to
 // /?confirmed=1 (success) | =already | =error&error=... Two render paths:
-//   • success (=1)  -> a welcome BAR that takes over the magnet bar's top slot
-//     inside the fixed nav-wrapper (the bar's MARKUP lives in Nav.astro; the
-//     magnet-bar controller suppresses the waitlist strip while this shows, so
-//     the thank-you replaces the pitch). Session-persistent (survives the URL
+//   • success (=1)  -> a welcome BAR in the top notice slot inside the fixed
+//     nav-wrapper (the bar's MARKUP lives in Nav.astro; the Download Flow strip
+//     that used to share the slot left on 2026-10-28). Session-persistent (survives the URL
 //     clean + reloads via sessionStorage); the CTA drives the next step to
 //     /flow/. This component owns the controller script that reveals/dismisses
 //     it by id.

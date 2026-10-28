@@ -17,8 +17,10 @@ const hashes = {
     "246f3265f307a07c04df8af4e2d497cdb74d55fb03a08417749053d9ac626d95",
   "src/components/ui/WaitlistForm.astro":
     "b0c0db5bb666f1b1e5b02eef26764ec44746991c7352175807618af8ff518fd7",
+  // 2026-10-28 11:39: the header comment no longer describes the removed
+  // Download Flow strip; controller unchanged. Re-pinned on purpose.
   "src/components/ui/ConfirmBanner.astro":
-    "e7f6d7e8414be8959685d08a35e4ff3f4a934f676380adddd609e0110fed3655",
+    "57b4ce9926052c1d650bc3279ee067a7844b5187f972750da92740e125650afb",
   "src/components/ui/EnquiryDrawer.astro":
     "02f06518147745573ea3898cf40ac112abe823503db0ef001aacc9d57fc3c753",
   "supabase/functions/.env.example":

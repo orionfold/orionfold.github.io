@@ -53,10 +53,11 @@ for (const retired of ['Models', 'Training', 'Proof']) {
 assert.match(nav, /flowLive \? 'Download Flow' : 'Join the waitlist'/, 'the nav CTA keeps the same launch intent as the hero and returns to the waitlist when the flag is off');
 assert.doesNotMatch(nav, /See Flow plans/, 'the launch CTA never changes from download intent to a pricing detour');
 assert.match(nav, /'\/flow\/#waitlist'/, 'the pre-launch waitlist path survives in the off branch');
-assert.doesNotMatch(nav, />Get Proposal</, 'the proposal CTA left the nav (footer keeps the path)');
-assert.match(nav, /Orionfold Flow is coming to Mac/, 'the pre-launch sticky bar copy survives in the off branch');
-assert.match(nav, /Orionfold Flow for Mac/, 'the launched sticky bar names the shipped app');
-assert.match(nav, /of-flow-bar-dismissed/, 'the Flow bar uses its own dismissal key so old book-bar dismissals do not hide it');
+// 2026-10-28 11:39: the operator removed the top notice bar (Download Flow
+// strip) and put Get Proposal back in the nav beside the Download button.
+assert.doesNotMatch(nav, /id="magnet-bar"|of-flow-bar-dismissed|Orionfold Flow for Mac/, 'the top notice bar is gone');
+assert.equal((nav.match(/>Get Proposal</g) ?? []).length, 2, 'Get Proposal sits in the desktop actions and the mobile menu');
+assert.match(nav, /href="\/proposal\/"\s+class="living-nav-cta living-nav-cta--desktop living-nav-cta--secondary/, 'the desktop Get Proposal is a secondary action beside Download');
 
 // ── Footer: curated Flow, Paths, Orionfold, and Connect navigation ─────────
 // Books follows Story in the Orionfold column since it left the main nav.
@@ -217,11 +218,10 @@ assert.doesNotMatch(downloadCta, /aria-disabled/, 'the disabled state is gone by
 // The subtext under the button is the shared constant, never retyped per surface.
 assert.match(downloadCta, /\{FLOW_DOWNLOAD_CAPTION\}/, 'the subtext comes from the one caption constant');
 
-// THE NAV STICKY BAR leads with the download once Flow is live (operator ask
-// 2026-08-22 10:13). All three nav calls to action switch together.
+// THE NAV leads with the download once Flow is live (operator ask
+// 2026-08-22 10:13). Both nav calls to action switch together.
 const navSource = read('src/components/Nav.astro');
 assert.match(navSource, /const navCtaLabel = flowLive \? 'Download Flow' : 'Join the waitlist';/);
-assert.match(navSource, /const stickyCtaLabel = navCtaLabel;/);
 // The nav keeps the same direct-download contract as every other launch CTA.
 // Release safety is enforced at the deployment boundary, not by changing the
 // action label or detouring this one surface to pricing.

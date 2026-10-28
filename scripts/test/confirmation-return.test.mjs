@@ -22,7 +22,7 @@ function fixture(query, { stored = {}, storageFails = false, pathname = '/' } = 
       click: () => listeners.get('click')?.(),
     };
   }
-  const nodes = Object.fromEntries(['confirm-bar', 'confirm-bar-text', 'confirm-bar-detail', 'confirm-bar-close', 'confirm-bar-cta', 'magnet-bar'].map(id => [id, element()]));
+  const nodes = Object.fromEntries(['confirm-bar', 'confirm-bar-text', 'confirm-bar-detail', 'confirm-bar-close', 'confirm-bar-cta'].map(id => [id, element()]));
   const events = [], pixelEvents = [], redirects = [], timers = new Map();
   const storage = new Map(Object.entries(stored));
   const local = new Map([['of-flow-bar-dismissed', '1']]);
@@ -54,10 +54,8 @@ test('Flow success uses the existing bar, counts once, and preserves attribution
   assert.equal(f.nodes['confirm-bar-text'].textContent, 'Thanks for subscribing to the Flow email newsletter.');
   assert.equal(f.nodes['confirm-bar-detail'].hidden, true);
   assert.equal(f.nodes['confirm-bar-cta'].hidden, true, 'the acknowledgement adds no third action');
-  assert.equal(f.nodes['magnet-bar'].classList.contains('hidden'), false, 'download retains its layout box');
-  assert.equal(f.nodes['magnet-bar'].dataset.confirmationCovered, 'true');
-  assert.equal(f.nodes['magnet-bar'].inert, true);
-  assert.equal(f.nodes['magnet-bar'].attributes.get('aria-hidden'), 'true');
+  // The Download Flow strip left the notice slot on 2026-10-28; nothing else
+  // in the header is covered or restored.
   assert.equal(f.local.has('of-flow-bar-dismissed'), false, 'past dismissal cannot suppress the returning download');
   assert.equal(f.location.search, '?utm_source=email&confirmed=already');
   assert.equal(f.location.hash, '#welcome');
@@ -78,18 +76,11 @@ test('the Flow acknowledgement auto-dismisses after eight seconds or closes imme
     timer.callback();
     assert.equal(f.nodes['confirm-bar'].classList.contains('hidden'), true);
     assert.equal(f.timers.size, 0);
-    assert.equal(f.nodes['magnet-bar'].classList.contains('hidden'), false);
-    assert.equal(f.nodes['magnet-bar'].inert, false);
-    assert.equal(f.nodes['magnet-bar'].attributes.has('aria-hidden'), false);
-    assert.equal(f.nodes['magnet-bar'].dataset.confirmationCovered, undefined);
     const manual = fixture(`?living-documents-confirmed=${state}`);
     manual.run();
     manual.nodes['confirm-bar-close'].click();
     assert.equal(manual.nodes['confirm-bar'].classList.contains('hidden'), true);
     assert.equal(manual.timers.size, 0);
-    assert.equal(manual.nodes['magnet-bar'].classList.contains('hidden'), false);
-    assert.equal(manual.nodes['magnet-bar'].inert, false);
-    assert.equal(manual.nodes['magnet-bar'].dataset.confirmationCovered, undefined);
   }
 });
 test('already and error acknowledge without confirmed-lead or ad conversion events', () => {

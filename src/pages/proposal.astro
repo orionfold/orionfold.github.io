@@ -3,7 +3,10 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import BrandMark from '../components/ui/BrandMark.astro';
-import SectionLabel from '../components/ui/SectionLabel.astro';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import ArrowDown from '@lucide/astro/icons/arrow-down';
+import '../styles/living-base.css';
+import '../styles/proposal.css';
 import ProposalOfferCard from '../components/proposal/ProposalOfferCard.astro';
 import { FLOW } from '../data/commerce';
 import { SITE } from '../data/seo';
@@ -54,31 +57,31 @@ const proposalSchema = {
   description="Put Flow seats and other Orionfold products on one itemized non-binding proposal request, then print it or send it for review."
   ogImage={og.image}
   ogImageAlt={og.alt}
+  bodyClass="ls pp-page"
   jsonLd={proposalSchema}
 >
   <Nav />
-  <main id="proposal-builder" data-local-preview={localPreview ? 'true' : 'false'} data-endpoint={endpoint} data-published-workshops={JSON.stringify(publishedWorkshopKeys)}>
-    <section class="proposal-hero relative overflow-hidden px-6 pb-20 pt-32">
-      <div class="proposal-grid absolute inset-0 pointer-events-none"></div>
-      <div class="absolute left-[12%] top-20 h-80 w-80 rounded-full bg-primary/[0.12] blur-[140px] pointer-events-none"></div>
-      <div class="relative mx-auto max-w-6xl">
-        <div data-animate><SectionLabel text="Product proposal · self-serve" /></div>
-        <div class="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1.18fr)_23rem] lg:items-end">
-          <div>
-            <p class="inline-flex rounded-full border border-primary/35 bg-primary/[0.08] px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-primary">
-              Non-binding proposal request
-            </p>
-            <h1 class="mt-6 max-w-4xl font-display text-[clamp(2.7rem,7vw,5.8rem)] leading-[0.97] tracking-[-0.045em] text-text" data-animate>
-              Build the Orionfold system your business needs.
-            </h1>
-            <p class="mt-7 max-w-3xl text-lg leading-relaxed text-text-muted sm:text-xl" data-animate>
-              Need to procure through an invoice or purchase order? Select the products and quantities you need, generate a formal proposal, and send it to Orionfold for review.
-            </p>
+  <main id="proposal-builder" class="ls-main" data-local-preview={localPreview ? 'true' : 'false'} data-endpoint={endpoint} data-published-workshops={JSON.stringify(publishedWorkshopKeys)}>
+    <header class="pp-hero">
+      <div class="pp-hero-inner ls-container">
+        <div class="pp-hero-copy">
+          <div class="pp-hero-eyebrow"><p class="ls-eyebrow">PRODUCT PROPOSAL / SELF-SERVE</p><span class="pp-pill">Non-binding proposal request</span></div>
+          <h1>Build the<br/>Orionfold system<br/><span class="ls-stroke">your business needs.</span></h1>
+          <p class="pp-hero-description">Need to procure through an invoice or purchase order? Select the products and quantities you need, generate a formal proposal, and send it to Orionfold for review.</p>
+          <div class="pp-hero-ctas">
+            <a class="ls-button" href="#flow">Start with Flow seats<ArrowRight size={18} /></a>
+            <a class="ls-text-link" href="#how">How it works<ArrowDown size={15} /></a>
           </div>
-          <aside class="rounded-2xl border border-border bg-surface-raised/85 p-6 shadow-of-pop backdrop-blur" data-animate>
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-text-dim">Product-only proposal</p>
-            <p class="mt-3 text-3xl font-semibold text-text">Catalog price × quantity</p>
-            <ul class="mt-5 space-y-3 text-sm leading-relaxed text-text-muted">
+        </div>
+        <div class="pp-hero-media">
+          <picture class="ls-paper-art">
+            <source srcset="/assets/living-systems/hero-flow-paper-planes-640.webp 640w, /assets/living-systems/hero-flow-paper-planes-960.webp 960w, /assets/living-systems/hero-flow-paper-planes-1152.webp 1152w, /assets/living-systems/hero-flow-paper-planes.webp 1642w" sizes="(max-width: 900px) 120vw, 60vw" type="image/webp"/>
+            <img alt="" fetchpriority="high" height="958" src="/assets/living-systems/hero-flow-paper-planes.png" width="1642"/>
+          </picture>
+          <aside class="pp-hero-card" aria-label="What a proposal holds">
+            <p class="ls-eyebrow">Product-only proposal</p>
+            <h2>Catalog price × quantity</h2>
+            <ul>
               <li>Select individual Orionfold products</li>
               <li>Set the licenses, Flow seats or workshop seats</li>
               <li>Review list price and estimated bank-transfer savings</li>
@@ -86,133 +89,107 @@ const proposalSchema = {
           </aside>
         </div>
       </div>
-    </section>
+    </header>
 
-    <section class="border-y border-border bg-surface-raised px-6 py-12">
-      <div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-3">
-        <article class="rounded-2xl border border-border bg-surface p-5">
-          <p class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-primary">1 · Build</p>
-          <h2 class="mt-3 text-xl">Choose by job, not by bundle</h2>
-          <p class="mt-2 text-sm leading-relaxed text-text-muted">Every product row explains when it fits, what it contributes, and when another choice is better.</p>
-        </article>
-        <article class="rounded-2xl border border-border bg-surface p-5">
-          <p class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-primary">2 · Review</p>
-          <h2 class="mt-3 text-xl">See one itemized estimate</h2>
-          <p class="mt-2 text-sm leading-relaxed text-text-muted">Unit price, quantity, line total, and estimated domestic bank-transfer savings remain visible and separate.</p>
-        </article>
-        <article class="rounded-2xl border border-border bg-surface p-5">
-          <p class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-primary">3 · Request</p>
-          <h2 class="mt-3 text-xl">Orionfold reviews fit</h2>
-          <p class="mt-2 text-sm leading-relaxed text-text-muted">Submission is not acceptance. Product availability, final quantities, invoice, and cleared payment come later.</p>
-        </article>
-      </div>
+    <section id="how" class="pp-how" aria-label="How a proposal works">
+      <ol class="pp-steps ls-container">
+        <li><p class="ls-eyebrow">1 · Build</p><h2>Choose by job, not by bundle</h2><p>Every product row explains when it fits, what it contributes, and when another choice is better.</p></li>
+        <li><p class="ls-eyebrow">2 · Review</p><h2>See one itemized estimate</h2><p>Unit price, quantity, line total, and estimated domestic bank-transfer savings remain visible and separate.</p></li>
+        <li><p class="ls-eyebrow">3 · Request</p><h2>Orionfold reviews fit</h2><p>Submission is not acceptance. Product availability, final quantities, invoice, and cleared payment come later.</p></li>
+      </ol>
     </section>
 
     <form id="proposal-form" novalidate>
-      <section id="flow" class="scroll-mt-28 px-6 py-20" aria-labelledby="flow-heading">
-        <div class="mx-auto max-w-6xl">
-          <div class="max-w-4xl">
-            <p class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-primary">Flow seats</p>
-            <h2 id="flow-heading" class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Put Flow seats on the same proposal.</h2>
-            <p class="mt-5 text-lg leading-relaxed text-text-muted">Flow Base is free for everyone and needs no line here. A Flow Pro seat is {formatUsd(FLOW.annual.amount)} a year for one person on their own Macs. In the app the same seat is {formatUsd(FLOW.monthly.amount)} a month. A proposal prices every seat by the year, so the whole document shares one period.</p>
-          </div>
-          <div class="mt-10 grid gap-5 xl:grid-cols-2">
-            {flowOffers.map((offer) => <ProposalOfferCard offer={offer} maxQuantity={MAX_PROPOSAL_QUANTITY} />)}
-            <aside class="rounded-2xl border border-primary/20 bg-primary/[0.06] p-6 text-sm leading-relaxed text-text-muted" aria-labelledby="flow-domains-heading">
-              <h3 id="flow-domains-heading" class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-primary">Flow Domains on a proposal</h3>
-              <ul class="mt-4 space-y-3">
-                <li>Bringing a Domain in from GitHub is free on Base.</li>
-                <li>Chat on a Domain, and the door for your own agents, need Flow Pro.</li>
-                <li>Publishing a Domain needs Flow Pro and the Publish add-on.</li>
-                <li>There is no fee per Domain. Seats are the only Flow lines.</li>
-              </ul>
-              <a class="mt-5 inline-block text-primary hover:underline" href="/domains/">Read about Flow Domains</a>
-            </aside>
-          </div>
+      <section id="flow" class="pp-section ls-container" aria-labelledby="flow-heading">
+        <div class="pp-head">
+          <p class="ls-eyebrow">FLOW SEATS</p>
+          <h2 id="flow-heading">Put Flow seats<br/><span class="ls-stroke">on the same proposal.</span></h2>
+          <p class="pp-sub">Flow Base is free for everyone and needs no line here. A Flow Pro seat is {formatUsd(FLOW.annual.amount)} a year for one person on their own Macs. In the app the same seat is {formatUsd(FLOW.monthly.amount)} a month. A proposal prices every seat by the year, so the whole document shares one period.</p>
+        </div>
+        <div class="pp-grid pp-grid-flow">
+          {flowOffers.map((offer, index) => <ProposalOfferCard offer={offer} maxQuantity={MAX_PROPOSAL_QUANTITY} featured={index === 0} />)}
         </div>
       </section>
 
-      <section class="border-y border-border bg-surface-raised px-6 py-20" aria-labelledby="matrix-heading">
-        <div class="mx-auto max-w-6xl">
-          <div class="max-w-4xl">
-            <p class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-primary">Product decision matrix</p>
-            <h2 id="matrix-heading" class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Choose the capability, not an upsell.</h2>
-            <p class="mt-5 text-lg leading-relaxed text-text-muted">No product is preselected. Each has one distinct job. Combinations are useful only when one product's output strengthens another.</p>
-          </div>
-
-          {families.map((family) => {
-            const familyOffers = offers.filter((offer) => offer.family === family);
-            if (!familyOffers.length) return null;
-            return (
-              <section class="mt-12" aria-labelledby={`family-${family.toLowerCase()}`}>
-                <h3 id={`family-${family.toLowerCase()}`} class="font-mono text-sm uppercase tracking-[0.2em] text-text-dim">{family}</h3>
-                <div class="mt-4 grid gap-5 xl:grid-cols-2">
-                  {familyOffers.map((offer) => (
-                    <ProposalOfferCard offer={offer} maxQuantity={MAX_PROPOSAL_QUANTITY} />
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-          {!offers.some((offer) => offer.family === 'Train') && (
-            <div class="mt-10 rounded-2xl border border-dashed border-border p-5 text-sm leading-relaxed text-text-muted">
-              Published training workshops will appear here automatically. The current workshop remains excluded until its public checkout is enabled.
-            </div>
-          )}
+      <section class="pp-section ls-container" aria-labelledby="matrix-heading">
+        <div class="pp-head">
+          <p class="ls-eyebrow">PRODUCT DECISION MATRIX</p>
+          <h2 id="matrix-heading">Choose the capability,<br/><span class="ls-stroke">not an upsell.</span></h2>
+          <p class="pp-sub">No product is preselected. Each has one distinct job. Combinations are useful only when one product's output strengthens another.</p>
         </div>
+        {families.map((family) => {
+          const familyOffers = offers.filter((offer) => offer.family === family);
+          if (!familyOffers.length) return null;
+          return (
+            <section class="pp-family" aria-labelledby={`family-${family.toLowerCase()}`}>
+              <h3 id={`family-${family.toLowerCase()}`}>{family}</h3>
+              <div class="pp-grid">
+                {familyOffers.map((offer) => (
+                  <ProposalOfferCard offer={offer} maxQuantity={MAX_PROPOSAL_QUANTITY} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
+        {!offers.some((offer) => offer.family === 'Train') && (
+          <div class="pp-empty">
+            Published training workshops will appear here automatically. The current workshop remains excluded until its public checkout is enabled.
+          </div>
+        )}
       </section>
 
-      <section class="px-6 py-20" aria-labelledby="summary-heading">
-        <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_25rem] lg:items-start">
+      <section class="pp-section ls-container" aria-labelledby="summary-heading">
+        <div class="pp-request">
           <div>
-            <p class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-primary">Your request</p>
-            <h2 id="summary-heading" class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Tell us who the products are for.</h2>
-            <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">Your selections, quantities, and business contact are enough for Orionfold to review. We respond within 24 hours; that response may ask questions, decline, or issue a written product proposal.</p>
-
-            <div class="mt-9 grid gap-5 sm:grid-cols-2">
-              <label class="field-label">Full name<input name="fullName" autocomplete="name" maxlength="160" required /></label>
-              <label class="field-label">Business email<input name="businessEmail" type="email" autocomplete="email" maxlength="320" required /></label>
-              <label class="field-label sm:col-span-2">Company name<input name="companyName" autocomplete="organization" maxlength="200" required /></label>
-              <label class="field-label sm:col-span-2">Purchase note or PO reference <span class="normal-case tracking-normal text-text-dim">(optional)</span><textarea name="purchaseNote" rows="3" maxlength="500" placeholder="Add a PO reference or a short invoicing or fulfillment note, if needed."></textarea></label>
-              <label class="honeypot" aria-hidden="true">Site<input name="website" tabindex="-1" autocomplete="off" /></label>
+            <div class="pp-head">
+              <p class="ls-eyebrow">YOUR REQUEST</p>
+              <h2 id="summary-heading">Tell us who<br/><span class="ls-stroke">the products are for.</span></h2>
+              <p class="pp-sub">Your selections, quantities, and business contact are enough for Orionfold to review. We respond within 24 hours; that response may ask questions, decline, or issue a written product proposal.</p>
             </div>
-            <div id="form-message" class="mt-5 hidden rounded-xl border p-4 text-sm leading-relaxed" role="status" aria-live="polite"></div>
-            <div class="mt-6 flex flex-wrap items-center gap-4">
-              <button id="submit-proposal" class="rounded-full bg-primary px-6 py-3.5 font-semibold text-accent-text transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50" type="submit">Submit proposal request</button>
-              <button id="print-proposal" class="rounded-full border border-border bg-surface-raised px-6 py-3.5 font-semibold text-text transition hover:border-primary/60" type="button">Print proposal</button>
+            <div class="pp-fields">
+              <label class="pp-field">Full name<input name="fullName" autocomplete="name" maxlength="160" required /></label>
+              <label class="pp-field">Business email<input name="businessEmail" type="email" autocomplete="email" maxlength="320" required /></label>
+              <label class="pp-field pp-field-wide">Company name<input name="companyName" autocomplete="organization" maxlength="200" required /></label>
+              <label class="pp-field pp-field-wide">Purchase note or PO reference <span>(optional)</span><textarea name="purchaseNote" rows="3" maxlength="500" placeholder="Add a PO reference or a short invoicing or fulfillment note, if needed."></textarea></label>
+              <label class="pp-honeypot" aria-hidden="true">Site<input name="website" tabindex="-1" autocomplete="off" /></label>
             </div>
-            <p class="mt-5 max-w-3xl text-xs leading-relaxed text-text-dim">By submitting, you ask Orionfold to review a non-binding product proposal request. No product order is accepted, invoiced, due, paid, or fulfilled. See the <a href="/terms/" class="text-primary hover:underline">Terms</a> and <a href="/privacy/" class="text-primary hover:underline">Privacy Policy</a>.</p>
+            <div id="form-message" class="pp-message" hidden role="status" aria-live="polite"></div>
+            <div class="pp-actions">
+              <button id="submit-proposal" class="ls-button" type="submit">Submit proposal request<ArrowRight size={18} /></button>
+              <button id="print-proposal" class="pp-button-secondary" type="button">Print proposal</button>
+            </div>
+            <p class="pp-fine">By submitting, you ask Orionfold to review a non-binding product proposal request. No product order is accepted, invoiced, due, paid, or fulfilled. See the <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>.</p>
           </div>
 
-          <aside class="proposal-summary rounded-2xl border border-border bg-surface-raised p-6 shadow-of-pop lg:sticky lg:top-28" aria-label="Proposal estimate">
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-primary">Non-binding proposal request</p>
-            <p id="summary-state" class="mt-2 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-text-dim">Draft · not submitted</p>
-            <div id="summary-lines" class="mt-6 space-y-4"><p class="text-sm text-text-muted">Choose at least one product to begin.</p></div>
-            <dl class="mt-6 space-y-3 border-t border-border pt-5 text-sm">
-              <div class="flex justify-between gap-4"><dt class="text-text-muted">List subtotal</dt><dd id="summary-subtotal" class="font-medium text-text">—</dd></div>
-              <div class="flex justify-between gap-4"><dt class="text-text-muted">Bank-transfer savings <span id="summary-rate"></span></dt><dd id="summary-savings" class="font-medium text-success">—</dd></div>
-              <div class="flex justify-between gap-4 border-t border-border pt-3"><dt class="font-medium text-text">Estimated final subtotal</dt><dd id="summary-final" class="text-xl font-semibold text-text">—</dd></div>
+          <aside class="pp-estimate" aria-label="Proposal estimate">
+            <p class="ls-eyebrow">Non-binding proposal request</p>
+            <p id="summary-state" class="pp-estimate-state">Draft · not submitted</p>
+            <div id="summary-lines" class="pp-estimate-lines"><p>Choose at least one product to begin.</p></div>
+            <dl>
+              <div><dt>List subtotal</dt><dd id="summary-subtotal">—</dd></div>
+              <div><dt>Bank-transfer savings <span id="summary-rate"></span></dt><dd id="summary-savings" class="pp-save">—</dd></div>
+              <div class="pp-total"><dt>Estimated final subtotal</dt><dd id="summary-final">—</dd></div>
             </dl>
-            <p class="mt-5 text-xs leading-relaxed text-text-dim">Estimate for domestic USD ACH/wire. Based on avoided 2.9% + $0.30 card processing; no bank instructions appear here. Final written proposal and invoice control.</p>
+            <p class="pp-estimate-fine">Estimate for domestic USD ACH/wire. Based on avoided 2.9% + $0.30 card processing; no bank instructions appear here. Final written proposal and invoice control.</p>
           </aside>
         </div>
       </section>
     </form>
 
-    <section class="proposal-preview-wrap border-t border-border bg-surface-raised px-6 py-20" aria-labelledby="formal-preview-heading">
-      <div class="mx-auto max-w-5xl">
-        <div class="proposal-preview-intro mb-8 print:hidden">
-          <p class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-primary">Formal HTML proposal</p>
-          <h2 id="formal-preview-heading" class="mt-4 text-3xl font-semibold tracking-tight">Print or save this document as PDF.</h2>
-          <p class="mt-3 max-w-3xl text-text-muted">Before submission it is a draft. After submission, the same-session receipt is rebuilt from the server's immutable calculation.</p>
+    <section class="pp-preview proposal-preview-wrap" aria-labelledby="formal-preview-heading">
+      <div class="ls-container">
+        <div class="pp-head pp-preview-intro">
+          <p class="ls-eyebrow">FORMAL HTML PROPOSAL</p>
+          <h2 id="formal-preview-heading">Print or save<br/><span class="ls-stroke">this document as PDF.</span></h2>
+          <p class="pp-sub">Before submission it is a draft. After submission, the same-session receipt is rebuilt from the server's immutable calculation.</p>
         </div>
         <article id="proposal-document" class="proposal-document" aria-label="Formal non-binding proposal document">
           <header class="document-header">
-            <div class="flex items-center gap-3">
+            <div class="document-brand">
               <BrandMark size={32} />
-              <div><p class="text-lg font-semibold"><span class="text-text">Orion</span><span class="text-primary">fold</span></p><p class="text-xs text-text-muted">{ORIONFOLD_LEGAL_IDENTITY.name}</p></div>
+              <div><p class="document-wordmark"><span>Orion</span><span class="document-wordmark-fold">fold</span></p><p class="document-legal">{ORIONFOLD_LEGAL_IDENTITY.name}</p></div>
             </div>
-            <div class="text-right text-xs leading-relaxed text-text-muted"><p>{ORIONFOLD_LEGAL_IDENTITY.postalAddress}</p><p>{ORIONFOLD_LEGAL_IDENTITY.email}</p></div>
+            <div class="document-address"><p>{ORIONFOLD_LEGAL_IDENTITY.postalAddress}</p><p>{ORIONFOLD_LEGAL_IDENTITY.email}</p></div>
           </header>
           <div class="document-status">
             <p>Non-binding proposal request</p>
@@ -255,28 +232,28 @@ const proposalSchema = {
 
     <aside
       id="proposal-sticky-summary"
-      class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-border bg-surface/95 backdrop-blur transition-transform duration-300 [&.is-visible]:translate-y-0 motion-reduce:transition-none"
+      class="pp-sticky"
       aria-label="Current proposal selections and estimate"
       role="status"
       aria-live="polite"
     >
-      <div class="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 px-4 py-3 sm:gap-6 sm:px-6">
-        <div class="min-w-0">
-          <p class="font-mono text-[0.56rem] uppercase tracking-[0.15em] text-primary sm:text-[0.62rem]">Your proposal</p>
-          <p id="sticky-selection-summary" class="mt-0.5 truncate text-xs font-medium text-text sm:text-sm">Select a product</p>
+      <div class="pp-sticky-inner ls-container">
+        <div>
+          <p class="ls-eyebrow">Your proposal</p>
+          <p id="sticky-selection-summary">Select a product</p>
         </div>
-        <div class="text-right">
-          <p class="font-mono text-[0.5rem] uppercase tracking-[0.1em] text-text-dim sm:text-[0.58rem]">You save</p>
-          <p id="sticky-savings" class="mt-0.5 text-xs font-semibold text-success sm:text-sm">—</p>
+        <div>
+          <p class="ls-eyebrow">You save</p>
+          <p id="sticky-savings">—</p>
         </div>
-        <div class="text-right">
-          <p class="font-mono text-[0.5rem] uppercase tracking-[0.1em] text-text-dim sm:text-[0.58rem]">Est. total</p>
-          <p id="sticky-final" class="mt-0.5 text-sm font-semibold text-text sm:text-lg">—</p>
+        <div>
+          <p class="ls-eyebrow">Est. total</p>
+          <p id="sticky-final">—</p>
         </div>
       </div>
     </aside>
   </main>
-  <Footer />
+  <Footer showDownload={false} />
 </Layout>
 
 <script>
@@ -325,16 +302,16 @@ const proposalSchema = {
       text('sticky-selection-summary', 'Select a product');
       text('sticky-savings', '$0.00');
       text('sticky-final', '$0.00');
-      linesHost.innerHTML = '<p class="text-sm text-text-muted">Choose at least one product to begin.</p>';
+      linesHost.innerHTML = '<p>Choose at least one product to begin.</p>';
       documentLines.innerHTML = '<p>Choose at least one product to build the estimate.</p>';
       for (const id of ['summary-subtotal','summary-savings','summary-final','document-subtotal','document-savings','document-final']) text(id, '$0.00');
       text('summary-rate', ''); text('document-rate', '');
       return;
     }
     linesHost.replaceChildren(...snapshot.lines.map((line: any) => {
-      const row = document.createElement('div'); row.className = 'flex justify-between gap-4 text-sm';
-      const label = document.createElement('span'); label.className = 'text-text-muted'; label.textContent = `${line.label} · ${line.quantity} ${line.unitLabel}`;
-      const amount = document.createElement('strong'); amount.className = 'shrink-0 text-text'; amount.textContent = formatUsd(line.amountCents);
+      const row = document.createElement('div');
+      const label = document.createElement('span'); label.textContent = `${line.label} · ${line.quantity} ${line.unitLabel}`;
+      const amount = document.createElement('strong'); amount.textContent = formatUsd(line.amountCents);
       row.append(label, amount); return row;
     }));
     documentLines.replaceChildren(...snapshot.lines.map((line: any) => {
@@ -399,7 +376,7 @@ const proposalSchema = {
     const submit = document.getElementById('submit-proposal') as HTMLButtonElement;
     const retryingConfirmation = Boolean(submittedReceipt && submittedPayload);
     if (!retryingConfirmation && !selectedOffers().length) {
-      message.className = 'mt-5 rounded-xl border border-danger/40 bg-danger/10 p-4 text-sm text-danger';
+      message.hidden = false; message.className = 'pp-message pp-message-error';
       message.textContent = 'Choose at least one Orionfold product.';
       form.querySelector<HTMLInputElement>('input[name="selectedOffers"]')?.focus();
       return;
@@ -421,7 +398,7 @@ const proposalSchema = {
     };
     submit.disabled = true;
     submit.textContent = 'Saving request…';
-    message.className = 'mt-5 rounded-xl border border-border bg-surface-raised p-4 text-sm text-text-muted';
+    message.hidden = false; message.className = 'pp-message';
     message.textContent = 'Saving the server-verified proposal before notifying Orionfold…';
     try {
       let result: any;
@@ -452,7 +429,7 @@ const proposalSchema = {
       text('document-number', result.proposalNumber);
       text('document-version', String(result.proposalVersion));
       form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea').forEach((control) => { control.disabled = true; });
-      message.className = 'mt-5 rounded-xl border border-success/40 bg-success/10 p-4 text-sm leading-relaxed text-text';
+      message.hidden = false; message.className = 'pp-message pp-message-ok';
       const customerConfirmationDelayed = result.customerConfirmationStatus === 'delayed';
       message.textContent = result.localPreview
         ? 'Preview only: no data or email was sent. The formal document below shows the server-calculated receipt shape for review.'
@@ -465,7 +442,7 @@ const proposalSchema = {
       submit.textContent = customerConfirmationDelayed ? 'Retry confirmation email' : 'Request stored';
       document.getElementById('print-proposal')?.focus();
     } catch (error) {
-      message.className = 'mt-5 rounded-xl border border-danger/40 bg-danger/10 p-4 text-sm text-danger';
+      message.hidden = false; message.className = 'pp-message pp-message-error';
       message.textContent = error instanceof Error ? error.message : 'We could not save the proposal request. Try again.';
       submit.disabled = false;
       submit.textContent = 'Submit proposal request';
@@ -476,12 +453,13 @@ const proposalSchema = {
 </script>
 
 <style>
-  .proposal-grid { background-image: linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(to bottom, black, transparent 88%); }
-  .field-label { display: flex; flex-direction: column; gap: .55rem; color: var(--color-text); font-size: .85rem; font-weight: 500; }
-  .field-label input, .field-label textarea { width: 100%; border: 1px solid var(--color-border); border-radius: .75rem; background: var(--color-surface-raised); padding: .85rem 1rem; color: var(--color-text); font: inherit; font-weight: 400; }
-  .field-label input:focus, .field-label textarea:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; border-color: transparent; }
-  .honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
   .proposal-document { --color-text: #1d1f25; --color-text-muted: #6b7280; --color-text-dim: #7b8390; --color-primary: #0e817c; background: #fff; color: #1d1f25; border: 1px solid #d6dbe4; border-radius: 1rem; padding: clamp(1.5rem, 5vw, 4rem); box-shadow: 0 30px 90px -55px rgba(0,0,0,.55); }
+  .document-brand { display: flex; align-items: center; gap: .75rem; }
+  .document-wordmark { font-size: 1.125rem; font-weight: 600; line-height: 1.4; }
+  .document-wordmark-fold { color: #0e817c; }
+  .document-legal { font-size: .75rem; color: #6b7280; }
+  .document-address { text-align: right; font-size: .75rem; line-height: 1.6; color: #6b7280; }
+  .proposal-document h4 { margin: 0; }
   .document-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; border-bottom: 1px solid #d6dbe4; padding-bottom: 1.25rem; }
   .document-status { margin-top: 2rem; display: flex; justify-content: space-between; gap: 1rem; border: 1px solid #0e9e98; background: #e8f8f7; border-radius: .6rem; padding: .75rem 1rem; font: 600 .68rem/1.3 var(--font-mono); letter-spacing: .11em; text-transform: uppercase; color: #096c68; }
   .document-title { margin: 2.5rem 0; }
@@ -503,9 +481,9 @@ const proposalSchema = {
   @media (max-width: 640px) { .document-header, .document-status, .document-footer { flex-direction: column; } .document-header > div:last-child { text-align: left; } .document-line { gap: 1rem; } }
   @media print {
     @page { size: auto; margin: 15mm; }
-    :global(#nav-wrapper), :global(body > footer), #proposal-form, #proposal-sticky-summary, .proposal-hero, main > section:nth-of-type(2), .proposal-preview-intro { display: none !important; }
+    :global(#nav-wrapper), :global(body > footer), #proposal-form, #proposal-sticky-summary, .pp-hero, .pp-how, .pp-preview-intro { display: none !important; }
     :global(body) { background: #fff !important; }
-    .proposal-preview-wrap { border: 0 !important; background: #fff !important; padding: 0 !important; }
+    .pp-preview { border: 0 !important; background: #fff !important; padding: 0 !important; }
     .proposal-document { border: 0; border-radius: 0; box-shadow: none; padding: 0; }
     .document-url { text-decoration: none; }
     .document-footer { position: running(document-footer); }

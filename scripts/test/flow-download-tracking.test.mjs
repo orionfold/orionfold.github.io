@@ -142,7 +142,8 @@ test('every download control is tagged for attribution', async () => {
   const cta = await readFile(new URL('../../src/components/flow/FlowDownloadCta.astro', import.meta.url), 'utf8');
   const nav = await readFile(new URL('../../src/components/Nav.astro', import.meta.url), 'utf8');
   assert.match(cta, /data-flow-download=\{source\}/, 'the shared CTA passes its placement through');
-  for (const surface of ['nav-desktop', 'nav-mobile', 'nav-sticky-bar']) {
+  // nav-sticky-bar left with the top notice bar (operator 2026-10-28).
+  for (const surface of ['nav-desktop', 'nav-mobile']) {
     assert.ok(nav.includes(surface), `${surface} must stay attributable`);
   }
 });

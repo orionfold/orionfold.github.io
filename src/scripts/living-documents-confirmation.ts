@@ -11,7 +11,6 @@ export function acknowledgeLivingDocumentsConfirmation(): boolean {
   const detail = document.getElementById("confirm-bar-detail");
   const close = document.getElementById("confirm-bar-close");
   const cta = document.getElementById("confirm-bar-cta");
-  const magnet = document.getElementById("magnet-bar");
   if (!bar || !text || !detail) return false;
 
   text.textContent = state === "1" ? "Thanks for subscribing to the Flow email newsletter."
@@ -21,12 +20,6 @@ export function acknowledgeLivingDocumentsConfirmation(): boolean {
   if (cta) cta.hidden = true;
   bar.dataset.confirmationState = state;
   bar.classList.remove("hidden");
-  if (magnet) {
-    magnet.classList.remove("hidden");
-    magnet.dataset.confirmationCovered = "true";
-    magnet.inert = true;
-    magnet.setAttribute("aria-hidden", "true");
-  }
   // A past dismissal must not prevent the permanent download from returning.
   try { localStorage.removeItem("of-flow-bar-dismissed"); } catch {}
 
@@ -40,12 +33,6 @@ export function acknowledgeLivingDocumentsConfirmation(): boolean {
     clearTimeout(timer);
     bar.classList.add("hidden");
     delete bar.dataset.confirmationState;
-    if (magnet) {
-      delete magnet.dataset.confirmationCovered;
-      magnet.inert = false;
-      magnet.removeAttribute("aria-hidden");
-      magnet.classList.remove("hidden");
-    }
   };
   close?.addEventListener("click", dismiss, { once: true });
   timer = setTimeout(dismiss, 8000);

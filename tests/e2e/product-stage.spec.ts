@@ -349,25 +349,22 @@ test('editorial compositions keep their desktop grids and all manifesto principl
 });
 
 
-// A later resize must not conceal an initial closed-bar measurement: that
-// write shifted the entire hero up and back down during real navigation.
+// The nav reserves its settled height before script measurement (the top
+// notice bar left on 2026-10-28, so there is no notice to wait for).
 for (const width of [390, 1440]) {
   test(`fresh visitor reserves the settled navigation height at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.addInitScript(() => {
-      localStorage.removeItem('of-flow-bar-dismissed');
       sessionStorage.removeItem('of-confirm-welcome');
-      const samples: Array<{ value: number; height: number; noticeVisible: boolean; previous: number }> = [];
+      const samples: Array<{ value: number; height: number; previous: number }> = [];
       Object.defineProperty(window, '__navOffsetWrites', { value: samples });
       const original = CSSStyleDeclaration.prototype.setProperty;
       CSSStyleDeclaration.prototype.setProperty = function (name, value, priority) {
         if (name === '--of-nav-height' && this === document.documentElement.style) {
           const nav = document.querySelector('#nav-wrapper');
-          const notice = document.querySelector('#magnet-bar');
           samples.push({
             value: Number.parseFloat(value ?? ''),
             height: Math.ceil(nav?.getBoundingClientRect().height ?? 0),
-            noticeVisible: !!notice && getComputedStyle(notice).display !== 'none',
             previous: Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)),
           });
         }
@@ -376,23 +373,15 @@ for (const width of [390, 1440]) {
     });
     await page.goto('/');
     await page.evaluate(() => document.fonts.ready);
-    await expect(page.locator('#magnet-bar')).toBeVisible();
+    await expect(page.locator('#magnet-bar')).toHaveCount(0);
     const evidence = await page.evaluate(() => ({
-      samples: (window as typeof window & { __navOffsetWrites: Array<{ value: number; height: number; noticeVisible: boolean; previous: number }> }).__navOffsetWrites,
+      samples: (window as typeof window & { __navOffsetWrites: Array<{ value: number; height: number; previous: number }> }).__navOffsetWrites,
       settled: Math.ceil(document.querySelector('#nav-wrapper')!.getBoundingClientRect().height),
     }));
     expect(evidence.samples.length).toBeGreaterThan(0);
-    expect(evidence.samples.every(sample => sample.noticeVisible), 'never measure a temporarily hidden fresh-visitor notice').toBe(true);
     expect(evidence.samples.every(sample => sample.value === sample.height), 'offset tracks the visible header').toBe(true);
     expect(evidence.samples[0].value, 'initial offset already equals settled header height').toBe(evidence.settled);
     expect(evidence.samples[0].previous, 'CSS reserves the initial header before script measurement').toBe(evidence.settled);
-    await page.locator('#magnet-bar-close').click();
-    await expect(page.locator('#magnet-bar')).toBeHidden();
-    await expect.poll(() => page.evaluate(() => (
-      Number.parseFloat(document.documentElement.style.getPropertyValue('--of-nav-height'))
-      - Math.ceil(document.querySelector('#nav-wrapper')!.getBoundingClientRect().height)
-    ))).toBe(0);
-    expect(await page.locator('#nav-wrapper').evaluate(el => Math.ceil(el.getBoundingClientRect().height))).toBeLessThan(evidence.settled);
   });
 }
 

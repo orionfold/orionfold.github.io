@@ -97,6 +97,15 @@
 #main-nav .living-nav-actions { gap: 16px; }
 #main-nav .living-nav-cta { gap: 9px; padding: 10px 18px; font: 700 16px/1.5 var(--font-body); white-space: nowrap; }
 #main-nav .living-nav-cta svg { flex-shrink: 0; }
+#main-nav .living-nav-cta--secondary { padding-block: 9px; border-color: var(--living-line); color: var(--living-ink); }
+#main-nav .living-nav-cta--secondary:hover { border-color: var(--living-teal); }
+/* Between the desktop breakpoint and 1280px the two actions and five links
+   share the shell edge to edge, so Get Proposal keeps its icon and aria-label
+   and drops the visible word. */
+@media (min-width:1100px) and (max-width:1279.98px) {
+  #main-nav .living-nav-cta--secondary { padding-inline: 12px; }
+  #main-nav .living-nav-cta--secondary span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
 @media (min-width:640px) {
   #main-nav > .living-nav-shell { max-width: 1440px; padding-inline: 27px; }
   #main-nav .living-nav-links { gap: 27px; }
@@ -115,9 +124,7 @@
   #main-nav .living-nav-cta--desktop { display: inline-flex; }
   #main-nav #mobile-menu-btn, #main-nav #mobile-menu-toggle, #main-nav #mobile-menu { display: none; }
 }
-#magnet-bar { background: #eaf2ef; border-color: var(--living-line); }
-#magnet-bar a, #confirm-bar { font-size: 12px; }
-#magnet-bar .font-mono { font-family: var(--font-body); font-weight: 700; color: #ba2d21; }
+#confirm-bar { font-size: 12px; }
 #mobile-menu { max-height: calc(100dvh - 120px); overflow-y: auto; }
 #mobile-menu-toggle:focus-visible + label { outline: 3px solid var(--living-teal); outline-offset: 6px; }
 /* Yellow bands already span the page; paint their gradient in place without
@@ -230,7 +237,6 @@
   .living-relay-band { padding-inline: 16px; }
   .living-wordmark__type { font-size: 30px; }
   #main-nav > div:first-child { padding-block: 15px; min-height: 76px; }
-  #magnet-bar .text-text-muted { display: none; }
 }
 @media (prefers-reduced-motion:reduce) {
   .living-site { scroll-behavior: auto; }
@@ -256,13 +262,14 @@
 .living-site .flow-eyebrow-chip--accent,
 .living-site :is(.flow-subnav__link,.relay-subnav__link,.arena-subnav__link) { font-weight:700; }
 
-/* The measured header includes a visible notice bar and follows dismissal,
-   viewport changes and navigation. Defaults reserve no-JS and first-paint room. */
-:root { --of-nav-height:82px; }
-html.js-ready { --of-nav-height:116px; }
+/* The measured header follows viewport changes and navigation. The top notice
+   bar left on 2026-10-28, so the reserved height is the nav shell alone:
+   83px (82 + its bottom border) from 701px up, 77px on phones. Measured on
+   2026-10-28; the product-stage e2e asserts first paint matches. */
+:root { --of-nav-height:83px; }
+@media(max-width:700px) { :root { --of-nav-height:77px; } }
 .living-site :is(main,footer) [id] { scroll-margin-top:calc(var(--of-nav-height,82px) + 20px); }
 .living-site .hero-gradient-text { background:none; -webkit-text-fill-color:var(--living-ink); color:var(--living-ink); }
-@media(max-width:700px) { html.js-ready { --of-nav-height:126px; } }
 @media(max-width:800px) {
   .living-paper-cta__inner {
     width: calc(100% - 40px); grid-template-columns: minmax(0, 1fr);
