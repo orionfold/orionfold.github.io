@@ -7,16 +7,21 @@ import {
   getConsultingOffers,
   PROPOSAL_TERMS_VERSION,
 } from '../../supabase/functions/_shared/consulting-proposal.ts';
+import { CATALOG, FLOW_ANNUAL_AMOUNT, FLOW_MONTHLY_AMOUNT } from '../../supabase/functions/_shared/catalog.ts';
 
 const pagePath = new URL('../../src/pages/proposal.astro', import.meta.url);
 const oldPagePath = new URL('../../src/pages/consulting.astro', import.meta.url);
 const navPath = new URL('../../src/components/Nav.astro', import.meta.url);
+const cardPath = new URL('../../src/components/proposal/ProposalOfferCard.astro', import.meta.url);
+const plansPath = new URL('../../src/components/living/FlowPlans.astro', import.meta.url);
 const functionPath = new URL('../../supabase/functions/consulting-request/index.ts', import.meta.url);
 const deliveryPath = new URL('../../supabase/functions/consulting-request/delivery.ts', import.meta.url);
 const migrationPath = new URL('../../supabase/migrations/20260720010000_create_consulting_proposals.sql', import.meta.url);
 const customerConfirmationMigrationPath = new URL('../../supabase/migrations/20260721173000_add_consulting_customer_confirmation.sql', import.meta.url);
 const page = readFileSync(pagePath, 'utf8');
 const nav = readFileSync(navPath, 'utf8');
+const card = readFileSync(cardPath, 'utf8');
+const plans = readFileSync(plansPath, 'utf8');
 const fn = readFileSync(functionPath, 'utf8');
 const delivery = readFileSync(deliveryPath, 'utf8');
 const migration = readFileSync(migrationPath, 'utf8');
@@ -63,27 +68,71 @@ test('navigation and sticky summary keep the proposal action visible', () => {
 });
 
 test('product cards toggle through a full-card native checkbox label while preserving the details link', () => {
-  assert.match(page, /class="offer-card relative/);
-  assert.match(page, /class="offer-checkbox peer sr-only"/);
-  assert.match(page, /class="offer-hit-area absolute inset-0 z-10 cursor-pointer rounded-2xl"/);
-  assert.match(page, /for=\{`offer-\$\{offer\.id\}`\}/);
-  assert.match(page, /class="relative z-20 text-sm text-primary hover:underline" href=\{offer\.href\}/);
-  assert.match(page, /\.offer-card:has\(\.offer-checkbox:checked\)/);
+  // The card is one component (G-134) shared by the Flow section and the matrix.
+  assert.match(card, /class="offer-card relative/);
+  assert.match(card, /class="offer-checkbox peer sr-only"/);
+  assert.match(card, /class="offer-hit-area absolute inset-0 z-10 cursor-pointer rounded-2xl"/);
+  assert.match(card, /for=\{`offer-\$\{offer\.id\}`\}/);
+  assert.match(card, /class="relative z-20 text-sm text-primary hover:underline" href=\{offer\.href\}/);
+  assert.match(card, /\.offer-card:has\(\.offer-checkbox:checked\)/);
   assert.doesNotMatch(page, /card\.classList\.toggle\('is-selected'/);
+  assert.equal((page.match(/<ProposalOfferCard offer=\{offer\} maxQuantity=\{MAX_PROPOSAL_QUANTITY\} \/>/g) ?? []).length, 2, 'both the Flow section and the matrix render the shared card');
 });
 
 test('every product card exposes a server-bounded license or seat quantity', () => {
-  assert.match(page, /data-offer-quantity=\{offer\.id\}/);
-  assert.match(page, /Number of \$\{offer\.unitLabel\} for \$\{offer\.label\}/);
-  assert.match(page, /min="1"/);
-  assert.match(page, /max=\{MAX_PROPOSAL_QUANTITY\}/);
+  assert.match(card, /data-offer-quantity=\{offer\.id\}/);
+  assert.match(card, /Number of \$\{offer\.unitLabel\} for \$\{offer\.label\}/);
+  assert.match(card, /min="1"/);
+  assert.match(card, /max=\{maxQuantity\}/);
   assert.match(page, /Catalog price × quantity/);
   assert.match(page, /line\.quantity.*line\.unitLabel/s);
+});
+
+test('Flow seats open the proposal, priced from the catalog, with the Domains facts and a Plans button (G-134)', () => {
+  const offers = getConsultingOffers();
+  const flow = offers.filter((offer) => offer.family === 'Flow');
+  assert.deepEqual(flow.map((offer) => offer.id), ['flow-pro-annual', 'flow-import-annual', 'flow-publish-annual']);
+  assert.deepEqual(offers.slice(0, 3), flow, 'Flow is first in the catalog order');
+  for (const offer of flow) {
+    assert.equal(offer.unitLabel, 'seats');
+    assert.equal(offer.mode, 'subscription');
+    assert.equal(offer.amountCents, CATALOG[offer.lookupKey].amount, `${offer.id} price comes from the catalog`);
+    assert.equal(offer.amountCents, FLOW_ANNUAL_AMOUNT, `${offer.id} is the annual seat price`);
+    for (const field of ['term', 'job', 'chooseWhen', 'contributes', 'worksWith', 'notFor', 'includes', 'freeBoundary']) {
+      assert.doesNotMatch(String(offer[field] ?? ''), /\$\d/, `${offer.id}.${field} types no price`);
+    }
+  }
+  // The add-on price is pegged to the Pro seat through the same two constants.
+  assert.equal(CATALOG.license_orionfold_flow_import_monthly.amount, FLOW_MONTHLY_AMOUNT);
+  assert.equal(CATALOG.license_orionfold_flow_publish_annual.amount, FLOW_ANNUAL_AMOUNT);
+
+  // Page: the Flow section precedes the capability matrix and sits inside the form.
+  const formAt = page.indexOf('<form id="proposal-form"');
+  const flowAt = page.indexOf('<section id="flow"');
+  const matrixAt = page.indexOf('aria-labelledby="matrix-heading"');
+  assert.ok(formAt > 0 && formAt < flowAt && flowAt < matrixAt, 'Flow section is the first section of the form, before the matrix');
+  assert.match(page, /\{formatUsd\(FLOW\.annual\.amount\)\} a year/);
+  assert.match(page, /\{formatUsd\(FLOW\.monthly\.amount\)\} a month/);
+  assert.doesNotMatch(page.slice(flowAt, matrixAt), /\$\d/, 'the Flow section types no price');
+  assert.match(page, /Bringing a Domain in from GitHub is free on Base\./);
+  assert.match(page, /Chat on a Domain, and the door for your own agents, need Flow Pro\./);
+  assert.match(page, /Publishing a Domain needs Flow Pro and the Publish add-on\./);
+  assert.match(page, /There is no fee per Domain\./);
+  assert.match(page, /Flow lines are yearly subscriptions, one seat per person\./);
+  assert.match(page, /Set the licenses, Flow seats or workshop seats/);
+
+  // Plans: the Request for proposal link sits beside Enterprise contact and deep-links to the section.
+  assert.match(plans, /<div class="ls-plan-buttons"><FlowEnterpriseContact \/><a class="ls-plan-rfp" href="\/proposal\/#flow"/);
+  assert.match(plans, />Request for proposal<\/a>/);
+  assert.match(readFileSync(new URL('../../src/styles/living-flow.css', import.meta.url), 'utf8'), /\.ls-plan-actions :is\(\.of-primary-action, \.flow-enterprise-trigger, \.ls-plan-rfp\)/);
 });
 
 test('all eligible offers and quantity fixtures build from the shared catalog', () => {
   const offers = getConsultingOffers();
   assert.deepEqual(offers.map((offer) => offer.id), [
+    'flow-pro-annual',
+    'flow-import-annual',
+    'flow-publish-annual',
     'proof-founding',
     'arena-founding',
     'relay-founding',

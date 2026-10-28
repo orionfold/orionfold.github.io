@@ -212,6 +212,42 @@ export const CATALOG: Record<string, CatalogItem> = {
     label: "Orionfold Flow (annual, 20% off)",
     amount: FLOW_ANNUAL_AMOUNT,
   },
+  // Flow's two add-ons, Import and Publish (Flow 2.0 add-on contract). Each is
+  // priced like a Pro seat, from the SAME two constants, so the add-on price can
+  // never drift from the Pro price it is pegged to. The product owns add-on
+  // checkout and enforcement; these rows exist so the website can DISPLAY the
+  // price and put an add-on seat on a /proposal/ line (G-134). The live Stripe
+  // prices carry these exact lookup keys (verified `stripe prices list --live`
+  // 2026-10-28), and website-event-ownership.ts already names them as
+  // product-fulfilled, so the webhook skips them.
+  license_orionfold_flow_import_monthly: {
+    lookupKey: "license_orionfold_flow_import_monthly",
+    kind: "license",
+    mode: "subscription",
+    label: "Flow Import add-on (monthly)",
+    amount: FLOW_MONTHLY_AMOUNT,
+  },
+  license_orionfold_flow_import_annual: {
+    lookupKey: "license_orionfold_flow_import_annual",
+    kind: "license",
+    mode: "subscription",
+    label: "Flow Import add-on (annual, 20% off)",
+    amount: FLOW_ANNUAL_AMOUNT,
+  },
+  license_orionfold_flow_publish_monthly: {
+    lookupKey: "license_orionfold_flow_publish_monthly",
+    kind: "license",
+    mode: "subscription",
+    label: "Flow Publish add-on (monthly)",
+    amount: FLOW_MONTHLY_AMOUNT,
+  },
+  license_orionfold_flow_publish_annual: {
+    lookupKey: "license_orionfold_flow_publish_annual",
+    kind: "license",
+    mode: "subscription",
+    label: "Flow Publish add-on (annual, 20% off)",
+    amount: FLOW_ANNUAL_AMOUNT,
+  },
   license_orionfold_relay: {
     lookupKey: "license_orionfold_relay",
     kind: "license",

@@ -53,7 +53,7 @@ import { FLOW_CANCEL_TERMS, FLOW_TRIAL_TERMS, FLOW_ADDONS, FLOW_ADDON_TERMS } fr
 <li>The door for your own agents in Terminal</li>
 <li>Local or configured cloud models; provider usage is separate</li>
 </ul>
-<div class="ls-plan-actions"><FlowEnterpriseContact /><p class="ls-plan-payment-note">Or pay in-app when ready.</p></div>
+<div class="ls-plan-actions"><div class="ls-plan-buttons"><FlowEnterpriseContact /><a class="ls-plan-rfp" href="/proposal/#flow" data-flow-rfp><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg>Request for proposal</a></div><p class="ls-plan-payment-note">Or pay in-app when ready. A proposal puts Flow seats on one itemized document for a purchase order.</p></div>
 </article>
 </div>
 <div class="ls-plan-addons">
@@ -66,6 +66,17 @@ import { FLOW_CANCEL_TERMS, FLOW_TRIAL_TERMS, FLOW_ADDONS, FLOW_ADDON_TERMS } fr
 </section>
 
 <style>
+/* Two asks side by side on the Pro card: the enquiry dialog and the proposal
+   builder's Flow section. Same white button shape as the enterprise trigger;
+   they wrap to one per row below 700px. */
+.ls-plan-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+.ls-plan-rfp {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 52px; padding: 14px 23px; border: 1px solid #b5c3bf;
+  border-radius: 5px; background: #fff; color: #152a2d;
+  font: 700 15px/1.4 var(--font-body); text-decoration: none;
+}
+.ls-plan-rfp:hover { background: #e9f0ed; border-color: #7d918a; color: #152a2d; }
 .ls-plan-addons { margin-top: 1.5rem; padding: 1.5rem; border: 1px solid var(--line); border-radius: 1rem; }
 .ls-plan-addons h3 { margin: 0 0 1rem; font-size: 1.2rem; }
 .ls-plan-addons p { margin: .75rem 0 0; line-height: 1.6; }

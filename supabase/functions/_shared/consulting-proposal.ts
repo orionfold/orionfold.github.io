@@ -1,8 +1,8 @@
 import { CATALOG, type CatalogItem } from "./catalog.ts";
 import { ORIONFOLD_LEGAL_IDENTITY } from "./legal-identity.ts";
 
-export const PROPOSAL_CATALOG_VERSION = "2026-07-23";
-export const PROPOSAL_TERMS_VERSION = "product-proposal-2026-07-23-r1";
+export const PROPOSAL_CATALOG_VERSION = "2026-10-28";
+export const PROPOSAL_TERMS_VERSION = "product-proposal-2026-10-28-r1";
 export const PROPOSAL_SAVINGS_FORMULA_VERSION = "domestic-card-2.9pct-plus-30c-2026-07";
 export const MAX_PROPOSAL_QUANTITY = 1_000;
 export const CONSULTING_BINDING_STATUS = "non_binding_request" as const;
@@ -20,7 +20,7 @@ export type ConsultingHourCap = (typeof CONSULTING_HOUR_CAPS)[number];
 export interface ConsultingOfferCopy {
   id: string;
   lookupKey: string;
-  family: "Operate" | "Prove" | "Learn" | "Train";
+  family: "Flow" | "Operate" | "Prove" | "Learn" | "Train";
   href: string;
   term: string;
   job: string;
@@ -42,6 +42,55 @@ export interface ConsultingOffer extends ConsultingOfferCopy {
 }
 
 const OFFER_COPY: readonly ConsultingOfferCopy[] = [
+  // Flow comes first (G-134, operator 2026-10-28). Each line is one SEAT, one
+  // person on their own Macs, priced by the year from the annual SKU. The
+  // monthly SKU stays an in-app choice; a proposal prices seats by the year so
+  // every line on the document shares one period. Flow Base is free and has no
+  // SKU, so it never appears as a line. No copy below carries a price: the
+  // number on the card and the document comes from CATALOG at render time.
+  {
+    id: "flow-pro-annual",
+    lookupKey: "license_orionfold_flow_annual",
+    family: "Flow",
+    href: "/flow/",
+    term: "Annual Pro subscription · one seat is one person on their own Macs",
+    job: "Write how you work. AI runs it, and a person approves each change.",
+    chooseWhen: "A team writes in Markdown and wants model-powered work with receipts.",
+    contributes: "A Flow Pro seat for one person, billed by the year.",
+    worksWith: "Add Import to bring Office files in. Add Publish to send documents and Domains out.",
+    notFor: "Reading and editing Markdown alone. Flow Base does that free, forever.",
+    includes: "One Flow Pro seat for twelve months. Every AI feature, local and cloud models, Chat on a folder or a Domain, and the door for your own agents.",
+    unitLabel: "seats",
+    freeBoundary: "Flow Base is free and needs no seat. Bringing a Domain in from GitHub is free on Base too. Pro adds the model-powered work.",
+  },
+  {
+    id: "flow-import-annual",
+    lookupKey: "license_orionfold_flow_import_annual",
+    family: "Flow",
+    href: "/flow/#get-flow",
+    term: "Annual add-on to Flow Pro · one per Pro seat",
+    job: "Bring Word, Excel, PowerPoint and PDF into Markdown.",
+    chooseWhen: "Your source documents live in Office files or PDFs.",
+    contributes: "A Flow Import add-on for one Pro seat, billed by the year.",
+    worksWith: "Needs a Flow Pro seat for the same person.",
+    notFor: "Teams that already write in Markdown.",
+    includes: "Flow Import for one seat for twelve months.",
+    unitLabel: "seats",
+  },
+  {
+    id: "flow-publish-annual",
+    lookupKey: "license_orionfold_flow_publish_annual",
+    family: "Flow",
+    href: "/flow/#get-flow",
+    term: "Annual add-on to Flow Pro · one per Pro seat",
+    job: "Publish PDF, GitHub Pages, EPUB, Word, Excel and PowerPoint, and a Domain to a GitHub repository.",
+    chooseWhen: "Your documents or a Domain need to leave Flow in a shape others can use.",
+    contributes: "A Flow Publish add-on for one Pro seat, billed by the year.",
+    worksWith: "Needs a Flow Pro seat for the same person. Publishing a Domain needs Pro and Publish together.",
+    notFor: "Bringing a Domain in. That is free on Base, with no fee per Domain.",
+    includes: "Flow Publish for one seat for twelve months.",
+    unitLabel: "seats",
+  },
   {
     id: "proof-founding",
     lookupKey: "license_orionfold_proof_founding",

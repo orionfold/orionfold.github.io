@@ -89,8 +89,10 @@ const hashes = {
     "be96ec481f5e4f4aac7908997a30ca1689094c28fc93dc2f8223ade1fdb4b407",
   "supabase/functions/_shared/meta-capi.ts":
     "4fa7a49c97adf0fd3d855f9b2d99cc0779111a364266e36857e38b5318ee5025",
+  // G-134 (2026-10-28): consulting-proposal.ts gained the three Flow seat offers
+  // and catalog.ts the four Flow add-on SKUs; both re-pinned on purpose.
   "supabase/functions/_shared/consulting-proposal.ts":
-    "17f47bbc79cb891c3d165768e2b1a3401d02f317e440231897de77601f6214f1",
+    "33135871c69214a452b572f4dc1384da4146330c944c39b1589a4b03c2177486",
   "supabase/functions/_shared/confirmation-email.ts":
     "19761e216bffa2c89b03021acc2cdd3a9bf7f6d4ee99f1f23ada3c868438376d",
   "supabase/functions/_shared/email-footer.ts":
@@ -104,7 +106,7 @@ const hashes = {
   "supabase/functions/_shared/workshop-contract.ts":
     "d6e4a13b3a4d249dc2081d4675850c5cdf388d4b2d69220056a9bb579f947312",
   "supabase/functions/_shared/catalog.ts":
-    "208399bfe20be6df238b73dd3e32b7c7923cde492e38d932282f63d3a5e8a535",
+    "13381d2289d576d5f9c75d5efa2448c30a2717fd5e7d5bdf1b26f63056054458",
   "supabase/functions/admin-issue-license/index.ts":
     "bb3dd36b3e22038d07cef234d3137dae094aa774f7262b376bb44663cca063ea",
   "supabase/functions/workshop-access/index.ts":

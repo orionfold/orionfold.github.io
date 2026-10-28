@@ -4,6 +4,8 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import BrandMark from '../components/ui/BrandMark.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
+import ProposalOfferCard from '../components/proposal/ProposalOfferCard.astro';
+import { FLOW } from '../data/commerce';
 import { SITE } from '../data/seo';
 import { ogMeta } from '../data/og';
 import { RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED } from '../data/launch';
@@ -19,6 +21,8 @@ const publishedWorkshopKeys = RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED
   ? ['workshop_relay_operator_founding']
   : [];
 const offers = getConsultingOffers(publishedWorkshopKeys);
+// Flow renders in its own section ahead of the matrix (G-134); the matrix keeps the rest.
+const flowOffers = offers.filter((offer) => offer.family === 'Flow');
 const families = ['Prove', 'Operate', 'Learn', 'Train'] as const;
 const og = ogMeta('/proposal/');
 const localPreview = import.meta.env.DEV;
@@ -28,7 +32,7 @@ const proposalSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
   name: 'Build a non-binding Orionfold product proposal',
-  description: 'Select Orionfold products, choose license or seat quantities, and print an itemized non-binding proposal request.',
+  description: 'Select Flow seats and other Orionfold products, choose license or seat quantities, and print an itemized non-binding proposal request.',
   url: `${SITE.url}/proposal/`,
   mainEntity: {
     '@type': 'OfferCatalog',
@@ -47,7 +51,7 @@ const proposalSchema = {
 ---
 <Layout
   title="Build a non-binding Orionfold product proposal"
-  description="Choose Orionfold products, set license or seat quantities, and print an itemized non-binding proposal request."
+  description="Put Flow seats and other Orionfold products on one itemized non-binding proposal request, then print it or send it for review."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={proposalSchema}
@@ -76,7 +80,7 @@ const proposalSchema = {
             <p class="mt-3 text-3xl font-semibold text-text">Catalog price × quantity</p>
             <ul class="mt-5 space-y-3 text-sm leading-relaxed text-text-muted">
               <li>Select individual Orionfold products</li>
-              <li>Set the required licenses or workshop seats</li>
+              <li>Set the licenses, Flow seats or workshop seats</li>
               <li>Review list price and estimated bank-transfer savings</li>
             </ul>
           </aside>
@@ -105,12 +109,35 @@ const proposalSchema = {
     </section>
 
     <form id="proposal-form" novalidate>
+      <section id="flow" class="scroll-mt-28 px-6 py-20" aria-labelledby="flow-heading">
+        <div class="mx-auto max-w-6xl">
+          <div class="max-w-4xl">
+            <p class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-primary">Flow seats</p>
+            <h2 id="flow-heading" class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Put Flow seats on the same proposal.</h2>
+            <p class="mt-5 text-lg leading-relaxed text-text-muted">Flow Base is free for everyone and needs no line here. A Flow Pro seat is {formatUsd(FLOW.annual.amount)} a year for one person on their own Macs. In the app the same seat is {formatUsd(FLOW.monthly.amount)} a month. A proposal prices every seat by the year, so the whole document shares one period.</p>
+          </div>
+          <div class="mt-10 grid gap-5 xl:grid-cols-2">
+            {flowOffers.map((offer) => <ProposalOfferCard offer={offer} maxQuantity={MAX_PROPOSAL_QUANTITY} />)}
+            <aside class="rounded-2xl border border-primary/20 bg-primary/[0.06] p-6 text-sm leading-relaxed text-text-muted" aria-labelledby="flow-domains-heading">
+              <h3 id="flow-domains-heading" class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-primary">Flow Domains on a proposal</h3>
+              <ul class="mt-4 space-y-3">
+                <li>Bringing a Domain in from GitHub is free on Base.</li>
+                <li>Chat on a Domain, and the door for your own agents, need Flow Pro.</li>
+                <li>Publishing a Domain needs Flow Pro and the Publish add-on.</li>
+                <li>There is no fee per Domain. Seats are the only Flow lines.</li>
+              </ul>
+              <a class="mt-5 inline-block text-primary hover:underline" href="/domains/">Read about Flow Domains</a>
+            </aside>
+          </div>
+        </div>
+      </section>
+
       <section class="border-y border-border bg-surface-raised px-6 py-20" aria-labelledby="matrix-heading">
         <div class="mx-auto max-w-6xl">
           <div class="max-w-4xl">
             <p class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-primary">Product decision matrix</p>
             <h2 id="matrix-heading" class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Choose the capability, not an upsell.</h2>
-            <p class="mt-5 text-lg leading-relaxed text-text-muted">No product is preselected. Each has one distinct job; combinations are useful only when one product's output strengthens another.</p>
+            <p class="mt-5 text-lg leading-relaxed text-text-muted">No product is preselected. Each has one distinct job. Combinations are useful only when one product's output strengthens another.</p>
           </div>
 
           {families.map((family) => {
@@ -121,65 +148,7 @@ const proposalSchema = {
                 <h3 id={`family-${family.toLowerCase()}`} class="font-mono text-sm uppercase tracking-[0.2em] text-text-dim">{family}</h3>
                 <div class="mt-4 grid gap-5 xl:grid-cols-2">
                   {familyOffers.map((offer) => (
-                    <article class="offer-card relative rounded-2xl border border-border bg-surface p-6 shadow-of transition hover:border-primary/60" data-offer-card={offer.id}>
-                      <input
-                        id={`offer-${offer.id}`}
-                        type="checkbox"
-                        name="selectedOffers"
-                        value={offer.id}
-                        class="offer-checkbox peer sr-only"
-                        aria-label={`Add ${offer.label} to proposal`}
-                      />
-                      <label
-                        for={`offer-${offer.id}`}
-                        class="offer-hit-area absolute inset-0 z-10 cursor-pointer rounded-2xl"
-                        aria-hidden="true"
-                      ></label>
-                      <div class="pointer-events-none relative z-20 flex items-start justify-between gap-5">
-                        <div>
-                          <p class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-primary">{offer.term}</p>
-                          <h4 class="mt-2 text-2xl font-semibold text-text">{offer.label}</h4>
-                        </div>
-                        <label for={`offer-${offer.id}`} class="offer-select pointer-events-auto inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-full border border-border bg-surface-raised px-3 py-2 text-sm font-medium text-text transition hover:border-primary/60">
-                          <span class="offer-check inline-grid h-4 w-4 place-items-center rounded border border-border bg-surface text-[0.65rem] font-bold text-white" aria-hidden="true"></span>
-                          <span class="offer-select-copy">Add</span>
-                          <span class="offer-selected-copy hidden">Selected</span>
-                        </label>
-                      </div>
-                      <dl class="mt-6 grid gap-4 text-sm leading-relaxed sm:grid-cols-2">
-                        <div><dt>Job</dt><dd>{offer.job}</dd></div>
-                        <div><dt>Choose it when</dt><dd>{offer.chooseWhen}</dd></div>
-                        <div><dt>What it contributes</dt><dd>{offer.contributes}</dd></div>
-                        <div><dt>Works with</dt><dd>{offer.worksWith}</dd></div>
-                        <div><dt>Do not choose it for</dt><dd>{offer.notFor}</dd></div>
-                        <div><dt>Included</dt><dd>{offer.includes}</dd></div>
-                      </dl>
-                      {offer.freeBoundary && <p class="mt-5 rounded-xl border border-primary/20 bg-primary/[0.06] p-3 text-sm leading-relaxed text-text-muted">{offer.freeBoundary}</p>}
-                      <div class="relative z-20 mt-6 grid gap-4 border-t border-border pt-5 sm:grid-cols-[1fr_auto] sm:items-end">
-                        <a class="relative z-20 text-sm text-primary hover:underline" href={offer.href}>Review product details</a>
-                        <div class="flex flex-wrap items-end justify-between gap-4 sm:justify-end">
-                          <label class="quantity-control">
-                            <span>Quantity · {offer.unitLabel}</span>
-                            <input
-                              type="number"
-                              name={`quantity-${offer.id}`}
-                              data-offer-quantity={offer.id}
-                              value="1"
-                              min="1"
-                              max={MAX_PROPOSAL_QUANTITY}
-                              step="1"
-                              inputmode="numeric"
-                              disabled
-                              aria-label={`Number of ${offer.unitLabel} for ${offer.label}`}
-                            />
-                          </label>
-                          <p class="min-w-28 text-right text-xl font-semibold text-text">
-                            {formatUsd(offer.amountCents)}
-                            <span class="block text-xs font-normal text-text-muted">each{offer.mode === 'subscription' ? ' · per year' : ''}</span>
-                          </p>
-                        </div>
-                      </div>
-                    </article>
+                    <ProposalOfferCard offer={offer} maxQuantity={MAX_PROPOSAL_QUANTITY} />
                   ))}
                 </div>
               </section>
@@ -272,6 +241,7 @@ const proposalSchema = {
             <ul>
               <li>This is a non-binding product proposal request, not acceptance, an order, an invoice, payment instructions, or a promise of availability or fulfillment.</li>
               <li>Every line is catalog unit price multiplied by the requested license or seat quantity. Prices, availability, and product terms may change before written acceptance.</li>
+              <li>Flow lines are yearly subscriptions, one seat per person. Monthly billing is available in the app, not on a proposal. Each add-on seat needs a Flow Pro seat for the same person.</li>
               <li>Each selected quantity is a request only. Orionfold may confirm, decline, or propose different quantities and fulfillment terms in writing.</li>
               <li>Hosting, cloud/model usage, deployment, consulting, and other third-party costs are excluded unless itemized in a later written agreement.</li>
               <li>Estimated savings applies to the eligible subtotal for domestic USD ACH/wire and uses the avoided-card-cost formula shown above. The final written proposal and invoice control.</li>
@@ -507,18 +477,6 @@ const proposalSchema = {
 
 <style>
   .proposal-grid { background-image: linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(to bottom, black, transparent 88%); }
-  .offer-card:has(.offer-checkbox:checked) { border-color: color-mix(in oklch, var(--color-primary) 70%, var(--color-border)); box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-primary) 35%, transparent), 0 20px 60px -42px var(--color-primary); }
-  .offer-card:has(.offer-checkbox:checked) .offer-check { border-color: var(--color-primary); background: var(--color-primary); }
-  .offer-card:has(.offer-checkbox:checked) .offer-check::after { content: '✓'; }
-  .offer-card:has(.offer-checkbox:checked) .offer-select-copy { display: none; }
-  .offer-card:has(.offer-checkbox:checked) .offer-selected-copy { display: inline; color: var(--color-primary); }
-  .offer-card:has(.offer-checkbox:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 3px; }
-  .offer-card dt { margin-bottom: .3rem; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-dim); }
-  .offer-card dd { color: var(--color-text-muted); }
-  .quantity-control { display: grid; gap: .35rem; font-family: var(--font-mono); font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-dim); }
-  .quantity-control input { width: 5.5rem; border: 1px solid var(--color-border); border-radius: .65rem; background: var(--color-surface-raised); padding: .55rem .65rem; color: var(--color-text); font-family: var(--font-sans); font-size: .95rem; font-weight: 600; letter-spacing: 0; text-transform: none; }
-  .quantity-control input:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; border-color: transparent; }
-  .quantity-control input:disabled { cursor: not-allowed; opacity: .45; }
   .field-label { display: flex; flex-direction: column; gap: .55rem; color: var(--color-text); font-size: .85rem; font-weight: 500; }
   .field-label input, .field-label textarea { width: 100%; border: 1px solid var(--color-border); border-radius: .75rem; background: var(--color-surface-raised); padding: .85rem 1rem; color: var(--color-text); font: inherit; font-weight: 400; }
   .field-label input:focus, .field-label textarea:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; border-color: transparent; }
@@ -552,5 +510,4 @@ const proposalSchema = {
     .document-url { text-decoration: none; }
     .document-footer { position: running(document-footer); }
   }
-  @media (prefers-reduced-motion: reduce) { .offer-card { transition: none; } }
 </style>

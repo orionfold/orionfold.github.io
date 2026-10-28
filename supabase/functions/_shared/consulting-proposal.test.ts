@@ -7,6 +7,7 @@ import {
   getConsultingOffers,
   MAX_PROPOSAL_QUANTITY,
 } from "./consulting-proposal.ts";
+import { FLOW_ANNUAL_AMOUNT } from "./catalog.ts";
 
 Deno.test("a product-only browser estimate multiplies catalog price by quantity", () => {
   const offer = getConsultingOffers()[0];
@@ -15,6 +16,23 @@ Deno.test("a product-only browser estimate multiplies catalog price by quantity"
   assert(estimate.lines[0].quantity === 3, "requested quantity was lost");
   assert(estimate.lines[0].unitAmountCents === offer.amountCents, "catalog unit price drifted");
   assert(estimate.listSubtotalCents === offer.amountCents * 3, "quantity was not applied");
+});
+
+Deno.test("Flow seats are the first proposal lines and price from the catalog's annual SKUs (G-134)", () => {
+  const offers = getConsultingOffers();
+  const flow = offers.filter((offer) => offer.family === "Flow");
+  assert(flow.length === 3, "Flow Pro, Import and Publish are the three Flow lines");
+  assert(offers.slice(0, 3).every((offer) => offer.family === "Flow"), "Flow is listed first");
+  for (const offer of flow) {
+    assert(offer.unitLabel === "seats", `${offer.id} is priced per seat`);
+    assert(offer.mode === "subscription", `${offer.id} is a subscription`);
+    assert(offer.amountCents === FLOW_ANNUAL_AMOUNT, `${offer.id} price is the catalog annual amount`);
+  }
+  const estimate = buildProposalSnapshot({
+    selectedOffers: [{ id: "flow-pro-annual", quantity: 12 }, { id: "flow-publish-annual", quantity: 12 }],
+  });
+  assert(estimate.listSubtotalCents === FLOW_ANNUAL_AMOUNT * 24, "twelve Pro seats plus twelve Publish seats");
+  assert(estimate.lines.every((line) => line.unitLabel === "seats"), "seat lines keep their unit");
 });
 
 function assert(condition: unknown, message: string) {
