@@ -8,6 +8,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { renderOgCard, type CardOptions } from '../../lib/og/card';
+import { cachedRender, rendererDigest } from '../../lib/og/card-cache';
 import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug, receiptOgSlug, flowPathOgSlug, compareOgSlug, flowElementsOgSlug, domainOgSlug } from '../../data/og';
 import { publishedPaths, publishedCompare } from '../../lib/flow/paths';
 import { publishedElementArticles } from '../../lib/flow/elements';
@@ -217,8 +218,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return [...fromPages, ...fromPosts, ...fromLetters, ...fromProducts, ...fromReceipts, ...fromPaths, ...fromCompare, ...fromElements, ...fromDomains];
 };
 
-export const GET: APIRoute = async ({ props }) => {
-  const jpg = await renderOgCard(props as CardOptions);
+// One digest of the renderer's inputs per build; the cache key adds each card's
+// own options (see card-cache.ts). Every render logs its slug, so the build log
+// is the receipt: a page-only push logs none, a new page logs its own card.
+const RENDERER = rendererDigest();
+
+export const GET: APIRoute = async ({ props, params }) => {
+  const jpg = await cachedRender(props as CardOptions as Record<string, unknown>, (o) => {
+    console.log(`[og] rendering ${params.slug}.jpg`);
+    return renderOgCard(o as unknown as CardOptions);
+  }, { renderer: RENDERER });
   return new Response(new Uint8Array(jpg), {
     headers: {
       'Content-Type': 'image/jpeg',
