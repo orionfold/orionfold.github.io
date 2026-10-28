@@ -3,7 +3,7 @@ category: components
 name: Sources
 anchor: sources
 card: component-sources
-line: "What this document was made from, as History records it: each source, how it was used and when, with a changed source marked."
+line: "What this document was made from, as History records it. It lists each source, how it was used and when, with a changed source marked."
 group: null
 order: 11
 facts: []

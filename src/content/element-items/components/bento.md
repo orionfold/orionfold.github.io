@@ -12,7 +12,7 @@ shared: true
 tint: "#0170f5"
 ---
 
-**Section** groups components under a title. **Hero** holds exactly two, side by side at every width: a chart beside the figures it rests on stays a pair even in a narrow window. **Bento** holds two or more, two across at most, and stacks when the column is narrow.
+**Section** groups components under a title. **Hero** holds exactly two, side by side at every width. A chart beside the figures it rests on stays a pair even in a narrow window. **Bento** holds two or more, two across at most, and stacks when the column is narrow.
 
 ````markdown
 ```flowui

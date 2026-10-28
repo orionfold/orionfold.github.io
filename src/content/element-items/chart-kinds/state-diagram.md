@@ -14,6 +14,6 @@ tint: "#0271f5"
 
 Keep state names distinct from actions and account for endings or reversals.
 
-**Takes:** a list of states and the events that move between them: a document lifecycle, an order status, a subscription.
+**Takes:** a list of states and the events that move between them, such as a document lifecycle, an order status or a subscription.
 
 ![State diagram in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-state-diagram.webp)

@@ -14,7 +14,7 @@ My route to this question has been through documents, analytical systems and AI 
 
 In the late 1990s, at Xerox PARC, I worked on systems for storing and sharing documents across distance. At Daily Mail Group's RMS and AgRisk businesses, my work was in risk analytics and technology. From 2017 until June 2026, I worked across Amazon and AWS, including cloud architecture, innovation, artificial general intelligence and generative-AI products. I describe that route in [the founding story](https://orionfold.com/story/why-i-folded-orionfold/); my [professional history](https://www.linkedin.com/in/manavsehgal/) records the roles.
 
-Across those settings, I became interested in a recurring distinction: information can be available without being ready for the next decision. Documents carry knowledge. Analytical systems organize evidence. Models offer ways to reason and express. Somebody still has to connect the intended outcome to the actual work.
+Across those settings, I became interested in a recurring distinction. Information can be available without being ready for the next decision. Documents carry knowledge. Analytical systems organize evidence. Models offer ways to reason and express. Somebody still has to connect the intended outcome to the actual work.
 
 An analytical result can be exact while the question around it is incomplete. A system can make material accessible while leaving its interpretation to whoever was present when the assumptions were chosen. Process and judgment are part of the work, even when the file contains little trace of them.
 
@@ -38,7 +38,7 @@ This also requires restraint from the product. More generated prose is not neces
 
 ## Where we intend to begin
 
-Our initial customer hypothesis is independent professionals who repeatedly return to research, client or product briefs: consultants, researchers and builders whose work combines changing inputs with accountable judgment.
+Our initial customer hypothesis is independent professionals who repeatedly return to research, client or product briefs. They are consultants, researchers and builders whose work combines changing inputs with accountable judgment.
 
 The common need is more specific than wanting an AI assistant. They have a document worth reopening, a recurring part of its upkeep they can describe, and a reason to inspect the result. A client brief must remain explainable. A research summary must preserve its qualifications. A product recommendation must survive another round of evidence.
 
@@ -46,4 +46,4 @@ That is where I want Flow to earn its place first. Can a person who did not buil
 
 We do not yet have independent customer evidence establishing those outcomes. They are the tests that distinguish a promising personal arrangement from a useful product. Twenty-four starting Living Documents offer places to begin in Flow 1.7, but the important count is how many responsibilities become worth returning to.
 
-For the Research Brief, the arrangement remains small enough to explain: the interview register is an input, the saved definition describes the calculation, and the outputs serve the table and chart. The map below makes those declared relationships visible. It gives the next visit somewhere to start.
+For the Research Brief, the arrangement remains small enough to explain. The interview register is an input, the saved definition describes the calculation, and the outputs serve the table and chart. The map below makes those declared relationships visible. It gives the next visit somewhere to start.

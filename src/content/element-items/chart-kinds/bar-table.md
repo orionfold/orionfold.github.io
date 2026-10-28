@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 Show the measurement basis; a score without its rubric is not a recommendation.
 
-**Takes:** a ranked table of names and one number, when you want the numbers read as a list as well as compared: a leaderboard, a vendor shortlist, a benchmark.
+**Takes:** a ranked table of names and one number, when you want the numbers read as a list as well as compared. That fits a leaderboard, a vendor shortlist or a benchmark.
 
 ![Bar table in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-bar-table.webp)

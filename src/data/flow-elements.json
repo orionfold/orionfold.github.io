@@ -40,7 +40,7 @@
           "name": "Chart",
           "anchor": "chart",
           "card": "component-chart",
-          "line": "A chart drawn in place from a readable body: the chart's type, title, rows and which field goes on which axis.",
+          "line": "A chart drawn in place from a readable body. It takes the chart's type, title, rows and which field goes on which axis.",
           "group": null,
           "tint": "#0070f5"
         },
@@ -80,7 +80,7 @@
           "name": "Callout",
           "anchor": "callout",
           "card": "component-callout",
-          "line": "A note or a warning in the Reader's own style: a bar, a mark and the word, so the kind never rests on colour alone.",
+          "line": "A note or a warning in the Reader's own style. It has a bar, a mark and the word, so the kind never rests on colour alone.",
           "group": null,
           "tint": "#0070f5"
         },
@@ -96,7 +96,7 @@
           "name": "Sources",
           "anchor": "sources",
           "card": "component-sources",
-          "line": "What this document was made from, as History records it: each source, how it was used and when, with a changed source marked.",
+          "line": "What this document was made from, as History records it. It lists each source, how it was used and when, with a changed source marked.",
           "group": null,
           "tint": "#0070f5"
         },
@@ -112,7 +112,7 @@
           "name": "Hero",
           "anchor": "hero",
           "card": "component-hero",
-          "line": "Hero holds exactly two, side by side at every width: a chart beside the figures it rests on stays a pair even in a narrow window.",
+          "line": "Hero holds exactly two, side by side at every width. A chart beside the figures it rests on stays a pair even in a narrow window.",
           "group": null,
           "tint": "#0170f5"
         },
@@ -308,7 +308,7 @@
           "name": "Path Card",
           "anchor": "path-card",
           "card": "skill-path-card",
-          "line": "A feature on one card: who it is for, the steps, the path, proof.",
+          "line": "A feature on one card, with who it is for, the steps, the path and the proof.",
           "group": null,
           "tint": "#216b40"
         },

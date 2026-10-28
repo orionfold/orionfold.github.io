@@ -5,7 +5,7 @@ persona: Creators
 drafted: "2026-09-29"
 build: "Orionfold Flow 2.0.3 dev builds 0249-10 (main at 85a83797 plus 0249 round 3, steps 1–2, 11:59–12:17 PDT), 0249-12 (the #814 fix, the book saved 16:06 PDT) and 0249-14 (main at 6376da4d, step 3 shots 17:06–17:07 PDT), macOS 26.6, MacBook Pro M3 Max 36 GB, window 1512×949"
 data: The Harbour Letter, its writer Ines and every figure in it are fictional. The two earlier issues, the notes and the harbour picture were generated for this walk; no real newsletter or reader was used.
-dek: "A spoken first draft in, a finished issue and a book of the year out: the draft filled out from your own notes, the picture described for readers who cannot see it, and three issues bound into an EPUB with a cover. About 18 seconds of model time, on the laptop, for $0.00."
+dek: "A spoken first draft in, a finished issue and a book of the year out. The draft is filled out from your own notes, the picture is described for readers who cannot see it, and three issues are bound into an EPUB with a cover. About 18 seconds of model time, on the laptop, for $0.00."
 hero: ../../assets/flow/paths/weekly-issue/01-home-writing.webp
 heroAlt: "Home: The weekly issue, then the book, under Writing"
 source: orionfold-flow articles/08-weekly-issue/ARTICLE.md
@@ -46,11 +46,11 @@ receipt:
 
 ## The answer first
 
-A newsletter usually lives on the platform that sends it. This path keeps the writing on your side: each issue is a Markdown file, and the year's issues become one book.
+A newsletter usually lives on the platform that sends it. This path keeps the writing on your side. Each issue is a Markdown file, and the year's issues become one book.
 
 1. **Speak the draft, then fill it out from your notes.** A 114-word spoken draft became a 267-word issue with *Expand with Sources*. It read one notes file, added seven figures, cited the notes for each one, and waited for approval. Every figure matched the notes.
 2. **Every picture gets a description.** *Describe Picture* wrote the harbour picture's alt text in about 3.5 seconds, as a change you approve.
-3. **The folder becomes a book.** *Publish Folder* turned the three issues into an EPUB: a cover taken from the issue's own picture, a title page, a contents page and one chapter per issue.
+3. **The folder becomes a book.** *Publish Folder* turned the three issues into an EPUB. It has a cover taken from the issue's own picture, a title page, a contents page and one chapter per issue.
 
 ## The job
 
@@ -58,7 +58,7 @@ A newsletter usually lives on the platform that sends it. This path keeps the wr
 
 **The usual way:** write in the newsletter platform's editor, which keeps the archive on its servers, and later copy the issues out one by one into a book tool. We did not time the usual way, so we make no claim about it.
 
-**The Flow way:** the path *The weekly issue, then the book* in three steps: dictate the issue and draft it with Expand, let Describe Picture write the alt text, collect the issues into an EPUB.
+**The Flow way:** the path *The weekly issue, then the book* in three steps. Dictate the issue and draft it with Expand, let Describe Picture write the alt text, collect the issues into an EPUB.
 
 ## Step one: dictate the issue, then fill it out with Expand
 
@@ -66,19 +66,19 @@ The path's own copy holds an `issues/` folder with two earlier issues, a notes f
 
 ![The path's guide, in your own copy](../../assets/flow/paths/weekly-issue/02-your-copy.webp)
 
-*New Document* in `issues/` opened Issue 03 in the editor. The first draft was spoken with **Dictation** (⇧⌘D): four short paragraphs and a sign-off, 114 words.
+*New Document* in `issues/` opened Issue 03 in the editor. The first draft was spoken with **Dictation** (⇧⌘D). It was four short paragraphs and a sign-off, 114 words.
 
 ![The spoken first draft, 114 words](../../assets/flow/paths/weekly-issue/03-dictated-draft.webp)
 
-**Agency ▸ Expand with Sources** searched the folders for material on the draft's subject and found the notes file. The run line named the model: *Flow Runtime | gemma-4-e4b-it-4bit*, an open model running on the laptop.
+**Agency ▸ Expand with Sources** searched the folders for material on the draft's subject and found the notes file. The run line named the model, *Flow Runtime | gemma-4-e4b-it-4bit*, an open model running on the laptop.
 
 ![Expand with Sources, searching your folders on this Mac](../../assets/flow/paths/weekly-issue/04-expand-searching.webp)
 
-About 14 seconds later the result came back as a proposal, not an edit: 145 words added or removed from a 114-word original, highlighted in the page and listed in **Review Changes**, with the notes file cited under *Sources for this section*.
+About 14 seconds later the result came back as a proposal, not an edit. It was 145 words added or removed from a 114-word original, highlighted in the page and listed in **Review Changes**, with the notes file cited under *Sources for this section*.
 
 ![The proposal, waiting in Review Changes](../../assets/flow/paths/weekly-issue/05-expand-proposal.webp)
 
-**Exact changes** shows what the model added: the 40 readers and 11 replies in the first week, the three readers it helped, 9 drafts since August at 3.4 replies each, 2 corrections, 0 unsubscribes, and the two errors fixed within the hour. Each figure carries a footnote to the notes file, and each one matches it. The draft's own sentences stayed as spoken.
+**Exact changes** shows what the model added. It added the 40 readers and 11 replies in the first week, the three readers it helped, 9 drafts since August at 3.4 replies each, 2 corrections, 0 unsubscribes, and the two errors fixed within the hour. Each figure carries a footnote to the notes file, and each one matches it. The draft's own sentences stayed as spoken.
 
 ![The exact change, every added figure footnoted to the notes](../../assets/flow/paths/weekly-issue/06-exact-changes.webp)
 
@@ -92,11 +92,11 @@ A picture dropped into Markdown has no description. Readers using a screen reade
 
 ![Describe Picture: the proposed alt text, as an exact change](../../assets/flow/paths/weekly-issue/08-describe-picture.webp)
 
-We approved it. The issue was finished: 254 words, one picture with its description, every added figure sourced.
+We approved it. The issue was finished. It had 254 words, one picture with its description, every added figure sourced.
 
 ## Step three: collect the issues into an EPUB
 
-With the `issues/` folder selected, **File ▸ Publish Folder…** opened the Publish panel on the folder itself: *3 documents · 571 words · 8 files*. We chose **EPUB** and typed the book's title, *A Year of the Harbour Letter*. The cover came from the harbour picture. The preview on the left is the book as it will read: the cover, a dated title page, then the contents with one chapter per issue.
+With the `issues/` folder selected, **File ▸ Publish Folder…** opened the Publish panel on the folder itself. It read *3 documents · 571 words · 8 files*. We chose **EPUB** and typed the book's title, *A Year of the Harbour Letter*. The cover came from the harbour picture. The preview on the left is the book as it will read. It shows the cover, a dated title page, then the contents with one chapter per issue.
 
 ![Publish ▸ EPUB: title, cover and the book's preview](../../assets/flow/paths/weekly-issue/09-epub-title-cover-preview.webp)
 
@@ -110,8 +110,8 @@ The panel says it plainly: *"The preview opens in the document area. Nothing is 
 
 The deliverable is two things that last.
 
-- **The issues, as files.** `issues/Issue 01.md`, `Issue 02.md` and `Issue 03.md`: plain Markdown that any editor opens, the picture in `pictures/`, and beside Issue 03 the record of what the model did (`.flow-receipts`) and its review state (`.flow-review`).
-- **The book.** `A Year of the Harbour Letter.epub`, 120 KB. Inside: the cover, a title page, a contents page, three chapters named for the issues' own headings (*What a quiet month teaches*, *Tools I stopped using*, *Writing in the open*), the harbour picture with its description, and a colophon. It opens in Apple Books and any other EPUB reader.
+- **The issues, as files.** `issues/Issue 01.md`, `Issue 02.md` and `Issue 03.md` are plain Markdown that any editor opens, with the picture in `pictures/`, and beside Issue 03 the record of what the model did (`.flow-receipts`) and its review state (`.flow-review`).
+- **The book.** `A Year of the Harbour Letter.epub`, 120 KB. Inside are the cover, a title page, a contents page, three chapters named for the issues' own headings (*What a quiet month teaches*, *Tools I stopped using*, *Writing in the open*), the harbour picture with its description, and a colophon. It opens in Apple Books and any other EPUB reader.
 
 ## What it costs, measured
 
@@ -124,7 +124,7 @@ The deliverable is two things that last.
 | **Same tokens on Claude Opus 5.5** ($4 / $20 per M) | | | **$0.026** |
 | **Same tokens on Claude Sonnet 5** ($2 / $10 per M) | | | **$0.013** |
 
-The honest reading: at a few cents an issue, cost is not the reason to write this way. The reasons are that the issues are files you keep whatever platform you send them with, that the model runs on your laptop, and that nothing it writes lands until you have read it.
+The honest reading is that at a few cents an issue, cost is not the reason to write this way. The reasons are that the issues are files you keep whatever platform you send them with, that the model runs on your laptop, and that nothing it writes lands until you have read it.
 
 ## FAQ
 

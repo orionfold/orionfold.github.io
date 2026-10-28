@@ -18,4 +18,4 @@ tint: "#ff4461"
 
 ![Review Changes with a form: Decision · How to cut the chase, three ways weighed against about 96 hours a quarter on email; options Keep email, Use the client portal, Buy Receiptly; Reason and Decided by fields; Record decision](../../../assets/flow/elements/agency/10-form.webp)
 
-On the options paragraph, Form drafted a decision form: the three options as choices, a **Reason**, **Decided by** and **Record decision**. Review spells out what it is: *Its one decision asks you before it records anything. It fetches nothing and opens nothing.*
+On the options paragraph, Form drafted a decision form. It holds the three options as choices, a **Reason**, **Decided by** and **Record decision**. Review spells out what it is: *Its one decision asks you before it records anything. It fetches nothing and opens nothing.*

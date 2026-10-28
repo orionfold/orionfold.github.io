@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 The picture records an intended arrangement; it neither provisions infrastructure nor proves a privacy boundary.
 
-**Takes:** a list of services, the stores they use and the edges between them, grouped by where they run: a deployment diagram.
+**Takes:** a list of services, the stores they use and the edges between them, grouped by where they run. That is a deployment diagram.
 
 ![Architecture diagram in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-architecture-diagram.webp)

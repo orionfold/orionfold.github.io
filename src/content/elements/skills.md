@@ -19,7 +19,7 @@ draft: false
 
 ## What Flow does
 
-**Select a paragraph, press a skill, and Flow draws its case: the brief, the table, the timeline or the figure.**
+**Select a paragraph, press a skill, and Flow draws its case as the brief, the table, the timeline or the figure.**
 Orionfold Flow ships nineteen skills, listed in Elements (⌘5) under **Skills**. Each turns one kind of passage into the form that reader needs. A discussion of choices becomes a decision brief with a decision tree. A list of initiatives becomes a value-and-effort map. Dated work becomes a roadmap, and a layered system becomes an isometric figure you can press. A recurring piece of work becomes a path from files in to deliverables out. Before anything runs, the skill's sheet counts whether your text has what the method needs, such as separate points, numbers or a date, and recommends **Cancel** when it doesn't. The result is placed right after the paragraph you selected and waits in **Review Changes**. What a skill draws is saved in the document as text, so it opens anywhere and prints when you publish. Ideas can choose the skill for you, section by section.
 
 ## The answer first
@@ -28,17 +28,17 @@ Orionfold Flow ships nineteen skills, listed in Elements (⌘5) under **Skills**
 2. **Press ⌘5 and press the skill's card under Skills.** Or let **Ideas** (⌘3) suggest one per section and press the idea.
 3. **Read the sheet.** It shows what the skill will read, its steps, and a check of what your text has: *46 words to read · 5 numbers to work with*. Press **Run Skill** when it says *Ready to run*.
 4. **Review the result** in **Review Changes**. A figure that builds in steps has **Previous**, **Play** and **Next** under it. Keep it, or discard it.
-5. **Open the Flow Guide's Skills Gallery** to see every skill's passage and what it drew, grouped by the question your text asks: Decide, Plan, Explain, Present.
+5. **Open the Flow Guide's Skills Gallery** to see every skill's passage and what it drew, grouped by the question your text asks. The groups are Decide, Plan, Explain, Present.
 
 ## The job
 
-A plan that says "three options, here are the costs" asks the reader to build the comparison in their head. A paragraph about who hands what to whom asks them to draw the flowchart. Most people know the form their argument wants: a table, a timeline, a map. Few have the time to draw it in another tool and keep it in step with the text. A skill draws it from the text you already wrote, in a form Flow keeps as part of the document.
+A plan that says "three options, here are the costs" asks the reader to build the comparison in their head. A paragraph about who hands what to whom asks them to draw the flowchart. Most people know the form their argument wants, such as a table, a timeline or a map. Few have the time to draw it in another tool and keep it in step with the text. A skill draws it from the text you already wrote, in a form Flow keeps as part of the document.
 
 ## A skill, run on a real section
 
 ![The Field-Notes Diagram sheet: Your selection · 46 words, then the skill, then A figure, in Review Changes; six steps from Find the numbers and the point to Title it with the point; Ready to run, 46 words to read, 5 numbers to work with; Cost included in a subscription you already pay for; Run Skill](../../assets/flow/elements/skills/02-skill-sheet.webp)
 
-On *Harbor Close Plan*, Ideas suggested **Field-Notes Diagram** for the section *Where the time goes*. Pressing the idea selected the section and opened the skill's sheet: its six steps, and a check that found *5 numbers to work with*. Every skill opens the same sheet when you press its card yourself.
+On *Harbor Close Plan*, Ideas suggested **Field-Notes Diagram** for the section *Where the time goes*. Pressing the idea selected the section and opened the skill's sheet. It showed its six steps, and a check that found *5 numbers to work with*. Every skill opens the same sheet when you press its card yourself.
 
 ![Review Changes with the field-notes figure at step 2 of 2: Reconciliation 140 hours, Chasing 96 hours highlighted in teal, Drafting 48 hours, Review 28 hours, and the caption CHASING RECEIPTS: 96 OF 312 HOURS](../../assets/flow/elements/skills/03-review.webp)
 
@@ -46,7 +46,7 @@ The figure arrived in **Review Changes** about 50 seconds later, after the secti
 
 ![The plan in Source view, dark mode: the figure is a fenced block of text — figure skill: field-notes-diagram, then the SVG with its title, description and styles](../../assets/flow/elements/skills/04-figure-as-text-dark.webp)
 
-Kept, the figure is a block of text in the Markdown file: a `figure` fence holding the drawing, with its title and a description a screen reader can say. It travels with the document and redraws in dark mode.
+Kept, the figure is a block of text in the Markdown file. It is a `figure` fence holding the drawing, with its title and a description a screen reader can say. It travels with the document and redraws in dark mode.
 
 ![Workflow Path's last step in dark mode: CSV, PDF and XLSX files into Reconcile, the ledger with mismatches flagged, then Send to a PDF summary and an updated ledger](../../assets/flow/elements/skills/05-workflow-path-dark.webp)
 

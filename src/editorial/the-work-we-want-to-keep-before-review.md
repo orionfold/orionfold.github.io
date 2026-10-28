@@ -22,7 +22,7 @@ A recurring Job is a further choice. Night Shift can run supported, authored wor
 
 Different actions also have different moments of approval. A daytime Agency transformation can present an exact proposal before **Approve & Save**. A manual Jobs run can apply reviewable changes that await **Keep** or **Revert** afterward. Permitted Night work has its own standing agreement. The owner needs to understand which arrangement they are choosing.
 
-This is more useful than a general promise that an assistant “keeps you in control.” Control has to attach to an actual decision: what may be read, what may change, when work may proceed and what happens if it fails. A missing input should remain a visible gap. A failed local attempt should not quietly become permission to send the material elsewhere.
+This is more useful than a general promise that an assistant “keeps you in control.” Control has to attach to an actual decision. It decides what may be read, what may change, when work may proceed and what happens if it fails. A missing input should remain a visible gap. A failed local attempt should not quietly become permission to send the material elsewhere.
 
 ## The decision after the run
 

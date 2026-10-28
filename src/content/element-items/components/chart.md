@@ -3,7 +3,7 @@ category: components
 name: Chart
 anchor: chart
 card: component-chart
-line: "A chart drawn in place from a readable body: the chart's type, title, rows and which field goes on which axis."
+line: "A chart drawn in place from a readable body. It takes the chart's type, title, rows and which field goes on which axis."
 group: null
 order: 4
 facts: []

@@ -4,11 +4,11 @@ The research count needs arithmetic. Another Job might need to compare passages,
 
 Personal computers are becoming more capable places for this work. Apple's recent hardware and model research point toward richer applications that combine device resources with other capabilities when needed. They do not eliminate the constraints of memory, energy, availability or review. A useful AI workshop still has to leave room for the person and the rest of their computer.
 
-In our own September model curation, a smaller candidate handled a bounded daytime document task better than an alternative we tested. It did not pass the separate Night baseline. A larger candidate did. That distinction mattered more than a single ranking: a model can earn one assignment without earning every assignment.
+In our own September model curation, a smaller candidate handled a bounded daytime document task better than an alternative we tested. It did not pass the separate Night baseline. A larger candidate did. That distinction mattered more than a single ranking. A model can earn one assignment without earning every assignment.
 
 We also observed that a larger thinking allowance could add time without consistently improving the result. These were small development studies on one Mac, not evidence of typical customer performance. The [research notes](/essays/the-work-we-want-to-keep/notes/) retain the exact models, test scope, resource measurements and their limits, alongside the external research informing this essay.
 
-The product principle is simple: choose computation for the work. A deterministic operation, a qualified local model or a stronger hosted model may be appropriate. A person should be able to understand the choice and the boundary it crosses. Suitable local inference avoids a hosted token charge, but hardware, electricity and human attention still count.
+The product principle is simple. Choose computation for the work. A deterministic operation, a qualified local model or a stronger hosted model may be appropriate. A person should be able to understand the choice and the boundary it crosses. Suitable local inference avoids a hosted token charge, but hardware, electricity and human attention still count.
 
 Flow begins on the Mac, with readable files the owner controls. Configured daytime actions can use metered OpenRouter, OpenAI or Anthropic routes when the person chooses to run them. Night Shift model work stays local. Local inference does not make every activity offline, and locality alone does not establish safety or correctness.
 
@@ -20,7 +20,7 @@ The first successful run is encouraging. The next visit is more revealing.
 
 Another interview has arrived. You changed a classification. You left the finding table unresolved because it needed thought. Ordinary life intervened. Can you now find the work, understand the changes and continue without rebuilding the assignment?
 
-For the Research Brief, the meaningful test reaches beyond refreshing two numbers. We would need to observe the full cycle: setting up the Job, returning to the context, updating the inputs, inspecting the result and correcting mistakes. The question is whether that whole arrangement helps somebody produce work they are willing to stand behind.
+For the Research Brief, the meaningful test reaches beyond refreshing two numbers. We would need to observe the full cycle. That means setting up the Job, returning to the context, updating the inputs, inspecting the result and correcting mistakes. The question is whether that whole arrangement helps somebody produce work they are willing to stand behind.
 
 Sometimes the right result is no change. Sometimes an input is unavailable and the honest result is an explanation. Sometimes the Job runs perfectly and the owner discovers that it answers a question no longer worth asking. A system that generates something impressive every time can make these ordinary outcomes harder to recognize.
 
@@ -36,7 +36,7 @@ Orionfold's opportunity is to make these arrangements dependable and understanda
 
 The hypothesis is that task-specific curation, document-aware execution and close attention to repeated use can improve together. Better Jobs make useful work easier to begin. Better review makes mistakes easier to diagnose. Those diagnoses can guide better defaults and more focused evaluations. Each part matters because it serves an actual responsibility somebody wants to carry forward.
 
-Whether this becomes a lasting advantage for Orionfold depends on people whose work and patience differ from mine. The first evidence would be modest: someone understands the arrangement, gets a result worth keeping and finds a reason to return. Repeated usefulness would tell us more than a spectacular first demonstration.
+Whether this becomes a lasting advantage for Orionfold depends on people whose work and patience differ from mine. The first evidence would be modest. Someone understands the arrangement, gets a result worth keeping and finds a reason to return. Repeated usefulness would tell us more than a spectacular first demonstration.
 
 ## Own the page, keep the possibility
 
@@ -44,7 +44,7 @@ Markdown is a quiet foundation for this ambition. Readable text can hold an argu
 
 Another Markdown editor will not necessarily execute Flow's Jobs or reproduce its views. Ownership of the file and portability of execution are different promises. The important starting point is that leaving the application does not require surrendering the work itself.
 
-A model can be replaced. A routine can be retired. An application can become unsuitable. The work should still offer its owner somewhere to stand: readable material, retained reasons, supporting files and a choice about what happens next.
+A model can be replaced. A routine can be retired. An application can become unsuitable. The work should still offer its owner somewhere to stand. That means readable material, retained reasons, supporting files and a choice about what happens next.
 
 The larger possibility is a working life with more continuity. Research can inform writing without another long reconstruction. A product decision can retain its reasons while the builder returns to making the product. A recurring responsibility can remain legible while its owner turns to business, family, curiosity or rest.
 

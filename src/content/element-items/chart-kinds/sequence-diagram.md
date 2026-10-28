@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 Name the boundary and failure path; the diagram is a scenario, not a trace captured from a live system.
 
-**Takes:** prose or a list describing who sends what to whom, in order: an integration, a support escalation, an approval exchange between people or systems.
+**Takes:** prose or a list describing who sends what to whom, in order, such as an integration, a support escalation or an approval exchange between people or systems.
 
 ![Sequence diagram in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-sequence-diagram.webp)

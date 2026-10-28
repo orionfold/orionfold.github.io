@@ -54,9 +54,9 @@ A launch post is short, and it is where a made-up number does the most damage. F
 
 ## The job
 
-Fieldstone Bikes (fictional) is launching a Q4 campaign: grow e-bike commuter trials in Denver and Salt Lake City by 25% between October 1 and December 15. The marketer has a one-page brief in Word, last quarter's channel results in Excel, and a note to lead with the parking math. The post has to go out in English and Spanish.
+Fieldstone Bikes (fictional) is launching a Q4 campaign. The goal is to grow e-bike commuter trials in Denver and Salt Lake City by 25% between October 1 and December 15. The marketer has a one-page brief in Word, last quarter's channel results in Excel, and a note to lead with the parking math. The post has to go out in English and Spanish.
 
-The usual way is familiar: copy figures from the workbook into the draft, hope none are transposed, and then send the English to a translator and wait. Proof is a separate chore, done after the writing, if at all. *We did not time the usual way. Any figure for it here would be our assumption.*
+The usual way is familiar. Copy figures from the workbook into the draft, hope none are transposed, and then send the English to a translator and wait. Proof is a separate chore, done after the writing, if at all. *We did not time the usual way. Any figure for it here would be our assumption.*
 
 ## Step one: open the path, bring the inputs in
 
@@ -64,11 +64,11 @@ Home ▸ **Campaign with proof** ▸ Open makes the marketer a copy of the path'
 
 ![Your copy of the path, opened from Home](../../assets/flow/paths/campaign-with-proof/02-your-copy.webp)
 
-File ▸ Import read `Campaign Brief — Fieldstone Q4.docx` as 4 headings, 2 paragraphs and 5 list items. It said plainly what it left out: underline, colour and highlight in 4 passages. The preview shows the document before anything is written, and *Adds to* names the folder it will land in.
+File ▸ Import read `Campaign Brief — Fieldstone Q4.docx` as 4 headings, 2 paragraphs and 5 list items. It said plainly what it left out. Underline, colour and highlight were dropped in 4 passages. The preview shows the document before anything is written, and *Adds to* names the folder it will land in.
 
 ![Importing the campaign brief: what came in, what was left out, where it goes](../../assets/flow/paths/campaign-with-proof/03-import-brief.webp)
 
-The Q3 results workbook came in as 1 sheet, 1 table, 4 rows: the four channels with trials, spend, cost per trial and conversion.
+The Q3 results workbook came in as 1 sheet, 1 table, 4 rows. The rows are the four channels, with trials, spend, cost per trial and conversion.
 
 ![The Q3 channel results, imported as a table](../../assets/flow/paths/campaign-with-proof/04-import-results.webp)
 
@@ -80,11 +80,11 @@ The marketer's notes link to Wikipedia's *Electric bicycle* article for backgrou
 
 We ran Expand with Sources twice. What differed is worth knowing.
 
-**By hand** (Agency ▸ Expand with Sources on the whole document), the small on-device model had to pick its own sources. The draft was weak: it misread the survey, wrote one citation in a broken form, and replaced the Spanish placeholder section. We discarded it with one click. Nothing had touched the file.
+**By hand** (Agency ▸ Expand with Sources on the whole document), the small on-device model had to pick its own sources. The draft was weak. It misread the survey, wrote one citation in a broken form, and replaced the Spanish placeholder section. We discarded it with one click. Nothing had touched the file.
 
 ![The by-hand draft, before we discarded it](../../assets/flow/paths/campaign-with-proof/07-by-hand-proposal.webp)
 
-**As a Job**, the document names its section and its two sources in its own front matter. Pressing **Run** in the context row sends the draft to the larger local model with exactly those sources. It took 48 seconds. The draft went from 8 words to 372, with a footnote after each claim: `[^flow-…]` markers that point at the brief and the results file.
+**As a Job**, the document names its section and its two sources in its own front matter. Pressing **Run** in the context row sends the draft to the larger local model with exactly those sources. It took 48 seconds. The draft went from 8 words to 372, with a footnote after each claim. The `[^flow-…]` markers point at the brief and the results file.
 
 ![The Job's draft waiting in Review](../../assets/flow/paths/campaign-with-proof/06-job-draft-review.webp)
 
@@ -92,7 +92,7 @@ We ran Expand with Sources twice. What differed is worth knowing.
 
 ![Exact changes: the added lines, each with its footnote](../../assets/flow/paths/campaign-with-proof/08-exact-changes.webp)
 
-We checked every figure in the draft against the two imports: the four channels' spend ($38,000, $24,500, $9,000, $12,000), trials (612, 455, 301, 118), cost per trial ($62.1, $53.8, $29.9, $101.7) and conversion (18.4%, 22.9%, 31.2%, 14.4%), the survey's 1,204 riders, 71% and 60 days, $210 parking, the 25% goal, October 1 to December 15, the 3–10 mile ride and "eleven months". All 25 hold. Then we ticked *I accept changes* and approved it. Flow recorded three checks on the approval: no unsupported citations, the link list observed, and a human review.
+We checked every figure in the draft against the two imports. The figures are the four channels' spend ($38,000, $24,500, $9,000, $12,000), trials (612, 455, 301, 118), cost per trial ($62.1, $53.8, $29.9, $101.7) and conversion (18.4%, 22.9%, 31.2%, 14.4%), the survey's 1,204 riders, 71% and 60 days, $210 parking, the 25% goal, October 1 to December 15, the 3–10 mile ride and "eleven months". All 25 hold. Then we ticked *I accept changes* and approved it. Flow recorded three checks on the approval, with no unsupported citations, the link list observed, and a human review.
 
 ![The approved post in Reader, footnotes numbered](../../assets/flow/paths/campaign-with-proof/09-approved-reader.webp)
 
@@ -104,7 +104,7 @@ The notes document has a *Spanish version* section. We pasted the approved Engli
 
 ![Translating the selected copy, on this Mac](../../assets/flow/paths/campaign-with-proof/10-translating.webp)
 
-Fifteen seconds later the proposal was in Review. It changed only the selected lines: the 32 lines above were untouched, English included. Every figure came through (the only digits that moved are "Q3/Q4", written out as *tercer/cuarto trimestre*), and all 12 footnotes survived, so the Spanish cites the same sources as the English.
+Fifteen seconds later the proposal was in Review. It changed only the selected lines. The 32 lines above were untouched, English included. Every figure came through (the only digits that moved are "Q3/Q4", written out as *tercer/cuarto trimestre*), and all 12 footnotes survived, so the Spanish cites the same sources as the English.
 
 ![Review of the translation: English out, Spanish in, footnotes kept](../../assets/flow/paths/campaign-with-proof/11-translation-review.webp)
 
@@ -112,11 +112,11 @@ We approved it the same way. The post now holds both languages, 858 words, with 
 
 ## The deliverable
 
-File ▸ Publish writes the formats from the same Markdown. **Word** first: the preview opens as a tab, and *Save Word File…* wrote an 8.5 KB `.docx`. It holds both languages, with the citations as Word footnotes (the first mention of each source is a real footnote, and later mentions carry the same number), and no raw markers anywhere.
+File ▸ Publish writes the formats from the same Markdown. **Word** first. The preview opens as a tab, and *Save Word File…* wrote an 8.5 KB `.docx`. It holds both languages, with the citations as Word footnotes (the first mention of each source is a real footnote, and later mentions carry the same number), and no raw markers anywhere.
 
 ![The Word preview: footnote numbers, not markers](../../assets/flow/paths/campaign-with-proof/12-word-preview.webp)
 
-**GitHub Pages** next. *Show preview* renders the web page in the Report theme with a sidebar, footnotes linked. Publishing needs a repository name, and we did not publish: this is a preview, not a live site.
+**GitHub Pages** next. *Show preview* renders the web page in the Report theme with a sidebar, footnotes linked. Publishing needs a repository name, and we did not publish. This is a preview, not a live site.
 
 ![The web page preview; nothing was published](../../assets/flow/paths/campaign-with-proof/13-pages-preview.webp)
 
@@ -131,15 +131,15 @@ File ▸ Publish writes the formats from the same Markdown. **Word** first: the 
 | **Same tokens on Claude Opus 5.5** ($4 / $20 per M) | | 4,354 / 1,631 | **$0.050** |
 | **Same tokens on Claude Sonnet 5** ($2 / $10 per M) | | | **$0.025** |
 
-The honest reading: the open model saved a few cents. That is not why a marketer runs it locally. The brief is an unreleased campaign plan, and it never left the laptop. Re-runs are free, so a weak draft costs one click to discard, which is how we used the by-hand attempt.
+The honest reading is that the open model saved a few cents. That is not why a marketer runs it locally. The brief is an unreleased campaign plan, and it never left the laptop. Re-runs are free, so a weak draft costs one click to discard, which is how we used the by-hand attempt.
 
 ## FAQ
 
-**Does Flow invent the numbers?** It drafts from the files you name, and every figure carries a footnote to one of them. You approve the exact words, and the check that matters is still yours: we compared every figure against the imports, and they held. The one uncited sentence is the kind of line a review should catch.
+**Does Flow invent the numbers?** It drafts from the files you name, and every figure carries a footnote to one of them. You approve the exact words, and the check that matters is still yours. We compared every figure against the imports, and they held. The one uncited sentence is the kind of line a review should catch.
 
 **Why run it as a Job instead of by hand?** A Job names its sources, so the draft comes from those files and not from whatever the model picks. In our walk the Job's draft was the one worth keeping.
 
-**Is the translation good enough to ship?** It was faithful: the figures and footnotes all came through, and the Spanish reads naturally. A native speaker should still review launch copy. For example, it kept "1,204" where Spanish style writes "1.204".
+**Is the translation good enough to ship?** It was faithful. The figures and footnotes all came through, and the Spanish reads naturally. A native speaker should still review launch copy. For example, it kept "1,204" where Spanish style writes "1.204".
 
 **Can I use a cloud model?** Yes. Flow names the model and the estimated price before a hosted run. For this post that would have been two to five cents.
 

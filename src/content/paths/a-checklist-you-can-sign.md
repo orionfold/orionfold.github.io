@@ -42,7 +42,7 @@ startInstructions: In Flow, open a copy of the Flow Guide’s Client Brief works
 ## What Flow does
 
 **A living document can now ask for a signature, and keep it.**
-In Orionfold Flow a document can carry an acceptance checklist drawn as a card: the items to tick, who accepts, an optional note, and one **Sign off** button. Before anything is written Flow shows a sheet that lists exactly what it will record, and on **Sign Off** it writes one signed record beside the document, with who signed, when, and which items were ticked. The document's text does not change, History lists the signature, and reopening the document shows the card signed with its ticks. Edit the checklist afterwards and the card asks for a new signature; the old record stays. **Agency ▸ Sign-off** drafts a checklist from any text you select, arriving in Review Changes like every other change, and the card's **⊟** opens the component editor, where you add items and fields without touching the text. Publish prints the card as the reader saw it, ticks and signature included.
+In Orionfold Flow a document can carry an acceptance checklist drawn as a card, with the items to tick, who accepts, an optional note, and one **Sign off** button. Before anything is written Flow shows a sheet that lists exactly what it will record, and on **Sign Off** it writes one signed record beside the document, with who signed, when, and which items were ticked. The document's text does not change, History lists the signature, and reopening the document shows the card signed with its ticks. Edit the checklist afterwards and the card asks for a new signature; the old record stays. **Agency ▸ Sign-off** drafts a checklist from any text you select, arriving in Review Changes like every other change, and the card's **⊟** opens the component editor, where you add items and fields without touching the text. Publish prints the card as the reader saw it, ticks and signature included.
 
 ## The answer first
 
@@ -54,13 +54,13 @@ In Orionfold Flow a document can carry an acceptance checklist drawn as a card: 
 
 ## The job
 
-A consultant sends Harbour Analytics a brief every month, and every month the acceptance lives somewhere else: an email that says "looks good", a thread, a note in a tracker. When a figure is questioned in November nobody can say which version of September's brief was accepted, or what exactly was agreed to. The Guide's *Client Brief* now ends with an Acceptance section: a card listing the four things the brief delivers. The walk signed that card, drafted a second one from the brief's own *Next month* paragraph, edited it, and looked at what History and Publish make of the result.
+A consultant sends Harbour Analytics a brief every month, and every month the acceptance lives somewhere else. It lives in an email that says "looks good", a thread, a note in a tracker. When a figure is questioned in November nobody can say which version of September's brief was accepted, or what exactly was agreed to. The Guide's *Client Brief* now ends with an Acceptance section. It is a card listing the four things the brief delivers. The walk signed that card, drafted a second one from the brief's own *Next month* paragraph, edited it, and looked at what History and Publish make of the result.
 
 ## Tick, type, sign
 
 ![The card with all four items ticked and Manav Sehgal typed into Accepted by, the Sign off button below](../../assets/flow/paths/a-checklist-you-can-sign/02-ticked.webp)
 
-The four boxes tick on a click and untick on a second. The name goes into **Accepted by**; the note is optional. Nothing is written yet: the ticks and the name are state the page holds, not text in the document.
+The four boxes tick on a click and untick on a second. The name goes into **Accepted by**; the note is optional. Nothing is written yet. The ticks and the name are state the page holds, not text in the document.
 
 ![The sheet: Sign off this checklist? Flow records who signed, when, each item with its tick and what you typed, beside Client Brief; the four items ticked, Accepted by Manav Sehgal, Note,, the sentence Signed off by Manav Sehgal on October 20, 2026 at 9:52 AM, 4 of 4 items; Cancel and Sign Off](../../assets/flow/paths/a-checklist-you-can-sign/03-the-sheet.webp)
 
@@ -68,17 +68,17 @@ The four boxes tick on a click and untick on a second. The name goes into **Acce
 
 ![The card after Sign Off: the ticks held, Accepted by Manav Sehgal, and the line Signed off by Manav Sehgal on October 20, 2026, 4 of 4 items where the button was](../../assets/flow/paths/a-checklist-you-can-sign/04-signed.webp)
 
-After **Sign Off** the card draws signed: the ticks held, the name, the signed line, no button. Beside the document Flow wrote one record with the same facts. The brief's word count did not move.
+After **Sign Off** the card draws signed. It shows the ticks held, the name, the signed line, and no button. Beside the document Flow wrote one record with the same facts. The brief's word count did not move.
 
 ## Draft one from the brief's own words
 
 ![Review Changes with the proposal: a card titled Review and Acceptance with three items, the line Item 3 has no label, two fields and Sign off; the Workbench says what the change does and does not do](../../assets/flow/paths/a-checklist-you-can-sign/05-draft-in-review.webp)
 
-The brief's *Next month* paragraph lists what the next refresh delivers. Selected in the Editor, **Agency ▸ Sign-off** turned it into a card in a few seconds on the Mac's own model, and the proposal landed in **Review Changes** like any other change, with a sentence saying what it does: it adds a checklist after the selected text, draws one card, and its one decision asks before it records anything. The model wrote one item with a colon in it, and the card says so in a line of its own rather than guessing; until a drafted item with a colon is read as a sentence, type it again in the component editor or put it in quotes.
+The brief's *Next month* paragraph lists what the next refresh delivers. Selected in the Editor, **Agency ▸ Sign-off** turned it into a card in a few seconds on the Mac's own model, and the proposal landed in **Review Changes** like any other change, with a sentence saying what it does. It adds a checklist after the selected text, draws one card, and its one decision asks before it records anything. The model wrote one item with a colon in it, and the card says so in a line of its own rather than guessing; until a drafted item with a colon is read as a sentence, type it again in the component editor or put it in quotes.
 
 ![Exact changes: the inserted text, a fenced block of plain lines naming the component, its title, subtitle, items, fields and decision](../../assets/flow/paths/a-checklist-you-can-sign/06-exact-changes.webp)
 
-**Exact changes** shows what will be written: a block of plain text inside the document. That is the whole mechanism. The card is Flow's own small language in the chart fence's dialect, readable in any editor, and the signature is a record beside the file, never a change to it. **I accept changes**, then **Approve & Save**.
+**Exact changes** shows what will be written. It is a block of plain text inside the document. That is the whole mechanism. The card is Flow's own small language in the chart fence's dialect, readable in any editor, and the signature is a record beside the file, never a change to it. **I accept changes**, then **Approve & Save**.
 
 ## Edit it without touching the text
 
@@ -94,7 +94,7 @@ The Workbench's **History** tab lists the signature as its own event, with the a
 
 ![Publish's PDF preview: the signed card printed as a heading, four ticked items, Accepted by Manav Sehgal, and the line Signed off by Manav Sehgal on October 20, 2026, 4 of 4 items](../../assets/flow/paths/a-checklist-you-can-sign/09-publish.webp)
 
-**Publish** prints the card as the reader saw it: the items with their ticks, the name, the signed line. PDF and EPUB print it this way; Word and PowerPoint carry the checklist as its text for now.
+**Publish** prints the card as the reader saw it. It prints the items with their ticks, the name and the signed line. PDF and EPUB print it this way; Word and PowerPoint carry the checklist as its text for now.
 
 ## The numbers
 

@@ -12,7 +12,7 @@ shared: false
 tint: "#0170f5"
 ---
 
-Its choices come from the document itself: `options: sections` offers its headings, `options: blocks` its charts and tables, `options: files` the files beside it. The lists follow the document as you edit it. The new Job waits in Review Changes until you keep it.
+Its choices come from the document itself. `options: sections` offers its headings, `options: blocks` its charts and tables, `options: files` the files beside it. The lists follow the document as you edit it. The new Job waits in Review Changes until you keep it.
 
 ````markdown
 ```flowui

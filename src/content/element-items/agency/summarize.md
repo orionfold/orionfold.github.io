@@ -18,4 +18,4 @@ tint: "#cb10d5"
 
 ![Review Changes with the whole plan condensed into one highlighted paragraph above the kept figure; the Workbench reads Replace the document with a summary of it](../../../assets/flow/elements/agency/03-summarize.webp)
 
-With nothing selected, Summarize read the whole plan and proposed a one-paragraph version: the firm, the close, the hours, the complaint. The figure in the plan was carried through untouched.
+With nothing selected, Summarize read the whole plan and proposed a one-paragraph version. It covers the firm, the close, the hours, the complaint. The figure in the plan was carried through untouched.

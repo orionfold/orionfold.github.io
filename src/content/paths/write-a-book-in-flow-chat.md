@@ -62,14 +62,14 @@ In Flow, a book is just a folder of notes. With Flow Chat you build it one sente
 2. **Tell Chat your idea.** Ask for a README, a home note for the book, with the title, a subtitle, your idea quoted, and an outline. Ask it not to make or run anything else yet.
 3. **For each chapter, say:** "Create chapter N, "title", as its own note from the README's outline, and turn it into a research brief." Open the brief in Review and approve it.
 4. **Then say:** "Expand the chapter with its sources." Read the draft in Review. Check its dates and links. Approve it.
-5. **Put the book together** with one more message: set the chapter order, turn the README into the introduction, and take the working notes out of each chapter.
+5. **Put the book together** with one more message. It sets the chapter order, turns the README into the introduction, and takes the working notes out of each chapter.
 6. **Add pictures** with one message that gives each chapter a subject. Then choose File ▸ Publish Folder… ▸ EPUB ▸ Cover ▸ Generate…, and press **Save EPUB…**. EPUB is the ebook file that Apple Books and most ebook readers open.
 
 ## The job
 
 An author has a question big enough for a short book, *Agents and Harness*. That is all they have. No notes, no sources, no outline.
 
-The usual way takes a browser full of tabs, a notes app, a word processor, and a tool to make the ebook. The author carries everything from one to the next by hand. This walk asks a simple question: can every step happen in Flow? The research, the writing, the checking, the pictures, and the book.
+The usual way takes a browser full of tabs, a notes app, a word processor, and a tool to make the ebook. The author carries everything from one to the next by hand. This walk asks a simple question. Can every step happen in Flow? The research, the writing, the checking, the pictures, and the book.
 
 ## Step one: an empty folder, with Chat beside it
 
@@ -85,7 +85,7 @@ We changed one setting first, because a book needs longer passes than a short no
 
 ## Step two: the idea, in one message
 
-The first message did not ask for a chapter. It told Chat what the book is about and where the idea came from. Then it asked for one note to hold all that: a README with the title, a one-line subtitle, the idea quoted word for word, and a three-chapter outline. It ended, "Don't create the chapters or run anything yet."
+The first message did not ask for a chapter. It told Chat what the book is about and where the idea came from. Then it asked for one note to hold all that. It wanted a README with the title, a one-line subtitle, the idea quoted word for word, and a three-chapter outline. It ended, "Don't create the chapters or run anything yet."
 
 No *Leaves this Mac* sheet came up for the Claude Code route. Chat showed *Writing with Claude Code* and a running clock.
 
@@ -126,7 +126,7 @@ Second, the chapter link on Chat's *Ready in Review* row opened the still-empty 
 
 We kept the brief. Its row in Chat changed to *Kept*, with Undo still beside it.
 
-The third message was the shortest: "Expand What Agents Actually Did with its sources." Chat said what would happen. It would write the six sections under *Draft*, using the brief and the two sources in its table, and we would review it before anything was kept. It also told us what to check: a date and a link on every claim, and each incident marked as real use, a test, or training.
+The third message was the shortest: "Expand What Agents Actually Did with its sources." Chat said what would happen. It would write the six sections under *Draft*, using the brief and the two sources in its table, and we would review it before anything was kept. It also told us what to check. Every claim needs a date and a link, and each incident must be marked as real use, a test, or training.
 
 The run card lists what the run reads as it goes. It searched the open folders for "agent incident" and "reward hacking". It read *S11-replit*, a saved record of Replit incidents that comes with the Flow Guide's *Competitor Watch* sample. Note that "your folders" means every open folder, not only the book's.
 
@@ -150,7 +150,7 @@ Chapter two asked for a little more up front: "Create chapter 2, "Ten Harnesses 
 
 A harness is the tool that runs an AI agent and sets its limits, like Claude Code, Codex or Gemini CLI. Chat wrote a ten-row Sources table into the note. For each harness it picked the page closest to the controls the idea named: Claude Code's permissions, Codex's approvals and security, Gemini CLI's sandboxing. It also said what it had not done. It "only saw their search summaries, not the full pages." The brief arrived in Review on top of that table and kept all ten rows. This time the quote was an exact piece of the idea's own words.
 
-The brief named its own gap: nothing in Sources yet on audit logs or cost limits. We ran Expand with Sources anyway, and the draft handled the gap the way the brief asked. Its side-by-side table says *Not documented* wherever the docs say nothing, 18 times in the chapter *(verified: counted)*. It also sets apart the two frameworks, LangGraph and CrewAI, where every control is something "the developer builds". We kept it: 3,177 words, cited to the ten documentation pages.
+The brief named its own gap. There was nothing in Sources yet on audit logs or cost limits. We ran Expand with Sources anyway, and the draft handled the gap the way the brief asked. Its side-by-side table says *Not documented* wherever the docs say nothing, 18 times in the chapter *(verified: counted)*. It also sets apart the two frameworks, LangGraph and CrewAI, where every control is something "the developer builds". We kept it: 3,177 words, cited to the ten documentation pages.
 
 ![Ten harnesses, six controls, and "Not documented" where the docs say nothing](../../assets/flow/paths/write-a-book-in-flow-chat/09-ten-harnesses-side-by-side.webp)
 
@@ -162,13 +162,13 @@ Chat's own reply caught a flaw before we did: "the note's front matter appears t
 
 ## Step six: put the book together, then add pictures
 
-One message turned three notes into a book: "Put the book together: remove the extra copy of the front matter at the top of Model or Harness; give What Agents Actually Did, Ten Harnesses Compared and Model or Harness book order 1, 2 and 3; and rewrite the README as the book's introduction…"
+One message turned three notes into a book. It said, "Put the book together: remove the extra copy of the front matter at the top of Model or Harness; give What Agents Actually Did, Ten Harnesses Compared and Model or Harness book order 1, 2 and 3; and rewrite the README as the book's introduction…"
 
 The reply listed four edits, one row each, each with Undo. The README became a 491-word introduction, with a paragraph and a link for each finished chapter. Chat also noticed that chapters one and two had lost their `#` title line and offered to add it back. One more sentence did.
 
 ![The book put together: four edits, one reply](../../assets/flow/paths/write-a-book-in-flow-chat/10-the-book-put-together.webp)
 
-The pictures took one message, with a subject for each chapter. That matters: a picture asked for by chapter name alone just draws the name. Three runs, one after another, each placed after its chapter's opening paragraph. They cost $0.10 in all *(verified: the three receipts, $0.0336 each, as OpenRouter reported)*.
+The pictures took one message, with a subject for each chapter. That matters. A picture asked for by chapter name alone just draws the name. Three runs, one after another, each placed after its chapter's opening paragraph. They cost $0.10 in all *(verified: the three receipts, $0.0336 each, as OpenRouter reported)*.
 
 ![Chapter three's picture: tracing an incident back to the model or the harness](../../assets/flow/paths/write-a-book-in-flow-chat/11-chapter-three-picture.webp)
 
@@ -178,7 +178,7 @@ The cover comes from Flow itself, not from Chat. File ▸ Publish Folder… ▸ 
 
 ## Step seven: publish, then take the scaffolding out
 
-**Save EPUB…** wrote the book in a second: cover, title page, introduction, contents page, three chapters, and a closing page. 1.07 MB.
+**Save EPUB…** wrote the book in a second. It holds a cover, title page, introduction, contents page, three chapters, and a closing page. 1.07 MB.
 
 Reading it back showed what a working folder looks like as a book. Every chapter still opened with its research brief. Its *Sources* and *Draft* headings sat in the contents next to the real sections.
 
@@ -203,7 +203,7 @@ We also redrew chapter one's picture ($0.0336) and saved the EPUB again. 1.17 MB
 
 We fixed nothing during the walk. We just wrote things down. Nine issues are filed for the release after 2.2. Each one is a caveat here, not a reason to hold the page.
 
-- **#925, #926** A review that Chat started does not come to the front when it is ready, and Chat's link to it is not always right: one row opened the empty note, another opened Review. Use the banner's *Review* button.
+- **#925, #926** A review that Chat started does not come to the front when it is ready, and Chat's link to it is not always right. One row opened the empty note, another opened Review. Use the banner's *Review* button.
 - **#927** A draft cited a Guide note by its file location instead of the public page the note records. One Chat message replaced it.
 - **#928** A research brief doubled a chapter's front matter. Chat noticed and removed it when asked.
 - **#929** Reopening Chat in a long conversation shows its first message, not the newest reply.
@@ -214,5 +214,5 @@ We fixed nothing during the walk. We just wrote things down. Nine issues are fil
 ## What is not done yet
 
 - **The PDF.** We saved the EPUB only. The PDF comes from the same Publish panel, *PDF*, and the same book.
-- **The sources it could not read.** Every chapter says what it could not read: OpenAI's technical report and its 21 July statement, and the METR and Redwood Research review. A second Expand pass, once those pages can be fetched, should bring them in.
+- **The sources it could not read.** Every chapter says what it could not read. Those are OpenAI's technical report and its 21 July statement, and the METR and Redwood Research review. A second Expand pass, once those pages can be fetched, should bring them in.
 - **Audit logs and cost limits.** Chapter two marks them *Not documented* for most harnesses. A web search for those pages, then a second pass, would close the gap.

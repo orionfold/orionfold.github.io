@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 It is authored data; the chart-fence pie is the choice here when values must bind to a local source.
 
-**Takes:** a short list of labels and amounts: the same material as a chart pie, when you want it inside a diagram-only document or rendered on GitHub.
+**Takes:** a short list of labels and amounts. It is the same material as a chart pie, when you want it inside a diagram-only document or rendered on GitHub.
 
 ![Pie (diagram) in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-pie-diagram.webp)

@@ -51,7 +51,7 @@ Your browser cannot play this video. The full walkthrough follows below.
 ## What Flow does
 
 **A living document can be driven three ways, and the canvas shows what happened whichever way you chose.**
-In Orionfold Flow a document carries its own workflow as Jobs: a saved definition that collects the figures, a watch on the files they come from, a reconcile against the folder, and a draft of one section from named sources. A power user configures each step in the Jobs tab, with the section, the sources, the length and the model in view, and presses Run; every proposal lands in Review Changes. Someone in a hurry types one sentence to Flow Chat, which reads the folder, checks the figures, rewrites the section with a link on every sentence, and starts Flow's heavier actions when asked; every change carries Undo and waits in Review. Either way, the canvas then draws the document in the middle, what it rests on to the left, what it links to below, and what links to it on the right; Evidence shows which file each sentence cites; History lists what the document was derived from and plays its saved versions. In our walk the hand-configured run proposed a section of about twelve hundred words from three sources in just over a minute, and Chat rewrote the section with a citation on every sentence in half that.
+In Orionfold Flow a document carries its own workflow as Jobs. They are a saved definition that collects the figures, a watch on the files they come from, a reconcile against the folder, and a draft of one section from named sources. A power user configures each step in the Jobs tab, with the section, the sources, the length and the model in view, and presses Run; every proposal lands in Review Changes. Someone in a hurry types one sentence to Flow Chat, which reads the folder, checks the figures, rewrites the section with a link on every sentence, and starts Flow's heavier actions when asked; every change carries Undo and waits in Review. Either way, the canvas then draws the document in the middle, what it rests on to the left, what it links to below, and what links to it on the right; Evidence shows which file each sentence cites; History lists what the document was derived from and plays its saved versions. In our walk the hand-configured run proposed a section of about twelve hundred words from three sources in just over a minute, and Chat rewrote the section with a citation on every sentence in half that.
 
 ## The answer first
 
@@ -68,7 +68,7 @@ A consultant sends Harbour Analytics a brief every month. The figures come from 
 
 ![The Jobs tab on step 1 of 4, Collect data: the definition Brief Refresh.md, chosen or made here, runs without a model](../../assets/flow/paths/the-canvas/02-jobs-step-1.webp)
 
-Pressing a step in the ribbon opens the Workbench on the Jobs tab, one step at a time. Step 1 collects data: it names the saved definition, *Brief Refresh.md*, says it runs without a model, and explains that on a run Flow saves the result where the document's charts and tables read it.
+Pressing a step in the ribbon opens the Workbench on the Jobs tab, one step at a time. Step 1 collects data. It names the saved definition, *Brief Refresh.md*, says it runs without a model, and explains that on a run Flow saves the result where the document's charts and tables read it.
 
 ![Step 4, Expand with Sources: the target section, the two sources with their readiness, a length slider recommending about 1,255 words, and Compare Models](../../assets/flow/paths/the-canvas/03-jobs-step-4.webp)
 
@@ -80,11 +80,11 @@ Pressing **</>** shows the declaration as text, the four jobs in the document's 
 
 ![Run Jobs finished: Document review ready, 2 awaiting a decision, Run progress 5 of 5 completed](../../assets/flow/paths/the-canvas/05-run-jobs-done.webp)
 
-**Run Jobs**, and 71 seconds later the banner read *Document review ready · 2 awaiting a decision*. No consent sheet appeared: the run went to Claude Code on the author's subscription.
+**Run Jobs**, and 71 seconds later the banner read *Document review ready · 2 awaiting a decision*. No consent sheet appeared. The run went to Claude Code on the author's subscription.
 
 ![Review Changes: the proposed section highlighted in the document with superscript citations; in the Workbench, This month expanded from 3 sources, 1181 words where there were 55, 3 sources cited, Claude subscription, Proposed; and the folder inventory, Applied](../../assets/flow/paths/the-canvas/06-review-after-run.webp)
 
-Review Changes shows the proposal in the document, highlighted, with a superscript on every cited sentence, and in the Workbench the two decisions: the expansion, *1181 words, was 55 · 3 sources cited · Claude subscription · Run by Claude Code*, proposed; and the inventory of `client-files`, applied. The draft is careful: it says which arithmetic is its own and what the sources do not say. We ticked *I accept changes*, approved, and kept the inventory.
+Review Changes shows the proposal in the document, highlighted, with a superscript on every cited sentence, and in the Workbench the two decisions. One is the expansion, *1181 words, was 55 · 3 sources cited · Claude subscription · Run by Claude Code*, proposed. The other is the inventory of `client-files`, applied. The draft is careful. It says which arithmetic is its own and what the sources do not say. We ticked *I accept changes*, approved, and kept the inventory.
 
 ## Level three, first pass: what the canvas shows after that run
 
@@ -108,7 +108,7 @@ A fresh clone of the brief, four Jobs declared and nothing run.
 
 ![Chat's reply: Client Figures checked against the Finance Workbook and left alone; This month rewritten so each sentence ends with a link to its file; the board deck's text named as not yet read; Run Jobs or Expand with Sources offered next; one change card, Edited, 1 edit, Shown in Review, Undo](../../assets/flow/paths/the-canvas/11-chat-does-the-work.webp)
 
-The reply came 34 seconds after the send. Chat had read *Client Figures* against the finance workbook and found revenue, accounts and margin already matched, so it left that file alone. It rewrote *This month* so every sentence ends with a link to the file it comes from, dropped a sentence of instructions that came from no file, and said plainly what it could not do: the board deck's text had not come with the message, so the headcount and the top-risk line were left as the brief already cited them. Then it offered the next step: Run Jobs so the cards and chart redraw, or Expand with Sources for a fuller draft written from the deck itself. One change card, *Edited · 1 edit · Shown in Review*, with **Undo**.
+The reply came 34 seconds after the send. Chat had read *Client Figures* against the finance workbook and found revenue, accounts and margin already matched, so it left that file alone. It rewrote *This month* so every sentence ends with a link to the file it comes from, dropped a sentence of instructions that came from no file, and said plainly what it could not do. The board deck's text had not come with the message, so the headcount and the top-risk line were left as the brief already cited them. Then it offered the next step, either Run Jobs so the cards and chart redraw, or Expand with Sources for a fuller draft written from the deck itself. One change card, *Edited · 1 edit · Shown in Review*, with **Undo**.
 
 ![Review Changes, Exact changes: the one line Chat replaced, red above green, captioned Changed by Flow Chat, with Keep and Revert](../../assets/flow/paths/the-canvas/12-chat-edit-in-review.webp)
 
@@ -134,11 +134,11 @@ Accepted, the picture is saved into the document's `assets` folder and drawn in 
 
 ![Canvas, Connections, after Chat's work: Rests on 4, Links from here 2, Links here 1, the same shape as after the hand-configured run](../../assets/flow/paths/the-canvas/17-canvas-after-chat.webp)
 
-The canvas draws the same shape: *Rests on · 4*, *Links from here · 2* because Chat's sentences link the files they cite, *Links here · 1*.
+The canvas draws the same shape, with *Rests on · 4*, *Links from here · 2* because Chat's sentences link the files they cite, *Links here · 1*.
 
 ![The History tab beside the canvas after Chat: 35 receipts, 4 saved versions, Derived from 3 documents; a timeline of 36 events listing the picture run with its cost, the expansion, Chat's edit and a saved version](../../assets/flow/paths/the-canvas/18-history-after-chat.webp)
 
-History says *Derived from 3 documents*, with *35 receipts · 4 saved versions* and a timeline of 36 events: the picture run with its cost on the line, the expansion, Chat's edit as a run of its own, and the version each one saved. The person who asked in sentences gets the same account as the person who configured every step.
+History says *Derived from 3 documents*, with *35 receipts · 4 saved versions* and a timeline of 36 events. Among them are the picture run with its cost on the line, the expansion, Chat's edit as a run of its own, and the version each one saved. The person who asked in sentences gets the same account as the person who configured every step.
 
 ## The numbers
 

@@ -5,7 +5,7 @@ persona: Tax · budget · insurance · travel
 drafted: "2026-09-30"
 build: Orionfold Flow 2.0.3 dev build 0249-18 (main at f52fcb94 + ledgers), macOS 26.6, MacBook Pro M3 Max 36 GB, window 1512×949; walked 09:27–09:41 PDT
 data: The household, its bank, its plan and its September statement are invented for this walk. The merchant names are ordinary brand names used as a real statement would print them; no account or person is real.
-dek: "A month of bank lines goes in as a CSV. What comes out is the month against the plan: what was spent, what was saved, which categories ran over, and which lines no rule could place. The totals are worked out on the laptop about a second after you press Run. A short written summary follows about 45 seconds later, also written on the laptop. Nothing we ran was billed."
+dek: "A month of bank lines goes in as a CSV. What comes out is the month against the plan. It shows what was spent, what was saved, which categories ran over, and which lines no rule could place. The totals are worked out on the laptop about a second after you press Run. A short written summary follows about 45 seconds later, also written on the laptop. Nothing we ran was billed."
 hero: ../../assets/flow/paths/life-admin-handled/01-home-life.webp
 heroAlt: "Home, filtered to Life: Life admin, handled"
 source: orionfold-flow articles/12-life-admin-handled/ARTICLE.md
@@ -13,7 +13,7 @@ order: 12
 featured: false
 draft: false
 chip: Life
-summary: "A bank statement in. This month’s budget out: spent against the plan, what ran over, and the lines no rule could place."
+summary: "A bank statement in. This month’s budget out, with what was spent against the plan, what ran over, and the lines no rule could place."
 stat:
   value: 1 s
   label: Month worked out on your Mac
@@ -39,14 +39,14 @@ receipt:
 
 ## The press release we would want to write
 
-**Households can now close the month's budget from their own bank export, on their own Mac, without a spreadsheet and without handing their statements to a service.** Orionfold Flow's *Household Budget* is a page that reads the CSVs in its `statements` folder and sorts every line with rules you can read. Press Run and it redraws the month against your plan: spending, income, savings rate, category against budget, the merchants that took the most, and the lines no rule caught. In our walk, a 35-line September statement was summed and sorted about a second after Run. Every figure on the page matched our own independent calculation to the cent. A model on the laptop then wrote a paragraph about the month in about 49 seconds, and all 20 figures in it traced back to the data. Teaching it three merchants and running again took one more press. The model cost was $0.00 both times.
+**Households can now close the month's budget from their own bank export, on their own Mac, without a spreadsheet and without handing their statements to a service.** Orionfold Flow's *Household Budget* is a page that reads the CSVs in its `statements` folder and sorts every line with rules you can read. Press Run and it redraws the month against your plan. It shows spending, income, savings rate, category against budget, the merchants that took the most, and the lines no rule caught. In our walk, a 35-line September statement was summed and sorted about a second after Run. Every figure on the page matched our own independent calculation to the cent. A model on the laptop then wrote a paragraph about the month in about 49 seconds, and all 20 figures in it traced back to the data. Teaching it three merchants and running again took one more press. The model cost was $0.00 both times.
 
 > "Close the month without a spreadsheet marathon, and keep my bank files off someone else's server."
 > — *The path's own brief, from the Flow Guide. Illustrative, not from a customer.*
 
 ## The answer first
 
-The budget is a folder of files: your statements, a page of rules, and the page that draws the month.
+The budget is a folder of files. It holds your statements, a page of rules, and the page that draws the month.
 
 1. **Choosing the path makes your copy.** One click on Home made `Household Budget`, a folder of your own with sample statements, the plan, and the page.
 2. **Your statement replaces the samples.** We put September's CSV in `statements/` and moved the two sample months out. **This build has no way to do that from inside Flow**, so it is a Finder step (#849).
@@ -61,7 +61,7 @@ The budget is a folder of files: your statements, a page of rules, and the page 
 
 **The usual way:** a spreadsheet you rebuild or paste into each month, or a budgeting service that connects to your bank. We did not time or price either, so we make no claim about them.
 
-**The Flow way:** the path *Life admin, handled*, in three steps: make a copy of the Household Budget, replace the sample statements with your own, and Run Jobs to redraw the month's totals.
+**The Flow way:** the path *Life admin, handled*, in three steps. Make a copy of the Household Budget, replace the sample statements with your own, and Run Jobs to redraw the month's totals.
 
 ## Step one: make your copy
 
@@ -75,9 +75,9 @@ The copy holds the page (*Household Budget*), the plan (*Budget Profile*), the d
 
 ## Step two: put your statement in `statements/`
 
-Our input is an invented September statement from an invented credit union: 35 lines, with the headers `Date`, `Description` and `Amount`, ISO dates, and spending as negative numbers. That is the format *Budget Profile* asks for. We planted five lines that none of the sample rules would place: a school book fair, an airline ticket, a bakery paid through Square, a vet visit, and a Zelle payment to a person.
+Our input is an invented September statement from an invented credit union. It has 35 lines, with the headers `Date`, `Description` and `Amount`, ISO dates, and spending as negative numbers. That is the format *Budget Profile* asks for. We planted five lines that none of the sample rules would place. They were a school book fair, an airline ticket, a bakery paid through Square, a vet visit, and a Zelle payment to a person.
 
-We first tried the obvious way in: File ▸ Import…. It does not take a CSV. The panel greys the file out and says what it does take: Word documents, Excel workbooks, PowerPoint presentations and PDFs (shot 04). The sidebar takes no file drop either. **So in this build the statement goes in through Finder.** Choose Reveal in Finder from the page's title menu, then drag the CSV into `statements/`, as the README says. We did the same thing with a Finder-equivalent copy at 09:30:29. We moved the two sample months out of the folder rather than deleting them. Filed as #849.
+We first tried the obvious way in, File ▸ Import…. It does not take a CSV. The panel greys the file out and says what it does take. It takes Word documents, Excel workbooks, PowerPoint presentations and PDFs (shot 04). The sidebar takes no file drop either. **So in this build the statement goes in through Finder.** Choose Reveal in Finder from the page's title menu, then drag the CSV into `statements/`, as the README says. We did the same thing with a Finder-equivalent copy at 09:30:29. We moved the two sample months out of the folder rather than deleting them. Filed as #849.
 
 ![File ▸ Import… greys out the CSV](../../assets/flow/paths/life-admin-handled/04-import-greys-csv.webp)
 
@@ -85,7 +85,7 @@ We first tried the obvious way in: File ▸ Import…. It does not take a CSV. T
 
 ## Step three: Run, and review what changed
 
-Run is at the end of the page's job ribbon: *Collect data*, *Watch sources*, *List a folder's files*, *Overnight notes*. We pressed it at 09:30:36 PDT. The banner counted the steps as they finished (shot 05).
+Run is at the end of the page's job ribbon, after *Collect data*, *Watch sources*, *List a folder's files*, *Overnight notes*. We pressed it at 09:30:36 PDT. The banner counted the steps as they finished (shot 05).
 
 ![Running document Jobs, step 4 of 5](../../assets/flow/paths/life-admin-handled/05-running.webp)
 
@@ -97,7 +97,7 @@ The banner then read "Document review ready · 8 awaiting a decision", naming th
 
 ![Document review ready: eight changes, and the model that wrote](../../assets/flow/paths/life-admin-handled/06-review-ready.webp)
 
-**The month against the plan.** $6,916 spent, 89% of the $7,810 plan. Income of $9,800 was received, as expected. The savings rate is 29.4%, 9.4 points above the 20% target, but only $1,500 was actually moved to savings, 77% of the $1,960 the target implies (shot 07). The page keeps those two facts apart on purpose: money left over is not money saved. We recomputed every one of these figures from the CSV and the rules ourselves, and they match.
+**The month against the plan.** $6,916 spent, 89% of the $7,810 plan. Income of $9,800 was received, as expected. The savings rate is 29.4%, 9.4 points above the 20% target, but only $1,500 was actually moved to savings, 77% of the $1,960 the target implies (shot 07). The page keeps those two facts apart on purpose. Money left over is not money saved. We recomputed every one of these figures from the CSV and the rules ourselves, and they match.
 
 ![This month against the plan](../../assets/flow/paths/life-admin-handled/07-month-at-a-glance.webp)
 
@@ -111,7 +111,7 @@ The banner then read "Document review ready · 8 awaiting a decision", naming th
 
 ![Cumulative spend through the month](../../assets/flow/paths/life-admin-handled/10-accumulated.webp)
 
-**Review** lists all eight changes, each with Revert and Keep: four charts, *Where it went*, *Lines no rule caught*, the inventory of `statements/`, and the Overnight notes (shot 11). Its Sources tab traces each one to the capture and the files it was built from (shot 12). It names `Budget Profile.md` three times, once for each of its tables, without saying which (#851). We kept all eight at 09:35:05.
+**Review** lists all eight changes, each with Revert and Keep. They are four charts, *Where it went*, *Lines no rule caught*, the inventory of `statements/`, and the Overnight notes (shot 11). Its Sources tab traces each one to the capture and the files it was built from (shot 12). It names `Budget Profile.md` three times, once for each of its tables, without saying which (#851). We kept all eight at 09:35:05.
 
 ![Review Changes: eight changes, each with Revert and Keep](../../assets/flow/paths/life-admin-handled/11-review-changes.webp)
 
@@ -123,7 +123,7 @@ The banner then read "Document review ready · 8 awaiting a decision", naming th
 
 ## Step four: teach it the lines it could not place
 
-*Lines no rule caught* lists the five planted lines and says what to do: identify them, add a rule in *Budget Profile*, and run again. Transfers and refunds need a person's review first (shot 14).
+*Lines no rule caught* lists the five planted lines and says what to do. Identify them, add a rule in *Budget Profile*, and run again. Transfers and refunds need a person's review first (shot 14).
 
 ![Lines no rule caught: the five we planted](../../assets/flow/paths/life-admin-handled/14-lines-no-rule-caught.webp)
 
@@ -161,7 +161,7 @@ The second notes paragraph was accurate too, but it did not mention that Travel 
 | **Same notes on Claude Opus 5.5** ($4 / $20 per M), both runs | | | **$0.0355** |
 | **Same notes on Claude Sonnet 5** ($2 / $10 per M), both runs | | | **$0.0178** |
 
-The honest reading: the arithmetic is not a model's job here. It is a definition you can read, run in about a second, and it came out right to the cent. The model's only job is the paragraph. On the laptop that took under a minute, for nothing. The same paragraph from a cloud model would cost under two cents a month. We walked one month; a year of statements, or a bank export in another layout, is not something we measured.
+The honest reading is that the arithmetic is not a model's job here. It is a definition you can read, run in about a second, and it came out right to the cent. The model's only job is the paragraph. On the laptop that took under a minute, for nothing. The same paragraph from a cloud model would cost under two cents a month. We walked one month; a year of statements, or a bank export in another layout, is not something we measured.
 
 ## FAQ
 

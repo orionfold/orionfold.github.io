@@ -14,6 +14,6 @@ tint: "#0170f5"
 
 Only the first component has a common baseline, so use grouped bars when precise middle-component comparisons matter.
 
-**Takes:** a table with a category column, a part column and a value column, where the parts of each category add up to a meaningful whole: cost by team and category, headcount by office and function.
+**Takes:** a table with a category column, a part column and a value column, where the parts of each category add up to a meaningful whole, such as cost by team and category or headcount by office and function.
 
 ![Stacked bar chart in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-stacked-bar-chart.webp)

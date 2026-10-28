@@ -3,7 +3,7 @@ category: skills
 name: Path Card
 anchor: path-card
 card: skill-path-card
-line: "A feature on one card: who it is for, the steps, the path, proof."
+line: "A feature on one card, with who it is for, the steps, the path and the proof."
 group: null
 order: 9
 facts: []

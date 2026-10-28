@@ -48,7 +48,7 @@ caveat: A document can stay blank for 3 to 5 seconds when it first opens. Wait a
 
 ## The answer first
 
-A weekly status is where confidential work meets a deadline: vendor terms, unreleased numbers and who is blocked. Flow keeps all of it on the Mac and still does the writing.
+A weekly status is where confidential work meets a deadline. It holds vendor terms, unreleased numbers and who is blocked. Flow keeps all of it on the Mac and still does the writing.
 
 1. **The attachments come in as documents, read on the Mac.** File ▸ Import read the vendor's Word update in seconds, and the sprint review PDF in under four, with *On this Mac*: "free, and nothing leaves this Mac." Flow checked 16 figures against the PDF's own page.
 2. **Ask and Summarize run on an open model on the laptop.** Ask answered "what changed this week" from the team's rollup in about 5 seconds. Summarize turned 259 words of notes into a six-point status in about 6 seconds. Both ran on Gemma 4 E4B through Flow Runtime.
@@ -56,11 +56,11 @@ A weekly status is where confidential work meets a deadline: vendor terms, unrel
 
 ## The job
 
-**The job:** send the team a short, correct status every week, built from what arrived that week: a vendor update, a sprint review and what was said at stand-up.
+**The job:** send the team a short, correct status every week, built from what arrived that week. That was a vendor update, a sprint review and what was said at stand-up.
 
 **The usual way:** open each attachment, copy the numbers, type up your notes, paste it all into a chat assistant to tidy, and paste the result into an email. The attachments go to a cloud service on the way. We did not time the usual way, so we make no claim about it.
 
-**The Flow way:** the path *Status from what you already have* in three steps: import the attachments and add your notes; ask what changed and summarize; publish a Word file. The model work ran on the laptop.
+**The Flow way:** the path *Status from what you already have* in three steps. Import the attachments and add your notes. Ask what changed and summarize. Publish a Word file. The model work ran on the laptop.
 
 ## Step one: bring the attachments in, add your notes
 
@@ -68,7 +68,7 @@ From Home, the **Teams** chip shows the path. **Open** makes the team's folder y
 
 ![Your copy of the path, with its README](../../assets/flow/paths/status-from-what-you-have/02-your-copy.webp)
 
-**File ▸ Import…** on the vendor's Word update showed a preview before anything was written: *2 headings, 1 paragraph, 3 list items, 1 table*. It also said what stayed behind: underline, colour and highlight on two passages. *Add to Team Status* saved it as a Markdown document, `Kestrel Payments — Integration Update`.
+**File ▸ Import…** on the vendor's Word update showed a preview before anything was written: *2 headings, 1 paragraph, 3 list items, 1 table*. It also said what stayed behind. That was underline, colour and highlight on two passages. *Add to Team Status* saved it as a Markdown document, `Kestrel Payments — Integration Update`.
 
 ![The Word update, previewed before it is added](../../assets/flow/paths/status-from-what-you-have/03-import-word.webp)
 
@@ -82,7 +82,7 @@ The read took under four seconds: *1 page, 1 table, 16 figures checked*. The tab
 
 ![The sprint review PDF as a document, table intact](../../assets/flow/paths/status-from-what-you-have/06-pdf-preview.webp)
 
-Then your notes. A new document, *My notes — week of September 28*, took the stand-up notes as dictation would enter them: who is waiting on what, the headline you want and the question to ask before quoting a number.
+Then your notes. A new document, *My notes — week of September 28*, took the stand-up notes as dictation would enter them. They say who is waiting on what, the headline you want and the question to ask before quoting a number.
 
 ![The team lead's notes, 114 words](../../assets/flow/paths/status-from-what-you-have/07-notes.webp)
 
@@ -127,11 +127,11 @@ We checked every figure against its source: 41 of 44 test cases, 3.9% against 3.
 | **Same tokens on Claude Sonnet 5** ($2 / $10 per M) | | | **$0.012** |
 | The PDF read on Claude Sonnet 5 instead | | | **$0.0097** (measured) |
 
-The honest reading: the open model saved about three cents. Cost is not the reason to run this on the laptop. The reason is that a vendor's integration status, an unreleased conversion number and who is blocked never left the Mac.
+The honest reading is that the open model saved about three cents. Cost is not the reason to run this on the laptop. The reason is that a vendor's integration status, an unreleased conversion number and who is blocked never left the Mac.
 
 ## FAQ
 
-**Does it work offline?** The steps we ran did: the Word and PDF reads use Flow's own reader, and Ask and Summarize ran on a model on the laptop. Choose a model on this Mac in Settings to keep it that way.
+**Does it work offline?** The steps we ran did. The Word and PDF reads use Flow's own reader, and Ask and Summarize ran on a model on the laptop. Choose a model on this Mac in Settings to keep it that way.
 
 **Can Ask read every file in the folder?** Ask answers about the document in front of you. The path's *Team Status* rollup already gathers the team's updates, so ask there.
 

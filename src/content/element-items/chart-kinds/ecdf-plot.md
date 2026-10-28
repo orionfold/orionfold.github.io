@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 State whether equality counts, name the sample size and remember that this is a sample proportion.
 
-**Takes:** one numeric column, optionally grouped: when the question is "what share finished within N seconds", read straight off the curve.
+**Takes:** one numeric column, optionally grouped. Use it when the question is "what share finished within N seconds", read straight off the curve.
 
 ![ECDF plot in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-ecdf-plot.webp)

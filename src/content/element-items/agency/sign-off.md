@@ -18,4 +18,4 @@ tint: "#b08900"
 
 ![Review Changes with an Approval Card: four risk items to tick, an Accepted by field, an optional Note and a Sign off button](../../../assets/flow/elements/agency/09-sign-off.webp)
 
-On the risks paragraph, Sign-off drafted an Approval Card: one item per risk, an **Accepted by** field and a **Sign off** button. The Components article shows how signing records a signature beside the document.
+On the risks paragraph, Sign-off drafted an Approval Card. It holds one item per risk, an **Accepted by** field and a **Sign off** button. The Components article shows how signing records a signature beside the document.

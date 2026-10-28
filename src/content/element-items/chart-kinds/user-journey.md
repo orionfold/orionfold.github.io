@@ -14,6 +14,6 @@ tint: "#0270f5"
 
 Say whose experience the ratings describe; this sample is not a user-research result.
 
-**Takes:** a walkthrough of what a person does, step by step, with how each step felt: research synthesis, a support transcript, an onboarding review.
+**Takes:** a walkthrough of what a person does, step by step, with how each step felt, such as research synthesis, a support transcript or an onboarding review.
 
 ![User journey in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-user-journey.webp)

@@ -42,7 +42,7 @@ receipt:
 
 **Builders can now keep their specs and README true to the code without handing their repository to anyone.** Flow opens the repo folder in place, proposes every documentation change as a diff you keep or revert, leaves your git history alone, and publishes a site or a PDF.
 
-Half of that is true today, measured below. The half in the title of the path, *stay true to the code*, is not: Flow 2.1 does not compare a document with the code it describes on its own (ISSUES #782, open). Ask can, partly, when you name the file: see the update below.
+Half of that is true today, measured below. The half in the title of the path, *stay true to the code*, is not: Flow 2.1 does not compare a document with the code it describes on its own (ISSUES #782, open). Ask can, partly, when you name the file. See the update below.
 
 ## The answer first
 
@@ -62,11 +62,11 @@ The job is not "write docs". It is: *before I tag a release, tell me which sente
 
 ![The Quayside repository opened in place, the spec in the Reader](../../assets/flow/paths/docs-true-to-code/02-repo-spec.webp)
 
-**Proofread, on this Mac.** Smart Routing picked Gemma 4 E4B on Flow Runtime ("this Mac first, free before metered"). The run reported "Usually a few seconds", and it was: the receipt records the model's answer about four seconds after the press.
+**Proofread, on this Mac.** Smart Routing picked Gemma 4 E4B on Flow Runtime ("this Mac first, free before metered"). The run reported "Usually a few seconds", and it was. The receipt records the model's answer about four seconds after the press.
 
 ![Proofreading on Flow Runtime](../../assets/flow/paths/docs-true-to-code/03-proofread-running.webp)
 
-It proposed four fixes: *can not* → *cannot*, *an other* → *another*, *days* → *day's*, *avaliable* → *available*. We accepted them. `git diff` afterwards shows exactly those two lines changed.
+It proposed four fixes. They were *can not* → *cannot*, *an other* → *another*, *days* → *day's*, *avaliable* → *available*. We accepted them. `git diff` afterwards shows exactly those two lines changed.
 
 ![The proposal waiting for approval](../../assets/flow/paths/docs-true-to-code/04-proofread-review.webp)
 
@@ -86,7 +86,7 @@ On 2.0.3, **Ask (⌘K)** took "Does the Rules section agree with the CHANGELOG? 
 
 ![Expand searching only the spec's title words](../../assets/flow/paths/docs-true-to-code/06-expand-searching.webp)
 
-**Expand with an explicit instruction.** We added a line under Rules: "Check each rule against CHANGELOG.md, the release notes for 0.4.0, and correct any rule that no longer matches." Result: *Nothing to change*, eleven seconds later.
+**Expand with an explicit instruction.** We added a line under Rules: "Check each rule against CHANGELOG.md, the release notes for 0.4.0, and correct any rule that no longer matches." The result was *Nothing to change*, eleven seconds later.
 
 ![Nothing to change, with the instruction on the page](../../assets/flow/paths/docs-true-to-code/07-expand-review.webp)
 
@@ -115,7 +115,7 @@ Proofreading a spec on an open model saves a fraction of a cent per run. As in t
 
 These shipped in **Flow 2.1** (build 3020, 30 September 2026). They were checked on a pre-release build (0249-1) on 28 September; the walk above describes 2.0.3.
 
-- **Ask answers the question now (#781).** The same prompt, "Does the Rules section agree with the CHANGELOG? List every mismatch.", read the spec and `CHANGELOG.md` and answered on Gemma 4 E4B on this Mac: the Rules say 60 requests a minute, the changelog says it rose to 120. It missed the other two drifts we planted, the port (8080 vs 8000) and the missing `/export.csv`. So Flow sees some drift when you ask and name the file. No Job yet checks a spec against code by itself (#782, open). ![Ask answering from the spec and the changelog](../../assets/flow/paths/docs-true-to-code/0249-ask-answer.webp)
+- **Ask answers the question now (#781).** The same prompt, "Does the Rules section agree with the CHANGELOG? List every mismatch.", read the spec and `CHANGELOG.md` and answered on Gemma 4 E4B on this Mac. The Rules say 60 requests a minute, the changelog says it rose to 120. It missed the other two drifts we planted, the port (8080 vs 8000) and the missing `/export.csv`. So Flow sees some drift when you ask and name the file. No Job yet checks a spec against code by itself (#782, open). ![Ask answering from the spec and the changelog](../../assets/flow/paths/docs-true-to-code/0249-ask-answer.webp)
 - **Publish no longer edits the file (#783).** Its choices now sit in `scheduling-spec.md.flow-publish`, beside `.flow-receipts`, so `git diff` of the spec stays clean. It is still a new untracked file in `git status`.
 - **Proofread's highlight marks only changed lines (#785).** Not re-checked on screen.
 

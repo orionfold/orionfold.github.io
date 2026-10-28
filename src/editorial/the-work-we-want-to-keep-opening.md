@@ -10,11 +10,11 @@ The file saved the words. We still have to recover the work.
 
 That gap interests me more than another impressive answer in a chat window. The work we care about rarely ends with the first answer. A research question becomes an argument. The argument needs a chart, the chart needs a definition, and the definition needs a source we can still inspect. Next month, somebody asks whether the recommendation still holds. Frequently, that somebody is us.
 
-I call the effort of making yesterday's work usable today the **continuity tax**. Some of it belongs to thinking: rereading, reflecting, changing our minds. Some is reconstruction we have already paid for. Find the relevant material. Recover the question. Rebuild the process. Remember why the previous result was worth keeping.
+I call the effort of making yesterday's work usable today the **continuity tax**. Some of it belongs to thinking. We reread, reflect and change our minds. Some is reconstruction we have already paid for. Find the relevant material. Recover the question. Rebuild the process. Remember why the previous result was worth keeping.
 
 Eventually, we stop returning to things. The subject we meant to understand. The essay we almost finished. The business idea whose research now requires another weekend to recover. We keep it in a folder, which is a wonderfully polite way to postpone ambition.
 
-In [*Room for a Renaissance*](/essay/), I argued that the document could become a better home for personal intelligence. This is the next question: can a document carry a useful responsibility forward, while leaving its owner free to question the result?
+In [*Room for a Renaissance*](/essay/), I argued that the document could become a better home for personal intelligence. This is the next question. Can a document carry a useful responsibility forward, while leaving its owner free to question the result?
 
 ## One brief, one new interview
 
@@ -32,4 +32,4 @@ The attraction is modest and practical. You should not have to explain the same 
 
 The same distinction matters when the task does need a model. Preparing a draft and accepting its conclusion are different responsibilities. A useful assistant can help with the first while giving the second a clear place to happen.
 
-Start with the example below: inspect the saved Job, add interview I12 and run the refresh. Two document parts change. Each awaits a decision to keep or revert it. Reverting an output does not erase the interview you added. That separation between the source, the work performed and the decision afterward is the beginning of the larger idea.
+Start with the example below. Inspect the saved Job, add interview I12 and run the refresh. Two document parts change. Each awaits a decision to keep or revert it. Reverting an output does not erase the interview you added. That separation between the source, the work performed and the decision afterward is the beginning of the larger idea.

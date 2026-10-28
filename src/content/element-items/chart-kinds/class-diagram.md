@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 Multiplicity and ownership should have a defined meaning; this is an illustrative model, not Flow source code.
 
-**Takes:** a description of the nouns in a system and how they relate: the data model behind a product, with fields and one-to-many relationships.
+**Takes:** a description of the nouns in a system and how they relate, such as the data model behind a product, with fields and one-to-many relationships.
 
 ![Class diagram in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-class-diagram.webp)

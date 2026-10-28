@@ -1,11 +1,11 @@
 ---
 title: Fifteen blocks a document can hold, each written as a few plain lines
 feature: "Elements ▸ Components: Approval Card, Form, Job Form, Table, Chart, Diagram, Image, Diff, Folder, Callout, Section, Hero, Bento, Change Summary and Sources — inserted from the sidebar, edited in the component editor, kept as text in the document"
-persona: "Anyone whose document needs more than paragraphs: a client deliverable to sign, a status form, a chart beside its figures, a warning before the numbers"
+persona: "Anyone whose document needs more than paragraphs, such as a client deliverable to sign, a status form, a chart beside its figures, a warning before the numbers"
 drafted: "2026-10-26"
 build: Orionfold Flow review build elements-1 (dev, main d43eb7f2), macOS 26.6, MacBook Pro M3 Max 36 GB, window 1512×949; walked 2026-10-26 13:55–14:29 PDT by the agent in an away session, one Flow instance
 data: The Flow Guide's Handbook ▸ Components page (Harbour Analytics, fictional) and Harbor Close Plan, a fictional plan written for this walk. The account row is painted over in every shot.
-dek: "Elements ▸ Components lists every block Flow draws inside a document: a checklist a client signs, a form with one act Flow records, a table, a chart, a diagram, a picture, a diff, a folder's inventory, a note or warning, side-by-side layouts, and two blocks that show what changed and what the document was made from. Each is stored as a few readable lines in the Markdown file, so the document still opens anywhere. In this walk a warning went into a plan from its card, was filled in with a live preview, and was written back as five lines."
+dek: "Elements ▸ Components lists every block Flow draws inside a document. They are a checklist a client signs, a form with one act Flow records, a table, a chart, a diagram, a picture, a diff, a folder's inventory, a note or warning, side-by-side layouts, and two blocks that show what changed and what the document was made from. Each is stored as a few readable lines in the Markdown file, so the document still opens anywhere. In this walk a warning went into a plan from its card, was filled in with a live preview, and was written back as five lines."
 hero: ../../assets/flow/elements/components/01-approval-card.webp
 heroAlt: "The Handbook's Components page in the Reader with Elements open: the Approval Card section and its card — Delivery acceptance, two unticked items, a Sign off button"
 source: orionfold-flow articles/20-elements-components/ARTICLE.md
@@ -20,7 +20,7 @@ draft: false
 ## What Flow does
 
 **A Flow document can now hold the parts a real deliverable needs, and every one of them is still plain text.**
-Open Elements (⌘5) and the **Components** section lists fifteen blocks, each with a drawing and one line. Press one in the Editor and Flow places a starter after the caret and opens the component editor: the block's fields as controls, and the block drawn live above them. Press **Apply** and you are back in the document on the line after it. In the file, a component is a ` ```flowui ` block of a few YAML lines, such as `component: Callout` and `kind: warning`, so the document reads the same in any editor and Flow draws it as one of its own surfaces. A checklist records its signature beside the document rather than in it. A form records its one act after asking. A Job Form sets up a Job that keeps a section current. Hero and Bento put two components side by side.
+Open Elements (⌘5) and the **Components** section lists fifteen blocks, each with a drawing and one line. Press one in the Editor and Flow places a starter after the caret and opens the component editor. It shows the block's fields as controls, and the block drawn live above them. Press **Apply** and you are back in the document on the line after it. In the file, a component is a ` ```flowui ` block of a few YAML lines, such as `component: Callout` and `kind: warning`, so the document reads the same in any editor and Flow draws it as one of its own surfaces. A checklist records its signature beside the document rather than in it. A form records its one act after asking. A Job Form sets up a Job that keeps a section current. Hero and Bento put two components side by side.
 
 ## The answer first
 
@@ -32,7 +32,7 @@ Open Elements (⌘5) and the **Components** section lists fifteen blocks, each w
 
 ## The job
 
-A deliverable is rarely only prose. A monthly brief needs its figures in a table, a chart beside them, a warning that the numbers are provisional, and a place for the client to sign. A status page needs a form whose answer lands in the document. In most editors these parts live elsewhere: a spreadsheet, an e-signature service, a slide. Flow draws them inside the document and keeps them as text the document owns.
+A deliverable is rarely only prose. A monthly brief needs its figures in a table, a chart beside them, a warning that the numbers are provisional, and a place for the client to sign. A status page needs a form whose answer lands in the document. In most editors these parts live elsewhere. They sit in a spreadsheet, an e-signature service, a slide. Flow draws them inside the document and keeps them as text the document owns.
 
 ## From the card to the page
 

@@ -48,17 +48,17 @@ receipt:
 
 The brief is a document that refreshes from your data, not a page you rewrite before each call.
 
-1. **The lead sheet comes in as a table.** File ▸ Import… turned a 6-row Excel sheet into an editable Markdown table in about a second. It kept the values and said what it left out: formulas, formatting and charts.
+1. **The lead sheet comes in as a table.** File ▸ Import… turned a 6-row Excel sheet into an editable Markdown table in about a second. It kept the values and said what it left out. The left-out parts were formulas, formatting and charts.
 2. **Run Jobs redraws the brief from it.** One press ran the brief's three Jobs. They rebuilt the requirements and meeting questions from the sheet, checked the watched sources, and wrote an overnight note on a model on this Mac. The question that had been answered (R3, export for counsel) dropped out, and the new open one (R6, store-cluster roll-up) came in. Both changes waited for a Keep or a Revert, with the exact diff one click away.
 3. **The workbook keeps its sources.** Publish ▸ Excel wrote `Account Brief.xlsx`. It opens with a README sheet naming each sheet's source file, row and column counts, and the capture it came from, and every data row carries its source file and capture date.
 
 ## The job
 
-**The job:** before each call with an account, know what has changed since the last one: which needs are confirmed, which questions are still open, and who owns each. Then hand a colleague or the customer a sheet they can check.
+**The job:** before each call with an account, know what has changed since the last one. Know which needs are confirmed, which questions are still open, and who owns each. Then hand a colleague or the customer a sheet they can check.
 
 **The usual way:** update the lead sheet, then re-read the discovery notes and re-type the open questions into a call-prep doc, and paste a table into an email. We did not time the usual way, so we make no claim about it.
 
-**The Flow way:** the path *Account brief before the call*, in three steps: import the lead sheet, Run Jobs, publish Excel.
+**The Flow way:** the path *Account brief before the call*, in three steps. Import the lead sheet, Run Jobs, publish Excel.
 
 ## Step one: import the lead sheet
 
@@ -66,11 +66,11 @@ The Home screen's Clients filter shows the path. Opening it makes a copy of the 
 
 ![The Import preview: 1 sheet, 1 table, 6 rows, adding to the path's folder](../../assets/flow/paths/account-brief/04-import-preview.webp)
 
-The preview showed the sheet as it would land before anything was written: one sheet, one table, six rows. Under *Left out* it said "Values only: formulas, formatting and charts stay in the workbook." *Add to Flow ▸ Sales Account* wrote the table as `Meridian Retail — lead sheet.md` about a second later (21:54:55 PDT), with its own history record, and opened it in the editor.
+The preview showed the sheet as it would land before anything was written. It held one sheet, one table, six rows. Under *Left out* it said "Values only: formulas, formatting and charts stay in the workbook." *Add to Flow ▸ Sales Account* wrote the table as `Meridian Retail — lead sheet.md` about a second later (21:54:55 PDT), with its own history record, and opened it in the editor.
 
 ![The imported lead sheet, an editable table in the account's folder](../../assets/flow/paths/account-brief/05-imported-table.webp)
 
-**One-time setup, done once per account.** The brief's refresh is a saved definition, *Account Refresh*. File ▸ Edit Definition… opens it as data: sources, row sets, tables, and a live preview of the rows each part produces. Pointing its one source at the imported sheet (`Meridian Retail — lead sheet.md#table:Requirements`) changed the preview from 5 rows to 6 before anything was saved. The definition uses no model and no web service.
+**One-time setup, done once per account.** The brief's refresh is a saved definition, *Account Refresh*. File ▸ Edit Definition… opens it as data. It shows sources, row sets, tables, and a live preview of the rows each part produces. Pointing its one source at the imported sheet (`Meridian Retail — lead sheet.md#table:Requirements`) changed the preview from 5 rows to 6 before anything was saved. The definition uses no model and no web service.
 
 ![The definition editor: the source now reads the lead sheet, and the preview shows 6 rows](../../assets/flow/paths/account-brief/06-definition-source.webp)
 
@@ -90,11 +90,11 @@ A banner then said *Document review ready · 2 awaiting a decision · Run progre
 
 ![Review Changes: the questions table and the overnight notes, each Applied with Revert and Keep](../../assets/flow/paths/account-brief/09-review-changes.webp)
 
-The review shows each change in the document, marked, and *Exact changes* shows the diff line by line: R3 out, R4 unchanged, R6 in.
+The review shows each change in the document, marked, and *Exact changes* shows the diff line by line, with R3 out, R4 unchanged and R6 in.
 
 ![Exact changes: R3 removed, R6 added](../../assets/flow/paths/account-brief/10-exact-changes.webp)
 
-Both changes were kept (22:03:43 PDT). The overnight note reads: *"The document lists two questions for the meeting. The first question, labeled R4, concerns Windows reviewers and is assigned to Mara for Discovery 02. The second question, labeled R6, addresses the Store-cluster roll-up and is assigned to Elliot for Discovery 03."* It is accurate to the table, but the phrasing is awkward: the evidence column is a meeting reference, not an assignment. That is why the note waits for a person too.
+Both changes were kept (22:03:43 PDT). The overnight note reads: *"The document lists two questions for the meeting. The first question, labeled R4, concerns Windows reviewers and is assigned to Mara for Discovery 02. The second question, labeled R6, addresses the Store-cluster roll-up and is assigned to Elliot for Discovery 03."* It is accurate to the table, but the phrasing is awkward. The evidence column is a meeting reference, not an assignment. That is why the note waits for a person too.
 
 ## Step three: publish Excel with every source kept
 
@@ -116,7 +116,7 @@ Every data row carries a *Source file* and a *Captured* column, so a colleague w
 ## The deliverable
 
 - **The brief, current.** `Account Brief.md` in the account's folder, with the meeting questions refreshed from the lead sheet, the overnight note, and the record of what ran (`.flow-receipts`) and what was decided (`.flow-review`) beside it.
-- **The workbook.** `Account Brief.xlsx`: four sheets, every row sourced, ready to attach to a follow-up.
+- **The workbook.** `Account Brief.xlsx` holds four sheets, every row sourced, ready to attach to a follow-up.
 - **The inputs, kept.** The imported lead sheet stays a table in the folder. The next call starts from the same place.
 
 ## What it costs, measured
@@ -130,13 +130,13 @@ Every data row carries a *Source file* and a *Captured* column, so a colleague w
 | **Same tokens on Claude Opus 5.5** ($4 / $20 per M) | | | **$0.0016** |
 | **Same tokens on Claude Sonnet 5** ($2 / $10 per M) | | | **$0.0008** |
 
-The honest reading: this path is barely an AI path at all. The refresh that matters, the questions table, is a saved calculation that costs nothing and gives the same answer every time. The model writes one short note. The reasons to work this way are that the brief is always rebuilt from the sheet you already keep, that every change waits for you, and that the workbook you send carries its own sources.
+The honest reading is that this path is barely an AI path at all. The refresh that matters, the questions table, is a saved calculation that costs nothing and gives the same answer every time. The model writes one short note. The reasons to work this way are that the brief is always rebuilt from the sheet you already keep, that every change waits for you, and that the workbook you send carries its own sources.
 
 ## FAQ
 
 **Does Run Jobs read the account's website?** Not in this path as shipped. The Guide's step says Run Jobs "gathers the account's pages". The saved definition here reads only the records in the folder and uses no web service. A definition can read an `https` address as a source, but this one does not, and we did not test one.
 
-**Do I have to edit the definition every time?** No. It is a one-time change per account: point the source at the imported sheet once. Whether a later import of the same file name replaces the table in place was not tested in this walk.
+**Do I have to edit the definition every time?** No. It is a one-time change per account. Point the source at the imported sheet once. Whether a later import of the same file name replaces the table in place was not tested in this walk.
 
 **Does it connect to my CRM?** No. The input is the Excel lead sheet you export or keep yourself.
 

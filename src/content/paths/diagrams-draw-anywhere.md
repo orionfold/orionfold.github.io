@@ -4,7 +4,7 @@ path: Diagrams that draw anywhere
 persona: Writers and technical teams
 drafted: '2026-10-19'
 build: Orionfold Flow review builds 0272-2 and 0272-3 (dev, main 83d99b86), macOS 26.6, MacBook Pro M3 Max 36 GB, window 1512×949; walked 2026-10-19 13:59–14:18 PDT, Claude Code driving with the operator away
-data: 'The Flow Guide''s Charts Gallery (Diagrams — Structures, Connections and Processes: twenty diagram forms on fictional teaching data) cloned into ~/flow-staging; never the operator''s real work. The account row is painted over in every shot.'
+data: 'The Flow Guide''s Charts Gallery (Diagrams — Structures, Connections and Processes, twenty diagram forms on fictional teaching data) cloned into ~/flow-staging; never the operator''s real work. The account row is painted over in every shot.'
 dek: Write a diagram as text, read it in either appearance, copy it as a picture, and preview it in a PDF. We tried twenty diagram forms and checked what happens when one cannot draw.
 hero: ../../assets/flow/paths/diagrams-draw-anywhere/02-structures-c4.webp
 heroAlt: 'Diagrams — Structures in the Reader: the C4 context diagram laid out for the column, every box and edge label readable'
@@ -46,15 +46,15 @@ In Orionfold Flow a diagram is a fenced block of plain text in the document, a f
 
 ## The answer first
 
-1. **Write the diagram as text.** In the Editor, a fenced block beginning ` ```mermaid ` holds the diagram: `flowchart LR`, `sequenceDiagram`, `gantt`, `stateDiagram-v2`, `C4Context` and the rest. The Guide's **Charts Gallery** pages show every form with a starter you can copy.
-2. **Read it.** Switch to **Reader**: the diagram draws in place, laid out for the width of the page. A drawing wider than the page keeps its words readable and scrolls sideways inside its card.
-3. **Copy it as a picture.** Hover the drawing and press **Copy as image**: a PNG with the document's colours is on the clipboard for Keynote, Slack or mail.
-4. **Publish it.** File ▸ **Publish…**, then **Show preview**: the PDF pages carry the same drawings. Save PDF, EPUB or Word when you are ready.
+1. **Write the diagram as text.** In the Editor, a fenced block beginning ` ```mermaid ` holds the diagram. It can be `flowchart LR`, `sequenceDiagram`, `gantt`, `stateDiagram-v2`, `C4Context` and the rest. The Guide's **Charts Gallery** pages show every form with a starter you can copy.
+2. **Read it.** Switch to **Reader**. The diagram draws in place, laid out for the width of the page. A drawing wider than the page keeps its words readable and scrolls sideways inside its card.
+3. **Copy it as a picture.** Hover the drawing and press **Copy as image**. A PNG with the document's colours is on the clipboard for Keynote, Slack or mail.
+4. **Publish it.** File ▸ **Publish…**, then **Show preview**. The PDF pages carry the same drawings. Save PDF, EPUB or Word when you are ready.
 5. **Let Jobs draw it overnight.** A **Visualize** step in the document's Jobs now draws and checks its diagram with nothing open; a broken one is refused before it reaches **Review Changes**, with the line that is wrong.
 
 ## The job
 
-A writer explaining how a request moves through approval, how four systems talk, or when a launch lands reaches for a diagram. In Flow the diagram has always been text in the document, so it versions, searches and travels with the words. What it could not do until now was leave the window: the drawing existed only while the document was open on screen, so the overnight Jobs that keep a living document current could draw a chart but had to leave a diagram for the morning, and a published page or a copied picture depended on what the page happened to have drawn. The renderer underneath the fence has changed; the text has not. Every diagram you already have draws as it did, laid out a little better for the page it sits in.
+A writer explaining how a request moves through approval, how four systems talk, or when a launch lands reaches for a diagram. In Flow the diagram has always been text in the document, so it versions, searches and travels with the words. What it could not do until now was leave the window. The drawing existed only while the document was open on screen, so the overnight Jobs that keep a living document current could draw a chart but had to leave a diagram for the morning, and a published page or a copied picture depended on what the page happened to have drawn. The renderer underneath the fence has changed; the text has not. Every diagram you already have draws as it did, laid out a little better for the page it sits in.
 
 ## In the Reader: twenty forms, laid out for the page
 
@@ -64,7 +64,7 @@ The three *Diagrams* pages of the Guide carry twenty forms between them, class, 
 
 ![The sankey on Diagrams: Connections: Visitors to Bounced, Signed up and onward, each node labelled with its number](../../assets/flow/paths/diagrams-draw-anywhere/06-connections-sankey.webp)
 
-Two things a careful eye will notice: on the sankey, two short nodes that share a column have labels that touch, and on the quadrant chart one label straddles the line between quadrants. Both are the renderer's layout and both are reported upstream; neither hides a word.
+A careful eye will notice two things. On the sankey, two short nodes that share a column have labels that touch, and on the quadrant chart one label straddles the line between quadrants. Both are the renderer's layout and both are reported upstream; neither hides a word.
 
 ## In the dark
 
@@ -78,7 +78,7 @@ Switch the Mac to dark and the drawings follow without being redrawn. The render
 
 ![The kanban board copied as an image: four columns, six cards, the document's ink on white](../../assets/flow/paths/diagrams-draw-anywhere/11-copy-as-image.webp)
 
-Hover any drawing and press **Copy as image**. The picture on the clipboard is the drawing with its colours carried along: paste it into a deck or a message and it looks as it did on the page, on a white surface.
+Hover any drawing and press **Copy as image**. The picture on the clipboard is the drawing with its colours carried along. Paste it into a deck or a message and it looks as it did on the page, on a white surface.
 
 ## In the PDF
 

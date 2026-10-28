@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 Moving a card in text changes this document; it does not update an external project-management system.
 
-**Takes:** a task list grouped by status: the sprint board as columns of cards with owners.
+**Takes:** a task list grouped by status. That is the sprint board as columns of cards with owners.
 
 ![Kanban board in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-kanban-board.webp)

@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 Keep units and group order consistent; many groups are easier to read in separate charts.
 
-**Takes:** a table with a category column, a group column and a value column: the same categories measured under two or three conditions, such as regions across years.
+**Takes:** a table with a category column, a group column and a value column. That means the same categories measured under two or three conditions, such as regions across years.
 
 ![Grouped bar chart in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-grouped-bar-chart.webp)

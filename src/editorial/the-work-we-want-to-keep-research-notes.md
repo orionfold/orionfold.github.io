@@ -38,7 +38,7 @@ At WWDC26 in June, Apple's Foundation Models session described on-device vision,
 
 Present availability is a separate question. Apple began rolling out iOS 27, iPadOS 27 and macOS 27 on September 14, 2026. Siri AI begins as an English-language beta, with feature, hardware, language and regional limits. A released operating system does not make every announced capability available everywhere. [Apple, *Software Platform Updates Now Available*](https://www.apple.com/newsroom/2026/09/major-updates-for-apples-software-platforms-are-now-available/).
 
-Apple's WWDC26 local-agent demonstration offers a concrete boundary: the model runs on the Mac through MLX-LM, while GitHub CLI retrieves information over the network. Inference is local; the whole activity is not offline. Its timing demonstrations are not Flow benchmarks. [Apple Developer, *Run Local Agentic AI on the Mac Using MLX*, WWDC26](https://developer.apple.com/videos/play/wwdc2026/232/).
+Apple's WWDC26 local-agent demonstration offers a concrete boundary. The model runs on the Mac through MLX-LM, while GitHub CLI retrieves information over the network. Inference is local; the whole activity is not offline. Its timing demonstrations are not Flow benchmarks. [Apple Developer, *Run Local Agentic AI on the Mac Using MLX*, WWDC26](https://developer.apple.com/videos/play/wwdc2026/232/).
 
 Private is not a synonym for permitted either. A confidential answer can still be used to perform an action its owner never requested. Apple's advanced App Intents session explains declarations for actions, entities and context, including ownership metadata relevant to side effects. Accurate declarations and application safeguards matter; discoverability is not blanket authority or guaranteed confirmation. [Apple Developer, *Advanced App Intents*, WWDC26](https://developer.apple.com/videos/play/wwdc2026/343/).
 
@@ -56,7 +56,7 @@ Can it preserve the comparison actually present in a source? Can it distinguish 
 
 These are less spectacular questions than a general reasoning benchmark. They are close to the product's responsibility.
 
-In a September 12, 2026 curation study, we compared pinned 4-bit artifacts of Gemma 4 E4B IT and Llama 3.1 8B Instruct through Flow's production one-turn host, on one M3 Max MacBook Pro with 36 GiB of memory. Four synthetic Expand scenarios were run three times per model: twenty-four attempts, but only four distinct scenarios. Repeated outputs were identical within each model and scenario, so the repeats showed repeatability rather than a population error rate.
+In a September 12, 2026 curation study, we compared pinned 4-bit artifacts of Gemma 4 E4B IT and Llama 3.1 8B Instruct through Flow's production one-turn host, on one M3 Max MacBook Pro with 36 GiB of memory. Four synthetic Expand scenarios were run three times per model. That is twenty-four attempts, but only four distinct scenarios. Repeated outputs were identical within each model and scenario, so the repeats showed repeatability rather than a population error rate.
 
 In a synthetic pilot brief, Llama repeatedly denied a comparison group that the supplied source explicitly contained, even while reporting results from both groups. The E4B candidate preserved the comparison and its nonrandomized nature more accurately. Two independently masked, AI-assisted output reviews favored it for this bounded Day role. Caveats remained, including clearer wording about unapproved rollout and proposed next steps.
 
@@ -72,7 +72,7 @@ Tokens per second matter when waiting gets in the way. Memory matters when a mod
 
 More thinking did not automatically improve the final document either. In a separate September 11 diagnostic on that shared Mac, increasing the larger model's thought allowance from 2,048 to 4,096 tokens moved median Expand time across four source-sensitive cases from about 32 to 67 seconds, without a consistent additional quality benefit in masked review. That was a small diagnostic, not a controlled timing benchmark or a universal optimum. Additional reasoning should be a qualified choice, rather than a compulsory charge on every action.
 
-A response can also have valid structure and still compute the wrong result. Our bounded Gather-drafting qualification required the generated Job to execute against supplied CSV data and produce the expected sorted or grouped rows. Repairing agreement between the authored schema and request mattered, not just changing the model. The point is the mechanism: judge the work the Job actually does, not merely the shape of the answer it returns.
+A response can also have valid structure and still compute the wrong result. Our bounded Gather-drafting qualification required the generated Job to execute against supplied CSV data and produce the expected sorted or grouped rows. Repairing agreement between the authored schema and request mattered, not just changing the model. The point is the mechanism. Judge the work the Job actually does, not merely the shape of the answer it returns.
 
 Supported local inference need not incur a hosted provider's token charge. It is not free computation. Hardware, energy and all the work around the call still count. Lower generation cost can even encourage us to produce more material than we have time to judge.
 
@@ -82,7 +82,7 @@ Orionfold's fitness for this problem is not that it has discovered one unbeatabl
 
 The main essay now follows the Customer Research example. The earlier Stock Portfolio walkthrough remains useful as a bounded record of a different sample run:
 
-Consider the bundled Stock Portfolio example. Its lots are illustrative and its market snapshot is retained sample data, not a real person's holdings, live investment performance or advice. That makes it a useful demonstration of mechanics rather than an outcome claim. The Portfolio Dashboard has a question to answer, tables and charts with named data bindings, local inputs, and five saved Jobs: two data collections, a source watch, a folder inventory and overnight notes.
+Consider the bundled Stock Portfolio example. Its lots are illustrative and its market snapshot is retained sample data, not a real person's holdings, live investment performance or advice. That makes it a useful demonstration of mechanics rather than an outcome claim. The Portfolio Dashboard has a question to answer, tables and charts with named data bindings, local inputs, and five saved Jobs. The five Jobs are two data collections, a source watch, a folder inventory and overnight notes.
 
 The important part is not that the page looks like a dashboard. It is that a person can ask what produced it. One collection reads a definition file beside the document and writes a capture into its data folder. Another prepares headlines. A chart can redraw from the captured series without asking a language model to invent the arithmetic. The notes step uses a model, but its contribution has a different status from the rows and chart bindings underneath it.
 
@@ -90,13 +90,13 @@ In one freshly installed Flow 1.7 walkthrough, the owner made a copy and ran its
 
 In that observed run, eleven changes were applied and awaited the owner’s Keep/Revert decision. This establishes the immediate manual run and review path on that sample. It does not demonstrate an overnight return by an independent customer.
 
-This matters because a Job is not just a prompt remembered from a chat. It can say which local definition to read, where to put a capture and which named series the page's views consume. Where an Agency action is involved, it also needs a target that fits the document: a table is not generic prose, a picture is not a paragraph and an ambiguous heading should be resolved before the model runs. In September development checks, eight action types were exercised in separate documents; that was a catalog test, not proof that eight actions chain into one magical run or each produced a quality result.
+This matters because a Job is not just a prompt remembered from a chat. It can say which local definition to read, where to put a capture and which named series the page's views consume. Where an Agency action is involved, it also needs a target that fits the document. A table is not generic prose, a picture is not a paragraph and an ambiguous heading should be resolved before the model runs. In September development checks, eight action types were exercised in separate documents; that was a catalog test, not proof that eight actions chain into one magical run or each produced a quality result.
 
 ## The continuity tax is a question to measure
 
 The phrase “continuity tax” names the effort of making earlier work usable again. It is an editorial concept, not a published statistical category or a measured Flow outcome.
 
-The individual arithmetic can be surprisingly large without any grand extrapolation. Suppose, purely as an illustration, that recovering context takes twenty minutes on each of 220 working days. That is 4,400 minutes, or 73 hours and 20 minutes in a year. It is not a measured Flow saving. It is not all time that should disappear: reading, reflection and reconsideration are often the work itself.
+The individual arithmetic can be surprisingly large without any grand extrapolation. Suppose, purely as an illustration, that recovering context takes twenty minutes on each of 220 working days. That is 4,400 minutes, or 73 hours and 20 minutes in a year. It is not a measured Flow saving. It is not all time that should disappear. Reading, reflection and reconsideration are often the work itself.
 
 The question is which part is avoidable reconstruction. Which part could a retained process, current inputs and a clear account of changes help us spend more usefully? An honest product test must include the setup, review and correction it adds, not just the reconstruction it might remove.
 

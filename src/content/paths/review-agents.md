@@ -39,7 +39,7 @@ receipt:
 
 ## The press release we would want to write
 
-**People who already pay for Claude Code or Codex can now let those agents work on their documents without handing over the last word.** Orionfold Flow runs the agent you already use, in a folder you choose, with its own tools and settings. Before it starts, Flow says where the work goes, what the agent may touch and what it costs. What the agent writes comes back as a proposal you keep or throw away, and every run leaves a receipt: which model, how many tokens, which checks passed. In our test, Codex proofread a pricing page in 27 seconds. Its three changes waited in review until we approved them, and the run was included in the Codex plan we already had.
+**People who already pay for Claude Code or Codex can now let those agents work on their documents without handing over the last word.** Orionfold Flow runs the agent you already use, in a folder you choose, with its own tools and settings. Before it starts, Flow says where the work goes, what the agent may touch and what it costs. What the agent writes comes back as a proposal you keep or throw away, and every run leaves a receipt. It says which model, how many tokens, which checks passed. In our test, Codex proofread a pricing page in 27 seconds. Its three changes waited in review until we approved them, and the run was included in the Codex plan we already had.
 
 > "My agents are fast and mostly right. 'Mostly' is the problem. I want every change in front of me, and a record of who made it, before it goes near a customer."
 > — *Illustrative quote, not from a customer.*
@@ -54,9 +54,9 @@ If you use a coding agent for writing, the risk isn't speed or cost. It's a chan
 
 ## The job
 
-You hand small writing jobs to an agent all day: tighten this page, fix the FAQ, update the changelog. The agent does them in a terminal, and you find out what changed by diffing files, if you look at all. For code there's git and a pull request. For a pricing page, a README or a client memo, usually there's nothing between the agent and the file.
+You hand small writing jobs to an agent all day. Tighten this page, fix the FAQ, update the changelog. The agent does them in a terminal, and you find out what changed by diffing files, if you look at all. For code there's git and a pull request. For a pricing page, a README or a client memo, usually there's nothing between the agent and the file.
 
-What you need is what a pull request gives code: the change, shown exactly, with a yes-or-no, and a history of who wrote each version. It should come with the agent you already pay for, not a second model on a second meter.
+What you need is what a pull request gives code. That means the change, shown exactly, with a yes-or-no, and a history of who wrote each version. It should come with the agent you already pay for, not a second model on a second meter.
 
 ## The walk: one task, end to end
 
@@ -64,7 +64,7 @@ We opened the path from Home. Flow made a working folder for it, *Agent Desk*, w
 
 ![The path's folder, with its own README](../../assets/flow/paths/review-agents/02-opened.webp)
 
-Into that folder we put a page that needed an editor: a pricing page for a made-up invoicing product, 239 words long, with two misspellings and the usual filler.
+Into that folder we put a page that needed an editor. It was a pricing page for a made-up invoicing product, 239 words long, with two misspellings and the usual filler.
 
 ![The draft: a pricing page with two spelling mistakes](../../assets/flow/paths/review-agents/03-draft-open.webp)
 
@@ -72,21 +72,21 @@ In Flow's model switcher we chose *Codex subscription*. In Settings ▸ Models, 
 
 ![Leaves this Mac: Codex CLI, Full access to Agent Desk, cost Included](../../assets/flow/paths/review-agents/04-full-access-consent.webp)
 
-That sheet does more than ask for permission. It tells you something Flow can't enforce: the agent "can read and change files Flow does not see", and "Flow records what it reports rather than what Flow watched". So you give full access knowing what it means. We pressed Allow Once at 16:13:46.
+That sheet does more than ask for permission. It tells you something Flow can't enforce. The agent "can read and change files Flow does not see", and "Flow records what it reports rather than what Flow watched". So you give full access knowing what it means. We pressed Allow Once at 16:13:46.
 
 ![Proofreading, on Codex CLI, the subscription route](../../assets/flow/paths/review-agents/05-running.webp)
 
-The receipt was written at 16:14:12.7: **26.7 seconds** for the run. The review opened with one proposal: *Correct spelling and grammar in the selected text. 6 words added or removed; original: 239 words.* *Exact changes* shows it line by line: a comma after "get started with", "buisness" to "business", "definately" to "definitely". Everything else is marked unchanged.
+The receipt was written at 16:14:12.7. It shows **26.7 seconds** for the run. The review opened with one proposal: *Correct spelling and grammar in the selected text. 6 words added or removed; original: 239 words.* *Exact changes* shows it line by line. The lines are a comma after "get started with", "buisness" to "business", "definately" to "definitely". Everything else is marked unchanged.
 
 ![Exact changes: three edited lines, everything else unchanged](../../assets/flow/paths/review-agents/07-exact-changes.webp)
 
-We ticked *I accept changes* and approved at 16:18:30. The file was saved one second later. Until then, the file on disk still had its old modification time: the agent's words existed only as a proposal.
+We ticked *I accept changes* and approved at 16:18:30. The file was saved one second later. Until then, the file on disk still had its old modification time. The agent's words existed only as a proposal.
 
 ![Approved: the corrected page](../../assets/flow/paths/review-agents/08-approved.webp)
 
 ## Who wrote what
 
-History is where the path's third promise lives. For this page it shows two saved versions and six receipts. The **Run** groups the evidence Flow recorded and the checks it passed: human review checked, footnote definitions complete. The event detail names the model that did the work, `codex-cli/subscription`. Below that, the first version is recorded as saved by *an outside writer*, sixteen minutes before we opened History. That's correct: we wrote the draft from a terminal, and Flow didn't pretend to know who we were.
+History is where the path's third promise lives. For this page it shows two saved versions and six receipts. The **Run** groups the evidence Flow recorded and the checks it passed. The checks were human review checked and footnote definitions complete. The event detail names the model that did the work, `codex-cli/subscription`. Below that, the first version is recorded as saved by *an outside writer*, sixteen minutes before we opened History. That's correct. We wrote the draft from a terminal, and Flow didn't pretend to know who we were.
 
 ![History: the run, its checks, and the earlier outside version](../../assets/flow/paths/review-agents/10-history-run.webp)
 
@@ -106,13 +106,13 @@ Second, the subscription route makes that overhead someone else's problem. Flow 
 
 ## FAQ
 
-**Does the agent write straight into my files?** With Full access it can: it works in the folder with its own tools. When you start it from a Flow action, as here, its answer came back as a proposal and the file stayed untouched until we approved. When an agent writes into a document Flow holds, from a terminal or anywhere else, Flow brings that change home for review with Keep and Revert.
+**Does the agent write straight into my files?** With Full access it can. It works in the folder with its own tools. When you start it from a Flow action, as here, its answer came back as a proposal and the file stayed untouched until we approved. When an agent writes into a document Flow holds, from a terminal or anywhere else, Flow brings that change home for review with Keep and Revert.
 
 **Which agents?** Claude Code and Codex, signed in on this Mac, on the plans you already have. Flow shows which ones it has verified in Settings ▸ Models. On our Mac, Codex was verified; Claude Code was installed but "not yet verified", so this walk used Codex.
 
 **Is this another AI subscription?** No. The run was billed to the Codex plan. Flow's consent sheet says *Included* before you allow the run.
 
-**What does "Full access" risk?** Flow tells you in the sheet: the agent runs with your own settings, and those decide whether its tools reach files outside the folder, the web, or apps connected to your account. Flow limits only what Flow itself does. Choose the folder with that in mind.
+**What does "Full access" risk?** Flow tells you in the sheet. The agent runs with your own settings, and those decide whether its tools reach files outside the folder, the web, or apps connected to your account. Flow limits only what Flow itself does. Choose the folder with that in mind.
 
 **Can I undo a change after keeping it?** History keeps every saved version, with the receipt of the run that made it.
 
@@ -122,7 +122,7 @@ These shipped in **Flow 2.1** (build 3020, 30 September 2026). They were checked
 
 - **The agent is named (#784).** History's run card reads *Run by · Codex*, and the proposal's row says "Run by Codex". The saved change is still credited to Flow, which wrote the text you approved. The card's "marked with the agent's name" holds on the proposal and in History.
 - **"Included" is recorded (#786).** History ▸ Cost reads "Included in a subscription you already pay for." ![History for the Codex run on build 0249-1](../../assets/flow/paths/review-agents/0249-history-cost.webp)
-- **Review ▸ Document paints only changed lines (#785).** Not re-checked on screen: the proposal was already approved.
+- **Review ▸ Document paints only changed lines (#785).** Not re-checked on screen. The proposal was already approved.
 
 ## Evidence
 

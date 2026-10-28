@@ -18,11 +18,11 @@ The file saved the words. We still have to recover the work.
 
 That gap interests me more than another impressive answer in a chat window. The work we care about rarely ends with the first answer. A research question becomes an argument. The argument needs a chart, the chart needs a definition, and the definition needs a source we can still inspect. Next month, somebody asks whether the recommendation still holds. Frequently, that somebody is us.
 
-I call the effort of making yesterday's work usable today the **continuity tax**. Some of it belongs to thinking: rereading, reflecting, changing our minds. Some is reconstruction we have already paid for. Find the relevant material. Recover the question. Rebuild the process. Remember why the previous result was worth keeping.
+I call the effort of making yesterday's work usable today the **continuity tax**. Some of it belongs to thinking. We reread, reflect and change our minds. Some is reconstruction we have already paid for. Find the relevant material. Recover the question. Rebuild the process. Remember why the previous result was worth keeping.
 
 Eventually, we stop returning to things. The subject we meant to understand. The essay we almost finished. The business idea whose research now requires another weekend to recover. We keep it in a folder, which is a wonderfully polite way to postpone ambition.
 
-In [*Room for a Renaissance*](https://orionfold.com/essay/), I argued that the document could become a better home for personal intelligence. This is the next question: can a document carry a useful responsibility forward, while leaving its owner free to question the result?
+In [*Room for a Renaissance*](https://orionfold.com/essay/), I argued that the document could become a better home for personal intelligence. This is the next question. Can a document carry a useful responsibility forward, while leaving its owner free to question the result?
 
 ## One brief, one new interview
 
@@ -40,7 +40,7 @@ The attraction is modest and practical. You should not have to explain the same 
 
 The same distinction matters when the task does need a model. Preparing a draft and accepting its conclusion are different responsibilities. A useful assistant can help with the first while giving the second a clear place to happen.
 
-Start with the example below: inspect the saved Job, add interview I12 and run the refresh. Two document parts change. Each awaits a decision to keep or revert it. Reverting an output does not erase the interview you added. That separation between the source, the work performed and the decision afterward is the beginning of the larger idea.
+Start with the example below. Inspect the saved Job, add interview I12 and run the refresh. Two document parts change. Each awaits a decision to keep or revert it. Reverting an output does not erase the interview you added. That separation between the source, the work performed and the decision afterward is the beginning of the larger idea.
 
 [Explore: One new interview. A brief you can return to.](https://orionfold.com/essays/the-work-we-want-to-keep/#essay-first-job)
 
@@ -60,7 +60,7 @@ My route to this question has been through documents, analytical systems and AI 
 
 In the late 1990s, at Xerox PARC, I worked on systems for storing and sharing documents across distance. At Daily Mail Group's RMS and AgRisk businesses, my work was in risk analytics and technology. From 2017 until June 2026, I worked across Amazon and AWS, including cloud architecture, innovation, artificial general intelligence and generative-AI products. I describe that route in [the founding story](https://orionfold.com/story/why-i-folded-orionfold/); my [professional history](https://www.linkedin.com/in/manavsehgal/) records the roles.
 
-Across those settings, I became interested in a recurring distinction: information can be available without being ready for the next decision. Documents carry knowledge. Analytical systems organize evidence. Models offer ways to reason and express. Somebody still has to connect the intended outcome to the actual work.
+Across those settings, I became interested in a recurring distinction. Information can be available without being ready for the next decision. Documents carry knowledge. Analytical systems organize evidence. Models offer ways to reason and express. Somebody still has to connect the intended outcome to the actual work.
 
 An analytical result can be exact while the question around it is incomplete. A system can make material accessible while leaving its interpretation to whoever was present when the assumptions were chosen. Process and judgment are part of the work, even when the file contains little trace of them.
 
@@ -84,7 +84,7 @@ This also requires restraint from the product. More generated prose is not neces
 
 ## Where we intend to begin
 
-Our initial customer hypothesis is independent professionals who repeatedly return to research, client or product briefs: consultants, researchers and builders whose work combines changing inputs with accountable judgment.
+Our initial customer hypothesis is independent professionals who repeatedly return to research, client or product briefs. They are consultants, researchers and builders whose work combines changing inputs with accountable judgment.
 
 The common need is more specific than wanting an AI assistant. They have a document worth reopening, a recurring part of its upkeep they can describe, and a reason to inspect the result. A client brief must remain explainable. A research summary must preserve its qualifications. A product recommendation must survive another round of evidence.
 
@@ -92,7 +92,7 @@ That is where I want Flow to earn its place first. Can a person who did not buil
 
 We do not yet have independent customer evidence establishing those outcomes. They are the tests that distinguish a promising personal arrangement from a useful product. Twenty-four starting Living Documents offer places to begin in Flow 1.7, but the important count is how many responsibilities become worth returning to.
 
-For the Research Brief, the arrangement remains small enough to explain: the interview register is an input, the saved definition describes the calculation, and the outputs serve the table and chart. The map below makes those declared relationships visible. It gives the next visit somewhere to start.
+For the Research Brief, the arrangement remains small enough to explain. The interview register is an input, the saved definition describes the calculation, and the outputs serve the table and chart. The map below makes those declared relationships visible. It gives the next visit somewhere to start.
 
 [Explore: A clear route back to the source.](https://orionfold.com/essays/the-work-we-want-to-keep/#essay-jobs-map)
 
@@ -120,7 +120,7 @@ A recurring Job is a further choice. Night Shift can run supported, authored wor
 
 Different actions also have different moments of approval. A daytime Agency transformation can present an exact proposal before **Approve & Save**. A manual Jobs run can apply reviewable changes that await **Keep** or **Revert** afterward. Permitted Night work has its own standing agreement. The owner needs to understand which arrangement they are choosing.
 
-This is more useful than a general promise that an assistant “keeps you in control.” Control has to attach to an actual decision: what may be read, what may change, when work may proceed and what happens if it fails. A missing input should remain a visible gap. A failed local attempt should not quietly become permission to send the material elsewhere.
+This is more useful than a general promise that an assistant “keeps you in control.” Control has to attach to an actual decision. It decides what may be read, what may change, when work may proceed and what happens if it fails. A missing input should remain a visible gap. A failed local attempt should not quietly become permission to send the material elsewhere.
 
 ## The decision after the run
 
@@ -146,11 +146,11 @@ The research count needs arithmetic. Another Job might need to compare passages,
 
 Personal computers are becoming more capable places for this work. Apple's recent hardware and model research point toward richer applications that combine device resources with other capabilities when needed. They do not eliminate the constraints of memory, energy, availability or review. A useful AI workshop still has to leave room for the person and the rest of their computer.
 
-In our own September model curation, a smaller candidate handled a bounded daytime document task better than an alternative we tested. It did not pass the separate Night baseline. A larger candidate did. That distinction mattered more than a single ranking: a model can earn one assignment without earning every assignment.
+In our own September model curation, a smaller candidate handled a bounded daytime document task better than an alternative we tested. It did not pass the separate Night baseline. A larger candidate did. That distinction mattered more than a single ranking. A model can earn one assignment without earning every assignment.
 
 We also observed that a larger thinking allowance could add time without consistently improving the result. These were small development studies on one Mac, not evidence of typical customer performance. The [research notes](https://orionfold.com/essays/the-work-we-want-to-keep/notes/) retain the exact models, test scope, resource measurements and their limits, alongside the external research informing this essay.
 
-The product principle is simple: choose computation for the work. A deterministic operation, a qualified local model or a stronger hosted model may be appropriate. A person should be able to understand the choice and the boundary it crosses. Suitable local inference avoids a hosted token charge, but hardware, electricity and human attention still count.
+The product principle is simple. Choose computation for the work. A deterministic operation, a qualified local model or a stronger hosted model may be appropriate. A person should be able to understand the choice and the boundary it crosses. Suitable local inference avoids a hosted token charge, but hardware, electricity and human attention still count.
 
 Flow begins on the Mac, with readable files the owner controls. Configured daytime actions can use metered OpenRouter, OpenAI or Anthropic routes when the person chooses to run them. Night Shift model work stays local. Local inference does not make every activity offline, and locality alone does not establish safety or correctness.
 
@@ -162,7 +162,7 @@ The first successful run is encouraging. The next visit is more revealing.
 
 Another interview has arrived. You changed a classification. You left the finding table unresolved because it needed thought. Ordinary life intervened. Can you now find the work, understand the changes and continue without rebuilding the assignment?
 
-For the Research Brief, the meaningful test reaches beyond refreshing two numbers. We would need to observe the full cycle: setting up the Job, returning to the context, updating the inputs, inspecting the result and correcting mistakes. The question is whether that whole arrangement helps somebody produce work they are willing to stand behind.
+For the Research Brief, the meaningful test reaches beyond refreshing two numbers. We would need to observe the full cycle. That means setting up the Job, returning to the context, updating the inputs, inspecting the result and correcting mistakes. The question is whether that whole arrangement helps somebody produce work they are willing to stand behind.
 
 Sometimes the right result is no change. Sometimes an input is unavailable and the honest result is an explanation. Sometimes the Job runs perfectly and the owner discovers that it answers a question no longer worth asking. A system that generates something impressive every time can make these ordinary outcomes harder to recognize.
 
@@ -178,7 +178,7 @@ Orionfold's opportunity is to make these arrangements dependable and understanda
 
 The hypothesis is that task-specific curation, document-aware execution and close attention to repeated use can improve together. Better Jobs make useful work easier to begin. Better review makes mistakes easier to diagnose. Those diagnoses can guide better defaults and more focused evaluations. Each part matters because it serves an actual responsibility somebody wants to carry forward.
 
-Whether this becomes a lasting advantage for Orionfold depends on people whose work and patience differ from mine. The first evidence would be modest: someone understands the arrangement, gets a result worth keeping and finds a reason to return. Repeated usefulness would tell us more than a spectacular first demonstration.
+Whether this becomes a lasting advantage for Orionfold depends on people whose work and patience differ from mine. The first evidence would be modest. Someone understands the arrangement, gets a result worth keeping and finds a reason to return. Repeated usefulness would tell us more than a spectacular first demonstration.
 
 ## Own the page, keep the possibility
 
@@ -186,7 +186,7 @@ Markdown is a quiet foundation for this ambition. Readable text can hold an argu
 
 Another Markdown editor will not necessarily execute Flow's Jobs or reproduce its views. Ownership of the file and portability of execution are different promises. The important starting point is that leaving the application does not require surrendering the work itself.
 
-A model can be replaced. A routine can be retired. An application can become unsuitable. The work should still offer its owner somewhere to stand: readable material, retained reasons, supporting files and a choice about what happens next.
+A model can be replaced. A routine can be retired. An application can become unsuitable. The work should still offer its owner somewhere to stand. That means readable material, retained reasons, supporting files and a choice about what happens next.
 
 The larger possibility is a working life with more continuity. Research can inform writing without another long reconstruction. A product decision can retain its reasons while the builder returns to making the product. A recurring responsibility can remain legible while its owner turns to business, family, curiosity or rest.
 

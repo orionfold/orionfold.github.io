@@ -3,7 +3,7 @@ category: components
 name: Callout
 anchor: callout
 card: component-callout
-line: "A note or a warning in the Reader's own style: a bar, a mark and the word, so the kind never rests on colour alone."
+line: "A note or a warning in the Reader's own style. It has a bar, a mark and the word, so the kind never rests on colour alone."
 group: null
 order: 9
 facts: []

@@ -14,6 +14,6 @@ tint: "#0371f5"
 
 The commits below are fictional labels; the diagram does not inspect or operate a repository.
 
-**Takes:** a description of branches, merges and releases: a release process, or how a feature landed.
+**Takes:** a description of branches, merges and releases, such as a release process or how a feature landed.
 
 ![Git graph in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-git-graph.webp)

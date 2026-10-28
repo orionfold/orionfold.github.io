@@ -5,7 +5,7 @@ persona: Investors
 drafted: "2026-09-30"
 build: Orionfold Flow 2.0.3 dev build 0247-17 (main at 8712deb0), macOS 26.6, MacBook Pro M3 Max 36 GB, window 1512×949; walked 06:38–06:47 PDT
 data: The lots, costs and purchase dates are invented for this walk. The tickers are real so that quotes resolve. Prices and headlines are Yahoo Finance's public data as fetched at 06:43 PDT on 30 September 2026. Nothing here is investment advice, and the allocation is not a recommendation.
-dek: "A brokerage spreadsheet goes in. A dashboard comes out: coverage, value, gain on cost, allocation and a month against the S&P 500, all redrawn from quotes the app fetched itself. A model on the laptop adds a short note, and nothing counts until you keep it. The quotes landed 4 seconds after one press, and the whole run took about 2½ minutes, for $0.00."
+dek: "A brokerage spreadsheet goes in. A dashboard comes out, with coverage, value, gain on cost, allocation and a month against the S&P 500, all redrawn from quotes the app fetched itself. A model on the laptop adds a short note, and nothing counts until you keep it. The quotes landed 4 seconds after one press, and the whole run took about 2½ minutes, for $0.00."
 hero: ../../assets/flow/paths/portfolio-explains-itself/01-home-money.webp
 heroAlt: "Home, filtered to Money: A portfolio that explains itself"
 source: orionfold-flow articles/10-portfolio-explains-itself/ARTICLE.md
@@ -49,7 +49,7 @@ receipt:
 The dashboard is a document that rebuilds itself from your files. It is not a web portfolio tracker that holds your positions.
 
 1. **The export comes in as a table.** File ▸ Import… turned a 10-row Excel sheet into an editable Markdown table in the path's folder in about a second.
-2. **Run Jobs gathers and redraws.** One press ran five Jobs. Two gathered data: 10 price series, 10 name lookups, 8 macro series and the S&P 500, plus 30 headlines. Two more checked the watched sources and the data folder. The fifth wrote the note. Ten views on the page were redrawn: the at-a-glance tiles, the holdings table, five charts, the macro and headlines tables, and the data inventory.
+2. **Run Jobs gathers and redraws.** One press ran five Jobs. Two gathered data. They gathered 10 price series, 10 name lookups, 8 macro series and the S&P 500, plus 30 headlines. Two more checked the watched sources and the data folder. The fifth wrote the note. Ten views on the page were redrawn. They are the at-a-glance tiles, the holdings table, five charts, the macro and headlines tables, and the data inventory.
 3. **You keep or revert each change.** Every redrawn view and the note waited in Review Changes, with the exact line-by-line diff one click away. The note is written by `qwen3.8-27b-4bit` on the laptop, and Flow refused its first draft because one number could not be traced to the data.
 
 **One caution before you start.** In this build, the path's first step does not do quite what its README says. We explain it under Step one, and it is filed as #828.
@@ -60,7 +60,7 @@ The dashboard is a document that rebuilds itself from your files. It is not a we
 
 **The usual way:** a broker's own screen, which knows only that broker's account, or a portfolio website that asks you to upload or type in your positions. We did not time either, so we make no claim about them.
 
-**The Flow way:** the path *A portfolio that explains itself*, in three steps: import your holdings, gather quotes, and read the notes from a model on your Mac.
+**The Flow way:** the path *A portfolio that explains itself*, in three steps. Import your holdings, gather quotes, and read the notes from a model on your Mac.
 
 ## Step one: import the holdings
 
@@ -68,7 +68,7 @@ Home's Money filter shows the path. Pressing Open at 06:38:40 PDT made `Stock Po
 
 ![The path's README in its own copy of the folder](../../assets/flow/paths/portfolio-explains-itself/02-path-readme.webp)
 
-File ▸ Import… took `Brokerage export — positions.xlsx`, a synthetic export we generated for this walk. Compared with the Guide's sample, TSLA is gone, COST is new, and NVDA went from 60 shares to 75. The preview showed the sheet as it would land, with nothing written yet: one sheet, one table, ten rows. The destination was already *Flow ▸ Stock Portfolio*. Under *Left out* it said "Values only: formulas, formatting and charts stay in the workbook."
+File ▸ Import… took `Brokerage export — positions.xlsx`, a synthetic export we generated for this walk. Compared with the Guide's sample, TSLA is gone, COST is new, and NVDA went from 60 shares to 75. The preview showed the sheet as it would land, with nothing written yet. It held one sheet, one table, ten rows. The destination was already *Flow ▸ Stock Portfolio*. Under *Left out* it said "Values only: formulas, formatting and charts stay in the workbook."
 
 ![The Import preview: 1 sheet, 1 table, 10 rows, adding to the path's folder](../../assets/flow/paths/portfolio-explains-itself/03-import-preview.webp)
 
@@ -88,11 +88,11 @@ The dashboard shows its Jobs in the row above the document: *1 Collect data*, *2
 
 Run was pressed at 06:43:18 PDT. By the receipts Flow writes beside the document:
 
-- **Collect data (prices)** saved `data/portfolio-2026-09-30.json` at 06:43:22.4, **4.2 s** after the press. It read 33 sources: the imported table and one Yahoo Finance address per holding, filled in from the one address written in the definition. The receipt lists each one, COST included.
+- **Collect data (prices)** saved `data/portfolio-2026-09-30.json` at 06:43:22.4, **4.2 s** after the press. It read 33 sources. They are the imported table and one Yahoo Finance address per holding, filled in from the one address written in the definition. The receipt lists each one, COST included.
 - **Collect data (headlines)** saved `data/news-2026-09-30.json` about a second later, with 30 headlines (3 per holding).
 - **Watch sources** and **List a folder's files** recorded fingerprints of `Holdings.md`, the data folder and one Federal Reserve page by 06:43:23.9.
 - **The redraw** rewrote the page's bound views, one after another, by 06:43:33, about **15 s** after the press. Every one of them names its source under the chart: `data/portfolio-*.json, newest capture`.
-- **Overnight notes** ran on Flow Runtime with `qwen3.8-27b-4bit` on this Mac. The first draft (7,532 tokens in, 250 out) was **refused**: 23 of its 24 numbers traced to the data, and one, "0.81", did not. The second draft (7,552 in, 152 out) traced 14 of 14 and was written at 06:45:54.9.
+- **Overnight notes** ran on Flow Runtime with `qwen3.8-27b-4bit` on this Mac. The first draft (7,532 tokens in, 250 out) was **refused**. Of its 24 numbers, 23 traced to the data, and one, "0.81", did not. The second draft (7,552 in, 152 out) traced 14 of 14 and was written at 06:45:54.9.
 
 The banner then said *Document review ready · 11 awaiting a decision · Run progress 6 of 6 completed*.
 
@@ -114,7 +114,7 @@ Review Changes lists every change the run made, each already applied to the page
 | Day change | 510 | shares × (latest − previous close), summed |
 | One month | 2.1% (S&P 500: 0.2%) | 22 daily closes, today's share counts |
 
-Every holding is priced, and the coverage table says so first: 10 declared, 10 with a positive quote, 0 missing. If a quote had failed, the totals, weights and allocation would have been withheld rather than drawn from nine of ten.
+Every holding is priced, and the coverage table says so first, with 10 declared, 10 with a positive quote, 0 missing. If a quote had failed, the totals, weights and allocation would have been withheld rather than drawn from nine of ten.
 
 ![The holdings table after the run: sorted by value, with NVDA, now 75 shares, first](../../assets/flow/paths/portfolio-explains-itself/09-review-holdings.webp)
 
@@ -153,7 +153,7 @@ All eleven changes were kept at 06:47:28 PDT, after reading the diff and the not
 | **Same tokens on Claude Opus 5.5** ($4 / $20 per M) | | | **$0.068** |
 | **Same tokens on Claude Sonnet 5** ($2 / $10 per M) | | | **$0.034** |
 
-The honest reading: the part of this path that matters to your money, the prices, totals, weights and charts, is a saved calculation. It runs in seconds, uses no model, and gives the same answer from the same capture every time. The model is used for one short paragraph, and it is the slowest part of the run by far: about 140 of the 157 seconds. Running it on the laptop is what keeps your positions off anyone's server. The tables themselves never needed a model.
+The honest reading is that the part of this path that matters to your money, the prices, totals, weights and charts, is a saved calculation. It runs in seconds, uses no model, and gives the same answer from the same capture every time. The model is used for one short paragraph, and it is the slowest part of the run by far, about 140 of the 157 seconds. Running it on the laptop is what keeps your positions off anyone's server. The tables themselves never needed a model.
 
 ## FAQ
 

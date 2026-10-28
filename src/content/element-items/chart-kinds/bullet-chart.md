@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 Keep rows in the same unit on a shared axis; put dollars, percentages and days in separate exhibits.
 
-**Takes:** a table of metrics, each with an actual value and a target: the quarterly scorecard, where every row is a measure against its goal.
+**Takes:** a table of metrics, each with an actual value and a target. That is the quarterly scorecard, where every row is a measure against its goal.
 
 ![Bullet chart in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-bullet-chart.webp)

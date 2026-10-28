@@ -39,22 +39,22 @@ receipt:
 
 ## The press release we would want to write
 
-**Consultants can now turn a client's monthly PDFs, decks and spreadsheets into a signed-off brief without the client's files ever leaving their Mac.** Orionfold Flow imports the files as plain Markdown, drafts the brief's summary with a source on every claim, waits for the consultant to approve the exact words, and publishes the PDF or Word file the client receives. The next month, the consultant drops in the new files and presses Run: the figures table redraws itself and a fresh draft arrives in under a minute. In our own test, both months' drafts ran on an open model on a laptop, in 43 and 45 seconds, at a model cost of $0.00.
+**Consultants can now turn a client's monthly PDFs, decks and spreadsheets into a signed-off brief without the client's files ever leaving their Mac.** Orionfold Flow imports the files as plain Markdown, drafts the brief's summary with a source on every claim, waits for the consultant to approve the exact words, and publishes the PDF or Word file the client receives. The next month, the consultant drops in the new files and presses Run. The figures table redraws itself and a fresh draft arrives in under a minute. In our own test, both months' drafts ran on an open model on a laptop, in 43 and 45 seconds, at a model cost of $0.00.
 
 > "I used to rebuild the brief from a blank page every month. Now the brief remembers where every number came from, and I spend my time on the two paragraphs the client actually argues about."
 > — *Illustrative quote, not from a customer.*
 
 ## The answer first
 
-A recurring brief is the same job twelve times a year. Flow makes the eleventh time cost what it should: the few minutes it takes to read what changed. Three things make that true.
+A recurring brief is the same job twelve times a year. Flow makes the eleventh time cost what it should. That is the few minutes it takes to read what changed. Three things make that true.
 
-1. **The client's files come to you, and stay with you.** File ▸ Import reads Word, Excel, PowerPoint and PDF into the brief's own folder as Markdown you can search and cite. A PDF can be read on this Mac with no model at all: free, and nothing leaves the machine.
+1. **The client's files come to you, and stay with you.** File ▸ Import reads Word, Excel, PowerPoint and PDF into the brief's own folder as Markdown you can search and cite. A PDF can be read on this Mac with no model at all. It is free, and nothing leaves the machine.
 2. **The draft cites everything and waits for you.** Expand with Sources wrote 265 words from four files, footnoted sentence by sentence, in 43 seconds on a local open model. Nothing entered the document until we ticked *I accept changes*.
-3. **Next month starts from this one.** New files in, Run pressed: the *What changed* table redrew from the new figures in under half a second, and a new, cited draft followed 45 seconds later.
+3. **Next month starts from this one.** New files in, Run pressed. The *What changed* table redrew from the new figures in under half a second, and a new, cited draft followed 45 seconds later.
 
 ## The job
 
-A fractional operations advisor (call them the consultant) sends Cascadia Freight a steering brief every month. The inputs arrive the way inputs always arrive: an operations report as a PDF, a KPI workbook, last month's steering deck. The output is two pages the steering group will read before the meeting: what moved, what is at risk, what they are asked to decide.
+A fractional operations advisor (call them the consultant) sends Cascadia Freight a steering brief every month. The inputs arrive the way inputs always arrive. They are an operations report as a PDF, a KPI workbook, and last month's steering deck. The output is two pages the steering group will read before the meeting. The pages say what moved, what is at risk, and what the group is asked to decide.
 
 The old way is familiar. Open three files. Copy the numbers into a table by hand. Write the summary from memory of what the files said. Hope nothing was transposed. Next month, do it again, because the brief is a document, not a system. *How long that takes is not something we measured; a figure of two to three hours a month is our assumption, labelled as such below.*
 
@@ -62,15 +62,15 @@ What the consultant needs is not a faster typist. It is a brief that keeps its o
 
 ## Month one: from three files to a brief you would sign
 
-**Bring the files in.** Each file arrives as a preview first. Nothing is written until you add it, and the task says plainly what did not come across: a deck's animations, a workbook's formulas and charts.
+**Bring the files in.** Each file arrives as a preview first. Nothing is written until you add it, and the task says plainly what did not come across, such as a deck's animations, a workbook's formulas and charts.
 
 ![A KPI workbook arriving as two tables, with what was left out named](../../assets/flow/paths/recurring-client-brief/03-import-workbook-preview.webp)
 
-For the PDF, Flow asks who should read it. The default offered a hosted model at "about under 1¢". We chose **On this Mac**, which reads the PDF's own text layer: free, nothing sent anywhere, and every figure written checked against its page ("25 figures checked").
+For the PDF, Flow asks who should read it. The default offered a hosted model at "about under 1¢". We chose **On this Mac**, which reads the PDF's own text layer. It is free, nothing is sent anywhere, and every figure written is checked against its page ("25 figures checked").
 
 ![Choosing to read a client PDF on this Mac](../../assets/flow/paths/recurring-client-brief/04-import-pdf-reader.webp)
 
-**Draft with sources.** The brief carries its own Jobs in plain text at the top of the file: collect the figures, watch the sources, list the client's files, expand *This month* from them. Pressing Run did the first three in under half a second and then handed the fourth to Flow Runtime, the open model Flow runs on the Mac itself: qwen3.8-27b-4bit.
+**Draft with sources.** The brief carries its own Jobs in plain text at the top of the file. They collect the figures, watch the sources, list the client's files, and expand *This month* from them. Pressing Run did the first three in under half a second and then handed the fourth to Flow Runtime, the open model Flow runs on the Mac itself. The model was qwen3.8-27b-4bit.
 
 ![The brief's Jobs running on this Mac](../../assets/flow/paths/recurring-client-brief/08-run-jobs-local.webp)
 
@@ -78,9 +78,9 @@ Forty-three seconds later the draft arrived as a proposal, not an edit. Every se
 
 ![The proposed summary, every sentence cited, waiting for approval](../../assets/flow/paths/recurring-client-brief/10-review-draft.webp)
 
-We checked each figure in the draft against the imported files. All of them held: 95.3% on time, $4.49 per parcel, 0.58% claims, Boise at 91.9% against a 93% target, the $42k pilot, the September 15 RFP decision. Two guardrails ran on approval, *unsupported citations* and *human review*, and both passed.
+We checked each figure in the draft against the imported files. All of them held. They were 95.3% on time, $4.49 per parcel, 0.58% claims, Boise at 91.9% against a 93% target, the $42k pilot, the September 15 RFP decision. Two guardrails ran on approval, *unsupported citations* and *human review*, and both passed.
 
-**Publish.** File ▸ Publish writes the file the client receives: PDF with running headers, or Word for a client who edits. The PDF took one save dialog. So did the Word file.
+**Publish.** File ▸ Publish writes the file the client receives. That is a PDF with running headers, or Word for a client who edits. The PDF took one save dialog. So did the Word file.
 
 ![Publishing the brief as a Word document](../../assets/flow/paths/recurring-client-brief/12-publish-word.webp)
 
@@ -90,7 +90,7 @@ This is where a recurring brief either becomes a system or stays a chore.
 
 The consultant moved August's imports aside, imported September's workbook and report, and updated five figures in the *Client Figures* table. Then Run.
 
-The *What changed* table redrew from the new figures before the model had started. The draft followed: 274 words from the September files, 45 seconds, same local model, same $0.00. Boise's pilot, the RFP timing gap, 54 of 60 seasonal roles filled: all there, all cited.
+The *What changed* table redrew from the new figures before the model had started. The draft followed. It was 274 words from the September files, 45 seconds, same local model, same $0.00. Boise's pilot, the RFP timing gap and 54 of 60 seasonal roles filled were all there, all cited.
 
 ![Month two's draft: new files, new figures, the same review](../../assets/flow/paths/recurring-client-brief/15-month-two-review.webp)
 
@@ -100,7 +100,7 @@ Side by side, the two published briefs are the argument for the whole product. S
 
 ## What it costs, measured
 
-Flow keeps a receipt for every write: who, when, from what, with which model, at what cost. These are the receipts' numbers, not estimates.
+Flow keeps a receipt for every write. It says who, when, from what, with which model, at what cost. These are the receipts' numbers, not estimates.
 
 | | Month one (August) | Month two (September) |
 |---|---|---|
@@ -113,9 +113,9 @@ Flow keeps a receipt for every write: who, when, from what, with which model, at
 
 ![Settings ▸ Observations ▸ Cost: 6.9K tokens in, 1.9K out, $0.00](../../assets/flow/paths/recurring-client-brief/16-observations-cost.webp)
 
-The honest reading of that table: **running this brief on an open model saves about two cents a month.** A consultant with twelve clients saves about three dollars a year. Nobody should switch models for three dollars.
+Here is the honest reading of that table. **Running this brief on an open model saves about two cents a month.** A consultant with twelve clients saves about three dollars a year. Nobody should switch models for three dollars.
 
-You choose the local model for a different reason. The client's operations report never went to anyone's server. There was no key to manage and no bill to forecast, and a re-run cost nothing, so we re-ran freely. The saving is not money. It is the question you no longer have to ask a client: *is it all right if I send your numbers to an AI company?*
+You choose the local model for a different reason. The client's operations report never went to anyone's server. There was no key to manage and no bill to forecast, and a re-run cost nothing, so we re-ran freely. The saving is not money. It is the question you no longer have to ask a client. *Is it all right if I send your numbers to an AI company?*
 
 ## FAQ
 
@@ -127,13 +127,13 @@ You choose the local model for a different reason. The client's operations repor
 
 **What do I need?** Flow Pro, with the Flow Import and Flow Publish add-ons: $10 a month each, or $96 a year. The Markdown documents themselves are never part of a plan.
 
-**What if a figure is wrong?** Every sentence's footnote opens the file it came from, and History shows each version of the brief and who wrote it: you, a Job, or an outside editor.
+**What if a figure is wrong?** Every sentence's footnote opens the file it came from, and History shows each version of the brief and who wrote it, whether you, a Job, or an outside editor.
 
 ## Update: build 0249-1 (2026-09-28, in Flow 2.1)
 
 These shipped in **Flow 2.1** (build 3020, 30 September 2026). They were checked on a pre-release build (0249-1) on 28 September; the walk above describes 2.0.3.
 
-- **PDF import keeps every line (#774).** Both Cascadia reports now come in whole: August's "…0.58% of shipments." and all three lines of September's Headline. A line that still went missing would be named under *Left out*. Checked through the Import route with the real PDFs (C3790), not on screen.
+- **PDF import keeps every line (#774).** Both Cascadia reports now come in whole, with August's "…0.58% of shipments." and all three lines of September's Headline. A line that still went missing would be named under *Left out*. Checked through the Import route with the real PDFs (C3790), not on screen.
 - **Run no longer refuses its own draft (#775).** A draft step now waits only for a change someone else made, and it waits *before* the model runs. On 0249-1, two runs applied the folder list and the date stamp and added nothing to Review.
 - **A local model's lookup reply that cannot be read is asked for once more (#789).** In the 0249-1 check the draft did not finish because the lookup reply failed its format twice; 2.1 tells the model why and asks again.
 - **Published footnotes read 1, 2, 3 (#777).** In PDF, web and EPUB the numbers follow first use, and a repeat keeps its number. Word keeps one note per source. Checked on this brief's published HTML and Word file; the PDF was not re-rendered on screen.

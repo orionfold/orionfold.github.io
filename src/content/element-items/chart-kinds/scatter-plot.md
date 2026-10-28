@@ -14,6 +14,6 @@ tint: "#0070f5"
 
 Label both units and investigate outliers; association does not establish cause.
 
-**Takes:** a table with two numeric columns per row, and optionally a category and a size: accounts by seats and spend, models by latency and quality.
+**Takes:** a table with two numeric columns per row, and optionally a category and a size, such as accounts by seats and spend or models by latency and quality.
 
 ![Scatter plot in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-scatter-plot.webp)

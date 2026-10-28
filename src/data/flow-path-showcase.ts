@@ -243,7 +243,7 @@ export const SHOWCASE: Record<string, PathShowcase> = {
     hook: 'Your notes, as files you own.',
     chip: 'Own your notes',
     hue: 'purple',
-    steps: ['Export from Notion; add the folder', 'Pick a model: on this Mac or your own key', 'Every AI edit is a change you approve'],
+    steps: ['Export from Notion; add the folder', 'Pick a model on this Mac or with your own key', 'Every AI edit is a change you approve'],
     benefits: ['Ownership', 'Cost'],
     diagram: { in: ['md', 'folder'], middle: 'router', out: ['flow', 'claude'], through: [], captions: ['Notion export', 'Smart Routing', 'Mac or your key'] },
     doc: {
@@ -320,7 +320,7 @@ export const SHOWCASE: Record<string, PathShowcase> = {
       blocks: [
         { kind: 'kpis', items: [{ label: 'Value', value: '111,233' }, { label: 'Day change', value: '510' }, { label: 'Gain on cost', value: '16%' }] },
         { kind: 'bars', title: 'Largest holdings', items: [{ label: 'NVDA', value: 17294, hi: true }, { label: 'AAPL', value: 13305 }, { label: 'GOOGL', value: 10434 }] },
-        { kind: 'callout', tone: 'watch', title: 'Overnight note', text: 'The first draft was refused: one number could not be traced to the data. The second draft traced 14 of 14.' },
+        { kind: 'callout', tone: 'watch', title: 'Overnight note', text: 'The first draft was refused. One number could not be traced to the data. The second draft traced 14 of 14.' },
       ],
       review: '11 changes: 10 views redrawn and the note.',
       receipt: '~2 min 21 s · Qwen 3.8 27B · on this Mac · $0.00',
@@ -366,7 +366,7 @@ export const SHOWCASE: Record<string, PathShowcase> = {
       blocks: [
         { kind: 'kpis', items: [{ label: 'Spent', value: '$6,916' }, { label: 'Plan', value: '$7,810' }, { label: 'Savings rate', value: '29.4%' }] },
         { kind: 'bars', title: 'Travel against its budget ($)', items: [{ label: 'Budget', value: 300 }, { label: 'Spent', value: 386, hi: true }] },
-        { kind: 'callout', tone: 'ask', title: 'No rule could place these', text: '2 lines, $445: a vet visit and a Zelle payment. Name these first.' },
+        { kind: 'callout', tone: 'ask', title: 'No rule could place these', text: '2 lines, $445. They are a vet visit and a Zelle payment. Name these first.' },
       ],
       review: '8 changes: the charts, the tables and the notes.',
       receipt: '~1 s totals · Qwen 3.8 27B notes · on this Mac · $0.00',

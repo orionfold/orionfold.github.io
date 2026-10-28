@@ -16,9 +16,9 @@ We learn to put parts of ourselves on hold. The research waits while we build. T
 
 In [Limitless, Without the Pill](https://orionfold.com/story/limitless-without-the-pill/), I wrote about building Orionfold across research, software, publishing, design, and operations. What moved me was the possibility of bringing different modes of thought into the same working life. Context preserved between them made those transitions more practical.
 
-That experience left me with a question: how much of our ambition is constrained by the cost of keeping it alive?
+That experience left me with a question. How much of our ambition is constrained by the cost of keeping it alive?
 
-The weekly brief, the editorial review, the plan for a project we care about: each needs somebody to return, check the sources, update the numbers, and recover the reasoning. The cost is small enough to overlook and persistent enough to shape what we attempt.
+Take the weekly brief, the editorial review, the plan for a project we care about. Each needs somebody to return, check the sources, update the numbers, and recover the reasoning. The cost is small enough to overlook and persistent enough to shape what we attempt.
 
 Living Documents begin here. A page can preserve its sources, carry a bounded routine, and leave evidence of the work done on its behalf. The purpose is to help knowledge remain useful while its owner turns to another part of life. A little less reconstruction can create room for a much larger question.
 
@@ -34,7 +34,7 @@ But a useful page also contains an invisible half. Somebody knows which sources 
 
 A Living Document gives recurring Jobs a home. In Flow, a document can name files, folders, and public web sources, collect and shape data, and bind its charts and tables to the resulting files. Saved Jobs describe what should happen again. The updated page gives a person something to understand and revise.
 
-This makes an old question newly useful: what would let me return to this work with my curiosity intact? The answer might be a refreshed table, a source check, or a clear account of why an update could not run. Flow provides editors for Jobs and data definitions, including previews. A local model can draft a definition from a sentence for you to review. The Jobs remain yours to author or accept.
+This makes an old question newly useful. What would let me return to this work with my curiosity intact? The answer might be a refreshed table, a source check, or a clear account of why an update could not run. Flow provides editors for Jobs and data definitions, including previews. A local model can draft a definition from a sentence for you to review. The Jobs remain yours to author or accept.
 
 <a id="the-morning-is-the-product"></a>
 
@@ -42,7 +42,7 @@ This makes an old question newly useful: what would let me return to this work w
 
 Imagine a creator who is also building a small business. She keeps an operating review beside a folder of sales exports, campaign results, and a few public sources worth watching. The document holds measures she has chosen and questions those measures may help her answer.
 
-During the day, she can ask Flow’s Agency to proofread, summarize, translate, or develop a document. Agency proposes exact changes for her review before saving. A standing Night Shift job makes a different agreement: she declares bounded maintenance in advance, then reviews its versioned results afterward. These are distinct permissions, explained in [writing with AI](https://orionfold.com/flow/writing-with-ai/).
+During the day, she can ask Flow’s Agency to proofread, summarize, translate, or develop a document. Agency proposes exact changes for her review before saving. A standing Night Shift job makes a different agreement. She declares bounded maintenance in advance, then reviews its versioned results afterward. These are distinct permissions, explained in [writing with AI](https://orionfold.com/flow/writing-with-ai/).
 
 During the next Night Shift, Flow collects the declared data and redraws the bound tables and charts. With a paid plan and a local model configured, Overnight notes can add a few sentences about the page’s numbers and what moved.
 
@@ -64,7 +64,7 @@ Flow’s Overnight notes begin with a deliberately narrow assignment. The model 
 
 This establishes that a number has a source in the supplied data. It cannot establish that the source is correct, the interpretation is fair, or the conclusion deserves publication. Your experience and judgment still matter at each of those steps.
 
-Flow’s [receipts and evidence](https://orionfold.com/flow/receipts/) keep a record beside the work: the model and route, cost and its basis, checks and their results, and revisions before and after a change. An estimate must remain distinguishable from an observed charge. A previous version provides a way back.
+Flow’s [receipts and evidence](https://orionfold.com/flow/receipts/) keep a record beside the work. It holds the model and route, cost and its basis, checks and their results, and revisions before and after a change. An estimate must remain distinguishable from an observed charge. A previous version provides a way back.
 
 A person can take a larger creative risk when a smaller operational mistake is easier to see and recover from. Visible evidence gives exploration a firmer footing.
 
@@ -106,7 +106,7 @@ Ownership extends to the business model. Flow Base keeps reading, writing, searc
 
 The bridge between a large ambition and a useful document is a small practice. For Living Documents, I use an adaptation of FOLD: Frame the outcome, Organize the routine, Leave a receipt, Develop the practice.
 
-**Frame the outcome.** Choose a page you already reopen. Write down what would make returning easier: a weekly view of campaign results, a research brief with current sources, or a budget whose chart follows new data. A clear outcome helps you recognize a useful result and reject a distracting one.
+**Frame the outcome.** Choose a page you already reopen. Write down what would make returning easier. It might be a weekly view of campaign results, a research brief with current sources, or a budget whose chart follows new data. A clear outcome helps you recognize a useful result and reject a distracting one.
 
 **Organize the routine.** Name the sources, the permitted changes, and the rhythm. A researcher may watch selected public pages. A creator may work from their own exports. A small team may begin with files it already exchanges. Flow’s editors let you define the recurring work and inspect its definitions. Begin with a task small enough to understand completely.
 
@@ -122,11 +122,11 @@ Flow includes seven Living Document examples as starting points. Their sources a
 
 An experienced researcher knows which distinctions a beginner may miss. An editor knows which questions strengthen a brief. A thoughtful operator knows which measures belong together and which comparison would mislead. Expertise lives partly in those choices.
 
-A book can explain them. A template can preserve their shape. A Living Document could carry some of that expertise as a practice: sources, definitions, examples, and review criteria that a reader can inspect and adapt while doing real work.
+A book can explain them. A template can preserve their shape. A Living Document could carry some of that expertise as a practice, with sources, definitions, examples, and review criteria that a reader can inspect and adapt while doing real work.
 
 Some is an essential qualification. Judgment cannot be fully packaged. A useful approach reveals its assumptions and makes clear where interpretation begins. It leaves room for the learner’s experience to change it. Its value may lie as much in the mistakes it anticipates as the steps it performs.
 
-This is a future I want to explore: richer domain practices and documents that cooperate through declared relationships. These are future possibilities, not a claim about Flow’s current feature set. They should grow from individual documents that people already find useful. A change in one brief must not silently rewrite conclusions elsewhere.
+This is a future I want to explore, with richer domain practices and documents that cooperate through declared relationships. These are future possibilities, not a claim about Flow’s current feature set. They should grow from individual documents that people already find useful. A change in one brief must not silently rewrite conclusions elsewhere.
 
 There is a personal possibility here as well. The researcher’s care can improve the writer’s argument. The builder’s experiment can give the researcher a better question. A practice carried between them gives curiosity more chances to compound.
 
@@ -171,6 +171,6 @@ I want the knowledge we have worked to acquire to keep helping us while we disco
 
 ## Related reading
 
-- [The Flow product tour](https://orionfold.com/flow/tour/) — Four paths through the product: writing, files, models, and the record.
+- [The Flow product tour](https://orionfold.com/flow/tour/) — Four paths through the product, covering writing, files, models, and the record.
 - [Flow technical specifications](https://orionfold.com/flow/specifications/) — Compatibility, formats, model routes, privacy boundaries, and measured facts.
 - [Why approval comes first](https://orionfold.com/story/the-day-i-stopped-trusting-invisible-edits/) — The product decision behind the daytime review gate.

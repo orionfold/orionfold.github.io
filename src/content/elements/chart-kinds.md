@@ -5,7 +5,7 @@ persona: Anyone who has data in a document and isn't sure which chart tells its 
 drafted: "2026-10-26"
 build: Orionfold Flow review build elements-1 (dev, main d43eb7f2), macOS 26.6, MacBook Pro M3 Max 36 GB, window 1512×949; walked 2026-10-26 14:06–14:44 PDT by the agent in an away session, one Flow instance; no model runs
 data: The Flow Guide's Charts Gallery, whose exhibits are fictional teaching samples. The file the walk switched was reverted and read back byte-identical. The account row is painted over in every full-window shot.
-dek: "Open a chart in Flow and the Elements panel turns into a catalogue of every kind Flow draws: 34 chart kinds in four groups named for the question each answers, and 20 diagram kinds when the open block is a diagram. Each card has a drawing of its shape and one line, and the kind on screen carries a check. In this walk a bar chart became a lollipop chart in one press with its data kept. A candlestick, which this data can't make, was refused with a sentence saying what it needs. No model is involved: the switch happens on your Mac at once."
+dek: "Open a chart in Flow and the Elements panel turns into a catalogue of every kind Flow draws: 34 chart kinds in four groups named for the question each answers, and 20 diagram kinds when the open block is a diagram. Each card has a drawing of its shape and one line, and the kind on screen carries a check. In this walk a bar chart became a lollipop chart in one press with its data kept. A candlestick, which this data can't make, was refused with a sentence saying what it needs. No model is involved. The switch happens on your Mac at once."
 hero: ../../assets/flow/elements/chart-kinds/01-kinds-panel.webp
 heroAlt: "A bar chart open in its editor beside the Elements panel: Comparison and ranking with Bar chart checked, then Change over time; the editor's header reads a two-column table — one category column, one number column — with up to a dozen rows"
 source: orionfold-flow articles/23-elements-chart-kinds/ARTICLE.md
@@ -38,11 +38,11 @@ A table of numbers can become a dozen pictures, and most of them mislead. Bars w
 
 ![The same chart redrawn as a lollipop chart: thin stems with dots, Q3 in the accent colour; Lollipop chart now carries the check; the header reads the same two-column table as a bar chart, but with many rows or long labels](../../assets/flow/elements/chart-kinds/02-switched-to-lollipop.webp)
 
-Pressing **Lollipop chart** redrew the five quarters as stems and dots, Q3 still in the accent colour. The check moved, and the editor's header changed to the new kind's need: *the same two-column table as a bar chart, but with many rows or long labels*.
+Pressing **Lollipop chart** redrew the five quarters as stems and dots, Q3 still in the accent colour. The check moved, and the editor's header changed to the new kind's need. *It wanted the same two-column table as a bar chart, but with many rows or long labels*.
 
 ![Candlestick chart pressed: the chart stays a lollipop, the card reads Your data doesn't fit it; the pane offers the example in orange, and above the axis pickers: Your data doesn't fit a candlestick chart: it needs a table of date, open, high, low and close, with Start from the example and Keep mine](../../assets/flow/elements/chart-kinds/03-candlestick-refused.webp)
 
-Pressing **Candlestick chart** on the same data changed nothing. The card turned orange, *Your data doesn't fit it; the pane offers the example*, and the editor said exactly why: *it needs a table of date, open, high, low and close*. **Keep mine** and **Revert** left the file as it was; read back afterwards, it was byte for byte the Guide's original.
+Pressing **Candlestick chart** on the same data changed nothing. The card turned orange, *Your data doesn't fit it; the pane offers the example*, and the editor said exactly why. *It needs a table of date, open, high, low and close*. **Keep mine** and **Revert** left the file as it was; read back afterwards, it was byte for byte the Guide's original.
 
 ## The numbers
 

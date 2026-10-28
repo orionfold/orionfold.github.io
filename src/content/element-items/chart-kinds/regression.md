@@ -14,6 +14,6 @@ tint: "#0170f5"
 
 Keep the points visible and avoid causal language or predictions beyond the observed range.
 
-**Takes:** the same two numeric columns as a scatter, when you want the fitted trend drawn through them: ad spend against signups, effort against score.
+**Takes:** the same two numeric columns as a scatter, when you want the fitted trend drawn through them, such as ad spend against signups or effort against score.
 
 ![Regression in the Charts Gallery](../../../assets/flow/elements/chart-kinds/gallery-regression.webp)
