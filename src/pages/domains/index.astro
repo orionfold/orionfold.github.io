@@ -87,6 +87,7 @@ const FAQ = [
   { q: 'What does it cost to publish a Domain?', a: 'Publishing needs Flow Pro ($10 a month) and the Publish add-on ($10 a month). There is no fee per Domain, so publish as many as you like. Bringing a Domain in is free on Base. Chat on it, and the door for your own agents, need Flow Pro. Any AI you use follows the terms of the service you connect.' },
   { q: 'Can my clients use it without Flow?', a: 'Yes. They can read the website, the PDF or the EPUB, or open the Office files. In Flow they also get Chat on the Domain, figures they can press and step through, and your updates.' },
   { q: 'What happens to client material?', a: 'Your documents stay in your files. Before a run leaves your Mac, Flow shows where it is going and asks. Publishing is a separate step you take yourself, so check the files and the repository’s visibility first.' },
+  { q: 'Can I take a blueprint and launch it as my own Domain?', a: 'Yes. That is what the blueprints are for. Each one is a plan, not a product. Build it in Flow from your own know-how, put your name, your version and your licence on the README, and publish it to your own GitHub. If you do, write to Manav. The next walkthrough on this page could be yours.' },
   { q: 'Will publishing a Domain bring me clients?', a: 'Not on its own. Publishing gives people a way to find and use your work. You still need a clear offer, the right clients and a reason for them to choose you. Flow does not promise leads or revenue.' },
 ];
 const schema = [
@@ -150,7 +151,7 @@ const schema = [
 
     {blueprints.length > 0 && (
       <section class="dm-section ls-container" aria-labelledby="dm-blueprints">
-        <div class="dm-head"><p class="ls-eyebrow">BLUEPRINTS</p><h2 id="dm-blueprints">Your expertise<br /><span class="ls-stroke">has a Domain in it.</span></h2><p class="dm-sub">Four blueprints for four kinds of expert. Each one shows what a Domain for that work would hold and how you would build it, with the launch story as the walkthrough. None of them is built yet. The next one could be yours.</p></div>
+        <div class="dm-head"><p class="ls-eyebrow">BLUEPRINTS</p><h2 id="dm-blueprints">Your expertise<br /><span class="ls-stroke">has a Domain in it.</span></h2><p class="dm-sub">Blueprints we give away. Each is a plan for a Domain in one field. It shows what the Domain would hold, the signals behind it, and the Flow steps to build it, with the launch story as the walkthrough. Take the one for your work, build it, put your name on it, and launch it as your Domain. None of them is built yet.</p></div>
         <ul class="dm-cards">
           {blueprints.map((b) => (
             <li>

@@ -492,6 +492,23 @@ const domains = defineCollection({
       blueprint: z
         .array(z.object({ n: z.string().default(''), name: z.string(), role: z.string(), chips: z.array(z.tuple([z.string(), z.string()])) }))
         .optional(),
+      // Search and answer engines (G-138): the phrases experts in the field
+      // type and ask, carried into the Article JSON-LD and llms.txt; the
+      // questions they ask an assistant, rendered as a section and FAQPage.
+      keywords: z.array(z.string()).default([]),
+      faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
+      // The Domain on a client job, played in a drawn Flow window (DomainMock):
+      // six steps, each what the expert asks, what Chat answers, the document
+      // open, the Element or Skill drawn, and the status pill. Only the names
+      // the article gives are written on screen; everything else is a grey
+      // placeholder, the way Flow's own Product Mock skill draws.
+      mock: z
+        .object({
+          folder: z.string(),
+          client: z.string(),
+          steps: z.array(z.object({ title: z.string(), ask: z.string(), reply: z.string(), doc: z.string(), block: z.string(), status: z.string() })).min(4).max(8),
+        })
+        .optional(),
       minutes: z.number(),
       draft: z.boolean().default(false),
     })

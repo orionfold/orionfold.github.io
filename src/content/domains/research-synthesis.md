@@ -7,8 +7,8 @@ hook: "Your way of turning interviews into evidence a client can decide on, with
 icon: skill-decision-brief
 tint: "#cb10d5"
 order: 3
-dek: "You take forty transcripts and hand back one decision. The method is yours, the coding frame is yours, and the standards you work to are in your head and a dozen past reports. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is an invitation."
-description: "A blueprint for a Flow Domain for market research and insights consultants. What it would hold, the signals behind it, and how to build it in Flow."
+dek: "You take forty transcripts and hand back one decision. The method is yours, the coding frame is yours, and the standards you work to are in your head and a dozen past reports. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
+description: "A research synthesis framework as a Flow Domain blueprint for market research and insights consultants. What it holds, the signals, and how to build it in Flow."
 drafted: "2026-10-28"
 release: "3.0"
 blueprint:
@@ -34,12 +34,64 @@ blueprint:
   - name: Worked Example
     role: "One brief built from a past study, with names and numbers changed and the choices explained."
     chips: [["component-callout", "Worked example"]]
-minutes: 8
+keywords: ["qualitative research synthesis framework", "research synthesis template", "discussion guide template", "coding frame template", "insights report template", "custom GPT for market researchers", "market research consultant toolkit", "AI disclosure in research reports", "decision brief template", "research repository for consultants"]
+faq:
+  - q: "Can I use AI to synthesize interview transcripts without losing my method?"
+    a: "Yes, if the method is written down. The Synthesis Method says what counts as a finding and what is only a quote. Chat on the Domain answers from it and links each fact to its file. Every change waits in Review Changes, and a claim Chat cannot stand behind is marked to check."
+  - q: "How do I disclose AI use in a research report?"
+    a: "Your Standards and AI Rules document says how, in your words, with the code points you follow linked to their source. A Sources block on the brief lists what the brief was made from. The client sees your rule and the brief's sources in the same place."
+  - q: "Is a Flow Domain a research repository?"
+    a: "No. It holds the method, the standards and the templates. Transcripts and coded tables stay in the client's folder on your Mac. The Domain is what you publish, and it holds no client material."
+  - q: "Does a Flow Domain replace the custom GPT I use for synthesis?"
+    a: "It is a different shape. A GPT is a chat inside one service, and OpenAI retires custom GPTs on December 11, 2026. A Domain is files in your own GitHub. Chat on it in Flow answers from your documents. The method stays yours whatever an AI service does."
+  - q: "What does it cost to publish a research Domain?"
+    a: "Bringing a Domain in is free on Base. Writing with Chat needs Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on, another $10 a month. There is no fee per Domain. Skills are free on every plan."
+mock:
+  folder: synthesis-method
+  client: "Northgate Grocers"
+  steps:
+    - title: "Start the study folder"
+      ask: "Start a folder for Northgate Grocers and bring in the twelve interview transcripts from Word."
+      reply: "Added 12 documents. Each has a Sources block naming its file. 2 items to check before you rely on them."
+      doc: "Transcript 01"
+      block: "Sources"
+      status: "Imported · 2 to check"
+    - title: "Code the interviews"
+      ask: "Code transcripts 1 to 4 against the Coding Frame and put the codes in a table."
+      reply: "Coded four transcripts with the Frame's 18 codes. The table has 61 rows. 3 passages did not fit a code and are marked."
+      doc: "Coded Table"
+      block: "Table"
+      status: "3 claims to check"
+    - title: "Find the themes"
+      ask: "Draft the findings from the coded table, with one quote per theme and the count behind it."
+      reply: "Drafted Findings. Five themes, each with its count as a bar chart and a quote. Every quote links to its transcript."
+      doc: "Findings"
+      block: "Chart · Bar"
+      status: "1 change to review"
+    - title: "Compare the options"
+      ask: "Run Option Comparison on the three options in the brief."
+      reply: "Option Comparison drew the three options on the four facts that tell them apart. It waits in Review Changes."
+      doc: "Decision Brief"
+      block: "Option Comparison"
+      status: "1 change to review"
+    - title: "Record the decision"
+      ask: "Add the decision form from the Template so the client can record their choice."
+      reply: "Added the Form. Its button is Decide, so the option and the reason are recorded with the client's name."
+      doc: "Decision Brief"
+      block: "Form · Decide"
+      status: "Decided"
+    - title: "Write the lesson back"
+      ask: "A new code came up in every store interview. Add it to the Coding Frame."
+      reply: "Added the code to Discussion Guide and Coding Frame, with the two passages that showed it. It waits in Review Changes."
+      doc: "Discussion Guide and Coding Frame"
+      block: "Change Summary"
+      status: "1 document changed"
+minutes: 10
 ---
 
 You are the person a client calls when they have a decision to make and the answer is in what customers say. You run the interviews, or you read the transcripts someone else ran, and you hand back evidence a leadership team can act on. You have a method for it. It is in your head, in a coding frame you keep adapting, and in the standards you hold to without ever writing them down.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. The point of this page is to show you what yours could hold, and to ask you to build it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 
@@ -79,6 +131,22 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 **Decision Brief Template** is the shape of what you hand back. What the client is deciding, the options, the evidence for each, and a recommendation with its sources. A Decision Brief Skill draws it. An Option Comparison puts the choices side by side on the facts that tell them apart.
 
 **Worked Example** is one brief from a past study with names and numbers changed, and the choices explained. A reader learns more from one finished brief than from ten rules.
+
+## What Flow does for this work
+
+**Chat answers from your Standards, and says when they are silent.** With the Domain chosen, Chat searches your documents before it replies and links each fact to its file. Ask *How do I disclose synthetic data in a report?* and the answer comes from Standards and AI Rules, with the code point linked. If your rules do not cover a case, Chat says so. That is the honest answer a client would want.
+
+**A Form logs one interview at a time.** The Discussion Guide ends in a Form. The questions you always ask, a day field, and a checklist of consent and recording steps. Its button is **Submit**, so each interview is recorded beside the document with the researcher's name. The coding frame is a Table a reader extends for a new study.
+
+**A Skill draws the brief's comparison.** Select the options section of a Decision Brief and run Option Comparison. It puts the choices side by side on the facts that tell them apart, using only what the text says, and names what is missing instead of guessing. A Decision Brief Skill draws the brief's own shape. Both wait in Review Changes until you keep them.
+
+**The client records the decision in the brief.** A Form with the **Decide** act records which option the client chose and why, with their name and the day. The record stays beside the document. When you look back at a study a year later, the decision and its reason are there with the evidence.
+
+**A Job keeps your code of conduct current.** Bring in the code page you follow with New from Web Page and choose *Follow the source*. When the association revises it, the next Jobs run brings the change into your copy where you have not edited. Your Standards document cites a current clause, not the one from the year you wrote it.
+
+**A client's survey export comes in as a table.** Drop in the Excel file and the rows stay rows. The import checklist in the Sources tab asks you to compare the table with its source and note what was left out before you rely on it. A Sources block on the finished brief lists everything it was made from, and marks a source that changed since.
+
+**Your agents can work from the Domain.** With Flow Pro, the Claude Code or Codex you run in Terminal can read the Synthesis Method's reading order, search the Standards and propose a first pass at coding. The proposal lands in Review Changes under the agent's name. The judgment call on each theme stays yours.
 
 ## How you build it in Flow
 

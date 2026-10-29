@@ -1,0 +1,304 @@
+---
+// A Domain on a client job, played in a drawn Flow window (G-138). The
+// article's front matter gives the script: the Domain's folder, a made-up
+// client, and six steps, each what the expert asks Chat, what Chat answers,
+// the document open, the Element drawn and the status pill. Only those names
+// are written on screen; every other line is a grey placeholder, the way
+// Flow's own Product Mock skill draws a journey (CHANGELOG 3.0, 2026-10-26).
+//
+// Each step draws the Element it names (operator 2026-10-28 23:09): the
+// block is resolved against the Elements set ("Chart · Waterfall" is the
+// waterfall chart kind, "Form · Decide" the Form with its act, "Register" the
+// skill) and drawn by family. A chart, diagram or skill shows the app's own
+// drawing of that kind, revealed left to right. A table or register fills
+// row by row. A form shows its fields and its act. An approval card ticks and
+// signs. A diff strikes and adds. A callout, a sources or change-summary
+// list, an image, a folder and a hero or bento each have their own shape.
+// "Publish · GitHub Repository" and "Update · <n> document(s)" draw the
+// sheets Flow shows instead of a block. An unknown name fails the build, so
+// a script can only name what Flow draws.
+//
+// Nothing here is a screenshot and nothing was built. Plays once in view
+// through the shared hero-story player; every control works without motion.
+import '../../../styles/flow-mocks.css';
+import '../../../styles/hero-story.css';
+import { ALL_ELEMENTS, elementDrawing } from '../../../lib/flow/elements';
+import Folder from '@lucide/astro/icons/folder';
+import FileText from '@lucide/astro/icons/file-text';
+import Check from '@lucide/astro/icons/check';
+import Play from '@lucide/astro/icons/play';
+import Pause from '@lucide/astro/icons/pause';
+import ChevronLeft from '@lucide/astro/icons/chevron-left';
+import ChevronRight from '@lucide/astro/icons/chevron-right';
+import Upload from '@lucide/astro/icons/upload';
+import RefreshCw from '@lucide/astro/icons/refresh-cw';
+import ImageIcon from '@lucide/astro/icons/image';
+import Info from '@lucide/astro/icons/info';
+import Link from '@lucide/astro/icons/link';
+
+interface Step { title: string; ask: string; reply: string; doc: string; block: string; status: string }
+interface Props { domain: string; tint: string; folder: string; client: string; files: string[]; steps: Step[] }
+const { domain, tint, folder, client, files, steps } = Astro.props;
+
+type Family = 'drawing' | 'table' | 'folder' | 'form' | 'checklist' | 'callout' | 'list' | 'diff' | 'image' | 'pair' | 'publish' | 'update';
+interface Block { family: Family; label: string; svg?: string; tint?: string; act?: string; count?: string }
+const FAMILY: Record<string, Family> = {
+  'component-table': 'table', 'skill-register': 'table', 'kind-bar-table': 'table',
+  'component-folder': 'folder',
+  'component-form': 'form', 'component-job-form': 'form', 'skill-guided-exercise': 'form', 'agency-form': 'form',
+  'component-approval-card': 'checklist', 'agency-sign-off': 'checklist',
+  'component-callout': 'callout',
+  'component-sources': 'list', 'component-change-summary': 'list',
+  'component-diff': 'diff',
+  'component-image': 'image',
+  'component-hero': 'pair', 'component-bento': 'pair', 'component-section': 'pair',
+};
+const byName = (name: string) => ALL_ELEMENTS.find((e) => e.name.toLowerCase() === name.toLowerCase());
+const kindByName = (name: string) => {
+  const n = name.toLowerCase();
+  return ALL_ELEMENTS.find((e) => e.card.startsWith('kind-') && (e.name.toLowerCase() === n || e.name.toLowerCase() === `${n} chart` || e.name.toLowerCase() === `${n} diagram` || e.name.toLowerCase().startsWith(n)));
+};
+function resolve(block: string): Block {
+  const [name, rest] = block.split(' · ').map((s) => s.trim());
+  if (name === 'Publish') return { family: 'publish', label: block, count: rest };
+  if (name === 'Update') return { family: 'update', label: block, count: rest };
+  let el = (name === 'Chart' || name === 'Diagram') && rest ? kindByName(rest) : byName(name);
+  if (!el && (name === 'Chart' || name === 'Diagram')) el = byName(name);
+  if (!el) throw new Error(`DomainMock (${domain}): "${block}" names no Element; use a name from the Elements set, "Chart · <kind>", "Form · <act>", "Publish · GitHub Repository" or "Update · <n> documents"`);
+  const family = FAMILY[el.card] ?? 'drawing';
+  return { family, label: block, svg: elementDrawing(el.card), tint: el.tint, act: family === 'form' ? rest ?? 'Submit' : family === 'checklist' ? 'Sign off' : rest };
+}
+const BLOCKS = steps.map((s) => resolve(s.block));
+// The client's own documents, in the order the steps open them.
+const clientDocs = [...new Set(steps.map((s) => s.doc))].filter((d) => !files.includes(d));
+const DUR = steps.map(() => 5600);
+const label = `${domain} on a client job, drawn step by step: ${steps.map((s) => s.title).join(', ')}. A made-up client, ${client}. Only the names on this page are on screen; the rest is placeholder.`;
+---
+<figure class="hs dmk" data-story data-durations={DUR.join(',')} data-story-scene="0" style={`--dm-tint:${tint}`} aria-label={label}>
+  <div class="dm-window dmk-win" aria-hidden="true">
+    <div class="dm-bar">
+      <span class="dm-lights"><i></i><i></i><i></i></span>
+      <span class="dm-title"><img src="/logos/orionfold-mark-3d-32.png" alt="" width="16" height="16" />{steps.map((s, i) => <span class="dmk-t" data-s={i}>{s.doc}.md</span>)}</span>
+      <span class="dmk-pill">{steps.map((s, i) => <span class="dmk-t" data-s={i}><i></i>{s.status}</span>)}</span>
+    </div>
+    <div class="dmk-panes">
+      <aside class="dmk-side">
+        <p class="dmk-folder"><Folder size={12} /><span>{folder}</span></p>
+        <ul class="dmk-files">{files.map((f) => <li data-doc={f}><FileText size={11} /><span>{f}</span></li>)}</ul>
+        <p class="dmk-folder dmk-folder--client"><Folder size={12} /><span>{client}</span></p>
+        <ul class="dmk-files">{clientDocs.map((d) => <li data-doc={d}><FileText size={11} /><span>{d}</span></li>)}</ul>
+      </aside>
+      <div class="dmk-doc">
+        {steps.map((s, i) => { const b = BLOCKS[i]; return (
+          <div class:list={['dmk-scene', `dmk-scene--${b.family}`]} data-s={i} style={b.tint ? `--bt:${b.tint}` : undefined}>
+            <p class="dmk-eyebrow">{client}</p>
+            <p class="dmk-h">{s.doc}</p>
+            <p class="dmk-lines"><i style="--w:92%"></i><i style="--w:78%"></i></p>
+            {b.family === 'publish' || b.family === 'update' ? (
+              <div class="dmk-sheet">
+                <p class="dmk-sheet-h">{b.family === 'publish' ? <Upload size={12} /> : <RefreshCw size={12} />}{b.label}</p>
+                <p class="dmk-dest"><span>{b.family === 'publish' ? `github.com/…/${folder}` : `${folder} · ${b.count ?? '1 document'}`}</span></p>
+                <p class="dmk-sheet-rows">{files.slice(0, 4).map((f, k) => <span style={`--k:${k}`}><FileText size={10} />{f}.md</span>)}</p>
+                <p class="dmk-btns"><span class="dmk-btn">{b.family === 'publish' ? 'Publish to GitHub' : 'Update Selected'}</span><span class="dmk-later">{b.family === 'publish' ? 'Cancel' : 'Not Now'}</span></p>
+                <p class="dmk-kept"><Check size={11} stroke-width={3} />{s.status}</p>
+              </div>
+            ) : (
+              <div class="dmk-block">
+                <p class="dmk-block-h"><span class="dmk-ic" set:html={b.svg} /><span>{b.label}</span></p>
+                {b.family === 'drawing' && <p class="dmk-draw" set:html={b.svg} />}
+                {b.family === 'table' && <p class="dmk-grid">{Array.from({ length: 12 }, (_, k) => <i style={`--k:${Math.floor(k / 3)}`} class:list={[k < 3 && 'is-head']}></i>)}</p>}
+                {b.family === 'folder' && <p class="dmk-grid dmk-grid--folder">{Array.from({ length: 4 }, (_, k) => <span style={`--k:${k}`}><FileText size={10} /><i></i><i class="is-short"></i></span>)}</p>}
+                {b.family === 'form' && <p class="dmk-form">{Array.from({ length: 3 }, (_, k) => <span style={`--k:${k}`}><i class="dmk-lab"></i><i class="dmk-box"></i></span>)}<span class="dmk-btn" style="--k:3">{b.act}</span></p>}
+                {b.family === 'checklist' && <p class="dmk-check">{Array.from({ length: 4 }, (_, k) => <span style={`--k:${k}`}><b><Check size={9} stroke-width={3} /></b><i style={`--w:${[70, 55, 80, 48][k]}%`}></i></span>)}<span class="dmk-sign" style="--k:4"><i></i><span class="dmk-btn">Sign off</span></span></p>}
+                {b.family === 'callout' && <p class="dmk-callout"><Info size={12} /><span><i style="--w:88%"></i><i style="--w:64%"></i></span></p>}
+                {b.family === 'list' && <p class="dmk-list">{Array.from({ length: 3 }, (_, k) => <span style={`--k:${k}`}><Link size={9} /><i style={`--w:${[72, 58, 80][k]}%`}></i><em></em></span>)}</p>}
+                {b.family === 'diff' && <p class="dmk-diff"><span class="is-del" style="--k:0"><i style="--w:70%"></i></span><span class="is-add" style="--k:1"><i style="--w:76%"></i></span><span style="--k:2"><i style="--w:60%"></i></span><span class="is-add" style="--k:3"><i style="--w:52%"></i></span></p>}
+                {b.family === 'image' && <p class="dmk-img"><ImageIcon size={22} /><i></i></p>}
+                {b.family === 'pair' && <p class="dmk-pair"><span style="--k:0" set:html={elementDrawing('kind-bar-chart')} /><span style="--k:1" set:html={elementDrawing('component-table')} /></p>}
+                <p class="dmk-kept"><Check size={11} stroke-width={3} />{s.status}</p>
+              </div>
+            )}
+            <p class="dmk-lines"><i style="--w:70%"></i><i style="--w:84%"></i></p>
+          </div>
+        ); })}
+      </div>
+      <aside class="dmk-chat">
+        <p class="dmk-chat-h">Chat · <span>Answers from {folder}</span></p>
+        {steps.map((s, i) => (
+          <div class="dmk-turn" data-s={i}>
+            <p class="dmk-me">{s.ask}</p>
+            <p class="dmk-dots"><i></i><i></i><i></i></p>
+            <p class="dmk-ai">{s.reply}</p>
+            <p class="dmk-route">{BLOCKS[i].family === 'publish' ? 'Publish is yours, not Chat’s' : 'Waits in Review Changes'}</p>
+          </div>
+        ))}
+      </aside>
+    </div>
+  </div>
+  <div class="hs-controls">
+    <button type="button" class="hs-play dmk-nav" data-story-prev aria-label="Previous step"><ChevronLeft size={15} /></button>
+    <button type="button" class="hs-play" data-story-toggle aria-pressed="false" aria-label="Play the story"><Play size={14} class="hs-i-play" /><Pause size={14} class="hs-i-pause" /></button>
+    <div class="hs-steps" role="group" aria-label="Steps">
+      {steps.map((s, i) => <button type="button" class="hs-step" data-story-go={i}><b>0{i + 1}</b><span>{s.title}</span></button>)}
+    </div>
+    <button type="button" class="hs-play dmk-nav" data-story-next aria-label="Next step"><ChevronRight size={15} /></button>
+    <span class="sr-only" data-story-status aria-live="polite"></span>
+  </div>
+  <figcaption class="hs-note">Drawn the way Flow's Product Mock skill draws a journey. Each step shows the Element it names from the Elements set. Only the names this page gives are on screen, and the client is made up. Nothing here is built yet.</figcaption>
+</figure>
+
+<style>
+  .dmk { --dmk-blue: #2f6fed; --dmk-green: #15835c; --ph: #e6eae8; margin: 28px 0 8px; }
+  .dmk-win { font-size: .68rem; }
+  .dmk-pill { display: grid; justify-items: end; }
+  .dmk-pill .dmk-t { display: none; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 99px; background: #e8ecea; font-weight: 600; color: #2b3431; white-space: nowrap; }
+  .dmk-pill .dmk-t i { width: 6px; height: 6px; border-radius: 50%; background: var(--dm-tint); }
+  .dm-title .dmk-t { display: none; }
+  .dmk-panes { display: grid; grid-template-columns: minmax(0, 9.6em) minmax(0, 1fr) minmax(0, 13.2em); min-height: 320px; }
+  .dmk-side { display: grid; align-content: start; gap: 4px; padding: 10px 8px; border-right: 1px solid #e3e7e4; background: #f8f9f8; }
+  :global(.ls) .dmk-side p, :global(.ls) .dmk-doc p, :global(.ls) .dmk-chat p { margin: 0; }
+  .dmk-folder { display: flex; align-items: center; gap: 5px; padding: 2px 4px; font-weight: 700; color: #2b3431; }
+  .dmk-folder--client { margin-top: 8px; }
+  .dmk-folder :global(svg) { color: var(--dm-tint); }
+  :global(.ls) .dmk-files { display: grid; gap: 1px; margin: 0; padding: 0; list-style: none; }
+  .dmk-files li { display: flex; align-items: center; gap: 5px; padding: 3px 4px 3px 14px; border-radius: 5px; color: #56635e; white-space: nowrap; overflow: hidden; }
+  .dmk-files li span { overflow: hidden; text-overflow: ellipsis; }
+  .dmk-files li.is-open { background: #e3ecfd; color: #1f4fb8; font-weight: 700; }
+  .dmk-doc { position: relative; padding: 16px 18px; }
+  .dmk-scene { display: none; gap: 10px; align-content: start; --bt: var(--dm-tint); }
+  .dmk-eyebrow { font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6b7672; }
+  .dmk-h { font: 700 1.05rem/1.15 'Geist Sans', Arial, sans-serif; letter-spacing: -.01em; color: #171c1a; }
+  .dmk-lines { display: grid; gap: 5px; }
+  .dmk-lines i { display: block; width: var(--w); height: 6px; border-radius: 3px; background: var(--ph); }
+
+  /* The block: header with the Element's own drawing as its icon, then the family's body. */
+  .dmk-block { display: grid; gap: 8px; padding: 9px 10px; border: 1px solid color-mix(in srgb, var(--bt) 40%, #e3e7e4); border-radius: 9px; background: color-mix(in srgb, var(--bt) 5%, #fff); }
+  .dmk-block-h { display: flex; align-items: center; gap: 6px; font-weight: 700; color: color-mix(in srgb, var(--bt) 70%, #000); }
+  .dmk-ic { display: grid; width: 16px; height: 16px; color: var(--bt); }
+  .dmk-ic :global(svg) { width: 16px; height: 16px; }
+  .dmk-kept { display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--dmk-green); opacity: 0; }
+  /* drawing: the app's own vector of that chart, diagram or skill, revealed left to right */
+  .dmk-draw { display: grid; justify-items: center; height: 104px; color: var(--bt); }
+  .dmk-draw :global(svg) { width: auto; height: 104px; clip-path: inset(0 100% 0 0); }
+  /* table and register: rows fill in */
+  .dmk-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .dmk-grid i { display: block; height: 10px; border-radius: 3px; background: var(--ph); opacity: 0; }
+  .dmk-grid i.is-head { background: color-mix(in srgb, var(--bt) 35%, #e6eae8); }
+  .dmk-grid--folder { grid-template-columns: minmax(0, 1fr); gap: 5px; }
+  .dmk-grid--folder span { display: grid; grid-template-columns: auto minmax(0, 1fr) 20%; gap: 6px; align-items: center; color: var(--bt); opacity: 0; }
+  .dmk-grid--folder i { opacity: 1; height: 7px; }
+  /* form: labelled fields, then the act */
+  .dmk-form { display: grid; gap: 7px; }
+  .dmk-form > span { display: grid; gap: 3px; opacity: 0; }
+  .dmk-lab { display: block; width: 36%; height: 5px; border-radius: 3px; background: #c9d0cc; }
+  .dmk-box { display: block; height: 16px; border: 1px solid #cfd6d3; border-radius: 5px; background: #fff; }
+  .dmk-btn { justify-self: start; padding: 4px 9px; border-radius: 6px; background: var(--dmk-blue); color: #fff; font: 700 .6rem/1.2 'Geist Sans', Arial, sans-serif; opacity: 0; }
+  .dmk-later { padding: 4px 6px; color: #56635e; font: 500 .6rem/1.2 'Geist Sans', Arial, sans-serif; }
+  /* checklist: boxes tick in turn, then a name and Sign off */
+  .dmk-check { display: grid; gap: 6px; }
+  .dmk-check > span { display: flex; align-items: center; gap: 7px; opacity: 0; }
+  .dmk-check b { display: grid; place-items: center; width: 12px; height: 12px; border: 1.5px solid #9aa5a0; border-radius: 3px; background: #fff; color: #fff; }
+  .dmk-check b :global(svg) { opacity: 0; }
+  .dmk-check > span i { display: block; width: var(--w); height: 6px; border-radius: 3px; background: var(--ph); }
+  .dmk-sign { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+  .dmk-sign i { flex: 1; height: 14px; border-bottom: 1px solid #9aa5a0; }
+  /* callout, list, diff, image, pair */
+  .dmk-callout { display: flex; gap: 8px; padding: 7px 8px; border: 1px solid color-mix(in srgb, var(--bt) 30%, #e3e7e4); border-radius: 7px; background: #fff; color: var(--bt); opacity: 0; }
+  .dmk-callout span { display: grid; flex: 1; gap: 5px; align-content: center; }
+  .dmk-callout i { display: block; width: var(--w); height: 6px; border-radius: 3px; background: var(--ph); }
+  .dmk-list { display: grid; gap: 6px; }
+  .dmk-list > span { display: flex; align-items: center; gap: 6px; color: var(--bt); opacity: 0; }
+  .dmk-list i { display: block; width: var(--w); height: 6px; border-radius: 3px; background: var(--ph); }
+  .dmk-list em { width: 6px; height: 6px; border-radius: 50%; background: #ffa23e; }
+  .dmk-list > span:not(:nth-child(2)) em { visibility: hidden; }
+  .dmk-diff { display: grid; gap: 5px; }
+  .dmk-diff > span { display: block; padding: 3px 6px; border-radius: 4px; opacity: 0; }
+  .dmk-diff i { display: block; width: var(--w); height: 6px; border-radius: 3px; background: var(--ph); }
+  .dmk-diff .is-del { background: #fde8e8; }
+  .dmk-diff .is-del i { background: #f0a3a3; }
+  .dmk-diff .is-add { background: #e2f5ea; }
+  .dmk-diff .is-add i { background: #8fd3ae; }
+  .dmk-img { position: relative; display: grid; place-items: center; height: 84px; border: 1px dashed color-mix(in srgb, var(--bt) 45%, #cfd6d3); border-radius: 7px; background: #fff; color: var(--bt); opacity: 0; }
+  .dmk-img i { position: absolute; left: 8px; right: 8px; bottom: 6px; height: 5px; border-radius: 3px; background: var(--ph); }
+  .dmk-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dmk-pair > span { display: grid; place-items: center; height: 72px; border: 1px solid #e3e7e4; border-radius: 7px; background: #fff; color: var(--bt); opacity: 0; }
+  .dmk-pair :global(svg) { width: 48px; height: 48px; }
+  /* the publish and update sheets */
+  .dmk-sheet { display: grid; gap: 6px; padding: 10px 11px; border: 1px solid #cddcf9; border-radius: 10px; background: #f6f9ff; }
+  .dmk-sheet-h { display: flex; align-items: center; gap: 5px; font-weight: 700; color: #2457c5; }
+  .dmk-dest { padding: 4px 6px; border: 1px solid #d7ddda; border-radius: 5px; background: #fff; font: .58rem/1.3 var(--font-mono, ui-monospace, monospace); color: #2b3431; overflow: hidden; }
+  .dmk-dest span { display: block; white-space: nowrap; overflow: hidden; max-width: 0; }
+  .dmk-sheet-rows { display: grid; gap: 3px; }
+  .dmk-sheet-rows span { display: flex; align-items: center; gap: 4px; color: #3b4541; opacity: 0; }
+  .dmk-btns { display: flex; gap: 6px; align-items: center; }
+  .dmk-sheet .dmk-btn { opacity: 1; }
+
+  /* Chat */
+  .dmk-chat { display: grid; align-content: start; gap: 7px; padding: 10px 9px; border-left: 1px solid #e3e7e4; background: #f8f9f8; }
+  .dmk-chat-h { font-weight: 700; color: #2b3431; }
+  .dmk-chat-h span { font-weight: 500; color: #6b7672; }
+  .dmk-turn { display: none; gap: 6px; }
+  .dmk-me, .dmk-ai { padding: 6px 8px; border-radius: 8px; line-height: 1.4; }
+  .dmk-me { justify-self: end; max-width: 94%; background: var(--dmk-blue); color: #fff; }
+  .dmk-ai { background: #fff; border: 1px solid #e3e7e4; color: #2b3431; }
+  .dmk-dots { display: flex; gap: 3px; justify-self: start; padding: 6px 8px; border: 1px solid #e3e7e4; border-radius: 8px; background: #fff; }
+  .dmk-dots i { width: 4px; height: 4px; border-radius: 50%; background: #8a948f; }
+  .dmk-route { font-size: .6rem; color: #6b7672; }
+  .dmk-nav { width: 30px; height: 30px; }
+
+  /* The scene on screen: keyed on the player's data-story-scene. */
+  .dmk[data-story-scene="0"] [data-s="0"], .dmk[data-story-scene="1"] [data-s="1"], .dmk[data-story-scene="2"] [data-s="2"], .dmk[data-story-scene="3"] [data-s="3"], .dmk[data-story-scene="4"] [data-s="4"], .dmk[data-story-scene="5"] [data-s="5"], .dmk[data-story-scene="6"] [data-s="6"], .dmk[data-story-scene="7"] [data-s="7"] { display: grid; }
+  .dmk[data-story-scene] .dm-title [data-s], .dmk[data-story-scene] .dmk-pill [data-s] { display: none; }
+  .dmk[data-story-scene="0"] .dm-title [data-s="0"], .dmk[data-story-scene="1"] .dm-title [data-s="1"], .dmk[data-story-scene="2"] .dm-title [data-s="2"], .dmk[data-story-scene="3"] .dm-title [data-s="3"], .dmk[data-story-scene="4"] .dm-title [data-s="4"], .dmk[data-story-scene="5"] .dm-title [data-s="5"], .dmk[data-story-scene="6"] .dm-title [data-s="6"], .dmk[data-story-scene="7"] .dm-title [data-s="7"] { display: inline; }
+  .dmk[data-story-scene="0"] .dmk-pill [data-s="0"], .dmk[data-story-scene="1"] .dmk-pill [data-s="1"], .dmk[data-story-scene="2"] .dmk-pill [data-s="2"], .dmk[data-story-scene="3"] .dmk-pill [data-s="3"], .dmk[data-story-scene="4"] .dmk-pill [data-s="4"], .dmk[data-story-scene="5"] .dmk-pill [data-s="5"], .dmk[data-story-scene="6"] .dmk-pill [data-s="6"], .dmk[data-story-scene="7"] .dmk-pill [data-s="7"] { display: inline-flex; animation: hs-in .3s ease 4s both; }
+  /* Each entry replays: the ask lands, Chat thinks, answers, the block draws, the pill flips. */
+  .dmk[data-story-scene] .dmk-turn .dmk-me { animation: hs-in .3s ease .2s both; }
+  .dmk[data-story-scene] .dmk-turn .dmk-dots { animation: dmk-dots 1.5s ease .6s both; }
+  .dmk[data-story-scene] .dmk-turn .dmk-dots i { animation: hs-blink .6s ease infinite; }
+  .dmk[data-story-scene] .dmk-turn .dmk-dots i:nth-child(2) { animation-delay: .15s; }
+  .dmk[data-story-scene] .dmk-turn .dmk-dots i:nth-child(3) { animation-delay: .3s; }
+  .dmk[data-story-scene] .dmk-turn .dmk-ai { animation: hs-in .3s ease 2.1s both; }
+  .dmk[data-story-scene] .dmk-turn .dmk-route { animation: hs-in .3s ease 2.4s both; }
+  .dmk[data-story-scene] .dmk-scene .dmk-h { animation: hs-in .3s ease .1s both; }
+  .dmk[data-story-scene] .dmk-scene .dmk-block, .dmk[data-story-scene] .dmk-scene .dmk-sheet { animation: hs-in .35s ease 2.3s both; }
+  .dmk[data-story-scene] .dmk-scene .dmk-kept { animation: hs-in .3s ease 3.8s both; }
+  /* family bodies, staggered by --k after the block lands */
+  .dmk[data-story-scene] .dmk-draw :global(svg) { animation: dmk-reveal 1s ease-out 2.6s both; }
+  .dmk[data-story-scene] :is(.dmk-grid i, .dmk-grid--folder span, .dmk-form > span, .dmk-form .dmk-btn, .dmk-check > span, .dmk-list > span, .dmk-diff > span, .dmk-pair > span, .dmk-sheet-rows span) { animation: hs-in .3s ease both; animation-delay: calc(2.6s + var(--k, 0) * 180ms); }
+  .dmk[data-story-scene] .dmk-check b :global(svg) { animation: dmk-tick .2s ease both; animation-delay: calc(2.9s + var(--k, 0) * 220ms); }
+  .dmk[data-story-scene] .dmk-check b { animation: dmk-fill .2s ease both; animation-delay: calc(2.9s + var(--k, 0) * 220ms); }
+  .dmk[data-story-scene] .dmk-check .dmk-btn, .dmk[data-story-scene] .dmk-sheet .dmk-btn { animation: hs-in .3s ease 3.4s both, hs-press .8s ease 3.6s both; }
+  .dmk[data-story-scene] :is(.dmk-callout, .dmk-img) { animation: hs-in .4s ease 2.6s both; }
+  .dmk[data-story-scene] .dmk-dest span { animation: hs-type 1s steps(36) 2.6s both; }
+  @keyframes dmk-dots { 0% { opacity: 0; max-height: 0; padding-block: 0; } 10%, 90% { opacity: 1; max-height: 20px; } 100% { opacity: 0; max-height: 0; padding-block: 0; border-width: 0; } }
+  @keyframes dmk-reveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes dmk-tick { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes dmk-fill { to { background: var(--dmk-green); border-color: var(--dmk-green); } }
+
+  @media (max-width: 700px) {
+    .dmk-panes { grid-template-columns: minmax(0, 1fr) minmax(0, 11em); min-height: 0; }
+    .dmk-side { display: none; }
+    .dmk-doc { padding: 12px; }
+    .dmk-draw, .dmk-draw :global(svg) { height: 84px; }
+  }
+  @media (max-width: 480px) {
+    .dmk-panes { grid-template-columns: minmax(0, 1fr); }
+    .dmk-chat { border-left: 0; border-top: 1px solid #e3e7e4; }
+  }
+</style>
+
+<script>
+  import '../../../scripts/hero-story.js';
+  // The file that is open follows the scene; the player owns the scene.
+  for (const root of document.querySelectorAll<HTMLElement>('.dmk[data-story]')) {
+    const files = root.querySelectorAll<HTMLElement>('.dmk-files li[data-doc]');
+    const scenes = root.querySelectorAll<HTMLElement>('.dmk-scene');
+    const sync = () => {
+      const n = Number(root.dataset.storyScene ?? 0);
+      const doc = scenes[n]?.querySelector('.dmk-h')?.textContent ?? '';
+      files.forEach((f) => f.classList.toggle('is-open', f.dataset.doc === doc));
+    };
+    new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['data-story-scene'] });
+    sync();
+  }
+</script>

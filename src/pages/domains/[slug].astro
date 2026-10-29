@@ -15,6 +15,7 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import PaperCta from '../../components/ui/PaperCta.astro';
 import DomainAnatomy from '../../components/flow/domains/DomainAnatomy.astro';
+import DomainMock from '../../components/flow/domains/DomainMock.astro';
 import { publishedDomainArticles, domainArticleHref, isBlueprint, type DomainArticle } from '../../lib/flow/domains';
 import { domainOgSlug, ogPath } from '../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../data/seo';
@@ -34,7 +35,14 @@ const { Content, headings } = await render(entry);
 const d = entry.data;
 const blueprint = isBlueprint(entry);
 const walkthrough = launch && launch.id !== entry.id ? launch : undefined;
-const sections = headings.filter((h) => h.depth === 2);
+const FAQ_ID = 'questions-experts-ask';
+const sections = [...headings.filter((h) => h.depth === 2), ...(d.faq.length ? [{ slug: FAQ_ID, text: 'Questions experts ask', depth: 2 }] : [])];
+// G-138: the Domain on a client job, drawn after "Apply it to a client job"
+// from the article's own mock script. The rendered body is split at the next
+// section so the figure sits inside the prose; a story without a mock renders whole.
+const html = entry.rendered?.html ?? '';
+const cut = d.mock && html ? html.indexOf('<h2 id="publish-it-and-keep-it-current"') : -1;
+const [before, after] = cut > 0 ? [html.slice(0, cut), html.slice(cut)] : [null, null];
 const numbers = sections.find((h) => h.text === (blueprint ? 'The signals' : 'The numbers'));
 const dateIso = d.drafted.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
@@ -69,7 +77,9 @@ const schema = [
       ...(blueprint ? [] : [{ '@type': 'CreativeWork', name: d.domain, url: d.repo, license: 'https://creativecommons.org/licenses/by/4.0/', author: PERSON }]),
     ],
     isPartOf: { '@type': 'CollectionPage', name: 'Flow Domains', url: `${SITE.url}/domains/` },
+    ...(d.keywords.length ? { keywords: d.keywords.join(', ') } : {}),
   },
+  ...(d.faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: d.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }] : []),
   {
     '@context': 'https://schema.org', '@type': 'BreadcrumbList',
     itemListElement: [
@@ -79,7 +89,7 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={fitDescription(d.description)} ogImage={ogImage} ogImageAlt={blueprint ? `${d.domain}, a blueprint for a Flow Domain` : `${d.domain}, a Flow Domain built in Flow and published to GitHub`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page dm-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Domains', tags: ['Flow', 'Flow Domains', d.domain] }}>
+<Layout title={seoTitle} description={fitDescription(d.description)} ogImage={ogImage} ogImageAlt={blueprint ? `${d.domain}, a blueprint for a Flow Domain` : `${d.domain}, a Flow Domain built in Flow and published to GitHub`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page dm-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Domains', tags: ['Flow', 'Flow Domains', d.domain, ...d.keywords] }}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero ls-container">
@@ -110,7 +120,15 @@ const schema = [
         <a class="fp-try" href="#bring-it-in">{blueprint ? 'Start building →' : 'Bring it into Flow →'}</a>
       </aside>
       <article class="ed-prose fp-prose" aria-label={d.title}>
-        <Content />
+        {before !== null && d.mock
+          ? <Fragment><Fragment set:html={before} /><DomainMock domain={d.domain} tint={d.tint} folder={d.mock.folder} client={d.mock.client} files={(d.blueprint ?? []).map((f) => f.name)} steps={d.mock.steps} /><Fragment set:html={after} /></Fragment>
+          : <Content />}
+        {d.faq.length > 0 && (
+          <section class="dm-art-faq" aria-labelledby={FAQ_ID}>
+            <h2 id={FAQ_ID}>Questions experts ask</h2>
+            {d.faq.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
+          </section>
+        )}
         <div id="bring-it-in">
           {blueprint
             ? <PaperCta layout="article" class="ed-paper-cta"

@@ -7,8 +7,8 @@ hook: "Your monthly close, the plain-English note that explains it, and the rese
 icon: skill-register
 tint: "#ff3252"
 order: 5
-dek: "You close the books for dozens of clients and answer the questions that come after. The close is a method. The explanation is a craft. Both live in your head and in a folder of past emails. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is an invitation."
-description: "A blueprint for a Flow Domain for accounting partners, advisory managers and CPAs. What it would hold, the signals behind it, and how to build it in Flow."
+dek: "You close the books for dozens of clients and answer the questions that come after. The close is a method. The explanation is a craft. Both live in your head and in a folder of past emails. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
+description: "A monthly close and client advisory playbook as a Flow Domain blueprint for accounting firms and CPAs. What it holds, the signals, and how to build it in Flow."
 drafted: "2026-10-28"
 release: "3.0"
 blueprint:
@@ -34,12 +34,64 @@ blueprint:
   - name: Worked Example
     role: "A close note and a research note for a made-up client, filled in end to end, with the choices explained."
     chips: [["component-callout", "Worked example"]]
-minutes: 8
+keywords: ["monthly close checklist template", "client advisory services playbook", "CAS playbook template", "tax research memo template", "accounting firm knowledge base", "custom GPT for accountants alternative", "close explanation for clients", "accounting advisory toolkit", "CPA firm process documentation", "AI for accounting firms"]
+faq:
+  - q: "Can I give every client a plain-English note on their close each month?"
+    a: "Yes. The Close Explanation Guide holds the shape of the note. After a close, Chat drafts it from the Guide and the month's tables, and marks every line it is unsure about. You confirm against the Method's checklist and send it. The next month starts from the same Guide."
+  - q: "How do I keep tax research notes current when the IRS changes a page?"
+    a: "Bring the page in with New from Web Page and choose Follow the source. Each Jobs run reads it again and brings changes in where you have not edited. Your Research Note Standard cites the current page, and Sources marks a source that changed since the note was written."
+  - q: "Does client data leave my Mac?"
+    a: "Client statements stay in that client's folder on your Mac. Before any run leaves the Mac, Flow shows what goes and where and asks. Publishing is a separate step you take yourself, and it sends only the Domain's files. The Domain holds the method, never a client's numbers."
+  - q: "Does a Flow Domain replace the custom GPT I built for client questions?"
+    a: "It is a different shape. A GPT is a chat inside one service, and OpenAI retires custom GPTs on December 11, 2026. A Domain is files in your own GitHub. Chat on it in Flow answers from your Standard and your Register and links each fact to its file."
+  - q: "What does it cost to publish an accounting advisory Domain?"
+    a: "Bringing a Domain in is free on Base. Writing with Chat needs Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on, another $10 a month. There is no fee per Domain. Skills are free on every plan."
+mock:
+  folder: close-method
+  client: "Juniper Bakery"
+  steps:
+    - title: "Start the month"
+      ask: "Start a folder for Juniper Bakery and bring in the March statements from Excel."
+      reply: "Added March Statements. The P&L and balance sheet came across as tables. 2 items to check before you rely on them."
+      doc: "March Statements"
+      block: "Table"
+      status: "Imported · 2 to check"
+    - title: "Run the close checklist"
+      ask: "Add the close checklist from the Monthly Close Method."
+      reply: "Added the checklist as an Approval Card. Eleven checks, each with its owner. Tick them and sign in the Reader."
+      doc: "March Close"
+      block: "Approval Card · Sign off"
+      status: "11 checks open"
+    - title: "Explain the close"
+      ask: "Draft the close note from the Close Explanation Guide, with a cash bridge from February to March."
+      reply: "Drafted March Close Note. Cash fell while profit rose, and a waterfall chart shows the four steps that explain it. 2 claims marked to check."
+      doc: "March Close Note"
+      block: "Chart · Waterfall"
+      status: "2 claims to check"
+    - title: "Draw the numbers"
+      ask: "Run Field-Notes Diagram on the cash paragraph."
+      reply: "Field-Notes Diagram drew the four numbers to size, with the inventory build in colour. It waits in Review Changes."
+      doc: "March Close Note"
+      block: "Field-Notes Diagram"
+      status: "1 change to review"
+    - title: "Answer the question"
+      ask: "They asked if the new oven is a repair or an improvement. Draft a research note from the Standard."
+      reply: "Drafted Research Note. Two sources cited, the question that goes to a specialist named. 1 claim marked to check."
+      doc: "Research Note"
+      block: "Sources"
+      status: "1 claim to check"
+    - title: "Log it in the Register"
+      ask: "Add the oven question to the Issues and Decisions Register with today's date."
+      reply: "Added the row. Owner, status and last checked are filled. It waits in Review Changes."
+      doc: "Issues and Decisions Register"
+      block: "Register"
+      status: "1 change to review"
+minutes: 10
 ---
 
 You close the books for dozens of businesses and then answer the questions that come after. Why did cash drop when profit rose. What does the new deduction mean for us. Can we treat this as a repair. The close is a method you repeat every month. The explanation is a craft you have practiced for years. Both live in your head, in a checklist someone started in 2019, and in a folder of past emails you search when a client asks the same thing again.
 
-This page is a blueprint for a Flow Domain that carries that method and that craft. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. The point of this page is to show you what yours could hold, and to ask you to build it.
+This page is a blueprint for a Flow Domain that carries that method and that craft. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 
@@ -79,6 +131,22 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 **Issues and Decisions Register** keeps the open questions per client, who owns each, and when it was last checked. A Register Skill draws it. It is the end of searching old emails.
 
 **Worked Example** is a close note and a research note for a made-up client, filled in end to end, with the choices explained. A reader learns more from one finished note than from ten rules.
+
+## What Flow does for this work
+
+**Chat answers from your Standard and your Register.** With the Domain chosen, Chat searches your documents before it replies and links each fact to its file. Ask *How do we treat a repair?* and the answer comes from the Research Note Standard, with the section named. A new hire gets the same answer you would give. When your documents are silent, Chat says so.
+
+**The close checklist is signed in the document.** The Monthly Close Method ends in an Approval Card. Eleven checks, each with its owner. The person who closes ticks them, types their name and presses **Sign off**. Flow writes one signed record beside the month, and History lists it. Change the checklist later and the card asks for a new signature. The old record stays.
+
+**A Job keeps a cited IRS page current.** Bring the page in with New from Web Page and choose *Follow the source*. Each Jobs run reads it again and brings changes in where you have not edited. On a quiet week the Job skips without calling a model. A Sources block on every research note marks a source that changed since the note was written.
+
+**Field-Notes Diagram draws the month's numbers to size.** Select the paragraph that explains why cash fell while profit rose, and run the Skill. It draws the four numbers as bars, each to its size and printed beside it, with the one the paragraph stresses in colour. A business owner reads it in ten seconds. It waits in Review Changes until you keep it.
+
+**A Form takes a client's question in your shape.** The Research Note Standard ends in a Form. What they want to know, what it is for, when they need it, and a checklist of what to attach. Its button is **Submit**, so the request is recorded beside the document with their name and the day. Nothing arrives in an email thread you have to search later.
+
+**A Register that draws itself.** The Issues and Decisions Register is drawn by the Register Skill from the open questions in the text. Each row has an owner, a status and when it was last checked. Chat adds a row when a question comes in and updates it when you answer. It is the end of searching old emails.
+
+**Your agents can draft the note.** With Flow Pro, Settings ▸ General ▸ Your agents opens the folder to the Claude Code or Codex you run in Terminal. It can read the Guide and the month's tables and propose the close note. The proposal lands in Review Changes under its name. You decide what the client reads.
 
 ## How you build it in Flow
 

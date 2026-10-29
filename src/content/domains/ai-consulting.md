@@ -143,3 +143,5 @@ With **Flow MCP**, the Claude Code or Codex you run in Terminal can use your Dom
 ## Try it
 
 Get [AI Consulting on GitHub](https://github.com/orionfold/flow/tree/main/flow-domains/ai-consulting-starter). In Flow, choose **File ▸ New from GitHub…**, paste the folder's address and press **Add**. Bringing a Domain in is free on Base; Chat on it needs Flow Pro. Start with the Mechanisms Primer, pick one real customer task, and work along the path to a PR/FAQ for it.
+
+If your field has a method of its own, the [blueprints on the Domains page](/domains/#dm-blueprints) are yours to take. Each is a plan for a Domain in one field, built the way this one was. Build it, put your name on it, and launch it as your Domain.

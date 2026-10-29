@@ -7,8 +7,8 @@ hook: "Your monthly reporting method, the rules you read the numbers by, and a b
 icon: skill-scenario-model
 tint: "#00c9b2"
 order: 4
-dek: "You close the month for several companies and tell each board what the numbers mean. The cadence is the same every time. The judgment is what they pay for, and it lives in your head and last quarter's deck. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is an invitation."
-description: "A blueprint for a Flow Domain for fractional CFOs, finance advisors and FP&A leads. What it would hold, the signals behind it, and how to build it in Flow."
+dek: "You close the month for several companies and tell each board what the numbers mean. The cadence is the same every time. The judgment is what they pay for, and it lives in your head and last quarter's deck. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
+description: "A fractional CFO playbook as a Flow Domain blueprint for finance advisors and FP&A leads. The board pack it would hold, the signals, and how to build it in Flow."
 drafted: "2026-10-28"
 release: "3.0"
 blueprint:
@@ -34,12 +34,64 @@ blueprint:
   - name: Worked Example
     role: "One board pack for a made-up company, filled in end to end, with the judgment calls explained."
     chips: [["component-callout", "Worked example"]]
-minutes: 8
+keywords: ["fractional CFO playbook", "board pack template", "monthly reporting package template", "FP&A process template", "scenario planning template for startups", "custom GPT for fractional CFOs", "CFO advisory toolkit", "cash runway model template", "finance advisory knowledge base", "AI for fractional CFOs"]
+faq:
+  - q: "Can a Domain hold my board pack template without exposing client numbers?"
+    a: "Yes. The Domain holds the Method, the Judgment Rules and the templates. Each client's numbers stay in that client's folder on your Mac. You publish the method, never the numbers."
+  - q: "How does a Job keep a board pack current?"
+    a: "A Job can keep a section, a chart or a table current from its sources. Point the pack's cash table at the month's export and each run asks only for the rows, leaving the table's header as you wrote it. When nothing changed, the Job skips and says so."
+  - q: "Can I run low, base and high cases inside a Domain?"
+    a: "The Scenario Model Skill draws low, base and high cases from stated ranges in the text, and names the choice the model is there to inform. It uses only the numbers the document gives. The result waits in Review Changes until you keep it."
+  - q: "Does a Flow Domain replace my custom GPT for board reporting?"
+    a: "It is a different shape. A GPT is a chat inside one service, and OpenAI retires custom GPTs on December 11, 2026. A Domain is files in your own GitHub. Chat on it in Flow answers from your Judgment Rules and links each fact to its file."
+  - q: "What does it cost to publish a finance advisory Domain?"
+    a: "Bringing a Domain in is free on Base. Writing with Chat needs Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on, another $10 a month. There is no fee per Domain. Skills are free on every plan."
+mock:
+  folder: reporting-method
+  client: "Pelican Tools"
+  steps:
+    - title: "Start the month"
+      ask: "Start a folder for Pelican Tools and bring in the March trial balance from Excel."
+      reply: "Added March Trial Balance. 212 rows came across as a table. 2 items to check before you rely on it."
+      doc: "March Trial Balance"
+      block: "Table"
+      status: "Imported · 2 to check"
+    - title: "Read the numbers"
+      ask: "Write the front paragraph of the pack from the Judgment Rules."
+      reply: "Drafted the front paragraph. Margin held, cash fell on the inventory build, runway is 14 months. 1 claim marked to check."
+      doc: "March Board Pack"
+      block: "Callout"
+      status: "1 claim to check"
+    - title: "Run the cases"
+      ask: "Run Scenario Model on the hiring plan section."
+      reply: "Scenario Model drew low, base and high cases from the ranges in the text. It waits in Review Changes."
+      doc: "March Board Pack"
+      block: "Scenario Model"
+      status: "1 change to review"
+    - title: "Draw the bridge"
+      ask: "Add a waterfall from last month's cash to this month's."
+      reply: "Added the chart from the table's rows. The four steps are collections, payroll, inventory and rent."
+      doc: "March Board Pack"
+      block: "Chart · Waterfall"
+      status: "1 change to review"
+    - title: "Sign the pack"
+      ask: "Add the Method's sign-off before the pack goes to the board."
+      reply: "Added the checklist as an Approval Card. Tick each item and sign it in the Reader."
+      doc: "March Board Pack"
+      block: "Approval Card · Sign off"
+      status: "Signed off"
+    - title: "Write the lesson back"
+      ask: "The board asked for runway in weeks when it drops under six months. Make that a rule."
+      reply: "Updated Judgment Rules and the Board Pack Template. Both wait in Review Changes."
+      doc: "Judgment Rules"
+      block: "Change Summary"
+      status: "2 documents changed"
+minutes: 10
 ---
 
 You are the finance person for companies too small to have one full time. You close the month, build the pack, and sit with the board to say what the numbers mean. The cadence never changes. The judgment is what they pay for, and today it lives in your head, in a spreadsheet only you understand, and in whatever last quarter's deck happened to say.
 
-This page is a blueprint for a Flow Domain that carries that judgment. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. The point of this page is to show you what yours could hold, and to ask you to build it.
+This page is a blueprint for a Flow Domain that carries that judgment. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 
@@ -80,6 +132,22 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 **Board Pack Template** is the pages, their order, and the one paragraph at the front that says what happened and what you recommend. A stepped figure shows a reader how the paragraph is built from the numbers.
 
 **Worked Example** is one pack for a made-up company, filled in end to end, with the judgment calls explained. A reader learns more from one finished pack than from ten rules.
+
+## What Flow does for this work
+
+**Chat answers from your Judgment Rules.** With the Domain chosen, Chat searches your documents before it replies and links each fact to its file. Ask *When do I flag runway?* and the answer is your threshold, from your rule, with the file named. A client who brings the Domain in gets the same answer from the same rule. When your rules are silent, Chat says so.
+
+**A Job keeps the pack's tables current.** A Job can keep a table or a chart current instead of a section. Point the cash table at the month's export and each run asks only for its rows, leaving the header and the chart's type as you wrote them. On a month when the source has not changed, the Job skips without calling a model and says *No change in its sources*.
+
+**Scenario Model draws the cases from your ranges.** Select the section that states the hiring plan and its ranges, and run the Scenario Model Skill. It draws low, base and high cases and names the choice the model is there to inform. It uses only the numbers in the text and refuses to guess the rest. The result waits in Review Changes.
+
+**A Chart draws the cash bridge.** A waterfall from last month's cash to this month's, drawn from the table's rows, sits in the pack as a chart block. Put it beside the front paragraph in a Hero and the two stay side by side on every screen, in a Chat reply and on a published page.
+
+**The board signs the pack inside the document.** The Monthly Reporting Method ends in an Approval Card. Tick what was delivered, type a name, press **Sign off**. Flow writes one signed record beside the document, and History lists it. Edit the pack after the signature and the card asks for a new one. The old record stays.
+
+**A rate page or a filing calendar follows its source.** Bring in the page you check every month with New from Web Page and choose *Follow the source*. Each Jobs run reads it again and brings changes in where you have not edited. Your Judgment Rules cite the current figure, not the one from the quarter you wrote them.
+
+**Your agents can prepare the first draft.** With Flow Pro, Settings ▸ General ▸ Your agents opens the folder to the Claude Code or Codex you run in Terminal. It can read the Method's reading order and the Rules, then propose the month's front paragraph. The proposal lands in Review Changes under its name. You decide what the board reads.
 
 ## How you build it in Flow
 

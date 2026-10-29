@@ -5,14 +5,21 @@
 // by itself, Flow MCP is described as it works, from its changelog.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 
 const root = new URL('../../', import.meta.url);
 const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
 const built = (route) => read(`dist${route}index.html`);
 const hasDist = existsSync(new URL('dist/domains/index.html', root));
-// G-135: the four blueprints, in the PR/FAQ's order after the launch story.
-const BLUEPRINTS = ['learning-design', 'research-synthesis', 'finance-advisory', 'accounting-advisory'];
+// G-135: the blueprints, in the site's order after the launch story (the
+// PR/FAQ's ranks 2 to 5, then the ten researched fields of G-138), read from
+// the collection so a new blueprint is guarded the day it lands.
+const front = (md) => md.match(/^---\n([\s\S]*?)\n---\n/)[1];
+const BLUEPRINTS = readdirSync(new URL('src/content/domains/', root))
+  .filter((f) => f.endsWith('.md') && /^kind: blueprint$/m.test(front(read(`src/content/domains/${f}`))))
+  .map((f) => f.replace(/\.md$/, ''))
+  .sort((a, b) => Number(front(read(`src/content/domains/${a}.md`)).match(/^order: (\d+)$/m)[1]) - Number(front(read(`src/content/domains/${b}.md`)).match(/^order: (\d+)$/m)[1]));
+const FIRST_FOUR = ['learning-design', 'research-synthesis', 'finance-advisory', 'accounting-advisory'];
 const PRIVATE = /DGH42|Harun|BeneFACT|Boardy|take rate|marketplace for Domains|Batista|Hardman|Stevens|Hopper|Marasigan/i;
 
 test('the launch story is written for Flow 3.0 from the walk, with every shot on disk and every number labelled', () => {
@@ -31,7 +38,9 @@ test('the launch story is written for Flow 3.0 from the walk, with every shot on
   assert.ok(existsSync(new URL('src/assets/flow/domains/ai-consulting/card.jpg', root)), 'the OG card has a jpg, not a webp');
 });
 
-test('the four blueprints invite an expert to build, on public signals only, and never claim a walk', () => {
+test('the blueprints invite an expert to build, on public signals only, and never claim a walk', () => {
+  assert.ok(BLUEPRINTS.length >= 4, 'at least the first four');
+  assert.deepEqual(BLUEPRINTS.slice(0, 4), FIRST_FOUR, 'the PR/FAQ ranks lead');
   for (const [i, slug] of BLUEPRINTS.entries()) {
     const md = read(`src/content/domains/${slug}.md`);
     const [, front, body] = md.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -63,6 +72,16 @@ test('the four blueprints invite an expert to build, on public signals only, and
       assert.match(m[1], /Shown on AI Consulting/, `${slug}: a reused shot says which Domain it shows`);
     }
     assert.ok(existsSync(new URL(`src/assets/flow/domains/${slug}/card.jpg`, root)), `${slug} has a card.jpg for the OG pipeline`);
+    // G-138: a blueprint is given away to the expert, speaks their field,
+    // maps Flow 3.0 features to their work, and carries what search and
+    // answer engines need (keywords, the questions experts ask, the mock script).
+    assert.match(body, /## What Flow does for this work/, `${slug} maps features to the work`);
+    assert.ok((body.match(/^\*\*[^*]+\*\* /gm) ?? []).length >= 10, `${slug}: bold-led paragraphs for documents and features`);
+    assert.ok((front.match(/^keywords: \[.{40,}\]$/m)), `${slug}: keywords for search`);
+    assert.ok((front.match(/^  - q: /gm) ?? []).length >= 4, `${slug}: the questions experts ask`);
+    assert.match(front, /^mock:\n  folder: /m, `${slug}: a mock script`);
+    assert.ok((front.match(/^    - title: /gm) ?? []).length >= 5, `${slug}: the mock plays at least five steps`);
+    assert.match(body, /yours to take|build it, put your name on it|launch it as your/i, `${slug}: given away to the expert`);
   }
   const schema = read('src/content.config.ts');
   assert.match(schema, /kind: z\.enum\(\['launch', 'blueprint'\]\)/);
@@ -136,7 +155,7 @@ test('the built pages link the Domain, the story and each other, and the nav lea
   // G-135: the Domains menu lists the five in the site's order, then All Domains;
   // the landing features the launch story and cards the four blueprints.
   const menu = land.match(/<div class="living-nav-dd">\s*<a[^>]*href="\/domains\/"[\s\S]*?living-nav-dd-all[^>]*>[^<]*/)[0];
-  assert.deepEqual([...menu.matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]), ['AI Consulting', 'Learning Design', 'Research Synthesis', 'Finance Advisory', 'Accounting Advisory']);
+  assert.deepEqual([...menu.matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]), ['AI Consulting', 'Learning Design', 'Research Synthesis', 'Finance Advisory', 'Accounting Advisory'], 'the menu keeps the top five; the rest are on /domains/');
   assert.match(menu, /living-nav-dd-all[^>]*>All Domains/);
   const cards = land.match(/<ul class="dm-cards">[\s\S]*?<\/ul>/)[0];
   for (const slug of BLUEPRINTS) assert.ok(cards.includes(`href="/domains/${slug}/"`), `${slug} is a card`);
@@ -151,5 +170,9 @@ test('the built pages link the Domain, the story and each other, and the nav lea
     assert.doesNotMatch(page.match(/<header[\s\S]*?<\/header>/)[0], /github\.com\/orionfold/, `${slug}: no repository link, nothing is published`);
     assert.match(read('public/llms.txt'), new RegExp(`orionfold\\.com/domains/${slug}/`), `${slug} is in llms.txt`);
     assert.match(read('dist/sitemap-0.xml'), new RegExp(`/domains/${slug}/</loc><lastmod>2026-`), `${slug} is in the sitemap with a real lastmod`);
+    assert.match(page, /"@type":"FAQPage"/, `${slug}: the questions experts ask are a FAQPage`);
+    assert.match(page, /"keywords":"/, `${slug}: keywords in the Article JSON-LD`);
+    assert.match(page, /class="hs dmk" data-story/, `${slug}: the Domain on a client job, drawn`);
+    assert.match(page, /Questions experts ask/);
   }
 });

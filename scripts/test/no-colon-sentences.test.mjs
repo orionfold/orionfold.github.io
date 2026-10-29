@@ -7,14 +7,16 @@
 // upstream and is not guarded here; see the memory `no-colon-joined-sentences`.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 
 const root = new URL('../../', import.meta.url);
 const dist = (route) => new URL(`dist${route}index.html`, root);
 const hasDist = existsSync(dist('/'));
 
+// Every Domain article is website-owned copy, so every one is guarded.
+const DOMAIN_ROUTES = readdirSync(new URL('src/content/domains/', root)).filter((f) => f.endsWith('.md')).map((f) => `/domains/${f.replace(/\.md$/, '')}/`);
 const ROUTES = [
-  '/', '/flow/', '/domains/', '/domains/ai-consulting/', '/domains/learning-design/', '/domains/research-synthesis/', '/domains/finance-advisory/', '/domains/accounting-advisory/', '/flow/paths/', '/flow/compare/',
+  '/', '/flow/', '/domains/', ...DOMAIN_ROUTES, '/flow/paths/', '/flow/compare/',
   '/flow/compare/notion/', '/flow/compare/obsidian/', '/flow/compare/custom-gpts/', '/flow/compare/claude-code/',
   '/flow/compare/codex/', '/flow/compare/hermes-openclaw/', '/flow/compare/word/', '/flow/compare/canva/',
 ];
@@ -35,11 +37,8 @@ const ALLOWED = [
   'Flow Domains: your expertise as a living system',
   'Flow Paths: real work, walked end to end',
   'From an empty folder to GitHub: how AI Consulting',
-  // The four Domain blueprints' titles (G-135), the same shape as the launch story's.
-  'Teach the way you teach, every time: a blueprint for Learning Design',
-  'From transcripts to a decision, your way: a blueprint for Research Synthesis',
-  'The board pack that remembers your judgment: a blueprint for Finance Advisory',
-  'A close your clients can read: a blueprint for Accounting Advisory',
+  // Every Domain blueprint's title (G-135, G-138), the same shape as the launch story's: read from the collection.
+  ...readdirSync(new URL('src/content/domains/', root)).filter((f) => f.endsWith('.md')).map((f) => readFileSync(new URL(`src/content/domains/${f}`, root), 'utf8').match(/^title: "(.*)"$/m)[1]),
   'Flow with Canva: the words and numbers',
   'Flow with Claude Code: your agent writes',
   'Flow with Codex: your agent proposes',

@@ -171,3 +171,10 @@
   .dm-loop-node { width: 96px; padding: 5px 6px; font-size: .68rem; }
   .dm-loop-mid { max-width: 120px; }
 }
+
+/* ── A blueprint's questions (G-138): the article's FAQ, also its FAQPage ── */
+.dm-art-faq { display: grid; gap: 10px; margin-top: 8px; }
+.ls .dm-art-faq h2 { grid-column: 1 / -1; }
+.dm-art-faq details { padding: 14px 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.dm-art-faq summary { cursor: pointer; font-weight: 700; }
+.ls .dm-art-faq p { margin: 10px 0 0; font-size: .96rem; line-height: 1.55; color: var(--muted); }
