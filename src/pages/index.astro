@@ -13,6 +13,7 @@ import HomeClosing from '../components/living/HomeClosing.astro';
 import FlowElementsShowcase from '../components/flow/FlowElementsShowcase.astro';
 import WowStat from '../components/flow/WowStat.astro';
 import FlowDomainsBand from '../components/flow/FlowDomainsBand.astro';
+import BuiltWithBand from '../components/flow/BuiltWithBand.astro';
 import FlowCanvasShowcase from '../components/flow/FlowCanvasShowcase.astro';
 import PathsSection from '../components/flow/paths/PathsSection.astro';
 import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
@@ -27,6 +28,7 @@ const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication
   <main id="main" class="ls-main">
     <HomeHero />
     <FlowDomainsBand id="home-domains" />
+    <BuiltWithBand id="home-built-with" />
     <WowStat ids={['brief43', 'agent']} />
     <FlowElementsShowcase id="home-elements" />
     <FlowCanvasShowcase id="home-canvas" />

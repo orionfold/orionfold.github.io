@@ -1,0 +1,69 @@
+---
+// Built with Orionfold (operator 2026-10-28): founder walks and customer cases
+// on the homepage, as signed accounts with the files, issues and releases to
+// check, never as quotations. Data: src/data/built-with.ts. Cards keep a whole
+// border and a flat fill (no edge accents); the only colour is the link.
+import { BUILT_WITH } from '../../data/built-with';
+import { ArrowRightIcon } from '../../lib/flow-icons';
+
+interface Props { id?: string }
+const { id = 'built-with' } = Astro.props;
+const KIND = { walk: 'Founder walk', case: 'Customer case' } as const;
+---
+<section id={id} class="bw ls-container" aria-labelledby={`${id}-heading`}>
+  <div class="bw-head">
+    <div>
+      <p class="ls-eyebrow">BUILT WITH ORIONFOLD</p>
+      <h2 id={`${id}-heading`}><span class="bw-l1">REAL WORK, SIGNED.</span><br /><span class="ls-stroke bw-l2">DATED AND LINKED.</span></h2>
+    </div>
+    <div class="ls-episode-dek">
+      <p>What people have built on Orionfold so far, told plainly. Each one links to the files, issues and releases behind it. More walks join as they happen.</p>
+    </div>
+  </div>
+  <ul class="bw-cards" role="list">
+    {BUILT_WITH.map((entry) => (
+      <li class="bw-card" id={`${id}-${entry.id}`}>
+        <p class="bw-kind"><span>{KIND[entry.kind]}</span><span aria-hidden="true">·</span><span>{entry.product}</span><span aria-hidden="true">·</span><time>{entry.when}</time></p>
+        <h3>{entry.title}</h3>
+        <p class="bw-body">{entry.body}</p>
+        <ul class="bw-facts" role="list" aria-label="Where to check it">
+          {entry.facts.map((fact) => (
+            <li><a href={fact.href}>{fact.label}</a></li>
+          ))}
+        </ul>
+        <footer class="bw-foot">
+          <p class="bw-who"><b>{entry.who}</b><span>{entry.role}</span></p>
+          <a class="bw-cta" href={entry.href}>{entry.hrefLabel}<ArrowRightIcon size={15} stroke-width={2.25} aria-hidden="true" /></a>
+        </footer>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .bw { padding-block: 88px 96px; display: grid; gap: 40px; border-top: 1px solid var(--line); }
+  .bw-head { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: end; }
+  :global(.ls) .bw-head h2 { margin-top: 12px; text-wrap: balance; }
+  .bw-l1 { white-space: nowrap; font-size: min(1em, 11.2vw); }
+
+  .bw-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 24px; }
+  .bw-card { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 14px; padding: 28px 28px 24px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  :global(.ls) .bw-kind { margin: 0; display: flex; flex-wrap: wrap; gap: 0 8px; font: 700 .7rem/1.5 'Geist Sans', Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); }
+  :global(.ls) .bw-card h3 { margin: 0; font: 700 clamp(1.35rem, 2vw, 1.7rem)/1.15 'Geist Sans', Arial, sans-serif; letter-spacing: -.015em; text-wrap: balance; }
+  :global(.ls) .bw-body { margin: 0; font-size: 1.02rem; line-height: 1.55; max-width: 60ch; text-wrap: pretty; }
+
+  .bw-facts { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .bw-facts a { display: inline-block; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); font-size: .84rem; font-weight: 700; color: var(--ink); text-decoration: none; transition: border-color .2s, color .2s; }
+  .bw-facts a:hover, .bw-facts a:focus-visible { border-color: var(--teal); color: var(--teal); }
+
+  .bw-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-top: 6px; padding-top: 18px; border-top: 1px solid var(--line); }
+  :global(.ls) .bw-who { margin: 0; display: grid; gap: 1px; font-size: .9rem; line-height: 1.35; }
+  .bw-who b { font-weight: 700; }
+  .bw-who span { color: #4b5552; }
+  .bw-cta { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1.5px solid var(--teal); border-radius: 999px; color: var(--teal); font-size: .86rem; font-weight: 700; line-height: 1.1; white-space: nowrap; transition: background .2s, color .2s; }
+  .bw-cta:hover, .bw-cta:focus-visible { background: var(--teal); color: #fff; }
+  .bw-cta:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  @media (max-width: 900px) { .bw-head { grid-template-columns: 1fr; gap: 20px; } }
+  @media (max-width: 760px) { .bw { padding-block: 64px 72px; gap: 28px; } .bw-card { padding: 22px 20px 18px; } }
+</style>
