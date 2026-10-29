@@ -6,13 +6,18 @@ import { lstatSync, readdirSync, readFileSync, writeFileSync, mkdirSync, realpat
 import { resolve, dirname, relative, isAbsolute } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { execFileSync } from 'node:child_process';
-import { STEPS } from './preflight.mjs';
+import { GATE_STEPS } from './preflight.mjs';
 
 export const RELEASE_REPOSITORY = 'orionfold/orionfold.github.io';
 export const RELEASE_WORKFLOW = '.github/workflows/deploy.yml';
 export const RECOVERY_WORKFLOW = '.github/workflows/recover.yml';
 export const RECOVERY_BASELINE_SHA = 'bbbf645b02349c4be744e0b3505c933dc616c54e';
-export const RELEASE_CHECKS = STEPS.map(step => step.name);
+// The checks the deploy waited for: the gate lane of the preflight chain. The
+// signal lane (the browser journeys) runs beside the deploy on this same
+// artifact and marks the run, so a manifest captured in the build job records
+// only what had passed when the bytes were captured.
+export const RELEASE_CHECKS = GATE_STEPS;
+export const hasReleaseChecks = checks => Array.isArray(checks) && RELEASE_CHECKS.every(name => checks.includes(name));
 // New canonical URLs must survive any return to the baseline presentation.
 // The local overlay tools consume this same contract; release eligibility checks
 // require page, social and discovery surfaces before considering provenance.
@@ -87,7 +92,7 @@ export function validateRecoveryEvidence(manifest, manifestBytes, evidence, now 
   const p = manifest.provenance;
   const { approvedRecovery: approved, workflowRun: run, artifact, expectedCurrent, observedCurrent } = evidence;
   if (p.mode !== 'ci-production' || p.dirty !== false || p.repository !== RELEASE_REPOSITORY || p.workflowPath !== RELEASE_WORKFLOW || p.ref !== 'refs/heads/main') fail('Recovery artifact is not from the allowlisted production workflow.');
-  if (JSON.stringify(p.checks) !== JSON.stringify(RELEASE_CHECKS)) fail('Required release checks are missing.');
+  if (!hasReleaseChecks(p.checks)) fail('Required release checks are missing.');
   if (!sha40(p.sourceSha) || !decimal(p.runId) || !decimal(p.runAttempt)) fail('Invalid retained source/run identity.');
   if (!approved || approved.sourceSha !== p.sourceSha || String(approved.runId) !== String(p.runId) || approved.manifestSha256 !== sha(manifestBytes)) fail('Recovery source or manifest is not explicitly allowlisted.');
   if (!run || run.repository !== RELEASE_REPOSITORY || run.path !== RELEASE_WORKFLOW || run.head_sha !== p.sourceSha || String(run.id) !== String(p.runId) || String(run.run_attempt) !== String(p.runAttempt) || run.head_branch !== 'main' || !['push', 'workflow_dispatch'].includes(run.event) || run.status !== 'completed' || run.conclusion !== 'success') fail('Recovery source workflow was not successful in this repository.');

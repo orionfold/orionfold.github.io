@@ -19,19 +19,27 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+# G-036: production Stripe, Supabase, Resend and private media are active and
+# passed the no-charge release rehearsal. Keep the public build's commercial
+# state explicit at the deployment boundary. Workflow-level, so the build job
+# and the journeys job resolve the same settings: preflight checks them in both.
+env:
+  PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: "true"
+  PUBLIC_SERVICE_MODE: "production"
+  PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED: ${{ vars.PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED || 'false' }}
+  PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED: ${{ vars.PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED || 'false' }}
+
+# Shape (G-136, 2026-10-28): the build job runs the gate lane of the preflight
+# chain and captures the Pages artifact; the deploy job and the journeys job
+# both start from it. The deploy does not wait for the browser journeys, which
+# the pre-push preflight already ran on this exact tree; the journeys run on
+# the exact artifact the deploy ships and a red result marks the run and the
+# commit within minutes. scripts/test/preflight.test.mjs pins this shape.
 jobs:
   build:
     runs-on: ubuntu-24.04
     # A hung build must not hold the deploy lane for the default six hours.
     timeout-minutes: 45
-    env:
-      # G-036: production Stripe, Supabase, Resend and private media are active
-      # and passed the no-charge release rehearsal. Keep the public build's
-      # commercial state explicit at the deployment boundary.
-      PUBLIC_RELAY_OPERATOR_WORKSHOP_CHECKOUT: "true"
-      PUBLIC_SERVICE_MODE: "production"
-      PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED: ${{ vars.PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED || 'false' }}
-      PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED: ${{ vars.PUBLIC_LIVING_DOCUMENTS_SIGNUP_ENABLED || 'false' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -52,9 +60,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Astro keeps its optimized-image cache under node_modules/.astro, which
-      # `npm ci` has just emptied. Restoring the newest cache turns the ~6 min
-      # image-heavy build into a mostly incremental one; a miss costs nothing.
+      # Astro keeps its optimized-image cache and the OG card cache under
+      # node_modules/.astro, which `npm ci` has just emptied. Restoring the
+      # newest cache turns the ~6 min image-heavy build into a mostly
+      # incremental one; a miss costs nothing.
       - name: Restore the Astro image cache
         uses: actions/cache@v6
         with:
@@ -63,14 +72,10 @@ jobs:
           restore-keys: |
             astro-image-cache-${{ runner.os }}-
 
-      - name: Install Chromium for browser regressions
-        run: npx playwright install --with-deps chromium
-
-      # Every step below is one entry of scripts/preflight.mjs, in preflight
-      # order. `npm run preflight` runs the identical chain locally and the
-      # pre-push hook refuses a push to main without proof that it passed on the
-      # pushed tree. scripts/test/preflight.test.mjs fails the moment this list
-      # and the script disagree, so the chain cannot drift apart again.
+      # Every step below is one gate entry of scripts/preflight.mjs, in preflight
+      # order. `npm run preflight` runs the identical chain locally (gate and
+      # signal lanes together) and the pre-push hook refuses a push to main
+      # without proof that it passed on the pushed tree.
       - name: Sweep the tree for local-only paths, key material, and mailboxes
         run: node scripts/preflight.mjs sweep
 
@@ -93,20 +98,6 @@ jobs:
       - name: Test source and rendered-output contracts
         run: node scripts/preflight.mjs node
 
-      - name: Test critical browser journeys
-        run: node scripts/preflight.mjs e2e
-
-      # Failed browser journeys leave traces and screenshots; ship them with the
-      # run so a red deploy can be read without a rerun.
-      - name: Upload browser traces and screenshots
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-output
-          path: output/playwright/
-          if-no-files-found: ignore
-          retention-days: 7
-
       - name: Upload artifact
         id: pages-artifact
         uses: actions/upload-pages-artifact@v5
@@ -116,7 +107,8 @@ jobs:
           include-hidden-files: true
 
       # The recovery package contains these same checked bytes plus a complete
-      # file-hash manifest. Capture only after every preflight step succeeded.
+      # file-hash manifest. Capture only after every gate step succeeded; the
+      # manifest records the gate checks, not the journeys still running.
       # The separately retained compatibility artifact below is migration-only.
       - name: Capture release provenance and file manifest
         env:
@@ -208,3 +200,56 @@ jobs:
             exit 0
           }
           echo "Cloudflare cache purged."
+
+  # The signal lane: the browser journeys, run on the exact Pages artifact the
+  # deploy job ships, beside it rather than ahead of it. The deploy never waits
+  # for this job. A red journey fails the run and marks the commit; the traces
+  # ship with the run so it can be read without a rerun. Chromium installs only
+  # here.
+  journeys:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for browser regressions
+        run: npx playwright install --with-deps chromium
+
+      - name: Fetch the checked Pages artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/pages
+
+      # upload-pages-artifact ships dist/ as one tar; unpack it where the
+      # journeys' static server expects the built site. No second build.
+      - name: Unpack the artifact as dist/
+        run: |
+          mkdir -p dist
+          tar -xf "$RUNNER_TEMP/pages/artifact.tar" -C dist
+          test -f dist/index.html
+
+      - name: Test critical browser journeys
+        run: node scripts/preflight.mjs e2e
+
+      # Failed browser journeys leave traces and screenshots; ship them with the
+      # run so a red journey can be read without a rerun.
+      - name: Upload browser traces and screenshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-output
+          path: output/playwright/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -7,6 +7,7 @@ import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { observeCurrent, migrationScope, assertCurrent, validateCompatibleManifest, recipeHash, runFromStatus } from '../migration-recovery.mjs';
 import { RECOVERY_BASELINE_SHA, RECOVERY_COMPATIBILITY_ROUTES, RECOVERY_REQUIRED_PATHS, RELEASE_REPOSITORY, RELEASE_WORKFLOW, RELEASE_CHECKS } from '../release-artifact.mjs';
+import { workflowShape } from '../preflight.mjs';
 const sha = 'a'.repeat(40);
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const run = () => ({ id: 100, run_attempt: 1, repository: { full_name: RELEASE_REPOSITORY }, path: RELEASE_WORKFLOW, head_sha: sha, head_branch: 'main', event: 'push', status: 'completed', conclusion: 'success' });
@@ -222,8 +223,9 @@ test('retained ZIP extraction rejects traversal, symlinks, duplicate members and
 test('normal pipeline retains verified compatibility before environment approval and recovery shares protected lock', () => {
   const deploy = readFileSync(join(ROOT, '.github/workflows/deploy.yml'), 'utf8');
   const recover = readFileSync(join(ROOT, '.github/workflows/recover.yml'), 'utf8');
-  assert.deepEqual([...deploy.matchAll(/run: node scripts\/preflight\.mjs (\S+)/g)].map(m => m[1]), RELEASE_CHECKS);
-  assert.ok(deploy.indexOf('migration-recovery.mjs prepare') > deploy.indexOf('scripts/preflight.mjs e2e'));
+  const build = workflowShape(deploy).find(job => job.job === 'build');
+  assert.deepEqual(build.calls, RELEASE_CHECKS, 'the manifest records exactly the checks the build job ran before capture');
+  assert.ok(build.text.indexOf('migration-recovery.mjs prepare') > build.text.lastIndexOf('run: node scripts/preflight.mjs '), 'recovery is prepared after every gate check');
   assert.ok(deploy.indexOf('name: site-compatible-recovery-') < deploy.indexOf('\n  deploy:'));
   assert.match(deploy, /recovery-scope\.outputs\.eligible == 'true'/);
   for (const source of [deploy, recover]) { assert.match(source, /group: pages\n  cancel-in-progress: false/); assert.match(source, /name: github-pages/); }

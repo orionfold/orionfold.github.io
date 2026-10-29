@@ -8,8 +8,13 @@
 // was the first place the whole sequence ran. This file removes the choice:
 //
 //   - The deploy workflow calls `node scripts/preflight.mjs <step>` for every
-//     step, in this order. `scripts/test/preflight.test.mjs` fails if the
-//     workflow and STEPS drift apart.
+//     step, in this order. Each step names its CI lane. A `gate` step runs in
+//     the build job and the deploy waits for it. A `signal` step runs in the
+//     journeys job beside the deploy, against the exact Pages artifact, and a
+//     red result marks the run and the commit within minutes without holding
+//     the release: the pre-push preflight already ran it on the same tree
+//     (G-136, 2026-10-28). `scripts/test/preflight.test.mjs` fails if the
+//     workflow and STEPS drift apart in order, lane or job.
 //   - `npm run preflight` (no arguments) runs the same steps, in the same order,
 //     with the same environment, and stamps both the git tree and build settings.
 //   - The tracked pre-push hook (`scripts/git-hooks/pre-push`) refuses to push
@@ -346,13 +351,18 @@ const shell = (label, cmd, args, buildEnv, env = {}) => {
 
 const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 
+// `ci` is the step's lane in the deploy workflow: 'gate' runs in the build job
+// before the Pages artifact is captured and the deploy waits for it; 'signal'
+// runs in the journeys job beside the deploy on that same artifact. Locally
+// every step gates the push: the stamp needs all of them.
 export const STEPS = [
-  { name: 'sweep', title: 'Sweep the tree for local-only paths, key material, and mailboxes', run: stepSweep },
-  { name: 'boundary', title: 'Verify Flow release boundary', run: stepBoundary },
-  { name: 'deno', title: 'Test server and commerce contracts', run: ({ buildEnv }) => shell('deno test', 'deno', ['test', '-A', 'supabase/functions'], buildEnv) },
-  { name: 'build', title: 'Build site', run: ({ buildEnv }) => shell('astro build', npx, ['astro', 'build'], buildEnv) },
+  { name: 'sweep', ci: 'gate', title: 'Sweep the tree for local-only paths, key material, and mailboxes', run: stepSweep },
+  { name: 'boundary', ci: 'gate', title: 'Verify Flow release boundary', run: stepBoundary },
+  { name: 'deno', ci: 'gate', title: 'Test server and commerce contracts', run: ({ buildEnv }) => shell('deno test', 'deno', ['test', '-A', 'supabase/functions'], buildEnv) },
+  { name: 'build', ci: 'gate', title: 'Build site', run: ({ buildEnv }) => shell('astro build', npx, ['astro', 'build'], buildEnv) },
   {
     name: 'node',
+    ci: 'gate',
     title: 'Test source and rendered-output contracts',
     run: ({ buildEnv }) => {
       const files = readdirSync(resolve(ROOT, 'scripts/test')).filter((f) => f.endsWith('.test.mjs')).sort().map((f) => `scripts/test/${f}`);
@@ -361,12 +371,39 @@ export const STEPS = [
   },
   {
     name: 'e2e',
+    ci: 'signal',
     title: 'Test critical browser journeys',
     // CI=1 locally too: no reuse of a stale server on the Playwright port, the
     // same retry policy, and `test.only` is rejected, exactly as in the workflow.
     run: ({ buildEnv }) => shell('playwright test', npx, ['playwright', 'test'], buildEnv, { CI: '1' }),
   },
 ];
+
+export const GATE_STEPS = STEPS.filter((s) => s.ci === 'gate').map((s) => s.name);
+export const SIGNAL_STEPS = STEPS.filter((s) => s.ci === 'signal').map((s) => s.name);
+
+/**
+ * The deploy workflow's jobs in file order, each with its `needs` and the
+ * preflight steps it calls. A small reader for the contract tests that pin the
+ * chain's CI shape, not a YAML parser: job names are the two-space keys under
+ * `jobs:`, which is how this repository's workflows are written.
+ */
+export function workflowShape(text) {
+  const jobsAt = text.search(/^jobs:[ \t]*$/m);
+  if (jobsAt === -1) return [];
+  const body = text.slice(jobsAt);
+  const heads = [...body.matchAll(/^  ([A-Za-z0-9_-]+):[ \t]*$/gm)];
+  return heads.map((head, i) => {
+    const chunk = body.slice(head.index, heads[i + 1]?.index ?? body.length);
+    const needs = chunk.match(/^    needs:[ \t]*(.+)$/m)?.[1].trim() ?? '';
+    return {
+      job: head[1],
+      needs: needs.replace(/^\[|\]$/g, '').split(',').map((s) => s.trim()).filter(Boolean),
+      calls: [...chunk.matchAll(/run: node scripts\/preflight\.mjs (\S+)/g)].map((m) => m[1]),
+      text: chunk,
+    };
+  });
+}
 
 // ---------------------------------------------------------------------------
 // Stamp: proof that the whole chain passed on an exact tree and build settings.
@@ -483,7 +520,7 @@ function runAll({ buildEnv = checkedBuildEnvironment() } = {}) {
 function main(argv) {
   const args = [...argv];
   if (args.includes('--list')) {
-    for (const step of STEPS) console.log(`${step.name}\t${step.title}`);
+    for (const step of STEPS) console.log(`${step.name}\t${step.ci}\t${step.title}`);
     return 0;
   }
   const gateAt = args.indexOf('--gate');

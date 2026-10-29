@@ -4,7 +4,7 @@ A push to `main` deploys orionfold.com from this public repository, so a push is
 
 | Place | Command | What it proves |
 | --- | --- | --- |
-| GitHub Actions (`deploy.yml`) | `node scripts/preflight.mjs <step>` per step | The customer-visible build passed every step on the pushed commit. |
+| GitHub Actions (`deploy.yml`) | `node scripts/preflight.mjs <step>` per step, in two lanes | The build job runs the gate steps on the pushed commit and captures the Pages artifact; the deploy ships it. The journeys job runs the signal step on that exact artifact beside the deploy. |
 | Local, before a push | `npm run preflight` | The same steps, same order, same environment, on your clean checkout. Writes `output/preflight/stamp.json` keyed on the git tree hash and resolved public build settings. |
 | `pre-push` hook (installed by `npm install` or `npm run hooks:install`) | `node scripts/preflight.mjs --gate <sha>` | A push to `main` carries proof: a green stamp for that exact tree and current public build settings, or an inline full run when the pushed commit is the clean working tree. |
 
@@ -17,7 +17,17 @@ The steps, in order:
 5. `node` – source and rendered-output contracts.
 6. `e2e` – Playwright critical journeys against the built `dist/`, with `CI=1` so a stale local server is never reused.
 
-`scripts/test/preflight.test.mjs` fails the moment the workflow's step list and `STEPS` disagree.
+Each step names its CI lane in `STEPS` (`ci: 'gate'` or `ci: 'signal'`). `scripts/test/preflight.test.mjs` fails the moment the workflow's jobs, their `needs`, and their step lists disagree with `STEPS`.
+
+## Two lanes in CI, one chain locally (G-136, 2026-10-28)
+
+Steps 1 to 5 are the gate lane. They run in the `build` job, in order, and the Pages artifact is captured only after the last of them. The `deploy` job needs `build` and nothing else.
+
+Step 6, the browser journeys, is the signal lane. It runs in the `journeys` job, which also needs only `build`, so it starts beside the deploy rather than ahead of it. The job installs Chromium, downloads the `github-pages` artifact the deploy ships, unpacks it as `dist/`, and runs `node scripts/preflight.mjs e2e` on those exact bytes. There is no second build. A red journey fails the run, marks the commit on GitHub, and ships its traces and screenshots with the run.
+
+Why the deploy does not wait: every push to `main` already carries a green stamp or an inline run of all six steps on the same tree, so the journeys in CI are a second run of the same check on the same bytes. Before the split, a warm deploy spent 69 of the build job's 159 seconds on them plus 21 seconds installing Chromium; the deploy then took another 21 seconds. The split takes the journeys and the browser install off the path from push to live.
+
+What does not change: locally `npm run preflight` runs all six steps and the stamp needs all six; the pre-push hook still refuses a push without them. The provenance manifest captured in the build job records the gate checks (`RELEASE_CHECKS`), never a journey that is still running, and recovery verification accepts an older manifest that listed all six. The Pages gate, the `pages` concurrency group, and the Cloudflare purge are untouched. One side effect: the run is complete only when the journeys finish, so a push that arrives within about a minute of the previous one waits a little longer for the group lock.
 
 ## Why
 

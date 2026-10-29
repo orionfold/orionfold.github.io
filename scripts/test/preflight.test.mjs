@@ -6,6 +6,9 @@ import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import {
   STEPS,
+  GATE_STEPS,
+  SIGNAL_STEPS,
+  workflowShape,
   BUILD_ENV,
   BUILD_FLAGS,
   buildEnvironmentsMatch,
@@ -19,14 +22,33 @@ import {
 
 const read = (relativePath) => readFileSync(new URL(`../../${relativePath}`, import.meta.url), 'utf8');
 
-test('the deploy workflow runs every preflight step, in preflight order, and nothing else between checkout and upload', () => {
+test('the deploy workflow runs the gate lane in the build job and the signal lane in the journeys job beside the deploy', () => {
   const workflow = read('.github/workflows/deploy.yml');
-  const calls = [...workflow.matchAll(/run: node scripts\/preflight\.mjs (\S+)/g)].map((m) => m[1]);
-  assert.deepEqual(calls, STEPS.map((s) => s.name), 'workflow steps must equal STEPS in order');
+  const jobs = Object.fromEntries(workflowShape(workflow).map((job) => [job.job, job]));
+  assert.deepEqual(Object.keys(jobs), ['build', 'deploy', 'journeys']);
+  assert.deepEqual(jobs.build.calls, GATE_STEPS, 'the build job runs the gate steps in preflight order');
+  assert.deepEqual(jobs.journeys.calls, SIGNAL_STEPS, 'the journeys job runs the signal steps in preflight order');
+  assert.deepEqual([...jobs.build.calls, ...jobs.journeys.calls], STEPS.map((s) => s.name), 'together the two jobs run the whole chain, nothing missing, nothing twice');
+  assert.deepEqual(jobs.deploy.calls, []);
+  assert.deepEqual(jobs.build.needs, []);
+  assert.deepEqual(jobs.deploy.needs, ['build'], 'the deploy waits for the gate lane and nothing else');
+  assert.deepEqual(jobs.journeys.needs, ['build'], 'the journeys start as soon as the artifact exists, beside the deploy');
   for (const step of STEPS) {
-    assert.match(workflow, new RegExp(`- name: ${step.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\n`), `workflow names the "${step.name}" step by its preflight title`);
+    const home = step.ci === 'gate' ? jobs.build : jobs.journeys;
+    assert.match(home.text, new RegExp(`- name: ${step.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\n`), `the ${home.job} job names the "${step.name}" step by its preflight title`);
   }
   assert.doesNotMatch(workflow, /run: npm run (?:build|test:node|test:e2e|test:deno)\b/, 'the workflow never calls a test or build script directly; parity lives in preflight');
+
+  // The artifact is captured after every gate step, and the journeys run on
+  // that exact artifact: Chromium only where journeys run, no second build.
+  assert.ok(jobs.build.text.indexOf('run: node scripts/preflight.mjs node') < jobs.build.text.indexOf('uses: actions/upload-pages-artifact'), 'the Pages artifact is captured after the last gate step');
+  assert.doesNotMatch(jobs.build.text, /playwright/i, 'the build job installs no browser and runs no journey');
+  assert.doesNotMatch(jobs.deploy.text, /playwright|preflight/i);
+  assert.match(jobs.journeys.text, /run: npx playwright install --with-deps chromium\n/, 'Chromium installs in the journeys job');
+  assert.match(jobs.journeys.text, /uses: actions\/download-artifact@v\d+\n\s+with:\n\s+name: github-pages\n/, 'the journeys fetch the Pages artifact the deploy ships');
+  assert.match(jobs.journeys.text, /tar -xf "\$RUNNER_TEMP\/pages\/artifact\.tar" -C dist\n/, 'and unpack it as dist/, where the static server looks');
+  assert.doesNotMatch(jobs.journeys.text, /astro build|preflight\.mjs build|setup-deno/, 'no second build in the journeys job');
+  assert.match(jobs.journeys.text, /timeout-minutes: \d+/, 'a hung journey cannot hold the concurrency group for hours');
   assert.match(workflow, /FLOW_RELEASE_DECLARED: \$\{\{ vars\.FLOW_RELEASE_DECLARED \}\}/, 'the operator declaration still comes from the repository variable');
   for (const [name, value] of Object.entries(BUILD_ENV)) {
     assert.ok(workflow.includes(`${name}: "${value}"`), `workflow pins ${name} exactly as local preflight does`);
@@ -35,16 +57,50 @@ test('the deploy workflow runs every preflight step, in preflight order, and not
     assert.ok(workflow.includes(`${name}: \${{ vars.${name} || 'false' }}`), `workflow resolves ${name} from the same repository flag, absent means false`);
   }
 
-  assert.match(workflow, /timeout-minutes: \d+/, 'a hung build cannot hold the deploy lane for hours');
-  assert.match(workflow, /if: failure\(\)[\s\S]*upload-artifact[\s\S]*output\/playwright/, 'browser traces and screenshots are uploaded when the chain fails');
+  assert.match(jobs.build.text, /timeout-minutes: \d+/, 'a hung build cannot hold the deploy lane for hours');
+  assert.match(jobs.journeys.text, /if: failure\(\)[\s\S]*upload-artifact[\s\S]*output\/playwright/, 'browser traces and screenshots are uploaded when a journey fails');
 });
 
-test('the chain order is boundary before build and browser journeys last', () => {
+test('the chain order is boundary before build and browser journeys last; only the journeys are a signal', () => {
   const names = STEPS.map((s) => s.name);
   assert.equal(names[0], 'sweep');
   assert.ok(names.indexOf('boundary') < names.indexOf('build'));
   assert.ok(names.indexOf('build') < names.indexOf('node'));
   assert.equal(names[names.length - 1], 'e2e');
+  assert.ok(STEPS.every((s) => s.ci === 'gate' || s.ci === 'signal'), 'every step names its CI lane');
+  assert.deepEqual(SIGNAL_STEPS, ['e2e'], 'the browser journeys are the only step the deploy does not wait for');
+  assert.deepEqual(GATE_STEPS, names.filter((n) => n !== 'e2e'), 'everything else gates the deploy');
+  assert.ok(Math.max(...GATE_STEPS.map((n) => names.indexOf(n))) < names.indexOf('e2e'), 'every gate step precedes the signal lane');
+});
+
+test('the workflow reader sees jobs, their needs and their preflight calls in file order', () => {
+  const shape = workflowShape([
+    'name: x',
+    'on:',
+    '  push:',
+    '    branches: [main]',
+    'jobs:',
+    '  build:',
+    '    runs-on: ubuntu-24.04',
+    '    steps:',
+    '      - run: node scripts/preflight.mjs sweep',
+    '      - run: node scripts/preflight.mjs build',
+    '  deploy:',
+    '    needs: build',
+    '    steps:',
+    '      - uses: actions/deploy-pages@v5',
+    '  journeys:',
+    '    needs: [build, deploy]',
+    '    steps:',
+    '      - run: node scripts/preflight.mjs e2e',
+    '',
+  ].join('\n'));
+  assert.deepEqual(shape.map(({ job, needs, calls }) => ({ job, needs, calls })), [
+    { job: 'build', needs: [], calls: ['sweep', 'build'] },
+    { job: 'deploy', needs: ['build'], calls: [] },
+    { job: 'journeys', needs: ['build', 'deploy'], calls: ['e2e'] },
+  ]);
+  assert.deepEqual(workflowShape('name: no jobs here\n'), []);
 });
 
 test('package scripts expose preflight and install the pre-push gate on npm install', () => {
@@ -194,6 +250,7 @@ test('a stamp proves the exact tree and build environment, only from a clean che
   assert.equal(stampSatisfies({ ...stamp, dirty: undefined }, tree, { buildEnv }), false);
   assert.equal(stampSatisfies({ ...stamp, tree: 'b'.repeat(40) }, tree, { buildEnv }), false);
   assert.equal(stampSatisfies({ ...stamp, steps: steps.filter((s) => s !== 'e2e') }, tree, { buildEnv }), false, 'a partial run is not proof');
+  assert.equal(stampSatisfies({ ...stamp, steps: GATE_STEPS }, tree, { buildEnv }), false, 'the CI gate lane alone is not local proof: the push still needs the journeys');
   assert.equal(stampSatisfies(null, tree, { buildEnv }), false);
   assert.equal(stampSatisfies(stamp, tree), false, 'the current configuration must be known');
   assert.equal(stampSatisfies({ tree, dirty: false, steps }, tree, { buildEnv }), false, 'old tree-only stamps must be rerun');

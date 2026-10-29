@@ -4,7 +4,8 @@ import { mkdtempSync, writeFileSync, mkdirSync, readFileSync, symlinkSync, rmSyn
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
-import { createManifest, verifyManifest, validateRecoveryEvidence, safeRelativePath, RELEASE_CHECKS, RELEASE_REPOSITORY, RELEASE_WORKFLOW, RECOVERY_COMPATIBILITY_ROUTES, RECOVERY_REQUIRED_PATHS } from '../release-artifact.mjs';
+import { createManifest, verifyManifest, validateRecoveryEvidence, safeRelativePath, hasReleaseChecks, RELEASE_CHECKS, RELEASE_REPOSITORY, RELEASE_WORKFLOW, RECOVERY_COMPATIBILITY_ROUTES, RECOVERY_REQUIRED_PATHS } from '../release-artifact.mjs';
+import { GATE_STEPS, STEPS, workflowShape } from '../preflight.mjs';
 const hash = value => createHash('sha256').update(value).digest('hex');
 function fixture() {
   const dir = mkdtempSync(join(tmpdir(), 'release-contract-'));
@@ -101,11 +102,22 @@ test('reconstructed local baseline and missing new-page overlay are ineligible f
 });
 test('workflow retains both packages for at least 30 days without changing preflight or deployment guards', () => {
   const source = readFileSync(new URL('../../.github/workflows/deploy.yml', import.meta.url), 'utf8');
-  const calls = [...source.matchAll(/run: node scripts\/preflight\.mjs (\S+)/g)].map(match => match[1]);
-  assert.deepEqual(calls, RELEASE_CHECKS);
+  const build = workflowShape(source).find(job => job.job === 'build');
+  assert.deepEqual(build.calls, RELEASE_CHECKS, 'the provenance names the checks the build job ran before the artifact was captured');
+  assert.ok(build.text.indexOf('release-artifact.mjs capture') > build.text.lastIndexOf('run: node scripts/preflight.mjs '));
   assert.match(source, /group: pages/);
   assert.match(source, /name: github-pages/);
   assert.match(source, /Upload artifact[\s\S]*upload-pages-artifact@v5[\s\S]*retention-days: 35/);
   assert.match(source, /name: site-recovery-.*[\s\S]*retention-days: 35/);
-  assert.ok(source.indexOf('release-artifact.mjs capture') > source.indexOf('scripts/preflight.mjs e2e'));
+  assert.ok(!build.text.includes('scripts/preflight.mjs e2e'), 'the journeys are not a capture precondition; they run beside the deploy on the captured bytes');
+});
+
+test('release checks are the gate lane; an older manifest that also lists the journeys still verifies, a short one does not', () => {
+  assert.deepEqual(RELEASE_CHECKS, GATE_STEPS);
+  assert.ok(!RELEASE_CHECKS.includes('e2e'), 'the journeys run beside the deploy, so a manifest captured in the build job cannot claim them');
+  assert.equal(hasReleaseChecks(RELEASE_CHECKS), true);
+  assert.equal(hasReleaseChecks(STEPS.map(step => step.name)), true, 'manifests captured before the lanes split listed every step');
+  assert.equal(hasReleaseChecks(RELEASE_CHECKS.filter(name => name !== 'build')), false);
+  assert.equal(hasReleaseChecks(['build']), false);
+  assert.equal(hasReleaseChecks(undefined), false);
 });

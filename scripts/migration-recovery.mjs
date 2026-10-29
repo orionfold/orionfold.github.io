@@ -7,7 +7,7 @@ import { resolve, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { createManifest, verifyManifest, RELEASE_REPOSITORY, RELEASE_WORKFLOW, RECOVERY_WORKFLOW, RECOVERY_BASELINE_SHA, RELEASE_CHECKS, RECOVERY_REQUIRED_PATHS } from './release-artifact.mjs';
+import { createManifest, verifyManifest, RELEASE_REPOSITORY, RELEASE_WORKFLOW, RECOVERY_WORKFLOW, RECOVERY_BASELINE_SHA, hasReleaseChecks, RECOVERY_REQUIRED_PATHS } from './release-artifact.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const API = `https://api.github.com/repos/${RELEASE_REPOSITORY}`;
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -93,7 +93,7 @@ export function validateCompatibleManifest(manifest, bytes, proofBytes, approved
   requireValue(/^[0-9a-f]{64}$/.test(approvedDigest) && hash(bytes) === approvedDigest, 'Approved manifest digest does not match.');
   requireValue(p?.mode === 'ci-compatible-migration' && p.repository === RELEASE_REPOSITORY && p.workflowPath === RELEASE_WORKFLOW && p.ref === 'refs/heads/main' && p.dirty === false && sha40(p.sourceSha) && sha40(p.sourceTree), 'Compatibility source is not trusted main CI.');
   requireValue(p.baseline?.sourceSha === RECOVERY_BASELINE_SHA && sha40(p.baseline.sourceTree) && /^[0-9a-f]{64}$/.test(p.baseline.lockfileSha256) && p.baseline.ancestor === true && p.baseline.directParent === true, 'Wrong baseline reconstruction provenance.');
-  requireValue(p.recipeSha256 === recipeHash() && p.overlayProofSha256 === hash(proofBytes) && JSON.stringify(p.checks) === JSON.stringify(RELEASE_CHECKS), 'Recipe, proof or required checks differ.');
+  requireValue(p.recipeSha256 === recipeHash() && p.overlayProofSha256 === hash(proofBytes) && hasReleaseChecks(p.checks), 'Recipe, proof or required checks differ.');
   requireValue(p.productionAtPreparation?.workflowPath === RELEASE_WORKFLOW && [RECOVERY_BASELINE_SHA, p.sourceSha].includes(p.productionAtPreparation.sourceSha) && id(p.productionAtPreparation.deploymentId), 'Artifact was prepared outside this migration.');
   validateRun(run, p.sourceSha);
   requireValue(String(run.id) === String(p.runId) && String(run.run_attempt) === String(p.runAttempt), 'Source run or attempt differs.');
