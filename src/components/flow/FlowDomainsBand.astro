@@ -25,10 +25,10 @@ const [launch] = await publishedDomainArticles();
         ) : (
           <Fragment>
             <p>{launch.data.domain} travels as 6 files and 75 KB of plain Markdown. In a client's Flow those files open with figures, tables and checklists drawn, and with skills and Jobs ready to run. Their agent can read your method through Flow too. Publish again, and every client gets a change to review.</p>
-            <p>Built a custom GPT for clients? OpenAI retires custom GPTs on December 11, 2026. A Domain is files you keep.</p>
+            <p>Built a custom GPT for clients? <a href="/flow/compare/custom-gpts/">OpenAI retires custom GPTs on December 11, 2026.</a> A Domain is files you keep.</p>
           </Fragment>
         )}
-        <p class="fd-links">{!self && <a href="/domains/">See Flow Domains<ArrowRight size={16} /></a>}<a href={domainArticleHref(launch.id)}>How {launch.data.domain} was built<ArrowRight size={16} /></a>{!self && <a href="/flow/compare/custom-gpts/">Flow for custom GPT users<ArrowRight size={16} /></a>}</p>
+        <p class="fd-links">{!self && <a href="/domains/">See Flow Domains<ArrowRight size={16} /></a>}<a href={domainArticleHref(launch.id)}>How {launch.data.domain} was built<ArrowRight size={16} /></a></p>
       </div>
     </div>
     <DomainPayload />
@@ -43,6 +43,9 @@ const [launch] = await publishedDomainArticles();
   .fd-l1 { white-space: nowrap; font-size: min(1em, 11.2vw); }
   :global(.ls) .fd-head h2 { text-wrap: balance; }
   :global(.ls) .fd-head .ls-episode-dek p + p { margin-top: 12px; }
+  /* The retirement date is the door to the custom GPT page (operator 2026-10-28): teal and underlined, so it reads as a link inside prose. */
+  :global(.ls) .fd-head .ls-episode-dek p a { color: var(--teal); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+  :global(.ls) .fd-head .ls-episode-dek p a:hover { color: var(--ink); }
   .fd-links { display: flex; flex-wrap: wrap; gap: 10px 24px; }
   .fd-links a { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
   @media (max-width: 900px) { .fd-head { grid-template-columns: 1fr; gap: 20px; } }

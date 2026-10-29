@@ -107,12 +107,14 @@ test('component snippets are coloured as YAML, and prose inline-code styling sta
   assert.doesNotMatch(read('src/styles/flow-elements.css'), /inset 3px 0 0/, 'no left-edge bar on the chosen element');
 });
 
-test('Elements is shown on the homepage right under the hero, with the walk’s own plan', { skip: !existsSync(new URL('dist/index.html', root)) }, () => {
+test('Elements is shown on the homepage after Domains, with the walk’s own plan', { skip: !existsSync(new URL('dist/index.html', root)) }, () => {
   // Operator 2026-10-27: "move flow elements section ... to home, below hero". No
   // section is on both pages, so /flow/ keeps only its Elements hero and links out.
+  // Operator 2026-10-28 17:25: Domains first, so the page names who it is for
+  // before it tours the app; Elements follows it.
   const page = read('src/pages/index.astro');
-  const order = ['<HomeHero', '<FlowElementsShowcase', '<FlowDomainsBand'].map((m) => page.indexOf(m));
-  assert.ok(order.every((i) => i > 0) && order[0] < order[1] && order[1] < order[2], 'Elements sits between the hero and Domains');
+  const order = ['<HomeHero', '<FlowDomainsBand', '<FlowElementsShowcase'].map((m) => page.indexOf(m));
+  assert.ok(order.every((i) => i > 0) && order[0] < order[1] && order[1] < order[2], 'Domains sits between the hero and Elements');
   assert.doesNotMatch(read('src/pages/flow.astro'), /<FlowElementsShowcase/);
   const src = read('src/components/flow/FlowElementsShowcase.astro');
   // Every result is the walk's own and no two look alike (operator 2026-10-27:
