@@ -91,7 +91,7 @@ minutes: 9
 
 You are the security leader for ten or twenty companies that could never hire one. For each you run an assessment against NIST CSF 2.0 or CIS Controls. You write the policy set, keep the risk register, and order the fixes into a remediation roadmap. Once a quarter you stand in front of a board and explain it in twenty minutes. Once a year you run a tabletop exercise and hope the plan holds. The method is yours. It lives in Word templates, a twelve-tab spreadsheet, and a custom GPT you loaded with your policies last spring.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

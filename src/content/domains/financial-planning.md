@@ -91,7 +91,7 @@ minutes: 9
 
 You meet a new household and ask the questions you have asked for fifteen years. What do you own. What do you owe. When do you want to stop working. You gather their statements, their tax return, their policies and the will they have not updated since the first child. You build the plan. Cash flow, net worth, a retirement projection with three scenarios, tax, insurance, estate, and an investment policy statement. A year later you sit down with them again and work through the annual review agenda. The method lives in your head, in a questionnaire you wrote in Word, and in a planning software template nobody else in the firm can run without you.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

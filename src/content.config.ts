@@ -510,11 +510,14 @@ const domains = defineCollection({
         })
         .optional(),
       minutes: z.number(),
+      // A built Domain's own walk facts for the rail (hands-on time, AI spend).
+      time: z.string().optional(),
+      spend: z.string().optional(),
       draft: z.boolean().default(false),
     })
     .superRefine((d, ctx) => {
       if (d.kind === 'launch') {
-        for (const k of ['walked', 'repo', 'files', 'size', 'licence', 'hero', 'heroAlt'] as const) {
+        for (const k of ['walked', 'repo', 'files', 'size', 'licence', 'hero', 'heroAlt', 'time', 'spend'] as const) {
           if (d[k] === undefined) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `a launch story needs ${k}` });
         }
       } else {

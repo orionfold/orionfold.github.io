@@ -91,7 +91,7 @@ minutes: 9
 
 You walk into a company that sells by accident and your job is to leave it selling on purpose. In the first month you write the ideal customer profile. Then the discovery call guide, the deal review scorecard, the weekly pipeline review, the objection library and a battlecard for each competitor. You train the reps, sit in on calls, and run the Monday pipeline meeting until they can run it without you. The method lives in your kickoff deck, in a Notion page nobody opens after month three, and in your head.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

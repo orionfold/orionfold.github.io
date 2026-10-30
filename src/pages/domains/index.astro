@@ -28,11 +28,15 @@ import '../../styles/essays.css';
 import '../../styles/flow-paths.css';
 import '../../styles/domains.css';
 
-// The launch story stays featured; the blueprints (G-135) render as cards
-// below it, in the PR/FAQ's order, each an invitation to build.
+// The launch story stays featured in the hero; the founder's built Domains get
+// their own section, and the blueprints (G-135) render as cards below them, in
+// the PR/FAQ's order, each an invitation to build.
 const articles = await publishedDomainArticles();
 const [launch] = articles;
 const blueprints = articles.filter(isBlueprint);
+// Founder-authored Domains (operator 2026-10-29): every built Domain, the
+// launch story first, each a card in its own section above the blueprints.
+const founders = articles.filter((a) => !isBlueprint(a));
 const title = 'Flow Domains: your expertise as a living system | Orionfold';
 const description = 'Turn the method you use with clients into a Flow Domain. Co-author living documents with any AI, review them, publish to GitHub and keep them current.';
 const og = ogMeta('/domains/');
@@ -54,6 +58,13 @@ const TIMELINE = [
   { t: '21:31', k: 'Published', v: 'Publish ▸ GitHub Repository: 6 files sent, nothing else touched.' },
   { t: '21:54', k: 'An update reaches a reader', v: 'A licence is added. The reader’s copy shows the change to review.' },
 ];
+const COUNT_WORD: Record<number, string> = { 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five' };
+// The walk, one column per day.
+const WALK_DAYS = TIMELINE.reduce<{ day: string; items: typeof TIMELINE }[]>((days, s) => {
+  if (s.day) days.push({ day: s.day, items: [] });
+  days[days.length - 1].items.push(s);
+  return days;
+}, []);
 // Earn a conversation (review 2026-10-28, A5): one email, the four PULL
 // fields, no form and no backend. manav@orionfold.com is the public contact.
 const TALK = `mailto:manav@orionfold.com?subject=${encodeURIComponent('My first Domain')}&body=${encodeURIComponent('The client job I would build a Domain for:\n\nWhen it is due:\n\nWhat I use for it today:\n\nWhat gets in the way:\n')}`;
@@ -138,14 +149,37 @@ const schema = [
 
     <FlowDomainsBand id="dm-how" self />
 
-    <section class="dm-section ls-container" aria-labelledby="dm-first">
-      <div class="dm-head"><p class="ls-eyebrow">THE FIRST DOMAIN</p><h2 id="dm-first">An empty folder<br /><span class="ls-stroke">to GitHub in a few hours.</span></h2><p class="dm-sub">AI Consulting turns nine years of Amazon mechanisms into a path for adopting AI. The hands-on work took about three hours across two days, and no run cost anything on top of a Claude subscription.</p></div>
-      <div class="dm-first">
-        <ol class="dm-time">{TIMELINE.map((s) => <Fragment>{s.day && <li class="dm-day" aria-label={s.day}><span>{s.day}</span></li>}<li>{s.t ? <time>{s.t}</time> : <span class="dm-time-blank" aria-hidden="true"></span>}<span><b>{s.k}</b>{s.v}</span></li></Fragment>)}</ol>
-        <a class="dm-story" href={domainArticleHref(launch.id)}>
-          <Image src={launch.data.hero} alt="" widths={[640, 960, 1280]} sizes="(max-width: 900px) 92vw, 600px" loading="lazy" />
-          <span class="dm-story-t"><small>THE LAUNCH STORY · {launch.data.minutes} MIN READ</small><b>{launch.data.title}</b><em>Read it<ArrowRight size={16} /></em></span>
-        </a>
+    <section class="dm-section ls-container" aria-labelledby="dm-founder">
+      <div class="dm-head"><p class="ls-eyebrow">BY ORIONFOLD’S FOUNDER</p><h2 id="dm-founder">{COUNT_WORD[founders.length] ?? founders.length} Domains,<br /><span class="ls-stroke">built and published.</span></h2><p class="dm-sub">Manav Sehgal built each one in Flow and published it to GitHub. Each took about three hours of hands-on work, and no run cost anything on top of a Claude subscription. Read how each was made, or bring one into your own Flow.</p></div>
+      <ul class="dm-founders">
+        {founders.map((f, i) => (
+          <li class="dm-founder" style={`--dm-tint:${f.data.tint}`}>
+            <a class="dm-founder-shot" href={domainArticleHref(f.id)} tabindex="-1" aria-hidden="true"><Image src={f.data.hero!} alt="" widths={[640, 960, 1280]} sizes="(max-width: 900px) 92vw, 600px" loading="lazy" /></a>
+            <div class="dm-founder-t">
+              <small><span class="dm-card-ic" set:html={elementDrawing(f.data.icon)} />{i === 0 ? 'THE LAUNCH STORY' : 'FOUNDER DOMAIN'} · {f.data.role.toUpperCase()}</small>
+              <b><a href={domainArticleHref(f.id)}>{f.data.domain}</a></b>
+              <span class="dm-card-line">{f.data.hook}</span>
+              <dl class="dm-founder-facts">
+                <div><dt>Files</dt><dd>{f.data.files} Markdown, {f.data.size}</dd></div>
+                <div><dt>Hands-on</dt><dd>{f.data.time}</dd></div>
+                <div><dt>Licence</dt><dd>{f.data.licence}</dd></div>
+              </dl>
+              <p class="dm-founder-links"><a href={domainArticleHref(f.id)}>Read how it was built<ArrowRight size={16} /></a><a href={f.data.repo}>Get it on GitHub<ArrowUpRight size={15} /></a></p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div class="dm-walk">
+        <h3>The first one, hour by hour</h3>
+        <p>{launch.data.domain} turns nine years of Amazon mechanisms into a path for adopting AI. Here is its walk across two days.</p>
+        <div class="dm-walk-days">
+          {WALK_DAYS.map((g) => (
+            <ol class="dm-time">
+              <li class="dm-day" aria-label={g.day}><span>{g.day}</span></li>
+              {g.items.map((s) => <li>{s.t ? <time>{s.t}</time> : <span class="dm-time-blank" aria-hidden="true"></span>}<span><b>{s.k}</b>{s.v}</span></li>)}
+            </ol>
+          ))}
+        </div>
       </div>
     </section>
 

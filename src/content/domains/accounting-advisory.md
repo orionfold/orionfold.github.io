@@ -91,7 +91,7 @@ minutes: 10
 
 You close the books for dozens of businesses and then answer the questions that come after. Why did cash drop when profit rose. What does the new deduction mean for us. Can we treat this as a repair. The close is a method you repeat every month. The explanation is a craft you have practiced for years. Both live in your head, in a checklist someone started in 2019, and in a folder of past emails you search when a client asks the same thing again.
 
-This page is a blueprint for a Flow Domain that carries that method and that craft. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method and that craft. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

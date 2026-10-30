@@ -91,7 +91,7 @@ minutes: 9
 
 You coach product teams through the same path again and again. Interview eight customers about a recent problem. Draw the opportunity solution tree. That is a tree from one outcome down to the needs you heard and the bets that might meet them. Write the strategy on one page and get the founder to sign it. Sort the roadmap by outcome, not by feature. Tick the launch checklist, then read the numbers a month later. The method is yours. Today it lives in a slide deck, an old whiteboard export, and a custom GPT you built so clients could ask it questions.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

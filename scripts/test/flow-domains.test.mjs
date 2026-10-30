@@ -51,7 +51,8 @@ test('the blueprints invite an expert to build, on public signals only, and neve
     assert.ok((front.match(/^  - (n: |name: )/gm) ?? []).length >= 5, `${slug} plans its documents`);
     assert.doesNotMatch(md, /—/, 'no em-dashes');
     assert.doesNotMatch(md, PRIVATE, `${slug}: nothing from the private PR/FAQ`);
-    assert.match(body, /It is not built\. Only one Domain exists today/, `${slug} says so up front`);
+    assert.match(body, /It is not built\. \[AI Consulting\]\(\/domains\/ai-consulting\/\) is a Domain that exists today/, `${slug} says so up front`);
+    assert.doesNotMatch(body, /Only one Domain exists/, `${slug}: more than one Domain is built (2026-10-29)`);
     assert.doesNotMatch(body, /\| (verified|derived):/, `${slug}: no walk numbers`);
     assert.doesNotMatch(body, /\b(we|I) built\b|was built in Flow|walked end to end/i, `${slug}: no built claim`);
     // Every market signal carries a public, dated, linked source and the day it was checked.
@@ -155,11 +156,20 @@ test('the built pages link the Domain, the story and each other, and the nav lea
   // G-135: the Domains menu lists the five in the site's order, then All Domains;
   // the landing features the launch story and cards the four blueprints.
   const menu = land.match(/<div class="living-nav-dd">\s*<a[^>]*href="\/domains\/"[\s\S]*?living-nav-dd-all[^>]*>[^<]*/)[0];
-  assert.deepEqual([...menu.matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]), ['AI Consulting', 'Learning Design', 'Research Synthesis', 'Finance Advisory', 'Accounting Advisory'], 'the menu keeps the top five; the rest are on /domains/');
+  assert.deepEqual([...menu.matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]), ['AI Consulting', 'Anthropic S-1 Analyst', 'Learning Design', 'Research Synthesis', 'Finance Advisory'], 'the menu keeps the top five: the built Domains, then the blueprints; the rest are on /domains/');
   assert.match(menu, /living-nav-dd-all[^>]*>All Domains/);
   const cards = land.match(/<ul class="dm-cards">[\s\S]*?<\/ul>/)[0];
   for (const slug of BLUEPRINTS) assert.ok(cards.includes(`href="/domains/${slug}/"`), `${slug} is a card`);
-  assert.doesNotMatch(cards, /ai-consulting/, 'the launch story stays featured, not carded');
+  assert.doesNotMatch(cards, /ai-consulting|anthropic-s1-analyst/, 'the built Domains are not blueprint cards');
+  // Operator 2026-10-29: the founder's built Domains get their own section, launch story first.
+  const founders = land.match(/<ul class="dm-founders">[\s\S]*?<\/ul>/)[0];
+  const order = [...founders.matchAll(/<b><a href="\/domains\/([^/]+)\/">/g)].map((m) => m[1]);
+  assert.deepEqual(order, ['ai-consulting', 'anthropic-s1-analyst'], 'both built Domains, the launch story first');
+  assert.ok(founders.includes('href="https://github.com/orionfold/flow/tree/main/flow-domains/anthropic-s1-analyst"'));
+  const s1 = built('/domains/anthropic-s1-analyst/');
+  assert.match(s1, /· A FOUNDER DOMAIN</);
+  assert.match(s1, /nothing in it is investment advice/, 'the body says it is not investment advice');
+  assert.match(s1, /<dt>Hands-on time<\/dt><dd>About 3 hours, in one afternoon<\/dd>/, 'its own walk facts, not the launch story\'s');
   for (const slug of BLUEPRINTS) {
     const page = built(`/domains/${slug}/`);
     assert.match(page, /· A BLUEPRINT</, `${slug} is headed as a blueprint`);

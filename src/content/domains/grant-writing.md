@@ -91,7 +91,7 @@ minutes: 9
 
 You write grants for several nonprofits at once, and every one of them is on a deadline somebody else set. One client needs a letter of inquiry by Friday. Another needs a full proposal with a need statement, a logic model and a budget narrative that explains every line. Your funder research lives in a spreadsheet. Your best paragraphs live in old proposals you search by memory. The method lives in your head.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own method, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own method, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

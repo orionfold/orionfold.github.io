@@ -91,7 +91,7 @@ minutes: 9
 
 You run engagements, not sessions. An engagement starts with a chemistry call and an intake form. Then come stakeholder interviews or a 360, which is feedback gathered from the people around the leader. Then a feedback summary, a development plan the sponsor signs, six to twelve sessions, a mid-point check-in, and a close-out report. Every session has a shape, GROW or something like it, and ends in a commitment you write down. The method is yours and it works. It lives in your head, in a proposal you copy each time, and in a custom GPT you fed your best questions.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

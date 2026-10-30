@@ -19,8 +19,9 @@ type NavChild = { href: string; label: string; tag: string; line: string; thumb?
 const paths: NavChild[] = (await publishedPaths()).slice(0, 5).map((p) => ({ href: pathHref(p.id), label: p.data.path, tag: p.data.chip.toUpperCase(), line: SHOWCASE[p.id]?.hook ?? p.data.persona }));
 // Elements lists five elements by their sidebar drawing (operator 2026-10-26).
 const elements: NavChild[] = NAV_ELEMENTS.map((e) => ({ href: elementHref(e), label: e.name, tag: e.categoryLabel.toUpperCase(), line: e.line, thumb: { svg: elementDrawing(e.card), tint: e.tint } }));
-// Domains (G-135): the launch story first, then the blueprints in the PR/FAQ's order.
-const domains: NavChild[] = (await publishedDomainArticles()).map((d) => ({ href: domainArticleHref(d.id), label: d.data.domain, tag: d.data.kind === 'launch' ? 'LAUNCH STORY' : 'BLUEPRINT', line: d.data.hook, thumb: { svg: elementDrawing(d.data.icon), tint: d.data.tint } }));
+// Domains (G-135): the launch story first, the founder's other built Domains,
+// then the blueprints in the PR/FAQ's order.
+const domains: NavChild[] = (await publishedDomainArticles()).map((d, i) => ({ href: domainArticleHref(d.id), label: d.data.domain, tag: d.data.kind === 'blueprint' ? 'BLUEPRINT' : i === 0 ? 'LAUNCH STORY' : 'FOUNDER DOMAIN', line: d.data.hook, thumb: { svg: elementDrawing(d.data.icon), tint: d.data.tint } }));
 const compare: NavChild[] = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.tool, tag: p.data.kind === 'switch' ? 'SWITCH' : 'PAIR', line: p.data.line }));
 const links: { href: string; label: string; children?: NavChild[]; all?: string }[] = [
   { href: '/flow/', label: 'Flow' },

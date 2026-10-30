@@ -91,7 +91,7 @@ minutes: 9
 
 You read other people's paper for a living. A vendor MSA lands on Monday. That is the master agreement that sets the terms for everything after it. SaaS terms land on Tuesday, and an NDA an hour before a call. You read each one the same way, build the issues list, mark the redline, and write the client a memo that says what matters and what to do. Your playbook, the wording you ask for and the fallbacks you accept for every clause, lives in a Word file you last cleaned up two years ago. The rest lives in your head and in the margin comments of old redlines.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

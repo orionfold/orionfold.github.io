@@ -91,7 +91,7 @@ minutes: 9
 
 You give every client a voice. You write the brand voice and style guide, the audience and messaging map, the content audit and the pillar plan. Then the work turns monthly. A calendar, a brief for each piece, a review pass on every draft, and a report on what the work did. The method is yours and you repeat it for each client. It lives in a Google Doc, a spreadsheet, and a custom GPT you trained on the style guide and ten sample posts.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

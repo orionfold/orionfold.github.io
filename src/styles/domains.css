@@ -86,7 +86,6 @@
 .da-traits span:last-child { font-size: .9rem; line-height: 1.5; color: var(--muted); }
 
 /* ── The first Domain ─────────────────────────────────── */
-.dm-first { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px; align-items: start; }
 .ls .dm-time { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 .dm-time li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line); }
 .dm-time time { font: 700 1.15rem/1.3 var(--dm-display); color: var(--teal); }
@@ -101,13 +100,26 @@
 .dm-talk b { font-size: 1.05rem; }
 .dm-talk span { font-size: .92rem; line-height: 1.5; color: var(--muted); }
 .dm-talk-btn { justify-self: start; white-space: nowrap; }
-.dm-story { position: sticky; top: calc(var(--of-nav-height, 82px) + 20px); display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: #fff; color: var(--ink); transition: box-shadow .2s, transform .2s; }
-.dm-story:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -20px #17201c50; }
-.dm-story img { display: block; width: 100%; height: auto; border-bottom: 1px solid var(--line); }
-.dm-story-t { display: grid; gap: 8px; padding: 20px 22px 22px; }
-.dm-story-t small { font-size: .7rem; font-weight: 700; letter-spacing: .1em; color: var(--muted); }
-.dm-story-t b { font: 400 1.5rem/1.15 var(--ed-serif, Georgia, serif); letter-spacing: -.02em; }
-.dm-story-t em { display: inline-flex; align-items: center; gap: 6px; font-style: normal; font-weight: 700; color: var(--red-deep); }
+/* Founder Domains (2026-10-29): every built Domain as a card, then the first walk by day. */
+.ls .dm-founders { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin: 0; padding: 0; list-style: none; }
+.dm-founder { display: grid; grid-template-rows: auto 1fr; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: #fff; transition: box-shadow .2s, transform .2s; }
+.dm-founder:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -20px #17201c50; }
+.dm-founder-shot img { display: block; width: 100%; height: auto; aspect-ratio: 3024 / 1964; object-fit: cover; border-bottom: 1px solid var(--line); }
+.dm-founder-t { display: grid; align-content: start; gap: 10px; padding: 20px 22px 22px; }
+.dm-founder-t small { display: flex; align-items: center; gap: 10px; font-size: .68rem; font-weight: 700; letter-spacing: .1em; color: var(--muted); }
+.dm-founder-t small .dm-card-ic { width: 32px; height: 32px; border-radius: 9px; flex: none; }
+.dm-founder-t small .dm-card-ic svg { width: 20px; height: 20px; }
+.dm-founder-t b { font: 400 1.6rem/1.15 var(--ed-serif, Georgia, serif); letter-spacing: -.02em; }
+.dm-founder-t b a { color: var(--ink); text-decoration: none; }
+.ls .dm-founder-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 6px 0 0; padding: 14px 0 0; border-top: 1px solid var(--line); }
+.dm-founder-facts dt { font-size: .66rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.dm-founder-facts dd { margin: 2px 0 0; font-size: .86rem; line-height: 1.4; color: var(--ink); }
+.dm-founder-links { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 4px 0 0; }
+.dm-founder-links a { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--red-deep); text-decoration: none; }
+.dm-walk { margin-top: 44px; }
+.dm-walk h3 { font: 400 1.5rem/1.2 var(--ed-serif, Georgia, serif); letter-spacing: -.02em; color: var(--ink); }
+.dm-walk > p { max-width: 640px; margin: 8px 0 0; font-size: .95rem; line-height: 1.55; color: var(--muted); }
+.dm-walk-days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 36px; align-items: start; margin-top: 8px; }
 
 /* ── Your service ─────────────────────────────────────── */
 .dm-model { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 40px; align-items: center; }
@@ -161,9 +173,9 @@
   .dm-formats, .dm-pairs { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
 @media (max-width: 900px) {
-  .dm-hero-foot, .da, .dm-blueprint-hero .da, .dm-first, .dm-model, .dm-next-in, .dm-talk { grid-template-columns: minmax(0, 1fr); }
+  .dm-hero-foot, .da, .dm-blueprint-hero .da, .dm-model, .dm-next-in, .dm-talk { grid-template-columns: minmax(0, 1fr); }
   .ls .dm-pains, .dm-faq { grid-template-columns: minmax(0, 1fr); }
-  .dm-story { position: static; }
+  .ls .dm-founders, .dm-walk-days { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 600px) {
   .dm-section { padding-block: 52px; }

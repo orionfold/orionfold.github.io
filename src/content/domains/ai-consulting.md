@@ -19,6 +19,8 @@ files: 6
 size: "75 KB"
 licence: "CC BY 4.0"
 minutes: 9
+time: "About 3 hours, over two days"
+spend: "$0 on top of a Claude subscription"
 ---
 
 ## What a Domain is

@@ -91,7 +91,7 @@ minutes: 10
 
 You are the finance person for companies too small to have one full time. You close the month, build the pack, and sit with the board to say what the numbers mean. The cadence never changes. The judgment is what they pay for, and today it lives in your head, in a spreadsheet only you understand, and in whatever last quarter's deck happened to say.
 
-This page is a blueprint for a Flow Domain that carries that judgment. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that judgment. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

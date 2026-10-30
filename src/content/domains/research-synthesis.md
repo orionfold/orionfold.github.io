@@ -91,7 +91,7 @@ minutes: 10
 
 You are the person a client calls when they have a decision to make and the answer is in what customers say. You run the interviews, or you read the transcripts someone else ran, and you hand back evidence a leadership team can act on. You have a method for it. It is in your head, in a coding frame you keep adapting, and in the standards you hold to without ever writing them down.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. Only one Domain exists today, [AI Consulting](/domains/ai-consulting/), and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
 
 ## The opportunity
 

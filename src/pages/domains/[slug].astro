@@ -5,7 +5,9 @@
 // (G-135) shows an expert in one role what their own Domain could hold and how
 // they would build it, with the launch story as the walkthrough; nothing in a
 // blueprint was built or walked, so its hero is the planned folder drawn by
-// DomainAnatomy and its rail carries no walk facts. The reading layout, rail
+// DomainAnatomy and its rail carries no walk facts. The other built Domains by
+// Orionfold's founder (the S-1 analyst guide, 2026-10-29) read the same way as
+// the launch story, with their own walk facts. The reading layout, rail
 // and CTA follow the Paths articles.
 import { render } from 'astro:content';
 import { Image } from 'astro:assets';
@@ -35,6 +37,7 @@ const { Content, headings } = await render(entry);
 const d = entry.data;
 const blueprint = isBlueprint(entry);
 const walkthrough = launch && launch.id !== entry.id ? launch : undefined;
+const kicker = blueprint ? 'A BLUEPRINT' : walkthrough ? 'A FOUNDER DOMAIN' : 'THE LAUNCH STORY';
 const FAQ_ID = 'questions-experts-ask';
 const sections = [...headings.filter((h) => h.depth === 2), ...(d.faq.length ? [{ slug: FAQ_ID, text: 'Questions experts ask', depth: 2 }] : [])];
 // G-138: the Domain on a client job, drawn after "Apply it to a client job"
@@ -60,8 +63,8 @@ const FACTS = blueprint
   : [
       { label: 'Files', value: `${d.files} Markdown files, ${d.size}` },
       { label: 'Licence', value: d.licence! },
-      { label: 'Hands-on time', value: 'About 3 hours, over two days' },
-      { label: 'AI spend', value: '$0 on top of a Claude subscription' },
+      { label: 'Hands-on time', value: d.time! },
+      { label: 'AI spend', value: d.spend! },
       { label: 'Walked', value: d.walked!.replace(/-/g, '‑') },
     ];
 const schema = [
@@ -93,7 +96,7 @@ const schema = [
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero ls-container">
-      <div class="ed-article-kicker"><a href="/domains/">← Domains</a><span>FLOW DOMAIN / {d.domain.toUpperCase()} · {blueprint ? 'A BLUEPRINT' : 'THE LAUNCH STORY'}</span></div>
+      <div class="ed-article-kicker"><a href="/domains/">← Domains</a><span>FLOW DOMAIN / {d.domain.toUpperCase()} · {kicker}</span></div>
       <h1>{d.title}</h1>
       <p class="ed-article-dek">{d.dek}</p>
       <div class="ed-hero-bottom"><div class="ed-meta"><span>By Manav Sehgal</span><span>{d.minutes} min read</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links">{blueprint
@@ -138,7 +141,7 @@ const schema = [
             : <PaperCta layout="article" class="ed-paper-cta"
                 source={`flow-domain-${entry.id}`} headingId="domain-cta"
                 eyebrow="BRING IT INTO FLOW" heading={`Open ${d.domain} on your Mac.`}
-                description={`In Flow, choose File ▸ New from GitHub…, paste the folder's address from GitHub and press Add. The ${d.files} files land in a folder of their own, and the next update arrives as a change you review. Bringing a Domain in is free on Base. Chat on it needs Flow Pro.`} />}
+                description={`In Flow, choose File ▸ New from GitHub…, paste the folder's address from GitHub and press Add. The ${d.files} documents land in a folder of their own, and the next update arrives as a change you review. Bringing a Domain in is free on Base. Chat on it needs Flow Pro.`} />}
         </div>
       </article>
     </div>
