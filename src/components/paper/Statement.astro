@@ -1,0 +1,12 @@
+---
+// A short serif statement. Words wrapped in <span class="pp-dim"> start grey
+// and darken once they scroll into view.
+---
+<div class="pp-statement" data-pp-statement><slot /></div>
+<script>
+  const dims = document.querySelectorAll('[data-pp-statement] .pp-dim');
+  if (dims.length) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add('pp-lit')), { rootMargin: '0px 0px -30% 0px' });
+    dims.forEach((d) => io.observe(d));
+  }
+</script>

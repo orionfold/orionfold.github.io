@@ -62,8 +62,8 @@ assert.match(flow, /<FlowNavigation \/>/, 'the overview renders its Flow-local d
 assert.match(read('src/components/living/FlowNavigation.astro'), /href: '\/flow\/specifications\/', label: 'Tech specs'/, 'the overview routes technical readers to the dedicated page');
 assert.doesNotMatch(nav, /Specifications|Tech Specs/, 'technical specifications stay out of the global menu');
 assert.doesNotMatch(nav, /label: 'Tour'|label: 'Enterprise'/, 'Flow-specific destinations stay out of the global menu');
-assert.match(read('src/components/Footer.astro'), /href: '\/relay\/', label: 'Relay'/, 'Relay remains in the shared Orionfold footer');
-assert.match(read('src/components/Footer.astro'), /href: '\/arena\/', label: 'Arena'/, 'Arena remains in the shared Orionfold footer');
+assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/relay\/', label: 'Relay'/, 'Relay remains in the shared Orionfold footer');
+assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/arena\/', label: 'Arena'/, 'Arena remains in the shared Orionfold footer');
 assert.match(flowSubNav, /label: 'Tech Specs', href: '\/flow\/specifications\/'/, 'the Flow-local rail uses Apple\'s concise Tech Specs label');
 assert.match(page, /<FlowSubNav active="specs" \/>/, 'the technical specifications page marks its local-nav item active');
 assert.match(nav, /flowLive \? FLOW_DMG_URL : '\/flow\/#waitlist'/, 'the shared nav keeps the direct launch CTA and the pre-launch waitlist branch');

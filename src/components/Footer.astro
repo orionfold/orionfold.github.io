@@ -5,54 +5,15 @@
 import Wordmark from './ui/Wordmark.astro';
 import PaperCta from './ui/PaperCta.astro';
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch';
-import { publishedPaths, publishedCompare, pathHref, compareHref } from '../lib/flow/paths';
+import { FLOW_COLUMNS, ORIONFOLD_COLUMNS, LEGAL_LINKS as legal, footerPaths, footerCompare } from '../data/footer-links';
 import { ArrowRightIcon } from '../lib/flow-icons';
 interface Props { showDownload?: boolean; downloadSource?: string; }
 const { showDownload = true, downloadSource = 'footer-download' } = Astro.props;
 
-const FLOW_COLUMNS = [
-  [
-    { href: '/flow/', label: 'Overview' },
-    { href: '/domains/', label: 'Domains' },
-    { href: '/flow/elements/', label: 'Elements' },
-    { href: '/essays/', label: 'Essays' },
-  ],
-  [
-    { href: '/flow/tour/', label: 'Tour' },
-    { href: '/flow/night-shift/', label: 'Night Shift' },
-    { href: '/flow/living-documents/', label: 'Living Documents' },
-    { href: '/flow/settings/', label: 'Settings' },
-    { href: '/flow/specifications/', label: 'Tech Specs' },
-    { href: '/flow/enterprise/', label: 'Enterprise' },
-  ],
-];
 // Paths and Compare each list their pages, then end on an "All …" link
 // styled as the group's call to action.
-const PATHS = (await publishedPaths()).map((p) => ({ href: pathHref(p.id), label: p.data.path }));
-const COMPARE = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.kind === 'switch' ? `Flow vs ${p.data.tool}` : `Flow with ${p.data.tool}` }));
-const ORIONFOLD_COLUMNS = [
-  [
-    { href: '/flow/', label: 'Flow' },
-    { href: '/arena/', label: 'Arena' },
-    { href: '/relay/', label: 'Relay' },
-  ],
-  [
-    { href: '/about/', label: 'About' },
-    { href: '/story/', label: 'Story' },
-    { href: '/learn/', label: 'Books' },
-    { href: '/proposal/', label: 'Proposal' },
-    { href: '/sponsor/', label: 'Sponsor' },
-  ],
-  [
-    { href: '/models/', label: 'Models' },
-    { href: '/dgx-spark/', label: 'DGX Spark' },
-  ],
-];
-const legal = [
-  { href: '/promise/', label: 'Promise' },
-  { href: '/terms/', label: 'Terms' },
-  { href: '/privacy/', label: 'Privacy' },
-];
+const PATHS = await footerPaths();
+const COMPARE = await footerCompare();
 const year = new Date().getFullYear();
 ---
 <footer class="living-footer border-t border-border">

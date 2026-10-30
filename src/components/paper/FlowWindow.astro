@@ -1,0 +1,53 @@
+---
+// A mock Flow window: the Domain's files on the left, the open document on the
+// right, ending in a sign-off the reader can press. With tabs, one window
+// switches between Domains; each tab carries its own Fold's colors.
+import { foldById, type FoldId } from '../../lib/paper/folds';
+export interface FlowWindowDoc { id: string; label: string; fold: FoldId; files: string[]; doc: string; title: string; body: string; bars?: number[]; sign: string }
+interface Props { docs: FlowWindowDoc[] }
+const { docs } = Astro.props;
+---
+<div class="pp-flow-window" data-pp-window>
+  {docs.length > 1 && (
+    <div class="pp-tabs" role="tablist">
+      {docs.map((d, i) => <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`pp-win-${d.id}`} data-pp-tab={d.id}>{d.label}</button>)}
+    </div>
+  )}
+  {docs.map((d, i) => {
+    const f = foldById[d.fold];
+    return (
+      <div class="pp-window" id={`pp-win-${d.id}`} role={docs.length > 1 ? 'tabpanel' : undefined} hidden={i > 0} style={`--pp-fold-a:${f.a}`}>
+        <aside>
+          <b>{d.label}</b>
+          {d.files.map((x) => <span class:list={{ 'pp-on': x === d.doc }}>{x}</span>)}
+          <b style="margin-top:14px">Fold</b><span>{f.name} the {f.kind}</span>
+        </aside>
+        <div class="pp-doc">
+          <span class="pp-kicker">{d.label.toUpperCase()} / {d.doc.toUpperCase()}.MD</span>
+          <h3>{d.title}</h3>
+          <p>{d.body}</p>
+          {d.bars && <div class="pp-bars" aria-hidden="true">{d.bars.map((h) => <i style={`height:${h}%`} />)}</div>}
+          <div class="pp-signoff">
+            <div><b>{d.sign}</b><small>{f.name} drafted this. It waits for your yes.</small></div>
+            <button type="button" aria-pressed="false" data-pp-approve>Approve</button>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
+<style is:global>
+  .pp-window[hidden] { display: none; }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-pp-window]').forEach((w) => {
+    w.querySelectorAll<HTMLButtonElement>('[data-pp-tab]').forEach((t) => t.addEventListener('click', () => {
+      w.querySelectorAll('[data-pp-tab]').forEach((b) => b.setAttribute('aria-selected', String(b === t)));
+      w.querySelectorAll<HTMLElement>('.pp-window').forEach((p) => { p.hidden = p.id !== `pp-win-${t.dataset.ppTab}`; });
+    }));
+    w.querySelectorAll<HTMLButtonElement>('[data-pp-approve]').forEach((b) => b.addEventListener('click', () => {
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Approved' : 'Approve';
+    }));
+  });
+</script>

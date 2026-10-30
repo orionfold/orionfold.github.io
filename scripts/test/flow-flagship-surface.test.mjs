@@ -32,9 +32,9 @@ const navArray = nav.match(/const links[^=]*= \[([\s\S]*?)\n\]/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/label: '([^']+)'/g)].map((match) => match[1]);
 assert.deepEqual(navLabels, ['Flow', 'Domains', 'Paths', 'Elements', 'Compare'], 'the global nav carries Flow, its Domains, then its Paths, Elements and Compare pages');
 // Operator 2026-10-26: Essays left the nav for the footer.
-assert.match(read('src/components/Footer.astro'), /href: '\/essays\/', label: 'Essays'/, 'the footer keeps Essays');
+assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/essays\/', label: 'Essays'/, 'the footer keeps Essays');
 // Operator 2026-10-26: the manifesto is essay 03, reached from /essays/, not the nav or footer.
-assert.doesNotMatch(nav + read('src/components/Footer.astro'), /href: '\/manifesto\/'/, 'the manifesto lives with the essays, not in the nav or footer');
+assert.doesNotMatch(nav + (read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/manifesto\/'/, 'the manifesto lives with the essays, not in the nav or footer');
 assert.match(read('src/data/essays.ts'), /number: '03',[\s\S]*?href: '\/manifesto\/',[\s\S]*?date: '2026-09-06'/, 'the manifesto is essay 03 at its original URL and date');
 // Operator 2026-09-28: Story and Books moved from the main nav to the footer.
 for (const moved of ['Story', 'Books']) {
@@ -62,8 +62,8 @@ assert.match(nav, /href="\/proposal\/"\s+class="living-nav-cta living-nav-cta--d
 // ── Footer: curated Flow, Paths, Orionfold, and Connect navigation ─────────
 // Books follows Story in the Orionfold column since it left the main nav.
 // The Paths group lists the published paths from the collection.
-const footer = read('src/components/Footer.astro');
-const columns = name => [...(footer.match(new RegExp('const ' + name + ' = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
+const footer = (read('src/components/Footer.astro') + read('src/data/footer-links.ts'));
+const columns = name => [...(footer.match(new RegExp('const ' + name + '(?:: [^=]+)? = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
 assert.deepEqual(columns('FLOW_COLUMNS'), [
   ['/flow/', 'Overview'], ['/domains/', 'Domains'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
   ['/flow/tour/', 'Tour'], ['/flow/night-shift/', 'Night Shift'], ['/flow/living-documents/', 'Living Documents'], ['/flow/settings/', 'Settings'], ['/flow/specifications/', 'Tech Specs'], ['/flow/enterprise/', 'Enterprise'],

@@ -1,0 +1,182 @@
+---
+// The Paper nav: a logo pill, a menu pill and a call-to-action pill floating
+// over the page. Each menu drops a panel sized to what it holds: a list of
+// links with one-line outcomes, at most five per group then "All …"
+// (operator 2026-10-27), and ONE visual card from the Fold cast.
+// Menus render as real links at build time; the script only opens and closes.
+import Fold from './Fold.astro';
+import { publishedCompare, compareHref, publishedPaths, pathHref } from '../../lib/flow/paths';
+import { SHOWCASE } from '../../data/flow-path-showcase';
+import { ELEMENT_CATEGORIES, NAV_ELEMENTS, elementHref, elementArticleHref } from '../../lib/flow/elements';
+import { publishedDomainArticles, domainArticleHref, isBlueprint } from '../../lib/flow/domains';
+import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
+import { FLOW_DMG_URL } from '../../data/flow-pricing';
+import { foldById, FOLDS, type FoldId } from '../../lib/paper/folds';
+
+interface Props { faces?: Partial<Record<FoldId, string>> }
+const { faces = {} } = Astro.props;
+
+const PAPER_NAV_GROUP_MAX = 5;
+const top = <T,>(xs: T[]) => xs.slice(0, PAPER_NAV_GROUP_MAX);
+
+type Item = { href: string; label: string; line?: string; meta?: string; fold?: FoldId; glyph?: string };
+type Group = { title: string; items: Item[]; chips?: boolean; two?: boolean; all?: Item };
+type Card = { fold: FoldId; kicker: string; title: string; line: string; face?: string; cta?: Item; mock?: { title: string; line: string; action: string } };
+type Menu = { key: string; label: string; groups: Group[]; card?: Card };
+
+const GLYPH = {
+  doc: '<path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/>',
+  spark: '<path d="M12 3v5M12 16v5M3 12h5M16 12h5"/>',
+  shield: '<path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/>',
+  tag: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>',
+  path: '<path d="M4 18c4 0 4-12 8-12s4 12 8 12"/>',
+  grid: '<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>',
+  person: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
+  layers: '<path d="M12 4l9 5-9 5-9-5z"/><path d="M3 14l9 5 9-5"/>',
+  chart: '<path d="M5 20V12M12 20V6M19 20v-9"/>',
+};
+const CATEGORY_GLYPH: Record<string, string> = { components: GLYPH.grid, agency: GLYPH.person, skills: GLYPH.layers, 'chart-kinds': GLYPH.chart };
+const FOLD_BY_DOMAIN = Object.fromEntries(FOLDS.map((f) => [f.domainSlug, f.id])) as Record<string, FoldId>;
+
+const domains = await publishedDomainArticles();
+const founder = domains.filter((d) => !isBlueprint(d));
+const blueprints = domains.filter(isBlueprint);
+const paths = await publishedPaths();
+const compare = await publishedCompare();
+const allElements = ELEMENT_CATEGORIES.reduce((n, c) => n + c.items.length, 0);
+
+const downloadHref = ORIONFOLD_FLOW_LIVE ? FLOW_DMG_URL : '/flow/#waitlist';
+const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow' : 'Join the waitlist';
+
+const domainItem = (d: (typeof domains)[number]): Item => ({ href: domainArticleHref(d.id), label: d.data.domain, line: d.data.hook, fold: FOLD_BY_DOMAIN[d.id], glyph: FOLD_BY_DOMAIN[d.id] ? undefined : GLYPH.doc });
+
+const MENUS: Menu[] = [
+  {
+    key: 'flow', label: 'Flow',
+    groups: [
+      { title: 'Flow', items: [
+        { href: '/flow/', label: 'Flow overview', line: 'The Mac app where your playbook lives', glyph: GLYPH.doc },
+        { href: '/flow/tour/', label: 'Take the tour', line: 'Every part of Flow, one screen at a time', glyph: GLYPH.spark },
+        { href: '/flow/#pricing', label: 'Pricing', line: 'Free to start. Pro when your Fold does the work.', glyph: GLYPH.tag },
+        { href: '/trust/', label: 'Trust and privacy', line: 'Plain files on your Mac. The AI waits for your yes.', glyph: GLYPH.shield },
+      ] },
+      ...(compare.length ? [{ title: 'Switch to Flow from', chips: true, items: top(compare).map((c) => ({ href: compareHref(c.id), label: c.data.tool })), all: { href: '/flow/compare/', label: 'All comparisons' } }] : []),
+    ],
+    card: { fold: 'orri', kicker: 'Flow for Mac', title: 'New here? Start with ten Pro Days.', line: 'Pro Days count only on the days you use them.', cta: { href: downloadHref, label: `${downloadLabel} for Mac` } },
+  },
+  {
+    key: 'domains', label: 'Domains',
+    groups: [
+      { title: 'Founder Domains', items: top(founder).map(domainItem) },
+      { title: 'Free blueprints', two: true, items: top(blueprints).map(domainItem), all: { href: '/domains/', label: `All ${blueprints.length} blueprints` } },
+    ],
+    card: { fold: 'tally', face: faces.tally, kicker: 'Accounting Advisory blueprint', title: 'Pick a blueprint. Put your name on it.', line: 'Tally drafts Juniper Bakery’s close note. You make the call.' },
+  },
+  {
+    key: 'paths', label: 'Paths',
+    groups: [
+      { title: 'Popular Paths', items: top(paths).map((p) => ({ href: pathHref(p.id), label: p.data.path, line: SHOWCASE[p.id]?.hook ?? p.data.persona, glyph: GLYPH.path })), all: { href: '/flow/paths/', label: `All ${paths.length} Paths` } },
+    ],
+    card: { fold: 'sprout', face: faces.sprout, kicker: 'Executive Coaching', title: 'Tell me who you are. I will show you a Path.', line: 'Sprout turns each Halvard Lantern session into notes the sponsor can read.' },
+  },
+  {
+    key: 'elements', label: 'Elements',
+    groups: [
+      { title: 'Kinds', items: top(ELEMENT_CATEGORIES).map((c) => ({ href: elementArticleHref(c.slug), label: c.label, meta: String(c.items.length), glyph: CATEGORY_GLYPH[c.slug] ?? GLYPH.grid })) },
+      { title: 'Try these first', chips: true, items: top(NAV_ELEMENTS).map((e) => ({ href: elementHref(e), label: e.name })), all: { href: '/flow/elements/', label: `All ${allElements} Elements` } },
+    ],
+    card: { fold: 'clause', kicker: 'Sign-off card', title: 'A hundred things I can draw into your documents.', line: 'Like this one, at the end of the Larkspur Robotics memo.', mock: { title: 'Counsel sign-off', line: 'Clause drafted this. It waits for your yes.', action: 'Approve' } },
+  },
+];
+// The phone menu: the first group of each menu, nothing else.
+const ALL: Menu = { key: 'all', label: 'Menu', groups: MENUS.map((m) => ({ ...m.groups[0], title: m.label })) };
+const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/flow/' && Astro.url.pathname.startsWith(href));
+---
+<header class="pp-nav" data-pp-nav>
+  <div class="pp-nav-left">
+    <a class="pp-pill pp-logo" href="/"><img src="/logos/orionfold-mark-3d-48.png" alt="" width="24" height="24" />ORIONFOLD</a>
+    <nav class="pp-pill pp-menu" aria-label="Main">
+      {MENUS.map((m) => <button type="button" data-pp-menu={m.key} aria-expanded="false" aria-controls="pp-sheet">{m.label}</button>)}
+      <a href="/flow/#pricing">Pricing</a>
+    </nav>
+    <button type="button" class="pp-menu-mobile" data-pp-menu="all" aria-expanded="false" aria-controls="pp-sheet">Menu</button>
+  </div>
+  <div class="pp-pill pp-cta-pair"><a href="/proposal/">Get a proposal</a><a class="pp-solid" href={downloadHref} data-download-source="paper-nav">{downloadLabel}</a></div>
+</header>
+<div class="pp-scrim" data-pp-scrim></div>
+<div class="pp-sheet" id="pp-sheet" data-pp-sheet>
+  {[...MENUS, ALL].map((m) => (
+    <div class:list={['pp-sheet-body', { 'pp-solo': !m.card }]} data-pp-panel={m.key} hidden>
+      <div class="pp-sheet-list">
+        {m.groups.map((g) => (
+          <div class:list={['pp-grp', { 'pp-grp--two': g.two }]}>
+            <h6>{g.title}</h6>
+            {g.chips ? (
+              <div class="pp-chips-row">
+                {g.items.map((it) => <a href={it.href}>{it.label}</a>)}
+                {g.all && <a class="pp-link" href={g.all.href}>{g.all.label} →</a>}
+              </div>
+            ) : (
+              <>
+                {g.items.map((it) => (
+                  <a class="pp-it" href={it.href} aria-current={isCurrent(it.href) ? 'page' : undefined}>
+                    {it.fold
+                      ? <span class="pp-it-lead" style={`background:${foldById[it.fold].c}66`}><Fold id={it.fold} /></span>
+                      : <span class="pp-it-lead"><svg class="pp-glyph" viewBox="0 0 24 24" aria-hidden="true" set:html={it.glyph} /></span>}
+                    <b>{it.label}</b>
+                    {it.line && <span class="pp-it-d">{it.line}</span>}
+                    {it.meta && <span class="pp-it-m">{it.meta}</span>}
+                  </a>
+                ))}
+                {g.all && <a class="pp-link pp-it" href={g.all.href}>{g.all.label} →</a>}
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+      {m.card && (
+        <div class="pp-feat" style={`--pp-fold-c:${foldById[m.card.fold].c}55`}>
+          <span class="pp-kicker">{m.card.kicker}</span>
+          <h4>{m.card.title}</h4>
+          <p>{m.card.line}</p>
+          {m.card.cta && <a class="pp-btn" href={m.card.cta.href}>{m.card.cta.label}</a>}
+          {m.card.face
+            ? <div class="pp-feat-pair"><img src={m.card.face} alt="" width="76" height="95" loading="lazy" /><Fold id={m.card.fold} bob /></div>
+            : <Fold id={m.card.fold} bob class="pp-feat-corner" />}
+          {m.card.mock && <div class="pp-feat-mock"><span><b>{m.card.mock.title}</b><small>{m.card.mock.line}</small></span><i>{m.card.mock.action}</i></div>}
+        </div>
+      )}
+    </div>
+  ))}
+</div>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-pp-nav]');
+  const sheet = document.querySelector<HTMLElement>('[data-pp-sheet]');
+  const scrim = document.querySelector<HTMLElement>('[data-pp-scrim]');
+  if (nav && sheet && scrim) {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-pp-menu]');
+    let open: string | null = null;
+    const close = () => {
+      sheet.classList.remove('pp-on'); scrim.classList.remove('pp-on'); open = null;
+      buttons.forEach((b) => b.setAttribute('aria-expanded', 'false'));
+    };
+    const show = (key: string, btn: HTMLButtonElement) => {
+      if (open === key) return close();
+      const left = document.querySelector('.pp-menu')!.getBoundingClientRect().left;
+      sheet.style.setProperty('--pp-sheet-top', `${nav.getBoundingClientRect().bottom + 4}px`);
+      sheet.style.setProperty('--pp-sheet-left', `${key === 'all' ? 14 : Math.max(14, Math.min(left, innerWidth - 834))}px`);
+      sheet.querySelectorAll<HTMLElement>('[data-pp-panel]').forEach((p) => {
+        p.hidden = p.dataset.ppPanel !== key;
+        if (!p.hidden && open) { p.classList.remove('pp-swap'); void p.offsetWidth; p.classList.add('pp-swap'); }
+      });
+      buttons.forEach((b) => b.setAttribute('aria-expanded', String(b === btn)));
+      sheet.classList.add('pp-on'); scrim.classList.add('pp-on'); open = key;
+      sheet.querySelector<HTMLElement>(`[data-pp-panel="${key}"] a`)?.focus({ preventScroll: true });
+    };
+    buttons.forEach((b) => b.addEventListener('click', () => show(b.dataset.ppMenu!, b)));
+    scrim.addEventListener('click', close);
+    sheet.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) close(); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) { const b = document.querySelector<HTMLButtonElement>(`[data-pp-menu="${open}"]`); close(); b?.focus(); } });
+  }
+</script>

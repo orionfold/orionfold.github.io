@@ -1,0 +1,6 @@
+---
+// The thin night strip above the nav. One sentence, one link.
+interface Props { href?: string; linkLabel?: string }
+const { href, linkLabel } = Astro.props;
+---
+<div class="pp-announce"><slot />{href && linkLabel && <a href={href}>{linkLabel}</a>}</div>

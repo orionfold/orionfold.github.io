@@ -1,0 +1,6 @@
+---
+// A one-line reason to act now, with its button, under a thin rule.
+interface Props { href: string; cta: string }
+const { href, cta } = Astro.props;
+---
+<div class="pp-why-now"><p><slot /></p><a class="pp-btn" href={href}>{cta}</a></div>

@@ -28,7 +28,7 @@ test('shared shell retains semantic metadata and private-page protections', () =
   assert.match(privateLayout, /noindex,nofollow/);
   assert.match(privateLayout, /name="referrer" content="no-referrer"/);
   assert.doesNotMatch(privateLayout, /gtag|fbq|captureAttribution/);
-  const footer = read('src/components/Footer.astro');
+  const footer = (read('src/components/Footer.astro') + read('src/data/footer-links.ts'));
   assert.doesNotMatch(footer, /getCollection|detailKeySet|softwareLinks|latestStories/, 'curated footer does not load the removed directory');
   assert.match(footer, /showDownload && ORIONFOLD_FLOW_LIVE && <PaperCta source=\{downloadSource\} tone="yellow" \/>/, 'the single closing CTA preserves gating and attribution');
   assert.equal((footer.match(/<h2 id="footer-/g) ?? []).length, 5, 'the menu has exactly five headings (Compare added 2026-09-29)');

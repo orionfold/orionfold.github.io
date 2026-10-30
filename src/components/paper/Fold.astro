@@ -1,0 +1,8 @@
+---
+// One Fold, drawn at build time. Decorative unless given a label.
+import { foldById, foldSvg, type FoldId } from '../../lib/paper/folds';
+interface Props { id: FoldId; bob?: boolean; label?: string; class?: string }
+const { id, bob = false, label, class: cls = '' } = Astro.props;
+const svg = foldSvg(foldById[id], { label });
+---
+<div class:list={['pp-fold', cls, { 'pp-bob': bob }]} set:html={svg} />

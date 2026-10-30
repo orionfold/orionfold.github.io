@@ -1,0 +1,15 @@
+---
+// The dark trust band: a short promise, two links, four plain facts.
+export interface TrustCell { title: string; line: string; icon: string }
+interface Props { title: string; intro: string; links: { href: string; label: string }[]; cells: TrustCell[] }
+const { title, intro, links, cells } = Astro.props;
+---
+<section class="pp-dark" aria-label={title}>
+  <h2>{title}</h2>
+  <div class="pp-trust">
+    <div class="pp-trust-intro"><p>{intro}</p>{links.map((l) => <a href={l.href}>{l.label}</a>)}</div>
+    <div class="pp-trust-cells">
+      {cells.map((c) => <div><svg viewBox="0 0 24 24" aria-hidden="true" set:html={c.icon} /><h4>{c.title}</h4><p>{c.line}</p></div>)}
+    </div>
+  </div>
+</section>

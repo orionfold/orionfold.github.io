@@ -48,7 +48,7 @@ test('the nav shows five Elements with their drawings, and the footer links the 
   const elementsMenu = home.match(/<div class="living-nav-dd">\s*<a[^>]*href="\/flow\/elements\/"[\s\S]*?living-nav-dd-all/)?.[0] ?? '';
   assert.equal((elementsMenu.match(/class="living-nav-dd-thumb"/g) ?? []).length, 5, 'five thumbnails in the Elements dropdown');
   assert.match(home, /href="\/flow\/elements\/"[^>]*>\s*Elements/);
-  assert.match(read('src/components/Footer.astro'), /href: '\/flow\/elements\/', label: 'Elements'/);
+  assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/flow\/elements\/', label: 'Elements'/);
 });
 
 test('the published bodies use the Flow 3.0 voice and link the set together', () => {

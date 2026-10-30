@@ -1,0 +1,15 @@
+---
+// A change sent to a client for review: the old line struck out, the new lines
+// added, and the client's choice to take it or not.
+interface Props { title: string; from: string; version: string; removed: string[]; added: string[]; takeLabel?: string; takenLabel?: string }
+const { title, from, version, removed, added, takeLabel = 'Take this change', takenLabel = 'Taken' } = Astro.props;
+---
+<div class="pp-change" data-pp-change>
+  <header><span><b>{title}</b> · from {from}</span><span>{version}</span></header>
+  {removed.map((l) => <div class="pp-del"><span class="sr-only">Removed: </span>{l}</div>)}
+  {added.map((l) => <div class="pp-add"><span class="sr-only">Added: </span>{l}</div>)}
+  <footer><button type="button">Not now</button><button type="button" class="pp-ok" data-taken={takenLabel}>{takeLabel}</button></footer>
+</div>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-pp-change] .pp-ok').forEach((b) => b.addEventListener('click', () => { b.textContent = b.dataset.taken ?? 'Taken'; }));
+</script>

@@ -9,6 +9,8 @@ import { GOOGLE_ADS_LEAD_SEND_TO } from '../data/ads';
 
 interface Props {
   bodyClass?: string;
+  /** 'paper' opts a page into the Paper design system (G-139); default keeps Living Systems. */
+  design?: 'living' | 'paper';
   title?: string;
   description?: string;
   ogImage?: string;
@@ -27,6 +29,7 @@ interface Props {
 
 const {
   bodyClass = '',
+  design = 'living',
   title = 'Orionfold · Living Documents for work that continues',
   description = SITE.description,
   ogImage = SITE.ogImage,
@@ -253,6 +256,7 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
     <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/geist-sans-common-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/barlow-condensed-bold-common.woff2" as="font" type="font/woff2" crossorigin>
+    {design === 'paper' && <link rel="preload" href="/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>}
 
     <!-- The public site is intentionally light-only. -->
     <meta name="theme-color" content="#f8f9fa" />
@@ -268,7 +272,7 @@ const jsonLdSchemas = [orgSchema, ...pageSchemas];
     <!-- Additional head content from child pages -->
     <slot name="head" />
   </head>
-  <body class:list={["living-site bg-surface text-text min-h-screen", bodyClass]}>
+  <body class:list={[design === 'paper' ? 'paper min-h-screen' : 'living-site bg-surface text-text min-h-screen', bodyClass]}>
     <slot />
 
     <!-- Capture ad attribution (utm_* / gclid / v) on landing, before any

@@ -1,0 +1,10 @@
+---
+// Three plans side by side. Prices come in as props from the pricing source of
+// truth; this component never states a price of its own.
+export interface PricePlan { name: string; price: string; unit?: string; line: string }
+interface Props { plans: PricePlan[] }
+const { plans } = Astro.props;
+---
+<div class="pp-price">
+  {plans.map((p) => <div><span>{p.name}</span><b>{p.price}{p.unit && <small> {p.unit}</small>}</b><p>{p.line}</p></div>)}
+</div>

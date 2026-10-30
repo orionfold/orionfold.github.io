@@ -151,7 +151,7 @@ test('the built pages link the Domain, the story and each other, and the nav lea
   assert.ok(story.includes('href="/domains/"'));
   assert.equal((story.match(/<article[\s\S]*?<\/article>/)[0].match(/<img [^>]*alt="[^"]+"/g) ?? []).length, 14, 'the walk’s fourteen shots, each described');
   assert.match(read('src/components/Nav.astro'), /\{ href: '\/flow\/', label: 'Flow' \},\n  \{ href: '\/domains\/', label: 'Domains', children: domains, all: 'All Domains' \},/);
-  assert.match(read('src/components/Footer.astro'), /href: '\/domains\/', label: 'Domains'/);
+  assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/domains\/', label: 'Domains'/);
   assert.match(read('public/llms.txt'), /## Flow Domains/);
   // G-135: the Domains menu lists the five in the site's order, then All Domains;
   // the landing features the launch story and cards the four blueprints.

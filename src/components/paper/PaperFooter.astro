@@ -1,0 +1,43 @@
+---
+// The Paper footer: a giant serif nav, every curated footer link (shared with
+// the Living Systems footer through src/data/footer-links.ts, so no internal
+// link is lost in the migration), the legal line, then a night credit field
+// with one Fold under the stars.
+import Fold from './Fold.astro';
+import { FLOW_COLUMNS, ORIONFOLD_COLUMNS, LEGAL_LINKS, SOCIAL_LINKS, footerPaths, footerCompare } from '../../data/footer-links';
+const BIG = [
+  { href: '/flow/', label: 'Flow' },
+  { href: '/domains/', label: 'Domains' },
+  { href: '/flow/paths/', label: 'Paths' },
+  { href: '/flow/elements/', label: 'Elements' },
+];
+const paths = await footerPaths();
+const compare = await footerCompare();
+const groups = [
+  { title: 'Flow', links: FLOW_COLUMNS.flat() },
+  { title: 'Paths', links: [...paths, { href: '/flow/paths/', label: 'All paths' }] },
+  ...(compare.length ? [{ title: 'Compare', links: [...compare, { href: '/flow/compare/', label: 'All comparisons' }] }] : []),
+  { title: 'Orionfold', links: ORIONFOLD_COLUMNS.flat() },
+];
+// A fixed star field, so every build draws the same sky.
+const stars = Array.from({ length: 46 }, (_, i) => `left:${(i * 37) % 100}%;top:${20 + ((i * 23) % 70)}%`);
+const year = new Date().getFullYear();
+---
+<footer class="pp-footer">
+  <div class="pp-bigfoot">
+    <nav aria-label="Footer">{BIG.map((l) => <a href={l.href}>{l.label}</a>)}</nav>
+    <div class="pp-cols">
+      {groups.map((g) => <nav aria-label={g.title}><b>{g.title}</b>{g.links.map((l) => <a href={l.href}>{l.label}</a>)}</nav>)}
+      <div><b>Follow</b><a href={SOCIAL_LINKS.linkedin} rel="noopener noreferrer">LinkedIn</a><a href={SOCIAL_LINKS.x} rel="noopener noreferrer">X</a><a href={SOCIAL_LINKS.github} rel="noopener noreferrer">GitHub</a></div>
+    </div>
+  </div>
+  <div class="pp-legal">
+    <span>© {year} Orionfold LLC. Made with ❤️ in Silicon Valley, USA.</span>
+    <nav aria-label="Legal">{LEGAL_LINKS.map((l, i) => <>{i > 0 && ' · '}<a href={l.href}>{l.label}</a></>)}</nav>
+  </div>
+  <div class="pp-credits">
+    <p>You spent years becoming the person people ask. Give them something worth coming back to.</p>
+    {stars.map((s) => <i class="pp-sky-dot" style={s} />)}
+    <Fold id="orri" bob />
+  </div>
+</footer>

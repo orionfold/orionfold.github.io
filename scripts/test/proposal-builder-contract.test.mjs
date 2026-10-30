@@ -60,7 +60,7 @@ test('navigation and sticky summary keep the proposal action visible', () => {
   // asserts the switch exists and leaves the wording to the Flow surface test.
   assert.match(nav, /flowLive \? 'Download Flow' : 'Join the waitlist'/);
   assert.match(
-    readFileSync(new URL('../../src/components/Footer.astro', import.meta.url), 'utf8'),
+    readFileSync(new URL('../../src/data/footer-links.ts', import.meta.url), 'utf8'),
     /href: '\/proposal\/', label: 'Proposal'/,
   );
   assert.match(page, /id="proposal-sticky-summary"/);

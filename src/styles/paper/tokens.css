@@ -1,0 +1,75 @@
+/* Paper design system: tokens.
+ * Source: the town-study prototype's final state (operator 2026-10-30).
+ * Every Paper color lives here; components.css may only use var(--pp-*).
+ * Scoped to .paper so Living Systems pages never see these values. */
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-latin-full-normal.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.paper {
+  /* paper and ink */
+  --pp-paper: #fbfaf6;
+  --pp-paper-2: #f4f1e8;
+  --pp-white: #fff;
+  --pp-ink: #171c1a;
+  --pp-ink-2: #4b5552;
+  --pp-ink-3: #8a918d;
+  --pp-line: #e2ded2;
+
+  /* accents */
+  --pp-teal: #247b80;
+  --pp-teal-pale: #e8f2ef;
+  --pp-gold: #f6b73c;
+  --pp-gold-pale: #fdebc4;
+  --pp-tape: rgba(246, 183, 60, 0.45);
+  --pp-red: #f24b39;
+  --pp-red-deep: #ba2d21;
+
+  /* change (diff) card */
+  --pp-del-bg: #fdecea;
+  --pp-del-ink: #8d2a20;
+  --pp-del-strike: rgba(141, 42, 32, 0.4);
+  --pp-add-bg: #e6f3ee;
+  --pp-add-ink: #1f5f45;
+
+  /* night: the trust band and the credits sky (bands, not a theme) */
+  --pp-night: #16191c;
+  --pp-night-ink: #efece4;
+  --pp-night-ink-2: #c9c5bb;
+  --pp-night-ink-3: #a9a59c;
+  --pp-night-line: #3a3f44;
+  --pp-star: #f6e7bf;
+
+  /* surfaces */
+  --pp-glass: rgba(251, 250, 246, 0.92);
+  --pp-scrim: rgba(40, 36, 28, 0.16);
+  --pp-shadow-sheet: 0 24px 48px -28px rgba(23, 28, 26, 0.35);
+  --pp-shadow-paper: 0 18px 40px -22px rgba(23, 28, 26, 0.25);
+  --pp-shadow-photo: 0 10px 24px -12px rgba(23, 28, 26, 0.35);
+  --pp-shadow-window: 0 30px 60px -40px rgba(23, 28, 26, 0.35);
+  --pp-shadow-small: 0 6px 14px -8px rgba(23, 28, 26, 0.4);
+
+  /* type */
+  --pp-serif: 'Fraunces', Georgia, serif;
+  --pp-sans: 'Geist Sans', system-ui, sans-serif;
+  --pp-mono: 'Geist Mono', ui-monospace, monospace;
+
+  /* radii */
+  --pp-r-1: 3px;
+  --pp-r-2: 4px;
+  --pp-r-3: 6px;
+  --pp-r-4: 8px;
+
+  /* the active Fold (set per page or per hero beat) */
+  --pp-fold-a: var(--pp-gold);
+  --pp-fold-c: var(--pp-gold-pale);
+  --pp-fold-ink: var(--pp-red-deep);
+
+  /* motion */
+  --pp-ease-unfold: cubic-bezier(.2, .85, .25, 1);
+}

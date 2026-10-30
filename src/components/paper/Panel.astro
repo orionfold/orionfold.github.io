@@ -1,0 +1,19 @@
+---
+// An inset panel with its tab label sitting on the seam, an optional Fold
+// perched on the top edge, and a two-column head (big serif title, short line).
+import Fold from './Fold.astro';
+import type { FoldId } from '../../lib/paper/folds';
+interface Props { id?: string; seam: string; fold?: FoldId; tinted?: boolean; title?: string; lede?: string }
+const { id, seam, fold, tinted = false, title, lede } = Astro.props;
+---
+<section id={id} class:list={['pp-panel', { 'pp-panel--tinted': tinted }]}>
+  <span class="pp-seam">{seam}</span>
+  {fold && <Fold id={fold} bob class="pp-panel-fold" />}
+  {title && (
+    <div class="pp-panel-head">
+      <h2 set:html={title} />
+      {lede && <p>{lede}</p>}
+    </div>
+  )}
+  <slot />
+</section>

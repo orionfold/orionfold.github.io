@@ -1,0 +1,27 @@
+---
+// The playbook sheet: a taped photo of the person pinned to the document their
+// Fold runs. Step 3 is always the expert's call (operator 2026-10-30).
+import Fold from './Fold.astro';
+import { foldById, type FoldId } from '../../lib/paper/folds';
+import { PLAY } from '../../lib/paper/cast';
+interface Props { fold: FoldId; face?: string; note?: string }
+const { fold, face, note = 'I’ll do steps 1 and 2. Step 3 is your call.' } = Astro.props;
+const f = foldById[fold];
+const p = PLAY[fold];
+---
+<div class="pp-pb" style={`--pp-fold-a:${f.a};--pp-fold-c:${f.c};--pp-fold-ink:${f.ink}`}>
+  <figure class="pp-pb-photo">
+    {face ? <img src={face} alt={`A ${p.who.toLowerCase()}, paired with ${f.name} the ${f.kind}`} width="400" height="500" loading="lazy" /> : <Fold id={fold} />}
+    <span data-pp-who>{p.who}</span>
+  </figure>
+  <div class="pp-pb-sheet" data-pp-sheet>
+    <span class="pp-pb-crumb">{p.area} / playbook.md</span>
+    <h3>{p.title}</h3>
+    <p class="pp-pb-for">{p.client ? `For ${p.client}` : 'For every client'}</p>
+    <ol class="pp-pb-steps">
+      {p.steps.map((s, i) => <li class:list={{ 'pp-yours': i === 2 }}><span>{s}<small>{i === 2 ? 'YOUR CALL' : `${f.name.toUpperCase()} DOES THIS`}</small></span></li>)}
+    </ol>
+  </div>
+  <Fold id={fold} bob class="pp-pb-fold" />
+  <p class="pp-pb-note">{note}</p>
+</div>

@@ -1,0 +1,113 @@
+---
+// The Paper component gallery (G-139, decision D5): a dev-only page where
+// every Paper component is reviewed live before any public page uses it.
+// It is never built for production: getStaticPaths returns nothing there.
+// Faces load straight from the local, git-ignored prototype folder through
+// the dev server, so no face becomes a public file until the operator says so.
+import PaperLayout from '../../layouts/PaperLayout.astro';
+import AnnounceBar from '../../components/paper/AnnounceBar.astro';
+import PaperNav from '../../components/paper/PaperNav.astro';
+import TalkPageHero from '../../components/paper/TalkPageHero.astro';
+import Statement from '../../components/paper/Statement.astro';
+import Panel from '../../components/paper/Panel.astro';
+import FlowWindow from '../../components/paper/FlowWindow.astro';
+import WhyNow from '../../components/paper/WhyNow.astro';
+import Rail from '../../components/paper/Rail.astro';
+import ChangeCard from '../../components/paper/ChangeCard.astro';
+import TrustBand from '../../components/paper/TrustBand.astro';
+import Roster from '../../components/paper/Roster.astro';
+import PricingTable from '../../components/paper/PricingTable.astro';
+import PlaybookSheet from '../../components/paper/PlaybookSheet.astro';
+import PaperFooter from '../../components/paper/PaperFooter.astro';
+import Fold from '../../components/paper/Fold.astro';
+import { FOLDS, type FoldId } from '../../lib/paper/folds';
+import { FACES_LABEL } from '../../lib/paper/cast';
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { slug: undefined } }] : [];
+}
+
+const faceDir = `/@fs${process.cwd()}/audit-reports/town-study/faces`;
+const happy = Object.fromEntries(FOLDS.map((f) => [f.id, `${faceDir}/${f.id}-happy.jpg`])) as Record<FoldId, string>;
+const emo = Object.fromEntries(FOLDS.map((f) => [f.id, `${faceDir}/${f.id}-emo.jpg`])) as Record<FoldId, string>;
+const ICON = {
+  doc: '<path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/>',
+  check: '<path d="M5 12l4 4 10-10"/>',
+  clock: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
+  shield: '<path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/>',
+};
+const swatches = ['paper', 'paper-2', 'white', 'line', 'ink', 'ink-2', 'ink-3', 'teal', 'teal-pale', 'gold', 'gold-pale', 'red', 'red-deep', 'night'];
+---
+<PaperLayout title="Paper design system · gallery" description="Dev-only component gallery for the Paper design system." noindex>
+  <AnnounceBar href="#domains" linkLabel="See how →">The new Flow is out. Your clients can keep using your method between meetings.</AnnounceBar>
+  <PaperNav faces={happy} />
+
+  <main>
+    <TalkPageHero faces={happy} ctaHref="#" ctaLabel="Download Flow for Mac" ctaNote="Free to start, with ten Pro Days to try.">
+      <h1 slot="title" class="pp-h1">Show how you work.<br /><em>AI follows it.<br />You make the call.</em></h1>
+      <p slot="sub" class="pp-sub">Flow turns what you know into <span class="pp-hl">a playbook</span> AI can run for each of your clients. Made for consultants, coaches and specialists.</p>
+    </TalkPageHero>
+
+    <Statement>
+      <p>A client sees the answer. You remember the route.</p>
+      <p>Show Flow your steps once. Type them, say them, or drop in the files you already use. <span class="pp-dim">Flow’s AI follows them for each client. You catch the exception and sign off.</span></p>
+      <small>Plain Markdown files on your Mac. The AI waits for your yes.</small>
+    </Statement>
+
+    <Panel id="domains" seam="Domains" fold="tally" title="Share a playbook.<br />It becomes a Domain." lede="Your clients bring it into their own Flow and work through your method on their own case.">
+      <FlowWindow docs={[
+        { id: 'acct', label: 'Accounting Advisory', fold: 'tally', files: ['Close checklist', 'Close note', 'Research notes', 'Juniper Bakery'], doc: 'Close note', title: 'Juniper Bakery, March close in plain English', body: 'Revenue came in 6 percent over plan. Most of it is the new catering contract. Costs held flat except software, which rose with two new seats.', bars: [40, 52, 47, 61, 58, 70], sign: 'Partner review' },
+        { id: 'contract', label: 'Contract Review', fold: 'clause', files: ['Issues list', 'Clause playbook', 'Redline memo', 'Larkspur Robotics'], doc: 'Redline memo', title: 'Larkspur Robotics vendor MSA, three asks', body: 'Clause 9 caps liability at fees paid. Our playbook asks for twice the fees. If they push back, the fallback is a carve-out for data loss.', bars: [70, 30, 20, 55, 15, 40], sign: 'Counsel sign-off' },
+      ]} />
+      <WhyNow href="#" cta="Move a GPT to Flow"><b>Custom GPTs retire December 11.</b> Give your playbook a home you own.</WhyNow>
+    </Panel>
+
+    <p class="pp-center-note">Rail: chips filter the cards already on the page.</p>
+    <section style="padding:0 16px">
+      <Rail label="Elements" allHref="#" allLabel="Browse all 100 Elements" items={[
+        { cat: 'Charts', title: 'Slope chart', line: '“I drew March against February so the change is the first thing you see.”', quote: true, icon: '<svg viewBox="0 0 24 24"><path d="M4 16l16-8M4 8l16 6"/></svg>', tint: '#d2e5ff' },
+        { cat: 'Sign-off', title: 'Sign-off card', line: '“I put the partner review at the end. It waits for a yes.”', quote: true, icon: '<svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>', tint: '#d3f8e6' },
+        { cat: 'Diagrams', title: 'Timeline', line: '“I laid the next six weeks out as steps you can press.”', quote: true, icon: '<svg viewBox="0 0 24 24"><path d="M3 12h18M7 8v8M12 8v8M17 8v8"/></svg>', tint: '#ffe8c2' },
+        { cat: 'Tables', title: 'Comparison table', line: '“I lined up the three vendors by price, terms and risk.”', quote: true, icon: '<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14"/><path d="M4 10h16M10 5v14"/></svg>', tint: '#cdeef0' },
+      ]} />
+    </section>
+
+    <Panel seam="Flow for clients" fold="tally" tinted title="Useful between<br />your meetings" lede="Each client brings your Domain into their own Flow. When you improve it, they see the change and choose to take it.">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px;align-items:start">
+        <ChangeCard title="Monthly close note" from="Tally" version="v1.4 → v1.5" removed={['Explain any variance over 10 percent.']} added={['Explain any variance over 5 percent, in one plain sentence.', 'Add a "what we will watch next month" line.']} takenLabel="Taken. Juniper Bakery is on v1.5" />
+        <PlaybookSheet fold="clause" face={happy.clause} />
+      </div>
+    </Panel>
+
+    <TrustBand title="Built to keep your work yours" intro="You decide what Flow can read, write and send. Your files stay plain Markdown in folders you own." links={[{ href: '/trust/', label: 'Trust center' }, { href: '/privacy/', label: 'Privacy' }]} cells={[
+      { title: 'Plain files on your Mac', line: 'Every document is Markdown you can open anywhere. Leave any day and take it all.', icon: ICON.doc },
+      { title: 'The AI waits for your yes', line: 'Each change shows up for review first. Nothing lands until you approve it.', icon: ICON.check },
+      { title: 'Use the AI you already pay for', line: 'Bring your own AI. Flow does not add a second AI bill.', icon: ICON.clock },
+      { title: 'Publish where you choose', line: 'Your Domain goes to your own GitHub. Clients pull it from there.', icon: ICON.shield },
+    ]} />
+
+    <section style="padding:110px 16px 40px;text-align:center">
+      <h2 class="pp-serif" style="margin:0 0 40px;font-weight:300;font-size:clamp(40px,5vw,72px);line-height:1">Meet your Fold</h2>
+      <Roster faces={emo} />
+      <h2 class="pp-serif" id="pricing" style="margin:110px 0 0;font-weight:300;font-size:clamp(34px,4vw,52px)">Pricing</h2>
+      <PricingTable plans={[
+        { name: 'Base', price: 'Free', line: 'Bring in any Domain and read it. Free forever.' },
+        { name: 'Pro', price: '$10', unit: '/mo', line: 'Chat with a Domain and let your Fold do the work. $96 a year. Ten Pro Days to try.' },
+        { name: 'Pro + Publish', price: '$20', unit: '/mo', line: 'Share your own playbook as a Domain. $192 a year.' },
+      ]} />
+    </section>
+
+    <section class="pp-panel" style="margin-top:96px">
+      <span class="pp-seam">Tokens</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px">
+        {swatches.map((s) => <div style="display:grid;gap:6px"><span style={`height:56px;border-radius:var(--pp-r-2);border:1px solid var(--pp-line);background:var(--pp-${s})`} /><span class="pp-kicker">--pp-{s}</span></div>)}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:16px;margin-top:40px">
+        {FOLDS.map((f) => <div style="text-align:center"><Fold id={f.id} bob /><span class="pp-kicker">{f.name} · {f.domain}</span></div>)}
+      </div>
+      <p class="pp-note" style="margin-top:28px">{FACES_LABEL} Gallery faces load from the local prototype folder and are not public files.</p>
+    </section>
+  </main>
+
+  <PaperFooter />
+</PaperLayout>

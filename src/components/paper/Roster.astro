@@ -1,0 +1,24 @@
+---
+// Meet the Folds: each one with a person, a feeling and one moment of work,
+// linking to its published Domain. Faces are AI-generated models and the
+// label below the grid always ships with them.
+import Fold from './Fold.astro';
+import { FOLDS, type FoldId } from '../../lib/paper/folds';
+import { MOMENT, FACES_LABEL } from '../../lib/paper/cast';
+interface Props { faces?: Partial<Record<FoldId, string>> }
+const { faces = {} } = Astro.props;
+const anyFace = Object.values(faces).some(Boolean);
+---
+<div class="pp-roster">
+  {FOLDS.map((f) => (
+    <a href={`/domains/${f.domainSlug}/`} style={`--pp-fold-c:${f.c};--pp-fold-ink:${f.ink}`}>
+      <span class="pp-r-photo">
+        {faces[f.id] && <img src={faces[f.id]} alt={`A person feeling ${MOMENT[f.id][0].toLowerCase()}`} width="400" height="500" loading="lazy" />}
+        <Fold id={f.id} class="pp-r-fold" />
+        <span class="pp-r-feel">{MOMENT[f.id][0]}</span>
+      </span>
+      <span class="pp-r-text"><b>{f.name} <span>the {f.kind}</span></b><small>{f.domain}</small><em>{MOMENT[f.id][1]}</em></span>
+    </a>
+  ))}
+</div>
+{anyFace && <p class="pp-note" style="text-align:center;margin-top:28px">{FACES_LABEL}</p>}
