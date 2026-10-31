@@ -505,6 +505,8 @@
 .paper .pp-prose li + li { margin-top: 8px; }
 .paper .pp-prose li::marker { color: var(--pp-ink-3); }
 .paper .pp-prose blockquote { padding: 4px 0 4px 22px; border-left: 1px solid var(--pp-ink); font: 400 21px/1.5 var(--pp-serif); color: var(--pp-ink-2); }
+/* Fraunces stops at 500: bold in a serif quote takes the real cut, not a faked 600. */
+.paper .pp-prose blockquote :is(strong, b) { font-weight: 500; }
 .paper .pp-prose hr { border: 0; height: 1px; background: var(--pp-line); margin: 48px 0; }
 .paper .pp-prose :is(p, li) > code { padding: 1px 5px; border-radius: var(--pp-r-1); background: var(--pp-paper-2); font: 400 .86em/1 var(--pp-mono); }
 .paper .pp-prose img { max-width: 100%; height: auto; border-radius: var(--pp-r-2); }

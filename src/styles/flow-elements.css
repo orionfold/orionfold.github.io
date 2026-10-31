@@ -25,7 +25,7 @@
 .fe-b-group { padding-top: 18px; }
 .fe-b-group[hidden], .fe-grid > li[hidden] { display: none; }
 .fe-b-group-head { display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: baseline; margin-bottom: 18px; }
-.ls .fe-b-group-head h2 { font: 700 1.6rem/1.1 var(--font-display); text-transform: uppercase; }
+.ls .fe-b-group-head h2 { font: 400 1.6rem/1.1 var(--font-display); }
 .ls .fe-b-group-head p { max-width: 640px; font-size: .95rem; color: var(--muted); }
 .fe-b-group-head a { font-weight: 700; color: var(--red-deep); white-space: nowrap; }
 .fe-b-group-head a:hover { color: var(--teal); }
@@ -50,7 +50,7 @@
 .fe-cat:hover { transform: translateY(-3px); box-shadow: 0 14px 34px #152a2d18; }
 /* One row of whole drawings: the ones that do not fit drop out, never wrap. */
 .fe-cat-strip { display: grid; grid-template-columns: repeat(auto-fill, 34px); grid-auto-rows: 34px; gap: 6px; height: 34px; overflow: hidden; margin-bottom: 6px; }
-.ls .fe-cat .fe-cat-title { font: 700 1.3rem/1.08 var(--font-display); text-transform: uppercase; }
+.ls .fe-cat .fe-cat-title { font: 400 1.3rem/1.08 var(--font-display); }
 .ls .fe-cat p:last-child { font-size: .9rem; line-height: 1.5; color: var(--muted); }
 .fe-cat--lead { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 40px; align-items: center; padding: 32px 36px; }
 .fe-cat-copy { display: grid; gap: 10px; }
@@ -76,7 +76,7 @@
 .fe-v-head { display: flex; gap: 22px; align-items: center; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
 .ls .fe-v-kicker { display: flex; gap: 12px; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); }
 .fe-v-kicker span { color: var(--muted); font-weight: 500; }
-.ls .fe-v-head h2 { margin: 6px 0 6px; font: 700 clamp(2rem, 3.4vw, 2.9rem)/1 var(--font-display); text-transform: uppercase; }
+.ls .fe-v-head h2 { margin: 6px 0 6px; font: 300 clamp(2rem, 3.4vw, 2.9rem)/1 var(--font-display); }
 .ls .fe-v-line { max-width: 60ch; font: 400 1.12rem/1.5 var(--ed-serif, Georgia, serif); color: var(--ink); }
 .fe-v-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 22px 0 0; }
 .fe-v-facts div { padding: 12px 14px; border-radius: 10px; background: #f4f6f4; }

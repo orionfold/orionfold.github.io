@@ -28,9 +28,9 @@ test('exact-face font subsets retain a complete, disjoint original Unicode fallb
  }
  const layout=read('src/layouts/Layout.astro');
  assert.match(layout,/href="\/fonts\/geist-sans-common-400-normal\.woff2"/);
- assert.match(layout,/href="\/fonts\/barlow-condensed-bold-common\.woff2"/);
+ assert.doesNotMatch(layout,/barlow/i,'Barlow retired in Paper R8: no preload');
  assert.doesNotMatch(layout,/rel="preload"[^>]+href="\/fonts\/(?:geist-sans-latin-400-normal|barlow-condensed-bold)\.woff2"/);
  assert.ok(manifest.fonts.reduce((n,font)=>n+font.subsetBytes,0)<=65000,'common display/body font budget');
  assert.match(read('public/fonts/Geist-OFL.txt'),/SIL OPEN FONT LICENSE/);
- assert.match(read('public/fonts/Barlow-OFL.txt'),/SIL OPEN FONT LICENSE/);
+ assert.match(read('public/fonts/Fraunces-OFL.txt'),/SIL OPEN FONT LICENSE/);
 });

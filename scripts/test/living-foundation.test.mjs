@@ -52,7 +52,8 @@ test('primary CTA palette clears normal-text AA contrast, distinct from editoria
     assert.ok(1.05/(luminance(value)+.05)>=4.5, token);
   }
   assert.match(css, /--living-red: #f24b39/);
-  assert.ok(existsSync(new URL('../../public/fonts/barlow-condensed-bold.woff2',import.meta.url)));
+  // Paper R8 (G-147): Barlow retired; Paper's Fraunces is the display face.
+  assert.ok(!existsSync(new URL('../../public/fonts/barlow-condensed-bold.woff2',import.meta.url)));
 });
 
 test('code tabs support roving keyboard focus and do not duplicate listeners after navigation', () => {

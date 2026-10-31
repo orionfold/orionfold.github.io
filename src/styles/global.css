@@ -176,7 +176,7 @@
   --svg-accent-red: #c0344d;         /* danger status */
   --svg-accent-pink: #9aa1ab;
 
-  --font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
   --font-body: "Geist Sans", system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 
@@ -244,6 +244,7 @@ body::before {
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     font-weight: 700;
+    font-synthesis-weight: none; /* Fraunces stops at 500; sans headings keep a real 700 */
     line-height: 1.15;
     color: var(--color-text);
   }
@@ -649,12 +650,17 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
 @keyframes home-hero-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 @keyframes home-hero-sheen { 0% { transform: translateX(-130%); } 30%, 100% { transform: translateX(130%); } }
 
+/* Paper R8 (G-147): the display face is Fraunces, cut at weights 300 to 500.
+   A heading or .font-display that still asks for 600/700 (a Tailwind
+   font-bold, say) gets the real 500 cut, never a browser-smeared fake bold. */
+h1, h2, h3, h4, .font-display { font-synthesis-weight: none; }
+
 /* of-display — a section headline that should read as a statement, not a
    label. Tight tracking is what makes large type look composed rather than
    merely big; it is applied only at display sizes, never to body copy. */
 .of-display {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.033em;
   text-wrap: balance;
@@ -675,7 +681,7 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
    The number carries the weight; its label stays quiet underneath it. */
 .of-spec-figure {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 300;
   font-size: clamp(1.9rem, 3.4vw, 2.6rem);
   line-height: 1;
   letter-spacing: -0.035em;

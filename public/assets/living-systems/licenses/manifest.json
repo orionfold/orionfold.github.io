@@ -2,11 +2,6 @@
   "checked": "2026-09-06",
   "licenses": [
     {
-      "file": "Barlow-Condensed-OFL.txt",
-      "bytes": 4376,
-      "sha256": "10b0e6bb43166a50fbe7cde2895bd7f703738a5da843acb5c97c95dc9ea26817"
-    },
-    {
       "file": "Geist-Google-Fonts-OFL.txt",
       "bytes": 4387,
       "sha256": "f12f59163d92084b0473315ae4566cde0c1233d940ae464f5225a69c347cc691"

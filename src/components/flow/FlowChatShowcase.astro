@@ -320,7 +320,7 @@ const ENGINES = [
   .fc { padding-block: 92px 84px; border-bottom: 1px solid var(--line); }
   .fc-head { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: end; margin-bottom: 40px; }
   .fc-eyebrow { display: flex; align-items: center; gap: 12px; }
-  .fc h2 { font: 700 clamp(42px, 5vw, 76px)/.95 'Barlow Condensed', Arial, sans-serif; letter-spacing: -.018em; margin: 18px 0 0; }
+  .fc h2 { font: 300 clamp(42px, 5vw, 76px)/.95 var(--pp-serif, 'Fraunces', Georgia, serif); letter-spacing: -.018em; margin: 18px 0 0; }
   .fc-dek { font-size: 16px; color: var(--muted); max-width: 560px; }
   .fc-dek p + p { margin-top: .8rem; }
 
@@ -365,7 +365,7 @@ const ENGINES = [
 
   .fc-doc { position: relative; padding: 26px 32px; overflow: hidden; }
   .fc-page { display: grid; gap: 12px; align-content: start; }
-  .fc-h1 { font: 700 26px/1.1 'Barlow Condensed', Arial, sans-serif; letter-spacing: -.01em; }
+  .fc-h1 { font: 400 26px/1.1 var(--pp-serif, 'Fraunces', Georgia, serif); letter-spacing: -.01em; }
   .fc-h2 { font-size: 15px; font-weight: 700; margin-top: 4px !important; }
   .fc-sub { color: var(--muted); font-size: 14px; }
   .fc-quote { padding-left: 12px; border-left: 3px solid #d5dbd6; color: #56635e; font-size: 14px; font-style: italic; }
@@ -393,9 +393,9 @@ const ENGINES = [
   .fc-pic-cap { position: absolute; left: 10px; bottom: 10px; padding: 3px 8px; border-radius: 5px; background: #000a; color: #fff; font-size: 12px; }
   .fc-pub { grid-template-columns: 170px 1fr; gap: 24px; align-items: start; }
   .fc-cover { display: grid; justify-items: center; align-content: space-between; text-align: center; aspect-ratio: 2 / 3; padding: 16px 12px 12px; border-radius: 3px 8px 8px 3px; background: radial-gradient(circle at 50% 52%, #7d4fd6 0 9%, #3a2a6a 22%, #161b33 48%), #161b33; color: #e8a25c; box-shadow: 8px 10px 22px -10px #17201c80, inset 4px 0 0 #0004; }
-  .fc-cover-t { font: 700 24px/1 'Barlow Condensed', Arial, sans-serif; letter-spacing: .03em; }
-  .fc-cover-ai { display: grid; place-items: center; width: 46px; height: 46px; border: 2px solid #e8a25c; border-radius: 10px; background: #2a1f4f; color: #fff; font: 700 20px/1 'Barlow Condensed', Arial, sans-serif; box-shadow: 0 0 0 10px #e8a25c22, 0 0 30px 8px #9b6cff66; }
-  .fc-cover-a { font: 700 13px/1 'Barlow Condensed', Arial, sans-serif; letter-spacing: .08em; }
+  .fc-cover-t { font: 400 24px/1 var(--pp-serif, 'Fraunces', Georgia, serif); }
+  .fc-cover-ai { display: grid; place-items: center; width: 46px; height: 46px; border: 2px solid #e8a25c; border-radius: 10px; background: #2a1f4f; color: #fff; font: 400 20px/1 var(--pp-serif, 'Fraunces', Georgia, serif); box-shadow: 0 0 0 10px #e8a25c22, 0 0 30px 8px #9b6cff66; }
+  .fc-cover-a { font: 400 13px/1 var(--pp-serif, 'Fraunces', Georgia, serif); }
   .fc-pub-side { display: grid; gap: 12px; }
   .fc-pub-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
   .fc-pub-list li { display: flex; align-items: center; gap: 8px; }
@@ -425,7 +425,7 @@ const ENGINES = [
   .fc-done { padding: 10px 11px; border-radius: 10px; background: #e7f6ee; }
   .fc-tally { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .fc-tally span { display: grid; font-size: 11px; color: #3b6b52; }
-  .fc-tally b { font: 700 22px/1 'Barlow Condensed', Arial, sans-serif; color: #146a3f; }
+  .fc-tally b { font: 400 22px/1 var(--pp-serif, 'Fraunces', Georgia, serif); color: #146a3f; }
   .fc-compose { display: flex; align-items: center; justify-content: space-between; margin: 6px 14px 6px; padding: 8px 8px 8px 12px; border: 1px solid #dfe4e0; border-radius: 10px; font-size: 13px; color: #9aa5a0; }
   .fc-compose i { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #c9d0cc; color: #fff; }
   .fc-route { min-height: 34px; padding: 0 14px 12px; font-size: 11.5px; }
@@ -456,7 +456,7 @@ const ENGINES = [
   .fc-orch-copy { display: grid; gap: 14px; align-content: start; color: var(--muted); font-size: 15px; }
   .fc-orch-copy p + p { margin-top: 0; }
   .fc-orch-copy .ls-eyebrow { color: var(--ink); }
-  .fc-orch-h { font: 700 clamp(28px, 2.6vw, 38px)/1.02 'Barlow Condensed', Arial, sans-serif; color: var(--ink); }
+  .fc-orch-h { font: 300 clamp(28px, 2.6vw, 38px)/1.02 var(--pp-serif, 'Fraunces', Georgia, serif); color: var(--ink); }
   .fc-orch-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .fc-orch-list li { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); font-size: 14px; color: var(--muted); }
   .fc-orch-list b { color: var(--ink); font-size: 15px; }

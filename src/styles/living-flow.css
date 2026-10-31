@@ -560,7 +560,7 @@ background: #fff;
   min-height: 258px;
 }
 .ls-receipt-detail h3 {
-font: 700 30px/1 'Barlow Condensed';
+font: 300 30px/1 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin: 15px 0 24px;
 }
 .ls-receipt-detail dl {
@@ -595,7 +595,7 @@ font-size: 8px;
   letter-spacing: 0.1em;
 }
 .ls-morning-heading h3 {
-font: 700 27px/1.1 'Barlow Condensed';
+font: 400 27px/1.1 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin-top: 5px;
 }
 .ls-morning-heading > b {

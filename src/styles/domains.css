@@ -2,7 +2,7 @@
    flow-paths.css for the hub intro and the article layout. Emphasis comes from
    fills, whole borders and type, never from one edge of a box. */
 
-.dm-page { --dm-display: 'Barlow Condensed', Arial, sans-serif; }
+.dm-page { --dm-display: var(--pp-serif, 'Fraunces', Georgia, serif); }
 
 /* ── Why now ──────────────────────────────────────────── */
 .dm-now { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 48px; max-width: 1040px; }
@@ -45,7 +45,7 @@
 .da-ic svg { width: 14px; height: 14px; }
 .ls .da-traits { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
 .da-traits li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
-.da-tn { grid-row: span 2; font: 700 1.6rem/1 var(--dm-display); color: var(--teal); }
+.da-tn { grid-row: span 2; font: 400 1.6rem/1 var(--pp-serif, 'Fraunces', Georgia, serif); color: var(--teal); }
 .da-traits b { font-size: 1rem; }
 .da-traits span:last-child { font-size: .9rem; line-height: 1.5; color: var(--muted); }
 /* Founder Playbooks (2026-10-29): every built Playbook as a card, then the first walk by day. */

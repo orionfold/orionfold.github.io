@@ -21,7 +21,7 @@ display: grid;
   margin-top: 12px !important;
 }
 .ls-market-signal h3 {
-font: 700 3.5rem/0.99 'Barlow Condensed';
+font: 300 3.5rem/0.99 var(--pp-serif, 'Fraunces', Georgia, serif);
   letter-spacing: -0.035em;
   margin-top: 20px;
 }
@@ -449,7 +449,7 @@ background: #fff;
   min-height: 258px;
 }
 .ls-receipt-detail h3 {
-font: 700 30px/1 'Barlow Condensed';
+font: 300 30px/1 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin: 15px 0 24px;
 }
 .ls-receipt-detail dl {
@@ -484,7 +484,7 @@ font-size: 8px;
   letter-spacing: 0.1em;
 }
 .ls-morning-heading h3 {
-font: 700 27px/1.1 'Barlow Condensed';
+font: 400 27px/1.1 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin-top: 5px;
 }
 .ls-morning-heading > b {
@@ -674,9 +674,7 @@ margin-top: 11px;
 }
 .ls-chapter-heading h2 {
 font:
-    700 clamp(45px, 5.4vw, 72px)/1.01 'Barlow Condensed',
-    Arial,
-    sans-serif;
+    300 clamp(45px, 5.4vw, 72px)/1.01 var(--pp-serif, 'Fraunces', Georgia, serif);
   letter-spacing: -0.02em;
   max-width: 950px;
 }
@@ -757,9 +755,7 @@ display: block;
 }
 .ls-principle h3 {
 font:
-    700 clamp(29px, 3.1vw, 41px)/1.08 'Barlow Condensed',
-    Arial,
-    sans-serif;
+    300 clamp(29px, 3.1vw, 41px)/1.08 var(--pp-serif, 'Fraunces', Georgia, serif);
   letter-spacing: -0.008em;
   margin: 0 0 22px;
   max-width: 20ch;
@@ -1036,7 +1032,7 @@ display: flex;
   font-size: 13px;
 }
 .ls-protected-writing {
-font: 700 31px/1.17 'Barlow Condensed';
+font: 300 31px/1.17 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin-top: 25px !important;
 }
 .ls-permitted-region {
@@ -1079,7 +1075,7 @@ background: #f0f2e8;
   padding: 28px;
 }
 .ls-note-input h3 {
-font: 700 37px/1.06 'Barlow Condensed';
+font: 300 37px/1.06 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin: 21px 0;
 }
 .ls-note-input dl {
@@ -1110,7 +1106,7 @@ display: flex;
 display: flex;
   align-items: center;
   gap: 13px;
-  font: 700 30px 'Barlow Condensed';
+  font: 300 30px var(--pp-serif, 'Fraunces', Georgia, serif);
 }
 .ls-note-source-values svg {
 color: var(--red);
@@ -1132,7 +1128,7 @@ display: flex;
   color: #667652;
 }
 .ls-note-output h3 {
-font: 700 38px/1.06 'Barlow Condensed';
+font: 300 38px/1.06 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin: 28px 0 21px;
 }
 .ls-note-output p {
@@ -1163,8 +1159,7 @@ display: flex;
   letter-spacing: 0.08em;
 }
 .ls-night-window strong {
-font: 700 43px/1 'Barlow Condensed';
-  letter-spacing: 0.015em;
+font: 300 43px/1 var(--pp-serif, 'Fraunces', Georgia, serif);
 }
 .ls-night-window strong > span {
 font-size: 26px;
@@ -1290,7 +1285,7 @@ color: var(--teal);
 padding: 17px 8px;
 }
 .ls-method-transfer h3 {
-font: 700 43px/1.04 'Barlow Condensed';
+font: 300 43px/1.04 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin: 19px 0 28px;
 }
 .ls-method-example {
@@ -1328,7 +1323,7 @@ padding: 27px;
 }
 .ls-cycle-first h3,
 .ls-cycle-second h3 {
-font: 700 35px/1.05 'Barlow Condensed';
+font: 300 35px/1.05 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin: 20px 0 25px;
 }
 .ls-cycle-first ul {
@@ -1418,7 +1413,7 @@ grid-column: 1/-1;
   margin-bottom: -50px;
 }
 .ls-why-heading h2 {
-font: 700 clamp(48px, 5.3vw, 70px)/1.02 'Barlow Condensed';
+font: 300 clamp(48px, 5.3vw, 70px)/1.02 var(--pp-serif, 'Fraunces', Georgia, serif);
   margin-top: 10px;
   letter-spacing: -0.015em;
 }
@@ -1446,7 +1441,7 @@ font-size: 12px;
   margin-bottom: 19px;
 }
 .ls-why-item h3 {
-font: 700 clamp(31px, 3.2vw, 43px)/1.09 'Barlow Condensed';
+font: 300 clamp(31px, 3.2vw, 43px)/1.09 var(--pp-serif, 'Fraunces', Georgia, serif);
   max-width: 31ch;
   margin-bottom: 22px;
 }
@@ -1481,7 +1476,7 @@ flex-shrink: 0;
   background: linear-gradient(var(--red), var(--red)) top left / 44px 3px no-repeat;
 }
 .ls-why-stat strong {
-font: 700 53px/1.08 'Barlow Condensed';
+font: 300 53px/1.08 var(--pp-serif, 'Fraunces', Georgia, serif);
   display: block;
 }
 .ls-why-stat > span {
@@ -1998,8 +1993,7 @@ background: #fff0a6;
 }
 .ls-fold-steps button > b {
 font:
-    700 44px/0.9 'Barlow Condensed',
-    sans-serif;
+    300 44px/0.9 var(--pp-serif, 'Fraunces', Georgia, serif);
   color: var(--teal);
   width: 25px;
   flex-shrink: 0;
@@ -2052,8 +2046,7 @@ width: 100%;
 }
 .ls-fold-document h3 {
 font:
-    700 38px/1.03 'Barlow Condensed',
-    sans-serif;
+    300 38px/1.03 var(--pp-serif, 'Fraunces', Georgia, serif);
   letter-spacing: -0.02em;
   margin: 20px 0 14px;
   max-width: 400px;
@@ -2188,9 +2181,7 @@ font:
 }
 .ls-paper-cta h3 {
 font:
-    700 clamp(32px, 3.8vw, 47px)/1 'Barlow Condensed',
-    Impact,
-    sans-serif;
+    300 clamp(32px, 3.8vw, 47px)/1 var(--pp-serif, 'Fraunces', Georgia, serif);
   letter-spacing: -0.025em;
   margin: 0 0 18px;
   color: var(--ink);
@@ -2224,7 +2215,7 @@ margin: 0;
 .ls-email-copy, .ls-email-form { position: relative; z-index: 1; min-width: 0; }
 .ls-email-copy { max-width: 440px; }
 .ls-email-copy h3 {
-  font: 700 clamp(42px, 4.5vw, 56px)/1 var(--font-display);
+  font: 300 clamp(42px, 4.5vw, 56px)/1 var(--font-display);
   margin: 16px 0 20px;
 }
 .ls-email-copy .ls-email-dek { font-size: 18px; line-height: 1.6; margin: 0; }
