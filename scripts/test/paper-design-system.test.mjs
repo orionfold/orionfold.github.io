@@ -36,8 +36,10 @@ test('the shell styles load with the shell; page components only on Paper pages'
   const importers = (sheet) => [...walk(path.join(root, 'src'))]
     .filter((f) => /\.(astro|ts|css|mjs)$/.test(f) && new RegExp(`import\\s+['"][^'"]*styles/paper/${sheet.replace('.', '\\.')}['"]`).test(readFileSync(f, 'utf8')))
     .map((f) => path.relative(root, f)).sort();
-  assert.deepEqual(importers('components.css'), ['src/layouts/PaperLayout.astro']);
-  for (const sheet of ['tokens.css', 'shell.css']) assert.deepEqual(importers(sheet), ['src/components/Footer.astro', 'src/components/Nav.astro', 'src/layouts/PaperLayout.astro'], sheet);
+  // R7e (G-146): PrivateLayout (the customer-only workshop pages) is the one
+  // other Paper layout; it keeps its own head (no analytics, noindex).
+  assert.deepEqual(importers('components.css'), ['src/layouts/PaperLayout.astro', 'src/layouts/PrivateLayout.astro']);
+  for (const sheet of ['tokens.css', 'shell.css']) assert.deepEqual(importers(sheet), ['src/components/Footer.astro', 'src/components/Nav.astro', 'src/layouts/PaperLayout.astro', 'src/layouts/PrivateLayout.astro'], sheet);
 });
 
 test('every Paper rule sits under .paper, so it outranks Living element rules', () => {

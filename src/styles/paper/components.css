@@ -927,3 +927,11 @@
 /* R7e: /proposal/. The hero facts hold short sentences, so they set smaller. */
 .paper .pp-proposal-facts { max-width: 760px; }
 .paper .pp-proposal-facts dd { font-size: clamp(17px, 1.5vw, 20px); line-height: 1.3; }
+
+/* R7e: the private access and refund cards. The live status sits in a quiet
+ * sheet; the recovery form is the Paper form inside the done card. */
+.paper .pp-private-status { width: 100%; padding: 16px 18px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-paper); font: 400 16px/1.5 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .pp-private-form { width: 100%; margin-top: 18px; text-align: left; background: var(--pp-paper); }
+.paper .pp-private-form input[name='company'] { display: none; }
+.paper .pp-done .pp-private-form h2 { font: 300 clamp(24px, 2.6vw, 30px)/1.1 var(--pp-serif); }
+.paper .pp-done .pp-private-form p { font-size: 14.5px; }

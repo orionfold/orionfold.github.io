@@ -1,6 +1,13 @@
 ---
+// Customer-only workshop pages (access, refund, workspace, Relay handoff).
+// No analytics, no attribution, noindex and no referrer: these URLs carry
+// private access tokens. R7e (G-146): the body is a Paper page, with the same
+// stylesheets PaperLayout loads, so the private pages read as the site does.
 import '../styles/global.css';
 import '../styles/living-system.css';
+import '../styles/paper/tokens.css';
+import '../styles/paper/shell.css';
+import '../styles/paper/components.css';
 
 interface Props {
   title: string;
@@ -17,8 +24,9 @@ const { title, description } = Astro.props;
     <meta name="referrer" content="no-referrer" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <link rel="preload" href="/fonts/fraunces-paper-latin.woff2" as="font" type="font/woff2" crossorigin />
   </head>
-  <body class="living-site living-private min-h-screen bg-surface text-text antialiased">
+  <body class="paper pp-private min-h-screen antialiased">
     <slot />
   </body>
 </html>

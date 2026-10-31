@@ -1,5 +1,9 @@
 ---
+// R7e (G-146): the guided workspace on Paper. Its Tailwind markup, ids and
+// stage script stay; the tw-in-paper bridge maps color, type and actions.
 import PrivateLayout from '../../../layouts/PrivateLayout.astro';
+import '../../../styles/living-in-paper.css';
+import '../../../styles/paper-bridge-product.css';
 
 const operatorPreviewEnabled = import.meta.env.DEV;
 const reviewMediaBase = operatorPreviewEnabled
@@ -76,7 +80,7 @@ const updateCaptions = reviewMediaBase ? `${reviewMediaBase}/captions/relay-oper
 ---
 
 <PrivateLayout title="Relay Operator Workshop workspace · Orionfold" description="A guided private Relay Operator Workshop workspace.">
-  <main id="workshop-root" class="min-h-screen bg-surface" data-preview-enabled={String(operatorPreviewEnabled)} data-unlocked="false">
+  <main id="workshop-root" class="tw-in-paper pd-paper pd-private min-h-screen bg-surface" data-preview-enabled={String(operatorPreviewEnabled)} data-unlocked="false">
     <section class="workshop-lock grid min-h-screen place-items-center px-5 py-12">
       <div class="w-full max-w-xl rounded-2xl border border-border bg-surface-raised p-8 shadow-of sm:p-10">
         <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Private workshop workspace</p>

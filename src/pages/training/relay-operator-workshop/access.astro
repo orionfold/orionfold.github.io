@@ -1,29 +1,34 @@
 ---
+// R7e (G-146): the access card on the Paper done sheet, with the recovery
+// form on the Paper form styles. Every id the script reads is unchanged.
 import PrivateLayout from '../../../layouts/PrivateLayout.astro';
+import Fold from '../../../components/paper/Fold.astro';
 const operatorPreviewEnabled = import.meta.env.DEV;
 ---
 <PrivateLayout title="Workshop access · Orionfold" description="Open or recover your Relay Operator Workshop access.">
-  <main class="grid min-h-screen place-items-center px-5 py-12">
-    <section class="w-full max-w-2xl rounded-xl border border-border bg-surface-raised p-7 shadow-of sm:p-10">
-      {operatorPreviewEnabled && <p id="preview-badge" hidden class="mb-5 w-fit rounded-full border border-primary/30 bg-primary/[0.08] px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-primary">Operator preview · active entitlement</p>}
-      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Private edition access</p>
-      <h1 class="mt-4 text-3xl">Relay Operator Workshop</h1>
-      <div id="access-status" class="mt-6 rounded-lg border border-border bg-surface p-5 leading-relaxed text-text-muted" role="status" aria-live="polite">
+  <header class="pp-done-brand">
+    <span class="pp-logo" aria-label="Orionfold"><img src="/logos/orionfold-mark-3d-48.png" alt="" width="24" height="24" />ORIONFOLD</span>
+  </header>
+  <main id="main" class="pp-done-page">
+    <section class="pp-done pp-private-card" aria-labelledby="access-title">
+      <Fold id="tally" bob />
+      {operatorPreviewEnabled && <p id="preview-badge" hidden class="pp-kicker">Operator preview · active entitlement</p>}
+      <p class="pp-kicker">Private edition access</p>
+      <h1 id="access-title">Relay Operator Workshop</h1>
+      <div id="access-status" class="pp-private-status" role="status" aria-live="polite">
         Checking your private access link…
       </div>
-      <a id="manifest-link" hidden class="mt-6 inline-flex rounded-lg bg-primary px-5 py-3 font-medium text-accent-text" rel="noreferrer">Enter the guided workshop</a>
+      <a id="manifest-link" hidden class="pp-btn" rel="noreferrer">Enter the guided workshop</a>
 
-      <form id="recovery-form" class="mt-10 border-t border-border pt-8">
-        <h2 class="text-xl">Need a fresh access link?</h2>
-        <label class="mt-5 block text-sm font-medium" for="email">Purchase email</label>
-        <input class="mt-2 w-full rounded-lg border border-border-strong bg-surface px-4 py-3 text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" id="email" name="email" type="email" autocomplete="email" required maxlength="254" />
+      <form id="recovery-form" class="pp-form pp-private-form">
+        <h2>Need a fresh access link?</h2>
+        <label for="email">Purchase email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required maxlength="254" />
         <input class="hidden" name="company" tabindex="-1" autocomplete="off" />
-        <div class="mt-4 flex flex-wrap gap-3">
-          <button class="rounded-lg bg-primary px-5 py-3 font-medium text-accent-text disabled:opacity-50" type="submit" data-action="reaccess">Email a fresh access link</button>
-        </div>
-        <p id="request-status" class="mt-4 text-sm text-text-muted" role="status" aria-live="polite"></p>
+        <button class="pp-btn" type="submit" data-action="reaccess">Email a fresh access link</button>
+        <p id="request-status" role="status" aria-live="polite"></p>
       </form>
-      <p class="mt-7 text-sm leading-relaxed text-text-dim">Looking for the policy or request form? Visit <a class="text-primary hover:underline" href="/training/refunds/">Training workshop refunds</a>.</p>
+      <small>Looking for the policy or request form? Visit <a href="/training/refunds/">Training workshop refunds</a>.</small>
     </section>
   </main>
 </PrivateLayout>

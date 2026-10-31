@@ -1,18 +1,27 @@
 ---
+// R7e (G-146): the refund state on the Paper done sheet. The status id and
+// the dev-only preview badge are unchanged.
 import PrivateLayout from '../../../layouts/PrivateLayout.astro';
+import Fold from '../../../components/paper/Fold.astro';
 const operatorPreviewEnabled = import.meta.env.DEV;
 ---
 <PrivateLayout title="Confirm workshop refund · Orionfold" description="Confirm and track your Relay Operator Workshop refund.">
-  <main class="grid min-h-screen place-items-center px-5 py-12">
-    <section class="w-full max-w-xl rounded-xl border border-border bg-surface-raised p-7 shadow-of sm:p-10">
-      {operatorPreviewEnabled && <p id="preview-badge" hidden class="mb-5 w-fit rounded-full border border-primary/30 bg-primary/[0.08] px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-primary">Operator preview · refund state</p>}
-      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">14-day refund</p>
-      <h1 class="mt-4 text-3xl">Refund confirmation</h1>
-      <div id="refund-status" class="mt-6 rounded-lg border border-border bg-surface p-5 leading-relaxed text-text-muted" role="status" aria-live="polite">
+  <header class="pp-done-brand">
+    <span class="pp-logo" aria-label="Orionfold"><img src="/logos/orionfold-mark-3d-48.png" alt="" width="24" height="24" />ORIONFOLD</span>
+  </header>
+  <main id="main" class="pp-done-page">
+    <section class="pp-done pp-private-card" aria-labelledby="refund-title">
+      <Fold id="tally" bob />
+      {operatorPreviewEnabled && <p id="preview-badge" hidden class="pp-kicker">Operator preview · refund state</p>}
+      <p class="pp-kicker">14-day refund</p>
+      <h1 id="refund-title">Refund confirmation</h1>
+      <div id="refund-status" class="pp-private-status" role="status" aria-live="polite">
         Confirming your request…
       </div>
-      <p class="mt-5 text-sm leading-relaxed text-text-dim">Access stays active while Stripe processes the refund. Only a successful Stripe refund revokes future playback and re-download.</p>
-      <a href="/training/relay-operator-workshop/access/" class="mt-7 inline-flex font-mono text-sm text-primary hover:underline">Return to access</a>
+      <p>Access stays active while Stripe processes the refund. Only a successful Stripe refund revokes future playback and re-download.</p>
+      <div class="pp-done-actions">
+        <a href="/training/relay-operator-workshop/access/" class="pp-btn pp-btn--ghost">Return to access</a>
+      </div>
     </section>
   </main>
 </PrivateLayout>
