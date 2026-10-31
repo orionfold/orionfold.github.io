@@ -20,5 +20,5 @@ assert.match(cast, /Sample clients come only from each blueprint's mock\.client;
 assert.match(page,/<ConfirmBanner \/>/);
 assert.match(page,/SoftwareApplication/);
 assert.match(read('src/data/og.ts'), /ogVersion\(p\)/, 'social URLs remain content-versioned');
-assert.match(read('src/lib/og/card.ts'),/hasShot \? 560 : 900/, 'other shot-based cards still reserve room for their screenshots');
+assert.match(read('src/lib/og/card.ts'),/const titleWidth = hasShot \? 520 : 560;/, 'shot-based cards still reserve room for their screenshots');
 console.log('home hero: Talk→Page playbook mock, locked headline, metadata and confirmation seams');

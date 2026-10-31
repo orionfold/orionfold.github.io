@@ -8,6 +8,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { renderOgCard, type CardOptions } from '../../lib/og/card';
+import { FOLDS, type FoldId } from '../../lib/paper/folds';
 import { cachedRender, rendererDigest } from '../../lib/og/card-cache';
 import { OG_PAGES, storyOgSlug, productOgSlug, letterOgSlug, receiptOgSlug, flowPathOgSlug, compareOgSlug, flowElementsOgSlug, domainOgSlug } from '../../data/og';
 import { publishedPaths, publishedCompare } from '../../lib/flow/paths';
@@ -15,7 +16,12 @@ import { publishedElementArticles } from '../../lib/flow/elements';
 import { publishedDomainArticles } from '../../lib/flow/domains';
 import { toProductView, coverKey } from '../../lib/product/detail';
 
-// Book detail OG cards frame the portrait cover on the left over the banner.
+// A Flow Domain's card shows its own Fold. The S-1 Analyst borrows Atlas
+// (operator 2026-10-30 19:34, via the product lane's flowDomainSlug contract).
+const DOMAIN_FOLD: Record<string, FoldId> = { 'anthropic-s1-analyst': 'atlas' };
+const domainFold = (id: string): FoldId | undefined => DOMAIN_FOLD[id] ?? FOLDS.find((f) => f.domainSlug === id)?.id;
+
+// Book detail OG cards frame the portrait cover on the right of the sheet.
 const BOOK_COVERS: Record<string, string> = {
   'ai-native-business': 'src/assets/book/ai-native-business-book.jpg',
   'ai-research-on-nvidia-dgx-spark': 'src/assets/book/ai-research-dgx-spark-book.jpg',
@@ -29,7 +35,7 @@ const fmtDate = (d: Date) =>
   new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(d);
 
 // A post's OG card uses its curated hero as a full-bleed background when one
-// exists at the convention path; otherwise it falls back to the constellation.
+// exists at the convention path; otherwise it falls back to the Paper sheet.
 function heroBackground(id: string): string | undefined {
   for (const ext of ['png', 'jpg', 'jpeg']) {
     const p = path.join(process.cwd(), 'src/assets/story', id, `hero.${ext}`);
@@ -57,16 +63,15 @@ function receiptHeroBackground(id: string): string | undefined {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // Landing / listing pages + homepage: the brand banner is the background, with the
-  // page title + orionfold.com kept on the left, clear of the banner's Orion logo.
-  // A landing page that ships its own curated hero (OgPage.background) uses that art
-  // full-bleed instead, with the title's text glow keeping it legible.
+  // Landing / listing pages + homepage: the Paper sheet with the page's Fold. A
+  // landing page that ships its own curated hero (OgPage.background) uses that art
+  // full-bleed with the paper brand bar instead.
   const fromPages = Object.values(OG_PAGES).map((p) => {
     const bgAbs = p.background ? path.join(process.cwd(), p.background) : undefined;
     const useBackground = Boolean(bgAbs && fs.existsSync(bgAbs));
     // A page may instead ship a product screenshot (OgPage.screenshot), framed
     // on the right of the card the way product-detail cards frame theirs.
-    // Satori cannot decode webp, so webp-configured entries keep the banner.
+    // Satori cannot decode webp, so webp-configured entries keep the plain sheet.
     const shotAbs = p.screenshot && !p.screenshot.endsWith('.webp')
       ? path.join(process.cwd(), p.screenshot)
       : undefined;
@@ -78,13 +83,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
         eyebrow: p.eyebrow,
         seed: p.seed,
         meta: p.meta,
-        ...(p.light ? { light: true } : {}),
-        ...(p.living ? { living: true } : {}),
-        ...(useBackground
-          ? { backgroundPath: bgAbs }
-          : useShot
-            ? { screenshotPath: shotAbs }
-            : { banner: true }),
+        ...(p.fold ? { fold: p.fold } : {}),
+        ...(useBackground ? { backgroundPath: bgAbs } : useShot ? { screenshotPath: shotAbs } : {}),
       } satisfies CardOptions,
     };
   });
@@ -103,7 +103,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   // Founder-letter editions: one card per edition, mirroring the story cards.
   // Background is the edition's curated hero when present (src/assets/letters/
-  // <id>/hero.*), otherwise the seeded constellation.
+  // <id>/hero.*), otherwise the Paper sheet.
   const letters = await getCollection('letters');
   const fromLetters = letters.map((letter: CollectionEntry<'letters'>) => ({
     params: { slug: letterOgSlug(letter.id) },
@@ -118,7 +118,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   // Receipts (A11): one card per receipt, mirroring the letter cards. Background
   // is the receipt's curated hero when present (src/assets/receipts/<id>/hero.*),
-  // otherwise the seeded constellation.
+  // otherwise the Paper sheet.
   const receiptEntries = await getCollection('receipts');
   const fromReceipts = receiptEntries.map((r: CollectionEntry<'receipts'>) => ({
     params: { slug: receiptOgSlug(r.id) },
@@ -133,7 +133,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   // Product detail pages: each card now shows the product's own featured art.
   // Software posters + model covers are landscape, used full-bleed. Book covers are
-  // portrait, so they are framed on the left over the brand banner instead.
+  // portrait, so they are framed on the sheet instead.
   const products = await getCollection('productDetail');
   const fromProducts = products.map((entry: CollectionEntry<'productDetail'>) => {
     const type = entry.data.type;
@@ -145,7 +145,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     if (type === 'book') {
       const rel = BOOK_COVERS[pslug];
       const abs = rel ? path.join(process.cwd(), rel) : undefined;
-      art = abs && fs.existsSync(abs) ? { banner: true, insetPath: abs } : { banner: true };
+      art = abs && fs.existsSync(abs) ? { insetPath: abs, fold: 'hop' } : { fold: 'hop' };
     } else {
       const { key, base } = coverKey(type, pslug);
       const abs = key && base ? path.join(process.cwd(), 'src/assets', base, key) : undefined;
@@ -163,8 +163,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
   });
 
-  // Flow paths: the Flow light card with the path's own card shot framed on the
-  // right (src/assets/flow/paths/<id>/card.jpg, written by sync-flow-paths.mjs).
+  // Flow paths: the sheet with the path's own card shot framed on the right (src/assets/flow/paths/<id>/card.jpg, written by sync-flow-paths.mjs).
   const fromPaths = (await publishedPaths()).map((entry) => {
     const shot = path.join(process.cwd(), 'src/assets/flow/paths', entry.id, 'card.jpg');
     return {
@@ -173,8 +172,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
         title: entry.data.title,
         eyebrow: `Flow · Path · ${entry.data.chip}`,
         seed: entry.id,
-        light: true,
-        ...(fs.existsSync(shot) ? { screenshotPath: shot } : { banner: true }),
+        fold: 'sprout',
+        ...(fs.existsSync(shot) ? { screenshotPath: shot } : {}),
       } satisfies CardOptions,
     };
   });
@@ -182,10 +181,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { slug: compareOgSlug(entry.id) },
     // The card carries the pairing only (the clause before the colon); the
     // eyebrow names the tool and the long H1 would clip at this type size.
-    props: { title: entry.data.title.replace(/:.*$/, ''), eyebrow: `Compare · Flow and ${entry.data.tool}`, seed: entry.id, living: true } satisfies CardOptions,
+    props: { title: entry.data.title.replace(/:.*$/, ''), eyebrow: `Compare · Flow and ${entry.data.tool}`, seed: entry.id, fold: 'clause' } satisfies CardOptions,
   }));
 
-  // Flow Elements: the same light card, framed on the article's card shot.
+  // Flow Elements: the same sheet, framed on the article's card shot.
   const fromElements = (await publishedElementArticles()).map((entry) => {
     const shot = path.join(process.cwd(), 'src/assets/flow/elements', entry.id, 'card.jpg');
     return {
@@ -194,8 +193,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
         title: entry.data.title,
         eyebrow: `Flow · Elements · ${entry.data.category}`,
         seed: entry.id,
-        light: true,
-        ...(fs.existsSync(shot) ? { screenshotPath: shot } : { banner: true }),
+        fold: 'hop',
+        ...(fs.existsSync(shot) ? { screenshotPath: shot } : {}),
       } satisfies CardOptions,
     };
   });
@@ -209,8 +208,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
         title: entry.data.title,
         eyebrow: `Flow · Domains · ${entry.data.domain}`,
         seed: entry.id,
-        light: true,
-        ...(fs.existsSync(shot) ? { screenshotPath: shot } : { banner: true }),
+        ...(domainFold(entry.id) ? { fold: domainFold(entry.id) } : {}),
+        ...(fs.existsSync(shot) ? { screenshotPath: shot } : {}),
       } satisfies CardOptions,
     };
   });

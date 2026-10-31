@@ -1,35 +1,61 @@
-// OG card renderer (I-series). Composes a 1200x630 social-share JPG:
-//   constellation background (resvg-rasterized SVG)  ->  Satori text overlay  ->
-//   resvg PNG  ->  sharp JPG. Satori does the typography (real Geist shaping +
-//   flexbox wrapping); resvg rasterizes; sharp re-encodes to JPG so detailed
-//   photographic hero backgrounds stay well under the social-card weight budget
-//   (spec §8 targets ~100-300KB). See _SPECS/2026-05-25-125727_og-and-featured-image-pipeline.md.
+// OG card renderer, Paper style (R3, G-142, operator pick 2026-10-30: "the sheet").
+// Composes a 1200x630 social-share JPG: Satori lays out the card, resvg rasterizes
+// it, sharp re-encodes to mozjpeg so photographic art stays under the weight budget.
 //
-// Satori cannot read the site's .woff2 fonts, so we load the TTFs converted from
-// the exact same Geist weights (src/lib/og/fonts/, a committed build input).
+// Two shapes:
+//   - titled cards: paper ground, Fraunces title on the left, the page's Fold on a
+//     soft disc on the right (or the app shot in a Paper window, or a book cover);
+//   - art cards (story comics, posters, curated heroes): the art full-bleed in true
+//     color with a solid paper brand bar along the bottom. The art carries its own title.
+//
+// Satori cannot read woff2 or apply variable axes, so the fonts are static TTF
+// instances cut from the site's Paper Fraunces (wght 300 and 400 at opsz 72, SOFT
+// 100) plus the site's Geist (src/lib/og/fonts/, committed build inputs).
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import sharp from 'sharp';
-import { constellationSvg } from './constellation';
+import { foldById, foldShapes, SHADOW, type FoldId } from '../paper/folds';
+import { foldedStar } from '../paper/star';
 
 const ROOT = process.cwd();
-const fontRegular = fs.readFileSync(path.join(ROOT, 'src/lib/og/fonts/Geist-Regular.ttf'));
-const fontBold = fs.readFileSync(path.join(ROOT, 'src/lib/og/fonts/Geist-Bold.ttf'));
-
-// Brand banner (committed build input, 1200x630, Orion logo on the right). Used as
-// the OG background for landing/listing pages and the homepage, and behind a framed
-// book cover for book detail pages. Read + encoded once and reused across cards.
-const BANNER_URI = `data:image/png;base64,${fs.readFileSync(path.join(ROOT, 'src/lib/og/banner.png')).toString('base64')}`;
-
-const fontDisplay = fs.readFileSync(path.join(ROOT, 'src/lib/og/fonts/BarlowCondensed-Bold.ttf'));
+const font = (name: string) => fs.readFileSync(path.join(ROOT, 'src/lib/og/fonts', name));
 const FONTS = [
-  { name: 'Barlow Condensed', data: fontDisplay, weight: 700 as const, style: 'normal' as const },
-  { name: 'Geist', data: fontRegular, weight: 400 as const, style: 'normal' as const },
-  { name: 'Geist', data: fontBold, weight: 700 as const, style: 'normal' as const },
+  { name: 'Fraunces', data: font('Fraunces-Paper-Light.ttf'), weight: 300 as const, style: 'normal' as const },
+  { name: 'Fraunces', data: font('Fraunces-Paper-Regular.ttf'), weight: 400 as const, style: 'normal' as const },
+  { name: 'Geist', data: font('Geist-Regular.ttf'), weight: 400 as const, style: 'normal' as const },
+  { name: 'Geist', data: font('Geist-Bold.ttf'), weight: 700 as const, style: 'normal' as const },
 ];
+
+// Paper tokens (src/styles/paper/tokens.css).
+const PAPER = '#fbfaf6';
+const PAPER_2 = '#f4f1e8';
+const WHITE = '#ffffff';
+const INK = '#171c1a';
+const INK_3 = '#666d69';
+const LINE = '#e2ded2';
+const TEAL = '#247b80';
+
+export type CardFold = FoldId | 'star';
+
+export interface CardOptions {
+  title: string;
+  eyebrow: string;
+  /** Cache and version key only; the Paper card draws nothing from it. */
+  seed: string;
+  /** Bottom-right caption, e.g. a post date. */
+  meta?: string;
+  /** The Fold on the card. Omitted means the folded star. */
+  fold?: CardFold;
+  /** Absolute path to an app shot, framed on the right in a Paper window. PNG/JPG. */
+  screenshotPath?: string;
+  /** Absolute path to curated art used full-bleed, with the paper brand bar. PNG/JPG. */
+  backgroundPath?: string;
+  /** Absolute path to a portrait book cover, framed on the right. PNG/JPG. */
+  insetPath?: string;
+}
 
 // Minimal hyperscript for Satori's element tree (this is a .ts file, no JSX).
 type El = { type: string; props: Record<string, unknown> };
@@ -37,437 +63,106 @@ function h(type: string, props: Record<string, unknown>, children?: unknown): El
   return { type, props: children === undefined ? props : { ...props, children } };
 }
 
-function pngDataUri(svg: string): string {
-  const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
+/** Rasterize an SVG at 2x the size it is drawn, so resvg only scales down. */
+function svgPng(svg: string, width: number): string {
+  const png = new Resvg(svg, { fitTo: { mode: 'width', value: width * 2 } }).render().asPng();
   return `data:image/png;base64,${Buffer.from(png).toString('base64')}`;
 }
 
 function fileDataUri(absPath: string): string {
-  const buf = fs.readFileSync(absPath);
   const ext = path.extname(absPath).slice(1).toLowerCase();
-  const mime = ext === 'jpg' ? 'jpeg' : ext;
-  return `data:image/${mime};base64,${buf.toString('base64')}`;
+  return `data:image/${ext === 'jpg' ? 'jpeg' : ext};base64,${fs.readFileSync(absPath).toString('base64')}`;
 }
 
-export interface CardOptions {
-  title: string;
-  eyebrow: string;
-  seed: string;
-  meta?: string; // bottom-right, e.g. "Build log · May 24, 2026"
-  /**
-   * Light theme: the site hero's light-gradient + fading teal grid replaces the
-   * dark constellation, and the type flips to the light-theme tokens (dark text,
-   * teal primary). Used by the Flow flagship cards (home + /flow/).
-   */
-  light?: boolean;
-  living?: boolean;
-  /** Absolute path to a product screenshot to frame on the right (offering cards). */
-  screenshotPath?: string;
-  /**
-   * Absolute path to a curated hero image used full-bleed as the card background
-   * (story comics, software posters, model covers). When set, it replaces the
-   * constellation; a heavier scrim keeps the title legible. PNG/JPG only (resvg
-   * does not decode webp).
-   */
-  backgroundPath?: string;
-  /**
-   * Use the brand banner as the background instead of the constellation
-   * (landing/listing pages + homepage). The title is constrained to the left so
-   * it never collides with the Orion logo on the banner's right. Overrides
-   * backgroundPath.
-   */
-  banner?: boolean;
-  /**
-   * Absolute path to a portrait image (a book cover) framed on the left over the
-   * banner. Implies banner mode; the text column shifts right of the cover. PNG/JPG.
-   */
-  insetPath?: string;
+const STAR_URI = svgPng(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">${foldedStar(39, 38, 34)}</svg>`, 40);
+
+function foldImage(fold: CardFold, width: number): El {
+  const svg = fold === 'star'
+    ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -24 120 128">${foldedStar(39, 38, 34)}</svg>`
+    : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214">${SHADOW}${foldShapes(foldById[fold])}</svg>`;
+  const height = Math.round(width * (fold === 'star' ? 128 / 120 : 214 / 200));
+  return h('img', { src: svgPng(svg, width), width, height, style: { width, height } });
 }
 
-const WHITE = '#ffffff';
-// Brand primary on a dark ground (global.css dark --color-primary): the cyan used
-// for "fold" in the wordmark on the dark cards.
-const CYAN = '#14c8c0';
-// Light-theme tokens (global.css :root) for `light` cards.
-const LIGHT_TEXT = '#1d1f25';
-const LIGHT_MUTED = '#6b7280';
-const LIGHT_PRIMARY = '#0e9e98';
-
-/**
- * The homepage hero background as an SVG: soft primary-tinted gradient, a 44px
- * teal grid fading out radially (same recipe as .home-hero__grid), and the
- * top-center primary glow. Rasterized once per card via pngDataUri.
- */
-function heroGridSvg(): string {
-  const lines: string[] = [];
-  for (let x = 0; x <= 1200; x += 44) lines.push(`M${x} 0V630`);
-  for (let y = 0; y <= 630; y += 44) lines.push(`M0 ${y}H1200`);
-  return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0.9" y2="1">
-      <stop offset="0" stop-color="#e9f4f3"/>
-      <stop offset="0.55" stop-color="#f9fafb"/>
-      <stop offset="1" stop-color="#f1f8f7"/>
-    </linearGradient>
-    <radialGradient id="glow" cx="0.5" cy="0" r="0.85">
-      <stop offset="0" stop-color="${LIGHT_PRIMARY}" stop-opacity="0.13"/>
-      <stop offset="1" stop-color="${LIGHT_PRIMARY}" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="fade" cx="0.5" cy="0.3" r="0.8">
-      <stop offset="0.3" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <mask id="gridmask"><rect width="1200" height="630" fill="url(#fade)"/></mask>
-  </defs>
-  <rect width="1200" height="630" fill="url(#bg)"/>
-  <path d="${lines.join(' ')}" stroke="${LIGHT_PRIMARY}" stroke-opacity="0.12" stroke-width="1" fill="none" mask="url(#gridmask)"/>
-  <rect width="1200" height="630" fill="url(#glow)"/>
-</svg>`;
+/** The folded star + "Orionfold" in Fraunces, then the address. */
+function lockup(): El {
+  return h('div', { style: { display: 'flex', alignItems: 'center', gap: 22 } }, [
+    h('div', { style: { display: 'flex', alignItems: 'center', gap: 12 } }, [
+      h('img', { src: STAR_URI, width: 40, height: 40, style: { width: 40, height: 40 } }),
+      h('div', { style: { display: 'flex', fontFamily: 'Fraunces', fontWeight: 400, fontSize: 28, color: INK } }, ['Orion', h('span', { style: { color: TEAL } }, 'fold')]),
+    ]),
+    h('div', { style: { display: 'flex', fontSize: 20, color: INK_3 } }, 'orionfold.com'),
+  ]);
 }
 
-// Orionfold brand mark — 3D variant B (design-system logo-3d, 2026-07-05): a matte
-// white origami paper star on a filled teal disc, matching BrandMark.astro after the
-// full logo swap. This is a photographic PNG (no vector form), read + base64-encoded
-// once and reused as the wordmark's leading logo on art cards. Replaces the former
-// inline flat SC-01f SVG (cyan disc + white star knockout). Rendered at 40px in the
-// lockup; we feed the DS exact-size 48px mark (nearest exact >= 40) so resvg only
-// downscales slightly rather than resampling a large master.
-const MARK_URI = `data:image/png;base64,${fs.readFileSync(path.join(ROOT, 'public/logos/orionfold-mark-3d-48.png')).toString('base64')}`;
-// Soft dark halo behind white text so it stays legible over bright, true-color art
-// without darkening the image. Layered: a crisp near shadow + two wider soft glows.
-const TEXT_GLOW = '0 0 5px rgba(0,0,0,0.95), 0 2px 7px rgba(0,0,0,0.92), 0 0 24px rgba(0,0,0,0.85), 0 0 54px rgba(0,0,0,0.6)';
-
-function wordmark(light = false): El {
-  return h(
-    'div',
-    {
+/** Full-bleed art in true color, branded by a paper bar along the bottom. */
+function artCard(opts: CardOptions): El {
+  return h('div', { style: { position: 'relative', display: 'flex', width: 1200, height: 630, fontFamily: 'Geist', backgroundColor: PAPER } }, [
+    h('img', { src: fileDataUri(opts.backgroundPath as string), width: 1200, height: 630, style: { position: 'absolute', top: 0, left: 0, width: 1200, height: 630, objectFit: 'cover' } }),
+    h('div', {
       style: {
-        display: 'flex',
-        alignItems: 'center',
-        fontSize: 30,
-        fontWeight: 700,
-        letterSpacing: -0.5,
-        color: light ? LIGHT_TEXT : WHITE,
-        ...(light ? {} : { textShadow: TEXT_GLOW }),
+        position: 'absolute', left: 0, right: 0, bottom: 0, width: 1200,
+        display: 'flex', alignItems: 'center', padding: '18px 48px',
+        backgroundColor: PAPER, borderTop: `1px solid ${LINE}`,
       },
-    },
-    'orionfold.com',
-  );
+    }, lockup()),
+  ]);
 }
 
-function eyebrow(text: string, light = false): El {
-  return h(
-    'div',
-    { style: { display: 'flex', alignItems: 'center' } },
-    h(
-      'div',
-      {
+/** The sheet: paper ground, title left, the Fold (or a framed shot or cover) right. */
+function sheetCard(opts: CardOptions): El {
+  const fold = opts.fold ?? 'star';
+  const hasShot = Boolean(opts.screenshotPath);
+  const hasInset = Boolean(opts.insetPath) && !hasShot;
+  const titleWidth = hasShot ? 520 : 560;
+  const titleSize = opts.title.length > 44 ? 64 : opts.title.length > 28 ? 74 : 84;
+
+  const art: El[] = [];
+  if (hasShot) {
+    art.push(
+      h('div', {
         style: {
-          color: light ? LIGHT_PRIMARY : WHITE,
-          fontSize: 22,
-          fontWeight: 700,
-          letterSpacing: 3,
-          textTransform: 'uppercase',
-          ...(light ? {} : { textShadow: TEXT_GLOW }),
+          position: 'absolute', right: -40, top: 150, width: 600, height: 380, display: 'flex', flexDirection: 'column',
+          borderRadius: 8, border: `1px solid ${LINE}`, backgroundColor: WHITE, boxShadow: '0 30px 60px -30px rgba(23,28,26,0.45)', overflow: 'hidden',
         },
-      },
-      text,
-    ),
-  );
-}
-
-/**
- * Brand wordmark for the art-card bar: the Orion mark + "orion" (white) "fold" (cyan)
- * ".com", matching the site nav wordmark (Nav.astro splits "Orion" + primary "fold").
- * The mark is the rasterized BrandMark SVG. Sits as a horizontal group so the bar can
- * center it vertically and pin it to the left.
- */
-function brandLockup(light = false): El {
-  const seg = (text: string, color: string): El =>
-    h(
-      'div',
-      { style: { display: 'flex', color, fontSize: 32, fontWeight: 700, letterSpacing: -0.5, ...(light ? {} : { textShadow: TEXT_GLOW }) } },
-      text,
-    );
-  const base = light ? LIGHT_TEXT : WHITE;
-  const accent = light ? LIGHT_PRIMARY : CYAN;
-  return h(
-    'div',
-    { style: { display: 'flex', alignItems: 'center', gap: 14 } },
-    [
-      h('img', { src: MARK_URI, width: 40, height: 40, style: { width: 40, height: 40 } }),
-      h('div', { style: { display: 'flex', alignItems: 'center' } }, [seg('orion', base), seg('fold', accent), seg('.com', base)]),
-    ],
-  );
-}
-
-/**
- * Bottom brand bar for full-bleed art cards (story comics, software posters, model
- * covers, curated-hero landing pages). The art carries its own title, so the bar
- * only brands the card: a solid translucent strip pinned to the bottom holding the
- * Orion mark + orionfold.com wordmark, vertically centered (equal top/bottom padding)
- * and pinned left. No title/eyebrow/meta overlay — the creative speaks for itself.
- * The starry brand-banner cards keep the airy full-card layout; this bar is only for
- * the photographic/art backgrounds.
- */
-function bottomStrip(_opts: CardOptions, _titleSize: number): El {
-  return h(
-    'div',
-    {
-      style: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        width: 1200,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        // Equal top/bottom padding => the lockup is vertically centered in the bar.
-        paddingTop: 20,
-        paddingBottom: 20,
-        paddingLeft: 48,
-        paddingRight: 48,
-        backgroundColor: 'rgba(7,13,20,0.82)',
-      },
-    },
-    brandLockup(),
-  );
-}
-
-/** Living Systems social cards share the approved origami motif, without a product screenshot. */
-function livingCardTree(opts: CardOptions): El {
-  const art = fileDataUri(path.join(ROOT, 'public/assets/living-systems/hero-home-paper-planes.png'));
-  return h('div', { style: { display: 'flex', position: 'relative', width: 1200, height: 630, backgroundColor: '#f4d558', color: '#171918', fontFamily: 'Geist', overflow: 'hidden' } }, [
-    h('img', { src: art, width: 1200, height: 700, style: { position: 'absolute', left: 0, top: -35, width: 1200, height: 700, objectFit: 'cover' } }),
-    h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1200, height: 630, backgroundImage: 'linear-gradient(90deg, rgba(244,213,88,1) 0%, rgba(244,213,88,.96) 43%, rgba(244,213,88,0) 78%)' } }),
-    h('div', { style: { display: 'flex', flexDirection: 'column', position: 'relative', padding: '54px 64px', width: 1200, height: 630, justifyContent: 'space-between' } }, [
-      h('div', { style: { display: 'flex', fontSize: 19, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase' } }, opts.eyebrow),
-      h('div', { style: { display: 'flex', position: 'relative', width: 640, flexDirection: 'column' } }, [
-        h('div', { style: { display: 'flex', fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: opts.title.length > 35 ? 98 : 110, lineHeight: .94, textTransform: 'uppercase', letterSpacing: -1 } }, opts.title),
-        h('div', { style: { display: 'flex', width: 310, height: 13, backgroundColor: '#de3033', marginTop: 22, transform: 'rotate(-2deg)' } }),
+      }, [
+        h('div', { style: { display: 'flex', height: 30, alignItems: 'center', gap: 7, paddingLeft: 14, backgroundColor: PAPER_2, borderBottom: `1px solid ${LINE}` } },
+          [0, 1, 2].map(() => h('div', { style: { width: 10, height: 10, borderRadius: 5, backgroundColor: LINE } }))),
+        h('img', { src: fileDataUri(opts.screenshotPath as string), style: { width: 600, height: 350, objectFit: 'cover', objectPosition: 'top' } }),
       ]),
-      h('div', { style: { display: 'flex', position: 'relative', justifyContent: 'space-between', alignItems: 'center' } }, [
-        h('div', { style: { display: 'flex', alignItems: 'center', gap: 12 } }, [
-          h('img', { src: MARK_URI, width: 40, height: 40, style: { width: 40, height: 40 } }),
-          h('div', { style: { display: 'flex', fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: 38 } }, ['Orion', h('span', { style: { color: '#247b80' } }, 'fold')]),
-        ]),
-        h('div', { style: { display: 'flex', position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700 } }, 'orionfold.com'),
+    );
+    if (opts.fold) art.push(h('div', { style: { position: 'absolute', left: 470, top: 462, display: 'flex' } }, foldImage(fold, 120)));
+  } else {
+    const disc = fold === 'star' ? '#e8f2ef' : `${foldById[fold].c}55`;
+    art.push(h('div', { style: { position: 'absolute', right: 70, top: 105, width: 380, height: 380, borderRadius: 190, backgroundColor: disc, display: 'flex' } }));
+    if (hasInset) {
+      art.push(h('div', {
+        style: { position: 'absolute', right: 149, top: 128, width: 222, height: 334, display: 'flex', borderRadius: 4, boxShadow: '0 24px 48px -20px rgba(23,28,26,0.55)', overflow: 'hidden', transform: 'rotate(2deg)' },
+      }, h('img', { src: fileDataUri(opts.insetPath as string), style: { width: 222, height: 334, objectFit: 'cover' } })));
+    } else {
+      art.push(h('div', { style: { position: 'absolute', right: 90, top: 110, display: 'flex' } }, foldImage(fold, 340)));
+    }
+  }
+
+  return h('div', { style: { position: 'relative', display: 'flex', width: 1200, height: 630, fontFamily: 'Geist', backgroundColor: PAPER, overflow: 'hidden' } }, [
+    ...art,
+    h('div', { style: { position: 'absolute', left: 72, top: 64, bottom: 60, width: hasShot ? titleWidth : 1056, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' } }, [
+      h('div', { style: { display: 'flex', fontWeight: 700, fontSize: 19, letterSpacing: 3, textTransform: 'uppercase', color: TEAL, maxWidth: hasShot ? titleWidth : 600 } }, opts.eyebrow),
+      h('div', { style: { display: 'flex', fontFamily: 'Fraunces', fontWeight: 300, fontSize: titleSize, lineHeight: 1.02, letterSpacing: -1.6, color: INK, maxWidth: titleWidth } }, opts.title),
+      h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: hasShot ? titleWidth : 600 } }, [
+        lockup(),
+        opts.meta ? h('div', { style: { display: 'flex', fontSize: 20, color: INK_3 } }, opts.meta) : h('div', { style: { display: 'flex' } }, ''),
       ]),
     ]),
   ]);
 }
 
-/** Build the Satori element tree for a card. */
-function cardTree(opts: CardOptions): El {
-  if (opts.living) return livingCardTree(opts);
-  const useBanner = Boolean(opts.banner);
-  const light = Boolean(opts.light);
-  const hasInset = Boolean(opts.insetPath);
-  const hasShot = Boolean(opts.screenshotPath) && !useBanner;
-  const usePhoto = Boolean(opts.backgroundPath) && !useBanner;
-  // Full-bleed art (no framed screenshot) gets the bottom overlay strip so the title
-  // never fights busy poster art or a comic's own lettering.
-  const useStrip = usePhoto && !hasShot && !hasInset;
-  const bg = light
-    ? pngDataUri(heroGridSvg())
-    : useBanner
-      ? BANNER_URI
-      : usePhoto
-        ? fileDataUri(opts.backgroundPath as string)
-        : pngDataUri(constellationSvg(opts.seed));
+const cardTree = (opts: CardOptions): El =>
+  opts.backgroundPath && !opts.screenshotPath && !opts.insetPath ? artCard(opts) : sheetCard(opts);
 
-  // Title scales down for long strings. It also narrows when a screenshot shares the
-  // row, when the banner logo must stay clear on the right, or when a book cover sits
-  // on the left.
-  const titleSize = opts.title.length > 42 ? 58 : opts.title.length > 28 ? 66 : 74;
-  // Shot cards: padLeft 80 + 560 = 640, clear of the pane at left 660.
-  const titleMaxWidth = hasInset ? 480 : useBanner ? 660 : hasShot ? 560 : 900;
-  const padLeft = hasInset ? 392 : 80;
-
-  const layers: El[] = [
-    // Background: full-bleed featured art shown in TRUE COLOR (no darkening scrim).
-    // Legibility comes from the text glow (TEXT_GLOW) instead.
-    h('img', {
-      src: bg,
-      width: 1200,
-      height: 630,
-      style: { position: 'absolute', top: 0, left: 0, width: 1200, height: 630, objectFit: 'cover' },
-    }),
-  ];
-
-  // Optional framed product screenshot, bleeding off the right edge.
-  if (hasShot) {
-    layers.push(
-      h(
-        'div',
-        {
-          style: {
-            position: 'absolute',
-            top: 168,
-            left: 660,
-            width: 660,
-            height: 372,
-            display: 'flex',
-            flexDirection: 'column',
-            borderRadius: 16,
-            border: light ? '1px solid rgba(14,158,152,0.32)' : '1px solid rgba(255,255,255,0.14)',
-            backgroundColor: light ? '#ffffff' : '#0c1020',
-            ...(light ? { boxShadow: '0 30px 70px rgba(15,45,52,0.20)' } : {}),
-            overflow: 'hidden',
-          },
-        },
-        [
-          // macOS-style title bar with three dots
-          h(
-            'div',
-            {
-              style: {
-                display: 'flex',
-                alignItems: 'center',
-                height: 34,
-                paddingLeft: 16,
-                backgroundColor: light ? '#eef1f4' : 'rgba(255,255,255,0.06)',
-              },
-            },
-            [
-              h('div', { style: { width: 11, height: 11, borderRadius: 6, backgroundColor: '#ff5f57', marginRight: 8 } }),
-              h('div', { style: { width: 11, height: 11, borderRadius: 6, backgroundColor: '#febc2e', marginRight: 8 } }),
-              h('div', { style: { width: 11, height: 11, borderRadius: 6, backgroundColor: '#28c840' } }),
-            ],
-          ),
-          h('img', {
-            src: fileDataUri(opts.screenshotPath as string),
-            style: { width: 660, height: 338, objectFit: 'cover', objectPosition: 'top' },
-          }),
-        ],
-      ),
-    );
-  }
-
-  // Optional portrait book cover, framed on the left over the banner (book cards).
-  if (hasInset) {
-    layers.push(
-      h(
-        'div',
-        {
-          style: {
-            position: 'absolute',
-            top: 92,
-            left: 64,
-            width: 296,
-            height: 446,
-            display: 'flex',
-            borderRadius: 12,
-            border: '1px solid rgba(255,255,255,0.20)',
-            boxShadow: '0 24px 60px rgba(0,0,0,0.55)',
-            overflow: 'hidden',
-          },
-        },
-        h('img', {
-          src: fileDataUri(opts.insetPath as string),
-          style: { width: 296, height: 446, objectFit: 'cover' },
-        }),
-      ),
-    );
-  }
-
-  // Foreground content column.
-  const content = h(
-    'div',
-    {
-      style: {
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        width: 1200,
-        height: 630,
-        paddingTop: 72,
-        paddingBottom: 64,
-        paddingLeft: padLeft,
-        paddingRight: 80,
-      },
-    },
-    [
-      eyebrow(opts.eyebrow, light),
-      h(
-        'div',
-        { style: { display: 'flex' } },
-        h(
-          'div',
-          {
-            style: {
-              display: 'flex',
-              color: light ? LIGHT_TEXT : WHITE,
-              fontSize: titleSize,
-              fontWeight: 700,
-              lineHeight: 1.06,
-              letterSpacing: -1,
-              maxWidth: titleMaxWidth,
-              ...(light ? {} : { textShadow: TEXT_GLOW }),
-            },
-          },
-          opts.title,
-        ),
-      ),
-      h(
-        'div',
-        { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
-        [
-          // Light cards carry the full brand lockup (origami mark + wordmark);
-          // dark cards keep their original plain wordmark.
-          light ? brandLockup(true) : wordmark(),
-          opts.meta
-            ? h(
-                'div',
-                {
-                  style: {
-                    display: 'flex',
-                    color: light ? LIGHT_MUTED : WHITE,
-                    fontSize: 20,
-                    fontWeight: 400,
-                    letterSpacing: 0.3,
-                    ...(light ? {} : { textShadow: TEXT_GLOW }),
-                  },
-                },
-                opts.meta,
-              )
-            : h('div', { style: { display: 'flex' } }, ''),
-        ],
-      ),
-    ],
-  );
-  layers.push(useStrip ? bottomStrip(opts, titleSize) : content);
-
-  return h(
-    'div',
-    {
-      style: {
-        position: 'relative',
-        display: 'flex',
-        width: 1200,
-        height: 630,
-        fontFamily: 'Geist',
-        backgroundColor: light ? '#f9fafb' : '#0e1322',
-      },
-    },
-    layers,
-  );
-}
-
-/**
- * Render a 1200x630 OG card for the given card options as a JPG buffer.
- * resvg rasterizes the Satori SVG to PNG, then sharp re-encodes to mozjpeg —
- * the constellation/screenshot cards stay crisp and the photographic hero cards
- * drop from ~1MB PNG to ~150-250KB. Quality 90 keeps the overlaid Geist text sharp.
- */
+/** Render a 1200x630 OG card as a JPG buffer (mozjpeg q90 keeps the type sharp). */
 export async function renderOgCard(opts: CardOptions): Promise<Buffer> {
-  const svg = await satori(cardTree(opts) as unknown as Parameters<typeof satori>[0], {
-    width: 1200,
-    height: 630,
-    fonts: FONTS,
-  });
+  const svg = await satori(cardTree(opts) as unknown as Parameters<typeof satori>[0], { width: 1200, height: 630, fonts: FONTS });
   const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
   return await sharp(png).jpeg({ quality: 90, mozjpeg: true }).toBuffer();
 }

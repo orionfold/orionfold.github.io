@@ -22,20 +22,23 @@ export const OG_CACHE_VERSION = '1';
 
 const sha1 = (data: Buffer | string) => createHash('sha1').update(data).digest('hex');
 
-/** Digest of every file under `dir` (sorted, relative path + bytes). */
-export function rendererDigest(dir = path.join(process.cwd(), 'src/lib/og')): string {
-  const files: string[] = [];
-  const walk = (d: string) => {
-    for (const e of fs.readdirSync(d, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
-      const p = path.join(d, e.name);
-      if (e.isDirectory()) walk(p);
-      else files.push(p);
-    }
-  };
-  walk(dir);
+/** Digest of every file under `dirs` (sorted, relative path + bytes). The Paper
+ *  card draws the Folds and the star from src/lib/paper, so those count too. */
+export function rendererDigest(dirs: string | string[] = ['src/lib/og', 'src/lib/paper'].map((d) => path.join(process.cwd(), d))): string {
   const h = createHash('sha1');
-  for (const f of files) {
-    h.update(path.relative(dir, f)).update('\0').update(fs.readFileSync(f)).update('\0');
+  for (const dir of Array.isArray(dirs) ? dirs : [dirs]) {
+    const files: string[] = [];
+    const walk = (d: string) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+        const p = path.join(d, e.name);
+        if (e.isDirectory()) walk(p);
+        else files.push(p);
+      }
+    };
+    walk(dir);
+    for (const f of files) {
+      h.update(path.relative(dir, f)).update('\0').update(fs.readFileSync(f)).update('\0');
+    }
   }
   return h.digest('hex');
 }

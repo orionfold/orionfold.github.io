@@ -10,6 +10,7 @@ import { SITE } from './seo.ts';
 import { FLOW_COUNTS } from '../lib/flow/flow-counts';
 import { FLOW_VERSION } from '../lib/flow/flow-release';
 import { RELAY_HOST_PORTABLE_LIVE } from './relay-host-portable.ts';
+import type { CardFold } from '../lib/og/card';
 
 const relayHostPortablePositioning = import.meta.env.DEV || RELAY_HOST_PORTABLE_LIVE;
 
@@ -28,14 +29,11 @@ export interface OgPage {
   meta?: string;
   /** Optional repo-relative product screenshot, framed on the right (offering cards). */
   screenshot?: string;
-  /** Light card: hero light gradient + fading teal grid background, dark text,
-   *  full brand lockup. Used by the Flow flagship cards. */
-  light?: boolean;
-  /** Living Systems card with origami artwork and display typography. */
-  living?: boolean;
+  /** The Fold on the Paper card; omitted means the folded star. */
+  fold?: CardFold;
   /** Optional repo-relative curated hero art, used FULL-BLEED as the card background
-   *  instead of the brand banner (a landing page with its own featured image, e.g.
-   *  /dgx-spark/). Title legibility comes from the card's text glow. PNG/JPG only. */
+   *  instead of the Paper sheet (a landing page with its own featured image, e.g.
+   *  /dgx-spark/). A paper brand bar runs along the bottom. PNG/JPG only. */
   background?: string;
 }
 
@@ -46,17 +44,19 @@ export const OG_PAGES: Record<string, OgPage> = {
     "title": "The Researcher, Writer and Builder in You.",
     "seed": "manifesto",
     "alt": "The Researcher, Writer and Builder in You, an essay by Manav Sehgal first published as The Living Documents Manifesto: work that continues and judgment that stays yours.",
-    "living": true
+    fold: 'ember'
 },
   '/essays/': {
     slug: 'essays', eyebrow: 'Orionfold · Essays',
     title: 'Work worth keeping. Ideas worth following.', seed: 'essays',
-    alt: 'Orionfold essays by Manav Sehgal on working knowledge, human judgment and Living Documents.', living: true,
+    alt: 'Orionfold essays by Manav Sehgal on working knowledge, human judgment and Living Documents.',
+    fold: 'ember'
   },
   '/essays/the-work-we-want-to-keep/': {
     slug: 'the-work-we-want-to-keep', eyebrow: 'An essay by Manav Sehgal',
     title: 'The Work We Want to Keep.', seed: 'the-work-we-want-to-keep',
-    alt: 'The Work We Want to Keep, an essay by Manav Sehgal on personal AI, working knowledge and human judgment.', living: true,
+    alt: 'The Work We Want to Keep, an essay by Manav Sehgal on personal AI, working knowledge and human judgment.',
+    fold: 'ember'
   },
   '/essay/': {
     "slug": "essay",
@@ -64,15 +64,15 @@ export const OG_PAGES: Record<string, OgPage> = {
     "title": "Room for a Renaissance.",
     "seed": "essay",
     "alt": "Room for a Renaissance, an essay by Manav Sehgal. More room for the researcher, writer and builder in you.",
-    "living": true
+    fold: 'ember'
 },
   '/': {
     "slug": "home",
     "eyebrow": "Orionfold · Flow Domains",
     "title": "Show how you work. AI follows it. You make the call.",
     "seed": "home",
-    "alt": "Orionfold Flow Domains: Show how you work. AI follows it. You make the call. Origami paper planes rise from an open book on yellow.",
-    "living": true
+    "alt": "Orionfold Flow Domains: Show how you work. AI follows it. You make the call. Orri, a paper plane Fold, on a paper card.",
+    fold: 'orri'
 },
   '/advisor/': {
     slug: 'advisor',
@@ -117,6 +117,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'The proof, one receipt at a time.',
     seed: 'receipts',
     alt: 'Orionfold receipts: frozen tests you can rerun, each with its own page',
+    fold: 'shell'
   },
   '/learn/': {
     slug: 'learn',
@@ -205,28 +206,32 @@ export const OG_PAGES: Record<string, OgPage> = {
     "eyebrow": "Flow for Mac · Elements",
     "title": "Describe it. Flow draws it.",
     "seed": "flow",
-    "alt": "Flow for Mac: Describe it. Flow draws it. Origami paper planes carry documents forward.",
-    "living": true
+    "alt": "Flow for Mac: Describe it. Flow draws it. Orri, a paper plane Fold, on a paper card.",
+    fold: 'orri'
 },
   '/flow/paths/': {
     slug: 'flow-paths', eyebrow: 'Flow · Paths',
     title: 'Real work. Walked end to end.', seed: 'flow-paths',
-    alt: 'Flow Paths: real work walked end to end on a Mac, with the time, the cost and the evidence for every step.', living: true,
+    alt: 'Flow Paths: real work walked end to end on a Mac, with the time, the cost and the evidence for every step.',
+    fold: 'sprout'
   },
   '/domains/': {
     slug: 'flow-domains', eyebrow: 'Flow for Mac · Domains',
     title: 'Co-author with any AI once. Publish everywhere.', seed: 'flow-domains',
-    alt: 'Flow Domains: an expert’s method as a folder of living documents, co-authored with AI, published to GitHub and kept current for every reader.', living: true,
+    alt: 'Flow Domains: an expert’s method as a folder of living documents, co-authored with AI, published to GitHub and kept current for every reader.',
+    fold: 'tally'
   },
   '/flow/elements/': {
     slug: 'flow-elements', eyebrow: 'Flow for Mac · Elements',
     title: 'Every element. One card at a time.', seed: 'flow-elements',
-    alt: 'Flow Elements: every block, action, skill and chart kind in Flow, each as a card with a small drawing.', living: true,
+    alt: 'Flow Elements: every block, action, skill and chart kind in Flow, each as a card with a small drawing.',
+    fold: 'hop'
   },
   '/flow/compare/': {
     slug: 'compare', eyebrow: 'Flow · Compare',
     title: 'Coming from another tool?', seed: 'compare',
-    alt: 'Compare Flow with Notion, Obsidian, Claude Code, Codex and Canva: what moves, what stays, and the path to start with.', living: true,
+    alt: 'Compare Flow with Notion, Obsidian, Claude Code, Codex and Canva: what moves, what stays, and the path to start with.',
+    fold: 'clause'
   },
   '/flow/specifications/': {
     slug: 'flow-specifications',
@@ -234,22 +239,21 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Requirements, routes, plans, and measured performance',
     seed: 'flow-specifications',
     alt: 'Orionfold Flow technical specifications for compatibility, document formats, model routes, privacy boundaries, plans, and measured performance',
-    light: true,
   },
   '/flow/night-shift/': {
     slug: 'flow-night-shift', eyebrow: `Flow ${FLOW_VERSION} · Night Shift`,
     title: 'Let your documents work the Night Shift.', seed: 'flow-night-shift',
-    alt: 'Flow Night Shift: scheduled work on your Mac, a Morning Briefing, and changes you can review.', living: true,
+    alt: 'Flow Night Shift: scheduled work on your Mac, a Morning Briefing, and changes you can review.',
   },
   '/flow/living-documents/': {
     slug: 'flow-living-documents', eyebrow: `Flow ${FLOW_VERSION} · Living Documents`,
     title: 'A document that keeps up.', seed: 'flow-living-documents',
-    alt: `Flow Living Documents: ${FLOW_COUNTS.livingDocuments} starting documents, linked sources, live charts and tables, and reviewable changes.`, living: true,
+    alt: `Flow Living Documents: ${FLOW_COUNTS.livingDocuments} starting documents, linked sources, live charts and tables, and reviewable changes.`,
   },
   '/flow/settings/': {
     slug: 'flow-settings', eyebrow: `Flow ${FLOW_VERSION} · Settings`,
     title: 'Your Mac. Your models. Your rules.', seed: 'flow-settings',
-    alt: 'Six Flow Settings screens put documents, models, routing, evidence and the Night Shift in view.', living: true,
+    alt: 'Six Flow Settings screens put documents, models, routing, evidence and the Night Shift in view.',
   },
   '/flow/tour/': {
     slug: 'flow-tour',
@@ -257,10 +261,9 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'See Flow at work',
     seed: 'flow-tour',
     alt: `Orionfold Flow ${FLOW_VERSION} product tour: Night Shift, Living Documents, six Settings screens, writing with AI and receipts shown through real product screens`,
-    light: true,
   },
   // The four /flow/<category>/ tour pages (2026-08-20 split). Text-only cards
-  // on the Flow light treatment; the chapter shots are too dense to read at
+  // on the Paper sheet; the chapter shots are too dense to read at
   // social-card size and the overview card already carries the product.
   '/flow/writing-with-ai/': {
     slug: 'flow-writing-with-ai',
@@ -268,7 +271,6 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Write with AI. Keep the final word.',
     seed: 'flow-writing',
     alt: 'Orionfold Flow, writing with AI: seven actions, a tool strip in the document, and an exact diff you approve for every change',
-    light: true,
   },
   '/flow/receipts/': {
     slug: 'flow-receipts',
@@ -276,7 +278,6 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Know what AI did. Keep the record.',
     seed: 'flow-receipts',
     alt: 'Orionfold Flow receipts: one card per run names what ran, where, what it cost, and what the evidence supports',
-    light: true,
   },
   '/flow/models-and-runtime/': {
     slug: 'flow-models-and-runtime',
@@ -284,7 +285,6 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Choose where AI runs. Every time.',
     seed: 'flow-models',
     alt: 'Orionfold Flow models and runtime: models on your Mac, configured cloud providers, and rules that pick the model',
-    light: true,
   },
   '/flow/documents-and-files/': {
     slug: 'flow-documents-and-files',
@@ -292,7 +292,6 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Do more with your files. Keep them yours.',
     seed: 'flow-documents',
     alt: 'Orionfold Flow documents and files: search results as checked citations, tables that edit like tables, ordinary Markdown files',
-    light: true,
   },
   '/flow/enterprise/': {
     slug: 'flow-enterprise',
@@ -300,7 +299,6 @@ export const OG_PAGES: Record<string, OgPage> = {
     title: 'Govern AI where the work happens',
     seed: 'flow-enterprise',
     alt: 'Orionfold Flow for enterprise: scope, routing, approval, evidence, and receipts inside the document',
-    light: true,
   },
   '/relay/': {
     slug: 'relay',
@@ -391,11 +389,10 @@ export const productOgSlug = (type: string, slug: string) => `${type}-${slug}`;
 // image even after it re-reads the page (seen 2026-08-28 after the hero
 // retitle). Versioning the URL from the card's content and renderer revision
 // gives scrapers a fresh image URL when either changes.
-// Bump when livingCardTree or its shared artwork changes without new page copy.
-const LIVING_OG_RENDERER_VERSION = 'living-systems-2';
+// Bump when the Paper card renderer or its artwork changes without new page copy.
+const OG_RENDERER_VERSION = 'paper-1';
 const ogVersion = (p: OgPage): string => {
-  const fields = [p.eyebrow, p.title, p.alt, p.screenshot ?? '', p.background ?? '', p.seed];
-  if (p.living) fields.push(LIVING_OG_RENDERER_VERSION);
+  const fields = [p.eyebrow, p.title, p.alt, p.screenshot ?? '', p.background ?? '', p.seed, p.fold ?? '', OG_RENDERER_VERSION];
   const src = fields.join('\u0000');
   let h = 5381;
   for (let i = 0; i < src.length; i += 1) h = (Math.imul(h, 33) ^ src.charCodeAt(i)) >>> 0;

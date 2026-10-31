@@ -16,25 +16,16 @@ async function loadOg(contents) {
   return import(`data:text/javascript;base64,${Buffer.from(result.outputFiles[0].text).toString('base64')}`);
 }
 
-const livingRoutes = ['/', '/domains/', '/essay/', '/essays/', '/essays/the-work-we-want-to-keep/', '/flow/', '/flow/compare/', '/flow/elements/', '/flow/living-documents/', '/flow/night-shift/', '/flow/paths/', '/flow/settings/', '/manifesto/'];
-
-test('Living renderer revisions refresh all living card URLs without changing other cards', async () => {
-  const revision = /const LIVING_OG_RENDERER_VERSION = '([^']+)';/;
+test('a renderer revision refreshes every card URL without changing paths or alts', async () => {
+  const revision = /const OG_RENDERER_VERSION = '([^']+)';/;
   assert.match(source, revision);
   const current = await loadOg(source);
-  const revised = await loadOg(source.replace(revision, (_, version) => `const LIVING_OG_RENDERER_VERSION = '${version}-test';`));
-  const changed = [];
-  for (const [route, page] of Object.entries(current.OG_PAGES)) {
+  const revised = await loadOg(source.replace(revision, (_, version) => `const OG_RENDERER_VERSION = '${version}-test';`));
+  for (const route of Object.keys(current.OG_PAGES)) {
     const before = current.ogMeta(route);
     const after = revised.ogMeta(route);
     assert.equal(after.alt, before.alt, route);
     assert.equal(after.image.split('?')[0], before.image.split('?')[0], route);
-    if (page.living) {
-      assert.notEqual(after.image, before.image, route);
-      changed.push(route);
-    } else {
-      assert.deepEqual(after, before, route);
-    }
+    assert.notEqual(after.image, before.image, route);
   }
-  assert.deepEqual(changed.sort(), livingRoutes);
 });

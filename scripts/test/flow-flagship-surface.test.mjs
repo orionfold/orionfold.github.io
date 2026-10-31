@@ -620,22 +620,21 @@ const terms = read('src/pages/terms.astro');
 assert.match(terms, /publishes open-source software and also develops proprietary commercial software/);
 assert.match(terms, /Proprietary products, including Orionfold Flow/);
 
-// ── OG cards: four distinct Living Documents editorial promises ────────
+// ── OG cards: four distinct editorial promises, each a Paper sheet with a Fold (R3) ──
 const ogData = read('src/data/og.ts');
 for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
   const entry=ogData.split(`'${route}': {`)[1]?.split(/\n\s*},/)[0] ?? '';
-  assert.match(entry, /["']?living["']?: true/, `${route}: approved Living Systems card`);
+  assert.match(entry, /fold: '[a-z]+'/, `${route}: the Paper card names its Fold`);
   assert.match(entry, /["']?alt["']?: ["'][^"']{35,}/, `${route}: descriptive social alt`);
-  assert.doesNotMatch(entry, /screenshot:/, `${route}: flagship social card uses editorial origami`);
+  assert.doesNotMatch(entry, /screenshot:/, `${route}: flagship social card uses a Fold, not a shot`);
 }
 assert.match(ogData,/Describe it\. Flow draws it\./);
 assert.match(ogData,/Show how you work\. AI follows it\. You make the call\./);
 assert.match(ogData,/Room for a Renaissance/);
 assert.match(ogData,/The Researcher, Writer and Builder in You/);
 const ogCardSource=read('src/lib/og/card.ts');
-assert.match(ogCardSource,/livingCardTree/);
-assert.match(ogCardSource,/hero-home-paper-planes\.png/);
-assert.match(ogCardSource,/function heroGridSvg\(\)/, 'existing non-flagship cards retain their rendering path');
+assert.match(ogCardSource,/function sheetCard\(/);
+assert.match(ogCardSource,/function artCard\(/, 'art cards keep their own rendering path');
 assert.match(read('src/pages/og/[slug].jpg.ts'),/endsWith\('\.webp'\)/, 'non-flagship WebP handling remains safe for Satori');
 
 // ── Benchmarks truth boundaries (2026-08-18) ───────────────────────────────

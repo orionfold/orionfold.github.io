@@ -76,14 +76,13 @@ for (const [, from] of prepare.matchAll(/from: '([^']+)'/g)) {
   assert.ok(rows.has(path.basename(from, '.webp')), `prepare-flow-details cuts from ${from}, which has no provenance row`);
 }
 const og = read('src/data/og.ts');
-// Flagship social cards now use approved origami; real product captures keep
-// the unchanged manifest/hash/crop rails above and remain on detailed tours.
+// Flagship social cards are Paper sheets with a Fold (R3); real product captures
+// keep the unchanged manifest/hash/crop rails above and remain on detailed tours.
 for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
-  const block = og.split(`'${route}': {`)[1]?.split(/\n\s*},/)[0] ?? '';
-  assert.match(block, /["']?living["']?: true/, `${route}: uses the approved Living Systems card`);
+  const block = og.split(`'${route}': {`)[1]?.split(/\n\s*},?\n/)[0] ?? '';
+  assert.match(block, /fold: '[a-z]+'/, `${route}: the Paper card names its Fold`);
   assert.doesNotMatch(block, /screenshot:/, `${route}: no unintended real-shot substitution`);
 }
-assert.match(read('src/lib/og/card.ts'), /hero-home-paper-planes\.png/, 'origami OG source is PNG for Satori');
 
 // ── The changelog parser reads the product lane's real format ──────────────
 const sample = [
