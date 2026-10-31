@@ -28,8 +28,8 @@ Deno.test("unknown offer falls back to default (fail-safe)", () => {
 
 Deno.test("proof-playbook offer gets its own copy", () => {
   const e = confirmationEmail(URL, "proof-playbook", FOOTER);
-  assertEquals(e.subject, "One click to get the Proof playbook");
-  assert(e.text.includes("the Proof playbook"));
+  assertEquals(e.subject, "One click to get the Proof guide");
+  assert(e.text.includes("the Proof guide"));
   assert(!e.text.includes("our stories"));
 });
 

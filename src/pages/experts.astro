@@ -18,14 +18,14 @@ import keplerCover from '../assets/models/kepler/cover.png';
 const og = ogMeta('/experts/');
 
 // The model library behind the future packs. The models are shipped and free;
-// the full pack (benchmark + playbook + run path) is the packaging step, so the
+// the full pack (benchmark + use-case guide + run path) is the packaging step, so the
 // status chips stay honest about which is which.
 // Paper R5 (G-144): the same copy and links as before, one idea per panel.
 const PACK = [
   { k: 'Model', v: 'An offline model or adapter selected for one domain, not a generic chatbot wrapper.' },
   { k: 'Benchmark', v: 'A test set or scorecard that makes improvement visible before the model is trusted.' },
   { k: 'Run path', v: 'A local setup path for customer-controlled hardware and private documents.' },
-  { k: 'Playbook', v: 'Use cases, prompts, limits, and review rules for the domain.' },
+  { k: 'Use-case guide', v: 'Use cases, prompts, limits, and review rules for the domain.' },
 ];
 const BENCH = 'https://huggingface.co/datasets/Orionfold/patent-strategist-bench-v0.1';
 const library = [
@@ -38,7 +38,7 @@ const library = [
 ---
 <PaperLayout
   title="Experts · Orionfold"
-  description="Orionfold Domain Experts combine offline models, benchmarks, local run paths, and use-case playbooks for sensitive work."
+  description="Orionfold Domain Experts combine offline models, benchmarks, local run paths, and use-case guides for sensitive work."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
@@ -47,8 +47,8 @@ const library = [
     <section class="pp-hero pp-hero--inner" aria-labelledby="experts-title">
       <div class="pp-hero-copy">
         <span class="pp-kicker">Experts</span>
-        <h1 id="experts-title" class="pp-h1">Offline domain experts with a benchmark and a playbook.</h1>
-        <p class="pp-sub">Patent Strategist leads the pattern. It has a domain model, a test set, a local run path, and a use-case playbook. Security, legal, finance, and medical packs follow the same shape as they mature.</p>
+        <h1 id="experts-title" class="pp-h1">Offline domain experts with a benchmark and a use-case guide.</h1>
+        <p class="pp-sub">Patent Strategist leads the pattern. It has a domain model, a test set, a local run path, and a use-case guide. Security, legal, finance, and medical packs follow the same shape as they mature.</p>
         <div class="pp-hero-cta">
           <a class="pp-btn" href="/models/patent-strategist/">Open Patent Strategist</a>
           <a class="pp-btn pp-btn--ghost" href="/adoption/#know">Request an expert pack</a>

@@ -59,10 +59,10 @@ export const nvidiaPortalProfiles: Record<PortalOfferId, NvidiaPortalProfile> = 
     id: 'experts',
     productServiceName: 'Orionfold Domain Experts',
     webpage: `${site}/experts/`,
-    type: 'Domain AI models and implementation playbooks',
+    type: 'Domain AI models and implementation guides',
     developmentStage: 'Shipping',
     valueProposition:
-      'Offline model packs for sensitive domain work. Each pack combines a domain model, benchmark or scorecard, local run path, and use-case playbook. Patent Strategist is the live flagship; security, legal, finance, and medical packs follow the same pattern.',
+      'Offline model packs for sensitive domain work. Each pack combines a domain model, benchmark or scorecard, local run path, and use-case guide. Patent Strategist is the live flagship; security, legal, finance, and medical packs follow the same pattern.',
     technicalDetails:
       'Patent Strategist is built with NVIDIA NeMo and shipped as GGUF and adapter artifacts with a public benchmark. Packs are tested on NVIDIA DGX Spark-class hardware and can run offline with local inference stacks, preserving sensitive documents and prompts on customer-controlled machines.',
     runtimeAcceleratedByNvidia: 'Yes',

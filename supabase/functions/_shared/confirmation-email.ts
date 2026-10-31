@@ -35,10 +35,10 @@ learned along the way. No spam, just the real build log.`,
 // `offer` field (see OfferSlot.astro callers): proof-playbook, founder-letter.
 const OFFER_COPY: Record<string, OfferCopy> = {
   "proof-playbook": {
-    subject: "One click to get the Proof playbook",
+    subject: "One click to get the Proof guide",
     pitch:
       `You're almost in. Confirm your email and we'll send you
-the Proof playbook.
+the Proof guide.
 
 It's the short, honest guide to running our AI on your own
 box and checking the receipts yourself. The same tests we

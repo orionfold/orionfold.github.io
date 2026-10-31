@@ -100,9 +100,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/experts/': {
     slug: 'experts',
     eyebrow: 'Experts',
-    title: 'Offline models with benchmarks and playbooks',
+    title: 'Offline models with benchmarks and use-case guides',
     seed: 'domain-packs',
-    alt: 'Orionfold Playbook Experts: offline models, benchmarks, local run paths, and playbooks',
+    alt: 'Orionfold Domain Experts: offline models, benchmarks, local run paths, and use-case guides',
   },
   '/cockpit/': {
     slug: 'cockpit',
@@ -122,7 +122,7 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/learn/': {
     slug: 'learn',
     eyebrow: 'Learn',
-    title: 'The playbooks behind the stack',
+    title: 'The books behind the stack',
     seed: 'learn',
     alt: 'Orionfold Learn: books, field notes, DGX Spark research, and build stories',
   },

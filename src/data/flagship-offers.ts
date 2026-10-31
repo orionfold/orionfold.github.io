@@ -49,9 +49,9 @@ export const flagshipOffers: FlagshipOffer[] = [
   {
     id: 'experts',
     eyebrow: 'Know',
-    title: 'Playbook Experts',
+    title: 'Domain Experts',
     route: '/experts/',
-    outcome: 'Offline model plus benchmark, local run path, and use-case playbook for sensitive domain work.',
+    outcome: 'Offline model plus benchmark, local run path, and use-case guide for sensitive domain work.',
     buyer: 'Teams with legal, security, finance, medical, or technical work that cannot live only in a generic chatbot.',
     status: 'Patent pack live, more planned',
     proof: [

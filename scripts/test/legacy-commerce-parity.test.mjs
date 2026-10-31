@@ -96,8 +96,10 @@ const hashes = {
   // G-148 (2026-10-30): its seat copy says Playbook for Domain; re-pinned on purpose.
   "supabase/functions/_shared/consulting-proposal.ts":
     "96bd5813a22ed015beb6659093404048fd7dcffae03a51e8deff07921a81107c",
+  // 2026-10-31: "Proof playbook" became "Proof guide" (Playbook means a Flow
+  // Playbook only); re-pinned on purpose. Redeploy with the D7 release.
   "supabase/functions/_shared/confirmation-email.ts":
-    "19761e216bffa2c89b03021acc2cdd3a9bf7f6d4ee99f1f23ada3c868438376d",
+    "68385dc663c1ea9485fd939036da6efb9d4e8fbddc2c169cf4dc5f11eb196cc4",
   "supabase/functions/_shared/email-footer.ts":
     "87ca4ccc82cf514a190cc1d4e2864192a38f5110b4becb5c8cf4f3cb4ef5dd16",
   "supabase/functions/_shared/legal-identity.ts":
