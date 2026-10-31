@@ -32,7 +32,7 @@ const folds = FOLDS.map((f) => {
   writeFileSync(path.join(out, 'folds', `${f.id}.svg`), standalone(foldSvg(f, { label: `${f.name} the ${f.kind}` })) + '\n');
   writeFileSync(path.join(out, 'folds', `${f.id}-no-shadow.svg`), standalone(foldSvg(f, { label: `${f.name} the ${f.kind}`, shadow: false })) + '\n');
   writeFileSync(path.join(out, 'folds', `${f.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${f.name} the ${f.kind}">${nightFoldShapes(f)}</svg>\n`);
-  return { id: f.id, name: f.name, kind: f.kind, flowDomain: f.domain, flowDomainSlug: f.domainSlug, colors: { a: f.a, b: f.b, c: f.c, ink: f.ink }, nightColors: nightFold(f), files: { svg: `folds/${f.id}.svg`, svgNoShadow: `folds/${f.id}-no-shadow.svg`, night: `folds/${f.id}-night.svg` }, viewBox: '0 0 200 214' };
+  return { id: f.id, name: f.name, kind: f.kind, flowPlaybook: f.domain, flowPlaybookSlug: f.domainSlug, colors: { a: f.a, b: f.b, c: f.c, ink: f.ink }, nightColors: nightFold(f), files: { svg: `folds/${f.id}.svg`, svgNoShadow: `folds/${f.id}-no-shadow.svg`, night: `folds/${f.id}-night.svg` }, viewBox: '0 0 200 214' };
 });
 writeFileSync(path.join(out, 'marks', 'orionfold-star.svg'), foldedStarSvg('Orionfold') + '\n');
 

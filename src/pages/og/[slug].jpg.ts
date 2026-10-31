@@ -17,7 +17,7 @@ import { publishedDomainArticles } from '../../lib/flow/domains';
 import { toProductView, coverKey } from '../../lib/product/detail';
 
 // A Flow Playbook's card shows its own Fold. The S-1 Analyst borrows Atlas
-// (operator 2026-10-30 19:34, via the product lane's flowDomainSlug contract).
+// (operator 2026-10-30 19:34, via the product lane's flowPlaybookSlug contract).
 const DOMAIN_FOLD: Record<string, FoldId> = { 'anthropic-s1-analyst': 'atlas' };
 const domainFold = (id: string): FoldId | undefined => DOMAIN_FOLD[id] ?? FOLDS.find((f) => f.domainSlug === id)?.id;
 

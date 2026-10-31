@@ -119,7 +119,7 @@ for (const slug of ['the-canvas', 'diagrams-draw-anywhere', 'a-checklist-you-can
     const response = await page.goto(`/flow/paths/${slug}/`);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('.ed-article-kicker')).toContainText('FLOW PATH');
+    await expect(page.locator('.pp-article-crumb')).toContainText(/flow path/i);
     await expect(page.locator('main')).not.toContainText('Flow 3.0');
     await expect(page.locator('#try-this-path')).toContainText('Guide');
     await expect(page.locator('#try-this-path')).not.toContainText('open an empty folder');

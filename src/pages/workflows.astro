@@ -1,14 +1,18 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import PaperLayout from '../layouts/PaperLayout.astro';
+import PageNav from '../components/paper/PageNav.astro';
+import Panel from '../components/paper/Panel.astro';
+import Fold from '../components/paper/Fold.astro';
+import { Image } from 'astro:assets';
+import { resolveProofArt } from '../lib/flagship/proof-art';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import PageHeader from '../components/ui/PageHeader.astro';
-import OfferProofRail from '../components/flagship/OfferProofRail.astro';
 import { flagshipById } from '../data/flagship-offers';
 import { ogMeta } from '../data/og';
 
 const offer = flagshipById.workflows;
 const og = ogMeta('/workflows/');
+const proof = offer.proof.map((link) => ({ ...link, art: resolveProofArt(link.href), external: link.href.startsWith('http') }));
 
 // The anatomy every starter kit ships with — the pitch's core trust loop,
 // shown as the pipeline it actually is.
@@ -27,64 +31,64 @@ const kits = [
   { n: '03', title: 'Private document workflow', body: 'Read sensitive files locally, draft an artifact, run checks, and preserve the audit trail.' },
 ];
 ---
-<Layout
+<PaperLayout
   title="Workflows · Orionfold"
   description="Private Agent Starter Kits package one useful local workflow with trigger, runner, eval, approval, artifact output, and audit trail."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
   <Nav />
-  <main>
-    <PageHeader
-      eyebrow="Workflows"
-      title="Run one private agent workflow end to end."
-      subtitle="A starter kit is not a consulting retainer. It is one reusable local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail."
-    >
-      <div class="mt-7 flex flex-wrap gap-3">
-        <a href="/adoption/#run" class="inline-flex rounded-lg bg-accent px-5 py-3 font-mono text-sm font-semibold tracking-wider text-accent-text transition-colors hover:bg-accent-hover">Request a starter kit</a>
-        <a href="/relay/" class="inline-flex rounded-lg border border-primary/30 px-5 py-3 font-mono text-sm font-semibold tracking-wider text-primary transition-colors hover:bg-primary/5">Open Relay</a>
-      </div>
-    </PageHeader>
-
-    <!-- Anatomy of a kit: the six-stage trust loop, as a pipeline. -->
-    <section class="px-6 pt-12">
-      <div class="mx-auto max-w-6xl">
-        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Anatomy of every kit</p>
-        <ol data-animate-stagger class="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {pipeline.map((stage, i) => (
-            <li data-animate class="relative rounded-2xl border border-border bg-surface-raised p-4">
-              <span class="font-mono text-[10px] tracking-[0.18em] text-text-dim">{String(i + 1).padStart(2, '0')}</span>
-              <p class="mt-2 font-medium leading-tight text-text">{stage.step}</p>
-              <p class="mt-2 text-xs leading-relaxed text-text-muted">{stage.gloss}</p>
-              {i < pipeline.length - 1 && (
-                <span aria-hidden="true" class="absolute -right-2.5 top-1/2 hidden -translate-y-1/2 text-text-dim lg:block">→</span>
-              )}
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-
-    <section class="px-6 pt-12">
-      <div class="mx-auto max-w-6xl">
-        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">First starter kits</p>
-        <div data-animate-stagger class="mt-4 grid gap-5 md:grid-cols-3">
-          {kits.map((kit) => (
-            <article data-animate class="of-surface rounded-2xl p-6">
-              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Kit {kit.n}</p>
-              <h2 class="mt-3 text-2xl leading-tight">{kit.title}</h2>
-              <p class="mt-3 text-sm leading-relaxed text-text-muted">{kit.body}</p>
-            </article>
-          ))}
+  <main id="main" class="pp-page">
+    {/* Paper R5 (G-144): the same copy and links; the audience and CTA stay the operator's call (G-015). */}
+    <section class="pp-hero pp-hero--inner pp-hero--article" aria-labelledby="workflows-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Workflows</span>
+        <h1 id="workflows-title" class="pp-h1">Run one private agent workflow end to end.</h1>
+        <p class="pp-sub">A starter kit is not a consulting retainer. It is one reusable local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail.</p>
+        <div class="pp-hero-cta">
+          <a class="pp-btn" href="/adoption/#run">Request a starter kit</a>
+          <a class="pp-btn pp-btn--ghost" href="/relay/">Open Relay</a>
         </div>
       </div>
     </section>
 
-    <section class="px-6 py-16">
-      <div class="mx-auto max-w-6xl">
-        <OfferProofRail title="Built from shipped parts" links={offer.proof} action={{ label: 'All software →', href: '/software/' }} />
-      </div>
+    <PageNav label="Workflows navigation" pages={[
+      { href: '/relay/', label: 'Relay' },
+      { href: '/experts/', label: 'Experts' },
+      { href: '/software/', label: 'All software' },
+    ]} />
+
+    <Panel id="anatomy" seam="Anatomy of every kit" fold="tally" title="Six stages.<br />Nothing ships itself.">
+      <ol class="pp-cells pp-cells--3 pp-cells--steps">
+        {pipeline.map((stage, i) => <li><small>{String(i + 1).padStart(2, '0')}</small><b>{stage.step}</b><span>{stage.gloss}</span></li>)}
+      </ol>
+    </Panel>
+
+    <Panel id="kits" seam="First starter kits" fold="ember" tinted title="Three kits<br />to start from.">
+      <ul class="pp-cells pp-cells--3">{kits.map((kit) => <li><small>Kit {kit.n}</small><b>{kit.title}</b><span>{kit.body}</span></li>)}</ul>
+    </Panel>
+
+    <Panel id="proof" seam="Built from shipped parts" fold="atlas" title="Shipped parts,<br />not slides.">
+      <ul class="pp-art-cards pp-art-cards--3">
+        {proof.map((link) => (
+          <li><a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>
+            {link.art
+              ? <Image src={link.art} alt={`${link.label} artwork`} widths={[400, 640]} sizes="(min-width: 860px) 30vw, 92vw" loading="lazy" data-no-zoom />
+              : <span class="pp-art-fallback" aria-hidden="true"><Fold id="shell" /></span>}
+            <h3>{link.label}</h3>
+            <p>{link.note}</p>
+          </a></li>
+        ))}
+      </ul>
+      <p class="pp-panel-link"><a href="/software/">All software <span aria-hidden="true">→</span></a></p>
+    </Panel>
+
+    <section class="pp-closing" aria-labelledby="workflows-closing">
+      <Fold id="tally" bob class="pp-closing-fold" />
+      <h2 id="workflows-closing">Start with one workflow.</h2>
+      <p>Tell us the job. We package it as one kit with its checks and its audit trail.</p>
+      <a class="pp-btn" href="/adoption/#run">Request a starter kit</a>
     </section>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>

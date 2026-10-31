@@ -6,7 +6,8 @@ import { render } from 'astro:content';
 import { FLOW_VERSION, flowName } from '../../../lib/flow/flow-release';
 import { fitTitle, fitDescription } from '../../../lib/flow/seo-meta';
 import { Image } from 'astro:assets';
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PaperArticle from '../../../components/paper/PaperArticle.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
@@ -17,6 +18,7 @@ import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
 import '../../../styles/flow-paths.css';
+import '../../../styles/living-in-paper.css';
 
 export async function getStaticPaths() {
   const paths = await publishedPaths();
@@ -58,17 +60,18 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.path}, a Flow path walked end to end`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Paths', tags: [flowName(release), d.chip, d.path] }}>
+<PaperLayout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.path}, a Flow path walked end to end`} ogType="article" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Paths', tags: [flowName(release), d.chip, d.path] }}>
   <Nav />
-  <main id="main" class="ls-main">
-    <header class="ed-article-hero fp-hero ls-container">
-      <div class="ed-article-kicker"><a href="/flow/paths/">← All paths</a><span>{flowName(release).toUpperCase()} PATH / {d.chip.toUpperCase()}{d.persona !== d.chip && ` · ${d.persona.toUpperCase()}`}</span></div>
-      <h1>{d.title}</h1>
-      <p class="ed-article-dek">{d.dek}</p>
-      {d.caveat && <p class="fp-caveat"><b>On the released build:</b> {d.caveat}</p>}
-      <div class="ed-hero-bottom"><div class="ed-meta"><span>Path: {d.path}</span><span>Walked on Flow</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#try-this-path" class="ed-download-link">Try this path ↓</a></div></div>
-      <figure class="fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>
-    </header>
+  <main id="main" class="pp-page">
+    <PaperArticle
+      crumb={{ href: '/flow/paths/', label: 'All paths' }}
+      kicker={`${flowName(release)} path / ${d.chip}${d.persona !== d.chip ? ` · ${d.persona}` : ''}`}
+      title={d.title} dek={d.dek}
+      meta={[`Path: ${d.path}`, 'Walked on Flow']} dateIso={dateIso} dateLabel={dateLabel}
+      link={{ href: '#try-this-path', label: 'Try this path ↓' }}
+      scope="ed-page ed-article-page fp-page">
+      {d.caveat && <p slot="note" class="pp-article-note fp-caveat"><b>On the released build:</b> {d.caveat}</p>}
+      <figure slot="figure" class="fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>
 
     <div class="ed-reading-layout fp-layout ls-container">
       <aside class="ed-contents fp-rail" aria-label="Path contents and receipt">
@@ -113,6 +116,7 @@ const schema = [
         <div class="ps-grid">{others.slice(0, 3).map((p) => <PathShowcase entry={p} />)}</div>
       </section>
     )}
+    </PaperArticle>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>

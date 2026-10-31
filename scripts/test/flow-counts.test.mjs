@@ -49,7 +49,7 @@ test('llms.txt states the same counts as the JSON', () => {
 
 test('paths say "walked on Flow", not a release number', () => {
   const page = read('src/pages/flow/paths/[slug].astro');
-  assert.match(page, /<span>Walked on Flow<\/span>/);
+  assert.match(page, /'Walked on Flow']/);
   assert.doesNotMatch(page, /Walked on Flow \{/);
   assert.match(read('public/llms.txt'), /walked on Flow\)/);
 });

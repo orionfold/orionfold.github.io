@@ -1,12 +1,14 @@
 ---
 // /flow/compare/ — every Compare page.
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PageNav from '../../../components/paper/PageNav.astro';
+import Panel from '../../../components/paper/Panel.astro';
+import Fold from '../../../components/paper/Fold.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import CompareBand from '../../../components/flow/paths/CompareBand.astro';
 import CompareTable from '../../../components/flow/paths/CompareTable.astro';
 import PathShowcase from '../../../components/flow/mocks/PathShowcase.astro';
-import PaperCta from '../../../components/ui/PaperCta.astro';
 import { publishedCompare, publishedPaths, compareHref } from '../../../lib/flow/paths';
 import { publishedDomainArticles, domainArticleHref } from '../../../lib/flow/domains';
 import { ogMeta } from '../../../data/og';
@@ -14,6 +16,7 @@ import { SITE, PERSON } from '../../../data/seo';
 import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
 import '../../../styles/flow-paths.css';
+import '../../../styles/living-in-paper.css';
 
 const pages = await publishedCompare();
 const paths = await publishedPaths();
@@ -24,8 +27,8 @@ const domains = await publishedDomainArticles();
 const domainStarts = [...new Set(pages.map((p) => p.data.startWith))].map((id) => domains.find((a) => a.id === id)).filter((a) => a !== undefined);
 const startFor = (id: string) => pages.filter((p) => p.data.startWith === id).map((p) => p.data.tool);
 const groups = [
-  { kind: 'switch', eyebrow: 'SWITCH', heading: 'Move one job.', stroke: 'Keep the rest.', text: 'Coming from a notes app or a custom AI. Move one job you do again and again, and keep the tool for everything else. What moves, what stays the same, and what you give up.' },
-  { kind: 'pair', eyebrow: 'PAIR', heading: 'Use both.', stroke: 'Each does its part.', text: 'Flow works beside the agent, writing app or design tool you already pay for. It does not replace them.' },
+  { kind: 'switch', eyebrow: 'SWITCH', fold: 'ember', heading: 'Move one job.', stroke: 'Keep the rest.', text: 'Coming from a notes app or a custom AI. Move one job you do again and again, and keep the tool for everything else. What moves, what stays the same, and what you give up.' },
+  { kind: 'pair', eyebrow: 'PAIR', fold: 'clause', heading: 'Use both.', stroke: 'Each does its part.', text: 'Flow works beside the agent, writing app or design tool you already pay for. It does not replace them.' },
 ].map((g) => ({ ...g, pages: pages.filter((p) => p.data.kind === g.kind) })).filter((g) => g.pages.length > 0);
 const rowCount = pages.reduce((n, p) => n + p.data.rows.length, 0);
 const sourceCount = new Set(pages.flatMap((p) => p.data.rows.map((r) => r.source?.href).filter(Boolean))).size;
@@ -46,66 +49,89 @@ const schema = {
   mainEntity: { '@type': 'ItemList', itemListElement: pages.map((p, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'Article', name: p.data.title, url: `${SITE.url}${compareHref(p.id)}` } })) },
 };
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page fp-page" jsonLd={schema}>
+<PaperLayout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={schema}>
   <Nav />
-  <main id="main" class="ls-main">
-    <header class="ed-hub-intro ls-container">
-      <p class="ls-eyebrow">FLOW / COMPARE</p>
-      <div class="ed-hub-heading">
-        <h1>Bring the work.<br /><em>Keep your tools.</em></h1>
-        <p>Start from one job you do again and again. That might be a monthly brief, an investor update, a launch post or an agent's edit. Each page shows that job in the tool you use now, your real choices, including staying put, what Flow adds, and what Flow is not.</p>
+  <main id="main" class="pp-page">
+    {/* Paper R5 (G-144): one idea per panel; each tool's three-row preview waits behind a toggle; one row of three facts. */}
+    <section class="pp-hero pp-hero--inner pp-hero--article" aria-labelledby="compare-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Flow Compare · {pages.length} tools</span>
+        <h1 id="compare-title" class="pp-h1">Bring the work.<br /><em>Keep your tools.</em></h1>
+        <p class="pp-sub">Start from one job you do again and again. Each page shows that job in the tool you use now, your real choices, including staying put, what Flow adds, and what Flow is not.</p>
+        <dl class="pp-facts pp-facts--three" aria-label="How these pages are checked">
+          <div><dt>Tools compared</dt><dd>{pages.length}, in {rowCount} topics</dd></div>
+          <div><dt>Sources</dt><dd>{sourceCount}, each one dated</dd></div>
+          <div><dt>Last checked</dt><dd>{lastChecked}</dd></div>
+        </dl>
       </div>
-    </header>
-    <section class="ls-container" aria-label="Compare">
-      <CompareBand headingLevel="h2" />
-      <ul class="fc-facts" aria-label="How these pages are checked">
-        <li><b>{pages.length}</b>tools compared</li>
-        <li><b>{rowCount}</b>topics, side by side</li>
-        <li><b>{sourceCount}</b>sources, each one dated</li>
-        <li><b>{lastChecked}</b>sources last checked</li>
-      </ul>
     </section>
+
+    <PageNav label="Compare navigation" onPage={[
+      ...groups.map((g) => ({ href: `#fc-${g.kind}`, label: g.eyebrow === 'SWITCH' ? 'Switch' : 'Pair' })),
+      ...(starts.length > 0 ? [{ href: '#fc-start', label: 'Watch it walked' }] : []),
+      { href: '#fc-not', label: 'Limits' },
+    ]} pages={[
+      { href: '/flow/', label: 'Flow' },
+      { href: '/playbooks/', label: 'Playbooks' },
+      { href: '/flow/paths/', label: 'Paths' },
+    ]} />
+
+    <Panel id="fc-tools" seam="Compare" fold="atlas" title="Pick the tool<br />you use now.">
+      <div class="ls ls-in-paper ed-page fp-page"><CompareBand headingLevel="h3" /></div>
+    </Panel>
+
     {groups.map((g) => (
-      <section class="fp-section ls-container" aria-labelledby={`fc-${g.kind}`}>
-        <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">{g.eyebrow}</p><h2 id={`fc-${g.kind}`}>{g.heading}<br /><span class="ls-stroke">{g.stroke}</span></h2><p>{g.text}</p></div></div>
-        {g.pages.map((p) => (
-          <article class="fc-tool" aria-labelledby={`fc-tool-${p.id}`}>
-            <div class="fc-tool-head">
-              <div>
-                <p class="fp-kind">{p.data.kind === 'switch' ? 'Switch from' : 'Pair with'} {p.data.tool}</p>
-                <h3 id={`fc-tool-${p.id}`}>{p.data.tool}</h3>
-                <p>{p.data.dek}</p>
+      <Panel id={`fc-${g.kind}`} seam={g.kind === 'switch' ? 'Switch' : 'Pair'} fold={g.fold as 'ember' | 'clause'} tinted={g.kind === 'pair'} title={`${g.heading}<br />${g.stroke}`} lede={g.text}>
+        <div class="ls ls-in-paper ed-page fp-page pp-fc-tools ls-fc-tools">
+          {g.pages.map((p) => (
+            <article class="fc-tool" aria-labelledby={`fc-tool-${p.id}`}>
+              <div class="fc-tool-head">
+                <div>
+                  <p class="fp-kind">{p.data.kind === 'switch' ? 'Switch from' : 'Pair with'} {p.data.tool}</p>
+                  <h3 id={`fc-tool-${p.id}`}>{p.data.tool}</h3>
+                  <p>{p.data.dek}</p>
+                </div>
+                <a class="fp-all" href={compareHref(p.id)}>Full comparison, {p.data.rows.length} topics →</a>
               </div>
-              <a class="fp-all" href={compareHref(p.id)}>Full comparison, {p.data.rows.length} topics →</a>
-            </div>
-            <CompareTable entry={p} limit={3} />
-          </article>
-        ))}
-      </section>
-    ))}
-    {starts.length > 0 && (
-      <section class="fp-section ls-container" aria-labelledby="fc-start">
-        <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">START WITH A PATH</p><h2 id="fc-start">Don’t take our word.<br /><span class="ls-stroke">Watch it walked.</span></h2><p>Most Compare pages name the path that shows Flow’s side. We walked every step on a Mac and wrote down the time and the cost. Where we have not walked a tool, its page says so.</p></div><a class="fp-all" href="/flow/paths/">All paths →</a></div>
-        <div class="ps-grid">
-          {starts.map((p) => (
-            <div class="fc-start">
-              <p class="fp-kind">For {startFor(p.id).join(' and ')} users</p>
-              <PathShowcase entry={p} headingLevel="h3" />
-            </div>
+              <details class="pp-more">
+                <summary>The first three topics, side by side</summary>
+                <CompareTable entry={p} limit={3} />
+              </details>
+            </article>
           ))}
         </div>
-        {domainStarts.map((a) => (
-          <p class="fc-domain-start"><span class="fp-kind">For {startFor(a.id).join(' and ')} users</span> Start with the <a href={domainArticleHref(a.id)}>{a.data.domain}</a> Playbook. Read how it was built in Flow, published to GitHub and brought in by a reader.</p>
-        ))}
-      </section>
+      </Panel>
+    ))}
+
+    {starts.length > 0 && (
+      <Panel id="fc-start" seam="Watch it walked" fold="sprout" title="Don’t take our word.<br />Watch it walked." lede="Most Compare pages name the path that shows Flow’s side. We walked every step on a Mac and wrote down the time and the cost. Where we have not walked a tool, its page says so.">
+        <div class="ls ls-in-paper ed-page fp-page">
+          <div class="ps-grid">
+            {starts.map((p) => (
+              <div class="fc-start">
+                <p class="fp-kind">For {startFor(p.id).join(' and ')} users</p>
+                <PathShowcase entry={p} headingLevel="h3" />
+              </div>
+            ))}
+          </div>
+          {domainStarts.map((a) => (
+            <p class="fc-domain-start"><span class="fp-kind">For {startFor(a.id).join(' and ')} users</span> Start with the <a href={domainArticleHref(a.id)}>{a.data.domain}</a> Playbook. Read how it was built in Flow, published to GitHub and brought in by a reader.</p>
+          ))}
+        </div>
+        <p class="pp-panel-link"><a href="/flow/paths/">All paths <span aria-hidden="true">→</span></a></p>
+      </Panel>
     )}
-    <section class="fp-section ls-container" aria-labelledby="fc-not">
-      <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">WHAT FLOW IS NOT</p><h2 id="fc-not">Know the limits<br /><span class="ls-stroke">before you move.</span></h2><p>These hold on every page. Each page adds the limits for its own tool.</p></div></div>
-      <ol class="fc-not">{notFlow.map((n) => <li>{n}</li>)}</ol>
+
+    <Panel id="fc-not" seam="What Flow is not" fold="shell" tinted title="Know the limits<br />before you move." lede="These hold on every page. Each page adds the limits for its own tool.">
+      <ol class="fc-not pp-fc-not">{notFlow.map((n) => <li>{n}</li>)}</ol>
+    </Panel>
+
+    <section class="pp-closing" aria-labelledby="compare-closing">
+      <Fold id="orri" bob class="pp-closing-fold" />
+      <h2 id="compare-closing">See the work, not the pitch.</h2>
+      <p>Each page links a real Flow path that shows its side of the comparison. Start there.</p>
+      <a class="pp-btn" href="/flow/paths/">Browse the paths</a>
     </section>
-    <div class="ls-container" style="padding-block:24px 88px">
-      <PaperCta source="flow-compare-index" eyebrow="EVERY CLAIM HAS A SOURCE" heading="See the work, not the pitch." description="Each page links a real Flow path that shows its side of the comparison. Start there." href="/flow/paths/" label="Browse the paths" />
-    </div>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>

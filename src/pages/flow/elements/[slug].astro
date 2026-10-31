@@ -5,7 +5,8 @@
 // does, the steps, the numbers) follows it.
 import { render } from 'astro:content';
 import { fitTitle, fitDescription } from '../../../lib/flow/seo-meta';
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PaperArticle from '../../../components/paper/PaperArticle.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
@@ -17,6 +18,7 @@ import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
 import '../../../styles/flow-paths.css';
+import '../../../styles/living-in-paper.css';
 import '../../../styles/flow-elements.css';
 
 export async function getStaticPaths() {
@@ -58,15 +60,16 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.title}, from Flow Elements`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page fe-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Elements', tags: ['Flow', 'Elements', d.category] }}>
+<PaperLayout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.title}, from Flow Elements`} ogType="article" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Elements', tags: ['Flow', 'Elements', d.category] }}>
   <Nav />
-  <main id="main" class="ls-main">
-    <header class="ed-article-hero fp-hero fe-hero ls-container">
-      <div class="ed-article-kicker"><a href="/flow/elements/">← All elements</a><span>FLOW ELEMENTS / {d.category.toUpperCase()}</span></div>
-      <h1>{d.title}</h1>
-      <p class="ed-article-dek">{items.length ? d.summary : d.dek}</p>
-      <div class="ed-hero-bottom"><div class="ed-meta"><span>{items.length ? `${items.length} elements` : 'The tour'}</span><span>Walked on Flow</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#how-it-works" class="ed-download-link">How it works ↓</a></div></div>
-    </header>
+  <main id="main" class="pp-page">
+    <PaperArticle
+      crumb={{ href: '/flow/elements/', label: 'All elements' }}
+      kicker={`Flow Elements / ${d.category}`}
+      title={d.title} dek={items.length ? d.summary : d.dek}
+      meta={[items.length ? `${items.length} elements` : 'The tour', 'Walked on Flow']} dateIso={dateIso} dateLabel={dateLabel}
+      link={{ href: '#how-it-works', label: 'How it works ↓' }}
+      scope="ed-page ed-article-page fp-page fe-page">
 
     {items.length > 0
       ? <ElementViewer items={items} label={d.category} />
@@ -105,6 +108,7 @@ const schema = [
         <CategoryCards articles={others} headingLevel="h2" />
       </section>
     )}
+    </PaperArticle>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>

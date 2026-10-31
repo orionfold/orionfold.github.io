@@ -4,10 +4,14 @@
 // every match for a search; each element opens in its category page's viewer
 // (/flow/elements/<cat>/#<el>).
 // Without the script every group shows, in order.
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PageNav from '../../../components/paper/PageNav.astro';
+import Panel from '../../../components/paper/Panel.astro';
+import Fold from '../../../components/paper/Fold.astro';
+import { ORIONFOLD_FLOW_LIVE } from '../../../data/launch';
+import { FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT } from '../../../data/flow-pricing';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
-import PaperCta from '../../../components/ui/PaperCta.astro';
 import ElementIcon from '../../../components/flow/elements/ElementIcon.astro';
 import CategoryCards from '../../../components/flow/elements/CategoryCards.astro';
 import { publishedElementArticles, elementArticleHref, elementHref, ELEMENT_CATEGORIES } from '../../../lib/flow/elements';
@@ -17,6 +21,7 @@ import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
 import '../../../styles/flow-paths.css';
 import '../../../styles/flow-elements.css';
+import '../../../styles/living-in-paper.css';
 
 const articles = await publishedElementArticles();
 const bySlug = Object.fromEntries(articles.map((a) => [a.id, a]));
@@ -24,6 +29,8 @@ const total = ELEMENT_CATEGORIES.reduce((n, c) => n + c.items.length, 0);
 const title = 'Flow Elements: blocks, actions, skills and chart kinds | Orionfold';
 const description = `All ${total} Flow Elements in one place: blocks a document can hold, actions on your words, skills that draw your case, and chart kinds.`;
 const og = ogMeta('/flow/elements/');
+const downloadHref = ORIONFOLD_FLOW_LIVE ? FLOW_DMG_URL : '/flow/#waitlist';
+const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the waitlist';
 const schema = [
   {
     '@context': 'https://schema.org', '@type': 'CollectionPage',
@@ -42,24 +49,34 @@ const schema = [
   },
 ];
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page fp-page fe-page" jsonLd={schema}>
+<PaperLayout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={schema}>
   <Nav />
-  <main id="main" class="ls-main">
-    <header class="ed-hub-intro fe-hub-intro ls-container">
-      <p class="ls-eyebrow">FLOW / ELEMENTS</p>
-      <div class="ed-hub-heading">
-        <h1>Every element.<br /><em>One card at a time.</em></h1>
-        <p>Press ⌘5 in Flow and the Elements panel opens. Here are all {total} of its cards. Pick one to see what it takes and what it draws.</p>
+  <main id="main" class="pp-page">
+    {/* Paper R5 (G-144): the four articles, then every card in one browser, then one action. */}
+    <section class="pp-hero pp-hero--inner pp-hero--article" aria-labelledby="elements-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Flow Elements · {total} cards</span>
+        <h1 id="elements-title" class="pp-h1">Every element.<br /><em>One card at a time.</em></h1>
+        <p class="pp-sub">Press ⌘5 in Flow and the Elements panel opens. Here are all {total} of its cards. Pick one to see what it takes and what it draws.</p>
       </div>
-    </header>
-
-    <section class="fp-section ls-container" aria-labelledby="fe-read-heading">
-      <p class="ls-eyebrow fe-section-label" id="fe-read-heading">THE ARTICLES</p>
-      <CategoryCards articles={articles} headingLevel="h2" leadTour />
     </section>
 
-    <section class="fe-browser ls-container" data-fe-browser aria-labelledby="fe-all-heading">
-      <p class="ls-eyebrow fe-section-label" id="fe-all-heading">THE ELEMENTS</p>
+    <PageNav label="Elements navigation" onPage={[
+      { href: '#fe-read', label: 'The articles' },
+      { href: '#fe-all', label: 'Every element' },
+    ]} pages={[
+      { href: '/flow/', label: 'Flow' },
+      { href: '/playbooks/', label: 'Playbooks' },
+      { href: '/flow/paths/', label: 'Paths' },
+    ]} />
+
+    <Panel id="fe-read" seam="The articles" fold="hop" title="Four kinds.<br />Each one walked." lede="Blocks a document can hold, actions on your words, skills that draw your case, and chart kinds.">
+      <div class="ls ls-in-paper ed-page fp-page fe-page"><CategoryCards articles={articles} headingLevel="h2" leadTour /></div>
+    </Panel>
+
+    <Panel id="fe-all" seam="Every element" fold="clause" tinted title={`All ${total}.<br />Find yours.`} lede="One group at a time, or search across every card.">
+    <div class="ls ls-in-paper ed-page fp-page fe-page">
+    <section class="fe-browser" data-fe-browser aria-label="Every element">
       <div class="fe-b-bar">
         <div class="fe-b-tabs" role="tablist" aria-label="Element groups">
           {ELEMENT_CATEGORIES.map((c, i) => (
@@ -100,12 +117,19 @@ const schema = [
       </div>
     </section>
 
-    <div class="ls-container" style="padding-bottom:88px">
-      <PaperCta source="flow-elements-index" eyebrow="TRY ONE ON YOUR MAC" heading="Open Elements with ⌘5." description="Open a document you already have, press ⌘5, and press a card. Whatever it adds waits in Review Changes until you keep it." />
     </div>
+    </Panel>
+
+    <section class="pp-closing" data-cta-placement="closing" aria-labelledby="elements-closing">
+      <Fold id="tally" bob class="pp-closing-fold" />
+      <h2 id="elements-closing">Open Elements with ⌘5.</h2>
+      <p>Open a document you already have, press ⌘5, and press a card. Whatever it adds waits in Review Changes until you keep it.</p>
+      <a class="pp-btn" href={downloadHref} data-flow-download={ORIONFOLD_FLOW_LIVE ? 'flow-elements-index' : undefined}>{downloadLabel}</a>
+      <small>{FLOW_SYSTEM_REQUIREMENT}</small>
+    </section>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>
 <script>
   // One group at a time; a search shows every match across the groups.
   for (const browser of document.querySelectorAll<HTMLElement>('[data-fe-browser]')) {

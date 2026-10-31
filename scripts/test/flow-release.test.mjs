@@ -81,7 +81,7 @@ test('the Flow front doors read the version from the JSON', () => {
 
 test('the Paths hub spans releases while each walkthrough names its own release', () => {
   const hub = read('src/pages/flow/paths/index.astro');
-  assert.match(hub, /FLOW \/ PATHS/);
+  assert.match(hub, /Flow Paths/i, "the hub is headed as Flow Paths");
   assert.doesNotMatch(hub, /FLOW_VERSION/);
   assert.doesNotMatch(hub, /^(?:const|\s*<p)[^\n]*Flow \d+\.\d+/m);
   const article = read('src/pages/flow/paths/[slug].astro');

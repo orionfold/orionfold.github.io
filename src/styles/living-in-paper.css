@@ -86,3 +86,27 @@
 .paper .tw-in-paper .flow-spec-state--ready { color: var(--pp-add-ink); }
 .paper .tw-in-paper .flow-spec-state--detected { color: var(--pp-ink-2); }
 .paper .tw-in-paper .flow-cat-card :is(h2, h3) { font-family: var(--pp-serif); font-weight: 400; letter-spacing: -.01em; }
+/* R5 (G-144): catalog kickers and tool titles in Paper's voice (mono kicker, serif title, no red, no yellow hover). */
+.paper .ls-in-paper .fp-kind { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; color: var(--pp-ink-3); }
+.paper .ls-in-paper .fp-tools .fp-title,
+.paper .ls-in-paper .fc-tool-head h3 { font: 300 clamp(24px, 2.2vw, 30px)/1.05 var(--pp-serif); text-transform: none; letter-spacing: -.01em; }
+.paper .ls-in-paper .fp-tools a { border-color: var(--pp-line); border-radius: var(--pp-r-2); transition: border-color .2s, transform .2s var(--pp-ease-unfold); }
+.paper .ls-in-paper .fp-tools a:hover { background: var(--pp-white); border-color: var(--pp-ink-3); transform: translateY(-2px); }
+.paper .ls-in-paper .fp-all { color: var(--pp-ink); }
+@media (prefers-reduced-motion: reduce) { .paper .ls-in-paper .fp-tools a { transition: none; } }
+.paper .ls-in-paper .fe-cat .fe-cat-title,
+.paper .ls-in-paper .fe-b-group-head h2,
+.paper .ls-in-paper .fe-v-head h2 { font-family: var(--pp-serif); font-weight: 300; text-transform: none; letter-spacing: -.01em; }
+.paper .ls-in-paper .fe-cat .fe-cat-title { font-size: 1.45rem; line-height: 1.12; }
+.paper .ls-in-paper .fe-v-head h2 { font-size: clamp(2.2rem, 3.6vw, 3rem); }
+
+/* R5 (G-144): catalog article bodies and Compare tools inside Paper (moved from components.css; Living class names live only in this bridge). */
+.paper .ls-article-figure .fp-heroshot { margin: 0; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); overflow: hidden; box-shadow: var(--pp-shadow-window); }
+.paper .ls-article-figure .fp-heroshot img { display: block; width: 100%; height: auto; }
+.paper .ls-article-body .ed-reading-layout { margin-top: 0; }
+.paper .ls-article-body .ed-prose h2 { font-family: var(--pp-serif); font-weight: 300; letter-spacing: -.01em; }
+.paper .ls-article-body .fp-try { background: var(--pp-ink); border-color: var(--pp-ink); color: var(--pp-white); }
+.paper .ls-article-body.ls-in-paper .ls-container { width: min(1240px, calc(100% - 48px)); margin-inline: auto; }
+@media (max-width: 760px) { .paper .ls-article-body.ls-in-paper .ls-container { width: calc(100% - 32px); } }
+.paper .ls-fc-tools .fc-tool { padding: 22px 0; border-top: 1px solid var(--pp-line); }
+.paper .ls-fc-tools .fc-tool h3 { font-family: var(--pp-serif); font-weight: 300; font-size: clamp(24px, 2.4vw, 32px); }

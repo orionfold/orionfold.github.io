@@ -94,7 +94,7 @@ test('the landing keeps the PR/FAQ’s promises and limits', () => {
   assert.match(page, /Write your method once\.<br \/><em>Every client gets the living version\.<\/em>/, 'the H1 is the plain promise (review 2026-10-28, G6)');
   assert.match(page, /Easily co-author with any AI once, one-click publish as AI system everywhere\./, 'the operator’s selected line stays, word for word, as the tagline');
   // Why now (review 2026-10-28, A1): the forcing event with its dated source.
-  assert.match(page, /WHY NOW/);
+  assert.match(page, /Why now/i);
   assert.match(page, /December 11, 2026/);
   assert.ok(page.includes('href="/flow/compare/custom-gpts/"'), 'the why-now block links the Compare page');
   assert.match(page, /help\.openai\.com\/en\/articles\/20001519/, 'with its source');
@@ -115,7 +115,7 @@ test('the landing keeps the PR/FAQ’s promises and limits', () => {
   assert.match(page, /Flow Pro and the Publish add-on/, 'publishing needs Pro plus Publish (operator, 2026-10-27)');
   assert.doesNotMatch(page, /Publishing is part of your Flow subscription/, 'Pro alone does not cover publishing');
   assert.match(page, /Flow does not promise leads or revenue/);
-  assert.match(page, /FLOW MCP · YOUR AGENTS/);
+  assert.match(page, /FLOW MCP · YOUR AGENTS/i);
   assert.match(page, /Settings ▸ General ▸ Your agents/, 'Flow MCP is named where it lives');
   assert.doesNotMatch(page, /building Flow MCP|COMING NEXT/i, 'Flow MCP is code complete (2026-10-27), not next');
   assert.doesNotMatch(page, /DGH42|Harun|BeneFACT|take rate|marketplace/i, 'nothing private from the PR/FAQ');
@@ -143,8 +143,9 @@ test('the built pages link the Playbook, the story and each other, and the nav l
   assert.ok(land.includes('href="/playbooks/ai-consulting/"'));
   assert.ok(land.includes('href="https://github.com/orionfold/flow/tree/main/flow-domains/ai-consulting-starter"'));
   assert.match(land, /"@type":"FAQPage"/);
-  // Operator 2026-10-27: How it moves became the homepage's Flow Playbooks band.
-  assert.match(land, /data-dp/, 'the Playbook payload band');
+  // Operator 2026-10-27: How it moves became the homepage's Flow Playbooks band;
+  // on /playbooks/ the payload figure sits behind a toggle (R5, G-144).
+  assert.match(land, /data-dp/, 'the Playbook payload figure');
   assert.doesNotMatch(land, /data-dj-go=/);
   const story = built('/playbooks/ai-consulting/');
   assert.match(story, /"@type":"Article"/);
@@ -158,12 +159,12 @@ test('the built pages link the Playbook, the story and each other, and the nav l
   const menu = land.split('data-pp-panel="').find((chunk) => chunk.startsWith('domains"'));
   assert.deepEqual([...menu.matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]), ['AI Consulting', 'Anthropic S-1 Analyst', 'Learning Design', 'Research Synthesis', 'Finance Advisory'], 'the menu keeps the top five: the built Playbooks, then the blueprints; the rest are on /playbooks/');
   assert.match(menu, /href="\/playbooks\/"[^>]*>All Playbooks/);
-  const cards = land.match(/<ul class="dm-cards">[\s\S]*?<\/ul>/)[0];
+  const cards = land.match(/<ul class="pp-play-cards">[\s\S]*?<\/ul>/)[0];
   for (const slug of BLUEPRINTS) assert.ok(cards.includes(`href="/playbooks/${slug}/"`), `${slug} is a card`);
   assert.doesNotMatch(cards, /ai-consulting|anthropic-s1-analyst/, 'the built Playbooks are not blueprint cards');
   // Operator 2026-10-29: the founder's built Playbooks get their own section, launch story first.
-  const founders = land.match(/<ul class="dm-founders">[\s\S]*?<\/ul>/)[0];
-  const order = [...founders.matchAll(/<b><a href="\/playbooks\/([^/]+)\/">/g)].map((m) => m[1]);
+  const founders = land.match(/<ul class="pp-play-founders">[\s\S]*?<\/ul>/)[0];
+  const order = [...founders.matchAll(/<h3><a href="\/playbooks\/([^/]+)\/">/g)].map((m) => m[1]);
   assert.deepEqual(order, ['ai-consulting', 'anthropic-s1-analyst'], 'both built Playbooks, the launch story first');
   assert.ok(founders.includes('href="https://github.com/orionfold/flow/tree/main/flow-domains/anthropic-s1-analyst"'));
   const s1 = built('/playbooks/anthropic-s1-analyst/');

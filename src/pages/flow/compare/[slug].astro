@@ -5,7 +5,8 @@
 import { render } from 'astro:content';
 import { FLOW_VERSION } from '../../../lib/flow/flow-release';
 import { fitTitle, fitDescription } from '../../../lib/flow/seo-meta';
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PaperArticle from '../../../components/paper/PaperArticle.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
@@ -18,6 +19,7 @@ import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
 import '../../../styles/flow-paths.css';
+import '../../../styles/living-in-paper.css';
 import { flowTermsHtml } from '../../../lib/flow/flow-terms.mjs';
 
 export async function getStaticPaths() {
@@ -64,15 +66,16 @@ const schema = [
   },
 ];
 ---
-<Layout title={seoTitle} description={seoDescription} ogImage={ogImage} ogImageAlt={`Flow compared with ${d.tool}: what moves, what stays, and the path to start with`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Compare', tags: [`Flow ${FLOW_VERSION}`, d.tool] }}>
+<PaperLayout title={seoTitle} description={seoDescription} ogImage={ogImage} ogImageAlt={`Flow compared with ${d.tool}: what moves, what stays, and the path to start with`} ogType="article" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Compare', tags: [`Flow ${FLOW_VERSION}`, d.tool] }}>
   <Nav />
-  <main id="main" class="ls-main">
-    <header class="ed-article-hero fp-hero ls-container">
-      <div class="ed-article-kicker"><a href="/flow/compare/">← Compare</a><span>COMPARE / {d.tool.toUpperCase()} · {d.kind === 'switch' ? 'SWITCH' : 'PAIR'}</span></div>
-      <h1>{d.title}</h1>
-      <p class="ed-article-dek">{d.dek}</p>
-      <div class="ed-hero-bottom"><div class="ed-meta"><span>Sources checked</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links"><a href="#try-flow" class="ed-download-link">Try Flow ↓</a></div></div>
-    </header>
+  <main id="main" class="pp-page">
+    <PaperArticle
+      crumb={{ href: '/flow/compare/', label: 'Compare' }}
+      kicker={`Compare / ${d.tool} · ${d.kind === 'switch' ? 'Switch' : 'Pair'}`}
+      title={d.title} dek={d.dek}
+      meta={['Sources checked']} dateIso={dateIso} dateLabel={dateLabel}
+      link={{ href: '#try-flow', label: 'Try Flow ↓' }}
+      scope="ed-page ed-article-page fp-page">
 
     <div class="ed-reading-layout fp-layout ls-container">
       <aside class="ed-contents fp-rail" aria-label="Page contents">
@@ -98,6 +101,7 @@ const schema = [
         </div>
       </article>
     </div>
+    </PaperArticle>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>

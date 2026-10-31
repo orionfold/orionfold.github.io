@@ -1,45 +1,52 @@
 ---
-// /playbooks/: Flow Playbooks, the Flow launch surface. The H1 is the plain
-// promise (review 2026-10-28); the operator's selected line (PR/FAQ,
-// 2026-10-26) rides under it as the tagline. The audience, business model and
-// comparisons follow the Flow PR/FAQ inside its own limits: the buyer is a
-// subject matter expert serving their own clients; publishing has no
+// /playbooks/ in Paper (R5, G-144), culled like the home: one idea per panel,
+// long lists behind "What … includes" toggles, one primary action per band.
+// The H1 is the plain promise (review 2026-10-28); the operator's selected line
+// (PR/FAQ, 2026-10-26) rides under it as the tagline. The audience, business
+// model and comparisons follow the Flow PR/FAQ inside its own limits: the buyer
+// is a subject matter expert serving their own clients; publishing has no
 // per-Playbook fee (it needs Pro plus the Publish add-on); bringing a Playbook in
 // is free on Base and Chat on it needs Pro (product 0284, DR-023); the door
 // for your own agents (Flow MCP, Settings ▸ General ▸ Your agents) is a Pro
-// feature (operator 2026-10-28); publishing does not bring customers; Claude
-// Code and Codex pair with Flow. Every walk number comes from the AI
-// Consulting journals via the launch article.
+// feature (operator 2026-10-28); publishing does not bring customers. Every walk
+// number comes from the AI Consulting journals via the launch article.
+// Left this page in R5 (named in the release notes): the loop figure, the
+// "keep your tools" pairs (the Compare pages own them) and the How-it-moves
+// band head (its payload figure stays).
 import { Image } from 'astro:assets';
-import Layout from '../../layouts/Layout.astro';
+import PaperLayout from '../../layouts/PaperLayout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
-import PaperCta from '../../components/ui/PaperCta.astro';
+import Panel from '../../components/paper/Panel.astro';
+import Fold from '../../components/paper/Fold.astro';
+import PageNav from '../../components/paper/PageNav.astro';
+import WhyNow from '../../components/paper/WhyNow.astro';
+import PlaybookSheet from '../../components/paper/PlaybookSheet.astro';
 import DomainAnatomy from '../../components/flow/domains/DomainAnatomy.astro';
-import FlowDomainsBand from '../../components/flow/FlowDomainsBand.astro';
-import ArrowRight from '@lucide/astro/icons/arrow-right';
-import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import DomainPayload from '../../components/flow/domains/DomainPayload.astro';
 import { publishedDomainArticles, domainArticleHref, isBlueprint } from '../../lib/flow/domains';
 import { elementDrawing } from '../../lib/flow/elements';
+import { FOLDS } from '../../lib/paper/folds';
 import { ogMeta } from '../../data/og';
 import { SITE, PERSON } from '../../data/seo';
+import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
+import { FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT } from '../../data/flow-pricing';
 import '../../styles/living-base.css';
-import '../../styles/essays.css';
-import '../../styles/flow-paths.css';
+import '../../styles/living-in-paper.css';
 import '../../styles/domains.css';
 
-// The launch story stays featured in the hero; the founder's built Playbooks get
-// their own section, and the blueprints (G-135) render as cards below them, in
-// the PR/FAQ's order, each an invitation to build.
+// The founder's built Playbooks (operator 2026-10-29), the launch story first,
+// then the blueprints (G-135) in the PR/FAQ's order, each an invitation to build.
 const articles = await publishedDomainArticles();
 const [launch] = articles;
 const blueprints = articles.filter(isBlueprint);
-// Founder-authored Playbooks (operator 2026-10-29): every built Playbook, the
-// launch story first, each a card in its own section above the blueprints.
 const founders = articles.filter((a) => !isBlueprint(a));
+const FOLD_BY_SLUG = Object.fromEntries(FOLDS.map((f) => [f.domainSlug, f])) as Record<string, (typeof FOLDS)[number]>;
 const title = 'Flow Playbooks: your expertise as a living system | Orionfold';
 const description = 'Turn the method you use with clients into a Flow Playbook. Co-author living documents with any AI, review them, publish to GitHub and keep them current.';
 const og = ogMeta('/playbooks/');
+const downloadHref = ORIONFOLD_FLOW_LIVE ? FLOW_DMG_URL : '/flow/#waitlist';
+const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the waitlist';
 
 const PAINS = [
   { k: 'Every client starts from a blank chat.', v: 'Your method lives in your head, old decks and a dozen past conversations. On each new job you explain it to the AI again.' },
@@ -59,7 +66,6 @@ const TIMELINE = [
   { t: '21:54', k: 'An update reaches a reader', v: 'A licence is added. The reader’s copy shows the change to review.' },
 ];
 const COUNT_WORD: Record<number, string> = { 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five' };
-// The walk, one column per day.
 const WALK_DAYS = TIMELINE.reduce<{ day: string; items: typeof TIMELINE }[]>((days, s) => {
   if (s.day) days.push({ day: s.day, items: [] });
   days[days.length - 1].items.push(s);
@@ -69,28 +75,25 @@ const WALK_DAYS = TIMELINE.reduce<{ day: string; items: typeof TIMELINE }[]>((da
 // fields, no form and no backend. manav@orionfold.com is the public contact.
 const TALK = `mailto:manav@orionfold.com?subject=${encodeURIComponent('My first Playbook')}&body=${encodeURIComponent('The client job I would build a Playbook for:\n\nWhen it is due:\n\nWhat I use for it today:\n\nWhat gets in the way:\n')}`;
 // Why now (review 2026-10-28, A1): the forcing event the Compare page already
-// documents, with its dated source, surfaced where the SME lands.
+// documents, with its dated source.
 const NOW = {
   source: { label: 'OpenAI Help: Custom GPT retirement and migration FAQ', href: 'https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq', checked: '2026-10-27' },
 };
-const LOOP = ['Your know-how', 'Co-author with AI', 'Your Playbook', 'Apply it to a client task', 'Review and deliver', 'Write the lesson back'].map((label, i, all) => {
-  const turn = (i / all.length) * Math.PI * 2 - Math.PI / 2;
-  return { label, x: 210 + 150 * Math.cos(turn), y: 210 + 150 * Math.sin(turn), deg: (i / all.length) * 360 - 90 };
-});
 // One relevant reader (review 2026-10-28, G5): the first buyer, then the two
 // nearest roles from the lane's ICP list (ranks 2 and 4).
+// Keep acronyms (AI, HR, CFO) as they are when a role starts a phrase mid-sentence.
+const lowerFirst = (s: string) => (/^[A-Z]{2}/.test(s) ? s : s.charAt(0).toLowerCase() + s.slice(1));
 const ROLES = ['AI and management consultants', 'Learning designers and trainers', 'Fractional CFOs and finance advisors'];
+const TERMS = [
+  { k: 'You subscribe to Flow. Your clients pay you.', v: 'You set the offer, the price and the terms. Flow is not in between you and your clients.' },
+  { k: 'No fee per Playbook.', v: 'Publishing needs Flow Pro and the Publish add-on, $10 a month each. Then publish as many Playbooks as you like. AI runs follow the terms of the service you connect.' },
+  { k: 'The method stays yours.', v: 'Plain files in your own repository, under the licence you choose, with your name on them.' },
+];
 const FORMATS = [
   { k: 'A GitHub repository', v: 'Readers bring the folder into Flow with one address, and get your updates as changes they review.', walked: true },
   { k: 'A GitHub Pages site', v: 'A website for your method. Figures play step by step.' },
   { k: 'PDF and EPUB', v: 'A guide or a book in a form every client can open.' },
   { k: 'Word, Excel and PowerPoint', v: 'Deliverables your client’s team already works in.' },
-];
-const PAIRS = [
-  { k: 'Claude Code and Codex', v: 'Use the subscription you already pay for as a route inside Flow. With Flow MCP, a Pro feature, they can also work from your Playbooks in Terminal.' },
-  { k: 'Obsidian and Notion', v: 'Keep your notes and your team space where they are. Try one client project as a folder in Flow first.' },
-  { k: 'Canva', v: 'Prepare and review the words, numbers and sources in Flow. Finish the design in Canva.' },
-  { k: 'General agents', v: 'Hermes Agent or OpenClaw suit work across many tools and channels. Flow is for work that ends in a document you put your name on.' },
 ];
 const FAQ = [
   { q: 'What is a Flow Playbook?', a: 'A folder of living documents that carries your method. It holds what you know, the sources behind it, worked examples, and tools a reader can use on their own work. It carries your name, a version and a licence, and every file is plain Markdown you own.' },
@@ -111,152 +114,143 @@ const schema = [
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Playbooks', item: `${SITE.url}/playbooks/` }] },
 ];
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page fp-page dm-page" jsonLd={schema}>
+<PaperLayout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={schema}>
   <Nav />
-  <main id="main" class="ls-main">
-    <header class="ed-hub-intro dm-hero ls-container">
-      <p class="ls-eyebrow dm-eyebrow">FLOW / PLAYBOOKS</p>
-      <h1>Write your method once.<br /><em>Every client gets the living version.</em></h1>
-      <p class="dm-tagline">Easily co-author with any AI once, one-click publish as AI system everywhere.</p>
-      <div class="dm-hero-foot">
-        <p>A Flow Playbook turns the method you use with clients into a folder of living documents. They hold your know-how, your sources, and tools your clients use on their own work. Build it in Flow with the AI you already pay for, review every change, and publish it to GitHub. Clients bring it in with one address, and each update reaches them as a change they review.</p>
-        <div class="dm-ctas">
-          <a class="ls-button" href={domainArticleHref(launch.id)}>Read the launch story<ArrowRight size={18} /></a>
-          <a class="ls-text-link" href={launch.data.repo}>Get AI Consulting<ArrowUpRight size={17} /></a>
+  <main id="main" class="pp-page" data-ls-root>
+    <section class="pp-hero pp-hero--inner pp-hero--play" aria-labelledby="pb-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Flow Playbooks</span>
+        <h1 id="pb-title" class="pp-h1">Write your method once.<br /><em>Every client gets the living version.</em></h1>
+        <p class="pp-sub">Easily co-author with any AI once, one-click publish as AI system everywhere.</p>
+        <div class="pp-hero-cta">
+          <a class="pp-btn" href={domainArticleHref(launch.id)}>Read the launch story</a>
+          <a class="pp-btn pp-btn--ghost" href="#dm-blueprints">Pick a blueprint</a>
+          <small>Bringing a Playbook in is free on Base.</small>
         </div>
       </div>
-    </header>
-
-    <section class="dm-section ls-container" aria-labelledby="dm-pain">
-      <div class="dm-head"><p class="ls-eyebrow">THE PROBLEM</p><h2 id="dm-pain">You have the method.<br /><span class="ls-stroke">It keeps starting over.</span></h2></div>
-      <ul class="dm-pains">{PAINS.map((p) => <li><b>{p.k}</b><span>{p.v}</span></li>)}</ul>
-      <p class="dm-bridge">A Playbook keeps your method, its sources and your corrections in one place, so the next client starts from what you already learned.</p>
-    </section>
-
-    <section class="dm-section ls-container" aria-labelledby="dm-now">
-      <div class="dm-head"><p class="ls-eyebrow">WHY NOW</p><h2 id="dm-now">The GPT you built<br /><span class="ls-stroke">retires on December 11.</span></h2></div>
-      <div class="dm-now">
-        <p><a href="/flow/compare/custom-gpts/">OpenAI is retiring custom GPTs on December 11, 2026.</a> A GPT can move to a ChatGPT plugin, but the plugin starts private and your users do not get it on their own. On a personal plan you can no longer make a new one. A Claude Project stays inside Claude.</p>
-        <p>A Playbook is plain Markdown files in your own GitHub. Build it once in Flow with the AI you already use, and publish it when it is ready. If you ever stop using Flow, the files still open anywhere.</p>
-        <p class="dm-now-links"><a href="/flow/compare/custom-gpts/">Move a GPT's method into a Playbook<ArrowRight size={16} /></a><a class="dm-now-src" href={NOW.source.href}>Source: {NOW.source.label}, checked {NOW.source.checked}<ArrowUpRight size={14} /></a></p>
+      <div class="pp-hero-stage">
+        <PlaybookSheet fold="tally" note="A Playbook, at its smallest. Step 3 stays yours." />
       </div>
     </section>
 
-    <section class="dm-section ls-container" aria-labelledby="dm-what">
-      <div class="dm-head"><p class="ls-eyebrow">WHAT A PLAYBOOK IS</p><h2 id="dm-what">One folder.<br /><span class="ls-stroke">Everything you know about the job.</span></h2><p class="dm-sub">Here is the first one, file by file, as it sits on GitHub.</p></div>
-      <DomainAnatomy repo={launch.data.repo} />
-    </section>
+    <PageNav label="Playbooks navigation" onPage={[
+      { href: '#dm-what', label: 'What it is' },
+      { href: '#dm-founder', label: 'Built so far' },
+      { href: '#dm-blueprints', label: 'Blueprints' },
+      { href: '#dm-yours', label: 'Your service' },
+      { href: '#dm-faq', label: 'Questions' },
+    ]} pages={[
+      { href: '/flow/', label: 'Flow' },
+      { href: '/flow/paths/', label: 'Paths' },
+      { href: '/flow/elements/', label: 'Elements' },
+      { href: '/flow/compare/', label: 'Compare' },
+    ]} />
 
-    <FlowDomainsBand id="dm-how" self />
+    <Panel id="dm-pain" seam="The problem" fold="sprout" title="You have the method.<br />It keeps starting over." lede="A Playbook keeps your method, its sources and your corrections in one place, so the next client starts from what you already learned.">
+      <ul class="pp-play-pains">{PAINS.map((p) => <li><b>{p.k}</b><span>{p.v}</span></li>)}</ul>
+      <WhyNow href="/flow/compare/custom-gpts/" cta="Move a GPT's method into a Playbook"><span class="pp-kicker">Why now</span><br /><b>OpenAI retires custom GPTs on December 11, 2026.</b> A Playbook is plain Markdown in your own GitHub, and the files still open anywhere.</WhyNow>
+      <p class="pp-play-src"><a href={NOW.source.href}>Source: {NOW.source.label}, checked {NOW.source.checked} ↗</a></p>
+    </Panel>
 
-    <section class="dm-section ls-container" aria-labelledby="dm-founder">
-      <div class="dm-head"><p class="ls-eyebrow">BY ORIONFOLD’S FOUNDER</p><h2 id="dm-founder">{COUNT_WORD[founders.length] ?? founders.length} Playbooks,<br /><span class="ls-stroke">built and published.</span></h2><p class="dm-sub">Manav Sehgal built each one in Flow and published it to GitHub. Each took about three hours of hands-on work, and no run cost anything on top of a Claude subscription. Read how each was made, or bring one into your own Flow.</p></div>
-      <ul class="dm-founders">
+    <Panel id="dm-what" seam="What a Playbook is" fold="orri" tinted title="One folder.<br />Everything you know about the job." lede="Your know-how, your sources, and tools your clients use on their own work. Here is the first one, file by file, as it sits on GitHub.">
+      <div class="ls ls-in-paper"><DomainAnatomy repo={launch.data.repo} /></div>
+      <details class="pp-more">
+        <summary>How it travels to a client</summary>
+        <p>From your Mac to your client's Flow, or to their agent through Flow. {launch.data.domain} travels as 6 files and 75 KB. Publish again, and every client gets a change to review.</p>
+        <div class="ls ls-in-paper"><DomainPayload /></div>
+      </details>
+    </Panel>
+
+    <Panel id="dm-founder" seam="Built so far" fold="atlas" title={`${COUNT_WORD[founders.length] ?? founders.length} Playbooks,<br />built and published.`} lede="Manav Sehgal built each one in Flow and published it to GitHub. Each took about three hours of hands-on work, and no run cost anything on top of a Claude subscription.">
+      <ul class="pp-play-founders">
         {founders.map((f, i) => (
-          <li class="dm-founder" style={`--dm-tint:${f.data.tint}`}>
-            <a class="dm-founder-shot" href={domainArticleHref(f.id)} tabindex="-1" aria-hidden="true"><Image src={f.data.hero!} alt="" widths={[640, 960, 1280]} sizes="(max-width: 900px) 92vw, 600px" loading="lazy" /></a>
-            <div class="dm-founder-t">
-              <small><span class="dm-card-ic" set:html={elementDrawing(f.data.icon)} />{i === 0 ? 'THE LAUNCH STORY' : 'FOUNDER PLAYBOOK'} · {f.data.role.toUpperCase()}</small>
-              <b><a href={domainArticleHref(f.id)}>{f.data.domain}</a></b>
-              <span class="dm-card-line">{f.data.hook}</span>
-              <dl class="dm-founder-facts">
-                <div><dt>Files</dt><dd>{f.data.files} Markdown, {f.data.size}</dd></div>
-                <div><dt>Hands-on</dt><dd>{f.data.time}</dd></div>
-                <div><dt>Licence</dt><dd>{f.data.licence}</dd></div>
-              </dl>
-              <p class="dm-founder-links"><a href={domainArticleHref(f.id)}>Read how it was built<ArrowRight size={16} /></a><a href={f.data.repo}>Get it on GitHub<ArrowUpRight size={15} /></a></p>
-            </div>
+          <li>
+            <a class="pp-play-shot" href={domainArticleHref(f.id)} tabindex="-1" aria-hidden="true"><Image src={f.data.hero!} alt="" widths={[640, 960, 1280]} sizes="(max-width: 900px) 92vw, 600px" loading="lazy" /></a>
+            <span class="pp-kicker">{i === 0 ? 'The launch story' : 'Founder Playbook'} · {f.data.role}</span>
+            <h3><a href={domainArticleHref(f.id)}>{f.data.domain}</a></h3>
+            <p>{f.data.hook}</p>
+            <dl class="pp-facts">
+              <div><dt>Files</dt><dd>{f.data.files} Markdown, {f.data.size}</dd></div>
+              <div><dt>Hands-on</dt><dd>{f.data.time}</dd></div>
+              <div><dt>Licence</dt><dd>{f.data.licence}</dd></div>
+            </dl>
+            <p class="pp-play-links"><a href={domainArticleHref(f.id)}>Read how it was built →</a><a href={f.data.repo}>Get it on GitHub ↗</a></p>
           </li>
         ))}
       </ul>
-      <div class="dm-walk">
-        <h3>The first one, hour by hour</h3>
+      <details class="pp-more">
+        <summary>The first one, hour by hour</summary>
         <p>{launch.data.domain} turns nine years of Amazon mechanisms into a path for adopting AI. Here is its walk across two days.</p>
-        <div class="dm-walk-days">
+        <div class="pp-play-walk">
           {WALK_DAYS.map((g) => (
-            <ol class="dm-time">
-              <li class="dm-day" aria-label={g.day}><span>{g.day}</span></li>
-              {g.items.map((s) => <li>{s.t ? <time>{s.t}</time> : <span class="dm-time-blank" aria-hidden="true"></span>}<span><b>{s.k}</b>{s.v}</span></li>)}
+            <ol>
+              <li class="pp-play-day" aria-label={g.day}><span>{g.day}</span></li>
+              {g.items.map((s) => <li>{s.t ? <time>{s.t}</time> : <span aria-hidden="true"></span>}<span><b>{s.k}</b> {s.v}</span></li>)}
             </ol>
           ))}
         </div>
-      </div>
-    </section>
+      </details>
+    </Panel>
 
     {blueprints.length > 0 && (
-      <section class="dm-section ls-container" aria-labelledby="dm-blueprints">
-        <div class="dm-head"><p class="ls-eyebrow">BLUEPRINTS</p><h2 id="dm-blueprints">Your expertise<br /><span class="ls-stroke">has a Playbook in it.</span></h2><p class="dm-sub">Blueprints we give away. Each is a plan for a Playbook in one field. It shows what the Playbook would hold, the signals behind it, and the Flow steps to build it, with the launch story as the walkthrough. Take the one for your work, build it, put your name on it, and launch it as your Playbook. None of them is built yet.</p></div>
-        <ul class="dm-cards">
-          {blueprints.map((b) => (
-            <li>
-              <a href={domainArticleHref(b.id)} style={`--dm-tint:${b.data.tint}`}>
-                <span class="dm-card-ic" set:html={elementDrawing(b.data.icon)} />
-                <small>BLUEPRINT · {b.data.role.toUpperCase()}</small>
-                <b>{b.data.domain}</b>
-                <span class="dm-card-line">{b.data.hook}</span>
-                <em>Read the blueprint<ArrowRight size={16} /></em>
-              </a>
-            </li>
-          ))}
+      <Panel id="dm-blueprints" seam="Blueprints" fold="ember" tinted title="Use a Blueprint<br />to create your own Playbook." lede="Blueprints we give away, one per field. Each shows what the Playbook would hold, the signals behind it, and the Flow steps to build it. Take yours, put your name on it, and launch it. None of them is built yet.">
+        <ul class="pp-play-cards">
+          {blueprints.map((b) => {
+            const fold = FOLD_BY_SLUG[b.id];
+            return (
+              <li>
+                <a href={domainArticleHref(b.id)}>
+                  {fold
+                    ? <span class="pp-ico pp-play-ico" style={`background:${fold.c}66`}><Fold id={fold.id} /></span>
+                    : <span class="pp-ico pp-ico--drawing" style={`background:${b.data.tint}`} set:html={elementDrawing(b.data.icon)} />}
+                  <h3>{b.data.domain}</h3>
+                  <p>{b.data.hook}</p>
+                  <span class="pp-card-tag">For {lowerFirst(b.data.role)}</span>
+                </a>
+              </li>
+            );
+          })}
+          <li class="pp-play-yours">
+            <a href={TALK}>
+              <span class="pp-ico" aria-hidden="true">+</span>
+              <h3>Your field is not here?</h3>
+              <p>Tell Manav the client job you would build a Playbook for. The next blueprint could be yours.</p>
+              <span class="pp-card-tag">Write to Manav</span>
+            </a>
+          </li>
         </ul>
-      </section>
+      </Panel>
     )}
 
-    <section class="dm-section ls-container" aria-labelledby="dm-yours">
-      <div class="dm-head"><p class="ls-eyebrow">YOUR SERVICE</p><h2 id="dm-yours">Your expertise.<br /><span class="ls-stroke">Your clients. Your brand.</span></h2></div>
-      <div class="dm-model">
-        <figure class="dm-loop" aria-label="The loop: your know-how, co-author with AI, your Playbook, apply it to a client task, review and deliver, write the lesson back, and around again">
-          <svg viewBox="0 0 420 420" aria-hidden="true">
-            <circle class="dm-loop-ring" cx="210" cy="210" r="150" />
-            <circle class="dm-loop-run" cx="210" cy="210" r="150" />
-            {LOOP.map((n) => <circle class="dm-loop-dot" cx={n.x} cy={n.y} r="7" />)}
-          </svg>
-          {LOOP.map((n) => <span class="dm-loop-node" style={`left:${(n.x / 4.2).toFixed(2)}%;top:${(n.y / 4.2).toFixed(2)}%`}>{n.label}</span>)}
-          <span class="dm-loop-mid"><b>One source</b>every client job makes it better</span>
-        </figure>
-        <div class="dm-terms">
-          <div><b>You subscribe to Flow. Your clients pay you.</b><span>You set the offer, the price and the terms. Flow is not in between you and your clients.</span></div>
-          <div><b>No fee per Playbook.</b><span>Publishing needs Flow Pro and the Publish add-on, $10 a month each. Then publish as many Playbooks as you like. AI runs follow the terms of the service you connect.</span></div>
-          <div><b>The method stays yours.</b><span>Plain files in your own repository, under the licence you choose, with your name on them.</span></div>
-        </div>
+    <Panel id="dm-yours" seam="Your service" fold="clause" title="Your expertise.<br />Your clients. Your brand." lede={`Built first for ${ROLES[0]}. It fits any expert with a method they apply again and again, like ${lowerFirst(ROLES[1])} or ${lowerFirst(ROLES[2])}.`}>
+      <ul class="pp-play-terms">{TERMS.map((t) => <li><b>{t.k}</b><span>{t.v}</span></li>)}</ul>
+      <details class="pp-more">
+        <summary>What publishing includes <em>{FORMATS.length}</em></summary>
+        <p>Chat on the Playbook and its interactive tools stay in Flow. Exported files are for reading and delivery.</p>
+        <ul class="pp-play-formats">{FORMATS.map((f) => <li><b>{f.k}</b><span>{f.v}</span>{f.walked && <small>Walked end to end for the first Playbook</small>}</li>)}</ul>
+      </details>
+      <div class="pp-play-talk">
+        <p><b>Talk about your first Playbook.</b> Email Manav the client job you would build it for, when it is due, what you use today, and what gets in the way. You get one reply, not a list.</p>
+        <a class="pp-btn" href={TALK}>Write to Manav</a>
       </div>
-      <div class="dm-roles">
-        <p>Built first for consultants who help businesses adopt AI. It fits any expert with a method they apply again and again:</p>
-        <ul>{ROLES.map((r) => <li>{r}</li>)}</ul>
-      </div>
-      <div class="dm-talk">
-        <div><b>Talk about your first Playbook.</b><span>Email Manav the client job you would build it for, when it is due, what you use today, and what gets in the way. You get one reply, not a list.</span></div>
-        <a class="ls-button dm-talk-btn" href={TALK}>Write to Manav<ArrowRight size={18} /></a>
-      </div>
-    </section>
+    </Panel>
 
-    <section class="dm-section ls-container" aria-labelledby="dm-formats">
-      <div class="dm-head"><p class="ls-eyebrow">ONE SOURCE</p><h2 id="dm-formats">One source.<br /><span class="ls-stroke">Many ways to deliver.</span></h2><p class="dm-sub">Chat on the Playbook and its interactive tools stay in Flow. Exported files are for reading and delivery.</p></div>
-      <ul class="dm-formats">{FORMATS.map((f) => <li class:list={[f.walked && 'is-walked']}><b>{f.k}</b><span>{f.v}</span>{f.walked && <small>Walked end to end for the first Playbook</small>}</li>)}</ul>
-    </section>
+    <Panel id="dm-mcp" seam="Flow MCP · Your agents" fold="shell" tinted title="Your agents,<br />on your Playbooks.">
+      <p class="pp-play-prose">In Settings ▸ General ▸ Your agents, open Flow to the Claude Code or Codex you run in Terminal, as Read or Read and propose. Your agent can read a Playbook's summary and reading order, read and search its documents, and read a skill's method, then apply your method to the work it does for you. A document it proposes comes back to Review Changes under its name, and Flow keeps a log of each call. The door is open only while Flow is, and it needs Flow Pro.</p>
+      <p class="pp-panel-link"><a href="/flow/compare/">Keep the tools you already trust. See the side-by-side comparisons <span aria-hidden="true">→</span></a></p>
+    </Panel>
 
-    <section class="dm-section ls-container" aria-labelledby="dm-pair">
-      <div class="dm-head"><p class="ls-eyebrow">KEEP YOUR TOOLS</p><h2 id="dm-pair">Keep the tools<br /><span class="ls-stroke">you already trust.</span></h2><p class="dm-sub">Flow picks a sensible model for each run and shows it before it starts. Switch when cost, quality or speed matters more. Your Playbook and your review stay the same, whichever model does the work.</p></div>
-      <ul class="dm-pairs">{PAIRS.map((p) => <li><b>{p.k}</b><span>{p.v}</span></li>)}</ul>
-      <p class="dm-compare"><a href="/flow/compare/">See the side-by-side comparisons<ArrowRight size={16} /></a></p>
-    </section>
+    <Panel id="dm-faq" seam="Questions" fold="hop" title="Before you<br />build your first.">
+      <div class="pp-faq">{FAQ.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}</div>
+    </Panel>
 
-    <section class="dm-next" aria-labelledby="dm-mcp">
-      <div class="ls-container dm-next-in">
-        <p class="ls-eyebrow">FLOW MCP · YOUR AGENTS</p>
-        <h2 id="dm-mcp">Your agents,<br /><span>on your Playbooks.</span></h2>
-        <p>In Settings ▸ General ▸ Your agents, open Flow to the Claude Code or Codex you run in Terminal, as Read or Read and propose. Your agent can read a Playbook's summary and reading order, read and search its documents, and read a skill's method, then apply your method to the work it does for you. A document it proposes comes back to Review Changes under its name, and Flow keeps a log of each call. The door is open only while Flow is, and it needs Flow Pro.</p>
-      </div>
+    <section class="pp-closing" data-cta-placement="closing" aria-labelledby="pb-closing-heading">
+      <Fold id="orri" bob class="pp-closing-fold" />
+      <h2 id="pb-closing-heading">Bring the first Playbook into Flow.</h2>
+      <p>Download Flow, choose File ▸ New from GitHub…, and paste the address of AI Consulting. Then pick one real client task and work along the path.</p>
+      <a class="pp-btn" href={downloadHref} data-flow-download={ORIONFOLD_FLOW_LIVE ? 'flow-domains-index' : undefined}>{downloadLabel}</a>
+      <small>{FLOW_SYSTEM_REQUIREMENT}</small>
     </section>
-
-    <section class="dm-section ls-container" aria-labelledby="dm-faq">
-      <div class="dm-head"><p class="ls-eyebrow">QUESTIONS</p><h2 id="dm-faq">Before you<br /><span class="ls-stroke">build your first.</span></h2></div>
-      <div class="dm-faq">{FAQ.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}</div>
-    </section>
-
-    <div class="ls-container" style="padding-bottom:88px">
-      <PaperCta source="flow-domains-index" eyebrow="START WITH AI CONSULTING" heading="Bring the first Playbook into Flow." description="Download Flow, choose File ▸ New from GitHub…, and paste the address of AI Consulting. Then pick one real client task and work along the path." />
-    </div>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>

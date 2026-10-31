@@ -1,17 +1,21 @@
 ---
 // /flow/paths/ — every published Flow 2.0 path.
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PageNav from '../../../components/paper/PageNav.astro';
+import Panel from '../../../components/paper/Panel.astro';
+import Fold from '../../../components/paper/Fold.astro';
+import { ORIONFOLD_FLOW_LIVE } from '../../../data/launch';
+import { FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT } from '../../../data/flow-pricing';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PathShowcase from '../../../components/flow/mocks/PathShowcase.astro';
-import CompareBand from '../../../components/flow/paths/CompareBand.astro';
-import PaperCta from '../../../components/ui/PaperCta.astro';
 import { publishedPaths, publishedCompare, pathHref } from '../../../lib/flow/paths';
 import { ogMeta } from '../../../data/og';
 import { SITE, PERSON } from '../../../data/seo';
 import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
 import '../../../styles/flow-paths.css';
+import '../../../styles/living-in-paper.css';
 
 const paths = await publishedPaths();
 const [lead, ...rest] = paths;
@@ -19,6 +23,8 @@ const hasCompare = (await publishedCompare()).length > 0;
 const title = 'Flow Paths: real work, walked end to end | Orionfold';
 const description = 'Flow workflows, each a real job done on a Mac: the steps, the time, the cost, and what we could not check.';
 const og = ogMeta('/flow/paths/');
+const downloadHref = ORIONFOLD_FLOW_LIVE ? FLOW_DMG_URL : '/flow/#waitlist';
+const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the waitlist';
 const schema = [
   {
     '@context': 'https://schema.org', '@type': 'CollectionPage',
@@ -37,31 +43,42 @@ const schema = [
   },
 ];
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page fp-page" jsonLd={schema}>
+<PaperLayout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={schema}>
   <Nav />
-  <main id="main" class="ls-main">
-    <header class="ed-hub-intro ls-container">
-      <p class="ls-eyebrow">FLOW / PATHS</p>
-      <div class="ed-hub-heading">
-        <h1>Real work.<br /><em>Walked end to end.</em></h1>
-        <p>Start with a path on Flow’s Home screen, an idea in Chat, or a document you already have. These walks cover the work, the review, and the record it leaves. We tried each workflow on a Mac and wrote down the time, the cost, and what we could not check.</p>
+  <main id="main" class="pp-page">
+    {/* Paper R5 (G-144): the paths in one panel; the Compare band left this page for /flow/compare/ (a concept another page owns is linked). */}
+    <section class="pp-hero pp-hero--inner pp-hero--article" aria-labelledby="paths-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Flow Paths · {paths.length} walks</span>
+        <h1 id="paths-title" class="pp-h1">Real work.<br /><em>Walked end to end.</em></h1>
+        <p class="pp-sub">Start with a path on Flow’s Home screen, an idea in Chat, or a document you already have. We tried each workflow on a Mac and wrote down the time, the cost, and what we could not check.</p>
       </div>
-    </header>
+    </section>
+
+    <PageNav label="Paths navigation" pages={[
+      { href: '/flow/', label: 'Flow' },
+      { href: '/playbooks/', label: 'Playbooks' },
+      { href: '/flow/elements/', label: 'Elements' },
+      ...(hasCompare ? [{ href: '/flow/compare/', label: 'Compare' }] : []),
+    ]} />
+
     {lead && (
-      <section class="ls-container" aria-label="Featured path">
-        <PathShowcase entry={lead} variant="hero" headingLevel="h2" />
-        {rest.length > 0 && <div class="ps-grid">{rest.map((p) => <PathShowcase entry={p} headingLevel="h2" />)}</div>}
-      </section>
+      <Panel id="all-paths" seam="Paths" fold="sprout" title={`${paths.length} jobs,<br />walked on a Mac.`} lede="Each walk covers the work, the review, and the record it leaves. Try the example files first, then bring your own work.">
+        <div class="ls ls-in-paper ed-page fp-page pp-paths">
+          <PathShowcase entry={lead} variant="hero" headingLevel="h2" />
+          {rest.length > 0 && <div class="ps-grid">{rest.map((p) => <PathShowcase entry={p} headingLevel="h2" />)}</div>}
+        </div>
+        {hasCompare && <p class="pp-panel-link"><a href="/flow/compare/">Moving from a notes app, or pairing Flow with a tool you already pay for? See Compare <span aria-hidden="true">→</span></a></p>}
+      </Panel>
     )}
-    {hasCompare && (
-      <section class="fp-section ls-container" aria-labelledby="flow-compare-heading">
-        <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">COMPARE</p><h2 id="flow-compare-heading">Bring the work.<br /><span class="ls-stroke">Keep your tools.</span></h2><p>Moving from a notes app, or pairing Flow with a coding agent or design tool you already pay for.</p></div><a class="fp-all" href="/flow/compare/">All Compare →</a></div>
-        <CompareBand />
-      </section>
-    )}
-    <div class="ls-container" style="padding-bottom:88px">
-      <PaperCta source="flow-paths-index" eyebrow="TRY THE WORK ON YOUR MAC" heading="Pick the job you already do." description="Choose a walkthrough and follow its starting steps. Try the Guide’s example files first, then bring your own work." />
-    </div>
+
+    <section class="pp-closing" data-cta-placement="closing" aria-labelledby="paths-closing">
+      <Fold id="orri" bob class="pp-closing-fold" />
+      <h2 id="paths-closing">Pick the job you already do.</h2>
+      <p>Choose a walkthrough and follow its starting steps. Try the Guide’s example files first, then bring your own work.</p>
+      <a class="pp-btn" href={downloadHref} data-flow-download={ORIONFOLD_FLOW_LIVE ? 'flow-paths-index' : undefined}>{downloadLabel}</a>
+      <small>{FLOW_SYSTEM_REQUIREMENT}</small>
+    </section>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>
