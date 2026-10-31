@@ -66,7 +66,8 @@ export const software: SoftwareProduct[] = [
     pills: ['Native Mac', 'Every change approved', 'Receipts', 'Patent pending'],
     href: '/flow/',
     ctaText: 'See Flow',
-    coverType: 'motif',
+    coverType: 'poster',
+    cover: 'flow-poster.png',
     status: ORIONFOLD_FLOW_LIVE ? 'active' : 'planned',
   },
   {

@@ -6,12 +6,13 @@
 // unified-cover grid of ProductCards (sm:2 lg:3). Covers resolve here: the two donor screenshots are
 // imported directly, the rest come from a glob over src/assets/projects/. A
 // page-level BehindTheScenes still holds the technical depth (spec §7).
-import Layout from '../layouts/Layout.astro';
+import PaperLayout from '../layouts/PaperLayout.astro';
+import '../styles/living-in-paper.css';
+import '../styles/paper-bridge-product.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ProductCard from '../components/ui/ProductCard.astro';
 import SectionLabel from '../components/ui/SectionLabel.astro';
-import PageHeader from '../components/ui/PageHeader.astro';
 import BehindTheScenes from '../components/ui/BehindTheScenes.astro';
 import { software, softwareGroups } from '../data/software';
 import platformImg from '../assets/platform/ai-native-platform.png';
@@ -56,20 +57,22 @@ function resolveCover(key?: string): ImageMetadata | undefined {
   return entry?.[1]?.default;
 }
 ---
-<Layout
+<PaperLayout
   title="AI software for work you own · Orionfold"
   description="Orionfold Flow leads the catalog, with Relay and Arena beside it. Keep knowledge work moving, run repeatable agent work, and see which local AI wins."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
   <Nav />
-  <main>
-    <!-- Page header (slim masthead so the poster grid rises above the fold) -->
-    <PageHeader
-      eyebrow="Software"
-      title="Work that keeps moving, on terms you control"
-      subtitle="Flow leads the line. Keep knowledge work moving in one document, run repeatable agent work in Relay, and see which local AI wins in Arena. Proof and the rest of the catalog carry the evidence and building blocks behind them."
-    />
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="software-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Software</p>
+        <h1 id="software-title" class="pp-h1">Work that keeps moving, on terms you control</h1>
+        <p class="pp-sub">Flow leads the line. Keep knowledge work moving in one document, run repeatable agent work in Relay, and see which local AI wins in Arena. Proof and the rest of the catalog carry the evidence and building blocks behind them.</p>
+      </div>
+    </section>
+  <div class="tw-in-paper pd-paper pd-catalog">
 
     <!-- Grouped product clusters -->
     {softwareGroups.map((group, groupIndex) => {
@@ -134,6 +137,7 @@ function resolveCover(key?: string): ImageMetadata | undefined {
         </BehindTheScenes>
       </div>
     </section>
+  </div>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>

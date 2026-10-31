@@ -1,0 +1,46 @@
+/* R7b (G-146): the product detail pages (/software/, /models/, /books/ <slug>)
+ * on Paper. The sections keep their Tailwind markup and checkout hooks; the
+ * tw-in-paper bridge maps the color tokens, and these rules carry the rest.
+ * Living and Tailwind class names only, every rule under .paper. */
+
+/* Type: Paper's light serif for headings and prices, never the bold display. */
+.paper .pd-paper :is(h1, h2, h3):not(.font-mono) { font-family: var(--pp-serif); font-weight: 300; letter-spacing: -.015em; }
+.paper .pd-paper h1 { font-size: clamp(44px, 5.2vw, 72px) !important; line-height: 1.02; }
+.paper .pd-paper h2:not(.font-mono) { font-size: clamp(28px, 3vw, 40px); line-height: 1.08; }
+.paper .pd-paper h3:not(.font-mono) { font-weight: 400; }
+.paper .pd-paper :is(h2, h3).font-mono { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; color: var(--pp-ink-3); }
+.paper .pd-paper .font-display { font-family: var(--pp-serif); font-weight: 300; }
+.paper .pd-paper .font-display.text-primary { color: var(--pp-ink); }
+.paper .pd-paper .font-mono.text-primary { color: var(--pp-ink-3); }
+
+/* Actions: one ink button, quiet outline for the rest, Paper's sans. */
+.paper .pd-paper :is(a, button).rounded-lg { border-radius: var(--pp-r-2); font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; }
+.paper .pd-paper :is(a, button).rounded-lg:not(.bg-accent):not(.bg-primary) { background: transparent; color: var(--pp-ink); border: 1px solid var(--pp-line); }
+.paper .pd-paper :is(a, button).rounded-lg:not(.bg-accent):not(.bg-primary):hover { border-color: var(--pp-ink-3); }
+.paper .pd-paper :is(.bg-accent, .bg-primary):is(a, button) { background: var(--pp-ink); border-color: var(--pp-ink); color: var(--pp-white); }
+.paper .pd-paper :is(.bg-accent, .bg-primary):is(a, button):hover { background: var(--pp-ink-2); }
+.paper .pd-paper span.bg-primary { background: var(--pp-ink); }
+
+/* Text links: Paper's sans, not the Living mono. */
+.paper .pd-paper a.font-mono:not(.rounded-lg) { font: 500 14px/1.3 var(--pp-sans); letter-spacing: 0; text-transform: none; color: var(--pp-ink); }
+
+/* Living atmosphere stays on Living pages: no glows, grids or origami. */
+.paper .pd-paper [class*='blur-['],
+.paper .pd-paper .product-band__grid,
+.paper .pd-paper .living-origami { display: none; }
+.paper .pd-paper .product-band { background: var(--pp-white); border-color: var(--pp-line); }
+
+/* The hero sits under the Paper nav, not under a second nav-height gap. */
+.paper .pd-paper > section:first-child { padding-top: 56px; }
+.paper .pd-paper #sticky-cta { background: var(--pp-white); border-color: var(--pp-line); }
+
+/* Sponsor and buy blocks: the section rhythm the Living body class gave them. */
+.paper .pd-paper :is(#buy, #field-edition, #sponsor) { padding-block: 72px; }
+.paper .pd-paper [data-code-group] [role='tab'][aria-selected='true'] { background: var(--pp-paper-2); color: var(--pp-ink); }
+.paper .pd-paper [data-code-group] pre { background: var(--pp-paper-2); }
+
+/* Catalog cards and book bands: the design-system actions and eyebrows. */
+.paper .pd-paper :is(.of-primary-action, .of-secondary-action, .of-text-action) { font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; }
+.paper .pd-paper :is(.of-primary-action, .of-secondary-action) { border-radius: var(--pp-r-2); }
+.paper .pd-paper .of-primary-action { background: var(--pp-ink); border-color: var(--pp-ink); color: var(--pp-white); }
+.paper .pd-paper .living-eyebrow { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; color: var(--pp-ink-3); }
