@@ -14,11 +14,11 @@ import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync, existsSyn
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
-const VERSION = '0.3.0';
+const VERSION = '0.3.1';
 const root = new URL('../', import.meta.url).pathname;
 const out = path.join(root, 'output/paper-package', VERSION);
 const rel = (p) => path.join(root, p);
-const { FOLDS, foldSvg } = await import(rel('src/lib/paper/folds.ts'));
+const { FOLDS, foldSvg, foldShapes, FOLD_BOUNDS } = await import(rel('src/lib/paper/folds.ts'));
 const { foldedStarSvg } = await import(rel('src/lib/paper/star.ts'));
 const { NIGHT, NIGHT_TEXT_PAIRS, NIGHT_DETAIL, contrast, nightFold, nightFoldShapes, nightColors } = await import(rel('src/lib/paper/night.ts'));
 const { PERSONAL_FOLDS, COLORWAYS, colorwayById, personalFoldSvg } = await import(rel('src/lib/paper/personal-folds.ts'));
@@ -27,12 +27,41 @@ rmSync(out, { recursive: true, force: true });
 for (const d of ['folds', 'personal', 'marks', 'fonts', 'tokens']) mkdirSync(path.join(out, d), { recursive: true });
 const standalone = (svg) => svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
 
+// Fitted variants (0.3.1, product-lane ask 2026-10-31): a square viewBox around
+// each drawing, without the ground shadow, so a Fold fills a circle avatar edge
+// to edge. Extents are measured in Chromium (getBBox), rounded outward, never
+// typed by hand. The website's FOLD_BOUNDS must agree within 1 unit or the
+// export stops. Night variants reuse the light box: night only removes detail.
+const { chromium } = await import('playwright');
+const browser = await chromium.launch();
+const page = await browser.newPage();
+const measure = (shapes) => page.evaluate((inner) => {
+  document.body.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" width="200" height="214"><g>${inner}</g></svg>`;
+  const b = document.querySelector('g').getBBox();
+  const x = Math.floor(b.x), y = Math.floor(b.y);
+  return [x, y, Math.ceil(b.x + b.width) - x, Math.ceil(b.y + b.height) - y];
+}, shapes);
+const fitBox = ([x, y, w, h]) => { const side = Math.max(w, h); return `${x - (side - w) / 2} ${y - (side - h) / 2} ${side} ${side}`; };
+const fitSvg = (viewBox, label, inner) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" role="img" aria-label="${label}">${inner}</svg>\n`;
+const foldBox = {};
+for (const f of FOLDS) {
+  const m = await measure(foldShapes(f));
+  const site = FOLD_BOUNDS[f.id];
+  if (!site || m.some((v, i) => Math.abs(v - site[i]) > 1)) throw new Error(`FOLD_BOUNDS.${f.id} ${JSON.stringify(site)} drifted from the art ${JSON.stringify(m)}; update src/lib/paper/folds.ts`);
+  foldBox[f.id] = fitBox(m);
+}
+const personalBox = {};
+for (const f of PERSONAL_FOLDS) { const cw = colorwayById[f.defaultColorway]; personalBox[f.id] = fitBox(await measure(f.draw(cw.a, cw.b, cw.c))); }
+await browser.close();
+
 // Folds: one SVG each (with and without the ground shadow), plus a manifest.
 const folds = FOLDS.map((f) => {
   writeFileSync(path.join(out, 'folds', `${f.id}.svg`), standalone(foldSvg(f, { label: `${f.name} the ${f.kind}` })) + '\n');
   writeFileSync(path.join(out, 'folds', `${f.id}-no-shadow.svg`), standalone(foldSvg(f, { label: `${f.name} the ${f.kind}`, shadow: false })) + '\n');
   writeFileSync(path.join(out, 'folds', `${f.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${f.name} the ${f.kind}">${nightFoldShapes(f)}</svg>\n`);
-  return { id: f.id, name: f.name, kind: f.kind, flowPlaybook: f.domain, flowPlaybookSlug: f.domainSlug, colors: { a: f.a, b: f.b, c: f.c, ink: f.ink }, nightColors: nightFold(f), files: { svg: `folds/${f.id}.svg`, svgNoShadow: `folds/${f.id}-no-shadow.svg`, night: `folds/${f.id}-night.svg` }, viewBox: '0 0 200 214' };
+  writeFileSync(path.join(out, 'folds', `${f.id}-fit.svg`), fitSvg(foldBox[f.id], `${f.name} the ${f.kind}`, foldShapes(f)));
+  writeFileSync(path.join(out, 'folds', `${f.id}-fit-night.svg`), fitSvg(foldBox[f.id], `${f.name} the ${f.kind}`, nightFoldShapes(f)));
+  return { id: f.id, name: f.name, kind: f.kind, flowPlaybook: f.domain, flowPlaybookSlug: f.domainSlug, colors: { a: f.a, b: f.b, c: f.c, ink: f.ink }, nightColors: nightFold(f), files: { svg: `folds/${f.id}.svg`, svgNoShadow: `folds/${f.id}-no-shadow.svg`, night: `folds/${f.id}-night.svg`, fit: `folds/${f.id}-fit.svg`, fitNight: `folds/${f.id}-fit-night.svg` }, viewBox: '0 0 200 214', fitViewBox: foldBox[f.id] };
 });
 writeFileSync(path.join(out, 'marks', 'orionfold-star.svg'), foldedStarSvg('Orionfold') + '\n');
 
@@ -44,15 +73,20 @@ const personal = PERSONAL_FOLDS.map((f) => {
   writeFileSync(path.join(out, 'personal', `${f.id}-no-shadow.svg`), personalFoldSvg(f, { label, shadow: false }) + '\n');
   const n = nightColors(colorwayById[f.defaultColorway]);
   writeFileSync(path.join(out, 'personal', `${f.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${label}">${f.draw(n.a, n.b, n.c, NIGHT_DETAIL)}</svg>\n`);
+  const dc = colorwayById[f.defaultColorway];
+  writeFileSync(path.join(out, 'personal', `${f.id}-fit.svg`), fitSvg(personalBox[f.id], label, f.draw(dc.a, dc.b, dc.c)));
+  writeFileSync(path.join(out, 'personal', `${f.id}-fit-night.svg`), fitSvg(personalBox[f.id], label, f.draw(n.a, n.b, n.c, NIGHT_DETAIL)));
   // Every colorway as its own file, light (no shadow) and night, so the app swaps files to recolor.
   mkdirSync(path.join(out, 'personal', f.id), { recursive: true });
   const byColorway = Object.fromEntries(COLORWAYS.map((cw) => {
     const nc = nightColors(cw);
     writeFileSync(path.join(out, 'personal', f.id, `${cw.id}.svg`), personalFoldSvg(f, { label, colorway: cw, shadow: false }) + '\n');
     writeFileSync(path.join(out, 'personal', f.id, `${cw.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${label}">${f.draw(nc.a, nc.b, nc.c, NIGHT_DETAIL)}</svg>\n`);
-    return [cw.id, { svg: `personal/${f.id}/${cw.id}.svg`, night: `personal/${f.id}/${cw.id}-night.svg` }];
+    writeFileSync(path.join(out, 'personal', f.id, `${cw.id}-fit.svg`), fitSvg(personalBox[f.id], label, f.draw(cw.a, cw.b, cw.c)));
+    writeFileSync(path.join(out, 'personal', f.id, `${cw.id}-fit-night.svg`), fitSvg(personalBox[f.id], label, f.draw(nc.a, nc.b, nc.c, NIGHT_DETAIL)));
+    return [cw.id, { svg: `personal/${f.id}/${cw.id}.svg`, night: `personal/${f.id}/${cw.id}-night.svg`, fit: `personal/${f.id}/${cw.id}-fit.svg`, fitNight: `personal/${f.id}/${cw.id}-fit-night.svg` }];
   }));
-  return { id: f.id, defaultName: '', shape: f.shape, line: f.line, defaultColorway: f.defaultColorway, colorways: COLORWAYS.map((c) => c.id), files: { svg: `personal/${f.id}.svg`, svgNoShadow: `personal/${f.id}-no-shadow.svg`, night: `personal/${f.id}-night.svg`, byColorway }, viewBox: '0 0 200 214' };
+  return { id: f.id, defaultName: '', shape: f.shape, line: f.line, defaultColorway: f.defaultColorway, colorways: COLORWAYS.map((c) => c.id), files: { svg: `personal/${f.id}.svg`, svgNoShadow: `personal/${f.id}-no-shadow.svg`, night: `personal/${f.id}-night.svg`, fit: `personal/${f.id}-fit.svg`, fitNight: `personal/${f.id}-fit-night.svg`, byColorway }, viewBox: '0 0 200 214', fitViewBox: personalBox[f.id] };
 });
 const colorways = COLORWAYS.map((c) => ({ ...c, night: nightColors(c) }));
 
@@ -120,13 +154,14 @@ writeFileSync(path.join(out, 'README.md'), `# Orionfold Paper ${VERSION}
 The Paper design system, exported by the website (it owns Paper, decision D1) for the Flow app's Paper goals. Generated by \`scripts/export-paper-package.mjs\` from website commit \`${commit}\`${dirty ? ' plus uncommitted Paper changes' : ''}. Copy a version into the app; never edit it in place, ask the website lane for a new version.
 
 ## What is here
-- \`folds/\`: the eight Flow Playbook Folds as standalone SVGs (viewBox 0 0 200 214): with and without the ground shadow, and a night variant (colors lifted to 3:1 on the night paper, Tally's legs and Orri's trail removed). Colors and night colors per Fold are in \`manifest.json\`.
-- \`personal/\`: the eight personal Folds a person folds in the app (elephant, paper boat, bear, butterfly, lotus, penguin, cat, hummingbird), drawn for 16 pt, each in its default colorway (with and without shadow, and night), plus \`personal/<id>/<colorway>.svg\` and \`-night.svg\` for every colorway, so recoloring is a file swap. Each has a temperament line, never a capability. \`colorways\` in the manifest lists the eight colorways (named by color, taken from the cast's palettes) with their night values.
+- \`folds/\`: the eight Flow Playbook Folds as standalone SVGs (viewBox 0 0 200 214): with and without the ground shadow, and a night variant (colors lifted to 3:1 on the night paper, Tally's legs and Orri's trail removed). \`<id>-fit.svg\` and \`<id>-fit-night.svg\` crop a square around the drawing (no shadow) so the Fold fills a circle avatar edge to edge; \`fitViewBox\` in the manifest gives the box. Colors and night colors per Fold are in \`manifest.json\`.
+- \`personal/\`: the eight personal Folds a person folds in the app (elephant, paper boat, bear, butterfly, lotus, penguin, cat, hummingbird), drawn for 16 pt, each in its default colorway (with and without shadow, and night), plus \`personal/<id>/<colorway>.svg\` and \`-night.svg\` for every colorway, so recoloring is a file swap. Every one of those also has \`-fit\` and \`-fit-night\` files for circle avatars. Each has a temperament line, never a capability. \`colorways\` in the manifest lists the eight colorways (named by color, taken from the cast's palettes) with their night values.
 - \`marks/orionfold-star.svg\`: the Orionfold star, folded in the Folds' polygon style.
 - \`tokens/\`: every Paper token as JSON (grouped: color, liquidGlass, font, radius, shadow, motion, foldDefaults, layout) and the source CSS, plus \`night\`: the app's dark appearance, same keys as \`color\`, with every promised text pair and its contrast ratio (all at least 4.5:1; the export stops if one drops).
 - \`fonts/\`: Fraunces cut for Paper (Latin, weight 300 to 500, optical size kept, SOFT pinned 100, WONK pinned 1), woff2${ttf ? ' and ttf' : ''}, under the SIL Open Font License (no reserved font name).
 
 ## Rules that travel with it
+- In a circle, use the \`-fit\` file at 100% of the circle with no padding, clip the circle (overflow hidden), and fill it with the Fold's color (night color in the dark appearance). The Fold's longer side touches the edge; the shorter side is centred.
 - The eight Folds are the characters of the Flow Playbooks (each maps to one in \`manifest.json\`). A person's own Fold is folded from a blank sheet and uses shapes outside these eight (cross-lane, 2026-10-30).
 - The Flow feature is a Playbook (Flow Playbook in full). A Blueprint is a free starter you use to create your own Playbook.
 - The faces on the website are AI-generated models and are not part of this package.
@@ -140,7 +175,7 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 - 0.1.1 (2026-10-30): same files, cut from a committed source (product lane ask).
 - 0.2.0 (2026-10-30): night (dark appearance) tokens and Fold variants; personal Folds with colorways.
 - 0.2.1 (2026-10-30): night beak and butterfly body in light ink; a rounder bear, now coral by default (penguin ochre), apart from the cat at 16 pt.
-- 0.3.0 (2026-10-31): the final design system. Liquid Glass tokens in their own group, the long-form frame in \`layout\`, and their rules above.
+- 0.3.0 (2026-10-31): the final design system. Liquid Glass tokens in their own group, the long-form frame in \`layout\`, and their rules above.\n- 0.3.1 (2026-10-31): fitted Fold SVGs (\`-fit\`, \`-fit-night\`) for circle avatars, for the Playbook Folds and every personal Fold colorway; \`fitViewBox\` per Fold in the manifest. No art or token changes.
 `);
 
 console.log(`Paper ${VERSION} → ${path.relative(root, out)} (${folds.length} Folds, ${Object.keys(vars).length} tokens${ttf ? ', ttf' : ''})`);
