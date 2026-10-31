@@ -308,7 +308,9 @@ for (const anchor of anchors) assert.ok(flow.includes(anchor) || livingFaq.inclu
 // scroll-mt-28, and a combined "id then class" regex broke on the reorder
 // while the anchors themselves were still perfectly fine.
 for (const id of ['tour-agency', 'tour-expand', 'tour-toolbar', 'tour-longdocs', 'tour-domains', 'tour-receipts', 'tour-runtime', 'tour-benchmarks', 'tour-routing', 'tour-resources', 'tour-search', 'tour-tables', 'tour-visualize', 'tour-pictures', 'tour-files']) {
-  const heading = chapters.match(new RegExp(`<h3[^>]*\\sid="${id}"[^>]*>`))?.[0];
+  // h2 since 2026-10-31: chapters sit right under each category page's h1,
+  // so an h3 skipped a level (axe heading-order).
+  const heading = chapters.match(new RegExp(`<h2[^>]*\\sid="${id}"[^>]*>`))?.[0];
   assert.ok(heading, `${id} must stay a linkable tour chapter heading`);
   assert.match(heading, /\bscroll-mt-28\b/, `${id} must clear the fixed nav when deep-linked`);
   // The overview keeps the same id in its tour invitation, so /flow/#tour-<x>

@@ -11,7 +11,7 @@ import detailRunBinding from '../../../assets/flow/details/detail-run-binding.we
   <div>
     <div class="mx-auto max-w-3xl">
       <p class="of-eyebrow" data-animate="rise">Receipts</p>
-      <h3 id="tour-receipts" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">One run. One durable record.</h3>
+      <h2 id="tour-receipts" class="of-display scroll-mt-28 mt-4 text-[clamp(1.85rem,3.4vw,2.75rem)]" data-animate="lead">One run. One durable record.</h2>
       <p class="of-lede mt-5" data-animate="rise">Approve a change and Flow records the model, provider, place, cost, checks, evidence, and exact before-and-after content. Your prompt and your API key are not recorded, and there is structurally nowhere in a receipt for them to go.</p>
     </div>
     <div class="of-stage of-stage--pad-top mt-12" data-animate="plate">
@@ -20,19 +20,19 @@ import detailRunBinding from '../../../assets/flow/details/detail-run-binding.we
     </div>
     <div class="mx-auto mt-12 grid max-w-5xl gap-8 lg:grid-cols-2">
       <div>
-        <h4 class="text-xl font-bold">The check and the rule stay distinct.</h4>
+        <h3 class="text-xl font-bold tracking-[-0.014em]">The check and the rule stay distinct.</h3>
         <p class="mt-3 text-sm leading-relaxed text-text-muted">A stored outcome says what happened then. A severity pill says what the rule would do now: Stops the change, Warns you, or Needs your acknowledgment. Flow keeps both facts instead of rewriting history when a rule changes.</p>
         <FlowDetail class="mt-6" src={detailRunChecks} alt="Three check rows with stored outcomes and separate current-severity pills." caption="What happened then · What the rule does now" sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)" />
       </div>
       <div>
-        <h4 class="text-xl font-bold">The receipt is bound to the bytes.</h4>
+        <h3 class="text-xl font-bold tracking-[-0.014em]">The receipt is bound to the bytes.</h3>
         <p class="mt-3 text-sm leading-relaxed text-text-muted">Before and after fingerprints tie the record to the exact saved document. A validity mark makes that binding checkable later.</p>
         <FlowDetail class="mt-6" src={detailRunBinding} alt="A Flow receipt binding block with before and after content digests and Receipt valid." caption="Before and after digests · Receipt valid" sizes="(min-width: 1024px) 30rem, calc(100vw - 3rem)" />
       </div>
     </div>
     <div class="mx-auto mt-16 max-w-3xl text-center">
       <p class="of-eyebrow">Evidence</p>
-      <h4 class="of-display mt-4 text-[clamp(1.5rem,2.6vw,2.1rem)]">A score must say what it rests on.</h4>
+      <h3 class="of-display mt-4 text-[clamp(1.5rem,2.6vw,2.1rem)]">A score must say what it rests on.</h3>
       <p class="of-lede mx-auto mt-4">The Evidence gallery leads with the verdict, then checks, dimensions, coverage, uncertainty, and the recorded reason. A dimension with no measurement says Not scored.</p>
     </div>
     <FlowDetail class="mx-auto mt-10 max-w-3xl" src={shots.settingsEvidence} alt="Evidence settings in Flow 1.6 shows five weighted questions and three separate checks." caption="Real Flow 1.6 (1899) · Five weighted questions · Three checks" />

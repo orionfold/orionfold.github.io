@@ -96,7 +96,7 @@ const icon = (c: { svg: string; tint: string }, size = 20) => `<span class="fe-i
         <span class="fe-key">⌘5</span>
       </div>
 
-      <aside class="fe-wb">
+      <div class="fe-wb">
         <p class="fe-wb-tabs" aria-hidden="true"><span class="t-ideas"><Lightbulb size={12} />Ideas</span><span class="t-review"><FileCheck size={12} />Review</span></p>
         <div class="fe-wb-p fe-wb-0" aria-hidden="true">
           <p class="fe-wb-h">What Flow noticed</p>
@@ -129,7 +129,7 @@ const icon = (c: { svg: string; tint: string }, size = 20) => `<span class="fe-i
           <p class="fe-out fe-out-keep"><Check size={12} stroke-width={3} />Kept. The plan carries the figure as text, so it opens in any editor.</p>
           <p class="fe-out fe-out-undo"><Undo2 size={12} />Undone. The plan is as it was.</p>
         </div>
-      </aside>
+      </div>
     </div>
   </div>
 </figure>
@@ -163,11 +163,11 @@ const icon = (c: { svg: string; tint: string }, size = 20) => `<span class="fe-i
   /* Elements */
   .fe-el { display: grid; gap: 3px; align-content: start; padding: 10px 8px; border-right: 1px solid #e3e7e4; background: #f8f9f8; font-size: .66rem; overflow: hidden; }
   :global(.ls) .fe-el p { margin: 0; }
-  .fe-search { display: flex; align-items: center; gap: 5px; padding: 4px 7px; margin-bottom: 4px !important; border-radius: 6px; background: #eceeed; color: #8a948f; }
+  .fe-search { display: flex; align-items: center; gap: 5px; padding: 4px 7px; margin-bottom: 4px !important; border-radius: 6px; background: #eceeed; color: #5f6a66; }
   .fe-el-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px !important; font-weight: 700; color: #2b3431; }
   .fe-el-h kbd { padding: 1px 5px; border: 1px solid #d8ddda; border-radius: 4px; background: #fff; font: 500 .6rem/1.4 var(--font-mono, ui-monospace, monospace); color: #56635e; }
   .fe-grp { display: flex; align-items: center; gap: 4px; padding: 3px 2px; color: #3b4541; font-weight: 500; }
-  .fe-grp b { margin-left: auto; font-weight: 500; color: #8a948f; }
+  .fe-grp b { margin-left: auto; font-weight: 500; color: #5f6a66; }
   .fe-card { display: flex; align-items: center; gap: 6px; padding: 4px 5px; margin-left: 8px !important; border: 1px solid #e3e7e4; border-radius: 7px; background: #fff; color: #2b3431; transition: border-color .3s, background .3s, opacity .3s; }
   .fe-card span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .fe-card b { font-weight: 500; }
@@ -188,7 +188,7 @@ const icon = (c: { svg: string; tint: string }, size = 20) => `<span class="fe-i
   .fe-scroll { display: grid; gap: 7px; padding: 16px 18px; transition: transform .8s cubic-bezier(.2,.8,.2,1); }
   :global(.ls) .fe-scroll p { margin: 0; }
   .hs[data-story-scene="3"] .fe-scroll, .hs[data-story-scene="4"] .fe-scroll { transform: translateY(-74px); }
-  .fe-crumb { font-size: .6rem; color: #8a948f; }
+  .fe-crumb { font-size: .6rem; color: #5f6a66; }
   :global(.ls) .fe .dm-h { font-size: 1.22rem; margin-bottom: 2px !important; }
   .fe-h2 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: .76rem; font-weight: 700; color: #2b3431; }
   .fe-p { font-size: .69rem; line-height: 1.5; color: #3b4541; }

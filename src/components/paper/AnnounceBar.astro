@@ -3,4 +3,4 @@
 interface Props { href?: string; linkLabel?: string }
 const { href, linkLabel } = Astro.props;
 ---
-<div class="pp-announce"><slot />{href && linkLabel && <a href={href}>{linkLabel}</a>}</div>
+<div class="pp-announce" role="region" aria-label="Announcement"><slot />{href && linkLabel && <a href={href}>{linkLabel}</a>}</div>

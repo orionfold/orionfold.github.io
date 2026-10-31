@@ -66,31 +66,31 @@
 .jw-finding-row > strong { font-size: 11px; }
 .jw-finding-foot { display: block; margin-top: 10px; color: var(--jw-muted); font-size: 9px; }
 .jw-demo .jw-authored-note { font-size: 11px; line-height: 1.7; color: #63716b; margin-top: 3px; }
-.jw-document-bottom { display: flex; align-items: start; gap: 8px; padding-top: 20px; margin-top: auto; font-size: 9px; color: #6e7c73; line-height: 1.6; }
+.jw-document-bottom { display: flex; align-items: start; gap: 8px; padding-top: 20px; margin-top: auto; font-size: 9px; color: #5f6a66; line-height: 1.6; }
 .jw-document-bottom > span:first-child { color: var(--jw-teal); font-size: 15px; line-height: 1.2; }
 .jw-workbench { min-width: 0; border-left: 1px solid var(--jw-line); background: #f5f7f3; }
 .jw-workbench-title { display: flex; align-items: center; gap: 8px; padding: 16px 20px 13px; font-size: 12px; }
 .jw-workbench-title > span:first-child { font-size: 17px; color: var(--jw-teal); }
 .jw-local { margin-left: auto; font-size: 9px; color: var(--jw-muted); border: 1px solid #d8e2d8; padding: 2px 6px; border-radius: 4px; }
 .jw-tabs { display: grid; grid-template-columns: repeat(3,1fr); border-bottom: 1px solid var(--jw-line); padding: 0 17px; gap: 5px; }
-.jw-tabs > button { position: relative; padding: 10px 8px; text-align: center; font-size: 11px; color: #6c776f; }
+.jw-tabs > button { position: relative; padding: 10px 8px; text-align: center; font-size: 11px; color: #5f6a66; }
 .jw-tabs > button[aria-selected='true'] { color: var(--jw-ink); font-weight: 700; }
 .jw-tabs > button[aria-selected='true']::after { content: ''; position: absolute; bottom: -1px; left: 8px; right: 8px; height: 2px; background: var(--jw-teal); }
 .jw-panel { padding: 20px; }
-.jw-demo .jw-micro { font-size: 9px; font-weight: 700; letter-spacing: .09em; color: #6b796f; line-height: 1.5; margin-bottom: 10px; }
+.jw-demo .jw-micro { font-size: 9px; font-weight: 700; letter-spacing: .09em; color: #5f6a66; line-height: 1.5; margin-bottom: 10px; }
 .jw-job-choices { display: grid; gap: 6px; margin-bottom: 14px; }
 .jw-job-choices > button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px; border: 1px solid transparent; border-radius: 5px; }
 .jw-job-choices > button[aria-pressed='true'] { border-color: #c2d6c9; background: #e9f0e8; }
 .jw-job-choices > button > span:last-child { margin-left: auto; font-size: 18px; color: #7f9484; }
 .jw-job-icon { display: flex; align-items: center; justify-content: center; width: 28px; height: 29px; flex: none; border-radius: 5px; background: #fff; color: #33776c; font-size: 20px; }
 .jw-job-choices strong { display: block; font-size: 11px; }
-.jw-job-choices small { display: block; color: #6b7970; font-size: 9px; margin-top: 2px; overflow-wrap: anywhere; }
+.jw-job-choices small { display: block; color: #5f6a66; font-size: 9px; margin-top: 2px; overflow-wrap: anywhere; }
 .jw-definition { margin: 0 1px 15px; }
 .jw-definition dl { display: grid; gap: 6px; }
 .jw-definition dl > div { display: grid; grid-template-columns: 50px minmax(0,1fr); gap: 10px; font-size: 10px; }
-.jw-definition dt { color: #6b776e; }
+.jw-definition dt { color: #5f6a66; }
 .jw-definition dd { font-weight: 500; overflow-wrap: anywhere; }
-.jw-demo .jw-definition p { color: #6b796e; font-size: 9px; line-height: 1.6; margin-top: 10px; }
+.jw-demo .jw-definition p { color: #5f6a66; font-size: 9px; line-height: 1.6; margin-top: 10px; }
 .jw-input-card { background: #fff; border: 1px solid var(--jw-line); border-radius: 5px; padding: 12px; margin-bottom: 12px; }
 .jw-input-card .jw-micro { display: block; font-size: 8px; margin-bottom: 6px; }
 .jw-input-card > div { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
