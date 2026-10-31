@@ -68,7 +68,7 @@ test('the R1 shell: announce bar, Paper nav and footer on every page with a nav'
   assert.match(read('src/styles/paper/tokens.css'), /url\('\/fonts\/fraunces-paper-latin\.woff2'\)/);
   assert.ok(statSync(path.join(root, 'public/fonts/fraunces-paper-latin.woff2')).size <= 60_000, 'Fraunces stays under 60 KB');
   const notFound = read('src/pages/404.astro');
-  assert.match(notFound, /<Layout [^>]*noindex>/);
+  assert.match(notFound, /<PaperLayout [^>]*noindex>/);
   assert.match(notFound, /<Nav \/>[\s\S]*<Footer showDownload=\{false\} \/>/);
 });
 

@@ -2,13 +2,16 @@
 // Private campaign-review route. Unlike a normal /story/ entry, this page is
 // not part of the content collection, RSS, story index, or sitemap discovery.
 // It exists only in builds that deliberately opt into the Flow Ideas campaign.
-import Layout from '../../layouts/Layout.astro';
+// R8 (G-147): a Paper page. The Living pit-stop hero and PaperCta gave way to
+// a Paper hero, a Panel of the four beats and a pp-closing with the download.
+import PaperLayout from '../../layouts/PaperLayout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
-import FlowIdeasPitStop from '../../components/flow/FlowIdeasPitStop.astro';
-import PaperCta from '../../components/ui/PaperCta.astro';
-import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN } from '../../data/launch.ts';
-import '../../styles/flow.css';
+import Panel from '../../components/paper/Panel.astro';
+import Fold from '../../components/paper/Fold.astro';
+import FlowDownloadCta from '../../components/flow/FlowDownloadCta.astro';
+import '../../styles/living-in-paper.css';
+import { ORIONFOLD_FLOW_IDEAS_CAMPAIGN, ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
 
 if (!ORIONFOLD_FLOW_IDEAS_CAMPAIGN) {
   return Astro.redirect('/flow/', 302);
@@ -41,104 +44,46 @@ const beats = [
   },
 ];
 ---
-
-<Layout
+<PaperLayout
   title="Flow Ideas in motion · Orionfold"
   description="Turn ideas into living documents: frame the outcome, organize the context, inspect a proposal, and develop the work with Flow."
   noindex={true}
 >
   <Nav />
-  <main class="flow-ideas-story overflow-x-clip">
-    <FlowIdeasPitStop
-      id="flow-ideas-story-hero"
-      variant="story"
-    />
-
-    <section class="flow-ideas-story__arc" aria-labelledby="flow-ideas-story-arc-title">
-      <div class="flow-ideas-story__intro">
-        <p class="of-eyebrow" data-animate="rise">The launch story</p>
-        <h2 id="flow-ideas-story-arc-title" class="of-display" data-animate="lead">
-          Good work deserves a second chapter.
-        </h2>
-        <p class="of-lede" data-animate="rise">
-          A living practice connects intention, context, action, and reflection.
-          Flow Ideas makes the next move visible while the document keeps the thread.
-        </p>
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="flow-ideas-story-hero-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Flow capabilities · A living practice</p>
+        <h1 id="flow-ideas-story-hero-title" class="pp-h1">Give the next idea somewhere to land.</h1>
+        <p class="pp-sub">Ideas turns the work in front of you into clear, inspectable moves. You choose what runs, what changes, and when the document is ready.</p>
       </div>
+    </section>
 
-      <ol class="flow-ideas-story__beats" aria-label="Four beats in the Flow Ideas launch story">
+    <Panel id="flow-ideas-story-arc" seam="The launch story" fold="orri" title="Good work deserves<br />a second chapter." lede="A living practice connects intention, context, action, and reflection. Flow Ideas makes the next move visible while the document keeps the thread.">
+      <ol class="pp-rows" aria-label="Four beats in the Flow Ideas launch story">
         {beats.map((beat) => (
-          <li data-animate="rise">
-            <div class="flow-ideas-story__number" aria-hidden="true">{beat.number}</div>
-            <div>
-              <p class="flow-ideas-story__kicker">{beat.kicker}</p>
-              <h3>{beat.title}</h3>
-              <p>{beat.body}</p>
-            </div>
+          <li class="pp-row">
+            <small>{beat.number} · {beat.kicker}</small>
+            <div><strong>{beat.title}</strong><span>{beat.body}</span></div>
           </li>
         ))}
       </ol>
-    </section>
+    </Panel>
 
-    <div class="mx-auto max-w-6xl px-6"><PaperCta source="ideas-in-motion" /></div>
-
-    <section class="flow-ideas-story__control" aria-labelledby="flow-ideas-story-control-title">
-      <div>
-        <p class="of-eyebrow" data-animate="rise">The point of the practice</p>
-        <h2 id="flow-ideas-story-control-title" class="of-display" data-animate="lead">
-          More possibility. Your judgment stays central.
-        </h2>
-      </div>
-      <div class="flow-ideas-story__control-copy" data-animate="rise">
-        <p>
-          Flow makes the work inspectable: the source, the proposal, the approval, and the record.
-          You keep the authority to decide what belongs in the document.
-        </p>
-        <p>
-          The work can grow through research, writing, and revision without losing its context.
-          Each return becomes a chance to refine it and carry the useful parts forward.
-        </p>
-        <a class="of-primary-action" href="/flow/">See the real Flow product <span aria-hidden="true">→</span></a>
-      </div>
+    <section class="pp-closing" aria-labelledby="flow-ideas-story-control-title">
+      <Fold id="tally" bob class="pp-closing-fold" />
+      <p class="pp-kicker">The point of the practice</p>
+      <h2 id="flow-ideas-story-control-title">More possibility. Your judgment stays central.</h2>
+      <p>Flow makes the work inspectable: the source, the proposal, the approval, and the record. You keep the authority to decide what belongs in the document.</p>
+      <p>The work can grow through research, writing, and revision without losing its context. Each return becomes a chance to refine it and carry the useful parts forward.</p>
+      {ORIONFOLD_FLOW_LIVE ? (
+        <div class="ls-in-paper ls-done-cta pp-done-actions">
+          <FlowDownloadCta source="ideas-in-motion" secondaryHref="/flow/" secondaryLabel="See the real Flow product" align="center" />
+        </div>
+      ) : (
+        <div class="pp-done-actions"><a class="pp-btn" href="/flow/">See the real Flow product <span aria-hidden="true">→</span></a></div>
+      )}
     </section>
   </main>
-  <Footer />
-</Layout>
-
-<style>
-  .flow-ideas-story { background: var(--color-surface); }
-  .flow-ideas-story__arc,
-  .flow-ideas-story__control {
-    width: min(calc(100% - 3rem), 76rem);
-    margin-inline: auto;
-    padding-block: clamp(4.5rem, 9vw, 8rem);
-  }
-  .flow-ideas-story__intro { max-width: 54rem; }
-  .flow-ideas-story__intro h2,
-  .flow-ideas-story__control h2 {
-    margin-top: 1rem;
-    font-size: clamp(2.3rem, 5vw, 4.5rem);
-    line-height: 1;
-    letter-spacing: -0.05em;
-    text-wrap: balance;
-  }
-  .flow-ideas-story__intro .of-lede { max-width: 46rem; margin-top: 1.5rem; }
-  .flow-ideas-story__beats { display: grid; gap: 0; margin-top: clamp(3rem, 7vw, 6rem); padding: 0; border-top: 1px solid var(--color-border); list-style: none; }
-  .flow-ideas-story__beats li { display: grid; grid-template-columns: auto 1fr; gap: clamp(1.2rem, 3vw, 3rem); padding-block: clamp(1.7rem, 4vw, 3rem); border-bottom: 1px solid var(--color-border); }
-  .flow-ideas-story__number { padding-top: 0.15rem; color: var(--color-accent-ink); font: 700 clamp(1.2rem,2.4vw,1.8rem)/1 var(--font-mono); }
-  .flow-ideas-story__kicker { color: var(--color-accent-ink); font: 700 0.65rem/1 var(--font-mono); letter-spacing: 0.18em; text-transform: uppercase; }
-  .flow-ideas-story__beats h3 { margin-top: 0.65rem; font: 700 clamp(1.35rem,2.7vw,2rem)/1.15 var(--font-display); letter-spacing: -0.035em; }
-  .flow-ideas-story__beats li p:last-child { max-width: 48rem; margin-top: 0.75rem; color: var(--color-text-muted); line-height: 1.7; }
-  .flow-ideas-story__control { display: grid; gap: 2rem 5rem; border-top: 1px solid var(--color-border); }
-  .flow-ideas-story__control-copy { color: var(--color-text-muted); font-size: 1.02rem; line-height: 1.75; }
-  .flow-ideas-story__control-copy p + p { margin-top: 1rem; }
-  .flow-ideas-story__control-copy a { margin-top: 2rem; }
-  @media (min-width: 820px) {
-    .flow-ideas-story__control { grid-template-columns: minmax(0,1fr) minmax(24rem,0.78fr); align-items: start; }
-  }
-  @media (max-width: 520px) {
-    .flow-ideas-story__arc,
-    .flow-ideas-story__control { width: min(calc(100% - 2rem), 76rem); }
-    .flow-ideas-story__beats li { grid-template-columns: 1fr; gap: 0.8rem; }
-  }
-</style>
+  <Footer showDownload={false} />
+</PaperLayout>
