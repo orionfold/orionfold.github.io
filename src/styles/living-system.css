@@ -76,17 +76,6 @@
   font-family: var(--font-body); border-radius: 5px;
 }
 .living-site input[type='checkbox'], .living-site input[type='radio'] { accent-color: var(--living-teal); }
-/* Shared wordmark: a supplied 700 face, no synthesized semibold or hover rule. */
-.living-wordmark, .living-footer .living-wordmark:hover,
-.living-site .living-wordmark:focus-visible {
-  display: inline-flex; align-items: center; gap: 9px;
-  color: var(--living-ink); text-decoration: none;
-}
-.living-wordmark__type {
-  font: 700 33px/1 'Barlow Condensed', 'Arial Narrow', sans-serif;
-  text-transform: uppercase; letter-spacing: -.015em;
-}
-.living-wordmark__fold { color: var(--living-teal); }
 /* The Living nav rules left with R1 (G-140): the Paper shell styles itself
    in src/styles/paper/shell.css. */
 #confirm-bar { font-size: 12px; }
@@ -144,7 +133,6 @@
   mask-image: radial-gradient(ellipse at center, #000 38%, transparent 75%);
   mix-blend-mode: multiply;
 }
-.living-closing-band { background: var(--living-yellow-gradient); }
 .living-origami { pointer-events: none; }
 .living-origami:not(.living-origami--compact) img {
   width: 100%; height: 100%; object-fit: cover; object-position: left center;
@@ -161,11 +149,8 @@
 }
 .living-relay-band { padding: 24px; }
 .living-relay-band .living-paper-cta { max-width: 1120px; margin-inline: auto; }
-.living-email-surface { background: var(--living-yellow-soft); border-color: #e3d7a8; }
 /* The shared footer owns its curated groups and responsive columns. */
-.living-footer { background: #f3f5f3; }
 .living-footer-acquisition { padding: 0; }
-.living-footer .living-wordmark:hover { text-decoration: none; }
 /* Editorial and dense product evidence: real reading typography, neutral tables
    and correctly bounded code blocks, without changing article semantics. */
 .living-site .story-prose { color: #294246; }
@@ -181,13 +166,6 @@
 .living-site .story-prose .not-prose h2 { margin-top: 14px; }
 .living-site .story-prose .not-prose p { font-size: 16px; line-height: 1.65; }
 .living-site .living-paper-cta section { contain: none; }
-.living-product-detail :is(#buy,#field-edition,#sponsor) { padding-block: 70px; }
-.living-product-detail :is(#buy,#field-edition) > div { border-color: var(--living-line); }
-.living-product-detail [data-code-group] [role='tab'][aria-selected='true'] { background: var(--living-yellow-soft); color: var(--living-ink); }
-.living-product-detail [data-code-group] pre { background: #f0f3f3; }
-.living-private { background: #f6f8f7; }
-.living-private h1 { font-size: clamp(2.6rem,6vw,4.2rem); }
-.living-private :is(input,select,textarea) { background: #fff; }
 /* Relay, Flow subpages, catalogs and service surfaces inherit the shared tokens
    and action scale; their product-specific screenshots remain untouched. */
 .living-site :is(.flow-subnav,.relay-subnav) { border-color: var(--living-line); }
@@ -195,7 +173,6 @@
 .living-site .flow-download-cta__button--large::after { display: none; }
 @media (max-width:700px) {
   .living-relay-band { padding-inline: 16px; }
-  .living-wordmark__type { font-size: 30px; }
 }
 @media (prefers-reduced-motion:reduce) {
   .living-site { scroll-behavior: auto; }
@@ -218,7 +195,6 @@
   --host-title-accent: var(--living-ink);
   --host-tagline-accent: var(--living-teal);
 }
-.living-site .flow-eyebrow-chip--accent,
 .living-site :is(.flow-subnav__link,.relay-subnav__link,.arena-subnav__link) { font-weight:700; }
 
 /* The measured header follows viewport changes and navigation. Since the
@@ -227,7 +203,6 @@
    product-stage e2e asserts first paint matches. */
 :root { --of-nav-height:102px; }
 .living-site :is(main,footer) [id] { scroll-margin-top:calc(var(--of-nav-height,82px) + 20px); }
-.living-site .hero-gradient-text { background:none; -webkit-text-fill-color:var(--living-ink); color:var(--living-ink); }
 @media(max-width:800px) {
   .living-paper-cta__inner {
     width: calc(100% - 40px); grid-template-columns: minmax(0, 1fr);
@@ -249,12 +224,6 @@
   background-image:
     linear-gradient(rgba(100, 114, 119, .12) 1px, transparent 1px),
     linear-gradient(90deg, rgba(100, 114, 119, .12) 1px, transparent 1px);
-}
-.living-site main:not(.ls-main) .flow-hero__glow {
-  background: radial-gradient(closest-side, rgba(100, 114, 119, .12), transparent 72%);
-}
-.living-site main:not(.ls-main) .proposal-hero > .pointer-events-none[class*="bg-primary"] {
-  background-color: rgba(100, 114, 119, .12);
 }
 
 /* CTA artwork shares the copy's top inset and reaches the band edge.

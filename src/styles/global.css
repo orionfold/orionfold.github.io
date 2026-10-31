@@ -423,37 +423,13 @@ img[data-fade] {
   .js-ready img[data-fade] { opacity: 1; }
   img[data-fade] { transition: none; }
 }
-
-/* ── Primary glow pulse (GPU-composited via opacity) ── */
-.primary-pulse {
-  position: relative;
-}
-.primary-pulse::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: 0 0 24px 4px var(--color-primary-glow);
-  opacity: 0;
-  animation: primary-pulse 3s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 0;
-}
 @keyframes primary-pulse {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
-
-/* ── Timeline active marker pulse (positioning-neutral) ── */
-.timeline-marker-active {
-  animation: timeline-marker-pulse 3s ease-in-out infinite;
-}
 @keyframes timeline-marker-pulse {
   0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--color-primary) 40%, transparent); }
   50%      { box-shadow: 0 0 0 10px color-mix(in oklch, var(--color-primary) 0%, transparent); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .timeline-marker-active { animation: none; }
 }
 
 /* ── SVG scroll-reveal animations ── */
@@ -465,23 +441,6 @@ img[data-fade] {
 .svg-reveal.visible {
   opacity: 1;
   transform: translateY(0);
-}
-.svg-reveal-d1 { transition-delay: 0.1s; }
-.svg-reveal-d2 { transition-delay: 0.2s; }
-.svg-reveal-d3 { transition-delay: 0.3s; }
-.svg-reveal-d4 { transition-delay: 0.4s; }
-.svg-reveal-d5 { transition-delay: 0.5s; }
-.svg-reveal-d6 { transition-delay: 0.6s; }
-.svg-reveal-d7 { transition-delay: 0.7s; }
-.svg-reveal-d8 { transition-delay: 0.8s; }
-
-/* Hover lift for interactive SVG elements */
-.svg-hover-lift {
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-.svg-hover-lift:hover {
-  transform: translateY(-2px);
-  opacity: 1;
 }
 
 /* Line draw animation (stroke-dasharray driven) */
@@ -554,10 +513,6 @@ img[data-fade] {
     transition: none;
   }
 
-  .primary-pulse {
-    animation: none;
-  }
-
   .svg-reveal,
   .line-draw,
   .bar-grow,
@@ -568,10 +523,6 @@ img[data-fade] {
     transform: none;
     transition: none;
     stroke-dashoffset: 0;
-  }
-
-  .svg-hover-lift {
-    transition: none;
   }
 
   main img {
@@ -632,17 +583,6 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   border-radius: 3px;
 }
 
-/* ── Timeline line ── */
-.timeline-line { opacity: 0.25; }
-
-/* ── Hero gradient text (single-hue: ink → cyan; gold dropped — no 2nd accent) ── */
-.hero-gradient-text {
-  background: linear-gradient(135deg, var(--color-text), var(--color-primary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 /* ── Orionfold component language (DS v6: Linear finish, single cyan accent) ──
    Component-class NAMES kept (used across ~24 files); values retargeted to the
    Orionfold tokens. of-surface → calm card (1px border + soft shadow, no indigo
@@ -655,11 +595,6 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   border-radius: var(--radius-of-lg);
   background: var(--color-surface-raised);
   box-shadow: var(--shadow-of);
-}
-/* premium feature surface — a faint cyan WASH (tint, never a control) */
-.of-surface.of-feature {
-  border-color: color-mix(in oklch, var(--color-accent) 26%, var(--color-border));
-  background: linear-gradient(180deg, var(--color-accent-soft), var(--color-surface-raised));
 }
 
 /* of-chip → categorical receipt-stub: squared (3px) + dashed "tear" edge.
@@ -705,84 +640,14 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   text-transform: uppercase;
   color: var(--color-accent-ink);
 }
-
-/* The hero eyebrow's second line: the audience is NAMED on line one, then
-   WIDENED on line two ("anyone whose name is on the document"). Its own line
-   and a muted tone so the widening reads as the aside it is rather than a
-   fourth job title. Used by the /flow/ and homepage heroes; it lives here
-   because an Astro-scoped page rule cannot restyle a shared global class
-   consistently across both. */
-.hero-icp__wide {
-  display: block;
-  margin-top: 0.35rem;
-  color: var(--color-text-muted);
-}
-
-/* ── Hero product shot: float, glow, sheen (ported from ainative.business,
-   2026-08-21) ──
-   Both loops animate `transform` ONLY, so they run on the compositor and
-   never trigger layout or paint. That is what makes them safe on the eager
-   LCP image: an opacity-gated `data-animate` reveal here would delay the
-   largest paint, which the mobile-perf rules forbid outright.
-   The scoped selectors reach into FlowShot with :global() because an
-   Astro-scoped rule cannot see a child component's markup. */
-.home-hero__shot { position: relative; }
 /* The hero copy no longer carries a lede paragraph (2026-08-21, operator),
    so the picture is the column that should grow. It grows via the grid's
    column ratio, NOT a negative margin: .home-hero sets overflow-x: clip, so
    any bleed past the viewport edge is SLICED rather than scrolled, which
    amputates the right pane of the document and reads as a broken image.
    The picture must stay whole -- it is the proof the headline rests on. */
-/* Ambient halo behind the frame. Radial gradient, never filter: blur() --
-   a large blurred layer re-rasterizes at retina DPR and is a known scroll-
-   jank source on this page. */
-.home-hero__shot::after {
-  content: '';
-  position: absolute;
-  inset: -3rem;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(ellipse at center, color-mix(in oklch, var(--color-primary) 16%, transparent) 0%, transparent 70%);
-}
-.home-hero__shot-frame {
-  position: relative;
-  border-radius: 1rem;
-  animation: home-hero-float 8s ease-in-out infinite;
-  transition: transform 0.4s ease;
-}
-.home-hero__shot-frame .flow-shot {
-  box-shadow: 0 30px 60px -24px rgb(0 0 0 / 0.45);
-  transition: box-shadow 0.4s ease;
-}
-.home-hero__shot-frame:hover { transform: translateY(-4px); }
-.home-hero__shot-frame:hover .flow-shot {
-  box-shadow: 0 42px 80px -24px rgb(0 0 0 / 0.55);
-}
-/* One slow diagonal sweep across the glass. Clipped by the frame's radius so
-   it never bleeds past the window's rounded corners. */
-.home-hero__sheen {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  border-radius: 1rem;
-  overflow: hidden;
-}
-.home-hero__sheen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, transparent 38%, color-mix(in oklch, white 70%, var(--color-primary)) 50%, transparent 62%);
-  opacity: 0.14;
-  transform: translateX(-130%);
-  animation: home-hero-sheen 9s ease-in-out 2s infinite;
-}
 @keyframes home-hero-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 @keyframes home-hero-sheen { 0% { transform: translateX(-130%); } 30%, 100% { transform: translateX(130%); } }
-@media (prefers-reduced-motion: reduce) {
-  .home-hero__shot-frame { animation: none; }
-  .home-hero__sheen { display: none; }
-}
 
 /* of-display — a section headline that should read as a statement, not a
    label. Tight tracking is what makes large type look composed rather than
@@ -816,11 +681,6 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   letter-spacing: -0.035em;
   color: var(--color-text);
   font-variant-numeric: tabular-nums;
-}
-.of-spec-label {
-  font-size: 0.92rem;
-  line-height: 1.5;
-  color: var(--color-text-muted);
 }
 /* The dated scope line under a measurement. Deliberately the quietest type on
    the page, but it must still be READABLE — it is the receipt for the claim. */
@@ -1055,9 +915,6 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
 .of-text-action:hover {
   color: var(--color-accent-hover);
 }
-.of-text-action.of-compact {
-  min-height: 0;
-}
 /* clickable card hover */
 .of-pressable {
   transition: border-color 220ms ease, background-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
@@ -1185,11 +1042,9 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
 }
 
 /* compare: emphasize the winning / "ours" row without color-coding every cell */
-.of-table.compare tr.is-win td,
 .of-table.compare tr[aria-current="true"] td {
   background: color-mix(in oklch, var(--color-accent) 6%, transparent);
 }
-.of-table.compare tr.is-win,
 .of-table.compare tr[aria-current="true"] {
   box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--color-accent) 28%, transparent);
 }
@@ -1296,27 +1151,6 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
 }
 @media (max-width: 640px) {
   .of-showcase[data-treatment="crop"] { grid-template-columns: 1fr; }
-}
-.of-showcase[data-treatment="crop"] .of-context { opacity: 0.82; }
-.of-showcase[data-treatment="crop"] .of-context .of-shot { aspect-ratio: var(--ratio, 16/9); }
-.of-showcase[data-treatment="crop"] .of-context .of-shot > img {
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-}
-/* the readable crop: a window onto the source positioned by --focus, image at native scale */
-.of-showcase[data-treatment="crop"] .of-detail .of-shot {
-  aspect-ratio: var(--focus-ratio, 16/9);
-  overflow: hidden;
-}
-.of-showcase[data-treatment="crop"] .of-detail .of-shot > img {
-  width: var(--focus-w, 100%);
-  height: auto;
-  max-width: none;
-  object-fit: none;
-  object-position: var(--focus-pos, top center);
-  transform: scale(var(--focus-scale, 1));
-  transform-origin: top left;
 }
 
 /* ── Story post prose (S9) ── */
@@ -1445,15 +1279,6 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   fill: color-mix(in oklch, var(--color-primary) 22%, transparent);
   stroke: var(--color-text-muted);
 }
-.receipt-prose .fn-diagram__node--ink {
-  fill: var(--color-surface);
-  stroke: var(--color-text);
-}
-.receipt-prose .fn-diagram__node--ghost {
-  fill: none;
-  stroke: var(--color-border);
-  stroke-dasharray: 4 3;
-}
 .receipt-prose .fn-diagram__edge {
   fill: none;
   stroke: var(--color-text-muted);
@@ -1461,22 +1286,8 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   stroke-linecap: round;
 }
 .receipt-prose .fn-diagram__edge--accent { stroke: var(--color-primary); stroke-width: 1.5; }
-.receipt-prose .fn-diagram__edge--dashed { stroke-dasharray: 5 4; }
 .receipt-prose .fn-diagram__edge--ghost { stroke: var(--color-border); stroke-width: 1; }
 .receipt-prose .fn-diagram__flow { fill: var(--color-primary); }
-.receipt-prose .fn-diagram__dot { fill: var(--color-text-muted); }
-.receipt-prose .fn-diagram__dot--accent { fill: var(--color-primary); }
-.receipt-prose .fn-diagram__dot--ghost { fill: var(--color-text-dim); }
-.receipt-prose .fn-diagram__bar { transform: none; }
-.receipt-prose .fn-diagram__icon {
-  fill: none;
-  stroke: var(--color-text);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.receipt-prose .fn-diagram__icon--accent { stroke: var(--color-primary); }
-.receipt-prose .fn-diagram__icon--muted { stroke: var(--color-text-muted); }
 .receipt-prose .fn-diagram__label {
   font-family: var(--font-body);
   font-size: 14px;
@@ -1495,7 +1306,6 @@ html:has(.flow-launch-hero--light)::-webkit-scrollbar-track {
   font-size: 11px;
   font-weight: 500;
 }
-.receipt-prose .fn-diagram__label--muted { fill: var(--color-text-dim); }
 .receipt-prose .fn-diagram__annotation {
   font-family: var(--font-mono);
   font-size: 11px;

@@ -8,6 +8,9 @@ const styles = Object.fromEntries(Object.keys(routes).map(route => [route, read(
 
 // Paper R2 (G-141) and R6 (G-145): home and essay 01 load no Living sheet.
 // R8 (G-147) deleted living-home.css and living-essay.css.
+// R8 (G-147) also pruned every rule whose markup no longer renders (the Living
+// /flow/ hero demo, its step states, the craft workbench, the manifesto hero),
+// so only pins for markup that still ships remain below.
 assert.doesNotMatch(read('src/pages/index.astro'), /styles\/living-/, 'home: Paper only');
 assert.doesNotMatch(read('src/pages/essay.astro'), /styles\/living-(?!in-paper)/, 'essay: Paper only');
 for (const [route, page] of Object.entries(routes)) {
@@ -15,7 +18,6 @@ for (const [route, page] of Object.entries(routes)) {
   assert.match(source, new RegExp(`import '../styles/living-base\\.css';\\s*import '../styles/living-${route}\\.css';`), `${route}: base precedes the selected route cascade`);
   for (const other of Object.keys(routes).filter(name => name !== route)) assert.ok(!source.includes(`styles/living-${other}.css`), `${route}: no unrelated page sheet`);
   assert.ok(!source.includes('living-flagships.css'), `${route}: no monolithic bundle`);
-  assert.match(css, /\.ls \.ls-main\s*\{padding-top:var\(--of-nav-height,82px\)\}/, `${route}: root section clears fixed navigation`);
   assert.match(css, /@media/, `${route}: responsive cascade retained`);
   assert.match(css, /prefers-reduced-motion/, `${route}: reduced motion remains explicit`);
   // Every authored animation reference resolves in the page's selected sheet.
@@ -25,10 +27,7 @@ for (const [route, page] of Object.entries(routes)) {
 }
 assert.match(base, /\.ls p,\s*\.ls h1/, 'shared typography reset includes root compositions');
 assert.match(base, /:focus-visible/, 'keyboard focus stays in the common base');
-assert.match(styles.manifesto, /\.ls-manifesto-hero\s*\{[^}]*display:\s*grid/, 'manifesto root grid survives route selection');
 for (const route of ['flow']) {
-  assert.match(styles[route], /backdrop-filter:/, `${route}: Liquid Glass product treatment remains`);
-  for (const state of [1, 2, 3, 4, 5]) assert.ok(styles[route].includes(`data-step='${state}'`), `${route}: runtime step ${state} retains its style`);
   assert.match(styles[route], /data-motion='off'/, `${route}: runtime motion preference retained`);
 }
 // Raw-source gzip is deliberately conservative: minification can only improve
@@ -39,15 +38,13 @@ console.log('Living Systems styles: route ownership, root layouts, runtime state
 // Persistently visible illustration text is content even before its active step.
 const block = (css, selector) => css.split(`${selector} {`)[1]?.split('}')[0] ?? '';
 for (const route of ['flow']) {
-  for (const selector of ['.ls-demo-events p', '.ls-overnight-note', '.ls-demo-stages span']) assert.match(block(styles[route], selector), /opacity:\s*1(?:;|\s*})?/, `${route}: ${selector} stays readable while pending`);
-  assert.match(block(styles[route], '.ls-demo-stages span'), /color:\s*#586b63/, `${route}: opaque progress label color`);
+  assert.match(block(styles[route], '.ls-overnight-note'), /opacity:\s*1(?:;|\s*})?/, `${route}: .ls-overnight-note stays readable while pending`);
 }
 for (const route of ['flow', 'manifesto']) assert.match(block(styles[route], '.ls-code-sheet small'), /color:\s*#586650/, `${route}: code note contrast`);
 assert.match(block(styles.flow, ".ls-example-tabs button[aria-selected='true'] > span"), /opacity:\s*1/, 'selected library number keeps full-contrast red');
 const entrance = styles.flow.split('@keyframes ls-craft-arrive')[1]?.split('@keyframes')[0] ?? '';
 assert.doesNotMatch(entrance, /opacity:/, 'craft entrance never fades readable content');
 assert.match(entrance, /transform:\s*translateY\(5px\)/, 'craft entrance keeps its existing motion');
-for (const selector of ['.ls-craft-workbench .ls-craft-switcher button > span', '.ls-craft-workbench .ls-craft-small', '.ls-craft-workbench .ls-craft-sidebar > p']) assert.match(block(styles.flow, selector), /color:\s*#64705e/, `desktop workbench label remains readable: ${selector}`);
 const luminance = hex => {
   const channels = hex.match(/[0-9a-f]{2}/gi).map(value => parseInt(value, 16) / 255).map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4);
   return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;

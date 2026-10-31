@@ -4,47 +4,11 @@
 
 .dm-page { --dm-display: 'Barlow Condensed', Arial, sans-serif; }
 
-/* ── Hero ─────────────────────────────────────────────── */
-.ls .dm-hero { padding-bottom: 48px; }
-.dm-eyebrow { display: flex; align-items: center; gap: 12px; }
-.ls .dm-hero h1 { max-width: 16ch; margin: 22px 0 0; font: 400 clamp(2.7rem, 5.6vw, 5.4rem)/1 var(--ed-serif, Georgia, serif); letter-spacing: -.045em; }
-.ls .dm-hero h1 em { color: var(--teal); }
-/* The operator's selected line (PR/FAQ, 2026-10-26) rides under the promise. */
-.ls .dm-tagline { max-width: 44ch; margin: 20px 0 0; font: italic 400 clamp(1.15rem, 1.6vw, 1.4rem)/1.35 var(--ed-serif, Georgia, serif); letter-spacing: -.01em; color: var(--muted); }
-.dm-hero-foot { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px 56px; align-items: end; margin-top: 36px; }
-.ls .dm-hero-foot p { max-width: 62ch; font-size: 1.05rem; line-height: 1.6; color: var(--muted); }
-.dm-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; }
-
-/* ── Sections ─────────────────────────────────────────── */
-.dm-section { padding-block: 72px; border-top: 1px solid var(--line); }
-.dm-head { display: grid; gap: 14px; max-width: 760px; margin-bottom: 36px; }
-.ls .dm-head h2 { font: 700 clamp(2.4rem, 4.4vw, 4rem)/.95 var(--dm-display); letter-spacing: -.015em; text-transform: uppercase; }
-.ls .dm-sub { max-width: 64ch; font-size: 1rem; line-height: 1.6; color: var(--muted); }
-
-.ls .dm-pains { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
-.dm-pains li { display: grid; gap: 10px; align-content: start; padding: 24px; border-radius: 14px; background: #f4f1e8; }
-.dm-pains b { font: 400 1.45rem/1.15 var(--ed-serif, Georgia, serif); letter-spacing: -.02em; color: var(--ink); }
-.dm-pains span { font-size: .95rem; line-height: 1.55; color: var(--muted); }
-.ls .dm-bridge { max-width: 60ch; margin-top: 28px; font: 400 1.25rem/1.5 var(--ed-serif, Georgia, serif); color: var(--ink); }
-
 /* ── Why now ──────────────────────────────────────────── */
 .dm-now { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 48px; max-width: 1040px; }
 .ls .dm-now p { margin: 0; font: 400 1.2rem/1.5 var(--ed-serif, Georgia, serif); color: var(--ink); }
 .ls .dm-now p a { color: var(--teal); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
 .ls .dm-now p a:hover { color: var(--ink); }
-.ls .dm-now .dm-now-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; font-family: inherit; font-size: .95rem; font-weight: 700; }
-.dm-now-links a { display: inline-flex; align-items: center; gap: 6px; }
-.dm-now-links .dm-now-src { font-weight: 500; color: var(--muted); }
-/* ── Blueprints (G-135) ───────────────────────────────── */
-.ls .dm-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 0; padding: 0; list-style: none; }
-.dm-cards a { display: grid; gap: 10px; height: 100%; padding: 24px 24px 22px; border: 1px solid var(--line); border-radius: 16px; background: #fff; color: var(--ink); text-decoration: none; transition: box-shadow .2s, transform .2s; }
-.dm-cards a:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -20px #17201c50; }
-.dm-card-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; color: var(--dm-tint); background: color-mix(in srgb, var(--dm-tint) 10%, #fff); }
-.dm-card-ic svg { width: 30px; height: 30px; }
-.dm-cards small { font-size: .68rem; font-weight: 700; letter-spacing: .1em; color: var(--muted); }
-.dm-cards b { font: 400 1.45rem/1.15 var(--ed-serif, Georgia, serif); letter-spacing: -.02em; }
-.dm-card-line { font-size: .95rem; line-height: 1.5; color: var(--muted); }
-.dm-cards em { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-style: normal; font-weight: 700; color: var(--red-deep); }
 /* A blueprint article's hero is the planned folder, drawn, not a shot. */
 .dm-blueprint-hero { margin-top: 36px; }
 .dm-blueprint-hero .da { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
@@ -84,81 +48,13 @@
 .da-tn { grid-row: span 2; font: 700 1.6rem/1 var(--dm-display); color: var(--teal); }
 .da-traits b { font-size: 1rem; }
 .da-traits span:last-child { font-size: .9rem; line-height: 1.5; color: var(--muted); }
-
-/* ── The first Playbook ─────────────────────────────────── */
-.ls .dm-time { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
-.dm-time li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line); }
-.dm-time time { font: 700 1.15rem/1.3 var(--dm-display); color: var(--teal); }
-.dm-time span { display: grid; gap: 2px; font-size: .9rem; line-height: 1.45; color: var(--muted); }
-.dm-time b { font-size: .98rem; color: var(--ink); }
-.dm-time .dm-day { grid-template-columns: 1fr; padding: 22px 0 8px; border-bottom: 0; }
-.dm-time .dm-day span { font: 700 .78rem/1.2 var(--font-sans, inherit); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
-.dm-time .dm-day + li { border-top: 1px solid var(--line); }
-.dm-time-blank { display: block; }
-.dm-talk { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px 32px; align-items: center; margin-top: 40px; padding: 22px 26px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); }
-.dm-talk > div { display: grid; gap: 4px; }
-.dm-talk b { font-size: 1.05rem; }
-.dm-talk span { font-size: .92rem; line-height: 1.5; color: var(--muted); }
-.dm-talk-btn { justify-self: start; white-space: nowrap; }
 /* Founder Playbooks (2026-10-29): every built Playbook as a card, then the first walk by day. */
-.ls .dm-founders { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin: 0; padding: 0; list-style: none; }
 .dm-founder { display: grid; grid-template-rows: auto 1fr; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: #fff; transition: box-shadow .2s, transform .2s; }
 .dm-founder:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -20px #17201c50; }
-.dm-founder-shot img { display: block; width: 100%; height: auto; aspect-ratio: 3024 / 1964; object-fit: cover; border-bottom: 1px solid var(--line); }
-.dm-founder-t { display: grid; align-content: start; gap: 10px; padding: 20px 22px 22px; }
-.dm-founder-t small { display: flex; align-items: center; gap: 10px; font-size: .68rem; font-weight: 700; letter-spacing: .1em; color: var(--muted); }
-.dm-founder-t small .dm-card-ic { width: 32px; height: 32px; border-radius: 9px; flex: none; }
-.dm-founder-t small .dm-card-ic svg { width: 20px; height: 20px; }
-.dm-founder-t b { font: 400 1.6rem/1.15 var(--ed-serif, Georgia, serif); letter-spacing: -.02em; }
-.dm-founder-t b a { color: var(--ink); text-decoration: none; }
-.ls .dm-founder-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 6px 0 0; padding: 14px 0 0; border-top: 1px solid var(--line); }
-.dm-founder-facts dt { font-size: .66rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-.dm-founder-facts dd { margin: 2px 0 0; font-size: .86rem; line-height: 1.4; color: var(--ink); }
-.dm-founder-links { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 4px 0 0; }
-.dm-founder-links a { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--red-deep); text-decoration: none; }
-.dm-walk { margin-top: 44px; }
-.dm-walk h3 { font: 400 1.5rem/1.2 var(--ed-serif, Georgia, serif); letter-spacing: -.02em; color: var(--ink); }
-.dm-walk > p { max-width: 640px; margin: 8px 0 0; font-size: .95rem; line-height: 1.55; color: var(--muted); }
-.dm-walk-days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 36px; align-items: start; margin-top: 8px; }
 
 /* ── Your service ─────────────────────────────────────── */
-.dm-model { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 40px; align-items: center; }
-.dm-loop { position: relative; width: min(100%, 440px); aspect-ratio: 1; margin: 0 auto; }
-.dm-loop svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.dm-loop-ring { fill: none; stroke: var(--line); stroke-width: 2; }
 .dm-loop-run { fill: none; stroke: var(--teal); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 120 822; transform-origin: center; animation: dm-run 9s linear infinite; }
-.dm-loop-dot { fill: #fff; stroke: var(--teal); stroke-width: 3; }
-.dm-loop-node { position: absolute; left: 50%; top: 50%; width: 132px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 10px; background: #fff; font-size: .8rem; font-weight: 700; line-height: 1.25; text-align: center; transform: translate(-50%, -50%); }
-.dm-loop-mid { position: absolute; inset: 0; display: grid; place-content: center; gap: 4px; max-width: 150px; margin: auto; font-size: .82rem; line-height: 1.35; text-align: center; color: var(--muted); }
-.dm-loop-mid b { font: 400 1.5rem/1.1 var(--ed-serif, Georgia, serif); color: var(--ink); }
 @keyframes dm-run { to { stroke-dashoffset: -942; } }
-.dm-terms { display: grid; gap: 12px; }
-.dm-terms div { display: grid; gap: 4px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
-.dm-terms b { font-size: 1.02rem; }
-.dm-terms span { font-size: .92rem; line-height: 1.5; color: var(--muted); }
-.dm-roles { margin-top: 40px; }
-.ls .dm-roles p { margin-bottom: 12px; font-size: .95rem; color: var(--muted); }
-.ls .dm-roles ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.dm-roles li { padding: 7px 13px; border: 1px solid var(--line); border-radius: 99px; background: var(--paper); font-size: .86rem; font-weight: 500; }
-.dm-roles li:first-child { border-color: var(--ink); background: var(--ink); color: #fff; }
-
-/* ── Formats and pairings ─────────────────────────────── */
-.ls .dm-formats, .ls .dm-pairs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
-.dm-formats li, .dm-pairs li { display: grid; gap: 8px; align-content: start; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
-.dm-formats li.is-walked { border-color: var(--teal); background: var(--teal-pale); }
-.dm-formats b, .dm-pairs b { font-size: 1.02rem; }
-.dm-formats span, .dm-pairs span { font-size: .9rem; line-height: 1.5; color: var(--muted); }
-.dm-formats small { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); }
-.ls .dm-compare { margin-top: 20px; }
-.dm-compare a { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--red-deep); }
-
-/* ── Flow MCP, next ───────────────────────────────────── */
-.dm-next { background: var(--ink); color: #fff; }
-.dm-next-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px 56px; align-items: end; padding-block: 76px; }
-.dm-next .ls-eyebrow { grid-column: 1 / -1; color: var(--yellow); }
-.ls .dm-next h2 { font: 700 clamp(2.4rem, 4.4vw, 4rem)/.95 var(--dm-display); text-transform: uppercase; color: #fff; }
-.dm-next h2 span { color: var(--yellow); }
-.ls .dm-next p:last-child { font-size: 1.05rem; line-height: 1.6; color: #ffffffc7; }
 
 /* ── FAQ ──────────────────────────────────────────────── */
 .dm-faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -169,19 +65,9 @@
 @media (prefers-reduced-motion: reduce) {
   .dm-loop-run { animation: none !important; }
 }
-@media (max-width: 1100px) {
-  .dm-formats, .dm-pairs { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-}
 @media (max-width: 900px) {
-  .dm-hero-foot, .da, .dm-blueprint-hero .da, .dm-model, .dm-next-in, .dm-talk { grid-template-columns: minmax(0, 1fr); }
-  .ls .dm-pains, .dm-faq { grid-template-columns: minmax(0, 1fr); }
-  .ls .dm-founders, .dm-walk-days { grid-template-columns: minmax(0, 1fr); }
-}
-@media (max-width: 600px) {
-  .dm-section { padding-block: 52px; }
-  .dm-formats, .dm-pairs, .ls .dm-cards { grid-template-columns: minmax(0, 1fr) !important; }
-  .dm-loop-node { width: 96px; padding: 5px 6px; font-size: .68rem; }
-  .dm-loop-mid { max-width: 120px; }
+  .da, .dm-blueprint-hero .da { grid-template-columns: minmax(0, 1fr); }
+  .dm-faq { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ── A blueprint's questions (G-138): the article's FAQ, also its FAQPage ── */
