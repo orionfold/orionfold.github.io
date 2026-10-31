@@ -6,6 +6,7 @@
 // polygon style as the Folds, beside the Flow wordmark. Drawn once at build
 // time; decorative art, so its colors live here with the Fold drawings.
 import { foldById, foldShapes, type FoldId } from './folds';
+import { foldedStar } from './star';
 
 const W = 760;
 const H = 460;
@@ -38,21 +39,6 @@ function tower(x: number, y: number, w: number, h: number): string {
     + [0, 1, 2].map((k) => `<rect x="${x + w * 0.32}" y="${y + 8 + k * 16}" width="${w * 0.36}" height="8" fill="#f6b73c" opacity=".85"/>`).join('');
 }
 
-/** The Orionfold mark as a folded paper star: a light and a shaded facet per arm, on a teal disc. */
-function star(cx: number, cy: number, r: number): string {
-  const at = (k: number, rr: number): [number, number] => {
-    const a = -Math.PI / 2 + (k * Math.PI) / 5;
-    return [cx + rr * Math.cos(a), cy + rr * Math.sin(a)];
-  };
-  let s = `<circle cx="${cx + 2}" cy="${cy + 3}" r="${r}" fill="#123f43" opacity=".35"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#2a9aa0"/>`;
-  for (let k = 0; k < 10; k += 2) {
-    const tip = at(k, r * 0.8);
-    s += poly(pts([[cx, cy], at(k - 1, r * 0.34), tip]), '#dfe7e4');
-    s += poly(pts([[cx, cy], tip, at(k + 1, r * 0.34)]), '#ffffff');
-  }
-  return s;
-}
-
 /** A Fold (200 × 214 art) placed by its top-left corner at a scale, optionally facing left. */
 const fold = (id: FoldId, x: number, y: number, s: number, flip = false) =>
   `<g transform="translate(${flip ? x + 200 * s : x},${y}) scale(${flip ? -s : s},${s})">${foldShapes(foldById[id])}</g>`;
@@ -73,7 +59,7 @@ export function paperScene(): string {
 <rect width="${W}" height="${H}" fill="url(#pp-scene-sky)"/>${stars}
 ${LINES.map(([a, b]) => `<line x1="${ORION[a][0]}" y1="${ORION[a][1]}" x2="${ORION[b][0]}" y2="${ORION[b][1]}" stroke="#f6e7bf" stroke-width="1" opacity=".55"/>`).join('')}
 ${ORION.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i > 1 && i < 5 ? 3 : 4}" fill="#f6e7bf"/>`).join('')}
-${star(488, 92, 34)}
+${foldedStar(488, 92, 34)}
 <text x="536" y="111" font-family="Fraunces, Georgia, serif" font-weight="400" font-size="56" letter-spacing="-1" fill="#fbfaf6">Flow</text>
 ${trail}${fold('orri', 262, 96, 0.34)}${fold('tally', 640, 146, 0.3, true)}
 ${ridge([[0, 236], [70, 190], [150, 228], [240, 172], [330, 222], [420, 182], [500, 226], [600, 176], [690, 220], [760, 196]], 300, '#7e8fb3', '#5f6f94')}

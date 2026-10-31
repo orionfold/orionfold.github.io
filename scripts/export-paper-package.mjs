@@ -1,0 +1,92 @@
+#!/usr/bin/env node
+// Exports the Paper design system as a versioned package for the Flow app
+// (D1: the website owns Paper; D8, operator 2026-10-30: the website and app
+// redesigns run in parallel, and the app's first Paper goal needs these
+// assets). The package is generated, never hand-edited: Fold SVGs and their
+// colors from src/lib/paper/folds.ts, the folded star from star.ts, tokens
+// parsed from src/styles/paper/tokens.css, and the trimmed Fraunces.
+//
+//   node scripts/export-paper-package.mjs            → output/paper-package/<version>/
+//   FONTTOOLS_PYTHON=/path/to/python node scripts/…  → also writes a .ttf
+//
+// output/ is git-ignored; the product lane copies a version into its own repo.
+import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import path from 'node:path';
+
+const VERSION = '0.1.0';
+const root = new URL('../', import.meta.url).pathname;
+const out = path.join(root, 'output/paper-package', VERSION);
+const rel = (p) => path.join(root, p);
+const { FOLDS, foldSvg } = await import(rel('src/lib/paper/folds.ts'));
+const { foldedStarSvg } = await import(rel('src/lib/paper/star.ts'));
+
+rmSync(out, { recursive: true, force: true });
+for (const d of ['folds', 'marks', 'fonts', 'tokens']) mkdirSync(path.join(out, d), { recursive: true });
+const standalone = (svg) => svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
+
+// Folds: one SVG each (with and without the ground shadow), plus a manifest.
+const folds = FOLDS.map((f) => {
+  writeFileSync(path.join(out, 'folds', `${f.id}.svg`), standalone(foldSvg(f, { label: `${f.name} the ${f.kind}` })) + '\n');
+  writeFileSync(path.join(out, 'folds', `${f.id}-no-shadow.svg`), standalone(foldSvg(f, { label: `${f.name} the ${f.kind}`, shadow: false })) + '\n');
+  return { id: f.id, name: f.name, kind: f.kind, flowDomain: f.domain, flowDomainSlug: f.domainSlug, colors: { a: f.a, b: f.b, c: f.c, ink: f.ink }, files: { svg: `folds/${f.id}.svg`, svgNoShadow: `folds/${f.id}-no-shadow.svg` }, viewBox: '0 0 200 214' };
+});
+writeFileSync(path.join(out, 'marks', 'orionfold-star.svg'), foldedStarSvg('Orionfold') + '\n');
+
+// Tokens: every --pp-* custom property in the .paper block, grouped by kind.
+const css = readFileSync(rel('src/styles/paper/tokens.css'), 'utf8');
+const vars = Object.fromEntries([...css.matchAll(/--pp-([a-z0-9-]+):\s*([^;]+);/g)].map(([, k, v]) => [k, v.trim()]));
+const group = (test) => Object.fromEntries(Object.entries(vars).filter(([k]) => test(k)));
+const tokens = {
+  version: VERSION,
+  color: group((k) => !/^(serif|sans|mono|r-\d|shadow|ease|fold-)/.test(k)),
+  font: group((k) => /^(serif|sans|mono)$/.test(k)),
+  radius: group((k) => /^r-\d$/.test(k)),
+  shadow: group((k) => /^shadow/.test(k)),
+  motion: group((k) => /^ease/.test(k)),
+  foldDefaults: group((k) => /^fold-/.test(k)),
+};
+writeFileSync(path.join(out, 'tokens', 'paper-tokens.json'), JSON.stringify(tokens, null, 2) + '\n');
+copyFileSync(rel('src/styles/paper/tokens.css'), path.join(out, 'tokens', 'paper-tokens.css'));
+
+// Fonts: the trimmed Fraunces (woff2) and its licence; a .ttf when fontTools is at hand.
+copyFileSync(rel('public/fonts/fraunces-paper-latin.woff2'), path.join(out, 'fonts', 'fraunces-paper-latin.woff2'));
+copyFileSync(rel('public/fonts/Fraunces-OFL.txt'), path.join(out, 'fonts', 'Fraunces-OFL.txt'));
+let ttf = false;
+const py = process.env.FONTTOOLS_PYTHON;
+if (py && existsSync(py)) {
+  execFileSync(py, ['-I', '-c', `from fontTools.ttLib import TTFont\nf=TTFont(${JSON.stringify(path.join(out, 'fonts', 'fraunces-paper-latin.woff2'))})\nf.flavor=None\nf.save(${JSON.stringify(path.join(out, 'fonts', 'fraunces-paper-latin.ttf'))})`]);
+  ttf = true;
+}
+
+let commit = 'unknown';
+try { commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: root }).toString().trim(); } catch {}
+const dirty = (() => { try { return execFileSync('git', ['status', '--porcelain', 'src/lib/paper', 'src/styles/paper', 'public/fonts'], { cwd: root }).toString().trim() !== ''; } catch { return false; } })();
+writeFileSync(path.join(out, 'manifest.json'), JSON.stringify({
+  name: 'orionfold-paper', version: VERSION, stage: 'early (before website R8)', source: { repo: 'orionfold/website', commit, uncommittedChanges: dirty },
+  folds, marks: { orionfoldStar: 'marks/orionfold-star.svg' },
+  tokens: { json: 'tokens/paper-tokens.json', css: 'tokens/paper-tokens.css' },
+  fonts: { fraunces: { woff2: 'fonts/fraunces-paper-latin.woff2', ttf: ttf ? 'fonts/fraunces-paper-latin.ttf' : null, licence: 'fonts/Fraunces-OFL.txt', axes: { wght: [300, 500], opsz: [9, 144] }, pinned: { SOFT: 100, WONK: 1 } } },
+}, null, 2) + '\n');
+
+writeFileSync(path.join(out, 'README.md'), `# Orionfold Paper ${VERSION} (early)
+
+The Paper design system, exported by the website (it owns Paper, decision D1) for the Flow app's Paper goals. Generated by \`scripts/export-paper-package.mjs\` from website commit \`${commit}\`${dirty ? ' plus uncommitted Paper changes' : ''}. Copy a version into the app; never edit it in place, ask the website lane for a new version.
+
+## What is here
+- \`folds/\`: the eight Folds as standalone SVGs (viewBox 0 0 200 214), with and without the ground shadow. Colors per Fold are in \`manifest.json\`.
+- \`marks/orionfold-star.svg\`: the Orionfold star, folded in the Folds' polygon style.
+- \`tokens/\`: every Paper token as JSON (grouped: color, font, radius, shadow, motion, foldDefaults) and the source CSS.
+- \`fonts/\`: Fraunces cut for Paper (Latin, weight 300 to 500, optical size kept, SOFT pinned 100, WONK pinned 1), woff2${ttf ? ' and ttf' : ''}, under the SIL Open Font License (no reserved font name).
+
+## Rules that travel with it
+- The eight Folds are the characters of the Flow Domains (each maps to one in \`manifest.json\`). A person's own Fold is folded from a blank sheet and uses shapes outside these eight (cross-lane, 2026-10-30).
+- Never the bare word "Domain" in copy: "Flow Domain" for the feature, "expert domain" for the concept.
+- The faces on the website are AI-generated models and are not part of this package.
+- Text colors meet WCAG AA on paper and white (ink-3 is #666d69 since 2026-10-30).
+
+## Versions
+- 0.1.0 (2026-10-30): first early export, before website R8.
+`);
+
+console.log(`Paper ${VERSION} → ${path.relative(root, out)} (${folds.length} Folds, ${Object.keys(vars).length} tokens${ttf ? ', ttf' : ''})`);
