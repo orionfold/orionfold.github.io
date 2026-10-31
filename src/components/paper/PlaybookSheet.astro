@@ -16,7 +16,7 @@ const p = PLAY[fold];
   </figure>
   <div class="pp-pb-sheet" data-pp-sheet>
     <span class="pp-pb-crumb">{p.area} / playbook.md</span>
-    <h3>{p.title}</h3>
+    <p class="pp-pb-title">{p.title}</p>
     <p class="pp-pb-for">{p.client ? `For ${p.client}` : 'For every client'}</p>
     <ol class="pp-pb-steps">
       {p.steps.map((s, i) => <li class:list={{ 'pp-yours': i === 2 }}><span>{s}<small>{i === 2 ? 'YOUR CALL' : `${f.name.toUpperCase()} DOES THIS`}</small></span></li>)}

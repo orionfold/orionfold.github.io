@@ -45,7 +45,7 @@
 .paper .pp-pb { position: relative; justify-self: center; width: min(540px, 100%); padding: 40px 0 84px 48px; }
 .paper .pp-pb-sheet { position: relative; background: var(--pp-white); border: 1px solid var(--pp-line); border-radius: var(--pp-r-1); padding: 40px 36px 34px 132px; box-shadow: var(--pp-shadow-paper); transform: rotate(-1deg); min-height: 300px; }
 .paper .pp-pb-crumb { font: 500 10.5px/1.3 var(--pp-mono); letter-spacing: .08em; color: var(--pp-ink-3); text-transform: uppercase; }
-.paper .pp-pb-sheet h3 { margin: 8px 0 20px; font: 400 32px/1.1 var(--pp-serif); }
+.paper .pp-pb-sheet h3, .paper .pp-pb-sheet .pp-pb-title { margin: 8px 0 20px; font: 400 32px/1.1 var(--pp-serif); letter-spacing: -0.021em; }
 .paper .pp-pb-for { margin: -6px 0 14px; font: 400 14px/1.3 var(--pp-sans); color: var(--pp-ink-2); }
 .paper .pp-pb-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: pp-st; }
 .paper .pp-pb-steps li { counter-increment: pp-st; display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 16px; line-height: 1.4; text-wrap: pretty; }

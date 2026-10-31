@@ -18,11 +18,11 @@
 .ls-starting-list button[aria-pressed='true'] { border-color: #9fb6a2; background: #e7efe0; color: #183f35; }
 .ls-starting-name { display: flex; justify-content: space-between; gap: 15px; font-size: 14px; font-weight: 700; line-height: 1.4; }
 .ls-starting-name > span { flex-shrink: 0; }
-.ls-starting-list small { display: block; margin-top: 4px; font-size: 10px; color: #62735c; }
+.ls-starting-list small { display: block; margin-top: 4px; font-size: 10px; color: #56664f; }
 .ls-starting-reset { margin-top: 16px; font-size: 11px; text-decoration: underline; text-underline-offset: 3px; color: #466548; min-height: 30px; }
 .ls-starting-empty { padding: 24px 12px; font-size: 13px; line-height: 1.6; color: #546a59; }
 .ls-starting-previews { min-width: 0; padding: 30px; }
-.ls-starting-document-title > p:first-child { display: flex; align-items: center; gap: 14px; color: #60775f; font-size: 11px; }
+.ls-starting-document-title > p:first-child { display: flex; align-items: center; gap: 14px; color: #52664f; font-size: 11px; }
 .ls-starting-document-title > p:first-child span { padding: 2px 6px; background: #f1edc9; font-size: 9px; letter-spacing: .03em; }
 .ls-starting-document-title h4 { margin: 12px 0; color: #254c45; font-size: clamp(23px, 2.25vw, 31px); line-height: 1.16; font-weight: 700; letter-spacing: -.04em; }
 .ls-starting-document-title > p:last-child { color: #506453; font-size: 14px; line-height: 1.7; }
