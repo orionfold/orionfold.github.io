@@ -14,7 +14,7 @@ import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync, existsSyn
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
-const VERSION = '0.3.2';
+const VERSION = '0.3.3';
 const root = new URL('../', import.meta.url).pathname;
 const out = path.join(root, 'output/paper-package', VERSION);
 const rel = (p) => path.join(root, p);
@@ -175,7 +175,7 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 - 0.1.1 (2026-10-30): same files, cut from a committed source (product lane ask).
 - 0.2.0 (2026-10-30): night (dark appearance) tokens and Fold variants; personal Folds with colorways.
 - 0.2.1 (2026-10-30): night beak and butterfly body in light ink; a rounder bear, now coral by default (penguin ochre), apart from the cat at 16 pt.
-- 0.3.0 (2026-10-31): the final design system. Liquid Glass tokens in their own group, the long-form frame in \`layout\`, and their rules above.\n- 0.3.1 (2026-10-31): fitted Fold SVGs (\`-fit\`, \`-fit-night\`) for circle avatars, for the Playbook Folds and every personal Fold colorway; \`fitViewBox\` per Fold in the manifest. No art or token changes.\n- 0.3.2 (2026-10-31): \`behaviour\` for each personal Fold (character = behaviour, product lane ask). No art or token changes.
+- 0.3.0 (2026-10-31): the final design system. Liquid Glass tokens in their own group, the long-form frame in \`layout\`, and their rules above.\n- 0.3.1 (2026-10-31): fitted Fold SVGs (\`-fit\`, \`-fit-night\`) for circle avatars, for the Playbook Folds and every personal Fold colorway; \`fitViewBox\` per Fold in the manifest. No art or token changes.\n- 0.3.2 (2026-10-31): \`behaviour\` for each personal Fold (character = behaviour, product lane ask). No art or token changes.\n- 0.3.3 (2026-10-31): operator review of \`behaviour\`; hummingbird gets to the point instead of promising speed, butterfly stays inside this document. New token \`--pp-teal-ink\` (#1f7176, night #5cc0bf) for small teal text; brand teal is unchanged.
 `);
 
 console.log(`Paper ${VERSION} → ${path.relative(root, out)} (${folds.length} Folds, ${Object.keys(vars).length} tokens${ttf ? ', ttf' : ''})`);

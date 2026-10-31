@@ -28,6 +28,9 @@
 
   /* accents */
   --pp-teal: #247b80;
+  /* Small teal text (labels, step numbers under 18px): AA on paper-2 too.
+     Brand teal stays #247b80 for marks, fills and large type. */
+  --pp-teal-ink: #1f7176;
   --pp-teal-pale: #e8f2ef;
   --pp-gold: #f6b73c;
   --pp-gold-pale: #fdebc4;

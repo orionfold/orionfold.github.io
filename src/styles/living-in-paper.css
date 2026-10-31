@@ -37,7 +37,7 @@
 .paper .tw-in-paper {
   --color-primary: var(--pp-teal);
   --color-accent: var(--pp-teal);
-  --color-accent-ink: var(--pp-teal);
+  --color-accent-ink: var(--pp-teal-ink);
   --color-accent-hover: var(--pp-ink);
   --color-text: var(--pp-ink);
   --color-text-muted: var(--pp-ink-2);

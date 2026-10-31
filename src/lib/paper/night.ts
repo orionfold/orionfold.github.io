@@ -19,6 +19,7 @@ export const NIGHT: Record<string, string> = {
   'ink-3': '#a19d94',
   line: '#3a3f44',
   teal: '#5cc0bf',
+  'teal-ink': '#5cc0bf',
   'teal-pale': '#173537',
   gold: '#f6b73c',
   'gold-pale': '#3a2f17',
@@ -43,7 +44,7 @@ export const NIGHT: Record<string, string> = {
 /** The text pairs night promises at 4.5:1 or better: [foreground, background]. */
 export const NIGHT_TEXT_PAIRS: [string, string][] = [
   ['ink', 'paper'], ['ink', 'white'], ['ink-2', 'paper'], ['ink-2', 'white'], ['ink-3', 'paper'], ['ink-3', 'white'], ['ink-3', 'paper-2'],
-  ['teal', 'paper'], ['teal', 'white'], ['teal', 'teal-pale'], ['red-deep', 'paper'], ['red-deep', 'white'],
+  ['teal', 'paper'], ['teal', 'white'], ['teal-ink', 'paper'], ['teal-ink', 'paper-2'], ['teal', 'teal-pale'], ['red-deep', 'paper'], ['red-deep', 'white'],
   ['del-ink', 'del-bg'], ['add-ink', 'add-bg'], ['night-ink', 'night'], ['night-ink-3', 'night'],
 ];
 
