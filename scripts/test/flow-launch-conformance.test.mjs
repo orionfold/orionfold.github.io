@@ -20,7 +20,7 @@ const link = (html, rel) => html.match(new RegExp(`<link\\s+rel="${esc(rel)}"\\s
 const routes = [
   // Paper R2 (operator finalized 2026-10-30): the locked headline, in the title too.
   ['/', 'Orionfold Flow · Show how you work. AI follows it. You make the call.', 'Show how you work. AI follows it. You make the call.'],
-  ['/flow/', 'Flow for Mac · Describe it. Flow draws it.', 'DESCRIBE IT. FLOW DRAWS IT.'],
+  ['/flow/', 'Flow for Mac · Describe it. Flow draws it.', 'Describe it. Flow draws it.'],
   ['/essay/', 'Room for a Renaissance · An essay by Manav Sehgal', 'Room for a Renaissance.'],
   ['/manifesto/', 'The Researcher, Writer and Builder in You · An essay by Manav Sehgal', 'THE RESEARCHER, WRITER AND BUILDER IN YOU.'],
   ['/flow/tour/', 'Orionfold Flow product tour · See Flow at work', 'See Flow at work.'],

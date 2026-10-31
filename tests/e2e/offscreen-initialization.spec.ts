@@ -16,20 +16,9 @@ async function holdIntersectionCallbacks(page: Page) {
   });
 }
 
-test('hero art pauses outside view and resumes without changing the motion preference', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.goto('/flow/');
-  const art = page.locator('.ls-hero .ls-paper-art');
-  await expect(art).toHaveCSS('animation-play-state', 'running');
-  await page.getByRole('contentinfo').scrollIntoViewIfNeeded();
-  await expect(art).toHaveCSS('animation-play-state', 'paused');
-  await page.locator('.ls-hero .ls-eyebrow').scrollIntoViewIfNeeded();
-  await expect(art).toHaveCSS('animation-play-state', 'running');
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(art).toHaveCSS('animation-play-state', 'paused');
-});
-
+// Paper R4 (G-143): /flow/ has no animated hero art; the Living hero-art
+// pause test left with it. The library and Jobs demos below still guard
+// offscreen initialization.
 for (const width of [390, 1440]) {
   test(`library controls size the first preview on demand and keep all seven examples usable at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });

@@ -159,7 +159,8 @@ test('the launch preview preserves downloads while extending sitemap and AI disc
     assert.match(html, /data-theme="light"/);
   }
   const { version } = JSON.parse(read('src/data/flow-release.json'));
-  assert.ok(built('/flow/').includes('MEET FLOW / ELEMENTS'), 'the hero pitches Elements (operator 2026-10-27)');
+  // Paper R4 (G-143): the H1 pitches Elements and the hero plays the Elements walk.
+  assert.ok(built('/flow/').includes('Flow draws it.') && built('/flow/').includes('Harbor Close Plan'), 'the hero pitches Elements (operator 2026-10-27)');
   assert.ok(built('/flow/').includes(`Flow ${version} for Mac`), 'the page still names the released version from flow-release.json');
   assert.match(built('/flow/'), /data-jobs-demo/);
 });

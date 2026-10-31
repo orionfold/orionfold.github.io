@@ -1,8 +1,10 @@
 ---
-// Shared shell for the four /flow/<category>/ pages (2026-08-20 split).
-// Renders the site nav, the category sub-nav, a hero with the category's
-// cover crop and a chapter jump list, the chapters passed in the slot, a pager
-// to the neighbouring categories, and the Flow waitlist. Copy for each category
+// Shared shell for the four /flow/<category>/ pages (2026-08-20 split), in
+// Paper since R4 (G-143). Renders the site nav, a hero with the category's
+// cover crop, one row of jumps (this page's chapters, then the tour's other
+// pages), the chapters passed in the slot, a pager to the neighbouring
+// categories, and the Flow waitlist as the one closing action (culling rubric,
+// operator 2026-10-30). Copy for each category
 // lives in src/data/flow-categories.ts so the overview cards and these pages
 // agree; the cover crop lives in src/data/flow-category-shots.ts for the same
 // reason.
@@ -10,10 +12,10 @@
 // Chapters are numbered 1 to 13 ACROSS the four pages (content-masterclass
 // review, 2026-08-20): a numbered series reads as one set to complete, and the
 // pager says which chapters come next.
-import Layout from '../../layouts/Layout.astro';
+import PaperLayout from '../../layouts/PaperLayout.astro';
 import Nav from '../Nav.astro';
-import FlowSubNav from './FlowSubNav.astro';
 import Footer from '../Footer.astro';
+import PageNav from '../paper/PageNav.astro';
 import FlowDetail from './FlowDetail.astro';
 import FlowWaitlist from '../sections/FlowWaitlist.astro';
 import { SITE } from '../../data/seo';
@@ -21,6 +23,8 @@ import { ogMeta } from '../../data/og';
 import { FLOW_CATEGORIES, flowCategoryHref } from '../../data/flow-categories';
 import { FLOW_CATEGORY_SHOTS } from '../../data/flow-category-shots';
 import '../../styles/flow.css';
+import '../../styles/living-base.css';
+import '../../styles/living-in-paper.css';
 
 interface Props {
   slug: string;
@@ -50,116 +54,54 @@ const breadcrumbs = {
   ],
 };
 ---
-<Layout title={cat.pageTitle} description={cat.description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={[breadcrumbs]}>
+<PaperLayout title={cat.pageTitle} description={cat.description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={[breadcrumbs]}>
   <Nav />
-  <FlowSubNav active="tour" />
-  <main class="flow-page flow-page--category -mt-20 overflow-x-clip sm:-mt-24">
-    <section class="flow-hero relative px-6 pb-10 pt-32 sm:pt-40">
-      <div class="flow-hero__grid" aria-hidden="true"></div>
-      <div class="flow-hero__glow" aria-hidden="true"></div>
-      <div class="relative mx-auto max-w-4xl text-center">
-        <p class="of-eyebrow">Product tour · Part {index + 1} of {FLOW_CATEGORIES.length}</p>
-        <h1 class="hero-gradient-text mx-auto mt-4 max-w-3xl font-display text-[clamp(2.1rem,5.4vw,3.3rem)] font-extrabold leading-[1.08] tracking-[-0.045em]">
-          {cat.title}
-        </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-[1.55] text-text-muted sm:text-xl">{cat.blurb}</p>
-        <div class="mx-auto mt-7 max-w-2xl rounded-2xl border border-primary/20 bg-surface/80 px-5 py-4 text-left">
-          <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-accent-ink">The proof</p>
-          <p class="mt-2 text-sm font-semibold leading-relaxed text-text">{cat.proof}</p>
-        </div>
-        <nav class="flow-jump mt-7" aria-label="On this page">
-          {cat.chapters.map((ch, i) => (
-            <a href={`#${ch.id}`}><span class="font-mono text-[0.62rem] text-text-dim">{firstChapter + i}</span>{ch.label}</a>
-          ))}
-        </nav>
+  <main id="main" class="pp-page flow-page flow-page--category">
+    <section class="pp-hero pp-hero--inner" aria-labelledby="flow-category-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Product tour · Part {index + 1} of {FLOW_CATEGORIES.length}</span>
+        <h1 id="flow-category-title" class="pp-h1">{cat.title}</h1>
+        <p class="pp-sub">{cat.blurb}</p>
+        <p class="pp-proof"><b>The proof</b> {cat.proof}</p>
       </div>
       <!-- The same real product crop that introduced this part on the tour home. -->
-      <div class="mx-auto mt-10 max-w-3xl" data-animate="plate">
-        <FlowDetail
-          src={cover.src}
-          alt={cover.alt}
-          caption={cover.caption}
-          sizes="(min-width: 1024px) 46rem, calc(100vw - 3rem)"
-          glow
-        />
+      <div class="pp-hero-stage tw-in-paper">
+        <FlowDetail src={cover.src} alt={cover.alt} caption={cover.caption} sizes="(min-width: 1024px) 40rem, calc(100vw - 2rem)" />
       </div>
     </section>
 
-    <nav class="flow-subnav px-6" aria-label="Flow tour categories">
-      <div class="flow-subnav__row mx-auto max-w-6xl">
-        <a href="/flow/tour/" class="flow-subnav__link flow-subnav__link--overview"><span aria-hidden="true">←</span> Tour overview</a>
-        {FLOW_CATEGORIES.map((c) => (
-          <a href={flowCategoryHref(c.slug)} class="flow-subnav__link" aria-current={c.slug === cat.slug ? 'page' : undefined}>{c.label}</a>
-        ))}
-        <a href="/flow/enterprise/" class="flow-subnav__link">Enterprise</a>
-      </div>
+    <PageNav label="Flow tour" onPage={cat.chapters.map((ch, i) => ({ href: `#${ch.id}`, label: `${firstChapter + i} ${ch.label}` }))} pages={[
+      { href: '/flow/', label: 'Overview' },
+      { href: '/flow/tour/', label: 'Tour' },
+      ...FLOW_CATEGORIES.map((c) => ({ href: flowCategoryHref(c.slug), label: c.label, current: c.slug === cat.slug })),
+      { href: '/flow/specifications/', label: 'Tech Specs' },
+      { href: '/flow/enterprise/', label: 'Enterprise' },
+    ]} />
+
+    <div class="tw-in-paper pp-chapters">
+      <slot />
+    </div>
+
+    <nav class="pp-pager" aria-label="More of the tour">
+      {prev ? (
+        <a href={flowCategoryHref(prev.slug)} data-dir="prev"><small>← Previous · Part {index}</small><b>{prev.label}</b></a>
+      ) : (
+        <a href="/flow/tour/" data-dir="prev"><small>← Back to</small><b>Product tour</b></a>
+      )}
+      {next ? (
+        <a href={flowCategoryHref(next.slug)} data-dir="next"><small>Next → Part {index + 2} · Chapters {lastChapter + 1} to {lastChapter + next.chapters.length}</small><b>{next.label}</b></a>
+      ) : (
+        <a href="/flow/enterprise/" data-dir="next"><small>Next → After the tour</small><b>Flow for enterprise AI owners</b></a>
+      )}
     </nav>
-
-    <slot />
-
-    <section class="border-t border-border/70 px-6 py-10 sm:py-12" aria-label="Technical details">
-      <div class="mx-auto flex max-w-6xl flex-col gap-4 rounded-2xl border border-border/70 bg-surface-raised/35 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
-        <div>
-          <p class="flow-kicker">Need the exact limits?</p>
-          <p class="mt-2 text-sm leading-relaxed text-text-muted">Requirements, formats, model states, plan boundaries, and qualified measurements live in Tech Specs.</p>
-        </div>
-        <a href="/flow/specifications/" class="of-secondary-action shrink-0">Read Tech Specs <span aria-hidden="true">→</span></a>
-      </div>
-    </section>
-
-    <section class="border-t border-border/70 px-6 py-12 sm:py-16" aria-label="More of the tour">
-      <div class="flow-pager mx-auto max-w-6xl">
-        {prev ? (
-          <a href={flowCategoryHref(prev.slug)} data-dir="prev">
-            <p class="flow-pager__label">← Previous · Part {index}</p>
-            <p class="flow-pager__title">{prev.label}</p>
-          </a>
-        ) : (
-          <a href="/flow/tour/" data-dir="prev">
-            <p class="flow-pager__label">← Back to</p>
-            <p class="flow-pager__title">Product tour</p>
-          </a>
-        )}
-        {next ? (
-          <a href={flowCategoryHref(next.slug)} data-dir="next">
-            <p class="flow-pager__label">Next → Part {index + 2} · Chapters {lastChapter + 1} to {lastChapter + next.chapters.length}</p>
-            <p class="flow-pager__title">{next.label}</p>
-          </a>
-        ) : (
-          <a href="/flow/enterprise/" data-dir="next">
-            <p class="flow-pager__label">Next → After the tour</p>
-            <p class="flow-pager__title">Flow for enterprise AI owners</p>
-          </a>
-        )}
-      </div>
-    </section>
 
     <!-- The category pages reuse the `flow-mid` placement (inside the tour,
          same offer, same consent text) so signups here stay separable from
          the overview's hero and foot forms in conversion data. The continue
          link goes to the NEXT part, never to an anchor this page lacks. -->
-    <div id="waitlist" class="scroll-mt-24">
+    <div id="waitlist" class="ls ls-in-paper pp-waitlist">
       <FlowWaitlist placement="flow-mid" storyHref={flowStoryHref} nextHref={nextHref} nextLabel={nextLabel} />
     </div>
   </main>
   <Footer showDownload={false} />
-</Layout>
-
-<script>
-  // Keep the sticky category sub-nav just below the FIXED site nav, whose
-  // height changes when the magnet bar is dismissed or the nav wraps on
-  // narrow screens. Writes --flow-nav-h (read by .flow-subnav in flow.css).
-  const navWrapper = document.getElementById('nav-wrapper');
-  if (navWrapper) {
-    const apply = () => document.documentElement.style.setProperty('--flow-nav-h', `${Math.round(navWrapper.getBoundingClientRect().height)}px`);
-    apply();
-    new ResizeObserver(apply).observe(navWrapper);
-  }
-  // On narrow screens the pill row scrolls sideways; bring the current
-  // category into view without moving the page itself.
-  const row = document.querySelector('.flow-subnav__row');
-  const current = row?.querySelector('[aria-current="page"]');
-  if (row && current instanceof HTMLElement) {
-    row.scrollLeft = Math.max(0, current.offsetLeft - (row.clientWidth - current.offsetWidth) / 2);
-  }
-</script>
+</PaperLayout>

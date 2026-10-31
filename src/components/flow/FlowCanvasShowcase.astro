@@ -13,8 +13,9 @@ import evidence from '../../assets/flow/paths/the-canvas/08-evidence-on-the-brie
 import history from '../../assets/flow/paths/the-canvas/09-history-derived-from.webp';
 import '../../styles/hero-story.css';
 
-interface Props { id?: string }
-const { id = 'flow-canvas' } = Astro.props;
+// `bare` drops the heading for a page that frames the mock itself (Paper, R4).
+interface Props { id?: string; bare?: boolean }
+const { id = 'flow-canvas', bare = false } = Astro.props;
 const PATH = '/flow/paths/the-canvas/';
 const LENSES = [
   {
@@ -37,8 +38,8 @@ const LENSES = [
   },
 ];
 ---
-<section id={id} class="fcv ls-container" aria-labelledby={`${id}-heading`}>
-  <div class="fcv-head">
+<section id={bare ? undefined : id} class="fcv ls-container" aria-labelledby={bare ? undefined : `${id}-heading`} aria-label={bare ? 'Flow canvas' : undefined}>
+  {!bare && <div class="fcv-head">
     <div>
       <p class="ls-eyebrow">FLOW / CANVAS</p>
       <h2 id={`${id}-heading`}>SEE WHERE EVERY<br /><span class="ls-stroke">WORD CAME FROM.</span></h2>
@@ -48,7 +49,7 @@ const LENSES = [
       <p>In our walk, a client brief's Jobs refreshed it in 71 seconds. The canvas then showed which files the new section cites, sentence by sentence.</p>
       <p class="fcv-link"><a href={PATH}>Walk through One brief, three ways<ArrowRight size={16} /></a></p>
     </div>
-  </div>
+  </div>}
 
   <div class="hs fcv-stage" data-story data-durations="6000,6000,6000" data-story-scene="0">
     <div class="fcv-frame">

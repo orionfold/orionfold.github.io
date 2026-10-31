@@ -15,6 +15,8 @@ import '../../../styles/flow-mocks.css';
 // Only the paths Flow's Home really offers; a walk from an empty folder is not one.
 const paths = (await publishedPaths()).filter((p) => SHOWCASE[p.id] && p.data.onHome);
 const lead = paths.find((p) => p.data.featured) ?? paths[0];
+// `bare` drops the heading for a page that frames the mock itself (Paper, R4).
+const { bare = false } = Astro.props as { bare?: boolean };
 const ADDONS = [
   { name: 'Flow Pro', body: 'Flow thinks with you. Ask, Jobs, Night Shift and Smart Routing, on the models you choose, on this Mac or hosted.', price: '$10 a month or $96 a year' },
   { name: 'Flow Import', body: 'Turn Word, Excel, PowerPoint and PDFs into documents you can edit, search and keep current.', price: '$10 a month or $96 a year · Needs Flow Pro' },
@@ -22,15 +24,15 @@ const ADDONS = [
 ];
 ---
 {lead && (
-  <section id="paths-home" class="fp-section ls-container" aria-labelledby="paths-home-heading">
-    <div class="fp-head">
+  <section id={bare ? undefined : 'paths-home'} class="fp-section ls-container" aria-labelledby={bare ? undefined : 'paths-home-heading'} aria-label={bare ? 'Flow Home: start from a path' : undefined}>
+    {!bare && <div class="fp-head">
       <div class="fp-heading">
         <p class="ls-eyebrow">FLOW / START FROM A PATH</p>
         <h2 id="paths-home-heading">What are you<br /><span class="ls-stroke">working on?</span></h2>
         <p>Flow opens on Paths. Each one is a ready folder for a real job. Pick one to see where it starts, then read the walkthrough with every screen.</p>
       </div>
       <a class="fp-all" href="/flow/paths/">All paths<ArrowRightIcon class="lk-arrow" size={14} stroke-width={2.25} aria-hidden="true" /></a>
-    </div>
+    </div>}
     <div class="fp-app" data-paths-home>
       <div class="fp-app-bar"><span aria-hidden="true"><i></i><i></i><i></i></span><span>Welcome to Flow</span></div>
       <div class="fp-app-body">

@@ -1,0 +1,22 @@
+---
+// Measured numbers on a ruled strip: a big serif value, the line it proves and
+// the walk it came from. Values come from src/data/flow-wow.ts; this component
+// never states a number of its own.
+import { WOW } from '../../data/flow-wow';
+import { pathHref } from '../../lib/flow/paths';
+interface Props { ids: string[]; title: string; note?: string }
+const { ids, title, note } = Astro.props;
+const points = ids.map((id) => WOW[id]).filter(Boolean);
+---
+<section class="pp-stats" aria-label={title}>
+  <h2>{title}</h2>
+  <div class="pp-stats-grid">
+    {points.map((p) => (
+      <figure>
+        <b>{p.value}</b>
+        <figcaption>{p.line}<a href={pathHref(p.path)}>{p.pathLabel} <span aria-hidden="true">→</span></a></figcaption>
+      </figure>
+    ))}
+  </div>
+  {note && <p class="pp-stats-note">{note}</p>}
+</section>

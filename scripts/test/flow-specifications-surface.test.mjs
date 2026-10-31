@@ -58,14 +58,14 @@ assert.doesNotMatch(stableMeasurements, /recentChanges/, 'the rolling release co
 assert.match(measurements, /value: '7 actions'[\s\S]*label: 'The Agency catalog'/, 'the canonical measurement carries the current seven-action catalog');
 assert.match(stableMeasurements, /agencyCatalog/, 'the seven-action catalog reaches technical measurements through the canonical object');
 
-assert.match(flow, /<FlowNavigation \/>/, 'the overview renders its Flow-local discovery rail');
-assert.match(read('src/components/living/FlowNavigation.astro'), /href: '\/flow\/specifications\/', label: 'Tech specs'/, 'the overview routes technical readers to the dedicated page');
+assert.match(flow, /<PageNav label="Flow product navigation"/, 'the overview renders its Flow-local discovery rail');
+assert.match(flow, /href: '\/flow\/specifications\/', label: 'Tech specs'/, 'the overview routes technical readers to the dedicated page');
 assert.doesNotMatch(nav, /Specifications|Tech Specs/, 'technical specifications stay out of the global menu');
 assert.doesNotMatch(nav, /label: 'Tour'|label: 'Enterprise'/, 'Flow-specific destinations stay out of the global menu');
 assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/relay\/', label: 'Relay'/, 'Relay remains in the shared Orionfold footer');
 assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/arena\/', label: 'Arena'/, 'Arena remains in the shared Orionfold footer');
 assert.match(flowSubNav, /label: 'Tech Specs', href: '\/flow\/specifications\/'/, 'the Flow-local rail uses Apple\'s concise Tech Specs label');
-assert.match(page, /<FlowSubNav active="specs" \/>/, 'the technical specifications page marks its local-nav item active');
+assert.match(page, /label: 'Tech Specs', current: true/, 'the technical specifications page marks its local-nav item active (Paper PageNav)');
 assert.match(nav, /flowLive \? FLOW_DMG_URL : '\/flow\/#waitlist'/, 'the shared nav keeps the direct launch CTA and the pre-launch waitlist branch');
 assert.doesNotMatch(nav, /See Flow plans/, 'the Flow CTA does not become a pricing detour');
 assert.match(og, /'\/flow\/specifications\/': {[\s\S]*slug: 'flow-specifications'/, 'the route has a social card source');

@@ -2,16 +2,21 @@
 import { livingLibrary } from '../../data/flow-library';
 import StartWithUsefulWork from './StartWithUsefulWork.astro';
 import { FLOW_COUNTS, countWord } from '../../lib/flow/flow-counts';
+// `bare` drops the heading for a page that frames the library itself (Paper, R4).
+// `picker` false leaves only the seven examples (one idea per panel); the
+// picker then lives on /flow/living-documents/.
+interface Props { bare?: boolean; picker?: boolean }
+const { bare = false, picker = true } = Astro.props;
 ---
-<section class="ls-library" id="living-library" aria-labelledby="library-heading">
-  <div class="ls-container">
+<section class="ls-library" id={bare ? undefined : 'living-library'} aria-labelledby={bare ? undefined : 'library-heading'} aria-label={bare ? 'Living Documents library' : undefined}>
+  {!bare && <div class="ls-container">
     <div class="ls-section-heading">
       <p class="ls-eyebrow">INCLUDED WITH FLOW</p>
       <h2 id="library-heading">{FLOW_COUNTS.livingDocuments} LIVING<br/>DOCUMENTS. {FLOW_COUNTS.paths} PATHS.<br/><span class="ls-stroke">YOUR NEXT CHAPTER.</span></h2>
       <p>Start with a responsibility you recognize. Explore {countWord(FLOW_COUNTS.categories)} categories, inspect a document's Jobs, and make a copy for your own work.</p>
     </div>
-  </div>
-  <StartWithUsefulWork />
+  </div>}
+  {picker && <StartWithUsefulWork />}
   <div class="ls-library-stage ls-container" id="curated-document-previews">
     <div class="ls-curated-heading"><h3>Explore seven illustrated examples.</h3><p>A closer look at selected documents, with sample data, sources and charts.</p></div>
     <div class="ls-library-mobile-nav">

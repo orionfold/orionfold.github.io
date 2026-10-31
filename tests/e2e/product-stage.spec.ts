@@ -204,39 +204,28 @@ test.describe('Living Systems native product stage', () => {
         await page.emulateMedia({reducedMotion:'reduce'});
         await page.goto(route);
         await expect(page.locator('main .flow-shot')).toHaveCount(0);
-        // Operator 2026-10-27: the homepage hero is a Domain mock, the Flow
-        // hero an Elements mock; both buttons read Download Flow Now.
-        const demo=route === '/'
-          ? page.locator('.ls-hero .dm--hero.hd')
-          : page.locator('.ls-hero-flow .dm--hero.fe');
-        await expect(demo).toHaveCount(1);
-        await expect(demo).toBeVisible();
-        await expect(page.locator('.ls-hero .ls-button')).toHaveText('Download Flow Now');
-        const window=demo.locator(route === '/' ? '.dm-window.hd-you' : '.dm-window');
-        await expect(window).not.toHaveCSS('box-shadow','none');
-        const positions=await page.evaluate(()=>({nav:document.querySelector('#nav-wrapper')!.getBoundingClientRect().bottom,hero:document.querySelector('main .ls-eyebrow')!.getBoundingClientRect().top,overflow:document.documentElement.scrollWidth>innerWidth+1}));
+        // Paper R4 (G-143): the hero is the live Elements walk (operator 2026-10-30).
+        const demo=page.locator('.pp-hero--flow .dm--hero.fe');
+        // Before any click, so the page is still at the top.
+        const positions=await page.evaluate(()=>({nav:document.querySelector('#nav-wrapper, .pp-nav')!.getBoundingClientRect().bottom,hero:document.querySelector('main .pp-kicker')!.getBoundingClientRect().top,overflow:document.documentElement.scrollWidth>innerWidth+1}));
         expect(positions.hero).toBeGreaterThanOrEqual(positions.nav);
         expect(positions.overflow).toBe(false);
-        const heroBox=await window.boundingBox();
+        await expect(demo).toHaveCount(1);
+        await expect(demo).toBeVisible();
+        await expect(demo).toContainText('Field-Notes Diagram');
+        await expect(demo).toContainText('CHASING RECEIPTS: 96 OF 312 HOURS');
+        const story=page.locator('.fe-story');
+        await story.locator('[data-story-go="4"]').click();
+        await story.getByRole('button',{name:'Undo'}).click();
+        await expect(story.locator('.fe-out-undo')).toBeVisible();
+        await expect(story.locator('.fe-fig')).toBeHidden();
+        await expect(page.locator('.pp-hero--flow .pp-btn').first()).toHaveAttribute('href',/\.dmg$|#get-flow$/);
+        const win=demo.locator('.dm-window');
+        await expect(win).not.toHaveCSS('box-shadow','none');
+        const heroBox=await win.boundingBox();
         expect(heroBox!.x).toBeGreaterThanOrEqual(0);
         expect(heroBox!.x + heroBox!.width).toBeLessThanOrEqual(width);
-        if (route === '/') {
-          await expect(demo).toContainText('AI Consulting');
-          // The story steps by hand: the last step's update can be taken.
-          const story=page.locator('.hd-story');
-          await story.locator('[data-story-go="4"]').click();
-          await story.getByRole('button',{name:'Update Selected'}).click();
-          await expect(story.locator('.hd-out-update')).toBeVisible();
-          await expect(story).toHaveAttribute('data-choice','update');
-        } else {
-          await expect(demo).toContainText('Field-Notes Diagram');
-          await expect(demo).toContainText('CHASING RECEIPTS: 96 OF 312 HOURS');
-          const story=page.locator('.fe-story');
-          await story.locator('[data-story-go="4"]').click();
-          await story.getByRole('button',{name:'Undo'}).click();
-          await expect(story.locator('.fe-out-undo')).toBeVisible();
-          await expect(story.locator('.fe-fig')).toBeHidden();
-
+        {
           // The full Jobs demo further down is the real Jobs interaction.
           const jobs=page.locator('#jobs-workbench [data-jobs-demo]');
           await jobs.scrollIntoViewIfNeeded();
@@ -323,7 +312,9 @@ test.describe('Living Systems native product stage', () => {
           await expect(jobs.locator('[data-chart-value]')).toHaveText('3');
           await expect(run).toBeDisabled();
         }
-        await expect(page.locator('body')).toHaveAttribute('data-motion','off');
+        // Paper R4: the page names its Living root, and every framed block follows it.
+        await expect(page.locator('[data-ls-root]')).toHaveAttribute('data-motion','off');
+        for (const block of await page.locator('[data-ls-root] .ls').all()) await expect(block).toHaveAttribute('data-motion','off');
       });
     }
   }
@@ -394,7 +385,8 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     // Paper R2 (G-141): the home closes on its Paper strip (paper-home.spec.ts).
-    for (const route of ['/flow/', '/essay/', '/manifesto/']) {
+    // Paper R4 (G-143): /flow/ closes on its Paper strip (product-stage /flow/ test).
+    for (const route of ['/essay/', '/manifesto/']) {
       await page.goto(route);
       await page.evaluate(() => document.fonts.ready);
       const band = page.locator('[data-download-band="yellow"]');

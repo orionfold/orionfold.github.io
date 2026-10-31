@@ -1,7 +1,9 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import PaperLayout from '../../layouts/PaperLayout.astro';
+import PageNav from '../../components/paper/PageNav.astro';
+import '../../styles/living-base.css';
+import '../../styles/living-in-paper.css';
 import Nav from '../../components/Nav.astro';
-import FlowSubNav from '../../components/flow/FlowSubNav.astro';
 import Footer from '../../components/Footer.astro';
 import LineIcon from '../../components/ui/LineIcon.astro';
 import { SITE } from '../../data/seo';
@@ -78,7 +80,7 @@ const pageSchema = {
 };
 ---
 
-<Layout
+<PaperLayout
   title="Flow technical specifications · Orionfold"
   description="System requirements, document formats, approval-led Agency, model routes, proof, privacy boundaries, plans, and qualified measurements for Orionfold Flow on Mac."
   ogImage={og.image}
@@ -86,35 +88,29 @@ const pageSchema = {
   jsonLd={[breadcrumbs, pageSchema]}
 >
   <Nav />
-  <FlowSubNav active="specs" />
-  <main class="flow-page flow-spec-page -mt-20 overflow-x-clip sm:-mt-24">
-    <section class="flow-hero relative px-6 pb-12 pt-32 sm:pb-16 sm:pt-40" aria-labelledby="flow-spec-title">
-      <div class="flow-hero__grid" aria-hidden="true"></div>
-      <div class="flow-hero__glow" aria-hidden="true"></div>
-      <div class="relative mx-auto max-w-5xl">
-        <a href="/flow/" class="of-eyebrow inline-flex items-center gap-2">Orionfold Flow <span aria-hidden="true">›</span></a>
-        <h1 id="flow-spec-title" class="of-display mt-6 max-w-5xl text-[clamp(2.45rem,6vw,4.25rem)] leading-[1] tracking-[-0.05em]">
-          Technical specifications.
-        </h1>
-        <p class="mt-7 max-w-3xl text-balance text-lg leading-relaxed text-text-muted sm:text-xl">
-          Requirements, documents, Agency, model routes, proof, privacy, plans, and measurements. All in one place.
-        </p>
-        <dl class="mt-10 grid grid-cols-2 overflow-hidden rounded-2xl border border-border/70 bg-surface/80 lg:grid-cols-4">
-          <div class="flow-spec-hero-fact"><dt>Minimum</dt><dd>macOS 26</dd></div>
-          <div class="flow-spec-hero-fact"><dt>Files</dt><dd>Plain Markdown</dd></div>
-          <div class="flow-spec-hero-fact"><dt>AI domains</dt><dd>4, separately controlled</dd></div>
-          <div class="flow-spec-hero-fact"><dt>App payload</dt><dd>Around 40 MB</dd></div>
+  <main id="main" class="pp-page flow-page flow-spec-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="flow-spec-title">
+      <div class="pp-hero-copy">
+        <a href="/flow/" class="pp-kicker">Orionfold Flow ›</a>
+        <h1 id="flow-spec-title" class="pp-h1">Technical specifications.</h1>
+        <p class="pp-sub">Requirements, documents, Agency, model routes, proof, privacy, plans, and measurements. All in one place.</p>
+        <dl class="pp-facts">
+          <div><dt>Minimum</dt><dd>macOS 26</dd></div>
+          <div><dt>Files</dt><dd>Plain Markdown</dd></div>
+          <div><dt>AI domains</dt><dd>4, separately controlled</dd></div>
+          <div><dt>App payload</dt><dd>Around 40 MB</dd></div>
         </dl>
       </div>
     </section>
 
-    <nav class="flow-spec-nav border-y border-border/70 bg-surface/90 px-6" aria-label="Technical specification sections">
-      <div class="mx-auto flex max-w-5xl gap-7 overflow-x-auto py-4">
-        {sectionLinks.map((link) => (
-          <a href={link.href} class="shrink-0 text-sm font-semibold text-text-muted transition-colors hover:text-primary">{link.label}</a>
-        ))}
-      </div>
-    </nav>
+    <PageNav label="Flow pages" onPage={sectionLinks} pages={[
+      { href: '/flow/', label: 'Overview' },
+      { href: '/flow/tour/', label: 'Tour' },
+      { href: '/flow/specifications/', label: 'Tech Specs', current: true },
+      { href: '/flow/enterprise/', label: 'Enterprise' },
+    ]} />
+
+    <div class="tw-in-paper pp-chapters">
 
     <section id="compatibility" class="scroll-mt-28 px-6 py-16 sm:py-24" aria-labelledby="compatibility-title">
       <div class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16">
@@ -317,9 +313,10 @@ const pageSchema = {
         </div>
       </div>
     </section>
+    </div>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
 
 <style>
   .flow-spec-nav {

@@ -21,7 +21,11 @@ for (const slug of ['night-shift', 'living-documents', 'settings']) {
   assert.doesNotMatch(page, /Cloud prepaid|Claude Code|Codex CLI|Share all|script(?:s)? (?:refresh|runs?)/i, `${slug}: retired or dark features do not enter the tour`);
 }
 const living = read('src/pages/flow/living-documents.astro');
-for (const folder of ['Stock Portfolio', 'Tax Advisor', 'Household Budget', 'Job Search', 'Competitor Watch', 'Team Status', 'Living Document Starter']) assert.match(living, new RegExp(`\\['${folder}'`), `${folder}: a shipped starter remains represented`);
+// Paper R4 (culling): the static seven-card list became the full picker, which
+// carries every shipped starter from the catalogue.
+assert.match(living, /<StartWithUsefulWork \/>/, 'the picker lives on the Living Documents page');
+const catalogue = read('src/data/flow-starting-documents.json');
+for (const folder of ['Stock Portfolio', 'Tax Advisor', 'Household Budget', 'Job Search', 'Competitor Watch', 'Team Status', 'Living Document Starter']) assert.ok(catalogue.includes(`"${folder}"`), `${folder}: a shipped starter remains represented`);
 const night = read('src/pages/flow/night-shift.astro');
 assert.match(night, /These jobs run on every plan, including Base/, 'deterministic work stays Base');
 assert.match(night, /Night Shift Pro[\s\S]*Overnight notes[\s\S]*Every number is checked against a source row or withheld/, 'Pro note promise keeps its evidence limit');

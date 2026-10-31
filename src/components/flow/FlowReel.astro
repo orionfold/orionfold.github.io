@@ -6,19 +6,20 @@ import { Image } from 'astro:assets';
 import Play from '@lucide/astro/icons/play';
 import { FLOW_REEL } from '../../data/flow-reel';
 
-interface Props { id?: string; eyebrow?: string; heading: string; lede: string }
-const { id = 'flow-reel', eyebrow = FLOW_REEL.eyebrow, heading, lede } = Astro.props;
+// `bare` keeps only the player for a page that frames the reel itself (Paper, R4).
+interface Props { id?: string; eyebrow?: string; heading?: string; lede?: string; bare?: boolean }
+const { id = 'flow-reel', eyebrow = FLOW_REEL.eyebrow, heading = '', lede = '', bare = false } = Astro.props;
 const { youtubeId, title, durationLabel, poster, posterAlt } = FLOW_REEL;
 const watchUrl = `https://www.youtube.com/watch?v=${youtubeId}`;
 ---
-<section id={id} class="reel" aria-labelledby={`${id}-title`}>
+<section id={id} class:list={['reel', { 'reel--bare': bare }]} aria-labelledby={bare ? undefined : `${id}-title`} aria-label={bare ? title : undefined}>
   <div class="reel-inner">
-    <div class="reel-copy">
+    {!bare && <div class="reel-copy">
       <p class="reel-eyebrow">{eyebrow}</p>
       <h2 id={`${id}-title`} class="reel-title">{heading}</h2>
       <p class="reel-lede">{lede}</p>
       <a class="reel-link" href={watchUrl} rel="noopener" target="_blank">Watch on YouTube</a>
-    </div>
+    </div>}
     <div class="reel-frame" data-reel={youtubeId} data-reel-title={title}>
       <button type="button" class="reel-play" aria-label={`Play the video: ${title} (${durationLabel})`}>
         <Image src={poster} alt={posterAlt} widths={[640, 960, 1280]} sizes="(min-width: 960px) 58vw, 92vw" loading="lazy" decoding="async" class="reel-poster" />

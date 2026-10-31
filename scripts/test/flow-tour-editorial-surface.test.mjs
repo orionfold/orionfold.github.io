@@ -41,7 +41,7 @@ for (const [slug, title, proof] of jobs) {
 }
 
 assert.match(shell, /The proof[\s\S]*\{cat\.proof\}/, 'the shared hero renders the route proof');
-assert.match(shell, /href="\/flow\/specifications\/"[\s\S]*Read Tech Specs/, 'dense facts route to Tech Specs');
+assert.match(shell, /href: '\/flow\/specifications\/', label: 'Tech Specs'/, 'dense facts route to Tech Specs (Paper PageNav)');
 assert.match(shell, /<FlowWaitlist placement="flow-mid"/, 'each product-tour job keeps one conversion close');
 assert.doesNotMatch(copyOnly(shell), /Orionfold Flow[\s\S]{0,80}Product tour · Part/, 'the hero no longer repeats an app badge before the product-tour eyebrow');
 

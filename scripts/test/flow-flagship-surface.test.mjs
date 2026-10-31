@@ -107,14 +107,16 @@ assert.deepEqual(
   ['Overview', 'Tour', 'Tech Specs', 'Enterprise'],
   'Flow carries the same concise product-local navigation pattern as Relay and Arena',
 );
-assert.match(flowPageSource, /<FlowNavigation \/>/, 'the Flow overview retains its local product navigation');
+assert.match(flowPageSource, /<PageNav label="Flow product navigation"/, 'the Flow overview retains its local product navigation (Paper PageNav, R4)');
 assert.match(flowSubNav, /label: 'Tour', href: '\/flow\/tour\/'/, 'Tour opens its own product-tour landing');
-assert.match(flowTour, /<FlowSubNav active="tour" \/>/, 'the tour landing marks Tour active');
-assert.match(categoryShell, /<FlowSubNav active="tour" \/>/, 'the Flow category pages mark Tour active');
+// Paper R4 (G-143): one PageNav row replaces the sticky FlowSubNav.
+assert.match(flowTour, /label: 'Tour', current: true/, 'the tour landing marks Tour active');
+assert.match(categoryShell, /<PageNav label="Flow tour"[\s\S]*label: 'Tour'[\s\S]*label: 'Tech Specs'[\s\S]*label: 'Enterprise'/, 'the Flow category pages keep the tour, specs and enterprise routes');
 // Approved Living Systems product proofs replace the racing photograph and
 // real screenshot on the flagship. Detailed tours keep their capture rails.
-assert.match(flowPageSource, /<FlowHero \/>/);
-assert.match(read('src/components/living/FlowHero.astro'), /DESCRIBE IT\.[\s\S]*FLOW[\s\S]*DRAWS IT\./, 'the Flow hero pitches Elements (operator 2026-10-27)');
+assert.match(flowPageSource, /<FlowHeroElementsMock \/>/, 'the Paper hero keeps the live, animated Elements walk (operator 2026-10-30)');
+assert.match(flowPageSource, /Describe it\.<br \/><em>Flow draws it\.<\/em>/, 'the Flow hero pitches Elements (operator 2026-10-27)');
+assert.match(read('src/components/flow/mocks/FlowHeroElementsMock.astro'), /data-story[\s\S]*hs-controls/, 'the hero mock animates and has its controls');
 // Operator 2026-10-27 removed the /flow/ Base band that carried it; the tour keeps the promise.
 assert.match(tour, /offline/i, 'the document tools retain their offline promise');
 assert.match(flow, /diff you approve|Review changes|Keep\/Revert|Keep and Revert/i, 'human review remains visible');
@@ -334,7 +336,7 @@ for (const slug of CATEGORY_SLUGS) {
   assert.match(categories, new RegExp(`slug: '${slug}'`), `${slug} must be registered in flow-categories.ts`);
 }
 // Real capture rail: every tour shot comes from the dev-build capture set.
-assert.match(flowPageSource, /import FlowHero from '\.\.\/components\/living\/FlowHero\.astro'/);
+assert.match(flowPageSource, /import FlowHeroElementsMock from '\.\.\/components\/flow\/mocks\/FlowHeroElementsMock\.astro'/);
 // The requirement is provenance, not a headcount: every picture on the page has
 // to come from the real development-build capture set (or a purpose-cut crop of
 // one) rather than a stock or mocked image. Asserting an exact number made an
@@ -450,9 +452,10 @@ assert.ok(categoryPages['writing-with-ai'].includes('<ChapterExpand />'), 'Expan
 assert.doesNotMatch(flow, /placement="flow-mid"/, 'the overview no longer carries the mid-tour CTA');
 assert.match(categoryShell, /<FlowWaitlist placement="flow-mid"/, 'category pages close with the flow-mid placement');
 assert.doesNotMatch(categoryShell, /placement="flow"[\s/>]/, 'a category page must not reuse the overview closer placement');
-assert.match(categoryShell, /aria-label="Flow tour categories"/, 'category pages carry the shared sub-nav');
-assert.match(categoryShell, /aria-current=\{c\.slug === cat\.slug \? 'page' : undefined\}/, 'the sub-nav marks the current category');
-assert.match(categoryShell, /href="\/flow\/tour\/"[\s\S]*Tour overview/, 'the category rail returns to the dedicated tour home');
+// Paper R4: the one PageNav row lists every category and marks this one.
+assert.match(categoryShell, /<PageNav label="Flow tour"/, 'category pages carry the shared sub-nav');
+assert.match(categoryShell, /current: c\.slug === cat\.slug/, 'the sub-nav marks the current category');
+assert.match(categoryShell, /href: '\/flow\/tour\/', label: 'Tour'/, 'the category rail returns to the dedicated tour home');
 // One offer, two surfaces: the placements must resolve to DIFFERENT form ids
 // (no duplicate DOM ids) and therefore different attribution sources.
 const waitlistComponent = read('src/components/sections/FlowWaitlist.astro');
@@ -498,7 +501,7 @@ assert.match(homePageSource, /Show how you work\.<br \/><em>AI follows it\.<br \
 assert.match(homePageSource, /<ConfirmBanner \/>/, 'confirmed-email landing behavior remains mounted');
 assert.match(homePageSource, /SoftwareApplication/);
 assert.match(homeHero, /The hero mock is never the LCP element: the H1 is\./, 'the Talk→Page mock never takes LCP');
-assert.match(read('src/components/living/FlowHero.astro'), /<FlowHeroElementsMock \/>/);
+assert.match(read('src/components/paper/FlowWindow.astro'), /named \? `\$\{f\.name\} drafted this\.` : 'Flow drafted this\.'/, 'the /flow/ window makes no Fold claim before the app ships Folds (D8)');
 assert.doesNotMatch(homePageSource, /FlowShot|FlowLaunchHomeHero|HomeRaceCapabilityAct|FlowIdeasPitStop|<Ecosystem|<HomeProof|<Founder/, 'Practice, measurements and builder bands were removed from the homepage 2026-09-29');
 assert.doesNotMatch(homePageSource, /<CapabilityRibbon/, 'the capability ribbon left the homepage 2026-10-05 (operator)');
 const homeOrder = ['<TalkPageHero','<Panel id="domains"','<Rail label="Elements"','<Panel id="paths"','<Panel id="clients"','class="pp-essay"','<TrustBand','class="pp-meet"','id="waitlist"'].map(marker => homePageSource.indexOf(marker));

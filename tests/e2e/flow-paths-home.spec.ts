@@ -1,26 +1,7 @@
 import { expect, test } from './fixtures';
 
-for (const width of [1440, 390]) {
-  test(`/flow/ Paths Home chips swap the featured path at ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 1000 });
-    await page.goto('/flow/');
-    const demo = page.locator('[data-paths-home]');
-    await demo.scrollIntoViewIfNeeded();
-    const visible = demo.locator('[data-panel]:not([hidden])');
-    await expect(visible).toHaveCount(1);
-    await expect(visible.getByRole('link', { name: /Read the walkthrough/ })).toHaveAttribute('href', '/flow/paths/investor-update/');
-    const agents = demo.getByRole('button', { name: 'Agents' });
-    await agents.click();
-    await expect(agents).toHaveAttribute('aria-pressed', 'true');
-    await expect(visible).toHaveCount(1);
-    await expect(visible.getByRole('link', { name: /Read the walkthrough/ })).toHaveAttribute('href', '/flow/paths/review-agents/');
-    // One chip per path, and no two chips share a label.
-    const labels = await demo.locator('[data-chip]').allTextContents();
-    expect(labels.length).toBe(new Set(labels).size);
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    expect(overflow).toBeLessThanOrEqual(0);
-  });
-}
+// Paper R4 (G-143, operator culling 2026-10-30): /flow/ no longer carries the
+// Paths Home mock; the home's Paths grid and /flow/paths/ show every Path.
 
 test('a path page renders its receipt and links back to all paths', async ({ page }) => {
   await page.goto('/flow/paths/investor-update/');
@@ -157,7 +138,8 @@ test('every "Why Flow" data point links to the path it was measured on', async (
   // Paper R2 (G-141): the home has no Why Flow stats; /flow/ keeps its own.
   for (const route of ['/flow/']) {
     await page.goto(route);
-    const links = page.locator('.wow figcaption a');
+    // Paper R4 (G-143): the measured numbers are a Paper stat strip.
+    const links = page.locator('.pp-stats figcaption a');
     expect(await links.count()).toBeGreaterThanOrEqual(3);
     for (const href of new Set(await links.evaluateAll((as) => as.map((a) => a.getAttribute('href'))))) {
       const res = await page.request.get(href!);

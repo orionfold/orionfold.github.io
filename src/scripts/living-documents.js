@@ -3,7 +3,9 @@ import { initFlowLibrary } from './flow-library.js';
 (() => {
   'use strict';
   function start() {
-    const root = document.querySelector('.ls');
+    // A Paper page frames several Living blocks; it names the shared root with
+    // data-ls-root, and every block inside follows the same motion setting.
+    const root = document.querySelector('[data-ls-root]') ?? document.querySelector('.ls');
     if (!root || root.dataset.ready) return;
     root.dataset.ready = 'true';
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -11,6 +13,7 @@ import { initFlowLibrary } from './flow-library.js';
     let tick = 0;
     function setMotion() {
       root.dataset.motion = paused ? 'off' : 'on';
+      for (const block of root.querySelectorAll('.ls')) block.dataset.motion = root.dataset.motion;
     }
     setMotion();
     motionQuery.addEventListener('change', (e) => {

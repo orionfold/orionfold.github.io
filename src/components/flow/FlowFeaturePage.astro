@@ -1,14 +1,22 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+// The Living Documents, Night Shift and Settings pages, in Paper since R4
+// (G-143): hero with the tour's crop, one row of jumps, the page's sections as
+// sheets, and one closing action (culling rubric, operator 2026-10-30).
+import PaperLayout from '../../layouts/PaperLayout.astro';
 import { FLOW_VERSION } from '../../lib/flow/flow-release';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
-import FlowSubNav from './FlowSubNav.astro';
+import PageNav from '../paper/PageNav.astro';
+import Fold from '../paper/Fold.astro';
 import FlowDetail from './FlowDetail.astro';
+import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
+import { FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT } from '../../data/flow-pricing';
 import { SITE } from '../../data/seo';
 import { ogMeta } from '../../data/og';
 import { FLOW_V16_TOURS } from '../../data/flow-v16';
 import '../../styles/flow.css';
+import '../../styles/living-base.css';
+import '../../styles/living-in-paper.css';
 interface Props { slug: 'living-documents' | 'night-shift' | 'settings'; title: string; description: string; }
 const { slug, title, description } = Astro.props;
 const tour = FLOW_V16_TOURS.find((item) => item.slug === slug)!;
@@ -20,37 +28,41 @@ const breadcrumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList
   { '@type': 'ListItem', position: 3, name: tour.label, item: `${SITE.url}${href}` },
 ] };
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={[breadcrumbs]}>
+<PaperLayout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={[breadcrumbs]}>
   <Nav />
-  <FlowSubNav active="tour" />
-  <main class="flow-page flow-page--category flow-feature-page -mt-20 overflow-x-clip sm:-mt-24">
-    <section class="flow-hero relative px-6 pb-14 pt-32 sm:pb-20 sm:pt-40" aria-labelledby="flow-feature-title">
-      <div class="flow-hero__grid" aria-hidden="true"></div><div class="flow-hero__glow" aria-hidden="true"></div>
-      <div class="relative mx-auto max-w-6xl grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <div>
-          <p class="of-eyebrow">Flow {FLOW_VERSION} · {tour.label}</p>
-          <h1 id="flow-feature-title" class="hero-gradient-text mt-4 font-display text-[clamp(2.6rem,5.5vw,4.6rem)] font-extrabold leading-[1.03] tracking-[-0.045em]">{tour.title}</h1>
-          <p class="mt-6 text-lg leading-relaxed text-text-muted sm:text-xl">{tour.description}</p>
-          <a href="/flow/tour/" class="of-text-action mt-7 inline-flex items-center gap-2">Explore the product tour <span aria-hidden="true">→</span></a>
-        </div>
-        <FlowDetail src={tour.image} alt={tour.alt} caption={tour.caption} sizes="(min-width: 1024px) 34rem, calc(100vw - 3rem)" />
+  <main id="main" class="pp-page flow-page flow-page--category flow-feature-page">
+    <section class="pp-hero pp-hero--inner" aria-labelledby="flow-feature-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Flow {FLOW_VERSION} · {tour.label}</span>
+        <h1 id="flow-feature-title" class="pp-h1">{tour.title}</h1>
+        <p class="pp-sub">{tour.description}</p>
+      </div>
+      <div class="pp-hero-stage tw-in-paper">
+        <FlowDetail src={tour.image} alt={tour.alt} caption={tour.caption} sizes="(min-width: 1024px) 34rem, calc(100vw - 2rem)" />
       </div>
     </section>
-    <nav class="border-y border-border/70 px-6 py-5" aria-label="Living Documents feature tours">
-      <div class="mx-auto flex max-w-6xl flex-wrap gap-x-8 gap-y-3">
-        {FLOW_V16_TOURS.map((item) => <a class="of-text-action" href={`/flow/${item.slug}/`} aria-current={item.slug === slug ? 'page' : undefined}>{item.label} <span aria-hidden="true">→</span></a>)}
-      </div>
-    </nav>
-    <slot />
-    <section class="border-t border-border/70 px-6 py-12 sm:py-16" aria-label="Explore more of Flow">
-      <div class="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2">
-        <div><p class="of-eyebrow">Make it yours</p><h2 class="of-display mt-3 text-3xl">Start with one recurring document.</h2><p class="mt-4 leading-relaxed text-text-muted">Choose Start with useful work, create your own copy, and inspect its Jobs in the Workbench. Replace the sample inputs before relying on the result.</p></div>
-        <div class="flex flex-col justify-center gap-4"><a class="of-text-action" href="/flow/tour/">Writing, files, models and evidence <span aria-hidden="true">→</span></a><a class="of-text-action" href="/flow/specifications/">Requirements and exact limits <span aria-hidden="true">→</span></a><a class="of-text-action" href="/flow/#get-flow">Compare Base and Pro <span aria-hidden="true">→</span></a></div>
-      </div>
+
+    <PageNav label="Living Documents feature tours" pages={[
+      { href: '/flow/', label: 'Overview' },
+      ...FLOW_V16_TOURS.map((item) => ({ href: `/flow/${item.slug}/`, label: item.label, current: item.slug === slug })),
+      { href: '/flow/tour/', label: 'Tour' },
+      { href: '/flow/specifications/', label: 'Tech Specs' },
+    ]} />
+
+    <div class="tw-in-paper pp-chapters">
+      <slot />
+    </div>
+
+    <section class="pp-closing" data-cta-placement="closing" aria-labelledby="flow-feature-closing">
+      <Fold id="tally" bob class="pp-closing-fold" />
+      <h2 id="flow-feature-closing">Start with one recurring document.</h2>
+      <p>Choose Start with useful work, make your own copy, and look at its Jobs before you run them.</p>
+      <a class="pp-btn" href={ORIONFOLD_FLOW_LIVE ? FLOW_DMG_URL : '/flow/#get-flow'} data-flow-download={ORIONFOLD_FLOW_LIVE ? `flow-${slug}` : undefined}>{ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the waitlist'}</a>
+      <small>{FLOW_SYSTEM_REQUIREMENT}</small>
     </section>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
 <style is:global>
   .flow-feature-section { padding: 4.5rem 1.5rem; border-top: 1px solid var(--color-border); }
   .flow-feature-section:nth-of-type(even) { background: color-mix(in oklch, var(--color-surface-raised) 35%, transparent); }

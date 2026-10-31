@@ -12,7 +12,10 @@ const body = (p) => {
 };
 // Operator 2026-10-27: Canvas is shown on both pages on purpose.
 const SHARED_ON_PURPOSE = new Set(['WowStat', 'FlowCanvasShowcase']);
-const sections = (html) => new Set([...html.matchAll(/<([A-Z]\w+)[\s/>]/g)].map((m) => m[1]).filter((c) => !SHARED_ON_PURPOSE.has(c)));
+// Paper frames (R4): a Panel or a Fold holds a section, it is not one. What sits
+// inside each frame is still compared.
+const PAPER_FRAMES = new Set(['Panel', 'Fold']);
+const sections = (html) => new Set([...html.matchAll(/<([A-Z]\w+)[\s/>]/g)].map((m) => m[1]).filter((c) => !SHARED_ON_PURPOSE.has(c) && !PAPER_FRAMES.has(c)));
 const stats = (html) => [...html.matchAll(/<WowStat ids=\{\[([^\]]*)\]/g)].flatMap((m) => m[1].match(/'[^']+'/g) ?? []);
 
 const home = body('src/pages/index.astro');
@@ -29,11 +32,13 @@ test('the homepage and /flow/ share no stat', () => {
 });
 
 test('/flow/ links only to sections it has, and Canvas has one', () => {
-  const nav = read('src/components/living/FlowNavigation.astro');
-  const onPage = nav.slice(nav.indexOf('const onPage'), nav.indexOf('const pages'));
-  assert.match(flow, /<FlowCanvasShowcase \/>/);
+  // Paper R4: the on-page jumps live in the page's PageNav (was FlowNavigation).
+  const page = read('src/pages/flow.astro');
+  const onPage = page.slice(page.indexOf('onPage={['), page.indexOf(']} pages={['));
+  assert.match(flow, /<FlowCanvasShowcase bare \/>/);
   assert.match(onPage, /'#flow-canvas'/);
   for (const gone of ['#flow-domains', '#agents-reviewed', '#import-publish', '#flow-elements']) assert.ok(!onPage.includes(`'${gone}'`), gone);
+  for (const [, id] of onPage.matchAll(/href: '#([\w-]+)'/g)) assert.match(page + read('src/components/living/FlowPlans.astro'), new RegExp(`id(=|: )["'{]?${id}["'}]`), `#${id} exists on the page`);
 });
 
 test('the homepage keeps Elements and drops Agents and Import & Publish (operator 2026-10-27)', () => {

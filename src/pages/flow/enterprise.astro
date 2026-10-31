@@ -1,7 +1,9 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import PaperLayout from '../../layouts/PaperLayout.astro';
+import PageNav from '../../components/paper/PageNav.astro';
+import '../../styles/living-base.css';
+import '../../styles/living-in-paper.css';
 import Nav from '../../components/Nav.astro';
-import FlowSubNav from '../../components/flow/FlowSubNav.astro';
 import Footer from '../../components/Footer.astro';
 import FlowWaitlist from '../../components/sections/FlowWaitlist.astro';
 import { SITE } from '../../data/seo';
@@ -52,7 +54,7 @@ const faqSchema = {
   })),
 };
 ---
-<Layout
+<PaperLayout
   title="Flow for enterprise · Govern AI in the document · Orionfold"
   description="Orionfold Flow puts AI scope, routing, approval, evidence, and cost inside the document, then keeps an inspectable receipt for every approved run."
   ogImage={og.image}
@@ -60,18 +62,24 @@ const faqSchema = {
   jsonLd={[breadcrumbs, faqSchema]}
 >
   <Nav />
-  <FlowSubNav active="enterprise" />
-  <main class="flow-page flow-page--category -mt-20 overflow-x-clip sm:-mt-24">
-    <section class="flow-hero relative px-6 pb-14 pt-32 sm:pt-40">
-      <div class="flow-hero__grid" aria-hidden="true"></div>
-      <div class="flow-hero__glow" aria-hidden="true"></div>
-      <div class="relative mx-auto max-w-4xl text-center">
-        <p class="of-eyebrow">Flow for enterprise</p>
-        <h1 class="hero-gradient-text mx-auto mt-4 max-w-3xl font-display text-[clamp(2.3rem,5.6vw,3.8rem)] font-extrabold leading-[1.06] tracking-[-0.05em]">Govern AI where the work happens.</h1>
-        <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-[1.55] text-text-muted sm:text-xl">Flow puts scope, routing, approval, evidence, and cost inside the document. Every approved run leaves a receipt your team can inspect.</p>
-        <p class="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-text-dim">{shippedCount} adoption patterns are built and running today. Knowledge mining remains a clearly marked direction.</p>
+  <main id="main" class="pp-page flow-page flow-page--category">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="flow-enterprise-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Flow for enterprise</span>
+        <h1 id="flow-enterprise-title" class="pp-h1">Govern AI where the work happens.</h1>
+        <p class="pp-sub">Flow puts scope, routing, approval, evidence, and cost inside the document. Every approved run leaves a receipt your team can inspect.</p>
+        <p class="pp-proof"><b>Today</b> {shippedCount} adoption patterns are built and running today. Knowledge mining remains a clearly marked direction.</p>
       </div>
     </section>
+
+    <PageNav label="Flow pages" pages={[
+      { href: '/flow/', label: 'Overview' },
+      { href: '/flow/tour/', label: 'Tour' },
+      { href: '/flow/specifications/', label: 'Tech Specs' },
+      { href: '/flow/enterprise/', label: 'Enterprise', current: true },
+    ]} />
+
+    <div class="tw-in-paper pp-chapters">
 
     <section class="border-t border-border/70 px-6 py-14 sm:py-20" aria-labelledby="enterprise-system-heading">
       <div class="mx-auto max-w-6xl">
@@ -140,9 +148,11 @@ const faqSchema = {
       </div>
     </section>
 
-    <div id="waitlist" class="scroll-mt-24">
+    </div>
+
+    <div id="waitlist" class="ls ls-in-paper pp-waitlist">
       <FlowWaitlist placement="flow-enterprise" storyHref={flowStoryHref} />
     </div>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>

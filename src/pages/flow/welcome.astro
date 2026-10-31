@@ -17,25 +17,25 @@
 // NOINDEX. A post-checkout page has nothing to offer search, and the URL
 // carries a session id. The sitemap filter already excludes /thanks/ pages by
 // convention; this one says so in its own head as well.
-import Layout from '../../layouts/Layout.astro';
+import PaperLayout from '../../layouts/PaperLayout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
 ---
 
-<Layout
+<PaperLayout
   title="Welcome to Flow Pro"
   description="Your Flow Pro subscription is active."
   noindex={true}
 >
   <Nav />
-  <main id="main">
+  <main id="main" class="pp-page tw-in-paper">
     <section class="px-6 py-20 sm:py-28">
       <div class="mx-auto max-w-2xl text-center">
         <p class="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-accent-ink">
           Payment received
         </p>
-        <h1 class="mt-4 text-balance text-3xl font-bold leading-[1.15] sm:text-4xl">
+        <h1 class="pp-h1 mt-4 text-balance">
           Welcome to Flow Pro
         </h1>
 
@@ -81,8 +81,8 @@ import { ORIONFOLD_FLOW_LIVE } from '../../data/launch.ts';
       </div>
     </section>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
 
 {ORIONFOLD_FLOW_LIVE && (
   <script is:inline>

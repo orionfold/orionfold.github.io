@@ -10,7 +10,8 @@ const homeSections=['TalkPageHero','Statement','TrustBand','Roster','PricingTabl
 assert.doesNotMatch(home,/HomeContinuity|HomeDocumentWorkshop|HomeIdeas|ids=\{\['cents'\]\}/);
 const positions=homeSections.map(name=>home.indexOf(`<${name}`));
 assert.ok(positions.every(i=>i>=0));assert.deepEqual([...positions].sort((a,b)=>a-b),positions);
-for(const name of ['FlowLibrary','FlowPlans','FlowFaq'])assert.ok(flow.includes(`<${name} />`));
+// Paper R4: the panel frames each one, so they render bare.
+for(const name of ['FlowLibrary','FlowPlans','FlowFaq'])assert.match(flow,new RegExp(`<${name}\\b[^>]*/>`),name);
 // Operator 2026-10-27: these seven /flow/ sections were removed.
 for(const name of ['FlowRhythm','FlowDocuments','FlowIdeas','FlowRouting','FlowReceipts','FlowMorningBriefing','FlowEverydayCraft'])assert.ok(!flow.includes(`<${name} />`),name);
 const concept=read('src/pages/flow/ideas-in-motion.astro');

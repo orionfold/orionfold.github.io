@@ -1,0 +1,12 @@
+---
+// A quiet row of jumps under a page hero: sections on this page, a rule, then
+// the sibling pages. Text only, so it reads as an index rather than a toolbar.
+export interface PageNavLink { href: string; label: string; current?: boolean }
+interface Props { label: string; onPage?: PageNavLink[]; pages?: PageNavLink[] }
+const { label, onPage = [], pages = [] } = Astro.props;
+---
+<nav class="pp-pagenav" aria-label={label}>
+  {onPage.length > 0 && <div role="group" aria-label="On this page">{onPage.map((l) => <a href={l.href}>{l.label}</a>)}</div>}
+  {onPage.length > 0 && pages.length > 0 && <span class="pp-pagenav-rule" aria-hidden="true"></span>}
+  {pages.length > 0 && <div role="group" aria-label="More pages">{pages.map((l) => <a href={l.href} aria-current={l.current ? 'page' : undefined}>{l.label} <span aria-hidden="true">→</span></a>)}</div>}
+</nav>

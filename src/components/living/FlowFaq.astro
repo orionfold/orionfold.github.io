@@ -1,11 +1,14 @@
 ---
 import faqs from '../../data/living-faq.json';
+// `bare` drops the heading for a page that frames the questions itself (Paper, R4).
+interface Props { bare?: boolean }
+const { bare = false } = Astro.props;
 ---
 <span id="deeper-heading" class="ls-anchor-alias" aria-hidden="true"></span>
 <span id="press-heading" class="ls-anchor-alias" aria-hidden="true"></span>
 
-<section class="ls-container ls-faq" aria-labelledby="faq-heading">
-  <h2 id="faq-heading">A FEW THINGS<br /><span class="ls-stroke">WORTH KNOWING.</span></h2>
+<section class="ls-container ls-faq" aria-labelledby={bare ? undefined : 'faq-heading'} aria-label={bare ? 'Questions about Flow' : undefined}>
+  {!bare && <h2 id="faq-heading">A FEW THINGS<br /><span class="ls-stroke">WORTH KNOWING.</span></h2>}
   <div>
     {faqs.map(faq => (
       <details>

@@ -153,3 +153,10 @@ test('personal Folds: eight shapes outside the cast, temperament lines, colorway
   const castPalettes = new Set(FOLDS.map((f) => `${f.a}${f.b}${f.c}`));
   for (const c of COLORWAYS) assert.ok(castPalettes.has(`${c.a}${c.b}${c.c}`), `${c.id} comes from a cast palette`);
 });
+
+test('Paper pages never render the Living footer download card (it is unstyled there and overflows phones)', () => {
+  const pages = [...walk(path.join(root, 'src'))].filter((f) => f.endsWith('.astro')).map((f) => [path.relative(root, f), readFileSync(f, 'utf8')])
+    .filter(([, src]) => /<PaperLayout\b/.test(src) && /<Footer\b/.test(src));
+  assert.ok(pages.length >= 5, 'Paper pages with a footer exist');
+  for (const [file, src] of pages) assert.match(src, /<Footer showDownload=\{false\}/, `${file}: pass showDownload={false}`);
+});

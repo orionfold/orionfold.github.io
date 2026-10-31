@@ -1,0 +1,88 @@
+/* Interim bridge (R4, G-143): Living Systems mocks framed inside Paper panels.
+ * The panel owns the heading, the width and the background, so the embedded
+ * section drops its own band, padding and rules. Paper tokens are read here,
+ * never redefined. Deleted with the Living styles in R8 (G-147). */
+/* Tour chapter titles (.of-display) set in Fraunces, a real 300 weight. */
+.paper .tw-in-paper .of-display { font-family: var(--pp-serif); font-weight: 300; letter-spacing: -.02em; }
+.paper .ls-in-paper { background: transparent; overflow: visible; color: var(--pp-ink); }
+.paper .ls-in-paper .ls-container,
+.paper .ls-in-paper .fc,
+.paper .ls-in-paper .fcv,
+.paper .ls-in-paper .ls-library-stage { width: auto; margin-inline: 0; }
+.paper .ls-in-paper .fc,
+.paper .ls-in-paper .fcv,
+.paper .ls-in-paper .ls-library,
+.paper .ls-in-paper .ls-plans,
+.paper .ls-in-paper .ls-faq,
+.paper .ls-in-paper .reel { padding: 0; border: 0; background: transparent; }
+.paper .ls-in-paper .reel-inner { width: auto; grid-template-columns: 1fr; }
+.paper .ls-in-paper .ls-faq { grid-template-columns: 1fr; }
+.paper .ls-in-paper .ls-plan-grid { border-color: var(--pp-line); }
+.paper .ls-in-paper .ls-plan-grid h3,
+.paper .ls-in-paper .ls-curated-heading h3 { font-family: var(--pp-serif); font-weight: 300; letter-spacing: -.01em; text-transform: none; }
+.paper .ls-in-paper .ls-library-stage { margin-top: 40px; }
+/* Paper has one solid action color, ink; Living red and yellow stay out. */
+.paper .ls-in-paper .ls-button,
+.paper .ls-in-paper .of-primary-action { background: var(--pp-ink); border-color: var(--pp-ink); color: var(--pp-white); border-radius: var(--pp-r-2); }
+.paper .ls-in-paper .ls-example-tabs,
+.paper .ls-in-paper .ls-library-mobile-nav { background: var(--pp-white); }
+.paper .ls-in-paper .ls-example-tabs button[aria-selected='true'] { background: var(--pp-paper); border-color: var(--pp-line); border-bottom-color: var(--pp-paper); color: var(--pp-ink); }
+.paper .ls-in-paper .ls-example-tabs button[aria-selected='true'] > span { color: var(--pp-teal); }
+.paper .ls-in-paper .ls-library-viewer { border-color: var(--pp-line); box-shadow: var(--pp-shadow-window); }
+/* On the narrowest phones the mocks borrow the panel's side padding. */
+@media (max-width: 400px) { .paper section > .ls-in-paper { margin-inline: -10px; } }
+/* The canvas lens label sits on a tinted panel; ink keeps it above AA. */
+.paper .ls-in-paper .fcv-lens figcaption { --teal: var(--pp-ink-2); }
+/* Plan details wait behind "What … includes", as the home's plans do. */
+.paper .ls-in-paper .ls-plan-more { margin-top: 18px; border-top: 1px solid var(--pp-line); }
+.paper .ls-in-paper .ls-plan-more summary { cursor: pointer; padding: 12px 0; font: 500 14px/1.3 var(--pp-sans); color: var(--pp-ink); }
+.paper .ls-in-paper .ls-plan-more summary em { font-style: normal; color: var(--pp-ink-3); margin-left: 4px; }
+.paper .ls-in-paper .ls-plan-more ul { min-height: 0; margin: 0 0 8px; }
+.paper .ls-in-paper .ls-plan-terms { margin-top: 28px; }
+.paper .ls-in-paper .ls-plan-terms .ls-plan-addons { margin-top: 4px; }
+
+/* Tailwind-built chapters (the Flow tour) inside a Paper page: the site's
+ * tokens point at Paper values, so type, color and rules follow Paper while
+ * the real product crops and their captions stay as they are. */
+.paper .tw-in-paper {
+  --color-primary: var(--pp-teal);
+  --color-accent: var(--pp-teal);
+  --color-accent-ink: var(--pp-teal);
+  --color-accent-hover: var(--pp-ink);
+  --color-text: var(--pp-ink);
+  --color-text-muted: var(--pp-ink-2);
+  --color-text-dim: var(--pp-ink-3);
+  --color-muted: var(--pp-ink-2);
+  --color-faint: var(--pp-ink-3);
+  --color-surface: var(--pp-paper);
+  --color-bg: var(--pp-paper);
+  --color-surface-raised: var(--pp-white);
+  --color-raised: var(--pp-white);
+  --color-border: var(--pp-line);
+  --color-border-strong: var(--pp-line);
+  --font-display: var(--pp-serif);
+}
+.paper .tw-in-paper .of-lede { font-family: var(--pp-serif); }
+
+/* The closing download/waitlist card in Paper: a quiet sheet, serif title,
+ * one ink action. The origami art stays on Living pages. */
+.paper .ls-in-paper .living-paper-cta { background: var(--pp-white); background-image: none; clip-path: none; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); color: var(--pp-ink); overflow: hidden; }
+.paper .ls-in-paper .living-origami,
+.paper .ls-in-paper .living-paper-cta picture,
+.paper .ls-in-paper .living-paper-cta img { display: none; }
+.paper .ls-in-paper .living-paper-cta__inner { width: auto; min-height: 0; padding: 48px clamp(20px, 5vw, 64px); }
+.paper .ls-in-paper .living-paper-cta__copy h2 { font: 300 clamp(32px, 3.6vw, 52px)/1.04 var(--pp-serif); text-transform: none; letter-spacing: -.02em; margin: 10px 0 14px; color: var(--pp-ink); }
+.paper .ls-in-paper .living-paper-cta__copy .ls-stroke { color: var(--pp-ink-3); background: none; -webkit-text-stroke: 0; }
+.paper .ls-in-paper .living-paper-cta__copy > p { color: var(--pp-ink-2); }
+.paper .ls-in-paper .living-paper-cta__copy > .living-eyebrow { color: var(--pp-ink-3); }
+.paper .ls-in-paper .living-paper-cta__copy .ls-stroke::before,
+.paper .ls-in-paper .living-paper-cta__copy .ls-stroke::after { display: none; }
+.paper .ls-in-paper .living-paper-cta .of-primary-action { font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; min-height: 48px; }
+.paper .ls-in-paper .living-paper-cta .of-waitlist-caption { font: 400 13px/1.5 var(--pp-sans); letter-spacing: 0; text-transform: none; white-space: normal; color: var(--pp-ink-3); max-width: 32ch; }
+/* AA on Paper's tinted sheets: kickers and state pills use ink tones, and a
+ * solid action is ink with white text (the site's one solid action color). */
+.paper .tw-in-paper .flow-kicker { color: var(--pp-ink-2); }
+.paper .tw-in-paper .of-primary-action { background: var(--pp-ink); border-color: var(--pp-ink); color: var(--pp-white); }
+.paper .tw-in-paper .flow-spec-state--ready { color: var(--pp-add-ink); }
+.paper .tw-in-paper .flow-spec-state--detected { color: var(--pp-ink-2); }
+.paper .tw-in-paper .flow-cat-card :is(h2, h3) { font-family: var(--pp-serif); font-weight: 400; letter-spacing: -.01em; }

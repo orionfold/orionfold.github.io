@@ -6,6 +6,12 @@ import FlowEnterpriseContact from '../flow/FlowEnterpriseContact.astro';
 import { FLOW, formatUsd } from '../../data/commerce';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
 import { FLOW_CANCEL_TERMS, FLOW_TRIAL_TERMS, FLOW_ADDONS, FLOW_ADDON_TERMS } from '../../data/flow-pricing';
+// `bare` drops the heading for a page that frames the plans itself (Paper, R4).
+interface Props { bare?: boolean }
+const { bare = false } = Astro.props;
+const baseItems = ['Write, search, organize and chart Markdown', 'Markdown, tables, pictures and diagrams', 'Deterministic Jobs and Night Shift', 'Morning Briefing and Keep/Revert review', 'Elements, Skills and the canvas, and any Domain you bring in from GitHub', `${FLOW_COUNTS.livingDocuments} Living Documents and ${FLOW_COUNTS.paths} paths to start from`];
+const proItems = ['Everything in Base', 'Local Overnight notes on changed work', 'Model-assisted data-definition drafts', 'Model-powered Ideas actions, daytime Agency and analysis', 'Chat on a folder or a Domain, and Suggest Ideas', 'The door for your own agents in Terminal', 'Local or configured cloud models; provider usage is separate'];
+// Paper (bare): each list waits behind "What … includes", as the home's plans do.
 ---
 <span id="pricing-heading" class="ls-anchor-alias" aria-hidden="true"></span>
 <span id="flow-page-waitlist-heading" class="ls-anchor-alias" aria-hidden="true"></span>
@@ -15,28 +21,21 @@ import { FLOW_CANCEL_TERMS, FLOW_TRIAL_TERMS, FLOW_ADDONS, FLOW_ADDON_TERMS } fr
 </span>
 <span class="ls-anchor-alias" id="waitlist">
 </span>
-<div class="ls-section-heading">
+{bare ? <p class="ls-trial-note">{FLOW_TRIAL_TERMS} A Pro Day counts when you use a paid feature. No credit card.</p> : <div class="ls-section-heading">
 <p class="ls-eyebrow">START WITH THE ROUTINE</p>
 <h2>ADD THE<br/>
 <span class="ls-stroke">INTERPRETATION.</span>
 </h2>
 <p>Keep data current for free. Add model-powered work with Pro.</p>
 <p class="ls-trial-note">{FLOW_TRIAL_TERMS} A Pro Day counts when you use a paid feature. No credit card.</p>
-</div>
+</div>}
 <div class="ls-plan-grid">
 <article data-plan="base">
 <span class="ls-eyebrow">FLOW BASE</span>
 <h3>A useful place<br/>to begin.</h3>
 <p class="ls-plan-price">Free forever<small>No account. No expiry. No private format.</small>
 </p>
-<ul>
-<li>Write, search, organize and chart Markdown</li>
-<li>Markdown, tables, pictures and diagrams</li>
-<li>Deterministic Jobs and Night Shift</li>
-<li>Morning Briefing and Keep/Revert review</li>
-<li>Elements, Skills and the canvas, and any Domain you bring in from GitHub</li>
-<li>{FLOW_COUNTS.livingDocuments} Living Documents and {FLOW_COUNTS.paths} paths to start from</li>
-</ul>
+{bare ? <details class="ls-plan-more"><summary>What Base includes <em>{baseItems.length}</em></summary><ul>{baseItems.map((i) => <li>{i}</li>)}</ul></details> : <ul>{baseItems.map((i) => <li>{i}</li>)}</ul>}
 <div class="ls-plan-actions"><FlowDownloadCta source="flow-living-documents" /></div>
 </article>
 <article data-plan="pro">
@@ -44,25 +43,23 @@ import { FLOW_CANCEL_TERMS, FLOW_TRIAL_TERMS, FLOW_ADDONS, FLOW_ADDON_TERMS } fr
 <h3>Intelligence for<br/>the continuing work.</h3>
 {ORIONFOLD_FLOW_LIVE && <p class="ls-plan-price">{formatUsd(FLOW.monthly.amount)} / month<small>Or {formatUsd(FLOW.annual.amount)} / year · one person, your own Macs</small>
 </p>}
-<ul>
-<li>Everything in Base</li>
-<li>Local Overnight notes on changed work</li>
-<li>Model-assisted data-definition drafts</li>
-<li>Model-powered Ideas actions, daytime Agency and analysis</li>
-<li>Chat on a folder or a Domain, and Suggest Ideas</li>
-<li>The door for your own agents in Terminal</li>
-<li>Local or configured cloud models; provider usage is separate</li>
-</ul>
+{bare ? <details class="ls-plan-more"><summary>What Pro includes <em>{proItems.length}</em></summary><ul>{proItems.map((i) => <li>{i}</li>)}</ul></details> : <ul>{proItems.map((i) => <li>{i}</li>)}</ul>}
 <div class="ls-plan-actions"><div class="ls-plan-buttons"><FlowEnterpriseContact /><a class="ls-plan-rfp" href="/proposal/#flow" data-flow-rfp><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg>Request for proposal</a></div><p class="ls-plan-payment-note">Or pay in-app when ready. A proposal puts Flow seats on one itemized document for a purchase order.</p></div>
 </article>
 </div>
-<div class="ls-plan-addons">
+{bare ? <details class="ls-plan-more ls-plan-terms"><summary>Add-ons and terms</summary><div class="ls-plan-addons">
 <h3>Add-ons to Flow Pro</h3>
 {FLOW_ADDONS.map((addon) => <p><strong>{addon.name}</strong> — {addon.description}</p>)}
 <p>{FLOW_ADDON_TERMS}</p>
 </div>
 <p class="ls-plan-note">Night Shift model work stays on your Mac. Configured cloud models remain a separate choice for daytime work.</p>
-<p class="ls-offer-footnote">{FLOW_CANCEL_TERMS} When Pro ends, model-powered actions stop. Your Markdown files stay readable and editable. Import and Publish require their add-ons after the trial. Read receipts remain accessible. <a href="/promise/">Read our promise</a> and <a href="/flow/specifications/#plans">licensing details</a>.</p>
+<p class="ls-offer-footnote">{FLOW_CANCEL_TERMS} When Pro ends, model-powered actions stop. Your Markdown files stay readable and editable. Import and Publish require their add-ons after the trial. Read receipts remain accessible. <a href="/promise/">Read our promise</a> and <a href="/flow/specifications/#plans">licensing details</a>.</p></details> : <Fragment><div class="ls-plan-addons">
+<h3>Add-ons to Flow Pro</h3>
+{FLOW_ADDONS.map((addon) => <p><strong>{addon.name}</strong> — {addon.description}</p>)}
+<p>{FLOW_ADDON_TERMS}</p>
+</div>
+<p class="ls-plan-note">Night Shift model work stays on your Mac. Configured cloud models remain a separate choice for daytime work.</p>
+<p class="ls-offer-footnote">{FLOW_CANCEL_TERMS} When Pro ends, model-powered actions stop. Your Markdown files stay readable and editable. Import and Publish require their add-ons after the trial. Read receipts remain accessible. <a href="/promise/">Read our promise</a> and <a href="/flow/specifications/#plans">licensing details</a>.</p></Fragment>}
 </section>
 
 <style>

@@ -1,33 +1,39 @@
 ---
-import Layout from '../layouts/Layout.astro';
+// /flow/ in Paper (R4, G-143). The hero is the live Elements walk (operator
+// 2026-10-30: the hero mock must be the real, animated product); the product's
+// own high-fidelity mocks sit inside
+// Paper panels (their Living styles load through the interim bridge sheet
+// until R8). Nothing here is shared with the home page (operator 2026-10-27).
+import PaperLayout from '../layouts/PaperLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { ogMeta } from '../data/og';
-import { FLOW_COUNTS } from '../lib/flow/flow-counts';
 import { FLOW_VERSION } from '../lib/flow/flow-release';
 import { SITE, PERSON } from '../data/seo';
+import { ORIONFOLD_FLOW_LIVE } from '../data/launch';
+import { FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT } from '../data/flow-pricing';
 import '../styles/living-base.css';
 import '../styles/living-flow.css';
+import '../styles/living-in-paper.css';
 import faqs from '../data/living-faq.json';
-import FlowHero from '../components/living/FlowHero.astro';
-import FlowNavigation from '../components/living/FlowNavigation.astro';
-import FlowDataDefinition from '../components/living/FlowDataDefinition.astro';
+import Panel from '../components/paper/Panel.astro';
+import Fold from '../components/paper/Fold.astro';
+import FlowHeroElementsMock from '../components/flow/mocks/FlowHeroElementsMock.astro';
+import PageNav from '../components/paper/PageNav.astro';
+import StatStrip from '../components/paper/StatStrip.astro';
+import FlowChatShowcase from '../components/flow/FlowChatShowcase.astro';
+import FlowCanvasShowcase from '../components/flow/FlowCanvasShowcase.astro';
+import JobsWorkbenchDemo from '../components/living/JobsWorkbenchDemo.astro';
+import FlowLibrary from '../components/living/FlowLibrary.astro';
+import FlowPlans from '../components/living/FlowPlans.astro';
+import FlowFaq from '../components/living/FlowFaq.astro';
+import FlowReel from '../components/flow/FlowReel.astro';
 import FlowDocumentAnchors from '../components/living/FlowDocumentAnchors.astro';
 import FlowIdeasAnchors from '../components/living/FlowIdeasAnchors.astro';
 import FlowRoutingAnchors from '../components/living/FlowRoutingAnchors.astro';
 import FlowReceiptsAnchors from '../components/living/FlowReceiptsAnchors.astro';
-import FlowLibrary from '../components/living/FlowLibrary.astro';
-import PathsHomeMock from '../components/flow/paths/PathsHomeMock.astro';
-import FlowProof from '../components/living/FlowProof.astro';
-import WowStat from '../components/flow/WowStat.astro';
-import FlowPlans from '../components/living/FlowPlans.astro';
-import FlowFaq from '../components/living/FlowFaq.astro';
-import FlowClosing from '../components/living/FlowClosing.astro';
-import FlowReel from '../components/flow/FlowReel.astro';
-import FlowChatShowcase from '../components/flow/FlowChatShowcase.astro';
-import FlowCanvasShowcase from '../components/flow/FlowCanvasShowcase.astro';
 import { flowReelSchema } from '../data/flow-reel';
-const title = "Flow for Mac \u00b7 Describe it. Flow draws it.";
+const title = "Flow for Mac · Describe it. Flow draws it.";
 const description = `Flow ${FLOW_VERSION} for Mac. Ideas picks the Element that fits each section, and the canvas shows where every sentence comes from. Your files, your call. Base is free.`;
 const og = ogMeta('/flow/');
 const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication',name:'Orionfold Flow',applicationCategory:'ProductivityApplication',operatingSystem:'macOS',description,url:`${SITE.url}/flow/`,image:`${SITE.url}${og.image}`,author:PERSON,brand:{'@type':'Brand',name:'Orionfold'}};
@@ -37,34 +43,94 @@ const faqSchema = {
 };
 const reelLede = 'Give a document a job. Flow runs it on your Mac, even overnight. Then you keep or undo each change.';
 const reelSchema = flowReelSchema(SITE.url, reelLede);
+const downloadHref = ORIONFOLD_FLOW_LIVE ? FLOW_DMG_URL : '#get-flow';
+const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the waitlist';
+
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ls-page-flow" jsonLd={[pageSchema, faqSchema, reelSchema]}>
+<PaperLayout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={[pageSchema, faqSchema, reelSchema]}>
   <Nav />
-  <main id="main" class="ls-main">
-    <FlowHero />
-    <FlowNavigation />
-    <FlowChatShowcase />
-    <FlowCanvasShowcase />
-    <WowStat ids={['tokens']} tone="ink" />
-    <FlowReel heading="See Flow work in about a minute." lede={reelLede} />
-    <PathsHomeMock />
-    <WowStat ids={['figures', 'footnotes']} />
-    <FlowDataDefinition />
-    <WowStat ids={['refresh', 'cents', 'market']} />
-    {/* Old links into removed sections (operator 2026-10-27) still land here. */}
-    <span id="how-it-works" class="ls-anchor-alias" aria-hidden="true"></span><span id="flow-overview-heading" class="ls-anchor-alias" aria-hidden="true"></span><span id="tour" class="ls-anchor-alias" aria-hidden="true"></span><span id="gallery" class="ls-anchor-alias" aria-hidden="true"></span>
+  <main id="main" class="pp-page" data-ls-root>
+    <section class="pp-hero pp-hero--flow" aria-labelledby="flow-landing-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Flow {FLOW_VERSION} for Mac</span>
+        <h1 id="flow-landing-title" class="pp-h1">Describe it.<br /><em>Flow draws it.</em></h1>
+        <p class="pp-sub">Write what you need in plain words. Flow picks the right chart, table or diagram for each section, shows where every sentence came from, and waits for your yes.</p>
+        <div class="pp-hero-cta">
+          <a class="pp-btn" href={downloadHref} data-flow-download={ORIONFOLD_FLOW_LIVE ? 'flow-hero' : undefined}>{downloadLabel}</a>
+          <a class="pp-btn pp-btn--ghost" href="#flow-reel">Watch it in a minute</a>
+          <small>Base is free. Pro comes with ten Pro Days to try.</small>
+        </div>
+      </div>
+      <div class="pp-hero-stage">
+        <div class="ls ls-in-paper pp-hero-mock"><FlowHeroElementsMock /></div>
+      </div>
+    </section>
+
+    <PageNav label="Flow product navigation" onPage={[
+      { href: '#flow-chat', label: 'Chat' },
+      { href: '#flow-canvas', label: 'Canvas' },
+      { href: '#jobs-workbench', label: 'Jobs' },
+      { href: '#living-library', label: 'Library' },
+      { href: '#pricing', label: 'Pricing' },
+    ]} pages={[
+      { href: '/flow/elements/', label: 'Elements' },
+      { href: '/domains/', label: 'Flow Domains' },
+      { href: '/flow/tour/', label: 'Tour' },
+      { href: '/flow/specifications/', label: 'Tech specs' },
+      { href: '/flow/enterprise/', label: 'Enterprise' },
+    ]} />
+
+    {/* #pricing, #get-flow and #waitlist live inside FlowPlans. Old links into removed sections (operator 2026-10-27) still land on this page. */}
+    <span id="how-it-works" aria-hidden="true"></span><span id="flow-overview-heading" aria-hidden="true"></span><span id="tour" aria-hidden="true"></span><span id="gallery" aria-hidden="true"></span><span id="flow-capability-ticker-title" aria-hidden="true"></span>
     <FlowDocumentAnchors />
     <FlowIdeasAnchors />
     <FlowRoutingAnchors />
     <FlowReceiptsAnchors />
-    <FlowLibrary />
-    <FlowProof />
-    <FlowPlans />
-    <FlowFaq />
-    <FlowClosing />
+
+    <Panel id="flow-chat" seam="Flow Chat" fold="orri" title="Talk to your folder.<br />Get a finished book." lede="Tell Flow Chat what you want in plain words. Each step goes to the right model. That can be the plan you already pay for, a cloud key for pictures, or your Mac. Every change waits for your yes.">
+      <div class="ls ls-in-paper"><FlowChatShowcase bare /></div>
+    </Panel>
+
+    <Panel id="flow-canvas" seam="Canvas" fold="atlas" tinted title="See where every<br />word came from." lede="Press Canvas and the page becomes a map. It shows the files it rests on, the source behind each sentence, and every saved version.">
+      <div class="ls ls-in-paper"><FlowCanvasShowcase bare /></div>
+      <p class="pp-panel-link"><a href="/flow/paths/the-canvas/">Walk through one brief, three ways <span aria-hidden="true">→</span></a></p>
+    </Panel>
+
+    <StatStrip title="Measured on a Mac" ids={['tokens', 'figures', 'refresh']} note="Each number comes from a walk you can read, step by step." />
+
+    <Panel id="jobs-workbench" seam="Jobs" fold="tally" title="New numbers in.<br />Your call on what stays." lede="A document can carry its own Jobs. They gather new figures, redraw the table and chart, and draft what changed. Then you keep or undo each part.">
+      <div class="ls ls-in-paper"><JobsWorkbenchDemo /></div>
+      <p class="pp-panel-note">Add interview I12, run Research Refresh, then open the changed table and chart.</p>
+    </Panel>
+
+    <section class="pp-reel" id="flow-reel" aria-labelledby="flow-reel-title">
+      <h2 id="flow-reel-title">See Flow work in about a minute.</h2>
+      <p>{reelLede}</p>
+      <div class="ls ls-in-paper"><FlowReel id="flow-reel-player" bare /></div>
+    </section>
+
+    <Panel id="living-library" seam="Included with Flow" fold="hop" tinted title="Seven documents<br />that keep themselves current." lede="Each one carries its own sources and Jobs. Open one, scroll it, and see what changes when new numbers arrive.">
+      <div class="ls ls-in-paper"><FlowLibrary bare picker={false} /></div>
+    </Panel>
+
+    <Panel seam="Pricing" fold="clause" title="Base is free.<br />Pro does the thinking." lede="Base keeps your data current, never expires and needs no account. Pro adds the AI work, on your Macs.">
+      <div class="ls ls-in-paper"><FlowPlans bare /></div>
+    </Panel>
+
+    <Panel id="faq" seam="Questions" fold="shell" tinted title="A few things<br />worth knowing.">
+      <div class="ls ls-in-paper"><FlowFaq bare /></div>
+    </Panel>
+
+    <section class="pp-closing" data-cta-placement="closing" aria-labelledby="flow-closing-heading">
+      <Fold id="ember" bob class="pp-closing-fold" />
+      <h2 id="flow-closing-heading">Make your next document a living one.</h2>
+      <p>Bring your notes, sources and the work you do every month.</p>
+      <a class="pp-btn" href={downloadHref} data-flow-download={ORIONFOLD_FLOW_LIVE ? 'flow-living-documents' : undefined}>{downloadLabel}</a>
+      <small>{FLOW_SYSTEM_REQUIREMENT}</small>
+    </section>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>
 <script>
   import "../scripts/living-documents.js";
 </script>
