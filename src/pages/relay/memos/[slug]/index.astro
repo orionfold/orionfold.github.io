@@ -9,10 +9,13 @@
 // (contract: chrome is ours, Relay ships content only). Mirrors the
 // /relay/docs/<slug>/ idiom, plus the story-page interstitial mount mechanism.
 import { getCollection, render, type CollectionEntry } from 'astro:content';
-import Layout from '../../../../layouts/Layout.astro';
+import PaperLayout from '../../../../layouts/PaperLayout.astro';
+import PaperLongform from '../../../../components/paper/PaperLongform.astro';
+import PageNav from '../../../../components/paper/PageNav.astro';
+import Fold from '../../../../components/paper/Fold.astro';
+import '../../../../styles/living-in-paper.css';
 import Nav from '../../../../components/Nav.astro';
 import Footer from '../../../../components/Footer.astro';
-import RelaySubNav from '../../../../components/relay/RelaySubNav.astro';
 import RelayCtaBand from '../../../../components/relay/RelayCtaBand.astro';
 import { ogMeta } from '../../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../../data/seo';
@@ -32,7 +35,8 @@ const { memo, prev, next } = Astro.props as {
   prev: Entry | null;
   next: Entry | null;
 };
-const { Content } = await render(memo);
+const { Content, headings } = await render(memo);
+const minutes = Math.max(1, Math.ceil((memo.body ?? '').split(/\s+/).filter(Boolean).length / 230));
 const { title, summary, series, date, difficulty } = memo.data;
 
 // The hero SVG lives next to the article (signature.svg); read it raw and inline
@@ -41,6 +45,14 @@ const { title, summary, series, date, difficulty } = memo.data;
 const heroSvg = memoSignatureHtml(memo);
 
 const og = ogMeta('/relay/');
+const RELAY_PAGES = [
+  { href: '/relay/', label: 'Overview' },
+  { href: '/relay/host/', label: 'Host' },
+  { href: '/relay/demo/', label: 'Demo' },
+  { href: '/relay/docs/', label: 'Docs' },
+  { href: '/relay/api/', label: 'API' },
+  { href: '/relay/memos/', label: 'Memos', current: true },
+];
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const isHostSeries = series === 'Relay Host & Cells';
 const cta = isHostSeries
@@ -83,7 +95,7 @@ const breadcrumbSchema = {
   ],
 };
 ---
-<Layout
+<PaperLayout
   title={`${title} · ${series} · Orionfold`}
   description={summary}
   ogImage={og.image}
@@ -91,40 +103,19 @@ const breadcrumbSchema = {
   jsonLd={[articleSchema, breadcrumbSchema]}
 >
   <Nav />
-  <RelaySubNav active="memos" />
-  <main class="px-6 pt-10 pb-24">
-    <div class="mx-auto max-w-2xl">
-      <a href="/relay/memos/" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-primary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
-        {series}
-      </a>
+  <main id="main" class="pp-page">
+    <PageNav label="Relay sections" pages={RELAY_PAGES} />
+    <PaperLongform crumb={{ href: '/relay/memos/', label: 'Relay memos' }} kicker={series} title={title} dek={summary} published={date} minutes={minutes} headings={headings}>
+      {heroSvg && <figure slot="figure" class="pp-long-svg" set:html={heroSvg} />}
 
-      <p class="mt-8 font-mono text-sm text-primary">{series}</p>
-      <h1 class="mt-2 text-3xl leading-tight sm:text-4xl">{title}</h1>
-      <p class="mt-4 text-base leading-relaxed text-text-muted">{summary}</p>
-      {heroSvg && (
-        <figure class="memo-hero mt-8 overflow-hidden rounded-2xl border border-border/70 bg-surface/40" set:html={heroSvg} />
-      )}
+      <Content />
 
-      <article class="story-prose mt-10 border-t border-border pt-10">
-        <Content />
-      </article>
-
-      {/* The mid-essay interstitial: server-rendered hidden, then an inline
-          script relocates the full-bleed Relay band into the
-          [data-memo-interstitial-slot] the rehype plugin auto-inserted at the
-          section boundary. Hidden-until-placed = no flash; JS-off falls back to
-          right after the body. The band breaks out of this reading column to
-          full viewport width (variant="interstitial"). Contract: ONE mid CTA +
-          the footer band, no sticky. */}
+      {/* The mid-essay interstitial: server-rendered hidden, then the inline
+          script moves it into the [data-memo-interstitial-slot] the rehype
+          plugin inserted at a section boundary. JS-off falls back to right
+          after the body. Contract: ONE mid CTA + the closing CTA, no sticky. */}
       <div id="memo-interstitial-source" hidden>
-        <RelayCtaBand
-          variant="interstitial"
-          kicker={cta.kicker}
-          line={cta.line}
-          href={cta.href}
-          label={cta.label}
-        />
+        <RelayCtaBand variant="interstitial" kicker={cta.kicker} line={cta.line} href={cta.href} label={cta.label} />
       </div>
       <script is:inline>
         (() => {
@@ -133,53 +124,28 @@ const breadcrumbSchema = {
           const card = src.firstElementChild;
           const slot = document.querySelector('[data-memo-interstitial-slot]');
           if (!card) { src.remove(); return; }
-          if (slot) {
-            slot.replaceWith(card);
-          } else {
-            src.parentElement.insertBefore(card, src);
-          }
+          if (slot) slot.replaceWith(card);
+          else src.parentElement.insertBefore(card, src);
           src.remove();
         })();
       </script>
 
-      {difficulty && (
-        <p class="mt-12 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-text-dim">
-          Reading level: {difficulty}
-        </p>
+      {difficulty && <p class="pp-long-note">Reading level: {difficulty}</p>}
+
+      {(prev || next) && (
+        <nav slot="after" class="pp-long-next" aria-label="Memo navigation">
+          {prev && <a href={`/relay/memos/${prev.id}/`}><span class="pp-kicker">← Previous</span><strong>{prev.data.title}</strong></a>}
+          {next && <a class="pp-next-newer" href={`/relay/memos/${next.id}/`}><span class="pp-kicker">Next →</span><strong>{next.data.title}</strong></a>}
+        </nav>
       )}
+    </PaperLongform>
 
-      <nav class="mt-8 flex flex-col gap-3 border-t border-border pt-8 sm:flex-row sm:justify-between" aria-label="Memo navigation">
-        {prev ? (
-          <a href={`/relay/memos/${prev.id}/`} class="group max-w-[48%] text-sm text-text-muted transition-colors hover:text-primary">
-            <span class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim">&larr; Previous</span>
-            <span class="mt-1 block leading-snug group-hover:text-primary">{prev.data.title}</span>
-          </a>
-        ) : <span />}
-        {next ? (
-          <a href={`/relay/memos/${next.id}/`} class="group max-w-[48%] text-right text-sm text-text-muted transition-colors hover:text-primary sm:ml-auto">
-            <span class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim">Next &rarr;</span>
-            <span class="mt-1 block leading-snug group-hover:text-primary">{next.data.title}</span>
-          </a>
-        ) : <span />}
-      </nav>
-    </div>
+    <section class="pp-closing" aria-labelledby="memo-closing-heading">
+      <Fold id="shell" bob class="pp-closing-fold" />
+      <h2 id="memo-closing-heading">{cta.kicker}</h2>
+      {cta.line && <p>{cta.line}</p>}
+      <a href={cta.href} data-relay-cta-btn class="pp-btn">{cta.label} <span aria-hidden="true">→</span></a>
+    </section>
   </main>
-
-  <RelayCtaBand
-    variant="footer"
-    kicker={cta.kicker}
-    line={cta.line}
-    href={cta.href}
-    label={cta.label}
-  />
-  <Footer />
-</Layout>
-
-<style>
-  /* The inlined hero SVG scales to the card width, keeping its 16:9 box. */
-  .memo-hero :global(svg) {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-</style>
+  <Footer showDownload={false} />
+</PaperLayout>

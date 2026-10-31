@@ -110,3 +110,22 @@
 @media (max-width: 760px) { .paper .ls-article-body.ls-in-paper .ls-container { width: calc(100% - 32px); } }
 .paper .ls-fc-tools .fc-tool { padding: 22px 0; border-top: 1px solid var(--pp-line); }
 .paper .ls-fc-tools .fc-tool h3 { font-family: var(--pp-serif); font-weight: 300; font-size: clamp(24px, 2.4vw, 32px); }
+
+/* R6 (G-145): the double-opt-in form inside a Paper closing sheet. Same form
+ * and funnel; Paper's sans input and one ink action. */
+.paper .ls-form-in-paper { width: min(440px, 100%); }
+.paper .ls-form-in-paper input[type="email"] { min-height: 48px; background: var(--pp-white); border-color: var(--pp-line); border-radius: var(--pp-r-2); font: 400 15px/1.2 var(--pp-sans); letter-spacing: 0; color: var(--pp-ink); }
+.paper .ls-form-in-paper input[type="email"]:focus { border-color: var(--pp-ink); }
+.paper .ls-form-in-paper button[type="submit"] { min-height: 48px; background: var(--pp-ink); color: var(--pp-white); border-radius: var(--pp-r-2); font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; }
+.paper .ls-form-in-paper button[type="submit"]:hover { background: var(--pp-ink-2); }
+/* The mid-article product cards (Proof, Flow) sit in the 620px column as a quiet sheet. */
+.paper .ls-longform .living-paper-cta:not(:has(.living-paper-cta__inner)) { padding: 24px; background: var(--pp-paper-2); }
+.paper .ls-longform .living-paper-cta:not(:has(.living-paper-cta__inner)) .living-paper-cta__copy h2 { font-size: 30px; margin: 6px 0 8px; }
+.paper .ls-longform .living-paper-cta:not(:has(.living-paper-cta__inner)) .living-paper-cta__copy > p:not(.living-eyebrow) { margin: 0 0 18px; font-size: 16px; line-height: 1.55; }
+.paper .ls-longform .living-paper-cta__inner { display: grid; grid-template-columns: 1fr; gap: 18px; padding: 28px; }
+.paper .ls-longform .living-paper-cta__copy h2 { font-size: 32px; }
+.paper .ls-longform .living-paper-cta__action { justify-self: start; align-items: start; text-align: left; }
+.paper .ls-longform .living-paper-cta__copy > p { font-size: 16px; line-height: 1.55; }
+.paper .ls-longform .living-relay-band { margin: 0; padding: 0; width: auto; border: 0; background: none; }
+.paper .ls-longform .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.paper .ls-longform .table-scroll table { min-width: 520px; }

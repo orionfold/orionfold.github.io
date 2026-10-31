@@ -16,7 +16,7 @@ test('shared Living Systems actions preserve product intent and transactional ho
   assert.match(read('src/components/product/BuyBox.astro'), /data-checkout=\{view.lookupKey\}/);
   assert.match(read('src/components/product/BuyBox.astro'), /id="buybox-err" role="alert"/);
   assert.match(read('src/components/relay/RelayCtaBand.astro'), /href = '\/relay\/'/);
-  assert.match(read('src/components/sections/StorySubscribe.astro'), /<WaitlistForm/);
+  assert.match(read('src/components/paper/PaperSubscribe.astro'), /<WaitlistForm/);
   assert.doesNotMatch(read('src/components/story/FlowStoryCta.astro'), /FlowRaceBlueprint|<Image/);
 });
 

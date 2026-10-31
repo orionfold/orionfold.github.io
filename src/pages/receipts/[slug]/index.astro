@@ -3,12 +3,13 @@
 // OG-shareable). Carries the canonical BlogPosting; the /receipts/ index hub
 // points here. A11.
 import { getCollection, render, type CollectionEntry } from 'astro:content';
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PaperLongform from '../../../components/paper/PaperLongform.astro';
+import PaperSubscribe from '../../../components/paper/PaperSubscribe.astro';
+import RailCard from '../../../components/paper/RailCard.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
-import ReceiptArticle from '../../../components/receipts/ReceiptArticle.astro';
-import ProductBand from '../../../components/product/ProductBand.astro';
-import OfferSlot from '../../../components/ui/OfferSlot.astro';
+import '../../../styles/living-in-paper.css';
 import { ogPath, receiptOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 
@@ -18,11 +19,10 @@ export async function getStaticPaths() {
 }
 
 const { receipt } = Astro.props as { receipt: CollectionEntry<'receipts'> };
-const { Content } = await render(receipt);
-const { title, metric, claim, dek, date, source, verify } = receipt.data;
+const { Content, headings } = await render(receipt);
+const minutes = Math.max(1, Math.ceil((receipt.body ?? '').split(/\s+/).filter(Boolean).length / 230));
+const { title, metric, claim, dek, date, source } = receipt.data;
 
-const dfmt = (d: Date) =>
-  new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(d);
 const dateIso = date.toISOString().slice(0, 10);
 const dateTime = date.toISOString(); // JSON-LD wants a timezone; OG meta keeps the date
 
@@ -31,6 +31,18 @@ const dateTime = date.toISOString(); // JSON-LD wants a timezone; OG meta keeps 
 // outcome; everything else is a Proof/Advisor outcome. Strong match either way.
 const sourceBlob = (source ?? []).map((s) => `${s.label} ${s.href}`).join(' ');
 const receiptProduct: 'arena' | 'proof' = /arena/i.test(sourceBlob) ? 'arena' : 'proof';
+// The rail names the tool behind the receipt; the link keeps the product-band
+// cross-sell UTM so GA4 still splits it per receipt.
+const PRODUCT = {
+  proof: { name: 'Orionfold Proof', landing: '/proof/', line: 'Runs on your own machine and hands back a signed receipt you can rerun.' },
+  arena: { name: 'Orionfold Arena', landing: '/arena/', line: 'Runs, compares and scores local AI models on one DGX Spark.' },
+}[receiptProduct];
+const productHref = `${PRODUCT.landing}?utm_source=orionfold&utm_medium=cross-sell&utm_campaign=product-band&utm_content=receipt-${receipt.id}-${receiptProduct}`;
+const others = (await getCollection('receipts'))
+  .filter((r) => r.id !== receipt.id)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+const shortDate = (d: Date) => new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImageUrl = new URL(ogPath(receiptOgSlug(receipt.id)), Astro.site).href;
 
@@ -60,7 +72,7 @@ const breadcrumbSchema = {
   ],
 };
 ---
-<Layout
+<PaperLayout
   title={`${title} · Receipts · Orionfold`}
   description={dek}
   ogImage={ogPath(receiptOgSlug(receipt.id))}
@@ -70,43 +82,28 @@ const breadcrumbSchema = {
   jsonLd={[blogPostingSchema, breadcrumbSchema]}
 >
   <Nav />
-  <main class="px-6 pt-36 pb-24 sm:pt-40">
-    <div class="mx-auto max-w-2xl">
-      <a href="/receipts/" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-primary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
-        All receipts
-      </a>
-    </div>
-    <div class="mt-8">
-      <ReceiptArticle
-        metric={metric}
-        title={title}
-        claim={claim}
-        dek={dek}
-        dateIso={dateIso}
-        dateFmt={dfmt(date)}
-        sources={source}
-        verify={verify}
-      >
-        <Content />
-      </ReceiptArticle>
-    </div>
+  <main id="main" class="pp-page">
+    <PaperLongform crumb={{ href: '/receipts/', label: 'Receipts' }} kicker={metric} title={title} dek={claim} published={date} minutes={minutes} headings={headings} bodyClass="receipt-prose" magnet={false}>
+      <Content />
+
+      {source.length > 0 && (
+        <section class="pp-sources" aria-labelledby="receipt-sources">
+          <h2 id="receipt-sources">Sources</h2>
+          <ol>{source.map((s) => <li><a href={s.href}>{s.label}</a></li>)}</ol>
+        </section>
+      )}
+
+      <Fragment slot="rail">
+        <RailCard href={productHref} kicker="The tool behind this receipt" title={PRODUCT.name} body={PRODUCT.line} go={`See ${PRODUCT.name.replace('Orionfold ', '')}`} />
+        <nav class="pp-rail-block" aria-label="More receipts">
+          <p class="pp-kicker">More receipts</p>
+          <ul>{others.map((r) => <li><a href={`/receipts/${r.id}/`}><small>{shortDate(r.data.date)}</small>{r.data.title}</a></li>)}</ul>
+        </nav>
+      </Fragment>
+    </PaperLongform>
+
+    <PaperSubscribe id="offer-proof-playbook" heading="Get the proof playbook." dek="The one-page guide to locking a test, running it on your own desk, and reading the receipts." source="receipt-page" offer="proof-playbook" buttonText="Send it" fold="tally"
+      consentText="By subscribing you agree to receive the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy." />
   </main>
-
-  <!-- Product band, flavored by the receipt's source (Arena outcome vs
-       Proof/Advisor outcome). Receipts are lower-intent evidence pages, so the
-       link mode routes to the product's landing page. -->
-  <ProductBand type="receipt" slug={receipt.id} receiptProduct={receiptProduct} />
-
-  <OfferSlot
-    offer="proof-playbook"
-    source="receipt-page"
-    label="Want the rest?"
-    heading="Get the proof playbook."
-    dek="The one-page guide to locking a test, running it on your own desk, and reading the receipts. Plus a note when we publish new proof."
-    artifact="One-page PDF + new-proof notes"
-    buttonText="Send it"
-    class="border-t border-border"
-  />
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>

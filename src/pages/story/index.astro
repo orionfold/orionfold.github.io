@@ -1,79 +1,63 @@
 ---
-// Story index (S9). Lists every post in the `story` collection, newest first.
-// Cards are the shared StoryCard (also used by the homepage carousel) in a
-// scroll-reveal grid. Posts are plain .md under src/content/story/.
+// /story/ — the build-log index in Paper (R6, G-145): the newest story as the
+// lead card, then every other story in an even grid of three, then the story
+// subscribe sheet (the same double-opt-in capture as each post).
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import PaperLayout from '../../layouts/PaperLayout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
-import StoryCard from '../../components/ui/StoryCard.astro';
-import SectionLabel from '../../components/ui/SectionLabel.astro';
-import PageHeader from '../../components/ui/PageHeader.astro';
-import StorySubscribe from '../../components/sections/StorySubscribe.astro';
+import PaperSubscribe from '../../components/paper/PaperSubscribe.astro';
 import { ogMeta } from '../../data/og';
-import { bentoSplit } from '../../lib/bento';
+import '../../styles/living-in-paper.css';
 
 const posts = (await getCollection('story')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
-// Two per row; the shared bento rule leads with a full-width hero (image left,
-// text right) when the count is odd (3+) so the grid below always pairs up.
-const { lead, rest } = bentoSplit(posts);
+const [lead, ...rest] = posts;
 const og = ogMeta('/story/');
+// timeZone UTC, so a date-only frontmatter value shows its authored day.
+const shortDate = (d: Date) => new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d);
 ---
-<Layout
+<PaperLayout
   title="Story · Orionfold"
   description="Building in public: short, honest notes on what we shipped, what broke, and what we learned along the way."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
   <Nav />
-  <main>
-    <!-- Page header (slim masthead so the story comics rise above the fold) -->
-    <PageHeader
-      eyebrow="Story"
-      title="From the build log"
-      subtitle="We build in public. Each note is a short, honest look at what we shipped, what broke, and what we learned."
-    />
-
-    <!-- Post grid: optional full-width lead, then two per row -->
-    <section class="px-6 pb-28 pt-8">
-      <div class="mx-auto max-w-6xl">
-        {lead && (
-          <StoryCard
-            href={`/story/${lead.id}/`}
-            title={lead.data.title}
-            date={lead.data.date}
-            tag={lead.data.tags[0]}
-            summary={lead.data.summary}
-            seed={lead.data.accent}
-            cover={lead.data.hero}
-            coverAlt={lead.data.heroAlt}
-            featured
-            priority
-            animate
-          />
-        )}
-        <div data-animate-stagger class:list={['grid gap-6 sm:grid-cols-2', lead && 'mt-6']}>
-          {rest.map((post) => (
-            <StoryCard
-              href={`/story/${post.id}/`}
-              title={post.data.title}
-              date={post.data.date}
-              tag={post.data.tags[0]}
-              summary={post.data.summary}
-              seed={post.data.accent}
-              cover={post.data.hero}
-              coverAlt={post.data.heroAlt}
-              animate
-            />
-          ))}
-        </div>
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="story-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Story</p>
+        <h1 id="story-title" class="pp-h1">From the build log</h1>
+        <p class="pp-sub">We build in public. Each note is a short, honest look at what we shipped, what broke, and what we learned.</p>
       </div>
     </section>
 
-    <!-- Subscribe to stories (H3): the site's only remaining email capture -->
-    <StorySubscribe />
+    <section class="pp-index" aria-label="Stories, newest first">
+      <a class="pp-lead" href={`/story/${lead.id}/`}>
+        {lead.data.hero && <Image src={lead.data.hero} alt={lead.data.heroAlt ?? lead.data.title} widths={[640, 960, 1280]} sizes="(min-width: 860px) 54vw, 92vw" loading="eager" fetchpriority="high" data-no-zoom />}
+        <div class="pp-lead-copy">
+          <p class="pp-kicker">Newest · {shortDate(lead.data.date)}{lead.data.tags[0] && ` · ${lead.data.tags[0]}`}</p>
+          <h2>{lead.data.title}</h2>
+          <p>{lead.data.summary}</p>
+          <span class="pp-rail-go">Read the story →</span>
+        </div>
+      </a>
+      <ul class="pp-art-cards pp-art-cards--3">
+        {rest.map((post) => (
+          <li><a href={`/story/${post.id}/`}>
+            {post.data.hero && <Image src={post.data.hero} alt={post.data.heroAlt ?? post.data.title} widths={[400, 640]} sizes="(min-width: 1100px) 30vw, (min-width: 420px) 46vw, 92vw" loading="lazy" data-no-zoom />}
+            <span class="pp-card-date">{shortDate(post.data.date)}</span>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.summary}</p>
+          </a></li>
+        ))}
+      </ul>
+    </section>
+
+    <PaperSubscribe id="story-subscribe" heading="Get each new story in your inbox." dek="Formerly AI For Everyone. Short, honest notes from building Orionfold in public. One email a week, no more." source="story" />
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>

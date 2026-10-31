@@ -324,12 +324,13 @@ test('editorial compositions keep their desktop grids and all manifesto principl
   await page.setViewportSize({width:1440,height:1000});
   await page.emulateMedia({reducedMotion:'reduce'});
   // The homepage Ideas band and its grid check left with the band (operator 2026-10-26).
+  // R6 (G-145): the essays read in the Paper long-form column (Fraunces title, contents rail).
   await page.goto('/essay/');
-  await expect(page.locator('.ls-essay-layout')).toHaveCSS('display','grid');
-  await expect(page.locator('.ls-essay-hero h1')).toHaveCSS('font-family', /Georgia/);
-  await expect(page.locator('.ls-essay-reading > section[id]')).toHaveCount(10);
+  await expect(page.locator('.pp-long-grid')).toHaveCSS('display','grid');
+  await expect(page.locator('.pp-long-title')).toHaveCSS('font-family', /Fraunces/);
+  await expect(page.locator('.pp-long-body section[id]')).toHaveCount(10);
   await page.goto('/manifesto/');
-  await expect(page.locator('.ls-manifesto-hero')).toHaveCSS('display','grid');
+  await expect(page.locator('h1.pp-long-title')).toHaveCSS('font-family', /Fraunces/);
   await expect(page.locator('[data-principle]')).toHaveCount(18);
   const scene=page.locator('[data-scene]').first();
   await scene.locator('[data-scene-next]').click();
@@ -378,62 +379,26 @@ for (const width of [390, 1440]) {
 }
 
 
-// The final download is one continuous band. Interstitials keep their quieter
-// gray treatment, and text must remain inside the action column at both sizes.
+// R6 (G-145): the essays close on Paper sheets, never the old yellow band. The
+// essay keeps its one attributed closing download; the manifesto closes on its
+// email invitation, with its one mid-page download card.
 for (const width of [1440, 390]) {
-  test(`each flagship has one full-width closing download at ${width}px`, async ({ page }) => {
+  test(`each essay closes on one Paper action at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    // Paper R2 (G-141): the home closes on its Paper strip (paper-home.spec.ts).
-    // Paper R4 (G-143): /flow/ closes on its Paper strip (product-stage /flow/ test).
+    await page.goto('/essay/');
+    await expect(page.locator('[data-download-band="yellow"]')).toHaveCount(0);
+    const closing = page.locator('.pp-closing');
+    await expect(closing).toHaveCount(1);
+    await expect(closing.locator('[data-flow-download="essay-living-documents"]')).toBeVisible();
+    await page.goto('/manifesto/');
+    await expect(page.locator('[data-download-band="yellow"]')).toHaveCount(0);
+    await expect(page.locator('[data-flow-download="manifesto-manifesto-middle"]')).toHaveCount(1);
+    await expect(page.locator('#email-updates form')).toHaveCount(1);
     for (const route of ['/essay/', '/manifesto/']) {
       await page.goto(route);
-      await page.evaluate(() => document.fonts.ready);
-      const band = page.locator('[data-download-band="yellow"]');
-      await expect(band, `${route}: one closing download band`).toHaveCount(1);
-      await expect(band.locator('a,button,input,select,textarea'), `${route}: one action rather than competing controls`).toHaveCount(1);
-      await expect(band.getByRole('link', { name: 'Download Flow Now', exact: true })).toBeVisible();
-      const caption = band.locator('.of-waitlist-caption');
-      await expect(caption).toHaveText('For Mac OS. Base is free forever. 10 Pro days included. No credit card to use.');
-      const geometry = await band.evaluate(element => {
-        const box = (node: Element) => {
-          const {left,right,top,bottom,width,height} = node.getBoundingClientRect();
-          return {left,right,top,bottom,width,height};
-        };
-        const action = element.querySelector('.living-paper-cta__action')!;
-        const caption = action.querySelector('.of-waitlist-caption')!;
-        const range = document.createRange();
-        range.selectNodeContents(caption);
-        return {
-          viewport: innerWidth,
-          overflow: document.documentElement.scrollWidth > innerWidth + 1,
-          band: box(element),
-          copy: box(element.querySelector('.living-paper-cta__copy')!),
-          action: box(action),
-          control: box(action.querySelector('a,button')!),
-          caption: box(caption),
-          captionLines: Array.from(range.getClientRects()).filter(rect => rect.width > 0).map(rect => ({ left: rect.left, right: rect.right })),
-          precedingBands: Array.from(document.querySelectorAll('[data-download-band]')).filter(other => other !== element).map(other => ({ tone: other.getAttribute('data-download-band'), bottom: other.getBoundingClientRect().bottom })),
-        };
-      });
-      expect(geometry.overflow, `${route}: no horizontal page overflow`).toBe(false);
-      expect(Math.abs(geometry.band.left), `${route}: closing band reaches the left edge`).toBeLessThanOrEqual(1);
-      expect(Math.abs(geometry.band.right - geometry.viewport), `${route}: closing band reaches the right edge`).toBeLessThanOrEqual(1);
-      for (const rect of [geometry.control, ...geometry.captionLines]) {
-        expect(rect.left, `${route}: action/caption does not escape left`).toBeGreaterThanOrEqual(geometry.action.left - 1);
-        expect(rect.right, `${route}: action/caption does not escape right`).toBeLessThanOrEqual(geometry.action.right + 1);
-      }
-      expect(geometry.captionLines.length, `${route}: caption has rendered text`).toBeGreaterThan(0);
-      expect(geometry.caption.top, `${route}: caption sits below the download control`).toBeGreaterThanOrEqual(geometry.control.bottom);
-      if (width === 1440) {
-        expect(geometry.copy.right, `${route}: copy and action occupy separate columns`).toBeLessThan(geometry.action.left);
-      } else {
-        expect(geometry.action.top, `${route}: action follows copy on mobile`).toBeGreaterThanOrEqual(geometry.copy.bottom);
-      }
-      for (const interstitial of geometry.precedingBands) {
-        expect(interstitial.tone, `${route}: other download bands remain gray`).toBe('gray');
-        expect(interstitial.bottom, `${route}: interstitial precedes the single closing band`).toBeLessThanOrEqual(geometry.band.top + 1);
-      }
+      const overflow = await page.evaluate(() => [...document.querySelectorAll('main *')].some((el) => el.getBoundingClientRect().right > innerWidth + 1 && getComputedStyle(el).position !== 'fixed' && !el.closest('.table-scroll, [data-scroll-x]')));
+      expect(overflow, `${route}: nothing wider than the screen`).toBe(false);
     }
   });
 }

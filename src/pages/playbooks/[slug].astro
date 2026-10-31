@@ -13,7 +13,7 @@ import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import { fitTitle, fitDescription } from '../../lib/flow/seo-meta';
 import PaperLayout from '../../layouts/PaperLayout.astro';
-import PaperArticle from '../../components/paper/PaperArticle.astro';
+import PaperLongform from '../../components/paper/PaperLongform.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import PaperCta from '../../components/ui/PaperCta.astro';
@@ -27,6 +27,7 @@ import '../../styles/essays.css';
 import '../../styles/flow-paths.css';
 import '../../styles/domains.css';
 import '../../styles/living-in-paper.css';
+import '../../styles/paper-bridge-catalog.css';
 
 export async function getStaticPaths() {
   const articles = await publishedDomainArticles();
@@ -39,7 +40,7 @@ const { Content, headings } = await render(entry);
 const d = entry.data;
 const blueprint = isBlueprint(entry);
 const walkthrough = launch && launch.id !== entry.id ? launch : undefined;
-const kicker = blueprint ? 'A BLUEPRINT' : walkthrough ? 'A FOUNDER PLAYBOOK' : 'THE LAUNCH STORY';
+const kicker = blueprint ? 'A blueprint' : walkthrough ? 'A founder Playbook' : 'The launch story';
 const FAQ_ID = 'questions-experts-ask';
 const sections = [...headings.filter((h) => h.depth === 2), ...(d.faq.length ? [{ slug: FAQ_ID, text: 'Questions experts ask', depth: 2 }] : [])];
 // G-138: the Playbook on a client job, drawn after "Apply it to a client job"
@@ -50,7 +51,6 @@ const cut = d.mock && html ? html.indexOf('<h2 id="publish-it-and-keep-it-curren
 const [before, after] = cut > 0 ? [html.slice(0, cut), html.slice(cut)] : [null, null];
 const numbers = sections.find((h) => h.text === (blueprint ? 'The signals' : 'The numbers'));
 const dateIso = d.drafted.toISOString().slice(0, 10);
-const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
 const canonical = `${SITE.url}${domainArticleHref(entry.id)}`;
 const ogImage = ogPath(domainOgSlug(entry.id));
 const seoTitle = fitTitle(`${d.title} · Flow Playbooks · Orionfold`, blueprint ? `${d.domain}, a Flow Playbook blueprint · Flow Playbooks · Orionfold` : `${d.domain}, built in Flow · Flow Playbooks · Orionfold`);
@@ -97,58 +97,52 @@ const schema = [
 <PaperLayout title={seoTitle} description={fitDescription(d.description)} ogImage={ogImage} ogImageAlt={blueprint ? `${d.domain}, a blueprint for a Flow Playbook` : `${d.domain}, a Flow Playbook built in Flow and published to GitHub`} ogType="article" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Playbooks', tags: ['Flow', 'Flow Playbooks', d.domain, ...d.keywords] }}>
   <Nav />
   <main id="main" class="pp-page">
-    <PaperArticle
+    <PaperLongform
       crumb={{ href: '/playbooks/', label: 'Playbooks' }}
       kicker={`Flow Playbook / ${d.domain} · ${kicker}`}
-      title={d.title} dek={d.dek}
-      meta={['By Manav Sehgal', `${d.minutes} min read`]} dateIso={dateIso} dateLabel={dateLabel}
-      link={blueprint
-        ? walkthrough && { href: domainArticleHref(walkthrough.id), label: 'Read the walkthrough →' }
-        : { href: d.repo!, label: 'Get the Playbook on GitHub ↗' }}
-      scope="ed-page ed-article-page fp-page dm-page">
-      {blueprint
-        ? <div slot="figure" class="dm-blueprint-hero"><DomainAnatomy blueprint name={d.domain} by={`for ${/^[A-Z]{2}/.test(d.role) ? d.role : d.role[0].toLowerCase() + d.role.slice(1)}`} files={d.blueprint!} label={`${d.domain}, a blueprint: the ${d.blueprint!.length} documents the Playbook would hold`} /></div>
-        : <figure slot="figure" class="fp-heroshot"><Image src={d.hero!} alt={d.heroAlt!} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>}
-
-    <div class="ed-reading-layout fp-layout ls-container">
-      <aside class="ed-contents fp-rail" aria-label="Article contents and the Playbook's facts">
-        <details open>
-          <summary>{blueprint ? 'IN THIS BLUEPRINT' : 'IN THIS STORY'}</summary>
-          <nav aria-label="Sections">
-            {sections.map((h, i) => <a href={`#${h.slug}`}><span>{String(i + 1).padStart(2, '0')}</span>{h.text}</a>)}
-          </nav>
-        </details>
-        <div class="fp-receipt">
-          <p>THE PLAYBOOK</p>
-          <dl>{FACTS.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl>
-          {numbers && <p class="fp-receipt-note">Every number is labelled. <a href={`#${numbers.slug}`}>See the table</a>.</p>}
-        </div>
-        <a class="fp-try" href="#bring-it-in">{blueprint ? 'Start building →' : 'Bring it into Flow →'}</a>
-      </aside>
-      <article class="ed-prose fp-prose" aria-label={d.title}>
-        {before !== null && d.mock
-          ? <Fragment><Fragment set:html={before} /><DomainMock domain={d.domain} tint={d.tint} folder={d.mock.folder} client={d.mock.client} files={(d.blueprint ?? []).map((f) => f.name)} steps={d.mock.steps} /><Fragment set:html={after} /></Fragment>
-          : <Content />}
-        {d.faq.length > 0 && (
-          <section class="dm-art-faq" aria-labelledby={FAQ_ID}>
-            <h2 id={FAQ_ID}>Questions experts ask</h2>
-            {d.faq.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
-          </section>
-        )}
-        <div id="bring-it-in">
+      title={d.title} dek={d.dek} published={d.drafted} minutes={d.minutes} headings={sections}
+      magnet={false} bodyClass="ed-page ed-article-page fp-page dm-page fp-longform">
+      {(blueprint ? walkthrough : true) && (
+        <p slot="lead" class="pp-long-lead">
           {blueprint
-            ? <PaperCta layout="article" class="ed-paper-cta"
-                source={`flow-domain-${entry.id}`} headingId="domain-cta"
-                eyebrow="BUILD YOUR PLAYBOOK" heading={`Start ${d.domain} on your Mac.`}
-                description={`Download Flow, add an empty folder and name it. Chat is ready before any document exists. Follow the AI Consulting walkthrough step by step, with your own know-how as the source. Writing with Chat needs Flow Pro. Publishing to GitHub needs the Publish add-on too.`} />
-            : <PaperCta layout="article" class="ed-paper-cta"
-                source={`flow-domain-${entry.id}`} headingId="domain-cta"
-                eyebrow="BRING IT INTO FLOW" heading={`Open ${d.domain} on your Mac.`}
-                description={`In Flow, choose File ▸ New from GitHub…, paste the folder's address from GitHub and press Add. The ${d.files} documents land in a folder of their own, and the next update arrives as a change you review. Bringing a Playbook in is free on Base. Chat on it needs Flow Pro.`} />}
-        </div>
-      </article>
-    </div>
-    </PaperArticle>
+            ? <a class="pp-btn pp-btn--ghost" href={domainArticleHref(walkthrough!.id)}>Read the walkthrough →</a>
+            : <a class="pp-btn pp-btn--ghost" href={d.repo!}>Get the Playbook on GitHub ↗</a>}
+        </p>
+      )}
+      <div slot="figure" class="ls ls-in-paper ls-article-figure ed-page fp-page dm-page">
+        {blueprint
+          ? <div class="dm-blueprint-hero"><DomainAnatomy blueprint name={d.domain} by={`for ${/^[A-Z]{2}/.test(d.role) ? d.role : d.role[0].toLowerCase() + d.role.slice(1)}`} files={d.blueprint!} label={`${d.domain}, a blueprint: the ${d.blueprint!.length} documents the Playbook would hold`} /></div>
+          : <figure class="fp-heroshot"><Image src={d.hero!} alt={d.heroAlt!} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 940px) 100vw, 900px" loading="eager" fetchpriority="high" /></figure>}
+      </div>
+
+      {before !== null && d.mock
+        ? <Fragment><Fragment set:html={before} /><DomainMock domain={d.domain} tint={d.tint} folder={d.mock.folder} client={d.mock.client} files={(d.blueprint ?? []).map((f) => f.name)} steps={d.mock.steps} /><Fragment set:html={after} /></Fragment>
+        : <Content />}
+      {d.faq.length > 0 && (
+        <section class="dm-art-faq" aria-labelledby={FAQ_ID}>
+          <h2 id={FAQ_ID}>Questions experts ask</h2>
+          {d.faq.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
+        </section>
+      )}
+      <div id="bring-it-in">
+        {blueprint
+          ? <PaperCta layout="article" class="ed-paper-cta"
+              source={`flow-domain-${entry.id}`} headingId="domain-cta"
+              eyebrow="BUILD YOUR PLAYBOOK" heading={`Start ${d.domain} on your Mac.`}
+              description={`Download Flow, add an empty folder and name it. Chat is ready before any document exists. Follow the AI Consulting walkthrough step by step, with your own know-how as the source. Writing with Chat needs Flow Pro. Publishing to GitHub needs the Publish add-on too.`} />
+          : <PaperCta layout="article" class="ed-paper-cta"
+              source={`flow-domain-${entry.id}`} headingId="domain-cta"
+              eyebrow="BRING IT INTO FLOW" heading={`Open ${d.domain} on your Mac.`}
+              description={`In Flow, choose File ▸ New from GitHub…, paste the folder's address from GitHub and press Add. The ${d.files} documents land in a folder of their own, and the next update arrives as a change you review. Bringing a Playbook in is free on Base. Chat on it needs Flow Pro.`} />}
+      </div>
+
+      <div slot="rail" class="pp-rail-block fp-receipt">
+        <p class="pp-kicker">The Playbook</p>
+        <dl>{FACTS.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl>
+        {numbers && <p class="fp-receipt-note">Every number is labelled. <a href={`#${numbers.slug}`}>See the table</a>.</p>}
+        <a class="fp-try" href="#bring-it-in">{blueprint ? 'Start building →' : 'Bring it into Flow →'}</a>
+      </div>
+    </PaperLongform>
   </main>
   <Footer showDownload={false} />
 </PaperLayout>

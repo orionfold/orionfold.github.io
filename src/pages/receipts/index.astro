@@ -4,11 +4,11 @@
 // the full index one level out, a first-class content type alongside /story/
 // and /letter/. Each card links to its own permalink.
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
+import PaperLayout from '../../layouts/PaperLayout.astro';
+import PaperSubscribe from '../../components/paper/PaperSubscribe.astro';
+import '../../styles/living-in-paper.css';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
-import PageHeader from '../../components/ui/PageHeader.astro';
-import OfferSlot from '../../components/ui/OfferSlot.astro';
 import { ogMeta } from '../../data/og';
 import { SITE } from '../../data/seo';
 
@@ -42,7 +42,7 @@ const breadcrumbSchema = {
   ],
 };
 ---
-<Layout
+<PaperLayout
   title="Receipts · Orionfold"
   description="Every receipt on its own page: a frozen test you can rerun, the run, and what we found. The proof, not the pitch."
   ogImage={og.image}
@@ -50,43 +50,29 @@ const breadcrumbSchema = {
   jsonLd={[collectionSchema, breadcrumbSchema]}
 >
   <Nav />
-  <main>
-    <PageHeader
-      eyebrow="Receipts"
-      title="The proof, one receipt at a time."
-      subtitle="Each claim on its own page: the test we locked, the run, and how you rerun it. The wall is at /proof/. These are the receipts behind it, one link each."
-    />
-
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-3xl">
-        <ul class="grid gap-3" data-animate-stagger>
-          {receipts.map((r) => (
-            <li data-animate>
-              <a href={`/receipts/${r.id}/`} class="of-surface of-pressable group block rounded-2xl p-6">
-                <div class="flex items-baseline justify-between gap-3">
-                  <span class="font-display text-2xl leading-none text-primary">{r.data.metric}</span>
-                  <span class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-text-dim">{r.data.tags[0] ?? 'Receipt'}</span>
-                </div>
-                <p class="mt-4 text-base font-medium leading-snug text-text group-hover:text-primary">{r.data.title}</p>
-                <p class="mt-2 text-sm leading-relaxed text-text-muted">{r.data.dek}</p>
-                <span class="mt-4 inline-block text-sm text-primary transition-colors group-hover:text-primary/80">See the receipt &rarr;</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="receipts-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Receipts</p>
+        <h1 id="receipts-title" class="pp-h1">The proof, one receipt at a time.</h1>
+        <p class="pp-sub">Each claim on its own page. The test we locked, the run, and how you rerun it. The wall is at <a href="/proof/">/proof/</a>. These are the receipts behind it, one link each.</p>
       </div>
     </section>
 
-    <OfferSlot
-      offer="proof-playbook"
-      source="receipts-index"
-      label="Not ready to buy?"
-      heading="Get the proof playbook."
-      dek="The one-page guide to locking a test, running it on your own desk, and reading the receipts. Plus a note when we publish new proof."
-      artifact="One-page PDF + new-proof notes"
-      buttonText="Send it"
-      class="border-t border-border"
-    />
+    <section class="pp-index" aria-label="Receipts, newest first">
+      <ul class="pp-rows">
+        {receipts.map((r) => (
+          <li><a href={`/receipts/${r.id}/`}>
+            <b>{r.data.metric}</b>
+            <div><strong>{r.data.title}</strong><span>{r.data.dek}</span></div>
+            <small>{r.data.tags[0] ?? 'Receipt'}</small>
+          </a></li>
+        ))}
+      </ul>
+    </section>
+
+    <PaperSubscribe id="offer-proof-playbook" heading="Get the proof playbook." dek="The one-page guide to locking a test, running it on your own desk, and reading the receipts. Plus a note when we publish new proof." source="receipts-index" offer="proof-playbook" buttonText="Send it" fold="tally"
+      consentText="By subscribing you agree to receive the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy." />
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>

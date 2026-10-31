@@ -6,7 +6,7 @@ import { render } from 'astro:content';
 import { FLOW_VERSION } from '../../../lib/flow/flow-release';
 import { fitTitle, fitDescription } from '../../../lib/flow/seo-meta';
 import PaperLayout from '../../../layouts/PaperLayout.astro';
-import PaperArticle from '../../../components/paper/PaperArticle.astro';
+import PaperLongform from '../../../components/paper/PaperLongform.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
@@ -20,6 +20,7 @@ import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
 import '../../../styles/flow-paths.css';
 import '../../../styles/living-in-paper.css';
+import '../../../styles/paper-bridge-catalog.css';
 import { flowTermsHtml } from '../../../lib/flow/flow-terms.mjs';
 
 export async function getStaticPaths() {
@@ -35,16 +36,16 @@ const start = paths.find((p) => p.id === d.startWith);
 // A page can start from a Playbook instead of a path (Custom GPTs and Projects).
 const startDomain = start ? undefined : (await publishedDomainArticles()).find((a) => a.id === d.startWith);
 const dateIso = d.updated.toISOString().slice(0, 10);
-const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.updated);
+const minutes = Math.max(1, Math.ceil((entry.body ?? '').split(/\s+/).filter(Boolean).length / 230));
 const canonical = `${SITE.url}${compareHref(entry.id)}`;
 const ogImage = ogPath(compareOgSlug(entry.id));
 const seoTitle = fitTitle(`${d.title} · Orionfold`, `Flow ${d.kind === 'switch' ? 'vs' : 'with'} ${d.tool} · Compare · Orionfold`);
 const seoDescription = fitDescription(d.dek);
 const sections = [
-  { slug: 'side-by-side', text: 'Side by side' },
+  { slug: 'side-by-side', text: 'Side by side', depth: 2 },
   ...headings.filter((h) => h.depth === 2),
-  { slug: 'what-flow-is-not', text: 'What Flow is not' },
-  { slug: 'sources', text: 'Sources' },
+  { slug: 'what-flow-is-not', text: 'What Flow is not', depth: 2 },
+  { slug: 'sources', text: 'Sources', depth: 2 },
 ];
 const schema = [
   {
@@ -69,39 +70,28 @@ const schema = [
 <PaperLayout title={seoTitle} description={seoDescription} ogImage={ogImage} ogImageAlt={`Flow compared with ${d.tool}: what moves, what stays, and the path to start with`} ogType="article" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Compare', tags: [`Flow ${FLOW_VERSION}`, d.tool] }}>
   <Nav />
   <main id="main" class="pp-page">
-    <PaperArticle
+    <PaperLongform
       crumb={{ href: '/flow/compare/', label: 'Compare' }}
-      kicker={`Compare / ${d.tool} · ${d.kind === 'switch' ? 'Switch' : 'Pair'}`}
-      title={d.title} dek={d.dek}
-      meta={['Sources checked']} dateIso={dateIso} dateLabel={dateLabel}
-      link={{ href: '#try-flow', label: 'Try Flow ↓' }}
-      scope="ed-page ed-article-page fp-page">
+      kicker={`${d.tool} · ${d.kind === 'switch' ? 'Switch' : 'Pair'} · Sources checked`}
+      title={d.title} dek={d.dek} updated={d.updated} minutes={minutes} headings={sections}
+      magnet={false} bodyClass="ed-page ed-article-page fp-page fp-longform">
+      <p slot="lead" class="pp-long-lead"><a class="pp-btn pp-btn--ghost" href="#try-flow">Try Flow ↓</a></p>
 
-    <div class="ed-reading-layout fp-layout ls-container">
-      <aside class="ed-contents fp-rail" aria-label="Page contents">
-        <details open>
-          <summary>ON THIS PAGE</summary>
-          <nav aria-label="Sections">{sections.map((h, i) => <a href={`#${h.slug}`}><span>{String(i + 1).padStart(2, '0')}</span>{h.text}</a>)}</nav>
-        </details>
-      </aside>
-      <article class="ed-prose fp-prose" aria-label={d.title}>
-        <h2 id="side-by-side">Side by side</h2>
-        <CompareTable entry={entry} />
-        <Content />
-        {start && <div class="fp-start"><PathShowcase entry={start} /></div>}
-        <h2 id="what-flow-is-not">What Flow is not</h2>
-        <ul class="fp-not">{d.notFlow.map((n) => <li set:html={flowTermsHtml(n)} />)}</ul>
-        <h2 id="sources">Sources</h2>
-        <ul class="fp-not">{d.sources.map((s) => <li><a href={s.href} rel="noopener">{s.label}</a>, checked {s.checked}</li>)}</ul>
-        <div id="try-flow">
-          <PaperCta layout="article" class="ed-paper-cta" source={`flow-compare-${entry.id}`} headingId="flow-compare-cta"
-            eyebrow={`FOR ${d.tool.toUpperCase()} USERS`} heading={start ? `Start with “${start.data.path}.”` : startDomain ? `Start with “${startDomain.data.domain}.”` : 'Try Flow on your Mac.'}
-            description={startDomain ? `Read how ${startDomain.data.domain} was built in Flow, then bring it in with File ▸ New from GitHub… and try its method on your own work.` : 'Download Flow, open a path on Home, and try it on the example files first. Your documents stay plain files on your Mac.'}
-            {...(startDomain ? { href: domainArticleHref(startDomain.id), label: 'Read how it was built' } : {})} />
-        </div>
-      </article>
-    </div>
-    </PaperArticle>
+      <h2 id="side-by-side">Side by side</h2>
+      <CompareTable entry={entry} />
+      <Content />
+      {start && <div class="fp-start"><PathShowcase entry={start} /></div>}
+      <h2 id="what-flow-is-not">What Flow is not</h2>
+      <ul class="fp-not">{d.notFlow.map((n) => <li set:html={flowTermsHtml(n)} />)}</ul>
+      <h2 id="sources">Sources</h2>
+      <ul class="fp-not">{d.sources.map((s) => <li><a href={s.href} rel="noopener">{s.label}</a>, checked {s.checked}</li>)}</ul>
+      <div id="try-flow">
+        <PaperCta layout="article" class="ed-paper-cta" source={`flow-compare-${entry.id}`} headingId="flow-compare-cta"
+          eyebrow={`FOR ${d.tool.toUpperCase()} USERS`} heading={start ? `Start with “${start.data.path}.”` : startDomain ? `Start with “${startDomain.data.domain}.”` : 'Try Flow on your Mac.'}
+          description={startDomain ? `Read how ${startDomain.data.domain} was built in Flow, then bring it in with File ▸ New from GitHub… and try its method on your own work.` : 'Download Flow, open a path on Home, and try it on the example files first. Your documents stay plain files on your Mac.'}
+          {...(startDomain ? { href: domainArticleHref(startDomain.id), label: 'Read how it was built' } : {})} />
+      </div>
+    </PaperLongform>
   </main>
   <Footer showDownload={false} />
 </PaperLayout>

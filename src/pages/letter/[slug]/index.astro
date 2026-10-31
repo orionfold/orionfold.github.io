@@ -3,11 +3,12 @@
 // shareable per-edition URL). Carries the canonical BlogPosting for the edition;
 // the /letter/ index is the always-fresh hub that points here.
 import { getCollection, render, type CollectionEntry } from 'astro:content';
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PaperSubscribe from '../../../components/paper/PaperSubscribe.astro';
+import '../../../styles/living-in-paper.css';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import LetterArticle from '../../../components/letters/LetterArticle.astro';
-import OfferSlot from '../../../components/ui/OfferSlot.astro';
 import { ogPath, letterOgSlug } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 
@@ -17,11 +18,10 @@ export async function getStaticPaths() {
 }
 
 const { letter } = Astro.props as { letter: CollectionEntry<'letters'> };
-const { Content } = await render(letter);
+const { Content, headings } = await render(letter);
+const minutes = Math.max(1, Math.ceil((letter.body ?? '').split(/\s+/).filter(Boolean).length / 230));
 const { title, dek, edition, date } = letter.data;
 
-const dfmt = (d: Date) =>
-  new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(d);
 const dateIso = date.toISOString().slice(0, 10);
 const dateTime = date.toISOString(); // JSON-LD wants a timezone; OG meta keeps the date
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -53,7 +53,7 @@ const breadcrumbSchema = {
   ],
 };
 ---
-<Layout
+<PaperLayout
   title={`${title} · A letter from the founder · Orionfold`}
   description={dek}
   ogImage={ogPath(letterOgSlug(letter.id))}
@@ -63,32 +63,14 @@ const breadcrumbSchema = {
   jsonLd={[blogPostingSchema, breadcrumbSchema]}
 >
   <Nav />
-  <main class="px-6 pt-36 pb-24 sm:pt-40">
-    <div class="mx-auto max-w-2xl">
-      <a href="/letter/" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-primary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
-        All letters
-      </a>
-    </div>
-    <div class="mt-8">
-      <LetterArticle edition={edition} title={title} dek={dek} dateIso={dateIso} dateFmt={dfmt(date)}>
-        <Content />
-      </LetterArticle>
-    </div>
-  </main>
+  <main id="main" class="pp-page">
+    <LetterArticle edition={edition} title={title} dek={dek} date={date} minutes={minutes} headings={headings}>
+      <Content />
+    </LetterArticle>
 
-  {/* A10: letters already link to /proof/ in their capability close; their real
-      gap is inline capture. A soft opt-in to the monthly letter itself fits a
-      reader who just finished one. Same live double-opt-in funnel as the rest. */}
-  <OfferSlot
-    offer="founder-letter"
-    source="letter-page"
-    label="Not done yet?"
-    heading="Get the next letter."
-    dek="One honest letter a month from building Orionfold in public. What we shipped, what the numbers really say, and the receipts behind every claim."
-    artifact="Monthly founder letter"
-    buttonText="Send it"
-    class="border-t border-border"
-  />
-  <Footer />
-</Layout>
+    {/* A10: a soft opt-in to the monthly letter fits a reader who just finished one. */}
+    <PaperSubscribe id="offer-founder-letter" heading="Get the next letter." dek="One honest letter a month from building Orionfold in public. What we shipped, what the numbers really say, and the receipts behind every claim." source="letter-page" offer="founder-letter" buttonText="Send it" fold="orri"
+      consentText="By subscribing you agree to receive the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy." />
+  </main>
+  <Footer showDownload={false} />
+</PaperLayout>

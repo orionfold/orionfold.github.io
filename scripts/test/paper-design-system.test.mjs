@@ -160,3 +160,21 @@ test('Paper pages never render the Living footer download card (it is unstyled t
   assert.ok(pages.length >= 5, 'Paper pages with a footer exist');
   for (const [file, src] of pages) assert.match(src, /<Footer showDownload=\{false\}/, `${file}: pass showDownload={false}`);
 });
+
+test('R6 long-form: one article template, BlogPosting kept, receipts cite their sources on the page', () => {
+  for (const page of ['src/pages/story/[slug]/index.astro', 'src/pages/receipts/[slug]/index.astro', 'src/pages/relay/memos/[slug]/index.astro', 'src/components/letters/LetterArticle.astro', 'src/pages/promise.astro']) {
+    assert.match(read(page), /<PaperLongform\b/, `${page} uses the long-form template`);
+  }
+  for (const page of ['src/pages/story/[slug]/index.astro', 'src/pages/receipts/[slug]/index.astro', 'src/pages/letter/[slug]/index.astro', 'src/pages/relay/memos/[slug]/index.astro']) {
+    assert.match(read(page), /'@type': 'BlogPosting'/, `${page} keeps its BlogPosting`);
+  }
+  const longform = read('src/components/paper/PaperLongform.astro');
+  assert.match(longform, /Written by/);
+  assert.doesNotMatch(longform, /Reviewed by/i, 'no reviewer exists, so the byline never claims one (operator 2026-10-30)');
+  assert.match(read('src/pages/receipts/[slug]/index.astro'), /class="pp-sources"[\s\S]*<h2 id="receipt-sources">Sources<\/h2>/);
+  // Every long-form subscribe keeps the live double-opt-in form and its attribution.
+  for (const [page, source] of [['src/pages/story/[slug]/index.astro', 'story'], ['src/pages/receipts/[slug]/index.astro', 'receipt-page'], ['src/pages/letter/[slug]/index.astro', 'letter-page']]) {
+    assert.match(read(page), new RegExp(`<PaperSubscribe [^>]*source="${source}"`), `${page} keeps source=${source}`);
+  }
+  assert.match(read('src/components/paper/PaperSubscribe.astro'), /<WaitlistForm /);
+});

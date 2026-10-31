@@ -49,7 +49,8 @@ test('llms.txt states the same counts as the JSON', () => {
 
 test('paths say "walked on Flow", not a release number', () => {
   const page = read('src/pages/flow/paths/[slug].astro');
-  assert.match(page, /'Walked on Flow']/);
+  // R6 (G-145): the byline is written by / published / reading time; the kicker names Flow, never a version.
+  assert.match(page, /kicker=\{`\$\{flowName\(release\)\} path \//);
   assert.doesNotMatch(page, /Walked on Flow \{/);
   assert.match(read('public/llms.txt'), /walked on Flow\)/);
 });

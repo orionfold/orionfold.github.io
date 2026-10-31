@@ -1,14 +1,15 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import PaperLayout from '../../layouts/PaperLayout.astro';
+import Panel from '../../components/paper/Panel.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import { ESSAYS } from '../../data/essays';
 import { SITE, PERSON } from '../../data/seo';
 import { ogMeta } from '../../data/og';
-import '../../styles/living-base.css';
-import '../../styles/essays.css';
+import '../../styles/paper-bridge-essays.css';
 
-const [latest, ...companions] = ESSAYS;
+// The kicker over each essay, in series order on the page (latest first).
+const KICKER: Record<string, string> = { '02': 'The latest essay', '01': 'Where the argument began', '03': 'The eighteen ideas' };
 const title = 'Essays on Personal AI and Working Knowledge | Orionfold';
 const description = 'Essays by Manav Sehgal on personal AI, Living Documents, and a working life with more room for inquiry, ownership, and human judgment.';
 const og = ogMeta('/essays/');
@@ -28,51 +29,38 @@ const schema = {
   },
 };
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page" jsonLd={schema}>
+<PaperLayout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={schema}>
   <Nav />
-  <main id="main" class="ls-main">
-    <header class="ed-hub-intro ls-container">
-      <p class="ls-eyebrow">ESSAYS / MANAV SEHGAL</p>
-      <div class="ed-hub-heading">
-        <h1>Ideas worth<br /><em>carrying forward.</em></h1>
-        <p>On personal AI, working knowledge, and the freedom to decide what our tools should do for us.</p>
-      </div>
-    </header>
-
-    <section class="ed-feature ls-container" aria-labelledby="latest-essay-heading">
-      <div class="ed-feature-label"><span>{latest.number} / THE LATEST ESSAY</span><span>PERSONAL AI · HUMAN JUDGMENT</span></div>
-      <div class="ed-feature-grid">
-        <div class="ed-feature-copy">
-          <h2 id="latest-essay-heading"><a href={latest.href}>The Work<br />We Want<br /><em>to Keep.</em></a></h2>
-          <p class="ed-feature-dek">{latest.subtitle}</p>
-          <p class="ed-feature-excerpt">Yesterday’s research should be a place to begin again. A document can retain the question, its Jobs and the right to question the result. This is the argument behind the next chapter of Flow.</p>
-          <div class="ed-meta"><span>By Manav Sehgal</span><time datetime={latest.date}>{latest.dateLabel}</time><span>{latest.minutes} minute read</span></div>
-          <a href={latest.href} class="ed-link ed-link-primary">Read the essay <span aria-hidden="true">↗</span></a>
-        </div>
-        <div class="ed-feature-art">
-          <img src="/assets/living-systems/hero-flow-paper-planes.webp" alt="" width="1642" height="958" decoding="async" />
-          <div class="ed-feature-thought"><span>THE FILE SAVED THE WORDS.</span><p>We still have to<br /><em>recover the work.</em></p></div>
-        </div>
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="essays-title">
+      <div class="pp-hero-copy">
+        <span class="pp-kicker">Essays / Manav Sehgal</span>
+        <h1 id="essays-title" class="pp-h1">Ideas worth<br /><em>carrying forward.</em></h1>
+        <p class="pp-sub">On personal AI, working knowledge, and the freedom to decide what our tools should do for us.</p>
       </div>
     </section>
 
-    {companions.map((essay) => (
-      <section class="ed-companion ls-container" aria-labelledby={`essay-${essay.number}-heading`}>
-        <div class="ed-companion-index" aria-hidden="true">{essay.number}</div>
-        <div class="ed-companion-copy">
-          <p class="ls-eyebrow">{essay.number === '01' ? 'WHERE THE ARGUMENT BEGAN' : 'THE EIGHTEEN IDEAS / FIRST PUBLISHED AS THE MANIFESTO'}</p>
-          <h2 id={`essay-${essay.number}-heading`}><a href={essay.href}>{essay.title}</a></h2>
-          <p>{essay.subtitle}</p>
-          <div class="ed-meta"><time datetime={essay.date}>{essay.dateLabel}</time><span>{essay.minutes} minute read</span></div>
-        </div>
-        <a href={essay.href} class="ed-link">Read essay {essay.number} <span aria-hidden="true">↗</span></a>
-      </section>
-    ))}
+    <Panel seam="Three essays" fold="atlas">
+      <ul class="pp-cells pp-cells--3 ls-essay-cells">
+        {ESSAYS.map((essay) => (
+          <li aria-labelledby={`essay-${essay.number}-heading`}>
+            <small>Essay {essay.number} · {KICKER[essay.number]}</small>
+            <h2 id={`essay-${essay.number}-heading`}><a href={essay.href}>{essay.title}</a></h2>
+            <span>{essay.subtitle}</span>
+            <small><time datetime={essay.date}>{essay.dateLabel}</time> · {essay.minutes} minute read</small>
+            <a class="ls-essay-read" href={essay.href}>Read essay {essay.number} →</a>
+          </li>
+        ))}
+      </ul>
+    </Panel>
 
-    <section class="ed-author-context ls-container" aria-labelledby="essays-author-heading">
-      <div><p class="ls-eyebrow">THE PERSON BEHIND THE WORK</p><h2 id="essays-author-heading">A personal desk.<br /><em>A larger possibility.</em></h2></div>
-      <div><p>I’m Manav Sehgal, founder of Orionfold. My work has taken me through document systems, risk analytics, cloud architecture and AI products. These essays ask what useful intelligence should make possible for the person at the desk.</p><p>The essays develop the argument. <a href="/manifesto/">The Researcher, Writer and Builder in You</a> names the principles. <a href="/flow/">Flow</a> puts them to work.</p><a href="/story/why-i-folded-orionfold/" class="ed-link">Read the founding story <span aria-hidden="true">↗</span></a></div>
-    </section>
+    <Panel seam="The person behind the work" tinted title="A personal desk.<br /><em>A larger possibility.</em>">
+      <div class="ls-essays-author">
+        <p>I’m Manav Sehgal, founder of Orionfold. My work has taken me through document systems, risk analytics, cloud architecture and AI products. These essays ask what useful intelligence should make possible for the person at the desk.</p>
+        <p>The essays develop the argument. <a href="/manifesto/">The Researcher, Writer and Builder in You</a> names the principles. <a href="/flow/">Flow</a> puts them to work.</p>
+        <p><a href="/story/why-i-folded-orionfold/">Read the founding story →</a></p>
+      </div>
+    </Panel>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>

@@ -1,0 +1,12 @@
+---
+// One linked card in a long-form rail (R6): a kicker, a serif line, a short
+// note and a go-line. The free book and the product behind a receipt use it.
+interface Props { href: string; kicker: string; title: string; body?: string; go: string }
+const { href, kicker, title, body, go } = Astro.props;
+---
+<a class="pp-rail-block pp-rail-card" href={href}>
+  <p class="pp-kicker">{kicker}</p>
+  <strong>{title}</strong>
+  {body && <span>{body}</span>}
+  <span class="pp-rail-go">{go} →</span>
+</a>

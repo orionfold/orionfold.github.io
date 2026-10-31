@@ -97,7 +97,7 @@ test('the full essay download and reading time follow the four source prose chun
   assert.ok(footer.includes(`https://orionfold.com${essay}`), 'offline readers can return to the interactive illustrations');
   const minutes = Math.ceil(proseWords / 230);
   assert.equal(schemas(article).find(s => s['@type'] === 'Article').timeRequired, `PT${minutes}M`);
-  assert.ok(article.includes(`${minutes} minute read`), 'visible reading time matches the source prose');
+  assert.ok(article.includes(`<dt>Reading time</dt><dd>${minutes} min</dd>`), 'visible reading time (the Paper byline) matches the source prose');
   assert.doesNotMatch(article + manuscript, /\/Users\/|website-essay-handoff|shot-manifest|publish_ready|internal_only|run-jobs-landed-review-ready|jobs-workbench-edit\.png/);
 });
 test('flagship paper downloads sit at chapter breaks and share the live download contract', () => {

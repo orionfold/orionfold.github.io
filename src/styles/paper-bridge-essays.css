@@ -1,0 +1,73 @@
+/* Paper R6 (G-145): the essays inside Paper. Living class names live here
+ * only; every rule sits under .paper and no rule names a Paper class. */
+
+/* Essay 01: chapters are sections inside the reading column. */
+.paper .ls-essay-in-paper > section > * { margin: 0; }
+.paper .ls-essay-in-paper > section > * + * { margin-top: 24px; }
+.paper .ls-essay-in-paper > section + section { margin-top: 56px; }
+.paper .ls-essay-in-paper .ls-essay-section-number { display: block; font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; color: var(--pp-ink-3); }
+.paper .ls-essay-in-paper .ls-essay-section-number + h2 { margin-top: 8px; }
+.paper .ls-essay-in-paper .ls-stroke { color: inherit; background: none; -webkit-text-stroke: 0; }
+.paper .ls-essay-in-paper .ls-stroke::before,
+.paper .ls-essay-in-paper .ls-stroke::after { display: none; }
+.paper .ls-essay-in-paper .ls-essay-related { padding: 20px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); }
+.paper .ls-essay-in-paper .ls-essay-related h2 { margin: 0 0 8px; font: 500 12px/1.3 var(--pp-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--pp-ink-2); }
+.paper .ls-essay-in-paper .ls-essay-related a { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 16px; line-height: 1.5; }
+.paper .ls-essay-in-paper .ls-author-note,
+.paper .ls-work-in-paper .ed-author-bio { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--pp-ink); font-size: 16px; line-height: 1.6; color: var(--pp-ink-2); }
+.paper .ls-essay-in-paper .ls-author-note > * + * { margin-top: 10px; }
+.paper .ls-essay-in-paper .ls-text-link { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Essay 02: the product scenes and the three paper cards stay in the column. */
+.paper .ls-work-in-paper .ed-product-scene { padding: 24px 0; border-block: 1px solid var(--pp-line); }
+.paper .ls-work-in-paper .ed-scene-intro { padding-inline: 0; }
+.paper .ls-work-in-paper .ed-scene-intro > * + * { margin-top: 10px; }
+.paper .ls-work-in-paper .ed-scene-intro .ls-eyebrow { margin: 0; font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; color: var(--pp-ink-3); }
+.paper .ls-work-in-paper .ed-scene-intro h2 { margin-top: 8px; }
+.paper .ls-work-in-paper .ed-scene-intro h2 em { font-style: normal; color: var(--pp-ink-3); }
+.paper .ls-work-in-paper .ed-scene-intro sup a { text-decoration: none; }
+.paper .ls-work-in-paper .ed-scene-intro + * { margin-top: 20px; }
+.paper .ls-work-in-paper .ed-illustration-note { margin-top: 14px; font: 400 13px/1.5 var(--pp-sans); color: var(--pp-ink-3); }
+.paper .ls-work-in-paper .ed-link { display: inline-block; margin-top: 14px; font-size: 16px; }
+.paper .ls-work-in-paper .ed-endmark { text-align: center; color: var(--pp-ink-3); }
+.paper .ls-work-in-paper .ed-author-bio > * + * { margin-top: 10px; }
+.paper .ls-work-in-paper .ed-author-bio a { display: block; }
+.paper .ls-work-in-paper .ed-notes-return { display: inline-block; margin-top: 40px; }
+
+/* Essay 03: the manifesto keeps its wide chapters and scenes, in Paper's voice. */
+.paper .ls-manifesto-in-paper { margin-top: 48px; background: transparent; --yellow: var(--pp-gold-pale); --red: var(--pp-ink-2); --red-deep: var(--pp-ink); --ink: var(--pp-ink); --muted: var(--pp-ink-2); --line: var(--pp-line); --paper: var(--pp-paper); }
+.paper .ls-manifesto-in-paper .ls-container { width: min(1240px, calc(100% - 48px)); margin-inline: auto; }
+@media (max-width: 760px) { .paper .ls-manifesto-in-paper .ls-container { width: calc(100% - 32px); } }
+.paper .ls-manifesto-in-paper .ls-paper-art,
+.paper .ls-manifesto-in-paper .ls-story-unit::before,
+.paper .ls-manifesto-in-paper .ls-story-unit::after { display: none; }
+.paper .ls-manifesto-in-paper .ls-story-unit { background: transparent; }
+.paper .ls-manifesto-in-paper .ls-story-unit[data-tone="yellow"],
+.paper .ls-manifesto-in-paper .ls-story-unit[data-tone="mint"] { background: var(--pp-paper-2); }
+.paper .ls-manifesto-in-paper .ls-eyebrow { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; color: var(--pp-ink-3); }
+.paper .ls-manifesto-in-paper .ls-chapter-heading h2,
+.paper .ls-manifesto-in-paper .ls-why-heading h2 { font: 300 clamp(38px, 5vw, 72px)/1.02 var(--pp-serif); font-variation-settings: 'SOFT' 100; letter-spacing: -.02em; text-transform: none; color: var(--pp-ink); }
+.paper .ls-manifesto-in-paper .ls-principle h3,
+.paper .ls-manifesto-in-paper .ls-why-item h3,
+.paper .ls-manifesto-in-paper .ls-market-signal h3 { font: 400 clamp(24px, 2.2vw, 30px)/1.12 var(--pp-serif); letter-spacing: -.01em; text-transform: none; color: var(--pp-ink); }
+.paper .ls-manifesto-in-paper .ls-principle-index { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; color: var(--pp-ink-3); }
+.paper .ls-manifesto-in-paper .ls-principle p { color: var(--pp-ink-2); }
+.paper .ls-manifesto-in-paper .ls-stroke { color: var(--pp-ink-3); background: none; -webkit-text-stroke: 0; text-decoration: none; }
+.paper .ls-manifesto-in-paper .ls-stroke::before,
+.paper .ls-manifesto-in-paper .ls-stroke::after { display: none; }
+.paper .ls-manifesto-in-paper .ls-scene { border-color: var(--pp-line); border-radius: var(--pp-r-2); box-shadow: var(--pp-shadow-window); }
+.paper .ls-manifesto-in-paper .ls-text-link,
+.paper .ls-manifesto-in-paper .ls-market-signal a { color: var(--pp-ink); }
+.paper .ls-manifesto-in-paper .ls-email-invitation { background: var(--pp-white); background-image: none; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); }
+.paper .ls-manifesto-in-paper .ls-email-invitation h3 { font: 300 clamp(32px, 3.6vw, 52px)/1.04 var(--pp-serif); letter-spacing: -.02em; text-transform: none; color: var(--pp-ink); }
+.paper .ls-manifesto-in-paper .ls-email-invitation button[type="submit"] { background: var(--pp-ink); border-color: var(--pp-ink); color: var(--pp-white); border-radius: var(--pp-r-2); font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; }
+.paper .ls-manifesto-in-paper .ls-email-invitation input[type="email"] { background: var(--pp-white); border-color: var(--pp-line); border-radius: var(--pp-r-2); font: 400 15px/1.2 var(--pp-sans); letter-spacing: 0; }
+
+/* The essays index: three essay cells and the author note. */
+.paper .ls-essay-cells h2 { margin: 0; font: 400 clamp(22px, 2vw, 28px)/1.15 var(--pp-serif); letter-spacing: -.01em; }
+.paper .ls-essay-cells h2 a,
+.paper .ls-essay-cells .ls-essay-read { color: var(--pp-ink); text-underline-offset: 4px; }
+.paper .ls-essay-cells .ls-essay-read { margin-top: 6px; font: 500 14px/1.3 var(--pp-sans); }
+.paper .ls-essays-author { display: grid; gap: 16px; max-width: 62ch; font: 400 17px/1.6 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .ls-essays-author p { margin: 0; }
+.paper .ls-essays-author a { color: var(--pp-ink); text-underline-offset: 4px; }

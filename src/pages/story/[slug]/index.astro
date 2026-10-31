@@ -6,11 +6,12 @@
 // lives at /story/<slug>/.
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PaperLongform from '../../../components/paper/PaperLongform.astro';
+import PaperSubscribe from '../../../components/paper/PaperSubscribe.astro';
+import '../../../styles/living-in-paper.css';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
-import StorySubscribe from '../../../components/sections/StorySubscribe.astro';
-import StoryPrevNext from '../../../components/story/StoryPrevNext.astro';
 import ProofCTA from '../../../components/story/ProofCTA.astro';
 import FlowStoryCta from '../../../components/story/FlowStoryCta.astro';
 import { ogPath, storyOgSlug } from '../../../data/og';
@@ -28,7 +29,6 @@ import proofPoster from '../../../assets/proof/orionfold-proof-poster.jpeg';
 import flowPitStop from '../../../assets/flow/launch/flow-ideas-pit-stop-daylight-wide.webp';
 import { ORIONFOLD_FLOW_LIVE } from '../../../data/launch.ts';
 import { FLOW_DMG_URL, FLOW_DOWNLOAD_CAPTION } from '../../../data/flow-pricing.ts';
-import FlowDownloadCta from '../../../components/flow/FlowDownloadCta.astro';
 
 const POSTER_ALT = 'Orionfold Proof poster: a laptop on a desk emitting a long signed receipt under a star constellation, with the gold title Orionfold Proof.';
 
@@ -86,47 +86,29 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+// About 230 words a minute, rounded up.
+const minutes = Math.max(1, Math.ceil((post.body ?? '').split(/\s+/).filter(Boolean).length / 230));
 const { title, date, summary, tags, hero, heroAlt } = post.data;
 
 const proofCta = PROOF_CTA[post.id as keyof typeof PROOF_CTA];
 const flowCta = ORIONFOLD_FLOW_LIVE ? FLOW_CTA[post.id as keyof typeof FLOW_CTA] : undefined;
-// Live stories use the shared footer's single yellow download band, carrying
-// their original story-footer attribution. The earlier waitlist block stays
-// available while launch-dark; the historical mid-article exclusion is retained.
-const hasMidStoryFlowCta = post.id in FLOW_CTA;
+// The closing ask under the subscribe form keeps the story-footer attribution
+// while Flow is live, and the waitlist while launch-dark.
 const footerFlowCta = ORIONFOLD_FLOW_LIVE
-  ? {
-      href: FLOW_DMG_URL,
-      ctaText: 'Download Flow Now',
-      caption: FLOW_DOWNLOAD_CAPTION,
-      downloadSource: `story-footer-${post.id}`,
-    }
-  : {
-      href: '/flow/#waitlist',
-      ctaText: 'Join the waitlist',
-      caption: 'Free to join · Double opt-in · One email a week, no more',
-      downloadSource: undefined,
-    };
-const FLOW_LAUNCH_STORIES = new Set([
-  'the-day-i-stopped-trusting-invisible-edits',
-  'where-your-ai-actually-runs',
-  'the-fastest-model-on-your-mac',
-  'a-search-result-is-a-citation',
-  'charts-that-come-from-the-words',
-  'the-pit-crew-that-never-touches-the-wheel',
-]);
-const titleBeforeHero = FLOW_LAUNCH_STORIES.has(post.id);
-
-// Ascending by date (oldest → newest) so a left-to-right walk in the index IS
-// the founder-arc walk. StoryPrevNext picks neighbors by simple index math.
+  ? { href: FLOW_DMG_URL, downloadSource: `story-footer-${post.id}` }
+  : { href: '/flow/#waitlist', downloadSource: undefined };
+// Ascending by date (oldest → newest), so the neighbours walk the founder arc.
 const allStories = (await getCollection('story')).sort(
   (a, b) => a.data.date.getTime() - b.data.date.getTime(),
 );
-
-// timeZone:'UTC' so a date-only frontmatter value (parsed as UTC midnight) shows
-// the authored day, not the day before in a behind-UTC build/local timezone.
-const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
+const at = allStories.findIndex((p) => p.id === post.id);
+const prev = at > 0 ? allStories[at - 1] : undefined;
+const next = at >= 0 && at < allStories.length - 1 ? allStories[at + 1] : undefined;
+// The rail's "keep reading": the three newest stories that are not this one or its neighbours.
+const latest = allStories.filter((p) => ![post.id, prev?.id, next?.id].includes(p.id)).slice(-3).reverse();
+// timeZone UTC, so a date-only frontmatter value shows its authored day.
+const shortDate = (d: Date) => new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d);
 const dateIso = date.toISOString().slice(0, 10);
 // JSON-LD dates carry the full ISO datetime with timezone. Rich Results Test
 // (2026-08-29, live launch story) reads a date-only value as "Invalid datetime
@@ -170,7 +152,7 @@ const breadcrumbSchema = {
   ],
 };
 ---
-<Layout
+<PaperLayout
   title={`${title} · Orionfold`}
   description={summary}
   ogImage={ogPath(storyOgSlug(post.id))}
@@ -186,69 +168,25 @@ const breadcrumbSchema = {
   jsonLd={[blogPostingSchema, breadcrumbSchema]}
 >
   <Nav />
-  <main class="overflow-x-clip px-6 pt-36 pb-28 sm:pt-40">
-    <article class="mx-auto max-w-2xl">
-      <a href="/story/" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-primary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
-        All stories
-      </a>
-
-      {titleBeforeHero && (
-        <header class="mt-8">
-          <div class="mb-4 flex flex-wrap items-center gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">
-            {tags[0] && <span class="text-primary">{tags[0]}</span>}
-            <time datetime={dateIso}>{dateFmt}</time>
-          </div>
-          <h1 class="leading-tight" style="font-size: clamp(2rem, 5vw, 3rem);">{title}</h1>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">{summary}</p>
-          {flowCta && (
-            // The download story's first ask sits above the fold, before the
-            // hero picture (day-2 read 2026-08-28: 8 readers, 40s, 0 downloads
-            // with the only early ask a prose link). Same button, URL and
-            // caption as the homepage hero; its own placement id so GA4 can
-            // split it from the mid-article card and the story footer.
-            <div class="mt-7">
-              <FlowDownloadCta source={`story-top-${post.id}`} />
-            </div>
-          )}
-        </header>
+  <main id="main" class="pp-page">
+    <PaperLongform crumb={{ href: '/story/', label: 'Stories' }} kicker={tags[0]} title={title} dek={summary} published={date} minutes={minutes} headings={headings}>
+      {flowCta && (
+        // The download story's first ask sits above the fold, before the hero
+        // picture (day-2 read 2026-08-28). Its own placement id so GA4 can split
+        // it from the mid-article card and the story footer.
+        <div slot="lead" class="pp-long-lead"><a class="pp-btn" href={FLOW_DMG_URL} data-flow-download={`story-top-${post.id}`}>Download Flow for Mac</a></div>
       )}
-
       {hero && (
-        <Image
-          src={hero}
-          alt={heroAlt ?? title}
-          widths={[480, 768, 1024]}
-          sizes="(min-width: 768px) 42rem, 100vw"
-          priority
-          data-no-zoom
-          class="mt-8 aspect-[16/9] w-full rounded-xl border border-border object-cover"
-        />
+        <Image slot="figure" src={hero} alt={heroAlt ?? title} widths={[480, 768, 1024, 1800]} sizes="(min-width: 940px) 900px, 100vw" priority data-no-zoom />
       )}
 
-      {!titleBeforeHero && (
-        <header class="mt-8">
-          <div class="mb-4 flex flex-wrap items-center gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">
-            {tags[0] && <span class="text-primary">{tags[0]}</span>}
-            <time datetime={dateIso}>{dateFmt}</time>
-          </div>
-          <h1 class="leading-tight" style="font-size: clamp(2rem, 5vw, 3rem);">{title}</h1>
-          <p class="mt-5 text-lg leading-relaxed text-text-muted">{summary}</p>
-        </header>
-      )}
-
-      <div class="story-prose mt-12 border-t border-border pt-10">
-        <Content />
-      </div>
+      <Content />
 
       {proofCta && (
         <>
-          {/* Server-rendered once, hidden; the inline script below moves it into
-              the `::proof-cta` slot inside the body so it sits mid-article. The
-              thumbnail still flows through <Image> (it lives outside <Content/>,
-              so the body's own inline images are untouched). Hidden-until-placed
-              = no flash; if JS is off it stays appended right after the body,
-              still a valid CTA. */}
+          {/* Server-rendered once, hidden; the inline script moves it into the
+              `::proof-cta` slot mid-article. With JS off it stays right after
+              the body, still a valid CTA. */}
           <div id="proof-cta-source" hidden>
             <ProofCTA
               thumb={proofCta.thumb}
@@ -265,13 +203,8 @@ const breadcrumbSchema = {
               if (!src) return;
               const card = src.firstElementChild;
               if (!card) { src.remove(); return; }
-              if (slot) {
-                slot.replaceWith(card);
-              } else {
-                // No midpoint marker in this body: drop the CTA right after the
-                // article body as a graceful fallback.
-                src.parentElement.insertBefore(card, src);
-              }
+              if (slot) slot.replaceWith(card);
+              else src.parentElement.insertBefore(card, src);
               src.remove();
             })();
           </script>
@@ -307,52 +240,32 @@ const breadcrumbSchema = {
               if (!src) return;
               const card = src.firstElementChild;
               if (!card) { src.remove(); return; }
-              if (slot) {
-                slot.replaceWith(card);
-              } else {
-                src.parentElement.insertBefore(card, src);
-              }
+              if (slot) slot.replaceWith(card);
+              else src.parentElement.insertBefore(card, src);
               src.remove();
             })();
           </script>
         </>
       )}
 
-      {tags.length > 0 && (
-        <ul class="mt-12 flex flex-wrap gap-1.5" aria-label="Tags">
-          {tags.map((tag) => (
-            <li>
-              <span class="rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1 font-mono text-[10px] tracking-wider text-primary">
-                {tag}
-              </span>
-            </li>
-          ))}
-        </ul>
+      <nav slot="rail" class="pp-rail-block" aria-label="Keep reading">
+        <p class="pp-kicker">Keep reading</p>
+        <ul>{latest.map((p) => <li><a href={`/story/${p.id}/`}><small>{shortDate(p.data.date)}</small>{p.data.title}</a></li>)}</ul>
+      </nav>
+
+      {(prev || next) && (
+        <nav slot="after" class="pp-long-next" aria-label="More stories in the arc">
+          {prev && <a href={`/story/${prev.id}/`} aria-label={`Previous story: ${prev.data.title}`}><span class="pp-kicker">← Previous story</span><strong>{prev.data.title}</strong></a>}
+          {next && <a class="pp-next-newer" href={`/story/${next.id}/`} aria-label={`Next story: ${next.data.title}`}><span class="pp-kicker">Next story →</span><strong>{next.data.title}</strong></a>}
+        </nav>
       )}
-    </article>
+    </PaperLongform>
+
+    <!-- Subscribe to stories (H3): the same double-opt-in capture as the story
+         index, then one attributed Flow ask under it. -->
+    <PaperSubscribe id="story-subscribe" heading="Get each new story in your inbox." dek="Short, honest notes from building Orionfold in public. One email a week, no more." source="story">
+      <small><a href={footerFlowCta.href} data-flow-download={footerFlowCta.downloadSource}>{ORIONFOLD_FLOW_LIVE ? 'Or download Flow for Mac' : 'Or join the Flow waitlist'}</a></small>
+    </PaperSubscribe>
   </main>
-
-  <!-- Read-next/prev within the arc; renders nothing at the ends if neither neighbor exists -->
-  <StoryPrevNext current={post} posts={allStories} />
-
-  <!-- Preserve the existing launch-dark waitlist path. Live downloads use the
-       shared footer band below StorySubscribe, with the same attribution. -->
-  {!ORIONFOLD_FLOW_LIVE && !hasMidStoryFlowCta && (
-    <FlowStoryCta
-      image={flowPitStop}
-      imageAlt="The Orionfold Flow race car in the Ideas pit stop with its crew at work and a driver reading telemetry beside the track."
-      eyebrow="The product behind these stories"
-      title="Orionfold Flow for Mac"
-      description="Flow brings AI to documents. You keep the wheel: every change is a diff you approve, every run leaves a receipt, and the files stay yours. Base is free."
-      ctaText={footerFlowCta.ctaText}
-      href={footerFlowCta.href}
-      downloadSource={footerFlowCta.downloadSource}
-      caption={footerFlowCta.caption}
-      placement="footer"
-    />
-  )}
-
-  <!-- Subscribe to stories (H3): same capture block as the story index -->
-  <StorySubscribe class="border-t border-border" />
-  <Footer downloadSource={footerFlowCta.downloadSource} />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>

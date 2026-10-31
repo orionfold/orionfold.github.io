@@ -1,8 +1,9 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import PaperLayout from '../layouts/PaperLayout.astro';
+import Panel from '../components/paper/Panel.astro';
+import Fold from '../components/paper/Fold.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import PageHeader from '../components/ui/PageHeader.astro';
 import { Image } from 'astro:assets';
 import { books } from '../data/books';
 import { ogMeta } from '../data/og';
@@ -27,80 +28,53 @@ const bookCovers: Record<string, ImageMetadata> = {
   'ai-research-on-nvidia-dgx-spark': aiResearchSparkCover,
 };
 ---
-<Layout
+<PaperLayout
   title="Learn · Orionfold"
   description="Books, field notes, DGX Spark research, and story posts from Orionfold."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
   <Nav />
-  <main>
-    <PageHeader
-      eyebrow="Learn"
-      title="The playbooks behind the stack."
-      subtitle="Books, field notes, DGX Spark research, and build stories explain how the private AI capability is made. The teaching layer stays linked to the software, models, and roadmap."
-    />
-
-    <section class="px-6 pt-12">
-      <div class="mx-auto max-w-6xl">
-        <div data-animate-stagger class="grid gap-5 md:grid-cols-3">
-          {learning.map((item) => (
-            <a data-animate href={item.href} class="of-surface of-pressable group flex flex-col overflow-hidden rounded-2xl">
-              <div class="aspect-[16/9] overflow-hidden border-b border-border">
-                <Image
-                  src={item.img}
-                  alt={item.alt}
-                  widths={[400, 640]}
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  loading="lazy"
-                  decoding="async"
-                  data-no-zoom
-                  class="h-full w-full object-cover object-top"
-                />
-              </div>
-              <div class="flex flex-1 flex-col p-6">
-                <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">{item.label}</span>
-                <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{item.body}</p>
-                <span class="of-text-action of-compact mt-5 text-xs">Open →</span>
-              </div>
-            </a>
-          ))}
-        </div>
-
-        <div class="mt-12">
-          <div class="flex flex-wrap items-baseline justify-between gap-4">
-            <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Current books</p>
-            <a href="/books/" class="of-text-action of-compact text-xs">All books →</a>
-          </div>
-          <div data-animate-stagger class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {books.map((book) => (
-              <a href={`/books/${book.slug}/`} data-animate class="of-surface of-pressable group flex flex-col overflow-hidden rounded-2xl">
-                {bookCovers[book.slug] && (
-                  <div class="aspect-[3/4] overflow-hidden border-b border-border">
-                    <Image
-                      src={bookCovers[book.slug]}
-                      alt={`${book.title} book cover`}
-                      widths={[300, 480]}
-                      sizes="(min-width: 640px) 33vw, 100vw"
-                      loading="lazy"
-                      decoding="async"
-                      data-no-zoom
-                      class="h-full w-full object-cover object-top"
-                    />
-                  </div>
-                )}
-                <div class="p-5">
-                  <span class="font-medium leading-snug text-text transition-colors group-hover:text-primary">{book.title}</span>
-                  <span class="mt-1.5 block text-sm leading-snug text-text-muted">{book.body}</span>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="learn-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Learn</p>
+        <h1 id="learn-title" class="pp-h1">The playbooks behind the stack.</h1>
+        <p class="pp-sub">Books, field notes, DGX Spark research, and build stories explain how the private AI capability is made. The teaching layer stays linked to the software, models, and roadmap.</p>
       </div>
     </section>
 
-    <div class="h-20"></div>
+    <section class="pp-index" aria-label="Ways to learn">
+      <ul class="pp-art-cards pp-art-cards--3">
+        {learning.map((item) => (
+          <li><a href={item.href}>
+            <Image src={item.img} alt={item.alt} widths={[400, 640]} sizes="(min-width: 1100px) 30vw, (min-width: 420px) 46vw, 92vw" loading="lazy" data-no-zoom />
+            <p class="pp-kicker">{item.label}</p>
+            <p>{item.body}</p>
+          </a></li>
+        ))}
+      </ul>
+    </section>
+
+    <Panel id="books" seam="Current books" fold="hop" title="Read it,<br />then run it.">
+      <ul class="pp-art-cards pp-art-cards--3 pp-art-cards--covers">
+        {books.map((book) => (
+          <li><a href={`/books/${book.slug}/`}>
+            {bookCovers[book.slug] && <Image src={bookCovers[book.slug]} alt={`${book.title} book cover`} widths={[300, 480]} sizes="(min-width: 1100px) 30vw, (min-width: 420px) 46vw, 92vw" loading="lazy" data-no-zoom />}
+            <h3>{book.title}</h3>
+            <p>{book.body}</p>
+          </a></li>
+        ))}
+      </ul>
+      <p class="pp-panel-link"><a href="/books/">All books <span aria-hidden="true">→</span></a></p>
+    </Panel>
+
+    <section class="pp-closing" aria-labelledby="learn-closing">
+      <Fold id="hop" bob class="pp-closing-fold" />
+      <h2 id="learn-closing">Start with the free book.</h2>
+      <p>Become an AI-native business. The PDF and EPUB, by email.</p>
+      <a class="pp-btn" href="/become-ai-native-business/">Get the free book</a>
+    </section>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>

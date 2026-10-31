@@ -1,0 +1,69 @@
+---
+// The Paper long-form article (R6, G-145): stories, receipts, letters, essays,
+// memos. The research pick (plan "Research findings"): Granola's shell (crumb
+// over the H1, a 620px column at 18/32), Lindy's byline (written by, published,
+// last updated), a dek that answers the title, and a sticky right rail with the
+// contents, "keep reading" and the free book. The rail drops under the body on
+// narrow screens. Markdown keeps its own markup; .pp-prose styles it.
+import RailCard from './RailCard.astro';
+interface Heading { depth: number; slug: string; text: string }
+interface Props {
+  crumb: { href: string; label: string };
+  kicker?: string;
+  title: string;
+  dek: string;
+  author?: { name: string; href: string };
+  /** Pages with no publish day (the promise, about) leave the date out. */
+  published?: Date;
+  /** Shown as "Last updated" only when it differs from the publish day. */
+  updated?: Date;
+  minutes?: number;
+  /** h2s become the contents list when there are three or more. */
+  headings?: Heading[];
+  /** The free-book card in the rail (on by default). */
+  magnet?: boolean;
+  /** Extra classes on the body, for markup a collection styles itself (receipt-prose). */
+  bodyClass?: string;
+}
+const {
+  crumb, kicker, title, dek,
+  author = { name: 'Manav Sehgal', href: '/about/' },
+  published, updated, minutes, headings = [], magnet = true, bodyClass,
+} = Astro.props;
+// timeZone UTC: a date-only frontmatter value shows its authored day.
+const fmt = (d: Date) => new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d);
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+const showUpdated = updated && (!published || iso(updated) !== iso(published));
+const contents = headings.filter((h) => h.depth === 2);
+---
+<article class="pp-long" aria-labelledby="pp-long-title">
+  <header class="pp-long-head">
+    <p class="pp-long-crumb"><a href={crumb.href}>{crumb.label}</a>{kicker && <><span aria-hidden="true">/</span><span>{kicker}</span></>}</p>
+    <h1 id="pp-long-title" class="pp-long-title">{title}</h1>
+    <p class="pp-long-dek">{dek}</p>
+    <dl class="pp-byline">
+      <div><dt>Written by</dt><dd><a href={author.href}>{author.name}</a></dd></div>
+      {published && <div><dt>Published</dt><dd><time datetime={iso(published)}>{fmt(published)}</time></dd></div>}
+      {showUpdated && <div><dt>Last updated</dt><dd><time datetime={iso(updated!)}>{fmt(updated!)}</time></dd></div>}
+      {minutes && <div><dt>Reading time</dt><dd>{minutes} min</dd></div>}
+    </dl>
+    <slot name="lead" />
+  </header>
+  {Astro.slots.has('figure') && <div class="pp-long-figure"><slot name="figure" /></div>}
+  <div class="pp-long-grid">
+    <div class:list={['pp-long-body pp-prose ls-in-paper ls-longform', bodyClass]}><slot /></div>
+    <aside class="pp-long-rail" aria-label="More from this page">
+      {contents.length >= 3 && (
+        <nav class="pp-rail-block" aria-label="Contents">
+          <p class="pp-kicker">On this page</p>
+          <ol>{contents.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+        </nav>
+      )}
+      <slot name="rail" />
+      {magnet && (
+        <RailCard href="/become-ai-native-business/" kicker="Free book" title="Become an AI-native business." body="Get the PDF and EPUB by email. Normally $20." go="Get the book" />
+      )}
+    </aside>
+  </div>
+  <slot name="after" />
+</article>

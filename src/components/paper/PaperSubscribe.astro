@@ -1,0 +1,31 @@
+---
+// The closing sheet on a Paper long-form page (R6, G-145): a Fold, one serif
+// line, the live double-opt-in form, and one quiet secondary link. Same funnel
+// as OfferSlot and StorySubscribe; `offer` and `consentText` pass through so
+// lead attribution and the stored consent stay as they were.
+import Fold from './Fold.astro';
+import WaitlistForm from '../ui/WaitlistForm.astro';
+import type { FoldId } from '../../lib/paper/folds';
+interface Props {
+  id: string;
+  heading: string;
+  dek?: string;
+  source: string;
+  offer?: string;
+  buttonText?: string;
+  consentText?: string;
+  fold?: FoldId;
+}
+const { id, heading, dek, source, offer, buttonText = 'Subscribe', consentText, fold = 'atlas' } = Astro.props;
+const privacyNote = consentText?.replace(' See our privacy policy.', '').replace('the AI For Everyone digest', 'the AI Native Newsletter');
+---
+<section class="pp-closing" id={id} aria-labelledby={`${id}-heading`}>
+  <Fold id={fold} bob class="pp-closing-fold" />
+  <h2 id={`${id}-heading`}>{heading}</h2>
+  {dek && <p>{dek}</p>}
+  <div class="ls-in-paper ls-form-in-paper">
+    <WaitlistForm id={`${id}-form`} source={source} offer={offer} buttonText={buttonText} successMessage="Check your inbox to confirm." consentText={consentText} />
+  </div>
+  {privacyNote && <small>{privacyNote} <a href="/privacy/">See our privacy policy.</a></small>}
+  <slot />
+</section>

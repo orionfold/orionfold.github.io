@@ -150,7 +150,7 @@ test('the built pages link the Playbook, the story and each other, and the nav l
   const story = built('/playbooks/ai-consulting/');
   assert.match(story, /"@type":"Article"/);
   assert.ok(story.includes('href="/playbooks/"'));
-  assert.equal((story.match(/<article[\s\S]*?<\/article>/)[0].match(/<img [^>]*alt="[^"]+"/g) ?? []).length, 14, 'the walk’s fourteen shots, each described');
+  assert.equal((story.match(/class="pp-long-body[\s\S]*?<aside class="pp-long-rail"/)[0].match(/<img [^>]*alt="[^"]+"/g) ?? []).length, 14, 'the walk’s fourteen shots, each described');
   assert.match(read('src/components/paper/PaperNav.astro'), /key: 'flow', label: 'Flow',[\s\S]*?key: 'domains', label: 'Playbooks',/, 'the nav leads with Flow, then Playbooks');
   assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/playbooks\/', label: 'Flow Playbooks'/);
   assert.match(read('public/llms.txt'), /## Flow Playbooks/);
@@ -168,12 +168,12 @@ test('the built pages link the Playbook, the story and each other, and the nav l
   assert.deepEqual(order, ['ai-consulting', 'anthropic-s1-analyst'], 'both built Playbooks, the launch story first');
   assert.ok(founders.includes('href="https://github.com/orionfold/flow/tree/main/flow-domains/anthropic-s1-analyst"'));
   const s1 = built('/playbooks/anthropic-s1-analyst/');
-  assert.match(s1, /· A FOUNDER PLAYBOOK</);
+  assert.match(s1, /· A founder Playbook</i);
   assert.match(s1, /nothing in it is investment advice/, 'the body says it is not investment advice');
   assert.match(s1, /<dt>Hands-on time<\/dt><dd>About 3 hours, in one afternoon<\/dd>/, 'its own walk facts, not the launch story\'s');
   for (const slug of BLUEPRINTS) {
     const page = built(`/playbooks/${slug}/`);
-    assert.match(page, /· A BLUEPRINT</, `${slug} is headed as a blueprint`);
+    assert.match(page, /· A blueprint</i, `${slug} is headed as a blueprint`);
     assert.doesNotMatch(page, /<title>[^<]*built in Flow/, `${slug}: the title never says the Playbook was built`);
     assert.match(page, /<title>[^<]*blueprint[^<]*<\/title>/i, `${slug}: the title says blueprint`);
     assert.match(page, /class="da da--blueprint"/, `${slug}: the hero is the planned folder, drawn`);

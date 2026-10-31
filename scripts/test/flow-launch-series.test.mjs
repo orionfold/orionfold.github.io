@@ -199,18 +199,17 @@ assert.match(storyRoute, /define:vars=\{\{ flowDmgUrl: FLOW_DMG_URL/, 'inline pr
 // GA4 Link ID splits it from the card and the footer.
 assert.match(
   storyRoute,
-  /titleBeforeHero && \([\s\S]*?\{summary\}<\/p>[\s\S]*?\{flowCta && \([\s\S]*?<FlowDownloadCta source=\{`story-top-\$\{post\.id\}`\} \/>[\s\S]*?<\/header>[\s\S]*?\{hero && \(/,
+  /\{flowCta && \([\s\S]*?<div slot="lead"[^>]*><a class="pp-btn" href=\{FLOW_DMG_URL\} data-flow-download=\{`story-top-\$\{post\.id\}`\}>[\s\S]*?\{hero && \(\s*<Image slot="figure"/,
   'the download story opens with a Download bar under its summary, before the hero image, attributed as story-top',
 );
-// A live story has one yellow closing download in the shared footer, with its
-// original attribution. The separate waitlist block remains launch-dark only;
-// contextual mid-article downloads remain gray.
+// R6 (G-145): a story closes on the subscribe sheet with one quiet Flow link
+// under it, carrying the original story-footer attribution while live and the
+// waitlist while launch-dark. Contextual mid-article downloads remain gray.
 assert.doesNotMatch(storyRoute, /MagnetBand|ProductBand/, 'the book magnet and the product band left the story footer');
-assert.match(storyRoute, /<StoryPrevNext[\s\S]*?\{!ORIONFOLD_FLOW_LIVE && !hasMidStoryFlowCta && \([\s\S]*?<FlowStoryCta[\s\S]*?<StorySubscribe/, 'the old footer waitlist survives only while launch-dark');
-assert.match(storyRoute, /<StorySubscribe[^>]*\/>\s*<Footer downloadSource=\{footerFlowCta\.downloadSource\} \/>/, 'the single shared closing download retains story-footer attribution');
-assert.match(storyRoute, /const hasMidStoryFlowCta = post\.id in FLOW_CTA;/, 'a story with the mid-article block does not repeat it at the foot');
-assert.match(storyRoute, /href: '\/flow\/#waitlist',\s*ctaText: 'Join the waitlist'/, 'launch-dark footer asks for the waitlist, not a download');
-assert.match(storyRoute, /href: FLOW_DMG_URL,\s*ctaText: 'Download Flow Now'/, 'live footer uses the one canonical download URL and label');
+assert.match(storyRoute, /<PaperSubscribe id="story-subscribe"[\s\S]*?<a href=\{footerFlowCta\.href\} data-flow-download=\{footerFlowCta\.downloadSource\}>/, 'the closing Flow link retains story-footer attribution');
+assert.match(storyRoute, /<Footer showDownload=\{false\} \/>/, 'no second closing download band');
+assert.match(storyRoute, /\{ href: '\/flow\/#waitlist', downloadSource: undefined \}/, 'launch-dark closing link asks for the waitlist, not a download');
+assert.match(storyRoute, /\{ href: FLOW_DMG_URL, downloadSource: `story-footer-\$\{post\.id\}` \}/, 'live closing link uses the one canonical download URL');
 const flowStoryCta = readFileSync(new URL('../../src/components/story/FlowStoryCta.astro', import.meta.url), 'utf8');
 assert.match(flowStoryCta, /<PaperCta source=\{downloadSource \?\? 'story-download'\}/, 'the Flow block preserves attribution through the shared origami download CTA');
 assert.doesNotMatch(flowStoryCta, /FlowRaceBlueprint|<Image/, 'story acquisition uses the origami CTA family');
@@ -230,10 +229,8 @@ assert.match(paperCta, /<FlowDownloadCta source=\{source\}/, 'the shared paper b
 const remarkCta = readFileSync(new URL('../../src/lib/products/remark-proof-cta.mjs', import.meta.url), 'utf8');
 assert.match(remarkCta, /node\.name !== 'flow-cta'/, 'the remark plugin accepts the ::flow-cta directive');
 assert.match(remarkCta, /href="\/flow\/" data-flow-inline-download/, 'inline download links fall back to /flow/ without JavaScript or when Flow is off');
-for (const file of Object.keys(editorialContract)) {
-  assert.match(
-    storyRoute,
-    new RegExp(`'${file.replace(/\.md$/, '')}'`),
-    `${file}: the title and human stakes render before supporting art`,
-  );
-}
+// R6 (G-145): every story now renders the title and its stakes before the art,
+// so the launch stories no longer need their own list.
+const longform = readFileSync(new URL('../../src/components/paper/PaperLongform.astro', import.meta.url), 'utf8');
+assert.match(longform, /<h1 [^>]*>\{title\}<\/h1>[\s\S]*?\{dek\}[\s\S]*?<slot name="figure" \/>/, 'the title and human stakes render before supporting art on every story');
+assert.ok(Object.keys(editorialContract).length > 0);

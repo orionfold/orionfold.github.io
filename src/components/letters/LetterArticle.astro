@@ -1,46 +1,27 @@
 ---
-// Renders one founder-letter edition: a dated masthead, the markdown body (passed
-// as the default slot, wrapped in the shared .story-prose typography), and a
-// standard capability close. The close is consistent across every edition by
-// design — per the strategy hierarchy, the letters are proof/reason-to-believe
-// that always ladder UP to the capability outcome (an AI team you own), so the
-// reader never leaves on "our numbers are honest" but on the payoff they earn.
+// Renders one founder-letter edition in the Paper long-form template (R6,
+// G-145): the edition as kicker, the markdown body, and the standard capability
+// close in the rail. The close is the same on every edition by design: the
+// letters are proof that always ladders up to the capability outcome (an AI team
+// you own), so the reader never leaves on "our numbers are honest" alone.
+import type { MarkdownHeading } from 'astro';
+import PaperLongform from '../paper/PaperLongform.astro';
+import RailCard from '../paper/RailCard.astro';
 interface Props {
   edition: string;
   title: string;
   dek: string;
-  dateIso: string;
-  dateFmt: string;
+  date: Date;
+  minutes: number;
+  headings: MarkdownHeading[];
 }
-const { edition, title, dek, dateIso, dateFmt } = Astro.props;
+const { edition, title, dek, date, minutes, headings } = Astro.props;
 ---
-<article class="mx-auto max-w-2xl">
-  <header>
-    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">
-      <span class="text-primary">A letter from the founder</span>
-      <span aria-hidden="true">·</span>
-      <span>{edition}</span>
-      <span aria-hidden="true">·</span>
-      <time datetime={dateIso}>{dateFmt}</time>
-    </div>
-    <h1 class="mt-4 font-display leading-[1.08]" style="font-size: clamp(2rem, 5vw, 3.25rem);">{title}</h1>
-    <p class="mt-5 text-lg leading-relaxed text-text-muted">{dek}</p>
-  </header>
-
-  <div class="story-prose mt-10 border-t border-border pt-10">
-    <slot />
-  </div>
-
-  <!-- Capability close (same on every edition) -->
-  <div class="mt-14 rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
-    <p class="font-display text-2xl leading-snug">Proof you can rerun. An AI team you can own.</p>
-    <p class="mt-4 text-base leading-relaxed text-text-muted">
-      Every claim here has a receipt you can check. The payoff they earn is an AI team of your own,
-      on the Spark you already own, with no cloud account and no per-token bill.
-    </p>
-    <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-      <a href="/proof/" class="of-primary-action">Read the receipts</a>
-      <a href="/cockpit/" class="of-secondary-action">Get an AI team you own</a>
-    </div>
-  </div>
-</article>
+<PaperLongform crumb={{ href: '/letter/', label: 'Letters from the founder' }} kicker={edition} title={title} dek={dek} published={date} minutes={minutes} headings={headings} magnet={false}>
+  <slot />
+  <Fragment slot="rail">
+    <RailCard href="/proof/" kicker="Proof you can rerun" title="An AI team you can own." body="Every claim here has a receipt you can check, on the Spark you already own, with no per-token bill." go="Read the receipts" />
+    <a class="pp-rail-link" href="/cockpit/">Get an AI team you own →</a>
+  </Fragment>
+  <slot name="after" slot="after" />
+</PaperLongform>

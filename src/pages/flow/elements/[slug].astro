@@ -6,7 +6,7 @@
 import { render } from 'astro:content';
 import { fitTitle, fitDescription } from '../../../lib/flow/seo-meta';
 import PaperLayout from '../../../layouts/PaperLayout.astro';
-import PaperArticle from '../../../components/paper/PaperArticle.astro';
+import PaperLongform from '../../../components/paper/PaperLongform.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
@@ -19,6 +19,7 @@ import '../../../styles/living-base.css';
 import '../../../styles/essays.css';
 import '../../../styles/flow-paths.css';
 import '../../../styles/living-in-paper.css';
+import '../../../styles/paper-bridge-catalog.css';
 import '../../../styles/flow-elements.css';
 
 export async function getStaticPaths() {
@@ -33,7 +34,7 @@ const items = await elementItems(entry.id);
 const others = articles.filter((a) => a.id !== entry.id);
 const sections = headings.filter((h) => h.depth === 2);
 const dateIso = d.drafted.toISOString().slice(0, 10);
-const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
+const minutes = Math.max(1, Math.ceil((entry.body ?? '').split(/\s+/).filter(Boolean).length / 230));
 const canonical = `${SITE.url}${elementArticleHref(entry.id)}`;
 const ogImage = ogPath(flowElementsOgSlug(entry.id));
 const description = fitDescription(d.summary);
@@ -63,52 +64,42 @@ const schema = [
 <PaperLayout title={seoTitle} description={description} ogImage={ogImage} ogImageAlt={`${d.title}, from Flow Elements`} ogType="article" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Elements', tags: ['Flow', 'Elements', d.category] }}>
   <Nav />
   <main id="main" class="pp-page">
-    <PaperArticle
+    <PaperLongform
       crumb={{ href: '/flow/elements/', label: 'All elements' }}
-      kicker={`Flow Elements / ${d.category}`}
-      title={d.title} dek={items.length ? d.summary : d.dek}
-      meta={[items.length ? `${items.length} elements` : 'The tour', 'Walked on Flow']} dateIso={dateIso} dateLabel={dateLabel}
-      link={{ href: '#how-it-works', label: 'How it works ↓' }}
-      scope="ed-page ed-article-page fp-page fe-page">
+      kicker={`Flow Elements / ${d.category}${items.length ? ` · ${items.length} elements` : ' · The tour'}`}
+      title={d.title} dek={items.length ? d.summary : d.dek} published={d.drafted} minutes={minutes} headings={sections}
+      magnet={false} bodyClass="ed-page ed-article-page fp-page fe-page fp-longform">
+      <p slot="lead" class="pp-long-lead"><a class="pp-btn pp-btn--ghost" href="#how-it-works">How it works ↓</a></p>
+      <div slot="figure" class="ls ls-in-paper ls-article-figure ed-page fp-page fe-page">
+        {items.length > 0
+          ? <ElementViewer items={items} label={d.category} />
+          : <section class="fe-tour-cats" aria-label="The four groups"><CategoryCards articles={others} headingLevel="h2" /></section>}
+      </div>
 
-    {items.length > 0
-      ? <ElementViewer items={items} label={d.category} />
-      : <section class="ls-container fe-tour-cats" aria-label="The four groups"><CategoryCards articles={others} headingLevel="h2" /></section>}
+      <span id="how-it-works" class="fe-anchor"></span>
+      {items.length > 0 && <p class="fe-how-dek">{d.dek}</p>}
+      <Content />
+      <div class="fp-colophon">
+        <p><strong>Walked on:</strong> {d.build}.</p>
+        <p><strong>Data:</strong> {d.data}</p>
+        <p>Written by the Flow product team from the walk's own records. Numbers are labelled verified, derived, assumed or unknown.</p>
+      </div>
+      <div id="try-elements">
+        <PaperCta layout="article" class="ed-paper-cta"
+          source={`flow-elements-${entry.id}`} headingId="elements-cta"
+          eyebrow="TRY IT IN FLOW" heading="Press ⌘5 and pick a card."
+          description={`In Flow, open a document and press ⌘5 to open Elements. Select a passage, press a card, and decide what to keep in Review Changes.`} />
+      </div>
 
-    <div class="ed-reading-layout fp-layout fe-how ls-container" id="how-it-works">
-      <aside class="ed-contents fp-rail" aria-label="Article contents">
-        <details open>
-          <summary>{items.length ? 'HOW IT WORKS' : 'IN THIS ARTICLE'}</summary>
-          <nav aria-label="Sections">
-            {sections.map((h, i) => <a href={`#${h.slug}`}><span>{String(i + 1).padStart(2, '0')}</span>{h.text}</a>)}
-          </nav>
-        </details>
-        <a class="fp-try" href="#try-elements">Try it in Flow →</a>
-      </aside>
-      <article class="ed-prose fp-prose fe-prose" aria-label={d.title}>
-        {items.length > 0 && <p class="fe-how-dek">{d.dek}</p>}
-        <Content />
-        <div class="fp-colophon">
-          <p><strong>Walked on:</strong> {d.build}.</p>
-          <p><strong>Data:</strong> {d.data}</p>
-          <p>Written by the Flow product team from the walk's own records. Numbers are labelled verified, derived, assumed or unknown.</p>
-        </div>
-        <div id="try-elements">
-          <PaperCta layout="article" class="ed-paper-cta"
-            source={`flow-elements-${entry.id}`} headingId="elements-cta"
-            eyebrow="TRY IT IN FLOW" heading="Press ⌘5 and pick a card."
-            description={`In Flow, open a document and press ⌘5 to open Elements. Select a passage, press a card, and decide what to keep in Review Changes.`} />
-        </div>
-      </article>
-    </div>
+      <p slot="rail" class="pp-rail-block fp-receipt"><a class="fp-try" href="#try-elements">Try it in Flow →</a></p>
 
-    {items.length > 0 && (
-      <section class="fp-section ls-container" aria-labelledby="more-elements">
-        <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">MORE ELEMENTS</p><h2 id="more-elements">Another group,<br /><span class="ls-stroke">walked the same way.</span></h2></div><a class="fp-all" href="/flow/elements/">All elements →</a></div>
-        <CategoryCards articles={others} headingLevel="h2" />
-      </section>
-    )}
-    </PaperArticle>
+      {items.length > 0 && (
+        <section slot="after" class="fp-section fp-after ls ls-in-paper" aria-labelledby="more-elements">
+          <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">MORE ELEMENTS</p><h2 id="more-elements">Another group,<br /><span class="ls-stroke">walked the same way.</span></h2></div><a class="fp-all" href="/flow/elements/">All elements →</a></div>
+          <CategoryCards articles={others} headingLevel="h2" />
+        </section>
+      )}
+    </PaperLongform>
   </main>
   <Footer showDownload={false} />
 </PaperLayout>

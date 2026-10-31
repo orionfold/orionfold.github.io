@@ -22,7 +22,7 @@ const routes = [
   ['/', 'Orionfold Flow · Show how you work. AI follows it. You make the call.', 'Show how you work. AI follows it. You make the call.'],
   ['/flow/', 'Flow for Mac · Describe it. Flow draws it.', 'Describe it. Flow draws it.'],
   ['/essay/', 'Room for a Renaissance · An essay by Manav Sehgal', 'Room for a Renaissance.'],
-  ['/manifesto/', 'The Researcher, Writer and Builder in You · An essay by Manav Sehgal', 'THE RESEARCHER, WRITER AND BUILDER IN YOU.'],
+  ['/manifesto/', 'The Researcher, Writer and Builder in You · An essay by Manav Sehgal', 'The Researcher, Writer and Builder in You.'],
   ['/flow/tour/', 'Orionfold Flow product tour · See Flow at work', 'See Flow at work.'],
   ['/flow/writing-with-ai/', 'Flow · Writing with AI you approve · Orionfold', 'Write with AI. Keep the final word.'],
   ['/flow/documents-and-files/', 'Flow · Documents and files that stay yours · Orionfold', 'Do more with your files. Keep them yours.'],

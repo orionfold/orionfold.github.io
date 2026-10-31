@@ -4,10 +4,10 @@
 // Voice: first person, grade 3-5, no em-dashes (website-copy-style). No revenue figures;
 // focus on the real public products. Person/ProfilePage JSON-LD ties it to the founder entity.
 import { Image } from 'astro:assets';
-import Layout from '../layouts/Layout.astro';
+import PaperLayout from '../layouts/PaperLayout.astro';
+import Panel from '../components/paper/Panel.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import SectionLabel from '../components/ui/SectionLabel.astro';
 import { SITE, PERSON } from '../data/seo';
 import { ogMeta } from '../data/og';
 import avatar from '../assets/about/manav.jpg';
@@ -79,7 +79,7 @@ const beliefs = [
   },
 ];
 ---
-<Layout
+<PaperLayout
   title="About Manav Sehgal · Orionfold"
   description="I am Manav Sehgal, the builder behind Orionfold. Twenty-five years building AI, from Xerox PARC to Alexa Conversations and Amazon Nova, now folded into one startup for the solo builder."
   ogImage={og.image}
@@ -114,270 +114,62 @@ const beliefs = [
   ]}
 >
   <Nav />
-  <main>
-    <!-- Hero: avatar + mission-first headline -->
-    <section class="relative overflow-hidden px-6 pt-32 pb-12">
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute left-1/2 top-10 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-primary/[0.12] blur-[150px]"></div>
-      </div>
-      <div class="relative z-10 mx-auto max-w-5xl">
-        <div data-animate>
-          <SectionLabel text="About" />
-        </div>
-        <div data-animate class="mt-6 flex items-center gap-5" style="transition-delay: 60ms">
-          <div class="relative shrink-0">
-            <div class="absolute -inset-1.5 rounded-full bg-primary/30 blur-md"></div>
-            <Image
-              src={avatar}
-              alt="Manav Sehgal, a stylized space-explorer portrait of the founder of Orionfold."
-              width={132}
-              height={132}
-              loading="eager"
-              class="relative h-[88px] w-[88px] rounded-full border-2 border-primary/40 object-cover sm:h-[132px] sm:w-[132px]"
-            />
-          </div>
-          <div>
-            <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-primary">Manav Sehgal</p>
-            <p class="mt-1 text-sm text-text-muted">Founder, Orionfold · builder for twenty-five years</p>
-          </div>
-        </div>
-        <h1 class="mt-7 font-display text-[clamp(2.2rem,6vw,4.5rem)] leading-[1.04]">
-          I fold the frontier<br class="hidden sm:block" /> down to one desk.
-        </h1>
-        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-text-muted">
-          Hi, I’m Manav. For twenty-five years I helped the biggest companies in the world put powerful
-          technology in front of millions of people. Now I do the opposite of big. I put that same
-          frontier in the hands of one person at a time, starting with you.
-        </p>
-      </div>
-    </section>
-
-    <!-- The mission, as a comic -->
-    <section class="px-6 pb-4">
-      <div class="mx-auto max-w-5xl">
-        <figure data-animate class="overflow-hidden rounded-3xl border border-border bg-surface-raised">
-          <Image
-            src={mission}
-            alt="A glowing tower of clouds and servers sends a bright star of light across a sunset sky into the open hands of a builder at a small desk, where a gold computer glows. A banner reads: Put the frontier in your hands."
-            class="w-full"
-            widths={[640, 960, 1280, 1600]}
-            sizes="(min-width: 1024px) 64rem, 100vw"
-          />
+  <main id="main" class="pp-page">
+    <!-- About as a letter (R6): mymind's large-type letter, the comics as figures,
+         then the timeline and beliefs as quiet rows, then one Flow ask. -->
+    <article class="pp-letter" aria-labelledby="about-title">
+      <header class="pp-letter-head">
+        <Image src={avatar} alt="Manav Sehgal, a stylized space-explorer portrait of the founder of Orionfold." width={132} height={132} loading="eager" class="pp-letter-avatar" />
+        <p class="pp-kicker">About · Manav Sehgal, founder of Orionfold</p>
+        <h1 id="about-title" class="pp-letter-title">I fold the frontier down to one desk.</h1>
+      </header>
+      <div class="pp-letter-body">
+        <p class="pp-letter-lede">Hi, I’m Manav. For twenty-five years I helped the biggest companies in the world put powerful technology in front of millions of people. Now I do the opposite of big. I put that same frontier in the hands of one person at a time, starting with you.</p>
+        <figure class="pp-letter-figure">
+          <Image src={mission} alt="A glowing tower of clouds and servers sends a bright star of light across a sunset sky into the open hands of a builder at a small desk, where a gold computer glows. A banner reads: Put the frontier in your hands." widths={[640, 960, 1280, 1600]} sizes="(min-width: 1000px) 900px, 100vw" />
+          <figcaption>That is the whole mission. The frontier of AI should not live only in giant clouds rented by giant companies. It should fit on your desk, run on your terms, and answer to you.</figcaption>
         </figure>
-        <p data-animate class="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-text-muted">
-          That is the whole mission. The frontier of AI should not live only in giant clouds rented by
-          giant companies. It should fit on your desk, run on your terms, and answer to you.
-        </p>
-      </div>
-    </section>
-
-    <!-- The why, in plain words -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-2xl">
-        <p class="mb-5 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Why I do this</p>
-        <p class="text-base leading-relaxed text-text-muted">
-          For most of my life, the rule was simple. The best technology was big, expensive, and lived
-          far away in someone else’s data center. You could use it, but you could not own it. I spent
-          years on the inside of that world, and I kept noticing the same gap. The tech got more
-          amazing every year, and yet it reached real people slowly, if at all.
-        </p>
-        <p class="mt-5 text-base leading-relaxed text-text-muted">
-          Then something changed. Open AI models caught up to the locked, paid ones. A computer small
-          enough to sit on a desk got powerful enough to run them. For the first time, one person with
-          the right tools could do what used to take a whole team and a cloud bill. I could not unsee
-          it. So I left to build for that person.
-        </p>
-      </div>
-    </section>
-
-    <!-- The 25-year arc, as a comic -->
-    <section class="px-6 pb-2">
-      <div class="mx-auto max-w-5xl">
-        <figure data-animate class="overflow-hidden rounded-3xl border border-border bg-surface-raised">
-          <Image
-            src={arc}
-            alt="Four-panel comic of a 25-year journey: a 1990s computer lab, a 2010s cloud city, a 2020s glowing voice assistant with a constellation of AI models, and today a builder at a home desk with a small glowing gold computer. A banner reads: Twenty-five years, folded into one desk."
-            class="w-full"
-            widths={[640, 960, 1280, 1600]}
-            sizes="(min-width: 1024px) 64rem, 100vw"
-          />
+        <h2>Why I do this</h2>
+        <p>For most of my life, the rule was simple. The best technology was big, expensive, and lived far away in someone else’s data center. You could use it, but you could not own it. I spent years on the inside of that world, and I kept noticing the same gap. The tech got more amazing every year, and yet it reached real people slowly, if at all.</p>
+        <p>Then something changed. Open AI models caught up to the locked, paid ones. A computer small enough to sit on a desk got powerful enough to run them. For the first time, one person with the right tools could do what used to take a whole team and a cloud bill. I could not unsee it. So I left to build for that person.</p>
+        <figure class="pp-letter-figure">
+          <Image src={arc} alt="Four-panel comic of a 25-year journey: a 1990s computer lab, a 2010s cloud city, a 2020s glowing voice assistant with a constellation of AI models, and today a builder at a home desk with a small glowing gold computer. A banner reads: Twenty-five years, folded into one desk." widths={[640, 960, 1280, 1600]} sizes="(min-width: 1000px) 900px, 100vw" />
         </figure>
+        <h2>The path here</h2>
+        <p>My path was not a straight line. It was the same idea told in very different rooms. It started at Xerox PARC in the late 1990s, where I helped build one of India’s first systems for storing and sharing documents across distance.</p>
+        <p>At AWS I helped bring the cloud to businesses across India, and helped stand up the tech behind the country’s pandemic response. At Amazon I led product for Alexa’s conversational AI, then worked on the foundation models that ship today as Amazon Nova, then helped bring generative AI to the store millions of people shop in every day. After that I led the team helping frontier AI labs like Anthropic and chipmakers like NVIDIA build on AWS.</p>
+        <p>Today that NVIDIA thread runs the other way. My reference machine is the NVIDIA DGX Spark, a small AI supercomputer on one desk, and the book, models, and tools are all proven on it. You can see that work gathered on the <a href="/dgx-spark/">DGX Spark page</a>.</p>
+        <p>Every step taught me the same lesson, a little louder each time. The most powerful technology in the world is worth almost nothing until it reaches the person who needs it. In June 2026, after nearly nine years at Amazon, I left to do the one thing all of it pointed at.</p>
+        <p>Then I spent sixty days building this startup the AI-native way. One person, one desk, research and software and books and operations, all with AI helpers alongside me. What I learned surprised me. AI did not make me smarter. It let me use different parts of my thinking together, and hold the thread between them. I wrote that down in <a href="/story/limitless-without-the-pill/">Limitless, Without the Pill</a>. The short version is a sentence I keep coming back to: I do not write every note anymore, I conduct.</p>
+        <p>That sentence is now a product. <a href="/flow/">Orionfold Flow</a> is the Mac app I am building so anyone can work that way, in the place the work actually happens, the document. Everything before it taught me what to build. Flow is me building it.</p>
+        <p>The frontier is finally small enough to hold. Let’s put it in your hands.</p>
+        <p class="pp-letter-sign">Manav</p>
       </div>
-    </section>
+    </article>
 
-    <!-- The journey, story style -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-2xl">
-        <p class="mb-5 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The path here</p>
-        <p class="text-base leading-relaxed text-text-muted">
-          My path was not a straight line. It was the same idea told in very different rooms. It
-          started at Xerox PARC in the late 1990s, where I helped build one of India’s first systems
-          for storing and sharing documents across distance.
-        </p>
-        <p class="mt-5 text-base leading-relaxed text-text-muted">
-          At AWS I helped bring the cloud to businesses across India, and helped stand up the tech
-          behind the country’s pandemic response. At Amazon I led product for Alexa’s conversational
-          AI, then worked on the foundation models that ship today as Amazon Nova, then helped bring
-          generative AI to the store millions of people shop in every day. After that I led the team
-          helping frontier AI labs like Anthropic and chipmakers like NVIDIA build on AWS.
-        </p>
-        <p class="mt-5 text-base leading-relaxed text-text-muted">
-          Today that NVIDIA thread runs the other way. My reference machine is the NVIDIA DGX Spark, a
-          small AI supercomputer on one desk, and the book, models, and tools are all proven on it. You
-          can see that work gathered on the <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/dgx-spark/">DGX Spark page</a>.
-        </p>
-        <p class="mt-5 text-base leading-relaxed text-text-muted">
-          Every step taught me the same lesson, a little louder each time. The most powerful technology
-          in the world is worth almost nothing until it reaches the person who needs it. In June 2026,
-          after nearly nine years at Amazon, I left to do the one thing all of it pointed at.
-        </p>
-        <p class="mt-5 text-base leading-relaxed text-text-muted">
-          Then I spent sixty days building this startup the AI-native way. One person, one desk,
-          research and software and books and operations, all with AI helpers alongside me. What I
-          learned surprised me. AI did not make me smarter. It let me use different parts of my
-          thinking together, and hold the thread between them. I wrote that down in
-          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/story/limitless-without-the-pill/">Limitless, Without the Pill</a>.
-          The short version is a sentence I keep coming back to: I do not write every note anymore, I conduct.
-        </p>
-        <p class="mt-5 text-base leading-relaxed text-text-muted">
-          That sentence is now a product. <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/flow/">Orionfold Flow</a>
-          is the Mac app I am building so anyone can work that way, in the place the work actually
-          happens, the document. Everything before it taught me what to build. Flow is me building it.
-        </p>
-      </div>
-    </section>
+    <Panel id="shipped" seam="Things I’ve helped bring into the world" fold="atlas" title="Not a resume.<br />A timeline." lede="The real, public things I had a hand in shipping, and the one I am building now.">
+      <ol class="pp-rows pp-rows--timeline">
+        {milestones.map((m) => <li><div class="pp-row"><b>{m.year}</b><div><strong>{m.mark}</strong><span>{m.line}</span></div></div></li>)}
+      </ol>
+    </Panel>
 
-    <!-- Things I've helped bring into the world, as a timeline -->
-    <section class="border-y border-border bg-surface-raised px-6 py-16">
-      <div class="mx-auto max-w-3xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Things I’ve helped bring into the world</p>
-        <p class="mb-10 max-w-2xl text-sm leading-relaxed text-text-muted">
-          Not a resume. A timeline of the real, public things I had a hand in shipping, and the one I am building now.
-        </p>
-        <ol class="relative" data-animate-stagger>
-          {milestones.map((m, i) => (
-            <li data-animate class="relative flex gap-5 sm:gap-7">
-              <div class="flex flex-col items-center">
-                <span class={`relative mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full ring-4 ${m.now ? 'bg-primary ring-primary/25' : 'bg-primary/85 ring-primary/10'}`}>
-                  {m.now && <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/50"></span>}
-                </span>
-                {i < milestones.length - 1 && <span class="mt-1.5 w-px flex-1 bg-gradient-to-b from-primary/35 to-primary/10"></span>}
-              </div>
-              <div class={i === milestones.length - 1 ? 'pb-0' : 'pb-10'}>
-                <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-primary">{m.year}</p>
-                <p class="mt-1 font-display text-xl leading-tight text-text">{m.mark}</p>
-                <p class="mt-2 max-w-xl text-sm leading-relaxed text-text-muted">{m.line}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
+    <Panel id="beliefs" seam="What I believe" fold="orri" tinted title="Three things<br />I hold to.">
+      <ol class="pp-cells pp-cells--3 pp-cells--steps">
+        {beliefs.map((b, i) => <li><small>{String(i + 1).padStart(2, '0')}</small><b>{b.title}</b><span>{b.body}</span></li>)}
+      </ol>
+      <p class="pp-panel-note">The <a href="/letter/">letter every month</a> covers where AI is going. The proof that a desk can do real AI is in the <a href="/proof/">receipts</a>. Why I left, and what the name means, is in <a href="/story/why-i-folded-orionfold/">Why I folded Orionfold</a>.</p>
+    </Panel>
 
-    <!-- What I believe -->
-    <section class="px-6 py-14">
-      <div class="mx-auto max-w-6xl">
-        <p class="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What I believe</p>
-        <div class="grid gap-4 md:grid-cols-3" data-animate-stagger>
-          {beliefs.map((b) => (
-            <article data-animate class="rounded-2xl border border-border/70 bg-surface-raised/70 p-6">
-              <p class="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-primary">{b.title}</p>
-              <p class="mt-4 text-sm leading-relaxed text-text-muted">{b.body}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Close + CTA -->
-    <section class="px-6 pb-24">
-      <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
-        <p class="font-display text-2xl leading-snug">The frontier is finally small enough to hold. Let’s put it in your hands.</p>
-        <p class="mt-4 text-base leading-relaxed text-text-muted">
-          I write a short
-          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/letter/">letter every month</a>
-          on where AI is going and why a desk you own beats a meter you rent, and the proof that a desk
-          can do real AI is in the
-          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/proof/">receipts</a>.
-          The full story of why I left, and what the name Orionfold means, is in
-          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/story/why-i-folded-orionfold/">Why I folded Orionfold</a>,
-          and what I am building next is in
-          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/story/limitless-without-the-pill/">Limitless, Without the Pill</a>.
-        </p>
-        <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-          <a href="/letter/" class="rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-text transition hover:bg-accent-hover">Read the letters</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Flow CTA (operator 2026-08-15). Replaces the Proof ProductBand: Flow is
-         the flagship, and the founder story now lands on it. Deliberately NOT a
-         ProductBand — that component is priced-product machinery (founding seat
-         + one-time price + checkout), and Flow has no commercial terms yet, so
-         it would render an empty or false price. This band borrows the family
-         chrome (blueprint grid, cyan glow, poster at right) with the Limitless
-         hero as the creative and a single link to /flow/.
-         Flow copy here stays broad positioning plus the current in-development
-         / Mac / freemium-planned facts: no mechanism, verification, or pricing
-         claims. -->
-    <section class="flow-band relative overflow-hidden border-y border-primary/25 px-6 py-14" aria-labelledby="about-flow-heading">
-      <div class="flow-band__grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
-      <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        <div class="absolute -left-[6%] top-1/2 h-[380px] w-[380px] -translate-y-1/2 rounded-full bg-primary/[0.12] blur-[130px]"></div>
-      </div>
-
-      <div class="mx-auto grid max-w-5xl items-center gap-8 md:grid-cols-[1.1fr_auto] md:gap-10">
-        <div>
-          <p class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-primary">The tool I am building now</p>
-          <h2 id="about-flow-heading" class="mt-2 font-display text-2xl font-bold leading-tight sm:text-3xl">
-            I do not write every note anymore. I conduct.
-          </h2>
-          <p class="mt-3 max-w-xl text-sm leading-relaxed text-text-muted">
-            Orionfold Flow is that idea made into a Mac app. A place to conduct
-            documents with AI agency built in, where you stay the one who approves
-            what changes. It is in development as a freemium subscription, and the
-            waitlist is open.
-          </p>
-          <div class="mt-6 flex flex-wrap items-center gap-4">
-            <a
-              href="/flow/?utm_source=orionfold&utm_medium=cross-sell&utm_campaign=about-flow&utm_content=about-band"
-              class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-5 py-2.5 font-mono text-sm tracking-wider text-accent-text transition-colors hover:bg-accent-hover"
-            >
-              Explore Orionfold Flow
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-            </a>
-            <a href="/story/limitless-without-the-pill/" class="font-mono text-[0.7rem] tracking-wider text-text-muted underline underline-offset-2 hover:text-primary">
-              or read Limitless, Without the Pill
-            </a>
-          </div>
-        </div>
-
-        <figure class="hidden md:block">
-          <Image
-            src={limitless}
-            alt="A knowledge worker at a laptop conducts a luminous constellation of research, code, strategy, art, and scientific ideas across a deep blue night sky."
-            width={420}
-            widths={[420, 840]}
-            sizes="420px"
-            class="w-[420px] rounded-2xl border border-border/70 shadow-2xl"
-          />
-        </figure>
-      </div>
+    <!-- Flow CTA (operator 2026-08-15): the founder story lands on Flow, the
+         flagship. Not a ProductBand (priced-product machinery). -->
+    <section class="pp-closing pp-closing--art" aria-labelledby="about-flow-heading">
+      <Image src={limitless} alt="A knowledge worker at a laptop conducts a luminous constellation of research, code, strategy, art, and scientific ideas across a deep blue night sky." widths={[420, 840]} sizes="(min-width: 760px) 420px, 90vw" class="pp-closing-art" />
+      <p class="pp-kicker">The tool I am building now</p>
+      <h2 id="about-flow-heading">I do not write every note anymore. I conduct.</h2>
+      <p>Orionfold Flow is that idea made into a Mac app. You work with AI inside your documents, and you stay the one who approves what changes.</p>
+      <a class="pp-btn" href="/flow/?utm_source=orionfold&utm_medium=cross-sell&utm_campaign=about-flow&utm_content=about-band">Explore Orionfold Flow</a>
+      <small><a href="/story/limitless-without-the-pill/">or read Limitless, Without the Pill</a></small>
     </section>
   </main>
-  <Footer />
-</Layout>
-
-<style>
-  /* Band-family chrome, matched to ProductBand so the Flow CTA reads as the
-     same surface (blueprint grid + tinted ground, both themes). */
-  .flow-band { background-color: oklch(0.97 0.012 200); }
-  .flow-band__grid {
-    background-image:
-      linear-gradient(to right, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px),
-      linear-gradient(to bottom, oklch(0.55 0.10 220 / 0.10) 1px, transparent 1px);
-    background-size: 26px 26px;
-    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
-    mask-image: radial-gradient(ellipse 80% 70% at 30% 50%, black, transparent);
-  }
-</style>
+  <Footer showDownload={false} />
+</PaperLayout>

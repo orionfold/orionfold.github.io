@@ -3,12 +3,12 @@
 // SVGs come from _ASSETS; grouping, status labels and conversion chrome belong
 // to Website. Each series keeps its own pillar and reading arc.
 import { getCollection } from 'astro:content';
-import Layout from '../../../layouts/Layout.astro';
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PageNav from '../../../components/paper/PageNav.astro';
+import Fold from '../../../components/paper/Fold.astro';
+import '../../../styles/living-in-paper.css';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
-import PageHeader from '../../../components/ui/PageHeader.astro';
-import RelaySubNav from '../../../components/relay/RelaySubNav.astro';
-import RelayCtaBand from '../../../components/relay/RelayCtaBand.astro';
 import { ogMeta } from '../../../data/og';
 import { SITE } from '../../../data/seo';
 import { groupedMemos, memoSignatureHtml } from '../../../lib/relay/memos.mjs';
@@ -42,9 +42,18 @@ const breadcrumbSchema = {
   ],
 };
 
+const RELAY_PAGES = [
+  { href: '/relay/', label: 'Overview' },
+  { href: '/relay/host/', label: 'Host' },
+  { href: '/relay/demo/', label: 'Demo' },
+  { href: '/relay/docs/', label: 'Docs' },
+  { href: '/relay/api/', label: 'API' },
+  { href: '/relay/memos/', label: 'Memos', current: true },
+];
+
 const statusLabel = (memo) => memo.data.status === 'published' ? null : memo.data.status;
 ---
-<Layout
+<PaperLayout
   title="Relay field memos · Orionfold"
   description="Two source-verified Relay memo series: how Packs become owned operating systems, and how Hosts and Cells create honest operating boundaries."
   ogImage={og.image}
@@ -52,96 +61,57 @@ const statusLabel = (memo) => memo.data.status === 'published' ? null : memo.dat
   jsonLd={[collectionSchema, breadcrumbSchema]}
 >
   <Nav />
-  <RelaySubNav active="memos" />
-  <main class="-mt-20 sm:-mt-24">
-    <PageHeader
-      eyebrow="Relay · Field memos"
-      title="The architecture behind Relay."
-      subtitle="Two reading arcs explain the product from the inside. Relay Packs covers the operating system you install for a domain. Relay Host & Cells covers the boundaries that keep managed customer instances honest, recoverable, and legible."
-    />
-
-    <div class="px-6 pt-8 pb-6">
-      <div class="mx-auto max-w-5xl space-y-20">
-        {groups.map((group) => {
-          const [pillar, ...rest] = group.memos;
-          return (
-            <section aria-labelledby={`series-${group.slugs[0]}`}>
-              <div class="mb-7 max-w-3xl">
-                <p class="font-mono text-[0.65rem] uppercase tracking-[0.22em] text-primary">{group.label}</p>
-                <h2 id={`series-${group.slugs[0]}`} class="mt-2 text-2xl sm:text-3xl">{group.name}</h2>
-                <p class="mt-3 leading-relaxed text-text-muted">{group.description}</p>
-              </div>
-
-              {pillar && (
-                <a
-                  href={`/relay/memos/${pillar.id}/`}
-                  class="group grid items-center gap-8 rounded-2xl border border-border/70 bg-surface/30 p-6 shadow-lg shadow-primary/5 transition-shadow hover:shadow-primary/15 sm:p-8 lg:grid-cols-2 lg:gap-10"
-                  aria-label={`Start the ${group.name} series: ${pillar.data.title}`}
-                >
-                  {memoSignatureHtml(pillar) && (
-                    <div class="memo-card-hero overflow-hidden rounded-xl border border-border/60 bg-surface/40 lg:order-2" set:html={memoSignatureHtml(pillar)} />
-                  )}
-                  <div class="lg:order-1">
-                    <div class="flex flex-wrap items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-primary">
-                      <span>Start here · Pillar</span>
-                      {statusLabel(pillar) && <span class="rounded-full border border-border px-2 py-0.5 text-text-dim">{statusLabel(pillar)}</span>}
-                    </div>
-                    <h3 class="mt-3 text-2xl leading-tight sm:text-3xl">{pillar.data.title}</h3>
-                    <p class="mt-4 text-base leading-relaxed text-text-muted">{pillar.data.summary}</p>
-                    <span class="mt-5 inline-flex items-center gap-1.5 font-mono text-sm text-primary">
-                      Start the series <span class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
-                    </span>
-                  </div>
-                </a>
-              )}
-
-              {rest.length > 0 && (
-                <div class="mt-8 grid gap-6 sm:grid-cols-2" data-animate-stagger>
-                  {rest.map((memo, index) => (
-                    <a
-                      href={`/relay/memos/${memo.id}/`}
-                      class="group flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-surface/30 transition-shadow hover:shadow-lg hover:shadow-primary/10"
-                      data-animate
-                      aria-label={`Read memo: ${memo.data.title}`}
-                    >
-                      {memoSignatureHtml(memo) && (
-                        <div class="memo-card-hero border-b border-border/60 bg-surface/40" set:html={memoSignatureHtml(memo)} />
-                      )}
-                      <div class="flex flex-1 flex-col p-6">
-                        <div class="flex flex-wrap items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-primary">
-                          <span>Memo {String(index + 2).padStart(2, '0')}</span>
-                          {statusLabel(memo) && <span class="rounded-full border border-border px-2 py-0.5 text-text-dim">{statusLabel(memo)}</span>}
-                        </div>
-                        <h3 class="mt-2 text-lg leading-snug sm:text-xl">{memo.data.title}</h3>
-                        <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{memo.data.summary}</p>
-                        <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-sm text-primary">
-                          Read <span class="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true">&rarr;</span>
-                        </span>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              )}
-            </section>
-          );
-        })}
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="memos-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Relay · Field memos</p>
+        <h1 id="memos-title" class="pp-h1">The architecture behind Relay.</h1>
+        <p class="pp-sub">Two reading arcs explain the product from the inside. Relay Packs covers the operating system you install for a domain. Relay Host &amp; Cells covers the boundaries that keep managed customer instances honest, recoverable, and legible.</p>
       </div>
-    </div>
+    </section>
+    <PageNav label="Relay sections" pages={RELAY_PAGES} />
 
-    <RelayCtaBand
-      variant="footer"
-      kicker="Choose the Relay boundary your work needs."
-      line="Explore Relay Core, premium Packs, and Relay Host from one product overview."
-      class="mt-10"
-    />
+    {groups.map((group) => {
+      const [pillar, ...rest] = group.memos;
+      return (
+        <section class="pp-index" aria-labelledby={`series-${group.slugs[0]}`}>
+          <div class="pp-index-head">
+            <p class="pp-kicker">{group.label}</p>
+            <h2 id={`series-${group.slugs[0]}`}>{group.name}</h2>
+            <p>{group.description}</p>
+          </div>
+          {pillar && (
+            <a class="pp-lead" href={`/relay/memos/${pillar.id}/`} aria-label={`Start the ${group.name} series: ${pillar.data.title}`}>
+              {memoSignatureHtml(pillar) && <div class="pp-lead-art" set:html={memoSignatureHtml(pillar)} />}
+              <div class="pp-lead-copy">
+                <p class="pp-kicker">Start here · Pillar{statusLabel(pillar) && ` · ${statusLabel(pillar)}`}</p>
+                <h2>{pillar.data.title}</h2>
+                <p>{pillar.data.summary}</p>
+                <span class="pp-rail-go">Start the series →</span>
+              </div>
+            </a>
+          )}
+          {rest.length > 0 && (
+            <ul class="pp-rows">
+              {rest.map((memo, index) => (
+                <li><a href={`/relay/memos/${memo.id}/`} aria-label={`Read memo: ${memo.data.title}`}>
+                  <b>Memo {String(index + 2).padStart(2, '0')}</b>
+                  <div><strong>{memo.data.title}</strong><span>{memo.data.summary}</span></div>
+                  <small>{statusLabel(memo) ?? 'Read →'}</small>
+                </a></li>
+              ))}
+            </ul>
+          )}
+        </section>
+      );
+    })}
+
+    <section class="pp-closing" aria-labelledby="memos-closing-heading">
+      <Fold id="shell" bob class="pp-closing-fold" />
+      <h2 id="memos-closing-heading">Choose the Relay boundary your work needs.</h2>
+      <p>Explore Relay Core, premium Packs, and Relay Host from one product overview.</p>
+      <a href="/relay/" data-relay-cta-btn class="pp-btn">Explore Orionfold Relay <span aria-hidden="true">→</span></a>
+    </section>
   </main>
-  <Footer />
-</Layout>
-
-<style>
-  .memo-card-hero :global(svg) {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-</style>
+  <Footer showDownload={false} />
+</PaperLayout>

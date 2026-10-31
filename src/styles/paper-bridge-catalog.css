@@ -1,0 +1,44 @@
+/* R6 (G-145): the catalog detail pages (Playbooks, Paths, Elements, Compare)
+ * in the Paper long-form template. Living class names only, every rule under
+ * .paper; Paper's own pp- classes stay in styles/paper/. */
+
+/* The rail's facts sheet (the Playbook, the receipt). */
+.paper .fp-receipt { padding: 16px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); font-family: var(--pp-sans); }
+.paper .fp-receipt dl { display: grid; gap: 10px; margin: 0; }
+.paper .fp-receipt dt { font: 400 12.5px/1.4 var(--pp-sans); color: var(--pp-ink-3); }
+.paper .fp-receipt dd { margin: 2px 0 0; font: 500 14px/1.35 var(--pp-sans); color: var(--pp-ink); }
+.paper .fp-receipt .fp-receipt-note { margin: 4px 0 0; padding-top: 10px; border-top: 1px solid var(--pp-line); font: 400 12.5px/1.5 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .fp-receipt-note a { color: var(--pp-ink); text-underline-offset: 3px; }
+.paper .fp-receipt .fp-try { margin-top: 4px; font: 500 14px/1.3 var(--pp-sans); color: var(--pp-ink); text-decoration: underline; text-underline-offset: 4px; }
+
+/* The hero picture or blueprint, in the 900px figure. */
+.paper .ls-article-figure .fp-heroshot { margin: 0; }
+.paper .ls-article-figure .fp-heroshot img { aspect-ratio: auto; object-fit: initial; border: 0; border-radius: 0; }
+.paper .ls-article-figure.ls { background: transparent; }
+.paper .fp-caveat { margin: 0; }
+
+/* Body pieces that keep their Living markup inside the 620px column. */
+.paper .fp-longform .fp-colophon { padding-top: 18px; border-top: 1px solid var(--pp-line); font: 400 14px/1.6 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .fp-longform .fp-colophon p + p { margin-top: 8px; }
+.paper .fp-longform .fp-not { padding-left: 1.3em; list-style: disc; }
+.paper .fp-longform .fp-start { max-width: 420px; }
+.paper .fp-longform .dm-art-faq h2 { font: 400 30px/1.15 var(--pp-serif); letter-spacing: -.012em; }
+.paper .fp-longform .dm-art-faq details { border-top: 1px solid var(--pp-line); padding: 14px 0; }
+.paper .fp-longform .dm-art-faq details:last-child { border-bottom: 1px solid var(--pp-line); }
+.paper .fp-longform .dm-art-faq summary { cursor: pointer; font: 500 17px/1.4 var(--pp-sans); }
+.paper .fp-longform .dm-art-faq p { margin-top: 8px; font-size: 16px; line-height: 1.6; color: var(--pp-ink-2); }
+.paper .fp-longform .fe-how-dek { font: 400 21px/1.5 var(--pp-serif); color: var(--pp-ink-2); }
+.paper .fp-longform .fe-anchor { display: block; height: 0; scroll-margin-top: calc(var(--of-nav-height, 102px) + 24px); }
+
+/* "More paths" / "More elements" after the article. */
+.paper .fp-after { width: min(1240px, calc(100% - 32px)); margin: 72px auto 0; }
+.paper .fp-after .fp-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+.paper .fp-after .fp-heading .ls-eyebrow { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; color: var(--pp-ink-3); }
+.paper .fp-after .fp-heading h2 { margin-top: 10px; font: 300 clamp(34px, 4vw, 52px)/1.04 var(--pp-serif); letter-spacing: -.02em; text-transform: none; color: var(--pp-ink); }
+.paper .fp-after .fp-heading .ls-stroke { color: var(--pp-ink-3); background: none; -webkit-text-stroke: 0; }
+.paper .fp-after .fp-heading .ls-stroke::before,
+.paper .fp-after .fp-heading .ls-stroke::after { display: none; }
+.paper .fp-after .fp-all { font: 500 14px/1.3 var(--pp-sans); color: var(--pp-ink); }
+
+/* The facts sheet leads the rail; the long contents list scrolls under it. */
+.paper .fp-receipt { order: -1; }
