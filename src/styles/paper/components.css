@@ -215,18 +215,19 @@
 .paper .pp-closing small a { color: var(--pp-ink-2); text-underline-offset: 3px; }
 /* hero controls (operator 2026-10-30): previous, play/pause, next, a chip per Fold */
 .paper .pp-hero-stage { display: grid; justify-items: center; gap: 14px; min-width: 0; }
-.paper .pp-hero-ctl { position: relative; z-index: 3; margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; }
+/* The control row spans the mock's width (operator 2026-10-31): buttons left, the Fold bar takes the rest with the Folds spread evenly. */
+.paper .pp-hero-ctl { position: relative; z-index: 3; margin-top: 18px; width: min(540px, 100%); display: flex; align-items: center; gap: 6px; }
 .paper .pp-hero-ctl[hidden] { display: none; }
 .paper .pp-ctl-btn { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--pp-line); background: var(--pp-white); color: var(--pp-ink); cursor: pointer; }
 .paper .pp-ctl-btn:hover, .paper .pp-ctl-btn:focus-visible { border-color: var(--pp-ink-3); }
 .paper .pp-ctl-btn .pp-i-play, .paper .pp-ctl-btn[aria-pressed="true"] .pp-i-pause { display: block; }
 .paper .pp-ctl-btn .pp-i-pause, .paper .pp-ctl-btn[aria-pressed="true"] .pp-i-play { display: none; }
-.paper .pp-ctl-folds { display: flex; gap: 2px; margin-left: 8px; padding: 3px; border: 1px solid var(--pp-line); border-radius: 999px; background: var(--pp-white); }
+.paper .pp-ctl-folds { flex: 1; display: flex; justify-content: space-between; gap: 4px; margin-left: 8px; padding: 3px 10px; border: 1px solid var(--pp-line); border-radius: 999px; background: var(--pp-white); }
 .paper .pp-ctl-folds button { width: 30px; height: 30px; padding: 3px; border: 0; border-radius: 50%; background: none; cursor: pointer; opacity: .5; transition: opacity .2s, background .2s; }
 .paper .pp-ctl-folds button:hover, .paper .pp-ctl-folds button:focus-visible { opacity: 1; }
 .paper .pp-ctl-folds button[aria-current="true"] { opacity: 1; background: var(--pp-fold-c); }
 .paper .pp-ctl-folds .pp-fold svg { width: 24px; height: 24px; }
-@media (max-width: 420px) { .paper .pp-ctl-folds { margin-left: 0; } }
+@media (max-width: 480px) { .paper .pp-hero-ctl { flex-wrap: wrap; justify-content: center; } .paper .pp-ctl-folds { flex: 1 1 100%; margin-left: 0; padding: 3px 6px; } }
 /* Playbooks (operator 2026-10-30): a tab per blueprint, each playing its own client job */
 .paper .pp-dm-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 8px 0 22px; }
 .paper .pp-dm-tabs button { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border: 1px solid var(--pp-line); border-radius: 999px; background: var(--pp-white); color: var(--pp-ink); font: 500 13.5px/1.2 var(--pp-sans); cursor: pointer; }
