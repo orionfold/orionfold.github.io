@@ -542,6 +542,42 @@
 .paper .pp-prose .pp-long-note { font: 500 11px/1.4 var(--pp-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--pp-ink-3); }
 .paper .pp-page > .pp-pagenav:has(+ .pp-long) { width: min(var(--pp-col, 620px), calc(100% - 32px)); margin: 32px auto 0; }
 
+/* Wide long-form (operator 2026-10-31): on large displays the article takes the
+   landing frame instead of a 620px strip. The head reads like a landing section
+   head; text keeps a ~760px reading measure; pictures, tables, code and cards
+   run the full body width; the rail gets 300px. Below 1180px nothing changes. */
+@media (min-width: 1180px) {
+  .paper .pp-page { --pp-wide: min(1320px, calc(100% - 112px)); --pp-measure: 760px; }
+  .paper .pp-long { padding-top: 56px; }
+  .paper .pp-long-head,
+  .paper .pp-long-figure,
+  .paper .pp-long-grid,
+  .paper .pp-long-next,
+  .paper .pp-long-archive,
+  .paper .pp-page > .pp-pagenav:has(+ .pp-long) { width: var(--pp-wide); margin-inline: auto; }
+  .paper .pp-long-title { max-width: 20ch; font-size: clamp(48px, 4.6vw, 72px); }
+  .paper .pp-long-dek { max-width: 46ch; font-size: clamp(21px, 1.7vw, 25px); }
+  .paper .pp-long-head .pp-byline { max-width: var(--pp-measure); }
+  .paper .pp-long-figure { margin-top: 56px; }
+  .paper .pp-long-grid { grid-template-columns: minmax(0, 1fr) 300px; column-gap: 80px; margin-top: 72px; }
+  .paper .pp-long-grid > .pp-long-body { grid-column: 1; width: 100%; }
+  .paper .pp-long-rail { grid-column: 2; width: 300px; margin-left: 0; }
+  .paper .pp-prose { font-size: 19px; line-height: 34px; }
+  .paper .pp-prose h2 { font-size: 36px; margin-top: 72px; }
+  .paper .pp-prose h3 { font-size: 22px; }
+  .paper .pp-prose > :is(p, ul, ol, dl, h2, h3, h4, blockquote, hr, .pp-sources) { max-width: var(--pp-measure); }
+  .paper .pp-prose > :is(figure, table, pre, img, picture, .pp-long-svg) { margin-top: 40px; margin-bottom: 16px; }
+  .paper .pp-prose blockquote { font-size: 24px; }
+  .paper .pp-rail-block { padding: 20px; }
+  .paper .pp-rail-block li a { font-size: 15px; }
+}
+@media (min-width: 1600px) {
+  .paper .pp-page { --pp-measure: 800px; }
+  .paper .pp-long-grid { grid-template-columns: minmax(0, 1fr) 320px; column-gap: 96px; }
+  .paper .pp-long-rail { width: 320px; }
+  .paper .pp-prose { font-size: 20px; line-height: 35px; }
+}
+
 /* R6 long-form indexes (stories, receipts, memos): a lead card, then an even
  * grid of art cards, or hairline rows when the entries carry no art. */
 .paper .pp-index { width: min(1240px, calc(100% - 32px)); margin: 0 auto; }
