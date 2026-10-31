@@ -4,6 +4,11 @@
  * Every class is pp- prefixed and every color a var(--pp-*) token. */
 
 /* ---------- base ---------- */
+/* The page root on a Paper page (operator 2026-10-31): with always-on scrollbars the
+   old gray root showed in the 6px track beside full-bleed dark bands. Paper owns it. */
+:root:has(> body.paper) { background: var(--pp-paper); scrollbar-color: var(--pp-line) var(--pp-paper); }
+:root:has(> body.paper)::-webkit-scrollbar-track { background: var(--pp-paper); }
+:root:has(> body.paper)::-webkit-scrollbar-thumb { background: var(--pp-line); }
 .paper { background: var(--pp-paper); color: var(--pp-ink); font: 400 15px/1.5 var(--pp-sans); letter-spacing: .01em; -webkit-font-smoothing: antialiased; }
 .paper a { color: inherit; }
 .paper :is(h1, h2, h3, h4, h5, h6) { color: inherit; }

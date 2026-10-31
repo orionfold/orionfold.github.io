@@ -44,7 +44,9 @@ test('the shell styles load with the shell; page components only on Paper pages'
 
 test('every Paper rule sits under .paper, so it outranks Living element rules', () => {
   const selectors = [...paperCss().matchAll(/([^{}]+)\{[^{}]*\}/g)].map((m) => m[1]).filter((sel) => !/^\s*(@|from|to|\d)/.test(sel));
-  const loose = selectors.flatMap((sel) => sel.split(/,(?![^()]*\))/)).map((sel) => sel.trim()).filter((sel) => !/^\.paper(?![\w-])/.test(sel));
+  const loose = selectors.flatMap((sel) => sel.split(/,(?![^()]*\))/)).map((sel) => sel.trim()).filter((sel) => !/^\.paper(?![\w-])/.test(sel))
+    // The one root rule (operator 2026-10-31): a Paper page owns its root background and scrollbar track.
+    .filter((sel) => !/^:root:has\(> body\.paper\)(::-webkit-scrollbar-(track|thumb))?$/.test(sel));
   assert.deepEqual(loose, []);
 });
 

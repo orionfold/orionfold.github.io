@@ -15,7 +15,8 @@
   font-display: swap;
 }
 
-.paper {
+/* :root on a Paper page too, so the page root (its scrollbar track) can read them. */
+.paper, :root:has(> body.paper) {
   /* paper and ink */
   --pp-paper: #fbfaf6;
   --pp-paper-2: #f4f1e8;
