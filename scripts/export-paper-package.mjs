@@ -14,7 +14,7 @@ import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync, existsSyn
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
-const VERSION = '0.3.1';
+const VERSION = '0.3.2';
 const root = new URL('../', import.meta.url).pathname;
 const out = path.join(root, 'output/paper-package', VERSION);
 const rel = (p) => path.join(root, p);
@@ -86,7 +86,7 @@ const personal = PERSONAL_FOLDS.map((f) => {
     writeFileSync(path.join(out, 'personal', f.id, `${cw.id}-fit-night.svg`), fitSvg(personalBox[f.id], label, f.draw(nc.a, nc.b, nc.c, NIGHT_DETAIL)));
     return [cw.id, { svg: `personal/${f.id}/${cw.id}.svg`, night: `personal/${f.id}/${cw.id}-night.svg`, fit: `personal/${f.id}/${cw.id}-fit.svg`, fitNight: `personal/${f.id}/${cw.id}-fit-night.svg` }];
   }));
-  return { id: f.id, defaultName: '', shape: f.shape, line: f.line, defaultColorway: f.defaultColorway, colorways: COLORWAYS.map((c) => c.id), files: { svg: `personal/${f.id}.svg`, svgNoShadow: `personal/${f.id}-no-shadow.svg`, night: `personal/${f.id}-night.svg`, fit: `personal/${f.id}-fit.svg`, fitNight: `personal/${f.id}-fit-night.svg`, byColorway }, viewBox: '0 0 200 214', fitViewBox: personalBox[f.id] };
+  return { id: f.id, defaultName: '', shape: f.shape, line: f.line, behaviour: f.behaviour, defaultColorway: f.defaultColorway, colorways: COLORWAYS.map((c) => c.id), files: { svg: `personal/${f.id}.svg`, svgNoShadow: `personal/${f.id}-no-shadow.svg`, night: `personal/${f.id}-night.svg`, fit: `personal/${f.id}-fit.svg`, fitNight: `personal/${f.id}-fit-night.svg`, byColorway }, viewBox: '0 0 200 214', fitViewBox: personalBox[f.id] };
 });
 const colorways = COLORWAYS.map((c) => ({ ...c, night: nightColors(c) }));
 
@@ -155,7 +155,7 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 
 ## What is here
 - \`folds/\`: the eight Flow Playbook Folds as standalone SVGs (viewBox 0 0 200 214): with and without the ground shadow, and a night variant (colors lifted to 3:1 on the night paper, Tally's legs and Orri's trail removed). \`<id>-fit.svg\` and \`<id>-fit-night.svg\` crop a square around the drawing (no shadow) so the Fold fills a circle avatar edge to edge; \`fitViewBox\` in the manifest gives the box. Colors and night colors per Fold are in \`manifest.json\`.
-- \`personal/\`: the eight personal Folds a person folds in the app (elephant, paper boat, bear, butterfly, lotus, penguin, cat, hummingbird), drawn for 16 pt, each in its default colorway (with and without shadow, and night), plus \`personal/<id>/<colorway>.svg\` and \`-night.svg\` for every colorway, so recoloring is a file swap. Every one of those also has \`-fit\` and \`-fit-night\` files for circle avatars. Each has a temperament line, never a capability. \`colorways\` in the manifest lists the eight colorways (named by color, taken from the cast's palettes) with their night values.
+- \`personal/\`: the eight personal Folds a person folds in the app (elephant, paper boat, bear, butterfly, lotus, penguin, cat, hummingbird), drawn for 16 pt, each in its default colorway (with and without shadow, and night), plus \`personal/<id>/<colorway>.svg\` and \`-night.svg\` for every colorway, so recoloring is a file swap. Every one of those also has \`-fit\` and \`-fit-night\` files for circle avatars. Each has a temperament line, never a capability, and \`behaviour\`: two or three short rules for how that Fold works (the first one shows on the Fold step's sheet). \`colorways\` in the manifest lists the eight colorways (named by color, taken from the cast's palettes) with their night values.
 - \`marks/orionfold-star.svg\`: the Orionfold star, folded in the Folds' polygon style.
 - \`tokens/\`: every Paper token as JSON (grouped: color, liquidGlass, font, radius, shadow, motion, foldDefaults, layout) and the source CSS, plus \`night\`: the app's dark appearance, same keys as \`color\`, with every promised text pair and its contrast ratio (all at least 4.5:1; the export stops if one drops).
 - \`fonts/\`: Fraunces cut for Paper (Latin, weight 300 to 500, optical size kept, SOFT pinned 100, WONK pinned 1), woff2${ttf ? ' and ttf' : ''}, under the SIL Open Font License (no reserved font name).
@@ -175,7 +175,7 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 - 0.1.1 (2026-10-30): same files, cut from a committed source (product lane ask).
 - 0.2.0 (2026-10-30): night (dark appearance) tokens and Fold variants; personal Folds with colorways.
 - 0.2.1 (2026-10-30): night beak and butterfly body in light ink; a rounder bear, now coral by default (penguin ochre), apart from the cat at 16 pt.
-- 0.3.0 (2026-10-31): the final design system. Liquid Glass tokens in their own group, the long-form frame in \`layout\`, and their rules above.\n- 0.3.1 (2026-10-31): fitted Fold SVGs (\`-fit\`, \`-fit-night\`) for circle avatars, for the Playbook Folds and every personal Fold colorway; \`fitViewBox\` per Fold in the manifest. No art or token changes.
+- 0.3.0 (2026-10-31): the final design system. Liquid Glass tokens in their own group, the long-form frame in \`layout\`, and their rules above.\n- 0.3.1 (2026-10-31): fitted Fold SVGs (\`-fit\`, \`-fit-night\`) for circle avatars, for the Playbook Folds and every personal Fold colorway; \`fitViewBox\` per Fold in the manifest. No art or token changes.\n- 0.3.2 (2026-10-31): \`behaviour\` for each personal Fold (character = behaviour, product lane ask). No art or token changes.
 `);
 
 console.log(`Paper ${VERSION} → ${path.relative(root, out)} (${folds.length} Folds, ${Object.keys(vars).length} tokens${ttf ? ', ttf' : ''})`);

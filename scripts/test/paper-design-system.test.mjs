@@ -152,6 +152,15 @@ test('personal Folds: eight shapes outside the cast, temperament lines, colorway
     // A line names a temperament, never a capability (memory is Pro; nothing proactive ships).
     assert.doesNotMatch(f.line, /remember|memory|every day|speaks up|reminds|learns|knows you/i, f.id);
     assert.doesNotMatch(f.line, /[—:]/, `${f.id}: house style`);
+    // Character = behaviour (operator 2026-10-31): 2 or 3 short rules Flow seeds
+    // into SOUL.md. Same limits as the line: conduct, never a capability.
+    assert.ok(Array.isArray(f.behaviour) && f.behaviour.length >= 2 && f.behaviour.length <= 3, `${f.id}: 2 or 3 behaviour rules`);
+    for (const r of f.behaviour) {
+      assert.match(r, /^[A-Z][^.]*\.$/, `${f.id}: one short sentence, ends with a period: ${r}`);
+      assert.ok(r.split(' ').length <= 12, `${f.id}: short rule: ${r}`);
+      assert.doesNotMatch(r, /remember|memory|every day|speaks up|reminds|learns|knows you/i, `${f.id}: ${r}`);
+      assert.doesNotMatch(r, /[—:;]/, `${f.id}: house style: ${r}`);
+    }
   }
   assert.equal(new Set(PERSONAL_FOLDS.map((f) => f.defaultColorway)).size, 8, 'each shape has its own default colorway');
   const castPalettes = new Set(FOLDS.map((f) => `${f.a}${f.b}${f.c}`));
