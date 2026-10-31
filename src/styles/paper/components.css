@@ -9,7 +9,7 @@
 .paper .pp-h1 { margin: 0; font: 300 clamp(46px, 6.4vw, 100px)/.98 var(--pp-serif); font-variation-settings: 'SOFT' 100; letter-spacing: -.025em; }
 .paper .pp-h1 em { font-style: normal; color: var(--pp-ink-3); }
 .paper .pp-sub { margin: 0; max-width: 30ch; font: 400 clamp(17px, 1.5vw, 21px)/1.35 var(--pp-serif); text-wrap: balance; }
-.paper .pp-hl { padding: 0 4px; transition: background .4s, color .4s; background: var(--pp-fold-c); color: var(--pp-ink); }
+.paper .pp-hl { padding: 0 4px; white-space: nowrap; transition: background .4s, color .4s; background: var(--pp-fold-c); color: var(--pp-ink); }
 .paper .pp-hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
 .paper .pp-hero-cta small { color: var(--pp-ink-3); font-size: 13px; }
 /* Both acts share one grid cell, so the box grows with a tall playbook; the
