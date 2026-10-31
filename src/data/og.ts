@@ -69,9 +69,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/': {
     "slug": "home",
     "eyebrow": "Orionfold · Flow Playbooks",
-    "title": "Build your AI team.\nIt works the night shift.\nYou sign off at breakfast.",
+    "title": "Teach your expertise to an AI team.\nIt works the night shift.\nYou sign off at breakfast.",
     "seed": "home",
-    "alt": "Orionfold Flow Playbooks: Build your AI team. It works the night shift. You sign off at breakfast. Orri, a paper plane Fold, on a paper card.",
+    "alt": "Orionfold Flow Playbooks: Teach your expertise to an AI team. It works the night shift. You sign off at breakfast. Orri, a paper plane Fold, on a paper card.",
     fold: 'orri'
 },
   '/advisor/': {

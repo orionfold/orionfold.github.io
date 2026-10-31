@@ -8,7 +8,7 @@ const page=read('src/pages/index.astro'), hero=read('src/components/paper/TalkPa
 const sheet=read('src/components/paper/PlaybookSheet.astro'), cast=read('src/lib/paper/cast.ts');
 assert.match(page, /<TalkPageHero /);
 assert.doesNotMatch(page, /<HomeHero[\s/>]|FlowShot|pit-stop-daylight|FlowRaceBlueprint|<video/);
-assert.match(page, /<h1 slot="title" class="pp-h1 pp-h1--lines"><span class="pp-h1-line">Build your AI team\./);
+assert.match(page, /<h1 slot="title" class="pp-h1 pp-h1--lines"><span class="pp-h1-line">Teach your expertise to an AI team\./);
 assert.match(page, /<span class="pp-hl">a playbook<\/span>/, 'the hook word is "playbook"');
 // Without the script (or with reduced motion) the first Fold's finished page is plain HTML.
 assert.match(hero, /data-act="page"/);

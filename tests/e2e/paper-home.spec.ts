@@ -11,7 +11,7 @@ for (const width of [1440, 390]) {
     await page.goto('/');
     await page.evaluate(() => document.fonts.ready);
     await expect(page.locator('body')).toHaveClass(/\bpaper\b/);
-    await expect(page.locator('h1.pp-h1')).toHaveText(/Build your AI team\.\s*It works the night shift\.\s*You sign off at breakfast\./);
+    await expect(page.locator('h1.pp-h1')).toHaveText(/Teach your expertise to an AI team\.\s*It works the night shift\.\s*You sign off at breakfast\./);
     const geometry = await page.evaluate(() => ({
       nav: document.querySelector('#nav-wrapper')!.getBoundingClientRect().bottom,
       h1: document.querySelector('h1.pp-h1')!.getBoundingClientRect().top,
