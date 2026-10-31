@@ -17,10 +17,6 @@ test('every consent mock in the path showcase names its Don\'t ask again line', 
   assert.match(read('src/components/flow/mocks/DocMock.astro'), /Don’t ask again for \{b\.remember\}/);
 });
 
-test('the agents-reviewed card draws the unticked Don\'t ask again line', () => {
-  assert.match(read('src/components/flow/FlowAgentsReviewed.astro'), /Don’t ask again for Codex CLI · Codex subscription/);
-});
-
 for (const page of ['claude-code', 'codex']) {
   test(`compare/${page} does not present Allow Once as the only way through`, () => {
     const md = read(`src/content/compare/${page}.md`);

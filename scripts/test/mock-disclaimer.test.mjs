@@ -6,10 +6,6 @@ import { readFileSync, readdirSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL(`../../${p}`, import.meta.url), 'utf8');
 
-test('the homepage mock carries the one sample-data note', () => {
-  assert.match(read('src/components/living/HomeKnowledgeDemo.astro'), /class="ls-demo-note">Product mocks on this site use fictional sample data\.</);
-});
-
 test('no mock repeats the illustration label or sample-content note', () => {
   const dirs = ['src/components/living', 'src/components/flow', 'src/components/flow/mocks'];
   for (const dir of dirs) {

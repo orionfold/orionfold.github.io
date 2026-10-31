@@ -11,7 +11,6 @@ const pricing = read('src/data/flow-pricing.ts');
 const measurements = read('src/data/flow-measurements.ts');
 const flow = read('src/pages/flow.astro');
 const nav = (read('src/components/Nav.astro') + read('src/components/paper/PaperNav.astro'));
-const flowSubNav = read('src/components/flow/FlowSubNav.astro');
 const og = read('src/data/og.ts');
 const config = read('astro.config.mjs');
 
@@ -64,7 +63,7 @@ assert.doesNotMatch(nav, /Specifications|Tech Specs/, 'technical specifications 
 assert.doesNotMatch(nav, /label: 'Tour'|label: 'Enterprise'/, 'Flow-specific destinations stay out of the global menu');
 assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/relay\/', label: 'Relay'/, 'Relay remains in the shared Orionfold footer');
 assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/arena\/', label: 'Arena'/, 'Arena remains in the shared Orionfold footer');
-assert.match(flowSubNav, /label: 'Tech Specs', href: '\/flow\/specifications\/'/, 'the Flow-local rail uses Apple\'s concise Tech Specs label');
+assert.match(read('src/components/flow/FlowCategoryPage.astro'), /label: 'Tech Specs'/, 'the Flow tour PageNav keeps Apple\'s concise Tech Specs label');
 assert.match(page, /label: 'Tech Specs', current: true/, 'the technical specifications page marks its local-nav item active (Paper PageNav)');
 assert.match(nav, /flowLive \? FLOW_DMG_URL : '\/flow\/#waitlist'/, 'the shared nav keeps the direct launch CTA and the pre-launch waitlist branch');
 assert.doesNotMatch(nav, /See Flow plans/, 'the Flow CTA does not become a pricing detour');

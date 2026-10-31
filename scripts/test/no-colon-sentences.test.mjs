@@ -85,8 +85,8 @@ test('key pages carry no colon-joined sentences in their copy', { skip: !hasDist
 
 test('the copy rule holds in the source of the hero paragraphs and the Playbooks page', () => {
   const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
-  for (const rel of ['src/components/living/HomeHero.astro', 'src/components/living/FlowHero.astro', 'src/components/flow/FlowDomainsBand.astro']) {
-    const paras = [...read(rel).matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)].map((m) => m[1].replace(/<[^>]+>/g, ' '));
+  for (const rel of ['src/pages/index.astro', 'src/pages/flow.astro', 'src/pages/playbooks/index.astro']) {
+    const paras = [...read(rel).matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/g)].map((m) => m[1].replace(/<[^>]+>/g, ' '));
     for (const p of paras) assert.doesNotMatch(p, /[a-z\)]: [a-z]/, `${rel}: ${p.slice(0, 80)}`);
   }
 });

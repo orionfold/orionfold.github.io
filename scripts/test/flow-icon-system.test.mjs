@@ -23,7 +23,7 @@ test('file marks have no opaque fold square and captions stay on one line', () =
 });
 
 test('mock cards never use a colored left-edge strip', () => {
-  for (const p of ['src/styles/flow-mocks.css', 'src/components/flow/mocks/FlowHeroMock.astro', 'src/styles/living-flow.css', 'src/styles/living-manifesto.css']) {
+  for (const p of ['src/styles/flow-mocks.css', 'src/styles/living-flow.css', 'src/styles/living-manifesto.css']) {
     assert.doesNotMatch(read(p), /inset \d+px 0 /, `${p}: inset left strip`);
   }
 });

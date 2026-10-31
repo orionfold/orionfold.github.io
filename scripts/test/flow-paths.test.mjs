@@ -184,8 +184,6 @@ test('the Flow Chat book walk names Flow 2.2 and never claims a Home path (opera
   assert.equal(book.front.onHome, false);
   // The site rewrote the body in its own voice; a resync must not overwrite it.
   assert.equal(book.front.bodyLocked, true);
-  const home = readFileSync(new URL('src/components/flow/paths/PathsHomeMock.astro', root), 'utf8');
-  assert.match(home, /p\.data\.onHome/, 'the Home mock only shows paths that are on Home');
 });
 
 test('The Flow 3.0 feature walks are launch-ready articles with their own starting steps', () => {

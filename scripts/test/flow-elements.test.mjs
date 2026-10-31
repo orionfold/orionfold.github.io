@@ -116,14 +116,6 @@ test('Elements is shown on the homepage after Playbooks, with the walk’s own p
   const page = read('src/pages/index.astro');
   const order = ['<TalkPageHero', '<Panel id="domains"', '<Rail label="Elements"'].map((m) => page.indexOf(m));
   assert.ok(order.every((i) => i > 0) && order[0] < order[1] && order[1] < order[2], 'Playbooks sits between the hero and Elements');
-  assert.doesNotMatch(read('src/pages/flow.astro'), /<FlowElementsShowcase/);
-  const src = read('src/components/flow/FlowElementsShowcase.astro');
-  // Every result is the walk's own and no two look alike (operator 2026-10-27:
-  // "Elements are so much richer than charts", then "now there are two forms!"):
-  // a skill's figure, the paragraph in Spanish, a sign-off card and a table.
-  for (const fact of ['about 18 s', '140 hours', '96 hours', '48 hours', '28 hours', 'El trimestre pasado', '96 words added or removed; original: 46 words', 'Receiptly portal risks', 'Draws an Approval Card with 4 items and 2 fields', 'Step</th><th>Who</th><th>Action</th><th>When']) assert.ok(src.includes(fact), fact);
-  assert.doesNotMatch(src, /fx-chart|fx-slope|drawn here from the plan|Record decision/, 'one chart and one form-like card at most');
-  assert.doesNotMatch(src, /54 chart types|AI-generated/i);
   const home = built('/');
   for (const slug of ['components', 'agency', 'skills', 'chart-kinds']) assert.ok(home.includes(`href="/flow/elements/${slug}/#`), `links ${slug}`);
   assert.ok(home.includes('href="/flow/elements/tour/"'), 'links the tour');

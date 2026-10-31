@@ -2,16 +2,15 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 const read = path => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
-const routes = { home: 'index', flow: 'flow', essay: 'essay', manifesto: 'manifesto' };
+const routes = { flow: 'flow', manifesto: 'manifesto' };
 const base = read('src/styles/living-base.css');
 const styles = Object.fromEntries(Object.keys(routes).map(route => [route, read(`src/styles/living-${route}.css`)]));
 
-// Paper R2 (G-141): the home page is Paper and loads no Living sheet; its old
-// living-home.css stays checked below until R8 retires it. Paper R6 (G-145):
-// essay 01 is Paper long-form too; living-essay.css waits for R8 the same way.
+// Paper R2 (G-141) and R6 (G-145): home and essay 01 load no Living sheet.
+// R8 (G-147) deleted living-home.css and living-essay.css.
 assert.doesNotMatch(read('src/pages/index.astro'), /styles\/living-/, 'home: Paper only');
 assert.doesNotMatch(read('src/pages/essay.astro'), /styles\/living-(?!in-paper)/, 'essay: Paper only');
-for (const [route, page] of Object.entries(routes).filter(([route]) => !['home', 'essay'].includes(route))) {
+for (const [route, page] of Object.entries(routes)) {
   const source = read(`src/pages/${page}.astro`), css = styles[route];
   assert.match(source, new RegExp(`import '../styles/living-base\\.css';\\s*import '../styles/living-${route}\\.css';`), `${route}: base precedes the selected route cascade`);
   for (const other of Object.keys(routes).filter(name => name !== route)) assert.ok(!source.includes(`styles/living-${other}.css`), `${route}: no unrelated page sheet`);
@@ -26,29 +25,24 @@ for (const [route, page] of Object.entries(routes).filter(([route]) => !['home',
 }
 assert.match(base, /\.ls p,\s*\.ls h1/, 'shared typography reset includes root compositions');
 assert.match(base, /:focus-visible/, 'keyboard focus stays in the common base');
-assert.doesNotMatch(styles.home, /\.ls-(?:essay-layout|essay-reading|manifesto-part|craft-workbench)\b/, 'homepage does not load editorial or advanced-workbench surfaces');
-assert.doesNotMatch(styles.essay, /\.ls-(?:product-demo|scene-body|hero-inner|plan-grid)\b/, 'typography-only essay omits interactive product styles');
-assert.match(styles.essay, /\.ls-essay-layout\s*\{[^}]*display:\s*grid/, 'essay root grid survives route selection');
 assert.match(styles.manifesto, /\.ls-manifesto-hero\s*\{[^}]*display:\s*grid/, 'manifesto root grid survives route selection');
-for (const route of ['home', 'flow']) {
+for (const route of ['flow']) {
   assert.match(styles[route], /backdrop-filter:/, `${route}: Liquid Glass product treatment remains`);
   for (const state of [1, 2, 3, 4, 5]) assert.ok(styles[route].includes(`data-step='${state}'`), `${route}: runtime step ${state} retains its style`);
   assert.match(styles[route], /data-motion='off'/, `${route}: runtime motion preference retained`);
 }
 // Raw-source gzip is deliberately conservative: minification can only improve
 // the measured release budget, which is checked on the emitted build separately.
-assert.ok(gzipSync(base + styles.home).length < 9000, 'homepage composition CSS source must stay below 9KB gzip');
-assert.ok(gzipSync(base + styles.essay).length < 3500, 'essay composition CSS source must stay below 3.5KB gzip');
 console.log('Living Systems styles: route ownership, root layouts, runtime states and source budgets');
 
 
 // Persistently visible illustration text is content even before its active step.
 const block = (css, selector) => css.split(`${selector} {`)[1]?.split('}')[0] ?? '';
-for (const route of ['home', 'flow']) {
+for (const route of ['flow']) {
   for (const selector of ['.ls-demo-events p', '.ls-overnight-note', '.ls-demo-stages span']) assert.match(block(styles[route], selector), /opacity:\s*1(?:;|\s*})?/, `${route}: ${selector} stays readable while pending`);
   assert.match(block(styles[route], '.ls-demo-stages span'), /color:\s*#586b63/, `${route}: opaque progress label color`);
 }
-for (const route of ['home', 'flow', 'manifesto']) assert.match(block(styles[route], '.ls-code-sheet small'), /color:\s*#586650/, `${route}: code note contrast`);
+for (const route of ['flow', 'manifesto']) assert.match(block(styles[route], '.ls-code-sheet small'), /color:\s*#586650/, `${route}: code note contrast`);
 assert.match(block(styles.flow, ".ls-example-tabs button[aria-selected='true'] > span"), /opacity:\s*1/, 'selected library number keeps full-contrast red');
 const entrance = styles.flow.split('@keyframes ls-craft-arrive')[1]?.split('@keyframes')[0] ?? '';
 assert.doesNotMatch(entrance, /opacity:/, 'craft entrance never fades readable content');

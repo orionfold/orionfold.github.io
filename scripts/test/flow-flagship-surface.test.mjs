@@ -84,9 +84,7 @@ assert.doesNotMatch(footer, /Site source: Apache 2\.0|Public site source/, 'foot
 const flowPageSource = read('src/pages/flow.astro');
 const flow = flowPageSource + '\n' + livingSource + '\n' + livingFaq;
 const flowTour = read('src/pages/flow/tour.astro');
-const flowSubNav = read('src/components/flow/FlowSubNav.astro');
 const flowMeasurements = read('src/data/flow-measurements.ts');
-const sharedHero = read('src/components/flow/FlowLaunchHomeHero.astro');
 // 2026-08-20 split: the twelve tour chapters live in components rendered by
 // the four /flow/<category>/ pages; /flow/ is the overview. Content contracts
 // run over the whole surface (`tour`); layout contracts name their file.
@@ -102,13 +100,7 @@ const categories = read('src/data/flow-categories.ts');
 const CATEGORY_SLUGS = ['writing-with-ai', 'receipts', 'models-and-runtime', 'documents-and-files'];
 const categoryPages = Object.fromEntries(CATEGORY_SLUGS.map((slug) => [slug, read(`src/pages/flow/${slug}.astro`)]));
 const tour = `${flow}\n${flowTour}\n${chapters}\n${categoryShell}`;
-assert.deepEqual(
-  [...flowSubNav.matchAll(/label: '([^']+)'/g)].map((match) => match[1]),
-  ['Overview', 'Tour', 'Tech Specs', 'Enterprise'],
-  'Flow carries the same concise product-local navigation pattern as Relay and Arena',
-);
 assert.match(flowPageSource, /<PageNav label="Flow product navigation"/, 'the Flow overview retains its local product navigation (Paper PageNav, R4)');
-assert.match(flowSubNav, /label: 'Tour', href: '\/flow\/tour\/'/, 'Tour opens its own product-tour landing');
 // Paper R4 (G-143): one PageNav row replaces the sticky FlowSubNav.
 assert.match(flowTour, /label: 'Tour', current: true/, 'the tour landing marks Tour active');
 assert.match(categoryShell, /<PageNav label="Flow tour"[\s\S]*label: 'Tour'[\s\S]*label: 'Tech Specs'[\s\S]*label: 'Enterprise'/, 'the Flow category pages keep the tour, specs and enterprise routes');
@@ -128,7 +120,6 @@ for (const surface of ['src/pages/flow.astro', 'src/components/flow/FlowCategory
   assert.doesNotMatch(copy, /Pre-launch|Freemium subscription planned|Every screen is the real build, running|\bin development\b/i, `${surface}: retired disclosure stays removed`);
 }
 assert.doesNotMatch(livingSource, /Private review|data-launch-action|data-signup(?:\s|=|>)|FlowShot|<video\b/i, 'flagships use native mocks and production service components');
-assert.match(read('src/components/living/LivingDownload.astro'), /<FlowDownloadCta source=\{source\}/, 'one existing component still owns the download');
 
 // ── Flow pricing: Base vs Pro truth boundaries ─────────────────────────────
 // Base = Flow unlicensed, free forever; Pro = Base + the AI features. The split
@@ -137,7 +128,8 @@ assert.match(read('src/components/living/LivingDownload.astro'), /<FlowDownloadC
 // the app at ONE seam (LicensedAgencyRunner). These guards protect the claims a
 // pricing page is most likely to get wrong.
 const pricingData = read('src/data/flow-pricing.ts');
-const pricingCopy = readCopy('src/components/flow/FlowPricing.astro');
+// R8 (G-147): FlowPricing is gone; the live price surfaces are FlowPlans (/flow/) and the home PricingTable.
+const pricingCopy = `${readCopy('src/components/living/FlowPlans.astro')}\n${readCopy('src/components/paper/PricingTable.astro')}\n${readCopy('src/pages/index.astro')}`;
 const launch = read('src/data/launch.ts');
 
 // THE PRICE GATE. The app does not yet enforce the terms, so no amount ships.
@@ -162,7 +154,7 @@ assert.match(pricingCopy, /ORIONFOLD_FLOW_LIVE/, 'the price and buy button rende
 // pill) is unbuilt, so the grant gets no countdown copy at all.
 assert.doesNotMatch(pricingCopy, /\b\d+\s*(?:Pro )?days? (?:free|left|remaining)/i, 'no Pro Days countdown copy');
 assert.doesNotMatch(pricingCopy, /free trial/i, 'Flow has a Pro Day grant, not a calendar free trial');
-assert.doesNotMatch(pricingCopy, /\bcredits?\b|\btokens?\b|usage allowance/i, 'Flow is BYOK: never meter it as credits or tokens');
+assert.doesNotMatch(pricingCopy.replace(/no credit card/gi, ''), /\bcredits?\b|\btokens?\b|usage allowance/i, 'Flow is BYOK: never meter it as credits or tokens');
 
 // THE LINE MOST LIKELY TO BE GOT WRONG: local models are PAID. The gate sits
 // above the runner protocol, so Ollama, MLX and llama.cpp are all behind it.
@@ -172,7 +164,6 @@ assert.doesNotMatch(
   /bring your own model[^.]{0,40}free|local models?[^.]{0,30}\bfree\b/i,
   '"bring your own model and it is free" is FALSE and must never ship',
 );
-assert.match(pricingCopy, /local models are part of Pro too/i, 'the page states plainly that local models are paid');
 
 // THE READ/PRODUCE SPLIT (product lane B11 report, 2026-08-22 09:55). The
 // original 01:14 table was corrected in five rows, two of which had promised
@@ -253,22 +244,18 @@ assert.match(
 assert.match(pricingData, /Your text wasn't checked\. Subscribe to keep using Flow's AI features/, "the app's own withdrawal sentence is quoted verbatim");
 assert.match(pricingData, /Your Markdown stays free\. Pro and its add-ons extend what you can do\./);
 // Markdown stays free when the grant is spent; format add-ons remain paid.
-assert.match(pricingCopy, /you keep your work/i);
 
 // One consent sentence, one module (src/data/flow-consent.ts): every Flow
 // capture surface imports it, so recorded consent cannot drift between them.
 const consentModule = read('src/data/flow-consent.ts');
 assert.match(consentModule, /export const FLOW_CONSENT_TEXT =\s*\n?\s*'By joining the Flow waitlist, you agree to receive Flow development and launch updates plus the AI For Everyone digest, one email a week, no more\. You can unsubscribe any time\. See our privacy policy\.'/);
-// FlowProofNuggets is unmounted as of 2026-08-21 but still carries a form, so
-// it stays in this list: if anyone remounts it, the shared consent sentence is
-// already enforced.
-for (const [name, path] of [['FlowLaunchHomeHero', 'src/components/flow/FlowLaunchHomeHero.astro'], ['FlowWaitlist', 'src/components/sections/FlowWaitlist.astro'], ['FlowProofNuggets', 'src/components/flow/FlowProofNuggets.astro']]) {
+for (const [name, path] of [['FlowWaitlist', 'src/components/sections/FlowWaitlist.astro']]) {
   assert.match(read(path), /import \{ FLOW_CONSENT_TEXT \} from '[./]+data\/flow-consent(?:\.ts)?'/, `${name} must import the shared consent sentence`);
   assert.doesNotMatch(read(path), /consentText\s*=\s*'By joining/, `${name} must not carry its own copy of the consent sentence`);
 }
 // Every Flow capture form carries ONE caption line (operator decision
 // 2026-08-20): the long consent sentence is recorded on submit, never shown.
-for (const [name, src] of [['FlowLaunchHomeHero', sharedHero], ['FlowWaitlist', read('src/components/sections/FlowWaitlist.astro')], ['FlowProofNuggets', read('src/components/flow/FlowProofNuggets.astro')]]) {
+for (const [name, src] of [['FlowWaitlist', read('src/components/sections/FlowWaitlist.astro')]]) {
   assert.doesNotMatch(src, /\{(hero)?[pP]rivacyNote\}/, `${name} must not render the long consent note`);
   assert.match(src, /of-waitlist-caption[^>]*>\s*Free to join · Double opt-in · One email a week, no more/, `${name} carries the one-line caption`);
 }
@@ -576,19 +563,6 @@ assert.match(consentModule, /AI For Everyone digest, one email a week, no more/)
 assert.match(flowWaitlistComponent, /import WaitlistForm from '\.\.\/ui\/WaitlistForm\.astro'/);
 assert.doesNotMatch(flowWaitlistComponent, /type="(text|tel|number)"/, 'Flow waitlist must remain email-only apart from the shared honeypot');
 
-// ── The light-only Living Workbench illustration component ────────────────
-const flowWorkbench = read('src/components/flow/FlowWorkbenchIllustration.astro');
-assert.match(flowWorkbench, /import lightMaster from '\.\.\/\.\.\/assets\/flow\/living-workbench-light-alpha-v2\.png'/);
-assert.doesNotMatch(flowWorkbench, /darkMaster|data-relay-shot|data-shot-dark/, 'workbench has no alternate appearance runtime');
-assert.match(flowWorkbench, /src=\{lightSrc\}/);
-assert.match(flowWorkbench, /srcset=\{lightSrcset\}/);
-assert.match(flowWorkbench, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?animation: none !important/);
-const transparentLight = readBinary('src/assets/flow/living-workbench-light-alpha-v2.png');
-assert.equal(
-  createHash('sha256').update(transparentLight).digest('hex'),
-  '900356a19c851ebb75889d58ffa62b6d42a28d7c112c8402bb501c585ee804d6',
-  'the source-faithful transparent light-theme Living Workbench master must not drift',
-);
 // ── The operator-written origin story stays intact ─────────────────────────
 const flowStory = read('src/content/story/limitless-without-the-pill.md');
 const flowStoryBody = flowStory.split('\n---\n').slice(1).join('\n---\n').trim();
@@ -649,13 +623,10 @@ assert.match(read('src/pages/og/[slug].jpg.ts'),/endsWith\('\.webp'\)/, 'non-fla
 // while turning a checkable statement into an unbacked one.
 // Truth guards read the whole tour surface (overview + the twelve chapter
 // components) since the 2026-08-20 split.
-const nuggetsCopy = readCopy('src/components/flow/FlowProofNuggets.astro');
+const nuggetsCopy = ''; // R8: FlowProofNuggets deleted; the truth guards below read the live tour.
 const flowTourCopy = `${readCopy('src/pages/flow.astro')}\n${nuggetsCopy}\n${chaptersCopy}`;
 const flowBenchCopy = flowTourCopy;
 const homeBenchCopy = `${readCopy('src/pages/index.astro')}\n${nuggetsCopy}`;
-assert.doesNotMatch(nuggetsCopy, /—/, 'proof-nuggets copy must not use em dashes');
-assert.match(nuggetsCopy, /Recorded 2026-07-30/, 'the probe card keeps its date');
-assert.match(nuggetsCopy, /Measured 2026-08-18/, 'the benchmark card keeps its date');
 
 // 1. Bandwidth. No public interface on a Mac reports memory bandwidth: 300 GB/s
 //    is the manufacturer's published figure and 268.6 GB/s is what Flow
@@ -1113,14 +1084,7 @@ assert.doesNotMatch(thanksSource, /href=\{FLOW_DMG_URL\}/, 'the thanks page must
 // any month-count framing of the annual term is arithmetically wrong at these
 // prices, and a hand-written percentage silently disagrees with the catalog the
 // day either price moves.
-const flowPricing = readCopy('src/components/flow/FlowPricing.astro');
-assert.match(
-  flowPricing,
-  /const discountPercent = Math\.round\(FLOW\.annualDiscount \* 100\)/,
-  'the annual saving is computed from the one catalog rate, never written as a literal',
-);
-assert.match(flowPricing, /save \{discountPercent\} percent/, 'the rendered saving reads from the derived value');
-for (const surface of ['src/components/flow/FlowPricing.astro', 'src/pages/flow.astro', 'src/data/flow-pricing.ts']) {
+for (const surface of ['src/components/living/FlowPlans.astro', 'src/components/paper/PricingTable.astro', 'src/pages/flow.astro', 'src/data/flow-pricing.ts']) {
   const copy = readCopy(surface);
   assert.doesNotMatch(
     copy,

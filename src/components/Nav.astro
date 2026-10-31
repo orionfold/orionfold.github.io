@@ -74,3 +74,15 @@ import { FLOW_VERSION } from '../lib/flow/flow-release';
   initNav();
   document.addEventListener('astro:after-swap', initNav);
 </script>
+
+<script>
+  // Scrolled state for the frosted band behind the nav (shell.css). One passive
+  // listener, batched to a frame; the attribute only flips at the threshold.
+  const shell = document.getElementById('nav-wrapper');
+  if (shell) {
+    let queued = false;
+    const sync = () => { queued = false; shell.toggleAttribute('data-pp-scrolled', window.scrollY > 8); };
+    window.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(sync); } }, { passive: true });
+    sync();
+  }
+</script>

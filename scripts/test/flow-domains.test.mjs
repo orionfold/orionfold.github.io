@@ -123,7 +123,7 @@ test('the landing keeps the PR/FAQ’s promises and limits', () => {
 });
 
 test('every surface prices a Playbook the way the product gates it', () => {
-  for (const rel of ['src/pages/playbooks/[slug].astro', 'src/content/domains/ai-consulting.md', 'src/content/compare/custom-gpts.md', 'public/llms.txt', 'src/components/flow/FlowDomainsBand.astro']) {
+  for (const rel of ['src/pages/playbooks/[slug].astro', 'src/content/domains/ai-consulting.md', 'src/content/compare/custom-gpts.md', 'public/llms.txt']) {
     const text = read(rel);
     assert.doesNotMatch(text, /bring\w* (a Playbook|one) in needs/i, `${rel}: a pull is free on Base`);
     assert.doesNotMatch(text, /Playbook in needs Flow Pro and the Import/i, rel);

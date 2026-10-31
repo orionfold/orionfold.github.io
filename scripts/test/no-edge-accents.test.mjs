@@ -25,12 +25,10 @@ const TYPOGRAPHIC = {
   'src/components/flow/FlowChatShowcase.astro .fc-cover': 'the spine of a drawn book cover',
   'src/styles/flow-paths.css .fp-prose blockquote': 'quotation rule',
   'src/styles/global.css .story-prose blockquote': 'quotation rule',
-  'src/styles/living-essay.css .ls-essay-reading blockquote': 'quotation rule',
   'src/styles/living-system.css .living-site .story-prose blockquote': 'quotation rule',
   'src/styles/flow-starting-documents.css .ls-starting-excerpt': 'quoted excerpt rule',
   'src/styles/flow-mocks.css .dm-flowchart i::after': 'an arrowhead drawn with borders',
   'src/pages/proposal.astro .document-totals div:last-child': 'the rule above a total',
-  'src/components/sections/HeroMissionPanel.astro .hero-mission-panel': 'a 1px light sheen, not a colour',
 };
 // The seven older card accents were fixed 2026-10-27 (operator); keep this empty.
 const PENDING = {};
@@ -65,7 +63,7 @@ test('no box gets one edge accented unless it is a listed convention or a pendin
 // The scan cannot see a bar positioned along an edge, so the two stepped
 // product mocks are checked by name: their step time runs as a ring.
 test('the stepped product mocks keep step time as a ring, not an edge bar', () => {
-  for (const [file, prefix] of [['FlowElementsShowcase', 'fx'], ['FlowChatShowcase', 'fc']]) {
+  for (const [file, prefix] of [['FlowChatShowcase', 'fc']]) {
     const src = readFileSync(path.join(root, `src/components/flow/${file}.astro`), 'utf8');
     assert.doesNotMatch(src, new RegExp(`${prefix}-tab-bar|inset 3px 0 0`), file);
     assert.match(src, new RegExp(`${prefix}-tab-ring`), file);
