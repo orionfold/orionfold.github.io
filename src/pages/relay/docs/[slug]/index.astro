@@ -4,13 +4,17 @@
 // markers are rewritten to themed shots by the global rehype bridge. Prev/next
 // walk the `order`. Footer CTA is the website's edge-to-edge RelayCtaBand
 // (contract: footer-only, don't interrupt), matching the Memos + API surfaces.
-// Mirrors the /receipts/<slug>/ idiom.
+// Mirrors the /receipts/<slug>/ idiom. R7c (G-146): a Paper docs page, the
+// chapter list in the left nav and the chapter's h2s on the right.
 import { getCollection, render, type CollectionEntry } from 'astro:content';
-import Layout from '../../../../layouts/Layout.astro';
+import PaperLayout from '../../../../layouts/PaperLayout.astro';
+import PaperDocs from '../../../../components/paper/PaperDocs.astro';
+import PageNav from '../../../../components/paper/PageNav.astro';
+import '../../../../styles/living-in-paper.css';
 import Nav from '../../../../components/Nav.astro';
 import Footer from '../../../../components/Footer.astro';
-import RelaySubNav from '../../../../components/relay/RelaySubNav.astro';
-import RelayCtaBand from '../../../../components/relay/RelayCtaBand.astro';
+import RelayClosing from '../../../../components/relay/RelayClosing.astro';
+import { RELAY_PAGES } from '../../../../lib/relay/pages';
 import { ogMeta } from '../../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../../data/seo';
 
@@ -20,6 +24,7 @@ export async function getStaticPaths() {
     params: { slug: chapter.id },
     props: {
       chapter,
+      chapters: chapters.map((c) => ({ id: c.id, title: c.data.title, order: c.data.order })),
       prev: i > 0 ? chapters[i - 1] : null,
       next: i < chapters.length - 1 ? chapters[i + 1] : null,
     },
@@ -27,8 +32,18 @@ export async function getStaticPaths() {
 }
 
 type Entry = CollectionEntry<'relayDocs'>;
-const { chapter, prev, next } = Astro.props as { chapter: Entry; prev: Entry | null; next: Entry | null };
-const { Content } = await render(chapter);
+const { chapter, chapters, prev, next } = Astro.props as {
+  chapter: Entry;
+  chapters: { id: string; title: string; order: number }[];
+  prev: Entry | null;
+  next: Entry | null;
+};
+const { Content, headings } = await render(chapter);
+const num = (n: number) => `Chapter ${String(n).padStart(2, '0')}`;
+const nav = {
+  label: 'Guide chapters',
+  items: chapters.map((c) => ({ href: `/relay/docs/${c.id}/`, label: c.title, num: num(c.order), current: c.id === chapter.id })),
+};
 const { title, order, summary } = chapter.data;
 
 const og = ogMeta('/relay/');
@@ -59,7 +74,7 @@ const breadcrumbSchema = {
   ],
 };
 ---
-<Layout
+<PaperLayout
   title={`${title} · Relay User Guide · Orionfold`}
   description={summary}
   ogImage={og.image}
@@ -67,38 +82,21 @@ const breadcrumbSchema = {
   jsonLd={[techArticleSchema, breadcrumbSchema]}
 >
   <Nav />
-  <RelaySubNav active="docs" />
-  <main class="px-6 pt-10 pb-24">
-    <div class="mx-auto max-w-2xl">
-      <a href="/relay/docs/" class="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.15em] text-text-muted transition-colors hover:text-primary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
-        User guide
-      </a>
+  <main id="main" class="pp-page">
+    <PageNav label="Relay sections" pages={RELAY_PAGES('docs')} />
+    <PaperDocs
+      crumb={{ href: '/relay/docs/', label: 'User guide' }}
+      kicker={num(order)}
+      title={title}
+      nav={nav}
+      headings={headings}
+      prev={prev && { href: `/relay/docs/${prev.id}/`, label: prev.data.title }}
+      next={next && { href: `/relay/docs/${next.id}/`, label: next.data.title }}
+    >
+      <Content />
+    </PaperDocs>
 
-      <p class="mt-8 font-mono text-sm text-primary">Chapter {String(order).padStart(2, '0')}</p>
-      <h1 class="mt-2 text-3xl leading-tight sm:text-4xl">{title}</h1>
-
-      <article class="story-prose mt-10 border-t border-border pt-10">
-        <Content />
-      </article>
-
-      <nav class="mt-16 flex flex-col gap-3 border-t border-border pt-8 sm:flex-row sm:justify-between" aria-label="Chapter navigation">
-        {prev ? (
-          <a href={`/relay/docs/${prev.id}/`} class="group max-w-[48%] text-sm text-text-muted transition-colors hover:text-primary">
-            <span class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim">&larr; Previous</span>
-            <span class="mt-1 block leading-snug group-hover:text-primary">{prev.data.title}</span>
-          </a>
-        ) : <span />}
-        {next ? (
-          <a href={`/relay/docs/${next.id}/`} class="group max-w-[48%] text-right text-sm text-text-muted transition-colors hover:text-primary sm:ml-auto">
-            <span class="block font-mono text-[0.6rem] uppercase tracking-[0.16em] text-text-dim">Next &rarr;</span>
-            <span class="mt-1 block leading-snug group-hover:text-primary">{next.data.title}</span>
-          </a>
-        ) : <span />}
-      </nav>
-    </div>
+    <RelayClosing />
   </main>
-
-  <RelayCtaBand variant="footer" />
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>

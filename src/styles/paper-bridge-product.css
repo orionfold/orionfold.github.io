@@ -44,3 +44,30 @@
 .paper .pd-paper :is(.of-primary-action, .of-secondary-action) { border-radius: var(--pp-r-2); }
 .paper .pd-paper .of-primary-action { background: var(--pp-ink); border-color: var(--pp-ink); color: var(--pp-white); }
 .paper .pd-paper .living-eyebrow { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; color: var(--pp-ink-3); }
+
+/* R7c (G-146): the Relay pages. Jumps land clear of the Paper nav; the
+ * showcase sits inside a Paper panel without its own section padding. */
+.paper .pd-paper section[id] { scroll-margin-top: calc(var(--of-nav-height, 102px) + 24px); }
+.paper .pd-relay-showcase > section { padding: 0; }
+.paper .pd-relay-showcase .relay-shot,
+.paper .pd-host .relay-shot { border-radius: var(--pp-r-3); }
+.paper .pd-paper .of-text-action { font: 500 15px/1.3 var(--pp-sans); letter-spacing: 0; text-transform: none; color: var(--pp-ink); }
+.paper .pd-paper :is(.relay-host-feature__glow, .relay-host-shot__sheen) { display: none; }
+/* The Relay license band: a quiet white band, no blueprint grid or drift. */
+.paper .pd-paper .license-band { background: var(--pp-white); border-color: var(--pp-line); }
+.paper .pd-paper .license-band__grid { display: none; }
+.paper .pd-paper .license3d-plane { transform: none; animation: none; }
+/* The Relay Host feature card: Paper sheet, ink action, no grid or glow. */
+.paper .pd-paper .relay-host-feature__canvas {
+  --host-canvas-border: var(--pp-line); --host-grid-line: transparent; --host-canvas-radial: transparent;
+  --host-canvas-bg: var(--pp-white); --host-canvas-shadow: var(--pp-shadow-paper);
+  --host-eyebrow: var(--pp-ink-3); --host-title: var(--pp-ink); --host-title-accent: var(--pp-ink-2);
+  --host-tagline: var(--pp-ink-2); --host-tagline-accent: var(--pp-ink); --host-description: var(--pp-ink-2);
+  --host-price: var(--pp-ink-3); --host-cta-bg: var(--pp-ink); --host-cta-hover: var(--pp-ink-2); --host-focus: var(--pp-teal);
+  --host-frame-border: var(--pp-line); --host-frame-shadow: var(--pp-shadow-window); --host-frame-hover-shadow: var(--pp-shadow-window);
+  border-radius: var(--pp-r-2);
+}
+.paper .pd-paper .relay-host-feature__title,
+.paper .pd-paper .relay-host-feature__tagline { font-family: var(--pp-serif); font-weight: 300; letter-spacing: -.02em; }
+.paper .pd-paper .relay-host-feature__cta { border-radius: var(--pp-r-2); font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; box-shadow: none; }
+.paper .pd-paper details > summary.font-semibold { font: 400 clamp(17px, 1.5vw, 20px)/1.35 var(--pp-serif); }

@@ -1,0 +1,22 @@
+---
+// The Relay closing card on Paper pages (R7c): RelayCtaBand's copy and link
+// as the Paper closing sheet, with a Fold in place of the origami.
+import Fold from '../paper/Fold.astro';
+import { RELAY, formatUsd } from '../../data/commerce';
+interface Props { id?: string; kicker?: string; line?: string; href?: string; label?: string }
+const {
+  id = 'relay-closing',
+  kicker = 'Run your AI team from one place.',
+  line,
+  href = '/relay/',
+  label = 'Explore Orionfold Relay',
+} = Astro.props;
+const body = line ?? `The engine is free and open. A license unlocks the premium packs you own and keeps them yours, offline. Founding seats from ${formatUsd(RELAY.founding.amount)}.`;
+---
+<section class="pp-closing" aria-labelledby={`${id}-heading`}>
+  <Fold id="shell" bob class="pp-closing-fold" />
+  <p class="pp-kicker">Orionfold Relay</p>
+  <h2 id={`${id}-heading`}>{kicker}</h2>
+  <p>{body}</p>
+  <a href={href} data-relay-cta-btn class="pp-btn">{label} <span aria-hidden="true">→</span></a>
+</section>

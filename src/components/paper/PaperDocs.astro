@@ -1,0 +1,61 @@
+---
+// The Paper docs page (R7c, G-146): the Relay user guide and API reference.
+// The research pick (plan "Research findings"): Notion help. A sticky chapter
+// nav on the left, one body column, and "On this page" on the right. A denser
+// sans body than the long-form article. Below 1240px the contents list drops;
+// below 960px the chapter nav folds into a disclosure above the title.
+// Markdown keeps its own markup; .pp-prose styles it.
+interface Heading { depth: number; slug: string; text: string }
+interface NavItem { href: string; label: string; num: string; current?: boolean }
+interface Neighbour { href: string; label: string }
+interface Props {
+  crumb: { href: string; label: string };
+  kicker?: string;
+  title: string;
+  dek?: string;
+  /** Metadata tags under the title (API stability and endpoint families). */
+  tags?: string[];
+  nav: { label: string; items: NavItem[] };
+  /** h2s become the contents list when there are three or more. */
+  headings?: Heading[];
+  prev?: Neighbour | null;
+  next?: Neighbour | null;
+}
+const { crumb, kicker, title, dek, tags = [], nav, headings = [], prev, next } = Astro.props;
+const contents = headings.filter((h) => h.depth === 2);
+---
+<div class="pp-docs">
+  <nav class="pp-docs-nav" aria-label={nav.label}>
+    <p class="pp-kicker"><a href={crumb.href}>{crumb.label}</a></p>
+    <ol>{nav.items.map((item) => (
+      <li><a href={item.href} aria-current={item.current ? 'page' : undefined}><small>{item.num}</small>{item.label}</a></li>
+    ))}</ol>
+  </nav>
+  <article class="pp-docs-main" aria-labelledby="pp-docs-title">
+    <details class="pp-docs-drawer">
+      <summary>All {nav.label.toLowerCase()}</summary>
+      <ol>{nav.items.map((item) => (
+        <li><a href={item.href} aria-current={item.current ? 'page' : undefined}><small>{item.num}</small>{item.label}</a></li>
+      ))}</ol>
+    </details>
+    <header class="pp-docs-head">
+      <p class="pp-long-crumb"><a href={crumb.href}>{crumb.label}</a>{kicker && <><span aria-hidden="true">/</span><span>{kicker}</span></>}</p>
+      <h1 id="pp-docs-title" class="pp-docs-title">{title}</h1>
+      {dek && <p class="pp-docs-dek">{dek}</p>}
+      {tags.length > 0 && <ul class="pp-docs-tags" aria-label="Tags">{tags.map((t) => <li>{t}</li>)}</ul>}
+    </header>
+    <div class="pp-docs-body pp-prose ls-in-paper ls-longform"><slot /></div>
+    {(prev || next) && (
+      <nav class="pp-docs-next" aria-label="Chapter navigation">
+        {prev && <a href={prev.href}><span class="pp-kicker">← Previous</span><strong>{prev.label}</strong></a>}
+        {next && <a class="pp-next-newer" href={next.href}><span class="pp-kicker">Next →</span><strong>{next.label}</strong></a>}
+      </nav>
+    )}
+  </article>
+  {contents.length >= 3 && (
+    <nav class="pp-docs-toc" aria-label="Contents">
+      <p class="pp-kicker">On this page</p>
+      <ol>{contents.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+    </nav>
+  )}
+</div>

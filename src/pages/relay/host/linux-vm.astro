@@ -2,11 +2,15 @@
 // Customer-facing adaptation of Relay G-108. The canonical bootstrap remains in
 // Relay's release-pinned guide; this page explains the decision, boundaries and
 // lifecycle without copying commands that could drift from supported artifacts.
-import Layout from '../../../layouts/Layout.astro';
+// R7c (G-146): a Paper page. Paper hero and PageNav; the sections keep their
+// markup inside the tw-in-paper product bridge.
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import PageNav from '../../../components/paper/PageNav.astro';
+import '../../../styles/living-in-paper.css';
+import '../../../styles/paper-bridge-product.css';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
-import PageHeader from '../../../components/ui/PageHeader.astro';
-import RelaySubNav from '../../../components/relay/RelaySubNav.astro';
+import { RELAY_PAGES } from '../../../lib/relay/pages';
 import { RELAY_HOST, formatUsd } from '../../../data/commerce';
 import {
   RELAY_HOST_PORTABLE_GUIDE_URL,
@@ -86,7 +90,7 @@ const faqSchema = {
 };
 ---
 
-<Layout
+<PaperLayout
   title="Relay Host portable Linux VM playbook"
   description="Prepare Relay Host on a compatible customer-owned Linux VM with a release-matched, secret-safe and receipt-driven playbook."
   ogImage={og.image}
@@ -95,32 +99,29 @@ const faqSchema = {
   jsonLd={showPlaybook ? [breadcrumbSchema, faqSchema] : breadcrumbSchema}
 >
   <Nav />
-  <RelaySubNav active="host" />
-  <main class="-mt-20 sm:-mt-24">
+  <main id="main" class="pp-page">
     {showPlaybook ? (
       <>
-        <PageHeader
-          eyebrow="Relay Host · Portable Linux VM playbook"
-          title="Your Relay Host. Your cloud account."
-          subtitle="Run Relay Host on a compatible Linux VM in the cloud account you choose, with checked release-matched assets, no cloud credentials handed to Orionfold and no product secrets placed in cloud user-data."
-        >
-          <div class="mb-4 mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-            {RELAY_HOST_PORTABLE_GUIDE_URL ? (
-              <a href={RELAY_HOST_PORTABLE_GUIDE_URL} class="of-primary-action">Read the portable VM guide</a>
-            ) : (
-              <span class="inline-flex min-h-11 items-center rounded-full border border-primary/30 bg-primary/[0.07] px-5 py-3 font-mono text-xs font-semibold uppercase tracking-wider text-primary">
-                Guide publishes with the next supported Relay release
-              </span>
+        <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="vm-title">
+          <div class="pp-hero-copy">
+            <p class="pp-kicker">Relay Host · Portable Linux VM playbook</p>
+            <h1 id="vm-title" class="pp-h1">Your Relay Host. Your cloud account.</h1>
+            <p class="pp-sub">Run Relay Host on a compatible Linux VM in the cloud account you choose, with checked release-matched assets, no cloud credentials handed to Orionfold and no product secrets placed in cloud user-data.</p>
+            <div class="pp-hero-cta">
+              {RELAY_HOST_PORTABLE_GUIDE_URL ? (
+                <a href={RELAY_HOST_PORTABLE_GUIDE_URL} class="pp-btn">Read the portable VM guide</a>
+              ) : (
+                <span class="pp-btn pp-btn--ghost" aria-disabled="true">Guide publishes with the next supported Relay release</span>
+              )}
+              <a href="/relay/host/#get-relay-host" class="pp-btn pp-btn--ghost">Choose Relay Host capacity</a>
+            </div>
+            {!RELAY_HOST_PORTABLE_LIVE && (
+              <small>Preview · this guide will name the exact supported Relay release before publication.</small>
             )}
-            <a href="/relay/host/#get-relay-host" class="of-secondary-action">Choose Relay Host capacity</a>
           </div>
-          {!RELAY_HOST_PORTABLE_LIVE && (
-            <p class="mt-2 max-w-2xl font-mono text-[0.68rem] leading-relaxed text-text-dim">
-              Preview · this guide will name the exact supported Relay release before publication.
-            </p>
-          )}
-        </PageHeader>
-
+        </section>
+        <PageNav label="Relay sections" pages={RELAY_PAGES('host')} />
+        <div class="tw-in-paper pd-paper pd-host">
         <section class="px-6 pb-16 pt-8 sm:pt-12">
           <div class="mx-auto grid max-w-5xl gap-4 md:grid-cols-3">
             {reassurance.map((item, index) => (
@@ -134,7 +135,6 @@ const faqSchema = {
         </section>
 
         <section class="portable-boundary relative overflow-hidden border-y border-primary/20 px-6 py-16 sm:py-20">
-          <div class="portable-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
           <div class="relative mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
             <div>
               <p class="font-mono text-[0.68rem] uppercase tracking-[0.24em] text-primary">Portable, not provider-managed</p>
@@ -230,34 +230,21 @@ const faqSchema = {
             </div>
           </div>
         </section>
+        </div>
       </>
     ) : (
-      <PageHeader
-        eyebrow="Relay Host · Portable Linux VM playbook"
-        title="The release-matched guide is being prepared."
-        subtitle="This guide will open when a supported public Relay release includes the matching command and deployment assets."
-      >
-        <div class="mb-4 mt-7 flex flex-col items-start gap-3 sm:flex-row">
-          <a href="/relay/host/" class="of-primary-action">Return to Relay Host</a>
-          <a href="https://github.com/orionfold/relay/releases" class="of-secondary-action">See Relay releases</a>
+      <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="vm-title">
+        <div class="pp-hero-copy">
+          <p class="pp-kicker">Relay Host · Portable Linux VM playbook</p>
+          <h1 id="vm-title" class="pp-h1">The release-matched guide is being prepared.</h1>
+          <p class="pp-sub">This guide will open when a supported public Relay release includes the matching command and deployment assets.</p>
+          <div class="pp-hero-cta">
+            <a href="/relay/host/" class="pp-btn">Return to Relay Host</a>
+            <a href="https://github.com/orionfold/relay/releases" class="pp-btn pp-btn--ghost">See Relay releases</a>
+          </div>
         </div>
-      </PageHeader>
+      </section>
     )}
   </main>
-  <Footer />
-</Layout>
-
-<style>
-  .portable-boundary {
-    background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 5%, var(--color-bg)), var(--color-bg));
-  }
-  .portable-grid {
-    --line: color-mix(in oklch, var(--color-primary) 13%, transparent);
-    background-image:
-      linear-gradient(to right, var(--line) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
-    background-size: 28px 28px;
-    -webkit-mask-image: radial-gradient(ellipse 85% 80% at 58% 45%, black 35%, transparent 100%);
-    mask-image: radial-gradient(ellipse 85% 80% at 58% 45%, black 35%, transparent 100%);
-  }
-</style>
+  <Footer showDownload={false} />
+</PaperLayout>

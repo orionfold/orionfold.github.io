@@ -77,7 +77,9 @@ const { title, lookupKey, priceLabel, itemId, live, anchor, hideWhile } = Astro.
 
     const heroObserver = new IntersectionObserver(
       ([entry]) => {
-        heroPassed = !entry.isIntersecting;
+        // Passed only when the sentinel has left through the top; below the
+        // band (a tall hero on a phone) the bar stays hidden.
+        heroPassed = !entry.isIntersecting && entry.boundingClientRect.top < 0;
         sync();
       },
       { rootMargin: '0px 0px -80% 0px' },
