@@ -6,11 +6,12 @@ const read = (relativePath) => readFileSync(
   'utf8',
 );
 
-const subnav = read('src/components/arena/ArenaSubNav.astro');
+// R7d: the Arena resource path moved from ArenaSubNav to the Paper PageNav.
+const pages = read('src/lib/arena/pages.ts');
 const page = read('src/pages/arena.astro');
 
-const slots = [...subnav.matchAll(/\{ key: '([^']+)', label: '([^']+)', href: '([^']+)', live: true \}/g)]
-  .map(([, key, label, href]) => ({ key, label, href }));
+const slots = [...pages.matchAll(/\{ key: '([^']+)', href: '([^']+)', label: '([^']+)' \}/g)]
+  .map(([, key, href, label]) => ({ key, label, href }));
 
 assert.deepEqual(slots, [
   { key: 'overview', label: 'Overview', href: '/arena/' },
@@ -22,15 +23,9 @@ assert.deepEqual(slots, [
   { key: 'receipts', label: 'Receipts', href: '/receipts/' },
 ]);
 
-assert.match(subnav, /<nav aria-label="Arena sections"/);
-assert.match(subnav, /aria-current=\{isActive \? 'page' : undefined\}/);
-assert.match(subnav, /flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2/);
-assert.match(subnav, /margin-top: 7rem/);
-assert.match(subnav, /@media \(min-width: 640px\)[\s\S]*margin-top: 8rem/);
-assert.match(subnav, /font-size: 0\.72rem/);
-assert.match(subnav, /bottom: -0\.85rem/);
+assert.match(pages, /current: key === current/);
+assert.match(page, /import \{ ARENA_PAGES \} from '\.\.\/lib\/arena\/pages'/);
+assert.match(page, /<PageNav label="Arena product navigation"[\s\S]*pages=\{ARENA_PAGES\('overview'\)\}/);
+assert.doesNotMatch(page, /ArenaSubNav/);
 
-assert.match(page, /import ArenaSubNav from '\.\.\/components\/arena\/ArenaSubNav\.astro'/);
-assert.match(page, /<Nav \/>\s*<ArenaSubNav active="overview" \/>\s*<main class="-mt-20 sm:-mt-24">/);
-
-console.log('arena subnav: Relay-style rail exposes the complete Arena resource path');
+console.log('arena subnav: the Paper PageNav exposes the complete Arena resource path');

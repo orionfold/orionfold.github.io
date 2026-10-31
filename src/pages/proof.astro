@@ -4,16 +4,26 @@
 // takes. Built for the builder who reruns your tests and the buyer they refer.
 // Voice: grade 3-5, jargon explained, no em-dashes (website-copy-style). Numbers
 // are repurposed from the field notes; the honest caveats stay in (receipt-honesty).
-import Layout from '../layouts/Layout.astro';
+//
+// R7d (G-146): a Paper page. The matrix and the product tour keep their markup
+// inside the tw-in-paper bridge; receipts, myths and field notes become Paper
+// rows. The own-it trust trio left (its three links are the same three trust
+// pages the security answers link). The buy block, license band and sticky
+// bar keep every data-checkout, data-item and data-error-target.
+import PaperLayout from '../layouts/PaperLayout.astro';
+import PageNav from '../components/paper/PageNav.astro';
+import Panel from '../components/paper/Panel.astro';
+import Fold from '../components/paper/Fold.astro';
+import PaperSubscribe from '../components/paper/PaperSubscribe.astro';
+import '../styles/living-in-paper.css';
+import '../styles/paper-bridge-product.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import PageHeader from '../components/ui/PageHeader.astro';
 import CapabilityMatrix from '../components/sections/CapabilityMatrix.astro';
 import ProofProduct from '../components/sections/ProofProduct.astro';
 import ProofBox from '../components/product/ProofBox.astro';
 import LandingStickyCta from '../components/product/LandingStickyCta.astro';
 import LicenseBand from '../components/product/LicenseBand.astro';
-import OfferSlot from '../components/ui/OfferSlot.astro';
 import ProductLineRail from '../components/product/ProductLineRail.astro';
 import proofPoster from '../assets/proof/orionfold-proof-poster.jpeg';
 import { getCollection } from 'astro:content';
@@ -140,31 +150,6 @@ const icps = [
   },
 ];
 
-// Own-it buyer-benefit trio (reference-build gap D4-②c): reframe "open source"
-// as three plain buyer benefits, each backed by a docs/trust/ page (link, don't
-// mirror, so the page can't drift from the canonical trust doc). Proof's two
-// uncontested axes are local/offline + reproducible; the trio says them plainly.
-const trustTrio = [
-  {
-    title: 'No lock-in, ever',
-    body: 'The tool is open and installs with one command. Your receipts are plain files you keep. If we vanished tomorrow, everything you ran still verifies.',
-    icon: '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
-    href: '/trust/continuity/',
-  },
-  {
-    title: 'Auditable end to end',
-    body: 'Every release ships with a signed record of where it came from and a full parts list. Check what you install before you run it.',
-    icon: '<path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
-    href: '/trust/supply-chain/',
-  },
-  {
-    title: 'Run it yourself',
-    body: 'Proof runs on your own machine, offline if you want. Nothing you test is uploaded. Anything that could leave the box is listed in full, with an off switch.',
-    icon: '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
-    href: '/trust/data-flow/',
-  },
-];
-
 // Objection-as-header security block (reference-build gap D4-②d): the four
 // questions a careful buyer (and a regulated-vertical risk team) asks about Proof
 // itself, each answered plainly and each linking the on-site /trust/ page that
@@ -207,7 +192,7 @@ const receiptTasters = Object.fromEntries(
   ]),
 );
 ---
-<Layout
+<PaperLayout
   title="AI you can verify yourself · Orionfold"
   description="The proof, not the pitch. Frozen tests you can rerun, a small model that out-trusts a big one, and an AI lab that runs overnight for 2 cents, all on one desk."
   ogImage={og.image}
@@ -235,280 +220,175 @@ const receiptTasters = Object.fromEntries(
   ]}
 >
   <Nav />
-  <main>
-    <PageHeader
-      eyebrow="Receipts"
-      title="The proof, not the pitch."
-      subtitle="We do not ask you to trust us. We lock the test before we train, publish the receipts, and let you rerun them. Here is what one desk can prove. Open source, offline, and it runs on the machine in front of you. Rerun anything on this page yourself."
-    >
-      <!-- Runnable install command on the hero (gap D4-②b): the brand is "rerun
-           it, never trust us," so the single most on-brand move is to SHOW the
-           real command above the fold, not assert "one command to install" 800px
-           down. Real, verified verb: `pip install orionfold-proof` then
-           `orionfold up` (PyPI package orionfold-proof, CLI command `orionfold`).
-           Same install-chip shape as the shipped /relay/ hero. -->
-      <div class="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-        {ORIONFOLD_PROOF_LIVE ? (
-          <button
-            type="button"
-            data-checkout={PROOF.founding.lookupKey}
-            data-item="software:orionfold-proof"
-            data-error-target="hero-cta-err"
-            class="of-primary-action text-base font-semibold"
-          >
-            Get Orionfold Proof
-            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(PROOF.founding.amount)} founding</span>
-          </button>
-        ) : (
-          <a href="#get-proof" class="of-primary-action text-base font-semibold">
-            Get Orionfold Proof
-            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(PROOF.founding.amount)} founding</span>
-          </a>
-        )}
-        <div class="inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-border/70 bg-surface/60 px-4 py-3">
-          <span class="font-mono text-[0.65rem] uppercase tracking-wider text-text-dim">Install</span>
-          <code class="font-mono text-sm text-primary">pip install orionfold-proof</code>
-          <span class="text-text-dim">then</span>
-          <code class="font-mono text-sm text-primary">orionfold up</code>
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="proof-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Receipts</p>
+        <h1 id="proof-title" class="pp-h1">The proof, not the pitch.</h1>
+        <p class="pp-sub">We do not ask you to trust us. We lock the test before we train, publish the receipts, and let you rerun them. Here is what one desk can prove. Open source, offline, and it runs on the machine in front of you. Rerun anything on this page yourself.</p>
+        {/* Runnable install command on the hero: the brand is "rerun it, never
+            trust us," so the real command sits above the fold. Real verbs:
+            `pip install orionfold-proof` then `orionfold up`. */}
+        <div class="pp-hero-cta">
+          {ORIONFOLD_PROOF_LIVE ? (
+            <button type="button" class="pp-btn" data-checkout={PROOF.founding.lookupKey} data-item="software:orionfold-proof" data-error-target="hero-cta-err">
+              Get Orionfold Proof · {formatUsd(PROOF.founding.amount)} founding
+            </button>
+          ) : (
+            <a class="pp-btn" href="#get-proof">Get Orionfold Proof · {formatUsd(PROOF.founding.amount)} founding</a>
+          )}
+          <span class="pp-install"><small>Install</small><code>pip install orionfold-proof</code><small>then</small><code>orionfold up</code></span>
         </div>
+        <p id="hero-cta-err" class="pp-done-error" role="alert" hidden></p>
       </div>
-      <p id="hero-cta-err" class="mt-3 hidden text-sm text-red-400" role="alert"></p>
-    </PageHeader>
-    <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view. -->
+    </section>
+    {/* Sticky-CTA sentinel: the bar fades in once this scrolls out of view. */}
     <div id="hero-cta-sentinel" aria-hidden="true"></div>
+    <PageNav label="Proof page navigation" onPage={[
+      { href: '#proof-matrix', label: 'The matrix' },
+      { href: '#what-it-does', label: 'The tool' },
+      { href: '#proof-receipts', label: 'Receipts' },
+      { href: '#proof-myths', label: 'Myths' },
+      { href: '#proof-security', label: 'Security' },
+      { href: '#get-proof', label: 'Pricing' },
+    ]} pages={[
+      { href: '/receipts/', label: 'All receipts' },
+      { href: '/letter/', label: 'The letter' },
+    ]} />
 
-    <!-- The signature WOW: the capability matrix + speed -->
-    <CapabilityMatrix tasters={receiptTasters} />
+    {/* The signature WOW: the capability matrix and speed. */}
+    <Panel id="proof-matrix" seam="Every star, rerunnable" fold="tally">
+      <div class="tw-in-paper pd-paper pd-in-panel"><CapabilityMatrix tasters={receiptTasters} /></div>
+    </Panel>
 
-    <!-- Proof stays an evidence product while the shared flagship rail now
-         associates Flow, Relay, and Arena. -->
-    <ProductLineRail class="pt-4 pb-10" />
+    {/* What Orionfold Proof is: the product behind the receipts. */}
+    <Panel seam="What Orionfold Proof does" fold="clause" tinted>
+      <div class="tw-in-paper pd-paper pd-in-panel"><ProofProduct /></div>
+    </Panel>
 
-    <!-- What Orionfold Proof is: the product behind the receipts -->
-    <ProofProduct />
-
-    <!-- ============================================================
-         DUAL-ICP COLUMNS (gap D4-②a) — one tool, two buyers. The builder
-         wants a fast local benchmark; the regulated-enterprise buyer wants
-         an audit-ready receipt a risk team can rerun. Placed after "What Proof
-         does" so the reader knows the product before choosing their path.
-         ============================================================ -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-5xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">One tool, two jobs</p>
-        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-          The same locked-test-and-receipt loop serves the builder proving a model on their desk
-          and the regulated team that has to hand a reviewer something they can check. Pick your path.
-        </p>
-        <div class="grid items-stretch gap-4 md:grid-cols-2 md:gap-6">
-          {icps.map((p) => (
-            <div class={`flex flex-col rounded-2xl border p-6 sm:p-8 ${p.accent ? 'border-primary/40 bg-primary/[0.06] shadow-lg shadow-primary/5' : 'border-border/70 bg-surface/60'}`}>
-              <span class={`mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl ${p.accent ? 'bg-primary/15 text-primary' : 'bg-primary/10 text-primary'}`}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={p.icon} />
-              </span>
-              <p class="font-mono text-[0.65rem] uppercase tracking-wider text-text-dim">{p.who}</p>
-              <p class={`mt-1.5 text-lg font-semibold ${p.accent ? 'text-primary' : 'text-text'}`}>{p.lead}</p>
-              <ul class="mt-5 space-y-3">
-                {p.points.map((pt) => (
-                  <li class="flex items-start gap-3">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class={`mt-0.5 shrink-0 ${p.accent ? 'text-primary' : 'text-text-muted'}`} aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span class="text-sm leading-relaxed text-text-muted">{pt}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+    {/* One tool, two buyers: the builder proving a model on their desk, and
+        the regulated team handing a reviewer something they can check. */}
+    <Panel id="proof-jobs" seam="One tool, two jobs" fold="atlas" title="Pick your<br />path." lede="The same locked-test-and-receipt loop serves the builder proving a model on their desk and the regulated team that has to hand a reviewer something they can check.">
+      <div class="pp-relay-split">
+        {icps.map((p) => (
+          <div class:list={{ 'pp-relay-paid': p.accent }}>
+            <p class="pp-kicker">{p.who}</p>
+            <p class="pp-proof-lead">{p.lead}</p>
+            <ul>{p.points.map((pt) => <li>{pt}</li>)}</ul>
+          </div>
+        ))}
       </div>
-    </section>
+    </Panel>
 
-    <!-- Mid-page CTA: they now know what Proof is — catch the fast-decider -->
-    <LicenseBand
-      family={PROOF}
-      live={ORIONFOLD_PROOF_LIVE}
-      itemId="software:orionfold-proof"
-      errId="proof-band-err"
-      fullBlockId="get-proof"
-      eyebrow="Prove it on your own machine"
-      heading="Own the tool behind these receipts."
-      body="Orionfold Proof runs on your own machine and hands back a signed receipt you can rerun. Owning it unlocks every pack it ships with, starting with the Advisor governance pack."
-      enquiryHref="/adoption/?item=software:orionfold-proof"
-      image={proofPoster}
-      imageAlt="Orionfold Proof poster: an art-deco receipt rising from a laptop into the Orion stars, the tool that proves which AI to trust."
-    />
+    {/* Mid-page CTA for the reader who is already sold. */}
+    <div class="tw-in-paper pd-paper pd-relay-bridge">
+      <LicenseBand
+        family={PROOF}
+        live={ORIONFOLD_PROOF_LIVE}
+        itemId="software:orionfold-proof"
+        errId="proof-band-err"
+        fullBlockId="get-proof"
+        eyebrow="Prove it on your own machine"
+        heading="Own the tool behind these receipts."
+        body="Orionfold Proof runs on your own machine and hands back a signed receipt you can rerun. Owning it unlocks every pack it ships with, starting with the Advisor governance pack."
+        enquiryHref="/adoption/?item=software:orionfold-proof"
+        image={proofPoster}
+        imageAlt="Orionfold Proof poster: an art-deco receipt rising from a laptop into the Orion stars, the tool that proves which AI to trust."
+      />
+    </div>
 
-    <!-- Headline receipts: our number next to the world it beats -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-6xl">
-        <p class="mb-6 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">The numbers that pop</p>
-        <div class="grid gap-4 sm:grid-cols-2" data-animate-stagger>
-          {receipts.map((r) => (
-            <a href={receiptHref(r.receipt) ?? r.href} data-animate class="of-surface of-pressable group flex flex-col rounded-2xl p-6">
-              <div class="flex items-baseline justify-between gap-3">
-                <span class="font-display text-3xl leading-none text-primary">{r.metric}</span>
-                <span class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-text-dim">{r.label}</span>
-              </div>
-              <p class="mt-4 text-sm leading-relaxed text-text-muted">{r.body}</p>
-              <span class="mt-4 text-sm text-primary transition-colors group-hover:text-primary/80">See the work &rarr;</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
+    {/* Headline receipts: our number next to the world it beats. */}
+    <Panel id="proof-receipts" seam="The numbers that pop" fold="orri" title="Our number, next to<br />the world it beats." lede="Each one links the receipt with the locked test and the run, so you can check it.">
+      <ul class="pp-rows">
+        {receipts.map((r) => (
+          <li><a href={receiptHref(r.receipt) ?? r.href}>
+            <b>{r.metric}</b>
+            <div><strong>{r.label}</strong><span>{r.body}</span></div>
+            <small>See the work →</small>
+          </a></li>
+        ))}
+      </ul>
+    </Panel>
 
-    <!-- Contrarian takes: what people assume, next to the receipt that breaks it -->
-    <section class="border-y border-border bg-surface-raised px-6 py-14">
-      <div class="mx-auto max-w-3xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">We proved these wrong</p>
-        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-          Six things almost everyone assumes about AI. Each one, next to the receipt from our own desk that breaks it.
-        </p>
-        <ul class="grid gap-3" data-animate-stagger>
-          {myths.map((m) => (
-            <li data-animate class="rounded-2xl border border-border/70 bg-surface/60 p-5">
-              <p class="text-sm font-medium text-text-dim line-through decoration-text-dim/40">{m.claim}</p>
-              <p class="mt-2 text-base leading-relaxed text-text">{m.bust}</p>
-            </li>
+    {/* Contrarian takes: what people assume, next to the receipt that breaks it. */}
+    <Panel id="proof-myths" seam="We proved these wrong" fold="ember" tinted title="Six things almost<br />everyone assumes." lede="Each one, next to the receipt from our own desk that breaks it.">
+      <ul class="pp-rows pp-proof-myths">
+        {myths.map((m) => (
+          <li><div class="pp-row"><s>{m.claim}</s><span>{m.bust}</span></div></li>
+        ))}
+      </ul>
+    </Panel>
+
+    {/* Proof in the field: the build-log notes behind each receipt. */}
+    {proofStories.length > 0 && (
+      <Panel id="proof-notes" seam="Proof in the field" fold="hop" title="The story behind<br />each receipt." lede="The test we locked, the run, and what we found. Each one is a thing you can rerun yourself.">
+        <ul class="pp-rows">
+          {proofStories.map((s) => (
+            <li><a href={`/story/${s.id}/`}>
+              <small>Field note</small>
+              <div><strong>{s.data.title}</strong><span>{s.data.summary}</span></div>
+              <small>Read →</small>
+            </a></li>
           ))}
         </ul>
-      </div>
-    </section>
-
-    <!-- Proof in the field: the build-log notes that carry each receipt's story -->
-    {proofStories.length > 0 && (
-      <section class="px-6 py-12">
-        <div class="mx-auto max-w-3xl">
-          <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Proof in the field</p>
-          <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-            Every receipt above has a story behind it. The test we locked, the run, and what we found.
-            Here are the field notes, each one a thing you can rerun yourself.
-          </p>
-          <ul class="grid gap-3" data-animate-stagger>
-            {proofStories.map((s) => (
-              <li data-animate>
-                <a href={`/story/${s.id}/`} class="of-surface of-pressable group block rounded-2xl p-5">
-                  <p class="text-base font-medium leading-snug text-text group-hover:text-primary">{s.data.title}</p>
-                  <p class="mt-2 text-sm leading-relaxed text-text-muted">{s.data.summary}</p>
-                  <span class="mt-3 inline-block text-sm text-primary transition-colors group-hover:text-primary/80">Read the note &rarr;</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      </Panel>
     )}
 
-    <!-- ============================================================
-         OWN-IT TRUST TRIO (gap D4-②c) — open source reframed as three plain
-         buyer benefits, each linking the docs/trust/ page that backs it
-         (link, not mirror, so no drift). Placed low, right before the
-         objection block + buy box, so the own-it reassurance lands just as
-         the reader nears the price. Proof's axes are local/offline +
-         reproducible; the trio says them without jargon.
-         ============================================================ -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-5xl">
-        <p class="mb-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Yours, not ours</p>
-        <div class="grid gap-4 sm:grid-cols-3">
-          {trustTrio.map((t) => (
-            <a
-              href={t.href}
-              class="group of-surface flex flex-col rounded-2xl border border-border/70 p-6 transition-colors hover:border-primary/40"
-            >
-              <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={t.icon} />
-              </span>
-              <p class="text-base font-semibold text-text">{t.title}</p>
-              <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{t.body}</p>
-              <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary/80 transition-colors group-hover:text-primary">
-                See how
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-              </span>
-            </a>
-          ))}
-        </div>
+    {/* Security and trust: the last gate before the price, and the deepest
+        one for the regulated buyer. Each answer links its trust page. */}
+    <Panel id="proof-security" seam="Before you buy" fold="shell" tinted title="The questions<br />your risk team asks." lede="Proof runs on your own machine, holds none of your data, and keeps working even if we do not. Each answer links the page that shows the code behind it.">
+      <div class="pp-faq">
+        {trust.map((t) => (
+          <details><summary>{t.q}</summary><p>{t.a} <a href={t.href}>{t.label} <span aria-hidden="true">→</span></a></p></details>
+        ))}
       </div>
-    </section>
+    </Panel>
 
-    <!-- ============================================================
-         OBJECTION-AS-HEADER SECURITY BLOCK (gap D4-②d) — the last gate to
-         clear before the price, and the deepest one for the regulated ICP.
-         The "WE PROVED THESE WRONG" block busts AI-industry myths; this one
-         answers buyer objections about Proof itself. Four questions a careful
-         buyer (and a risk team) asks, each answered plainly, each linking the
-         on-site /trust/ page that proves it. Same pattern as shipped /relay/.
-         ============================================================ -->
-    <section class="border-y border-border bg-surface-raised px-6 py-14">
-      <div class="mx-auto max-w-3xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Before you buy</p>
-        <h2 class="mb-4 text-3xl sm:text-4xl">The questions your risk team asks.</h2>
-        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-          Proof runs on your own machine, holds none of your data, and keeps working even if we do
-          not. Here are the four questions a careful buyer asks, answered in plain words, each backed
-          by a page that links the code that proves it.
-        </p>
-        <ul class="grid gap-4">
-          {trust.map((t) => (
-            <li class="rounded-2xl border border-border/70 bg-surface/60 p-6">
-              <p class="text-base font-semibold text-text">{t.q}</p>
-              <p class="mt-2 text-sm leading-relaxed text-text-muted">{t.a}</p>
-              <a
-                href={t.href}
-                class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary transition-colors hover:text-primary/80"
-              >
-                {t.label}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+    {/* Own the tool behind the receipts: the buy block, then the sibling line. */}
+    <div class="tw-in-paper pd-paper pd-relay-bridge">
+      <ProofBox />
+      <ProductLineRail class="pd-proof-rail" />
+    </div>
 
-    <!-- Own the tool behind the receipts: lead with the buy block -->
-    <ProofBox />
-
-    <!-- Soft opt-in below the buy: catch receipt-readers who aren't checkout-ready yet -->
-    <OfferSlot
+    {/* Soft opt-in below the buy: receipt readers who are not checkout-ready. */}
+    <PaperSubscribe
+      id="offer-proof-playbook"
       offer="proof-playbook"
       source="proof-page"
-      label="Not ready to buy?"
-      heading="Get the proof playbook."
+      heading="Not ready to buy? Get the proof playbook."
       dek="The one-page guide to locking a test, running it on your own desk, and reading the receipts. Plus a note when we publish new proof."
-      artifact="One-page PDF + new-proof notes"
       buttonText="Send it"
+      fold="sprout"
+      consentText="By subscribing you agree to receive the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy."
     />
 
-    <!-- Close: hand the reader to the story and the catalog -->
-    <section class="px-6 py-16">
-      <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
-        <p class="font-display text-2xl leading-snug">Proof you can rerun. An AI team you can own.</p>
-        <p class="mt-4 text-base leading-relaxed text-text-muted">
-          The receipts are the reason to believe. The payoff is what they earn, a private AI team
-          that runs on the Spark you already own, with no cloud account and no per-word bills. The
-          full story of why is in the
-          <a class="text-primary underline underline-offset-2 hover:text-primary/80" href="/letter/">letter from the founder</a>.
-        </p>
-        <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-          <a href="/cockpit/" class="of-primary-action">Get an AI team you own</a>
-          <a href="/letter/" class="of-secondary-action">Read the letter</a>
-        </div>
+    {/* Close: hand the reader to the story and the catalog. */}
+    <section class="pp-closing" aria-labelledby="proof-closing-heading">
+      <Fold id="tally" bob class="pp-closing-fold" />
+      <p class="pp-kicker">Orionfold Proof</p>
+      <h2 id="proof-closing-heading">Proof you can rerun. An AI team you can own.</h2>
+      <p>The receipts are the reason to believe. The payoff is a private AI team that runs on the Spark you already own, with no cloud account and no per-word bills.</p>
+      <div class="pp-done-actions">
+        <a href="/cockpit/" class="pp-btn">Get an AI team you own <span aria-hidden="true">→</span></a>
+        <a href="/letter/" class="pp-btn pp-btn--ghost">Read the letter</a>
       </div>
     </section>
 
-    <!-- Persistent Buy bar: one tap away once the hero scrolls past. Same
-         founding price + data-checkout wiring as ProofBox (SSOT-driven). -->
-    <LandingStickyCta
-      title="Orionfold Proof"
-      lookupKey={PROOF.founding.lookupKey}
-      priceLabel={formatUsd(PROOF.founding.amount)}
-      itemId="software:orionfold-proof"
-      live={ORIONFOLD_PROOF_LIVE}
-      anchor="#get-proof"
-    />
+    {/* Persistent Buy bar once the hero scrolls past. Same founding price and
+        data-checkout wiring as ProofBox (SSOT-driven). */}
+    <div class="tw-in-paper pd-paper">
+      <LandingStickyCta
+        title="Orionfold Proof"
+        lookupKey={PROOF.founding.lookupKey}
+        priceLabel={formatUsd(PROOF.founding.amount)}
+        itemId="software:orionfold-proof"
+        live={ORIONFOLD_PROOF_LIVE}
+        anchor="#get-proof"
+      />
+    </div>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
 
 <script>
   // Wire the Proof purchase buttons (data-checkout → create-checkout-session →

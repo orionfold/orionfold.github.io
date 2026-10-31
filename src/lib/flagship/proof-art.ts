@@ -26,6 +26,10 @@ const advisorShots = import.meta.glob<{ default: ImageMetadata }>(
   '../../assets/projects/advisor/*.png',
   { eager: true },
 );
+const relayPoster = import.meta.glob<{ default: ImageMetadata }>(
+  '../../assets/projects/orionfold-relay-poster.jpeg',
+  { eager: true },
+);
 const sparkHero = import.meta.glob<{ default: ImageMetadata }>(
   '../../assets/dgx-spark/hero.jpg',
   { eager: true },
@@ -62,6 +66,10 @@ export function resolveProofArt(href: string): ImageMetadata | undefined {
     return advisorShots['../../assets/projects/advisor/refusal-scored.png']?.default;
   if (href.includes('Orionfold/Advisor-bench'))
     return advisorShots['../../assets/projects/advisor/eval-drawer.png']?.default;
+
+  // The flagship landings lead with their own posters.
+  if (/^\/arena\/?$/.test(href)) return posters['../../assets/projects/arena-poster.png']?.default;
+  if (/^\/relay\/?$/.test(href)) return relayPoster['../../assets/projects/orionfold-relay-poster.jpeg']?.default;
 
   // The adoption map is the site's own star chart, so it leads with the
   // starscape key art instead of the generic constellation motif.

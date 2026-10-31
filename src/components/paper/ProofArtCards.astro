@@ -1,0 +1,22 @@
+---
+// The offer proof rail on Paper pages (R7d): each proof link as an art card,
+// led by the destination's real key art when resolveProofArt finds it.
+import { Image } from 'astro:assets';
+import { resolveProofArt } from '../../lib/flagship/proof-art';
+import type { ProofLink } from '../../data/flagship-offers';
+interface Props { links: ProofLink[] }
+const { links } = Astro.props;
+---
+<ul class="pp-art-cards pp-art-cards--3">
+  {links.map((link) => {
+    const art = resolveProofArt(link.href);
+    const external = link.href.startsWith('http');
+    return (
+      <li><a href={link.href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>
+        {art && <Image src={art} alt={`${link.label} artwork`} widths={[400, 640]} sizes="(min-width: 860px) 30vw, 100vw" loading="lazy" decoding="async" data-no-zoom />}
+        <h3>{link.label}</h3>
+        <p>{link.note}</p>
+      </a></li>
+    );
+  })}
+</ul>

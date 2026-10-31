@@ -774,3 +774,77 @@
 }
 @media (max-width: 560px) { .paper .pp-relay-packs ul { grid-template-columns: 1fr; } }
 .paper :is(#relay-free, #relay-security) .pp-panel-note { margin-inline: auto; }
+
+/* R7d: the Arena overview, on the Relay hero and stat cells. Cited wins with
+ * their source links, the four moves, and a 2-up gallery of window shots. */
+.paper .pp-arena-wins-head { margin: 40px 0 12px; }
+.paper .pp-arena-wins b { font: 300 clamp(30px, 3vw, 40px)/1 var(--pp-serif); }
+.paper .pp-arena-wins strong { font: 500 16px/1.35 var(--pp-sans); }
+.paper .pp-arena-wins a { margin-top: 4px; font: 500 14px/1.3 var(--pp-sans); color: var(--pp-ink); text-decoration: underline; text-decoration-color: var(--pp-teal); text-underline-offset: 4px; }
+.paper .pp-arena-moves b { font: 300 clamp(26px, 2.4vw, 32px)/1.1 var(--pp-serif); }
+.paper .pp-arena-gallery { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.paper .pp-arena-gallery figcaption { text-align: left; font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; text-transform: uppercase; }
+@media (max-width: 760px) { .paper .pp-arena-gallery { grid-template-columns: 1fr; } }
+.paper #arena-outcome .pp-panel-note code { padding: 1px 5px; border-radius: var(--pp-r-1); background: var(--pp-paper-2); font: 400 .9em/1 var(--pp-mono); }
+.paper #arena-security .pp-faq p a { color: var(--pp-ink); font-weight: 500; white-space: nowrap; text-underline-offset: 4px; }
+.paper :is(#arena-proof, #arena-moves, #arena-outcome) .pp-panel-note { margin-inline: auto; }
+.paper .pp-closing .pp-done-actions { margin-top: 6px; }
+@media (max-width: 760px) {
+  .paper .pp-arena-evidence { --pp-n: 2; }
+  .paper .pp-arena-evidence li:nth-child(even) { padding-left: 14px !important; border-left: 1px solid var(--pp-line) !important; }
+  .paper .pp-arena-evidence li:nth-child(2) { border-top: 0; }
+}
+
+/* R7d: the Proof wall. Two buyer paths on the Relay split, myths as rows with
+ * the assumption struck through, the install line with two commands. */
+.paper .pp-proof-lead { margin: 0; font: 400 clamp(20px, 1.8vw, 24px)/1.25 var(--pp-serif); }
+.paper .pp-proof-myths .pp-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
+.paper .pp-proof-myths s { font: 400 17px/1.4 var(--pp-sans); color: var(--pp-ink-3); text-decoration-color: var(--pp-ink-3); }
+.paper .pp-proof-myths span { margin-top: 0; font: 400 clamp(18px, 1.5vw, 20px)/1.45 var(--pp-serif); color: var(--pp-ink); }
+.paper .pp-install code + small { margin-left: 2px; }
+@media (max-width: 860px) { .paper .pp-proof-myths .pp-row { grid-template-columns: 1fr; } }
+.paper .pp-install { flex-wrap: wrap; row-gap: 6px; }
+.paper .pp-install code { white-space: nowrap; }
+
+/* R7d: /adoption/. The enquiry steps as a quiet numbered strip under the
+ * hero, and lane heads with their count. */
+.paper .pp-adoption-guide { width: min(1152px, calc(100% - 48px)); display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 24px 40px; align-items: start; margin-top: 40px; padding: 24px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); }
+.paper .pp-adoption-guide .pp-kicker { margin: 0 0 6px; }
+.paper .pp-adoption-guide p:not(.pp-kicker) { margin: 0; font: 400 18px/1.35 var(--pp-serif); }
+.paper .pp-adoption-guide ol { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 24px; }
+.paper .pp-adoption-guide li { counter-increment: step; display: grid; grid-template-columns: auto 1fr; gap: 10px; font: 400 15px/1.45 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .pp-adoption-guide li::before { content: counter(step); font: 500 12px/1.6 var(--pp-mono); color: var(--pp-ink-3); }
+.paper .pp-adoption-guide strong { font-weight: 500; color: var(--pp-ink); }
+.paper .pp-adoption-lane { max-width: none; padding-bottom: 14px; border-bottom: 1px solid var(--pp-ink); }
+.paper .pp-adoption-lane h2 small { margin-left: 6px; font: 500 13px/1 var(--pp-mono); color: var(--pp-ink-3); }
+@media (max-width: 860px) { .paper .pp-adoption-guide, .paper .pp-adoption-guide ol { grid-template-columns: 1fr; } }
+
+/* R7d: /dgx-spark/. The art as the hero stage, the Inception badge strip,
+ * the posture prose with the spec chips, and the legal line in the close. */
+.paper .pp-spark-art img { aspect-ratio: 16 / 10; object-position: center; }
+.paper .pp-spark-inception { width: min(1152px, calc(100% - 48px)); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; margin-top: 56px; padding: 24px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); }
+.paper .pp-spark-inception > div { flex: 1 1 420px; max-width: 64ch; }
+.paper .pp-spark-inception .pp-kicker { margin: 0 0 6px; }
+.paper .pp-spark-inception p:not(.pp-kicker) { margin: 0; font: 400 15.5px/1.55 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .pp-spark-inception img { width: 176px; height: auto; }
+.paper .pp-spark-used { font: 400 12.5px/1.5 var(--pp-mono) !important; color: var(--pp-ink-3) !important; }
+.paper .pp-spark-prose { max-width: 68ch; display: grid; gap: 18px; }
+.paper .pp-spark-prose p { margin: 0; font: 400 clamp(17px, 1.4vw, 19px)/1.6 var(--pp-serif); color: var(--pp-ink); }
+.paper .pp-spark-specs { margin: 28px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.paper .pp-spark-specs li { padding: 6px 11px; border: 1px solid var(--pp-line); border-radius: 99px; background: var(--pp-white); font: 500 12px/1.2 var(--pp-mono); color: var(--pp-ink-2); }
+.paper .pp-spark-blurb { margin: 0 0 24px; max-width: 64ch; font: 400 clamp(18px, 1.6vw, 22px)/1.4 var(--pp-serif); }
+.paper .pp-spark-legal { max-width: 64ch; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--pp-line); }
+.paper .pp-closing .pp-spark-legal p { font: 400 11.5px/1.55 var(--pp-sans); color: var(--pp-ink-3); }
+.paper #spark-closing-heading { max-width: 22ch; }
+.paper #spark-closing-heading ~ p { max-width: 62ch; }
+
+/* R7d: /sponsor/. The backing banner, the tier note, and the manage form. */
+.paper .pp-sponsor-backing:not([hidden]) { display: inline-flex; gap: 6px; margin: 4px 0 0; padding: 7px 12px; border: 1px solid var(--pp-line); border-radius: 99px; background: var(--pp-teal-pale); font: 500 13px/1.3 var(--pp-sans); }
+.paper .pp-sponsor-backing strong { font-weight: 600; }
+.paper .pp-sponsor-secure { text-align: center; margin-inline: auto; font-size: 13.5px; color: var(--pp-ink-3); }
+.paper .pp-sponsor-manage { width: min(620px, calc(100% - 32px)); margin-top: 72px; }
+.paper .pp-sponsor-row:not([hidden]) { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.paper .pp-sponsor-row input { flex: 1 1 240px; width: auto !important; }
+.paper .pp-sponsor-row .pp-btn { margin-top: 0; }
+.paper .pp-sponsor-success { color: var(--pp-ink) !important; font-weight: 500; }
+.paper .pp-sponsor-manage [hidden] { display: none; }

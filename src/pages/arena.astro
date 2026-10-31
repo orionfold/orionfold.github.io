@@ -13,18 +13,30 @@
 // (receipt is verifiable, never "all gates green"). Prices come from the catalog
 // SSOT (FIELD_EDITION) so they can't drift. Voice: grade 3-5, jargon explained,
 // no em-dashes (website-copy-style).
+//
+// R7d (G-146): a Paper page, culled like /relay/. The cockpit shot is the
+// hero stage, then one panel per idea (proof, the four moves, screens, what
+// you get, security). The builder-velocity band left (its counts were stale
+// and the field-note numbers already carry that proof), and so did the
+// "board you can publish" band (the security answers carry it). The buy
+// block, license band and sticky bar keep their markup inside the
+// tw-in-paper bridge, with every data-checkout, data-item and
+// data-error-target.
 import { Image } from 'astro:assets';
-import Layout from '../layouts/Layout.astro';
+import PaperLayout from '../layouts/PaperLayout.astro';
+import PageNav from '../components/paper/PageNav.astro';
+import Panel from '../components/paper/Panel.astro';
+import Fold from '../components/paper/Fold.astro';
+import PaperSubscribe from '../components/paper/PaperSubscribe.astro';
+import '../styles/living-in-paper.css';
+import '../styles/paper-bridge-product.css';
 import Nav from '../components/Nav.astro';
-import ArenaSubNav from '../components/arena/ArenaSubNav.astro';
 import Footer from '../components/Footer.astro';
-import PageHeader from '../components/ui/PageHeader.astro';
-import ConstellationCover from '../components/ui/ConstellationCover.astro';
 import ArenaBox from '../components/product/ArenaBox.astro';
 import LandingStickyCta from '../components/product/LandingStickyCta.astro';
 import LicenseBand from '../components/product/LicenseBand.astro';
-import OfferSlot from '../components/ui/OfferSlot.astro';
 import ProductLineRail from '../components/product/ProductLineRail.astro';
+import { ARENA_PAGES } from '../lib/arena/pages';
 import { ARENA_FIELD_EDITION_LIVE } from '../data/launch';
 import arenaPoster from '../assets/projects/arena-poster.png';
 import arenaCockpit from '../assets/arena/01-cockpit.png';
@@ -173,12 +185,12 @@ const trust = [
   },
 ];
 
-// The dark cockpit gallery (fresh Orionfold-Arena-branded shots).
+// The dark cockpit gallery (fresh Orionfold-Arena-branded shots), 16:9 top crops.
 const gallery = [
-  { img: arenaLeaderboard, alt: 'The Arena leaderboard: your own models ranked by score, built from your own results.', label: 'Leaderboard', crop: 'aspect-[16/9] object-top' },
-  { img: arenaFrontier, alt: 'Cost against quality, plotted, so you can see which smaller model earns its place.', label: 'Cost vs. quality', crop: 'aspect-[16/9] object-center' },
-  { img: arenaCompare, alt: 'Compare: any model against any other, side by side, with metric cards over a session sparkline.', label: 'Compare, any vs any', crop: 'aspect-[16/9] object-top' },
-  { img: arenaEvalDrawer, alt: 'The eval drawer: send a real eval prompt from the chat, gold answer beside the live one, graded instantly.', label: 'Eval drawer', crop: 'aspect-[16/9] object-top' },
+  { img: arenaLeaderboard, alt: 'The Arena leaderboard: your own models ranked by score, built from your own results.', label: 'Leaderboard' },
+  { img: arenaFrontier, alt: 'Cost against quality, plotted, so you can see which smaller model earns its place.', label: 'Cost vs. quality' },
+  { img: arenaCompare, alt: 'Compare: any model against any other, side by side, with metric cards over a session sparkline.', label: 'Compare, any vs any' },
+  { img: arenaEvalDrawer, alt: 'The eval drawer: send a real eval prompt from the chat, gold answer beside the live one, graded instantly.', label: 'Eval drawer' },
 ];
 
 // Credibility evidence band, same shape as the /relay/ proof band. Every number
@@ -186,19 +198,17 @@ const gallery = [
 // (verified 2026-07-03 against the live page + the source project-stats.json,
 // which agree): a real, growing research log produced on this exact stack. The
 // stat is a SHOWN artifact (D2: proof is never an adjective), cited openly to
-// the source site, and rerunnable by the reader. `accent` flags the headline
-// throughput tile. The starry backdrop is drawn by ConstellationCover (seeded,
-// zero image weight), the site's signature motif.
+// the source site, and rerunnable by the reader.
 const evidence = [
   { value: '56', sub: '+13 in the works', label: 'Field notes published' },
   { value: '176,597', sub: 'across the whole log', label: 'Words written' },
   { value: '63,840', sub: 'Python, CLI, tests', label: 'Lines of fieldkit code' },
   { value: '8', sub: 'run and scored locally', label: 'Open models' },
   { value: '11', sub: 'used across the notes', label: 'NVIDIA products' },
-  { value: '100', unit: 'tok/s', sub: 'a local brain, on one Spark', label: 'Throughput', accent: true },
+  { value: '100', unit: 'tok/s', sub: 'a local brain, on one Spark', label: 'Throughput' },
 ];
 ---
-<Layout
+<PaperLayout
   title="See which AI wins, on your own desk · Orionfold Arena"
   description="Run, compare, score, and train local AI models on one NVIDIA DGX Spark, all on one screen. A cost-against-quality view and a leaderboard from your own results. Nothing leaves the box."
   ogImage={og.image}
@@ -216,430 +226,183 @@ const evidence = [
   ]}
 >
   <Nav />
-  <ArenaSubNav active="overview" />
-  <main class="-mt-20 sm:-mt-24">
-    <PageHeader
-      eyebrow="Run · Compare · Score · Train"
-      title="See which AI wins, on your own desk."
-      subtitle="Orionfold Arena puts every move on one screen. Run, compare, score, and train local AI models on one NVIDIA DGX Spark. The model, the tests, the hardware, and the results all live in one place you control. Nothing leaves the box."
-    >
-      <!-- Above-fold hero action, same pattern as the shipped /relay/ hero:
-           Arena's OWN buy CTA so a cold visitor's first action is toward this
-           product. Live data-checkout button (ONE step to Stripe, wired by the
-           page script when ARENA_FIELD_EDITION_LIVE) when the flag is on; falls
-           back to a #get-arena scroll anchor when off, so no one can pay
-           pre-fulfilment. Beside it, the runnable install verb as a single-line
-           chip: `pip install fieldkit[arena]`. -->
-      <div class="mb-4 mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-        {ARENA_FIELD_EDITION_LIVE ? (
-          <button
-            type="button"
-            data-checkout={FIELD_EDITION.founding.lookupKey}
-            data-item="software:arena"
-            data-error-target="hero-cta-err"
-            class="of-primary-action text-base font-semibold"
-          >
-            Get Arena Field Edition
-            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(FIELD_EDITION.founding.amount)} founding</span>
-          </button>
-        ) : (
-          <a
-            href="#get-arena"
-            class="of-primary-action text-base font-semibold"
-          >
-            Get Arena Field Edition
-            <span class="rounded-md bg-black/15 px-2 py-0.5 font-mono text-xs font-medium tracking-wide">{formatUsd(FIELD_EDITION.founding.amount)} founding</span>
-          </a>
-        )}
-        <div class="inline-flex items-center gap-2 rounded-xl border border-border/70 bg-surface/60 px-4 py-3">
-          <span class="font-mono text-[0.65rem] uppercase tracking-wider text-text-dim">Install</span>
-          <code class="font-mono text-sm text-primary">pip install fieldkit[arena]</code>
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--relay" aria-labelledby="arena-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Run · Compare · Score · Train</p>
+        <h1 id="arena-title" class="pp-h1">See which AI wins, on your own desk.</h1>
+        <p class="pp-sub">Orionfold Arena puts every move on one screen. Run, compare, score, and train local AI models on one NVIDIA DGX Spark. The model, the tests, the hardware, and the results all live in one place you control. Nothing leaves the box.</p>
+        {/* Above-fold primary action: Arena's OWN buy CTA, one step straight to
+            Stripe when ARENA_FIELD_EDITION_LIVE (wired by the page script); a
+            scroll anchor when the flag is off, so no one can pay pre-fulfilment.
+            Secondary = the runnable install verb. */}
+        <div class="pp-hero-cta">
+          {ARENA_FIELD_EDITION_LIVE ? (
+            <button type="button" class="pp-btn" data-checkout={FIELD_EDITION.founding.lookupKey} data-item="software:arena" data-error-target="hero-cta-err">
+              Get Arena Field Edition · {formatUsd(FIELD_EDITION.founding.amount)} founding
+            </button>
+          ) : (
+            <a class="pp-btn" href="#get-arena">Get Arena Field Edition · {formatUsd(FIELD_EDITION.founding.amount)} founding</a>
+          )}
+          <span class="pp-install"><small>Install</small><code>pip install fieldkit[arena]</code></span>
         </div>
+        <p id="hero-cta-err" class="pp-done-error" role="alert" hidden></p>
       </div>
-      <p id="hero-cta-err" class="mt-3 hidden text-sm text-red-400" role="alert"></p>
-    </PageHeader>
-    <!-- Sticky-CTA sentinel: the bar fades in once this scrolls out of view. -->
-    <div id="hero-cta-sentinel" aria-hidden="true"></div>
-
-    <!-- ============================================================
-         CREDIBILITY EVIDENCE BAND — placed right after the hero to match the
-         shipped /relay/ sequence (hero -> proof band -> trust trio ->
-         constellation demoted). Same shape as the /relay/ proof band (mono
-         eyebrow, headline, infographic stat tiles, honest caption, a real
-         product shot framed inside), but the backdrop is a starry
-         ConstellationCover (seeded, zero image weight) instead of the
-         blueprint grid. Every number is a live count from the public
-         ainative.business field-notes "At a glance" (verified 2026-07-03),
-         cited openly and rerunnable by the reader — proof as a shown
-         artifact, not an adjective. A dark overlay over the deep-blue cover
-         keeps the tiles + text legible in both themes.
-         ============================================================ -->
-    <section class="relative overflow-hidden border-y border-primary/20 px-6 py-16 sm:py-20">
-      <!-- Starry night backdrop: the site's signature constellation motif,
-           seeded so it draws a distinct field. Dimmed by an overlay so the
-           content reads on top. -->
-      <ConstellationCover
-        seed="arena-field-notes-evidence"
-        rounded="rounded-none"
-        class="!absolute inset-0 !aspect-auto h-full w-full"
-      />
-      <div class="pointer-events-none absolute inset-0 bg-bg/70" aria-hidden="true"></div>
-      <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-bg/30 via-transparent to-bg/60" aria-hidden="true"></div>
-
-      <div class="relative mx-auto max-w-5xl">
-        <div class="mb-2 flex items-center gap-2">
-          <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-primary/15 text-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          </span>
-          <p class="font-mono text-xs uppercase tracking-[0.28em] text-primary">Proven on the same stack</p>
-        </div>
-        <h2 class="max-w-3xl text-balance text-2xl leading-tight sm:text-3xl">
-          The field notes are the receipts.
-          <span class="text-text-muted">One builder, one Spark, a public research log anyone can read and <span class="whitespace-nowrap">rerun.</span></span>
-        </h2>
-
-        <!-- Infographic stat tiles: the six "At a glance" KPIs. The throughput
-             tile is accented as the headline performance number. -->
-        <dl class="mt-8 grid gap-3 sm:grid-cols-3">
-          {evidence.map((t) => (
-            <div class={`relative overflow-hidden rounded-2xl border p-5 backdrop-blur-sm ${t.accent ? 'border-primary/40 bg-primary/[0.1]' : 'border-border/60 bg-surface/70'}`}>
-              <dt class={`font-mono text-[0.65rem] uppercase tracking-wider ${t.accent ? 'text-primary/80' : 'text-text-dim'}`}>{t.label}</dt>
-              <dd class={`mt-1.5 font-display text-3xl font-bold ${t.accent ? 'text-primary' : 'text-text'}`}>
-                {t.value}{t.unit && <span class="ml-1 text-lg font-semibold text-text-muted">{t.unit}</span>}
-              </dd>
-              <dd class="mt-1 text-xs text-text-muted">{t.sub}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <!-- The leaderboard shot, framed like /relay/ frames its receipt: real
-             results, aspect-cropped to its meaningful top. -->
-        <figure class="mt-8 overflow-hidden rounded-2xl border border-primary/25 shadow-xl shadow-primary/10">
-          <div class="aspect-[16/9] w-full overflow-hidden sm:aspect-[16/8]">
-            <Image
-              src={arenaLeaderboard}
-              alt="The Orionfold Arena leaderboard: local open models ranked by score, built from the builder's own runs on one DGX Spark."
-              widths={[720, 1080, 1440]}
-              sizes="(min-width: 1024px) 64rem, 100vw"
-              loading="lazy"
-              decoding="async"
-              data-no-zoom
-              class="block w-full object-cover object-top"
-            />
-          </div>
-          <figcaption class="border-t border-primary/15 bg-surface/60 px-5 py-3 text-center text-sm text-text-muted">
-            Real models, ranked from real runs on one Spark. Not a marketing chart.
-          </figcaption>
-        </figure>
-
-        <p class="mx-auto mt-6 max-w-2xl text-center text-sm leading-relaxed text-text-muted">
-          Every number is a live count from the public research log,
-          <a href="https://ainative.business/field-notes/" target="_blank" rel="noopener" class="text-primary underline underline-offset-2 transition-colors hover:text-primary/80">the ainative field notes</a>.
-          Read the notes, then rerun them yourself.
-        </p>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         WHAT THE LOOP EARNS — replaces the ported own-it trust cards with
-         three wins the Spark-owner ICP buys the box for: overnight self-
-         improvement, speed on their own metal, and near-zero cost because it
-         is their hardware. Placed right under the evidence band to match the
-         /relay/ sequence (proof band -> value cards). Each card leads with a
-         real, cited field-note metric and deep-links the note that backs it
-         (proof shown + rerunnable, not asserted). Distinct from the 18/21
-         buyer-outcome band below (no repeat). The own-it TRUST story is
-         carried by the objection-as-header block lower down.
-         ============================================================ -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-5xl">
-        <p class="mb-2 text-center font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">What the loop earns</p>
-        <p class="mx-auto mb-6 max-w-2xl text-center text-sm leading-relaxed text-text-muted">
-          Run, compare, score, train, repeat. Here is what that loop already produced on this exact
-          stack, each a field note you can open and rerun.
-        </p>
-        <div class="grid gap-4 sm:grid-cols-3">
-          {loopWins.map((w) => (
-            <a
-              href={w.href}
-              target="_blank"
-              rel="noopener"
-              class="group of-surface flex flex-col rounded-2xl border border-border/70 p-6 transition-colors hover:border-primary/40"
-            >
-              <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={w.icon} />
-              </span>
-              <p class="font-display text-2xl font-bold text-primary">{w.metric}</p>
-              <p class="mt-1 text-base font-semibold text-text">{w.title}</p>
-              <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{w.body}</p>
-              <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary/80 transition-colors group-hover:text-primary">
-                {w.source}
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-              </span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Shared Flow-led product line, kept below Arena's own evidence. -->
-    <ProductLineRail current="arena" class="pt-4 pb-10" />
-
-    <!-- The real cockpit: one dark shot so the visitor sees it early -->
-    <section class="px-6 pb-6">
-      <div class="mx-auto max-w-5xl">
-        <div class="overflow-hidden rounded-2xl border border-border/70 shadow-lg shadow-primary/5">
+      <div class="pp-hero-stage">
+        <figure class="pp-window-shot">
           <Image
             src={arenaCockpit}
             alt="The Orionfold Arena screen: live GPU readouts, your models, the tests, and a leaderboard built from your own results, all in one place."
             widths={[720, 1080, 1440]}
-            sizes="(min-width: 1024px) 64rem, 100vw"
-            loading="lazy"
+            sizes="(min-width: 860px) 50vw, 100vw"
+            loading="eager"
             decoding="async"
             data-no-zoom
-            class="block aspect-[16/11] w-full object-cover object-top"
           />
-        </div>
-        <p class="mt-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-text-dim">
-          One screen over the whole loop
-        </p>
+          <figcaption>One screen over the whole loop</figcaption>
+        </figure>
       </div>
     </section>
+    {/* Sticky-CTA sentinel: the bar fades in once this scrolls out of view. */}
+    <div id="hero-cta-sentinel" aria-hidden="true"></div>
+    <PageNav label="Arena product navigation" onPage={[
+      { href: '#arena-proof', label: 'Proof' },
+      { href: '#arena-moves', label: 'What it does' },
+      { href: '#arena-screens', label: 'Screens' },
+      { href: '#arena-outcome', label: 'Results' },
+      { href: '#arena-security', label: 'Security' },
+      { href: '#get-arena', label: 'Pricing' },
+    ]} pages={ARENA_PAGES('overview')} />
 
-    <!-- What it does: the four core moves -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-4xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What it does</p>
-        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-          You have a shelf of local models and nowhere to drive them from. Arena is the instrument
-          panel that turns that shelf into something you can fly. Four moves, one screen.
-        </p>
-        <div class="grid gap-4 sm:grid-cols-2">
-          {capabilities.map((c) => (
-            <div class="rounded-2xl border border-border/70 bg-surface/60 p-6">
-              <p class="font-display text-xl font-bold text-primary">{c.verb}</p>
-              <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.line}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    {/* THE PROOF: live counts from the public field notes, then three cited
+        wins the loop already produced on this exact stack. */}
+    <Panel id="arena-proof" seam="Proven on the same stack" fold="atlas" title="The field notes<br />are the receipts." lede="One builder, one Spark, a public research log anyone can read and rerun.">
+      <ul class="pp-cells pp-cells--3 pp-relay-stats pp-arena-evidence">
+        {evidence.map((t) => (
+          <li><span class="pp-kicker">{t.label}</span><b>{t.value}{t.unit && <small> {t.unit}</small>}</b><span>{t.sub}</span></li>
+        ))}
+      </ul>
+      <p class="pp-kicker pp-arena-wins-head">What the loop earns</p>
+      <ul class="pp-cells pp-cells--3 pp-arena-wins">
+        {loopWins.map((w) => (
+          <li>
+            <b>{w.metric}</b>
+            <strong>{w.title}</strong>
+            <span>{w.body}</span>
+            <a href={w.href} target="_blank" rel="noopener">{w.source} <span aria-hidden="true">↗</span></a>
+          </li>
+        ))}
+      </ul>
+      <p class="pp-panel-note">Every number is a live count from the public research log, <a href="https://ainative.business/field-notes/" target="_blank" rel="noopener">the ainative field notes</a>. Read the notes, then rerun them yourself.</p>
+    </Panel>
 
-    <!-- The leaderboard / efficiency-frontier mechanic: publishable, data stays yours -->
-    <section class="border-y border-border bg-surface-raised px-6 py-14">
-      <div class="mx-auto max-w-3xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">A board you can publish, data you keep</p>
-        <p class="max-w-2xl text-base leading-relaxed text-text-muted">
-          The leaderboard is built from your own results, and it is safe to share. A locked-down list
-          exports only the scores and the totals, never a prompt, an answer, or the model's working.
-          The board is something you can publish; the data behind it stays yours.
-        </p>
-        <p class="mt-4 max-w-2xl text-base leading-relaxed text-text-muted">
-          Arena plots cost against quality, so you can read at a glance which smaller model earns its
-          place. It is the full loop a rented AI service never gives you. You hold the model, its test data,
-          the hardware, and the results, all in one place you control.
-        </p>
-      </div>
-    </section>
+    {/* What it does: the four core moves. */}
+    <Panel id="arena-moves" seam="What it does" fold="tally" tinted title="Four moves,<br />one screen." lede="You have a shelf of local models and nowhere to drive them from. Arena is the instrument panel that turns that shelf into something you can fly.">
+      <ul class="pp-cells pp-cells--4 pp-arena-moves">
+        {capabilities.map((c) => (<li><b>{c.verb}</b><span>{c.line}</span></li>))}
+      </ul>
+      <p class="pp-panel-note">Every install runs a test gate and writes a receipt you can read. The receipt reports the real state of the box, and the 12-month window re-tests and re-receipts every update. What you buy is the assembled, proven, kept-proven AI team, not a pile of parts you wire together and babysit.</p>
+    </Panel>
 
-    <!-- Mid-page CTA: they now know what Arena is — catch the fast-decider -->
-    <LicenseBand
-      family={FIELD_EDITION}
-      live={ARENA_FIELD_EDITION_LIVE}
-      itemId="software:arena"
-      errId="arena-band-err"
-      fullBlockId="get-arena"
-      eyebrow="Get an AI team without hiring one"
-      heading="Own the proven box, not the parts."
-      body="Arena Field Edition turns the Spark you own into a private AI lab, delivered turnkey. It installs in one pass, proves itself on first boot with a verifiable receipt, and stays proven for a year."
-      enquiryHref="/adoption/?item=software:arena"
-      image={arenaPoster}
-      imageAlt="Orionfold Arena poster: the private AI lab you run on your own DGX Spark."
-    />
+    {/* Mid-page CTA for the reader who is already sold. Same SSOT-priced,
+        launch-flag-gated band. */}
+    <div class="tw-in-paper pd-paper pd-relay-bridge">
+      <LicenseBand
+        family={FIELD_EDITION}
+        live={ARENA_FIELD_EDITION_LIVE}
+        itemId="software:arena"
+        errId="arena-band-err"
+        fullBlockId="get-arena"
+        eyebrow="Get an AI team without hiring one"
+        heading="Own the proven box, not the parts."
+        body="Arena Field Edition turns the Spark you own into a private AI lab, delivered turnkey. It installs in one pass, proves itself on first boot with a verifiable receipt, and stays proven for a year."
+        enquiryHref="/adoption/?item=software:arena"
+        image={arenaPoster}
+        imageAlt="Orionfold Arena poster: the private AI lab you run on your own DGX Spark."
+      />
+    </div>
 
-    <!-- Gallery: a few dark cockpit views -->
-    <section class="px-6 py-12">
-      <div class="mx-auto max-w-5xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">Inside the screen</p>
-        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-          A few of the surfaces you drive, all on the machine under your desk.
-        </p>
-        <div class="grid gap-5 sm:grid-cols-2">
-          {gallery.map((g) => (
-            <figure class="overflow-hidden rounded-2xl border border-border/70 bg-surface/60">
-              <Image
-                src={g.img}
-                alt={g.alt}
-                widths={[480, 720]}
-                sizes="(min-width: 640px) 30rem, 100vw"
-                loading="lazy"
-                decoding="async"
-                data-no-zoom
-                class:list={['block w-full object-cover', g.crop]}
-              />
-              <figcaption class="px-4 py-3 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-text-dim">
-                {g.label}
-              </figcaption>
+    {/* Inside the screen: the board, the frontier, compare and the eval drawer. */}
+    <Panel id="arena-screens" seam="Inside the screen" fold="orri" title="Every surface,<br />on your desk." lede="Arena plots cost against quality, so you can read at a glance which smaller model earns its place. You hold the model, its tests, the hardware, and the results.">
+      <ul class="pp-arena-gallery">
+        {gallery.map((g) => (
+          <li>
+            <figure class="pp-window-shot">
+              <Image src={g.img} alt={g.alt} widths={[480, 720, 1080]} sizes="(min-width: 860px) 36rem, 100vw" loading="lazy" decoding="async" data-no-zoom />
+              <figcaption>{g.label}</figcaption>
             </figure>
-          ))}
-        </div>
+          </li>
+        ))}
+      </ul>
+    </Panel>
+
+    {/* BUYER OUTCOME: the payoff of the run-compare-score loop, on the
+        Advisor governance bench (config 552d0060f782), the same receipt
+        /proof/ publishes. The honest losses stay in. */}
+    <Panel id="arena-outcome" seam="What you get out of it" fold="sprout" tinted title="Your model beat<br />one 8 times bigger." lede="This is the payoff of the run-compare-score loop, on a locked governance test. The winner is a small model you run on your own box, for nothing per run.">
+      <ul class="pp-cells pp-cells--3 pp-relay-stats">
+        <li><span class="pp-kicker">A 4B model you own</span><b>18 <small>of 21</small></b><span>Scored on the locked test. It refused all 9 trick questions and made up nothing.</span></li>
+        <li><span class="pp-kicker">Eight times bigger</span><b>8 <small>of 21</small></b><span>Same test. It made up 3 answers the small one did not.</span></li>
+        <li><span class="pp-kicker">Cost to run the winner</span><b>$0.00</b><span>On the Spark under your desk. No account, no per-word bill.</span></li>
+      </ul>
+      <p class="pp-panel-note">The full receipt, config hash <code>552d0060f782</code>, is on the <a href="/proof/">receipts page</a>, with the three honest misses and the exact test, so you can rerun it yourself.</p>
+    </Panel>
+
+    {/* Security and trust: the questions a box owner asks before the price,
+        each linking the on-site trust page that backs it. */}
+    <Panel id="arena-security" seam="Before you buy" fold="shell" title="The questions<br />a box owner asks." lede="Arena runs on your own Spark, holds none of your data, and keeps working even if we do not. Each answer links the page that shows the code behind it.">
+      <div class="pp-faq">
+        {trust.map((t) => (
+          <details><summary>{t.q}</summary><p>{t.a} <a href={t.href}>{t.label} <span aria-hidden="true">→</span></a></p></details>
+        ))}
       </div>
-    </section>
+    </Panel>
 
-    <!-- Build-speed proof: honest, measured. This proves the BUILDER is prolific
-         (what one person shipped with the stack); the buyer-outcome band below it
-         proves what the BUYER gets (a small model they own beating a big one). -->
-    <section class="border-y border-border bg-surface-raised px-6 py-14">
-      <div class="mx-auto max-w-3xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-text-dim">What one builder shipped on it</p>
-        <p class="mb-6 max-w-2xl text-sm leading-relaxed text-text-muted">
-          The proof is what one builder already did with this exact stack. Solo, on a single Spark
-          running Arena: 14 software tools, 6 open models, 3 books, a 54-article research corpus, and
-          2 production sites.
-        </p>
-        <div class="grid gap-4 sm:grid-cols-3">
-          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
-            <p class="font-display text-2xl font-bold text-primary">~15 hours</p>
-            <p class="mt-1 text-xs leading-relaxed text-text-muted">Arena itself, built in about fifteen hours across one day and an overnight.</p>
-          </div>
-          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
-            <p class="font-display text-2xl font-bold text-primary">125 tests</p>
-            <p class="mt-1 text-xs leading-relaxed text-text-muted">Written alongside the features, over 12,733 lines of authored source.</p>
-          </div>
-          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
-            <p class="font-display text-2xl font-bold text-primary">Private by design</p>
-            <p class="mt-1 text-xs leading-relaxed text-text-muted">Nothing you type is uploaded. It is a tool you could run on a plane.</p>
-          </div>
-        </div>
-        <p class="mt-6 max-w-2xl text-sm leading-relaxed text-text-muted">
-          Every install runs an eval gate and writes a verifiable receipt you can read. The receipt
-          reports the real state of the box, and the 12-month window re-gates and re-receipts every
-          update. What you buy is the assembled, proven, kept-proven AI team, not a pile of parts you
-          wire together and babysit.
-        </p>
-      </div>
-    </section>
+    {/* Own the box: the buy block, then the sibling line. */}
+    <div class="tw-in-paper pd-paper pd-relay-bridge">
+      <ArenaBox />
+      <ProductLineRail current="arena" />
+    </div>
 
-    <!-- ============================================================
-         BUYER-OUTCOME ARTIFACT (gap D4-③b) — the velocity band proves the
-         builder is prolific; this proves what the BUYER gets. The real result
-         from driving models through this exact compare-and-score loop: a small
-         model the buyer owns beat a model eight times its size, on a locked
-         test, for nothing to run. Honest caption: it is the Advisor governance
-         bench (config 552d0060f782), the same receipt Proof publishes, found by
-         the loop Arena is built for. The number is a shown artifact, not an
-         adjective; the honest losses stay in.
-         ============================================================ -->
-    <section class="px-6 py-14">
-      <div class="mx-auto max-w-3xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">What you get out of it</p>
-        <h2 class="mb-4 text-balance text-2xl leading-tight sm:text-3xl">
-          A model you own, beating one <span class="whitespace-nowrap">eight times bigger.</span>
-        </h2>
-        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-          This is the payoff of the run-compare-score loop, on a locked governance test. The
-          winner is a small model you can run on your own box, for nothing per run. The receipt is
-          public and you can rerun it.
-        </p>
-        <div class="grid gap-4 sm:grid-cols-3">
-          <div class="rounded-2xl border border-primary/30 bg-primary/[0.06] p-5 shadow-lg shadow-primary/5">
-            <p class="font-display text-2xl font-bold text-primary">18 of 21</p>
-            <p class="mt-1 text-xs leading-relaxed text-text-muted">A 4B model you own, scored on the locked test. It refused all 9 trick questions and made up nothing.</p>
-          </div>
-          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
-            <p class="font-display text-2xl font-bold text-text">8 of 21</p>
-            <p class="mt-1 text-xs leading-relaxed text-text-muted">A model eight times bigger, on the same test. It made up 3 answers the small one did not.</p>
-          </div>
-          <div class="rounded-2xl border border-border/70 bg-surface/60 p-5">
-            <p class="font-display text-2xl font-bold text-text">$0.00</p>
-            <p class="mt-1 text-xs leading-relaxed text-text-muted">Cost to run the winner, on the Spark under your desk. No account, no per-word bill.</p>
-          </div>
-        </div>
-        <p class="mt-6 max-w-2xl text-sm leading-relaxed text-text-muted">
-          The full receipt, config hash
-          <code class="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-primary">552d0060f782</code>,
-          is on the <a href="/proof/" class="text-primary underline underline-offset-2 hover:text-primary/80">receipts page</a>,
-          with the three honest misses and the exact test, so you can rerun it yourself.
-        </p>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         OBJECTION-AS-HEADER SECURITY BLOCK (gap D4-③c) — Arena had no
-         security section at all. The questions a box owner asks before the
-         price, each answered plainly, each linking the on-site /trust/ page.
-         The publish-safety question (half-answered by the allowlist copy
-         above) is promoted to a header here. Same pattern as /relay/ + /proof/.
-         ============================================================ -->
-    <section class="border-y border-border bg-surface-raised px-6 py-14">
-      <div class="mx-auto max-w-3xl">
-        <p class="mb-2 font-mono text-[0.65rem] uppercase tracking-[0.24em] text-primary">Before you buy</p>
-        <h2 class="mb-4 text-3xl sm:text-4xl">The questions a box owner asks.</h2>
-        <p class="mb-8 max-w-2xl text-sm leading-relaxed text-text-muted">
-          Arena runs on your own Spark, holds none of your data, and keeps working even if we do not.
-          Here are the questions a careful buyer asks, answered in plain words, each backed by a page
-          that links the code that proves it.
-        </p>
-        <ul class="grid gap-4">
-          {trust.map((t) => (
-            <li class="rounded-2xl border border-border/70 bg-surface/60 p-6">
-              <p class="text-base font-semibold text-text">{t.q}</p>
-              <p class="mt-2 text-sm leading-relaxed text-text-muted">{t.a}</p>
-              <a
-                href={t.href}
-                class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary transition-colors hover:text-primary/80"
-              >
-                {t.label}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-
-    <!-- Own the box: lead with the buy block -->
-    <ArenaBox />
-
-    <!-- Soft opt-in below the buy: catch readers who aren't checkout-ready yet -->
-    <OfferSlot
+    {/* Soft opt-in below the buy: readers who are not checkout-ready yet. */}
+    <PaperSubscribe
+      id="offer-become-ai-native-business"
       offer="become-ai-native-business"
       source="arena-page"
-      label="Not ready to buy?"
-      heading="Start with the free book."
+      heading="Not ready to buy? Start with the free book."
       dek="Get the AI Native Business book free, and a note when we ship new Arena proof."
-      artifact="PDF + EPUB, plus new-proof notes"
       buttonText="Send it"
+      fold="hop"
+      consentText="By subscribing you agree to receive the AI For Everyone digest, one email a week, no more. You can unsubscribe any time. See our privacy policy."
     />
 
-    <!-- Close: hand the reader to the live demo + the buy block -->
-    <section class="px-6 py-16">
-      <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
-        <p class="font-display text-2xl leading-snug">Drive every screen yourself.</p>
-        <p class="mt-4 text-base leading-relaxed text-text-muted">
-          Click through every screen in the live demo, or get the Field Edition and run the whole
-          stack on your own Spark.
-        </p>
-        <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-          <a href="/arena/demo/" class="of-primary-action">Try the live demo</a>
-          <a href="#get-arena" class="of-secondary-action">Get Arena Field Edition</a>
-        </div>
+    {/* Close: hand the reader to the live demo and the buy block. */}
+    <section class="pp-closing" aria-labelledby="arena-closing-heading">
+      <Fold id="ember" bob class="pp-closing-fold" />
+      <p class="pp-kicker">Orionfold Arena</p>
+      <h2 id="arena-closing-heading">Drive every screen yourself.</h2>
+      <p>Click through every screen in the live demo, or get the Field Edition and run the whole stack on your own Spark.</p>
+      <div class="pp-done-actions">
+        <a href="/arena/demo/" class="pp-btn">Try the live demo <span aria-hidden="true">→</span></a>
+        <a href="#get-arena" class="pp-btn pp-btn--ghost">Get Arena Field Edition</a>
       </div>
     </section>
 
-    <!-- Persistent Buy bar: one tap away once the hero scrolls past. Same
-         founding price + data-checkout wiring as ArenaBox (SSOT-driven). -->
-    <LandingStickyCta
-      title="Orionfold Arena Field Edition"
-      lookupKey={FIELD_EDITION.founding.lookupKey}
-      priceLabel={formatUsd(FIELD_EDITION.founding.amount)}
-      itemId="software:arena"
-      live={ARENA_FIELD_EDITION_LIVE}
-      anchor="#get-arena"
-    />
+    {/* Persistent Buy bar once the hero scrolls past. Same founding price and
+        data-checkout wiring as ArenaBox (SSOT-driven). */}
+    <div class="tw-in-paper pd-paper">
+      <LandingStickyCta
+        title="Orionfold Arena Field Edition"
+        lookupKey={FIELD_EDITION.founding.lookupKey}
+        priceLabel={formatUsd(FIELD_EDITION.founding.amount)}
+        itemId="software:arena"
+        live={ARENA_FIELD_EDITION_LIVE}
+        anchor="#get-arena"
+      />
+    </div>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
 
 <script>
   // Wire the Arena purchase buttons (data-checkout → create-checkout-session →

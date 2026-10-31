@@ -8,10 +8,16 @@
 // Returning sponsors use the "Manage your sponsorship" form (emails a Billing
 // Portal link). Static page; the checkout/portal calls CORS-fail on localhost
 // by design (live-domain test at L1), so the UI degrades gracefully.
-import Layout from '../layouts/Layout.astro';
+//
+// R7d (G-146): a Paper page. The tier cards keep their markup and checkout
+// buttons inside the tw-in-paper bridge; the manage form moves onto the Paper
+// form styles with the same ids, so the portal script is unchanged.
+import PaperLayout from '../layouts/PaperLayout.astro';
+import Panel from '../components/paper/Panel.astro';
+import '../styles/living-in-paper.css';
+import '../styles/paper-bridge-product.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import PageHeader from '../components/ui/PageHeader.astro';
 import SponsorCard from '../components/ui/SponsorCard.astro';
 import { SPONSOR_TIER_DISPLAY } from '../data/commerce';
 import { roadmap } from '../data/roadmap';
@@ -35,94 +41,63 @@ const howItWorks = [
   { q: 'Can I change or cancel?', a: 'Anytime. Use the manage link below to update your card, switch tiers, or cancel. No emails, no waiting.' },
 ];
 ---
-<Layout
+<PaperLayout
   title="Sponsor · Orionfold"
   description="Sponsor Orionfold from $10 a month. Bronze to Platinum tiers prioritize your feature, fix, and support requests, with a roadmap badge for Gold and Platinum."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
   <Nav />
-  <main>
-    <!-- Header (slim masthead, matching the other landing pages) -->
-    <PageHeader
-      eyebrow="Sponsor"
-      title="Back the private AI capabilities you want built next"
-      subtitle="Sponsors fund research and development of Orionfold products and offerings. Pick a monthly tier and your feature, fix, and support requests jump up the line. You can stop anytime."
-    >
-      <!-- Backing-an-item banner (shown by the script when arriving via ?item=) -->
-      <p
-        id="sponsor-backing"
-        hidden
-        data-animate
-        class="mt-6 inline-flex max-w-xl items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 font-mono text-xs tracking-wide text-primary"
-        style="transition-delay: 120ms"
-      >
-        <span class="inline-block h-2 w-2 rounded-full bg-primary"></span>
-        You're backing: <strong id="sponsor-backing-title" class="font-semibold"></strong>
-      </p>
-    </PageHeader>
-
-    <!-- Tiers -->
-    <section class="px-6 pt-10">
-      <div data-animate-stagger class="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {SPONSOR_TIER_DISPLAY.map((tier) => (
-          <SponsorCard tier={tier} />
-        ))}
-      </div>
-      <p class="mx-auto mt-6 max-w-6xl text-center font-mono text-xs tracking-wide text-text-muted">
-        Secure checkout by Stripe. Cancel anytime.
-      </p>
-    </section>
-
-    <!-- How priority works -->
-    <section class="px-6 pt-20">
-      <div class="mx-auto max-w-3xl">
-        <h2 class="mb-8 text-center text-2xl">How sponsoring works</h2>
-        <dl data-animate-stagger class="grid gap-6 sm:grid-cols-3">
-          {howItWorks.map((item) => (
-            <div data-animate class="rounded-xl border border-border bg-surface-raised p-5">
-              <dt class="font-display text-base font-bold leading-snug">{item.q}</dt>
-              <dd class="mt-2 text-sm leading-relaxed text-text-muted">{item.a}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
-
-    <!-- Manage your sponsorship (returning sponsors) -->
-    <section class="px-6 pt-20 pb-24">
-      <div class="mx-auto max-w-xl rounded-2xl border border-border bg-surface-raised p-8 text-center">
-        <h2 class="mb-3 text-2xl">Already a sponsor?</h2>
-        <p class="mb-6 text-sm leading-relaxed text-text-muted">
-          Enter your email and we will send you a secure link to update your card, switch tiers, or cancel.
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="sponsor-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Sponsor</p>
+        <h1 id="sponsor-title" class="pp-h1">Back the private AI capabilities you want built next</h1>
+        <p class="pp-sub">Sponsors fund research and development of Orionfold products and offerings. Pick a monthly tier and your feature, fix, and support requests jump up the line. You can stop anytime.</p>
+        {/* Backing-an-item banner (shown by the script when arriving via ?item=). */}
+        <p id="sponsor-backing" class="pp-sponsor-backing" hidden>
+          You're backing: <strong id="sponsor-backing-title"></strong>
         </p>
-        <form id="portal-form" novalidate class="mx-auto w-full max-w-md">
-          <div class="flex flex-col gap-2 sm:flex-row">
-            <label for="portal-email" class="sr-only">Email address</label>
-            <input
-              id="portal-email"
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              required
-              autocomplete="email"
-              class="flex-1 rounded-md border border-border bg-transparent px-4 py-3 font-mono text-xs tracking-wide text-text transition-colors placeholder:text-text-dim focus:border-primary focus:outline-none"
-            />
-            <button
-              type="submit"
-              class="cursor-pointer whitespace-nowrap rounded-md bg-primary px-6 py-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-surface transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Email me a link
-            </button>
-          </div>
-          <p id="portal-error" role="alert" hidden class="mt-3 font-mono text-xs text-red-500"></p>
-          <p id="portal-success" hidden class="mt-3 font-mono text-xs text-success"></p>
-        </form>
       </div>
+    </section>
+
+    {/* Tiers: each card's button starts a Stripe subscription Checkout. */}
+    <div class="tw-in-paper pd-paper pd-catalog">
+      <section class="px-6 pt-4">
+        <div data-animate-stagger class="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {SPONSOR_TIER_DISPLAY.map((tier) => (
+            <SponsorCard tier={tier} />
+          ))}
+        </div>
+        <p class="pp-panel-note pp-sponsor-secure">Secure checkout by Stripe. Cancel anytime.</p>
+      </section>
+    </div>
+
+    {/* How priority works. */}
+    <Panel id="sponsor-how" seam="How sponsoring works" fold="sprout" tinted>
+      <ul class="pp-cells pp-cells--3">
+        {howItWorks.map((item) => (<li><b>{item.q}</b><span>{item.a}</span></li>))}
+      </ul>
+    </Panel>
+
+    {/* Manage your sponsorship (returning sponsors). */}
+    <section class="pp-index pp-sponsor-manage" aria-labelledby="portal-title">
+      <form id="portal-form" class="pp-form" novalidate>
+        <p class="pp-kicker">Returning sponsors</p>
+        <h2 id="portal-title">Already a sponsor?</h2>
+        <p>Enter your email and we will send you a secure link to update your card, switch tiers, or cancel.</p>
+        <div class="pp-sponsor-row">
+          <label for="portal-email" class="sr-only">Email address</label>
+          <input id="portal-email" type="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+          <button type="submit" class="pp-btn">Email me a link</button>
+        </div>
+        <p id="portal-error" class="pp-done-error" role="alert" hidden></p>
+        <p id="portal-success" class="pp-sponsor-success" hidden></p>
+      </form>
     </section>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
 
 <script define:vars={{ itemTitles }}>
   // Carry the roadmap selection (from /sponsor/?item=<id> or the multi-select
@@ -193,11 +168,11 @@ const howItWorks = [
 
       submitBtn.disabled = true;
       const original = submitBtn.textContent;
-      submitBtn.textContent = 'SENDING...';
+      submitBtn.textContent = 'Sending...';
       try {
         const message = await requestPortalByEmail(email);
         show(successEl, message);
-        form.querySelector('div')?.classList.add('hidden');
+        form.querySelector('div')?.setAttribute('hidden', '');
       } catch (err) {
         show(errorEl, err instanceof Error ? err.message : 'Could not connect. Please try again.');
         submitBtn.disabled = false;

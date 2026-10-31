@@ -71,3 +71,6 @@
 .paper .pd-paper .relay-host-feature__tagline { font-family: var(--pp-serif); font-weight: 300; letter-spacing: -.02em; }
 .paper .pd-paper .relay-host-feature__cta { border-radius: var(--pp-r-2); font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; box-shadow: none; }
 .paper .pd-paper details > summary.font-semibold { font: 400 clamp(17px, 1.5vw, 20px)/1.35 var(--pp-serif); }
+/* R7d: a Tailwind section placed inside a Paper panel drops its own padding. */
+.paper .pd-in-panel > section { padding: 0; }
+.paper .pd-in-panel > section > .mx-auto { max-width: none; }

@@ -7,10 +7,17 @@
 // the R2 enquiry drawer) and a Buy/Sponsor CTA. A momentum strip up top reads the
 // live signals so the page feels alive. Covers resolve here via globs, mirroring
 // software.astro / models.astro. Reuses RoadmapCard + ConstellationCover idioms.
-import Layout from '../layouts/Layout.astro';
+//
+// R7d (G-146): a Paper hero, stats and enquiry steps, and Paper lane heads.
+// The cards, the selection tray and the enquiry drawer keep their markup and
+// ids inside the tw-in-paper bridge, so the select, enquiry and sponsor flows
+// are unchanged.
+import PaperLayout from '../layouts/PaperLayout.astro';
+import PageNav from '../components/paper/PageNav.astro';
+import '../styles/living-in-paper.css';
+import '../styles/paper-bridge-product.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import PageHeader from '../components/ui/PageHeader.astro';
 import RoadmapCard from '../components/ui/RoadmapCard.astro';
 import EnquiryDrawer from '../components/ui/EnquiryDrawer.astro';
 import { roadmap, roadmapLanes, roadmapSignals } from '../data/roadmap';
@@ -68,7 +75,7 @@ const stats = [
 // real UI (the checkbox and the "Enquiry" button) so the steps are concrete.
 const enquirySteps = [
   'Tick the box on any card or feature you care about.',
-  'Hit the <strong class="font-semibold text-text">Enquiry</strong> button in the bar that appears.',
+  'Hit the <strong>Enquiry</strong> button in the bar that appears.',
   'Add a line about your project. We email you back, usually within a day.',
 ];
 
@@ -96,35 +103,30 @@ const lanes = [
     key: 'ask',
     title: 'Ask',
     blurb: 'Advisor work gives private answers over the Orionfold corpus, with exact sources, trusted refusals, and receipts.',
-    dot: 'bg-primary animate-pulse',
     items: byLane(roadmap.filter((item) => item.id === 'software:advisor')),
   },
   {
     key: 'run',
     title: 'Run',
     blurb: 'Private agent workflows, platform runtime, API surface, and tests.',
-    dot: 'bg-primary/80',
     items: byLane(roadmap.filter((item) => runIds.has(item.id))),
   },
   {
     key: 'know',
     title: 'Know',
     blurb: 'Domain models, benchmarks, memory, and intelligence tools for sensitive work.',
-    dot: 'bg-success',
     items: byLane(roadmap.filter((item) => item.type === 'model' || knowSoftwareIds.has(item.id))),
   },
   {
     key: 'build',
     title: 'Build',
     blurb: 'The local AI cockpit: Arena, fieldkit, Command, and the reusable artifacts around them.',
-    dot: 'bg-text-muted/50',
     items: byLane(roadmap.filter((item) => buildIds.has(item.id) || (item.type === 'software' && !runIds.has(item.id) && !knowSoftwareIds.has(item.id) && item.id !== 'software:advisor'))),
   },
   {
     key: 'learn',
     title: 'Learn',
     blurb: 'Books, field notes, and the DGX Spark field lab that explain the work and keep it teachable.',
-    dot: 'bg-text-muted/30 ring-1 ring-text-muted/40',
     items: byLane(roadmap.filter((item) => item.type === 'book')),
   },
 ];
@@ -141,7 +143,7 @@ const itemListLd = {
     .map((i, idx) => ({ '@type': 'ListItem', position: idx + 1, name: i.title, url: i.href })),
 };
 ---
-<Layout
+<PaperLayout
   title="Adoption · Orionfold"
   description="The Orionfold adoption map by flagship capability lane: Advisor, workflows, domain experts, the local cockpit, and learning material."
   ogImage={og.image}
@@ -149,67 +151,37 @@ const itemListLd = {
   jsonLd={itemListLd}
 >
   <Nav />
-  <main>
-    <!-- Page header + momentum strip (slim masthead so the lanes rise up) -->
-    <PageHeader
-      eyebrow="Adoption"
-      title="The capability map, not a shelf of projects."
-      subtitle="Sponsor reusable private AI capabilities: Advisor, workflows, domain experts, the local cockpit, and the playbooks that teach the stack. Each card still shows whether it is shipped, active, or planned."
-    >
-      <dl data-animate class="mt-7 flex flex-wrap items-center gap-x-8 gap-y-4" style="transition-delay: 140ms">
-        {stats.map((s) => (
-          <div class="flex flex-col">
-            <dt class="font-display text-2xl font-bold text-primary">{s.value}</dt>
-            <dd class="font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">{s.label}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <!-- Enquiry guide: what it is, how to use it, what happens (R2). -->
-      <div
-        data-animate
-        class="mt-8 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.07] to-primary/[0.015]"
-        style="transition-delay: 220ms"
-      >
-        <div class="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:gap-8">
-          <div class="flex items-start gap-3.5 lg:max-w-xs lg:shrink-0">
-            <span class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect width="8" height="4" x="8" y="2" rx="1" />
-                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                <path d="M12 11h4M12 16h4M8 11h.01M8 16h.01" />
-              </svg>
-            </span>
-            <div>
-              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Custom enquiry</p>
-              <p class="mt-1 text-sm font-medium leading-snug text-text">
-                Need something we haven't built yet? Pick the parts you want and send a short brief.
-              </p>
-            </div>
-          </div>
-          <ol class="grid flex-1 gap-x-6 gap-y-3 sm:grid-cols-3 lg:border-l lg:border-primary/15 lg:pl-8">
-            {enquirySteps.map((step, i) => (
-              <li class="flex items-start gap-2.5">
-                <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-surface">{i + 1}</span>
-                <span class="text-sm leading-snug text-text-muted" set:html={step}></span>
-              </li>
-            ))}
-          </ol>
-        </div>
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="adoption-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Adoption</p>
+        <h1 id="adoption-title" class="pp-h1">The capability map, not a shelf of projects.</h1>
+        <p class="pp-sub">Sponsor reusable private AI capabilities: Advisor, workflows, domain experts, the local cockpit, and the playbooks that teach the stack. Each card still shows whether it is shipped, active, or planned.</p>
+        <dl class="pp-facts">
+          {stats.map((s) => (<div><dt>{s.label}</dt><dd>{s.value}</dd></div>))}
+        </dl>
       </div>
-    </PageHeader>
+    </section>
+    <PageNav label="Adoption lanes" onPage={lanes.map((lane) => ({ href: `#${lane.key}`, label: lane.title }))} />
 
-    <!-- Status lanes -->
+    {/* Enquiry guide: what it is, how to use it, what happens (R2). */}
+    <section class="pp-index pp-adoption-guide" aria-labelledby="adoption-guide-title">
+      <div>
+        <p class="pp-kicker">Custom enquiry</p>
+        <p id="adoption-guide-title">Need something we haven't built yet? Pick the parts you want and send a short brief.</p>
+      </div>
+      <ol>{enquirySteps.map((step) => <li><span set:html={step} /></li>)}</ol>
+    </section>
+
+  <div class="tw-in-paper pd-paper pd-catalog pd-adoption">
+    {/* Capability lanes: a Paper head, then the cards. */}
     {lanes.map((lane) => (
-      <section id={lane.key} class="scroll-mt-24 px-6 pt-14">
+      <section id={lane.key} class="px-6 pt-14">
         <div class="mx-auto max-w-6xl">
-          <div class="mb-6 flex items-baseline gap-3 border-b border-border pb-3">
-            <span class:list={['inline-block h-2.5 w-2.5 shrink-0 translate-y-px rounded-full', lane.dot]}></span>
-            <h2 class="text-2xl">{lane.title}</h2>
-            <span class="font-mono text-sm text-text-muted">{lane.items.length}</span>
-            <p class="ml-auto hidden max-w-md text-right text-sm leading-relaxed text-text-muted sm:block">{lane.blurb}</p>
+          <div class="pp-index-head pp-adoption-lane">
+            <h2>{lane.title} <small>{lane.items.length}</small></h2>
+            <p>{lane.blurb}</p>
           </div>
-          <p class="mb-6 text-sm leading-relaxed text-text-muted sm:hidden">{lane.blurb}</p>
 
           {lane.items.length > 0 ? (
             <div data-animate-stagger class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -230,7 +202,6 @@ const itemListLd = {
     ))}
 
     <div class="h-20"></div>
-  </main>
 
   <!-- Selection tray + enquiry trigger. R1 shipped the multi-select store + count;
        R2 adds the "Enquiry (n)" button that opens the EnquiryDrawer, reading the
@@ -303,9 +274,11 @@ const itemListLd = {
   </div>
 
   <EnquiryDrawer />
+  </div>
+  </main>
 
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
 
 <script>
   // Roadmap selection store (R1). Tracks which items/features the visitor ticked

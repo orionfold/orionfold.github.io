@@ -8,13 +8,22 @@
 // Orionfold was accepted into the NVIDIA Inception program on 2026-06-09.
 // Factual membership claims and the official badge are allowed; do not imply
 // endorsement, sponsorship, or partnership beyond program membership.
-import Layout from '../layouts/Layout.astro';
+//
+// R7d (G-146): a Paper page. The hero art moves into the hero stage, the
+// abstract joins the hero line, and each idea gets a panel. The Field Edition
+// band, the book highlight and the live counts keep their markup inside the
+// tw-in-paper bridge. The Inception copy and the legal line are unchanged.
+import PaperLayout from '../layouts/PaperLayout.astro';
+import PageNav from '../components/paper/PageNav.astro';
+import Panel from '../components/paper/Panel.astro';
+import Fold from '../components/paper/Fold.astro';
+import '../styles/living-in-paper.css';
+import '../styles/paper-bridge-product.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Highlight from '../components/ui/Highlight.astro';
 import BookCover from '../components/ui/BookCover.astro';
 import TrustBlock from '../components/product/TrustBlock.astro';
-import SectionLabel from '../components/ui/SectionLabel.astro';
 import NvidiaLegalLine from '../components/flagship/NvidiaLegalLine.astro';
 import { nvidiaPortalProfiles } from '../data/nvidia-portal';
 import { SITE } from '../data/seo';
@@ -101,13 +110,13 @@ const trustStats: { value: string; label: string }[] = [];
 if (modelDownloads > 0) trustStats.push({ value: fmt(modelDownloads), label: 'Model downloads · last 30 days' });
 if (patentDownloads > 0) trustStats.push({ value: fmt(patentDownloads), label: 'Patent Strategist · last 30 days' });
 
-const groups: { label: string; blurb: string; works: Work[] }[] = [
-  { label: 'The models', blurb: 'Open-weight models tuned for one field each, all benchmarked on the Spark. The flagship is built with NVIDIA NeMo.', works: modelWorks },
-  { label: 'The software', blurb: 'Open tools whose patterns were proven on the Spark before they shipped.', works: softwareWorks },
-  { label: 'The field notes', blurb: 'Short build-log posts from the real work on the machine.', works: storyWorks },
+const groups: { id: string; fold: 'atlas' | 'clause' | 'hop'; label: string; blurb: string; works: Work[] }[] = [
+  { id: 'spark-models', fold: 'atlas', label: 'The models', blurb: 'Open-weight models tuned for one field each, all benchmarked on the Spark. The flagship is built with NVIDIA NeMo.', works: modelWorks },
+  { id: 'spark-software', fold: 'clause', label: 'The software', blurb: 'Open tools whose patterns were proven on the Spark before they shipped.', works: softwareWorks },
+  { id: 'spark-notes', fold: 'hop', label: 'The field notes', blurb: 'Short build-log posts from the real work on the machine.', works: storyWorks },
 ];
 ---
-<Layout
+<PaperLayout
   title="Built on NVIDIA DGX Spark · Orionfold"
   description="Orionfold's reference machine is the NVIDIA DGX Spark. The book, the open models, and the tools here were all proven on one small AI desktop, no cloud."
   ogImage={og.image}
@@ -134,206 +143,152 @@ const groups: { label: string; blurb: string; works: Work[] }[] = [
   ]}
 >
   <Nav />
-  <main>
-    <!-- Full-bleed hero (G3 redesign): the featured art runs edge to edge — top
-         behind the transparent fixed nav, left and right to the viewport edges —
-         with the masthead on a frosted glass panel over it. It is the page's LCP
-         element (eager + fetchpriority; the largest above-fold paint; never
-         data-animate). Replaces the slim PageHeader for this hub only. -->
-    <section class="relative mt-[74px] min-h-[72vh] w-full overflow-hidden sm:min-h-[80vh]">
-      <Image
-        src={sparkHero}
-        alt="A small gold desktop computer glows on a plain desk at night, sending bright beams of light up into a wide sky full of stars and constellations."
-        widths={[768, 1280, 1920, 2560]}
-        sizes="100vw"
-        loading="eager"
-        fetchpriority="high"
-        data-no-zoom
-        class="absolute inset-0 h-full w-full object-cover"
+  <main id="main" class="pp-page">
+    {/* The featured art is the hero stage and the page's LCP element (eager +
+        fetchpriority; never data-animate). */}
+    <section class="pp-hero pp-hero--relay" aria-labelledby="spark-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Built on the NVIDIA stack</p>
+        <h1 id="spark-title" class="pp-h1">AI research, run on one desk.</h1>
+        <p class="pp-sub">The NVIDIA DGX Spark is Orionfold's reference machine, a small AI computer that sits on your own desk. The book, open models, and tools below were all proven on it first, and the Field Edition turns a Spark into a turnkey AI lab.</p>
+      </div>
+      <div class="pp-hero-stage">
+        <figure class="pp-window-shot pp-spark-art">
+          <Image
+            src={sparkHero}
+            alt="A small gold desktop computer glows on a plain desk at night, sending bright beams of light up into a wide sky full of stars and constellations."
+            widths={[720, 1080, 1440]}
+            sizes="(min-width: 860px) 50vw, 100vw"
+            loading="eager"
+            fetchpriority="high"
+            data-no-zoom
+          />
+        </figure>
+      </div>
+    </section>
+    <PageNav label="DGX Spark page navigation" onPage={[
+      { href: '#arena-field-edition', label: 'Field Edition' },
+      { href: '#spark-offers', label: 'Offers' },
+      { href: '#spark-why', label: 'Why the Spark' },
+      { href: '#spark-book', label: 'The book' },
+      ...groups.map((g) => ({ href: `#${g.id}`, label: g.label.replace(/^The /, '').replace(/^./, (c) => c.toUpperCase()) })),
+    ]} />
+
+    {/* The ICP for the Field Edition is the DGX Spark owner, so the buy band
+        leads this hub (own a Spark? turn it into a turnkey, proven AI lab). */}
+    <div class="tw-in-paper pd-paper pd-relay-bridge"><FieldEditionBand /></div>
+
+    {/* Program membership: factual, with the official badge. */}
+    <section class="pp-index pp-spark-inception" aria-label="Program membership">
+      <div>
+        <p class="pp-kicker">Program membership</p>
+        <p>
+          Orionfold is a member of the NVIDIA Inception program. The membership supports the same
+          practical goal as this page, to make private AI work easier to build, test, and run on
+          customer-controlled hardware.
+        </p>
+      </div>
+      <img
+        src="/logos/nvidia-inception/nvidia-inception-program-badge-rgb-for-screen.svg"
+        alt="NVIDIA Inception program member badge"
+        loading="lazy"
+        width="176"
       />
-      <!-- legibility scrim: darker at the foot where the glass panel sits -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/35"></div>
-      <div class="relative mx-auto flex min-h-[72vh] max-w-6xl items-end px-6 pb-14 pt-16 sm:min-h-[80vh]">
-        <div class="max-w-2xl rounded-3xl border border-white/15 bg-white/10 p-7 shadow-2xl backdrop-blur-md sm:p-9">
-          <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-white/75">Built on the NVIDIA stack</p>
-          <h1 class="mt-3 text-balance text-4xl leading-[1.1] text-white sm:text-5xl">AI research, run on one desk.</h1>
-          <p class="mt-4 max-w-xl text-base leading-relaxed text-white/85">
-            The NVIDIA DGX Spark is Orionfold's reference machine. The book, open models, and tools below were all proven on it first.
-          </p>
-        </div>
-      </div>
     </section>
 
-    <!-- Page-level abstract: a short, plain-spoken summary that gives breathing
-         space between the full-bleed hero and the first band below. -->
-    <section class="px-6 py-14 sm:py-20">
-      <div class="mx-auto max-w-3xl text-center">
-        <p class="text-lg leading-relaxed text-text-muted sm:text-xl">
-          Everything below was built and proven on the NVIDIA DGX Spark, a small AI computer
-          that sits on your own desk. This page gathers it in one place. Here are the book, the open
-          models, the tools, and the Field Edition that turns a Spark into a turnkey AI lab.
+    {/* How each flagship offer sits on the NVIDIA stack. This is the one place
+        the per-offer stack profiles render. */}
+    <Panel id="spark-offers" seam="Offer fit on the NVIDIA stack" fold="tally" title="Each offer,<br />on the stack." lede="What each flagship offer does, how far along it is, and the NVIDIA parts it uses.">
+      <ul class="pp-rows">
+        {Object.values(nvidiaPortalProfiles).map((profile) => (
+          <li><a href={`/${profile.id}/`}>
+            <small>{profile.developmentStage}</small>
+            <div><strong>{profile.productServiceName}</strong><span>{profile.valueProposition}</span><span class="pp-spark-used">NVIDIA used: {profile.nvidiaTechnologiesUsed.join(', ')}</span></div>
+            <small>Open →</small>
+          </a></li>
+        ))}
+      </ul>
+    </Panel>
+
+    {/* Posture: why the Spark, in plain words. */}
+    <Panel id="spark-why" seam="Why the Spark" fold="shell" tinted title="Tiny,<br />but mighty." lede="Most powerful AI lives far away, in a rented cloud. Orionfold builds the other way.">
+      <div class="pp-spark-prose">
+        <p>
+          Our reference machine is the NVIDIA DGX Spark, a small AI supercomputer that sits on one
+          desk. Inside is NVIDIA's GB10 Grace Blackwell chip and 128 GB of shared memory. That is
+          enough to fine-tune (retrain) models up to about 70 billion parameters, and to run models
+          up to about 200 billion, all on your own desk with no cloud and no meter running.
         </p>
-      </div>
-    </section>
-
-    <!-- The ICP for the Field Edition is the DGX Spark owner, so the buy band
-         leads this hub (own a Spark? turn it into a turnkey, proven AI lab). -->
-    <FieldEditionBand />
-
-    <section class="px-6 pt-6">
-      <div class="mx-auto flex max-w-6xl flex-col gap-5 rounded-2xl border border-border bg-surface-raised/70 p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div class="min-w-0 max-w-2xl">
-          <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-text-dim">Program membership</p>
-          <p class="mt-2 text-sm leading-relaxed text-text-muted">
-            Orionfold is a member of the NVIDIA Inception program. The membership supports the same
-            practical goal as this page, to make private AI work easier to build, test, and run on
-            customer-controlled hardware.
-          </p>
-        </div>
-        <img
-          src="/logos/nvidia-inception/nvidia-inception-program-badge-rgb-for-screen.svg"
-          alt="NVIDIA Inception program member badge"
-          loading="lazy"
-          class="h-auto w-40 shrink-0 sm:w-44"
-        />
-      </div>
-    </section>
-
-    <!-- How each flagship offer sits on the NVIDIA stack. This is the one place
-         the per-offer stack profiles render; the offer pages carry only a
-         compact membership band so they stay buyer-first. -->
-    <section class="px-6 pt-8">
-      <div class="mx-auto max-w-6xl">
-        <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-text-dim">Offer fit on the NVIDIA stack</p>
-        <div data-animate-stagger class="mt-3 grid gap-4 sm:grid-cols-2">
-          {Object.values(nvidiaPortalProfiles).map((profile) => (
-            <a href={`/${profile.id}/`} data-animate class="of-surface of-pressable group rounded-2xl p-5">
-              <div class="flex items-start justify-between gap-3">
-                <p class="font-medium leading-snug text-text transition-colors group-hover:text-primary">{profile.productServiceName}</p>
-                <span class="of-chip shrink-0">{profile.developmentStage}</span>
-              </div>
-              <p class="mt-2 text-sm leading-relaxed text-text-muted">{profile.valueProposition}</p>
-              <p class="mt-3 font-mono text-[11px] leading-relaxed text-text-dim">NVIDIA used: {profile.nvidiaTechnologiesUsed.join(', ')}</p>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Posture: why the Spark, in plain words -->
-    <section class="px-6 pb-8 pt-6">
-      <div class="mx-auto max-w-3xl">
-        <p class="text-lg leading-relaxed text-text-muted">
-          Most powerful AI lives far away, in a rented cloud. Orionfold builds the other way. Our
-          reference machine is the NVIDIA DGX Spark, a small AI supercomputer that sits on one desk.
-        </p>
-        <p class="mt-5 text-lg leading-relaxed text-text-muted">
-          It is tiny but mighty. Inside is NVIDIA's GB10 Grace Blackwell chip and 128 GB of shared
-          memory. That is enough to fine-tune (retrain) models up to about 70 billion parameters, and
-          to run models up to about 200 billion, all on your own desk with no cloud and no meter
-          running.
-        </p>
-        <p class="mt-5 text-lg leading-relaxed text-text-muted">
+        <p>
           Everything below was proven on this machine first. The book is the field log of the work.
           The models are tuned and tested on it, with the flagship built using NVIDIA's NeMo toolkit
           (NVIDIA's open kit for training models). The fieldkit toolbox is the set of patterns that
           held up on it.
         </p>
-        <p class="mt-5 text-lg leading-relaxed text-text-muted">
+        <p>
           The Spark is our reference, not our only home. The same models and tools also run on Apple
           Silicon and other small devices, a lighter path for when you do not need the full machine.
         </p>
-        <div data-animate class="mt-7 flex flex-wrap gap-1.5" style="transition-delay: 80ms">
-          {sparkSpecs.map((spec) => (
-            <span class="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-[10px] tracking-wider text-primary">
-              {spec}
-            </span>
-          ))}
-        </div>
       </div>
-    </section>
+      <ul class="pp-spark-specs" aria-label="DGX Spark at a glance">
+        {sparkSpecs.map((spec) => <li>{spec}</li>)}
+      </ul>
+    </Panel>
 
-    <!-- The book: the field log + funnel lead magnet -->
-    <Highlight
-      eyebrow="The field log"
-      title="AI Research on NVIDIA DGX Spark"
-      body={book.body}
-      pills={book.pills}
-      href="/books/ai-research-on-nvidia-dgx-spark/"
-      ctaText="Explore the book"
-    >
-      <a slot="media" href="/books/ai-research-on-nvidia-dgx-spark/" aria-label="Explore the book" class="block">
-        <BookCover
-          title={book.cover.title}
-          subtitle={book.cover.subtitle}
-          tag={book.cover.tag}
-          image={dgxCover}
-          imageAlt="The AI Research on NVIDIA DGX Spark book cover, a glowing gold brain made of network nodes on a black cover."
-        />
-      </a>
-    </Highlight>
+    {/* The book: the field log and the funnel's lead magnet. */}
+    <div id="spark-book" class="tw-in-paper pd-paper pd-catalog">
+      <Highlight
+        eyebrow="The field log"
+        title="AI Research on NVIDIA DGX Spark"
+        body={book.body}
+        pills={book.pills}
+        href="/books/ai-research-on-nvidia-dgx-spark/"
+        ctaText="Explore the book"
+      >
+        <a slot="media" href="/books/ai-research-on-nvidia-dgx-spark/" aria-label="Explore the book" class="block">
+          <BookCover
+            title={book.cover.title}
+            subtitle={book.cover.subtitle}
+            tag={book.cover.tag}
+            image={dgxCover}
+            imageAlt="The AI Research on NVIDIA DGX Spark book cover, a glowing gold brain made of network nodes on a black cover."
+          />
+        </a>
+      </Highlight>
+    </div>
 
-    <!-- The work, gathered: models, software, field notes (all link inward) -->
-    {groups.map((group) => (
-      <section class="px-6 py-10">
-        <div class="mx-auto max-w-6xl">
-          <SectionLabel text={group.label} />
-          <p class="mt-3 max-w-2xl text-base leading-relaxed text-text-muted">{group.blurb}</p>
-          <div data-animate-stagger class="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {group.works.map((w) => (
-              <a
-                data-animate
-                href={w.href}
-                class="group flex flex-col rounded-2xl border border-border bg-surface-raised/70 p-6 transition hover:border-primary/50"
-              >
-                <p class="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-primary">{w.eyebrow}</p>
-                <p class="mt-2 font-display text-lg leading-tight text-text">{w.title}</p>
-                <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{w.blurb}</p>
-                <span class="mt-4 inline-flex items-center gap-1.5 font-mono text-xs tracking-wider text-primary">
-                  {w.cta}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
+    {/* The work, gathered: models, software, field notes (all link inward). */}
+    {groups.map((group, i) => (
+      <Panel id={group.id} seam={group.label} fold={group.fold} tinted={i % 2 === 1}>
+        <p class="pp-spark-blurb">{group.blurb}</p>
+        <ul class="pp-rows">
+          {group.works.map((w) => (
+            <li><a href={w.href}>
+              <small>{w.eyebrow}</small>
+              <div><strong>{w.title}</strong><span>{w.blurb}</span></div>
+              <small>{w.cta} →</small>
+            </a></li>
+          ))}
+        </ul>
+      </Panel>
     ))}
 
-    <!-- Proof: real, live HuggingFace counts -->
-    <TrustBlock stats={trustStats} />
+    {/* Proof: real, live HuggingFace counts. */}
+    <div class="tw-in-paper pd-paper pd-catalog"><TrustBlock stats={trustStats} /></div>
 
-    <!-- Funnel CTA -->
-    <section class="px-6 pb-24 pt-6">
-      <div class="mx-auto max-w-2xl rounded-3xl border border-border bg-surface-raised/70 p-8 text-center">
-        <p class="font-display text-2xl leading-snug">Start with the book. It is free to read, and every lesson runs.</p>
-        <p class="mt-4 text-base leading-relaxed text-text-muted">
-          Read the field log online, keep a copy if you want one, then run the open models and tools on
-          your own machine. Want to move the work forward faster? You can sponsor it.
-        </p>
-        <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href={book.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-text transition hover:bg-accent-hover"
-          >
-            Read the book free
-          </a>
-          <a href="/books/ai-research-on-nvidia-dgx-spark/" class="rounded-full border border-border px-6 py-3 text-sm font-medium text-text transition hover:border-primary/50">
-            Get the book and bundle
-          </a>
-          <a href="/sponsor/" class="rounded-full border border-border px-6 py-3 text-sm font-medium text-text transition hover:border-primary/50">
-            Sponsor the work
-          </a>
-        </div>
-        <div class="mt-7 border-t border-border pt-5 text-left">
-          <NvidiaLegalLine />
-        </div>
+    {/* Funnel close: the free book first, then the bundle and sponsorship. */}
+    <section class="pp-closing" aria-labelledby="spark-closing-heading">
+      <Fold id="orri" bob class="pp-closing-fold" />
+      <p class="pp-kicker">The field log</p>
+      <h2 id="spark-closing-heading">Start with the book. It is free to read, and every lesson runs.</h2>
+      <p>Read the field log online, keep a copy if you want one, then run the open models and tools on your own machine. Want to move the work forward faster? You can sponsor it.</p>
+      <div class="pp-done-actions">
+        <a href={book.href} target="_blank" rel="noopener noreferrer" class="pp-btn">Read the book free <span aria-hidden="true">↗</span></a>
+        <a href="/books/ai-research-on-nvidia-dgx-spark/" class="pp-btn pp-btn--ghost">Get the book and bundle</a>
+        <a href="/sponsor/" class="pp-btn pp-btn--ghost">Sponsor the work</a>
       </div>
+      <div class="tw-in-paper pp-spark-legal"><NvidiaLegalLine /></div>
     </section>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
