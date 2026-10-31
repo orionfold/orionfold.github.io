@@ -28,17 +28,17 @@ test('shared shell retains semantic metadata and private-page protections', () =
   assert.match(privateLayout, /noindex,nofollow/);
   assert.match(privateLayout, /name="referrer" content="no-referrer"/);
   assert.doesNotMatch(privateLayout, /gtag|fbq|captureAttribution/);
-  const footer = (read('src/components/Footer.astro') + read('src/data/footer-links.ts'));
+  // Paper R1 (G-140): Footer.astro keeps the closing CTA; PaperFooter draws the menu.
+  const footer = read('src/components/Footer.astro') + read('src/components/paper/PaperFooter.astro') + read('src/data/footer-links.ts');
   assert.doesNotMatch(footer, /getCollection|detailKeySet|softwareLinks|latestStories/, 'curated footer does not load the removed directory');
   assert.match(footer, /showDownload && ORIONFOLD_FLOW_LIVE && <PaperCta source=\{downloadSource\} tone="yellow" \/>/, 'the single closing CTA preserves gating and attribution');
-  assert.equal((footer.match(/<h2 id="footer-/g) ?? []).length, 5, 'the menu has exactly five headings (Compare added 2026-09-29)');
-  for (const heading of ['Flow', 'Paths', 'Compare', 'Orionfold', 'Connect']) assert.match(footer, new RegExp('>' + heading + '<\/h2>'));
-  assert.match(footer, /href="https:\/\/www\.linkedin\.com\/in\/manavsehgal\/"/);
+  assert.match(footer, /<PaperFooter \/>/);
+  for (const heading of ['Flow', 'Paths', 'Compare', 'Orionfold']) assert.match(footer, new RegExp("title: '" + heading + "'"), heading);
+  assert.match(footer, /linkedin: 'https:\/\/www\.linkedin\.com\/in\/manavsehgal\/'/);
   assert.doesNotMatch(footer, /youtube\.com/);
-  assert.match(footer, /<Wordmark size=\{28\} \/>/);
   for (const href of ['/promise/', '/terms/', '/privacy/']) assert.ok(footer.includes("href: '" + href + "'"));
   assert.doesNotMatch(footer, /Site source: Apache/);
-  for (const all of ['href="/flow/paths/">All paths', 'href="/flow/compare/">All comparisons']) assert.ok(footer.includes(all), `footer ends its group with ${all}`);
+  for (const all of ["{ href: '/flow/paths/', label: 'All paths' }", "{ href: '/flow/compare/', label: 'All comparisons' }"]) assert.ok(footer.includes(all), `footer ends its group with ${all}`);
 });
 
 test('primary CTA palette clears normal-text AA contrast, distinct from editorial red', () => {

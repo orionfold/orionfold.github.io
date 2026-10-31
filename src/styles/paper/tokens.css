@@ -3,10 +3,14 @@
  * Every Paper color lives here; components.css may only use var(--pp-*).
  * Scoped to .paper so Living Systems pages never see these values. */
 
+/* Fraunces cut for Paper (G-140): Latin only, weights 300 to 500, SOFT
+ * pinned at 100 and WONK at its default, optical size kept (53 KB, was 121).
+ * Made with fontTools instancer + subset from @fontsource-variable/fraunces
+ * 5.2.8; OFL, no reserved font name (public/fonts/Fraunces-OFL.txt). */
 @font-face {
   font-family: 'Fraunces';
-  src: url('/fonts/fraunces-latin-full-normal.woff2') format('woff2');
-  font-weight: 100 900;
+  src: url('/fonts/fraunces-paper-latin.woff2') format('woff2');
+  font-weight: 300 500;
   font-style: normal;
   font-display: swap;
 }

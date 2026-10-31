@@ -16,24 +16,58 @@ const walk = (d) => readdirSync(d).flatMap((n) => {
   return statSync(p).isDirectory() ? walk(p) : [p];
 });
 
+const PAPER_CSS = ['src/styles/paper/shell.css', 'src/styles/paper/components.css'];
+const paperCss = () => PAPER_CSS.map(read).join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
+
 test('Paper components use tokens only, never raw colors', () => {
-  const css = read('src/styles/paper/components.css').replace(/\/\*[\s\S]*?\*\//g, '');
+  const css = paperCss();
   assert.deepEqual(css.match(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/gi) ?? [], [], 'move the color into tokens.css as a --pp-* token');
 });
 
 test('every Paper class is pp- prefixed, so nothing collides with Living Systems', () => {
-  const css = read('src/styles/paper/components.css').replace(/\/\*[\s\S]*?\*\//g, '');
+  const css = paperCss();
   const selectors = [...css.matchAll(/([^{}]+)\{[^{}]*\}/g)].map((m) => m[1]).filter((s) => !/^\s*(@|from|to|\d)/.test(s));
   const bad = new Set();
   for (const sel of selectors) for (const [, cls] of sel.matchAll(/\.([a-zA-Z][\w-]*)/g)) if (cls !== 'paper' && !cls.startsWith('pp-')) bad.add(cls);
   assert.deepEqual([...bad], []);
 });
 
-test('only PaperLayout loads the Paper stylesheets', () => {
-  const importers = [...walk(path.join(root, 'src'))]
-    .filter((f) => /\.(astro|ts|css|mjs)$/.test(f) && /styles\/paper\//.test(readFileSync(f, 'utf8')))
-    .map((f) => path.relative(root, f));
-  assert.deepEqual(importers, ['src/layouts/PaperLayout.astro']);
+test('the shell styles load with the shell; page components only on Paper pages', () => {
+  const importers = (sheet) => [...walk(path.join(root, 'src'))]
+    .filter((f) => /\.(astro|ts|css|mjs)$/.test(f) && new RegExp(`import\\s+['"][^'"]*styles/paper/${sheet.replace('.', '\\.')}['"]`).test(readFileSync(f, 'utf8')))
+    .map((f) => path.relative(root, f)).sort();
+  assert.deepEqual(importers('components.css'), ['src/layouts/PaperLayout.astro']);
+  for (const sheet of ['tokens.css', 'shell.css']) assert.deepEqual(importers(sheet), ['src/components/Footer.astro', 'src/components/Nav.astro', 'src/layouts/PaperLayout.astro'], sheet);
+});
+
+test('every Paper rule sits under .paper, so it outranks Living element rules', () => {
+  const selectors = [...paperCss().matchAll(/([^{}]+)\{[^{}]*\}/g)].map((m) => m[1]).filter((sel) => !/^\s*(@|from|to|\d)/.test(sel));
+  const loose = selectors.flatMap((sel) => sel.split(',')).map((sel) => sel.trim()).filter((sel) => !/^\.paper(?![\w-])/.test(sel));
+  assert.deepEqual(loose, []);
+});
+
+test('no stylesheet outside Paper defines a pp- class', () => {
+  const sheets = [...walk(path.join(root, 'src/styles'))].filter((f) => f.endsWith('.css') && !f.includes(`${path.sep}paper${path.sep}`));
+  const hits = sheets.filter((f) => /\.pp-[a-z]/.test(readFileSync(f, 'utf8'))).map((f) => path.relative(root, f));
+  assert.deepEqual(hits, [], 'the proposal page moved to prop- (G-140); keep pp- for Paper alone');
+});
+
+test('the R1 shell: announce bar, Paper nav and footer on every page with a nav', () => {
+  const nav = read('src/components/Nav.astro');
+  assert.match(nav, /<AnnounceBar href="\/domains\/"[^>]*>Flow \{FLOW_VERSION\} is out\./, 'the announce bar (D6) reads the version from flow-release.json');
+  assert.match(nav, /<div id="nav-wrapper" class="paper pp-shell">[\s\S]*id="nav-notice-slot"[\s\S]*<PaperNav \/>/);
+  assert.match(nav, /--of-nav-height/);
+  const paperNav = read('src/components/paper/PaperNav.astro');
+  assert.match(paperNav, /id="main-nav"/);
+  for (const surface of ['nav-desktop', 'nav-mobile', 'nav-menu']) assert.ok(paperNav.includes(surface), `${surface} stays attributable`);
+  assert.match(read('src/components/Footer.astro'), /<div class="paper pp-shell-foot"><PaperFooter \/><\/div>/);
+  assert.match(read('src/styles/living-system.css'), /:root \{ --of-nav-height:102px; \}/, 'first paint reserves the measured shell');
+  // Every page with the shell fetches Fraunces, so it stays the trimmed cut.
+  assert.match(read('src/styles/paper/tokens.css'), /url\('\/fonts\/fraunces-paper-latin\.woff2'\)/);
+  assert.ok(statSync(path.join(root, 'public/fonts/fraunces-paper-latin.woff2')).size <= 60_000, 'Fraunces stays under 60 KB');
+  const notFound = read('src/pages/404.astro');
+  assert.match(notFound, /<Layout [^>]*noindex>/);
+  assert.match(notFound, /<Nav \/>[\s\S]*<Footer showDownload=\{false\} \/>/);
 });
 
 test('Layout keeps Living Systems as the default design', () => {
@@ -71,7 +105,8 @@ test('Paper nav groups list at most five, then "All"', () => {
   assert.match(src, /const PAPER_NAV_GROUP_MAX = 5;/);
   const flow = src.match(/\{ title: 'Flow', items: \[([\s\S]*?)\] \}/)[1];
   assert.ok((flow.match(/href:/g) ?? []).length <= 5);
-  assert.ok(!/items: (?!top\(|\[)\w+\./.test(src), 'every data-driven group must go through top()');
+  assert.ok(!/items: (?!top\(|\[|domainTop\.)\w+\./.test(src), 'every data-driven group must go through top()');
+  assert.match(src, /const domainTop = top\(domains\);/, 'Domains list five in all, like the old menu');
 });
 
 test('head-diff catches a dropped JSON-LD block, canonical or internal link', () => {

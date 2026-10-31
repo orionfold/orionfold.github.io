@@ -1,10 +1,11 @@
 ---
 // A page in the Paper design system (G-139). Same head as every other page
 // (SEO, JSON-LD, analytics, fonts all come from Layout); only the body
-// changes. Paper styles load on Paper pages alone, so Living Systems pages
-// never see them.
+// changes. Every page with the shell loads tokens + shell.css (R1); only
+// Paper pages load the page components.
 import Layout from './Layout.astro';
 import '../styles/paper/tokens.css';
+import '../styles/paper/shell.css';
 import '../styles/paper/components.css';
 type Props = Omit<Parameters<typeof Layout>[0], 'design'>;
 const props = Astro.props as Props;

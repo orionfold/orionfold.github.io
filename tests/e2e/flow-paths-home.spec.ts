@@ -39,7 +39,10 @@ test('Compare pages are linked from the nav and each row cites a source', async 
   await page.goto('/flow/compare/');
   const cards = page.locator('.fp-tools a');
   await expect(cards).toHaveCount(8);
-  await expect(page.locator('#main-nav .living-nav-links .living-nav-dd > a[href="/flow/compare/"]')).toHaveText('Compare');
+  // Paper R1 (G-140): Compare lives in the Flow menu, five tools then All.
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.locator('#main-nav [data-pp-menu="flow"]').click();
+  await expect(page.locator('[data-pp-panel="flow"] a[href="/flow/compare/"]')).toHaveText('All comparisons →');
   // The hub previews each page: three sourced rows per tool, the paths the
   // pages start with, and the limits that hold everywhere.
   const tools = page.locator('.fc-tool');
@@ -80,27 +83,29 @@ test('every nav menu shows at most its top five, then its All link', async ({ pa
   // Design rule (operator 2026-10-27): a dropdown never lists more than five.
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/flow/compare/');
-  const menus = page.locator('#main-nav .living-nav-dd');
-  expect(await menus.count()).toBeGreaterThan(0);
-  for (const dd of await menus.all()) {
-    const items = dd.locator('.living-nav-dd-panel a:not(.living-nav-dd-all)');
-    expect(await items.count()).toBeLessThanOrEqual(5);
-    await expect(dd.locator('.living-nav-dd-all')).toHaveCount(1);
+  // Paper R1 (G-140): every group in a menu panel lists five at most, then All.
+  const groups = page.locator('[data-pp-panel]:not([data-pp-panel="all"]) .pp-grp');
+  expect(await groups.count()).toBeGreaterThan(0);
+  for (const group of await groups.all()) {
+    expect(await group.locator('a:not(.pp-link)').count()).toBeLessThanOrEqual(5);
   }
-  const compare = menus.filter({ has: page.locator('> a[href="/flow/compare/"]') });
-  await expect(compare.locator('a[href="/flow/compare/word/"]')).toHaveCount(0);
+  for (const key of ['flow', 'domains', 'paths', 'elements']) await expect(page.locator(`[data-pp-panel="${key}"] a.pp-link`)).toHaveCount(1);
+  await expect(page.locator('[data-pp-panel="flow"] a[href="/flow/compare/word/"]')).toHaveCount(0);
 });
 
 test('the Paths nav item carries a dropdown of the first five paths', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/flow/compare/');
-  const dd = page.locator('#main-nav .living-nav-dd').filter({ has: page.locator('> a[href="/flow/paths/"]') });
-  await dd.hover();
-  const items = dd.locator('.living-nav-dd-panel a[href^="/flow/paths/"]:not(.living-nav-dd-all)');
+  await page.locator('#main-nav [data-pp-menu="paths"]').click();
+  const dd = page.locator('[data-pp-panel="paths"]');
+  await expect(dd).toBeVisible();
+  const items = dd.locator('a[href^="/flow/paths/"]:not(.pp-link)');
   await expect(items).toHaveCount(5);
-  await expect(dd.locator('.living-nav-dd-all')).toHaveAttribute('href', '/flow/paths/');
+  await expect(dd.locator('a.pp-link')).toHaveAttribute('href', '/flow/paths/');
   // Only the first five by order; the sixth waits on All paths.
   await expect(dd.locator('a[href="/flow/paths/status-from-what-you-have/"]')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+  await expect(dd).toBeHidden();
 });
 
 test('Compare sets Flow vocabulary apart from ordinary copy', async ({ page }) => {

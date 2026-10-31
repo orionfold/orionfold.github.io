@@ -1,58 +1,19 @@
 ---
-// Shared navigation: Flow, its Domains (Flow 3.0's launch surface, operator
-// 2026-10-27), then its Paths, Elements and Compare pages.
-// The essays (the manifesto is essay 03) live in the footer (operator 2026-10-26).
-// Story and Books moved to the footer (operator 2026-09-28). Download intent,
-// launch gating, and sticky-bar consent mechanics stay shared.
-import Wordmark from './ui/Wordmark.astro';
-import { publishedCompare, compareHref, publishedPaths, pathHref } from '../lib/flow/paths';
-import { SHOWCASE } from '../data/flow-path-showcase';
-import { ArrowRightIcon } from '../lib/flow-icons';
-import { NAV_ELEMENTS, elementHref, elementDrawing } from '../lib/flow/elements';
-import { publishedDomainArticles, domainArticleHref } from '../lib/flow/domains';
-// "Paths" and "Compare" carry their pages as a small dropdown (desktop) or
-// indented sub-links (mobile); Compare appears only once a page is routed.
-// Every menu shows at most its top five, in the site's order, and the rest
-// wait behind its "All …" link (design rule, operator 2026-10-27).
-const NAV_MENU_MAX = 5;
-type NavChild = { href: string; label: string; tag: string; line: string; thumb?: { svg: string; tint: string } };
-const paths: NavChild[] = (await publishedPaths()).slice(0, 5).map((p) => ({ href: pathHref(p.id), label: p.data.path, tag: p.data.chip.toUpperCase(), line: SHOWCASE[p.id]?.hook ?? p.data.persona }));
-// Elements lists five elements by their sidebar drawing (operator 2026-10-26).
-const elements: NavChild[] = NAV_ELEMENTS.map((e) => ({ href: elementHref(e), label: e.name, tag: e.categoryLabel.toUpperCase(), line: e.line, thumb: { svg: elementDrawing(e.card), tint: e.tint } }));
-// Domains (G-135): the launch story first, the founder's other built Domains,
-// then the blueprints in the PR/FAQ's order.
-const domains: NavChild[] = (await publishedDomainArticles()).map((d, i) => ({ href: domainArticleHref(d.id), label: d.data.domain, tag: d.data.kind === 'blueprint' ? 'BLUEPRINT' : i === 0 ? 'LAUNCH STORY' : 'FOUNDER DOMAIN', line: d.data.hook, thumb: { svg: elementDrawing(d.data.icon), tint: d.data.tint } }));
-const compare: NavChild[] = (await publishedCompare()).map((p) => ({ href: compareHref(p.id), label: p.data.tool, tag: p.data.kind === 'switch' ? 'SWITCH' : 'PAIR', line: p.data.line }));
-const links: { href: string; label: string; children?: NavChild[]; all?: string }[] = [
-  { href: '/flow/', label: 'Flow' },
-  { href: '/domains/', label: 'Domains', children: domains, all: 'All Domains' },
-  { href: '/flow/paths/', label: 'Paths', ...(paths.length ? { children: paths, all: 'All paths' } : {}) },
-  { href: '/flow/elements/', label: 'Elements', children: elements, all: 'All 100 elements' },
-  ...(compare.length ? [{ href: '/flow/compare/', label: 'Compare', children: compare, all: 'All comparisons' }] : []),
-].map((l) => (l.children ? { ...l, children: l.children.slice(0, NAV_MENU_MAX) } : l));
-const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/flow/' && Astro.url.pathname.startsWith(href));
-import { ORIONFOLD_FLOW_LIVE } from '../data/launch.ts';
-import { FLOW_DMG_URL } from '../data/flow-pricing.ts';
-
-// 2026-08-22 launch switch. Once ORIONFOLD_FLOW_LIVE is on, all three nav calls
-// to action point straight at the download instead of the waitlist: the sticky
-// bar, the desktop pill and the mobile pill. The sticky bar is the operator's
-// named priority, since it is the one that follows a reader down every page.
-//
-// OPERATOR DECISION 2026-08-22 20:47, reaffirmed 2026-08-25: the launched
-// rehearsal keeps the direct Download Flow intent everywhere, including the
-// sticky, desktop and mobile nav calls to action. The conspicuous placeholder
-// URL remains a release blocker, not a reason for the navigation to advertise
-// a different action from the rest of the launch surface.
-const flowLive = ORIONFOLD_FLOW_LIVE;
-const flowDownloadHref = flowLive ? FLOW_DMG_URL : '/flow/#waitlist';
-const navCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
-// The top notice bar (Download Flow strip) was removed 2026-10-28 11:39 on the
-// operator's call; the nav carries two actions instead, Get Proposal beside
-// the Download button.
-
+// The site shell's top (G-140, Paper R1, operator 2026-10-30): the announce
+// bar (back by decision D6; removed 2026-10-28), then the Paper nav with its
+// menu panels. Every page body below it is unchanged in R1.
+// Kept from the Living nav, because the rest of the site depends on them:
+// #nav-wrapper and the --of-nav-height it writes (page bodies pad by it),
+// #nav-notice-slot with the confirmation bar (ConfirmBanner.astro owns its
+// script), and #main-nav. Menus, ≤5 items per group then "All", live in
+// src/components/paper/PaperNav.astro.
+import '../styles/paper/tokens.css';
+import '../styles/paper/shell.css';
+import AnnounceBar from './paper/AnnounceBar.astro';
+import PaperNav from './paper/PaperNav.astro';
+import { FLOW_VERSION } from '../lib/flow/flow-release';
 ---
-<div id="nav-wrapper" class="fixed top-0 left-0 right-0 z-40 transition-[background-color,backdrop-filter] duration-300">
+<div id="nav-wrapper" class="paper pp-shell">
   <div id="nav-notice-slot">
   <!-- Post-confirm welcome bar (success state). Takes the top notice slot after
        a confirmed signup. Hidden by default; ConfirmBanner's script reveals it
@@ -81,185 +42,31 @@ const navCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
     </div>
   </div>
   </div>
-  <nav id="main-nav" aria-label="Main navigation" class="border-b border-transparent transition-[border-color] duration-300">
-  <div class="living-nav-shell mx-auto py-5 flex items-center justify-between">
-    <Wordmark />
-
-    <!-- Desktop nav -->
-    <div class="living-nav-links items-center">
-      {links.map((link) => link.children ? (
-        <div class="living-nav-dd">
-          <a
-            href={link.href}
-            aria-current={isCurrent(link.href) ? "page" : undefined}
-            aria-haspopup="true"
-            class="living-nav-link text-text-muted hover:text-primary transition-colors"
-            data-astro-prefetch
-          >
-            {link.label}
-          </a>
-          <div class="living-nav-dd-menu">
-            <div class="living-nav-dd-panel">
-              {link.children.map((c) => (
-                c.thumb
-                  ? <a href={c.href} class="living-nav-dd-has-thumb"><span class="living-nav-dd-thumb" style={`--dd-tint:${c.thumb.tint}`} set:html={c.thumb.svg} /><b>{c.label}</b><small>{c.line}</small></a>
-                  : <a href={c.href}><span class="living-nav-dd-kind">{c.tag}</span><b>{c.label}</b><small>{c.line}</small></a>
-              ))}
-              {link.all && <a class="living-nav-dd-all" href={link.href}>{link.all}<ArrowRightIcon size={14} stroke-width={2.25} aria-hidden="true" style="display:inline-block;margin-left:4px;vertical-align:-2px" /></a>}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <a
-          href={link.href}
-          aria-current={isCurrent(link.href) ? "page" : undefined}
-          class="living-nav-link text-text-muted hover:text-primary transition-colors"
-          data-astro-prefetch
-        >
-          {link.label}
-        </a>
-      ))}
-
-    </div>
-
-    <!-- Right cluster: primary action + mobile hamburger -->
-    <div class="living-nav-actions flex items-center">
-      <a
-        href="/proposal/"
-        class="living-nav-cta living-nav-cta--desktop living-nav-cta--secondary items-center justify-center rounded-full border border-border bg-surface text-text transition-colors hover:bg-surface-raised"
-        aria-label="Get Proposal"
-        title="Get Proposal"
-        data-astro-prefetch
-      ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg><span>Get Proposal</span></a>
-      <a
-        href={flowDownloadHref}
-        class="living-nav-cta living-nav-cta--desktop items-center justify-center rounded-full bg-primary text-accent-text transition-colors hover:bg-primary/90"
-        data-astro-prefetch={flowLive ? undefined : true}
-        data-flow-download={flowLive ? 'nav-desktop' : undefined}
-      >{flowLive && (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v12m-5-5 5 5 5-5M5 16v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" /></svg>)}<span>{navCtaLabel}</span></a>
-      <!-- Mobile hamburger — CSS-only disclosure. A visually-hidden checkbox is
-           the real control; the <label> below toggles it. The menu open/close and
-           the icon swap are driven purely by `#main-nav:has(...:checked)` CSS
-           (style block at the bottom), so tapping works the instant the HTML
-           paints — no wait for the deferred module bundle to execute, which is
-           what made the menu feel laggy to open on slow mobile. JS is no longer
-           required for the menu. -->
-      <input id="mobile-menu-toggle" type="checkbox" class="sr-only" aria-label="Toggle menu" />
-      <label
-        for="mobile-menu-toggle"
-        id="mobile-menu-btn"
-        class="text-text-muted hover:text-primary transition-colors cursor-pointer"
-      >
-        <svg id="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-        <svg id="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="hidden">
-          <path d="M18 6L6 18M6 6l12 12" />
-        </svg>
-      </label>
-    </div>
-  </div>
-
-  <!-- Mobile menu — opaque bg (no backdrop-blur). The blur was a GPU cost paid
-       on every paint of the dropdown, which made it feel slow to open on real
-       phones; a solid surface paints instantly. Shadow restores the depth the
-       translucency used to give. Opened by the CSS at the bottom. -->
-  <div id="mobile-menu" class="hidden border-t border-border bg-surface shadow-xl">
-    <div class="living-mobile-links px-6 py-4 flex flex-col gap-3">
-      {links.map((link) => (
-        <Fragment>
-          <a href={link.href} class="living-nav-link text-text-muted hover:text-primary transition-colors py-2" data-astro-prefetch>{link.label}</a>
-          {link.children?.map((c) => (
-            <a href={c.href} class="living-nav-link living-nav-sublink text-text-muted hover:text-primary transition-colors py-1" data-astro-prefetch>{c.label}</a>
-          ))}
-        </Fragment>
-      ))}
-      <a href={flowDownloadHref} class="living-nav-cta mt-2 inline-flex items-center justify-center rounded-full bg-primary text-accent-text transition-colors hover:bg-primary/90" data-astro-prefetch={flowLive ? undefined : true} data-flow-download={flowLive ? 'nav-mobile' : undefined}>{flowLive && (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v12m-5-5 5 5 5-5M5 16v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" /></svg>)}<span>{navCtaLabel}</span></a>
-      <a href="/proposal/" class="living-nav-cta living-nav-cta--secondary inline-flex items-center justify-center rounded-full border border-border bg-surface text-text transition-colors hover:bg-surface-raised" data-astro-prefetch><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg><span>Get Proposal</span></a>
-    </div>
-  </div>
-</nav>
+  <AnnounceBar href="/domains/" linkLabel="See how →">Flow {FLOW_VERSION} is out. Share your playbook as a Domain.</AnnounceBar>
+  <PaperNav />
 </div>
 
 <style is:global>
-  /* The confirmation bar owns the notice slot (the download strip that used to
-     reserve its box left on 2026-10-28), so it lays out in flow. */
   #nav-notice-slot { position: relative; }
   #confirm-bar[data-confirmation-state] { display: flex; align-items: center; justify-content: center; min-height: 34px; }
   #confirm-bar[data-confirmation-state="1"],
   #confirm-bar[data-confirmation-state="already"] { background-color: #ecfccb; border-color: #d9f99d; }
   #confirm-bar[data-confirmation-state] > div { width: 100%; }
   #confirm-bar[data-confirmation-state] p { min-width: 0; text-wrap: balance; }
-  /* "Compare" dropdown: opens on hover or keyboard focus, no script. */
-  .living-nav-dd { position: relative; }
-  .living-nav-dd-menu { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); padding-top: 12px; z-index: 60; }
-  .living-nav-dd:hover .living-nav-dd-menu, .living-nav-dd:focus-within .living-nav-dd-menu { display: block; }
-  .living-nav-dd-panel { display: grid; grid-template-columns: auto 1fr; gap: 2px 0; min-width: 360px; padding: 10px; background: #fff; border: 1px solid #d5dbd6; border-radius: 10px; box-shadow: 0 18px 40px #152a2d22; }
-  /* Rows share the panel's columns (subgrid), so every tag and title lines up
-     to the widest tag in that menu. */
-  .living-nav-dd-panel a { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; column-gap: 12px; row-gap: 2px; padding: 9px 10px; border-radius: 7px; color: #171c1a; }
-  .living-nav-dd-panel a:hover, .living-nav-dd-panel a:focus-visible { background: #fff6c9; }
-  .living-nav-dd-panel b { font-size: .95rem; line-height: 1.2; }
-  .living-nav-dd-panel small { grid-column: 2; font-size: .78rem; line-height: 1.4; color: #56635e; }
-  .living-nav-dd-thumb { grid-row: span 2; align-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9px; color: var(--dd-tint); background: color-mix(in srgb, var(--dd-tint) 9%, #fff); }
-  .living-nav-dd-thumb svg { width: 26px; height: 26px; }
-  .living-nav-dd-kind { align-self: baseline; font-size: .56rem; font-weight: 700; letter-spacing: .1em; color: #ba2d21; }
-  .living-nav-dd-panel a.living-nav-dd-all { display: block; margin-top: 4px; border-top: 1px solid #e6ebe7; border-radius: 0 0 7px 7px; font-size: .84rem; font-weight: 600; color: #0e7f7a; }
-  .living-nav-sublink { padding-left: 1.1rem; font-size: .92em; }
-  /* CSS-only mobile menu (see the markup above). The hidden checkbox's state
-     opens the dropdown and swaps the hamburger/close icons with no JavaScript,
-     so the menu responds the moment the page paints. Scoped to the mobile
-     breakpoint so the desktop nav (1100px and up) is never affected even if the
-     checkbox is left checked when the viewport is resized. */
-  @media (max-width: 1099.98px) {
-    #main-nav:has(#mobile-menu-toggle:checked) #mobile-menu { display: block; }
-    #main-nav:has(#mobile-menu-toggle:checked) #hamburger-icon { display: none; }
-    #main-nav:has(#mobile-menu-toggle:checked) #close-icon { display: block; }
-  }
 </style>
 
 <script>
+  // Page bodies pad by --of-nav-height; keep it equal to the visible header.
   let disposeNav: (() => void) | undefined;
   function initNav() {
     disposeNav?.();
-    // The mobile menu is a pure-CSS disclosure. This script owns the scroll blur
-    // and the persistent Flow callout bar.
-    const nav = document.getElementById('main-nav');
     const navWrapper = document.getElementById('nav-wrapper');
-    if (!nav || !navWrapper) return;
+    if (!navWrapper) return;
     const updateOffset = () => {
-      const menu = document.getElementById('mobile-menu');
-      const menuHeight = menu && getComputedStyle(menu).display !== 'none' ? menu.getBoundingClientRect().height : 0;
-      document.documentElement.style.setProperty('--of-nav-height', `${Math.ceil(navWrapper.getBoundingClientRect().height - menuHeight)}px`);
+      document.documentElement.style.setProperty('--of-nav-height', `${Math.ceil(navWrapper.getBoundingClientRect().height)}px`);
     };
     const resizeObserver = new ResizeObserver(updateOffset);
-
-    // Scroll-triggered blur
-    let scrolled = false;
-    function onScroll() {
-      const isScrolled = window.scrollY > 40;
-      if (isScrolled !== scrolled) {
-        scrolled = isScrolled;
-        if (scrolled) {
-          navWrapper.classList.add('bg-surface/80', 'backdrop-blur-md');
-          nav.classList.add('border-border');
-          nav.classList.remove('border-transparent');
-        } else {
-          navWrapper.classList.remove('bg-surface/80', 'backdrop-blur-md');
-          nav.classList.remove('border-border');
-          nav.classList.add('border-transparent');
-        }
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    disposeNav = () => {
-      window.removeEventListener('scroll', onScroll);
-      resizeObserver.disconnect();
-    };
-
-    // Reserve the settled notice state on the first measurement. Measuring
-    // while its bar is still hidden briefly collapses the reserved hero gap.
+    disposeNav = () => resizeObserver.disconnect();
     resizeObserver.observe(navWrapper);
     updateOffset();
   }

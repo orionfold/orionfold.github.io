@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 const read = path => readFileSync(new URL(`../../${path}`, import.meta.url),'utf8');
 const home=read('src/pages/index.astro'),flow=read('src/pages/flow.astro');
 assert.doesNotMatch(home+flow,/FlowIdeasPitStop|HomeRaceCapabilityAct|FlowRaceBlueprint|home-variants/);
-assert.doesNotMatch(read('src/components/Nav.astro'),/theme-toggle|lockedTheme|data-theme-lock|of-theme/);
+assert.doesNotMatch((read('src/components/Nav.astro') + read('src/components/paper/PaperNav.astro')),/theme-toggle|lockedTheme|data-theme-lock|of-theme/);
 // Operator 2026-10-26: the continuity, workshop and ideas bands left the homepage.
 const homeSections=['HomeHero','FlagshipEssayInvitation','HomeClosing'];
 assert.doesNotMatch(home,/HomeContinuity|HomeDocumentWorkshop|HomeIdeas|ids=\{\['cents'\]\}/);

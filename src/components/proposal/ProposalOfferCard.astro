@@ -2,7 +2,7 @@
 // One product card on /proposal/. Shared by the Flow section and the
 // capability matrix so both render the same checkbox, quantity and price shape.
 // The price comes from the shared catalog through the offer; nothing here types a
-// number. Styled by src/styles/proposal.css (pp-card).
+// number. Styled by src/styles/proposal.css (prop-card).
 import { formatUsd, type ConsultingOffer } from '../../../supabase/functions/_shared/consulting-proposal';
 
 interface Props {
@@ -13,25 +13,25 @@ interface Props {
 }
 const { offer, maxQuantity, featured = false } = Astro.props;
 ---
-<article class:list={["pp-card", featured && "pp-card-featured"]} data-offer-card={offer.id}>
+<article class:list={["prop-card", featured && "prop-card-featured"]} data-offer-card={offer.id}>
   <input
     id={`offer-${offer.id}`}
     type="checkbox"
     name="selectedOffers"
     value={offer.id}
-    class="pp-card-check pp-sr-only"
+    class="prop-card-check prop-sr-only"
     aria-label={`Add ${offer.label} to proposal`}
   />
-  <label for={`offer-${offer.id}`} class="pp-card-hit" aria-hidden="true"></label>
-  <div class="pp-card-head">
+  <label for={`offer-${offer.id}`} class="prop-card-hit" aria-hidden="true"></label>
+  <div class="prop-card-head">
     <div>
-      <p class="pp-card-term">{offer.term}</p>
+      <p class="prop-card-term">{offer.term}</p>
       <h3>{offer.label}</h3>
     </div>
-    <label for={`offer-${offer.id}`} class="pp-add">
-      <span class="pp-add-box" aria-hidden="true"></span>
-      <span class="pp-add-off">Add</span>
-      <span class="pp-add-on">Selected</span>
+    <label for={`offer-${offer.id}`} class="prop-add">
+      <span class="prop-add-box" aria-hidden="true"></span>
+      <span class="prop-add-off">Add</span>
+      <span class="prop-add-on">Selected</span>
     </label>
   </div>
   <dl>
@@ -42,11 +42,11 @@ const { offer, maxQuantity, featured = false } = Astro.props;
     <div><dt>Do not choose it for</dt><dd>{offer.notFor}</dd></div>
     <div><dt>Included</dt><dd>{offer.includes}</dd></div>
   </dl>
-  {offer.freeBoundary && <p class="pp-card-note">{offer.freeBoundary}</p>}
-  <div class="pp-card-foot">
-    <a class="ls-text-link pp-card-link" href={offer.href}>Review product details</a>
-    <div class="pp-card-buy">
-      <label class="pp-qty">
+  {offer.freeBoundary && <p class="prop-card-note">{offer.freeBoundary}</p>}
+  <div class="prop-card-foot">
+    <a class="ls-text-link prop-card-link" href={offer.href}>Review product details</a>
+    <div class="prop-card-buy">
+      <label class="prop-qty">
         <span>Quantity · {offer.unitLabel}</span>
         <input
           type="number"
@@ -61,7 +61,7 @@ const { offer, maxQuantity, featured = false } = Astro.props;
           aria-label={`Number of ${offer.unitLabel} for ${offer.label}`}
         />
       </label>
-      <p class="pp-price">
+      <p class="prop-price">
         {formatUsd(offer.amountCents)}
         <small>each{offer.mode === 'subscription' ? ' · per year' : ''}</small>
       </p>

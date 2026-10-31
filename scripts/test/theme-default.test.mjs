@@ -8,7 +8,7 @@ const read = (relativePath) => readFileSync(new URL(relativePath, root), 'utf8')
 
 const layout = read('src/layouts/Layout.astro');
 const privateLayout = read('src/layouts/PrivateLayout.astro');
-const nav = read('src/components/Nav.astro');
+const nav = (read('src/components/Nav.astro') + read('src/components/paper/PaperNav.astro'));
 const css = read('src/styles/global.css');
 
 for (const [name, source] of [

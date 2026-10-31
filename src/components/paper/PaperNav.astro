@@ -7,7 +7,7 @@
 import Fold from './Fold.astro';
 import { publishedCompare, compareHref, publishedPaths, pathHref } from '../../lib/flow/paths';
 import { SHOWCASE } from '../../data/flow-path-showcase';
-import { ELEMENT_CATEGORIES, NAV_ELEMENTS, elementHref, elementArticleHref } from '../../lib/flow/elements';
+import { ELEMENT_CATEGORIES, NAV_ELEMENTS, elementHref, elementArticleHref, elementDrawing } from '../../lib/flow/elements';
 import { publishedDomainArticles, domainArticleHref, isBlueprint } from '../../lib/flow/domains';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
 import { FLOW_DMG_URL } from '../../data/flow-pricing';
@@ -19,9 +19,9 @@ const { faces = {} } = Astro.props;
 const PAPER_NAV_GROUP_MAX = 5;
 const top = <T,>(xs: T[]) => xs.slice(0, PAPER_NAV_GROUP_MAX);
 
-type Item = { href: string; label: string; line?: string; meta?: string; fold?: FoldId; glyph?: string };
+type Item = { href: string; label: string; line?: string; meta?: string; fold?: FoldId; glyph?: string; drawing?: { svg: string; tint: string } };
 type Group = { title: string; items: Item[]; chips?: boolean; two?: boolean; all?: Item };
-type Card = { fold: FoldId; kicker: string; title: string; line: string; face?: string; cta?: Item; mock?: { title: string; line: string; action: string } };
+type Card = { fold: FoldId; kicker: string; title: string; line: string; face?: string; cta?: Item & { track?: string }; mock?: { title: string; line: string; action: string } };
 type Menu = { key: string; label: string; groups: Group[]; card?: Card };
 
 const GLYPH = {
@@ -30,23 +30,23 @@ const GLYPH = {
   shield: '<path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/>',
   tag: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>',
   path: '<path d="M4 18c4 0 4-12 8-12s4 12 8 12"/>',
-  grid: '<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>',
-  person: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
-  layers: '<path d="M12 4l9 5-9 5-9-5z"/><path d="M3 14l9 5 9-5"/>',
-  chart: '<path d="M5 20V12M12 20V6M19 20v-9"/>',
 };
-const CATEGORY_GLYPH: Record<string, string> = { components: GLYPH.grid, agency: GLYPH.person, skills: GLYPH.layers, 'chart-kinds': GLYPH.chart };
 const FOLD_BY_DOMAIN = Object.fromEntries(FOLDS.map((f) => [f.domainSlug, f.id])) as Record<string, FoldId>;
 
+// Domains keep the old menu's rule: five in the site's order (the built
+// Domains, then the blueprints), then All Domains.
 const domains = await publishedDomainArticles();
-const founder = domains.filter((d) => !isBlueprint(d));
 const blueprints = domains.filter(isBlueprint);
+const domainTop = top(domains);
 const paths = await publishedPaths();
 const compare = await publishedCompare();
 const allElements = ELEMENT_CATEGORIES.reduce((n, c) => n + c.items.length, 0);
 
-const downloadHref = ORIONFOLD_FLOW_LIVE ? FLOW_DMG_URL : '/flow/#waitlist';
-const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow' : 'Join the waitlist';
+// The launch switch (2026-08-22): with Flow live every nav call to action is a
+// direct download, attributed by surface; off, it returns to the waitlist.
+const flowLive = ORIONFOLD_FLOW_LIVE;
+const flowDownloadHref = flowLive ? FLOW_DMG_URL : '/flow/#waitlist';
+const navCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
 
 const domainItem = (d: (typeof domains)[number]): Item => ({ href: domainArticleHref(d.id), label: d.data.domain, line: d.data.hook, fold: FOLD_BY_DOMAIN[d.id], glyph: FOLD_BY_DOMAIN[d.id] ? undefined : GLYPH.doc });
 
@@ -62,13 +62,13 @@ const MENUS: Menu[] = [
       ] },
       ...(compare.length ? [{ title: 'Switch to Flow from', chips: true, items: top(compare).map((c) => ({ href: compareHref(c.id), label: c.data.tool })), all: { href: '/flow/compare/', label: 'All comparisons' } }] : []),
     ],
-    card: { fold: 'orri', kicker: 'Flow for Mac', title: 'New here? Start with ten Pro Days.', line: 'Pro Days count only on the days you use them.', cta: { href: downloadHref, label: `${downloadLabel} for Mac` } },
+    card: { fold: 'orri', kicker: 'Flow for Mac', title: 'New here? Start with ten Pro Days.', line: 'Pro Days count only on the days you use them.', cta: { href: flowDownloadHref, label: `${navCtaLabel} for Mac`, track: 'nav-menu' } },
   },
   {
     key: 'domains', label: 'Domains',
     groups: [
-      { title: 'Founder Domains', items: top(founder).map(domainItem) },
-      { title: 'Free blueprints', two: true, items: top(blueprints).map(domainItem), all: { href: '/domains/', label: `All ${blueprints.length} blueprints` } },
+      { title: 'Founder Domains', items: domainTop.filter((d) => !isBlueprint(d)).map(domainItem) },
+      { title: `Free blueprints, ${blueprints.length} in all`, items: domainTop.filter(isBlueprint).map(domainItem), all: { href: '/domains/', label: 'All Domains' } },
     ],
     card: { fold: 'tally', face: faces.tally, kicker: 'Accounting Advisory blueprint', title: 'Pick a blueprint. Put your name on it.', line: 'Tally drafts Juniper Bakery’s close note. You make the call.' },
   },
@@ -82,8 +82,9 @@ const MENUS: Menu[] = [
   {
     key: 'elements', label: 'Elements',
     groups: [
-      { title: 'Kinds', items: top(ELEMENT_CATEGORIES).map((c) => ({ href: elementArticleHref(c.slug), label: c.label, meta: String(c.items.length), glyph: CATEGORY_GLYPH[c.slug] ?? GLYPH.grid })) },
-      { title: 'Try these first', chips: true, items: top(NAV_ELEMENTS).map((e) => ({ href: elementHref(e), label: e.name })), all: { href: '/flow/elements/', label: `All ${allElements} Elements` } },
+      // Five Elements by their own drawings (operator 2026-10-26), then the kinds.
+      { title: 'Try these first', items: top(NAV_ELEMENTS).map((e) => ({ href: elementHref(e), label: e.name, line: e.line, drawing: { svg: elementDrawing(e.card), tint: e.tint } })) },
+      { title: 'Kinds', chips: true, items: top(ELEMENT_CATEGORIES).map((c) => ({ href: elementArticleHref(c.slug), label: `${c.label} · ${c.items.length}` })), all: { href: '/flow/elements/', label: `All ${allElements} Elements` } },
     ],
     card: { fold: 'clause', kicker: 'Sign-off card', title: 'A hundred things I can draw into your documents.', line: 'Like this one, at the end of the Larkspur Robotics memo.', mock: { title: 'Counsel sign-off', line: 'Clause drafted this. It waits for your yes.', action: 'Approve' } },
   },
@@ -92,7 +93,7 @@ const MENUS: Menu[] = [
 const ALL: Menu = { key: 'all', label: 'Menu', groups: MENUS.map((m) => ({ ...m.groups[0], title: m.label })) };
 const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/flow/' && Astro.url.pathname.startsWith(href));
 ---
-<header class="pp-nav" data-pp-nav>
+<header class="pp-nav" id="main-nav" data-pp-nav>
   <div class="pp-nav-left">
     <a class="pp-pill pp-logo" href="/"><img src="/logos/orionfold-mark-3d-48.png" alt="" width="24" height="24" />ORIONFOLD</a>
     <nav class="pp-pill pp-menu" aria-label="Main">
@@ -101,7 +102,11 @@ const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/f
     </nav>
     <button type="button" class="pp-menu-mobile" data-pp-menu="all" aria-expanded="false" aria-controls="pp-sheet">Menu</button>
   </div>
-  <div class="pp-pill pp-cta-pair"><a href="/proposal/">Get a proposal</a><a class="pp-solid" href={downloadHref} data-download-source="paper-nav">{downloadLabel}</a></div>
+  <div class="pp-pill pp-cta-pair">
+    <a href="/proposal/">Get a proposal</a>
+    <a class="pp-solid pp-wide" href={flowDownloadHref} data-flow-download={flowLive ? 'nav-desktop' : undefined}>{navCtaLabel}</a>
+    <a class="pp-solid pp-narrow" href={flowDownloadHref} data-flow-download={flowLive ? 'nav-mobile' : undefined}>{navCtaLabel}</a>
+  </div>
 </header>
 <div class="pp-scrim" data-pp-scrim></div>
 <div class="pp-sheet" id="pp-sheet" data-pp-sheet>
@@ -122,7 +127,9 @@ const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/f
                   <a class="pp-it" href={it.href} aria-current={isCurrent(it.href) ? 'page' : undefined}>
                     {it.fold
                       ? <span class="pp-it-lead" style={`background:${foldById[it.fold].c}66`}><Fold id={it.fold} /></span>
-                      : <span class="pp-it-lead"><svg class="pp-glyph" viewBox="0 0 24 24" aria-hidden="true" set:html={it.glyph} /></span>}
+                      : it.drawing
+                        ? <span class="pp-it-lead pp-it-drawing" style={`--pp-it-tint:${it.drawing.tint}`} set:html={it.drawing.svg} />
+                        : <span class="pp-it-lead"><svg class="pp-glyph" viewBox="0 0 24 24" aria-hidden="true" set:html={it.glyph} /></span>}
                     <b>{it.label}</b>
                     {it.line && <span class="pp-it-d">{it.line}</span>}
                     {it.meta && <span class="pp-it-m">{it.meta}</span>}
@@ -139,7 +146,7 @@ const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/f
           <span class="pp-kicker">{m.card.kicker}</span>
           <h4>{m.card.title}</h4>
           <p>{m.card.line}</p>
-          {m.card.cta && <a class="pp-btn" href={m.card.cta.href}>{m.card.cta.label}</a>}
+          {m.card.cta && <a class="pp-btn" href={m.card.cta.href} data-flow-download={flowLive ? m.card.cta.track : undefined}>{m.card.cta.label}</a>}
           {m.card.face
             ? <div class="pp-feat-pair"><img src={m.card.face} alt="" width="76" height="95" loading="lazy" /><Fold id={m.card.fold} bob /></div>
             : <Fold id={m.card.fold} bob class="pp-feat-corner" />}

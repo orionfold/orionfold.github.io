@@ -27,10 +27,14 @@ const livingFiles = readdirSync(new URL('../../src/components/living/', import.m
 const livingSource = livingFiles.map(name => read(`src/components/living/${name}`)).join('\n');
 const livingFaq = read('src/data/living-faq.json');
 // ── Nav: flagship product family ──────────────────────────────────────────
-const nav = read('src/components/Nav.astro');
-const navArray = nav.match(/const links[^=]*= \[([\s\S]*?)\n\]/)?.[1] ?? '';
-const navLabels = [...navArray.matchAll(/label: '([^']+)'/g)].map((match) => match[1]);
-assert.deepEqual(navLabels, ['Flow', 'Domains', 'Paths', 'Elements', 'Compare'], 'the global nav carries Flow, its Domains, then its Paths, Elements and Compare pages');
+// Paper R1 (G-140): Nav.astro is the shell, PaperNav holds the menus.
+const nav = read('src/components/Nav.astro') + read('src/components/paper/PaperNav.astro');
+const navArray = nav.match(/const MENUS: Menu\[\] = \[([\s\S]*?)\n\];/)?.[1] ?? '';
+const navLabels = [...navArray.matchAll(/key: '[a-z]+', label: '([^']+)'/g)].map((match) => match[1]);
+assert.deepEqual(navLabels, ['Flow', 'Domains', 'Paths', 'Elements'], 'the global nav carries Flow, its Domains, then its Paths and Elements menus');
+// Paper R1: Compare lives inside the Flow menu (five tools, then All), and Pricing is a plain link.
+assert.match(nav, /title: 'Switch to Flow from', chips: true, items: top\(compare\)/, 'Compare sits in the Flow menu, top five then All');
+assert.match(nav, /<a href="\/flow\/#pricing">Pricing<\/a>/, 'Pricing is the last item in the menu bar');
 // Operator 2026-10-26: Essays left the nav for the footer.
 assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/essays\/', label: 'Essays'/, 'the footer keeps Essays');
 // Operator 2026-10-26: the manifesto is essay 03, reached from /essays/, not the nav or footer.
@@ -56,8 +60,7 @@ assert.match(nav, /'\/flow\/#waitlist'/, 'the pre-launch waitlist path survives 
 // 2026-10-28 11:39: the operator removed the top notice bar (Download Flow
 // strip) and put Get Proposal back in the nav beside the Download button.
 assert.doesNotMatch(nav, /id="magnet-bar"|of-flow-bar-dismissed|Orionfold Flow for Mac/, 'the top notice bar is gone');
-assert.equal((nav.match(/>Get Proposal</g) ?? []).length, 2, 'Get Proposal sits in the desktop actions and the mobile menu');
-assert.match(nav, /href="\/proposal\/"\s+class="living-nav-cta living-nav-cta--desktop living-nav-cta--secondary/, 'the desktop Get Proposal is a secondary action beside Download');
+assert.match(nav, /<div class="pp-pill pp-cta-pair">\s*<a href="\/proposal\/">Get a proposal<\/a>/, 'Get a proposal sits beside Download in the call-to-action pill');
 
 // ── Footer: curated Flow, Paths, Orionfold, and Connect navigation ─────────
 // Books follows Story in the Orionfold column since it left the main nav.
@@ -220,7 +223,7 @@ assert.match(downloadCta, /\{FLOW_DOWNLOAD_CAPTION\}/, 'the subtext comes from t
 
 // THE NAV leads with the download once Flow is live (operator ask
 // 2026-08-22 10:13). Both nav calls to action switch together.
-const navSource = read('src/components/Nav.astro');
+const navSource = read('src/components/Nav.astro') + read('src/components/paper/PaperNav.astro');
 assert.match(navSource, /const navCtaLabel = flowLive \? 'Download Flow' : 'Join the waitlist';/);
 // The nav keeps the same direct-download contract as every other launch CTA.
 // Release safety is enforced at the deployment boundary, not by changing the

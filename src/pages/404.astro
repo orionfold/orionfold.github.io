@@ -1,0 +1,50 @@
+---
+// The not-found page (G-140, Paper R1). GitHub Pages serves dist/404.html for
+// any missing path. Four tiles lead back into the site, and it is never indexed.
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Fold from '../components/paper/Fold.astro';
+import type { FoldId } from '../lib/paper/folds';
+
+const TILES: { href: string; title: string; line: string; fold: FoldId }[] = [
+  { href: '/flow/', title: 'Flow', line: 'The Mac app where your playbook lives.', fold: 'orri' },
+  { href: '/domains/', title: 'Domains', line: 'Playbooks your clients can use on their own work.', fold: 'tally' },
+  { href: '/flow/paths/', title: 'Paths', line: 'Find a way in that fits the work you do.', fold: 'sprout' },
+  { href: '/flow/elements/', title: 'Elements', line: 'A hundred things Flow can draw into a document.', fold: 'clause' },
+];
+---
+<Layout title="Page not found · Orionfold" description="This page is not here. Try Flow, Domains, Paths or Elements." noindex>
+  <Nav />
+  <main class="paper pp-404">
+    <Fold id="hop" bob class="pp-404-fold" />
+    <h1>This page is not here.</h1>
+    <p>It may have moved, or the link has a typo. Try one of these.</p>
+    <div class="pp-404-tiles">
+      {TILES.map((t) => (
+        <a href={t.href}>
+          <Fold id={t.fold} />
+          <b>{t.title}</b>
+          <span>{t.line}</span>
+        </a>
+      ))}
+    </div>
+    <a class="pp-404-home" href="/">Go to the home page →</a>
+  </main>
+  <Footer showDownload={false} />
+</Layout>
+
+<style>
+  .pp-404 { padding: calc(var(--of-nav-height, 96px) + 48px) 16px 24px; text-align: center; }
+  .pp-404 :global(.pp-404-fold) { width: 96px; margin: 0 auto 18px; }
+  .pp-404 h1 { margin: 0; font: 300 clamp(40px, 6vw, 72px)/1.05 var(--pp-serif); font-variation-settings: 'SOFT' 100; letter-spacing: -.01em; }
+  .pp-404 > p { margin: 16px auto 0; max-width: 34ch; font: 400 18px/1.4 var(--pp-serif); color: var(--pp-ink-2); }
+  .pp-404-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; max-width: 1000px; margin: 44px auto 0; text-align: left; }
+  .pp-404-tiles a { display: grid; gap: 6px; padding: 18px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-3); background: var(--pp-white); text-decoration: none; transition: transform .2s var(--pp-ease-unfold), box-shadow .2s; }
+  .pp-404-tiles a:hover, .pp-404-tiles a:focus-visible { transform: translateY(-3px); box-shadow: var(--pp-shadow-small); }
+  .pp-404-tiles :global(.pp-fold) { width: 48px; margin-bottom: 6px; }
+  .pp-404-tiles b { font: 400 24px/1.1 var(--pp-serif); }
+  .pp-404-tiles span { font-size: 14px; color: var(--pp-ink-2); }
+  .pp-404-home { display: inline-block; margin-top: 32px; color: var(--pp-teal); font-weight: 500; text-decoration: none; }
+  @media (prefers-reduced-motion: reduce) { .pp-404-tiles a { transition: none; } }
+</style>

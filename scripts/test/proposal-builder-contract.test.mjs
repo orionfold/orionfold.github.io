@@ -19,7 +19,7 @@ const deliveryPath = new URL('../../supabase/functions/consulting-request/delive
 const migrationPath = new URL('../../supabase/migrations/20260720010000_create_consulting_proposals.sql', import.meta.url);
 const customerConfirmationMigrationPath = new URL('../../supabase/migrations/20260721173000_add_consulting_customer_confirmation.sql', import.meta.url);
 const page = readFileSync(pagePath, 'utf8');
-const nav = readFileSync(navPath, 'utf8');
+const nav = readFileSync(navPath, 'utf8') + readFileSync(new URL('../../src/components/paper/PaperNav.astro', import.meta.url), 'utf8');
 const card = readFileSync(cardPath, 'utf8');
 const plans = readFileSync(plansPath, 'utf8');
 const css = readFileSync(new URL('../../src/styles/proposal.css', import.meta.url), 'utf8');
@@ -30,7 +30,7 @@ const customerConfirmationMigration = readFileSync(customerConfirmationMigration
 
 test('/proposal/ is canonical and the former page does not ship', () => {
   assert.equal(existsSync(pagePath), true);
-  assert.match(page, /bodyClass="ls pp-page"/, 'the page sits on the Living Systems system');
+  assert.match(page, /bodyClass="ls prop-page"/, 'the page sits on the Living Systems system');
   assert.match(page, /hero-flow-paper-planes/, 'the paper planes fly on the proposal hero');
   assert.doesNotMatch(page, /bg-surface-raised|text-text-muted|rounded-2xl/, 'no leftover utility styling');
   assert.equal(existsSync(oldPagePath), false);
@@ -73,13 +73,13 @@ test('navigation and sticky summary keep the proposal action visible', () => {
 
 test('product cards toggle through a full-card native checkbox label while preserving the details link', () => {
   // The card is one component (G-134) shared by the Flow section and the matrix.
-  // Living Systems restyle (operator 2026-10-28 11:36): pp-card, styled in src/styles/proposal.css.
-  assert.match(card, /class:list=\{\["pp-card", featured && "pp-card-featured"\]\}/);
-  assert.match(card, /class="pp-card-check pp-sr-only"/);
-  assert.match(card, /class="pp-card-hit" aria-hidden="true"/);
+  // Living Systems restyle (operator 2026-10-28 11:36): prop-card, styled in src/styles/proposal.css.
+  assert.match(card, /class:list=\{\["prop-card", featured && "prop-card-featured"\]\}/);
+  assert.match(card, /class="prop-card-check prop-sr-only"/);
+  assert.match(card, /class="prop-card-hit" aria-hidden="true"/);
   assert.match(card, /for=\{`offer-\$\{offer\.id\}`\}/);
-  assert.match(card, /class="ls-text-link pp-card-link" href=\{offer\.href\}/);
-  assert.match(css, /\.pp-card:has\(\.pp-card-check:checked\)/);
+  assert.match(card, /class="ls-text-link prop-card-link" href=\{offer\.href\}/);
+  assert.match(css, /\.prop-card:has\(\.prop-card-check:checked\)/);
   assert.doesNotMatch(page, /card\.classList\.toggle\('is-selected'/);
   assert.equal((page.match(/<ProposalOfferCard offer=\{offer\} maxQuantity=\{MAX_PROPOSAL_QUANTITY\}/g) ?? []).length, 2, 'both the Flow section and the matrix render the shared card');
 });
@@ -121,8 +121,8 @@ test('Flow seats open the proposal, priced from the catalog, with the Domains fa
   assert.doesNotMatch(page.slice(flowAt, matrixAt), /\$\d/, 'the Flow section types no price');
   // Bento: the Pro seat leads as a full-width tile, the two add-ons share the row below (operator 2026-10-28 11:34).
   assert.match(page, /featured=\{index === 0\}/);
-  assert.match(card, /featured && "pp-card-featured"/);
-  assert.match(css, /\.pp-card-featured \{ grid-column: 1 \/ -1; \}/);
+  assert.match(card, /featured && "prop-card-featured"/);
+  assert.match(css, /\.prop-card-featured \{ grid-column: 1 \/ -1; \}/);
   assert.doesNotMatch(page, /Flow Domains on a proposal/, 'the Domains aside was removed; the facts live on the cards');
   assert.match(flow[0].freeBoundary, /Bringing a Domain in from GitHub is free on Base/);
   assert.match(flow[2].worksWith, /Publishing a Domain needs Pro and Publish together/);
