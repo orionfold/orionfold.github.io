@@ -154,7 +154,8 @@ for (const slug of ['the-canvas', 'diagrams-draw-anywhere', 'a-checklist-you-can
 }
 
 test('every "Why Flow" data point links to the path it was measured on', async ({ page }) => {
-  for (const route of ['/', '/flow/']) {
+  // Paper R2 (G-141): the home has no Why Flow stats; /flow/ keeps its own.
+  for (const route of ['/flow/']) {
     await page.goto(route);
     const links = page.locator('.wow figcaption a');
     expect(await links.count()).toBeGreaterThanOrEqual(3);

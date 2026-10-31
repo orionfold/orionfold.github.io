@@ -129,7 +129,7 @@ test('every surface prices a Domain the way the product gates it', () => {
     assert.doesNotMatch(text, /Domain in needs Flow Pro and the Import/i, rel);
   }
   assert.match(read('src/content/compare/custom-gpts.md'), /Publishing a Domain needs Flow Pro and the Publish add-on/);
-  assert.match(read('src/data/flow-pricing.ts'), /a Domain to a GitHub repository/, 'the Publish add-on names the Domain route');
+  assert.match(read('src/data/flow-pricing.ts'), /a Flow Domain to a GitHub repository/, 'the Publish add-on names the Domain route');
   const plans = read('src/components/living/FlowPlans.astro');
   assert.match(plans, /any Domain you bring in from GitHub/, 'Base lists the pull');
   assert.match(plans, /Chat on a folder or a Domain/, 'Pro lists Chat on a Domain');
@@ -150,14 +150,14 @@ test('the built pages link the Domain, the story and each other, and the nav lea
   assert.match(story, /"@type":"Article"/);
   assert.ok(story.includes('href="/domains/"'));
   assert.equal((story.match(/<article[\s\S]*?<\/article>/)[0].match(/<img [^>]*alt="[^"]+"/g) ?? []).length, 14, 'the walk’s fourteen shots, each described');
-  assert.match(read('src/components/paper/PaperNav.astro'), /key: 'flow', label: 'Flow',[\s\S]*?key: 'domains', label: 'Domains',/, 'the nav leads with Flow, then Domains');
-  assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/domains\/', label: 'Domains'/);
+  assert.match(read('src/components/paper/PaperNav.astro'), /key: 'flow', label: 'Flow',[\s\S]*?key: 'domains', label: 'Flow Domains',/, 'the nav leads with Flow, then Domains');
+  assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/domains\/', label: 'Flow Domains'/);
   assert.match(read('public/llms.txt'), /## Flow Domains/);
   // G-135: the Domains menu lists the five in the site's order, then All Domains;
   // the landing features the launch story and cards the four blueprints.
   const menu = land.split('data-pp-panel="').find((chunk) => chunk.startsWith('domains"'));
   assert.deepEqual([...menu.matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]), ['AI Consulting', 'Anthropic S-1 Analyst', 'Learning Design', 'Research Synthesis', 'Finance Advisory'], 'the menu keeps the top five: the built Domains, then the blueprints; the rest are on /domains/');
-  assert.match(menu, /href="\/domains\/"[^>]*>All Domains/);
+  assert.match(menu, /href="\/domains\/"[^>]*>All Flow Domains/);
   const cards = land.match(/<ul class="dm-cards">[\s\S]*?<\/ul>/)[0];
   for (const slug of BLUEPRINTS) assert.ok(cards.includes(`href="/domains/${slug}/"`), `${slug} is a card`);
   assert.doesNotMatch(cards, /ai-consulting|anthropic-s1-analyst/, 'the built Domains are not blueprint cards');

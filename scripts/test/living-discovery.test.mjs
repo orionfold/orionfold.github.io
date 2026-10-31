@@ -43,7 +43,9 @@ test('Authored pages share the design system; demos and silent legacy redirects 
    continue;
   }
   if(/http-equiv="refresh"/i.test(html))continue;
-  assert.match(html,/<body[^>]*class="[^"]*\bliving-site\b/,rel);checked++;
+  // During the Paper migration (G-139 to G-147) a page is on exactly one system.
+  assert.match(html,/<body[^>]*class="[^"]*\b(living-site|paper)\b/,rel);
+  assert.ok(!/<body[^>]*class="[^"]*\bliving-site\b[^"]*\bpaper\b|<body[^>]*class="[^"]*\bpaper\b[^"]*\bliving-site\b/.test(html),`${rel}: one design system per page`);checked++;
  }}}
  visit(new URL('dist',root).pathname);assert.ok(checked>130,`covered ${checked} authored pages`);
 });

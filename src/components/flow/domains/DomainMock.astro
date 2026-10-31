@@ -37,8 +37,9 @@ import Info from '@lucide/astro/icons/info';
 import Link from '@lucide/astro/icons/link';
 
 interface Step { title: string; ask: string; reply: string; doc: string; block: string; status: string }
-interface Props { domain: string; tint: string; folder: string; client: string; files: string[]; steps: Step[] }
-const { domain, tint, folder, client, files, steps } = Astro.props;
+// wide: a roomier file column, for a full-width placement such as the home (G-141).
+interface Props { domain: string; tint: string; folder: string; client: string; files: string[]; steps: Step[]; wide?: boolean }
+const { domain, tint, folder, client, files, steps, wide = false } = Astro.props;
 
 type Family = 'drawing' | 'table' | 'folder' | 'form' | 'checklist' | 'callout' | 'list' | 'diff' | 'image' | 'pair' | 'publish' | 'update';
 interface Block { family: Family; label: string; svg?: string; tint?: string; act?: string; count?: string }
@@ -74,7 +75,7 @@ const clientDocs = [...new Set(steps.map((s) => s.doc))].filter((d) => !files.in
 const DUR = steps.map(() => 5600);
 const label = `${domain} on a client job, drawn step by step: ${steps.map((s) => s.title).join(', ')}. A made-up client, ${client}. Only the names on this page are on screen; the rest is placeholder.`;
 ---
-<figure class="hs dmk" data-story data-durations={DUR.join(',')} data-story-scene="0" style={`--dm-tint:${tint}`} aria-label={label}>
+<figure class:list={['hs dmk', { 'dmk--wide': wide }]} data-story data-durations={DUR.join(',')} data-story-scene="0" style={`--dm-tint:${tint}`} aria-label={label}>
   <div class="dm-window dmk-win" aria-hidden="true">
     <div class="dm-bar">
       <span class="dm-lights"><i></i><i></i><i></i></span>
@@ -148,25 +149,29 @@ const label = `${domain} on a client job, drawn step by step: ${steps.map((s) =>
 </figure>
 
 <style>
-  .dmk { --dmk-blue: #2f6fed; --dmk-green: #15835c; --ph: #e6eae8; margin: 28px 0 8px; }
+  .dmk { --dmk-blue: #2f6fed; --dmk-green: #127650; --ph: #e6eae8; margin: 28px 0 8px; }
   .dmk-win { font-size: .68rem; }
   .dmk-pill { display: grid; justify-items: end; }
   .dmk-pill .dmk-t { display: none; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 99px; background: #e8ecea; font-weight: 600; color: #2b3431; white-space: nowrap; }
   .dmk-pill .dmk-t i { width: 6px; height: 6px; border-radius: 50%; background: var(--dm-tint); }
   .dm-title .dmk-t { display: none; }
+  /* A long file name starts at the left instead of spilling past it. */
+  .dm-title { justify-content: safe center; }
+  @media (min-width: 900px) { .dmk--wide .dmk-panes { grid-template-columns: minmax(0, 14em) minmax(0, 1fr) minmax(0, 15em); } }
   .dmk-panes { display: grid; grid-template-columns: minmax(0, 9.6em) minmax(0, 1fr) minmax(0, 13.2em); min-height: 320px; }
   .dmk-side { display: grid; align-content: start; gap: 4px; padding: 10px 8px; border-right: 1px solid #e3e7e4; background: #f8f9f8; }
-  :global(.ls) .dmk-side p, :global(.ls) .dmk-doc p, :global(.ls) .dmk-chat p { margin: 0; }
+  /* The resets hold in Living Systems (.ls) and on Paper pages alike (G-141). */
+  :global(.ls) .dmk-side p, :global(.ls) .dmk-doc p, :global(.ls) .dmk-chat p, :global(.paper) .dmk-side p, :global(.paper) .dmk-doc p, :global(.paper) .dmk-chat p { margin: 0; }
   .dmk-folder { display: flex; align-items: center; gap: 5px; padding: 2px 4px; font-weight: 700; color: #2b3431; }
   .dmk-folder--client { margin-top: 8px; }
   .dmk-folder :global(svg) { color: var(--dm-tint); }
-  :global(.ls) .dmk-files { display: grid; gap: 1px; margin: 0; padding: 0; list-style: none; }
+  :global(.ls) .dmk-files, :global(.paper) .dmk-files { display: grid; gap: 1px; margin: 0; padding: 0; list-style: none; }
   .dmk-files li { display: flex; align-items: center; gap: 5px; padding: 3px 4px 3px 14px; border-radius: 5px; color: #56635e; white-space: nowrap; overflow: hidden; }
   .dmk-files li span { overflow: hidden; text-overflow: ellipsis; }
   .dmk-files li.is-open { background: #e3ecfd; color: #1f4fb8; font-weight: 700; }
   .dmk-doc { position: relative; padding: 16px 18px; }
   .dmk-scene { display: none; gap: 10px; align-content: start; --bt: var(--dm-tint); }
-  .dmk-eyebrow { font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6b7672; }
+  .dmk-eyebrow { font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #606b67; }
   .dmk-h { font: 700 1.05rem/1.15 'Geist Sans', Arial, sans-serif; letter-spacing: -.01em; color: #171c1a; }
   .dmk-lines { display: grid; gap: 5px; }
   .dmk-lines i { display: block; width: var(--w); height: 6px; border-radius: 3px; background: var(--ph); }
@@ -236,14 +241,14 @@ const label = `${domain} on a client job, drawn step by step: ${steps.map((s) =>
   /* Chat */
   .dmk-chat { display: grid; align-content: start; gap: 7px; padding: 10px 9px; border-left: 1px solid #e3e7e4; background: #f8f9f8; }
   .dmk-chat-h { font-weight: 700; color: #2b3431; }
-  .dmk-chat-h span { font-weight: 500; color: #6b7672; }
+  .dmk-chat-h span { font-weight: 500; color: #606b67; }
   .dmk-turn { display: none; gap: 6px; }
   .dmk-me, .dmk-ai { padding: 6px 8px; border-radius: 8px; line-height: 1.4; }
   .dmk-me { justify-self: end; max-width: 94%; background: var(--dmk-blue); color: #fff; }
   .dmk-ai { background: #fff; border: 1px solid #e3e7e4; color: #2b3431; }
   .dmk-dots { display: flex; gap: 3px; justify-self: start; padding: 6px 8px; border: 1px solid #e3e7e4; border-radius: 8px; background: #fff; }
   .dmk-dots i { width: 4px; height: 4px; border-radius: 50%; background: #8a948f; }
-  .dmk-route { font-size: .6rem; color: #6b7672; }
+  .dmk-route { font-size: .6rem; color: #606b67; }
   .dmk-nav { width: 30px; height: 30px; }
 
   /* The scene on screen: keyed on the player's data-story-scene. */

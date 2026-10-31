@@ -6,6 +6,7 @@
 /* ---------- base ---------- */
 .paper { background: var(--pp-paper); color: var(--pp-ink); font: 400 15px/1.5 var(--pp-sans); letter-spacing: .01em; -webkit-font-smoothing: antialiased; }
 .paper a { color: inherit; }
+.paper :is(h1, h2, h3, h4, h5, h6) { color: inherit; }
 .paper img { display: block; max-width: 100%; }
 .paper .pp-serif { font-family: var(--pp-serif); font-variation-settings: 'SOFT' 100; }
 .paper .pp-kicker { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--pp-ink-3); }

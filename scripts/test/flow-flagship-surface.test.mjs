@@ -31,7 +31,8 @@ const livingFaq = read('src/data/living-faq.json');
 const nav = read('src/components/Nav.astro') + read('src/components/paper/PaperNav.astro');
 const navArray = nav.match(/const MENUS: Menu\[\] = \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/key: '[a-z]+', label: '([^']+)'/g)].map((match) => match[1]);
-assert.deepEqual(navLabels, ['Flow', 'Domains', 'Paths', 'Elements'], 'the global nav carries Flow, its Domains, then its Paths and Elements menus');
+// Operator 2026-10-30: never the bare word Domain; the feature is a Flow Domain.
+assert.deepEqual(navLabels, ['Flow', 'Flow Domains', 'Paths', 'Elements'], 'the global nav carries Flow, its Flow Domains, then its Paths and Elements menus');
 // Paper R1: Compare lives inside the Flow menu (five tools, then All), and Pricing is a plain link.
 assert.match(nav, /title: 'Switch to Flow from', chips: true, items: top\(compare\)/, 'Compare sits in the Flow menu, top five then All');
 assert.match(nav, /<a href="\/flow\/#pricing">Pricing<\/a>/, 'Pricing is the last item in the menu bar');
@@ -68,7 +69,7 @@ assert.match(nav, /<div class="pp-pill pp-cta-pair">\s*<a href="\/proposal\/">Ge
 const footer = (read('src/components/Footer.astro') + read('src/data/footer-links.ts'));
 const columns = name => [...(footer.match(new RegExp('const ' + name + '(?:: [^=]+)? = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
 assert.deepEqual(columns('FLOW_COLUMNS'), [
-  ['/flow/', 'Overview'], ['/domains/', 'Domains'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
+  ['/flow/', 'Overview'], ['/domains/', 'Flow Domains'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
   ['/flow/tour/', 'Tour'], ['/flow/night-shift/', 'Night Shift'], ['/flow/living-documents/', 'Living Documents'], ['/flow/settings/', 'Settings'], ['/flow/specifications/', 'Tech Specs'], ['/flow/enterprise/', 'Enterprise'],
 ]);
 assert.deepEqual(columns('ORIONFOLD_COLUMNS'), [
@@ -490,16 +491,17 @@ for (const id of ["'home-flow-waitlist'", "'flow-mid-waitlist'", "'flow-page-wai
 // ── Homepage: approved native compositions, shared real download owner ──
 const homePageSource = read('src/pages/index.astro');
 const home = homePageSource + '\n' + livingSource;
-const homeHero = read('src/components/living/HomeHero.astro');
+// Paper R2 (G-141, operator 2026-10-30): the home is the town-study prototype.
+const homeHero = read('src/components/paper/TalkPageHero.astro');
 const flowWaitlistComponent = read('src/components/sections/FlowWaitlist.astro');
-assert.match(homeHero, /WRITE HOW[\s\S]*YOU WORK\.[\s\S]*AI[\s\S]*RUNS IT\./, 'the homepage hero pitches Flow Domains (operator 2026-10-27)');
+assert.match(homePageSource, /Show how you work\.<br \/><em>AI follows it\.<br \/>You make the call\.<\/em>/, 'the homepage hero carries the locked headline (operator 2026-10-30)');
 assert.match(homePageSource, /<ConfirmBanner \/>/, 'confirmed-email landing behavior remains mounted');
 assert.match(homePageSource, /SoftwareApplication/);
-assert.match(homeHero, /<HomeHeroDomainMock \/>/);
+assert.match(homeHero, /The hero mock is never the LCP element: the H1 is\./, 'the Talk→Page mock never takes LCP');
 assert.match(read('src/components/living/FlowHero.astro'), /<FlowHeroElementsMock \/>/);
 assert.doesNotMatch(homePageSource, /FlowShot|FlowLaunchHomeHero|HomeRaceCapabilityAct|FlowIdeasPitStop|<Ecosystem|<HomeProof|<Founder/, 'Practice, measurements and builder bands were removed from the homepage 2026-09-29');
 assert.doesNotMatch(homePageSource, /<CapabilityRibbon/, 'the capability ribbon left the homepage 2026-10-05 (operator)');
-const homeOrder = ['<HomeHero','<FlagshipEssayInvitation','<HomeClosing'].map(marker => homePageSource.indexOf(marker));
+const homeOrder = ['<TalkPageHero','<Panel id="domains"','<Rail label="Elements"','<Panel id="paths"','<Panel id="clients"','class="pp-essay"','<TrustBand','class="pp-meet"','id="waitlist"'].map(marker => homePageSource.indexOf(marker));
 assert.match(home, /id="waitlist"/, 'old campaign landing anchor survives');
 assert.match(read('src/components/living/EmailInvitation.astro'), /<LivingDocumentsForm \/>/, 'the new offer has a dedicated signup component');
 assert.match(read('src/components/living/LivingDocumentsForm.astro'), /data-consent=\{FLOW_LIVING_DOCUMENTS_CONSENT_TEXT\}/, 'new consent is imported rather than retyped');

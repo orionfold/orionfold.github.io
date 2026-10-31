@@ -58,11 +58,14 @@ test('the built homepage renders the band after Domains with both cards, and /fl
   const home = new URL('dist/index.html', root);
   if (!existsSync(home)) { test.skip('dist/ not built'); return; }
   const html = readFileSync(home, 'utf8');
-  assert.match(html, /id="home-built-with"/);
-  assert.ok(html.indexOf('id="home-domains"') < html.indexOf('id="home-built-with"'), 'the band follows the Domains band');
-  assert.ok(html.indexOf('id="home-built-with"') < html.indexOf('id="home-elements"'), 'and precedes Elements');
+  // Paper R2 (G-141, operator 2026-10-30): walk and case side by side, right after Domains.
+  const first = html.indexOf(`id="home-built-with-${entries[0].id}"`);
+  assert.ok(html.indexOf('id="domains"') < first, 'Built with follows the Domains panel');
+  assert.ok(html.lastIndexOf('id="home-built-with-') < html.indexOf('id="elements"'), 'and precedes Elements');
   for (const entry of entries) assert.match(html, new RegExp(`id="home-built-with-${entry.id}"`));
-  assert.doesNotMatch(html, /approval/, 'operator 2026-10-28 18:39: the approval is recorded in the ledger, not on the page');
+  // The Elements rail names an "Approval Card", so read only the Built with markup.
+  const built = html.slice(html.indexOf('id="home-built-with"'), html.indexOf('</section>', first));
+  assert.doesNotMatch(built, /approval/i, 'operator 2026-10-28 18:39: the approval is recorded in the ledger, not on the page');
   assert.match(html, /Founder walk/); assert.match(html, /Customer case/);
   const flow = readFileSync(new URL('dist/flow/index.html', root), 'utf8');
   assert.doesNotMatch(flow, /built-with/);

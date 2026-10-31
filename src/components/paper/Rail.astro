@@ -1,26 +1,31 @@
 ---
-// Filter chips on the left, a sliding row of cards on the right. Cards are
-// real links; the chips only filter what is already on the page.
-export interface RailItem { cat: string; title: string; line: string; href?: string; tag?: string; quote?: boolean; icon?: string; tint?: string }
-interface Props { items: RailItem[]; allHref?: string; allLabel?: string; label: string }
-const { items, allHref, allLabel, label } = Astro.props;
+// Filter chips on the left, cards on the right. Cards are real links; the
+// chips only filter what is already on the page. With grid (operator
+// 2026-10-30) the cards sit in an even grid with no sideways scroll, and items
+// marked `all` are the "All" view, so every filter shows a balanced set.
+export interface RailItem { cat: string; title: string; line: string; href?: string; tag?: string; quote?: boolean; icon?: string; tint?: string; ink?: string; all?: boolean }
+interface Props { items: RailItem[]; allHref?: string; allLabel?: string; label: string; filter?: boolean; lede?: string; grid?: boolean }
+const { items, allHref, allLabel, label, filter = true, lede, grid = false } = Astro.props;
 const cats = ['All', ...new Set(items.map((i) => i.cat))];
+const subset = items.some((i) => i.all);
 ---
-<div class="pp-rail-row" data-pp-rail>
+<div class:list={['pp-rail-row', { 'pp-rail-row--grid': grid }]} data-pp-rail>
   <div class="pp-rail-side">
-    <div class="pp-chips" role="group" aria-label={`Filter ${label}`}>
-      {cats.map((c, i) => <button type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-pp-cat={c}>{c}</button>)}
-    </div>
+    {filter ? (
+      <div class="pp-chips" role="group" aria-label={`Filter ${label}`}>
+        {cats.map((c, i) => <button type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-pp-cat={c}>{c}</button>)}
+      </div>
+    ) : lede && <p class="pp-rail-lede">{lede}</p>}
     {allHref && <a class="pp-btn" href={allHref}>{allLabel}</a>}
   </div>
-  <div class="pp-rail" role="list" aria-label={label}>
+  <div class="pp-rail" role="group" aria-label={label}>
     <slot name="lead" />
     {items.map((it) => {
       const Tag = it.href ? 'a' : 'div';
       return (
-        <Tag class="pp-card" role="listitem" href={it.href} data-pp-cat={it.cat}>
-          {it.icon && <span class="pp-ico" style={it.tint ? `background:${it.tint}` : undefined} set:html={it.icon} />}
-          <h4>{it.title}</h4>
+        <Tag class="pp-card" href={it.href} data-pp-cat={it.cat} data-pp-all={it.all ? '' : undefined} hidden={subset && !it.all}>
+          {it.icon && <span class:list={['pp-ico', { 'pp-ico--drawing': it.ink }]} style={[it.tint && `background:${it.tint}`, it.ink && `color:${it.ink}`].filter(Boolean).join(';') || undefined} set:html={it.icon} />}
+          <h3>{it.title}</h3>
           <p class:list={{ 'pp-quote': it.quote }}>{it.line}</p>
           <span class="pp-card-tag">{it.tag ?? it.cat}</span>
         </Tag>
@@ -31,10 +36,14 @@ const cats = ['All', ...new Set(items.map((i) => i.cat))];
 <script>
   document.querySelectorAll<HTMLElement>('[data-pp-rail]').forEach((r) => {
     const chips = r.querySelectorAll<HTMLButtonElement>('.pp-chips button');
+    const cards = r.querySelectorAll<HTMLElement>('.pp-card[data-pp-cat]');
+    const subset = r.querySelector('[data-pp-all]') !== null;
     chips.forEach((b) => b.addEventListener('click', () => {
       const c = b.dataset.ppCat;
       chips.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      r.querySelectorAll<HTMLElement>('.pp-card[data-pp-cat]').forEach((card) => { card.hidden = c !== 'All' && card.dataset.ppCat !== c; });
+      cards.forEach((card) => {
+        card.hidden = c === 'All' ? subset && !card.hasAttribute('data-pp-all') : card.dataset.ppCat !== c;
+      });
     }));
   });
 </script>

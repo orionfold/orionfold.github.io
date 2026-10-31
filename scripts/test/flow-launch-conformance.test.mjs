@@ -18,7 +18,8 @@ const meta = (html, key, value) => html.match(new RegExp(`<meta\\s+${key}="${esc
 const link = (html, rel) => html.match(new RegExp(`<link\\s+rel="${esc(rel)}"\\s+href="([^"]*)"`, 'i'))?.[1] ?? '';
 
 const routes = [
-  ['/', 'Orionfold Flow · Write how you work. AI runs it.', 'WRITE HOW YOU WORK. AI RUNS IT.'],
+  // Paper R2 (operator 2026-10-30): the locked headline; the title waits on the D4 copy call.
+  ['/', 'Orionfold Flow · Write how you work. AI runs it.', 'Show how you work. AI follows it. You make the call.'],
   ['/flow/', 'Flow for Mac · Describe it. Flow draws it.', 'DESCRIBE IT. FLOW DRAWS IT.'],
   ['/essay/', 'Room for a Renaissance · An essay by Manav Sehgal', 'Room for a Renaissance.'],
   ['/manifesto/', 'The Researcher, Writer and Builder in You · An essay by Manav Sehgal', 'THE RESEARCHER, WRITER AND BUILDER IN YOU.'],
@@ -153,7 +154,8 @@ const visibleLaunchSource = [
   read('src/pages/flow.astro'),
   read('src/data/flow-categories.ts'),
   read('src/data/flow-specifications.ts'),
-  read('src/components/living/HomeHero.astro'),
+  read('src/pages/index.astro'),
+  read('src/lib/paper/cast.ts'),
   read('src/components/living/FlowHero.astro'),
   read('src/components/living/FlowPlans.astro'),
 ].join('\n').replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');

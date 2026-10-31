@@ -22,7 +22,7 @@
   --pp-white: #fff;
   --pp-ink: #171c1a;
   --pp-ink-2: #4b5552;
-  --pp-ink-3: #8a918d;
+  --pp-ink-3: #666d69;  /* AA on paper, white and paper-2 (was #8a918d, 3.1:1) */
   --pp-line: #e2ded2;
 
   /* accents */

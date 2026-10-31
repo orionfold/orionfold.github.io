@@ -1,7 +1,7 @@
 import { expect, test, type Page } from './fixtures';
 
+// Paper R2 (G-141): the home hero has no artwork image; its H1 is the LCP.
 const heroes = [
-  { route: '/', name: 'home', priority: 'low' },
   { route: '/flow/', name: 'flow', priority: 'high' },
 ] as const;
 const widths = [390, 768, 1100, 1150, 1440, 1920];

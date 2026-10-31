@@ -112,8 +112,9 @@ test('Elements is shown on the homepage after Domains, with the walk’s own pla
   // section is on both pages, so /flow/ keeps only its Elements hero and links out.
   // Operator 2026-10-28 17:25: Domains first, so the page names who it is for
   // before it tours the app; Elements follows it.
+  // Paper R2 (operator 2026-10-30): Elements is a rail of real Elements, each with its drawing.
   const page = read('src/pages/index.astro');
-  const order = ['<HomeHero', '<FlowDomainsBand', '<FlowElementsShowcase'].map((m) => page.indexOf(m));
+  const order = ['<TalkPageHero', '<Panel id="domains"', '<Rail label="Elements"'].map((m) => page.indexOf(m));
   assert.ok(order.every((i) => i > 0) && order[0] < order[1] && order[1] < order[2], 'Domains sits between the hero and Elements');
   assert.doesNotMatch(read('src/pages/flow.astro'), /<FlowElementsShowcase/);
   const src = read('src/components/flow/FlowElementsShowcase.astro');
@@ -124,6 +125,6 @@ test('Elements is shown on the homepage after Domains, with the walk’s own pla
   assert.doesNotMatch(src, /fx-chart|fx-slope|drawn here from the plan|Record decision/, 'one chart and one form-like card at most');
   assert.doesNotMatch(src, /54 chart types|AI-generated/i);
   const home = built('/');
-  assert.equal((home.match(/data-fx-go=/g) ?? []).length, 6, 'six steps');
-  for (const slug of ['components', 'agency', 'skills', 'chart-kinds', 'tour']) assert.ok(home.includes(`href="/flow/elements/${slug}/"`), `links ${slug}`);
+  for (const slug of ['components', 'agency', 'skills', 'chart-kinds']) assert.ok(home.includes(`href="/flow/elements/${slug}/#`), `links ${slug}`);
+  assert.ok(home.includes('href="/flow/elements/tour/"'), 'links the tour');
 });

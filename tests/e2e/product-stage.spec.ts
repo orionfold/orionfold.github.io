@@ -196,7 +196,8 @@ for (const viewport of [DESKTOP, MOBILE]) {
 // The approved front doors use native models. Detail pages above retain real
 // shot geometry/provenance. This catches missing composition CSS in-browser.
 test.describe('Living Systems native product stage', () => {
-  for (const route of ['/', '/flow/']) {
+  // Paper R2 (G-141): the home is Paper; tests/e2e/paper-home.spec.ts covers it.
+  for (const route of ['/flow/']) {
     for (const width of [1440,390]) {
       test(`${route} native model stays usable at ${width}px`, async ({page}) => {
         await page.setViewportSize({width,height:900});
@@ -392,7 +393,8 @@ for (const width of [1440, 390]) {
   test(`each flagship has one full-width closing download at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
+    // Paper R2 (G-141): the home closes on its Paper strip (paper-home.spec.ts).
+    for (const route of ['/flow/', '/essay/', '/manifesto/']) {
       await page.goto(route);
       await page.evaluate(() => document.fonts.ready);
       const band = page.locator('[data-download-band="yellow"]');

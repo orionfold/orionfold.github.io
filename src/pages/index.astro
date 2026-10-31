@@ -1,45 +1,257 @@
 ---
-import Layout from '../layouts/Layout.astro';
+// The home page in Paper (G-141, R2; operator 2026-10-30). Built from the
+// town-study prototype: the Talk→Page hero, the paper scene and statement,
+// Domains with each blueprint's own client job, Built with, Elements and
+// Paths rails, clients, trust, the Folds and pricing. Copy is the prototype's
+// locked copy and goes to the operator's copy call at the R2 preview (D4).
+// The head (title, description, JSON-LD) is unchanged from the Living home.
+import { getImage } from 'astro:assets';
+import PaperLayout from '../layouts/PaperLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
+import TalkPageHero from '../components/paper/TalkPageHero.astro';
+import Statement from '../components/paper/Statement.astro';
+import Panel from '../components/paper/Panel.astro';
+import DomainMock from '../components/flow/domains/DomainMock.astro';
+import WhyNow from '../components/paper/WhyNow.astro';
+import Rail from '../components/paper/Rail.astro';
+import HomeHeroDomainMock from '../components/flow/mocks/HomeHeroDomainMock.astro';
+import TrustBand from '../components/paper/TrustBand.astro';
+import Roster from '../components/paper/Roster.astro';
+import PricingTable from '../components/paper/PricingTable.astro';
+import Fold from '../components/paper/Fold.astro';
 import { ogMeta } from '../data/og';
 import { SITE, PERSON } from '../data/seo';
-import '../styles/living-base.css';
-import '../styles/living-home.css';
-import HomeHero from '../components/living/HomeHero.astro';
-import CompareSection from '../components/flow/paths/CompareSection.astro';
-import FlagshipEssayInvitation from '../components/living/FlagshipEssayInvitation.astro';
-import HomeClosing from '../components/living/HomeClosing.astro';
-import FlowElementsShowcase from '../components/flow/FlowElementsShowcase.astro';
-import WowStat from '../components/flow/WowStat.astro';
-import FlowDomainsBand from '../components/flow/FlowDomainsBand.astro';
-import BuiltWithBand from '../components/flow/BuiltWithBand.astro';
-import FlowCanvasShowcase from '../components/flow/FlowCanvasShowcase.astro';
-import PathsSection from '../components/flow/paths/PathsSection.astro';
-import ConfirmBanner from '../components/ui/ConfirmBanner.astro';
-const title = "Orionfold Flow \u00b7 Write how you work. AI runs it.";
-const description = "Flow for Mac helps consultants and experts turn their method into a Domain. Write it with your AI, publish it to GitHub, and each client gets your updates to review.";
+import { ORIONFOLD_FLOW_LIVE } from '../data/launch';
+import { FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT, FLOW_BASE_CAPABILITIES, FLOW_PRO_CAPABILITIES, FLOW_ADDONS, FLOW_ADDON_TERMS, FLOW_TRIAL_TERMS } from '../data/flow-pricing';
+import { FLOW, formatUsd } from '../data/commerce';
+import { BUILT_WITH } from '../data/built-with';
+import { FLAGSHIP_ESSAY as essay } from '../data/essays';
+import { ALL_ELEMENTS, ELEMENT_CATEGORIES, elementHref, elementDrawing } from '../lib/flow/elements';
+import { publishedPaths, pathHref } from '../lib/flow/paths';
+import { publishedDomainArticles, isBlueprint, domainArticleHref } from '../lib/flow/domains';
+import { SHOWCASE } from '../data/flow-path-showcase';
+import { FOLDS, foldById, type FoldId } from '../lib/paper/folds';
+import { paperScene } from '../lib/paper/scene';
+import { PATH_GLYPH, PATH_GLYPH_FALLBACK } from '../lib/paper/path-glyphs';
+
+const title = "Orionfold Flow · Write how you work. AI runs it.";
+const description = "Flow for Mac helps experts turn their method into a Flow Domain. Write it with your AI, publish it to GitHub, and each client gets your updates to review.";
 const og = ogMeta('/');
 const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication',name:'Orionfold Flow',applicationCategory:'ProductivityApplication',operatingSystem:'macOS',description,url:`${SITE.url}/flow/`,image:`${SITE.url}${og.image}`,author:PERSON,brand:{'@type':'Brand',name:'Orionfold'}};
+
+// Faces are AI-generated models (labelled wherever they show). Each source is
+// in src/assets/paper/faces; the page asks for the size it draws.
+const faceFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/paper/faces/*.jpg', { eager: true });
+const face = async (id: FoldId, mood: 'happy' | 'emo', width: number) => {
+  const src = faceFiles[`../assets/paper/faces/${id}-${mood}.jpg`].default;
+  return (await getImage({ src, width: Math.min(width, src.width), format: 'webp', quality: 78 })).src;
+};
+const faceSet = async (mood: 'happy' | 'emo', width: number) =>
+  Object.fromEntries(await Promise.all(FOLDS.map(async (f) => [f.id, await face(f.id, mood, width)] as const))) as Record<FoldId, string>;
+const happy = await faceSet('happy', 320);
+const emo = await faceSet('emo', 560);
+
+const flowLive = ORIONFOLD_FLOW_LIVE;
+const flowDownloadHref = flowLive ? FLOW_DMG_URL : '/flow/#waitlist';
+
+// Built with Orionfold (operator 2026-10-28, placed 2026-10-30): the founder
+// walk and the customer case side by side, as on the live home.
+const KIND = { walk: 'Founder walk', case: 'Customer case' } as const;
+const domainArticles = await publishedDomainArticles();
+const blueprintCount = domainArticles.filter(isBlueprint).length;
+
+// Domains (operator 2026-10-30): each tab plays that blueprint's own six-step
+// client job in a drawn Flow window, every step drawing a different Element.
+const MOCK_FOLDS: FoldId[] = ['tally', 'clause', 'shell', 'atlas'];
+const mocks = MOCK_FOLDS.map((id) => {
+  const f = foldById[id];
+  const d = domainArticles.find((a) => a.id === f.domainSlug);
+  if (!d?.data.mock) throw new Error(`home: ${f.domainSlug} has no mock script`);
+  return { fold: f, d };
+});
+
+// Elements (operator 2026-10-30): an even grid, eight per kind, each with the
+// app's own drawing. Charts and diagrams are separate kinds; Charts take two
+// from each chart group so the tab is not all bars. "All" shows eight too:
+// two each of Components, Agency and Skills, then one chart and one diagram.
+const ELEMENTS_PER_KIND = 8;
+const byCat = (slug: string) => ALL_ELEMENTS.filter((e) => e.category === slug);
+const kinds = byCat('chart-kinds');
+const chartGroups = [...new Set(kinds.filter((e) => e.group !== 'Diagrams').map((e) => e.group))];
+const ELEMENT_KINDS: { label: string; items: typeof ALL_ELEMENTS; inAll: number }[] = [
+  ...ELEMENT_CATEGORIES.filter((c) => c.slug !== 'chart-kinds').map((c) => ({ label: c.label, items: byCat(c.slug), inAll: 2 })),
+  { label: 'Charts', items: chartGroups.flatMap((g) => kinds.filter((e) => e.group === g).slice(0, 2)), inAll: 1 },
+  { label: 'Diagrams', items: ['Flowchart', 'Sequence diagram', 'Mindmap', 'Timeline', 'Sankey diagram', 'Quadrant chart', 'Kanban board', 'Architecture diagram'].map((n) => kinds.find((e) => e.name === n)!).filter(Boolean), inAll: 1 },
+];
+const elements = ELEMENT_KINDS.flatMap((k) => k.items.slice(0, ELEMENTS_PER_KIND).map((e, i) => ({
+  cat: k.label, title: e.name, line: e.line, href: elementHref(e), all: i < k.inAll,
+  icon: elementDrawing(e.card), ink: e.tint, tint: `color-mix(in srgb, ${e.tint} 10%, #fff)`,
+})));
+const allElements = ALL_ELEMENTS.length;
+
+// Paths: every published path in an even grid, each with a line glyph for its
+// chip on a Fold-colored tile.
+const paths = (await publishedPaths()).map((p, i) => ({
+  cat: p.data.persona, title: p.data.path, line: SHOWCASE[p.id]?.hook ?? p.data.persona, href: pathHref(p.id), tag: p.data.chip,
+  icon: `<svg viewBox="0 0 24 24" aria-hidden="true">${PATH_GLYPH[p.data.chip] ?? PATH_GLYPH_FALLBACK}</svg>`, tint: `${FOLDS[i % FOLDS.length].c}66`,
+}));
+
+const ICON = {
+  doc: '<path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/>',
+  check: '<path d="M5 12l4 4 10-10"/>',
+  key: '<circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3"/>',
+  share: '<path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6"/>',
+  send: '<path d="M4 12l16-8-6 16-3-7z"/><path d="M11 13l9-9"/>',
+  fence: '<path d="M5 21V7l2-3 2 3v14M15 21V7l2-3 2 3v14M3 11h18M3 17h18"/>',
+};
+const pro = FLOW.monthly.amount;
+const proYear = FLOW.annual.amount;
+// The Publish add-on costs what Pro costs (FLOW_ADDON_TERMS), so Pro + Publish is twice Pro.
+// What each plan includes opens on request (operator 2026-10-30), from the same
+// capability lists the /flow/ plans read, so the two never drift.
+const publish = FLOW_ADDONS.find((a) => a.name === 'Flow Publish')!;
+const plans = [
+  { name: 'Base', price: 'Free', line: 'Bring in any Flow Domain and read it. Free forever.',
+    features: [{ label: 'Bring in any Flow Domain', note: 'Read it, search it and keep it, free' }, ...FLOW_BASE_CAPABILITIES] },
+  { name: 'Pro', price: formatUsd(pro), unit: ' /mo', line: `Chat with a Flow Domain and let your Fold do the work. ${formatUsd(proYear)} a year. Ten Pro Days to try.`,
+    features: [{ label: 'Chat with a Flow Domain', note: 'Your Fold works through the method on your case' }, ...FLOW_PRO_CAPABILITIES], terms: FLOW_TRIAL_TERMS },
+  { name: 'Pro + Publish', price: formatUsd(pro * 2), unit: ' /mo', line: `Share your own playbook as a Flow Domain. ${formatUsd(proYear * 2)} a year.`,
+    features: [{ label: 'Everything in Pro', note: 'Chat, agentic runs, receipts and the rest' }, { label: publish.name, note: publish.description }], terms: FLOW_ADDON_TERMS },
+];
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ls-page-home" jsonLd={pageSchema}>
+<PaperLayout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={pageSchema}>
   <Nav />
   <ConfirmBanner />
-  <main id="main" class="ls-main">
-    <HomeHero />
-    <FlowDomainsBand id="home-domains" />
-    <BuiltWithBand id="home-built-with" />
-    <WowStat ids={['brief43', 'agent']} />
-    <FlowElementsShowcase id="home-elements" />
-    <FlowCanvasShowcase id="home-canvas" />
-    <PathsSection id="home-paths" showFor={false} />
-    <CompareSection />
-    <FlagshipEssayInvitation />
-    <WowStat ids={['watch']} tone="ink" />
-    <HomeClosing />
+  <main id="main" class="pp-home">
+    <TalkPageHero faces={happy} ctaHref={flowDownloadHref} ctaLabel={flowLive ? 'Download Flow for Mac' : 'Join the waitlist'} ctaNote="Free to start, with ten Pro Days to try." ctaTrack={flowLive ? 'home-hero' : undefined}>
+      <h1 slot="title" class="pp-h1">Show how you work.<br /><em>AI follows it.<br />You make the call.</em></h1>
+      <p slot="sub" class="pp-sub">Flow turns what you know into <span class="pp-hl">a playbook</span> AI can run for each of your clients. Made for consultants, coaches and specialists.</p>
+    </TalkPageHero>
+
+    <section class="pp-scene-wrap" aria-label="The Orionfold scene">
+      <div class="pp-scene" set:html={paperScene()} />
+      <Statement>
+        <p>A client sees the answer. You remember the route.</p>
+        <p>Show Flow your steps once. Type them, say them, or drop in the files you already use. <span class="pp-dim">Flow’s AI follows them for each client. You catch the exception and sign off.</span></p>
+        <small>Plain Markdown files on your Mac. The AI waits for your yes.</small>
+      </Statement>
+    </section>
+
+    <Panel id="domains" seam="Flow Domains" fold="tally" title="Share a playbook.<br />It becomes a Flow Domain." lede={`Your clients bring it into their own Flow and work through your method on their own case. When you improve a step, they get the change to review. Start from one of ${blueprintCount} free blueprints, or make your own.`}>
+      <div class="pp-dm-tabs" role="tablist" aria-label="Pick a Flow Domain">
+        {mocks.map(({ fold, d }, i) => (
+          <button type="button" role="tab" id={`dm-tab-${d.id}`} aria-controls={`dm-${d.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : '-1'} data-pp-dm-tab style={`--pp-fold-c:${fold.c}`}><Fold id={fold.id} /><span>{d.data.domain}</span></button>
+        ))}
+      </div>
+      {mocks.map(({ fold, d }, i) => (
+        <div class="pp-dm-panel" role="tabpanel" id={`dm-${d.id}`} aria-labelledby={`dm-tab-${d.id}`} hidden={i > 0}>
+          <DomainMock domain={d.data.domain} tint={d.data.tint} folder={d.data.mock!.folder} client={d.data.mock!.client} files={(d.data.blueprint ?? []).map((x) => x.name)} steps={d.data.mock!.steps} wide />
+          <p class="pp-dm-cap">{fold.name} the {fold.kind} runs the {d.data.domain} blueprint on a client job. <a class="pp-link" href={domainArticleHref(d.id)}>See the blueprint →</a></p>
+        </div>
+      ))}
+      <WhyNow href="/flow/compare/custom-gpts/" cta="Move a GPT to Flow"><b>Custom GPTs retire December 11.</b> Give your playbook a home you own.</WhyNow>
+    </Panel>
+
+    <section class="pp-built-wrap" aria-labelledby="home-built-with-heading">
+      <h2 id="home-built-with-heading">Built with Orionfold</h2>
+      <p>Real work, signed and dated. Each one links to the files, issues and releases behind it.</p>
+      <ul class="pp-built" id="home-built-with">
+        {BUILT_WITH.map((b) => (
+          <li id={`home-built-with-${b.id}`}>
+            <span class="pp-kicker">{KIND[b.kind]} · {b.product} · {b.when}</span>
+            <h3>{b.title}</h3>
+            <p>{b.body}</p>
+            <ul class="pp-facts" aria-label="Where to check it">{b.facts.map((f) => <li><a href={f.href}>{f.label}</a></li>)}</ul>
+            <div class="pp-built-foot"><span><b>{b.who}</b>, {b.role}</span><a class="pp-link" href={b.href}>{b.hrefLabel} →</a></div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <p class="pp-center-note" id="elements">See how a Fold like Tally draws charts, sign-offs and timelines right into your documents. <a class="pp-link" href="/flow/elements/tour/">Take the Elements tour →</a></p>
+    <section style="padding:0 16px">
+      <Rail label="Elements" allHref="/flow/elements/" allLabel={`Browse all ${allElements} Elements`} items={elements} grid />
+    </section>
+
+    <Panel id="paths" seam="Paths" fold="sprout" tinted title="Hand off the work<br />you do over and over" lede="A Path is a job Flow already knows how to do. Pick one, or describe your own in plain words. You sign off on every result.">
+      <Rail label="Paths" allHref="/flow/paths/" allLabel={`Browse all ${paths.length} Paths`} items={paths} filter={false} grid lede="Each Path was walked end to end in Flow on a Mac. Its page shows the time, the cost and what we could not check." />
+    </Panel>
+
+    <Panel id="clients" seam="Flow for clients" fold="tally" title="Useful between<br />your meetings" lede="Publish your Flow Domain to GitHub. Each client brings it into their own Flow and keeps working with your method after the workshop. When you improve it, they see the change and choose to take it.">
+      <!-- The live home's client round trip (operator 2026-10-30): write, a skill draws, publish, the client brings it in, the update arrives. -->
+      <div class="pp-client-mock"><HomeHeroDomainMock /></div>
+      <div class="pp-clients-copy">
+        <p>Every client gets their own copy, not one shared folder. Each copy knows that client's work, and your updates fill the gaps.</p>
+        <p>Need a file instead? Send the same work as a website, a PDF, an Office file or a book.</p>
+      </div>
+    </Panel>
+
+    <section class="pp-essay" aria-labelledby="home-essay-heading">
+      <span class="pp-kicker">The thinking behind Flow · Essay {essay.number}</span>
+      <h2 id="home-essay-heading"><a href={essay.href}>{essay.title}</a></h2>
+      <p>{essay.subtitle}</p>
+      <p class="pp-essay-links"><a class="pp-btn" href={essay.href}>Read the essay</a><a class="pp-link" href="/essay/">Or begin with essay 01, Room for a Renaissance →</a><a class="pp-link" href="/essays/">All essays →</a></p>
+      <p class="pp-essay-by">An essay by Manav Sehgal</p>
+    </section>
+
+    <!-- Trust (operator 2026-10-30): the PR/FAQ's sourced differentiators, set against
+         the pattern in this year's AI-agent incidents (databases wiped by coding
+         agents, files leaked after reading one planted document). No company named;
+         wording kept inside PR/FAQ §16 ("never promise every action waits"). -->
+    <TrustBand title="Built to keep your work yours" intro="This year, AI helpers have wiped live databases and leaked files after reading one bad document. Flow works the other way. Its AI suggests, and you decide." links={[{ href: '/trust/', label: 'Trust center' }, { href: '/privacy/', label: 'Privacy' }]} cells={[
+      { title: 'Plain files you keep', line: 'Your work is Markdown in folders on your Mac. It still opens if you leave Flow.', icon: ICON.doc },
+      { title: 'You review AI changes', line: 'Each AI change shows the exact words it touches. You accept it or undo it.', icon: ICON.check },
+      { title: 'It asks before it sends', line: 'The first time work goes to an online AI, Flow shows where it goes, what is sent and the cost.', icon: ICON.send },
+      { title: 'Each run has a fence', line: 'A run says what it may touch. Publishing and spending need your own say.', icon: ICON.fence },
+      { title: 'Use the AI you already pay for', line: 'Bring your own AI, and switch if one stops working for you. Flow adds no second AI bill.', icon: ICON.key },
+      { title: 'You press Publish', line: 'Chat cannot publish for you. Your clients pick which of your updates come in.', icon: ICON.share },
+    ]} />
+
+    <section class="pp-meet" id="meet">
+      <h2>Meet your Fold</h2>
+      <p>Every Flow Domain comes with a Fold, a small paper helper that knows the method. Each one links to its Flow Domain.</p>
+      <Roster faces={emo} />
+      <div class="pp-price-head" id="pricing">
+        <h2>Pricing</h2>
+        <p>Free to start. Pay when you want your Fold to do the work.</p>
+      </div>
+      <PricingTable plans={plans} />
+      <p class="pp-price-note">AI use is billed by your own AI provider. There is no fee per Flow Domain.</p>
+    </section>
+
+    <!-- The closing call keeps the old campaign anchor (#waitlist) and its attribution. -->
+    <span id="home-flow-waitlist-heading" aria-hidden="true"></span>
+    <section class="pp-closing" id="waitlist" data-cta-placement="closing" aria-labelledby="home-closing-heading">
+      <Fold id="orri" bob class="pp-closing-fold" />
+      <h2 id="home-closing-heading">Show Flow how you work.</h2>
+      <p>Free to start, with ten Pro Days to try.</p>
+      <a class="pp-btn" href={flowDownloadHref} data-flow-download={flowLive ? 'home-living-documents' : undefined}>{flowLive ? 'Download Flow for Mac' : 'Join the waitlist'}</a>
+      <small>{FLOW_SYSTEM_REQUIREMENT}</small>
+    </section>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>
 <script>
   import "../scripts/living-documents.js";
+</script>
+<script>
+  // Domains tabs: one mock at a time; arrow keys move between tabs.
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-pp-dm-tab]')];
+  const pick = (t: HTMLButtonElement) => tabs.forEach((x) => {
+    const on = x === t;
+    x.setAttribute('aria-selected', String(on));
+    x.tabIndex = on ? 0 : -1;
+    document.getElementById(x.getAttribute('aria-controls')!)!.hidden = !on;
+  });
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => pick(t));
+    t.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      const n = tabs[(i + d + tabs.length) % tabs.length];
+      pick(n); n.focus();
+    });
+  });
 </script>

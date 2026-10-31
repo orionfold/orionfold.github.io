@@ -37,11 +37,13 @@ test('/flow/ links only to sections it has, and Canvas has one', () => {
 });
 
 test('the homepage keeps Elements and drops Agents and Import & Publish (operator 2026-10-27)', () => {
-  assert.match(home, /<FlowElementsShowcase id="home-elements" \/>/);
+  // Paper R2 (operator 2026-10-30): Elements is now a rail of real Elements.
+  assert.match(home, /<Rail label="Elements"/);
   assert.doesNotMatch(home, /<FlowAgentsReviewed|<FlowInOut/);
 });
 
-test('the homepage also shows Canvas and the Paths lead card plus three (operator 2026-10-27)', () => {
-  assert.match(home, /<FlowCanvasShowcase id="home-canvas" \/>/);
-  assert.match(home, /<PathsSection id="home-paths" showFor=\{false\} \/>/);
+test('the homepage keeps its own Paths band (operator 2026-10-27), now a rail of every Path', () => {
+  // Paper R2 (operator 2026-10-30): the prototype home has no Canvas band; whether
+  // Canvas returns is the operator's call at the R2 preview.
+  assert.match(home, /<Panel id="paths"[\s\S]*?<Rail label="Paths"/);
 });

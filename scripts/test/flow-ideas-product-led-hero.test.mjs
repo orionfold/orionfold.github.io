@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict';
 import {readFileSync,statSync} from 'node:fs';
 const read = path => readFileSync(new URL(`../../${path}`, import.meta.url),'utf8');
-for (const [page,hero,art] of [['index','HomeHero','home'],['flow','FlowHero','flow']]) {
+// Paper R2 (operator 2026-10-30): the home hero is the Talk→Page playbook mock,
+// the artifact itself, with the download still attributed to home-hero.
+const homeRoute=read('src/pages/index.astro');
+assert.match(homeRoute,/<TalkPageHero faces=\{happy\} ctaHref=\{flowDownloadHref\}[^>]*ctaTrack=\{flowLive \? 'home-hero' : undefined\}>/);
+assert.match(read('src/components/paper/TalkPageHero.astro'),/data-flow-download=\{ctaTrack\}/);
+assert.doesNotMatch(homeRoute,/FlowShot|FlowLaunchHomeHero|home-variants|data-home-variant|FlowRaceBlueprint|<video/);
+for (const [page,hero,art] of [['flow','FlowHero','flow']]) {
  const route=read(`src/pages/${page}.astro`), composition=read(`src/components/living/${hero}.astro`);
  assert.match(route,new RegExp(`<${hero} \\/>`));
  // Operator 2026-10-27: the homepage hero pitches Flow Domains, the /flow/ hero

@@ -42,7 +42,7 @@ test('the shell styles load with the shell; page components only on Paper pages'
 
 test('every Paper rule sits under .paper, so it outranks Living element rules', () => {
   const selectors = [...paperCss().matchAll(/([^{}]+)\{[^{}]*\}/g)].map((m) => m[1]).filter((sel) => !/^\s*(@|from|to|\d)/.test(sel));
-  const loose = selectors.flatMap((sel) => sel.split(',')).map((sel) => sel.trim()).filter((sel) => !/^\.paper(?![\w-])/.test(sel));
+  const loose = selectors.flatMap((sel) => sel.split(/,(?![^()]*\))/)).map((sel) => sel.trim()).filter((sel) => !/^\.paper(?![\w-])/.test(sel));
   assert.deepEqual(loose, []);
 });
 

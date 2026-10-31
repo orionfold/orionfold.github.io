@@ -4,12 +4,19 @@
 // taped paper playbook. It rotates through the cast. With reduced motion, or
 // before the script runs, the first Fold's finished page shows as plain HTML.
 // The hero mock is never the LCP element: the H1 is.
+// Controls (operator 2026-10-30): previous, play/pause and next walk the beats
+// (each Fold talks, then shows its page), and a Fold chip jumps to that Fold.
+// They appear once the script runs; with reduced motion nothing plays by itself.
 import Fold from './Fold.astro';
+import Play from '@lucide/astro/icons/play';
+import Pause from '@lucide/astro/icons/pause';
+import ChevronLeft from '@lucide/astro/icons/chevron-left';
+import ChevronRight from '@lucide/astro/icons/chevron-right';
 import { FOLDS, foldSvg } from '../../lib/paper/folds';
 import { PLAY } from '../../lib/paper/cast';
 import type { FoldId } from '../../lib/paper/folds';
-interface Props { faces?: Partial<Record<FoldId, string>>; ctaHref: string; ctaLabel: string; ctaNote?: string; interval?: number }
-const { faces = {}, ctaHref, ctaLabel, ctaNote, interval = 10400 } = Astro.props;
+interface Props { faces?: Partial<Record<FoldId, string>>; ctaHref: string; ctaLabel: string; ctaNote?: string; ctaTrack?: string; interval?: number }
+const { faces = {}, ctaHref, ctaLabel, ctaNote, ctaTrack, interval = 10400 } = Astro.props;
 const first = FOLDS[0];
 const p0 = PLAY[first.id];
 const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c: f.c, ink: f.ink, svg: foldSvg(f, { className: 'pp-bob' }), face: faces[f.id] ?? '', play: PLAY[f.id] }));
@@ -18,8 +25,9 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
   <div class="pp-hero-copy">
     <slot name="title" />
     <slot name="sub" />
-    <div class="pp-hero-cta"><a class="pp-btn" href={ctaHref}>{ctaLabel}</a>{ctaNote && <small>{ctaNote}</small>}</div>
+    <div class="pp-hero-cta"><a class="pp-btn" href={ctaHref} data-flow-download={ctaTrack}>{ctaLabel}</a>{ctaNote && <small>{ctaNote}</small>}</div>
   </div>
+  <div class="pp-hero-stage">
   <div class="pp-duo" data-act="page" aria-hidden="true">
     <div class="pp-duo-talk pp-tk">
       <div class="pp-tk-row">
@@ -45,20 +53,40 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
       </div>
     </div>
   </div>
+  <div class="pp-hero-ctl" data-pp-ctl hidden>
+    <button type="button" class="pp-ctl-btn" data-pp-prev aria-label="Previous step"><ChevronLeft size={16} /></button>
+    <button type="button" class="pp-ctl-btn" data-pp-toggle aria-pressed="true" aria-label="Pause"><Pause size={15} class="pp-i-pause" /><Play size={15} class="pp-i-play" /></button>
+    <button type="button" class="pp-ctl-btn" data-pp-next aria-label="Next step"><ChevronRight size={16} /></button>
+    <div class="pp-ctl-folds" role="group" aria-label="Pick a Fold">
+      {FOLDS.map((f, i) => <button type="button" data-pp-go={i} aria-label={`${f.name} the ${f.kind}, ${PLAY[f.id].who}`} aria-current={i === 0 ? 'true' : undefined}><Fold id={f.id} /></button>)}
+    </div>
+    <span class="sr-only" aria-live="polite" data-pp-status></span>
+  </div>
+  </div>
   <script type="application/json" data-pp-cast set:html={JSON.stringify(cast)} />
 </section>
 
 <script>
   type Beat = { id: string; name: string; kind: string; a: string; c: string; ink: string; svg: string; face: string; play: { area: string; who: string; client: string; title: string; said: string; steps: string[]; run: string } };
+  // Beats: Fold n talks (2n), then shows its page (2n + 1). Playing types the
+  // ask, answers, turns to the page and holds it; stepping shows a beat whole.
   const hero = document.querySelector<HTMLElement>('[data-pp-hero]');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (hero && !reduce) {
+  if (hero) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const cast: Beat[] = JSON.parse(hero.querySelector('[data-pp-cast]')!.textContent!);
     const duo = hero.querySelector<HTMLElement>('.pp-duo')!;
     const said = duo.querySelector<HTMLElement>('[data-pp-said]')!;
     const reply = duo.querySelector<HTMLElement>('[data-pp-reply]')!;
+    const ctl = hero.querySelector<HTMLElement>('[data-pp-ctl]')!;
+    const toggle = ctl.querySelector<HTMLButtonElement>('[data-pp-toggle]')!;
+    const status = ctl.querySelector<HTMLElement>('[data-pp-status]')!;
+    const chips = ctl.querySelectorAll<HTMLButtonElement>('[data-pp-go]');
     const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
-    let cur = 0, typing = 0, timers: number[] = [];
+    const HOLD = Number(hero.dataset.interval) / 2;
+    const total = cast.length * 2;
+    let beat = 1, playing = false, inView = false, started = false, timers: number[] = [], typing = 0;
+    const clear = () => { timers.forEach(clearTimeout); timers = []; clearInterval(typing); };
+    const later = (ms: number, fn: () => void) => { timers.push(window.setTimeout(fn, ms)); };
     const fill = (b: Beat) => {
       hero.style.setProperty('--pp-fold-a', b.a); hero.style.setProperty('--pp-fold-c', b.c); hero.style.setProperty('--pp-fold-ink', b.ink);
       duo.querySelectorAll<HTMLImageElement>('[data-pp-face]').forEach((im) => { if (b.face) im.src = b.face; });
@@ -70,24 +98,60 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
       const p = b.play;
       duo.querySelector('[data-pp-sheet]')!.innerHTML = `<span class="pp-pb-crumb">${esc(p.area)} / playbook.md</span><h3>${esc(p.title)}</h3><p class="pp-pb-for">${p.client ? 'For ' + esc(p.client) : 'For every client'}</p><ol class="pp-pb-steps">${p.steps.map((t, i) => `<li${i === 2 ? ' class="pp-yours"' : ''}><span>${esc(t)}<small>${i === 2 ? 'YOUR CALL' : esc(b.name.toUpperCase()) + ' DOES THIS'}</small></span></li>`).join('')}</ol>`;
     };
-    const play = (b: Beat) => {
-      timers.forEach(clearTimeout); clearInterval(typing); timers = [];
-      const start = () => {
-        fill(b); reply.classList.add('pp-wait'); said.textContent = ''; duo.dataset.act = 'talk';
+    const mark = () => {
+      const f = Math.floor(beat / 2), b = cast[f];
+      chips.forEach((c, i) => { if (i === f) c.setAttribute('aria-current', 'true'); else c.removeAttribute('aria-current'); });
+      status.textContent = `${b.name} the ${b.kind}, ${beat % 2 ? 'the playbook' : 'the conversation'}. Step ${beat + 1} of ${total}.`;
+    };
+    // Show a beat. animate: type the ask and let the beat run on by itself.
+    const show = (n: number, animate: boolean) => {
+      clear();
+      const prev = Math.floor(beat / 2);
+      beat = (n + total) % total;
+      const f = Math.floor(beat / 2), b = cast[f];
+      const enter = () => {
+        if (f !== prev || duo.dataset.act === 'out') fill(b);
+        mark();
+        if (beat % 2) { duo.dataset.act = 'page'; if (animate) later(HOLD, () => show(beat + 1, true)); return; }
+        duo.dataset.act = 'talk';
+        if (!animate) { said.textContent = b.play.said; reply.classList.remove('pp-wait'); return; }
+        said.textContent = ''; reply.classList.add('pp-wait');
         let k = 0;
         typing = window.setInterval(() => {
           said.textContent = b.play.said.slice(0, ++k);
-          if (k >= b.play.said.length) {
-            clearInterval(typing);
-            timers.push(window.setTimeout(() => reply.classList.remove('pp-wait'), 250));
-            timers.push(window.setTimeout(() => { duo.dataset.act = 'page'; }, 2300));
-          }
+          if (k < b.play.said.length) return;
+          clearInterval(typing);
+          later(250, () => reply.classList.remove('pp-wait'));
+          later(2300, () => show(beat + 1, true));
         }, 22);
       };
-      if (duo.dataset.act === 'page') { duo.dataset.act = 'out'; timers.push(window.setTimeout(start, 450)); } else start();
+      if (f !== prev && duo.dataset.act === 'page') { duo.dataset.act = 'out'; later(animate ? 450 : 200, enter); } else enter();
     };
+    const setPlaying = (on: boolean) => {
+      playing = on;
+      toggle.setAttribute('aria-pressed', String(on));
+      toggle.setAttribute('aria-label', on ? 'Pause' : 'Play');
+      if (on && inView) { started = true; show(beat % 2 ? beat + 1 : beat, true); } else clear();
+    };
+    ctl.addEventListener('click', (e) => {
+      const t = (e.target as HTMLElement).closest('button');
+      if (!t) return;
+      if (t.hasAttribute('data-pp-toggle')) return setPlaying(!playing);
+      playing = false; toggle.setAttribute('aria-pressed', 'false'); toggle.setAttribute('aria-label', 'Play');
+      if (t.hasAttribute('data-pp-next')) show(beat + 1, false);
+      else if (t.hasAttribute('data-pp-prev')) show(beat - 1, false);
+      else if (t.dataset.ppGo) show(Number(t.dataset.ppGo) * 2, false);
+    });
     cast.forEach((b) => { if (b.face) new Image().src = b.face; });
-    play(cast[0]);
-    window.setInterval(() => { cur = (cur + 1) % cast.length; play(cast[cur]); }, Number(hero.dataset.interval));
+    ctl.hidden = false;
+    mark();
+    // Play while the hero is on screen; never by itself with reduced motion.
+    new IntersectionObserver(([en]) => {
+      inView = en.isIntersecting;
+      if (!inView) clear();
+      else if (playing) show(started ? (beat % 2 ? beat + 1 : beat) : 0, true);
+      started = true;
+    }, { threshold: 0.3 }).observe(duo);
+    if (!reduce) { playing = true; toggle.setAttribute('aria-pressed', 'true'); } else { toggle.setAttribute('aria-pressed', 'false'); toggle.setAttribute('aria-label', 'Play'); }
   }
 </script>

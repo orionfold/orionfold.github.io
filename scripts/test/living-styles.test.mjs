@@ -6,7 +6,10 @@ const routes = { home: 'index', flow: 'flow', essay: 'essay', manifesto: 'manife
 const base = read('src/styles/living-base.css');
 const styles = Object.fromEntries(Object.keys(routes).map(route => [route, read(`src/styles/living-${route}.css`)]));
 
-for (const [route, page] of Object.entries(routes)) {
+// Paper R2 (G-141): the home page is Paper and loads no Living sheet; its old
+// living-home.css stays checked below until R8 retires it.
+assert.doesNotMatch(read('src/pages/index.astro'), /styles\/living-/, 'home: Paper only');
+for (const [route, page] of Object.entries(routes).filter(([route]) => route !== 'home')) {
   const source = read(`src/pages/${page}.astro`), css = styles[route];
   assert.match(source, new RegExp(`import '../styles/living-base\\.css';\\s*import '../styles/living-${route}\\.css';`), `${route}: base precedes the selected route cascade`);
   for (const other of Object.keys(routes).filter(name => name !== route)) assert.ok(!source.includes(`styles/living-${other}.css`), `${route}: no unrelated page sheet`);
