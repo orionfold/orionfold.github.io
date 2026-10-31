@@ -1,5 +1,5 @@
 ---
-// Homepage hero: a Flow Domain's whole round trip, from the AI Consulting
+// Homepage hero: a Flow Playbook's whole round trip, from the AI Consulting
 // walk (src/content/domains/ai-consulting.md), in five quick
 // steps you can click or let play. You write the README with Chat (788 words,
 // 2 claims marked to check), a Visual Explainer draws "Good intentions don't
@@ -37,15 +37,15 @@ const FORMATS = [
 const DEST = 'orionfold/flow/flow-domains/ai-consulting-starter';
 const BOXES = ['Good intentions', 'A tool', 'Adoption', 'Inspection'];
 // The README as you wrote it. Your client's copy renders from the same words
-// and the same figure, because the Domain arrives exactly as published.
-const P1 = 'I spent nine years at Amazon helping teams adopt AI at scale. This Domain is what I would hand someone starting that job today.';
+// and the same figure, because the Playbook arrives exactly as published.
+const P1 = 'I spent nine years at Amazon helping teams adopt AI at scale. This Playbook is what I would hand someone starting that job today.';
 const P2 = 'It is for a consultant who wants a repeatable way to do it <span class="hd-check">check</span> and for a leader asked to “do something with AI” <span class="hd-check">check</span>';
 const FIG = "Good intentions don't work; mechanisms do.";
 const STEPS = ['Write with AI', 'A skill draws', 'Publish', 'Client brings it in', 'Update arrives'];
 const DURATIONS = [3800, 4400, 5200, 6800, 5600];
 ---
 <div class="hs hd-story" data-story data-durations={DURATIONS.join(',')} data-auto="4:update:2600" data-story-scene="0">
-<figure class="dm dm--hero hd" style="--dm-tint:#0e9e98" aria-label="A Flow Domain's round trip: you write AI Consulting with Chat, a skill draws its figure, you publish six files to GitHub, your client brings the folder in with one address, and your next update reaches them as a change to review">
+<figure class="dm dm--hero hd" style="--dm-tint:#0e9e98" aria-label="A Flow Playbook's round trip: you write AI Consulting with Chat, a skill draws its figure, you publish six files to GitHub, your client brings the folder in with one address, and your next update reaches them as a change to review">
   <div class="hd-stage">
     <!-- Your Flow -->
     <div class="dm-window hd-win hd-you" aria-hidden="true">
@@ -62,7 +62,7 @@ const DURATIONS = [3800, 4400, 5200, 6800, 5600];
           </ul>
         </aside>
         <div class="hd-doc">
-          <p class="hd-eyebrow">FLOW DOMAIN</p>
+          <p class="hd-eyebrow">FLOW PLAYBOOK</p>
           <p class="hd-h">AI Consulting</p>
           <p class="hd-p hd-type">{P1}</p>
           <p class="hd-p hd-type2" set:html={P2} />
@@ -85,7 +85,7 @@ const DURATIONS = [3800, 4400, 5200, 6800, 5600];
         <aside class="hd-wb">
           <div class="hd-wb-p hd-wb-0">
             <p class="hd-tab"><MessageSquareText size={11} />Chat</p>
-            <p class="hd-msg hd-me">Write a README for this Domain, about 600 words.</p>
+            <p class="hd-msg hd-me">Write a README for this Playbook, about 600 words.</p>
             <p class="hd-dots"><i></i><i></i><i></i></p>
             <p class="hd-msg hd-ai">Wrote <b>788 words</b>. <b>2 claims</b> are marked to check before you publish.</p>
             <p class="hd-route">Claude Code › Claude subscription</p>
@@ -136,7 +136,7 @@ const DURATIONS = [3800, 4400, 5200, 6800, 5600];
         </aside>
         <div class="hd-doc">
           <div aria-hidden="true">
-            <p class="hd-eyebrow">FLOW DOMAIN</p>
+            <p class="hd-eyebrow">FLOW PLAYBOOK</p>
             <p class="hd-h">AI Consulting</p>
             <p class="hd-p">{P1}</p>
             <p class="hd-p" set:html={P2} />
@@ -198,7 +198,7 @@ const DURATIONS = [3800, 4400, 5200, 6800, 5600];
   .hs:is([data-story-scene="3"], [data-story-scene="4"]) .hd-them { z-index: 3; opacity: 1; transform: none; pointer-events: auto; }
   .hs:is([data-story-scene="3"], [data-story-scene="4"]) .hd-you { transform: scale(.95) translate(-3%, -2%); filter: saturate(.6); opacity: .7; }
 
-  /* Title bar: who it is and what state the Domain is in */
+  /* Title bar: who it is and what state the Playbook is in */
   .hd-bar-r { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
   .hd-who { padding: 2px 8px; border-radius: 99px; background: #171c1a; color: #fff; font-size: .6rem; font-weight: 700; letter-spacing: .04em; white-space: nowrap; }
   .hd-them .hd-who { background: #2f6fed; }
@@ -229,7 +229,7 @@ const DURATIONS = [3800, 4400, 5200, 6800, 5600];
   .hd-files li :global(svg) { flex: none; }
   .hd-files li span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hd-files li.is-open { background: #e3eeed; color: #0b6f6b; font-weight: 500; }
-  /* Your folder holds the README until the Domain is done; the client's fills on Add. */
+  /* Your folder holds the README until the Playbook is done; the client's fills on Add. */
   .hs:is([data-story-scene="0"], [data-story-scene="1"]) .hd-you .hd-files li:not(.is-open) { display: none; }
   .hs[data-story-scene="2"] .hd-you .hd-files li { animation: hd-slot .3s ease both; animation-delay: calc(.4s + var(--i) * 70ms); }
   .hs[data-story-scene="3"] .hd-them .hd-files li { animation: hd-slot .3s ease both; animation-delay: calc(3.1s + var(--i) * 90ms); }

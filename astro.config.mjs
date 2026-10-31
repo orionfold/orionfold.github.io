@@ -27,6 +27,13 @@ import inlineLandingStyles from './src/lib/inline-landing-styles.mjs';
 // date (legal/static) are left out — lastmod is optional per-URL. Runs once at
 // config-eval time because serialize() only sees the URL, not the frontmatter.
 const CONTENT = new URL('./src/content/', import.meta.url);
+const DOMAINS_TO_PLAYBOOKS = Object.fromEntries([
+  ['/domains/', '/playbooks/'],
+  ...readdirSync(new URL('domains/', CONTENT))
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => f.replace(/\.md$/, ''))
+    .map((slug) => [`/domains/${slug}/`, `/playbooks/${slug}/`]),
+]);
 const firstDate = (txt, re) => {
   const m = txt.match(re);
   return m ? m[1] : null;
@@ -134,7 +141,7 @@ function buildLastmodMap() {
     ['paths', '/flow/paths/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
     ['compare', '/flow/compare/', /^updated:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
     ['elements', '/flow/elements/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
-    ['domains', '/domains/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
+    ['domains', '/playbooks/', /^drafted:\s*['"]?(\d{4}-\d{2}-\d{2})/m],
   ]) {
     let files;
     try {
@@ -158,7 +165,7 @@ function buildLastmodMap() {
       .map(([, v]) => v)
       .sort()
       .at(-1);
-  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/', '/flow/paths/', '/flow/compare/', '/flow/elements/', '/domains/', '/receipts/', '/letter/']) {
+  for (const hub of ['/story/', '/software/', '/models/', '/books/', '/relay/docs/', '/relay/api/', '/relay/memos/', '/flow/paths/', '/flow/compare/', '/flow/elements/', '/playbooks/', '/receipts/', '/letter/']) {
     const d = freshestUnder(hub);
     if (d) map[hub] = d;
   }
@@ -242,11 +249,15 @@ export default defineConfig({
     '/roadmap/': '/adoption/',
     // Domains lost their "Starter" suffix on 2026-10-28 before the first push;
     // the product lane's ledger and Flow Guide drafts carried the old routes.
-    '/domains/ai-consulting-starter/': '/domains/ai-consulting/',
-    '/domains/learning-design-starter/': '/domains/learning-design/',
-    '/domains/research-synthesis-starter/': '/domains/research-synthesis/',
-    '/domains/finance-advisory-starter/': '/domains/finance-advisory/',
-    '/domains/accounting-advisory-starter/': '/domains/accounting-advisory/',
+    '/domains/ai-consulting-starter/': '/playbooks/ai-consulting/',
+    '/domains/learning-design-starter/': '/playbooks/learning-design/',
+    '/domains/research-synthesis-starter/': '/playbooks/research-synthesis/',
+    '/domains/finance-advisory-starter/': '/playbooks/finance-advisory/',
+    '/domains/accounting-advisory-starter/': '/playbooks/accounting-advisory/',
+    // Flow Domains became Flow Playbooks on 2026-10-30 (G-148). /domains/ and
+    // every page under it were live and indexed, so each one points at its
+    // /playbooks/ twin. Mirror as a Cloudflare edge 301 at go-live.
+    ...DOMAINS_TO_PLAYBOOKS,
     // GSC 404s with real successors (2026-10-01 indexing read): the DGX book's
     // pre-rename slug (54d3fe8c) and a singular /book/ typo of the business book.
     '/books/field-notes/': '/books/ai-research-on-nvidia-dgx-spark/',

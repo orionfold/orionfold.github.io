@@ -1,12 +1,12 @@
 ---
-// A Domain from publisher to consumer (operator 2026-10-27): you and your AI
+// A Playbook from publisher to consumer (operator 2026-10-27): you and your AI
 // write the method, it travels as a few Markdown files, and on the other side
 // it wakes up in a client's Flow or reaches their agent through Flow. Every
 // number is from the AI Consulting walk (src/content/domains/
 // ai-consulting.md): 788 words and 2 claims to check from Chat, 6
 // files and 75 KB, CC BY 4.0, and a first-launch Flow where the README's
 // figure played all four steps with no model run. The agent's four actions are
-// the walk's "Your agents, on your Domains". It plays once in view; without JS
+// the walk's "Your agents, on your Playbooks". It plays once in view; without JS
 // or with reduced motion it rests on the finished picture.
 import UserRound from '@lucide/astro/icons/user-round';
 import Bot from '@lucide/astro/icons/bot';
@@ -29,7 +29,7 @@ const WAKES = [
 ];
 const AGENT = ['Reads the summary and reading order', 'Searches the documents', 'Uses your method in its own work', 'Sends what it writes to Review Changes'];
 ---
-<figure class="dp" data-dp aria-label="A Domain from publisher to consumer: you and your AI write the method, it travels as 6 Markdown files of 75 KB, and it wakes up in your client's Flow or reaches their agent through Flow">
+<figure class="dp" data-dp aria-label="A Playbook from publisher to consumer: you and your AI write the method, it travels as 6 Markdown files of 75 KB, and it wakes up in your client's Flow or reaches their agent through Flow">
   <!-- Publisher -->
   <div class="dp-card dp-pub" style="--d:0">
     <p class="dp-tag">Publisher</p>
@@ -46,7 +46,7 @@ const AGENT = ['Reads the summary and reading order', 'Searches the documents', 
 
   <!-- The payload -->
   <div class="dp-card dp-pay" style="--d:1">
-    <p class="dp-tag">The Domain</p>
+    <p class="dp-tag">The Playbook</p>
     <p class="dp-folder"><Folder size={14} /><b>ai-consulting-starter</b></p>
     <ul class="dp-files">
       {FILES.map((f, i) => <li style={`--i:${i}`}><FileText size={12} /><span>{f}.md</span></li>)}

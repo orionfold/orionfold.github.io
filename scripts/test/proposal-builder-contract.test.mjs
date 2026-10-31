@@ -93,7 +93,7 @@ test('every product card exposes a server-bounded license or seat quantity', () 
   assert.match(page, /line\.quantity.*line\.unitLabel/s);
 });
 
-test('Flow seats open the proposal, priced from the catalog, with the Domains facts and a Plans button (G-134)', () => {
+test('Flow seats open the proposal, priced from the catalog, with the Playbooks facts and a Plans button (G-134)', () => {
   const offers = getConsultingOffers();
   const flow = offers.filter((offer) => offer.family === 'Flow');
   assert.deepEqual(flow.map((offer) => offer.id), ['flow-pro-annual', 'flow-import-annual', 'flow-publish-annual']);
@@ -123,10 +123,10 @@ test('Flow seats open the proposal, priced from the catalog, with the Domains fa
   assert.match(page, /featured=\{index === 0\}/);
   assert.match(card, /featured && "prop-card-featured"/);
   assert.match(css, /\.prop-card-featured \{ grid-column: 1 \/ -1; \}/);
-  assert.doesNotMatch(page, /Flow Domains on a proposal/, 'the Domains aside was removed; the facts live on the cards');
-  assert.match(flow[0].freeBoundary, /Bringing a Domain in from GitHub is free on Base/);
-  assert.match(flow[2].worksWith, /Publishing a Domain needs Pro and Publish together/);
-  assert.match(flow[2].notFor, /no fee per Domain/);
+  assert.doesNotMatch(page, /Flow Playbooks on a proposal/, 'the Playbooks aside was removed; the facts live on the cards');
+  assert.match(flow[0].freeBoundary, /Bringing a Playbook in from GitHub is free on Base/);
+  assert.match(flow[2].worksWith, /Publishing a Playbook needs Pro and Publish together/);
+  assert.match(flow[2].notFor, /no fee per Playbook/);
   assert.match(page, /Flow lines are yearly subscriptions, one seat per person\./);
   assert.match(page, /Set the licenses, Flow seats or workshop seats/);
 

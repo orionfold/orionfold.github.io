@@ -7,13 +7,13 @@ hook: "Your monthly close, the plain-English note that explains it, and the rese
 icon: skill-register
 tint: "#ff3252"
 order: 5
-dek: "You close the books for dozens of clients and answer the questions that come after. The close is a method. The explanation is a craft. Both live in your head and in a folder of past emails. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
-description: "A monthly close and client advisory playbook as a Flow Domain blueprint for accounting firms and CPAs. What it holds, the signals, and how to build it in Flow."
+dek: "You close the books for dozens of clients and answer the questions that come after. The close is a method. The explanation is a craft. Both live in your head and in a folder of past emails. This blueprint shows what a Flow Playbook for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
+description: "A blueprint for a monthly close and client advisory Playbook, for accounting firms and CPAs. What it holds, the signals, and how to build it in Flow."
 drafted: "2026-10-28"
 release: "3.0"
 blueprint:
   - name: README
-    role: "The front page. Who the Domain is for, what a reader will have at the end, and the path through it."
+    role: "The front page. Who the Playbook is for, what a reader will have at the end, and the path through it."
     chips: [["skill-visual-explainer", "Stepped figure"], ["skill-isometric-figure", "Map of the path"]]
   - n: "1"
     name: Monthly Close Method
@@ -41,11 +41,11 @@ faq:
   - q: "How do I keep tax research notes current when the IRS changes a page?"
     a: "Bring the page in with New from Web Page and choose Follow the source. Each Jobs run reads it again and brings changes in where you have not edited. Your Research Note Standard cites the current page, and Sources marks a source that changed since the note was written."
   - q: "Does client data leave my Mac?"
-    a: "Client statements stay in that client's folder on your Mac. Before any run leaves the Mac, Flow shows what goes and where and asks. Publishing is a separate step you take yourself, and it sends only the Domain's files. The Domain holds the method, never a client's numbers."
-  - q: "Does a Flow Domain replace the custom GPT I built for client questions?"
-    a: "It is a different shape. A GPT is a chat inside one service, and OpenAI retires custom GPTs on December 11, 2026. A Domain is files in your own GitHub. Chat on it in Flow answers from your Standard and your Register and links each fact to its file."
-  - q: "What does it cost to publish an accounting advisory Domain?"
-    a: "Bringing a Domain in is free on Base. Writing with Chat needs Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on, another $10 a month. There is no fee per Domain. Skills are free on every plan."
+    a: "Client statements stay in that client's folder on your Mac. Before any run leaves the Mac, Flow shows what goes and where and asks. Publishing is a separate step you take yourself, and it sends only the Playbook's files. The Playbook holds the method, never a client's numbers."
+  - q: "Does a Flow Playbook replace the custom GPT I built for client questions?"
+    a: "It is a different shape. A GPT is a chat inside one service, and OpenAI retires custom GPTs on December 11, 2026. A Playbook is files in your own GitHub. Chat on it in Flow answers from your Standard and your Register and links each fact to its file."
+  - q: "What does it cost to publish an accounting advisory Playbook?"
+    a: "Bringing a Playbook in is free on Base. Writing with Chat needs Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on, another $10 a month. There is no fee per Playbook. Skills are free on every plan."
 mock:
   folder: close-method
   client: "Juniper Bakery"
@@ -91,7 +91,7 @@ minutes: 10
 
 You close the books for dozens of businesses and then answer the questions that come after. Why did cash drop when profit rose. What does the new deduction mean for us. Can we treat this as a repair. The close is a method you repeat every month. The explanation is a craft you have practiced for years. Both live in your head, in a checklist someone started in 2019, and in a folder of past emails you search when a client asks the same thing again.
 
-This page is a blueprint for a Flow Domain that carries that method and that craft. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Playbook that carries that method and that craft. It is not built. [AI Consulting](/playbooks/ai-consulting/) is a Playbook that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Playbook. If you do, I would like to hear about it.
 
 ## The opportunity
 
@@ -99,7 +99,7 @@ The accounting market is large and slow. US accounting services bring in about [
 
 AI arrived in firms faster than almost anywhere else. Thomson Reuters found firm-level use of generative AI among tax firms went from [8 percent in 2024 to 34 percent in 2026](https://www.thomsonreuters.com/en-us/posts/innovation/the-real-ai-story-in-tax-and-audit-isnt-adoption-its-impact/). Wolters Kluwer's 2025 survey found the share of firms using AI jumped from [9 to 41 percent](https://www.accountex.co.uk/insight/2025/10/08/wolters-kluwer-releases-its-2025-future-ready-accountant-report-highlighting-key-trends-in-the-global-tax-accounting-industry/) in one year. Karbon's 2027 report puts firms using at least one AI tool at [86.7 percent](https://karbonhq.com/resources/accounting-technology-report-2027-karbon/). The tools are in. What most firms do not have is a written way of using them that a new hire or a client can read.
 
-The people to do the work are getting scarcer. Accounting degrees fell [6.6 percent](https://www.aicpa-cima.com/professional-insights/download/2025-trends-report) in a year, and new CPA exam candidates fell by a third, from 42,626 to 28,082. The Bureau of Labor Statistics still expects [1.6 million accountants and auditors](https://www.bls.gov/ooh/business-and-financial/accountants-and-auditors.htm) to be needed in 2035, with about 115,000 openings a year. The 2026 filing season was the first to carry the 2025 tax law, with a new form and about [164 million returns](https://www.irs.gov/newsroom/irs-announces-first-day-of-2026-filing-season-online-tools-and-resources-help-with-tax-filing) to explain to the people who filed them. And the custom GPT some advisors used to package their know-how [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). A Domain is plain files in your own GitHub. Nobody can retire it.
+The people to do the work are getting scarcer. Accounting degrees fell [6.6 percent](https://www.aicpa-cima.com/professional-insights/download/2025-trends-report) in a year, and new CPA exam candidates fell by a third, from 42,626 to 28,082. The Bureau of Labor Statistics still expects [1.6 million accountants and auditors](https://www.bls.gov/ooh/business-and-financial/accountants-and-auditors.htm) to be needed in 2035, with about 115,000 openings a year. The 2026 filing season was the first to carry the 2025 tax law, with a new form and about [164 million returns](https://www.irs.gov/newsroom/irs-announces-first-day-of-2026-filing-season-online-tools-and-resources-help-with-tax-filing) to explain to the people who filed them. And the custom GPT some advisors used to package their know-how [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). A Playbook is plain files in your own GitHub. Nobody can retire it.
 
 ## The signals
 
@@ -116,11 +116,11 @@ The people to do the work are getting scarcer. Accounting degrees fell [6.6 perc
 
 Each figure measures something narrower than it sounds. Surveys count who answered. Vendor research counts a vendor's view. A market estimate is a model. Read them as a direction, not a forecast.
 
-## What your Domain holds
+## What your Playbook holds
 
 The figure at the top of this page is the folder as it could sit on GitHub. Six Markdown files. Here is what each one does.
 
-**The README** is the front page. It says who the Domain is for, what a reader will have at the end, and the order to read the documents in. A stepped figure shows a close becoming a note. An isometric figure maps the path.
+**The README** is the front page. It says who the Playbook is for, what a reader will have at the end, and the order to read the documents in. A stepped figure shows a close becoming a note. An isometric figure maps the path.
 
 **Monthly Close Method** is the backbone. The steps of your close, who owns each, and the checks that must pass before the books are called done. The checklist is an Approval Card, so the record of who closed what stays with the month.
 
@@ -134,7 +134,7 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 
 ## What Flow does for this work
 
-**Chat answers from your Standard and your Register.** With the Domain chosen, Chat searches your documents before it replies and links each fact to its file. Ask *How do we treat a repair?* and the answer comes from the Research Note Standard, with the section named. A new hire gets the same answer you would give. When your documents are silent, Chat says so.
+**Chat answers from your Standard and your Register.** With the Playbook chosen, Chat searches your documents before it replies and links each fact to its file. Ask *How do we treat a repair?* and the answer comes from the Research Note Standard, with the section named. A new hire gets the same answer you would give. When your documents are silent, Chat says so.
 
 **The close checklist is signed in the document.** The Monthly Close Method ends in an Approval Card. Eleven checks, each with its owner. The person who closes ticks them, types their name and presses **Sign off**. Flow writes one signed record beside the month, and History lists it. Change the checklist later and the card asks for a new signature. The old record stays.
 
@@ -150,40 +150,40 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 
 ## How you build it in Flow
 
-The [AI Consulting story](/domains/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
+The [AI Consulting story](/playbooks/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
 
-1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/domains/ai-consulting/#an-empty-folder-and-chat-already-in-it).
-2. **Ask Chat for the README.** Describe who the Domain is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/domains/ai-consulting/#a-front-page-in-the-authors-voice).
-3. **Bring in what you already have.** The close checklist from 2019, a past client note with the names changed, the IRS page you cite most. New from Web Page turns a page or a shared AI chat into a document with its links kept. See [an old AI chat became a reference](/domains/ai-consulting/#an-old-ai-chat-became-a-reference).
+1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/playbooks/ai-consulting/#an-empty-folder-and-chat-already-in-it).
+2. **Ask Chat for the README.** Describe who the Playbook is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/playbooks/ai-consulting/#a-front-page-in-the-authors-voice).
+3. **Bring in what you already have.** The close checklist from 2019, a past client note with the names changed, the IRS page you cite most. New from Web Page turns a page or a shared AI chat into a document with its links kept. See [an old AI chat became a reference](/playbooks/ai-consulting/#an-old-ai-chat-became-a-reference).
 4. **Let Ideas pick a Skill.** Press Suggest on your Method document. Ideas reads the sections and names a Skill for each, a Workflow Path for the close, a Register for the open questions. A figure or a form waits in Review Changes until you keep it.
 
-![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Domain built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
+![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Playbook built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
 
-5. **Ask Chat for the next document with your own pages as sources.** The Explanation Guide can be written from your Method and your past notes. Repeat until the path is done. See [the next document, from his own pages](/domains/ai-consulting/#the-next-document-from-his-own-pages).
-6. **Review every change.** When you merge two checks or rename a document, every page that pointed at it follows. See [Review changed the plan, and the source followed](/domains/ai-consulting/#review-changed-the-plan-and-the-source-followed).
+5. **Ask Chat for the next document with your own pages as sources.** The Explanation Guide can be written from your Method and your past notes. Repeat until the path is done. See [the next document, from his own pages](/playbooks/ai-consulting/#the-next-document-from-his-own-pages).
+6. **Review every change.** When you merge two checks or rename a document, every page that pointed at it follows. See [Review changed the plan, and the source followed](/playbooks/ai-consulting/#review-changed-the-plan-and-the-source-followed).
 
 ## Apply it to a client job
 
-A Domain is for using, not only reading. After a close, open the Domain, start a folder for the client and drop the month's statements in as tables. Ask Chat to draft the close note from the Guide, and to mark every line it is unsure about. The Method's checklist tells you what to confirm before the note goes out. When a client asks a question you had to research, the answer goes in the Register, and the lesson goes back into the Standard. Next month starts from what you learned.
+A Playbook is for using, not only reading. After a close, open the Playbook, start a folder for the client and drop the month's statements in as tables. Ask Chat to draft the close note from the Guide, and to mark every line it is unsure about. The Method's checklist tells you what to confirm before the note goes out. When a client asks a question you had to research, the answer goes in the Register, and the lesson goes back into the Standard. Next month starts from what you learned.
 
 A new hire can read the Method and the Guide on their first day and close their first month the way you would. That is the staffing problem answered one person at a time.
 
 ## Publish it, and keep it current
 
-When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Domain in with File, then New from GitHub, and the folder's address. Check the repository's visibility first. Your method can be public while every client's statements stay in their own folder on your Mac.
+When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Playbook in with File, then New from GitHub, and the folder's address. Check the repository's visibility first. Your method can be public while every client's statements stay in their own folder on your Mac.
 
-![Publish open on a Domain in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
+![Publish open on a Playbook in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
 
 When a rule changes and you publish again, every reader's copy shows the update as a change they review. They keep their own edits. Nothing is replaced behind their back.
 
-![Flow's update sheet for a Domain a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
+![Flow's update sheet for a Playbook a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
 
-The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and Excel files for a client's team. Chat on the Domain, and the figures a reader steps through, stay in Flow.
+The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and Excel files for a client's team. Chat on the Playbook, and the figures a reader steps through, stay in Flow.
 
 ## What it costs
 
-Bringing any Domain into Flow is free on Base. Writing with Chat, and Chat on a Domain, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Domain, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
+Bringing any Playbook into Flow is free on Base. Writing with Chat, and Chat on a Playbook, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Playbook, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
 
 ## Start here
 
-Read the [walkthrough](/domains/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your close to Chat in three sentences. The README it writes is the first document of your Domain. If you want to talk it through first, the [Domains page](/domains/) has one email address and four questions.
+Read the [walkthrough](/playbooks/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your close to Chat in three sentences. The README it writes is the first document of your Playbook. If you want to talk it through first, the [Playbooks page](/playbooks/) has one email address and four questions.

@@ -171,7 +171,7 @@
 .paper .pp-why-now p { margin: 0; font: 400 clamp(19px, 1.8vw, 24px)/1.3 var(--pp-serif); }
 .paper .pp-why-now b { font-weight: 500; }
 
-/* ---------- home (R2): scene, Domains row, built-with, clients, meet ---------- */
+/* ---------- home (R2): scene, Playbooks row, built-with, clients, meet ---------- */
 .paper .pp-scene-wrap { padding: 80px 16px 40px; display: grid; justify-items: center; }
 .paper .pp-scene { width: min(760px, 100%); border-radius: var(--pp-r-1); overflow: hidden; box-shadow: 0 1px 0 var(--pp-line); }
 .paper .pp-scene svg { display: block; width: 100%; height: auto; }
@@ -222,7 +222,7 @@
 .paper .pp-ctl-folds button[aria-current="true"] { opacity: 1; background: var(--pp-fold-c); }
 .paper .pp-ctl-folds .pp-fold svg { width: 24px; height: 24px; }
 @media (max-width: 420px) { .paper .pp-ctl-folds { margin-left: 0; } }
-/* Domains (operator 2026-10-30): a tab per blueprint, each playing its own client job */
+/* Playbooks (operator 2026-10-30): a tab per blueprint, each playing its own client job */
 .paper .pp-dm-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 8px 0 22px; }
 .paper .pp-dm-tabs button { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border: 1px solid var(--pp-line); border-radius: 999px; background: var(--pp-white); color: var(--pp-ink); font: 500 13.5px/1.2 var(--pp-sans); cursor: pointer; }
 .paper .pp-dm-tabs button .pp-fold { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--pp-fold-c); }

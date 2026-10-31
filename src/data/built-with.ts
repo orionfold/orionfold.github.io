@@ -39,15 +39,15 @@ export const BUILT_WITH: BuiltWithEntry[] = [
     product: 'Flow',
     when: 'October 25 to 26, 2026',
     title: 'AI Consulting, built in Flow',
-    body: 'I wrote the AI Consulting Domain in Flow over two days. It carries nine years of Amazon mechanisms, from picking the right AI project to taking a pilot to production. Chat drafted each document in my voice and marked every claim it could not stand behind. An old ChatGPT chat came in as a reference, links kept. Skills drew the figures, and each one can be pressed and stepped through. I reviewed every change, published the folder to GitHub, and pulled it into a fresh Flow. When I published again, that copy showed the update as a change to review.',
+    body: 'I wrote the AI Consulting Playbook in Flow over two days. It carries nine years of Amazon mechanisms, from picking the right AI project to taking a pilot to production. Chat drafted each document in my voice and marked every claim it could not stand behind. An old ChatGPT chat came in as a reference, links kept. Skills drew the figures, and each one can be pressed and stepped through. I reviewed every change, published the folder to GitHub, and pulled it into a fresh Flow. When I published again, that copy showed the update as a change to review.',
     facts: [
       { label: '6 files, 75 KB', href: 'https://github.com/orionfold/flow/tree/main/flow-domains/ai-consulting-starter' },
-      { label: 'About 3 hours', href: '/domains/ai-consulting/#the-numbers' },
-      { label: '$0 extra API spend', href: '/domains/ai-consulting/#the-numbers' },
+      { label: 'About 3 hours', href: '/playbooks/ai-consulting/#the-numbers' },
+      { label: '$0 extra API spend', href: '/playbooks/ai-consulting/#the-numbers' },
     ],
     who: 'Manav Sehgal',
     role: 'Founder, Orionfold',
-    href: '/domains/ai-consulting/',
+    href: '/playbooks/ai-consulting/',
     hrefLabel: 'Read the walk',
   },
   {
@@ -60,7 +60,7 @@ export const BUILT_WITH: BuiltWithEntry[] = [
     facts: [
       { label: 'Relay, open source', href: 'https://github.com/orionfold/relay' },
       { label: 'BeneFACT', href: 'https://dgh42.com/beneFACT' },
-      { label: 'Flow Domains', href: '/domains/' },
+      { label: 'Flow Playbooks', href: '/playbooks/' },
     ],
     who: 'Harun Yayli',
     role: 'Co-founder, DGH42',

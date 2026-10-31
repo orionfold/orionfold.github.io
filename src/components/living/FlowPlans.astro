@@ -9,8 +9,8 @@ import { FLOW_CANCEL_TERMS, FLOW_TRIAL_TERMS, FLOW_ADDONS, FLOW_ADDON_TERMS } fr
 // `bare` drops the heading for a page that frames the plans itself (Paper, R4).
 interface Props { bare?: boolean }
 const { bare = false } = Astro.props;
-const baseItems = ['Write, search, organize and chart Markdown', 'Markdown, tables, pictures and diagrams', 'Deterministic Jobs and Night Shift', 'Morning Briefing and Keep/Revert review', 'Elements, Skills and the canvas, and any Domain you bring in from GitHub', `${FLOW_COUNTS.livingDocuments} Living Documents and ${FLOW_COUNTS.paths} paths to start from`];
-const proItems = ['Everything in Base', 'Local Overnight notes on changed work', 'Model-assisted data-definition drafts', 'Model-powered Ideas actions, daytime Agency and analysis', 'Chat on a folder or a Domain, and Suggest Ideas', 'The door for your own agents in Terminal', 'Local or configured cloud models; provider usage is separate'];
+const baseItems = ['Write, search, organize and chart Markdown', 'Markdown, tables, pictures and diagrams', 'Deterministic Jobs and Night Shift', 'Morning Briefing and Keep/Revert review', 'Elements, Skills and the canvas, and any Playbook you bring in from GitHub', `${FLOW_COUNTS.livingDocuments} Living Documents and ${FLOW_COUNTS.paths} paths to start from`];
+const proItems = ['Everything in Base', 'Local Overnight notes on changed work', 'Model-assisted data-definition drafts', 'Model-powered Ideas actions, daytime Agency and analysis', 'Chat on a folder or a Playbook, and Suggest Ideas', 'The door for your own agents in Terminal', 'Local or configured cloud models; provider usage is separate'];
 // Paper (bare): each list waits behind "What … includes", as the home's plans do.
 ---
 <span id="pricing-heading" class="ls-anchor-alias" aria-hidden="true"></span>

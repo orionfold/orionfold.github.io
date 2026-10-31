@@ -2,7 +2,7 @@
 // on the homepage are signed accounts with checkable links, never quotations.
 // A walk is the founder's own; a case runs with the customer's approval,
 // recorded in the planning changelog rather than on the page. The links point
-// only at places this repository has verified (the launch story, the Domain
+// only at places this repository has verified (the launch story, the Playbook
 // folder, the Relay repository, DGH42's public pages).
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -54,13 +54,13 @@ test('the launch story still carries the numbers the walk links to', () => {
   assert.match(story, /6 Markdown files, 75 KB/);
 });
 
-test('the built homepage renders the band after Domains with both cards, and /flow/ does not', () => {
+test('the built homepage renders the band after Playbooks with both cards, and /flow/ does not', () => {
   const home = new URL('dist/index.html', root);
   if (!existsSync(home)) { test.skip('dist/ not built'); return; }
   const html = readFileSync(home, 'utf8');
-  // Paper R2 (G-141, operator 2026-10-30): walk and case side by side, right after Domains.
+  // Paper R2 (G-141, operator 2026-10-30): walk and case side by side, right after Playbooks.
   const first = html.indexOf(`id="home-built-with-${entries[0].id}"`);
-  assert.ok(html.indexOf('id="domains"') < first, 'Built with follows the Domains panel');
+  assert.ok(html.indexOf('id="domains"') < first, 'Built with follows the Playbooks panel');
   assert.ok(html.lastIndexOf('id="home-built-with-') < html.indexOf('id="elements"'), 'and precedes Elements');
   for (const entry of entries) assert.match(html, new RegExp(`id="home-built-with-${entry.id}"`));
   // The Elements rail names an "Approval Card", so read only the Built with markup.

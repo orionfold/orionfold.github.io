@@ -9,7 +9,7 @@ export interface FooterLink { href: string; label: string }
 export const FLOW_COLUMNS: FooterLink[][] = [
   [
     { href: '/flow/', label: 'Overview' },
-    { href: '/domains/', label: 'Flow Domains' },
+    { href: '/playbooks/', label: 'Flow Playbooks' },
     { href: '/flow/elements/', label: 'Elements' },
     { href: '/essays/', label: 'Essays' },
   ],

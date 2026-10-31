@@ -7,14 +7,14 @@ hook: "Your discovery method, the opportunity tree and roadmap it feeds, and the
 icon: skill-opportunity-map
 tint: "#ff2a6b"
 order: 10
-dek: "You coach product teams through the same path again and again. Interview customers, draw the opportunity tree, write the strategy on one page, sort the roadmap by outcome, sign off the launch, read the numbers. The method is yours. It lives in a slide deck, a Miro board and a custom GPT you are about to lose. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
-description: "A blueprint for a Flow Domain for product coaches and fractional CPOs. Your product management method, from discovery to launch, and how to build it in Flow."
+dek: "You coach product teams through the same path again and again. Interview customers, draw the opportunity tree, write the strategy on one page, sort the roadmap by outcome, sign off the launch, read the numbers. The method is yours. It lives in a slide deck, a Miro board and a custom GPT you are about to lose. This blueprint shows what a Flow Playbook for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
+description: "A blueprint for a Flow Playbook for product coaches and fractional CPOs. Your product management method, from discovery to launch, and how to build it in Flow."
 drafted: "2026-10-29"
 release: "3.0"
 keywords: ["product management framework template", "prd template", "product discovery playbook", "custom gpt for product managers", "product coaching toolkit", "opportunity solution tree template", "product strategy one-pager template", "outcome based roadmap template", "product launch checklist template", "fractional cpo playbook"]
 blueprint:
   - name: README
-    role: "The front page. Who the Domain is for, what a reader will have at the end, and the path through it."
+    role: "The front page. Who the Playbook is for, what a reader will have at the end, and the path through it."
     chips: [["skill-visual-explainer", "Stepped figure"], ["skill-isometric-figure", "Map of the path"]]
   - n: "1"
     name: Discovery Interview Method
@@ -75,7 +75,7 @@ mock:
       block: "Hero"
       status: "1 change to review"
     - title: "Sign off the launch"
-      ask: "Add the Launch Checklist from the Domain so the team lead can tick it and sign."
+      ask: "Add the Launch Checklist from the Playbook so the team lead can tick it and sign."
       reply: "Approval Card added with 12 items."
       doc: "Launch checklist, release one"
       block: "Approval Card · Sign off"
@@ -91,7 +91,7 @@ minutes: 9
 
 You coach product teams through the same path again and again. Interview eight customers about a recent problem. Draw the opportunity solution tree. That is a tree from one outcome down to the needs you heard and the bets that might meet them. Write the strategy on one page and get the founder to sign it. Sort the roadmap by outcome, not by feature. Tick the launch checklist, then read the numbers a month later. The method is yours. Today it lives in a slide deck, an old whiteboard export, and a custom GPT you built so clients could ask it questions.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Playbook that carries that method. It is not built. [AI Consulting](/playbooks/ai-consulting/) is a Playbook that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Playbook. If you do, I would like to hear about it.
 
 ## The opportunity
 
@@ -99,7 +99,7 @@ Product management has no line of its own in the labor statistics. The nearest i
 
 AI is already in the daily work. Gartner says [79 percent of product teams](https://www.gartner.com/en/product-management/insights/leadership-vision-for-technology-cpo) use generative AI every day. Product Focus found frequent use jumped from [49 to 69 percent](https://www.productfocus.com/product-management-amplified-part-1-the-33-point-gap/) in one year, and 97 percent said it made them more productive. Only 64 percent said the product got better. Productboard found [96 percent](https://www.productboard.com/blog/ai-in-product-management-report) of enterprise product managers use AI consistently, and 65 percent work under a written AI policy. [Four in five](https://productside.com/the-state-of-ai-for-pm-report-2026/) use AI every day. Only 23 percent of their companies have a clear plan with an owner. The gap between use and method is where a coach earns their fee.
 
-The method is what gets overridden. ProductPlan found [over 60 percent](https://productplan.com/ebooks/the-state-of-product-management-report-2026) of prioritization frameworks are set aside by a leader's escalation. A written path, with the reason on each step, is harder to set aside than a slide. There is now a standard to point at, too. [ISO 56001](https://www.iso.org/standard/79278.html), published in September 2024, sets requirements for how an organization manages innovation. And the custom GPT some coaches built to answer their clients' questions [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). A Domain is plain files in your own GitHub. Nobody can retire it.
+The method is what gets overridden. ProductPlan found [over 60 percent](https://productplan.com/ebooks/the-state-of-product-management-report-2026) of prioritization frameworks are set aside by a leader's escalation. A written path, with the reason on each step, is harder to set aside than a slide. There is now a standard to point at, too. [ISO 56001](https://www.iso.org/standard/79278.html), published in September 2024, sets requirements for how an organization manages innovation. And the custom GPT some coaches built to answer their clients' questions [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). A Playbook is plain files in your own GitHub. Nobody can retire it.
 
 ## The signals
 
@@ -116,11 +116,11 @@ The method is what gets overridden. ProductPlan found [over 60 percent](https://
 
 Each figure measures something narrower than it sounds. Surveys count who answered. Vendor research counts a vendor's view. A market estimate is a model. Read them as a direction, not a forecast.
 
-## What your Domain holds
+## What your Playbook holds
 
 The figure at the top of this page is the folder as it could sit on GitHub. Six Markdown files. Here is what each one does.
 
-**The README** is the front page. It says who the Domain is for, what a reader will have at the end, and the order to read the documents in. A stepped figure shows an interview note becoming a bet on a roadmap. An isometric figure maps the path from discovery to launch.
+**The README** is the front page. It says who the Playbook is for, what a reader will have at the end, and the order to read the documents in. A stepped figure shows an interview note becoming a bet on a roadmap. An isometric figure maps the path from discovery to launch.
 
 **Discovery Interview Method** is where the path starts. How you find customers to talk to. How you keep the interview on a recent problem and off your idea. How the note is written so it can feed the tree. A Workflow Path draws it. An Interview Intake form lets a team member log each interview in the shape you need. A Guided Exercise lets a new product manager practice the questions before a real call.
 
@@ -134,7 +134,7 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 
 ## What Flow does for this work
 
-**Chat answers from the folder.** A product manager on a client team opens the Domain and asks how long a discovery interview should run. Chat searches the folder and answers from the Method, with a From this folder row naming the page. When the folder does not say, Chat says so. The README's questions wait in an empty Chat as buttons.
+**Chat answers from the folder.** A product manager on a client team opens the Playbook and asks how long a discovery interview should run. Chat searches the folder and answers from the Method, with a From this folder row naming the page. When the folder does not say, Chat says so. The README's questions wait in an empty Chat as buttons.
 
 **A Skill draws the opportunity tree.** Select the interview notes and run Opportunity Map. It draws the tree from what the notes say and names what is missing rather than guessing. The figure waits in Review Changes until you keep it. Run Roadmap on the three bets you chose, and the now, next and later columns appear with an outcome on each card.
 
@@ -148,40 +148,40 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 
 ## How you build it in Flow
 
-The [AI Consulting story](/domains/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
+The [AI Consulting story](/playbooks/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
 
-1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/domains/ai-consulting/#an-empty-folder-and-chat-already-in-it).
-2. **Ask Chat for the README.** Describe who the Domain is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/domains/ai-consulting/#a-front-page-in-the-authors-voice).
-3. **Bring in what you already have.** The interview script from your workshop deck. A past one-pager with the client's name changed. The custom GPT's instructions and reference files. New from Web Page turns a page or a shared ChatGPT conversation into a document with its links kept. See [an old AI chat became a reference](/domains/ai-consulting/#an-old-ai-chat-became-a-reference).
+1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/playbooks/ai-consulting/#an-empty-folder-and-chat-already-in-it).
+2. **Ask Chat for the README.** Describe who the Playbook is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/playbooks/ai-consulting/#a-front-page-in-the-authors-voice).
+3. **Bring in what you already have.** The interview script from your workshop deck. A past one-pager with the client's name changed. The custom GPT's instructions and reference files. New from Web Page turns a page or a shared ChatGPT conversation into a document with its links kept. See [an old AI chat became a reference](/playbooks/ai-consulting/#an-old-ai-chat-became-a-reference).
 4. **Let Ideas pick a Skill.** Press Suggest on your Discovery Interview Method. Ideas reads the sections and names a Skill for each, a Workflow Path for the interview loop, a Guided Exercise for the practice run. A figure or a form waits in Review Changes until you keep it.
 
-![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Domain built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
+![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Playbook built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
 
-5. **Ask Chat for the next document with your own pages as sources.** The Opportunity Tree and Strategy One-Pager can be written from your Method and the past one-pager you brought in. Repeat until the path is done. See [the next document, from his own pages](/domains/ai-consulting/#the-next-document-from-his-own-pages).
-6. **Review every change.** When you merge two checklist items or rename an outcome, every page that pointed at it follows. See [Review changed the plan, and the source followed](/domains/ai-consulting/#review-changed-the-plan-and-the-source-followed).
+5. **Ask Chat for the next document with your own pages as sources.** The Opportunity Tree and Strategy One-Pager can be written from your Method and the past one-pager you brought in. Repeat until the path is done. See [the next document, from his own pages](/playbooks/ai-consulting/#the-next-document-from-his-own-pages).
+6. **Review every change.** When you merge two checklist items or rename an outcome, every page that pointed at it follows. See [Review changed the plan, and the source followed](/playbooks/ai-consulting/#review-changed-the-plan-and-the-source-followed).
 
 ## Apply it to a client job
 
-A Domain is for using, not only reading. A fractional CPO engagement starts with a folder for the client and the first eight interview notes dropped in from Word. Ask Chat to draft the opportunity tree from the notes and the Discovery Interview Method, and to mark every branch the notes do not support. The Opportunity Tree and Strategy One-Pager says how to pick three bets and write the page the founder signs. The Outcome Roadmap and One-Pager Template sorts those bets into now, next and later. When the first release is ready, the Launch Checklist is an Approval Card the team lead signs. A month later the metrics review reads the chart the Job kept current.
+A Playbook is for using, not only reading. A fractional CPO engagement starts with a folder for the client and the first eight interview notes dropped in from Word. Ask Chat to draft the opportunity tree from the notes and the Discovery Interview Method, and to mark every branch the notes do not support. The Opportunity Tree and Strategy One-Pager says how to pick three bets and write the page the founder signs. The Outcome Roadmap and One-Pager Template sorts those bets into now, next and later. When the first release is ready, the Launch Checklist is an Approval Card the team lead signs. A month later the metrics review reads the chart the Job kept current.
 
 When a release misses its outcome, the reason goes into the Worked Example, and the lesson goes back into the Method. The next engagement starts from what you learned. A new product manager can read the Method and the Template on their first day and run their first interview the way you would. That is how the team keeps the method after the coach leaves.
 
 ## Publish it, and keep it current
 
-When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Domain in with File, then New from GitHub, and the folder's address. Check the repository's visibility first. Your method can be public while every client's interview notes, metrics and roadmap stay in their own folder on your Mac.
+When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Playbook in with File, then New from GitHub, and the folder's address. Check the repository's visibility first. Your method can be public while every client's interview notes, metrics and roadmap stay in their own folder on your Mac.
 
-![Publish open on a Domain in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
+![Publish open on a Playbook in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
 
 When a rule changes and you publish again, every reader's copy shows the update as a change they review. They keep their own edits. Nothing is replaced behind their back.
 
-![Flow's update sheet for a Domain a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
+![Flow's update sheet for a Playbook a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
 
-The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and Excel files for a client's team. Chat on the Domain, and the figures a reader steps through, stay in Flow.
+The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and Excel files for a client's team. Chat on the Playbook, and the figures a reader steps through, stay in Flow.
 
 ## What it costs
 
-Bringing any Domain into Flow is free on Base. Writing with Chat, and Chat on a Domain, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Domain, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
+Bringing any Playbook into Flow is free on Base. Writing with Chat, and Chat on a Playbook, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Playbook, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
 
 ## Start here
 
-Read the [walkthrough](/domains/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your discovery method to Chat in three sentences. Who you interview and what you ask. How the notes become a tree and a one-page strategy. What must be true before a release ships. The README it writes is the first document of your Domain. If you want to talk it through first, the [Domains page](/domains/) has one email address and four questions.
+Read the [walkthrough](/playbooks/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your discovery method to Chat in three sentences. Who you interview and what you ask. How the notes become a tree and a one-page strategy. What must be true before a release ships. The README it writes is the first document of your Playbook. If you want to talk it through first, the [Playbooks page](/playbooks/) has one email address and four questions.

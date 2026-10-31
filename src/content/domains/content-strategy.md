@@ -7,14 +7,14 @@ hook: "Your brand voice guide, the messaging map behind it, and the briefs and c
 icon: skill-landscape-map
 tint: "#00cb48"
 order: 15
-dek: "You give every client a voice, a messaging map, a calendar and a stack of briefs. The method is yours. It lives in a Google Doc, a spreadsheet and a custom GPT you trained on the style guide. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
-description: "A blueprint for a Flow Domain for content strategists. The brand voice guide, content strategy template, briefs and calendar it would hold, and how to build it."
+dek: "You give every client a voice, a messaging map, a calendar and a stack of briefs. The method is yours. It lives in a Google Doc, a spreadsheet and a custom GPT you trained on the style guide. This blueprint shows what a Flow Playbook for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
+description: "A blueprint for a Flow Playbook for content strategists. The brand voice guide, content strategy template, briefs and calendar it would hold, and how to build it."
 drafted: "2026-10-29"
 release: "3.0"
 keywords: ["brand voice guide template", "content style guide", "content strategy template", "editorial calendar template", "content brief template", "content audit template", "messaging framework template", "content pillars template", "custom gpt for brand voice alternative", "content marketing playbook"]
 blueprint:
   - name: README
-    role: "The front page. Who the Domain is for, what a reader will have at the end, and the path through it."
+    role: "The front page. Who the Playbook is for, what a reader will have at the end, and the path through it."
     chips: [["skill-visual-explainer", "Stepped figure"], ["skill-isometric-figure", "Map of the path"]]
   - n: "1"
     name: Brand Voice and Style Guide
@@ -41,8 +41,8 @@ faq:
   - q: "Custom GPTs are retiring. How do I move my brand voice GPT somewhere I control?"
     a: "Save a shared chat from the GPT as a document with New from Web Page. The instructions and sample posts become plain Markdown files in a folder on your Mac. Publish that folder to your own GitHub and nobody can retire it."
   - q: "What should a B2B content brief template include?"
-    a: "The goal, the reader, the angle, the outline, the sources to cite, and the word count. In a Domain the brief is a Form. A writer fills it in the Reader or on a published page, and Submit records every entry beside the document."
-  - q: "Can my client sign off a draft inside the Domain?"
+    a: "The goal, the reader, the angle, the outline, the sources to cite, and the word count. In a Playbook the brief is a Form. A writer fills it in the Reader or on a published page, and Submit records every entry beside the document."
+  - q: "Can my client sign off a draft inside the Playbook?"
     a: "Yes. The review checklist is an Approval Card. The client ticks each item, types their name and presses Sign off, and Flow writes one signed record beside the document. If you edit the checklist later the card asks for a new signature and keeps the old record."
   - q: "How do I keep a client's style guide, messaging map and calendar in sync when their product changes?"
     a: "Edit the messaging map and ask Chat to carry the change into the guide and the calendar. Chat reads the other documents and makes the changes in the same reply, and every change waits in Review Changes. When you publish again, each client's copy shows the update as a change they review."
@@ -57,7 +57,7 @@ mock:
       block: "Folder"
       status: "Imported · 3 to check"
     - title: "Draft the voice guide"
-      ask: "Write Larkspur's brand voice and style guide from the Domain's guide and their old PDF."
+      ask: "Write Larkspur's brand voice and style guide from the Playbook's guide and their old PDF."
       reply: "Drafted the voice guide, with the tone-by-situation table. 2 claims to check about their tagline."
       doc: "Larkspur Brand Voice and Style Guide"
       block: "Table"
@@ -81,7 +81,7 @@ mock:
       block: "Approval Card · Sign off"
       status: "Awaiting sign off"
     - title: "Publish the update"
-      ask: "Publish the Domain update to GitHub."
+      ask: "Publish the Playbook update to GitHub."
       reply: "I can't publish from Chat. Check the repository's visibility and the 1 open check mark first, then choose Publish."
       doc: "README"
       block: "Publish · GitHub Repository"
@@ -91,7 +91,7 @@ minutes: 9
 
 You give every client a voice. You write the brand voice and style guide, the audience and messaging map, the content audit and the pillar plan. Then the work turns monthly. A calendar, a brief for each piece, a review pass on every draft, and a report on what the work did. The method is yours and you repeat it for each client. It lives in a Google Doc, a spreadsheet, and a custom GPT you trained on the style guide and ten sample posts.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Playbook that carries that method. It is not built. [AI Consulting](/playbooks/ai-consulting/) is a Playbook that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Playbook. If you do, I would like to hear about it.
 
 ## The opportunity
 
@@ -99,7 +99,7 @@ Marketing budgets are flat. Gartner's 2026 survey puts them at [7.8 percent of c
 
 AI is already in every content team. The Content Marketing Institute found [95 percent of B2B marketers](https://contentmarketinginstitute.com/b2b-research/b2b-content-marketing-trends-research) use AI applications, but among those using it for content only 39 percent say content performance improved. HubSpot's 2026 survey puts [86.4 percent of marketing teams](https://blog.hubspot.com/marketing/inbound-marketing-data) on AI, and 62.7 percent say more unique, human-centered content is needed to compete. Ahrefs found [87 percent](https://ahrefs.com/blog/content-marketing-statistics) of marketers use AI for content creation. The tools write. What most teams lack is a voice guide the tools can be held to.
 
-The rules tightened too. Google named [scaled content abuse](https://developers.google.com/search/blog/2024/03/core-update-spam-policies) a spam policy on March 5, 2024, and said automation including generative AI is spam when its main purpose is ranking. The FTC's [rule on fake reviews and testimonials](https://www.ftc.gov/news-events/news/press-releases/2024/08/federal-trade-commission-announces-final-rule-banning-fake-reviews-testimonials), announced August 14, 2024, covers AI-generated ones. A review checklist has to catch both. And the custom GPT many strategists trained on a brand voice [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). Enterprise workspaces stopped creating new ones on October 26, 2026. A Domain is plain files in your own GitHub. Nobody can retire it.
+The rules tightened too. Google named [scaled content abuse](https://developers.google.com/search/blog/2024/03/core-update-spam-policies) a spam policy on March 5, 2024, and said automation including generative AI is spam when its main purpose is ranking. The FTC's [rule on fake reviews and testimonials](https://www.ftc.gov/news-events/news/press-releases/2024/08/federal-trade-commission-announces-final-rule-banning-fake-reviews-testimonials), announced August 14, 2024, covers AI-generated ones. A review checklist has to catch both. And the custom GPT many strategists trained on a brand voice [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). Enterprise workspaces stopped creating new ones on October 26, 2026. A Playbook is plain files in your own GitHub. Nobody can retire it.
 
 ## The signals
 
@@ -116,11 +116,11 @@ The rules tightened too. Google named [scaled content abuse](https://developers.
 
 Each figure measures something narrower than it sounds. Surveys count who answered. Vendor research counts a vendor's view. A market estimate is a model. Read them as a direction, not a forecast.
 
-## What your Domain holds
+## What your Playbook holds
 
 The figure at the top of this page is the folder as it could sit on GitHub. Six Markdown files. Here is what each one does.
 
-**The README** is the front page. It says who the Domain is for, what a reader will have at the end, and the order to read in. A stepped figure shows a messaging map becoming a published piece. An isometric figure maps the path.
+**The README** is the front page. It says who the Playbook is for, what a reader will have at the end, and the order to read in. A stepped figure shows a messaging map becoming a published piece. An isometric figure maps the path.
 
 **Brand Voice and Style Guide** is the voice written down. Three or four voice traits. A table of tone by situation, so a launch post and an apology read like the same company. The word list and the formatting rules. A callout of do and do not pairs. A Guided Exercise lets a new writer test a paragraph against the guide.
 
@@ -146,44 +146,44 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 
 **Bring In All for a style manual.** When a client's style standard is a documentation set online, Flow offers Bring In All and reads the pages into a folder with a README in the author's order. A client's old brand guide PDF comes in as a document with a checklist beside it in Sources. Walk Through with Chat takes the open items one at a time.
 
-**Sources and Change Summary on every deliverable.** A voice guide carries Sources, so a client sees what it was made from and whether a source changed since. Change Summary says what changed, who and which day. Your own Claude Code or Codex can read the Domain and propose a document through Settings ▸ General ▸ Your agents. The proposal arrives in Review Changes under the agent's name.
+**Sources and Change Summary on every deliverable.** A voice guide carries Sources, so a client sees what it was made from and whether a source changed since. Change Summary says what changed, who and which day. Your own Claude Code or Codex can read the Playbook and propose a document through Settings ▸ General ▸ Your agents. The proposal arrives in Review Changes under the agent's name.
 
 ## How you build it in Flow
 
-The [AI Consulting story](/domains/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
+The [AI Consulting story](/playbooks/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
 
-1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/domains/ai-consulting/#an-empty-folder-and-chat-already-in-it).
-2. **Ask Chat for the README.** Describe who the Domain is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/domains/ai-consulting/#a-front-page-in-the-authors-voice).
-3. **Bring in what you already have.** The style guide from your best engagement with the client's name changed, the brief template, and a shared chat from the brand voice GPT you built. New from Web Page turns a page or a shared AI chat into a document with its links kept. See [an old AI chat became a reference](/domains/ai-consulting/#an-old-ai-chat-became-a-reference).
+1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/playbooks/ai-consulting/#an-empty-folder-and-chat-already-in-it).
+2. **Ask Chat for the README.** Describe who the Playbook is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/playbooks/ai-consulting/#a-front-page-in-the-authors-voice).
+3. **Bring in what you already have.** The style guide from your best engagement with the client's name changed, the brief template, and a shared chat from the brand voice GPT you built. New from Web Page turns a page or a shared AI chat into a document with its links kept. See [an old AI chat became a reference](/playbooks/ai-consulting/#an-old-ai-chat-became-a-reference).
 4. **Let Ideas pick a Skill.** Press Suggest on your Pillar Plan document. Ideas reads the sections and names a Skill for each, a Roadmap for the quarter, a Register for the audit. A figure or a form waits in Review Changes until you keep it.
 
-![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Domain built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
+![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Playbook built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
 
-5. **Ask Chat for the next document with your own pages as sources.** The Brief and Review Standard can be written from your Voice Guide and your Messaging Map. Repeat until the path is done. See [the next document, from his own pages](/domains/ai-consulting/#the-next-document-from-his-own-pages).
-6. **Review every change.** When you merge two tone rows or rename a document, every page that pointed at it follows. See [Review changed the plan, and the source followed](/domains/ai-consulting/#review-changed-the-plan-and-the-source-followed).
+5. **Ask Chat for the next document with your own pages as sources.** The Brief and Review Standard can be written from your Voice Guide and your Messaging Map. Repeat until the path is done. See [the next document, from his own pages](/playbooks/ai-consulting/#the-next-document-from-his-own-pages).
+6. **Review every change.** When you merge two tone rows or rename a document, every page that pointed at it follows. See [Review changed the plan, and the source followed](/playbooks/ai-consulting/#review-changed-the-plan-and-the-source-followed).
 
 ## Apply it to a client job
 
-A Domain is for using, not only reading. Say a made-up client, Larkspur Fastening Co., signs for a quarter. Start a folder for Larkspur and bring in their old brand guide PDF and last quarter's posts. Ask Chat to draft their Brand Voice and Style Guide from the Domain's guide and the PDF, and to mark every claim it is unsure about. Fill in the Audience and Messaging Map from the kickoff call. Run the audit as a Register, then ask for the Pillar Plan and Editorial Calendar as a Roadmap. The first brief goes out as a Form. The first draft passes the Approval Card, signed by Larkspur's marketing lead.
+A Playbook is for using, not only reading. Say a made-up client, Larkspur Fastening Co., signs for a quarter. Start a folder for Larkspur and bring in their old brand guide PDF and last quarter's posts. Ask Chat to draft their Brand Voice and Style Guide from the Playbook's guide and the PDF, and to mark every claim it is unsure about. Fill in the Audience and Messaging Map from the kickoff call. Run the audit as a Register, then ask for the Pillar Plan and Editorial Calendar as a Roadmap. The first brief goes out as a Form. The first draft passes the Approval Card, signed by Larkspur's marketing lead.
 
 At month end the report section tells Larkspur what published and what it did. When the card catches a claim the product cannot back, the lesson goes into the Messaging Map, and the next brief starts from what you learned. A junior strategist can read the Voice Guide and the Standard on their first day and write a brief the way you would.
 
 ## Publish it, and keep it current
 
-When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Domain in with File, then New from GitHub, and the folder's address. Check the repository's visibility first. Your method can be public while every client's voice guide, messaging map and unpublished drafts stay in their own folder on your Mac.
+When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Playbook in with File, then New from GitHub, and the folder's address. Check the repository's visibility first. Your method can be public while every client's voice guide, messaging map and unpublished drafts stay in their own folder on your Mac.
 
-![Publish open on a Domain in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
+![Publish open on a Playbook in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
 
 When a rule changes and you publish again, every reader's copy shows the update as a change they review. They keep their own edits. Nothing is replaced behind their back.
 
-![Flow's update sheet for a Domain a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
+![Flow's update sheet for a Playbook a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
 
-The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and Excel files for a client's team. Chat on the Domain, and the figures a reader steps through, stay in Flow.
+The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and Excel files for a client's team. Chat on the Playbook, and the figures a reader steps through, stay in Flow.
 
 ## What it costs
 
-Bringing any Domain into Flow is free on Base. Writing with Chat, and Chat on a Domain, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Domain, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
+Bringing any Playbook into Flow is free on Base. Writing with Chat, and Chat on a Playbook, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Playbook, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
 
 ## Start here
 
-Read the [walkthrough](/domains/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your method to Chat in three sentences. Who you write for, what a client gets in the first month, and the one rule every draft must pass. The README it writes is the first document of your Domain. If you want to talk it through first, the [Domains page](/domains/) has one email address and four questions.
+Read the [walkthrough](/playbooks/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your method to Chat in three sentences. Who you write for, what a client gets in the first month, and the one rule every draft must pass. The README it writes is the first document of your Playbook. If you want to talk it through first, the [Playbooks page](/playbooks/) has one email address and four questions.

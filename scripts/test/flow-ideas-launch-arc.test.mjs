@@ -5,7 +5,7 @@ const home=read('src/pages/index.astro'),flow=read('src/pages/flow.astro');
 assert.doesNotMatch(home+flow,/FlowIdeasPitStop|HomeRaceCapabilityAct|FlowRaceBlueprint|home-variants/);
 assert.doesNotMatch((read('src/components/Nav.astro') + read('src/components/paper/PaperNav.astro')),/theme-toggle|lockedTheme|data-theme-lock|of-theme/);
 // Operator 2026-10-26: the continuity, workshop and ideas bands left the homepage.
-// Paper R2 (operator 2026-10-30): hero, Domains, Elements, Paths, clients, trust, Folds and pricing.
+// Paper R2 (operator 2026-10-30): hero, Playbooks, Elements, Paths, clients, trust, Folds and pricing.
 const homeSections=['TalkPageHero','Statement','TrustBand','Roster','PricingTable'];
 assert.doesNotMatch(home,/HomeContinuity|HomeDocumentWorkshop|HomeIdeas|ids=\{\['cents'\]\}/);
 const positions=homeSections.map(name=>home.indexOf(`<${name}`));

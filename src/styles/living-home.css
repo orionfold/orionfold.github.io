@@ -1798,7 +1798,7 @@ html:has(body.ls) {font-size:16px}
 [data-demo-narrative='knowledge'] .ls-demo-controls button:disabled {opacity:1;background:#e7ece5;border-color:#b7c5ba;color:#586b63;cursor:default}
 /* Mock title bars: title sits after the window dots (no trailing label). */
 .ls-scene-chrome > b { margin-right: auto; }
-/* Domains hero (2026-10-27): the Domain mock sits in the media column's flow,
+/* Playbooks hero (2026-10-27): the Playbook mock sits in the media column's flow,
    its top edge level with the title, as the Flow hero's workbench does. */
 .ls-page-home .ls-hero-workbench { position: relative; z-index: 2; width: 100%; min-width: 0; }
 @media (min-width: 1101px) { .ls-page-home .ls-hero-media { padding-top: 62px; } }

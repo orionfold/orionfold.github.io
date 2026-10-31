@@ -1,10 +1,10 @@
 ---
-// /domains/: Flow Domains, the Flow launch surface. The H1 is the plain
+// /playbooks/: Flow Playbooks, the Flow launch surface. The H1 is the plain
 // promise (review 2026-10-28); the operator's selected line (PR/FAQ,
 // 2026-10-26) rides under it as the tagline. The audience, business model and
 // comparisons follow the Flow PR/FAQ inside its own limits: the buyer is a
 // subject matter expert serving their own clients; publishing has no
-// per-Domain fee (it needs Pro plus the Publish add-on); bringing a Domain in
+// per-Playbook fee (it needs Pro plus the Publish add-on); bringing a Playbook in
 // is free on Base and Chat on it needs Pro (product 0284, DR-023); the door
 // for your own agents (Flow MCP, Settings ▸ General ▸ Your agents) is a Pro
 // feature (operator 2026-10-28); publishing does not bring customers; Claude
@@ -28,18 +28,18 @@ import '../../styles/essays.css';
 import '../../styles/flow-paths.css';
 import '../../styles/domains.css';
 
-// The launch story stays featured in the hero; the founder's built Domains get
+// The launch story stays featured in the hero; the founder's built Playbooks get
 // their own section, and the blueprints (G-135) render as cards below them, in
 // the PR/FAQ's order, each an invitation to build.
 const articles = await publishedDomainArticles();
 const [launch] = articles;
 const blueprints = articles.filter(isBlueprint);
-// Founder-authored Domains (operator 2026-10-29): every built Domain, the
+// Founder-authored Playbooks (operator 2026-10-29): every built Playbook, the
 // launch story first, each a card in its own section above the blueprints.
 const founders = articles.filter((a) => !isBlueprint(a));
-const title = 'Flow Domains: your expertise as a living system | Orionfold';
-const description = 'Turn the method you use with clients into a Flow Domain. Co-author living documents with any AI, review them, publish to GitHub and keep them current.';
-const og = ogMeta('/domains/');
+const title = 'Flow Playbooks: your expertise as a living system | Orionfold';
+const description = 'Turn the method you use with clients into a Flow Playbook. Co-author living documents with any AI, review them, publish to GitHub and keep them current.';
+const og = ogMeta('/playbooks/');
 
 const PAINS = [
   { k: 'Every client starts from a blank chat.', v: 'Your method lives in your head, old decks and a dozen past conversations. On each new job you explain it to the AI again.' },
@@ -67,13 +67,13 @@ const WALK_DAYS = TIMELINE.reduce<{ day: string; items: typeof TIMELINE }[]>((da
 }, []);
 // Earn a conversation (review 2026-10-28, A5): one email, the four PULL
 // fields, no form and no backend. manav@orionfold.com is the public contact.
-const TALK = `mailto:manav@orionfold.com?subject=${encodeURIComponent('My first Domain')}&body=${encodeURIComponent('The client job I would build a Domain for:\n\nWhen it is due:\n\nWhat I use for it today:\n\nWhat gets in the way:\n')}`;
+const TALK = `mailto:manav@orionfold.com?subject=${encodeURIComponent('My first Playbook')}&body=${encodeURIComponent('The client job I would build a Playbook for:\n\nWhen it is due:\n\nWhat I use for it today:\n\nWhat gets in the way:\n')}`;
 // Why now (review 2026-10-28, A1): the forcing event the Compare page already
 // documents, with its dated source, surfaced where the SME lands.
 const NOW = {
   source: { label: 'OpenAI Help: Custom GPT retirement and migration FAQ', href: 'https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq', checked: '2026-10-27' },
 };
-const LOOP = ['Your know-how', 'Co-author with AI', 'Your Domain', 'Apply it to a client task', 'Review and deliver', 'Write the lesson back'].map((label, i, all) => {
+const LOOP = ['Your know-how', 'Co-author with AI', 'Your Playbook', 'Apply it to a client task', 'Review and deliver', 'Write the lesson back'].map((label, i, all) => {
   const turn = (i / all.length) * Math.PI * 2 - Math.PI / 2;
   return { label, x: 210 + 150 * Math.cos(turn), y: 210 + 150 * Math.sin(turn), deg: (i / all.length) * 360 - 90 };
 });
@@ -87,39 +87,39 @@ const FORMATS = [
   { k: 'Word, Excel and PowerPoint', v: 'Deliverables your client’s team already works in.' },
 ];
 const PAIRS = [
-  { k: 'Claude Code and Codex', v: 'Use the subscription you already pay for as a route inside Flow. With Flow MCP, a Pro feature, they can also work from your Domains in Terminal.' },
+  { k: 'Claude Code and Codex', v: 'Use the subscription you already pay for as a route inside Flow. With Flow MCP, a Pro feature, they can also work from your Playbooks in Terminal.' },
   { k: 'Obsidian and Notion', v: 'Keep your notes and your team space where they are. Try one client project as a folder in Flow first.' },
   { k: 'Canva', v: 'Prepare and review the words, numbers and sources in Flow. Finish the design in Canva.' },
   { k: 'General agents', v: 'Hermes Agent or OpenClaw suit work across many tools and channels. Flow is for work that ends in a document you put your name on.' },
 ];
 const FAQ = [
-  { q: 'What is a Flow Domain?', a: 'A folder of living documents that carries your method. It holds what you know, the sources behind it, worked examples, and tools a reader can use on their own work. It carries your name, a version and a licence, and every file is plain Markdown you own.' },
+  { q: 'What is a Flow Playbook?', a: 'A folder of living documents that carries your method. It holds what you know, the sources behind it, worked examples, and tools a reader can use on their own work. It carries your name, a version and a licence, and every file is plain Markdown you own.' },
   { q: 'Do I need to code?', a: 'No. You write with Chat, add figures and tables with Skills and Elements, review every change, and publish from a menu. The one-time setup is a GitHub account and a token for publishing.' },
-  { q: 'What does it cost to publish a Domain?', a: 'Publishing needs Flow Pro ($10 a month) and the Publish add-on ($10 a month). There is no fee per Domain, so publish as many as you like. Bringing a Domain in is free on Base. Chat on it, and the door for your own agents, need Flow Pro. Any AI you use follows the terms of the service you connect.' },
-  { q: 'Can my clients use it without Flow?', a: 'Yes. They can read the website, the PDF or the EPUB, or open the Office files. In Flow they also get Chat on the Domain, figures they can press and step through, and your updates.' },
+  { q: 'What does it cost to publish a Playbook?', a: 'Publishing needs Flow Pro ($10 a month) and the Publish add-on ($10 a month). There is no fee per Playbook, so publish as many as you like. Bringing a Playbook in is free on Base. Chat on it, and the door for your own agents, need Flow Pro. Any AI you use follows the terms of the service you connect.' },
+  { q: 'Can my clients use it without Flow?', a: 'Yes. They can read the website, the PDF or the EPUB, or open the Office files. In Flow they also get Chat on the Playbook, figures they can press and step through, and your updates.' },
   { q: 'What happens to client material?', a: 'Your documents stay in your files. Before a run leaves your Mac, Flow shows where it is going and asks. Publishing is a separate step you take yourself, so check the files and the repository’s visibility first.' },
-  { q: 'Can I take a blueprint and launch it as my own Domain?', a: 'Yes. That is what the blueprints are for. Each one is a plan, not a product. Build it in Flow from your own know-how, put your name, your version and your licence on the README, and publish it to your own GitHub. If you do, write to Manav. The next walkthrough on this page could be yours.' },
-  { q: 'Will publishing a Domain bring me clients?', a: 'Not on its own. Publishing gives people a way to find and use your work. You still need a clear offer, the right clients and a reason for them to choose you. Flow does not promise leads or revenue.' },
+  { q: 'Can I take a blueprint and launch it as my own Playbook?', a: 'Yes. That is what the blueprints are for. Each one is a plan, not a product. Build it in Flow from your own know-how, put your name, your version and your licence on the README, and publish it to your own GitHub. If you do, write to Manav. The next walkthrough on this page could be yours.' },
+  { q: 'Will publishing a Playbook bring me clients?', a: 'Not on its own. Publishing gives people a way to find and use your work. You still need a clear offer, the right clients and a reason for them to choose you. Flow does not promise leads or revenue.' },
 ];
 const schema = [
   {
     '@context': 'https://schema.org', '@type': 'CollectionPage',
-    name: 'Flow Domains', description, url: `${SITE.url}/domains/`, author: PERSON,
+    name: 'Flow Playbooks', description, url: `${SITE.url}/playbooks/`, author: PERSON,
     mainEntity: { '@type': 'ItemList', itemListElement: articles.map((a, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'Article', name: a.data.title, url: `${SITE.url}${domainArticleHref(a.id)}` } })) },
   },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
-  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Domains', item: `${SITE.url}/domains/` }] },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Playbooks', item: `${SITE.url}/playbooks/` }] },
 ];
 ---
 <Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} bodyClass="ls ed-page ed-hub-page fp-page dm-page" jsonLd={schema}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-hub-intro dm-hero ls-container">
-      <p class="ls-eyebrow dm-eyebrow">FLOW / DOMAINS</p>
+      <p class="ls-eyebrow dm-eyebrow">FLOW / PLAYBOOKS</p>
       <h1>Write your method once.<br /><em>Every client gets the living version.</em></h1>
       <p class="dm-tagline">Easily co-author with any AI once, one-click publish as AI system everywhere.</p>
       <div class="dm-hero-foot">
-        <p>A Flow Domain turns the method you use with clients into a folder of living documents. They hold your know-how, your sources, and tools your clients use on their own work. Build it in Flow with the AI you already pay for, review every change, and publish it to GitHub. Clients bring it in with one address, and each update reaches them as a change they review.</p>
+        <p>A Flow Playbook turns the method you use with clients into a folder of living documents. They hold your know-how, your sources, and tools your clients use on their own work. Build it in Flow with the AI you already pay for, review every change, and publish it to GitHub. Clients bring it in with one address, and each update reaches them as a change they review.</p>
         <div class="dm-ctas">
           <a class="ls-button" href={domainArticleHref(launch.id)}>Read the launch story<ArrowRight size={18} /></a>
           <a class="ls-text-link" href={launch.data.repo}>Get AI Consulting<ArrowUpRight size={17} /></a>
@@ -130,33 +130,33 @@ const schema = [
     <section class="dm-section ls-container" aria-labelledby="dm-pain">
       <div class="dm-head"><p class="ls-eyebrow">THE PROBLEM</p><h2 id="dm-pain">You have the method.<br /><span class="ls-stroke">It keeps starting over.</span></h2></div>
       <ul class="dm-pains">{PAINS.map((p) => <li><b>{p.k}</b><span>{p.v}</span></li>)}</ul>
-      <p class="dm-bridge">A Domain keeps your method, its sources and your corrections in one place, so the next client starts from what you already learned.</p>
+      <p class="dm-bridge">A Playbook keeps your method, its sources and your corrections in one place, so the next client starts from what you already learned.</p>
     </section>
 
     <section class="dm-section ls-container" aria-labelledby="dm-now">
       <div class="dm-head"><p class="ls-eyebrow">WHY NOW</p><h2 id="dm-now">The GPT you built<br /><span class="ls-stroke">retires on December 11.</span></h2></div>
       <div class="dm-now">
         <p><a href="/flow/compare/custom-gpts/">OpenAI is retiring custom GPTs on December 11, 2026.</a> A GPT can move to a ChatGPT plugin, but the plugin starts private and your users do not get it on their own. On a personal plan you can no longer make a new one. A Claude Project stays inside Claude.</p>
-        <p>A Domain is plain Markdown files in your own GitHub. Build it once in Flow with the AI you already use, and publish it when it is ready. If you ever stop using Flow, the files still open anywhere.</p>
-        <p class="dm-now-links"><a href="/flow/compare/custom-gpts/">Move a GPT's method into a Domain<ArrowRight size={16} /></a><a class="dm-now-src" href={NOW.source.href}>Source: {NOW.source.label}, checked {NOW.source.checked}<ArrowUpRight size={14} /></a></p>
+        <p>A Playbook is plain Markdown files in your own GitHub. Build it once in Flow with the AI you already use, and publish it when it is ready. If you ever stop using Flow, the files still open anywhere.</p>
+        <p class="dm-now-links"><a href="/flow/compare/custom-gpts/">Move a GPT's method into a Playbook<ArrowRight size={16} /></a><a class="dm-now-src" href={NOW.source.href}>Source: {NOW.source.label}, checked {NOW.source.checked}<ArrowUpRight size={14} /></a></p>
       </div>
     </section>
 
     <section class="dm-section ls-container" aria-labelledby="dm-what">
-      <div class="dm-head"><p class="ls-eyebrow">WHAT A DOMAIN IS</p><h2 id="dm-what">One folder.<br /><span class="ls-stroke">Everything you know about the job.</span></h2><p class="dm-sub">Here is the first one, file by file, as it sits on GitHub.</p></div>
+      <div class="dm-head"><p class="ls-eyebrow">WHAT A PLAYBOOK IS</p><h2 id="dm-what">One folder.<br /><span class="ls-stroke">Everything you know about the job.</span></h2><p class="dm-sub">Here is the first one, file by file, as it sits on GitHub.</p></div>
       <DomainAnatomy repo={launch.data.repo} />
     </section>
 
     <FlowDomainsBand id="dm-how" self />
 
     <section class="dm-section ls-container" aria-labelledby="dm-founder">
-      <div class="dm-head"><p class="ls-eyebrow">BY ORIONFOLD’S FOUNDER</p><h2 id="dm-founder">{COUNT_WORD[founders.length] ?? founders.length} Domains,<br /><span class="ls-stroke">built and published.</span></h2><p class="dm-sub">Manav Sehgal built each one in Flow and published it to GitHub. Each took about three hours of hands-on work, and no run cost anything on top of a Claude subscription. Read how each was made, or bring one into your own Flow.</p></div>
+      <div class="dm-head"><p class="ls-eyebrow">BY ORIONFOLD’S FOUNDER</p><h2 id="dm-founder">{COUNT_WORD[founders.length] ?? founders.length} Playbooks,<br /><span class="ls-stroke">built and published.</span></h2><p class="dm-sub">Manav Sehgal built each one in Flow and published it to GitHub. Each took about three hours of hands-on work, and no run cost anything on top of a Claude subscription. Read how each was made, or bring one into your own Flow.</p></div>
       <ul class="dm-founders">
         {founders.map((f, i) => (
           <li class="dm-founder" style={`--dm-tint:${f.data.tint}`}>
             <a class="dm-founder-shot" href={domainArticleHref(f.id)} tabindex="-1" aria-hidden="true"><Image src={f.data.hero!} alt="" widths={[640, 960, 1280]} sizes="(max-width: 900px) 92vw, 600px" loading="lazy" /></a>
             <div class="dm-founder-t">
-              <small><span class="dm-card-ic" set:html={elementDrawing(f.data.icon)} />{i === 0 ? 'THE LAUNCH STORY' : 'FOUNDER DOMAIN'} · {f.data.role.toUpperCase()}</small>
+              <small><span class="dm-card-ic" set:html={elementDrawing(f.data.icon)} />{i === 0 ? 'THE LAUNCH STORY' : 'FOUNDER PLAYBOOK'} · {f.data.role.toUpperCase()}</small>
               <b><a href={domainArticleHref(f.id)}>{f.data.domain}</a></b>
               <span class="dm-card-line">{f.data.hook}</span>
               <dl class="dm-founder-facts">
@@ -185,7 +185,7 @@ const schema = [
 
     {blueprints.length > 0 && (
       <section class="dm-section ls-container" aria-labelledby="dm-blueprints">
-        <div class="dm-head"><p class="ls-eyebrow">BLUEPRINTS</p><h2 id="dm-blueprints">Your expertise<br /><span class="ls-stroke">has a Domain in it.</span></h2><p class="dm-sub">Blueprints we give away. Each is a plan for a Domain in one field. It shows what the Domain would hold, the signals behind it, and the Flow steps to build it, with the launch story as the walkthrough. Take the one for your work, build it, put your name on it, and launch it as your Domain. None of them is built yet.</p></div>
+        <div class="dm-head"><p class="ls-eyebrow">BLUEPRINTS</p><h2 id="dm-blueprints">Your expertise<br /><span class="ls-stroke">has a Playbook in it.</span></h2><p class="dm-sub">Blueprints we give away. Each is a plan for a Playbook in one field. It shows what the Playbook would hold, the signals behind it, and the Flow steps to build it, with the launch story as the walkthrough. Take the one for your work, build it, put your name on it, and launch it as your Playbook. None of them is built yet.</p></div>
         <ul class="dm-cards">
           {blueprints.map((b) => (
             <li>
@@ -205,7 +205,7 @@ const schema = [
     <section class="dm-section ls-container" aria-labelledby="dm-yours">
       <div class="dm-head"><p class="ls-eyebrow">YOUR SERVICE</p><h2 id="dm-yours">Your expertise.<br /><span class="ls-stroke">Your clients. Your brand.</span></h2></div>
       <div class="dm-model">
-        <figure class="dm-loop" aria-label="The loop: your know-how, co-author with AI, your Domain, apply it to a client task, review and deliver, write the lesson back, and around again">
+        <figure class="dm-loop" aria-label="The loop: your know-how, co-author with AI, your Playbook, apply it to a client task, review and deliver, write the lesson back, and around again">
           <svg viewBox="0 0 420 420" aria-hidden="true">
             <circle class="dm-loop-ring" cx="210" cy="210" r="150" />
             <circle class="dm-loop-run" cx="210" cy="210" r="150" />
@@ -216,7 +216,7 @@ const schema = [
         </figure>
         <div class="dm-terms">
           <div><b>You subscribe to Flow. Your clients pay you.</b><span>You set the offer, the price and the terms. Flow is not in between you and your clients.</span></div>
-          <div><b>No fee per Domain.</b><span>Publishing needs Flow Pro and the Publish add-on, $10 a month each. Then publish as many Domains as you like. AI runs follow the terms of the service you connect.</span></div>
+          <div><b>No fee per Playbook.</b><span>Publishing needs Flow Pro and the Publish add-on, $10 a month each. Then publish as many Playbooks as you like. AI runs follow the terms of the service you connect.</span></div>
           <div><b>The method stays yours.</b><span>Plain files in your own repository, under the licence you choose, with your name on them.</span></div>
         </div>
       </div>
@@ -225,18 +225,18 @@ const schema = [
         <ul>{ROLES.map((r) => <li>{r}</li>)}</ul>
       </div>
       <div class="dm-talk">
-        <div><b>Talk about your first Domain.</b><span>Email Manav the client job you would build it for, when it is due, what you use today, and what gets in the way. You get one reply, not a list.</span></div>
+        <div><b>Talk about your first Playbook.</b><span>Email Manav the client job you would build it for, when it is due, what you use today, and what gets in the way. You get one reply, not a list.</span></div>
         <a class="ls-button dm-talk-btn" href={TALK}>Write to Manav<ArrowRight size={18} /></a>
       </div>
     </section>
 
     <section class="dm-section ls-container" aria-labelledby="dm-formats">
-      <div class="dm-head"><p class="ls-eyebrow">ONE SOURCE</p><h2 id="dm-formats">One source.<br /><span class="ls-stroke">Many ways to deliver.</span></h2><p class="dm-sub">Chat on the Domain and its interactive tools stay in Flow. Exported files are for reading and delivery.</p></div>
-      <ul class="dm-formats">{FORMATS.map((f) => <li class:list={[f.walked && 'is-walked']}><b>{f.k}</b><span>{f.v}</span>{f.walked && <small>Walked end to end for the first Domain</small>}</li>)}</ul>
+      <div class="dm-head"><p class="ls-eyebrow">ONE SOURCE</p><h2 id="dm-formats">One source.<br /><span class="ls-stroke">Many ways to deliver.</span></h2><p class="dm-sub">Chat on the Playbook and its interactive tools stay in Flow. Exported files are for reading and delivery.</p></div>
+      <ul class="dm-formats">{FORMATS.map((f) => <li class:list={[f.walked && 'is-walked']}><b>{f.k}</b><span>{f.v}</span>{f.walked && <small>Walked end to end for the first Playbook</small>}</li>)}</ul>
     </section>
 
     <section class="dm-section ls-container" aria-labelledby="dm-pair">
-      <div class="dm-head"><p class="ls-eyebrow">KEEP YOUR TOOLS</p><h2 id="dm-pair">Keep the tools<br /><span class="ls-stroke">you already trust.</span></h2><p class="dm-sub">Flow picks a sensible model for each run and shows it before it starts. Switch when cost, quality or speed matters more. Your Domain and your review stay the same, whichever model does the work.</p></div>
+      <div class="dm-head"><p class="ls-eyebrow">KEEP YOUR TOOLS</p><h2 id="dm-pair">Keep the tools<br /><span class="ls-stroke">you already trust.</span></h2><p class="dm-sub">Flow picks a sensible model for each run and shows it before it starts. Switch when cost, quality or speed matters more. Your Playbook and your review stay the same, whichever model does the work.</p></div>
       <ul class="dm-pairs">{PAIRS.map((p) => <li><b>{p.k}</b><span>{p.v}</span></li>)}</ul>
       <p class="dm-compare"><a href="/flow/compare/">See the side-by-side comparisons<ArrowRight size={16} /></a></p>
     </section>
@@ -244,8 +244,8 @@ const schema = [
     <section class="dm-next" aria-labelledby="dm-mcp">
       <div class="ls-container dm-next-in">
         <p class="ls-eyebrow">FLOW MCP · YOUR AGENTS</p>
-        <h2 id="dm-mcp">Your agents,<br /><span>on your Domains.</span></h2>
-        <p>In Settings ▸ General ▸ Your agents, open Flow to the Claude Code or Codex you run in Terminal, as Read or Read and propose. Your agent can read a Domain's summary and reading order, read and search its documents, and read a skill's method, then apply your method to the work it does for you. A document it proposes comes back to Review Changes under its name, and Flow keeps a log of each call. The door is open only while Flow is, and it needs Flow Pro.</p>
+        <h2 id="dm-mcp">Your agents,<br /><span>on your Playbooks.</span></h2>
+        <p>In Settings ▸ General ▸ Your agents, open Flow to the Claude Code or Codex you run in Terminal, as Read or Read and propose. Your agent can read a Playbook's summary and reading order, read and search its documents, and read a skill's method, then apply your method to the work it does for you. A document it proposes comes back to Review Changes under its name, and Flow keeps a log of each call. The door is open only while Flow is, and it needs Flow Pro.</p>
       </div>
     </section>
 
@@ -255,7 +255,7 @@ const schema = [
     </section>
 
     <div class="ls-container" style="padding-bottom:88px">
-      <PaperCta source="flow-domains-index" eyebrow="START WITH AI CONSULTING" heading="Bring the first Domain into Flow." description="Download Flow, choose File ▸ New from GitHub…, and paste the address of AI Consulting. Then pick one real client task and work along the path." />
+      <PaperCta source="flow-domains-index" eyebrow="START WITH AI CONSULTING" heading="Bring the first Playbook into Flow." description="Download Flow, choose File ▸ New from GitHub…, and paste the address of AI Consulting. Then pick one real client task and work along the path." />
     </div>
   </main>
   <Footer showDownload={false} />

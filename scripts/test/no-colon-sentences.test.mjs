@@ -13,10 +13,10 @@ const root = new URL('../../', import.meta.url);
 const dist = (route) => new URL(`dist${route}index.html`, root);
 const hasDist = existsSync(dist('/'));
 
-// Every Domain article is website-owned copy, so every one is guarded.
-const DOMAIN_ROUTES = readdirSync(new URL('src/content/domains/', root)).filter((f) => f.endsWith('.md')).map((f) => `/domains/${f.replace(/\.md$/, '')}/`);
+// Every Playbook article is website-owned copy, so every one is guarded.
+const DOMAIN_ROUTES = readdirSync(new URL('src/content/domains/', root)).filter((f) => f.endsWith('.md')).map((f) => `/playbooks/${f.replace(/\.md$/, '')}/`);
 const ROUTES = [
-  '/', '/flow/', '/domains/', ...DOMAIN_ROUTES, '/flow/paths/', '/flow/compare/',
+  '/', '/flow/', '/playbooks/', ...DOMAIN_ROUTES, '/flow/paths/', '/flow/compare/',
   '/flow/compare/notion/', '/flow/compare/obsidian/', '/flow/compare/custom-gpts/', '/flow/compare/claude-code/',
   '/flow/compare/codex/', '/flow/compare/hermes-openclaw/', '/flow/compare/word/', '/flow/compare/canva/',
 ];
@@ -34,10 +34,10 @@ const ALLOWED = [
   'Search: obtain the fixture',
   'Pick a model: on this Mac or your own key',
   'Proposed outline What Agents Actually Did: a record',
-  'Flow Domains: your expertise as a living system',
+  'Flow Playbooks: your expertise as a living system',
   'Flow Paths: real work, walked end to end',
   'From an empty folder to GitHub: how AI Consulting',
-  // Every Domain blueprint's title (G-135, G-138), the same shape as the launch story's: read from the collection.
+  // Every Playbook blueprint's title (G-135, G-138), the same shape as the launch story's: read from the collection.
   ...readdirSync(new URL('src/content/domains/', root)).filter((f) => f.endsWith('.md')).map((f) => readFileSync(new URL(`src/content/domains/${f}`, root), 'utf8').match(/^title: "(.*)"$/m)[1]),
   'Flow with Canva: the words and numbers',
   'Flow with Claude Code: your agent writes',
@@ -48,7 +48,7 @@ const ALLOWED = [
   'Flow for Obsidian users: same Markdown files',
   'Flow with Word: check the work',
   'Source: Claude Code docs: Overview',
-  'Start with the AI Consulting Domain',
+  'Start with the AI Consulting Playbook',
   // The mock's proposed book outline, as Flow wrote it in the walk.
   'Model or Harness: each incident traced back',
   // A path summary synced from the product's article (sync-flow-paths); owned upstream.
@@ -83,7 +83,7 @@ test('key pages carry no colon-joined sentences in their copy', { skip: !hasDist
   assert.deepEqual(found, [], `colon-joined sentences (write two sentences instead):\n${found.join('\n')}`);
 });
 
-test('the copy rule holds in the source of the hero paragraphs and the Domains page', () => {
+test('the copy rule holds in the source of the hero paragraphs and the Playbooks page', () => {
   const read = (rel) => readFileSync(new URL(rel, root), 'utf8');
   for (const rel of ['src/components/living/HomeHero.astro', 'src/components/living/FlowHero.astro', 'src/components/flow/FlowDomainsBand.astro']) {
     const paras = [...read(rel).matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)].map((m) => m[1].replace(/<[^>]+>/g, ' '));

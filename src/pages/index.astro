@@ -1,7 +1,7 @@
 ---
 // The home page in Paper (G-141, R2; operator 2026-10-30). Built from the
 // town-study prototype: the Talk→Page hero, the paper scene and statement,
-// Domains with each blueprint's own client job, Built with, Elements and
+// Playbooks with each blueprint's own client job, Built with, Elements and
 // Paths rails, clients, trust, the Folds and pricing. Copy is the prototype's
 // locked copy and goes to the operator's copy call at the R2 preview (D4).
 // The head (title, description, JSON-LD) is unchanged from the Living home.
@@ -38,7 +38,7 @@ import { PATH_GLYPH, PATH_GLYPH_FALLBACK } from '../lib/paper/path-glyphs';
 
 // The locked headline (operator finalized 2026-10-30).
 const title = "Orionfold Flow · Show how you work. AI follows it. You make the call.";
-const description = "Flow for Mac helps experts turn their method into a Flow Domain. Write it with your AI, publish it to GitHub, and each client gets your updates to review.";
+const description = "Flow for Mac helps experts turn their method into a Flow Playbook. Write it with your AI, publish it to GitHub, and each client gets your updates to review.";
 const og = ogMeta('/');
 const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication',name:'Orionfold Flow',applicationCategory:'ProductivityApplication',operatingSystem:'macOS',description,url:`${SITE.url}/flow/`,image:`${SITE.url}${og.image}`,author:PERSON,brand:{'@type':'Brand',name:'Orionfold'}};
 
@@ -63,7 +63,7 @@ const KIND = { walk: 'Founder walk', case: 'Customer case' } as const;
 const domainArticles = await publishedDomainArticles();
 const blueprintCount = domainArticles.filter(isBlueprint).length;
 
-// Domains (operator 2026-10-30): each tab plays that blueprint's own six-step
+// Playbooks (operator 2026-10-30): each tab plays that blueprint's own six-step
 // client job in a drawn Flow window, every step drawing a different Element.
 const MOCK_FOLDS: FoldId[] = ['tally', 'clause', 'shell', 'atlas'];
 const mocks = MOCK_FOLDS.map((id) => {
@@ -114,11 +114,11 @@ const proYear = FLOW.annual.amount;
 // capability lists the /flow/ plans read, so the two never drift.
 const publish = FLOW_ADDONS.find((a) => a.name === 'Flow Publish')!;
 const plans = [
-  { name: 'Base', price: 'Free', line: 'Bring in any Flow Domain and read it. Free forever.',
-    features: [{ label: 'Bring in any Flow Domain', note: 'Read it, search it and keep it, free' }, ...FLOW_BASE_CAPABILITIES] },
-  { name: 'Pro', price: formatUsd(pro), unit: ' /mo', line: `Chat with a Flow Domain and let your Fold do the work. ${formatUsd(proYear)} a year. Ten Pro Days to try.`,
-    features: [{ label: 'Chat with a Flow Domain', note: 'Your Fold works through the method on your case' }, ...FLOW_PRO_CAPABILITIES], terms: FLOW_TRIAL_TERMS },
-  { name: 'Pro + Publish', price: formatUsd(pro * 2), unit: ' /mo', line: `Share your own playbook as a Flow Domain. ${formatUsd(proYear * 2)} a year.`,
+  { name: 'Base', price: 'Free', line: 'Bring in any Flow Playbook and read it. Free forever.',
+    features: [{ label: 'Bring in any Flow Playbook', note: 'Read it, search it and keep it, free' }, ...FLOW_BASE_CAPABILITIES] },
+  { name: 'Pro', price: formatUsd(pro), unit: ' /mo', line: `Chat with a Flow Playbook and let your Fold do the work. ${formatUsd(proYear)} a year. Ten Pro Days to try.`,
+    features: [{ label: 'Chat with a Flow Playbook', note: 'Your Fold works through the method on your case' }, ...FLOW_PRO_CAPABILITIES], terms: FLOW_TRIAL_TERMS },
+  { name: 'Pro + Publish', price: formatUsd(pro * 2), unit: ' /mo', line: `Share your own Playbook with clients. ${formatUsd(proYear * 2)} a year.`,
     features: [{ label: 'Everything in Pro', note: 'Chat, agentic runs, receipts and the rest' }, { label: publish.name, note: publish.description }], terms: FLOW_ADDON_TERMS },
 ];
 ---
@@ -140,8 +140,8 @@ const plans = [
       </Statement>
     </section>
 
-    <Panel id="domains" seam="Flow Domains" fold="tally" title="Share a playbook.<br />It becomes a Flow Domain." lede={`Your clients bring it into their own Flow and work through your method on their own case. When you improve a step, they get the change to review. Start from one of ${blueprintCount} free blueprints, or make your own.`}>
-      <div class="pp-dm-tabs" role="tablist" aria-label="Pick a Flow Domain">
+    <Panel id="domains" seam="Flow Playbooks" fold="tally" title="Share your Playbook.<br />Clients work through it." lede={`Your clients bring it into their own Flow and work through your method on their own case. When you improve a step, they get the change to review. Start from one of ${blueprintCount} free blueprints, or make your own.`}>
+      <div class="pp-dm-tabs" role="tablist" aria-label="Pick a Flow Playbook">
         {mocks.map(({ fold, d }, i) => (
           <button type="button" role="tab" id={`dm-tab-${d.id}`} aria-controls={`dm-${d.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : '-1'} data-pp-dm-tab style={`--pp-fold-c:${fold.c}`}><Fold id={fold.id} /><span>{d.data.domain}</span></button>
         ))}
@@ -180,7 +180,7 @@ const plans = [
       <Rail label="Paths" allHref="/flow/paths/" allLabel={`Browse all ${paths.length} Paths`} items={paths} filter={false} grid lede="Each Path was walked end to end in Flow on a Mac. Its page shows the time, the cost and what we could not check." />
     </Panel>
 
-    <Panel id="clients" seam="Flow for clients" fold="tally" title="Useful between<br />your meetings" lede="Publish your Flow Domain to GitHub. Each client brings it into their own Flow and keeps working with your method after the workshop. When you improve it, they see the change and choose to take it.">
+    <Panel id="clients" seam="Flow for clients" fold="tally" title="Useful between<br />your meetings" lede="Publish your Flow Playbook to GitHub. Each client brings it into their own Flow and keeps working with your method after the workshop. When you improve it, they see the change and choose to take it.">
       <!-- The live home's client round trip (operator 2026-10-30): write, a skill draws, publish, the client brings it in, the update arrives. -->
       <div class="pp-client-mock"><HomeHeroDomainMock /></div>
       <div class="pp-clients-copy">
@@ -212,14 +212,14 @@ const plans = [
 
     <section class="pp-meet" id="meet">
       <h2>Meet your Fold</h2>
-      <p>Every Flow Domain comes with a Fold, a small paper helper that knows the method. Each one links to its Flow Domain.</p>
+      <p>Every Flow Playbook comes with a Fold, a small paper helper that knows the method. Each one links to its Flow Playbook.</p>
       <Roster faces={emo} />
       <div class="pp-price-head" id="pricing">
         <h2>Pricing</h2>
         <p>Free to start. Pay when you want your Fold to do the work.</p>
       </div>
       <PricingTable plans={plans} />
-      <p class="pp-price-note">AI use is billed by your own AI provider. There is no fee per Flow Domain.</p>
+      <p class="pp-price-note">AI use is billed by your own AI provider. There is no fee per Flow Playbook.</p>
     </section>
 
     <!-- The closing call keeps the old campaign anchor (#waitlist) and its attribution. -->
@@ -238,7 +238,7 @@ const plans = [
   import "../scripts/living-documents.js";
 </script>
 <script>
-  // Domains tabs: one mock at a time; arrow keys move between tabs.
+  // Playbooks tabs: one mock at a time; arrow keys move between tabs.
   const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-pp-dm-tab]')];
   const pick = (t: HTMLButtonElement) => tabs.forEach((x) => {
     const on = x === t;

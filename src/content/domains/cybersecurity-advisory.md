@@ -7,14 +7,14 @@ hook: "Your assessment method, the policies and risk register that follow it, an
 icon: skill-roadmap
 tint: "#ad7c5a"
 order: 7
-dek: "You are the security leader for ten or twenty companies that cannot hire one. You assess each against NIST CSF 2.0 or CIS Controls, write the policies, keep the risk register, and explain it all to a board in twenty minutes. The method is yours. It lives in a folder of templates, a spreadsheet and a custom GPT. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
-description: "A blueprint for a Flow Domain for vCISOs and security consultants. The vCISO playbook, policy set, risk register and board report it holds, and how to build it."
+dek: "You are the security leader for ten or twenty companies that cannot hire one. You assess each against NIST CSF 2.0 or CIS Controls, write the policies, keep the risk register, and explain it all to a board in twenty minutes. The method is yours. It lives in a folder of templates, a spreadsheet and a custom GPT. This blueprint shows what a Flow Playbook for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
+description: "A blueprint for a Flow Playbook for vCISOs and security consultants. The vCISO playbook, policy set, risk register and board report it holds, and how to build it."
 drafted: "2026-10-29"
 release: "3.0"
 keywords: ["vciso playbook template", "cybersecurity policy templates for small business", "risk register template", "nist csf 2.0 risk assessment template", "soc 2 readiness checklist", "incident response plan template small business", "tabletop exercise template", "board cybersecurity report template", "custom gpt alternative for security consultants", "vciso client knowledge base"]
 blueprint:
   - name: README
-    role: "The front page. Who the Domain is for, what a reader will have at the end, and the path through it."
+    role: "The front page. Who the Playbook is for, what a reader will have at the end, and the path through it."
     chips: [["skill-visual-explainer", "Stepped figure"], ["skill-isometric-figure", "Map of the path"]]
   - n: "1"
     name: Risk Assessment Method
@@ -39,13 +39,13 @@ faq:
   - q: "I run a vCISO practice. How do I turn my risk assessment method into something each client can read and use without me on every call?"
     a: "Write the method as a folder of Markdown documents and publish it to GitHub from Flow. A client brings the folder in with New from GitHub, reads the README, and asks Chat questions that are answered from your pages. You stay the author. The folder answers the routine questions so your calls can be about decisions."
   - q: "My custom GPT holds my policy templates and my NIST CSF 2.0 assessment questions. What do I move it to before it retires?"
-    a: "Save the GPT's shared chats as documents with New from Web Page, and bring its knowledge files in as Word, Excel or PDF. Those become the first drafts of your Domain. A Domain is plain files in a GitHub repository you own. Nothing in it depends on a vendor keeping a feature alive."
+    a: "Save the GPT's shared chats as documents with New from Web Page, and bring its knowledge files in as Word, Excel or PDF. Those become the first drafts of your Playbook. A Playbook is plain files in a GitHub repository you own. Nothing in it depends on a vendor keeping a feature alive."
   - q: "How do I keep a client's risk register and remediation roadmap current without emailing a new spreadsheet every month?"
-    a: "The register is a table in the client's folder, drawn by the Register Skill from the assessment. A Job can keep that table current from the sources you name, and each run asks only for its rows. When you publish the Domain again, the client sees the change as an update to review. Their own edits stay."
+    a: "The register is a table in the client's folder, drawn by the Register Skill from the assessment. A Job can keep that table current from the sources you name, and each run asks only for its rows. When you publish the Playbook again, the client sees the change as an update to review. Their own edits stay."
   - q: "Can an AI assistant answer only from my own security method and show which document each answer came from?"
-    a: "Chat on a Domain searches the folder before each reply and links each fact to its file. A From this folder row lists the documents it used. When the folder does not say, Chat says so instead of guessing. Before any run leaves your Mac, Flow shows what goes where and asks."
+    a: "Chat on a Playbook searches the folder before each reply and links each fact to its file. A From this folder row lists the documents it used. When the folder does not say, Chat says so instead of guessing. Before any run leaves your Mac, Flow shows what goes where and asks."
   - q: "How do I give a client a living incident response plan that updates when I change the method, but keeps their edits?"
-    a: "Publish the plan as part of the Domain. The client's copy checks for a newer version at launch and every six hours. An untouched document is replaced. One they edited is updated only if they tick it, and edits in different places are both kept. Nothing changes until they choose."
+    a: "Publish the plan as part of the Playbook. The client's copy checks for a newer version at launch and every six hours. An untouched document is replaced. One they edited is updated only if they tick it, and edits in different places are both kept. Nothing changes until they choose."
 mock:
   folder: vciso-method
   client: "Lanternfield Dental"
@@ -81,7 +81,7 @@ mock:
       block: "Approval Card · Sign off"
       status: "Awaiting signature"
     - title: "The client’s update arrives"
-      ask: "What changed since the client brought the Domain in?"
+      ask: "What changed since the client brought the Playbook in?"
       reply: "The Policy Set changed. The client’s copy shows an update to review. Nothing changes until they choose."
       doc: "README"
       block: "Update · 1 document"
@@ -91,7 +91,7 @@ minutes: 9
 
 You are the security leader for ten or twenty companies that could never hire one. For each you run an assessment against NIST CSF 2.0 or CIS Controls. You write the policy set, keep the risk register, and order the fixes into a remediation roadmap. Once a quarter you stand in front of a board and explain it in twenty minutes. Once a year you run a tabletop exercise and hope the plan holds. The method is yours. It lives in Word templates, a twelve-tab spreadsheet, and a custom GPT you loaded with your policies last spring.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Playbook that carries that method. It is not built. [AI Consulting](/playbooks/ai-consulting/) is a Playbook that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Playbook. If you do, I would like to hear about it.
 
 ## The opportunity
 
@@ -99,7 +99,7 @@ Security spending keeps growing. Gartner expects worldwide spending on informati
 
 The work is moving to people like you. Cynomi's 2025 survey found that [67 percent of MSPs and MSSPs](https://www.helpnetsecurity.com/2025/07/31/vciso-services-adoption-2025/) now offer vCISO services, up from 21 percent a year earlier. The people to do the work are scarce. The Bureau of Labor Statistics expects jobs for information security analysts to grow [21 percent](https://www.bls.gov/ooh/computer-and-information-technology/information-security-analysts.htm) from 2025 to 2035, with about 14,100 openings a year. ISC2's 2025 study found [95 percent of teams](https://www.isc2.org/insights/2025/12/2025-isc2-cybersecurity-workforce-study) report a skills gap, and 59 percent call it critical or significant. A written method a client can follow is worth more each year.
 
-The standards have moved toward governance. NIST CSF 2.0, released [February 26, 2024](https://www.nist.gov/news-events/news/2024/02/nist-releases-version-20-landmark-cybersecurity-framework), added a Govern function and now speaks to every organization, with quick-start guides for small businesses. Public companies must report a material incident to the SEC within [four business days](https://www.sec.gov/newsroom/press-releases/2023-139) and describe their risk management in the annual report. And the custom GPT you loaded with your policy templates [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). A Domain is plain files in your own GitHub. Nobody can retire it.
+The standards have moved toward governance. NIST CSF 2.0, released [February 26, 2024](https://www.nist.gov/news-events/news/2024/02/nist-releases-version-20-landmark-cybersecurity-framework), added a Govern function and now speaks to every organization, with quick-start guides for small businesses. Public companies must report a material incident to the SEC within [four business days](https://www.sec.gov/newsroom/press-releases/2023-139) and describe their risk management in the annual report. And the custom GPT you loaded with your policy templates [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). A Playbook is plain files in your own GitHub. Nobody can retire it.
 
 ## The signals
 
@@ -116,11 +116,11 @@ The standards have moved toward governance. NIST CSF 2.0, released [February 26,
 
 Each figure measures something narrower than it sounds. Surveys count who answered. Vendor research counts a vendor's view. A market estimate is a model. Read them as a direction, not a forecast.
 
-## What your Domain holds
+## What your Playbook holds
 
 The figure at the top of this page is the folder as it could sit on GitHub. Six Markdown files. Here is what each one does.
 
-**The README** is the front page. It says who the Domain is for, what a reader will have at the end, and the order to read the documents in. A stepped figure shows an assessment becoming a board report. An isometric figure maps the path.
+**The README** is the front page. It says who the Playbook is for, what a reader will have at the end, and the order to read the documents in. A stepped figure shows an assessment becoming a board report. An isometric figure maps the path.
 
 **Risk Assessment Method** is the backbone. How you assess a client against NIST CSF 2.0 or CIS Controls, the questions you ask, and how a score is earned. A Workflow Path draws the engagement from intake to findings. A Scorecard holds the score per function. An intake form gathers a client's first answers before you arrive.
 
@@ -150,40 +150,40 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 
 ## How you build it in Flow
 
-The [AI Consulting story](/domains/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
+The [AI Consulting story](/playbooks/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
 
-1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/domains/ai-consulting/#an-empty-folder-and-chat-already-in-it).
-2. **Ask Chat for the README.** Describe who the Domain is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/domains/ai-consulting/#a-front-page-in-the-authors-voice).
-3. **Bring in what you already have.** The assessment questionnaire in Word, the risk register spreadsheet, and the shared chats from your custom GPT. New from Web Page turns a page or a shared AI chat into a document with its links kept. See [an old AI chat became a reference](/domains/ai-consulting/#an-old-ai-chat-became-a-reference).
+1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/playbooks/ai-consulting/#an-empty-folder-and-chat-already-in-it).
+2. **Ask Chat for the README.** Describe who the Playbook is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/playbooks/ai-consulting/#a-front-page-in-the-authors-voice).
+3. **Bring in what you already have.** The assessment questionnaire in Word, the risk register spreadsheet, and the shared chats from your custom GPT. New from Web Page turns a page or a shared AI chat into a document with its links kept. See [an old AI chat became a reference](/playbooks/ai-consulting/#an-old-ai-chat-became-a-reference).
 4. **Let Ideas pick a Skill.** Press Suggest on your Method document. Ideas reads the sections and names a Skill for each. A Workflow Path for the engagement, a Register for the findings. A figure or a form waits in Review Changes until you keep it.
 
-![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Domain built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
+![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Playbook built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
 
-5. **Ask Chat for the next document with your own pages as sources.** The Roadmap and Board Report can be written from your Method and two past board decks with the names removed. Repeat until the path is done. See [the next document, from his own pages](/domains/ai-consulting/#the-next-document-from-his-own-pages).
-6. **Review every change.** When you merge two policies or rename the Register, every page that pointed at it follows. See [Review changed the plan, and the source followed](/domains/ai-consulting/#review-changed-the-plan-and-the-source-followed).
+5. **Ask Chat for the next document with your own pages as sources.** The Roadmap and Board Report can be written from your Method and two past board decks with the names removed. Repeat until the path is done. See [the next document, from his own pages](/playbooks/ai-consulting/#the-next-document-from-his-own-pages).
+6. **Review every change.** When you merge two policies or rename the Register, every page that pointed at it follows. See [Review changed the plan, and the source followed](/playbooks/ai-consulting/#review-changed-the-plan-and-the-source-followed).
 
 ## Apply it to a client job
 
-A Domain is for using, not only reading. A new client signs, a dental group with four offices. Open the Domain, start a folder for them, and drop in their old policies and the security export as tables. Ask Chat to draft the assessment from the Method and the intake, and to mark every claim it is unsure about. Run Register on the findings and Roadmap on the remediation section. The Policy Set goes to the owner with an Approval Card. The Board Report is drafted from the roadmap. Before the quarter ends, the Incident Response Plan is theirs and the tabletop has been run once.
+A Playbook is for using, not only reading. A new client signs, a dental group with four offices. Open the Playbook, start a folder for them, and drop in their old policies and the security export as tables. Ask Chat to draft the assessment from the Method and the intake, and to mark every claim it is unsure about. Run Register on the findings and Roadmap on the remediation section. The Policy Set goes to the owner with an Approval Card. The Board Report is drafted from the roadmap. Before the quarter ends, the Incident Response Plan is theirs and the tabletop has been run once.
 
-What you learn goes back into the Domain. The question the owner asked twice becomes one of the README's questions. The finding you had not seen becomes a row in the Method. A new hire can read the Method and the Policy Set on their first day and run their first assessment the way you would. That is the skills gap answered one person at a time.
+What you learn goes back into the Playbook. The question the owner asked twice becomes one of the README's questions. The finding you had not seen becomes a row in the Method. A new hire can read the Method and the Policy Set on their first day and run their first assessment the way you would. That is the skills gap answered one person at a time.
 
 ## Publish it, and keep it current
 
-When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Domain in with File, then New from GitHub, and the folder's address. Check the repository's visibility first. Your method can be public while every client's assessment, register and incident plan stays in their own folder on your Mac.
+When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Playbook in with File, then New from GitHub, and the folder's address. Check the repository's visibility first. Your method can be public while every client's assessment, register and incident plan stays in their own folder on your Mac.
 
-![Publish open on a Domain in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
+![Publish open on a Playbook in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
 
 When a rule changes and you publish again, every reader's copy shows the update as a change they review. They keep their own edits. Nothing is replaced behind their back.
 
-![Flow's update sheet for a Domain a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
+![Flow's update sheet for a Playbook a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
 
-The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and Excel files for a client's team. Chat on the Domain, and the figures a reader steps through, stay in Flow.
+The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and Excel files for a client's team. Chat on the Playbook, and the figures a reader steps through, stay in Flow.
 
 ## What it costs
 
-Bringing any Domain into Flow is free on Base. Writing with Chat, and Chat on a Domain, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Domain, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
+Bringing any Playbook into Flow is free on Base. Writing with Chat, and Chat on a Playbook, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Playbook, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
 
 ## Start here
 
-Read the [walkthrough](/domains/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your assessment method to Chat in three sentences. Which standard you assess against, what a client has at the end, and what the board sees. The README it writes is the first document of your Domain. If you want to talk it through first, the [Domains page](/domains/) has one email address and four questions.
+Read the [walkthrough](/playbooks/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your assessment method to Chat in three sentences. Which standard you assess against, what a client has at the end, and what the board sees. The README it writes is the first document of your Playbook. If you want to talk it through first, the [Playbooks page](/playbooks/) has one email address and four questions.

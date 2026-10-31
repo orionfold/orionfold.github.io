@@ -1,4 +1,4 @@
-// Flow Domains (/domains/): the launch story first, then the blueprints in the
+// Flow Playbooks (/playbooks/): the launch story first, then the blueprints in the
 // site's order (the PR/FAQ's ranks), each an article an expert in that role
 // can read and build from.
 import { getCollection, type CollectionEntry } from 'astro:content';
@@ -16,4 +16,4 @@ export async function publishedDomainArticles(): Promise<DomainArticle[]> {
 
 export const isBlueprint = (e: DomainArticle) => e.data.kind === 'blueprint';
 
-export const domainArticleHref = (id: string) => `/domains/${id}/`;
+export const domainArticleHref = (id: string) => `/playbooks/${id}/`;

@@ -1,6 +1,6 @@
 // Personal Folds: the shapes a person folds from a blank sheet in the Flow
 // app's first launch (decided between the website and product lanes under the
-// operator's 2026-10-30 delegation). They sit outside the eight Flow Domain
+// operator's 2026-10-30 delegation). They sit outside the eight Flow Playbook
 // Folds, carry no name until the person gives one, and are drawn for 16 pt:
 // one solid mass, no thin limbs or dotted trails, contrast carried by the body.
 // Each line names a temperament, never a capability, so it stays true on Base

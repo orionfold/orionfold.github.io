@@ -33,8 +33,8 @@ test('Compare pages are linked from the nav and each row cites a source', async 
     await expect(tool.locator('a.fp-all')).toHaveAttribute('href', /^\/flow\/compare\/[a-z-]+\/$/);
   }
   await expect(page.locator('.fc-start .ps')).not.toHaveCount(0);
-  // The Custom GPTs page starts from a Domain, not a path.
-  await expect(page.locator('.fc-domain-start a')).toHaveAttribute('href', '/domains/ai-consulting/');
+  // The Custom GPTs page starts from a Playbook, not a path.
+  await expect(page.locator('.fc-domain-start a')).toHaveAttribute('href', '/playbooks/ai-consulting/');
   await expect(page.locator('.fc-not li')).toHaveCount(5);
   await page.goto('/flow/compare/notion/');
   const rows = page.locator('.fp-compare tbody tr');

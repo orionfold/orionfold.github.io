@@ -1,7 +1,7 @@
 ---
-// A mock Flow window: the Domain's files on the left, the open document on the
+// A mock Flow window: the Playbook's files on the left, the open document on the
 // right, ending in a sign-off the reader can press. With tabs, one window
-// switches between Domains; each tab carries its own Fold's colors.
+// switches between Playbooks; each tab carries its own Fold's colors.
 import { foldById, type FoldId } from '../../lib/paper/folds';
 export interface FlowWindowDoc { id: string; label: string; fold: FoldId; files: string[]; doc: string; title: string; body: string; bars?: number[]; sign: string }
 // `named` puts the Fold in the window and the byline. The /flow/ hero turns it

@@ -19,7 +19,7 @@ const pages = await publishedCompare();
 const paths = await publishedPaths();
 // Each page names the path to start with; show each such path once.
 const starts = [...new Set(pages.map((p) => p.data.startWith))].map((id) => paths.find((p) => p.id === id)).filter((p) => p !== undefined);
-// A page can start from a Domain instead (Custom GPTs and Projects).
+// A page can start from a Playbook instead (Custom GPTs and Projects).
 const domains = await publishedDomainArticles();
 const domainStarts = [...new Set(pages.map((p) => p.data.startWith))].map((id) => domains.find((a) => a.id === id)).filter((a) => a !== undefined);
 const startFor = (id: string) => pages.filter((p) => p.data.startWith === id).map((p) => p.data.tool);
@@ -95,7 +95,7 @@ const schema = {
           ))}
         </div>
         {domainStarts.map((a) => (
-          <p class="fc-domain-start"><span class="fp-kind">For {startFor(a.id).join(' and ')} users</span> Start with the <a href={domainArticleHref(a.id)}>{a.data.domain}</a> Domain. Read how it was built in Flow, published to GitHub and brought in by a reader.</p>
+          <p class="fc-domain-start"><span class="fp-kind">For {startFor(a.id).join(' and ')} users</span> Start with the <a href={domainArticleHref(a.id)}>{a.data.domain}</a> Playbook. Read how it was built in Flow, published to GitHub and brought in by a reader.</p>
         ))}
       </section>
     )}

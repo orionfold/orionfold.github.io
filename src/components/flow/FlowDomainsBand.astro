@@ -1,13 +1,13 @@
 ---
-// Flow Domains on the homepage (operator 2026-10-27): the method an expert uses
+// Flow Playbooks on the homepage (operator 2026-10-27): the method an expert uses
 // with clients, as a few Markdown files, written with an AI co-author and
 // published once. On the other side it wakes up with all of Flow, for a client
 // in Flow or their agent through Flow. The hero already plays the round trip,
-// so this band shows the payload (DomainPayload); /domains/ keeps the journey.
+// so this band shows the payload (DomainPayload); /playbooks/ keeps the journey.
 import ArrowRight from '@lucide/astro/icons/arrow-right';
 import DomainPayload from './domains/DomainPayload.astro';
 import { publishedDomainArticles, domainArticleHref } from '../../lib/flow/domains';
-// On /domains/ itself (self) the band leaves out its link to that page.
+// On /playbooks/ itself (self) the band leaves out its link to that page.
 interface Props { id?: string; self?: boolean }
 const { id = 'flow-domains', self = false } = Astro.props;
 const [launch] = await publishedDomainArticles();
@@ -16,7 +16,7 @@ const [launch] = await publishedDomainArticles();
   <section id={id} class="fd ls-container" aria-labelledby={`${id}-heading`}>
     <div class="fd-head">
       <div>
-        <p class="ls-eyebrow">FLOW DOMAINS</p>
+        <p class="ls-eyebrow">FLOW PLAYBOOKS</p>
         <h2 id={`${id}-heading`}><span class="fd-l1">YOUR METHOD IN 75 KB.</span><br /><span class="ls-stroke fd-l2">ALIVE IN YOUR CLIENT'S FLOW.</span></h2>
       </div>
       <div class="ls-episode-dek">
@@ -25,10 +25,10 @@ const [launch] = await publishedDomainArticles();
         ) : (
           <Fragment>
             <p>{launch.data.domain} travels as 6 files and 75 KB of plain Markdown. In a client's Flow those files open with figures, tables and checklists drawn, and with skills and Jobs ready to run. Their agent can read your method through Flow too. Publish again, and every client gets a change to review.</p>
-            <p>Built a custom GPT for clients? <a href="/flow/compare/custom-gpts/">OpenAI retires custom GPTs on December 11, 2026.</a> A Domain is files you keep.</p>
+            <p>Built a custom GPT for clients? <a href="/flow/compare/custom-gpts/">OpenAI retires custom GPTs on December 11, 2026.</a> A Playbook is files you keep.</p>
           </Fragment>
         )}
-        <p class="fd-links">{!self && <a href="/domains/">See Flow Domains<ArrowRight size={16} /></a>}<a href={domainArticleHref(launch.id)}>How {launch.data.domain} was built<ArrowRight size={16} /></a></p>
+        <p class="fd-links">{!self && <a href="/playbooks/">See Flow Playbooks<ArrowRight size={16} /></a>}<a href={domainArticleHref(launch.id)}>How {launch.data.domain} was built<ArrowRight size={16} /></a></p>
       </div>
     </div>
     <DomainPayload />

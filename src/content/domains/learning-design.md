@@ -7,13 +7,13 @@ hook: "Your course method, your evidence on how people learn, and the questions 
 icon: skill-guided-exercise
 tint: "#ffa23e"
 order: 2
-dek: "You design courses for other people's expertise. Every project starts with the same questions, the same model and the same arguments about what works. This blueprint shows what a Flow Domain for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
-description: "An instructional design framework as a Flow Domain blueprint for learning designers and trainers. What it would hold, the signals, and how to build it in Flow."
+dek: "You design courses for other people's expertise. Every project starts with the same questions, the same model and the same arguments about what works. This blueprint shows what a Flow Playbook for that method would hold, how you would build it with Chat and Skills, and how every client would get the living version. Nothing here is built yet. It is yours to take."
+description: "An instructional design framework as a blueprint for a Flow Playbook, for learning designers and trainers. What it would hold, the signals, and how to build it in Flow."
 drafted: "2026-10-28"
 release: "3.0"
 blueprint:
   - name: README
-    role: "The front page. Who the Domain is for, what a reader will have at the end, and the path through it."
+    role: "The front page. Who the Playbook is for, what a reader will have at the end, and the path through it."
     chips: [["skill-visual-explainer", "Stepped figure"], ["skill-isometric-figure", "Map of the path"]]
   - n: "1"
     name: Learning Design Method
@@ -37,15 +37,15 @@ blueprint:
 keywords: ["instructional design framework template", "learning design playbook", "course blueprint template", "subject matter expert interview guide", "custom GPT for instructional designers", "learning and development consultant toolkit", "training needs analysis template", "learning design knowledge base", "AI for learning designers", "ADDIE process template"]
 faq:
   - q: "Can I turn my instructional design process into something clients use on their own?"
-    a: "Yes. A Domain holds your Method, the evidence you lean on and your templates as plain Markdown. A client brings it into Flow with one address, fills the Course Blueprint Template for their own course, and gets your updates as changes they review."
-  - q: "Is a Flow Domain a replacement for the custom GPT I built for course design?"
-    a: "It is a different shape. A GPT is a chat inside one service, and OpenAI retires custom GPTs on December 11, 2026. A Domain is files in your own GitHub. Chat on it in Flow answers from your documents and links each fact to its file. The method stays yours whatever an AI service does."
+    a: "Yes. A Playbook holds your Method, the evidence you lean on and your templates as plain Markdown. A client brings it into Flow with one address, fills the Course Blueprint Template for their own course, and gets your updates as changes they review."
+  - q: "Is a Flow Playbook a replacement for the custom GPT I built for course design?"
+    a: "It is a different shape. A GPT is a chat inside one service, and OpenAI retires custom GPTs on December 11, 2026. A Playbook is files in your own GitHub. Chat on it in Flow answers from your documents and links each fact to its file. The method stays yours whatever an AI service does."
   - q: "How do I get a subject matter expert's knowledge out of their head?"
     a: "The Expert Interview Guide holds your questions, and a Form logs one interview at a time. A Guided Exercise lets a new designer practice on a sample transcript before a real call. Chat can draft the first module map from the interview notes, with every claim it is unsure about marked to check."
-  - q: "Can clients read the Domain without Flow?"
-    a: "Yes. The same folder goes out as a GitHub Pages site, a PDF, an EPUB or Word files. The interactive parts stay in Flow. Those are Chat on the Domain, the forms, and the figures a reader steps through."
-  - q: "What does it cost to publish a learning design Domain?"
-    a: "Bringing a Domain in is free on Base. Writing with Chat needs Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on, another $10 a month. There is no fee per Domain. Skills are free on every plan."
+  - q: "Can clients read the Playbook without Flow?"
+    a: "Yes. The same folder goes out as a GitHub Pages site, a PDF, an EPUB or Word files. The interactive parts stay in Flow. Those are Chat on the Playbook, the forms, and the figures a reader steps through."
+  - q: "What does it cost to publish a learning design Playbook?"
+    a: "Bringing a Playbook in is free on Base. Writing with Chat needs Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on, another $10 a month. There is no fee per Playbook. Skills are free on every plan."
 mock:
   folder: learning-design-method
   client: "Harbor Lane Clinic"
@@ -91,7 +91,7 @@ minutes: 10
 
 You are the person a company calls when an expert knows something and nobody else can learn it from them. You turn that knowledge into a course. You have done it often enough to have a method. It lives in your head, in old decks and in a folder of templates you copy and rename.
 
-This page is a blueprint for a Flow Domain that carries that method. It is not built. [AI Consulting](/domains/ai-consulting/) is a Domain that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Domain. If you do, I would like to hear about it.
+This page is a blueprint for a Flow Playbook that carries that method. It is not built. [AI Consulting](/playbooks/ai-consulting/) is a Playbook that exists today, and its launch story is the walkthrough for every step below. This blueprint is yours to take. Build it from your own know-how, put your name on it, and launch it as your Playbook. If you do, I would like to hear about it.
 
 ## The opportunity
 
@@ -99,7 +99,7 @@ Companies spend a lot on learning, and more of it is going outside. US organizat
 
 AI is already in your field. LinkedIn Learning found that [71 percent of L&D professionals](https://business.linkedin.com/learn/resources/workplace-learning-report) are exploring, experimenting with or using AI in their work. The share of organizations that count AI among their learning tools jumped from 25 to 37 percent in one year, in the same Training magazine report. Yet the leaders who buy learning are not sure their teams can deliver AI skills. In a 2026 survey by 2U, [83 percent](https://2u.com/newsroom/state-of-enterprise-learning-2026-ai-upskilling-research/) called AI capabilities an active priority, and only 26 percent were highly confident their own L&D team could deliver them.
 
-The demand has a deadline. The World Economic Forum expects [59 of every 100 workers](https://www.weforum.org/media/future-of-jobs-report-2025-78-million-new-job-opportunities-by-2030-but-urgent-upskilling-needed-to-prepare-workforces) to need upskilling or reskilling by 2030. In the EU, [Article 4 of the AI Act](https://artificialintelligenceact.eu/article/4/) has asked every company that uses AI to build its staff's AI literacy since February 2025. And the tool many trainers used to package a course method, the custom GPT, [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). A Domain is plain files in your own GitHub. Nobody can retire it.
+The demand has a deadline. The World Economic Forum expects [59 of every 100 workers](https://www.weforum.org/media/future-of-jobs-report-2025-78-million-new-job-opportunities-by-2030-but-urgent-upskilling-needed-to-prepare-workforces) to need upskilling or reskilling by 2030. In the EU, [Article 4 of the AI Act](https://artificialintelligenceact.eu/article/4/) has asked every company that uses AI to build its staff's AI literacy since February 2025. And the tool many trainers used to package a course method, the custom GPT, [retires on December 11, 2026](https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq). A Playbook is plain files in your own GitHub. Nobody can retire it.
 
 ## The signals
 
@@ -117,11 +117,11 @@ The demand has a deadline. The World Economic Forum expects [59 of every 100 wor
 
 Each figure measures something narrower than it sounds. Surveys count who answered. Vendor research counts a vendor's view. The job count leaves out independents like you. Read them as a direction, not a forecast.
 
-## What your Domain holds
+## What your Playbook holds
 
 The figure at the top of this page is the folder as it could sit on GitHub. Six Markdown files. Here is what each one does.
 
-**The README** is the front page. It says who the Domain is for, what a reader will have at the end, and the order to read the documents in. A stepped figure shows your method building up one step at a time. An isometric figure maps the path.
+**The README** is the front page. It says who the Playbook is for, what a reader will have at the end, and the order to read the documents in. A stepped figure shows your method building up one step at a time. An isometric figure maps the path.
 
 **Learning Design Method** is the heart of it. It is your model, from the first conversation with a client to the last assessment. Each step has the questions you ask, the output you expect, and a checklist a reader ticks before moving on. The checklist is an Approval Card, so a reader can sign it and keep the record.
 
@@ -135,7 +135,7 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 
 ## What Flow does for this work
 
-**Chat answers from your Method, not from memory.** With the Domain's folder chosen, Chat searches your documents before it replies and links each fact to the file it came from. Your README can carry up to six questions, such as *How do I run a needs analysis?* or *What goes in a module brief?* A reader sees four of them as buttons the moment they open Chat. When your documents do not say, Chat says so instead of inventing an answer.
+**Chat answers from your Method, not from memory.** With the Playbook's folder chosen, Chat searches your documents before it replies and links each fact to the file it came from. Your README can carry up to six questions, such as *How do I run a needs analysis?* or *What goes in a module brief?* A reader sees four of them as buttons the moment they open Chat. When your documents do not say, Chat says so instead of inventing an answer.
 
 **A Form logs each expert interview.** The Expert Interview Guide ends in a Form with the questions you always ask, a day field, and a checklist of what you must have before the call ends. Its button is **Submit**, so every entry is recorded beside the document with the reader's name. The next interview starts from the same form, and the record of the last one is still there.
 
@@ -147,44 +147,44 @@ The figure at the top of this page is the folder as it could sit on GitHub. Six 
 
 **A client's deck comes in with a checklist.** Drop in the PowerPoint from the last course they ran and Flow turns it into a document. The Sources tab lists what to confirm before you rely on it. Pictures without a description, tables to compare with the slide, links that leave the folder. **Walk Through with Chat** takes the open items one at a time.
 
-**Your agents can use the Domain too.** With Flow Pro, Settings ▸ General ▸ Your agents opens the folder to the Claude Code or Codex you run in Terminal. It can read the Method's reading order, search your evidence and draft a module map. What it proposes arrives in Review Changes under its name, and you keep or revert it.
+**Your agents can use the Playbook too.** With Flow Pro, Settings ▸ General ▸ Your agents opens the folder to the Claude Code or Codex you run in Terminal. It can read the Method's reading order, search your evidence and draft a module map. What it proposes arrives in Review Changes under its name, and you keep or revert it.
 
 ## How you build it in Flow
 
-The [AI Consulting story](/domains/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
+The [AI Consulting story](/playbooks/ai-consulting/) walks every one of these steps on a real screen. Follow it with your own material.
 
-1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/domains/ai-consulting/#an-empty-folder-and-chat-already-in-it).
-2. **Ask Chat for the README.** Describe who the Domain is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/domains/ai-consulting/#a-front-page-in-the-authors-voice).
-3. **Bring in what you already have.** Your old decks, a shared AI chat where you once listed the learning science you trust, a web page you always cite. New from Web Page turns each into a document with its links kept. See [an old AI chat became a reference](/domains/ai-consulting/#an-old-ai-chat-became-a-reference).
+1. **Add an empty folder and choose it.** Chat answers from the folder before any document exists. The walkthrough shows it at [an empty folder, and Chat already in it](/playbooks/ai-consulting/#an-empty-folder-and-chat-already-in-it).
+2. **Ask Chat for the README.** Describe who the Playbook is for and what you want a reader to have at the end. Chat writes it in your voice and marks every claim it cannot stand behind. See [a front page, in the author's voice](/playbooks/ai-consulting/#a-front-page-in-the-authors-voice).
+3. **Bring in what you already have.** Your old decks, a shared AI chat where you once listed the learning science you trust, a web page you always cite. New from Web Page turns each into a document with its links kept. See [an old AI chat became a reference](/playbooks/ai-consulting/#an-old-ai-chat-became-a-reference).
 4. **Let Ideas pick a Skill.** Press Suggest on your Method document. Ideas reads the sections and names a Skill for each, a Workflow Path for the steps, a Guided Exercise for the interview practice. A figure or a form waits in Review Changes until you keep it.
 
-![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Domain built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
+![Ideas open beside a README in Flow, offering to run Visual Explainer and Guided Exercise on two sections, each with a sentence on why it fits. Shown on AI Consulting, the only Playbook built so far](../../assets/flow/domains/ai-consulting/04-ideas-suggest.webp)
 
-5. **Ask Chat for the next document with your own pages as sources.** The Interview Guide can be written from your Method and your evidence. Repeat until the path is done. See [the next document, from his own pages](/domains/ai-consulting/#the-next-document-from-his-own-pages).
-6. **Review every change.** When you cut a step or rename a document, every page that pointed at it follows. See [Review changed the plan, and the source followed](/domains/ai-consulting/#review-changed-the-plan-and-the-source-followed).
+5. **Ask Chat for the next document with your own pages as sources.** The Interview Guide can be written from your Method and your evidence. Repeat until the path is done. See [the next document, from his own pages](/playbooks/ai-consulting/#the-next-document-from-his-own-pages).
+6. **Review every change.** When you cut a step or rename a document, every page that pointed at it follows. See [Review changed the plan, and the source followed](/playbooks/ai-consulting/#review-changed-the-plan-and-the-source-followed).
 
 ## Apply it to a client job
 
-A Domain is for using, not only reading. On a new course project, open the Domain, start a folder for the client and ask Chat to draft the course blueprint from the Template, using the expert interview notes as the source. The Method's checklist tells you what to confirm before the draft goes to the client. When the client corrects something, write the lesson back into the Method. The next project starts from what you learned.
+A Playbook is for using, not only reading. On a new course project, open the Playbook, start a folder for the client and ask Chat to draft the course blueprint from the Template, using the expert interview notes as the source. The Method's checklist tells you what to confirm before the draft goes to the client. When the client corrects something, write the lesson back into the Method. The next project starts from what you learned.
 
 With the Expert Interview Guide open, a client's subject matter expert can read the questions before the call. With the Worked Example beside it, they see what the end looks like. That is a better first meeting than a blank chat.
 
 ## Publish it, and keep it current
 
-When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Domain in with File, then New from GitHub, and the folder's address.
+When the folder is ready, choose Publish and then GitHub Repository. Flow sends the files and nothing else. A reader brings the Playbook in with File, then New from GitHub, and the folder's address.
 
-![Publish open on a Domain in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
+![Publish open on a Playbook in Flow, with GitHub Repository chosen and the note that six files were sent. The preview shows the README as the repository will. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/09-published-to-github.webp)
 
 When you learn something and publish again, every reader's copy shows the update as a change they review. They keep their own edits. Nothing is replaced behind their back.
 
-![Flow's update sheet for a Domain a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
+![Flow's update sheet for a Playbook a reader brought in, listing the one document that changed and offering Not Now or Update Selected. Shown on AI Consulting](../../assets/flow/domains/ai-consulting/12-update-sheet.webp)
 
-The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and PowerPoint files for the client's team. Chat on the Domain, and the figures a reader steps through, stay in Flow.
+The same source can also become a GitHub Pages site, a PDF, an EPUB, or Word and PowerPoint files for the client's team. Chat on the Playbook, and the figures a reader steps through, stay in Flow.
 
 ## What it costs
 
-Bringing any Domain into Flow is free on Base. Writing with Chat, and Chat on a Domain, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Domain, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
+Bringing any Playbook into Flow is free on Base. Writing with Chat, and Chat on a Playbook, need Flow Pro at $10 a month. Publishing to GitHub needs the Publish add-on too, another $10 a month. There is no fee per Playbook, so publish one or twenty for the same price. Any AI you connect follows the terms of that service. Publishing does not bring clients on its own. It gives the clients you earn a living copy of your method.
 
 ## Start here
 
-Read the [walkthrough](/domains/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your method to Chat in three sentences. The README it writes is the first document of your Domain. If you want to talk it through first, the [Domains page](/domains/) has one email address and four questions.
+Read the [walkthrough](/playbooks/ai-consulting/) once, end to end. Then add an empty folder in Flow, name it, and describe your method to Chat in three sentences. The README it writes is the first document of your Playbook. If you want to talk it through first, the [Playbooks page](/playbooks/) has one email address and four questions.

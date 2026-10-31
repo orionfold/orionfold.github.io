@@ -1,7 +1,7 @@
 // Paper design system guards (G-139, operator 2026-10-30).
 // Paper is built beside Living Systems and must not leak into it: its classes
 // are pp- prefixed, its colors are tokens, and only PaperLayout loads it.
-// The cast stays truthful: every Fold belongs to a published Domain, every
+// The cast stays truthful: every Fold belongs to a published Playbook, every
 // sample client comes from that blueprint's own mock, and faces are labeled.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
@@ -54,7 +54,7 @@ test('no stylesheet outside Paper defines a pp- class', () => {
 
 test('the R1 shell: announce bar, Paper nav and footer on every page with a nav', () => {
   const nav = read('src/components/Nav.astro');
-  assert.match(nav, /<AnnounceBar href="\/domains\/"[^>]*>Flow \{FLOW_VERSION\} is out\./, 'the announce bar (D6) reads the version from flow-release.json');
+  assert.match(nav, /<AnnounceBar href="\/playbooks\/"[^>]*>Flow \{FLOW_VERSION\} is out\./, 'the announce bar (D6) reads the version from flow-release.json');
   assert.match(nav, /<div id="nav-wrapper" class="paper pp-shell">[\s\S]*id="nav-notice-slot"[\s\S]*<PaperNav \/>/);
   assert.match(nav, /--of-nav-height/);
   const paperNav = read('src/components/paper/PaperNav.astro');
@@ -76,12 +76,12 @@ test('Layout keeps Living Systems as the default design', () => {
   assert.match(src, /'living-site bg-surface text-text min-h-screen'/);
 });
 
-test('each Fold belongs to a published Domain, and sample clients come from its blueprint', () => {
+test('each Fold belongs to a published Playbook, and sample clients come from its blueprint', () => {
   const folds = read('src/lib/paper/folds.ts');
   const cast = read('src/lib/paper/cast.ts');
   const slugs = [...folds.matchAll(/domainSlug: '([a-z0-9-]+)'/g)].map((m) => m[1]);
   assert.equal(slugs.length, 8);
-  for (const slug of slugs) assert.ok(existsSync(path.join(root, `src/content/domains/${slug}.md`)), `${slug} is not a published Domain`);
+  for (const slug of slugs) assert.ok(existsSync(path.join(root, `src/content/domains/${slug}.md`)), `${slug} is not a published Playbook`);
   for (const [, id, client] of cast.matchAll(/^\s+(\w+): \{ area: '[^']*', who: '[^']*', client: '([^']*)'/gm)) {
     if (!client) continue;
     const slug = folds.match(new RegExp(`id: '${id}'[^}]*domainSlug: '([a-z0-9-]+)'`))[1];
@@ -106,7 +106,7 @@ test('Paper nav groups list at most five, then "All"', () => {
   const flow = src.match(/\{ title: 'Flow', items: \[([\s\S]*?)\] \}/)[1];
   assert.ok((flow.match(/href:/g) ?? []).length <= 5);
   assert.ok(!/items: (?!top\(|\[|domainTop\.)\w+\./.test(src), 'every data-driven group must go through top()');
-  assert.match(src, /const domainTop = top\(domains\);/, 'Domains list five in all, like the old menu');
+  assert.match(src, /const domainTop = top\(domains\);/, 'Playbooks list five in all, like the old menu');
 });
 
 test('head-diff catches a dropped JSON-LD block, canonical or internal link', () => {

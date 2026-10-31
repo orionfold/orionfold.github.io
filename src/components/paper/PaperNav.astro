@@ -33,8 +33,8 @@ const GLYPH = {
 };
 const FOLD_BY_DOMAIN = Object.fromEntries(FOLDS.map((f) => [f.domainSlug, f.id])) as Record<string, FoldId>;
 
-// Domains keep the old menu's rule: five in the site's order (the built
-// Domains, then the blueprints), then All Domains.
+// Playbooks keep the old menu's rule: five in the site's order (the built
+// Playbooks, then the blueprints), then All Playbooks.
 const domains = await publishedDomainArticles();
 const blueprints = domains.filter(isBlueprint);
 const domainTop = top(domains);
@@ -65,10 +65,10 @@ const MENUS: Menu[] = [
     card: { fold: 'orri', kicker: 'Flow for Mac', title: 'New here? Start with ten Pro Days.', line: 'Pro Days count only on the days you use them.', cta: { href: flowDownloadHref, label: `${navCtaLabel} for Mac`, track: 'nav-menu' } },
   },
   {
-    key: 'domains', label: 'Flow Domains',
+    key: 'domains', label: 'Playbooks',
     groups: [
-      { title: 'Founder Flow Domains', items: domainTop.filter((d) => !isBlueprint(d)).map(domainItem) },
-      { title: `Free blueprints, ${blueprints.length} in all`, items: domainTop.filter(isBlueprint).map(domainItem), all: { href: '/domains/', label: 'All Flow Domains' } },
+      { title: 'Founder Playbooks', items: domainTop.filter((d) => !isBlueprint(d)).map(domainItem) },
+      { title: `Free blueprints, ${blueprints.length} in all`, items: domainTop.filter(isBlueprint).map(domainItem), all: { href: '/playbooks/', label: 'All Playbooks' } },
     ],
     card: { fold: 'tally', face: faces.tally, kicker: 'Accounting Advisory blueprint', title: 'Pick a blueprint. Put your name on it.', line: 'Tally drafts Juniper Bakery’s close note. You make the call.' },
   },

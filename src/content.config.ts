@@ -456,7 +456,7 @@ const elementItems = defineCollection({
     }),
 });
 
-// Domains: launch articles for /domains/ — how a Flow Domain was built in
+// Playbooks: launch articles for /playbooks/ — how a Flow Playbook was built in
 // Flow, published to GitHub and brought in by a reader. Written by the website
 // lane from the product lane's together-use journals and shots (operator
 // 2026-10-27), and handed back to the product lane through the ops ledger.
@@ -465,15 +465,15 @@ const domains = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
-      domain: z.string(), // the Domain the article is about
-      // 'launch': a Domain that exists, was walked and published (the launch
-      // story carries its repo, files and walk). 'blueprint': a Domain an
+      domain: z.string(), // the Playbook the article is about
+      // 'launch': a Playbook that exists, was walked and published (the launch
+      // story carries its repo, files and walk). 'blueprint': a Playbook an
       // expert in that role could build; nothing exists yet, so no repo, no
       // walk and no walk numbers (G-135, operator 2026-10-28).
       kind: z.enum(['launch', 'blueprint']).default('launch'),
-      role: z.string(), // the expert the Domain is for, e.g. "Learning designers and trainers"
+      role: z.string(), // the expert the Playbook is for, e.g. "Learning designers and trainers"
       hook: z.string(), // one line for the nav menu and the landing cards
-      icon: z.string(), // the Flow Elements card whose drawing stands for the Domain
+      icon: z.string(), // the Flow Elements card whose drawing stands for the Playbook
       tint: z.string(), // its colour, from the Elements set
       order: z.number(), // the site's order after the launch story (PR/FAQ ranks)
       dek: z.string(),
@@ -483,7 +483,7 @@ const domains = defineCollection({
       release: z.string(), // the Flow release the article is written for
       hero: image().optional(),
       heroAlt: z.string().optional(),
-      repo: z.string().url().optional(), // the Domain's folder on GitHub
+      repo: z.string().url().optional(), // the Playbook's folder on GitHub
       files: z.number().optional(),
       size: z.string().optional(),
       licence: z.string().optional(),
@@ -497,7 +497,7 @@ const domains = defineCollection({
       // questions they ask an assistant, rendered as a section and FAQPage.
       keywords: z.array(z.string()).default([]),
       faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
-      // The Domain on a client job, played in a drawn Flow window (DomainMock):
+      // The Playbook on a client job, played in a drawn Flow window (DomainMock):
       // six steps, each what the expert asks, what Chat answers, the document
       // open, the Element or Skill drawn, and the status pill. Only the names
       // the article gives are written on screen; everything else is a grey
@@ -510,7 +510,7 @@ const domains = defineCollection({
         })
         .optional(),
       minutes: z.number(),
-      // A built Domain's own walk facts for the rail (hands-on time, AI spend).
+      // A built Playbook's own walk facts for the rail (hands-on time, AI spend).
       time: z.string().optional(),
       spend: z.string().optional(),
       draft: z.boolean().default(false),
@@ -524,7 +524,7 @@ const domains = defineCollection({
         for (const k of ['walked', 'repo', 'files', 'size', 'licence'] as const) {
           if (d[k] !== undefined) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `a blueprint has no ${k}; nothing was built or walked` });
         }
-        if (!d.blueprint?.length) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'a blueprint lists the documents its Domain would hold' });
+        if (!d.blueprint?.length) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'a blueprint lists the documents its Playbook would hold' });
       }
     }),
 });

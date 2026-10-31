@@ -1,6 +1,6 @@
 // The eight Folds: origami helpers drawn as faceted polygons, ported from the
 // town-study prototype (operator 2026-10-30). Each Fold belongs to one
-// published Domain in src/content/domains; the Paper design system renders
+// published Playbook in src/content/domains; the Paper design system renders
 // them as inline SVG at build time, so no page needs JavaScript to draw one.
 
 export type Draw = (a: string, b: string, c: string) => string;
@@ -72,7 +72,7 @@ export interface Fold {
   id: FoldId;
   name: string;
   kind: string;
-  /** The published Domain this Fold belongs to (src/content/domains/<domainSlug>.md). */
+  /** The published Playbook this Fold belongs to (src/content/domains/<domainSlug>.md). */
   domain: string;
   domainSlug: string;
   /** a = main face, b = shadow face, c = light face, ink = readable text tint, tint = soft background */

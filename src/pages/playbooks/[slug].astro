@@ -1,11 +1,11 @@
 ---
-// /domains/<slug>/ — a Domain article. The launch story tells how AI
+// /playbooks/<slug>/ — a Playbook article. The launch story tells how AI
 // Consulting was built in Flow, published to GitHub and brought in by
 // a reader, from the product lane's session journals and shots. A blueprint
-// (G-135) shows an expert in one role what their own Domain could hold and how
+// (G-135) shows an expert in one role what their own Playbook could hold and how
 // they would build it, with the launch story as the walkthrough; nothing in a
 // blueprint was built or walked, so its hero is the planned folder drawn by
-// DomainAnatomy and its rail carries no walk facts. The other built Domains by
+// DomainAnatomy and its rail carries no walk facts. The other built Playbooks by
 // Orionfold's founder (the S-1 analyst guide, 2026-10-29) read the same way as
 // the launch story, with their own walk facts. The reading layout, rail
 // and CTA follow the Paths articles.
@@ -37,10 +37,10 @@ const { Content, headings } = await render(entry);
 const d = entry.data;
 const blueprint = isBlueprint(entry);
 const walkthrough = launch && launch.id !== entry.id ? launch : undefined;
-const kicker = blueprint ? 'A BLUEPRINT' : walkthrough ? 'A FOUNDER DOMAIN' : 'THE LAUNCH STORY';
+const kicker = blueprint ? 'A BLUEPRINT' : walkthrough ? 'A FOUNDER PLAYBOOK' : 'THE LAUNCH STORY';
 const FAQ_ID = 'questions-experts-ask';
 const sections = [...headings.filter((h) => h.depth === 2), ...(d.faq.length ? [{ slug: FAQ_ID, text: 'Questions experts ask', depth: 2 }] : [])];
-// G-138: the Domain on a client job, drawn after "Apply it to a client job"
+// G-138: the Playbook on a client job, drawn after "Apply it to a client job"
 // from the article's own mock script. The rendered body is split at the next
 // section so the figure sits inside the prose; a story without a mock renders whole.
 const html = entry.rendered?.html ?? '';
@@ -51,7 +51,7 @@ const dateIso = d.drafted.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.drafted);
 const canonical = `${SITE.url}${domainArticleHref(entry.id)}`;
 const ogImage = ogPath(domainOgSlug(entry.id));
-const seoTitle = fitTitle(`${d.title} · Flow Domains · Orionfold`, blueprint ? `${d.domain}, a Flow Domain blueprint · Flow Domains · Orionfold` : `${d.domain}, built in Flow · Flow Domains · Orionfold`);
+const seoTitle = fitTitle(`${d.title} · Flow Playbooks · Orionfold`, blueprint ? `${d.domain}, a Flow Playbook blueprint · Flow Playbooks · Orionfold` : `${d.domain}, built in Flow · Flow Playbooks · Orionfold`);
 const FACTS = blueprint
   ? [
       { label: 'Status', value: 'A blueprint. Not built yet.' },
@@ -79,36 +79,36 @@ const schema = [
       { '@type': 'SoftwareApplication', name: 'Orionfold Flow', operatingSystem: 'macOS', softwareVersion: d.release },
       ...(blueprint ? [] : [{ '@type': 'CreativeWork', name: d.domain, url: d.repo, license: 'https://creativecommons.org/licenses/by/4.0/', author: PERSON }]),
     ],
-    isPartOf: { '@type': 'CollectionPage', name: 'Flow Domains', url: `${SITE.url}/domains/` },
+    isPartOf: { '@type': 'CollectionPage', name: 'Flow Playbooks', url: `${SITE.url}/playbooks/` },
     ...(d.keywords.length ? { keywords: d.keywords.join(', ') } : {}),
   },
   ...(d.faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: d.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }] : []),
   {
     '@context': 'https://schema.org', '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Domains', item: `${SITE.url}/domains/` },
+      { '@type': 'ListItem', position: 1, name: 'Playbooks', item: `${SITE.url}/playbooks/` },
       { '@type': 'ListItem', position: 2, name: d.domain, item: canonical },
     ],
   },
 ];
 ---
-<Layout title={seoTitle} description={fitDescription(d.description)} ogImage={ogImage} ogImageAlt={blueprint ? `${d.domain}, a blueprint for a Flow Domain` : `${d.domain}, a Flow Domain built in Flow and published to GitHub`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page dm-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Domains', tags: ['Flow', 'Flow Domains', d.domain, ...d.keywords] }}>
+<Layout title={seoTitle} description={fitDescription(d.description)} ogImage={ogImage} ogImageAlt={blueprint ? `${d.domain}, a blueprint for a Flow Playbook` : `${d.domain}, a Flow Playbook built in Flow and published to GitHub`} ogType="article" bodyClass="ls ed-page ed-article-page fp-page dm-page" jsonLd={schema} article={{ datePublished: dateIso, dateModified: dateIso, author: 'Manav Sehgal', section: 'Flow Playbooks', tags: ['Flow', 'Flow Playbooks', d.domain, ...d.keywords] }}>
   <Nav />
   <main id="main" class="ls-main">
     <header class="ed-article-hero fp-hero ls-container">
-      <div class="ed-article-kicker"><a href="/domains/">← Domains</a><span>FLOW DOMAIN / {d.domain.toUpperCase()} · {kicker}</span></div>
+      <div class="ed-article-kicker"><a href="/playbooks/">← Playbooks</a><span>FLOW PLAYBOOK / {d.domain.toUpperCase()} · {kicker}</span></div>
       <h1>{d.title}</h1>
       <p class="ed-article-dek">{d.dek}</p>
       <div class="ed-hero-bottom"><div class="ed-meta"><span>By Manav Sehgal</span><span>{d.minutes} min read</span><time datetime={dateIso}>{dateLabel}</time></div><div class="ed-reading-links">{blueprint
         ? walkthrough && <a href={domainArticleHref(walkthrough.id)} class="ed-download-link">Read the walkthrough →</a>
-        : <a href={d.repo} class="ed-download-link">Get the Domain on GitHub ↗</a>}</div></div>
+        : <a href={d.repo} class="ed-download-link">Get the Playbook on GitHub ↗</a>}</div></div>
       {blueprint
-        ? <div class="dm-blueprint-hero"><DomainAnatomy blueprint name={d.domain} by={`for ${d.role[0].toLowerCase()}${d.role.slice(1)}`} files={d.blueprint!} label={`${d.domain}, a blueprint: the ${d.blueprint!.length} documents the Domain would hold`} /></div>
+        ? <div class="dm-blueprint-hero"><DomainAnatomy blueprint name={d.domain} by={`for ${d.role[0].toLowerCase()}${d.role.slice(1)}`} files={d.blueprint!} label={`${d.domain}, a blueprint: the ${d.blueprint!.length} documents the Playbook would hold`} /></div>
         : <figure class="fp-heroshot"><Image src={d.hero!} alt={d.heroAlt!} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" /></figure>}
     </header>
 
     <div class="ed-reading-layout fp-layout ls-container">
-      <aside class="ed-contents fp-rail" aria-label="Article contents and the Domain's facts">
+      <aside class="ed-contents fp-rail" aria-label="Article contents and the Playbook's facts">
         <details open>
           <summary>{blueprint ? 'IN THIS BLUEPRINT' : 'IN THIS STORY'}</summary>
           <nav aria-label="Sections">
@@ -116,7 +116,7 @@ const schema = [
           </nav>
         </details>
         <div class="fp-receipt">
-          <p>THE DOMAIN</p>
+          <p>THE PLAYBOOK</p>
           <dl>{FACTS.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl>
           {numbers && <p class="fp-receipt-note">Every number is labelled. <a href={`#${numbers.slug}`}>See the table</a>.</p>}
         </div>
@@ -136,12 +136,12 @@ const schema = [
           {blueprint
             ? <PaperCta layout="article" class="ed-paper-cta"
                 source={`flow-domain-${entry.id}`} headingId="domain-cta"
-                eyebrow="BUILD YOUR DOMAIN" heading={`Start ${d.domain} on your Mac.`}
+                eyebrow="BUILD YOUR PLAYBOOK" heading={`Start ${d.domain} on your Mac.`}
                 description={`Download Flow, add an empty folder and name it. Chat is ready before any document exists. Follow the AI Consulting walkthrough step by step, with your own know-how as the source. Writing with Chat needs Flow Pro. Publishing to GitHub needs the Publish add-on too.`} />
             : <PaperCta layout="article" class="ed-paper-cta"
                 source={`flow-domain-${entry.id}`} headingId="domain-cta"
                 eyebrow="BRING IT INTO FLOW" heading={`Open ${d.domain} on your Mac.`}
-                description={`In Flow, choose File ▸ New from GitHub…, paste the folder's address from GitHub and press Add. The ${d.files} documents land in a folder of their own, and the next update arrives as a change you review. Bringing a Domain in is free on Base. Chat on it needs Flow Pro.`} />}
+                description={`In Flow, choose File ▸ New from GitHub…, paste the folder's address from GitHub and press Add. The ${d.files} documents land in a folder of their own, and the next update arrives as a change you review. Bringing a Playbook in is free on Base. Chat on it needs Flow Pro.`} />}
         </div>
       </article>
     </div>

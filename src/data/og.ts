@@ -68,10 +68,10 @@ export const OG_PAGES: Record<string, OgPage> = {
 },
   '/': {
     "slug": "home",
-    "eyebrow": "Orionfold · Flow Domains",
+    "eyebrow": "Orionfold · Flow Playbooks",
     "title": "Show how you work. AI follows it. You make the call.",
     "seed": "home",
-    "alt": "Orionfold Flow Domains: Show how you work. AI follows it. You make the call. Orri, a paper plane Fold, on a paper card.",
+    "alt": "Orionfold Flow Playbooks: Show how you work. AI follows it. You make the call. Orri, a paper plane Fold, on a paper card.",
     fold: 'orri'
 },
   '/advisor/': {
@@ -102,7 +102,7 @@ export const OG_PAGES: Record<string, OgPage> = {
     eyebrow: 'Experts',
     title: 'Offline models with benchmarks and playbooks',
     seed: 'domain-packs',
-    alt: 'Orionfold Domain Experts: offline models, benchmarks, local run paths, and playbooks',
+    alt: 'Orionfold Playbook Experts: offline models, benchmarks, local run paths, and playbooks',
   },
   '/cockpit/': {
     slug: 'cockpit',
@@ -215,10 +215,10 @@ export const OG_PAGES: Record<string, OgPage> = {
     alt: 'Flow Paths: real work walked end to end on a Mac, with the time, the cost and the evidence for every step.',
     fold: 'sprout'
   },
-  '/domains/': {
-    slug: 'flow-domains', eyebrow: 'Flow for Mac · Domains',
+  '/playbooks/': {
+    slug: 'flow-domains', eyebrow: 'Flow for Mac · Playbooks',
     title: 'Co-author with any AI once. Publish everywhere.', seed: 'flow-domains',
-    alt: 'Flow Domains: an expert’s method as a folder of living documents, co-authored with AI, published to GitHub and kept current for every reader.',
+    alt: 'Flow Playbooks: an expert’s method as a folder of living documents, co-authored with AI, published to GitHub and kept current for every reader.',
     fold: 'tally'
   },
   '/flow/elements/': {

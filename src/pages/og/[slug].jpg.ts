@@ -16,7 +16,7 @@ import { publishedElementArticles } from '../../lib/flow/elements';
 import { publishedDomainArticles } from '../../lib/flow/domains';
 import { toProductView, coverKey } from '../../lib/product/detail';
 
-// A Flow Domain's card shows its own Fold. The S-1 Analyst borrows Atlas
+// A Flow Playbook's card shows its own Fold. The S-1 Analyst borrows Atlas
 // (operator 2026-10-30 19:34, via the product lane's flowDomainSlug contract).
 const DOMAIN_FOLD: Record<string, FoldId> = { 'anthropic-s1-analyst': 'atlas' };
 const domainFold = (id: string): FoldId | undefined => DOMAIN_FOLD[id] ?? FOLDS.find((f) => f.domainSlug === id)?.id;
@@ -199,14 +199,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
     };
   });
 
-  // Flow Domains: the launch article's card, framed on its hero shot.
+  // Flow Playbooks: the launch article's card, framed on its hero shot.
   const fromDomains = (await publishedDomainArticles()).map((entry) => {
     const shot = path.join(process.cwd(), 'src/assets/flow/domains', entry.id, 'card.jpg');
     return {
       params: { slug: domainOgSlug(entry.id) },
       props: {
         title: entry.data.title,
-        eyebrow: `Flow · Domains · ${entry.data.domain}`,
+        eyebrow: `Flow · Playbooks · ${entry.data.domain}`,
         seed: entry.id,
         ...(domainFold(entry.id) ? { fold: domainFold(entry.id) } : {}),
         ...(fs.existsSync(shot) ? { screenshotPath: shot } : {}),

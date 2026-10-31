@@ -30,7 +30,7 @@ const { Content, headings } = await render(entry);
 const d = entry.data;
 const paths = await publishedPaths();
 const start = paths.find((p) => p.id === d.startWith);
-// A page can start from a Domain instead of a path (Custom GPTs and Projects).
+// A page can start from a Playbook instead of a path (Custom GPTs and Projects).
 const startDomain = start ? undefined : (await publishedDomainArticles()).find((a) => a.id === d.startWith);
 const dateIso = d.updated.toISOString().slice(0, 10);
 const dateLabel = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(d.updated);

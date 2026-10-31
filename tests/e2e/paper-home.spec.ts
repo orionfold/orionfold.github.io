@@ -21,7 +21,7 @@ for (const width of [1440, 390]) {
     expect(geometry.overflow).toBe(false);
     for (const id of ['domains', 'elements', 'paths', 'clients', 'meet', 'pricing', 'waitlist']) await expect(page.locator(`#${id}`)).toHaveCount(1);
     await expect(page.getByText('People shown are AI-generated models, not customers.')).toBeVisible();
-    // Each Flow Domain mock names a made-up client and says so.
+    // Each Flow Playbook mock names a made-up client and says so.
     await expect(page.locator('#domains .pp-dm-panel:not([hidden]) .hs-note')).toContainText('the client is made up');
     expect(errors).toEqual([]);
   });
@@ -61,7 +61,7 @@ test('hero controls pause, step back and forward, and jump to a Fold (operator 2
   await expect(page.locator('[data-pp-toggle]')).toHaveAttribute('aria-pressed', 'false');
 });
 
-test('Domains tabs play each blueprint’s own client job, and a change can be taken', async ({ page }) => {
+test('Playbooks tabs play each blueprint’s own client job, and a change can be taken', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   const tabs = page.locator('#domains [role="tab"]');
@@ -122,9 +122,9 @@ test('each plan shows what it includes on request, from the shared plan lists (o
   await expect(more).toHaveCount(3);
   for (const d of await more.all()) await expect(d).not.toHaveAttribute('open', '');
   await more.nth(1).locator('summary').click();
-  await expect(more.nth(1).locator('li').first()).toContainText('Chat with a Flow Domain');
+  await expect(more.nth(1).locator('li').first()).toContainText('Chat with a Flow Playbook');
   await expect(more.nth(1).locator('li', { hasText: 'Agentic runs' })).toBeVisible();
   await more.nth(2).locator('summary').click();
-  await expect(more.nth(2)).toContainText('a Flow Domain to a GitHub repository');
+  await expect(more.nth(2)).toContainText('a Flow Playbook to a GitHub repository');
   await expect(page.locator('#meet a[href="/flow/#pricing"]')).toHaveCount(0);
 });

@@ -31,8 +31,8 @@ const livingFaq = read('src/data/living-faq.json');
 const nav = read('src/components/Nav.astro') + read('src/components/paper/PaperNav.astro');
 const navArray = nav.match(/const MENUS: Menu\[\] = \[([\s\S]*?)\n\];/)?.[1] ?? '';
 const navLabels = [...navArray.matchAll(/key: '[a-z]+', label: '([^']+)'/g)].map((match) => match[1]);
-// Operator 2026-10-30: never the bare word Domain; the feature is a Flow Domain.
-assert.deepEqual(navLabels, ['Flow', 'Flow Domains', 'Paths', 'Elements'], 'the global nav carries Flow, its Flow Domains, then its Paths and Elements menus');
+// Operator 2026-10-30 21:08: Flow Domains became Flow Playbooks (G-148); bare "Playbook" is fine in copy.
+assert.deepEqual(navLabels, ['Flow', 'Playbooks', 'Paths', 'Elements'], 'the global nav carries Flow, its Playbooks, then its Paths and Elements menus');
 // Paper R1: Compare lives inside the Flow menu (five tools, then All), and Pricing is a plain link.
 assert.match(nav, /title: 'Switch to Flow from', chips: true, items: top\(compare\)/, 'Compare sits in the Flow menu, top five then All');
 assert.match(nav, /<a href="\/flow\/#pricing">Pricing<\/a>/, 'Pricing is the last item in the menu bar');
@@ -69,7 +69,7 @@ assert.match(nav, /<div class="pp-pill pp-cta-pair">\s*<a href="\/proposal\/">Ge
 const footer = (read('src/components/Footer.astro') + read('src/data/footer-links.ts'));
 const columns = name => [...(footer.match(new RegExp('const ' + name + '(?:: [^=]+)? = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
 assert.deepEqual(columns('FLOW_COLUMNS'), [
-  ['/flow/', 'Overview'], ['/domains/', 'Flow Domains'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
+  ['/flow/', 'Overview'], ['/playbooks/', 'Flow Playbooks'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
   ['/flow/tour/', 'Tour'], ['/flow/night-shift/', 'Night Shift'], ['/flow/living-documents/', 'Living Documents'], ['/flow/settings/', 'Settings'], ['/flow/specifications/', 'Tech Specs'], ['/flow/enterprise/', 'Enterprise'],
 ]);
 assert.deepEqual(columns('ORIONFOLD_COLUMNS'), [
