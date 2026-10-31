@@ -129,3 +129,6 @@
 .paper .ls-longform .living-relay-band { margin: 0; padding: 0; width: auto; border: 0; background: none; }
 .paper .ls-longform .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .paper .ls-longform .table-scroll table { min-width: 520px; }
+/* R7a: the Flow download pair on the free-book thank-you sheet, in Paper type; the caption wraps. */
+.paper .ls-in-paper.ls-done-cta p.of-waitlist-caption { white-space: normal; font: 400 13px/1.5 var(--pp-sans); letter-spacing: 0; text-transform: none; color: var(--pp-ink-3); }
+.paper .ls-done-cta :is(.of-primary-action, .of-secondary-action) { font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; border-radius: var(--pp-r-2); }

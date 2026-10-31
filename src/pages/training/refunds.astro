@@ -1,5 +1,7 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+// Workshop refunds. R7a (G-146): Paper. The form id, fields, honeypot and the
+// status line the script writes to are unchanged.
+import PaperLayout from '../../layouts/PaperLayout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import { SITE } from '../../data/seo';
@@ -32,58 +34,62 @@ const faqSchema = {
 };
 ---
 
-<Layout
+<PaperLayout
   title="Training workshop refunds · Orionfold"
   description="Read the Orionfold training workshop refund policy and request a refund using your purchase email."
   jsonLd={faqSchema}
 >
   <Nav />
-  <main class="px-6 pb-28 pt-36 sm:pt-44">
-    <header class="mx-auto max-w-4xl">
-      <a class="font-mono text-xs uppercase tracking-[0.2em] text-primary hover:underline" href="/training/">Orionfold Training</a>
-      <h1 class="mt-5 max-w-3xl text-balance text-5xl font-bold leading-[0.98] sm:text-7xl">Workshop refunds, without a maze.</h1>
-      <p class="mt-7 max-w-2xl text-lg leading-relaxed text-text-muted">Every paid Orionfold training workshop includes a 14-day full, no-judgment refund window. Use the purchase email below and confirm the private link we send you.</p>
-    </header>
+  <main id="main" class="pp-page">
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="refunds-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker"><a href="/training/">Orionfold Training</a></p>
+        <h1 id="refunds-title" class="pp-h1">Workshop refunds, without a maze.</h1>
+        <p class="pp-sub">Every paid Orionfold training workshop includes a 14-day full, no-judgment refund window. Use the purchase email below and confirm the private link we send you.</p>
+      </div>
+    </section>
 
-    <section class="mx-auto mt-14 grid max-w-4xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-      <div class="rounded-2xl border border-border bg-surface-raised p-6 sm:p-8">
-        <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">The policy</p>
-        <dl class="mt-6 grid gap-6 text-sm leading-relaxed">
-          <div><dt class="font-semibold text-text">14 calendar days</dt><dd class="mt-2 text-text-muted">The window begins when payment succeeds. Requests inside it receive a full refund to the original payment method.</dd></div>
-          <div><dt class="font-semibold text-text">Access stays open while pending</dt><dd class="mt-2 text-text-muted">Only a successful Stripe refund closes future private playback and re-download.</dd></div>
-          <div><dt class="font-semibold text-text">Your work remains yours</dt><dd class="mt-2 text-text-muted">Downloaded files and the workflows, outputs, and receipts you created in Relay are not removed.</dd></div>
-          <div><dt class="font-semibold text-text">Private by default</dt><dd class="mt-2 text-text-muted">The form always returns the same message, so it does not reveal whether an email owns a purchase.</dd></div>
+    <section class="pp-split" aria-label="The policy and the request form">
+      <div>
+        <p class="pp-kicker">The policy</p>
+        <dl class="pp-policy">
+          <div><dt>14 calendar days</dt><dd>The window begins when payment succeeds. Requests inside it receive a full refund to the original payment method.</dd></div>
+          <div><dt>Access stays open while pending</dt><dd>Only a successful Stripe refund closes future private playback and re-download.</dd></div>
+          <div><dt>Your work remains yours</dt><dd>Downloaded files and the workflows, outputs, and receipts you created in Relay are not removed.</dd></div>
+          <div><dt>Private by default</dt><dd>The form always returns the same message, so it does not reveal whether an email owns a purchase.</dd></div>
         </dl>
       </div>
 
-      <form id="refund-request-form" class="rounded-2xl border border-primary/30 bg-primary/[0.05] p-6 sm:p-8">
-        <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Request a refund</p>
-        <h2 class="mt-3 text-2xl font-semibold">Relay Operator Workshop</h2>
-        <p class="mt-3 text-sm leading-relaxed text-text-muted">Enter the email used at checkout. If it owns an eligible purchase, we will send a one-hour confirmation link. Refund timing after confirmation depends on Stripe and your bank.</p>
-        <label class="mt-6 block text-sm font-medium" for="refund-email">Purchase email</label>
-        <input class="mt-2 w-full rounded-lg border border-border-strong bg-surface px-4 py-3 text-text outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" id="refund-email" name="email" type="email" autocomplete="email" required maxlength="254" />
+      <form id="refund-request-form" class="pp-form">
+        <p class="pp-kicker">Request a refund</p>
+        <h2>Relay Operator Workshop</h2>
+        <p>Enter the email used at checkout. If it owns an eligible purchase, we will send a one-hour confirmation link. Refund timing after confirmation depends on Stripe and your bank.</p>
+        <label for="refund-email">Purchase email</label>
+        <input id="refund-email" name="email" type="email" autocomplete="email" required maxlength="254" />
         <input class="hidden" name="company" tabindex="-1" autocomplete="off" />
-        <button class="mt-5 rounded-lg bg-primary px-5 py-3 font-semibold text-accent-text disabled:opacity-50" type="submit">Email my confirmation link</button>
-        <p id="refund-request-status" class="mt-4 text-sm leading-relaxed text-text-muted" role="status" aria-live="polite"></p>
-        <p class="mt-5 text-xs leading-relaxed text-text-dim">Outside the automatic window or unable to use the form? Email <a class="text-primary hover:underline" href="mailto:manav@orionfold.com">manav@orionfold.com</a>.</p>
+        <button class="pp-btn" type="submit">Email my confirmation link</button>
+        <p id="refund-request-status" role="status" aria-live="polite"></p>
+        <small>Outside the automatic window or unable to use the form? Email <a href="mailto:manav@orionfold.com">manav@orionfold.com</a>.</small>
       </form>
     </section>
 
-    <section class="mx-auto mt-16 max-w-4xl border-t border-border pt-12" aria-labelledby="refund-questions">
-      <p class="font-mono text-xs uppercase tracking-[0.18em] text-text-dim">Clear before you ask</p>
-      <h2 id="refund-questions" class="mt-3 text-3xl font-bold">Refund questions</h2>
-      <div class="mt-7 grid gap-4">
+    <section class="pp-index" aria-labelledby="refund-questions">
+      <div class="pp-index-head">
+        <p class="pp-kicker">Clear before you ask</p>
+        <h2 id="refund-questions">Refund questions</h2>
+      </div>
+      <div class="pp-faq">
         {faq.map((item) => (
-          <details class="rounded-xl border border-border bg-surface-raised p-5">
-            <summary class="cursor-pointer font-semibold text-text">{item.question}</summary>
-            <p class="mt-3 max-w-3xl text-sm leading-relaxed text-text-muted">{item.answer}</p>
+          <details>
+            <summary>{item.question}</summary>
+            <p>{item.answer}</p>
           </details>
         ))}
       </div>
     </section>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
 
 <script>
   import { requestWorkshopLink } from '../../lib/workshop';

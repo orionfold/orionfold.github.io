@@ -20,71 +20,59 @@
 // Flow surface, so one line reverts it. The download control routes through
 // FlowDownloadCta, which owns the truthful unavailable state while FLOW_DMG_URL
 // is a placeholder -- this page must never hand out a link that 404s.
-import Layout from '../../layouts/Layout.astro';
-import BrandMark from '../../components/ui/BrandMark.astro';
+// R7a (G-146): the Paper done sheet. Still no site nav (the magnet funnel keeps
+// its own bare header), and the download still goes through FlowDownloadCta.
+import PaperLayout from '../../layouts/PaperLayout.astro';
+import Fold from '../../components/paper/Fold.astro';
+import '../../styles/living-in-paper.css';
 import FlowDownloadCta from '../../components/flow/FlowDownloadCta.astro';
 import { ORIONFOLD_FLOW_LIVE } from '../../data/launch';
 ---
-<Layout title="Your book is on the way · Orionfold" description="Your free AI Native Business book is on its way to your inbox." noindex>
-  <header class="px-6 py-5">
+<PaperLayout title="Your book is on the way · Orionfold" description="Your free AI Native Business book is on its way to your inbox." noindex>
+  <header class="pp-done-brand">
     <!-- Logo + wordmark, top-left, subtle and non-linked (marketing 2026-06-28),
          consistent with the magnet page; the forward action is the Flow CTA. -->
-    <div class="inline-flex items-center gap-1.5 opacity-80" aria-label="Orionfold">
-      <BrandMark size={28} class="h-7 w-7" />
-      <span class="text-xl font-semibold tracking-tight leading-none">
-        <span class="text-text">Orion</span><span class="text-primary">fold</span>
-      </span>
-    </div>
+    <span class="pp-logo" aria-label="Orionfold"><img src="/logos/orionfold-mark-3d-48.png" alt="" width="24" height="24" />ORIONFOLD</span>
   </header>
 
-  <main class="mx-auto max-w-xl px-6 py-20 text-center">
-    <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">You're in</p>
-    <h1 class="mt-4 leading-tight" style="font-size: clamp(1.8rem, 4.5vw, 2.6rem);">
-      Your book is on the way.
-    </h1>
-    <p class="mx-auto mt-5 max-w-md text-lg leading-relaxed text-text-muted">
-      Check your inbox for the PDF and EPUB. The links work for seven days, so
-      save the files once you grab them.
-    </p>
-    <p class="mx-auto mt-4 max-w-md leading-relaxed text-text-muted">
-      {ORIONFOLD_FLOW_LIVE
-        ? 'You are also signed up for Orionfold Flow updates. Nothing more to do.'
-        : 'You are also on the list for Orionfold Flow. Nothing more to do.'}
-    </p>
-
-    <!-- Single forward step: the flagship. Link only, no capture (see header). -->
-    <div class="mt-12 rounded-2xl border border-primary/25 bg-primary/[0.04] px-6 py-10">
-      <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">{ORIONFOLD_FLOW_LIVE ? 'Your next step' : 'While you wait'}</p>
-      <h2 class="mt-4 text-2xl font-bold leading-tight">Meet the tool the book is about.</h2>
-      <p class="mx-auto mt-4 max-w-md leading-relaxed text-text-muted">
-        Orionfold Flow is our Mac app for the person doing the work. It brings AI
-        to your documents, and you stay the one who approves what changes.
+  <main id="main" class="pp-done-page">
+    <section class="pp-done" aria-labelledby="magnet-thanks-heading">
+      <Fold id="atlas" bob />
+      <p class="pp-kicker">You're in</p>
+      <h1 id="magnet-thanks-heading">Your book is on the way.</h1>
+      <p>Check your inbox for the PDF and EPUB. The links work for seven days, so save the files once you grab them.</p>
+      <p>
         {ORIONFOLD_FLOW_LIVE
-          ? ' Reading and writing your documents is free forever.'
-          : ' See the real development build, screen by screen.'}
+          ? 'You are also signed up for Orionfold Flow updates. Nothing more to do.'
+          : 'You are also on the list for Orionfold Flow. Nothing more to do.'}
       </p>
-      {ORIONFOLD_FLOW_LIVE ? (
-        <div class="mt-7">
-          <FlowDownloadCta
-            source="magnet-thanks"
-            secondaryHref="/flow/"
-            secondaryLabel="Take the product tour"
-            align="center"
-          />
-        </div>
-      ) : (
-        <a
-          href="/flow/"
-          class="mt-7 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-semibold text-surface transition-opacity hover:opacity-90"
-          data-astro-prefetch
-        >
-          Explore Orionfold Flow <span aria-hidden="true">&rarr;</span>
-        </a>
-      )}
-    </div>
 
-    <p class="mt-10 text-sm text-text-dim">
-      Didn't get the email? Check spam, or <a class="underline underline-offset-2 hover:text-text-muted" href="/become-ai-native-business/">request it again</a>.
-    </p>
+      <!-- Single forward step: the flagship. Link only, no capture (see header). -->
+      <div class="pp-done-next">
+        <p class="pp-kicker">{ORIONFOLD_FLOW_LIVE ? 'Your next step' : 'While you wait'}</p>
+        <h2>Meet the tool the book is about.</h2>
+        <p>
+          Orionfold Flow is our Mac app for the person doing the work. It brings AI
+          to your documents, and you stay the one who approves what changes.
+          {ORIONFOLD_FLOW_LIVE
+            ? ' Reading and writing your documents is free forever.'
+            : ' See the real development build, screen by screen.'}
+        </p>
+        {ORIONFOLD_FLOW_LIVE ? (
+          <div class="ls-in-paper ls-done-cta pp-done-actions">
+            <FlowDownloadCta
+              source="magnet-thanks"
+              secondaryHref="/flow/"
+              secondaryLabel="Take the product tour"
+              align="center"
+            />
+          </div>
+        ) : (
+          <div class="pp-done-actions"><a class="pp-btn" href="/flow/" data-astro-prefetch>Explore Orionfold Flow <span aria-hidden="true">&rarr;</span></a></div>
+        )}
+      </div>
+
+      <small>Didn't get the email? Check spam, or <a href="/become-ai-native-business/">request it again</a>.</small>
+    </section>
   </main>
-</Layout>
+</PaperLayout>

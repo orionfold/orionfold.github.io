@@ -563,6 +563,7 @@
 .paper .pp-rows b { font: 400 22px/1.15 var(--pp-serif); }
 .paper .pp-rows strong { display: block; font: 500 17px/1.35 var(--pp-sans); }
 .paper .pp-rows span { display: block; margin-top: 6px; font: 400 15px/1.5 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .pp-rows span:first-child { margin-top: 0; }
 .paper .pp-rows small { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--pp-ink-3); white-space: nowrap; }
 @media (max-width: 860px) {
   .paper .pp-lead { grid-template-columns: 1fr; gap: 16px; }
@@ -603,3 +604,44 @@
 .paper .pp-closing .pp-kicker { margin: 0; }
 .paper .pp-panel-note { margin: 32px 0 0; max-width: 72ch; font: 400 16px/1.6 var(--pp-sans); color: var(--pp-ink-2); }
 .paper .pp-panel-note a { color: var(--pp-ink); text-underline-offset: 4px; }
+
+/* R7a (G-146): the done sheet. One centered card after a checkout or an
+   opt-in: a Fold, the serif line, what happens next, one or two actions. */
+.paper .pp-done { width: min(720px, calc(100% - 32px)); margin: 48px auto 0; padding: 56px 24px 48px; display: grid; gap: 14px; justify-items: center; text-align: center; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); }
+.paper :is(.pp-done, .pp-done-next) > * { min-width: 0; max-width: 100%; }
+.paper .pp-done .pp-fold { width: 88px; }
+.paper .pp-done .pp-kicker { margin: 8px 0 0; }
+.paper .pp-done h1 { margin: 0; max-width: 16ch; font: 300 clamp(36px, 5vw, 60px)/1.04 var(--pp-serif); letter-spacing: -.015em; text-wrap: balance; }
+.paper .pp-done p:not(.pp-kicker) { margin: 0; max-width: 48ch; font: 400 17px/1.5 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .pp-done small { max-width: 52ch; font-size: 13.5px; line-height: 1.5; color: var(--pp-ink-3); }
+.paper .pp-done small a { color: var(--pp-ink-2); text-underline-offset: 3px; }
+.paper .pp-done-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
+.paper .pp-done-error { margin: 0; font: 500 13px/1.4 var(--pp-sans); color: var(--pp-red-deep); }
+.paper .pp-done-next { width: 100%; display: grid; gap: 12px; justify-items: center; margin-top: 18px; padding-top: 32px; border-top: 1px solid var(--pp-line); }
+.paper .pp-done-next h2 { margin: 0; font: 300 clamp(26px, 3vw, 36px)/1.1 var(--pp-serif); }
+.paper .pp-done [hidden] { display: none; }
+.paper .pp-done .pp-btn:disabled { cursor: not-allowed; opacity: .6; }
+.paper .pp-done-brand { padding: 20px 16px 0; }
+.paper .pp-done-brand .pp-logo { display: inline-flex; opacity: .8; }
+.paper .pp-done-page { padding-bottom: 96px; }
+
+/* R7a (G-146): a policy beside its one form (workshop refunds). The form
+   styles are generic so later forms on Paper pages can reuse them. */
+.paper .pp-split { width: min(1240px, calc(100% - 32px)); margin: 0 auto; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 24px; align-items: start; }
+.paper .pp-policy { margin: 0; padding: 0; border-top: 1px solid var(--pp-ink); }
+.paper .pp-policy > div { padding: 18px 0; border-bottom: 1px solid var(--pp-line); }
+.paper .pp-policy dt { font: 500 16px/1.35 var(--pp-sans); }
+.paper .pp-policy dd { margin: 6px 0 0; font: 400 15px/1.5 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .pp-form { display: grid; gap: 10px; padding: 28px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); }
+.paper .pp-form .pp-kicker { margin: 0; }
+.paper .pp-form h2 { margin: 0; font: 300 clamp(26px, 3vw, 34px)/1.1 var(--pp-serif); }
+.paper .pp-form p { margin: 0; font: 400 15px/1.5 var(--pp-sans); color: var(--pp-ink-2); }
+.paper .pp-form label { margin-top: 8px; font: 500 14px/1.3 var(--pp-sans); }
+.paper .pp-form input:not([type='hidden']) { width: 100%; padding: 12px 14px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); color: var(--pp-ink); font: 400 16px/1.3 var(--pp-sans); }
+.paper .pp-form input:focus-visible { outline: 2px solid var(--pp-teal); outline-offset: 1px; border-color: var(--pp-teal); }
+.paper .pp-form .pp-btn { justify-self: start; margin-top: 4px; }
+.paper .pp-form .pp-btn:disabled { cursor: not-allowed; opacity: .5; }
+.paper .pp-form small { font-size: 13px; line-height: 1.5; color: var(--pp-ink-3); }
+.paper .pp-form small a { color: var(--pp-ink-2); text-underline-offset: 3px; }
+.paper .pp-split + .pp-index { margin-top: 72px; }
+@media (max-width: 860px) { .paper .pp-split { grid-template-columns: 1fr; } }
