@@ -83,3 +83,5 @@ export const nightFoldShapes = (f: Fold) => {
 };
 /** Any colorway (a, b, c, ink) lifted for night the same way. */
 export const nightColors = (cw: { a: string; b: string; c: string; ink: string }) => ({ a: lift(cw.a, 3), b: lift(cw.b, 3), c: cw.c, ink: lift(cw.ink, 4.5) });
+/** The small solid parts of a personal Fold at night (a beak, a body): Paper's own light ink. */
+export const NIGHT_DETAIL = NIGHT['ink-2'];

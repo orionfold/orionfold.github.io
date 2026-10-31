@@ -14,13 +14,13 @@ import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync, existsSyn
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
-const VERSION = '0.2.0';
+const VERSION = '0.2.1';
 const root = new URL('../', import.meta.url).pathname;
 const out = path.join(root, 'output/paper-package', VERSION);
 const rel = (p) => path.join(root, p);
 const { FOLDS, foldSvg } = await import(rel('src/lib/paper/folds.ts'));
 const { foldedStarSvg } = await import(rel('src/lib/paper/star.ts'));
-const { NIGHT, NIGHT_TEXT_PAIRS, contrast, nightFold, nightFoldShapes, nightColors } = await import(rel('src/lib/paper/night.ts'));
+const { NIGHT, NIGHT_TEXT_PAIRS, NIGHT_DETAIL, contrast, nightFold, nightFoldShapes, nightColors } = await import(rel('src/lib/paper/night.ts'));
 const { PERSONAL_FOLDS, COLORWAYS, colorwayById, personalFoldSvg } = await import(rel('src/lib/paper/personal-folds.ts'));
 
 rmSync(out, { recursive: true, force: true });
@@ -43,13 +43,13 @@ const personal = PERSONAL_FOLDS.map((f) => {
   writeFileSync(path.join(out, 'personal', `${f.id}.svg`), personalFoldSvg(f, { label }) + '\n');
   writeFileSync(path.join(out, 'personal', `${f.id}-no-shadow.svg`), personalFoldSvg(f, { label, shadow: false }) + '\n');
   const n = nightColors(colorwayById[f.defaultColorway]);
-  writeFileSync(path.join(out, 'personal', `${f.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${label}">${f.draw(n.a, n.b, n.c)}</svg>\n`);
+  writeFileSync(path.join(out, 'personal', `${f.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${label}">${f.draw(n.a, n.b, n.c, NIGHT_DETAIL)}</svg>\n`);
   // Every colorway as its own file, light (no shadow) and night, so the app swaps files to recolor.
   mkdirSync(path.join(out, 'personal', f.id), { recursive: true });
   const byColorway = Object.fromEntries(COLORWAYS.map((cw) => {
     const nc = nightColors(cw);
     writeFileSync(path.join(out, 'personal', f.id, `${cw.id}.svg`), personalFoldSvg(f, { label, colorway: cw, shadow: false }) + '\n');
-    writeFileSync(path.join(out, 'personal', f.id, `${cw.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${label}">${f.draw(nc.a, nc.b, nc.c)}</svg>\n`);
+    writeFileSync(path.join(out, 'personal', f.id, `${cw.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${label}">${f.draw(nc.a, nc.b, nc.c, NIGHT_DETAIL)}</svg>\n`);
     return [cw.id, { svg: `personal/${f.id}/${cw.id}.svg`, night: `personal/${f.id}/${cw.id}-night.svg` }];
   }));
   return { id: f.id, defaultName: '', shape: f.shape, line: f.line, defaultColorway: f.defaultColorway, colorways: COLORWAYS.map((c) => c.id), files: { svg: `personal/${f.id}.svg`, svgNoShadow: `personal/${f.id}-no-shadow.svg`, night: `personal/${f.id}-night.svg`, byColorway }, viewBox: '0 0 200 214' };
@@ -120,6 +120,7 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 - 0.1.0 (2026-10-30): first early export, before website R8.
 - 0.1.1 (2026-10-30): same files, cut from a committed source (product lane ask).
 - 0.2.0 (2026-10-30): night (dark appearance) tokens and Fold variants; personal Folds with colorways.
+- 0.2.1 (2026-10-30): night beak and butterfly body in light ink; a rounder bear, now coral by default (penguin ochre), apart from the cat at 16 pt.
 `);
 
 console.log(`Paper ${VERSION} → ${path.relative(root, out)} (${folds.length} Folds, ${Object.keys(vars).length} tokens${ttf ? ', ttf' : ''})`);
