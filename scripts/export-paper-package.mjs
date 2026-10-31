@@ -14,7 +14,7 @@ import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync, existsSyn
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
-const VERSION = '0.1.0';
+const VERSION = '0.1.1';
 const root = new URL('../', import.meta.url).pathname;
 const out = path.join(root, 'output/paper-package', VERSION);
 const rel = (p) => path.join(root, p);
@@ -87,6 +87,7 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 
 ## Versions
 - 0.1.0 (2026-10-30): first early export, before website R8.
+- 0.1.1 (2026-10-30): same files, cut from a committed source (product lane ask).
 `);
 
 console.log(`Paper ${VERSION} → ${path.relative(root, out)} (${folds.length} Folds, ${Object.keys(vars).length} tokens${ttf ? ', ttf' : ''})`);
