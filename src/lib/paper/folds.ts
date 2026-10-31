@@ -100,8 +100,27 @@ export const foldById = Object.fromEntries(FOLDS.map((f) => [f.id, f])) as Recor
 export const foldShapes = (f: Fold) => f.draw(f.a, f.b, f.c);
 
 /** A standalone Fold SVG. Decorative by default; pass a label to make it an image. */
-export function foldSvg(f: Fold, opts: { label?: string; className?: string; shadow?: boolean } = {}) {
+/**
+ * Each Fold's drawn extent inside the 200 x 214 viewBox, without the ground
+ * shadow: [x, y, width, height]. Measured with getBBox on 2026-10-31; measure
+ * again if a drawing changes. A circle avatar uses it to draw the Fold edge to
+ * edge (operator 2026-10-31: "like the Flow star on its circle").
+ */
+export const FOLD_BOUNDS: Record<FoldId, [number, number, number, number]> = {
+  orri: [18, 40, 166, 148], tally: [22, 26, 158, 170], ember: [54, 38, 136, 158], clause: [30, 34, 140, 158],
+  shell: [22, 84, 168, 96], sprout: [54, 12, 92, 184], atlas: [24, 48, 172, 118], hop: [40, 81, 120, 113],
+};
+
+/** A square viewBox centred on the Fold, its longer side edge to edge. */
+export function foldFitViewBox(id: FoldId): string {
+  const [x, y, w, h] = FOLD_BOUNDS[id];
+  const side = Math.max(w, h);
+  return `${x - (side - w) / 2} ${y - (side - h) / 2} ${side} ${side}`;
+}
+
+export function foldSvg(f: Fold, opts: { label?: string; className?: string; shadow?: boolean; fit?: boolean } = {}) {
   const a11y = opts.label ? `role="img" aria-label="${opts.label}"` : 'aria-hidden="true"';
   const cls = opts.className ? ` class="${opts.className}"` : '';
+  if (opts.fit) return `<svg viewBox="${foldFitViewBox(f.id)}" ${a11y}${cls}>${foldShapes(f)}</svg>`;
   return `<svg viewBox="0 0 200 214" ${a11y}${cls}>${opts.shadow === false ? '' : SHADOW}${foldShapes(f)}</svg>`;
 }

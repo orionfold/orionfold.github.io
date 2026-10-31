@@ -68,7 +68,7 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
     <button type="button" class="pp-ctl-btn" data-pp-toggle aria-pressed="true" aria-label="Pause"><Pause size={15} class="pp-i-pause" /><Play size={15} class="pp-i-play" /></button>
     <button type="button" class="pp-ctl-btn" data-pp-next aria-label="Next step"><ChevronRight size={16} /></button>
     <div class="pp-ctl-folds" role="group" aria-label="Pick a Fold">
-      {FOLDS.map((f, i) => <button type="button" data-pp-go={i} aria-label={`${f.name} the ${f.kind}, ${PLAY[f.id].who}`} aria-current={i === 0 ? 'true' : undefined}><Fold id={f.id} /></button>)}
+      {FOLDS.map((f, i) => <button type="button" data-pp-go={i} aria-label={`${f.name} the ${f.kind}, ${PLAY[f.id].who}`} aria-current={i === 0 ? 'true' : undefined}><Fold id={f.id} fit /></button>)}
     </div>
     <span class="sr-only" aria-live="polite" data-pp-status></span>
   </div>

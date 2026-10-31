@@ -146,7 +146,7 @@ const plans = [
     <Panel id="domains" seam="Flow Playbooks" fold="tally" title="Share your Playbook.<br />Clients work through it." lede={`Your clients bring it into their own Flow and work through your method on their own case. When you improve a step, they get the change to review. Start from one of ${blueprintCount} free blueprints, or make your own.`}>
       <div class="pp-dm-tabs" role="tablist" aria-label="Pick a Flow Playbook">
         {mocks.map(({ fold, d }, i) => (
-          <button type="button" role="tab" id={`dm-tab-${d.id}`} aria-controls={`dm-${d.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : '-1'} data-pp-dm-tab style={`--pp-fold-c:${fold.c}`}><Fold id={fold.id} /><span>{d.data.domain}</span></button>
+          <button type="button" role="tab" id={`dm-tab-${d.id}`} aria-controls={`dm-${d.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : '-1'} data-pp-dm-tab style={`--pp-fold-c:${fold.c}`}><Fold id={fold.id} fit /><span>{d.data.domain}</span></button>
         ))}
       </div>
       {mocks.map(({ fold, d }, i) => (
