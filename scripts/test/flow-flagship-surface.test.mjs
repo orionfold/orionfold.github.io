@@ -629,7 +629,7 @@ for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
   assert.doesNotMatch(entry, /screenshot:/, `${route}: flagship social card uses editorial origami`);
 }
 assert.match(ogData,/Describe it\. Flow draws it\./);
-assert.match(ogData,/Write how you work\. AI runs it\./);
+assert.match(ogData,/Show how you work\. AI follows it\. You make the call\./);
 assert.match(ogData,/Room for a Renaissance/);
 assert.match(ogData,/The Researcher, Writer and Builder in You/);
 const ogCardSource=read('src/lib/og/card.ts');

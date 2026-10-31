@@ -68,10 +68,10 @@ export const OG_PAGES: Record<string, OgPage> = {
 },
   '/': {
     "slug": "home",
-    "eyebrow": "Orionfold Flow · Domains",
-    "title": "Write how you work. AI runs it.",
+    "eyebrow": "Orionfold · Flow Domains",
+    "title": "Show how you work. AI follows it. You make the call.",
     "seed": "home",
-    "alt": "Orionfold Flow Domains: Write how you work. AI runs it. Origami paper planes rise from an open book on yellow.",
+    "alt": "Orionfold Flow Domains: Show how you work. AI follows it. You make the call. Origami paper planes rise from an open book on yellow.",
     "living": true
 },
   '/advisor/': {

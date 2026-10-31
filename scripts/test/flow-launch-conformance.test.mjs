@@ -18,8 +18,8 @@ const meta = (html, key, value) => html.match(new RegExp(`<meta\\s+${key}="${esc
 const link = (html, rel) => html.match(new RegExp(`<link\\s+rel="${esc(rel)}"\\s+href="([^"]*)"`, 'i'))?.[1] ?? '';
 
 const routes = [
-  // Paper R2 (operator 2026-10-30): the locked headline; the title waits on the D4 copy call.
-  ['/', 'Orionfold Flow · Write how you work. AI runs it.', 'Show how you work. AI follows it. You make the call.'],
+  // Paper R2 (operator finalized 2026-10-30): the locked headline, in the title too.
+  ['/', 'Orionfold Flow · Show how you work. AI follows it. You make the call.', 'Show how you work. AI follows it. You make the call.'],
   ['/flow/', 'Flow for Mac · Describe it. Flow draws it.', 'DESCRIBE IT. FLOW DRAWS IT.'],
   ['/essay/', 'Room for a Renaissance · An essay by Manav Sehgal', 'Room for a Renaissance.'],
   ['/manifesto/', 'The Researcher, Writer and Builder in You · An essay by Manav Sehgal', 'THE RESEARCHER, WRITER AND BUILDER IN YOU.'],
