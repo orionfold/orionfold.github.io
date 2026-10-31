@@ -51,6 +51,17 @@
 
   /* surfaces */
   --pp-glass: rgba(251, 250, 246, 0.92);
+  /* Liquid Glass, regular variant (Apple HIG, WWDC25): see-through paper tint, a
+     light blur with a saturation lift so colour under it stays clean, a sheen
+     that falls from the top (the specular light), an even bright rim and a
+     soft lift. The rim stays even on all four sides (no edge accents). */
+  --pp-lg-tint: rgba(251, 250, 246, 0.58);
+  --pp-lg-tint-scrolled: rgba(251, 250, 246, 0.72);
+  --pp-lg-filter: blur(10px) saturate(1.8) brightness(1.06);
+  --pp-lg-rim: rgba(255, 255, 255, 0.7);
+  --pp-lg-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45), 0 8px 24px -12px rgba(23, 28, 26, 0.22);
+  --pp-lg-sheen: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 65%);
+  --pp-lg-edge: rgba(251, 250, 246, 0.6);
   --pp-scrim: rgba(40, 36, 28, 0.16);
   --pp-shadow-sheet: 0 24px 48px -28px rgba(23, 28, 26, 0.35);
   --pp-shadow-paper: 0 18px 40px -22px rgba(23, 28, 26, 0.25);

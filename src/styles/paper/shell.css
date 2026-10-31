@@ -27,13 +27,13 @@
 /* ---------- nav: floating pill groups ---------- */
 .paper .pp-nav { position: sticky; top: 0; z-index: 50; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; pointer-events: none; }
 .paper .pp-nav > * { pointer-events: auto; }
-.paper .pp-pill { display: flex; align-items: center; gap: 2px; background: var(--pp-glass); backdrop-filter: blur(8px); border: 1px solid var(--pp-line); border-radius: var(--pp-r-3); padding: 4px; }
+.paper .pp-pill { display: flex; align-items: center; gap: 2px; background: var(--pp-lg-sheen), var(--pp-lg-tint); -webkit-backdrop-filter: var(--pp-lg-filter); backdrop-filter: var(--pp-lg-filter); border: 1px solid var(--pp-lg-rim); box-shadow: var(--pp-lg-shadow); border-radius: var(--pp-r-3); padding: 4px; transition: background-color .28s var(--pp-ease-unfold); }
 .paper .pp-logo { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 6px; font: 600 15px/1 var(--pp-sans); letter-spacing: .14em; text-decoration: none; }
 .paper .pp-logo img { width: 24px; height: 24px; }
 .paper .pp-nav-left { display: flex; gap: 10px; }
 .paper .pp-menu a, .paper .pp-menu button, .paper .pp-menu-mobile { padding: 7px 11px; border-radius: var(--pp-r-2); text-decoration: none; font: 500 13.5px/1.2 var(--pp-sans); color: var(--pp-ink); background: none; border: 0; cursor: pointer; }
 .paper .pp-menu a:hover, .paper .pp-menu button:hover, .paper .pp-menu button[aria-expanded="true"], .paper .pp-menu a[aria-current="page"] { background: var(--pp-paper-2); box-shadow: inset 0 0 0 1px var(--pp-line); }
-.paper .pp-menu-mobile { display: none; padding: 9px 14px; background: var(--pp-glass); border: 1px solid var(--pp-line); }
+.paper .pp-menu-mobile { display: none; padding: 9px 14px; background: var(--pp-lg-sheen), var(--pp-lg-tint); -webkit-backdrop-filter: var(--pp-lg-filter); backdrop-filter: var(--pp-lg-filter); border: 1px solid var(--pp-lg-rim); box-shadow: var(--pp-lg-shadow); }
 .paper .pp-cta-pair a { white-space: nowrap; padding: 7px 12px; border-radius: var(--pp-r-2); text-decoration: none; font-size: 13.5px; font-weight: 500; }
 .paper .pp-cta-pair a.pp-solid { background: var(--pp-ink); color: var(--pp-white); }
 @media (max-width: 760px) { .paper .pp-menu { display: none; } .paper .pp-menu-mobile { display: block; } .paper .pp-cta-pair a:first-child { display: none; } }
@@ -114,6 +114,18 @@
 .paper.pp-shell { position: fixed; top: 0; left: 0; right: 0; z-index: 40; background: transparent; pointer-events: none; }
 .paper.pp-shell > #nav-notice-slot, .paper.pp-shell > .pp-announce { pointer-events: auto; }
 .paper.pp-shell .pp-nav { position: relative; }
+/* Scrolled (operator 2026-10-31): Apple's scroll edge effect. A soft blur fades
+   in behind the glass nav row and feathers out at its foot, so text passing
+   under it softens instead of clashing. At the top it stays clear. */
+.paper.pp-shell .pp-nav::before { content: ''; position: absolute; inset: 0 0 -22px; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, var(--pp-lg-edge) 40%, transparent); -webkit-backdrop-filter: blur(8px) saturate(1.4); backdrop-filter: blur(8px) saturate(1.4); -webkit-mask-image: linear-gradient(to bottom, black 62%, transparent); mask-image: linear-gradient(to bottom, black 62%, transparent); opacity: 0; transition: opacity .28s var(--pp-ease-unfold); }
+.paper.pp-shell[data-pp-scrolled] .pp-nav::before { opacity: 1; }
+.paper.pp-shell[data-pp-scrolled] :is(.pp-pill, .pp-menu-mobile) { background-color: var(--pp-lg-tint-scrolled); }
+@media (prefers-reduced-motion: reduce) { .paper.pp-shell .pp-nav::before, .paper .pp-pill { transition: none; } }
+/* Reduce Transparency: the glass turns to solid paper, as Apple's does. */
+@media (prefers-reduced-transparency: reduce) {
+  .paper :is(.pp-pill, .pp-menu-mobile) { background: var(--pp-paper); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .paper.pp-shell .pp-nav::before { background: var(--pp-paper); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
 .paper .pp-cta-pair a.pp-narrow { display: none; }
 @media (max-width: 760px) {
   .paper .pp-cta-pair a.pp-wide { display: none; }
