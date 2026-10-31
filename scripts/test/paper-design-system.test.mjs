@@ -117,3 +117,39 @@ test('head-diff catches a dropped JSON-LD block, canonical or internal link', ()
   assert.equal(compare(before, stripped).length, 2);
   assert.deepEqual(compare(before, {}), ['/a/index.html: page no longer built']);
 });
+
+test('night (the app’s dark appearance) keeps every promised text pair at AA and every Fold at 3:1', async () => {
+  const night = await import(path.join(root, 'src/lib/paper/night.ts'));
+  const { FOLDS } = await import(path.join(root, 'src/lib/paper/folds.ts'));
+  for (const [fg, bg] of night.NIGHT_TEXT_PAIRS) assert.ok(night.contrast(night.NIGHT[fg], night.NIGHT[bg]) >= 4.5, `${fg} on ${bg}`);
+  for (const f of FOLDS) {
+    const n = night.nightFold(f);
+    for (const k of ['a', 'b']) assert.ok(night.contrast(n[k], night.NIGHT.paper) >= 3, `${f.id}.${k} on night`);
+    assert.ok(night.contrast(n.ink, night.NIGHT.paper) >= 4.5, `${f.id} ink on night`);
+  }
+  // Fine detail the app measured as noise on a dark sidebar stays out of night.
+  const byId = Object.fromEntries(FOLDS.map((f) => [f.id, f]));
+  assert.doesNotMatch(night.nightFoldShapes(byId.orri), /stroke-dasharray/);
+  assert.doesNotMatch(night.nightFoldShapes(byId.tally), /points="92,146/);
+  // The website itself stays light-only: night never reaches a site stylesheet.
+  const siteCss = read('src/styles/paper/tokens.css') + read('src/styles/paper/shell.css') + read('src/styles/paper/components.css');
+  assert.equal((siteCss.match(/--pp-paper:/g) ?? []).length, 1, 'one (light) paper value on the site');
+  assert.doesNotMatch(siteCss, new RegExp(`--pp-paper:\\s*${night.NIGHT.paper}`));
+});
+
+test('personal Folds: eight shapes outside the cast, temperament lines, colorways from the cast palettes', async () => {
+  const { PERSONAL_FOLDS, COLORWAYS, colorwayById } = await import(path.join(root, 'src/lib/paper/personal-folds.ts'));
+  const { FOLDS } = await import(path.join(root, 'src/lib/paper/folds.ts'));
+  assert.equal(PERSONAL_FOLDS.length, 8);
+  const castKinds = new Set(FOLDS.map((f) => f.kind));
+  for (const f of PERSONAL_FOLDS) {
+    assert.ok(!castKinds.has(f.shape), `${f.shape} is a cast shape`);
+    assert.ok(colorwayById[f.defaultColorway], `${f.id} default colorway`);
+    // A line names a temperament, never a capability (memory is Pro; nothing proactive ships).
+    assert.doesNotMatch(f.line, /remember|memory|every day|speaks up|reminds|learns|knows you/i, f.id);
+    assert.doesNotMatch(f.line, /[—:]/, `${f.id}: house style`);
+  }
+  assert.equal(new Set(PERSONAL_FOLDS.map((f) => f.defaultColorway)).size, 8, 'each shape has its own default colorway');
+  const castPalettes = new Set(FOLDS.map((f) => `${f.a}${f.b}${f.c}`));
+  for (const c of COLORWAYS) assert.ok(castPalettes.has(`${c.a}${c.b}${c.c}`), `${c.id} comes from a cast palette`);
+});

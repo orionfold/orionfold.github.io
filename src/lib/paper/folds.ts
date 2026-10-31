@@ -3,15 +3,15 @@
 // published Domain in src/content/domains; the Paper design system renders
 // them as inline SVG at build time, so no page needs JavaScript to draw one.
 
-type Draw = (a: string, b: string, c: string) => string;
+export type Draw = (a: string, b: string, c: string) => string;
 
-const INK = '#171c1a';
-const P = (pts: string, fill: string) =>
+export const INK = '#171c1a';
+export const P = (pts: string, fill: string) =>
   `<polygon points="${pts}" fill="${fill}" stroke="${fill}" stroke-width=".6" stroke-linejoin="round"/>`;
-const eye = (x: number, y: number, r = 3.4) =>
+export const eye = (x: number, y: number, r = 3.4) =>
   `<circle cx="${x}" cy="${y}" r="${r}" fill="${INK}"/><circle cx="${x + r * 0.35}" cy="${y - r * 0.35}" r="${r * 0.32}" fill="#fff"/>`;
-const blush = (x: number, y: number) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="2.6" fill="#f24b39" opacity=".28"/>`;
-const SHADOW = `<ellipse cx="100" cy="206" rx="52" ry="5" fill="${INK}" opacity=".08"/>`;
+export const blush = (x: number, y: number) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="2.6" fill="#f24b39" opacity=".28"/>`;
+export const SHADOW = `<ellipse cx="100" cy="206" rx="52" ry="5" fill="${INK}" opacity=".08"/>`;
 
 /* Orri, a paper plane mid-glide: the guide who carries your updates to clients */
 const plane: Draw = (a, b, c) =>

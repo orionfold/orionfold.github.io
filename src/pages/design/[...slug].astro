@@ -22,6 +22,8 @@ import PaperFooter from '../../components/paper/PaperFooter.astro';
 import Fold from '../../components/paper/Fold.astro';
 import { FOLDS, type FoldId } from '../../lib/paper/folds';
 import { FACES_LABEL } from '../../lib/paper/cast';
+import { NIGHT, NIGHT_TEXT_PAIRS, contrast, nightFoldShapes } from '../../lib/paper/night';
+import { PERSONAL_FOLDS, COLORWAYS, personalFoldSvg } from '../../lib/paper/personal-folds';
 
 export function getStaticPaths() {
   return import.meta.env.DEV ? [{ params: { slug: undefined } }] : [];
@@ -36,6 +38,9 @@ const ICON = {
   clock: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
   shield: '<path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/>',
 };
+// Night (the Flow app's dark appearance) as plain token overrides on a .paper block.
+const nightVars = Object.entries(NIGHT).map(([k, v]) => `--pp-${k}:${v}`).join(';') + ';background:var(--pp-paper);color:var(--pp-ink)';
+const nightFoldSvg = (f: (typeof FOLDS)[number]) => `<svg viewBox="0 0 200 214" aria-hidden="true">${nightFoldShapes(f)}</svg>`;
 const swatches = ['paper', 'paper-2', 'white', 'line', 'ink', 'ink-2', 'ink-3', 'teal', 'teal-pale', 'gold', 'gold-pale', 'red', 'red-deep', 'night'];
 ---
 <PaperLayout title="Paper design system · gallery" description="Dev-only component gallery for the Paper design system." noindex>
@@ -106,6 +111,37 @@ const swatches = ['paper', 'paper-2', 'white', 'line', 'ink', 'ink-2', 'ink-3', 
         {FOLDS.map((f) => <div style="text-align:center"><Fold id={f.id} bob /><span class="pp-kicker">{f.name} · {f.domain}</span></div>)}
       </div>
       <p class="pp-note" style="margin-top:28px">{FACES_LABEL} Gallery faces load from the local prototype folder and are not public files.</p>
+    </section>
+
+    <section class="pp-panel" style="margin-top:96px">
+      <span class="pp-seam">Personal Folds (app)</span>
+      <p class="pp-note">Folded from a blank sheet in the Flow app's first launch. Drawn for 16 pt. Default colorway first, then every colorway at 24 px.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:18px;margin-top:18px">
+        {PERSONAL_FOLDS.map((f) => (
+          <div style="text-align:center">
+            <div set:html={personalFoldSvg(f)} />
+            <b style="display:block;font-weight:500">{f.shape}</b>
+            <span class="pp-note">{f.line}</span>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:6px">{COLORWAYS.map((cw) => <span style="width:24px" title={cw.name} set:html={personalFoldSvg(f, { colorway: cw, shadow: false })} />)}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="paper pp-panel" style={`margin-top:96px;${nightVars}`}>
+      <span class="pp-seam">Night (Flow app only)</span>
+      <h2 class="pp-serif" style="margin:0 0 8px;font-weight:300;font-size:44px">The same Paper, at night</h2>
+      <p style="max-width:52ch;color:var(--pp-ink-2)">Paper owns the app's dark appearance. The website stays light. <span style="color:var(--pp-ink-3)">Quiet text stays readable too.</span> <a class="pp-link" href="#">A link</a></p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:18px">
+        {NIGHT_TEXT_PAIRS.map(([fg, bg]) => <div style={`background:var(--pp-${bg});color:var(--pp-${fg});padding:10px;border:1px solid var(--pp-line);border-radius:var(--pp-r-2);font-size:13px`}>{fg} on {bg} · {contrast(NIGHT[fg], NIGHT[bg]).toFixed(1)}:1</div>)}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px;margin-top:24px;align-items:end">
+        {FOLDS.map((f) => <div style="text-align:center"><div set:html={nightFoldSvg(f)} /><span style="font-size:12px;color:var(--pp-ink-3)">{f.name}</span></div>)}
+      </div>
+      <div style="display:flex;gap:14px;margin-top:18px;padding:10px;background:var(--pp-paper-2);border-radius:var(--pp-r-2);align-items:center">
+        <span style="font-size:12px;color:var(--pp-ink-3)">Sidebar, 20 px:</span>
+        {FOLDS.map((f) => <span style="width:20px" set:html={nightFoldSvg(f)} />)}
+      </div>
     </section>
   </main>
 
