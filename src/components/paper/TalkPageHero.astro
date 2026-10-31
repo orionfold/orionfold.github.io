@@ -13,19 +13,22 @@
 // Pacing (operator 2026-10-30): every beat is held for its own words at an
 // adult's silent reading rate, 250 words a minute (Brysbaert 2019: 238 for
 // non-fiction, 260 for fiction), plus a short glance to find the new text.
+// Feature demo (operator 2026-10-31): each beat shows one Flow feature (cast
+// HERO), and the ask types 25% faster than reading pace.
 import Fold from './Fold.astro';
 import Play from '@lucide/astro/icons/play';
 import Pause from '@lucide/astro/icons/pause';
 import ChevronLeft from '@lucide/astro/icons/chevron-left';
 import ChevronRight from '@lucide/astro/icons/chevron-right';
 import { FOLDS, foldSvg } from '../../lib/paper/folds';
-import { PLAY } from '../../lib/paper/cast';
+import { PLAY, HERO } from '../../lib/paper/cast';
 import type { FoldId } from '../../lib/paper/folds';
 interface Props { faces?: Partial<Record<FoldId, string>>; ctaHref: string; ctaLabel: string; ctaNote?: string; ctaTrack?: string }
 const { faces = {}, ctaHref, ctaLabel, ctaNote, ctaTrack } = Astro.props;
 const first = FOLDS[0];
 const p0 = PLAY[first.id];
-const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c: f.c, ink: f.ink, svg: foldSvg(f, { className: 'pp-bob' }), face: faces[f.id] ?? '', play: PLAY[f.id] }));
+const h0 = HERO[first.id];
+const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c: f.c, ink: f.ink, svg: foldSvg(f, { className: 'pp-bob' }), face: faces[f.id] ?? '', play: PLAY[f.id], hero: HERO[f.id] }));
 ---
 <section class="pp-hero" aria-label="Intro" style={`--pp-fold-a:${first.a};--pp-fold-c:${first.c};--pp-fold-ink:${first.ink}`} data-pp-hero>
   <div class="pp-hero-copy">
@@ -38,24 +41,24 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
     <div class="pp-duo-talk pp-tk">
       <div class="pp-tk-row">
         <div class="pp-tk-av">{faces[first.id] && <img data-pp-face src={faces[first.id]} alt="" width="128" height="128" />}</div>
-        <div><p class="pp-tk-who" data-pp-you>You, {p0.who.toLowerCase()}</p><div class="pp-tk-b" data-pp-said>{p0.said}</div></div>
+        <div><p class="pp-tk-who" data-pp-you>You, {p0.who.toLowerCase()}</p><div class="pp-tk-b" data-pp-said>{h0.said}</div></div>
       </div>
       <div class="pp-tk-row pp-tk-row--ai">
         <Fold id={first.id} bob class="pp-tk-av" />
-        <div><p class="pp-tk-who" data-pp-who>{first.name} the {first.kind}</p><div class="pp-tk-b" data-pp-reply>Got it. That’s your playbook now. I’ll {p0.run}, and bring step 3 back to you.</div></div>
+        <div><p class="pp-tk-who" data-pp-who>{first.name} the {first.kind}</p><div class="pp-tk-b" data-pp-reply>{h0.reply}</div></div>
       </div>
     </div>
     <div class="pp-duo-page">
       <div class="pp-pb">
         <figure class="pp-pb-photo">{faces[first.id] ? <img data-pp-face src={faces[first.id]} alt="" width="400" height="500" /> : <Fold id={first.id} />}<span data-pp-role>{p0.who}</span></figure>
         <div class="pp-pb-sheet" data-pp-sheet>
-          <span class="pp-pb-crumb">{p0.area} / playbook.md</span>
-          <h3>{p0.title}</h3>
+          <span class="pp-pb-crumb">{p0.area} / {h0.file}</span>
+          <h3>{h0.title}</h3>
           <p class="pp-pb-for">{p0.client ? `For ${p0.client}` : 'For every client'}</p>
-          <ol class="pp-pb-steps">{p0.steps.map((s, i) => <li class:list={{ 'pp-yours': i === 2 }}><span>{s}<small>{i === 2 ? 'YOUR CALL' : `${first.name.toUpperCase()} DOES THIS`}</small></span></li>)}</ol>
+          <ol class="pp-pb-steps">{h0.rows.map((r, i) => <li class:list={{ 'pp-yours': i === 2 }}><span>{typeof r === 'string' ? r : r[0]}<small>{typeof r === 'string' ? 'YOUR CALL' : r[1].toUpperCase()}</small></span></li>)}</ol>
         </div>
         <Fold id={first.id} bob class="pp-pb-fold" />
-        <p class="pp-pb-note">I’ll do steps 1 and 2. Step 3 is your call.</p>
+        <p class="pp-pb-note" data-pp-note>{h0.note}</p>
       </div>
     </div>
   </div>
@@ -74,7 +77,7 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
 </section>
 
 <script>
-  type Beat = { id: string; name: string; kind: string; a: string; c: string; ink: string; svg: string; face: string; play: { area: string; who: string; client: string; title: string; said: string; steps: string[]; run: string } };
+  type Beat = { id: string; name: string; kind: string; a: string; c: string; ink: string; svg: string; face: string; play: { area: string; who: string; client: string; title: string; said: string; steps: string[]; run: string }; hero: { said: string; reply: string; file: string; title: string; rows: [[string, string], [string, string], string]; note: string } };
   // Beats: Fold n talks (2n), then shows its page (2n + 1). Playing types the
   // ask, answers, turns to the page and holds it; stepping shows a beat whole.
   const hero = document.querySelector<HTMLElement>('[data-pp-hero]');
@@ -90,11 +93,13 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
     const chips = ctl.querySelectorAll<HTMLButtonElement>('[data-pp-go]');
     const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
     // Reading pace: 250 words a minute, plus a 0.6 s glance per new block.
-    const WPM = 250, GLANCE = 600, REVEAL = 1500;
+    // The ask types 25% faster than reading pace (operator 2026-10-31).
+    const WPM = 250, TYPE_WPM = WPM * 1.25, GLANCE = 600, REVEAL = 1500;
     const words = (t: string) => t.trim().split(/\s+/).length;
     const readMs = (t: string) => GLANCE + (words(t) * 60000) / WPM;
-    const replyText = (b: Beat) => `Got it. That’s your playbook now. I’ll ${b.play.run}, and bring step 3 back to you.`;
-    const pageText = (b: Beat) => [b.play.title, b.play.client ? `For ${b.play.client}` : 'For every client', ...b.play.steps, 'I’ll do steps 1 and 2. Step 3 is your call.'].join(' ');
+    const replyText = (b: Beat) => b.hero.reply;
+    const rowText = (r: string | [string, string]) => (typeof r === 'string' ? r : r[0]);
+    const pageText = (b: Beat) => [b.hero.title, b.play.client ? `For ${b.play.client}` : 'For every client', ...b.hero.rows.map(rowText), b.hero.note].join(' ');
     const total = cast.length * 2;
     let beat = duo.dataset.act === 'talk' ? 0 : 1, playing = false, inView = false, started = false, timers: number[] = [], typing = 0;
     const clear = () => { timers.forEach(clearTimeout); timers = []; clearInterval(typing); };
@@ -107,8 +112,9 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
       duo.querySelector('[data-pp-who]')!.textContent = `${b.name} the ${b.kind}`;
       duo.querySelectorAll('.pp-tk-av.pp-fold, .pp-pb-fold, .pp-pb-photo > .pp-fold').forEach((el) => { el.innerHTML = b.svg; });
       reply.textContent = replyText(b);
-      const p = b.play;
-      duo.querySelector('[data-pp-sheet]')!.innerHTML = `<span class="pp-pb-crumb">${esc(p.area)} / playbook.md</span><h3>${esc(p.title)}</h3><p class="pp-pb-for">${p.client ? 'For ' + esc(p.client) : 'For every client'}</p><ol class="pp-pb-steps">${p.steps.map((t, i) => `<li${i === 2 ? ' class="pp-yours"' : ''}><span>${esc(t)}<small>${i === 2 ? 'YOUR CALL' : esc(b.name.toUpperCase()) + ' DOES THIS'}</small></span></li>`).join('')}</ol>`;
+      const p = b.play, h = b.hero;
+      duo.querySelector('[data-pp-sheet]')!.innerHTML = `<span class="pp-pb-crumb">${esc(p.area)} / ${esc(h.file)}</span><h3>${esc(h.title)}</h3><p class="pp-pb-for">${p.client ? 'For ' + esc(p.client) : 'For every client'}</p><ol class="pp-pb-steps">${h.rows.map((r, i) => `<li${i === 2 ? ' class="pp-yours"' : ''}><span>${esc(rowText(r))}<small>${typeof r === 'string' ? 'YOUR CALL' : esc(r[1].toUpperCase())}</small></span></li>`).join('')}</ol>`;
+      duo.querySelector('[data-pp-note]')!.textContent = h.note;
     };
     const mark = () => {
       const f = Math.floor(beat / 2), b = cast[f];
@@ -126,14 +132,14 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
         mark();
         if (beat % 2) { duo.dataset.act = 'page'; if (animate) later(REVEAL + readMs(pageText(b)), () => show(beat + 1, true)); return; }
         duo.dataset.act = 'talk';
-        if (!animate) { said.textContent = b.play.said; reply.classList.remove('pp-wait'); return; }
+        if (!animate) { said.textContent = b.hero.said; reply.classList.remove('pp-wait'); return; }
         said.textContent = ''; reply.classList.add('pp-wait');
-        // The ask types at reading pace, so the eye can follow the cursor.
+        // The ask types a little faster than reading pace; the eye still follows the cursor.
         let k = 0;
-        const perChar = (words(b.play.said) * 60000) / WPM / b.play.said.length;
+        const perChar = (words(b.hero.said) * 60000) / TYPE_WPM / b.hero.said.length;
         typing = window.setInterval(() => {
-          said.textContent = b.play.said.slice(0, ++k);
-          if (k < b.play.said.length) return;
+          said.textContent = b.hero.said.slice(0, ++k);
+          if (k < b.hero.said.length) return;
           clearInterval(typing);
           later(250, () => reply.classList.remove('pp-wait'));
           later(250 + readMs(replyText(b)), () => show(beat + 1, true));

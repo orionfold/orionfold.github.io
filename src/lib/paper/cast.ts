@@ -40,3 +40,81 @@ export const MOMENT: Record<FoldId, [string, string]> = {
 
 /** Every public face is an AI-generated model; this line ships wherever one does. */
 export const FACES_LABEL = 'People shown are AI-generated models, not customers.';
+
+/**
+ * The home hero (operator 2026-10-31): each Fold's person states how they
+ * work and asks for one thing, the Fold answers, and a document follows that
+ * shows one Flow feature doing the work: Playbooks, a Living Document's Jobs,
+ * search by meaning, Smart Routing to a local model, the Night Shift,
+ * Elements, a hosted model with its receipt, and a Flow Path. Rows 1 and 2
+ * name the feature; row 3 is always the person's call. Feature wording
+ * follows the shipped capability copy in src/data/flow-pricing.ts and the
+ * /flow/ feature pages; never claim a feature Flow does not have.
+ */
+export interface HeroBeat {
+  said: string;
+  reply: string;
+  file: string;
+  title: string;
+  rows: [[string, string], [string, string], string];
+  note: string;
+}
+
+export const HERO: Record<FoldId, HeroBeat> = {
+  orri: {
+    said: 'Before any AI build, I write the press release first. If no customer would care, we stop. Make that my playbook.',
+    reply: 'Got it. That’s your playbook now. I’ll run it for every new client and bring the go or stop call back to you.',
+    file: 'playbook.md', title: 'Pick the AI project',
+    rows: [['Write the launch press release', 'Playbook step'], ['Answer the hard customer questions', 'Playbook step'], 'Stop if no customer would care'],
+    note: 'Your method, saved once. Every client gets it.',
+  },
+  tally: {
+    said: 'Each month I pull the bank and sales files, then explain every change over 5 percent. Keep the close note up to date.',
+    reply: 'Got it. I gave the close note a job. It collects the new files, refreshes the table and the cash chart, and marks what moved.',
+    file: 'march-close.md', title: 'Month-end close',
+    rows: [['Collect the bank and sales files', 'Job · Collect data'], ['Refresh the table and the cash chart', 'Living Document'], 'Call the client if cash and profit disagree'],
+    note: 'The note keeps itself current. You make the call.',
+  },
+  ember: {
+    said: 'Every post gets checked against the client’s voice guide. Find any old post that makes the same promise as this one.',
+    reply: 'Got it. I searched by meaning, not just matching words. Three old posts make that same promise, so I marked them for you.',
+    file: 'voice-check.md', title: 'Voice check',
+    rows: [['Find old posts that promise the same thing', 'Search by meaning'], ['Mark lines that drift from the guide', 'Voice check'], 'Check each repeated promise with the client'],
+    note: 'Found by meaning, across every folder you opened.',
+  },
+  clause: {
+    said: 'Client contracts never leave my Mac. Read liability, payment and ownership first, and tell me if the cap is lower than the fees.',
+    reply: 'Got it. Smart Routing sent this contract to a model on your Mac, and the screen names the rule that decided. Nothing went to the cloud.',
+    file: 'msa-first-read.md', title: 'First read',
+    rows: [['The rule “contracts stay local” picks the model', 'Smart Routing'], ['Read liability, payment and ownership', 'Local model'], 'Flag the cap if it is lower than the fees'],
+    note: 'Your rule picked a model that runs on your Mac.',
+  },
+  shell: {
+    said: 'When a new threat touches patient data, the owner hears that week. Watch the security advisories for me overnight.',
+    reply: 'Got it. The Night Shift watches those pages while you sleep. By breakfast the risk register is scored again and your Morning Briefing is ready.',
+    file: 'risk-register.md', title: 'Risk register',
+    rows: [['Watch the advisory pages overnight', 'Night Shift · Watch sources'], ['Score the risks again and write the Morning Briefing', 'Night Shift'], 'Keep or revert each overnight change'],
+    note: 'Changed overnight on your Mac. Nothing stays until you keep it.',
+  },
+  sprout: {
+    said: 'After each session I list what they promised. If they miss one twice, we talk about why. Show me the pattern.',
+    reply: 'Got it. I drew a promise tracker into your notes, with a chart of promises kept each month. It is a real table you can edit.',
+    file: 'session-notes.md', title: 'Session notes',
+    rows: [['Draw a table of every promise', 'Element · Table'], ['Chart the promises kept each month', 'Element · Chart'], 'Raise any promise missed twice'],
+    note: 'Tables and charts drawn right into the page.',
+  },
+  atlas: {
+    said: 'I group interview quotes into themes. If two people use one word to mean two things, I split it. Use the big model for this one.',
+    reply: 'Got it. This run uses a hosted model on your own key. When you approve, a receipt keeps what ran, where it ran and what it cost.',
+    file: 'interview-themes.md', title: 'Interview themes',
+    rows: [['Group the quotes into themes', 'Hosted model · Your key'], ['Keep a receipt when you approve', 'Receipt'], 'Split a word that means two things'],
+    note: 'The cloud only when you choose it. A receipt every time.',
+  },
+  hop: {
+    said: 'I ask learners to say the idea in their own words. If they only repeat mine, we try a new example. Where do I start?',
+    reply: 'Got it. I started you on a Flow Path. It walks a real job end to end with example files, then takes your own work.',
+    file: 'lesson-check.md', title: 'Lesson check',
+    rows: [['Start from the checklist Path', 'Flow Path'], ['Compare each answer to the worked example', 'Lesson check'], 'Try a new example if they echo it'],
+    note: 'Walk the example first. Then it is yours.',
+  },
+};
