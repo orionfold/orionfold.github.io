@@ -1,27 +1,31 @@
 ---
-import Layout from '../../../layouts/Layout.astro';
+// R7e (G-146): the R7a done sheet. The status script keeps its ids (heading,
+// status, preview-badge, next-link) and the dev-only preview is unchanged.
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import Fold from '../../../components/paper/Fold.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 const operatorPreviewEnabled = import.meta.env.DEV;
 ---
-<Layout title="Workshop purchase confirmed · Orionfold" description="Your Relay Operator Workshop purchase is confirmed." noindex>
+<PaperLayout title="Workshop purchase confirmed · Orionfold" description="Your Relay Operator Workshop purchase is confirmed." noindex>
   <Nav />
-  <main class="px-6 pb-28 pt-40">
-    <section class="mx-auto max-w-2xl rounded-xl border border-border bg-surface-raised p-8 shadow-of sm:p-12">
-      {operatorPreviewEnabled && <p id="preview-badge" hidden class="mb-5 w-fit rounded-full border border-primary/30 bg-primary/[0.08] px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-primary">Operator preview · simulated payment</p>}
-      <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Relay Operator Workshop</p>
-      <h1 id="heading" class="mt-5 text-4xl">Your workshop is confirmed</h1>
-      <p id="status" class="mt-5 text-lg leading-relaxed text-text-muted" aria-live="polite">
+  <main id="main" class="pp-page pp-done-page">
+    <section class="pp-done" aria-labelledby="heading">
+      <Fold id="tally" bob />
+      {operatorPreviewEnabled && <p id="preview-badge" hidden class="pp-kicker">Operator preview · simulated payment</p>}
+      <p class="pp-kicker">Relay Operator Workshop</p>
+      <h1 id="heading">Your workshop is confirmed</h1>
+      <p id="status" aria-live="polite">
         Payment confirmation is loading. Your private access link is delivered transactionally by email—not by this redirect.
       </p>
-      <div class="mt-8 rounded-lg border border-border bg-surface p-5 text-sm leading-relaxed text-text-muted">
-        The link works for seven days. If it expires, request a fresh one automatically; no account or founder reply is required.
+      <p>The link works for seven days. If it expires, request a fresh one automatically; no account or founder reply is required.</p>
+      <div class="pp-done-actions">
+        <a id="next-link" class="pp-btn" href="/training/relay-operator-workshop/access/">Request access or a refund</a>
       </div>
-      <a id="next-link" class="mt-8 inline-flex rounded-lg border border-primary/40 px-5 py-3 font-mono text-sm text-primary hover:bg-primary/5" href="/training/relay-operator-workshop/access/">Request access or a refund</a>
     </section>
   </main>
-  <Footer />
-</Layout>
+  <Footer showDownload={false} />
+</PaperLayout>
 
 <script>
   import { fetchOrderStatus } from '../../../lib/checkout';

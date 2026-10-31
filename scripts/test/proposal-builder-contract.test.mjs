@@ -30,8 +30,10 @@ const customerConfirmationMigration = readFileSync(customerConfirmationMigration
 
 test('/proposal/ is canonical and the former page does not ship', () => {
   assert.equal(existsSync(pagePath), true);
-  assert.match(page, /bodyClass="ls prop-page"/, 'the page sits on the Living Systems system');
-  assert.match(page, /hero-flow-paper-planes/, 'the paper planes fly on the proposal hero');
+  // R7e (G-146): the page moved from Living Systems to Paper.
+  assert.match(page, /<PaperLayout/, 'the page sits on the Paper design system');
+  assert.match(page, /bodyClass="prop-page"/);
+  assert.doesNotMatch(page, /living-base\.css|ls-button|ls-eyebrow|hero-flow-paper-planes/, 'no Living Systems markup is left');
   assert.doesNotMatch(page, /bg-surface-raised|text-text-muted|rounded-2xl/, 'no leftover utility styling');
   assert.equal(existsSync(oldPagePath), false);
   assert.match(page, /ogMeta\('\/proposal\/'\)/);
@@ -73,12 +75,13 @@ test('navigation and sticky summary keep the proposal action visible', () => {
 
 test('product cards toggle through a full-card native checkbox label while preserving the details link', () => {
   // The card is one component (G-134) shared by the Flow section and the matrix.
-  // Living Systems restyle (operator 2026-10-28 11:36): prop-card, styled in src/styles/proposal.css.
+  // prop-card, styled in src/styles/proposal.css on Paper tokens (R7e).
   assert.match(card, /class:list=\{\["prop-card", featured && "prop-card-featured"\]\}/);
   assert.match(card, /class="prop-card-check prop-sr-only"/);
   assert.match(card, /class="prop-card-hit" aria-hidden="true"/);
   assert.match(card, /for=\{`offer-\$\{offer\.id\}`\}/);
-  assert.match(card, /class="ls-text-link prop-card-link" href=\{offer\.href\}/);
+  assert.match(card, /class="prop-card-link" href=\{offer\.href\}/);
+  assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b|Geist Sans|Barlow/i, 'the builder reads Paper tokens only');
   assert.match(css, /\.prop-card:has\(\.prop-card-check:checked\)/);
   assert.doesNotMatch(page, /card\.classList\.toggle\('is-selected'/);
   assert.equal((page.match(/<ProposalOfferCard offer=\{offer\} maxQuantity=\{MAX_PROPOSAL_QUANTITY\}/g) ?? []).length, 2, 'both the Flow section and the matrix render the shared card');

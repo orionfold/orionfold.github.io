@@ -44,7 +44,7 @@ const { offer, maxQuantity, featured = false } = Astro.props;
   </dl>
   {offer.freeBoundary && <p class="prop-card-note">{offer.freeBoundary}</p>}
   <div class="prop-card-foot">
-    <a class="ls-text-link prop-card-link" href={offer.href}>Review product details</a>
+    <a class="prop-card-link" href={offer.href}>Review product details</a>
     <div class="prop-card-buy">
       <label class="prop-qty">
         <span>Quantity · {offer.unitLabel}</span>

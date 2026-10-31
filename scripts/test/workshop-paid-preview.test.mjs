@@ -68,9 +68,9 @@ test('landing page presents every real workshop screen as a light-only alternati
   for (const stage of ['start', 'inspect', 'adapt', 'govern', 'run', 'retain', 'finish']) {
     assert.match(product, new RegExp(`id: '${stage}'`));
   }
-  assert.match(product, /index % 2 === 1 && 'lg:order-2'/);
-  assert.match(product, /index % 2 === 1 && 'lg:order-1'/);
-  assert.match(product, /index % 2 === 1 \? 'lg:grid-cols-\[1\.22fr_0\.78fr\]' : 'lg:grid-cols-\[0\.78fr_1\.22fr\]'/);
+  // R7e (G-146): the screens are Paper tour beats; odd beats flip sides.
+  assert.match(product, /<ol class="pp-tour"/);
+  assert.match(product, /'pp-tour--flip': index % 2 === 1/);
   assert.match(shot, /src=\{shot\.light\.src\}/);
   assert.match(shot, /srcset=\{shot\.light\.srcset\}/);
   assert.doesNotMatch(shot, /data-shot-dark|shot\.dark/);

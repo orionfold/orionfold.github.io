@@ -22,8 +22,14 @@
 // DB on every submit, so a flag flip would fork the compliance record between
 // subscribers. It also stays true either way -- this capture still sends Flow
 // updates and the digest.
-import Layout from '../layouts/Layout.astro';
-import BrandMark from '../components/ui/BrandMark.astro';
+//
+// R7e (G-146): a Paper page that keeps the 1:1 attention ratio: a logo that
+// is not a link, no nav and a minimal footer. Both captures keep their ids,
+// sources, offer key and consent text, inside the Living form bridge.
+import PaperLayout from '../layouts/PaperLayout.astro';
+import Panel from '../components/paper/Panel.astro';
+import Fold from '../components/paper/Fold.astro';
+import '../styles/living-in-paper.css';
 import WaitlistForm from '../components/ui/WaitlistForm.astro';
 import { Image } from 'astro:assets';
 import { ogMeta } from '../data/og';
@@ -89,175 +95,153 @@ const faqSchema = {
   })),
 };
 ---
-<Layout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={faqSchema}>
-  <header class="px-6 py-5">
+<PaperLayout title={title} description={description} ogImage={og.image} ogImageAlt={og.alt} jsonLd={faqSchema}>
+  <header class="pp-done-brand">
     <!-- Logo + wordmark, top-left, subtle and NON-LINKED (marketing 2026-06-28):
          brand presence for trust, but no escape hatch off the page so the only
          action is the email form (max 1:1 attention ratio). -->
-    <div class="inline-flex items-center gap-1.5 opacity-80" aria-label="Orionfold">
-      <BrandMark size={28} class="h-7 w-7" />
-      <span class="text-xl font-semibold tracking-tight leading-none">
-        <span class="text-text">Orion</span><span class="text-primary">fold</span>
-      </span>
-    </div>
+    <span class="pp-logo" aria-label="Orionfold"><img src="/logos/orionfold-mark-3d-48.png" alt="" width="24" height="24" />ORIONFOLD</span>
   </header>
 
-  <main class="mx-auto max-w-5xl px-6 pb-24 pt-6">
-    <div class="grid items-center gap-12 md:grid-cols-2">
+  <main id="main" class="pp-page pp-magnet">
+    <section class="pp-hero pp-hero--relay pp-magnet-hero" aria-labelledby="magnet-title">
       <!-- Left: the offer + capture -->
-      <div>
-        <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Free book · normally $20</p>
-        <h1 class="mt-4 leading-tight" style="font-size: clamp(2rem, 5vw, 3rem);">
-          Become an AI-native business.
-        </h1>
-        <p class="mt-5 max-w-md text-lg leading-relaxed text-text-muted">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Free book · normally $20</p>
+        <h1 id="magnet-title" class="pp-h1">Become an AI-native business.</h1>
+        <p class="pp-sub">
           Not how to build AI models. How to run a business that already thinks
           in AI.
         </p>
-        <p class="mt-3 max-w-md leading-relaxed text-text-muted">
-          Get the $20 <span class="italic">AI Native Business</span> book free.
+        <p class="pp-magnet-copy">
+          Get the $20 <i>AI Native Business</i> book free.
           Just your email, and we send the PDF and EPUB to read on any device.
-        </p>
-        <p class="mt-3 max-w-md leading-relaxed text-text-muted">
-          You will also get updates on <span class="font-semibold text-text">Orionfold Flow</span>,
+          You will also get updates on <b>Orionfold Flow</b>,
           {ORIONFOLD_FLOW_LIVE ? 'our Mac app for the person doing the work.' : 'the Mac app we are building for the person doing the work.'}
         </p>
 
-        <!-- Capture panel: same treatment as the Flow waitlist (FlowWaitlist.astro)
-             so both funnels read as one system. Offer key is unchanged. -->
-        <div class="mt-8 rounded-2xl border border-border/80 bg-surface/85 p-5 backdrop-blur sm:p-6">
-          <p class="mb-5 flex items-center justify-between gap-4 font-mono text-[0.64rem] uppercase tracking-[0.16em] text-text-dim">
-            <span>Email only</span>
-            <span>Double opt-in</span>
-          </p>
-          <WaitlistForm
-            id="magnet-ainb"
-            source="magnet-ai-native-business"
-            offer="become-ai-native-business"
-            buttonText="Send me the book"
-            successMessage="Check your inbox to confirm, then your book is on the way."
-            consentText={consentText}
-          />
-          <p class="mt-5 max-w-sm text-xs leading-relaxed text-text-dim">
+        <!-- Capture panel: the live double-opt-in form inside the Paper form
+             sheet. Offer key is unchanged. -->
+        <div class="pp-magnet-capture">
+          <p class="pp-magnet-chrome"><span>Email only</span><span>Double opt-in</span></p>
+          <div class="ls-in-paper ls-form-in-paper">
+            <WaitlistForm
+              id="magnet-ainb"
+              source="magnet-ai-native-business"
+              offer="become-ai-native-business"
+              buttonText="Send me the book"
+              successMessage="Check your inbox to confirm, then your book is on the way."
+              consentText={consentText}
+            />
+          </div>
+          <small>
             {privacyNote}{' '}
-            <a class="underline underline-offset-2 hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
-          </p>
+            <a href="/privacy/">See our privacy policy.</a>
+          </small>
         </div>
 
-        <p class="mt-8 border-l-2 border-primary/40 pl-4 text-sm leading-relaxed text-text-muted">
+        <p class="pp-proof">
           Built by one team running private AI on hardware they own: 15 tools, 7
           models, 3 books, and the open-source Orionfold Proof engine.
         </p>
       </div>
 
-      <!-- Right: the cover + what's inside -->
-      <div>
+      <!-- Right: the cover -->
+      <div class="pp-hero-stage">
         <Image
           src={bookCover}
           alt="AI Native Business book cover"
           width={420}
           height={560}
-          class="mx-auto w-full max-w-xs rounded-xl border border-border shadow-2xl"
+          class="pp-magnet-cover"
           loading="eager"
           fetchpriority="high"
         />
-        <div class="mt-10">
-          <h2 class="text-lg font-semibold">What's in the book</h2>
-          <ul class="mt-4 space-y-3">
-            {insideBullets.map((b) => (
-              <li class="flex gap-3 text-sm leading-relaxed text-text-muted">
-                <svg class="mt-1 shrink-0 text-primary" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-          <p class="mt-4 text-sm text-text-dim">Written to be read in about two hours, then kept as a working reference.</p>
-        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Objection blocks (relay §5.3). Header-as-question doubles as FAQPage
-         schema (jsonLd above) — AEO/citation surface as well as conversion. -->
+    <Panel id="inside" seam="What's in the book" fold="atlas">
+      <ol class="pp-magnet-inside">
+        {insideBullets.map((b) => <li>{b}</li>)}
+      </ol>
+      <p class="pp-panel-note">Written to be read in about two hours, then kept as a working reference.</p>
+    </Panel>
+
     <!-- Book to Flow tie (operator 2026-08-15). The book is the map; Flow is the
          tool. Copy stays broad positioning plus the current in-development /
          Mac / freemium-planned facts. No mechanism, verification, privacy, or
          pricing claims. -->
-    <section class="mx-auto mt-24 max-w-4xl" aria-labelledby="flow-tie-heading">
-      <div class="rounded-[2rem] border border-primary/25 bg-primary/[0.04] px-6 py-10 sm:px-10 sm:py-12">
-        <p class="font-mono text-[0.68rem] uppercase tracking-[0.23em] text-primary">The book and the tool</p>
-        <h2 id="flow-tie-heading" class="mt-4 text-balance text-3xl font-bold leading-[1.08] sm:text-4xl">
-          The book shows you the shape. Flow does the work with you.
-        </h2>
-        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-text-muted">
+    <Panel id="book-and-tool" seam="The book and the tool" tinted>
+      <div class="pp-panel-head">
+        <h2 id="flow-tie-heading">The book shows you the shape. Flow does the work with you.</h2>
+        <p>
           Reading how an AI-native business is put together is the first half. The
           second half is Monday morning, when the writing, the research, and the
           reporting still land on your desk.
         </p>
-        <div class="mt-10 grid gap-8 sm:grid-cols-2">
-          <div>
-            <p class="font-mono text-xs uppercase tracking-[0.18em] text-text-dim">The book guides</p>
-            <p class="mt-3 leading-relaxed text-text-muted">
-              <span class="italic">AI Native Business</span> is the map. How the work is
-              structured, where AI does the doing instead of the talking, and how the
-              pieces hold together as you grow. Read it in about two hours, then keep
-              it as a working reference.
-            </p>
-          </div>
-          <div>
-            <p class="font-mono text-xs uppercase tracking-[0.18em] text-primary">Flow tools the work</p>
-            <p class="mt-3 leading-relaxed text-text-muted">
-              Orionfold Flow is our Mac app for the knowledge worker. It brings AI
-              to your documents, and you stay the one who approves what changes.
-              {ORIONFOLD_FLOW_LIVE
-                ? ' Markdown stays free. AI work needs Pro; Import and Publish are add-ons.'
-                : ' It is in development as a freemium subscription, and your email puts you first in line.'}
-            </p>
-          </div>
-        </div>
-        <a href="/flow/" class="of-text-action mt-9 inline-flex items-center gap-2">
-          Explore Orionfold Flow <span aria-hidden="true">→</span>
-        </a>
       </div>
-    </section>
+      <div class="pp-relay-split">
+        <div>
+          <p class="pp-kicker">The book guides</p>
+          <p>
+            <i>AI Native Business</i> is the map. How the work is
+            structured, where AI does the doing instead of the talking, and how the
+            pieces hold together as you grow. Read it in about two hours, then keep
+            it as a working reference.
+          </p>
+        </div>
+        <div class="pp-relay-paid">
+          <p class="pp-kicker">Flow tools the work</p>
+          <p>
+            Orionfold Flow is our Mac app for the knowledge worker. It brings AI
+            to your documents, and you stay the one who approves what changes.
+            {ORIONFOLD_FLOW_LIVE
+              ? ' Markdown stays free. AI work needs Pro; Import and Publish are add-ons.'
+              : ' It is in development as a freemium subscription, and your email puts you first in line.'}
+          </p>
+          <a href="/flow/" class="pp-link">Explore Orionfold Flow <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </Panel>
 
-    <section class="mx-auto mt-24 max-w-2xl" aria-labelledby="faq-heading">
-      <h2 id="faq-heading" class="text-center text-2xl font-semibold">Questions, answered straight</h2>
-      <dl class="mt-10 space-y-8">
+    <!-- Objection blocks (relay §5.3). Header-as-question doubles as FAQPage
+         schema (jsonLd above), so every answer stays on the page. -->
+    <Panel id="questions" seam="Questions, answered straight">
+      <h2 id="faq-heading" class="sr-only">Questions, answered straight</h2>
+      <dl class="pp-policy pp-magnet-faq">
         {objections.map((o) => (
           <div>
-            <dt class="text-lg font-semibold text-text">{o.q}</dt>
-            <dd class="mt-2 leading-relaxed text-text-muted">{o.a}</dd>
+            <dt>{o.q}</dt>
+            <dd>{o.a}</dd>
           </div>
         ))}
       </dl>
-    </section>
+    </Panel>
 
     <!-- Repeated CTA: convertible from any scroll depth (relay §5.5). -->
-    <section class="mx-auto mt-24 max-w-xl text-center" aria-labelledby="cta2-heading">
-      <h2 id="cta2-heading" class="leading-tight" style="font-size: clamp(1.6rem, 4vw, 2.2rem);">
-        Ready when you are.
-      </h2>
-      <p class="mx-auto mt-4 max-w-md leading-relaxed text-text-muted">
-        Get the $20 <span class="italic">AI Native Business</span> book free, and
+    <section class="pp-closing" aria-labelledby="cta2-heading">
+      <Fold id="atlas" bob class="pp-closing-fold" />
+      <h2 id="cta2-heading">Ready when you are.</h2>
+      <p>
+        Get the $20 <i>AI Native Business</i> book free, and
         {ORIONFOLD_FLOW_LIVE ? 'get the updates on Orionfold Flow.' : 'be first to hear when Orionfold Flow is ready.'}
       </p>
-      <div class="mx-auto mt-8 max-w-md rounded-2xl border border-border/80 bg-surface/85 p-5 text-left backdrop-blur sm:p-6">
-        <p class="mb-5 flex items-center justify-between gap-4 font-mono text-[0.64rem] uppercase tracking-[0.16em] text-text-dim">
-          <span>Email only</span>
-          <span>Double opt-in</span>
-        </p>
-        <WaitlistForm
-          id="magnet-ainb-2"
-          source="magnet-ai-native-business-footer"
-          offer="become-ai-native-business"
-          buttonText="Send me the book"
-          successMessage="Check your inbox to confirm, then your book is on the way."
-          consentText={consentText}
-        />
-        <p class="mt-5 max-w-sm text-xs leading-relaxed text-text-dim">
+      <div class="pp-magnet-capture">
+        <p class="pp-magnet-chrome"><span>Email only</span><span>Double opt-in</span></p>
+        <div class="ls-in-paper ls-form-in-paper">
+          <WaitlistForm
+            id="magnet-ainb-2"
+            source="magnet-ai-native-business-footer"
+            offer="become-ai-native-business"
+            buttonText="Send me the book"
+            successMessage="Check your inbox to confirm, then your book is on the way."
+            consentText={consentText}
+          />
+        </div>
+        <small>
           {privacyNote}{' '}
-          <a class="underline underline-offset-2 hover:text-text-muted" href="/privacy/">See our privacy policy.</a>
-        </p>
+          <a href="/privacy/">See our privacy policy.</a>
+        </small>
       </div>
     </section>
   </main>
@@ -265,11 +249,9 @@ const faqSchema = {
   <!-- Minimal footer (relay §5.6): CAN-SPAM needs an unsubscribe path + a
        postal address in the EMAILS only; the page carries the site's
        publisher line (operator 2026-10-30), unsubscribe note, and privacy link. -->
-  <footer class="mt-24 border-t border-border px-6 py-10 text-center text-xs leading-relaxed text-text-dim">
+  <footer class="pp-magnet-foot">
     <p>© 2026 Orionfold LLC. Made with ❤️ in Silicon Valley, USA.</p>
-    <p class="mt-1">One email a week, no more. Unsubscribe any time from any email we send.</p>
-    <p class="mt-2">
-      <a class="underline underline-offset-2 hover:text-text-muted" href="/privacy/">Privacy policy</a>
-    </p>
+    <p>One email a week, no more. Unsubscribe any time from any email we send.</p>
+    <p><a href="/privacy/">Privacy policy</a></p>
   </footer>
-</Layout>
+</PaperLayout>

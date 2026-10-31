@@ -1,11 +1,11 @@
 ---
-import Layout from '../layouts/Layout.astro';
+// R7e (G-146): a Paper page. The hero and the three steps use Paper
+// components; the builder (cards, form, estimate, formal document, sticky
+// bar) keeps every id and its script, restyled on Paper tokens in proposal.css.
+import PaperLayout from '../layouts/PaperLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import BrandMark from '../components/ui/BrandMark.astro';
-import ArrowRight from '@lucide/astro/icons/arrow-right';
-import ArrowDown from '@lucide/astro/icons/arrow-down';
-import '../styles/living-base.css';
 import '../styles/proposal.css';
 import ProposalOfferCard from '../components/proposal/ProposalOfferCard.astro';
 import { FLOW } from '../data/commerce';
@@ -52,58 +52,50 @@ const proposalSchema = {
   },
 };
 ---
-<Layout
+<PaperLayout
   title="Build a non-binding Orionfold product proposal"
   description="Put Flow seats and other Orionfold products on one itemized non-binding proposal request, then print it or send it for review."
   ogImage={og.image}
   ogImageAlt={og.alt}
-  bodyClass="ls prop-page"
+  bodyClass="prop-page"
   jsonLd={proposalSchema}
 >
   <Nav />
-  <main id="proposal-builder" class="ls-main" data-local-preview={localPreview ? 'true' : 'false'} data-endpoint={endpoint} data-published-workshops={JSON.stringify(publishedWorkshopKeys)}>
-    <header class="prop-hero">
-      <div class="prop-hero-inner ls-container">
-        <div class="prop-hero-copy">
-          <div class="prop-hero-eyebrow"><p class="ls-eyebrow">PRODUCT PROPOSAL / SELF-SERVE</p><span class="prop-pill">Non-binding proposal request</span></div>
-          <h1>Build the<br/>Orionfold system<br/><span class="ls-stroke">your business needs.</span></h1>
-          <p class="prop-hero-description">Need to procure through an invoice or purchase order? Select the products and quantities you need, generate a formal proposal, and send it to Orionfold for review.</p>
-          <div class="prop-hero-ctas">
-            <a class="ls-button" href="#flow">Start with Flow seats<ArrowRight size={18} /></a>
-            <a class="ls-text-link" href="#how">How it works<ArrowDown size={15} /></a>
-          </div>
+  <main id="proposal-builder" class="pp-page" data-local-preview={localPreview ? 'true' : 'false'} data-endpoint={endpoint} data-published-workshops={JSON.stringify(publishedWorkshopKeys)}>
+    <section class="pp-hero pp-hero--inner pp-hero--solo" aria-labelledby="proposal-title">
+      <div class="pp-hero-copy">
+        <p class="pp-kicker">Product proposal · self-serve · non-binding proposal request</p>
+        <h1 id="proposal-title" class="pp-h1">Build the Orionfold system your business needs.</h1>
+        <p class="pp-sub">Need to procure through an invoice or purchase order? Select the products and quantities you need, generate a formal proposal, and send it to Orionfold for review.</p>
+        <div class="pp-hero-cta">
+          <a class="pp-btn" href="#flow">Start with Flow seats <span aria-hidden="true">→</span></a>
+          <a class="pp-btn pp-btn--ghost" href="#how">How it works <span aria-hidden="true">↓</span></a>
         </div>
-        <div class="prop-hero-media">
-          <picture class="ls-paper-art">
-            <source srcset="/assets/living-systems/hero-flow-paper-planes-640.webp 640w, /assets/living-systems/hero-flow-paper-planes-960.webp 960w, /assets/living-systems/hero-flow-paper-planes-1152.webp 1152w, /assets/living-systems/hero-flow-paper-planes.webp 1642w" sizes="(max-width: 900px) 120vw, 60vw" type="image/webp"/>
-            <img alt="" fetchpriority="high" height="958" src="/assets/living-systems/hero-flow-paper-planes.png" width="1642"/>
-          </picture>
-          <aside class="prop-hero-card" aria-label="What a proposal holds">
-            <p class="ls-eyebrow">Product-only proposal</p>
-            <h2>Catalog price × quantity</h2>
-            <ul>
-              <li>Select individual Orionfold products</li>
-              <li>Set the licenses, Flow seats or workshop seats</li>
-              <li>Review list price and estimated bank-transfer savings</li>
-            </ul>
-          </aside>
-        </div>
+        <dl class="pp-facts pp-facts--three pp-proposal-facts" aria-label="What a proposal holds">
+          <div><dt>Product-only proposal</dt><dd>Catalog price × quantity</dd></div>
+          <div><dt>You set</dt><dd>Set the licenses, Flow seats or workshop seats</dd></div>
+          <div><dt>You review</dt><dd>List price and estimated bank-transfer savings</dd></div>
+        </dl>
       </div>
-    </header>
+    </section>
 
-    <section id="how" class="prop-how" aria-label="How a proposal works">
-      <ol class="prop-steps ls-container">
-        <li><p class="ls-eyebrow">1 · Build</p><h2>Choose by job, not by bundle</h2><p>Every product row explains when it fits, what it contributes, and when another choice is better.</p></li>
-        <li><p class="ls-eyebrow">2 · Review</p><h2>See one itemized estimate</h2><p>Unit price, quantity, line total, and estimated domestic bank-transfer savings remain visible and separate.</p></li>
-        <li><p class="ls-eyebrow">3 · Request</p><h2>Orionfold reviews fit</h2><p>Submission is not acceptance. Product availability, final quantities, invoice, and cleared payment come later.</p></li>
+    <section id="how" class="pp-index pp-adoption-guide" aria-label="How a proposal works">
+      <div>
+        <p class="pp-kicker">How it works</p>
+        <p>Pick products, see one estimate, and send it. Orionfold reviews fit before anything is owed.</p>
+      </div>
+      <ol>
+        <li><span><strong>Choose by job, not by bundle.</strong> Every product row explains when it fits, what it contributes, and when another choice is better.</span></li>
+        <li><span><strong>See one itemized estimate.</strong> Unit price, quantity, line total, and estimated domestic bank-transfer savings remain visible and separate.</span></li>
+        <li><span><strong>Orionfold reviews fit.</strong> Submission is not acceptance. Product availability, final quantities, invoice, and cleared payment come later.</span></li>
       </ol>
     </section>
 
     <form id="proposal-form" novalidate>
-      <section id="flow" class="prop-section ls-container" aria-labelledby="flow-heading">
+      <section id="flow" class="prop-section" aria-labelledby="flow-heading">
         <div class="prop-head">
-          <p class="ls-eyebrow">FLOW SEATS</p>
-          <h2 id="flow-heading">Put Flow seats<br/><span class="ls-stroke">on the same proposal.</span></h2>
+          <p class="prop-kicker">FLOW SEATS</p>
+          <h2 id="flow-heading">Put Flow seats on the same proposal.</h2>
           <p class="prop-sub">Flow Base is free for everyone and needs no line here. A Flow Pro seat is {formatUsd(FLOW.annual.amount)} a year for one person on their own Macs. In the app the same seat is {formatUsd(FLOW.monthly.amount)} a month. A proposal prices every seat by the year, so the whole document shares one period.</p>
         </div>
         <div class="prop-grid prop-grid-flow">
@@ -111,10 +103,10 @@ const proposalSchema = {
         </div>
       </section>
 
-      <section class="prop-section ls-container" aria-labelledby="matrix-heading">
+      <section class="prop-section" aria-labelledby="matrix-heading">
         <div class="prop-head">
-          <p class="ls-eyebrow">PRODUCT DECISION MATRIX</p>
-          <h2 id="matrix-heading">Choose the capability,<br/><span class="ls-stroke">not an upsell.</span></h2>
+          <p class="prop-kicker">PRODUCT DECISION MATRIX</p>
+          <h2 id="matrix-heading">Choose the capability, not an upsell.</h2>
           <p class="prop-sub">No product is preselected. Each has one distinct job. Combinations are useful only when one product's output strengthens another.</p>
         </div>
         {families.map((family) => {
@@ -138,12 +130,12 @@ const proposalSchema = {
         )}
       </section>
 
-      <section class="prop-section ls-container" aria-labelledby="summary-heading">
+      <section class="prop-section" aria-labelledby="summary-heading">
         <div class="prop-request">
           <div>
             <div class="prop-head">
-              <p class="ls-eyebrow">YOUR REQUEST</p>
-              <h2 id="summary-heading">Tell us who<br/><span class="ls-stroke">the products are for.</span></h2>
+              <p class="prop-kicker">YOUR REQUEST</p>
+              <h2 id="summary-heading">Tell us who the products are for.</h2>
               <p class="prop-sub">Your selections, quantities, and business contact are enough for Orionfold to review. We respond within 24 hours; that response may ask questions, decline, or issue a written product proposal.</p>
             </div>
             <div class="prop-fields">
@@ -155,14 +147,14 @@ const proposalSchema = {
             </div>
             <div id="form-message" class="prop-message" hidden role="status" aria-live="polite"></div>
             <div class="prop-actions">
-              <button id="submit-proposal" class="ls-button" type="submit">Submit proposal request<ArrowRight size={18} /></button>
+              <button id="submit-proposal" class="prop-button" type="submit">Submit proposal request <span aria-hidden="true">→</span></button>
               <button id="print-proposal" class="prop-button-secondary" type="button">Print proposal</button>
             </div>
             <p class="prop-fine">By submitting, you ask Orionfold to review a non-binding product proposal request. No product order is accepted, invoiced, due, paid, or fulfilled. See the <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>.</p>
           </div>
 
           <aside class="prop-estimate" aria-label="Proposal estimate">
-            <p class="ls-eyebrow">Non-binding proposal request</p>
+            <p class="prop-kicker">Non-binding proposal request</p>
             <p id="summary-state" class="prop-estimate-state">Draft · not submitted</p>
             <div id="summary-lines" class="prop-estimate-lines"><p>Choose at least one product to begin.</p></div>
             <dl>
@@ -177,10 +169,10 @@ const proposalSchema = {
     </form>
 
     <section class="prop-preview proposal-preview-wrap" aria-labelledby="formal-preview-heading">
-      <div class="ls-container">
+      <div class="prop-preview-inner">
         <div class="prop-head prop-preview-intro">
-          <p class="ls-eyebrow">FORMAL HTML PROPOSAL</p>
-          <h2 id="formal-preview-heading">Print or save<br/><span class="ls-stroke">this document as PDF.</span></h2>
+          <p class="prop-kicker">FORMAL HTML PROPOSAL</p>
+          <h2 id="formal-preview-heading">Print or save this document as PDF.</h2>
           <p class="prop-sub">Before submission it is a draft. After submission, the same-session receipt is rebuilt from the server's immutable calculation.</p>
         </div>
         <article id="proposal-document" class="proposal-document" aria-label="Formal non-binding proposal document">
@@ -235,24 +227,24 @@ const proposalSchema = {
       class="prop-sticky"
       aria-label="Current proposal selections and estimate"
     >
-      <div class="prop-sticky-inner ls-container" role="status" aria-live="polite">
+      <div class="prop-sticky-inner" role="status" aria-live="polite">
         <div>
-          <p class="ls-eyebrow">Your proposal</p>
+          <p class="prop-kicker">Your proposal</p>
           <p id="sticky-selection-summary">Select a product</p>
         </div>
         <div>
-          <p class="ls-eyebrow">You save</p>
+          <p class="prop-kicker">You save</p>
           <p id="sticky-savings">—</p>
         </div>
         <div>
-          <p class="ls-eyebrow">Est. total</p>
+          <p class="prop-kicker">Est. total</p>
           <p id="sticky-final">—</p>
         </div>
       </div>
     </aside>
   </main>
   <Footer showDownload={false} />
-</Layout>
+</PaperLayout>
 
 <script>
   import {
@@ -458,10 +450,12 @@ const proposalSchema = {
   .document-legal { font-size: .75rem; color: #6b7280; }
   .document-address { text-align: right; font-size: .75rem; line-height: 1.6; color: #6b7280; }
   .proposal-document h4 { margin: 0; }
+  .proposal-document :is(h2, h3) { font-family: var(--pp-serif); font-weight: 400; letter-spacing: -.01em; text-transform: none; }
+  .proposal-document h4 { font-family: var(--pp-sans); font-weight: 600; }
   .document-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; border-bottom: 1px solid #d6dbe4; padding-bottom: 1.25rem; }
   .document-status { margin-top: 2rem; display: flex; justify-content: space-between; gap: 1rem; border: 1px solid #0e9e98; background: #e8f8f7; border-radius: .6rem; padding: .75rem 1rem; font: 600 .68rem/1.3 var(--font-mono); letter-spacing: .11em; text-transform: uppercase; color: #096c68; }
   .document-title { margin: 2.5rem 0; }
-  .document-title h2 { margin-top: .65rem; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.05; letter-spacing: -.035em; }
+  .document-title h2 { margin-top: .65rem; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.05; letter-spacing: -.015em; font-weight: 300; }
   .document-title > p:last-child { margin-top: .75rem; color: #6b7280; }
   .document-meta { font: .75rem/1.5 var(--font-mono); text-transform: uppercase; letter-spacing: .16em; color: #6b7280; }
   .proposal-document section { margin-top: 2rem; break-inside: avoid; }
@@ -480,7 +474,8 @@ const proposalSchema = {
   @media (max-width: 640px) { .document-header, .document-status, .document-footer { flex-direction: column; } .document-header > div:last-child { text-align: left; } .document-line { gap: 1rem; } }
   @media print {
     @page { size: auto; margin: 15mm; }
-    :global(#nav-wrapper), :global(body > footer), #proposal-form, #proposal-sticky-summary, .prop-hero, .prop-how, .prop-preview-intro { display: none !important; }
+    :global(#nav-wrapper), :global(.pp-shell-foot), #proposal-form, #proposal-sticky-summary, .pp-hero, #how, .prop-preview-intro { display: none !important; }
+    .prop-preview { margin: 0 !important; }
     :global(body) { background: #fff !important; }
     .prop-preview { border: 0 !important; background: #fff !important; padding: 0 !important; }
     .proposal-document { border: 0; border-radius: 0; box-shadow: none; padding: 0; }
