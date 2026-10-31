@@ -35,7 +35,7 @@ const navLabels = [...navArray.matchAll(/key: '[a-z]+', label: '([^']+)'/g)].map
 assert.deepEqual(navLabels, ['Flow', 'Playbooks', 'Paths', 'Elements'], 'the global nav carries Flow, its Playbooks, then its Paths and Elements menus');
 // Paper R1: Compare lives inside the Flow menu (five tools, then All), and Pricing is a plain link.
 assert.match(nav, /title: 'Switch to Flow from', chips: true, items: top\(compare\)/, 'Compare sits in the Flow menu, top five then All');
-assert.match(nav, /<a href="\/flow\/#pricing">Pricing<\/a>/, 'Pricing is the last item in the menu bar');
+assert.match(nav, /<a href="\/#pricing">Pricing<\/a>/, 'Pricing is the last item in the menu bar, and it opens the one pricing section on the home page');
 // Operator 2026-10-26: Essays left the nav for the footer.
 assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/essays\/', label: 'Essays'/, 'the footer keeps Essays');
 // Operator 2026-10-26: the manifesto is essay 03, reached from /essays/, not the nav or footer.
@@ -57,7 +57,7 @@ for (const retired of ['Models', 'Training', 'Proof']) {
 // flag flip away rather than deleted.
 assert.match(nav, /flowLive \? 'Download Flow' : 'Join the waitlist'/, 'the nav CTA keeps the same launch intent as the hero and returns to the waitlist when the flag is off');
 assert.doesNotMatch(nav, /See Flow plans/, 'the launch CTA never changes from download intent to a pricing detour');
-assert.match(nav, /'\/flow\/#waitlist'/, 'the pre-launch waitlist path survives in the off branch');
+assert.match(nav, /'\/#waitlist'/, 'the pre-launch waitlist path survives in the off branch');
 // 2026-10-28 11:39: the operator removed the top notice bar (Download Flow
 // strip) and put Get Proposal back in the nav beside the Download button.
 assert.doesNotMatch(nav, /id="magnet-bar"|of-flow-bar-dismissed|Orionfold Flow for Mac/, 'the top notice bar is gone');
@@ -69,7 +69,7 @@ assert.match(nav, /<div class="pp-pill pp-cta-pair">\s*<a href="\/proposal\/">Ge
 const footer = (read('src/components/Footer.astro') + read('src/data/footer-links.ts'));
 const columns = name => [...(footer.match(new RegExp('const ' + name + '(?:: [^=]+)? = \\[([\\s\\S]*?)\\n\\];'))?.[1] ?? '').matchAll(/href: '([^']+)', label: '([^']+)'/g)].map(match => [match[1], match[2]]);
 assert.deepEqual(columns('FLOW_COLUMNS'), [
-  ['/flow/', 'Overview'], ['/playbooks/', 'Flow Playbooks'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
+  ['/flow/', 'Overview'], ['/playbooks/', 'Playbooks'], ['/flow/elements/', 'Elements'], ['/essays/', 'Essays'],
   ['/flow/tour/', 'Tour'], ['/flow/night-shift/', 'Night Shift'], ['/flow/living-documents/', 'Living Documents'], ['/flow/settings/', 'Settings'], ['/flow/specifications/', 'Tech Specs'], ['/flow/enterprise/', 'Enterprise'],
 ]);
 assert.deepEqual(columns('ORIONFOLD_COLUMNS'), [
@@ -128,8 +128,8 @@ assert.doesNotMatch(livingSource, /Private review|data-launch-action|data-signup
 // the app at ONE seam (LicensedAgencyRunner). These guards protect the claims a
 // pricing page is most likely to get wrong.
 const pricingData = read('src/data/flow-pricing.ts');
-// R8 (G-147): FlowPricing is gone; the live price surfaces are FlowPlans (/flow/) and the home PricingTable.
-const pricingCopy = `${readCopy('src/components/living/FlowPlans.astro')}\n${readCopy('src/components/paper/PricingTable.astro')}\n${readCopy('src/pages/index.astro')}`;
+// Operator 2026-10-31: the home PricingTable is the site's one pricing section.
+const pricingCopy = `${readCopy('src/components/paper/PricingTable.astro')}\n${readCopy('src/pages/index.astro')}`;
 const launch = read('src/data/launch.ts');
 
 // THE PRICE GATE. The app does not yet enforce the terms, so no amount ships.
@@ -222,7 +222,7 @@ assert.match(navSource, /const navCtaLabel = flowLive \? 'Download Flow' : 'Join
 // The nav keeps the same direct-download contract as every other launch CTA.
 // Release safety is enforced at the deployment boundary, not by changing the
 // action label or detouring this one surface to pricing.
-assert.match(navSource, /const flowDownloadHref = flowLive \? FLOW_DMG_URL : '\/flow\/#waitlist';/, 'the launched nav points at the one canonical download URL');
+assert.match(navSource, /const flowDownloadHref = flowLive \? FLOW_DMG_URL : '\/#waitlist';/, 'the launched nav points at the one canonical download URL');
 
 // BASE IS THE ABSENCE OF AN ENTITLEMENT. It has no SKU, no price and no
 // entitlement string, and the commerce layer must never grow one for it.
@@ -296,7 +296,10 @@ assert.match(flowMeasurements, /This Mac or configured cloud API providers/);
 assert.doesNotMatch(flowMeasurements, /3 locations|your network|\bLAN\b/);
 // Section order: tour → enterprise → press → waitlist. (The stack band left
 // for the footer directory on 2026-08-20; the press kit names the footer.)
-const anchors = ['id="tour"', 'id="enterprise"', 'id="press"', 'id="waitlist"'];
+const anchors = ['id="tour"', 'id="enterprise"', 'id="press"'];
+// Pricing left /flow/ (operator 2026-10-31); its old anchors are sent to the home page.
+assert.match(flowPageSource, /'#waitlist': '\/#waitlist'/);
+assert.match(flowPageSource, /'#pricing': '\/#pricing'/);
 assert.doesNotMatch(flow, /id="stack"/, 'the stack band lives in the footer directory, not on the overview');
 for (const anchor of anchors) assert.ok(flow.includes(anchor) || livingFaq.includes(anchor.replace('id=','\"id\": ')), `legacy landing anchor retained: ${anchor}`);
 // Each tour chapter stays deep-linkable AND stays clear of the fixed nav when
@@ -407,9 +410,9 @@ assert.match(flowPageSource, /FAQPage/);
 assert.match(flowPageSource, /SoftwareApplication/);
 assert.match(flowPageSource, /faqs\.map/);
 assert.match(read('src/components/living/FlowFaq.astro'), /faqs\.map/);
-assert.match(read('src/components/living/FlowPlans.astro'), /FLOW\.monthly\.amount/);
-assert.match(read('src/components/living/FlowPlans.astro'), /FLOW\.annual\.amount/);
-assert.match(read('src/components/living/FlowPlans.astro'), /ORIONFOLD_FLOW_LIVE && <p class="ls-plan-price">/, 'new price rendering retains the release gate');
+assert.match(read('src/pages/index.astro'), /const pro = FLOW\.monthly\.amount/, 'home prices read the catalog');
+assert.match(read('src/pages/index.astro'), /FLOW\.annual\.amount/);
+assert.doesNotMatch(read('src/pages/flow.astro'), /<Panel id="pricing"|FlowPlans/, '/flow/ carries no pricing section (operator 2026-10-31)');
 
 // ── Expand with Sources (0131) truth rails, 2026-08-20 ────────────────────
 // Source: flow-expand-with-sources-source.md "Hard guardrails". Lookup-backed
@@ -491,7 +494,8 @@ assert.match(homeHero, /The hero mock is never the LCP element: the H1 is\./, 't
 assert.match(read('src/components/paper/FlowWindow.astro'), /named \? `\$\{f\.name\} drafted this\.` : 'Flow drafted this\.'/, 'the /flow/ window makes no Fold claim before the app ships Folds (D8)');
 assert.doesNotMatch(homePageSource, /FlowShot|FlowLaunchHomeHero|HomeRaceCapabilityAct|FlowIdeasPitStop|<Ecosystem|<HomeProof|<Founder/, 'Practice, measurements and builder bands were removed from the homepage 2026-09-29');
 assert.doesNotMatch(homePageSource, /<CapabilityRibbon/, 'the capability ribbon left the homepage 2026-10-05 (operator)');
-const homeOrder = ['<TalkPageHero','<Panel id="domains"','<Rail label="Elements"','<Panel id="paths"','<Panel id="clients"','class="pp-essay"','<TrustBand','class="pp-meet"','id="waitlist"'].map(marker => homePageSource.indexOf(marker));
+// Operator 2026-10-31 ("accept"): panels and open sections alternate.
+const homeOrder = ['<TalkPageHero','<Panel id="domains"','class="pp-meet"','<Panel id="clients"','class="pp-built-wrap"','<Rail label="Elements"','<TrustBand','<Panel id="paths"','class="pp-essay"','<Panel id="pricing"','id="waitlist"'].map(marker => homePageSource.indexOf(marker));
 assert.match(home, /id="waitlist"/, 'old campaign landing anchor survives');
 assert.match(read('src/components/living/EmailInvitation.astro'), /<LivingDocumentsForm \/>/, 'the new offer has a dedicated signup component');
 assert.match(read('src/components/living/LivingDocumentsForm.astro'), /data-consent=\{FLOW_LIVING_DOCUMENTS_CONSENT_TEXT\}/, 'new consent is imported rather than retyped');
@@ -1084,7 +1088,7 @@ assert.doesNotMatch(thanksSource, /href=\{FLOW_DMG_URL\}/, 'the thanks page must
 // any month-count framing of the annual term is arithmetically wrong at these
 // prices, and a hand-written percentage silently disagrees with the catalog the
 // day either price moves.
-for (const surface of ['src/components/living/FlowPlans.astro', 'src/components/paper/PricingTable.astro', 'src/pages/flow.astro', 'src/data/flow-pricing.ts']) {
+for (const surface of ['src/components/paper/PricingTable.astro', 'src/pages/index.astro', 'src/pages/flow.astro', 'src/data/flow-pricing.ts']) {
   const copy = readCopy(surface);
   assert.doesNotMatch(
     copy,

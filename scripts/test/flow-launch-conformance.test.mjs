@@ -156,7 +156,7 @@ const visibleLaunchSource = [
   read('src/data/flow-specifications.ts'),
   read('src/pages/index.astro'),
   read('src/lib/paper/cast.ts'),
-  read('src/components/living/FlowPlans.astro'),
+  read('src/components/paper/PricingTable.astro'),
 ].join('\n').replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
 assert.doesNotMatch(visibleLaunchSource, /Apple Intelligence/i, 'withdrawn Apple Intelligence route is not marketed');
 assert.doesNotMatch(visibleLaunchSource, /Flow Quick|global hotkey assistant/i, 'withdrawn Flow Quick is not marketed');

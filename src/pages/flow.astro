@@ -25,7 +25,6 @@ import FlowChatShowcase from '../components/flow/FlowChatShowcase.astro';
 import FlowCanvasShowcase from '../components/flow/FlowCanvasShowcase.astro';
 import JobsWorkbenchDemo from '../components/living/JobsWorkbenchDemo.astro';
 import FlowLibrary from '../components/living/FlowLibrary.astro';
-import FlowPlans from '../components/living/FlowPlans.astro';
 import FlowFaq from '../components/living/FlowFaq.astro';
 import FlowReel from '../components/flow/FlowReel.astro';
 import FlowDocumentAnchors from '../components/living/FlowDocumentAnchors.astro';
@@ -43,7 +42,7 @@ const faqSchema = {
 };
 const reelLede = 'Give a document a job. Flow runs it on your Mac, even overnight. Then you keep or undo each change.';
 const reelSchema = flowReelSchema(SITE.url, reelLede);
-const downloadHref = ORIONFOLD_FLOW_LIVE ? FLOW_DMG_URL : '#get-flow';
+const downloadHref = ORIONFOLD_FLOW_LIVE ? FLOW_DMG_URL : '/#waitlist';
 const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the waitlist';
 
 ---
@@ -71,7 +70,7 @@ const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the 
       { href: '#flow-canvas', label: 'Canvas' },
       { href: '#jobs-workbench', label: 'Jobs' },
       { href: '#living-library', label: 'Library' },
-      { href: '#pricing', label: 'Pricing' },
+      { href: '/#pricing', label: 'Pricing' },
     ]} pages={[
       { href: '/flow/elements/', label: 'Elements' },
       { href: '/playbooks/', label: 'Flow Playbooks' },
@@ -80,7 +79,7 @@ const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the 
       { href: '/flow/enterprise/', label: 'Enterprise' },
     ]} />
 
-    {/* #pricing is the Pricing panel; #get-flow and #waitlist live inside FlowPlans. Old links into removed sections (operator 2026-10-27) still land on this page. */}
+    {/* Pricing lives on the home page only (operator 2026-10-31). Old /flow/#pricing, #plans, #get-flow and #waitlist links are sent there by the script below. Old links into removed sections (operator 2026-10-27) still land on this page. */}
     <span id="how-it-works" aria-hidden="true"></span><span id="flow-overview-heading" aria-hidden="true"></span><span id="tour" aria-hidden="true"></span><span id="gallery" aria-hidden="true"></span><span id="flow-capability-ticker-title" aria-hidden="true"></span>
     <FlowDocumentAnchors />
     <FlowIdeasAnchors />
@@ -113,9 +112,6 @@ const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the 
       <div class="ls ls-in-paper"><FlowLibrary bare picker={false} /></div>
     </Panel>
 
-    <Panel id="pricing" seam="Pricing" fold="clause" title="Base is free.<br />Pro does the thinking." lede="Base keeps your data current, never expires and needs no account. Pro adds the AI work, on your Macs.">
-      <div class="ls ls-in-paper"><FlowPlans bare /></div>
-    </Panel>
 
     <Panel id="faq" seam="Questions" fold="shell" tinted title="A few things<br />worth knowing.">
       <div class="ls ls-in-paper"><FlowFaq bare /></div>
@@ -133,4 +129,11 @@ const downloadLabel = ORIONFOLD_FLOW_LIVE ? 'Download Flow for Mac' : 'Join the 
 </PaperLayout>
 <script>
   import "../scripts/living-documents.js";
+</script>
+<script is:inline>
+  // Pricing moved to the home page (operator 2026-10-31). Old deep links keep working.
+  (function () {
+    var to = { '#pricing': '/#pricing', '#plans': '/#pricing', '#get-flow': '/#pricing', '#waitlist': '/#waitlist' }[location.hash];
+    if (to) location.replace(to);
+  })();
 </script>

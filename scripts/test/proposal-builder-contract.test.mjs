@@ -13,7 +13,8 @@ const pagePath = new URL('../../src/pages/proposal.astro', import.meta.url);
 const oldPagePath = new URL('../../src/pages/consulting.astro', import.meta.url);
 const navPath = new URL('../../src/components/Nav.astro', import.meta.url);
 const cardPath = new URL('../../src/components/proposal/ProposalOfferCard.astro', import.meta.url);
-const plansPath = new URL('../../src/components/living/FlowPlans.astro', import.meta.url);
+// Operator 2026-10-31: the home page holds the site's one pricing section.
+const plansPath = new URL('../../src/pages/index.astro', import.meta.url);
 const functionPath = new URL('../../supabase/functions/consulting-request/index.ts', import.meta.url);
 const deliveryPath = new URL('../../supabase/functions/consulting-request/delivery.ts', import.meta.url);
 const migrationPath = new URL('../../supabase/migrations/20260720010000_create_consulting_proposals.sql', import.meta.url);
@@ -133,10 +134,8 @@ test('Flow seats open the proposal, priced from the catalog, with the Playbooks 
   assert.match(page, /Flow lines are yearly subscriptions, one seat per person\./);
   assert.match(page, /Set the licenses, Flow seats or workshop seats/);
 
-  // Plans: the Request for proposal link sits beside Enterprise contact and deep-links to the section.
-  assert.match(plans, /<div class="ls-plan-buttons"><FlowEnterpriseContact \/><a class="ls-plan-rfp" href="\/proposal\/#flow"/);
-  assert.match(plans, />Request for proposal<\/a>/);
-  assert.match(readFileSync(new URL('../../src/styles/living-flow.css', import.meta.url), 'utf8'), /\.ls-plan-actions :is\(\.of-primary-action, \.flow-enterprise-trigger, \.ls-plan-rfp\)/);
+  // Pricing: the team line deep-links to the proposal builder's Flow section.
+  assert.match(plans, /<div class="pp-price-team"><span>Buying for a team\?<\/span><FlowEnterpriseContact \/><a class="pp-link" href="\/proposal\/#flow"/);
 });
 
 test('all eligible offers and quantity fixtures build from the shared catalog', () => {

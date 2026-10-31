@@ -208,7 +208,7 @@ assert.match(
 assert.doesNotMatch(storyRoute, /MagnetBand|ProductBand/, 'the book magnet and the product band left the story footer');
 assert.match(storyRoute, /<PaperSubscribe id="story-subscribe"[\s\S]*?<a href=\{footerFlowCta\.href\} data-flow-download=\{footerFlowCta\.downloadSource\}>/, 'the closing Flow link retains story-footer attribution');
 assert.match(storyRoute, /<Footer showDownload=\{false\} \/>/, 'no second closing download band');
-assert.match(storyRoute, /\{ href: '\/flow\/#waitlist', downloadSource: undefined \}/, 'launch-dark closing link asks for the waitlist, not a download');
+assert.match(storyRoute, /\{ href: '\/#waitlist', downloadSource: undefined \}/, 'launch-dark closing link asks for the waitlist, not a download');
 assert.match(storyRoute, /\{ href: FLOW_DMG_URL, downloadSource: `story-footer-\$\{post\.id\}` \}/, 'live closing link uses the one canonical download URL');
 const flowStoryCta = readFileSync(new URL('../../src/components/story/FlowStoryCta.astro', import.meta.url), 'utf8');
 assert.match(flowStoryCta, /<PaperCta source=\{downloadSource \?\? 'story-download'\}/, 'the Flow block preserves attribution through the shared origami download CTA');

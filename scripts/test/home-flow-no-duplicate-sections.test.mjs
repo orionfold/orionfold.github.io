@@ -38,7 +38,7 @@ test('/flow/ links only to sections it has, and Canvas has one', () => {
   assert.match(flow, /<FlowCanvasShowcase bare \/>/);
   assert.match(onPage, /'#flow-canvas'/);
   for (const gone of ['#flow-domains', '#agents-reviewed', '#import-publish', '#flow-elements']) assert.ok(!onPage.includes(`'${gone}'`), gone);
-  for (const [, id] of onPage.matchAll(/href: '#([\w-]+)'/g)) assert.match(page + read('src/components/living/FlowPlans.astro'), new RegExp(`id(=|: )["'{]?${id}["'}]`), `#${id} exists on the page`);
+  for (const [, id] of onPage.matchAll(/href: '#([\w-]+)'/g)) assert.match(page, new RegExp(`id(=|: )["'{]?${id}["'}]`), `#${id} exists on the page`);
 });
 
 test('the homepage keeps Elements and drops Agents and Import & Publish (operator 2026-10-27)', () => {

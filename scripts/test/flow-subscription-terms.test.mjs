@@ -15,7 +15,7 @@ test('terms cover the plan, paid period and all trial capabilities', () => {
 });
 
 test('Website plans and terms reuse the approved facts', () => {
-  for (const p of ['src/components/living/FlowPlans.astro', 'src/pages/flow/specifications.astro', 'src/pages/terms.astro']) {
+  for (const p of ['src/pages/terms.astro']) {
     const source = read(p);
     for (const name of ['FLOW_CANCEL_TERMS', 'FLOW_ADDON_TERMS', 'FLOW_TRIAL_TERMS']) assert.ok(source.split(name).length >= 3, `${p} imports and renders ${name}`);
   }
@@ -27,7 +27,7 @@ test('free and lapsed promises do not include paid-format publishing', () => {
   const base = JSON.stringify(FLOW_BASE_CAPABILITIES);
   assert.doesNotMatch(base, /\b(export|publish|Word|PowerPoint|PDF)\b/i);
   assert.ok(FLOW_LAPSE_FACTS.some((s) => s.includes('Markdown editing and saving stay free')));
-  for (const p of ['src/components/living/FlowPlans.astro', 'src/pages/promise.astro', 'src/data/living-faq.json', 'src/pages/flow/specifications.astro']) {
+  for (const p of ['src/pages/index.astro', 'src/pages/promise.astro', 'src/data/living-faq.json', 'src/pages/flow/specifications.astro']) {
     assert.doesNotMatch(read(p), /no watermark or export wall|charts and export|visualize, and export|Anything that ever shipped free does not later become paid/i);
   }
 });

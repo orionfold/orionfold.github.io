@@ -130,9 +130,10 @@ test('every surface prices a Playbook the way the product gates it', () => {
   }
   assert.match(read('src/content/compare/custom-gpts.md'), /Publishing a Playbook needs Flow Pro and the Publish add-on/);
   assert.match(read('src/data/flow-pricing.ts'), /a Flow Playbook to a GitHub repository/, 'the Publish add-on names the Playbook route');
-  const plans = read('src/components/living/FlowPlans.astro');
-  assert.match(plans, /any Playbook you bring in from GitHub/, 'Base lists the pull');
-  assert.match(plans, /Chat on a folder or a Playbook/, 'Pro lists Chat on a Playbook');
+  // Operator 2026-10-31: the home pricing section is the one place plans are listed.
+  const plans = read('src/pages/index.astro') + read('src/data/flow-pricing.ts');
+  assert.match(plans, /Bring in any Flow Playbook', note: 'Read it, search it and keep it, free'/, 'Base lists the pull');
+  assert.match(plans, /Chat with a Flow Playbook/, 'Pro lists Chat on a Playbook');
   assert.match(plans, /The door for your own agents in Terminal/, 'Pro lists the agents door (operator 2026-10-28)');
   assert.match(read('public/llms.txt'), /Your agents, a Flow Pro feature/);
   assert.match(read('src/components/flow/domains/DomainPayload.astro'), /setTimeout\(reveal, 1500\)/, 'the payload figure never stays blank (A4)');
@@ -152,7 +153,7 @@ test('the built pages link the Playbook, the story and each other, and the nav l
   assert.ok(story.includes('href="/playbooks/"'));
   assert.equal((story.match(/class="pp-long-body[\s\S]*?<aside class="pp-long-rail"/)[0].match(/<img [^>]*alt="[^"]+"/g) ?? []).length, 14, 'the walk’s fourteen shots, each described');
   assert.match(read('src/components/paper/PaperNav.astro'), /key: 'flow', label: 'Flow',[\s\S]*?key: 'domains', label: 'Playbooks',/, 'the nav leads with Flow, then Playbooks');
-  assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/playbooks\/', label: 'Flow Playbooks'/);
+  assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/playbooks\/', label: 'Playbooks'/, 'the footer matches the nav: Playbooks (operator 2026-10-31)');
   assert.match(read('public/llms.txt'), /## Flow Playbooks/);
   // G-135: the Playbooks menu lists the five in the site's order, then All Playbooks;
   // the landing features the launch story and cards the four blueprints.

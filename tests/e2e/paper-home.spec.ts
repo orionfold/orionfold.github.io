@@ -118,7 +118,7 @@ test('both home downloads keep their attribution, and the old #waitlist anchor l
 
 test('each plan shows what it includes on request, from the shared plan lists (operator 2026-10-30)', async ({ page }) => {
   await page.goto('/');
-  const more = page.locator('#pricing ~ .pp-price .pp-price-more');
+  const more = page.locator('#pricing .pp-price .pp-price-more');
   await expect(more).toHaveCount(3);
   for (const d of await more.all()) await expect(d).not.toHaveAttribute('open', '');
   await more.nth(1).locator('summary').click();
@@ -126,5 +126,7 @@ test('each plan shows what it includes on request, from the shared plan lists (o
   await expect(more.nth(1).locator('li', { hasText: 'Agentic runs' })).toBeVisible();
   await more.nth(2).locator('summary').click();
   await expect(more.nth(2)).toContainText('a Flow Playbook to a GitHub repository');
-  await expect(page.locator('#meet a[href="/flow/#pricing"]')).toHaveCount(0);
+  // Operator 2026-10-31: home pricing is the only pricing section; nothing links to /flow/#pricing.
+  await expect(page.locator('a[href="/flow/#pricing"]')).toHaveCount(0);
+  await expect(page.locator('#main-nav a[href="/#pricing"]')).toHaveCount(1);
 });

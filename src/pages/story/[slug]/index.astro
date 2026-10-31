@@ -97,7 +97,7 @@ const flowCta = ORIONFOLD_FLOW_LIVE ? FLOW_CTA[post.id as keyof typeof FLOW_CTA]
 // while Flow is live, and the waitlist while launch-dark.
 const footerFlowCta = ORIONFOLD_FLOW_LIVE
   ? { href: FLOW_DMG_URL, downloadSource: `story-footer-${post.id}` }
-  : { href: '/flow/#waitlist', downloadSource: undefined };
+  : { href: '/#waitlist', downloadSource: undefined };
 // Ascending by date (oldest → newest), so the neighbours walk the founder arc.
 const allStories = (await getCollection('story')).sort(
   (a, b) => a.data.date.getTime() - b.data.date.getTime(),

@@ -14,13 +14,17 @@ const nav = (read('src/components/Nav.astro') + read('src/components/paper/Paper
 const og = read('src/data/og.ts');
 const config = read('astro.config.mjs');
 
-for (const section of ['compatibility', 'documents', 'agency', 'models', 'proof', 'plans', 'measurements', 'availability']) {
+for (const section of ['compatibility', 'documents', 'agency', 'models', 'proof', 'measurements', 'availability']) {
   assert.match(page, new RegExp(`id=["']${section}["']`), `${section} section stays addressable`);
   assert.match(page, new RegExp(`href: ['"]#${section}['"]`), `${section} stays in the scan navigation`);
 }
 
 assert.match(page, /Technical specifications\./, 'the page leads with a literal, scan-first title');
-assert.match(page, /Requirements, documents, Agency, model routes, proof, privacy, plans, and measurements\./, 'the lede names the page contents');
+assert.match(page, /Requirements, documents, Agency, model routes, proof, privacy, and measurements\./, 'the lede names the page contents');
+// Operator 2026-10-31: plans live in the home pricing section only.
+assert.doesNotMatch(page, /id="plans"/);
+assert.match(page, /\{ href: '\/#pricing', label: 'Pricing' \}/);
+assert.match(page, /location\.hash === '#plans'\) location\.replace\('\/#pricing'\)/);
 assert.match(page, /State is part of the specification\./, 'provider state is explained beside the table');
 assert.match(page, /Detection alone never grants permission or proves a runnable Agency path\./, 'detection is not allowed to imply execution');
 assert.match(page, /FLOW_DOWNLOAD_READY \? 'Available now' : 'Package not connected yet'/, 'availability follows the real download readiness seam');
@@ -65,7 +69,7 @@ assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.
 assert.match((read('src/components/Footer.astro') + read('src/data/footer-links.ts')), /href: '\/arena\/', label: 'Arena'/, 'Arena remains in the shared Orionfold footer');
 assert.match(read('src/components/flow/FlowCategoryPage.astro'), /label: 'Tech Specs'/, 'the Flow tour PageNav keeps Apple\'s concise Tech Specs label');
 assert.match(page, /label: 'Tech Specs', current: true/, 'the technical specifications page marks its local-nav item active (Paper PageNav)');
-assert.match(nav, /flowLive \? FLOW_DMG_URL : '\/flow\/#waitlist'/, 'the shared nav keeps the direct launch CTA and the pre-launch waitlist branch');
+assert.match(nav, /flowLive \? FLOW_DMG_URL : '\/#waitlist'/, 'the shared nav keeps the direct launch CTA and the pre-launch waitlist branch');
 assert.doesNotMatch(nav, /See Flow plans/, 'the Flow CTA does not become a pricing detour');
 assert.match(og, /'\/flow\/specifications\/': {[\s\S]*slug: 'flow-specifications'/, 'the route has a social card source');
 assert.match(config, /map\['\/flow\/specifications\/'\] = '2026-09-17'/, 'the route has an honest sitemap date');

@@ -23,7 +23,7 @@ async function controllerFixture(page: Page, enabled = true) {
       PUBLIC_FLOW_ENTERPRISE_CONTACT_ENABLED: String(enabled),
     }) },
   }).outputFiles[0].text;
-  await page.route('http://127.0.0.1:4325/flow/', async route => {
+  await page.route('http://127.0.0.1:4325/', async route => {
     const response = await route.fetch();
     const html = (await response.text())
       .replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '')
@@ -33,7 +33,7 @@ async function controllerFixture(page: Page, enabled = true) {
   });
 }
 async function openAndFill(page: Page) {
-  await page.goto('/flow/');
+  await page.goto('/');
   await page.getByRole('button', { name: 'Enterprise contact', exact: true }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.getByLabel('Contact name', { exact: true }).fill(synthetic.name);
@@ -49,11 +49,9 @@ test('pricing owns the right actions and the unactivated form never sends', asyn
   await page.setViewportSize({ width: 390, height: 844 });
   const requests: string[] = [];
   page.on('request', request => { if (request.url().includes('flow-enterprise-request')) requests.push(request.method()); });
-  await page.goto('/flow/');
-  await expect(page.locator('[data-cta-placement="plan-download"],.ls-plan-download')).toHaveCount(0);
-  await expect(page.locator('[data-plan="base"] [data-flow-download="flow-living-documents"]')).toHaveCount(1);
-  await expect(page.locator('[data-plan="base"]')).toContainText('For Mac OS. Base is free forever. 10 Pro days included. No credit card to use.');
-  await expect(page.locator('[data-plan="pro"]')).toContainText('Or pay in-app when ready.');
+  await page.goto('/');
+  // Operator 2026-10-31: the home pricing section is the site's only one; the team line carries the enquiry.
+  await expect(page.locator('#pricing .pp-price-team a[href="/proposal/#flow"]')).toHaveCount(1);
   const trigger = page.getByRole('button', { name: 'Enterprise contact', exact: true });
   await trigger.click();
   const dialog = page.getByRole('dialog');

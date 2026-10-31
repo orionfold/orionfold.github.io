@@ -24,7 +24,8 @@ import Fold from '../components/paper/Fold.astro';
 import { ogMeta } from '../data/og';
 import { SITE, PERSON } from '../data/seo';
 import { ORIONFOLD_FLOW_LIVE } from '../data/launch';
-import { FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT, FLOW_BASE_CAPABILITIES, FLOW_PRO_CAPABILITIES, FLOW_ADDONS, FLOW_ADDON_TERMS, FLOW_TRIAL_TERMS } from '../data/flow-pricing';
+import { FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT, FLOW_BASE_CAPABILITIES, FLOW_PRO_CAPABILITIES, FLOW_ADDONS, FLOW_ADDON_TERMS, FLOW_TRIAL_TERMS, FLOW_CANCEL_TERMS } from '../data/flow-pricing';
+import FlowEnterpriseContact from '../components/flow/FlowEnterpriseContact.astro';
 import { FLOW, formatUsd } from '../data/commerce';
 import { BUILT_WITH } from '../data/built-with';
 import { FLAGSHIP_ESSAY as essay } from '../data/essays';
@@ -55,7 +56,7 @@ const happy = await faceSet('happy', 320);
 const emo = await faceSet('emo', 560);
 
 const flowLive = ORIONFOLD_FLOW_LIVE;
-const flowDownloadHref = flowLive ? FLOW_DMG_URL : '/flow/#waitlist';
+const flowDownloadHref = flowLive ? FLOW_DMG_URL : '/#waitlist';
 
 // Built with Orionfold (operator 2026-10-28, placed 2026-10-30): the founder
 // walk and the customer case side by side, as on the live home.
@@ -117,7 +118,7 @@ const plans = [
   { name: 'Base', price: 'Free', line: 'Bring in any Flow Playbook and read it. Free forever.',
     features: [{ label: 'Bring in any Flow Playbook', note: 'Read it, search it and keep it, free' }, ...FLOW_BASE_CAPABILITIES] },
   { name: 'Pro', price: formatUsd(pro), unit: ' /mo', line: `Chat with a Flow Playbook and let your Fold do the work. ${formatUsd(proYear)} a year. Ten Pro Days to try.`,
-    features: [{ label: 'Chat with a Flow Playbook', note: 'Your Fold works through the method on your case' }, ...FLOW_PRO_CAPABILITIES], terms: FLOW_TRIAL_TERMS },
+    features: [{ label: 'Chat with a Flow Playbook', note: 'Your Fold works through the method on your case' }, { label: 'Your agents', note: 'The door for your own agents in Terminal' }, ...FLOW_PRO_CAPABILITIES], terms: FLOW_TRIAL_TERMS },
   { name: 'Pro + Publish', price: formatUsd(pro * 2), unit: ' /mo', line: `Share your own Playbook with clients. ${formatUsd(proYear * 2)} a year.`,
     features: [{ label: 'Everything in Pro', note: 'Chat, agentic runs, receipts and the rest' }, { label: publish.name, note: publish.description }], terms: FLOW_ADDON_TERMS },
 ];
@@ -140,6 +141,8 @@ const plans = [
       </Statement>
     </section>
 
+    <!-- Order (operator 2026-10-31): panels and open sections alternate. Playbooks, the
+         Fold that runs each one, clients, proof, Elements, trust, Paths, the essay, price. -->
     <Panel id="domains" seam="Flow Playbooks" fold="tally" title="Share your Playbook.<br />Clients work through it." lede={`Your clients bring it into their own Flow and work through your method on their own case. When you improve a step, they get the change to review. Start from one of ${blueprintCount} free blueprints, or make your own.`}>
       <div class="pp-dm-tabs" role="tablist" aria-label="Pick a Flow Playbook">
         {mocks.map(({ fold, d }, i) => (
@@ -153,6 +156,21 @@ const plans = [
         </div>
       ))}
       <WhyNow href="/flow/compare/custom-gpts/" cta="Move a GPT to Flow"><b>Custom GPTs retire December 11.</b> Give your playbook a home you own.</WhyNow>
+    </Panel>
+
+    <section class="pp-meet" id="meet">
+      <h2>Meet your Fold</h2>
+      <p>Every Flow Playbook comes with a Fold, a small paper helper that knows the method. Each one links to its Flow Playbook.</p>
+      <Roster faces={emo} />
+    </section>
+
+    <Panel id="clients" seam="Flow for clients" fold="ember" tinted title="Useful between<br />your meetings" lede="Publish your Flow Playbook to GitHub. Each client brings it into their own Flow and keeps working with your method after the workshop. When you improve it, they see the change and choose to take it.">
+      <!-- The live home's client round trip (operator 2026-10-30): write, a skill draws, publish, the client brings it in, the update arrives. -->
+      <div class="pp-client-mock"><HomeHeroDomainMock /></div>
+      <div class="pp-clients-copy">
+        <p>Every client gets their own copy, not one shared folder. Each copy knows that client's work, and your updates fill the gaps.</p>
+        <p>Need a file instead? Send the same work as a website, a PDF, an Office file or a book.</p>
+      </div>
     </Panel>
 
     <section class="pp-built-wrap" aria-labelledby="home-built-with-heading">
@@ -176,27 +194,6 @@ const plans = [
       <p class="pp-elements-tour"><a class="pp-link" href="/flow/elements/tour/">Take the Elements tour →</a></p>
     </Panel>
 
-    <Panel id="paths" seam="Paths" fold="sprout" tinted title="Hand off the work<br />you do over and over" lede="A Path is a job Flow already knows how to do. Pick one, or describe your own in plain words. You sign off on every result.">
-      <Rail label="Paths" allHref="/flow/paths/" allLabel={`Browse all ${paths.length} Paths`} items={paths} filter={false} grid lede="Each Path was walked end to end in Flow on a Mac. Its page shows the time, the cost and what we could not check." />
-    </Panel>
-
-    <Panel id="clients" seam="Flow for clients" fold="tally" title="Useful between<br />your meetings" lede="Publish your Flow Playbook to GitHub. Each client brings it into their own Flow and keeps working with your method after the workshop. When you improve it, they see the change and choose to take it.">
-      <!-- The live home's client round trip (operator 2026-10-30): write, a skill draws, publish, the client brings it in, the update arrives. -->
-      <div class="pp-client-mock"><HomeHeroDomainMock /></div>
-      <div class="pp-clients-copy">
-        <p>Every client gets their own copy, not one shared folder. Each copy knows that client's work, and your updates fill the gaps.</p>
-        <p>Need a file instead? Send the same work as a website, a PDF, an Office file or a book.</p>
-      </div>
-    </Panel>
-
-    <section class="pp-essay" aria-labelledby="home-essay-heading">
-      <span class="pp-kicker">The thinking behind Flow · Essay {essay.number}</span>
-      <h2 id="home-essay-heading"><a href={essay.href}>{essay.title}</a></h2>
-      <p>{essay.subtitle}</p>
-      <p class="pp-essay-links"><a class="pp-btn" href={essay.href}>Read the essay</a><a class="pp-link" href="/essay/">Or begin with essay 01, Room for a Renaissance →</a><a class="pp-link" href="/essays/">All essays →</a></p>
-      <p class="pp-essay-by">An essay by Manav Sehgal</p>
-    </section>
-
     <!-- Trust (operator 2026-10-30): the PR/FAQ's sourced differentiators, set against
          the pattern in this year's AI-agent incidents (databases wiped by coding
          agents, files leaked after reading one planted document). No company named;
@@ -210,17 +207,25 @@ const plans = [
       { title: 'You press Publish', line: 'Chat cannot publish for you. Your clients pick which of your updates come in.', icon: ICON.share },
     ]} />
 
-    <section class="pp-meet" id="meet">
-      <h2>Meet your Fold</h2>
-      <p>Every Flow Playbook comes with a Fold, a small paper helper that knows the method. Each one links to its Flow Playbook.</p>
-      <Roster faces={emo} />
-      <div class="pp-price-head" id="pricing">
-        <h2>Pricing</h2>
-        <p>Free to start. Pay when you want your Fold to do the work.</p>
-      </div>
+    <Panel id="paths" seam="Paths" fold="sprout" tinted title="Hand off the work<br />you do over and over" lede="A Path is a job Flow already knows how to do. Pick one, or describe your own in plain words. You sign off on every result.">
+      <Rail label="Paths" allHref="/flow/paths/" allLabel={`Browse all ${paths.length} Paths`} items={paths} filter={false} grid lede="Each Path was walked end to end in Flow on a Mac. Its page shows the time, the cost and what we could not check." />
+    </Panel>
+
+    <section class="pp-essay" aria-labelledby="home-essay-heading">
+      <span class="pp-kicker">The thinking behind Flow · Essay {essay.number}</span>
+      <h2 id="home-essay-heading"><a href={essay.href}>{essay.title}</a></h2>
+      <p>{essay.subtitle}</p>
+      <p class="pp-essay-links"><a class="pp-btn" href={essay.href}>Read the essay</a><a class="pp-link" href="/essay/">Or begin with essay 01, Room for a Renaissance →</a><a class="pp-link" href="/essays/">All essays →</a></p>
+      <p class="pp-essay-by">An essay by Manav Sehgal</p>
+    </section>
+
+    <!-- The one pricing section on the site (operator 2026-10-31): /flow/ and the nav point here. -->
+    <Panel id="pricing" seam="Pricing" fold="clause" title="Free to start.<br />Pay when your Fold does the work." lede="Base is free forever and needs no account. Pro adds the AI work. Pro + Publish lets you share your own Playbook with clients.">
       <PricingTable plans={plans} />
       <p class="pp-price-note">AI use is billed by your own AI provider. There is no fee per Flow Playbook.</p>
-    </section>
+      <p class="pp-price-note">{FLOW_CANCEL_TERMS} When Pro ends, the AI work stops. Your Markdown files stay yours to read and edit. <a href="/promise/">Read our promise</a> and the <a href="/terms/#17-flow-subscriptions-and-add-ons">subscription terms</a>.</p>
+      <div class="pp-price-team"><span>Buying for a team?</span><FlowEnterpriseContact /><a class="pp-link" href="/proposal/#flow" data-flow-rfp>Request a proposal →</a><a class="pp-link" href="/flow/enterprise/">See Flow for teams →</a></div>
+    </Panel>
 
     <!-- The closing call keeps the old campaign anchor (#waitlist) and its attribution. -->
     <span id="home-flow-waitlist-heading" aria-hidden="true"></span>

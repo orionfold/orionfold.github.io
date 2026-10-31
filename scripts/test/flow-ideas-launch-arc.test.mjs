@@ -5,13 +5,13 @@ const home=read('src/pages/index.astro'),flow=read('src/pages/flow.astro');
 assert.doesNotMatch(home+flow,/FlowIdeasPitStop|HomeRaceCapabilityAct|FlowRaceBlueprint|home-variants/);
 assert.doesNotMatch((read('src/components/Nav.astro') + read('src/components/paper/PaperNav.astro')),/theme-toggle|lockedTheme|data-theme-lock|of-theme/);
 // Operator 2026-10-26: the continuity, workshop and ideas bands left the homepage.
-// Paper R2 (operator 2026-10-30): hero, Playbooks, Elements, Paths, clients, trust, Folds and pricing.
-const homeSections=['TalkPageHero','Statement','TrustBand','Roster','PricingTable'];
+// Operator 2026-10-31 ("accept"): hero, Playbooks, Folds, clients, proof, Elements, trust, Paths, essay, pricing.
+const homeSections=['TalkPageHero','Statement','Roster','TrustBand','PricingTable'];
 assert.doesNotMatch(home,/HomeContinuity|HomeDocumentWorkshop|HomeIdeas|ids=\{\['cents'\]\}/);
 const positions=homeSections.map(name=>home.indexOf(`<${name}`));
 assert.ok(positions.every(i=>i>=0));assert.deepEqual([...positions].sort((a,b)=>a-b),positions);
 // Paper R4: the panel frames each one, so they render bare.
-for(const name of ['FlowLibrary','FlowPlans','FlowFaq'])assert.match(flow,new RegExp(`<${name}\\b[^>]*/>`),name);
+for(const name of ['FlowLibrary','FlowFaq'])assert.match(flow,new RegExp(`<${name}\\b[^>]*/>`),name);
 // Operator 2026-10-27: these seven /flow/ sections were removed.
 for(const name of ['FlowRhythm','FlowDocuments','FlowIdeas','FlowRouting','FlowReceipts','FlowMorningBriefing','FlowEverydayCraft'])assert.ok(!flow.includes(`<${name} />`),name);
 const concept=read('src/pages/flow/ideas-in-motion.astro');
@@ -20,6 +20,6 @@ assert.match(concept,/noindex=\{true\}/);
 assert.match(read('astro.config.mjs'),/!page\.endsWith\(['"]\/flow\/ideas-in-motion\/['"]\)/);
 const measurements=read('src/data/flow-measurements.ts');
 for(const fact of ['22.3 ms','$0.00425','1.1 s','7 actions'])assert.ok(measurements.includes(fact));
-assert.match(read('src/components/living/FlowPlans.astro'),/FLOW\.monthly\.amount/);
-assert.match(read('src/components/living/FlowPlans.astro'),/FLOW\.annual\.amount/);
+assert.match(read('src/pages/index.astro'),/FLOW\.monthly\.amount/);
+assert.match(read('src/pages/index.astro'),/FLOW\.annual\.amount/);
 console.log('Living Systems arc: approved section order, measured evidence, gated historical campaign');

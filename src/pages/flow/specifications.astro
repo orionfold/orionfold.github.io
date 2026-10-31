@@ -9,23 +9,17 @@ import LineIcon from '../../components/ui/LineIcon.astro';
 import { SITE } from '../../data/seo';
 import { ogMeta } from '../../data/og';
 import { FLOW, formatUsd } from '../../data/commerce';
-import { FLOW_CANCEL_TERMS, FLOW_ADDONS, FLOW_ADDON_TERMS, FLOW_TRIAL_TERMS } from '../../data/flow-pricing';
 import {
   FLOW_DOWNLOAD_CAPTION,
   FLOW_DOWNLOAD_READY,
-  FLOW_PROMISE,
-  FLOW_SPLIT_RULE,
 } from '../../data/flow-pricing';
 import { FLOW_SPECIFICATION_MEASUREMENTS } from '../../data/flow-measurements';
 import {
   FLOW_AGENCY_SPECIFICATIONS,
-  FLOW_BASE_SPECIFICATIONS,
   FLOW_COMPATIBILITY_SPECIFICATIONS,
   FLOW_DOCUMENT_SPECIFICATIONS,
   FLOW_EXECUTION_SPECIFICATIONS,
-  FLOW_LAPSE_SPECIFICATIONS,
   FLOW_PROOF_SPECIFICATIONS,
-  FLOW_PRO_SPECIFICATIONS,
   FLOW_PROVIDER_SPECIFICATIONS,
   FLOW_RUNTIME_COMPARISON,
   type FlowSpecificationState,
@@ -43,7 +37,7 @@ const sectionLinks = [
   { href: '#agency', label: 'Agency' },
   { href: '#models', label: 'Models & privacy' },
   { href: '#proof', label: 'Proof & history' },
-  { href: '#plans', label: 'Plans' },
+  { href: '/#pricing', label: 'Pricing' },
   { href: '#measurements', label: 'Measurements' },
   { href: '#availability', label: 'Availability' },
 ];
@@ -68,7 +62,7 @@ const pageSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
   name: 'Orionfold Flow technical specifications',
-  description: 'System requirements, document formats, approval-led Agency, model routes, proof, privacy boundaries, plans, and qualified measurements for Orionfold Flow.',
+  description: 'System requirements, document formats, approval-led Agency, model routes, proof, privacy boundaries, and qualified measurements for Orionfold Flow.',
   url: `${SITE.url}${href}`,
   isPartOf: {
     '@type': 'SoftwareApplication',
@@ -82,7 +76,7 @@ const pageSchema = {
 
 <PaperLayout
   title="Flow technical specifications · Orionfold"
-  description="System requirements, document formats, approval-led Agency, model routes, proof, privacy boundaries, plans, and qualified measurements for Orionfold Flow on Mac."
+  description="System requirements, document formats, approval-led Agency, model routes, proof, privacy boundaries, and qualified measurements for Orionfold Flow on Mac."
   ogImage={og.image}
   ogImageAlt={og.alt}
   jsonLd={[breadcrumbs, pageSchema]}
@@ -93,7 +87,7 @@ const pageSchema = {
       <div class="pp-hero-copy">
         <a href="/flow/" class="pp-kicker">Orionfold Flow ›</a>
         <h1 id="flow-spec-title" class="pp-h1">Technical specifications.</h1>
-        <p class="pp-sub">Requirements, documents, Agency, model routes, proof, privacy, plans, and measurements. All in one place.</p>
+        <p class="pp-sub">Requirements, documents, Agency, model routes, proof, privacy, and measurements. All in one place.</p>
         <dl class="pp-facts">
           <div><dt>Minimum</dt><dd>macOS 26</dd></div>
           <div><dt>Files</dt><dd>Plain Markdown</dd></div>
@@ -230,53 +224,6 @@ const pageSchema = {
       </div>
     </section>
 
-    <section id="plans" class="scroll-mt-28 border-t border-border/70 bg-surface-raised/40 px-6 py-16 sm:py-24" aria-labelledby="plans-title">
-      <div class="mx-auto max-w-5xl">
-        <p class="flow-kicker">Base, Pro and add-ons</p>
-        <h2 id="plans-title" class="of-display mt-4 max-w-4xl text-[clamp(2rem,4vw,3rem)]">{FLOW_PROMISE}</h2>
-        <p class="mt-5 max-w-3xl text-lg leading-relaxed text-text-muted">{FLOW_SPLIT_RULE} Reading old receipts stays free. Producing new AI work is Pro.</p>
-        <div class="mt-12 grid gap-5 lg:grid-cols-2">
-          <article class="of-surface rounded-2xl border border-border/70 p-6 sm:p-8">
-            <div class="flex items-baseline justify-between gap-4"><h3 class="text-2xl font-bold">Base</h3><span class="flow-spec-state flow-spec-state--ready">Free forever</span></div>
-            <p class="mt-5 text-sm leading-relaxed text-text-muted">Write, organize, search, visualize, and save Markdown. Read every past receipt, timeline, evidence score, and guardrail result without an account or expiry.</p>
-            <details class="flow-spec-plan-details mt-6">
-              <summary>{FLOW_BASE_SPECIFICATIONS.length} Base capabilities <span aria-hidden="true">+</span></summary>
-              <ul class="mt-3 divide-y divide-border/70">
-                {FLOW_BASE_SPECIFICATIONS.map((item) => (
-                  <li class="py-3"><strong class="block text-sm text-text">{item.label}</strong><span class="mt-1 block text-sm leading-relaxed text-text-muted">{item.note}</span></li>
-                ))}
-              </ul>
-            </details>
-          </article>
-          <article class="of-surface rounded-2xl border border-primary/35 p-6 sm:p-8">
-            <div class="flex items-baseline justify-between gap-4"><h3 class="text-2xl font-bold">Pro</h3><span class="flow-spec-state flow-spec-state--detected">{monthly}/month</span></div>
-            <p class="mt-5 text-sm leading-relaxed text-text-muted">Everything in Base, plus every feature that runs a model: seven actions, agentic tools, routing, approvals, new receipts, and new evidence.</p>
-            <details class="flow-spec-plan-details mt-6">
-              <summary>{FLOW_PRO_SPECIFICATIONS.length} Pro capabilities <span aria-hidden="true">+</span></summary>
-              <ul class="mt-3 divide-y divide-border/70">
-                {FLOW_PRO_SPECIFICATIONS.map((item) => (
-                  <li class="py-3"><strong class="block text-sm text-text">{item.label}</strong><span class="mt-1 block text-sm leading-relaxed text-text-muted">{item.note}</span></li>
-                ))}
-              </ul>
-            </details>
-          </article>
-        </div>
-        <div class="mt-5 rounded-2xl border border-border/70 bg-surface px-6 py-5">
-          <h3 class="text-base font-bold">Add-ons to Flow Pro</h3>
-          {FLOW_ADDONS.map((addon) => <p class="mt-3 text-sm leading-relaxed text-text-muted"><strong>{addon.name}:</strong> {addon.description}</p>)}
-          <p class="mt-3 text-sm leading-relaxed text-text-muted">{FLOW_ADDON_TERMS}</p>
-          <p class="mt-3 text-sm leading-relaxed text-text-muted">{FLOW_TRIAL_TERMS}</p>
-        </div>
-        <div class="mt-5 rounded-2xl border border-border/70 bg-surface px-6 py-5">
-          <h3 class="text-base font-bold">If Pro ends</h3>
-          <ul class="mt-3 grid gap-x-8 gap-y-2 text-sm leading-relaxed text-text-muted sm:grid-cols-2">
-            {FLOW_LAPSE_SPECIFICATIONS.map((fact) => <li class="flex gap-2"><span class="text-primary" aria-hidden="true">✓</span><span>{fact}</span></li>)}
-          </ul>
-          <p class="mt-4 text-sm leading-relaxed text-text-muted">{FLOW_CANCEL_TERMS}</p>
-        </div>
-      </div>
-    </section>
-
     <section id="measurements" class="scroll-mt-28 border-t border-border/70 px-6 py-16 sm:py-24" aria-labelledby="measurements-title">
       <div class="mx-auto max-w-5xl">
         <p class="flow-kicker">Measured, not promised</p>
@@ -308,7 +255,7 @@ const pageSchema = {
           <p class="mt-7 max-w-3xl text-sm leading-relaxed text-text-muted">{FLOW_DOWNLOAD_CAPTION} One licence covers one person on their own Macs. Patent pending.</p>
           <div class="mt-8 flex flex-wrap gap-3">
             <a href="/flow/" class="of-primary-action">Explore Flow</a>
-            <a href="/flow/#pricing" class="of-secondary-action">See plans</a>
+            <a href="/#pricing" class="of-secondary-action">See plans</a>
           </div>
         </div>
       </div>
@@ -321,32 +268,6 @@ const pageSchema = {
 <style>
   .flow-spec-nav {
     backdrop-filter: blur(18px);
-  }
-
-  .flow-spec-plan-details summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    cursor: pointer;
-    list-style: none;
-    border-top: 1px solid var(--color-border);
-    padding-top: 1rem;
-    font-size: 0.86rem;
-    font-weight: 650;
-    color: var(--color-primary);
-  }
-
-  .flow-spec-plan-details summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .flow-spec-plan-details[open] summary span {
-    transform: rotate(45deg);
-  }
-
-  .flow-spec-plan-details summary span {
-    transition: transform 180ms ease;
   }
 
   .flow-spec-hero-fact {
@@ -465,3 +386,7 @@ const pageSchema = {
     }
   }
 </style>
+<script is:inline>
+  // Plans moved to the home pricing section (operator 2026-10-31). Old links keep working.
+  if (location.hash === '#plans') location.replace('/#pricing');
+</script>

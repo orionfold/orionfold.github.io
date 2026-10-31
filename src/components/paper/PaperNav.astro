@@ -45,7 +45,7 @@ const allElements = ELEMENT_CATEGORIES.reduce((n, c) => n + c.items.length, 0);
 // The launch switch (2026-08-22): with Flow live every nav call to action is a
 // direct download, attributed by surface; off, it returns to the waitlist.
 const flowLive = ORIONFOLD_FLOW_LIVE;
-const flowDownloadHref = flowLive ? FLOW_DMG_URL : '/flow/#waitlist';
+const flowDownloadHref = flowLive ? FLOW_DMG_URL : '/#waitlist';
 const navCtaLabel = flowLive ? 'Download Flow' : 'Join the waitlist';
 
 const domainItem = (d: (typeof domains)[number]): Item => ({ href: domainArticleHref(d.id), label: d.data.domain, line: d.data.hook, fold: FOLD_BY_DOMAIN[d.id], glyph: FOLD_BY_DOMAIN[d.id] ? undefined : GLYPH.doc });
@@ -57,7 +57,7 @@ const MENUS: Menu[] = [
       { title: 'Flow', items: [
         { href: '/flow/', label: 'Flow overview', line: 'The Mac app where your playbook lives', glyph: GLYPH.doc },
         { href: '/flow/tour/', label: 'Take the tour', line: 'Every part of Flow, one screen at a time', glyph: GLYPH.spark },
-        { href: '/flow/#pricing', label: 'Pricing', line: 'Free to start. Pro when your Fold does the work.', glyph: GLYPH.tag },
+        { href: '/#pricing', label: 'Pricing', line: 'Free to start. Pro when your Fold does the work.', glyph: GLYPH.tag },
         { href: '/trust/', label: 'Trust and privacy', line: 'Plain files on your Mac. The AI waits for your yes.', glyph: GLYPH.shield },
       ] },
       ...(compare.length ? [{ title: 'Switch to Flow from', chips: true, items: top(compare).map((c) => ({ href: compareHref(c.id), label: c.data.tool })), all: { href: '/flow/compare/', label: 'All comparisons' } }] : []),
@@ -98,7 +98,7 @@ const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/f
     <a class="pp-pill pp-logo" href="/"><img src="/logos/orionfold-mark-3d-48.png" alt="" width="24" height="24" />ORIONFOLD</a>
     <nav class="pp-pill pp-menu" aria-label="Main">
       {MENUS.map((m) => <button type="button" data-pp-menu={m.key} aria-expanded="false" aria-controls="pp-sheet">{m.label}</button>)}
-      <a href="/flow/#pricing">Pricing</a>
+      <a href="/#pricing">Pricing</a>
     </nav>
     <button type="button" class="pp-menu-mobile" data-pp-menu="all" aria-expanded="false" aria-controls="pp-sheet">Menu</button>
   </div>
