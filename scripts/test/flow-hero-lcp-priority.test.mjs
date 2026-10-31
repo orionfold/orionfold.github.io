@@ -9,7 +9,7 @@ if(!existsSync(path('index.html'))){console.log('# skip hero priority: dist miss
 {
  const html=readFileSync(path('index.html'),'utf8');
  const hero=(html.split('<main')[1]??'').split('</section>')[0];
- assert.match(hero,/<h1 class="pp-h1">/,'home: the H1 leads the hero');
+ assert.match(hero,/<h1 class="pp-h1[^"]*">/,'home: the H1 leads the hero');
  assert.doesNotMatch(hero,/fetchpriority="high"|hero-home-paper-planes/,'home: no hero image competes with the H1');
  for (const tag of hero.match(/<img\b[^>]*>/g) ?? []) assert.ok(Number(tag.match(/width="(\d+)"/)?.[1] ?? 0) <= 400,'home: hero faces stay small');
 }

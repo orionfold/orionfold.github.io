@@ -36,8 +36,8 @@ import { FOLDS, foldById, type FoldId } from '../lib/paper/folds';
 import { paperScene } from '../lib/paper/scene';
 import { PATH_GLYPH, PATH_GLYPH_FALLBACK } from '../lib/paper/path-glyphs';
 
-// The locked headline (operator finalized 2026-10-30).
-const title = "Orionfold Flow · Show how you work. AI follows it. You make the call.";
+// The locked headline (operator 2026-10-31 08:32: "lock in A"; was 2026-10-30's "Show how you work…").
+const title = "Orionfold Flow · Build your AI team. It works the night shift. You sign off at breakfast.";
 const description = "Flow for Mac helps experts turn their method into a Flow Playbook. Write it with your AI, publish it to GitHub, and each client gets your updates to review.";
 const og = ogMeta('/');
 const pageSchema = {'@context':'https://schema.org','@type':'SoftwareApplication',name:'Orionfold Flow',applicationCategory:'ProductivityApplication',operatingSystem:'macOS',description,url:`${SITE.url}/flow/`,image:`${SITE.url}${og.image}`,author:PERSON,brand:{'@type':'Brand',name:'Orionfold'}};
@@ -127,8 +127,8 @@ const plans = [
   <ConfirmBanner />
   <main id="main" class="pp-home">
     <TalkPageHero faces={happy} ctaHref={flowDownloadHref} ctaLabel={flowLive ? 'Download Flow for Mac' : 'Join the waitlist'} ctaNote="Free to start, with ten Pro Days to try." ctaTrack={flowLive ? 'home-hero' : undefined}>
-      <h1 slot="title" class="pp-h1">Show how you work.<br /><em>AI follows it.<br />You make the call.</em></h1>
-      <p slot="sub" class="pp-sub">Flow turns what you know into <span class="pp-hl">a playbook</span> AI can run for each of your clients. Made for consultants, coaches and specialists.</p>
+      <h1 slot="title" class="pp-h1 pp-h1--lines"><span class="pp-h1-line">Build your AI team.</span><em><span class="pp-h1-line">It works the night shift.</span><span class="pp-h1-line">You sign off at breakfast.</span></em></h1>
+      <p slot="sub" class="pp-sub">Flow turns how you work into <span class="pp-hl">a playbook</span> your AI team runs for every client. Serve more clients without adding hours. Made for consultants, coaches and specialists.</p>
     </TalkPageHero>
 
     <section class="pp-scene-wrap" aria-label="The Orionfold scene">
@@ -164,17 +164,17 @@ const plans = [
             <span class="pp-kicker">{KIND[b.kind]} · {b.product} · {b.when}</span>
             <h3>{b.title}</h3>
             <p>{b.body}</p>
-            <ul class="pp-facts" aria-label="Where to check it">{b.facts.map((f) => <li><a href={f.href}>{f.label}</a></li>)}</ul>
+            <ul class="pp-built-links" aria-label="Where to check it">{b.facts.map((f) => <li><a href={f.href}>{f.label}</a></li>)}</ul>
             <div class="pp-built-foot"><span><b>{b.who}</b>, {b.role}</span><a class="pp-link" href={b.href}>{b.hrefLabel} →</a></div>
           </li>
         ))}
       </ul>
     </section>
 
-    <p class="pp-center-note" id="elements">See how a Fold like Tally draws charts, sign-offs and timelines right into your documents. <a class="pp-link" href="/flow/elements/tour/">Take the Elements tour →</a></p>
-    <section style="padding:0 16px">
+    <Panel id="elements" seam="Elements" fold="atlas" title="Ask for a chart.<br />It lands in your document." lede="Ask in plain words. Your Fold draws charts, sign-offs and timelines right into the page, and you approve each one.">
       <Rail label="Elements" allHref="/flow/elements/" allLabel={`Browse all ${allElements} Elements`} items={elements} grid />
-    </section>
+      <p class="pp-elements-tour"><a class="pp-link" href="/flow/elements/tour/">Take the Elements tour →</a></p>
+    </Panel>
 
     <Panel id="paths" seam="Paths" fold="sprout" tinted title="Hand off the work<br />you do over and over" lede="A Path is a job Flow already knows how to do. Pick one, or describe your own in plain words. You sign off on every result.">
       <Rail label="Paths" allHref="/flow/paths/" allLabel={`Browse all ${paths.length} Paths`} items={paths} filter={false} grid lede="Each Path was walked end to end in Flow on a Mac. Its page shows the time, the cost and what we could not check." />

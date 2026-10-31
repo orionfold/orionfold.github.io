@@ -178,9 +178,9 @@
 .paper .pp-scene-wrap { padding: 80px 16px 40px; display: grid; justify-items: center; }
 .paper .pp-scene { width: min(760px, 100%); border-radius: var(--pp-r-1); overflow: hidden; box-shadow: 0 1px 0 var(--pp-line); }
 .paper .pp-scene svg { display: block; width: 100%; height: auto; }
-.paper .pp-facts { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.paper .pp-facts a { display: inline-block; font-size: 12px; border: 1px solid var(--pp-line); border-radius: 99px; padding: 4px 9px; text-decoration: none; background: var(--pp-white); }
-.paper .pp-facts a:hover { border-color: var(--pp-ink-3); }
+.paper .pp-built-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 4px; padding: 0; list-style: none; }
+.paper .pp-built-links a { display: inline-block; white-space: nowrap; font-size: 12px; border: 1px solid var(--pp-line); border-radius: 99px; padding: 5px 11px; text-decoration: none; background: var(--pp-white); }
+.paper .pp-built-links a:hover { border-color: var(--pp-ink-3); }
 .paper .pp-built { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; margin: 40px 0 0; padding: 0; list-style: none; }
 .paper .pp-built > li { display: grid; gap: 10px; align-content: start; padding: 20px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); }
 .paper .pp-built h3 { margin: 0; font: 400 22px/1.2 var(--pp-serif); }
@@ -935,3 +935,10 @@
 .paper .pp-private-form input[name='company'] { display: none; }
 .paper .pp-done .pp-private-form h2 { font: 300 clamp(24px, 2.6vw, 30px)/1.1 var(--pp-serif); }
 .paper .pp-done .pp-private-form p { font-size: 14.5px; }
+
+/* Home headline A (operator 2026-10-31): one sentence per line, each balanced
+ * so no word sits alone; sized so a sentence holds one line on desktop. */
+.paper .pp-h1--lines { font-size: clamp(40px, 3.75vw, 64px); line-height: 1.04; }
+.paper .pp-h1--lines .pp-h1-line { display: block; text-wrap: balance; }
+@media (max-width: 860px) { .paper .pp-h1--lines { font-size: clamp(38px, 10.5vw, 52px); } }
+.paper .pp-elements-tour { margin: 20px 0 0; text-align: center; }

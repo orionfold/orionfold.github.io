@@ -23,6 +23,7 @@
 import '../../../styles/flow-mocks.css';
 import '../../../styles/hero-story.css';
 import { ALL_ELEMENTS, elementDrawing } from '../../../lib/flow/elements';
+import { mockFigure } from '../../../lib/flow/mock-figures';
 import Folder from '@lucide/astro/icons/folder';
 import FileText from '@lucide/astro/icons/file-text';
 import Check from '@lucide/astro/icons/check';
@@ -42,7 +43,7 @@ interface Props { domain: string; tint: string; folder: string; client: string; 
 const { domain, tint, folder, client, files, steps, wide = false } = Astro.props;
 
 type Family = 'drawing' | 'table' | 'folder' | 'form' | 'checklist' | 'callout' | 'list' | 'diff' | 'image' | 'pair' | 'publish' | 'update';
-interface Block { family: Family; label: string; svg?: string; tint?: string; act?: string; count?: string }
+interface Block { family: Family; label: string; svg?: string; fig?: string; tint?: string; act?: string; count?: string }
 const FAMILY: Record<string, Family> = {
   'component-table': 'table', 'skill-register': 'table', 'kind-bar-table': 'table',
   'component-folder': 'folder',
@@ -67,7 +68,10 @@ function resolve(block: string): Block {
   if (!el && (name === 'Chart' || name === 'Diagram')) el = byName(name);
   if (!el) throw new Error(`DomainMock (${domain}): "${block}" names no Element; use a name from the Elements set, "Chart · <kind>", "Form · <act>", "Publish · GitHub Repository" or "Update · <n> documents"`);
   const family = FAMILY[el.card] ?? 'drawing';
-  return { family, label: block, svg: elementDrawing(el.card), tint: el.tint, act: family === 'form' ? rest ?? 'Submit' : family === 'checklist' ? 'Sign off' : rest };
+  // A chart, diagram or skill draws as a real figure (operator 2026-10-31), never its icon.
+  const fig = family === 'drawing' ? mockFigure(el.card) : undefined;
+  if (family === 'drawing' && !fig) throw new Error(`DomainMock (${domain}): "${block}" (${el.card}) has no drawn figure; add one in src/lib/flow/mock-figures.ts`);
+  return { family, label: block, svg: elementDrawing(el.card), fig, tint: el.tint, act: family === 'form' ? rest ?? 'Submit' : family === 'checklist' ? 'Sign off' : rest };
 }
 const BLOCKS = steps.map((s) => resolve(s.block));
 // The client's own documents, in the order the steps open them.
@@ -94,7 +98,14 @@ const label = `${domain} on a client job, drawn step by step: ${steps.map((s) =>
           <div class:list={['dmk-scene', `dmk-scene--${b.family}`]} data-s={i} style={b.tint ? `--bt:${b.tint}` : undefined}>
             <p class="dmk-eyebrow">{client}</p>
             <p class="dmk-h">{s.doc}</p>
-            <p class="dmk-lines"><i style="--w:92%"></i><i style="--w:78%"></i></p>
+            {/* The document already has content; Chat's change is proposed after it,
+                never into a blank (operator 2026-10-31, after the app's Review Changes:
+                "Adds a bar chart with 4 data rows after the selected text"). */}
+            <p class="dmk-lines"><i style="--w:92%"></i><i style="--w:64%"></i></p>
+            <p class="dmk-sub"><i></i></p>
+            <p class="dmk-lines"><i style="--w:86%"></i></p>
+            <div class:list={['dmk-ins', { 'dmk-ins--proposed': b.family !== 'publish' && b.family !== 'update' }]}><div class="dmk-ins-in">
+            {b.family !== 'publish' && b.family !== 'update' && <p class="dmk-prop">Proposed</p>}
             {b.family === 'publish' || b.family === 'update' ? (
               <div class="dmk-sheet">
                 <p class="dmk-sheet-h">{b.family === 'publish' ? <Upload size={12} /> : <RefreshCw size={12} />}{b.label}</p>
@@ -106,7 +117,7 @@ const label = `${domain} on a client job, drawn step by step: ${steps.map((s) =>
             ) : (
               <div class="dmk-block">
                 <p class="dmk-block-h"><span class="dmk-ic" set:html={b.svg} /><span>{b.label}</span></p>
-                {b.family === 'drawing' && <p class="dmk-draw" set:html={b.svg} />}
+                {b.family === 'drawing' && <p class="dmk-draw dmk-fig" set:html={b.fig} />}
                 {b.family === 'table' && <p class="dmk-grid">{Array.from({ length: 12 }, (_, k) => <i style={`--k:${Math.floor(k / 3)}`} class:list={[k < 3 && 'is-head']}></i>)}</p>}
                 {b.family === 'folder' && <p class="dmk-grid dmk-grid--folder">{Array.from({ length: 4 }, (_, k) => <span style={`--k:${k}`}><FileText size={10} /><i></i><i class="is-short"></i></span>)}</p>}
                 {b.family === 'form' && <p class="dmk-form">{Array.from({ length: 3 }, (_, k) => <span style={`--k:${k}`}><i class="dmk-lab"></i><i class="dmk-box"></i></span>)}<span class="dmk-btn" style="--k:3">{b.act}</span></p>}
@@ -119,7 +130,10 @@ const label = `${domain} on a client job, drawn step by step: ${steps.map((s) =>
                 <p class="dmk-kept"><Check size={11} stroke-width={3} />{s.status}</p>
               </div>
             )}
-            <p class="dmk-lines"><i style="--w:70%"></i><i style="--w:84%"></i></p>
+            </div></div>
+            <p class="dmk-lines dmk-after"><i style="--w:84%"></i><i style="--w:90%"></i><i style="--w:58%"></i></p>
+            <p class="dmk-sub dmk-after"><i></i></p>
+            <p class="dmk-lines dmk-after"><i style="--w:88%"></i><i style="--w:76%"></i></p>
           </div>
         ); })}
       </div>
@@ -169,12 +183,25 @@ const label = `${domain} on a client job, drawn step by step: ${steps.map((s) =>
   .dmk-files li { display: flex; align-items: center; gap: 5px; padding: 3px 4px 3px 14px; border-radius: 5px; color: #56635e; white-space: nowrap; overflow: hidden; }
   .dmk-files li span { overflow: hidden; text-overflow: ellipsis; }
   .dmk-files li.is-open { background: #e3ecfd; color: #1f4fb8; font-weight: 700; }
-  .dmk-doc { position: relative; padding: 16px 18px; }
+  /* A fixed document viewport: an insert pushes the text below it down and out
+     of view, as scrolling would, and the window never changes height. */
+  .dmk-doc { position: relative; padding: 16px 18px; overflow: hidden; }
+  @media (min-width: 481px) { .dmk-panes { height: 340px; } }
+  @media (max-width: 480px) { .dmk-doc { height: 300px; } }
+  .dmk-doc::after { content: ''; position: absolute; inset: auto 0 0; height: 36px; background: linear-gradient(transparent, #fff); pointer-events: none; }
   .dmk-scene { display: none; gap: 10px; align-content: start; --bt: var(--dm-tint); }
   .dmk-eyebrow { font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #606b67; }
   .dmk-h { font: 700 1.05rem/1.15 'Geist Sans', Arial, sans-serif; letter-spacing: -.01em; color: #171c1a; }
   .dmk-lines { display: grid; gap: 5px; }
   .dmk-lines i { display: block; width: var(--w); height: 6px; border-radius: 3px; background: var(--ph); }
+  .dmk-sub { padding-top: 4px; }
+  .dmk-sub i { display: block; width: 38%; height: 9px; border-radius: 3px; background: #cdd4d0; }
+  /* The insert opens in place: zero rows, then its full height. */
+  .dmk-ins { display: grid; grid-template-rows: 0fr; }
+  .dmk-ins-in { min-height: 0; overflow: hidden; }
+  .dmk-ins--proposed .dmk-ins-in { display: grid; gap: 6px; padding: 7px; border: 1px solid #ecd486; border-radius: 9px; background: #fbf0c8; }
+  .dmk-ins--proposed .dmk-block { background: #fff; }
+  .dmk-prop { font: 700 .55rem/1.2 'Geist Sans', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #7a5a00; }
 
   /* The block: header with the Element's own drawing as its icon, then the family's body. */
   .dmk-block { display: grid; gap: 8px; padding: 9px 10px; border: 1px solid color-mix(in srgb, var(--bt) 40%, #e3e7e4); border-radius: 9px; background: color-mix(in srgb, var(--bt) 5%, #fff); }
@@ -184,7 +211,13 @@ const label = `${domain} on a client job, drawn step by step: ${steps.map((s) =>
   .dmk-kept { display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--dmk-green); opacity: 0; }
   /* drawing: the app's own vector of that chart, diagram or skill, revealed left to right */
   .dmk-draw { display: grid; justify-items: center; height: 104px; color: var(--bt); }
-  .dmk-draw :global(svg) { width: auto; height: 104px; clip-path: inset(0 100% 0 0); }
+  .dmk-draw :global(svg) { width: 100%; max-width: 340px; height: 104px; overflow: visible; }
+  /* The drawn figure's parts (src/lib/flow/mock-figures.ts) start undrawn. */
+  .dmk-fig :global(:is(.mf-g, .mf-gx, .mf-p)) { transform-box: fill-box; }
+  .dmk-fig :global(.mf-g) { transform-origin: 50% 100%; transform: scaleY(0); }
+  .dmk-fig :global(.mf-gx) { transform-origin: 0 50%; transform: scaleX(0); }
+  .dmk-fig :global(.mf-s) { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .dmk-fig :global(.mf-p) { transform-origin: 50% 50%; opacity: 0; }
   /* table and register: rows fill in */
   .dmk-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
   .dmk-grid i { display: block; height: 10px; border-radius: 3px; background: var(--ph); opacity: 0; }
@@ -255,28 +288,38 @@ const label = `${domain} on a client job, drawn step by step: ${steps.map((s) =>
   .dmk[data-story-scene="0"] [data-s="0"], .dmk[data-story-scene="1"] [data-s="1"], .dmk[data-story-scene="2"] [data-s="2"], .dmk[data-story-scene="3"] [data-s="3"], .dmk[data-story-scene="4"] [data-s="4"], .dmk[data-story-scene="5"] [data-s="5"], .dmk[data-story-scene="6"] [data-s="6"], .dmk[data-story-scene="7"] [data-s="7"] { display: grid; }
   .dmk[data-story-scene] .dm-title [data-s], .dmk[data-story-scene] .dmk-pill [data-s] { display: none; }
   .dmk[data-story-scene="0"] .dm-title [data-s="0"], .dmk[data-story-scene="1"] .dm-title [data-s="1"], .dmk[data-story-scene="2"] .dm-title [data-s="2"], .dmk[data-story-scene="3"] .dm-title [data-s="3"], .dmk[data-story-scene="4"] .dm-title [data-s="4"], .dmk[data-story-scene="5"] .dm-title [data-s="5"], .dmk[data-story-scene="6"] .dm-title [data-s="6"], .dmk[data-story-scene="7"] .dm-title [data-s="7"] { display: inline; }
-  .dmk[data-story-scene="0"] .dmk-pill [data-s="0"], .dmk[data-story-scene="1"] .dmk-pill [data-s="1"], .dmk[data-story-scene="2"] .dmk-pill [data-s="2"], .dmk[data-story-scene="3"] .dmk-pill [data-s="3"], .dmk[data-story-scene="4"] .dmk-pill [data-s="4"], .dmk[data-story-scene="5"] .dmk-pill [data-s="5"], .dmk[data-story-scene="6"] .dmk-pill [data-s="6"], .dmk[data-story-scene="7"] .dmk-pill [data-s="7"] { display: inline-flex; animation: hs-in .3s ease 4s both; }
+  .dmk[data-story-scene="0"] .dmk-pill [data-s="0"], .dmk[data-story-scene="1"] .dmk-pill [data-s="1"], .dmk[data-story-scene="2"] .dmk-pill [data-s="2"], .dmk[data-story-scene="3"] .dmk-pill [data-s="3"], .dmk[data-story-scene="4"] .dmk-pill [data-s="4"], .dmk[data-story-scene="5"] .dmk-pill [data-s="5"], .dmk[data-story-scene="6"] .dmk-pill [data-s="6"], .dmk[data-story-scene="7"] .dmk-pill [data-s="7"] { display: inline-flex; animation: hs-in .225s ease 3s both; }
   /* Each entry replays: the ask lands, Chat thinks, answers, the block draws, the pill flips. */
-  .dmk[data-story-scene] .dmk-turn .dmk-me { animation: hs-in .3s ease .2s both; }
-  .dmk[data-story-scene] .dmk-turn .dmk-dots { animation: dmk-dots 1.5s ease .6s both; }
-  .dmk[data-story-scene] .dmk-turn .dmk-dots i { animation: hs-blink .6s ease infinite; }
-  .dmk[data-story-scene] .dmk-turn .dmk-dots i:nth-child(2) { animation-delay: .15s; }
-  .dmk[data-story-scene] .dmk-turn .dmk-dots i:nth-child(3) { animation-delay: .3s; }
-  .dmk[data-story-scene] .dmk-turn .dmk-ai { animation: hs-in .3s ease 2.1s both; }
-  .dmk[data-story-scene] .dmk-turn .dmk-route { animation: hs-in .3s ease 2.4s both; }
-  .dmk[data-story-scene] .dmk-scene .dmk-h { animation: hs-in .3s ease .1s both; }
-  .dmk[data-story-scene] .dmk-scene .dmk-block, .dmk[data-story-scene] .dmk-scene .dmk-sheet { animation: hs-in .35s ease 2.3s both; }
-  .dmk[data-story-scene] .dmk-scene .dmk-kept { animation: hs-in .3s ease 3.8s both; }
+  .dmk[data-story-scene] .dmk-turn .dmk-me { animation: hs-in .225s ease .15s both; }
+  .dmk[data-story-scene] .dmk-turn .dmk-dots { animation: dmk-dots 1.125s ease .45s both; }
+  .dmk[data-story-scene] .dmk-turn .dmk-dots i { animation: hs-blink .45s ease infinite; }
+  .dmk[data-story-scene] .dmk-turn .dmk-dots i:nth-child(2) { animation-delay: .112s; }
+  .dmk[data-story-scene] .dmk-turn .dmk-dots i:nth-child(3) { animation-delay: .225s; }
+  .dmk[data-story-scene] .dmk-turn .dmk-ai { animation: hs-in .225s ease 1.575s both; }
+  .dmk[data-story-scene] .dmk-turn .dmk-route { animation: hs-in .225s ease 1.8s both; }
+  .dmk[data-story-scene] .dmk-scene .dmk-h { animation: hs-in .225s ease .075s both; }
+  .dmk[data-story-scene] .dmk-scene { animation: dmk-scroll .34s cubic-bezier(.2, .8, .2, 1) 1.725s both; }
+  .dmk[data-story-scene] .dmk-scene .dmk-ins { animation: dmk-open .34s cubic-bezier(.2, .8, .2, 1) 1.725s both; }
+  .dmk[data-story-scene] .dmk-scene .dmk-ins-in { animation: hs-in .262s ease 1.8s both; }
+  .dmk[data-story-scene] .dmk-scene .dmk-kept { animation: hs-in .225s ease 2.85s both; }
   /* family bodies, staggered by --k after the block lands */
-  .dmk[data-story-scene] .dmk-draw :global(svg) { animation: dmk-reveal 1s ease-out 2.6s both; }
-  .dmk[data-story-scene] :is(.dmk-grid i, .dmk-grid--folder span, .dmk-form > span, .dmk-form .dmk-btn, .dmk-check > span, .dmk-list > span, .dmk-diff > span, .dmk-pair > span, .dmk-sheet-rows span) { animation: hs-in .3s ease both; animation-delay: calc(2.6s + var(--k, 0) * 180ms); }
-  .dmk[data-story-scene] .dmk-check b :global(svg) { animation: dmk-tick .2s ease both; animation-delay: calc(2.9s + var(--k, 0) * 220ms); }
-  .dmk[data-story-scene] .dmk-check b { animation: dmk-fill .2s ease both; animation-delay: calc(2.9s + var(--k, 0) * 220ms); }
-  .dmk[data-story-scene] .dmk-check .dmk-btn, .dmk[data-story-scene] .dmk-sheet .dmk-btn { animation: hs-in .3s ease 3.4s both, hs-press .8s ease 3.6s both; }
-  .dmk[data-story-scene] :is(.dmk-callout, .dmk-img) { animation: hs-in .4s ease 2.6s both; }
-  .dmk[data-story-scene] .dmk-dest span { animation: hs-type 1s steps(36) 2.6s both; }
+  .dmk[data-story-scene] .dmk-fig :global(.mf-g) { animation: dmk-grow .413s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(1.95s + var(--k, 0) * 82ms); }
+  .dmk[data-story-scene] .dmk-fig :global(.mf-gx) { animation: dmk-grow-x .45s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(1.95s + var(--k, 0) * 82ms); }
+  .dmk[data-story-scene] .dmk-fig :global(.mf-s) { animation: dmk-stroke .675s ease-out both; animation-delay: calc(1.95s + var(--k, 0) * 90ms); }
+  .dmk[data-story-scene] .dmk-fig :global(.mf-p) { animation: dmk-pop .262s cubic-bezier(.2, .8, .2, 1.3) both; animation-delay: calc(2.025s + var(--k, 0) * 82ms); }
+  .dmk[data-story-scene] :is(.dmk-grid i, .dmk-grid--folder span, .dmk-form > span, .dmk-form .dmk-btn, .dmk-check > span, .dmk-list > span, .dmk-diff > span, .dmk-pair > span, .dmk-sheet-rows span) { animation: hs-in .225s ease both; animation-delay: calc(1.95s + var(--k, 0) * 135ms); }
+  .dmk[data-story-scene] .dmk-check b :global(svg) { animation: dmk-tick .15s ease both; animation-delay: calc(2.175s + var(--k, 0) * 165ms); }
+  .dmk[data-story-scene] .dmk-check b { animation: dmk-fill .15s ease both; animation-delay: calc(2.175s + var(--k, 0) * 165ms); }
+  .dmk[data-story-scene] .dmk-check .dmk-btn, .dmk[data-story-scene] .dmk-sheet .dmk-btn { animation: hs-in .225s ease 2.55s both, hs-press .6s ease 2.7s both; }
+  .dmk[data-story-scene] :is(.dmk-callout, .dmk-img) { animation: hs-in .3s ease 1.95s both; }
+  .dmk[data-story-scene] .dmk-dest span { animation: hs-type .75s steps(36) 1.95s both; }
   @keyframes dmk-dots { 0% { opacity: 0; max-height: 0; padding-block: 0; } 10%, 90% { opacity: 1; max-height: 20px; } 100% { opacity: 0; max-height: 0; padding-block: 0; border-width: 0; } }
-  @keyframes dmk-reveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes dmk-open { to { grid-template-rows: 1fr; } }
+  @keyframes dmk-scroll { to { transform: translateY(calc(var(--dmk-shift, 0px) * -1)); } }
+  @keyframes dmk-grow { to { transform: scaleY(1); } }
+  @keyframes dmk-grow-x { to { transform: scaleX(1); } }
+  @keyframes dmk-stroke { to { stroke-dashoffset: 0; } }
+  @keyframes dmk-pop { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
   @keyframes dmk-tick { from { opacity: 0; } to { opacity: 1; } }
   @keyframes dmk-fill { to { background: var(--dmk-green); border-color: var(--dmk-green); } }
 
@@ -298,10 +341,22 @@ const label = `${domain} on a client job, drawn step by step: ${steps.map((s) =>
   for (const root of document.querySelectorAll<HTMLElement>('.dmk[data-story]')) {
     const files = root.querySelectorAll<HTMLElement>('.dmk-files li[data-doc]');
     const scenes = root.querySelectorAll<HTMLElement>('.dmk-scene');
+    const docPane = root.querySelector<HTMLElement>('.dmk-doc');
     const sync = () => {
       const n = Number(root.dataset.storyScene ?? 0);
       const doc = scenes[n]?.querySelector('.dmk-h')?.textContent ?? '';
       files.forEach((f) => f.classList.toggle('is-open', f.dataset.doc === doc));
+      // Review Changes scrolls the document to the change: when the opened
+      // insert would end below the pane, the scene scrolls up by that much.
+      const scene = scenes[n];
+      if (!scene || !docPane) return;
+      requestAnimationFrame(() => {
+        const ins = scene.querySelector<HTMLElement>('.dmk-ins');
+        const inner = scene.querySelector<HTMLElement>('.dmk-ins-in');
+        if (!ins || !inner) return;
+        const end = ins.getBoundingClientRect().top + inner.scrollHeight + 28;
+        scene.style.setProperty('--dmk-shift', `${Math.max(0, Math.ceil(end - docPane.getBoundingClientRect().bottom))}px`);
+      });
     };
     new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['data-story-scene'] });
     sync();

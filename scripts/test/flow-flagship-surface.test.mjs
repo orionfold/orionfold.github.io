@@ -497,7 +497,7 @@ const home = homePageSource + '\n' + livingSource;
 // Paper R2 (G-141, operator 2026-10-30): the home is the town-study prototype.
 const homeHero = read('src/components/paper/TalkPageHero.astro');
 const flowWaitlistComponent = read('src/components/sections/FlowWaitlist.astro');
-assert.match(homePageSource, /Show how you work\.<br \/><em>AI follows it\.<br \/>You make the call\.<\/em>/, 'the homepage hero carries the locked headline (operator 2026-10-30)');
+assert.match(homePageSource, /<span class="pp-h1-line">Build your AI team\.<\/span><em><span class="pp-h1-line">It works the night shift\.<\/span><span class="pp-h1-line">You sign off at breakfast\.<\/span><\/em>/, 'the homepage hero carries the locked headline (operator 2026-10-31)');
 assert.match(homePageSource, /<ConfirmBanner \/>/, 'confirmed-email landing behavior remains mounted');
 assert.match(homePageSource, /SoftwareApplication/);
 assert.match(homeHero, /The hero mock is never the LCP element: the H1 is\./, 'the Talk→Page mock never takes LCP');
@@ -632,7 +632,7 @@ for (const route of ['/', '/flow/', '/essay/', '/manifesto/']) {
   assert.doesNotMatch(entry, /screenshot:/, `${route}: flagship social card uses a Fold, not a shot`);
 }
 assert.match(ogData,/Describe it\. Flow draws it\./);
-assert.match(ogData,/Show how you work\. AI follows it\. You make the call\./);
+assert.match(ogData,/Build your AI team\.\\nIt works the night shift\.\\nYou sign off at breakfast\./);
 assert.match(ogData,/Room for a Renaissance/);
 assert.match(ogData,/The Researcher, Writer and Builder in You/);
 const ogCardSource=read('src/lib/og/card.ts');

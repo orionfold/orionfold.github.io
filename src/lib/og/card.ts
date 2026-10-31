@@ -116,6 +116,15 @@ function sheetCard(opts: CardOptions): El {
   const hasInset = Boolean(opts.insetPath) && !hasShot;
   const titleWidth = hasShot ? 520 : 560;
   const titleSize = opts.title.length > 44 ? 64 : opts.title.length > 28 ? 74 : 84;
+  // A title written with line breaks sets one line each (the home headline,
+  // operator 2026-10-31): the column widens to the disc and the size follows
+  // the longest line, so no sentence wraps and no word sits alone.
+  const lines = opts.title.split('\n');
+  const lineWidth = 640;
+  const lineSize = Math.min(84, Math.floor(lineWidth / (Math.max(...lines.map((l) => l.length)) * 0.46)));
+  const titleEl = lines.length > 1 && !hasShot
+    ? h('div', { style: { display: 'flex', flexDirection: 'column', fontFamily: 'Fraunces', fontWeight: 300, fontSize: lineSize, lineHeight: 1.06, letterSpacing: -1.2, color: INK, maxWidth: lineWidth } }, lines.map((l) => h('div', { style: { display: 'flex' } }, l)))
+    : h('div', { style: { display: 'flex', fontFamily: 'Fraunces', fontWeight: 300, fontSize: titleSize, lineHeight: 1.02, letterSpacing: -1.6, color: INK, maxWidth: titleWidth } }, opts.title.replace(/\n/g, ' '));
 
   const art: El[] = [];
   if (hasShot) {
@@ -148,7 +157,7 @@ function sheetCard(opts: CardOptions): El {
     ...art,
     h('div', { style: { position: 'absolute', left: 72, top: 64, bottom: 60, width: hasShot ? titleWidth : 1056, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' } }, [
       h('div', { style: { display: 'flex', fontWeight: 700, fontSize: 19, letterSpacing: 3, textTransform: 'uppercase', color: TEAL, maxWidth: hasShot ? titleWidth : 600 } }, opts.eyebrow),
-      h('div', { style: { display: 'flex', fontFamily: 'Fraunces', fontWeight: 300, fontSize: titleSize, lineHeight: 1.02, letterSpacing: -1.6, color: INK, maxWidth: titleWidth } }, opts.title),
+      titleEl,
       h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: hasShot ? titleWidth : 600 } }, [
         lockup(),
         opts.meta ? h('div', { style: { display: 'flex', fontSize: 20, color: INK_3 } }, opts.meta) : h('div', { style: { display: 'flex' } }, ''),
