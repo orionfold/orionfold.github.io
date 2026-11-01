@@ -14,7 +14,7 @@ import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync, existsSyn
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
-const VERSION = '0.3.3';
+const VERSION = '0.3.4';
 const root = new URL('../', import.meta.url).pathname;
 const out = path.join(root, 'output/paper-package', VERSION);
 const rel = (p) => path.join(root, p);
@@ -22,9 +22,10 @@ const { FOLDS, foldSvg, foldShapes, FOLD_BOUNDS } = await import(rel('src/lib/pa
 const { foldedStarSvg } = await import(rel('src/lib/paper/star.ts'));
 const { NIGHT, NIGHT_TEXT_PAIRS, NIGHT_DETAIL, contrast, nightFold, nightFoldShapes, nightColors } = await import(rel('src/lib/paper/night.ts'));
 const { PERSONAL_FOLDS, COLORWAYS, colorwayById, personalFoldSvg } = await import(rel('src/lib/paper/personal-folds.ts'));
+const { foldGlyph } = await import(rel('scripts/lib/fold-glyph.mjs'));
 
 rmSync(out, { recursive: true, force: true });
-for (const d of ['folds', 'personal', 'marks', 'fonts', 'tokens']) mkdirSync(path.join(out, d), { recursive: true });
+for (const d of ['folds', 'personal', 'glyphs', 'marks', 'fonts', 'tokens']) mkdirSync(path.join(out, d), { recursive: true });
 const standalone = (svg) => svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
 
 // Fitted variants (0.3.1, product-lane ask 2026-10-31): a square viewBox around
@@ -61,7 +62,9 @@ const folds = FOLDS.map((f) => {
   writeFileSync(path.join(out, 'folds', `${f.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${f.name} the ${f.kind}">${nightFoldShapes(f)}</svg>\n`);
   writeFileSync(path.join(out, 'folds', `${f.id}-fit.svg`), fitSvg(foldBox[f.id], `${f.name} the ${f.kind}`, foldShapes(f)));
   writeFileSync(path.join(out, 'folds', `${f.id}-fit-night.svg`), fitSvg(foldBox[f.id], `${f.name} the ${f.kind}`, nightFoldShapes(f)));
-  return { id: f.id, name: f.name, kind: f.kind, flowPlaybook: f.domain, flowPlaybookSlug: f.domainSlug, colors: { a: f.a, b: f.b, c: f.c, ink: f.ink }, nightColors: nightFold(f), files: { svg: `folds/${f.id}.svg`, svgNoShadow: `folds/${f.id}-no-shadow.svg`, night: `folds/${f.id}-night.svg`, fit: `folds/${f.id}-fit.svg`, fitNight: `folds/${f.id}-fit-night.svg` }, viewBox: '0 0 200 214', fitViewBox: foldBox[f.id] };
+  // One-colour template glyph (0.3.4, product lane ask 2026-10-31 21:01).
+  writeFileSync(path.join(out, 'glyphs', `${f.id}.svg`), foldGlyph(foldShapes(f), { label: `${f.name} the ${f.kind}` }).svg);
+  return { id: f.id, name: f.name, kind: f.kind, flowPlaybook: f.domain, flowPlaybookSlug: f.domainSlug, colors: { a: f.a, b: f.b, c: f.c, ink: f.ink }, nightColors: nightFold(f), files: { svg: `folds/${f.id}.svg`, svgNoShadow: `folds/${f.id}-no-shadow.svg`, night: `folds/${f.id}-night.svg`, fit: `folds/${f.id}-fit.svg`, fitNight: `folds/${f.id}-fit-night.svg`, glyph: `glyphs/${f.id}.svg` }, viewBox: '0 0 200 214', fitViewBox: foldBox[f.id] };
 });
 writeFileSync(path.join(out, 'marks', 'orionfold-star.svg'), foldedStarSvg('Orionfold') + '\n');
 
@@ -74,6 +77,8 @@ const personal = PERSONAL_FOLDS.map((f) => {
   const n = nightColors(colorwayById[f.defaultColorway]);
   writeFileSync(path.join(out, 'personal', `${f.id}-night.svg`), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 214" role="img" aria-label="${label}">${f.draw(n.a, n.b, n.c, NIGHT_DETAIL)}</svg>\n`);
   const dc = colorwayById[f.defaultColorway];
+  // The glyph is the shape alone, so one file serves every colorway.
+  writeFileSync(path.join(out, 'glyphs', `${f.id}.svg`), foldGlyph(f.draw(dc.a, dc.b, dc.c), { label }).svg);
   writeFileSync(path.join(out, 'personal', `${f.id}-fit.svg`), fitSvg(personalBox[f.id], label, f.draw(dc.a, dc.b, dc.c)));
   writeFileSync(path.join(out, 'personal', `${f.id}-fit-night.svg`), fitSvg(personalBox[f.id], label, f.draw(n.a, n.b, n.c, NIGHT_DETAIL)));
   // Every colorway as its own file, light (no shadow) and night, so the app swaps files to recolor.
@@ -86,7 +91,7 @@ const personal = PERSONAL_FOLDS.map((f) => {
     writeFileSync(path.join(out, 'personal', f.id, `${cw.id}-fit-night.svg`), fitSvg(personalBox[f.id], label, f.draw(nc.a, nc.b, nc.c, NIGHT_DETAIL)));
     return [cw.id, { svg: `personal/${f.id}/${cw.id}.svg`, night: `personal/${f.id}/${cw.id}-night.svg`, fit: `personal/${f.id}/${cw.id}-fit.svg`, fitNight: `personal/${f.id}/${cw.id}-fit-night.svg` }];
   }));
-  return { id: f.id, defaultName: '', shape: f.shape, line: f.line, behaviour: f.behaviour, defaultColorway: f.defaultColorway, colorways: COLORWAYS.map((c) => c.id), files: { svg: `personal/${f.id}.svg`, svgNoShadow: `personal/${f.id}-no-shadow.svg`, night: `personal/${f.id}-night.svg`, fit: `personal/${f.id}-fit.svg`, fitNight: `personal/${f.id}-fit-night.svg`, byColorway }, viewBox: '0 0 200 214', fitViewBox: personalBox[f.id] };
+  return { id: f.id, defaultName: '', shape: f.shape, line: f.line, behaviour: f.behaviour, defaultColorway: f.defaultColorway, colorways: COLORWAYS.map((c) => c.id), files: { svg: `personal/${f.id}.svg`, svgNoShadow: `personal/${f.id}-no-shadow.svg`, night: `personal/${f.id}-night.svg`, fit: `personal/${f.id}-fit.svg`, fitNight: `personal/${f.id}-fit-night.svg`, glyph: `glyphs/${f.id}.svg`, byColorway }, viewBox: '0 0 200 214', fitViewBox: personalBox[f.id] };
 });
 const colorways = COLORWAYS.map((c) => ({ ...c, night: nightColors(c) }));
 
@@ -141,7 +146,7 @@ if (py && existsSync(py)) {
 
 let commit = 'unknown';
 try { commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: root }).toString().trim(); } catch {}
-const dirty = (() => { try { return execFileSync('git', ['status', '--porcelain', 'src/lib/paper', 'src/styles/paper', 'public/fonts'], { cwd: root }).toString().trim() !== ''; } catch { return false; } })();
+const dirty = (() => { try { return execFileSync('git', ['status', '--porcelain', 'src/lib/paper', 'src/styles/paper', 'public/fonts', 'scripts/lib/fold-glyph.mjs', 'scripts/export-paper-package.mjs', 'package-lock.json'], { cwd: root }).toString().trim() !== ''; } catch { return false; } })();
 writeFileSync(path.join(out, 'manifest.json'), JSON.stringify({
   name: 'orionfold-paper', version: VERSION, stage: 'final design system (website R8)', source: { repo: 'orionfold/website', commit, uncommittedChanges: dirty },
   folds, personal, colorways, marks: { orionfoldStar: 'marks/orionfold-star.svg' },
@@ -156,6 +161,7 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 ## What is here
 - \`folds/\`: the eight Flow Playbook Folds as standalone SVGs (viewBox 0 0 200 214): with and without the ground shadow, and a night variant (colors lifted to 3:1 on the night paper, Tally's legs and Orri's trail removed). \`<id>-fit.svg\` and \`<id>-fit-night.svg\` crop a square around the drawing (no shadow) so the Fold fills a circle avatar edge to edge; \`fitViewBox\` in the manifest gives the box. Colors and night colors per Fold are in \`manifest.json\`.
 - \`personal/\`: the eight personal Folds a person folds in the app (elephant, paper boat, bear, butterfly, lotus, penguin, cat, hummingbird), drawn for 16 pt, each in its default colorway (with and without shadow, and night), plus \`personal/<id>/<colorway>.svg\` and \`-night.svg\` for every colorway, so recoloring is a file swap. Every one of those also has \`-fit\` and \`-fit-night\` files for circle avatars. Each has a temperament line, never a capability, and \`behaviour\`: two or three short rules for how that Fold works (the first one shows on the Fold step's sheet). \`colorways\` in the manifest lists the eight colorways (named by color, taken from the cast's palettes) with their night values.
+- \`glyphs/\`: one-colour template glyphs for a Mac toolbar, one per Fold (the eight Playbook Folds and the eight personal Folds; \`files.glyph\` in the manifest). Each is one compound path filled #000, no strokes, gradients or shadow, in a square viewBox 0 0 100 100 with 8% padding on the longer side. They are generated from the coloured drawings (the mass is every facet; the holes are pale patches and the eyes, sized to read at 16 pt or dropped as a pair), so they never drift from the art. Built for 16 and 18 pt and checked at 12 pt, where they still hold, so there is no separate small variant.
 - \`marks/orionfold-star.svg\`: the Orionfold star, folded in the Folds' polygon style.
 - \`tokens/\`: every Paper token as JSON (grouped: color, liquidGlass, font, radius, shadow, motion, foldDefaults, layout) and the source CSS, plus \`night\`: the app's dark appearance, same keys as \`color\`, with every promised text pair and its contrast ratio (all at least 4.5:1; the export stops if one drops).
 - \`fonts/\`: Fraunces cut for Paper (Latin, weight 300 to 500, optical size kept, SOFT pinned 100, WONK pinned 1), woff2${ttf ? ' and ttf' : ''}, under the SIL Open Font License (no reserved font name).
@@ -175,7 +181,7 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 - 0.1.1 (2026-10-30): same files, cut from a committed source (product lane ask).
 - 0.2.0 (2026-10-30): night (dark appearance) tokens and Fold variants; personal Folds with colorways.
 - 0.2.1 (2026-10-30): night beak and butterfly body in light ink; a rounder bear, now coral by default (penguin ochre), apart from the cat at 16 pt.
-- 0.3.0 (2026-10-31): the final design system. Liquid Glass tokens in their own group, the long-form frame in \`layout\`, and their rules above.\n- 0.3.1 (2026-10-31): fitted Fold SVGs (\`-fit\`, \`-fit-night\`) for circle avatars, for the Playbook Folds and every personal Fold colorway; \`fitViewBox\` per Fold in the manifest. No art or token changes.\n- 0.3.2 (2026-10-31): \`behaviour\` for each personal Fold (character = behaviour, product lane ask). No art or token changes.\n- 0.3.3 (2026-10-31): operator review of \`behaviour\`; hummingbird gets to the point instead of promising speed, butterfly stays inside this document. New token \`--pp-teal-ink\` (#1f7176, night #5cc0bf) for small teal text; brand teal is unchanged.
+- 0.3.0 (2026-10-31): the final design system. Liquid Glass tokens in their own group, the long-form frame in \`layout\`, and their rules above.\n- 0.3.1 (2026-10-31): fitted Fold SVGs (\`-fit\`, \`-fit-night\`) for circle avatars, for the Playbook Folds and every personal Fold colorway; \`fitViewBox\` per Fold in the manifest. No art or token changes.\n- 0.3.2 (2026-10-31): \`behaviour\` for each personal Fold (character = behaviour, product lane ask). No art or token changes.\n- 0.3.3 (2026-10-31): operator review of \`behaviour\`; hummingbird gets to the point instead of promising speed, butterfly stays inside this document. New token \`--pp-teal-ink\` (#1f7176, night #5cc0bf) for small teal text; brand teal is unchanged.\n- 0.3.4 (2026-10-31): one-colour template glyphs (\`glyphs/\`, \`files.glyph\` per Fold) for the Flow toolbar's Ideas button and the "<Fold> suggests" badge (product lane ask). No art or token changes.
 `);
 
 console.log(`Paper ${VERSION} → ${path.relative(root, out)} (${folds.length} Folds, ${Object.keys(vars).length} tokens${ttf ? ', ttf' : ''})`);

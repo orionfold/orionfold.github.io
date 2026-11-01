@@ -36,7 +36,8 @@
     "tailwindcss": "^4"
   },
   "devDependencies": {
-    "@playwright/test": "^1.61.1"
+    "@playwright/test": "^1.61.1",
+    "clipper-lib": "6.4.2"
   },
   "engines": {
     "node": ">=22"
