@@ -3,91 +3,115 @@ import PaperLayout from '../layouts/PaperLayout.astro';
 import PageNav from '../components/paper/PageNav.astro';
 import Panel from '../components/paper/Panel.astro';
 import Fold from '../components/paper/Fold.astro';
-import { Image } from 'astro:assets';
-import { resolveProofArt } from '../lib/flagship/proof-art';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { flagshipById } from '../data/flagship-offers';
+import { publishedDomainArticles, domainArticleHref, isBlueprint } from '../lib/flow/domains';
+import { elementDrawing } from '../lib/flow/elements';
+import { FOLDS } from '../lib/paper/folds';
 import { ogMeta } from '../data/og';
 
-const offer = flagshipById.workflows;
+// Operator 2026-10-31: /workflows/ is reframed from "Private Agent Starter
+// Kits" (Relay-led) to one repeat job run as a Flow Playbook (G-015). Every
+// step below names a Flow feature the site already sells (flow-pricing.ts,
+// /flow/, /flow/night-shift/, /flow/receipts/); never add one Flow lacks.
 const og = ogMeta('/workflows/');
-const proof = offer.proof.map((link) => ({ ...link, art: resolveProofArt(link.href), external: link.href.startsWith('http') }));
 
-// The anatomy every starter kit ships with — the pitch's core trust loop,
-// shown as the pipeline it actually is.
-const pipeline = [
-  { step: 'Trigger', gloss: 'A schedule, file drop, or request starts the run.' },
-  { step: 'Runner', gloss: 'A local agent does the work with the tools it is given.' },
-  { step: 'Eval', gloss: 'Checks score the output before anyone relies on it.' },
-  { step: 'Approval', gloss: 'A person reviews and signs off. Nothing ships itself.' },
-  { step: 'Artifact', gloss: 'The run produces a real file, draft, or report.' },
-  { step: 'Audit trail', gloss: 'Every run is logged and can be replayed later.' },
+const steps = [
+  { step: 'Playbook', gloss: 'Your method, its sources and your past fixes sit in one folder.' },
+  { step: 'Jobs', gloss: 'A document carries its own Jobs. They gather new figures and draft what changed.' },
+  { step: 'Model', gloss: 'Smart Routing picks the model by your rules, on your Mac or on your own key.' },
+  { step: 'Night Shift', gloss: 'Flow works the Jobs on your Mac while you sleep.' },
+  { step: 'Sign-off', gloss: 'In the morning you keep or undo each change. Nothing ships itself.' },
+  { step: 'Receipt', gloss: 'Every run records what ran, where it ran, and what it cost.' },
 ];
 
-const kits = [
-  { n: '01', title: 'Founder operating memory', body: 'Capture decisions, summarize work, propose next actions, and keep a traceable memory of what changed.' },
-  { n: '02', title: 'Content to launch', body: 'Turn a source note into article, social posts, product copy, screenshots, and a final approval checklist.' },
-  { n: '03', title: 'Private document workflow', body: 'Read sensitive files locally, draft an artifact, run checks, and preserve the audit trail.' },
+const blueprints = (await publishedDomainArticles()).filter(isBlueprint).slice(0, 4);
+const FOLD_BY_SLUG = Object.fromEntries(FOLDS.map((f) => [f.domainSlug, f])) as Record<string, (typeof FOLDS)[number]>;
+const lowerFirst = (s: string) => (/^[A-Z]{2}/.test(s) ? s : s.charAt(0).toLowerCase() + s.slice(1));
+
+const TALK = `mailto:manav@orionfold.com?subject=${encodeURIComponent('A workflow for my Playbook')}&body=${encodeURIComponent('The job I repeat for clients:\n\nHow often it comes round:\n\nWhat I use for it today:\n\nWhat gets in the way:\n')}`;
+
+const proof = [
+  { href: '/flow/night-shift/', title: 'Night Shift', note: 'Jobs run while you sleep. You review what changed at breakfast.', fold: 'tally' },
+  { href: '/flow/receipts/', title: 'Receipts', note: 'What ran, where it ran, and what it cost, for every run.', fold: 'atlas' },
+  { href: '/playbooks/', title: 'Playbooks built so far', note: 'Real Playbooks, built in Flow and published to GitHub.', fold: 'orri' },
 ];
 ---
 <PaperLayout
   title="Workflows · Orionfold"
-  description="Private Agent Starter Kits package one useful local workflow with trigger, runner, eval, approval, artifact output, and audit trail."
+  description="Turn one job you repeat for clients into a Flow Playbook. Flow runs its Jobs on your Mac, even overnight. You keep or undo each change, and every run leaves a receipt."
   ogImage={og.image}
   ogImageAlt={og.alt}
 >
   <Nav />
   <main id="main" class="pp-page">
-    {/* Paper R5 (G-144): the same copy and links; the audience and CTA stay the operator's call (G-015). */}
     <section class="pp-hero pp-hero--inner pp-hero--article" aria-labelledby="workflows-title">
       <div class="pp-hero-copy">
         <span class="pp-kicker">Workflows</span>
-        <h1 id="workflows-title" class="pp-h1">Run one private agent workflow end to end.</h1>
-        <p class="pp-sub">A starter kit is not a consulting retainer. It is one reusable local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail.</p>
+        <h1 id="workflows-title" class="pp-h1">One job you repeat.<br /><em>Done overnight, signed by you.</em></h1>
+        <p class="pp-sub">Put the job in a Flow Playbook. Flow runs its Jobs on your Mac, even while you sleep. You keep or undo each change, and every run leaves a receipt.</p>
         <div class="pp-hero-cta">
-          <a class="pp-btn" href="/adoption/#run">Request a starter kit</a>
-          <a class="pp-btn pp-btn--ghost" href="/relay/">Open Relay</a>
+          <a class="pp-btn" href="/playbooks/#dm-blueprints">Pick a blueprint</a>
+          <a class="pp-btn pp-btn--ghost" href={TALK}>Ask for a custom one</a>
         </div>
       </div>
     </section>
 
     <PageNav label="Workflows navigation" pages={[
-      { href: '/relay/', label: 'Relay' },
-      { href: '/experts/', label: 'Experts' },
-      { href: '/software/', label: 'All software' },
+      { href: '/playbooks/', label: 'Playbooks' },
+      { href: '/flow/night-shift/', label: 'Night Shift' },
+      { href: '/flow/receipts/', label: 'Receipts' },
+      { href: '/flow/', label: 'Flow' },
     ]} />
 
-    <Panel id="anatomy" seam="Anatomy of every kit" fold="tally" title="Six stages.<br />Nothing ships itself.">
+    <Panel id="anatomy" seam="How a workflow runs" fold="tally" title="Six steps.<br />Nothing ships itself.">
       <ol class="pp-cells pp-cells--3 pp-cells--steps">
-        {pipeline.map((stage, i) => <li><small>{String(i + 1).padStart(2, '0')}</small><b>{stage.step}</b><span>{stage.gloss}</span></li>)}
+        {steps.map((s, i) => <li><small>{String(i + 1).padStart(2, '0')}</small><b>{s.step}</b><span>{s.gloss}</span></li>)}
       </ol>
     </Panel>
 
-    <Panel id="kits" seam="First starter kits" fold="ember" tinted title="Three kits<br />to start from.">
-      <ul class="pp-cells pp-cells--3">{kits.map((kit) => <li><small>Kit {kit.n}</small><b>{kit.title}</b><span>{kit.body}</span></li>)}</ul>
-    </Panel>
+    {blueprints.length > 0 && (
+      <Panel id="kits" seam="Start from a blueprint" fold="ember" tinted title="Free starters,<br />one per field." lede="Each blueprint shows what the Playbook would hold and the Flow steps to build it. Take one, put your name on it, and make it yours. None of them is built yet.">
+        <ul class="pp-play-cards">
+          {blueprints.map((b) => {
+            const fold = FOLD_BY_SLUG[b.id];
+            return (
+              <li>
+                <a href={domainArticleHref(b.id)}>
+                  {fold
+                    ? <span class="pp-ico pp-play-ico" style={`background:${fold.c}66`}><Fold id={fold.id} /></span>
+                    : <span class="pp-ico pp-ico--drawing" style={`background:${b.data.tint}`} set:html={elementDrawing(b.data.icon)} />}
+                  <h3>{b.data.domain}</h3>
+                  <p>{b.data.hook}</p>
+                  <span class="pp-card-tag">For {lowerFirst(b.data.role)}</span>
+                </a>
+              </li>
+            );
+          })}
+          <li class="pp-play-yours">
+            <a href={TALK}>
+              <span class="pp-ico" aria-hidden="true">+</span>
+              <h3>Your job is not here?</h3>
+              <p>Tell Manav the job you repeat. We help you shape it into a Playbook.</p>
+              <span class="pp-card-tag">Write to Manav</span>
+            </a>
+          </li>
+        </ul>
+        <p class="pp-panel-link"><a href="/playbooks/#dm-blueprints">All blueprints <span aria-hidden="true">→</span></a></p>
+      </Panel>
+    )}
 
-    <Panel id="proof" seam="Built from shipped parts" fold="atlas" title="Shipped parts,<br />not slides.">
-      <ul class="pp-art-cards pp-art-cards--3">
-        {proof.map((link) => (
-          <li><a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>
-            {link.art
-              ? <Image src={link.art} alt={`${link.label} artwork`} widths={[400, 640]} sizes="(min-width: 860px) 30vw, 92vw" loading="lazy" data-no-zoom />
-              : <span class="pp-art-fallback" aria-hidden="true"><Fold id="shell" /></span>}
-            <h3>{link.label}</h3>
-            <p>{link.note}</p>
-          </a></li>
-        ))}
+    <Panel id="proof" seam="See it work" fold="atlas" title="Shipped in Flow,<br />not slides.">
+      <ul class="pp-cells pp-cells--3">
+        {proof.map((p) => <li><small><a href={p.href}>{p.title} <span aria-hidden="true">→</span></a></small><span>{p.note}</span></li>)}
       </ul>
-      <p class="pp-panel-link"><a href="/software/">All software <span aria-hidden="true">→</span></a></p>
     </Panel>
 
     <section class="pp-closing" aria-labelledby="workflows-closing">
       <Fold id="tally" bob class="pp-closing-fold" />
-      <h2 id="workflows-closing">Start with one workflow.</h2>
-      <p>Tell us the job. We package it as one kit with its checks and its audit trail.</p>
-      <a class="pp-btn" href="/adoption/#run">Request a starter kit</a>
+      <h2 id="workflows-closing">Start with one job.</h2>
+      <p>Pick a blueprint, or tell us the job and we help you shape the Playbook.</p>
+      <a class="pp-btn" href="/playbooks/#dm-blueprints">Pick a blueprint</a>
     </section>
   </main>
   <Footer showDownload={false} />

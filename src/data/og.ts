@@ -93,9 +93,9 @@ export const OG_PAGES: Record<string, OgPage> = {
   '/workflows/': {
     slug: 'workflows',
     eyebrow: 'Workflows',
-    title: 'Private Agent Starter Kits',
+    title: 'One job, done overnight, signed by you',
     seed: 'workflows',
-    alt: 'Orionfold Workflows: private agent starter kits with evals, approvals, and audit trails',
+    alt: 'Orionfold Workflows: one repeat job run as a Flow Playbook, with your sign-off and a receipt for every run',
   },
   '/experts/': {
     slug: 'experts',

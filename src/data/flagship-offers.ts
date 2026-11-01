@@ -35,15 +35,15 @@ export const flagshipOffers: FlagshipOffer[] = [
   {
     id: 'workflows',
     eyebrow: 'Run',
-    title: 'Private Agent Starter Kit',
+    title: 'Playbook workflows',
     route: '/workflows/',
-    outcome: 'One local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail.',
-    buyer: 'Small teams that need a useful private agent before they have a full automation team.',
-    status: 'Packaged from shipped parts',
+    outcome: 'One job you repeat, run as a Flow Playbook. Jobs run on your Mac, you sign off, and every run leaves a receipt.',
+    buyer: 'Experts who do the same client job again and again and want it done overnight, checked by them.',
+    status: 'Runs in Flow today',
     proof: [
-      { label: 'Orionfold Relay', href: '/relay/', note: 'Agents, runtime, schedules, and cost ledger.' },
-      { label: 'AI Native API', href: '/software/ai-native-api/', note: 'Programmatic workflow control.' },
-      { label: 'Sentinel', href: '/software/sentinel/', note: 'Behavior checks for agent runs.' },
+      { label: 'Night Shift', href: '/flow/night-shift/', note: 'Jobs run while you sleep. You review what changed.' },
+      { label: 'Receipts', href: '/flow/receipts/', note: 'What ran, where it ran, and what it cost.' },
+      { label: 'Flow Playbooks', href: '/playbooks/', note: 'Playbooks built so far, and free blueprints.' },
     ],
   },
   {

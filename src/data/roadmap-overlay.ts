@@ -57,9 +57,9 @@ export const roadmapOverlay: RoadmapOverlayItem[] = [
   {
     id: 'software:private-agent-starter-kit',
     type: 'software',
-    title: 'Private Agent Starter Kit',
-    blurb: 'One local workflow with a trigger, runner, evaluation, approval loop, artifact output, and audit trail.',
-    status: 'planned',
+    title: 'Playbook workflows',
+    blurb: 'One job you repeat, run as a Flow Playbook. Jobs run on your Mac, you sign off, and every run leaves a receipt.',
+    status: 'released',
     href: '/workflows/',
     cover: 'private-agent-starter-kit-poster.png',
     assetBase: 'projects',
