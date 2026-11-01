@@ -49,7 +49,7 @@ test('hero controls pause, step back and forward, and jump to a Fold (operator 2
   await expect(page.locator('[data-pp-said]')).toContainText('explain every change over 5 percent');
   await page.locator('[data-pp-next]').click();
   await expect(duo).toHaveAttribute('data-act', 'page');
-  await expect(page.locator('[data-pp-sheet] h3')).toHaveText('Month-end close');
+  await expect(page.locator('[data-pp-sheet] .pp-pb-title')).toHaveText('Month-end close');
   await page.locator('[data-pp-prev]').click();
   await expect(duo).toHaveAttribute('data-act', 'talk');
   await page.locator('[data-pp-go="7"]').click();

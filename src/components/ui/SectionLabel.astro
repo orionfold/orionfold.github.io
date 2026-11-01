@@ -3,10 +3,12 @@
 // brand-neutral, reused across the homepage sections and S6–S10 showcases.
 interface Props {
   text: string;
+  /** 'h2' when the label is the only heading of its section (cards follow as h3). */
+  as?: 'span' | 'h2';
 }
 
-const { text } = Astro.props;
+const { text, as = 'span' } = Astro.props;
 ---
-<span class="living-eyebrow inline-block">
-  {text}
-</span>
+{as === 'h2'
+  ? <h2 class="living-eyebrow font-mono inline-block m-0">{text}</h2>
+  : <span class="living-eyebrow inline-block">{text}</span>}

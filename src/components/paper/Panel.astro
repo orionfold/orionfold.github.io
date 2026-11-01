@@ -1,13 +1,15 @@
 ---
 // An inset panel with its tab label sitting on the seam, an optional Fold
 // perched on the top edge, and a two-column head (big serif title, short line).
+// A panel with no title makes its seam label the section's h2, so the cards
+// inside (h3) never skip a heading level.
 import Fold from './Fold.astro';
 import type { FoldId } from '../../lib/paper/folds';
 interface Props { id?: string; seam: string; fold?: FoldId; tinted?: boolean; title?: string; lede?: string }
 const { id, seam, fold, tinted = false, title, lede } = Astro.props;
 ---
 <section id={id} class:list={['pp-panel', { 'pp-panel--tinted': tinted }]}>
-  <span class="pp-seam">{seam}</span>
+  {title ? <span class="pp-seam">{seam}</span> : <h2 class="pp-seam">{seam}</h2>}
   {fold && <Fold id={fold} bob class="pp-panel-fold" />}
   {title && (
     <div class="pp-panel-head">

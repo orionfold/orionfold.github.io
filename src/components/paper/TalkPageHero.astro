@@ -53,7 +53,7 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
         <figure class="pp-pb-photo">{faces[first.id] ? <img data-pp-face src={faces[first.id]} alt="" width="400" height="500" /> : <Fold id={first.id} />}<span data-pp-role>{p0.who}</span></figure>
         <div class="pp-pb-sheet" data-pp-sheet>
           <span class="pp-pb-crumb">{p0.area} / {h0.file}</span>
-          <h3>{h0.title}</h3>
+          <p class="pp-pb-title">{h0.title}</p>
           <p class="pp-pb-for">{p0.client ? `For ${p0.client}` : 'For every client'}</p>
           <ol class="pp-pb-steps">{h0.rows.map((r, i) => <li class:list={{ 'pp-yours': i === 2 }}><span>{typeof r === 'string' ? r : r[0]}<small>{typeof r === 'string' ? 'YOUR CALL' : r[1].toUpperCase()}</small></span></li>)}</ol>
         </div>
@@ -113,7 +113,7 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
       duo.querySelectorAll('.pp-tk-av.pp-fold, .pp-pb-fold, .pp-pb-photo > .pp-fold').forEach((el) => { el.innerHTML = b.svg; });
       reply.textContent = replyText(b);
       const p = b.play, h = b.hero;
-      duo.querySelector('[data-pp-sheet]')!.innerHTML = `<span class="pp-pb-crumb">${esc(p.area)} / ${esc(h.file)}</span><h3>${esc(h.title)}</h3><p class="pp-pb-for">${p.client ? 'For ' + esc(p.client) : 'For every client'}</p><ol class="pp-pb-steps">${h.rows.map((r, i) => `<li${i === 2 ? ' class="pp-yours"' : ''}><span>${esc(rowText(r))}<small>${typeof r === 'string' ? 'YOUR CALL' : esc(r[1].toUpperCase())}</small></span></li>`).join('')}</ol>`;
+      duo.querySelector('[data-pp-sheet]')!.innerHTML = `<span class="pp-pb-crumb">${esc(p.area)} / ${esc(h.file)}</span><p class="pp-pb-title">${esc(h.title)}</p><p class="pp-pb-for">${p.client ? 'For ' + esc(p.client) : 'For every client'}</p><ol class="pp-pb-steps">${h.rows.map((r, i) => `<li${i === 2 ? ' class="pp-yours"' : ''}><span>${esc(rowText(r))}<small>${typeof r === 'string' ? 'YOUR CALL' : esc(r[1].toUpperCase())}</small></span></li>`).join('')}</ol>`;
       duo.querySelector('[data-pp-note]')!.textContent = h.note;
     };
     const mark = () => {
