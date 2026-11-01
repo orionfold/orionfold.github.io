@@ -3,6 +3,7 @@
 // keep their data-checkout, data-item and data-error-target; the free
 // showcase video, the JSON-LD and the dev-only operator preview are unchanged.
 import PaperLayout from '../../../layouts/PaperLayout.astro';
+import { ogMeta } from '../../../data/og';
 import Panel from '../../../components/paper/Panel.astro';
 import PageNav from '../../../components/paper/PageNav.astro';
 import Fold from '../../../components/paper/Fold.astro';
@@ -142,8 +143,10 @@ const faqSchema = {
 ---
 
 <PaperLayout
+  ogImage={ogMeta('/training/relay-operator-workshop/').image}
+  ogImageAlt={ogMeta('/training/relay-operator-workshop/').alt}
   title="Relay Operator Workshop · Build and run one AI-assisted workflow"
-  description="Bring one real operating process. Leave with a governed Relay workflow you can run, inspect, and improve—without scheduling Orionfold."
+  description="Bring one real operating process. Leave with a governed Relay workflow you can run, inspect, and improve, with no call to schedule with Orionfold."
   jsonLd={[productSchema, faqSchema]}
 >
   <Nav />
@@ -153,7 +156,7 @@ const faqSchema = {
         <a href="/training/" class="pp-kicker">Orionfold Training · Founding edition</a>
         <h1 id="workshop-title" class="pp-h1">Build and run one AI-assisted workflow.</h1>
         <p class="pp-sub">
-          Add human approval, visible cost controls, and a reusable blueprint. Bring one real operating process; leave with a governed Relay workflow you can run, inspect, and improve—without scheduling Orionfold.
+          Add human approval, visible cost controls, and a reusable blueprint. Bring one real operating process; leave with a governed Relay workflow you can run, inspect, and improve, with no call to schedule with Orionfold.
         </p>
         <div id="start" class="pp-hero-cta">
           {RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? (

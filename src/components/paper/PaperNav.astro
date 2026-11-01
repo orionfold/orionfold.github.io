@@ -115,7 +115,7 @@ const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/f
       <div class="pp-sheet-list">
         {m.groups.map((g) => (
           <div class:list={['pp-grp', { 'pp-grp--two': g.two }]}>
-            <h6>{g.title}</h6>
+            <p class="pp-grp-t">{g.title}</p>
             {g.chips ? (
               <div class="pp-chips-row">
                 {g.items.map((it) => <a href={it.href}>{it.label}</a>)}
@@ -144,7 +144,7 @@ const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/f
       {m.card && (
         <div class="pp-feat" style={`--pp-fold-c:${foldById[m.card.fold].c}55`}>
           <span class="pp-kicker">{m.card.kicker}</span>
-          <h4>{m.card.title}</h4>
+          <p class="pp-feat-t">{m.card.title}</p>
           <p>{m.card.line}</p>
           {m.card.cta && <a class="pp-btn" href={m.card.cta.href} data-flow-download={flowLive ? m.card.cta.track : undefined}>{m.card.cta.label}</a>}
           {m.card.face

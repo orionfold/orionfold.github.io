@@ -6,6 +6,7 @@
 // R7a (G-146): Paper index. The Relay pages as hairline rows, then the
 // promise and the two legal pages, which live under Trust in the crumbs.
 import PaperLayout from '../../layouts/PaperLayout.astro';
+import { ogMeta } from '../../data/og';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import { SITE, PUBLISHER } from '../../data/seo';
@@ -19,6 +20,8 @@ const rules = [
 ];
 ---
 <PaperLayout
+  ogImage={ogMeta('/trust/').image}
+  ogImageAlt={ogMeta('/trust/').alt}
   title="Trust: own it, run it local, verify every call · Orionfold"
   description="How Orionfold Relay earns trust: it runs on your machine, you own it forever, and you can verify every network call yourself. Data flow, continuity, supply chain, and license terms."
   jsonLd={[

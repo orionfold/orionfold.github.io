@@ -18,8 +18,9 @@ const meta = (html, key, value) => html.match(new RegExp(`<meta\\s+${key}="${esc
 const link = (html, rel) => html.match(new RegExp(`<link\\s+rel="${esc(rel)}"\\s+href="([^"]*)"`, 'i'))?.[1] ?? '';
 
 const routes = [
-  // Paper R2 (operator finalized 2026-10-30): the locked headline, in the title too.
-  ['/', 'Orionfold Flow · Teach your expertise to an AI team. It works the night shift. You sign off at breakfast.', 'Teach your expertise to an AI team. It works the night shift. You sign off at breakfast.'],
+  // Paper R2 (operator finalized 2026-10-30): the locked headline. Its first line
+  // is the title, short enough for a search result (operator 2026-10-31, SEO fix 4).
+  ['/', 'Orionfold Flow · Teach your expertise to an AI team', 'Teach your expertise to an AI team. It works the night shift. You sign off at breakfast.'],
   ['/flow/', 'Flow for Mac · Describe it. Flow draws it.', 'Describe it. Flow draws it.'],
   ['/essay/', 'Room for a Renaissance · An essay by Manav Sehgal', 'Room for a Renaissance.'],
   ['/manifesto/', 'The Researcher, Writer and Builder in You · An essay by Manav Sehgal', 'The Researcher, Writer and Builder in You.'],

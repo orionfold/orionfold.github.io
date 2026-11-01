@@ -9,9 +9,11 @@ export const SITE = {
   description:
     'Flow Living Documents on your Mac. Files you own, changes you can review, and useful work that continues between visits. Base is free forever.',
   logo: 'https://orionfold.com/orionfold-128.png',
-  ogImage: 'https://orionfold.com/og-image.png',
+  // Fallback card for a page without its own: the Paper home card (every
+  // indexable page has its own since 2026-10-31; og-image.png is pre-Paper).
+  ogImage: 'https://orionfold.com/og/home.jpg',
   ogImageAlt:
-    'Orionfold Flow Living Documents: bold black headlines, a red highlight and origami paper planes on a warm yellow background.',
+    'Orionfold Flow Playbooks: Teach your expertise to an AI team. It works the night shift. You sign off at breakfast. Orri, a paper plane Fold, on a paper card.',
   // Single light theme: address-bar tint matches the manifest background.
   themeColor: '#f6f6f3',
   license: 'Apache-2.0',

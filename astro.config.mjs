@@ -210,6 +210,23 @@ function buildLastmodMap() {
   // so it tracks the freshest date across all of them.
   const relayFreshest = freshestUnder('/relay/');
   if (relayFreshest) map['/relay/'] = relayFreshest;
+  // Hand-built pages (2026-10-31, Paper redesign): a static route's lastmod is
+  // the later of its recorded date and the last commit to its own source, so a
+  // page rewritten in place is not stuck on an old hand-set date, and a page
+  // with no recorded date still gets an honest one. Thin routes that render
+  // from a data module also count that module. Dynamic routes ([slug]) keep
+  // their content dates above; a template change alone never moves them.
+  const ROUTE_DATA = { '/trust/': ['src/data/trust-pages.ts', 'src/components/trust/TrustPage.astro'] };
+  const pagesDir = new URL('./src/pages/', import.meta.url);
+  const walk = (dir, rel = '') => readdirSync(new URL(rel, dir), { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? walk(dir, `${rel}${e.name}/`) : [`${rel}${e.name}`]);
+  for (const file of walk(pagesDir)) {
+    if (!file.endsWith('.astro') || file.includes('[') || file.split('/').some((p) => p.startsWith('_'))) continue;
+    const route = `/${file.replace(/(^|\/)index\.astro$/, '$1').replace(/\.astro$/, '/')}`;
+    const sources = [`src/pages/${file}`, ...Object.entries(ROUTE_DATA).filter(([k]) => route.startsWith(k) && route !== k).flatMap(([, v]) => v)];
+    const dates = [map[route], ...sources.map(gitDate)].filter(Boolean).sort();
+    if (dates.length) map[route] = dates.at(-1);
+  }
   // Home page surfaces the newest content anywhere, so it tracks the freshest date.
   const newest = Object.values(map).sort().at(-1);
   if (newest) map['/'] = newest;

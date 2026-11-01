@@ -8,6 +8,7 @@
 // R7a (G-146): rendered as the Paper long-form page (PaperLongform), with the
 // "check it yourself" pointer and the sibling pages in the rail.
 import PaperLayout from '../../layouts/PaperLayout.astro';
+import { ogMeta } from '../../data/og';
 import PaperLongform from '../paper/PaperLongform.astro';
 import '../../styles/living-in-paper.css';
 import Nav from '../../components/Nav.astro';
@@ -28,6 +29,8 @@ const hasShortSection = page.sections[0]?.title === 'The short version';
 const slugify = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 ---
 <PaperLayout
+  ogImage={ogMeta(`/trust/${page.slug}/`).image}
+  ogImageAlt={ogMeta(`/trust/${page.slug}/`).alt}
   title={`${page.title} · Orionfold`}
   description={page.summary}
   jsonLd={[
