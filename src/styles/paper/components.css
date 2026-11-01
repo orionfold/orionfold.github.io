@@ -212,7 +212,7 @@
 .paper .pp-closing h2 { margin: 0; font: 300 clamp(34px, 4.4vw, 60px)/1.04 var(--pp-serif); }
 .paper .pp-closing p:not(.pp-kicker) { margin: 0; color: var(--pp-ink-2); font: 400 17px/1.4 var(--pp-serif); }
 .paper .pp-closing small { max-width: 52ch; color: var(--pp-ink-3); font-size: 12.5px; line-height: 1.5; }
-.paper .pp-closing small a { color: var(--pp-ink-2); text-underline-offset: 3px; }
+.paper .pp-closing small a { color: var(--pp-ink-2); text-decoration: underline; text-underline-offset: 3px; }
 /* hero controls (operator 2026-10-30): previous, play/pause, next, a chip per Fold */
 .paper .pp-hero-stage { display: grid; justify-items: center; gap: 14px; min-width: 0; }
 /* The control row spans the mock's width (operator 2026-10-31): buttons left, the Fold bar takes the rest with the Folds spread evenly. */

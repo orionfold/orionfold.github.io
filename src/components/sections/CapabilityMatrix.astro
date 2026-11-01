@@ -257,9 +257,6 @@ const meaning: Record<Mark, string> = {
     opacity: 1;
   }
 
-  /* In "all" view the receipt-hover hint is less central (base cols have no
-     receipt), so soften the guiding line. */
-  [data-matrix][data-view='all'] [data-matrix-hint] { opacity: 0.7; }
 
   /* Toggle active state, set by the inline script via aria-pressed. The active
      pill uses the theme-aware accent triad — a bare #fff on the bright dark-theme
