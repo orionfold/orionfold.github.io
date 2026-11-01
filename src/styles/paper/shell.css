@@ -107,9 +107,34 @@
 .paper .pp-legal { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 18px 16px; font-size: 12px; color: var(--pp-ink-2); }
 .paper .pp-legal a { text-decoration: none; }
 .paper .pp-credits { background: var(--pp-night); color: var(--pp-night-ink-2); padding: 60px 16px 0; text-align: center; position: relative; min-height: 360px; overflow: hidden; }
-.paper .pp-credits p { margin: 0 auto; max-width: 30ch; font-size: 14px; }
+/* the night line: a serif quote that lights word by word, like stars coming out */
+.paper .pp-quote { margin: 0 auto; max-width: 760px; position: relative; z-index: 1; }
+.paper .pp-quote blockquote { margin: 0; }
+.paper .pp-quote p { margin: 0 auto; max-width: 24ch; font: 300 clamp(22px, 3.1vw, 36px)/1.3 var(--pp-serif); font-variation-settings: 'SOFT' 100; color: var(--pp-night-ink); text-wrap: balance; }
+.paper .pp-qw { display: inline-block; opacity: 0; }
+.paper .pp-lit .pp-qw { animation: pp-ink 1.1s cubic-bezier(.2, .7, .2, 1) calc(var(--i) * 85ms) both; }
+@keyframes pp-ink {
+  0% { opacity: 0; filter: blur(7px); transform: translateY(.35em); text-shadow: 0 0 0 transparent; }
+  45% { opacity: 1; filter: blur(0); text-shadow: 0 0 18px var(--pp-star); color: var(--pp-star); }
+  100% { opacity: 1; filter: blur(0); transform: none; text-shadow: 0 0 0 transparent; }
+}
+.paper .pp-quote-next { margin-top: 22px; background: none; border: 1px solid var(--pp-night-line); border-radius: 999px; color: var(--pp-night-ink-2); font: 400 12.5px/1 var(--pp-sans); padding: 9px 14px; cursor: pointer; transition: color .2s, border-color .2s; }
+.paper .pp-quote-next::before { content: '\2726'; color: var(--pp-star); margin-right: 7px; }
+.paper .pp-quote-next:hover, .paper .pp-quote-next:focus-visible { color: var(--pp-night-ink); border-color: var(--pp-night-ink-3); }
+.paper .pp-quote-next:focus-visible { outline: 2px solid var(--pp-star); outline-offset: 3px; }
+/* the sky wakes once with the line: each star flares on its own beat, and one star falls */
+.paper .pp-lit .pp-sky-dot { animation: pp-flare 1.6s ease-out var(--d) both; }
+@keyframes pp-flare { 0% { opacity: .1; transform: scale(.6) } 35% { opacity: 1; transform: scale(1.8) } 100% { opacity: var(--o, .7); transform: none } }
+.paper .pp-shoot { position: absolute; left: 12%; top: 18%; width: 110px; height: 1.5px; border-radius: 2px; background: linear-gradient(90deg, transparent, var(--pp-star)); opacity: 0; transform: rotate(24deg); pointer-events: none; }
+.paper .pp-lit .pp-shoot { animation: pp-shoot 1.4s ease-in 1.1s both; }
+@keyframes pp-shoot { 0% { opacity: 0; translate: 0 0 } 15% { opacity: 1 } 100% { opacity: 0; translate: 46vw 21vw } }
+@media (prefers-reduced-motion: reduce) {
+  .paper .pp-lit .pp-qw { animation: pp-ink-calm .6s ease calc(var(--i) * 30ms) both; }
+  .paper .pp-lit .pp-sky-dot, .paper .pp-lit .pp-shoot { animation: none; }
+}
+@keyframes pp-ink-calm { from { opacity: 0 } to { opacity: 1 } }
 .paper .pp-credits .pp-fold { position: absolute; right: 4vw; bottom: -6px; width: 170px; }
-.paper .pp-sky-dot { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--pp-star); opacity: .7; }
+.paper .pp-sky-dot { position: absolute; width: var(--s, 3px); height: var(--s, 3px); border-radius: 50%; background: var(--pp-star); opacity: var(--o, .7); box-shadow: 0 0 var(--g, 0) var(--pp-star); }
 
 /* menu panel fixes: the "All" link spans its group; outcome lines stay two lines */
 .paper .pp-it.pp-link { display: block; grid-column: 1 / -1; padding: 10px 8px 4px; }

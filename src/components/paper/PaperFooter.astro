@@ -4,6 +4,7 @@
 // link is lost in the migration), the legal line, then a night credit field
 // with one Fold under the stars.
 import Fold from './Fold.astro';
+import { FOOTER_QUOTES } from '../../data/footer-quotes';
 import { FLOW_COLUMNS, ORIONFOLD_COLUMNS, LEGAL_LINKS, SOCIAL_LINKS, footerPaths, footerCompare } from '../../data/footer-links';
 const BIG = [
   { href: '/flow/', label: 'Flow' },
@@ -19,8 +20,23 @@ const groups = [
   ...(compare.length ? [{ title: 'Compare', links: [...compare, { href: '/flow/compare/', label: 'All comparisons' }] }] : []),
   { title: 'Orionfold', links: ORIONFOLD_COLUMNS.flat() },
 ];
-// A fixed star field, so every build draws the same sky.
-const stars = Array.from({ length: 46 }, (_, i) => `left:${(i * 37) % 100}%;top:${20 + ((i * 23) % 70)}%`);
+// A seeded random star field: it looks scattered like a real sky, yet every
+// build draws the same one (no layout shift, stable screenshots). Jittered
+// cells keep stars from clumping or leaving big holes; sizes and brightness
+// vary so a few read as near and bright, most as faint and far.
+const rand = ((seed) => () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; })(20261031);
+const stars: string[] = [];
+for (let row = 0; row < 7; row++) for (let col = 0; col < 16; col++) {
+  if (rand() < 0.3) continue; // leave gaps, as real skies do
+  const left = ((col + rand()) / 16) * 100, top = 4 + ((row + rand()) / 7) * 92;
+  const r = rand();
+  const size = r > 0.93 ? 4 : r > 0.7 ? 2.8 : r > 0.35 ? 2 : 1.5;
+  // Brightness skews faint (squared), and the biggest stars glow.
+  const b = rand() ** 2;
+  const o = (0.32 + b * 0.68).toFixed(2);
+  const glow = size >= 2.8 && b > 0.25 ? Math.round(3 + b * 8) : 0;
+  stars.push(`left:${left.toFixed(1)}%;top:${top.toFixed(1)}%;--s:${size}px;--o:${o};--g:${glow}px;--d:${Math.round(rand() * 900)}ms`);
+}
 const year = new Date().getFullYear();
 ---
 <footer class="pp-footer">
@@ -36,8 +52,72 @@ const year = new Date().getFullYear();
     <nav aria-label="Legal">{LEGAL_LINKS.map((l, i) => <>{i > 0 && ' · '}<a href={l.href}>{l.label}</a></>)}</nav>
   </div>
   <div class="pp-credits">
-    <p>You spent years becoming the person people ask. Give them something worth coming back to.</p>
-    {stars.map((s) => <i class="pp-sky-dot" style={s} />)}
+    <figure class="pp-quote" data-pp-quote data-quotes={JSON.stringify(FOOTER_QUOTES)}>
+      <blockquote><p aria-live="polite">{FOOTER_QUOTES[0]}</p></blockquote>
+      <button type="button" class="pp-quote-next" hidden>Another thought</button>
+    </figure>
+    {stars.map((st) => <i class="pp-sky-dot" style={st} />)}
+    <i class="pp-shoot" aria-hidden="true" />
     <Fold id="orri" bob />
   </div>
 </footer>
+<script>
+  // The night line: deal a quote from the tab's shuffled deck, then light it word by word, like
+  // stars coming out, once it scrolls into view. "Another thought" draws a new
+  // one. Without JS the default line shows as plain text.
+  function initQuote() {
+    const fig = document.querySelector<HTMLElement>('[data-pp-quote]');
+    if (!fig || fig.dataset.ready) return;
+    fig.dataset.ready = '1';
+    const quotes: string[] = JSON.parse(fig.dataset.quotes || '[]');
+    const p = fig.querySelector('p')!;
+    const btn = fig.querySelector<HTMLButtonElement>('.pp-quote-next')!;
+    const sky = fig.closest('.pp-credits')!;
+    // A shuffled deck per tab: each page load and each "Another thought" deals
+    // the next card, so no line repeats until the whole pool has been seen.
+    // Storage can be blocked (private mode), so fall back to an in-page deck.
+    const KEY = 'pp-quote-deck';
+    let mem: number[] = [];
+    const load = (): number[] => { try { return JSON.parse(sessionStorage.getItem(KEY) || '[]'); } catch { return mem; } };
+    const save = (d: number[]) => { mem = d; try { sessionStorage.setItem(KEY, JSON.stringify(d)); } catch { /* in-page only */ } };
+    const deal = (avoid?: number) => {
+      let deck = load().filter((n) => n < quotes.length);
+      if (!deck.length) {
+        deck = quotes.map((_, i) => i);
+        for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+        if (deck.length > 1 && deck[0] === avoid) deck.push(deck.shift()!); // no repeat across a reshuffle
+      }
+      const next = deck.shift()!;
+      save(deck);
+      return next;
+    };
+    let at = deal();
+    const paint = (text: string) => {
+      p.replaceChildren(...text.split(' ').flatMap((w, i) => {
+        const s = document.createElement('span');
+        s.className = 'pp-qw';
+        s.style.setProperty('--i', String(i));
+        s.textContent = w;
+        return i ? [document.createTextNode(' '), s] : [s];
+      }));
+    };
+    const light = () => {
+      sky.classList.remove('pp-lit');
+      void (sky as HTMLElement).offsetWidth; // restart the one-shot animations
+      sky.classList.add('pp-lit');
+    };
+    paint(quotes[at]);
+    btn.hidden = false;
+    const io = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { light(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -20% 0px' });
+    io.observe(fig);
+    btn.addEventListener('click', () => {
+      at = deal(at);
+      paint(quotes[at]);
+      light();
+    });
+  }
+  initQuote();
+  document.addEventListener('astro:after-swap', initQuote);
+</script>
