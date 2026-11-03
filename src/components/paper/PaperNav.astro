@@ -148,8 +148,8 @@ const isCurrent = (href: string) => Astro.url.pathname === href || (href !== '/f
           <p>{m.card.line}</p>
           {m.card.cta && <a class="pp-btn" href={m.card.cta.href} data-flow-download={flowLive ? m.card.cta.track : undefined}>{m.card.cta.label}</a>}
           {m.card.face
-            ? <div class="pp-feat-pair"><img src={m.card.face} alt="" width="76" height="95" loading="lazy" /><Fold id={m.card.fold} bob /></div>
-            : <Fold id={m.card.fold} bob class="pp-feat-corner" />}
+            ? <div class="pp-feat-pair"><img src={m.card.face} alt="" width="76" height="95" loading="lazy" /><Fold id={m.card.fold} live /></div>
+            : <Fold id={m.card.fold} live class="pp-feat-corner" />}
           {m.card.mock && <div class="pp-feat-mock"><span><b>{m.card.mock.title}</b><small>{m.card.mock.line}</small></span><i>{m.card.mock.action}</i></div>}
         </div>
       )}

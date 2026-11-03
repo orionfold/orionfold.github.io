@@ -1,7 +1,8 @@
 ---
 // Meet the Folds: each one with a person, a feeling and one moment of work,
 // linking to its published Playbook. Faces are AI-generated models and the
-// label below the grid always ships with them.
+// label below the grid always ships with them. The Fold listens when its card
+// is hovered or focused (Paper 0.4.0).
 import Fold from './Fold.astro';
 import { FOLDS, type FoldId } from '../../lib/paper/folds';
 import { MOMENT, FACES_LABEL } from '../../lib/paper/cast';
@@ -14,10 +15,21 @@ const anyFace = Object.values(faces).some(Boolean);
     <a href={`/playbooks/${f.domainSlug}/`} style={`--pp-fold-c:${f.c};--pp-fold-ink:${f.ink}`}>
       <span class="pp-r-photo">
         {faces[f.id] && <img src={faces[f.id]} alt={`A person feeling ${MOMENT[f.id][0].toLowerCase()}`} width="400" height="500" loading="lazy" />}
-        <Fold id={f.id} class="pp-r-fold" />
+        <Fold id={f.id} live class="pp-r-fold" />
       </span>
       <span class="pp-r-text"><b>{f.name} <span>the {f.kind}</span></b><small>{f.domain}</small><em>{MOMENT[f.id][1]}</em></span>
     </a>
   ))}
 </div>
 {anyFace && <p class="pp-note" style="text-align:center;margin-top:28px">{FACES_LABEL}</p>}
+<script>
+  import { liveFold } from '../../lib/paper/fold-live.js';
+  document.querySelectorAll<HTMLElement>('.pp-roster > a').forEach((a) => {
+    const el = a.querySelector<HTMLElement>('.pp-live');
+    if (!el) return;
+    const f = liveFold(el);
+    const on = () => f.state('listening'), off = () => f.state('idle');
+    a.addEventListener('pointerenter', on); a.addEventListener('pointerleave', off);
+    a.addEventListener('focusin', on); a.addEventListener('focusout', off);
+  });
+</script>

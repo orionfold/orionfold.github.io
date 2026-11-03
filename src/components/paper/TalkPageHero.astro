@@ -15,12 +15,16 @@
 // non-fiction, 260 for fiction), plus a short glance to find the new text.
 // Feature demo (operator 2026-10-31): each beat shows one Flow feature (cast
 // HERO), and the ask types 25% faster than reading pace.
+// Live Folds (Paper 0.4.0, G-150): the chat Fold listens while the ask types,
+// thinks until the reply, speaks the reply, and the sheet Fold gives its one
+// bounce when the sign-off note lands. Reduce Motion keeps the poses only.
 import Fold from './Fold.astro';
 import Play from '@lucide/astro/icons/play';
 import Pause from '@lucide/astro/icons/pause';
 import ChevronLeft from '@lucide/astro/icons/chevron-left';
 import ChevronRight from '@lucide/astro/icons/chevron-right';
-import { FOLDS, foldSvg } from '../../lib/paper/folds';
+import { FOLDS } from '../../lib/paper/folds';
+import { liveFoldSvg } from '../../lib/paper/fold-motion';
 import { PLAY, HERO } from '../../lib/paper/cast';
 import type { FoldId } from '../../lib/paper/folds';
 interface Props { faces?: Partial<Record<FoldId, string>>; ctaHref: string; ctaLabel: string; ctaNote?: string; ctaTrack?: string }
@@ -28,7 +32,7 @@ const { faces = {}, ctaHref, ctaLabel, ctaNote, ctaTrack } = Astro.props;
 const first = FOLDS[0];
 const p0 = PLAY[first.id];
 const h0 = HERO[first.id];
-const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c: f.c, ink: f.ink, svg: foldSvg(f, { className: 'pp-bob' }), face: faces[f.id] ?? '', play: PLAY[f.id], hero: HERO[f.id] }));
+const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c: f.c, ink: f.ink, svg: liveFoldSvg(f), face: faces[f.id] ?? '', play: PLAY[f.id], hero: HERO[f.id] }));
 ---
 <section class="pp-hero" aria-label="Intro" style={`--pp-fold-a:${first.a};--pp-fold-c:${first.c};--pp-fold-ink:${first.ink}`} data-pp-hero>
   <div class="pp-hero-copy">
@@ -44,20 +48,20 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
         <div><p class="pp-tk-who" data-pp-you>You, {p0.who.toLowerCase()}</p><div class="pp-tk-b" data-pp-said>{h0.said}</div></div>
       </div>
       <div class="pp-tk-row pp-tk-row--ai">
-        <Fold id={first.id} bob class="pp-tk-av" />
+        <Fold id={first.id} live class="pp-tk-av" />
         <div><p class="pp-tk-who" data-pp-who>{first.name} the {first.kind}</p><div class="pp-tk-b" data-pp-reply>{h0.reply}</div></div>
       </div>
     </div>
     <div class="pp-duo-page">
       <div class="pp-pb">
-        <figure class="pp-pb-photo">{faces[first.id] ? <img data-pp-face src={faces[first.id]} alt="" width="400" height="500" /> : <Fold id={first.id} />}<span data-pp-role>{p0.who}</span></figure>
+        <figure class="pp-pb-photo">{faces[first.id] ? <img data-pp-face src={faces[first.id]} alt="" width="400" height="500" /> : <Fold id={first.id} live />}<span data-pp-role>{p0.who}</span></figure>
         <div class="pp-pb-sheet" data-pp-sheet>
           <span class="pp-pb-crumb">{p0.area} / {h0.file}</span>
           <p class="pp-pb-title">{h0.title}</p>
           <p class="pp-pb-for">{p0.client ? `For ${p0.client}` : 'For every client'}</p>
           <ol class="pp-pb-steps">{h0.rows.map((r, i) => <li class:list={{ 'pp-yours': i === 2 }}><span>{typeof r === 'string' ? r : r[0]}<small>{typeof r === 'string' ? 'YOUR CALL' : r[1].toUpperCase()}</small></span></li>)}</ol>
         </div>
-        <Fold id={first.id} bob class="pp-pb-fold" />
+        <Fold id={first.id} live class="pp-pb-fold" />
         <p class="pp-pb-note" data-pp-note>{h0.note}</p>
       </div>
     </div>
@@ -77,6 +81,7 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
 </section>
 
 <script>
+  import { liveFold } from '../../lib/paper/fold-live.js';
   type Beat = { id: string; name: string; kind: string; a: string; c: string; ink: string; svg: string; face: string; play: { area: string; who: string; client: string; title: string; said: string; steps: string[]; run: string }; hero: { said: string; reply: string; file: string; title: string; rows: [[string, string], [string, string], string]; note: string } };
   // Beats: Fold n talks (2n), then shows its page (2n + 1). Playing types the
   // ask, answers, turns to the page and holds it; stepping shows a beat whole.
@@ -91,6 +96,9 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
     const toggle = ctl.querySelector<HTMLButtonElement>('[data-pp-toggle]')!;
     const status = ctl.querySelector<HTMLElement>('[data-pp-status]')!;
     const chips = ctl.querySelectorAll<HTMLButtonElement>('[data-pp-go]');
+    const chat = liveFold(duo.querySelector('.pp-tk-row--ai .pp-live')!);
+    const sheet = liveFold(duo.querySelector('.pp-pb-fold')!);
+    const folds = [chat, sheet];
     const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
     // Reading pace: 250 words a minute, plus a 0.6 s glance per new block.
     // The ask types 25% faster than reading pace (operator 2026-10-31).
@@ -102,7 +110,7 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
     const pageText = (b: Beat) => [b.hero.title, b.play.client ? `For ${b.play.client}` : 'For every client', ...b.hero.rows.map(rowText), b.hero.note].join(' ');
     const total = cast.length * 2;
     let beat = duo.dataset.act === 'talk' ? 0 : 1, playing = false, inView = false, started = false, timers: number[] = [], typing = 0;
-    const clear = () => { timers.forEach(clearTimeout); timers = []; clearInterval(typing); };
+    const clear = () => { timers.forEach(clearTimeout); timers = []; clearInterval(typing); folds.forEach((f) => f.rest()); };
     const later = (ms: number, fn: () => void) => { timers.push(window.setTimeout(fn, ms)); };
     const fill = (b: Beat) => {
       hero.style.setProperty('--pp-fold-a', b.a); hero.style.setProperty('--pp-fold-c', b.c); hero.style.setProperty('--pp-fold-ink', b.ink);
@@ -110,7 +118,8 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
       duo.querySelector('[data-pp-you]')!.textContent = `You, ${b.play.who.toLowerCase()}`;
       duo.querySelector('[data-pp-role]')!.textContent = b.play.who;
       duo.querySelector('[data-pp-who]')!.textContent = `${b.name} the ${b.kind}`;
-      duo.querySelectorAll('.pp-tk-av.pp-fold, .pp-pb-fold, .pp-pb-photo > .pp-fold').forEach((el) => { el.innerHTML = b.svg; });
+      duo.querySelectorAll('.pp-live').forEach((el) => { el.querySelector('.pp-live-svg')!.outerHTML = b.svg; });
+      folds.forEach((f) => f.rest());
       reply.textContent = replyText(b);
       const p = b.play, h = b.hero;
       duo.querySelector('[data-pp-sheet]')!.innerHTML = `<span class="pp-pb-crumb">${esc(p.area)} / ${esc(h.file)}</span><p class="pp-pb-title">${esc(h.title)}</p><p class="pp-pb-for">${p.client ? 'For ' + esc(p.client) : 'For every client'}</p><ol class="pp-pb-steps">${h.rows.map((r, i) => `<li${i === 2 ? ' class="pp-yours"' : ''}><span>${esc(rowText(r))}<small>${typeof r === 'string' ? 'YOUR CALL' : esc(r[1].toUpperCase())}</small></span></li>`).join('')}</ol>`;
@@ -130,18 +139,18 @@ const cast = FOLDS.map((f) => ({ id: f.id, name: f.name, kind: f.kind, a: f.a, c
       const enter = () => {
         if (f !== prev || duo.dataset.act === 'out') fill(b);
         mark();
-        if (beat % 2) { duo.dataset.act = 'page'; if (animate) later(REVEAL + readMs(pageText(b)), () => show(beat + 1, true)); return; }
+        if (beat % 2) { duo.dataset.act = 'page'; later(1700, () => sheet.trigger('right')); if (animate) later(REVEAL + readMs(pageText(b)), () => show(beat + 1, true)); return; }
         duo.dataset.act = 'talk';
         if (!animate) { said.textContent = b.hero.said; reply.classList.remove('pp-wait'); return; }
-        said.textContent = ''; reply.classList.add('pp-wait');
+        said.textContent = ''; reply.classList.add('pp-wait'); chat.state('listening');
         // The ask types a little faster than reading pace; the eye still follows the cursor.
         let k = 0;
         const perChar = (words(b.hero.said) * 60000) / TYPE_WPM / b.hero.said.length;
         typing = window.setInterval(() => {
           said.textContent = b.hero.said.slice(0, ++k);
           if (k < b.hero.said.length) return;
-          clearInterval(typing);
-          later(250, () => reply.classList.remove('pp-wait'));
+          clearInterval(typing); chat.state('thinking');
+          later(250, () => { reply.classList.remove('pp-wait'); chat.say(readMs(replyText(b))); });
           later(250 + readMs(replyText(b)), () => show(beat + 1, true));
         }, perChar);
       };

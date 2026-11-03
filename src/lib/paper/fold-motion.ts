@@ -5,7 +5,7 @@
 // (fold-live.js) can run idle, listening, thinking, speaking and the right and
 // wrong triggers. The same anchors and paths go to the package, so the Rive
 // editor and the Mac app work from one geometry.
-import { FOLDS, foldShapes, INK, type Fold, type FoldId } from './folds.ts';
+import { FOLDS, foldShapes, foldFitViewBox, INK, SHADOW, type Fold, type FoldId } from './folds.ts';
 
 type Eye = [number, number, number];
 export interface Face {
@@ -57,8 +57,10 @@ export function bodyShapes(f: Fold): string {
   return s;
 }
 
-/** A Fold with a face layer, ready for fold-live.js. Decorative unless given a label. */
-export function liveFoldSvg(f: Fold, opts: { label?: string } = {}): string {
+/** A Fold with a face layer, ready for fold-live.js. Decorative unless given a label.
+ *  Same options as foldSvg: `fit` crops to the drawing, `shadow: false` drops the ground shadow
+ *  (the shadow sits outside the body layer, so it holds still while the Fold breathes). */
+export function liveFoldSvg(f: Fold, opts: { label?: string; fit?: boolean; shadow?: boolean } = {}): string {
   const face = FACE[f.id];
   const lid = f[face.lid];
   const vis = visemes(face.mouth), poses = mouthPoses(face.mouth);
@@ -68,7 +70,10 @@ export function liveFoldSvg(f: Fold, opts: { label?: string } = {}): string {
   }).join('');
   const blush = face.blush.map(([x, y]) => `<ellipse class="pp-live-blush" cx="${x}" cy="${y}" rx="5" ry="2.6" fill="#f24b39"/>`).join('');
   const aria = opts.label ? ` role="img" aria-label="${opts.label}"` : ' aria-hidden="true"';
-  return `<svg viewBox="0 0 200 214" class="pp-live-svg"${aria} data-fold="${f.id}" data-visemes='${JSON.stringify(vis)}' data-mouth-right="${poses.right}" data-mouth-wrong="${poses.wrong}" data-mouth-thinking="${poses.thinking}"><g class="pp-live-body">${bodyShapes(f)}</g><g class="pp-live-face">${eyes}<path class="pp-live-mouth" d="${vis[0]}" fill="none" stroke="${INK}" stroke-width="${f1(Math.max(1.4, face.mouth[2] * .22))}" stroke-linecap="round"/>${blush}</g></svg>`;
+  const box = opts.fit ? foldFitViewBox(f.id) : '0 0 200 214';
+  const shadow = opts.fit || opts.shadow === false ? '' : SHADOW;
+  const delay = (FOLDS.findIndex((x) => x.id === f.id) * 0.55).toFixed(2);
+  return `<svg viewBox="${box}" class="pp-live-svg" style="--pp-blink-delay:${delay}s"${aria} data-fold="${f.id}" data-visemes='${JSON.stringify(vis)}' data-mouth-right="${poses.right}" data-mouth-wrong="${poses.wrong}" data-mouth-thinking="${poses.thinking}">${shadow}<g class="pp-live-body">${bodyShapes(f)}</g><g class="pp-live-face">${eyes}<path class="pp-live-mouth" d="${vis[0]}" fill="none" stroke="${INK}" stroke-width="${f1(Math.max(1.4, face.mouth[2] * .22))}" stroke-linecap="round"/>${blush}</g></svg>`;
 }
 
 /** Every Fold's face geometry for the package and the Rive editor. */

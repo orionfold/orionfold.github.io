@@ -5,6 +5,7 @@
 import PaperLayout from '../../../layouts/PaperLayout.astro';
 import { ogMeta } from '../../../data/og';
 import Panel from '../../../components/paper/Panel.astro';
+import Media from '../../../components/paper/Media.astro';
 import PageNav from '../../../components/paper/PageNav.astro';
 import Fold from '../../../components/paper/Fold.astro';
 import Nav from '../../../components/Nav.astro';
@@ -183,10 +184,9 @@ const faqSchema = {
         )}
       </div>
       <div class="pp-hero-stage">
-        <figure class="pp-window-shot pp-workshop-hero-shot">
+        <Media caption={"Governed support workflow · checkpoint 03 of 05 · the human decides"} ratio="contain" class="pp-workshop-hero-shot">
           <ThemedShot id="inbox-approvals" alt="Relay Inbox showing the human approval checkpoint in a governed workflow." />
-          <figcaption>Governed support workflow · checkpoint 03 of 05 · the human decides</figcaption>
-        </figure>
+</Media>
       </div>
     </section>
 
@@ -216,13 +216,13 @@ const faqSchema = {
 
     <Panel id="free-lesson" seam="Free · 15-minute workshop showcase" tinted>
       <div class="pp-workshop-lesson">
-        <figure class="pp-window-shot pp-workshop-video">
+        <Media ratio="auto" class="pp-workshop-video">
           <video controls playsinline preload="metadata" poster={media.showcasePoster} crossorigin="anonymous">
             <source src={media.showcase} type="video/mp4" />
             <track kind="captions" src={media.showcaseCaptions} srclang="en" label="English" default />
             Your browser cannot play this video. Use the transcript link beside it.
           </video>
-        </figure>
+        </Media>
         <div class="pp-tour-copy">
           <h2>Follow the Marketing Line from operating memo to retained proof.</h2>
           <p>This complete public showcase uses synthetic Marketing Line data to inspect the source, isolate the join, shape the workflow, place human judgment before consequence, and keep a deterministic receipt. It makes no model call and writes nothing to your Relay workspace.</p>
@@ -299,7 +299,7 @@ const faqSchema = {
     </Panel>
 
     <section class="pp-closing" aria-labelledby="workshop-closing-title">
-      <Fold id="tally" bob class="pp-closing-fold" />
+      <Fold id="tally" live class="pp-closing-fold" />
       <p class="pp-kicker">Relay Operator Workshop · 2026.07 founding</p>
       <h2 id="workshop-closing-title">Bring the process. Keep the working system.</h2>
       <p>One-time {price}. No account, cohort, sales call, premium Relay requirement, or recurring charge.</p>

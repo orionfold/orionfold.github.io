@@ -99,10 +99,37 @@
 /* R6 (G-145): the double-opt-in form inside a Paper closing sheet. Same form
  * and funnel; Paper's sans input and one ink action. */
 .paper .ls-form-in-paper { width: min(440px, 100%); }
-.paper .ls-form-in-paper input[type="email"] { min-height: 48px; background: var(--pp-white); border-color: var(--pp-line); border-radius: var(--pp-r-2); font: 400 15px/1.2 var(--pp-sans); letter-spacing: 0; color: var(--pp-ink); }
-.paper .ls-form-in-paper input[type="email"]:focus { border-color: var(--pp-ink); }
-.paper .ls-form-in-paper button[type="submit"] { min-height: 48px; background: var(--pp-ink); color: var(--pp-white); border-radius: var(--pp-r-2); font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; }
+/* 0.4.0 control states (G-150): hover ink-3, focus ring, invalid red-deep, disabled paper-2; messages in red-ink and add-ink. */
+.paper .ls-form-in-paper input[type="email"] { min-height: 48px; background: var(--pp-white); border-color: var(--pp-line); border-radius: var(--pp-r-2); font: 400 15px/1.2 var(--pp-sans); letter-spacing: 0; color: var(--pp-ink); transition: border-color var(--pp-dur-fast) var(--pp-ease-out), box-shadow var(--pp-dur-fast) var(--pp-ease-out); }
+.paper .ls-form-in-paper input[type="email"]::placeholder { color: var(--pp-ink-3); }
+.paper .ls-form-in-paper input[type="email"]:hover { border-color: var(--pp-ink-3); }
+.paper .ls-form-in-paper input[type="email"]:focus-visible { outline: 0; border-color: var(--pp-teal); box-shadow: var(--pp-ring); }
+.paper .ls-form-in-paper input[type="email"]:is([aria-invalid="true"], :user-invalid) { border-color: var(--pp-red-deep); }
+.paper .ls-form-in-paper input[type="email"]:disabled { background: var(--pp-paper-2); color: var(--pp-ink-3); border-color: var(--pp-line); cursor: not-allowed; }
+.paper .ls-form-in-paper button[type="submit"] { min-height: 48px; background: var(--pp-ink); color: var(--pp-white); border-radius: var(--pp-r-2); font: 500 15px/1.2 var(--pp-sans); letter-spacing: 0; text-transform: none; transition: background-color var(--pp-dur-fast) var(--pp-ease-out), transform var(--pp-dur-fast) var(--pp-ease-out); }
 .paper .ls-form-in-paper button[type="submit"]:hover { background: var(--pp-ink-2); }
+.paper .ls-form-in-paper button[type="submit"]:active { transform: scale(var(--pp-press)); }
+.paper .ls-form-in-paper button[type="submit"]:focus-visible { outline: 0; box-shadow: var(--pp-ring), 0 0 0 1px var(--pp-teal); }
+.paper .ls-form-in-paper button[type="submit"]:disabled { background: var(--pp-paper-2); color: var(--pp-ink-3); opacity: 1; cursor: not-allowed; }
+.paper .ls-form-in-paper [role="alert"] { font: 400 12.5px/1.4 var(--pp-sans); letter-spacing: 0; color: var(--pp-red-ink); }
+.paper .ls-form-in-paper [id$="-success"] { color: var(--pp-add-ink); }
+.paper .ls-form-in-paper [id$="-success"] :is(svg, span) { color: inherit; font: 400 13px/1.4 var(--pp-sans); letter-spacing: 0; }
+/* The adoption page's enquiry drawer (a Living component on a Paper page): same states through the bridge. */
+.paper #enquiry-form :is(input:not([type="text"][tabindex="-1"]), textarea) { background: var(--pp-white); border-color: var(--pp-line); border-radius: var(--pp-r-2); color: var(--pp-ink); font: var(--pp-t-copy); transition: border-color var(--pp-dur-fast) var(--pp-ease-out), box-shadow var(--pp-dur-fast) var(--pp-ease-out); }
+.paper #enquiry-form :is(input, textarea)::placeholder { color: var(--pp-ink-3); }
+.paper #enquiry-form :is(input, textarea):hover { border-color: var(--pp-ink-3); }
+.paper #enquiry-form :is(input, textarea):focus-visible { outline: 0; border-color: var(--pp-teal); box-shadow: var(--pp-ring); }
+.paper #enquiry-form :is(input, textarea):is([aria-invalid="true"], :user-invalid) { border-color: var(--pp-red-deep); }
+.paper #enquiry-form :is(input, textarea):disabled { background: var(--pp-paper-2); color: var(--pp-ink-3); cursor: not-allowed; }
+.paper #enquiry-form label { font: var(--pp-t-label); letter-spacing: 0; text-transform: none; color: var(--pp-ink); }
+.paper #enquiry-form [role="alert"] { font: 400 12.5px/1.4 var(--pp-sans); letter-spacing: 0; color: var(--pp-red-ink); }
+.paper #enquiry-form button[type="submit"] { background: var(--pp-ink); color: var(--pp-white); border-radius: var(--pp-r-2); font: var(--pp-t-button); letter-spacing: 0; text-transform: none; }
+.paper #enquiry-form button[type="submit"]:focus-visible { outline: 0; box-shadow: var(--pp-ring), 0 0 0 1px var(--pp-teal); }
+.paper #enquiry-form button[type="submit"]:disabled { background: var(--pp-paper-2); color: var(--pp-ink-3); opacity: 1; }
+/* Receipt diagrams in the Paper long-form read the figure palette (0.4.0 §4.8): greys for context, teal for the one accent, red-deep for the mark. */
+.paper .receipt-prose { --color-primary: var(--pp-teal); --color-text: var(--pp-ink); --color-text-muted: var(--pp-ink-2); --color-text-dim: var(--pp-ink-3); --color-border: var(--pp-viz-grid); --color-surface: var(--pp-white); --color-surface-overlay: var(--pp-white); --svg-accent-red: var(--pp-red-deep); }
+.paper .receipt-prose .fn-diagram__edge { stroke: var(--pp-viz-context-2); }
+.paper .receipt-prose .fn-diagram__node { stroke: var(--pp-viz-context-3); }
 /* The mid-article product cards (Proof, Flow) sit in the 620px column as a quiet sheet. */
 .paper .ls-longform .living-paper-cta:not(:has(.living-paper-cta__inner)) { padding: 24px; background: var(--pp-paper-2); }
 .paper .ls-longform .living-paper-cta:not(:has(.living-paper-cta__inner)) .living-paper-cta__copy h2 { font-size: 30px; margin: 6px 0 8px; }

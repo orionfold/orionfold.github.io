@@ -10,7 +10,7 @@ const { id, seam, fold, tinted = false, title, lede } = Astro.props;
 ---
 <section id={id} class:list={['pp-panel', { 'pp-panel--tinted': tinted }]}>
   {title ? <span class="pp-seam">{seam}</span> : <h2 class="pp-seam">{seam}</h2>}
-  {fold && <Fold id={fold} bob class="pp-panel-fold" />}
+  {fold && <Fold id={fold} live class="pp-panel-fold" />}
   {title && (
     <div class="pp-panel-head">
       <h2 set:html={title} />

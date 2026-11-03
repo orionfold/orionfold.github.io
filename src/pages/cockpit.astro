@@ -5,6 +5,7 @@
 import { Image } from 'astro:assets';
 import PaperLayout from '../layouts/PaperLayout.astro';
 import Panel from '../components/paper/Panel.astro';
+import Media from '../components/paper/Media.astro';
 import ProofArtCards from '../components/paper/ProofArtCards.astro';
 import '../styles/living-in-paper.css';
 import '../styles/paper-bridge-product.css';
@@ -45,7 +46,7 @@ const moves = [
       </div>
       {/* The cockpit itself: a real Arena screenshot, not a description of one. */}
       <div class="pp-hero-stage">
-        <figure class="pp-window-shot">
+        <Media caption={"Local models side by side, with live speed and memory. Nothing you type leaves your machine."}>
           <Image
             src={arenaCockpit}
             alt="The Orionfold Arena cockpit running local models side by side with live speed and memory telemetry."
@@ -55,8 +56,7 @@ const moves = [
             decoding="async"
             data-no-zoom
           />
-          <figcaption>Local models side by side, with live speed and memory. Nothing you type leaves your machine.</figcaption>
-        </figure>
+</Media>
       </div>
     </section>
 

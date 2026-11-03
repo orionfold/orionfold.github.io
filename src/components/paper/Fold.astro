@@ -1,8 +1,19 @@
 ---
 // One Fold, drawn at build time. Decorative unless given a label.
+// `live` (Paper 0.4.0) draws it as a body and a face layer with the idle breath
+// and blink in CSS; fold-live.js drives listening, thinking, speaking and the
+// right and wrong moments. Reduce Motion keeps the pose and stops the breath.
 import { foldById, foldSvg, type FoldId } from '../../lib/paper/folds';
-interface Props { id: FoldId; bob?: boolean; label?: string; class?: string; fit?: boolean }
-const { id, bob = false, label, class: cls = '', fit = false } = Astro.props;
-const svg = foldSvg(foldById[id], { label, fit });
+import { liveFoldSvg } from '../../lib/paper/fold-motion';
+interface Props { id: FoldId; live?: boolean; label?: string; class?: string; fit?: boolean }
+const { id, live = false, label, class: cls = '', fit = false } = Astro.props;
+const f = foldById[id];
 ---
-<div class:list={['pp-fold', cls, { 'pp-bob': bob, 'pp-fold--fit': fit }]} set:html={svg} />
+{live
+  ? <div class:list={['pp-fold pp-live pp-live--idle', cls, { 'pp-fold--fit': fit }]} data-pp-fold={id}><span class="pp-live-ring" aria-hidden="true"></span><Fragment set:html={liveFoldSvg(f, { label, fit })} /></div>
+  : <div class:list={['pp-fold', cls, { 'pp-fold--fit': fit }]} set:html={foldSvg(f, { label, fit })} />}
+{live && <script>
+  // Every live Fold on the page rests while it is off screen (one observer per page).
+  import { sleepFolds } from '../../lib/paper/fold-live.js';
+  sleepFolds();
+</script>}

@@ -240,3 +240,45 @@ test('0.4.0 roles and rules: type roles, motion tokens, controls, Increase Contr
   assert.doesNotMatch(comp, /\.pp-next(?![\w-])/);
   assert.doesNotMatch(read('src/layouts/PaperLayout.astro'), /paper=next/);
 });
+
+test('0.4.0 applied across the pages (G-150): live Folds, chart kit, media frames, sheet, control states, role tokens', () => {
+  const src = walk(path.join(root, 'src')).filter((f) => /\.(astro|ts|js|css|mjs)$/.test(f));
+  const grep = (re) => src.filter((f) => re.test(readFileSync(f, 'utf8'))).map((f) => path.relative(root, f)).sort();
+  // the bob retired: every placed Fold is live (breath, blink, the state machine) and rests off screen
+  assert.deepEqual(grep(/pp-bob(?!-soft)/), [], 'no .pp-bob left (the live Fold replaced it)');
+  assert.deepEqual(grep(/<Fold [^>]*\bbob\b/), []);
+  const fold = read('src/components/paper/Fold.astro');
+  assert.match(fold, /live\?: boolean/); assert.match(fold, /liveFoldSvg\(f, \{ label, fit \}\)/); assert.match(fold, /sleepFolds\(\)/);
+  const hero = read('src/components/paper/TalkPageHero.astro');
+  for (const call of ["chat.state('listening')", "chat.state('thinking')", 'chat.say(', "sheet.trigger('right')", 'folds.forEach((f) => f.rest())']) assert.ok(hero.includes(call), `the hero Fold listens, thinks, speaks, bounces once at the sign-off note and rests on clear: ${call}`);
+  assert.match(read('src/components/paper/Roster.astro'), /<Fold id=\{f\.id\} live class="pp-r-fold" \/>[\s\S]*pointerenter[\s\S]*focusin/);
+  const comp = read('src/styles/paper/components.css');
+  assert.match(comp, /\.paper \.pp-live\[data-pp-asleep\] :is\(\.pp-live-body, \.pp-live-face, \.pp-live-lid\) \{ animation-play-state: paused; \}/);
+  assert.match(read('src/lib/paper/fold-live.js'), /export function sleepFolds[\s\S]*IntersectionObserver/);
+  // the chart kit is one module; the gallery and the window draw from it
+  assert.match(read('src/lib/paper/next-review.ts'), /import \{ marker, monotonePath \} from '\.\/chart'/);
+  assert.match(read('src/components/paper/FlowWindow.astro'), /import \{ barChart, chartFigure, type BarSpec \} from '\.\.\/\.\.\/lib\/paper\/chart'/);
+  assert.doesNotMatch(comp, /\.pp-bars(?![\w-])/, 'the window draws a kit chart, not tinted bars');
+  // provenance on the sign-off
+  assert.match(read('src/components/paper/FlowWindow.astro'), /class="pp-prov" data-pp-prov[\s\S]*Signed by you at/);
+  // media frames replaced the window shot everywhere, and generated pictures carry the chip
+  assert.deepEqual(grep(/pp-window-shot/), []);
+  assert.match(read('src/pages/about.astro'), /<Media ai ratio="auto" class="pp-letter-figure">/);
+  assert.match(read('src/pages/dgx-spark.astro'), /<Media ratio="wide" ai class="pp-spark-art">/);
+  // the enterprise dialog is a sheet with the control states and the one teal primary
+  const ent = read('src/components/flow/FlowEnterpriseContact.astro');
+  assert.match(ent, /class="flow-enterprise-dialog pp-modal"/); assert.match(ent, /class="flow-enterprise-intro pp-modal-lead"/);
+  assert.equal((ent.match(/class="pp-input"/g) ?? []).length, 6, 'every field is a .pp-input');
+  assert.match(ent, /pp-btn pp-btn--primary/); assert.doesNotMatch(ent, /clamp\(/);
+  // the Living bridges carry the states through tokens, never pp- classes
+  const bridge = read('src/styles/living-in-paper.css');
+  for (const sel of ['.ls-form-in-paper input[type="email"]:focus-visible', '.ls-form-in-paper input[type="email"]:is([aria-invalid="true"], :user-invalid)', '#enquiry-form :is(input, textarea):focus-visible']) assert.ok(bridge.includes(sel), sel);
+  assert.ok(bridge.includes('box-shadow: var(--pp-ring)'));
+  // role tokens: heads that match a role read it; the bespoke clamp count only goes down
+  for (const sel of ['.pp-form h2', '.pp-done-next h2', '.pp-relay-split h3', '.pp-index-head h2', '.pp-play-founders h3']) assert.match(comp, new RegExp(`\\.paper ${sel.replace(/[.]/g, '\\.')} \\{[^}]*font: var\\(--pp-t-(title|section)\\)`), sel);
+  assert.ok((comp.match(/font: \d+ clamp\(/g) ?? []).length <= 25, 'no new ad hoc clamp sizes in components.css (25 bespoke home and long-form sizes remain)');
+  assert.match(read('src/pages/404.astro'), /font: var\(--pp-t-display\)/);
+  // section 7: teal is for links, rings and the primary; small text reads ink
+  assert.match(comp, /\.pp-price-more summary \{[^}]*color: var\(--pp-ink-2\)/);
+  assert.match(comp, /\.pp-signoff button\[aria-pressed="true"\] \{[^}]*color: var\(--pp-teal-ink\)/);
+});

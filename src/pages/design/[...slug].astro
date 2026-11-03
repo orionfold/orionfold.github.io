@@ -61,8 +61,8 @@ const swatches = ['paper', 'paper-2', 'white', 'line', 'ink', 'ink-2', 'ink-3', 
 
     <Panel id="domains" seam="Playbooks" fold="tally" title="Share your Playbook.<br />Clients work through it." lede="Your clients bring it into their own Flow and work through your method on their own case.">
       <FlowWindow docs={[
-        { id: 'acct', label: 'Accounting Advisory', fold: 'tally', files: ['Close checklist', 'Close note', 'Research notes', 'Juniper Bakery'], doc: 'Close note', title: 'Juniper Bakery, March close in plain English', body: 'Revenue came in 6 percent over plan. Most of it is the new catering contract. Costs held flat except software, which rose with two new seats.', bars: [40, 52, 47, 61, 58, 70], sign: 'Partner review' },
-        { id: 'contract', label: 'Contract Review', fold: 'clause', files: ['Issues list', 'Clause playbook', 'Redline memo', 'Larkspur Robotics'], doc: 'Redline memo', title: 'Larkspur Robotics vendor MSA, three asks', body: 'Clause 9 caps liability at fees paid. Our playbook asks for twice the fees. If they push back, the fallback is a carve-out for data loss.', bars: [70, 30, 20, 55, 15, 40], sign: 'Counsel sign-off' },
+        { id: 'acct', label: 'Accounting Advisory', fold: 'tally', files: ['Close checklist', 'Close note', 'Research notes', 'Juniper Bakery'], doc: 'Close note', title: 'Juniper Bakery, March close in plain English', body: 'Revenue came in 6 percent over plan. Most of it is the new catering contract. Costs held flat except software, which rose with two new seats.', chart: { title: 'Catering carried March', label: 'Monthly revenue index, October to March: 40, 52, 47, 61, 58, 70. March is the highest.', bars: [['Oct', 40], ['Nov', 52], ['Dec', 47], ['Jan', 61], ['Feb', 58], ['Mar', 70]].map(([label, value]) => ({ label: String(label), value: Number(value), hi: label === 'Mar' })) }, sign: 'Partner review' },
+        { id: 'contract', label: 'Contract Review', fold: 'clause', files: ['Issues list', 'Clause playbook', 'Redline memo', 'Larkspur Robotics'], doc: 'Redline memo', title: 'Larkspur Robotics vendor MSA, three asks', body: 'Clause 9 caps liability at fees paid. Our playbook asks for twice the fees. If they push back, the fallback is a carve-out for data loss.', chart: { title: 'Clause 9 holds most of the risk', label: 'Risk points by clause: clause 9 70, clause 4 30, clause 7 20, clause 12 55, clause 2 15, clause 15 40.', bars: [['Cl. 9', 70], ['Cl. 4', 30], ['Cl. 7', 20], ['Cl. 12', 55], ['Cl. 2', 15], ['Cl. 15', 40]].map(([label, value]) => ({ label: String(label), value: Number(value), hi: label === 'Cl. 9' })) }, sign: 'Counsel sign-off' },
       ]} />
       <WhyNow href="#" cta="Move a GPT to Flow"><b>Custom GPTs retire December 11.</b> Give your playbook a home you own.</WhyNow>
     </Panel>
@@ -92,9 +92,9 @@ const swatches = ['paper', 'paper-2', 'white', 'line', 'ink', 'ink-2', 'ink-3', 
     ]} />
 
     <section style="padding:110px 16px 40px;text-align:center">
-      <h2 class="pp-serif" style="margin:0 0 40px;font-weight:300;font-size:clamp(40px,5vw,72px);line-height:1">Meet your Fold</h2>
+      <h2 class="pp-display" style="margin:0 0 40px">Meet your Fold</h2>
       <Roster faces={emo} />
-      <h2 class="pp-serif" id="pricing" style="margin:110px 0 0;font-weight:300;font-size:clamp(34px,4vw,52px)">Pricing</h2>
+      <h2 class="pp-section" id="pricing" style="margin:110px 0 0">Pricing</h2>
       <PricingTable plans={[
         { name: 'Base', price: 'Free', line: 'Bring in any Playbook and read it. Free forever.' },
         { name: 'Pro', price: '$10', unit: '/mo', line: 'Chat with a Playbook and let your Fold do the work. $96 a year. Ten Pro Days to try.' },
@@ -108,7 +108,7 @@ const swatches = ['paper', 'paper-2', 'white', 'line', 'ink', 'ink-2', 'ink-3', 
         {swatches.map((s) => <div style="display:grid;gap:6px"><span style={`height:56px;border-radius:var(--pp-r-2);border:1px solid var(--pp-line);background:var(--pp-${s})`} /><span class="pp-kicker">--pp-{s}</span></div>)}
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:16px;margin-top:40px">
-        {FOLDS.map((f) => <div style="text-align:center"><Fold id={f.id} bob /><span class="pp-kicker">{f.name} · {f.domain}</span></div>)}
+        {FOLDS.map((f) => <div style="text-align:center"><Fold id={f.id} live /><span class="pp-kicker">{f.name} · {f.domain}</span></div>)}
       </div>
       <p class="pp-note" style="margin-top:28px">{FACES_LABEL} Gallery faces load from the local prototype folder and are not public files.</p>
     </section>

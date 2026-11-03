@@ -4,6 +4,7 @@
 import PaperLayout from '../../layouts/PaperLayout.astro';
 import { ogMeta } from '../../data/og';
 import Panel from '../../components/paper/Panel.astro';
+import Media from '../../components/paper/Media.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import ThemedShot from '../../components/relay/ThemedShot.astro';
@@ -78,10 +79,9 @@ const collectionSchema = {
             <small>{RELAY_OPERATOR_WORKSHOP_CHECKOUT_ENABLED ? 'Enrollment open' : 'Enrollment opens with the first workshop release'}</small>
           </div>
         </div>
-        <figure class="pp-window-shot pp-training-shot">
+        <Media caption={"Human checkpoint · waiting for judgment"} ratio="contain" class="pp-training-shot">
           <ThemedShot id="inbox-approvals" alt="Relay Inbox showing a human approval checkpoint waiting for an operator decision." />
-          <figcaption>Human checkpoint · waiting for judgment</figcaption>
-        </figure>
+</Media>
       </article>
     </section>
 

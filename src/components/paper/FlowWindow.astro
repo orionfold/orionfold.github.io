@@ -2,12 +2,16 @@
 // A mock Flow window: the Playbook's files on the left, the open document on the
 // right, ending in a sign-off the reader can press. With tabs, one window
 // switches between Playbooks; each tab carries its own Fold's colors.
-import { foldById, type FoldId } from '../../lib/paper/folds';
-export interface FlowWindowDoc { id: string; label: string; fold: FoldId; files: string[]; doc: string; title: string; body: string; bars?: number[]; sign: string }
+import { foldById, foldGlyphSvg, type FoldId } from '../../lib/paper/folds';
+import { barChart, chartFigure, type BarSpec } from '../../lib/paper/chart';
+/** `chart` draws with the Paper chart kit (0.4.0): a takeaway title and bars from zero, one teal highlight. */
+export interface FlowWindowDoc { id: string; label: string; fold: FoldId; files: string[]; doc: string; title: string; body: string; chart?: BarSpec & { title: string }; sign: string }
 // `named` puts the Fold in the window and the byline. The /flow/ hero turns it
 // off: Fold claims wait for the app release that carries them (D8).
 // `level` keeps the outline whole: a hero window sits under the H1, so its
 // document titles are h2.
+// The sign-off carries a provenance chip (0.4.0 §4.7): "Drawn by <Fold>" until
+// the reader approves, then "Signed by you at <time>".
 interface Props { docs: FlowWindowDoc[]; named?: boolean; level?: 'h2' | 'h3' }
 const { docs, named = true, level = 'h3' } = Astro.props;
 const Title = level;
@@ -31,9 +35,10 @@ const Title = level;
           <span class="pp-kicker">{d.label.toUpperCase()} / {d.doc.toUpperCase()}.MD</span>
           <Title class="pp-doc-title">{d.title}</Title>
           <p>{d.body}</p>
-          {d.bars && <div class="pp-bars" aria-hidden="true">{d.bars.map((h) => <i style={`height:${h}%`} />)}</div>}
+          {d.chart && <Fragment set:html={chartFigure({ title: d.chart.title, svg: barChart({ ...d.chart, h: 150, grid: undefined }) })} />}
           <div class="pp-signoff">
-            <div><b>{d.sign}</b><small>{named ? `${f.name} drafted this.` : 'Flow drafted this.'} It waits for your yes.</small></div>
+            <div><b>{d.sign}</b><small>{named ? `${f.name} drafted this.` : 'Flow drafted this.'} It waits for your yes.</small>
+              <span class="pp-prov" data-pp-prov data-drawn={named ? `Drawn by ${f.name}` : 'Drawn by Flow'}><Fragment set:html={foldGlyphSvg(f)} /><span>{named ? `Drawn by ${f.name}` : 'Drawn by Flow'}</span></span></div>
             <button type="button" aria-pressed="false" data-pp-approve>Approve</button>
           </div>
         </div>
@@ -53,6 +58,10 @@ const Title = level;
     w.querySelectorAll<HTMLButtonElement>('[data-pp-approve]').forEach((b) => b.addEventListener('click', () => {
       const on = b.getAttribute('aria-pressed') !== 'true';
       b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Approved' : 'Approve';
+      const prov = b.closest('.pp-signoff')?.querySelector<HTMLElement>('[data-pp-prov]');
+      if (!prov) return;
+      prov.classList.toggle('pp-prov--signed', on);
+      prov.lastElementChild!.textContent = on ? `Signed by you at ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : prov.dataset.drawn!;
     }));
   });
 </script>

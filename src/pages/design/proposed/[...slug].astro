@@ -223,7 +223,7 @@ const LIGHT = { paper: '#fbfaf6', 'paper-2': '#f4f1e8', 'ink-3': '#666d69', 'tea
       <h2>11 · Every Fold as a state machine</h2>
       <p>Duolingo runs ten characters across a hundred courses this way: one runtime file per character, a state machine with body, mouth and idle layers that run in parallel, driven by the app with a state, a viseme number and two triggers. Each Fold's drawing is now split into a body layer and a face layer (eyes with lids and pupils, a mouth with five visemes, blush), so the same inputs drive all eight here on the web. The package carries each Fold's layered SVG, the driver, and the face geometry the Rive editor and the Mac app work from.</p>
       <div class="rv-pair">
-        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><div style="display:flex;gap:18px;flex-wrap:wrap;align-items:end">{FOLDS.map((f) => <div style="width:88px"><Fold id={f.id} bob /></div>)}</div><p class="pp-note" style="margin-top:12px">One drawing each, one CSS bob. A Fold cannot listen, think, speak or react, and the app cannot drive it.</p></div>
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><div style="display:flex;gap:18px;flex-wrap:wrap;align-items:end">{FOLDS.map((f) => <div style="width:88px"><Fold id={f.id} /></div>)}</div><p class="pp-note" style="margin-top:12px">One drawing each, one CSS bob. A Fold cannot listen, think, speak or react, and the app cannot drive it.</p></div>
         <div class="rv-col pp-next"><span class="rv-tag">0.4.0, the state machine on every Fold</span>
           <div class="rv-live-grid" id="live-grid">{FOLDS.map((f) => <div class="rv-live-cell"><div class="pp-live pp-live--idle"><span class="pp-live-ring" aria-hidden="true"></span><div set:html={liveFoldSvg(f, { label: `${f.name} the ${f.kind}, animated` })} /></div><span class="pp-note">{f.name}</span></div>)}</div>
           <div class="rv-fx-ctl" style="margin-top:18px">
@@ -266,7 +266,7 @@ const LIGHT = { paper: '#fbfaf6', 'paper-2': '#f4f1e8', 'ink-3': '#666d69', 'tea
       <h2>13 · Pictures, video and 3D on Paper</h2>
       <p>Media keeps its aspect ratio inside a line frame, the caption sits in ink-3, a poster never looks like a control, and anything a model made carries a chip plus Edit, Undo and Retry beside it (Apple HIG Generative AI, June 2026). 3D ships as glTF on the web and USDZ on Apple from one source.</p>
       <div class="rv-pair">
-        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><figure class="pp-window-shot"><div style="aspect-ratio:16/9;background:var(--pp-paper-2)"></div><figcaption>One screenshot frame. No rule for video, 3D or made-with-AI labels.</figcaption></figure></div>
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><figure style="margin:0;border:1px solid var(--pp-line);border-radius:var(--pp-r-3);overflow:hidden;background:var(--pp-white)"><div style="aspect-ratio:16/9;background:var(--pp-paper-2)"></div><figcaption style="padding:10px 16px;border-top:1px solid var(--pp-line);font-size:13px;color:var(--pp-ink-3);text-align:center">One screenshot frame (the 0.3.x window shot). No rule for video, 3D or made-with-AI labels.</figcaption></figure></div>
         <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
           <div class="rv-media">
             <figure class="pp-media"><div class="pp-media-frame"><svg viewBox="0 0 160 90" aria-hidden="true"><rect width="160" height="90" fill="var(--pp-gold-pale)"/><polygon points="0,90 60,40 100,70 160,20 160,90" fill="var(--pp-gold-soft)"/><circle cx="120" cy="24" r="10" fill="var(--pp-gold-base)"/></svg><span class="pp-prov pp-ai-chip" set:html={glyph('ember') + 'Made with AI'} /></div><figcaption>A hero Ember drew for the newsletter.</figcaption><div class="pp-media-acts"><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">Edit</button><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">Undo</button><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">Retry</button></div></figure>
@@ -358,14 +358,14 @@ const LIGHT = { paper: '#fbfaf6', 'paper-2': '#f4f1e8', 'ink-3': '#666d69', 'tea
 <style is:global>
   .rv { max-width: 1400px; margin: 0 auto; padding: 32px 16px 80px; }
   .rv-head { max-width: 72ch; margin: 0 auto 40px; }
-  .rv-head h1 { font-weight: 300; font-size: clamp(36px, 4.5vw, 56px); line-height: 1.02; margin: 8px 0 12px; }
+  .rv-head h1 { font: var(--pp-t-display); margin: 8px 0 12px; }
   .rv-head p { color: var(--pp-ink-2); font-size: 16px; }
   .rv-head code { font: 500 12px/1 var(--pp-mono); padding: 2px 5px; background: var(--pp-paper-2); border-radius: var(--pp-r-1); }
   .rv-tools { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; margin-top: 18px; font-size: 13px; color: var(--pp-ink-3); }
   .rv-tools button { font: 500 13px/1.2 var(--pp-sans); padding: 6px 11px; border: 1px solid var(--pp-line); border-radius: 999px; background: var(--pp-white); color: var(--pp-ink); cursor: pointer; margin-right: 10px; }
   .rv-tools button[aria-pressed="true"] { background: var(--pp-ink); color: var(--pp-white); border-color: var(--pp-ink); }
   .rv-row { padding: 40px 0; border-top: 1px solid var(--pp-line); }
-  .rv-row > h2 { font: 400 clamp(24px, 2.6vw, 32px)/1.15 var(--pp-serif); margin: 0 0 8px; }
+  .rv-row > h2 { font: var(--pp-t-title); margin: 0 0 8px; }
   .rv-row > p { max-width: 80ch; color: var(--pp-ink-2); margin: 0 0 22px; font-size: 15px; }
   .rv-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 18px; align-items: start; }
   .rv-pair + .rv-pair { margin-top: 18px; }

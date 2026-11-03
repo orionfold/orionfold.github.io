@@ -129,3 +129,7 @@ export function foldSvg(f: Fold, opts: { label?: string; className?: string; sha
   if (opts.fit) return `<svg viewBox="${foldFitViewBox(f.id)}" ${a11y}${cls}>${foldShapes(f)}</svg>`;
   return `<svg viewBox="0 0 200 214" ${a11y}${cls}>${opts.shadow === false ? '' : SHADOW}${foldShapes(f)}</svg>`;
 }
+
+/** A one-colour glyph of the Fold in currentColor, for the provenance chip and other small marks (0.4.0 §4.7). */
+export const foldGlyphSvg = (f: Fold, label?: string) =>
+  `<svg viewBox="${foldFitViewBox(f.id)}" ${label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"'}>${foldShapes(f).replace(/(fill|stroke)="[^"]*"/g, '$1="currentColor"').replace(/ opacity="[^"]*"/g, '')}</svg>`;

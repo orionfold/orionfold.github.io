@@ -6,6 +6,7 @@
 import { Image } from 'astro:assets';
 import PaperLayout from '../layouts/PaperLayout.astro';
 import Panel from '../components/paper/Panel.astro';
+import Media from '../components/paper/Media.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { SITE, PERSON } from '../data/seo';
@@ -125,16 +126,17 @@ const beliefs = [
       </header>
       <div class="pp-letter-body">
         <p class="pp-letter-lede">Hi, I’m Manav. For twenty-five years I helped the biggest companies in the world put powerful technology in front of millions of people. Now I do the opposite of big. I put that same frontier in the hands of one person at a time, starting with you.</p>
-        <figure class="pp-letter-figure">
+        <Media ai ratio="auto" class="pp-letter-figure">
           <Image src={mission} alt="A glowing tower of clouds and servers sends a bright star of light across a sunset sky into the open hands of a builder at a small desk, where a gold computer glows. A banner reads: Put the frontier in your hands." widths={[640, 960, 1280, 1600]} sizes="(min-width: 1000px) 900px, 100vw" />
-          <figcaption>That is the whole mission. The frontier of AI should not live only in giant clouds rented by giant companies. It should fit on your desk, run on your terms, and answer to you.</figcaption>
-        </figure>
+
+          <Fragment slot="caption">That is the whole mission. The frontier of AI should not live only in giant clouds rented by giant companies. It should fit on your desk, run on your terms, and answer to you.</Fragment>
+        </Media>
         <h2>Why I do this</h2>
         <p>For most of my life, the rule was simple. The best technology was big, expensive, and lived far away in someone else’s data center. You could use it, but you could not own it. I spent years on the inside of that world, and I kept noticing the same gap. The tech got more amazing every year, and yet it reached real people slowly, if at all.</p>
         <p>Then something changed. Open AI models caught up to the locked, paid ones. A computer small enough to sit on a desk got powerful enough to run them. For the first time, one person with the right tools could do what used to take a whole team and a cloud bill. I could not unsee it. So I left to build for that person.</p>
-        <figure class="pp-letter-figure">
+        <Media ai ratio="auto" class="pp-letter-figure">
           <Image src={arc} alt="Four-panel comic of a 25-year journey: a 1990s computer lab, a 2010s cloud city, a 2020s glowing voice assistant with a constellation of AI models, and today a builder at a home desk with a small glowing gold computer. A banner reads: Twenty-five years, folded into one desk." widths={[640, 960, 1280, 1600]} sizes="(min-width: 1000px) 900px, 100vw" />
-        </figure>
+        </Media>
         <h2>The path here</h2>
         <p>My path was not a straight line. It was the same idea told in very different rooms. It started at Xerox PARC in the late 1990s, where I helped build one of India’s first systems for storing and sharing documents across distance.</p>
         <p>At AWS I helped bring the cloud to businesses across India, and helped stand up the tech behind the country’s pandemic response. At Amazon I led product for Alexa’s conversational AI, then worked on the foundation models that ship today as Amazon Nova, then helped bring generative AI to the store millions of people shop in every day. After that I led the team helping frontier AI labs like Anthropic and chipmakers like NVIDIA build on AWS.</p>

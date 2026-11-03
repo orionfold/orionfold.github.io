@@ -29,6 +29,7 @@ import { Image } from 'astro:assets';
 import PaperLayout from '../../layouts/PaperLayout.astro';
 import PageNav from '../../components/paper/PageNav.astro';
 import Panel from '../../components/paper/Panel.astro';
+import Media from '../../components/paper/Media.astro';
 import PaperSubscribe from '../../components/paper/PaperSubscribe.astro';
 import '../../styles/living-in-paper.css';
 import '../../styles/paper-bridge-product.css';
@@ -258,7 +259,7 @@ const trust = [
         <p id="hero-cta-err" class="pp-done-error" role="alert" hidden></p>
       </div>
       <div class="pp-hero-stage">
-        <figure class="pp-window-shot">
+        <Media caption={"One board for every client"}>
           <Image
             src={relayBoardShot}
             alt="The Orionfold Relay board: active work, tasks that need attention, a live agent activity stream, recent client projects, and today's cost, all on one screen."
@@ -268,8 +269,7 @@ const trust = [
             decoding="async"
             data-no-zoom
           />
-          <figcaption>One board for every client</figcaption>
-        </figure>
+</Media>
       </div>
     </section>
     {/* Sticky-CTA sentinel: the bar fades in once this scrolls out of view. */}
@@ -291,7 +291,7 @@ const trust = [
           <li><span class="pp-kicker">{t.label}</span><b set:html={t.value} /><span>{t.sub}</span></li>
         ))}
       </ul>
-      <figure class="pp-window-shot pp-relay-receipt">
+      <Media caption={"Live per-client cost attribution, tallied from real runs. Not a hardcoded billing line."} class="pp-relay-receipt">
         <Image
           src={relayCostReceipt}
           alt="An Orionfold Relay customer page for Parkview Property Management: AI spend over 30 days reads $0.05 across 6 runs and 32,150 tokens, beside 1 linked project and an active status, with a note showing a roughly $500 a month retainer."
@@ -301,8 +301,7 @@ const trust = [
           decoding="async"
           data-no-zoom
         />
-        <figcaption>Live per-client cost attribution, tallied from real runs. Not a hardcoded billing line.</figcaption>
-      </figure>
+</Media>
     </Panel>
 
     {/* See it running: three capability beats on real screens. */}

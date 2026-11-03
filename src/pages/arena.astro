@@ -26,6 +26,7 @@ import { Image } from 'astro:assets';
 import PaperLayout from '../layouts/PaperLayout.astro';
 import PageNav from '../components/paper/PageNav.astro';
 import Panel from '../components/paper/Panel.astro';
+import Media from '../components/paper/Media.astro';
 import Fold from '../components/paper/Fold.astro';
 import PaperSubscribe from '../components/paper/PaperSubscribe.astro';
 import '../styles/living-in-paper.css';
@@ -249,7 +250,7 @@ const evidence = [
         <p id="hero-cta-err" class="pp-done-error" role="alert" hidden></p>
       </div>
       <div class="pp-hero-stage">
-        <figure class="pp-window-shot">
+        <Media caption={"One screen over the whole loop"}>
           <Image
             src={arenaCockpit}
             alt="The Orionfold Arena screen: live GPU readouts, your models, the tests, and a leaderboard built from your own results, all in one place."
@@ -259,8 +260,7 @@ const evidence = [
             decoding="async"
             data-no-zoom
           />
-          <figcaption>One screen over the whole loop</figcaption>
-        </figure>
+</Media>
       </div>
     </section>
     {/* Sticky-CTA sentinel: the bar fades in once this scrolls out of view. */}
@@ -327,10 +327,9 @@ const evidence = [
       <ul class="pp-arena-gallery">
         {gallery.map((g) => (
           <li>
-            <figure class="pp-window-shot">
+            <Media caption={g.label}>
               <Image src={g.img} alt={g.alt} widths={[480, 720, 1080]} sizes="(min-width: 860px) 36rem, 100vw" loading="lazy" decoding="async" data-no-zoom />
-              <figcaption>{g.label}</figcaption>
-            </figure>
+</Media>
           </li>
         ))}
       </ul>
@@ -378,7 +377,7 @@ const evidence = [
 
     {/* Close: hand the reader to the live demo and the buy block. */}
     <section class="pp-closing" aria-labelledby="arena-closing-heading">
-      <Fold id="ember" bob class="pp-closing-fold" />
+      <Fold id="ember" live class="pp-closing-fold" />
       <p class="pp-kicker">Orionfold Arena</p>
       <h2 id="arena-closing-heading">Drive every screen yourself.</h2>
       <p>Click through every screen in the live demo, or get the Field Edition and run the whole stack on your own Spark.</p>

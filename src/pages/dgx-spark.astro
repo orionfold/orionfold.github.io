@@ -16,6 +16,7 @@
 import PaperLayout from '../layouts/PaperLayout.astro';
 import PageNav from '../components/paper/PageNav.astro';
 import Panel from '../components/paper/Panel.astro';
+import Media from '../components/paper/Media.astro';
 import Fold from '../components/paper/Fold.astro';
 import '../styles/living-in-paper.css';
 import '../styles/paper-bridge-product.css';
@@ -153,7 +154,7 @@ const groups: { id: string; fold: 'atlas' | 'clause' | 'hop'; label: string; blu
         <p class="pp-sub">The NVIDIA DGX Spark is Orionfold's reference machine, a small AI computer that sits on your own desk. The book, open models, and tools below were all proven on it first, and the Field Edition turns a Spark into a turnkey AI lab.</p>
       </div>
       <div class="pp-hero-stage">
-        <figure class="pp-window-shot pp-spark-art">
+        <Media ratio="wide" ai class="pp-spark-art">
           <Image
             src={sparkHero}
             alt="A small gold desktop computer glows on a plain desk at night, sending bright beams of light up into a wide sky full of stars and constellations."
@@ -163,7 +164,7 @@ const groups: { id: string; fold: 'atlas' | 'clause' | 'hop'; label: string; blu
             fetchpriority="high"
             data-no-zoom
           />
-        </figure>
+        </Media>
       </div>
     </section>
     <PageNav label="DGX Spark page navigation" onPage={[
@@ -278,7 +279,7 @@ const groups: { id: string; fold: 'atlas' | 'clause' | 'hop'; label: string; blu
 
     {/* Funnel close: the free book first, then the bundle and sponsorship. */}
     <section class="pp-closing" aria-labelledby="spark-closing-heading">
-      <Fold id="orri" bob class="pp-closing-fold" />
+      <Fold id="orri" live class="pp-closing-fold" />
       <p class="pp-kicker">The field log</p>
       <h2 id="spark-closing-heading">Start with the book. It is free to read, and every lesson runs.</h2>
       <p>Read the field log online, keep a copy if you want one, then run the open models and tools on your own machine. Want to move the work forward faster? You can sponsor it.</p>

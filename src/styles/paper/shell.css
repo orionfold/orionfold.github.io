@@ -92,9 +92,6 @@
 
 /* ---------- Folds ---------- */
 .paper .pp-fold svg { display: block; width: 100%; height: auto; }
-.paper .pp-bob { animation: pp-bob 3.6s ease-in-out infinite; transform-origin: 50% 100%; }
-@keyframes pp-bob { 0%, 100% { transform: translateY(0) rotate(0) } 50% { transform: translateY(-5px) rotate(-1.2deg) } }
-@media (prefers-reduced-motion: reduce) { .paper .pp-bob { animation: none; } }
 
 
 /* ---------- footer: giant serif nav, then a dark credit field with one Fold ---------- */

@@ -20,7 +20,7 @@ const { id, heading, dek, source, offer, buttonText = 'Subscribe', consentText, 
 const privacyNote = consentText?.replace(' See our privacy policy.', '').replace('the AI For Everyone digest', 'the AI Native Newsletter');
 ---
 <section class="pp-closing" id={id} aria-labelledby={`${id}-heading`}>
-  <Fold id={fold} bob class="pp-closing-fold" />
+  <Fold id={fold} live class="pp-closing-fold" />
   <h2 id={`${id}-heading`}>{heading}</h2>
   {dek && <p>{dek}</p>}
   <div class="ls-in-paper ls-form-in-paper">

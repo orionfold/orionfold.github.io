@@ -22,6 +22,6 @@ const p = PLAY[fold];
       {p.steps.map((s, i) => <li class:list={{ 'pp-yours': i === 2 }}><span>{s}<small>{i === 2 ? 'YOUR CALL' : `${f.name.toUpperCase()} DOES THIS`}</small></span></li>)}
     </ol>
   </div>
-  <Fold id={fold} bob class="pp-pb-fold" />
+  <Fold id={fold} live class="pp-pb-fold" />
   <p class="pp-pb-note">{note}</p>
 </div>

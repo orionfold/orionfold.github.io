@@ -6,18 +6,18 @@
 </button>
 <noscript><p>For enterprise enquiries, email <a href="mailto:manav@orionfold.com">manav@orionfold.com</a>.</p></noscript>
 
-<dialog id="flow-enterprise-dialog" class="flow-enterprise-dialog" aria-labelledby="flow-enterprise-title" aria-describedby="flow-enterprise-intro" closedby="any">
+<dialog id="flow-enterprise-dialog" class="flow-enterprise-dialog pp-modal" aria-labelledby="flow-enterprise-title" aria-describedby="flow-enterprise-intro" closedby="any">
   <div class="flow-enterprise-shell">
     <header class="flow-enterprise-header">
       <div>
-        <p class="flow-enterprise-eyebrow">Flow for your team</p>
+        <p class="flow-enterprise-eyebrow pp-kicker">Flow for your team</p>
         <h2 id="flow-enterprise-title">Enterprise contact</h2>
       </div>
       <button type="button" class="flow-enterprise-close" data-flow-enterprise-close aria-label="Close enterprise contact">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
       </button>
     </header>
-    <p id="flow-enterprise-intro" class="flow-enterprise-intro">Tell us about your team and what you need from Flow.</p>
+    <p id="flow-enterprise-intro" class="flow-enterprise-intro pp-modal-lead">Tell us about your team and what you need from Flow.</p>
 
     <!-- Native dialog method is a safe no-network fallback. The bundled
          controller enables submit only when its service configuration allows it. -->
@@ -26,34 +26,34 @@
         <legend class="flow-enterprise-sr-only">Enterprise requirements</legend>
         <div class="flow-enterprise-field">
           <label for="flow-enterprise-name">Contact name</label>
-          <input id="flow-enterprise-name" name="name" type="text" autocomplete="name" required maxlength="120" />
+          <input id="flow-enterprise-name" class="pp-input" name="name" type="text" autocomplete="name" required maxlength="120" />
         </div>
         <div class="flow-enterprise-field">
           <label for="flow-enterprise-email">Email</label>
-          <input id="flow-enterprise-email" name="email" type="email" autocomplete="email" required maxlength="254" />
+          <input id="flow-enterprise-email" class="pp-input" name="email" type="email" autocomplete="email" required maxlength="254" />
         </div>
         <div class="flow-enterprise-field">
           <label for="flow-enterprise-company">Company</label>
-          <input id="flow-enterprise-company" name="company" type="text" autocomplete="organization" required maxlength="200" />
+          <input id="flow-enterprise-company" class="pp-input" name="company" type="text" autocomplete="organization" required maxlength="200" />
         </div>
         <div class="flow-enterprise-field">
           <label for="flow-enterprise-licenses">Number of licenses</label>
-          <input id="flow-enterprise-licenses" name="licenses" type="number" inputmode="numeric" min="1" max="100000" step="1" required />
+          <input id="flow-enterprise-licenses" class="pp-input" name="licenses" type="number" inputmode="numeric" min="1" max="100000" step="1" required />
         </div>
         <div class="flow-enterprise-field flow-enterprise-field--wide">
           <label for="flow-enterprise-requirements">Requirements details</label>
-          <textarea id="flow-enterprise-requirements" name="requirements" rows="5" maxlength="6000" required></textarea>
+          <textarea id="flow-enterprise-requirements" class="pp-input" name="requirements" rows="5" maxlength="6000" required></textarea>
         </div>
         <div class="flow-enterprise-field flow-enterprise-field--wide">
           <label for="flow-enterprise-heard-about">Where did you hear about us? <span>(optional)</span></label>
-          <input id="flow-enterprise-heard-about" name="heardAbout" type="text" maxlength="240" />
+          <input id="flow-enterprise-heard-about" class="pp-input" name="heardAbout" type="text" maxlength="240" />
         </div>
         <input class="flow-enterprise-trap" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
       </fieldset>
       <p class="flow-enterprise-privacy">We’ll use these details to respond to your enquiry. <a href="/privacy/">Privacy policy</a>.</p>
       <p id="flow-enterprise-error" class="flow-enterprise-error" role="alert" hidden></p>
       <p id="flow-enterprise-status" class="flow-enterprise-status" role="status" aria-live="polite"></p>
-      <button id="flow-enterprise-submit" class="flow-enterprise-submit" type="submit" disabled>Send requirements</button>
+      <button id="flow-enterprise-submit" class="flow-enterprise-submit pp-btn pp-btn--primary" type="submit" disabled>Send requirements</button>
     </form>
     <div id="flow-enterprise-success" class="flow-enterprise-success" role="status" aria-live="polite" tabindex="-1" hidden></div>
   </div>
@@ -65,53 +65,49 @@
 
 <style>
   /* Paper (operator 2026-10-31): the enquiry dialog wears the Paper design system,
-     tokens only. It sits in the home Pricing panel's team line. */
+     tokens only. It sits in the home Pricing panel's team line.
+     0.4.0 (G-150): the dialog is a Paper sheet (.pp-modal: title role, lead,
+     r-4, shadow-sheet), its fields are .pp-input with the control states, and
+     the send button is the sheet's one teal primary. Only the dialog box,
+     backdrop, header row, close button and field grid are styled here. */
   .flow-enterprise-trigger {
     display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px;
     border: 0; border-radius: var(--pp-r-2); background: var(--pp-white); color: var(--pp-ink);
     box-shadow: inset 0 0 0 1px var(--pp-line); font: 500 14px/1.2 var(--pp-sans); cursor: pointer;
-    transition: box-shadow .2s;
+    transition: box-shadow var(--pp-dur-fast) var(--pp-ease-out);
   }
   .flow-enterprise-trigger:hover { box-shadow: inset 0 0 0 1px var(--pp-ink-3); }
   .flow-enterprise-trigger:focus-visible { outline: 2px solid var(--pp-teal); outline-offset: 2px; }
   .flow-enterprise-dialog {
-    width: min(680px, calc(100vw - 32px)); max-width: none;
-    max-height: calc(100dvh - 32px); margin: auto; padding: 0;
-    border: 1px solid var(--pp-line); border-radius: var(--pp-r-3); background: var(--pp-paper); color: var(--pp-ink);
-    box-shadow: var(--pp-shadow-sheet); overflow: auto; overscroll-behavior: contain;
-    font: 400 15px/1.55 var(--pp-sans); text-align: left;
+    width: min(680px, calc(100vw - 32px)); max-height: calc(100dvh - 32px);
+    color: var(--pp-ink); overflow: auto; overscroll-behavior: contain;
+    font: var(--pp-t-copy); text-align: left;
   }
   .flow-enterprise-dialog::backdrop { background: var(--pp-scrim); -webkit-backdrop-filter: blur(6px) saturate(1.2); backdrop-filter: blur(6px) saturate(1.2); }
   :global(html:has(#flow-enterprise-dialog[open])) { overflow: hidden; }
-  .flow-enterprise-shell { padding: 36px 36px 32px; }
+  .flow-enterprise-shell { padding: 0; }
   .flow-enterprise-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
-  .flow-enterprise-header .flow-enterprise-eyebrow { margin: 0 0 10px; color: var(--pp-ink-3); font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; text-transform: uppercase; }
-  .flow-enterprise-header h2 { margin: 0; color: var(--pp-ink); font: 300 clamp(32px, 4vw, 44px)/1.05 var(--pp-serif); font-variation-settings: 'SOFT' 100; letter-spacing: -.015em; }
+  .flow-enterprise-header .flow-enterprise-eyebrow { margin: 0 0 10px; }
   .flow-enterprise-close { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; margin: -6px -6px 0 0; border: 0; border-radius: var(--pp-r-2); background: transparent; color: var(--pp-ink-2); box-shadow: inset 0 0 0 1px var(--pp-line); cursor: pointer; }
   .flow-enterprise-close:hover { color: var(--pp-ink); box-shadow: inset 0 0 0 1px var(--pp-ink-3); }
-  .flow-enterprise-dialog .flow-enterprise-intro { margin: 14px 0 24px; color: var(--pp-ink-2); font: 400 18px/1.45 var(--pp-serif); }
+  .flow-enterprise-dialog .flow-enterprise-intro { margin: 14px 0 24px; }
   .flow-enterprise-dialog a { color: var(--pp-ink); text-decoration-color: var(--pp-teal); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
   .flow-enterprise-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 0; padding: 0; border: 0; min-width: 0; }
   .flow-enterprise-field { min-width: 0; }
   .flow-enterprise-field--wide { grid-column: 1 / -1; }
-  .flow-enterprise-field label { display: block; margin-bottom: 8px; color: var(--pp-ink); font: 500 14px/1.3 var(--pp-sans); }
+  .flow-enterprise-field label { display: block; margin-bottom: 6px; color: var(--pp-ink); font: var(--pp-t-label); }
   .flow-enterprise-field label span { color: var(--pp-ink-3); font-weight: 400; }
-  .flow-enterprise-field :is(input, textarea) { width: 100%; padding: 12px 14px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); color: var(--pp-ink); font: 400 16px/1.4 var(--pp-sans); box-sizing: border-box; }
-  .flow-enterprise-field textarea { min-height: 128px; resize: vertical; }
-  .flow-enterprise-field :is(input, textarea):focus-visible { outline: 2px solid var(--pp-teal); outline-offset: 1px; border-color: var(--pp-teal); }
+  .flow-enterprise-field textarea { min-height: 128px; }
   .flow-enterprise-dialog .flow-enterprise-privacy { margin: 20px 0 0; color: var(--pp-ink-3); font: 400 13px/1.5 var(--pp-sans); }
   .flow-enterprise-dialog .flow-enterprise-privacy a { color: var(--pp-ink-2); }
   .flow-enterprise-dialog .flow-enterprise-error { overflow-wrap: anywhere; margin: 18px 0 0; padding: 12px 14px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-del-bg); color: var(--pp-del-ink); font: 400 14px/1.55 var(--pp-sans); }
   .flow-enterprise-dialog .flow-enterprise-status { margin: 16px 0 0; color: var(--pp-ink-2); font: 400 14px/1.55 var(--pp-sans); }
   .flow-enterprise-status:empty { display: none; }
-  .flow-enterprise-dialog .flow-enterprise-submit { display: inline-flex; align-items: center; justify-content: center; margin-top: 22px; padding: 12px 20px; border: 0; border-radius: var(--pp-r-2); background: var(--pp-ink); color: var(--pp-white); font: 500 15px/1.2 var(--pp-sans); cursor: pointer; }
-  .flow-enterprise-dialog .flow-enterprise-submit:focus-visible { outline: 2px solid var(--pp-teal); outline-offset: 2px; }
-  .flow-enterprise-dialog .flow-enterprise-submit:disabled { cursor: not-allowed; opacity: .5; }
+  .flow-enterprise-dialog .flow-enterprise-submit { margin-top: 22px; }
   .flow-enterprise-success { padding: 22px 24px; margin-top: 24px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-add-bg); color: var(--pp-add-ink); font: 400 18px/1.5 var(--pp-serif); }
   .flow-enterprise-sr-only, .flow-enterprise-trap { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
   @media (max-width: 600px) {
     .flow-enterprise-dialog { width: calc(100vw - 20px); max-height: calc(100dvh - 20px); }
-    .flow-enterprise-shell { padding: 26px 20px 22px; }
     .flow-enterprise-fields { grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .flow-enterprise-dialog .flow-enterprise-submit { width: 100%; }
   }
