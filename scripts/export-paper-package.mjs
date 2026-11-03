@@ -14,7 +14,7 @@ import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync, existsSyn
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
-const VERSION = '0.4.0';
+const VERSION = '0.4.1';
 const root = new URL('../', import.meta.url).pathname;
 const out = path.join(root, 'output/paper-package', VERSION);
 const rel = (p) => path.join(root, p);
@@ -112,7 +112,15 @@ if (weakG.length) throw new Error(`night graphics pairs below 3:1: ${JSON.string
 
 // Tokens: every --pp-* custom property in the .paper block, grouped by kind.
 const css = readFileSync(rel('src/styles/paper/tokens.css'), 'utf8');
-const vars = Object.fromEntries([...css.matchAll(/--pp-([a-z0-9-]+):\s*([^;]+);/g)].map(([, k, v]) => [k, v.trim()]));
+// Only the main light block: the later `@media (prefers-contrast: more)`, `.pp-ic` and
+// coarse-pointer blocks re-declare a few variables and must not leak into the defaults
+// (0.4.1, product lane 2026-11-03 13:07: 0.4.0 exported the Increase Contrast teal, ink-3
+// and line and the 40px touch height as the light defaults).
+const mainStart = css.indexOf('.paper, :root:has(> body.paper) {');
+const mainBlock = css.slice(mainStart, css.indexOf('\n}\n', mainStart));
+const vars = Object.fromEntries([...mainBlock.matchAll(/--pp-([a-z0-9-]+):\s*([^;]+);/g)].map(([, k, v]) => [k, v.trim()]));
+for (const k of ['teal', 'ink-3', 'line', 'input-h']) if (!vars[k]) throw new Error(`token ${k} not found in the main block`);
+if (vars.teal !== '#247b80' || vars['input-h'] !== '36px') throw new Error('the main block parse picked up an override');
 const group = (test) => Object.fromEntries(Object.entries(vars).filter(([k]) => test(k)));
 // Long-form frame (website R8, operator 2026-10-31): set per breakpoint in
 // components.css, not in tokens.css, so read each @media block's values.
@@ -125,7 +133,9 @@ for (const [, min, body] of components.matchAll(/@media \(min-width: (\d+)px\) \
   if (Object.keys(v).length) longform[`min${min}`] = v;
 }
 if (!longform.min1180?.wide || !longform.min1180?.measure) throw new Error('long-form frame values not found in components.css');
-const isRamp = (k) => new RegExp(`^(${HUES.join('|')})-(${STEPS.join('|')})$`).test(k);
+// The 0.3.x colour keys that happen to read like ramp steps stay in `color` (Flow reads them there).
+const LEGACY = new Set(['teal', 'teal-ink', 'teal-pale', 'gold', 'gold-pale', 'red', 'red-deep']);
+const isRamp = (k) => !LEGACY.has(k) && new RegExp(`^(${HUES.join('|')})-(${STEPS.join('|')})$`).test(k);
 const tokens = {
   version: VERSION,
   color: group((k) => !/^(serif|sans|mono|r-\d|shadow|ease|fold-|lg-|t-|dur-|press|enter|input-|ring|viz-|data-|fig-)/.test(k) && !isRamp(k)),
@@ -165,7 +175,9 @@ copyFileSync(rel('public/fonts/Fraunces-OFL.txt'), path.join(out, 'fonts', 'Frau
 let ttf = false;
 const py = process.env.FONTTOOLS_PYTHON;
 if (py && existsSync(py)) {
-  execFileSync(py, ['-I', '-c', `from fontTools.ttLib import TTFont\nf=TTFont(${JSON.stringify(path.join(out, 'fonts', 'fraunces-paper-latin.woff2'))})\nf.flavor=None\nf.save(${JSON.stringify(path.join(out, 'fonts', 'fraunces-paper-latin.ttf'))})`]);
+  // Byte-stable across exports of the same source (0.4.1, product lane 13:13: Flow's C8040 proves
+  // "verbatim" by bytes): fontTools stamps head.modified from SOURCE_DATE_EPOCH when it is set.
+  execFileSync(py, ['-I', '-c', `from fontTools.ttLib import TTFont\nf=TTFont(${JSON.stringify(path.join(out, 'fonts', 'fraunces-paper-latin.woff2'))})\nf.flavor=None\nf.save(${JSON.stringify(path.join(out, 'fonts', 'fraunces-paper-latin.ttf'))})`], { env: { ...process.env, SOURCE_DATE_EPOCH: '1761868800' } });
   ttf = true;
 }
 
@@ -255,7 +267,7 @@ let commit = 'unknown';
 try { commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: root }).toString().trim(); } catch {}
 const dirty = (() => { try { return execFileSync('git', ['status', '--porcelain', 'src/lib/paper', 'src/styles/paper', 'public/fonts', 'scripts/lib/fold-glyph.mjs', 'scripts/export-paper-package.mjs', 'package-lock.json'], { cwd: root }).toString().trim() !== ''; } catch { return false; } })();
 writeFileSync(path.join(out, 'manifest.json'), JSON.stringify({
-  name: 'orionfold-paper', version: VERSION, stage: '0.4.0 (operator-approved 2026-11-03)', stateMachine: 'folds/state-machine.json', live: { css: 'folds/live/fold-live.css', js: 'folds/live/fold-live.js', svgs: Object.fromEntries(FOLDS.map((f) => [f.id, `folds/live/${f.id}.svg`])) }, agents: { catalog: 'agents/paper-catalog.json', rules: 'agents/paper-rules.txt', llms: 'agents/llms.txt', mcpAppsStyleMap: 'agents/mcp-apps-style-map.json' }, source: { repo: 'orionfold/website', commit, uncommittedChanges: dirty },
+  name: 'orionfold-paper', version: VERSION, stage: '0.4.x (operator-approved 2026-11-03)', stateMachine: 'folds/state-machine.json', live: { css: 'folds/live/fold-live.css', js: 'folds/live/fold-live.js', svgs: Object.fromEntries(FOLDS.map((f) => [f.id, `folds/live/${f.id}.svg`])) }, agents: { catalog: 'agents/paper-catalog.json', rules: 'agents/paper-rules.txt', llms: 'agents/llms.txt', mcpAppsStyleMap: 'agents/mcp-apps-style-map.json' }, source: { repo: 'orionfold/website', commit, uncommittedChanges: dirty },
   folds, personal, colorways, marks: { orionfoldStar: 'marks/orionfold-star.svg' },
   tokens: { json: 'tokens/paper-tokens.json', css: 'tokens/paper-tokens.css', dtcg: 'tokens/paper.tokens.json' },
   fonts: { fraunces: { woff2: 'fonts/fraunces-paper-latin.woff2', ttf: ttf ? 'fonts/fraunces-paper-latin.ttf' : null, licence: 'fonts/Fraunces-OFL.txt', axes: { wght: [300, 500], opsz: [9, 144] }, pinned: { SOFT: 100, WONK: 1 } } },
@@ -280,6 +292,7 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 - The faces on the website are AI-generated models and are not part of this package.
 - Text colors meet WCAG AA on paper and white (ink-3 is #666d69 since 2026-10-30).
 - Changes come as new versions, never as edits in place (operator 2026-10-31).
+- The active Fold on a surface sets \`--pp-fold-a\` (its a), \`--pp-fold-c\` (its c, the soft step) and \`--pp-fold-ink\` from the manifest; the token defaults (gold, gold-pale, red-deep) are the ground for a surface with no active Fold, so the highlighter sits on the gold wash there. Read a Fold's colours from the manifest, never from the defaults.
 - 0.4.0 ramps: each hue has pale, soft, base, deep and ink (\`ramps\` in the tokens, light and night). pale is a wash, soft a lit face or fill, base the brand or Fold colour, deep the shade face (3:1 on its ground), ink the hue as text (4.5:1 on paper-2). A Fold wears its hue's ramp: a = base, b = deep, c = soft, ink = ink. A multi-tone picture uses one ramp (soft, base, deep).
 - 0.4.0 data ramp: \`data-1\` to \`data-8\`, each paired with a marker shape (circle, square, diamond, triangle up, triangle down, cross, plus, hexagon), never colour alone; gold base is never a series; context series use the viz greys; one teal highlight; a paper gap between stacked segments.
 - 0.4.0 Increase Contrast: \`contrast.light\` and \`contrast.night\` give the fourth value per colour (HIG Color); ghost buttons and controls draw a 1px ink-2 outline under it. The website answers \`prefers-contrast: more\`; the app adds a High Contrast appearance.
@@ -306,7 +319,8 @@ The Paper design system, exported by the website (it owns Paper, decision D1) fo
 - 0.2.0 (2026-10-30): night (dark appearance) tokens and Fold variants; personal Folds with colorways.
 - 0.2.1 (2026-10-30): night beak and butterfly body in light ink; a rounder bear, now coral by default (penguin ochre), apart from the cat at 16 pt.
 - 0.3.0 (2026-10-31): the final design system. Liquid Glass tokens in their own group, the long-form frame in \`layout\`, and their rules above.\n- 0.3.1 (2026-10-31): fitted Fold SVGs (\`-fit\`, \`-fit-night\`) for circle avatars, for the Playbook Folds and every personal Fold colorway; \`fitViewBox\` per Fold in the manifest. No art or token changes.\n- 0.3.2 (2026-10-31): \`behaviour\` for each personal Fold (character = behaviour, product lane ask). No art or token changes.\n- 0.3.3 (2026-10-31): operator review of \`behaviour\`; hummingbird gets to the point instead of promising speed, butterfly stays inside this document. New token \`--pp-teal-ink\` (#1f7176, night #5cc0bf) for small teal text; brand teal is unchanged.\n- 0.3.4 (2026-10-31): one-colour template glyphs (\`glyphs/\`, \`files.glyph\` per Fold) for the Flow toolbar's Ideas button and the "<Fold> suggests" badge (product lane ask). No art or token changes.
-- 0.4.0 (2026-11-03): the operator-approved next version (five vectors: one system for site and app, AI-first, multimodal, dual use by people and agents, taste). Tonal ramps per hue (light and night), the data ramp with marker shapes, viz greys, Increase Contrast values, type roles, motion tokens and springs, form controls and states, segmented control and stepper, sheet and alert, provenance chip and Element states, the chart kit, media and voice rules, the figure palette contract, the Fold state-machine contract, and the agent-facing files. Folds now wear their hue's ramp (Tally is brand teal). Spec: website \`_SPECS/…_paper-0-4-0-proposed.md\`.
+- 0.4.0 (2026-11-03): the operator-approved next version (five vectors: one system for site and app, AI-first, multimodal, dual use by people and agents, taste). Tonal ramps per hue (light and night), the data ramp with marker shapes, viz greys, Increase Contrast values, type roles, motion tokens and springs, form controls and states, segmented control and stepper, sheet and alert, provenance chip and Element states, the chart kit, media and voice rules, the figure palette contract, the Fold state-machine contract, and the agent-facing files. Folds now wear their hue's ramp (Tally is brand teal). Spec: website \`_SPECS/2026-11-03-130558_paper-0-4-0.md\`.
+- 0.4.1 (2026-11-03): token export fix (product lane, 13:07). The JSON tokens read only the main light block, so \`color.teal\`, \`color.ink-3\`, \`color.line\` and \`control.input-h\` are the defaults again (the Increase Contrast values stay in \`contrast\`, the touch height is a note); \`teal-pale\`, \`teal-ink\`, \`gold-pale\` and \`red-deep\` are back in \`color\` (and in the DTCG file) beside their ramp twins. No art, token or rule changes.
 `);
 
 console.log(`Paper ${VERSION} → ${path.relative(root, out)} (${folds.length} Folds, ${Object.keys(vars).length} tokens${ttf ? ', ttf' : ''})`);
