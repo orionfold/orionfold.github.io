@@ -39,6 +39,54 @@ export const NIGHT: Record<string, string> = {
   star: '#f6e7bf',
   glass: 'rgba(22, 25, 28, 0.88)',
   scrim: 'rgba(0, 0, 0, 0.45)',
+  // 0.4.0: tonal ramps (pale, soft, base, deep, ink per hue) and the viz greys at night.
+  // deep clears 3:1 on the night paper, ink 4.5:1 on night paper-2 (checked by the exporter and the guard test).
+  'teal-soft': '#2d4b4d',
+  'teal-base': '#5cc0bf',
+  'teal-deep': '#40a7a6',
+  'gold-soft': '#56411c',
+  'gold-base': '#f6b73c',
+  'gold-deep': '#d2a148',
+  'gold-ink': '#e9bb6d',
+  'coral-pale': '#33221a',
+  'coral-soft': '#603a29',
+  'coral-base': '#f2783c',
+  'coral-deep': '#c26e47',
+  'coral-ink': '#d98965',
+  'violet-pale': '#272434',
+  'violet-soft': '#463f63',
+  'violet-base': '#7c5bd6',
+  'violet-deep': '#6e56b9',
+  'violet-ink': '#8b7dc7',
+  'green-pale': '#1c2b1f',
+  'green-soft': '#304d35',
+  'green-base': '#3d8a4f',
+  'green-deep': '#387347',
+  'green-ink': '#50965f',
+  'pink-pale': '#332027',
+  'pink-soft': '#5e3745',
+  'pink-base': '#f08bb0',
+  'pink-deep': '#d17697',
+  'pink-ink': '#e791b0',
+  'blue-pale': '#1f2635',
+  'blue-soft': '#354465',
+  'blue-base': '#4f74c9',
+  'blue-deep': '#4464aa',
+  'blue-ink': '#6887cc',
+  'ochre-pale': '#2d2515',
+  'ochre-soft': '#53431d',
+  'ochre-base': '#d0a43a',
+  'ochre-deep': '#b38c2b',
+  'ochre-ink': '#caa653',
+  'red-pale': '#34211e',
+  'red-soft': '#613832',
+  'red-base': '#ff6b5a',
+  'red-ink': '#dd8679',
+  'viz-grid': '#35332d',
+  'viz-axis': '#9b9890',
+  'viz-context-1': '#58554e',
+  'viz-context-2': '#74716a',
+  'viz-context-3': '#95928a',
 };
 
 /** The text pairs night promises at 4.5:1 or better: [foreground, background]. */
@@ -46,7 +94,18 @@ export const NIGHT_TEXT_PAIRS: [string, string][] = [
   ['ink', 'paper'], ['ink', 'white'], ['ink-2', 'paper'], ['ink-2', 'white'], ['ink-3', 'paper'], ['ink-3', 'white'], ['ink-3', 'paper-2'],
   ['teal', 'paper'], ['teal', 'white'], ['teal-ink', 'paper'], ['teal-ink', 'paper-2'], ['teal', 'teal-pale'], ['red-deep', 'paper'], ['red-deep', 'white'],
   ['del-ink', 'del-bg'], ['add-ink', 'add-bg'], ['night-ink', 'night'], ['night-ink-3', 'night'],
+  // 0.4.0: every hue's ink step as text on night paper-2
+  ['teal-ink', 'paper-2'], ['gold-ink', 'paper-2'], ['coral-ink', 'paper-2'], ['violet-ink', 'paper-2'], ['green-ink', 'paper-2'], ['pink-ink', 'paper-2'], ['blue-ink', 'paper-2'], ['ochre-ink', 'paper-2'], ['red-ink', 'paper-2'],
 ];
+
+/** Graphics pairs night promises at 3:1 or better (0.4.0): a hue's base and deep steps on the night paper. */
+export const NIGHT_GRAPHIC_PAIRS: [string, string][] = [
+  ['teal-base', 'paper'], ['teal-deep', 'paper'], ['gold-base', 'paper'], ['gold-deep', 'paper'], ['coral-base', 'paper'], ['coral-deep', 'paper'], ['violet-base', 'paper'], ['violet-deep', 'paper'], ['green-base', 'paper'], ['green-deep', 'paper'], ['pink-base', 'paper'], ['pink-deep', 'paper'], ['blue-base', 'paper'], ['blue-deep', 'paper'], ['ochre-base', 'paper'], ['ochre-deep', 'paper'], ['red-base', 'paper'], ['red-deep', 'paper'],
+];
+
+/** Increase Contrast (0.4.0): the fourth value per colour, light and night (Apple HIG Color). */
+export const CONTRAST = { 'ink-3': '#484f4b', line: '#bbb7ad', teal: '#0c6469', 'teal-base': '#0c6469', 'teal-ink': '#04585c' } as const;
+export const NIGHT_CONTRAST = { 'ink-3': '#c1bdb5', line: '#5b5851', teal: '#8cdee3', 'teal-base': '#8cdee3', 'teal-ink': '#8cdee3' } as const;
 
 const channels = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 const lum = (hex: string) => {

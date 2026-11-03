@@ -1,0 +1,428 @@
+---
+// Paper 0.4.0: the side-by-side review that the operator approved and cut on
+// 2026-11-03 (dev only, never built for production). Left column = 0.3.4 markup;
+// right column = 0.4.0. Since the cut both render from the same stylesheets, so
+// where a 0.4.0 rule changed an existing class (teal text, motion, form states)
+// the two columns now look alike; the before shots are in audit-reports/paper-next/shots. App "current" shots load straight from the Flow lane's
+// feature folders through the dev server, so nothing becomes a public file.
+// Spec: _SPECS/…_paper-0-4-0-proposed.md.
+import PaperLayout from '../../../layouts/PaperLayout.astro';
+import Fold from '../../../components/paper/Fold.astro';
+import { contrast, NIGHT } from '../../../lib/paper/night';
+import { liveFoldSvg } from '../../../lib/paper/fold-motion';
+import { FOLDS, foldById, silhouette, glyph, catSvg, HUES, STEPS, SHAPES, marker, barChart, lineChart, stacked, iso, icon } from '../../../lib/paper/next-review';
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { slug: undefined } }] : [];
+}
+
+// Copies (downscaled) of the Flow lane's current-app shots, kept in the git-ignored audit folder.
+const appDir = `/@fs${process.cwd()}/audit-reports/paper-next/app-current`;
+const shots = { home: `${appDir}/home-now.png`, bringIn: `${appDir}/bring-in-current.png` };
+
+const icPairs = [['ink-3', 'paper'], ['teal-ink', 'paper-2'], ['teal', 'paper']] as const;
+const IC = { 'ink-3': '#484f4b', 'teal-ink': '#04585c', teal: '#0c6469', line: '#bbb7ad' };
+const ICN = { 'ink-3': '#c1bdb5', 'teal-ink': '#8cdee3', teal: '#8cdee3', line: '#5b5851' };
+const LIGHT = { paper: '#fbfaf6', 'paper-2': '#f4f1e8', 'ink-3': '#666d69', 'teal-ink': '#1f7176', teal: '#247b80' };
+---
+<PaperLayout title="Paper 0.4.0 proposed · side by side" description="Dev-only review of the proposed Paper design system against 0.3.4." noindex>
+  <main class="rv">
+    <header class="rv-head">
+      <span class="pp-kicker">Paper design system · review</span>
+      <h1 class="pp-serif">0.3.4 beside 0.4.0</h1>
+      <p>Left is the system as the site and the app have it. Right is the same thing under the proposed version. Every value on the right is a token in <code>src/styles/paper/next.css</code>. Any Paper page can be seen under the proposal with <code>?paper=next</code>.</p>
+      <div class="rv-tools" role="group" aria-label="Review controls">
+        <span>Animations</span><button class="rv-tog" data-cls="pp-still" aria-pressed="false">Pause</button>
+        <span>Increase Contrast</span><button class="rv-tog" data-cls="pp-ic" aria-pressed="false">On</button>
+      </div>
+    </header>
+
+    <!-- 1 colour ramps -->
+    <section class="rv-row" id="ramps">
+      <h2>1 · One mid tone per hue becomes five steps</h2>
+      <p>The Flow lane's isometric lost its shading because teal had one mid tone. Each hue now has pale, soft, base, deep and ink, built in OKLCH so steps match across hues. Base is the Fold or brand colour you already know. Deep clears 3:1 on paper, ink clears 4.5:1 on paper-2.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span>
+          <div class="rv-sw">{['teal', 'teal-ink', 'teal-pale', 'gold', 'gold-pale', 'red', 'red-deep'].map((s) => <div><i style={`background:var(--pp-${s})`} /><span>{s}</span></div>)}</div>
+          <p class="pp-note">Plus each Fold's own a, b and c, which never reach a figure.</p>
+          <div class="rv-sw rv-sw--tiny">{FOLDS.map((f) => <div><i style={`background:${f.a}`} /><i style={`background:${f.b}`} /><i style={`background:${f.c}`} /><span>{f.name}</span></div>)}</div>
+        </div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <div class="rv-ramp">{HUES.map((h) => <div class="rv-ramp-row"><span class="pp-kicker">{h}</span>{STEPS.map((s) => <i style={`background:var(--pp-${h}-${s})`} title={`--pp-${h}-${s}`} />)}<b style={`color:var(--pp-${h}-ink)`}>Aa</b></div>)}</div>
+          <div class="rv-ramp pp-night">{HUES.map((h) => <div class="rv-ramp-row"><span class="pp-kicker">{h}</span>{STEPS.map((s) => <i style={`background:var(--pp-${h}-${s})`} title={`night --pp-${h}-${s}`} />)}<b style={`color:var(--pp-${h}-ink)`}>Aa</b></div>)}</div>
+          <p class="pp-note">Top light, below night (the app only). Columns are pale, soft, base, deep, ink.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 data -->
+    <section class="rv-row" id="data">
+      <h2>2 · A data ramp that never relies on colour alone</h2>
+      <p>Eight series, each paired with a fixed marker shape, each clearing 3:1 on paper. Gold base is never a series because gold is the highlighter. Context series sit in warm greys so one teal line can carry the point.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span>
+          <p class="pp-note">No categorical ramp. A four-series chart has to borrow teal, gold, red and a grey.</p>
+          <div class="pp-chart rv-chart-cur"><h3>Revenue by line</h3><div set:html={lineChart(false)} /></div>
+        </div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <div class="rv-sw">{SHAPES.map((n, i) => <div><i style={`background:var(--pp-data-${i + 1})`} /><svg viewBox="-10 -10 20 20" width="18" height="18" set:html={marker(i)} /><span>data-{i + 1} · {n}</span></div>)}</div>
+          <div class="rv-sw">{['viz-grid', 'viz-context-1', 'viz-context-2', 'viz-context-3', 'viz-axis'].map((s) => <div><i style={`background:var(--pp-${s})`} /><span>{s}</span></div>)}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 chart kit -->
+    <section class="rv-row" id="charts">
+      <h2>3 · The chart kit: the takeaway is the title</h2>
+      <p>Context bars in warm grey, one teal highlight, numbers on the bars, the title says what the reader should see, the source line sits under it, and a note can point at one thing. Stacked segments get a paper gap. Multi-series lines get shapes and labels at the end of the line, not a legend.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4 (the Flow lane's mechanical recolour)</span>
+          <div class="pp-chart rv-chart-cur"><h3>Q3 is the strongest quarter in this sample</h3><p>New ARR by quarter, $k</p><div set:html={barChart(false)} /><p class="pp-chart-src">Fictional teaching sample. Finance close, FY26</p></div>
+          <div class="pp-chart rv-chart-cur" style="margin-top:28px"><h3>Hours by client</h3><div set:html={stacked(false)} /></div>
+        </div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <div class="pp-chart"><h3 class="pp-chart-title">Q3 was the strongest quarter, then catering slowed</h3><p class="pp-chart-sub">New ARR by quarter, $k</p><div set:html={barChart(true)} /><p class="pp-chart-src">Fictional teaching sample. Finance close, FY26</p></div>
+          <div class="pp-chart" style="margin-top:28px"><h3 class="pp-chart-title">Catering doubled while retail held</h3><p class="pp-chart-sub">Monthly revenue by line, $k</p><div set:html={lineChart(true)} /></div>
+          <div class="pp-chart" style="margin-top:28px"><h3 class="pp-chart-title">Harbor is the only client where admin leads</h3><p class="pp-chart-sub">Hours by client and kind</p><div set:html={stacked(true)} /><div class="pp-legend"><span><svg viewBox="-10 -10 20 20" set:html={marker(0)} />Advisory</span><span><svg viewBox="-10 -10 20 20" set:html={marker(1)} />Review</span><span><svg viewBox="-10 -10 20 20" set:html={marker(2)} />Admin</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 isometric -->
+    <section class="rv-row" id="figure">
+      <h2>4 · A model-drawn figure with a palette contract</h2>
+      <p>A figure may use only role tokens: fig-paper, fig-ink, fig-ink-2, fig-line, four accent steps (teal), four warm steps (gold), fig-mark (red deep) and data-1 to 8. A checker snaps any raw hex to the nearest token and hands the error back to the model. The isometric below shows why the ramp matters.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><div class="rv-fig" set:html={iso(false)} /><p class="pp-note" style="text-align:center">Left and right faces are the same teal, so the shape flattens.</p></div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span><div class="rv-fig" set:html={iso(true)} /><p class="pp-note" style="text-align:center">Top fig-accent-soft, left fig-accent-base, right fig-accent-deep.</p>
+          <div class="rv-sw rv-sw--tiny" style="margin-top:10px">{['paper', 'ink', 'ink-2', 'line', 'accent-pale', 'accent-soft', 'accent-base', 'accent-deep', 'warm-pale', 'warm-soft', 'warm-base', 'warm-deep', 'mark'].map((s) => <div><i style={`background:var(--pp-fig-${s})`} /><span>fig-{s}</span></div>)}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 type -->
+    <section class="rv-row" id="type">
+      <h2>5 · Type roles instead of sizes set per component</h2>
+      <p>Geist's pattern: one token and one class per job, bundling weight, size and line height. The site already uses these sizes; naming them keeps the app in step.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span>
+          <p class="pp-serif" style="font-weight:300;font-size:56px;line-height:1;margin:0">Show how you work</p>
+          <p class="pp-serif" style="font-weight:400;font-size:30px;line-height:1.1;margin:14px 0 0">Share your Playbook</p>
+          <p style="margin:14px 0 0">Body copy at 15 over 1.5, set on the shell.</p>
+          <p class="pp-kicker" style="margin:14px 0 0">Kicker in mono</p>
+          <p class="pp-note" style="margin:8px 0 0">A note at 12. Every other size lives inside a component rule.</p>
+        </div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          {[['display', 'Show how you work', 'Fraunces 300 · 40 to 72 / 1.0'], ['title', 'Share your Playbook', 'Fraunces 400 · 26 to 34 / 1.1'], ['section', 'Useful between your meetings', 'Fraunces 300 · 28 to 44 / 1.06 (site section heads)'], ['subtitle', 'A client sees the answer. You remember the route.', 'Fraunces 400 · 19 to 23 / 1.3 (serif subtitles)'], ['heading', 'Monthly close note', 'Geist 500 · 17 / 1.3'], ['copy-lg', 'Long-form reading copy sits at 17 over 1.5 so a page reads like paper.', 'Geist 400 · 17 / 1.5'], ['copy', 'Body copy at 15 over 1.5 for every surface.', 'Geist 400 · 15 / 1.5'], ['label', 'A label beside a control', 'Geist 500 · 13 / 1.3'], ['kicker', 'Kicker in mono', 'Geist Mono 500 · 11 / 1.3 · caps'], ['tabular', 'Step 3 of 12 · 1,224 notes', 'Geist Mono 400 · 13 · tabular figures']].map(([r, t, spec]) => <div class="rv-type"><p class={`pp-${r}`}>{t}</p><span class="pp-note">pp-{r} · {spec}</span></div>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 teal -->
+    <section class="rv-row" id="teal">
+      <h2>6 · Teal means a link or an action</h2>
+      <p>One colour, one meaning (Apple HIG Color). Today teal also sits on format labels, ticks and markers. Under the proposal they go to ink, and teal stays for links, the primary action in a sheet and the one chart highlight. Same markup both sides.</p>
+      <div class="rv-pair">
+        {[false, true].map((next) => (
+          <div class:list={['rv-col', { 'pp-next': next }]}><span class="rv-tag">{next ? 'Proposed 0.4.0' : 'Current 0.3.4'}</span>
+            <ul class="pp-play-formats" style="grid-template-columns:1fr 1fr"><li><small>Markdown</small><b>Plain files</b><span>Every document is a file you own.</span></li><li><small>Sign-off</small><b>Your yes</b><span>Nothing lands until you approve it.</span></li></ul>
+            <ul class="pp-training-ticks" style="margin:18px 0 0;padding:0;list-style:none;display:grid;gap:6px"><li>Read the whole thing before you start.</li><li>Flag small slips, like a wrong number.</li></ul>
+            <p style="margin:18px 0 0"><a class="pp-link" href="#teal">A link stays teal</a> · <button class="pp-btn pp-btn--small">An action stays ink</button></p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 7 form controls -->
+    <section class="rv-row" id="forms">
+      <h2>7 · Form controls and their states</h2>
+      <p>The app asked for checkbox, radio, text field, select and their states. One height token, a ring on focus, a red deep border when invalid with a message in red ink, and disabled as paper-2 with ink-3 text, never a faded copy.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span>
+          <form class="pp-form" onsubmit="return false"><span class="pp-kicker">Subscribe</span><label for="c-email">Email</label><input id="c-email" type="email" placeholder="Your email" /><label style="display:flex;gap:8px;align-items:center;font-weight:400"><input type="checkbox" style="width:auto" checked /> Native checkbox, system styled</label><button class="pp-btn" type="button">Subscribe</button><button class="pp-btn" type="button" disabled>Disabled at 50% opacity</button><small>No invalid state, no select, no radio, no textarea rule.</small></form>
+        </div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <form class="rv-formgrid" onsubmit="return false">
+            <div class="pp-field"><label for="p-1">Default</label><input id="p-1" class="pp-input" placeholder="Your email" /></div>
+            <div class="pp-field"><label for="p-2">Focus</label><input id="p-2" class="pp-input pp-focus" value="manav@orionfold.com" /></div>
+            <div class="pp-field"><label for="p-3">Invalid</label><input id="p-3" class="pp-input" value="manav@orionfold" aria-invalid="true" aria-describedby="p-3m" /><span id="p-3m" class="pp-msg pp-msg--bad">Add the part after the @.</span></div>
+            <div class="pp-field"><label for="p-4">Disabled</label><input id="p-4" class="pp-input" value="Set by your Playbook" disabled /><span class="pp-msg">Comes from the Playbook you brought in.</span></div>
+            <div class="pp-field"><label for="p-5">Select</label><div class="pp-select-wrap"><select id="p-5" class="pp-input"><option>Accounting Advisory</option><option>Contract Review</option></select></div></div>
+            <div class="pp-field"><label for="p-6">Textarea</label><textarea id="p-6" class="pp-input" placeholder="Tell Flow how you work"></textarea></div>
+            <div class="pp-field"><span class="pp-field-l">Checkbox</span><label class="pp-check"><input type="checkbox" checked /> Criteria are price, recovery and migration</label><label class="pp-check"><input type="checkbox" /> Weights are 40, 30 and 30</label><label class="pp-check"><input type="checkbox" class="pp-focus" /> Focused</label><label class="pp-check"><input type="checkbox" disabled checked /> Disabled, checked</label></div>
+            <div class="pp-field"><span class="pp-field-l">Radio</span><label class="pp-radio"><input type="radio" name="r" checked /> Reader</label><label class="pp-radio"><input type="radio" name="r" /> Edit</label><label class="pp-radio"><input type="radio" name="r" disabled /> Split (Pro)</label></div>
+            <div class="pp-field" style="grid-column:1/-1"><span class="pp-field-l">Buttons</span><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pp-btn" type="button">Ink (site)</button><button class="pp-btn pp-btn--primary" type="button">Teal primary (sheets, app)</button><button class="pp-btn pp-btn--ghost" type="button">Ghost</button><button class="pp-btn" type="button" disabled>Disabled</button></div></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 segmented + stepper -->
+    <section class="rv-row" id="stepper">
+      <h2>8 · Segmented control and the figure stepper</h2>
+      <p>Figure steps (Previous · Play · Next · Step n of m) and view switches get one control: a line-bordered group on paper-2, the chosen segment white with an inset line, the count in tabular mono.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><p style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0"><button class="pp-btn pp-btn--ghost pp-btn--small">Previous</button><button class="pp-btn pp-btn--ghost pp-btn--small">Play</button><button class="pp-btn pp-btn--ghost pp-btn--small">Next</button><span class="pp-note">Step 1 of 5</span></p><p class="pp-note">Three ghost buttons stand in for a stepper. No selected state for a view switch.</p></div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <div class="pp-stepper"><div class="pp-seg" role="group" aria-label="Figure steps"><button type="button">Previous</button><button type="button" aria-pressed="true">Play</button><button type="button">Next</button></div><span class="pp-tabular">Step 1 of 5</span></div>
+          <div class="pp-seg" role="group" aria-label="View" style="margin-top:14px"><button type="button" aria-pressed="true">Reader</button><button type="button">Edit</button><button type="button" disabled>Split</button></div>
+          <p class="pp-note">The disabled segment is Pro only on Base.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 sheet -->
+    <section class="rv-row" id="sheet">
+      <h2>9 · The sheet and the alert</h2>
+      <p>The Flow lane's Bring In prototype set the pattern: a title, one lead line, a paper-2 explainer strip, teal-pale check rows, one disclosure link, Not Now as a ghost and one teal primary. The proposal makes it a Paper component with radius r-4 and the sheet shadow. An alert is the same sheet at 420.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current app (system sheet)</span><img src={shots.bringIn} alt="The Flow app's current Bring In sheet, system styled" class="rv-shot" loading="lazy" /></div>
+        <div class="rv-col pp-next rv-col--grey"><span class="rv-tag">Proposed 0.4.0</span>
+          <div class="pp-modal" role="dialog" aria-labelledby="bi-t">
+            <h2 id="bi-t">Let Kitty learn how you work</h2>
+            <p class="pp-modal-lead">You have already taught your coding agents. Kitty can start from that.</p>
+            <div class="pp-explain">
+              <div set:html={icon.notes + '<b>Your agents’ notes</b><small>about you, not your projects</small>'} />
+              <div set:html={icon.review + '<b>Security review</b><small>each by its own agent</small>'} />
+              <div><div class="rv-cat" set:html={catSvg} /><b>Kitty learns you</b><small>undo anything</small></div>
+              <div set:html={icon.voice + '<b>Work in your voice</b><small>for you and your clients</small>'} />
+            </div>
+            <div class="pp-modal-rows"><label class="pp-modal-check"><span class="pp-check"><input type="checkbox" checked /></span><span><b>Claude Code</b><small>1,223 notes</small></span></label><label class="pp-modal-check"><span class="pp-check"><input type="checkbox" checked /></span><span><b>Codex</b><small>2 files</small></span></label></div>
+            <div class="pp-modal-foot"><a class="pp-link" href="#sheet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg>What is read, and by whom</a><div class="pp-modal-acts"><button class="pp-btn pp-btn--ghost" type="button">Not Now</button><button class="pp-btn pp-btn--primary" type="button">Bring In</button></div></div>
+          </div>
+          <div class="pp-modal pp-modal--alert" role="alertdialog" aria-labelledby="al-t" style="margin-top:24px">
+            <h2 id="al-t">Forget what Kitty learned?</h2>
+            <p class="pp-modal-lead">The 1,223 notes stay in your agents' folders. Kitty forgets its copy.</p>
+            <div class="pp-modal-foot"><div class="pp-modal-acts"><button class="pp-btn pp-btn--ghost" type="button">Keep</button><button class="pp-btn pp-btn--primary" type="button">Forget</button></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 provenance + lifecycle -->
+    <section class="rv-row" id="provenance">
+      <h2>10 · Who drew this, and where it is in its life</h2>
+      <p>No glow, no gradient, no purple. A Fold's one-colour glyph in a chip says who drew the Element, whether you edited it, and when you signed it, with Revert beside it (Carbon's pattern, in Paper's clothes). Five lifecycle states carry their own copy. Nothing shows under one second, and no ellipsis.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><div class="pp-signoff"><div><b>Partner review</b><small>Waits for your yes</small></div><button type="button">Sign off</button></div><p class="pp-note">One sign-off box. No way to tell an agent's draft from your own text, and no drafting, declined or error state.</p></div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <p style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px"><span class="pp-prov" set:html={glyph('tally') + 'Drawn by Tally'} /><span class="pp-prov" set:html={glyph('tally') + 'You edited<button type=\"button\">Revert</button>'} /><span class="pp-prov pp-prov--signed" set:html={glyph('tally') + 'Signed by you, 09:12'} /></p>
+          <div class="rv-els">
+            <div class="pp-el pp-el--drafting"><div class="pp-el-head"><h3 class="pp-el-title">Drafting</h3><span class="pp-prov" set:html={glyph('tally') + 'Tally'} /></div><div class="pp-el-slot">Drawing a chart</div><div class="pp-el-bar"><i /></div></div>
+            <div class="pp-el"><div class="pp-el-head"><h3 class="pp-el-title">Awaiting your yes</h3><span class="pp-prov" set:html={glyph('tally') + 'Drawn by Tally'} /></div><div class="pp-el-slot">Q3 was the strongest quarter</div><div class="pp-el-acts"><button class="pp-btn pp-btn--primary pp-btn--small" type="button">Sign off</button><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">Not now</button></div></div>
+            <div class="pp-el"><div class="pp-el-head"><h3 class="pp-el-title">Draft, then signed</h3><span class="pp-morph" id="morph"><span>Draft</span><span>Signed</span></span></div><div class="pp-el-slot">Q3 was the strongest quarter</div><p class="pp-el-msg">The label morphs. Only the word changes. <button class="rv-link" type="button" data-morph>Play it</button></p></div>
+            <div class="pp-el pp-el--declined"><div class="pp-el-head"><h3 class="pp-el-title">Declined</h3><span class="pp-prov" set:html={glyph('tally') + 'Drawn by Tally'} /></div><div class="pp-el-slot">Q3 was the strongest quarter</div><p class="pp-el-msg">You said no. Tally keeps the note for next time.</p></div>
+            <div class="pp-el pp-el--error"><div class="pp-el-head"><h3 class="pp-el-title">Could not finish</h3><span class="pp-prov" set:html={glyph('tally') + 'Tally'} /></div><div class="pp-el-slot">No chart</div><p class="pp-el-msg">The AI provider did not answer. Nothing was changed.</p><div class="pp-el-acts"><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">Retry</button></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 every Fold as a state machine (operator 2026-11-03 12:54 "Rive animations for each Fold avatar") -->
+    <section class="rv-row" id="rive">
+      <h2>11 · Every Fold as a state machine</h2>
+      <p>Duolingo runs ten characters across a hundred courses this way: one runtime file per character, a state machine with body, mouth and idle layers that run in parallel, driven by the app with a state, a viseme number and two triggers. Each Fold's drawing is now split into a body layer and a face layer (eyes with lids and pupils, a mouth with five visemes, blush), so the same inputs drive all eight here on the web. The package carries each Fold's layered SVG, the driver, and the face geometry the Rive editor and the Mac app work from.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><div style="display:flex;gap:18px;flex-wrap:wrap;align-items:end">{FOLDS.map((f) => <div style="width:88px"><Fold id={f.id} bob /></div>)}</div><p class="pp-note" style="margin-top:12px">One drawing each, one CSS bob. A Fold cannot listen, think, speak or react, and the app cannot drive it.</p></div>
+        <div class="rv-col pp-next"><span class="rv-tag">0.4.0, the state machine on every Fold</span>
+          <div class="rv-live-grid" id="live-grid">{FOLDS.map((f) => <div class="rv-live-cell"><div class="pp-live pp-live--idle"><span class="pp-live-ring" aria-hidden="true"></span><div set:html={liveFoldSvg(f, { label: `${f.name} the ${f.kind}, animated` })} /></div><span class="pp-note">{f.name}</span></div>)}</div>
+          <div class="rv-fx-ctl" style="margin-top:18px">
+            <div class="pp-seg" role="group" aria-label="State input"><button type="button" data-fx="idle" aria-pressed="true">Idle</button><button type="button" data-fx="listening">Listening</button><button type="button" data-fx="thinking">Thinking</button><button type="button" data-fx="speaking">Speaking</button></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pp-btn pp-btn--ghost pp-btn--small" type="button" data-fx-trigger="right">Trigger: right</button><button class="pp-btn pp-btn--ghost pp-btn--small" type="button" data-fx-trigger="wrong">Trigger: wrong</button><button class="pp-btn pp-btn--ghost pp-btn--small" type="button" data-fx-say>Say a line</button></div>
+            <p class="pp-note" style="margin:0"><span class="pp-tabular">state</span> <b id="fx-state">idle</b> · <span class="pp-tabular">viseme</span> <b id="fx-viseme">0</b> · blink and breathe run on their own layer under every state</p>
+          </div>
+          <table class="rv-fx-map">
+            <thead><tr><th>Rive</th><th>What it holds</th></tr></thead>
+            <tbody>
+              <tr><td>Artboard</td><td>One per Fold, 200 by 214, the same polygons as the SVG; the face layer's anchors are in <code>folds/state-machine.json</code>.</td></tr>
+              <tr><td>Inputs</td><td><code>state</code> enum idle · listening · thinking · speaking; <code>viseme</code> number 0 to 4; triggers <code>right</code> and <code>wrong</code>.</td></tr>
+              <tr><td>Layers (parallel)</td><td>body pose, eyes (pupils, lids), mouth (five shared visemes, each Fold's own geometry), blink and breathe, reaction (bounce or shake, then back).</td></tr>
+              <tr><td>View model</td><td>colours a, b, c, ink bound at runtime, so one file serves eight colourways and night.</td></tr>
+              <tr><td>Runtimes</td><td><code>@rive-app/canvas</code> on the web, RiveRuntime on macOS 13.1 and later. One <code>.riv</code> for both. On the web today: <code>folds/live/</code> (SVG layers, CSS, <code>fold-live.js</code>).</td></tr>
+              <tr><td>Reduce Motion</td><td>the pose changes, nothing moves between poses, blink and breathe stop.</td></tr>
+              <tr><td>Authoring</td><td>the <code>.riv</code> files are made in the Rive editor from these layers (no authoring API), one editor task per Fold.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 voice -->
+    <section class="rv-row" id="voice">
+      <h2>12 · Voice: six states, no orb</h2>
+      <p>The person's Fold glyph, the state as a word, a transcript line and Stop. Listening pulses a soft teal ring (opacity only). Speaking breathes the glyph. Under Reduce Motion it all holds still. Nothing glows, and the person always sees whose turn it is.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><p class="pp-note">No voice component.</p></div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <div class="rv-voices">
+            {[['idle', 'Ready', 'Hold Space to talk'], ['connecting', 'Connecting', 'One moment'], ['listening', 'Listening', 'Move the catering line to the top of the…'], ['thinking', 'Thinking', 'Reading the March close note'], ['speaking', 'Kitty is speaking', 'Catering is on top now. Want the chart too?'], ['error', 'Lost the connection', 'Your words are kept. Try again.']].map(([s, w, t]) => <div class={`pp-voice pp-voice--${s}`}><div class="pp-voice-glyph" set:html={glyph('cat')} /><div><div class="pp-voice-state">{w}</div><p class="pp-voice-text">{t}</p></div><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">{s === 'error' ? 'Retry' : 'Stop'}</button></div>)}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 media -->
+    <section class="rv-row" id="media">
+      <h2>13 · Pictures, video and 3D on Paper</h2>
+      <p>Media keeps its aspect ratio inside a line frame, the caption sits in ink-3, a poster never looks like a control, and anything a model made carries a chip plus Edit, Undo and Retry beside it (Apple HIG Generative AI, June 2026). 3D ships as glTF on the web and USDZ on Apple from one source.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><figure class="pp-window-shot"><div style="aspect-ratio:16/9;background:var(--pp-paper-2)"></div><figcaption>One screenshot frame. No rule for video, 3D or made-with-AI labels.</figcaption></figure></div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <div class="rv-media">
+            <figure class="pp-media"><div class="pp-media-frame"><svg viewBox="0 0 160 90" aria-hidden="true"><rect width="160" height="90" fill="var(--pp-gold-pale)"/><polygon points="0,90 60,40 100,70 160,20 160,90" fill="var(--pp-gold-soft)"/><circle cx="120" cy="24" r="10" fill="var(--pp-gold-base)"/></svg><span class="pp-prov pp-ai-chip" set:html={glyph('ember') + 'Made with AI'} /></div><figcaption>A hero Ember drew for the newsletter.</figcaption><div class="pp-media-acts"><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">Edit</button><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">Undo</button><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">Retry</button></div></figure>
+            <figure class="pp-media"><div class="pp-media-frame"><svg viewBox="0 0 160 90" aria-hidden="true"><rect width="160" height="90" fill="var(--pp-teal-pale)"/><rect x="20" y="18" width="120" height="54" rx="3" fill="var(--pp-white)" stroke="var(--pp-line)"/><rect x="30" y="28" width="60" height="6" fill="var(--pp-line)"/><rect x="30" y="40" width="90" height="4" fill="var(--pp-line)"/><rect x="30" y="50" width="70" height="4" fill="var(--pp-line)"/></svg><span class="pp-media-play" aria-hidden="true"></span></div><figcaption>Flow in 40 seconds. Captions on, in your size.</figcaption></figure>
+            <figure class="pp-media"><div class="pp-media-frame pp-media-frame--square"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,18 82,34 50,50 18,34" fill="var(--pp-fig-accent-soft)"/><polygon points="18,34 50,50 50,86 18,70" fill="var(--pp-fig-accent-base)"/><polygon points="50,50 82,34 82,70 50,86" fill="var(--pp-fig-accent-deep)"/></svg></div><figcaption>The folded star, glTF here and USDZ in Quick Look.</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 contrast -->
+    <section class="rv-row" id="contrast">
+      <h2>14 · Increase Contrast, a fourth value per colour</h2>
+      <p>Apple asks for light, dark and an increased-contrast version of each. The web answers prefers-contrast: more. Ink-3 and line darken, teal deepens, ghost buttons and controls draw a solid outline (Linear's rule). Use the control at the top to flip the whole right column.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><div class="rv-sw">{icPairs.map(([fg, bg]) => <div><i style={`background:var(--pp-${bg});color:var(--pp-${fg});display:grid;place-items:center;font-size:13px;font-weight:500`}>Aa {contrast(LIGHT[fg], LIGHT[bg]).toFixed(1)}:1</i><span>{fg} on {bg}</span></div>)}</div><p class="pp-note">No increased-contrast values. The system setting changes nothing.</p></div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <div class="rv-sw pp-ic">{icPairs.map(([fg, bg]) => <div><i style={`background:var(--pp-${bg});color:var(--pp-${fg});display:grid;place-items:center;font-size:13px;font-weight:500`}>Aa {contrast(IC[fg], LIGHT[bg]).toFixed(1)}:1</i><span>{fg} on {bg}</span></div>)}<div><i style="background:var(--pp-paper);border-color:var(--pp-line);border-width:2px"></i><span>line</span></div><div><i style="display:grid;place-items:center"><button class="pp-btn pp-btn--ghost pp-btn--small" type="button">Ghost</button></i><span>outlined</span></div></div>
+          <div class="rv-sw pp-night pp-ic" style="padding:12px;border-radius:var(--pp-r-3)">{icPairs.map(([fg, bg]) => <div><i style={`background:var(--pp-${bg});color:var(--pp-${fg});display:grid;place-items:center;font-size:13px;font-weight:500`}>Aa {contrast(ICN[fg], NIGHT[bg]).toFixed(1)}:1</i><span>{fg} on {bg}</span></div>)}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 motion -->
+    <section class="rv-row" id="motion">
+      <h2>15 · Motion tokens: under 300 ms, ease-out, press 0.97</h2>
+      <p>Three durations and two curves on the web, with springs for the app carried in the export (smooth, snappy, bouncy for Fold moments only). Keyboard actions never animate. Reduce Motion swaps movement for a fade. Delight follows frequency: daily actions stay subtle, rare moments like a sign-off may bounce.</p>
+      <div class="rv-pair">
+        <div class="rv-col"><span class="rv-tag">Current 0.3.4</span><p class="pp-note">One curve, ease-unfold, and literal durations set per rule (.18s, .25s, .28s, .38s, .4s). No press, no enter, no reduced-motion rule beyond the Fold bob.</p><button class="pp-btn" type="button">Press me</button></div>
+        <div class="rv-col pp-next"><span class="rv-tag">Proposed 0.4.0</span>
+          <div class="rv-sw rv-sw--text">{[['dur-fast', '160 ms'], ['dur-base', '240 ms'], ['dur-slow', '380 ms'], ['ease-out', '.2 .85 .25 1'], ['ease-in-out', '.45 0 .2 1'], ['press', '0.97'], ['enter', '0.93'], ['spring smooth', '.32 s · 0'], ['spring snappy', '.28 s · .15'], ['spring bouncy', '.5 s · .3']].map(([k, v]) => <div><b class="pp-tabular">{v}</b><span>{k}</span></div>)}</div>
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px"><button class="pp-btn" type="button">Press me</button><button class="rv-link" type="button" data-enter>Replay an enter</button><div class="pp-el pp-enter" id="enter" style="padding:10px 14px"><span class="pp-label">Enters from 0.93 with a fade</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16 whole pages -->
+    <section class="rv-row" id="pages">
+      <h2>16 · Whole pages under the overlay</h2>
+      <p>The proposal is mostly additive, so a landing page changes little: teal leaves non-link text, motion takes the tokens, and Increase Contrast applies if switched on. Both frames are the live dev pages at 1440, scaled.</p>
+      {['/', '/flow/'].map((p) => <div class="rv-pair"><div class="rv-col"><span class="rv-tag">Current · {p}</span><div class="rv-frame"><iframe src={p} title={`Current ${p}`} loading="lazy"></iframe></div></div><div class="rv-col"><span class="rv-tag">Proposed · {p}?paper=next</span><div class="rv-frame"><iframe src={`${p}?paper=next`} title={`Proposed ${p}`} loading="lazy"></iframe></div></div></div>)}
+      <div class="rv-pair rv-pair--phone"><div class="rv-col"><span class="rv-tag">Current · / at 390</span><div class="rv-frame rv-frame--phone"><iframe src="/" title="Current home at 390" loading="lazy"></iframe></div></div><div class="rv-col"><span class="rv-tag">Proposed · /?paper=next at 390</span><div class="rv-frame rv-frame--phone"><iframe src="/?paper=next" title="Proposed home at 390" loading="lazy"></iframe></div></div></div>
+    </section>
+
+    <footer class="rv-foot"><p class="pp-note">Dev only. Nothing on this page is built for production. Fold art and the Flow screenshots load from local folders.</p></footer>
+  </main>
+
+  <script is:inline>
+    (function () {
+      var cols = function () { return document.querySelectorAll('.pp-next'); };
+      document.querySelectorAll('.rv-tog').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on));
+          var cls = b.dataset.cls;
+          if (cls === 'pp-still') document.documentElement.classList.toggle('pp-still', on);
+          else cols().forEach(function (c) { c.classList.toggle(cls, on); });
+        });
+      });
+      var m = document.getElementById('morph');
+      document.querySelector('[data-morph]').addEventListener('click', function () { m.classList.remove('pp-on'); void m.offsetWidth; requestAnimationFrame(function () { m.classList.add('pp-on'); }); });
+      var fit = function () { document.querySelectorAll('.rv-frame:not(.rv-frame--phone)').forEach(function (f) { f.style.setProperty('--rv-w', f.clientWidth); }); };
+      fit(); addEventListener('resize', fit);
+      var fit = function () { document.querySelectorAll('.rv-frame:not(.rv-frame--phone)').forEach(function (f) { f.style.setProperty('--rv-w', f.clientWidth); }); };
+      fit(); addEventListener('resize', fit);
+      // Ember's state machine (prototype of the Rive inputs)
+      var fx = document.getElementById('fx'), mouth = document.getElementById('fx-mouth'), stEl = document.getElementById('fx-state'), viEl = document.getElementById('fx-viseme');
+      var VISEME = ['M94 138 Q100 142 106 138', 'M97 136 Q100 134 103 136 Q104 140 100 141 Q96 140 97 136 Z', 'M92 136 Q100 150 108 136 Z', 'M90 137 Q100 141 110 137 Q100 144 90 137 Z', 'M98 134 Q102 134 102 141 Q100 145 98 141 Z'];
+      var sayTimer = null, state = 'idle';
+      function viseme(n) { mouth.setAttribute('d', VISEME[n]); mouth.setAttribute('fill', n ? 'var(--pp-ink)' : 'none'); viEl.textContent = n; }
+      function setState(st) { state = st; fx.className = 'rv-fx rv-fx--' + st; stEl.textContent = st; document.querySelectorAll('[data-fx]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.fx === st)); }); if (st !== 'speaking') { clearInterval(sayTimer); sayTimer = null; viseme(0); } else if (!sayTimer) { var seq = [1, 2, 0, 3, 2, 4, 0, 1, 3, 0], k = 0; sayTimer = setInterval(function () { viseme(seq[k++ % seq.length]); }, 110); } }
+      document.querySelectorAll('[data-fx]').forEach(function (b) { b.addEventListener('click', function () { setState(b.dataset.fx); }); });
+      document.querySelectorAll('[data-fx-trigger]').forEach(function (b) { b.addEventListener('click', function () { var t = b.dataset.fxTrigger, prev = state; setState(t); setTimeout(function () { setState(prev === 'right' || prev === 'wrong' ? 'idle' : prev); }, 1300); }); });
+      document.querySelector('[data-fx-say]').addEventListener('click', function () { setState('speaking'); setTimeout(function () { setState('idle'); }, 2600); });
+      var e = document.getElementById('enter');
+      document.querySelector('[data-enter]').addEventListener('click', function () { e.classList.remove('pp-enter'); void e.offsetWidth; e.classList.add('pp-enter'); });
+    })();
+  </script>
+  <script>
+    import { liveFolds } from '../../../lib/paper/fold-live.js';
+    const live = liveFolds(document.getElementById('live-grid'));
+    const stEl = document.getElementById('fx-state'), viEl = document.getElementById('fx-viseme');
+    live.all[0] && document.querySelector('#live-grid .pp-live').addEventListener('pp-live', (e) => { if (e.detail.state) { stEl.textContent = e.detail.state; document.querySelectorAll('[data-fx]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.fx === e.detail.state))); } if (e.detail.viseme !== undefined) viEl.textContent = e.detail.viseme; });
+    document.querySelectorAll('[data-fx]').forEach((b) => b.addEventListener('click', () => live.state(b.dataset.fx)));
+    document.querySelectorAll('[data-fx-trigger]').forEach((b) => b.addEventListener('click', () => live.trigger(b.dataset.fxTrigger)));
+    document.querySelector('[data-fx-say]').addEventListener('click', () => live.say(2600));
+  </script>
+</PaperLayout>
+
+<style is:global>
+  .rv { max-width: 1400px; margin: 0 auto; padding: 32px 16px 80px; }
+  .rv-head { max-width: 72ch; margin: 0 auto 40px; }
+  .rv-head h1 { font-weight: 300; font-size: clamp(36px, 4.5vw, 56px); line-height: 1.02; margin: 8px 0 12px; }
+  .rv-head p { color: var(--pp-ink-2); font-size: 16px; }
+  .rv-head code { font: 500 12px/1 var(--pp-mono); padding: 2px 5px; background: var(--pp-paper-2); border-radius: var(--pp-r-1); }
+  .rv-tools { display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; margin-top: 18px; font-size: 13px; color: var(--pp-ink-3); }
+  .rv-tools button { font: 500 13px/1.2 var(--pp-sans); padding: 6px 11px; border: 1px solid var(--pp-line); border-radius: 999px; background: var(--pp-white); color: var(--pp-ink); cursor: pointer; margin-right: 10px; }
+  .rv-tools button[aria-pressed="true"] { background: var(--pp-ink); color: var(--pp-white); border-color: var(--pp-ink); }
+  .rv-row { padding: 40px 0; border-top: 1px solid var(--pp-line); }
+  .rv-row > h2 { font: 400 clamp(24px, 2.6vw, 32px)/1.15 var(--pp-serif); margin: 0 0 8px; }
+  .rv-row > p { max-width: 80ch; color: var(--pp-ink-2); margin: 0 0 22px; font-size: 15px; }
+  .rv-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 18px; align-items: start; }
+  .rv-pair + .rv-pair { margin-top: 18px; }
+  .rv-col { position: relative; padding: 48px 20px 22px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-3); background: var(--pp-paper); min-width: 0; }
+  .rv-col--grey { background: var(--pp-paper-2); }
+  .rv-tag { position: absolute; left: 20px; top: 16px; font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--pp-ink-3); }
+  .rv-sw { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; margin-top: 8px; }
+  .rv-sw > div { display: grid; gap: 4px; min-width: 0; }
+  .rv-sw i { display: block; height: 44px; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); font-style: normal; }
+  .rv-sw span { font: 500 11px/1.3 var(--pp-mono); color: var(--pp-ink-3); overflow-wrap: anywhere; }
+  .rv-sw--tiny { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
+  .rv-sw--tiny > div { grid-template-columns: 1fr 1fr 1fr; }
+  .rv-sw--tiny > div > span { grid-column: 1 / -1; }
+  .rv-sw--tiny i { height: 22px; }
+  .rv-sw--text b { font-size: 15px; }
+  .rv-sw--text span { font-family: var(--pp-sans); text-transform: none; letter-spacing: 0; }
+  .rv-ramp { display: grid; gap: 6px; padding: 12px; border-radius: var(--pp-r-3); }
+  .rv-ramp + .rv-ramp { margin-top: 12px; }
+  .rv-ramp-row { display: grid; grid-template-columns: 58px repeat(5, 1fr) 28px; gap: 4px; align-items: center; }
+  .rv-ramp-row i { display: block; height: 26px; border-radius: var(--pp-r-1); }
+  .rv-ramp-row b { font: 500 14px/1 var(--pp-sans); text-align: center; }
+  .rv-fig { padding: 10px 0; }
+  .rv-chart-cur { display: grid; gap: 6px; } .rv-chart-cur h3 { font: 500 17px/1.3 var(--pp-sans); margin: 0; } .rv-chart-cur p { font-size: 13px; color: var(--pp-ink-3); margin: 0; }
+  .rv-chart-cur svg { width: 100%; height: auto; display: block; font-family: var(--pp-sans); } .rv-chart-cur .pp-grid { stroke: var(--pp-line); } .rv-chart-cur .pp-axis { stroke: var(--pp-ink-3); } .rv-chart-cur .pp-tick { fill: var(--pp-ink-2); font-size: 12px; } .rv-chart-cur .pp-dl { fill: var(--pp-ink); font-size: 13px; font-weight: 500; }
+  .rv-type { padding: 10px 0; border-bottom: 1px solid var(--pp-line); }
+  .rv-type:last-child { border-bottom: 0; }
+  .rv-type .pp-note { display: block; margin-top: 4px; }
+  .rv-formgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
+  .rv-formgrid .pp-check, .rv-formgrid .pp-radio { margin-top: 4px; }
+  .rv-shot { width: 100%; height: auto; border: 1px solid var(--pp-line); border-radius: var(--pp-r-3); background: var(--pp-white); }
+  .rv-cat { width: 64px; margin: 0 auto 6px; }
+  .rv-cat svg { display: block; width: 100%; height: auto; }
+  .rv-cat--big { width: 72px; margin: 0; flex: none; }
+  .rv-els { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .rv-pane { padding: 28px 30px; background: var(--pp-white); max-width: 560px; margin: 0 auto; }
+  .rv-greet { display: flex; gap: 16px; align-items: center; }
+  .rv-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--pp-line); }
+  .rv-voices { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; }
+  .rv-g { display: block; }
+  .rv-media { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .rv-panel { padding: 28px; background: var(--pp-paper-2); border: 1px solid var(--pp-line); border-radius: var(--pp-r-3); }
+  .rv-link { font: 500 13px/1.3 var(--pp-sans); color: var(--pp-teal-ink, var(--pp-teal)); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+  .rv-frame { width: 100%; aspect-ratio: 1440 / 900; overflow: hidden; border: 1px solid var(--pp-line); border-radius: var(--pp-r-2); background: var(--pp-white); position: relative; }
+  .rv-frame iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; border: 0; transform-origin: 0 0; transform: scale(calc(var(--rv-w, 640) / 1440)); }
+  .rv-frame--phone { aspect-ratio: 390 / 844; max-width: 390px; margin: 0 auto; }
+  .rv-frame--phone iframe { width: 390px; height: 844px; transform: none; }
+  .pp-still *, .pp-still *::before, .pp-still *::after { animation-play-state: paused !important; }
+  .rv-live-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .rv-live-cell { display: grid; justify-items: center; gap: 2px; }
+  .rv-live-cell .pp-live { width: 100%; }
+  @media (max-width: 600px) { .rv-live-grid { grid-template-columns: repeat(2, 1fr); } }
+  .rv-fx-ctl { display: grid; gap: 12px; }
+  .rv-fx-map { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 13px; }
+  .rv-fx-map th, .rv-fx-map td { text-align: left; padding: 7px 8px; border-top: 1px solid var(--pp-line); vertical-align: top; }
+  .rv-fx-map th { font: 500 11px/1.3 var(--pp-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--pp-ink-3); border-top: 0; }
+  .rv-fx-map td:first-child { font-weight: 500; white-space: nowrap; }
+  .rv-fx-map code { font: 500 12px/1 var(--pp-mono); padding: 1px 4px; background: var(--pp-paper-2); border-radius: var(--pp-r-1); }
+  .rv-foot { margin-top: 40px; text-align: center; }
+  @media (max-width: 600px) { .rv-col { padding: 44px 14px 18px; } .rv-ramp-row { grid-template-columns: 46px repeat(5, 1fr) 24px; } }
+</style>

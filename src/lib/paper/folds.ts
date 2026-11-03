@@ -3,6 +3,8 @@
 // published Playbook in src/content/domains; the Paper design system renders
 // them as inline SVG at build time, so no page needs JavaScript to draw one.
 
+import { RAMP, FOLD_HUE } from './ramps.ts';
+
 export type Draw = (a: string, b: string, c: string) => string;
 
 export const INK = '#171c1a';
@@ -83,15 +85,18 @@ export interface Fold {
   draw: Draw;
 }
 
+// 0.4.0 (operator 2026-11-03): a Fold's palette is its hue's ramp (a = base, b = deep, c = soft, ink = ink).
+const pal = (id: keyof typeof FOLD_HUE) => { const r = RAMP[FOLD_HUE[id]]; return { a: r.base, b: r.deep, c: r.soft, ink: r.ink }; };
+
 export const FOLDS: Fold[] = [
-  { id: 'orri', name: 'Orri', kind: 'paper plane', domain: 'AI Consulting', domainSlug: 'ai-consulting', a: '#f6b73c', b: '#e3951a', c: '#ffd77a', ink: '#ba2d21', draw: plane },
-  { id: 'tally', name: 'Tally', kind: 'crane', domain: 'Accounting Advisory', domainSlug: 'accounting-advisory', a: '#2a9aa0', b: '#1d6f74', c: '#9fd6d6', ink: '#0c7480', draw: crane },
-  { id: 'ember', name: 'Ember', kind: 'fox', domain: 'Content Strategy', domainSlug: 'content-strategy', a: '#f2783c', b: '#cf5420', c: '#ffa56e', ink: '#b9471a', draw: fox },
-  { id: 'clause', name: 'Clause', kind: 'owl', domain: 'Contract Review', domainSlug: 'contract-review', a: '#7c5bd6', b: '#5a3fb0', c: '#d6c9fb', ink: '#6b32d6', draw: owl },
-  { id: 'shell', name: 'Shell', kind: 'turtle', domain: 'Cybersecurity Advisory', domainSlug: 'cybersecurity-advisory', a: '#3d8a4f', b: '#2b6a3b', c: '#9fd3a8', ink: '#157a3c', draw: turtle },
-  { id: 'sprout', name: 'Sprout', kind: 'rabbit', domain: 'Executive Coaching', domainSlug: 'executive-coaching', a: '#f08bb0', b: '#d65f8b', c: '#ffc2d8', ink: '#b02457', draw: rabbit },
-  { id: 'atlas', name: 'Atlas', kind: 'whale', domain: 'Research Synthesis', domainSlug: 'research-synthesis', a: '#4f74c9', b: '#3456a3', c: '#a9c0f2', ink: '#1257c4', draw: whale },
-  { id: 'hop', name: 'Hop', kind: 'frog', domain: 'Learning Design', domainSlug: 'learning-design', a: '#d0a43a', b: '#a8801c', c: '#ecd38a', ink: '#8a6410', draw: frog },
+  { id: 'orri', name: 'Orri', kind: 'paper plane', domain: 'AI Consulting', domainSlug: 'ai-consulting', ...pal('orri'), draw: plane },
+  { id: 'tally', name: 'Tally', kind: 'crane', domain: 'Accounting Advisory', domainSlug: 'accounting-advisory', ...pal('tally'), draw: crane },
+  { id: 'ember', name: 'Ember', kind: 'fox', domain: 'Content Strategy', domainSlug: 'content-strategy', ...pal('ember'), draw: fox },
+  { id: 'clause', name: 'Clause', kind: 'owl', domain: 'Contract Review', domainSlug: 'contract-review', ...pal('clause'), draw: owl },
+  { id: 'shell', name: 'Shell', kind: 'turtle', domain: 'Cybersecurity Advisory', domainSlug: 'cybersecurity-advisory', ...pal('shell'), draw: turtle },
+  { id: 'sprout', name: 'Sprout', kind: 'rabbit', domain: 'Executive Coaching', domainSlug: 'executive-coaching', ...pal('sprout'), draw: rabbit },
+  { id: 'atlas', name: 'Atlas', kind: 'whale', domain: 'Research Synthesis', domainSlug: 'research-synthesis', ...pal('atlas'), draw: whale },
+  { id: 'hop', name: 'Hop', kind: 'frog', domain: 'Learning Design', domainSlug: 'learning-design', ...pal('hop'), draw: frog },
 ];
 
 export const foldById = Object.fromEntries(FOLDS.map((f) => [f.id, f])) as Record<FoldId, Fold>;

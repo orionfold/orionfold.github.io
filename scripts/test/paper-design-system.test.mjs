@@ -191,3 +191,52 @@ test('R6 long-form: one article template, BlogPosting kept, receipts cite their 
   }
   assert.match(read('src/components/paper/PaperSubscribe.astro'), /<WaitlistForm /);
 });
+
+// ---------- Paper 0.4.0 (operator 2026-11-03 "cut it") ----------
+test('0.4.0 ramps: tokens.css equals ramps.ts, every step clears its contrast promise, Folds wear the ramp', async () => {
+  const { RAMP, NIGHT_RAMP, VIZ, NIGHT_VIZ, HUES, STEPS, DATA, FOLD_HUE } = await import(path.join(root, 'src/lib/paper/ramps.ts'));
+  const { NIGHT, contrast, NIGHT_GRAPHIC_PAIRS, NIGHT_TEXT_PAIRS } = await import(path.join(root, 'src/lib/paper/night.ts'));
+  const { FOLDS } = await import(path.join(root, 'src/lib/paper/folds.ts'));
+  const css = read('src/styles/paper/tokens.css');
+  const tok = (k) => css.match(new RegExp(`--pp-${k}:\\s*([^;]+);`))?.[1].trim();
+  const paper = tok('paper'), paper2 = tok('paper-2');
+  for (const h of HUES) for (const s of STEPS) assert.equal(tok(`${h}-${s}`), RAMP[h][s], `--pp-${h}-${s}`);
+  for (const k of Object.keys(VIZ)) assert.equal(tok(k), VIZ[k], k);
+  for (const h of HUES) {
+    assert.ok(contrast(RAMP[h].deep, paper) >= 3, `${h}-deep 3:1 on paper`);
+    assert.ok(contrast(RAMP[h].ink, paper2) >= 4.5, `${h}-ink 4.5:1 on paper-2`);
+    assert.ok(contrast(NIGHT_RAMP[h].deep, NIGHT.paper) >= 3, `night ${h}-deep 3:1`);
+    assert.ok(contrast(NIGHT_RAMP[h].ink, NIGHT['paper-2']) >= 4.5, `night ${h}-ink 4.5:1`);
+    for (const s of STEPS) assert.equal(NIGHT[`${h}-${s}`], NIGHT_RAMP[h][s], `night.ts carries ${h}-${s}`);
+  }
+  for (const k of Object.keys(NIGHT_VIZ)) assert.equal(NIGHT[k], NIGHT_VIZ[k]);
+  for (const [fg, bg] of NIGHT_GRAPHIC_PAIRS) assert.ok(contrast(NIGHT[fg], NIGHT[bg]) >= 3, `${fg} on night ${bg}`);
+  for (const [fg, bg] of NIGHT_TEXT_PAIRS) assert.ok(contrast(NIGHT[fg], NIGHT[bg]) >= 4.5, `${fg} on night ${bg}`);
+  // the data ramp: eight steps, each 3:1 on paper, gold-base never a series, each with its own shape
+  assert.equal(DATA.length, 8);
+  assert.equal(new Set(DATA.map(([, shape]) => shape)).size, 8);
+  for (const [k] of DATA) { assert.notEqual(k, 'gold-base'); const [h, s] = k.split('-'); const v = k === 'ink-2' ? tok('ink-2') : RAMP[h][s]; assert.ok(contrast(v, paper) >= 3, `${k} 3:1 on paper`); assert.equal(tok(`data-${DATA.findIndex(([x]) => x === k) + 1}`), `var(--pp-${k})`); }
+  // the Folds wear their hue's ramp
+  for (const f of FOLDS) { const r = RAMP[FOLD_HUE[f.id]]; assert.deepEqual({ a: f.a, b: f.b, c: f.c, ink: f.ink }, { a: r.base, b: r.deep, c: r.soft, ink: r.ink }, f.id); }
+});
+
+test('0.4.0 roles and rules: type roles, motion tokens, controls, Increase Contrast, no overlay left', () => {
+  const css = read('src/styles/paper/tokens.css');
+  for (const r of ['display', 'title', 'section', 'subtitle', 'heading', 'copy', 'copy-lg', 'label', 'kicker', 'button', 'button-small', 'tabular']) assert.match(css, new RegExp(`--pp-t-${r}:`), `type role ${r}`);
+  for (const m of ['dur-fast: 160ms', 'dur-base: 240ms', 'dur-slow: 380ms', 'ease-out:', 'ease-in-out:', 'press: .97', 'enter: .93', 'input-h: 36px', 'ring:']) assert.ok(css.includes(`--pp-${m}`), m);
+  assert.match(css, /@media \(prefers-contrast: more\)/);
+  const comp = paperCss();
+  // no sub-second literal duration is left in the Paper sheets; motion reads the tokens
+  assert.deepEqual(comp.match(/(?<![0-9.\w])\.[0-9]+s(?=[ ;,)])/g)?.filter((d) => parseFloat(d) <= 0.4) ?? [], []);
+  // teal in text means a link or an action: these four read ink now
+  assert.match(comp, /\.pp-play-formats small \{[^}]*color: var\(--pp-ink-2\)/);
+  assert.match(comp, /\.pp-training-ticks li::before \{[^}]*color: var\(--pp-ink-2\)/);
+  assert.match(comp, /\.pp-relay-paid li::marker \{[^}]*color: var\(--pp-ink-2\)/);
+  assert.match(comp, /\.pp-price-more li::before \{[^}]*background: var\(--pp-ink-3\)/);
+  // the chart kit never fills a line path (a class fill beats an inline fill="none")
+  assert.match(comp, /\.pp-chart path\[class\^="pp-s"\] \{ fill: none; \}/);
+  for (const c of ['pp-input', 'pp-check', 'pp-radio', 'pp-seg', 'pp-stepper', 'pp-modal', 'pp-prov', 'pp-el', 'pp-chart', 'pp-media', 'pp-voice', 'pp-display', 'pp-title', 'pp-tabular']) assert.ok(comp.includes(`.paper .${c}`), c);
+  assert.ok(!existsSync(path.join(root, 'src/styles/paper/next.css')), 'the 0.4.0 overlay folded into tokens.css and components.css');
+  assert.doesNotMatch(comp, /\.pp-next(?![\w-])/);
+  assert.doesNotMatch(read('src/layouts/PaperLayout.astro'), /paper=next/);
+});
