@@ -106,7 +106,8 @@ for (const route of ['/flow/paths/']) {
     await page.goto(route);
     const cards = page.locator('.ps');
     expect(await cards.count()).toBeGreaterThanOrEqual(4);
-    await expect(cards.locator('.ps-capture img')).toHaveCount(route === '/' ? 2 : 3);
+    // Captured feature walks: the three Flow 3.0 walks plus the four in the Flow 4 series (2026-11-07).
+    await expect(cards.locator('.ps-capture img')).toHaveCount(route === '/' ? 2 : 7);
     if (route === '/') await expect(page.locator('.ps--hero [data-flow-mock]').first()).toHaveAttribute('data-stage', '4');
     else await expect(page.locator('.ps--hero .ps-capture img')).toBeVisible();
     for (const link of await cards.locator('a.ps-link').all()) await expect(link).toHaveAttribute('href', /^\/flow\/paths\/[a-z-]+\/$/);
