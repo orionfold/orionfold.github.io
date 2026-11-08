@@ -33,6 +33,10 @@ export interface TrustPageData {
   /** Eyebrow label + the homepage-trio phrasing this page backs. */
   eyebrow: string;
   title: string;
+  /** Search-result title when "<title> · Orionfold" is too short or too long. */
+  seoTitle?: string;
+  /** Search-result description when the summary runs past 165. */
+  seoDescription?: string;
   /** One-line plain summary under the H1. */
   summary: string;
   /** The "short version" card, plain language. */
@@ -52,6 +56,7 @@ export const TRUST_PAGES: Record<string, TrustPageData> = {
     title: 'Data flow: what leaves your machine, and when',
     summary:
       'Relay runs on your own computer. This page lists every outbound network call the product can make, checked against the code, so nothing about what leaves your machine is a guess.',
+    seoDescription: 'Relay runs on your own computer. This page lists every outbound network call it can make, checked against the code, so what leaves your machine is never a guess.',
     shortVersion:
       'A plain install with nothing configured makes exactly one kind of outbound call: a checksum-verified download of the server build from GitHub, once per version. Everything else only happens after you configure or click it. No telemetry, no analytics, no update check, no call to orionfold.com anywhere in the code.',
     lastUpdated: '2026-07-01',
@@ -114,6 +119,7 @@ export const TRUST_PAGES: Record<string, TrustPageData> = {
     title: 'Continuity: what happens if Orionfold disappears',
     summary:
       'Vendor risk is fair to ask of a small company. Relay answers it in the architecture, not a contract: our disappearance cannot take your workflows, data, or purchased content with it.',
+    seoDescription: 'Vendor risk is fair to ask of a small company. Relay answers it in the design. If we disappear, your workflows, data and purchased content stay with you.',
     shortVersion:
       'The engine is open source, your data is a local file you already hold, and your license verifies offline forever. What you would lose if Orionfold wound down: future pack updates and support. What you keep: everything you have.',
     lastUpdated: '2026-07-01',
@@ -278,6 +284,7 @@ export const TRUST_PAGES: Record<string, TrustPageData> = {
     slug: 'security-packet',
     eyebrow: 'Security packet',
     title: 'Security packet',
+    seoTitle: 'Security packet · A Relay overview for security reviews',
     summary:
       'A concise security overview for evaluators, written to be handed to a security review as-is. Every claim links to the code or document that backs it.',
     shortVersion:

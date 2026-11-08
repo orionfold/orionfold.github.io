@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Orionfold Cortex · A private second brain on your desktop'
 # New software rollout: Orionfold Cortex (2026-06-03). The Arena memory layer
 # turned into its own product upstream (cockpit Knowledge tab rebranded Cortex,
 # route /arena/cortex/, plus a /cortex/ landing + sidecar-less demo). Authored

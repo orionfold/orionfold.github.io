@@ -2,7 +2,7 @@
 title: "Reasoning you can read step by step"
 metric: "Show the work"
 claim: "The Patent Strategist works through a problem in steps you can read, and giving it the right source lifts its score on patent questions from 62.5% to 95%, so you can see the path and check it."
-dek: "A right answer with a hidden path is hard to trust on the next question. This model shows each step, and its score climbs in a clear, checkable way as you hand it better source. Rerun it yourself."
+dek: "A right answer with a hidden path is hard to trust. This model shows each step, and its score climbs as you hand it better sources. Rerun it yourself."
 date: 2026-06-28
 tags: ["Reasoning"]
 relatedTo: ["matrix:shows-step-by-step-reasoning:kepler", "matrix:shows-step-by-step-reasoning:patent", "headline:step-by-step"]

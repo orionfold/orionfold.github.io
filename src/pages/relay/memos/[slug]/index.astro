@@ -96,8 +96,8 @@ const breadcrumbSchema = {
 };
 ---
 <PaperLayout
-  title={`${title} · ${series} · Orionfold`}
-  description={summary}
+  title={memo.data.seoTitle ?? `${title} · ${series} · Orionfold`}
+  description={memo.data.seoDescription ?? summary}
   ogImage={og.image}
   ogImageAlt={`${title} · Orionfold ${series}`}
   jsonLd={[articleSchema, breadcrumbSchema]}

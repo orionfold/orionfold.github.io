@@ -53,6 +53,8 @@ const productDetail = defineCollection({
       // Optional search-only title. Keeps canonical product names and slugs
       // stable while allowing an evidence-backed SERP intent test.
       seoTitle: z.string().optional(),
+      // Optional search-only description when the valueProp runs past 165.
+      seoDescription: z.string().optional(),
 
       // Hero override. By convention the hero reuses the listing poster/cover the
       // route resolves from the SSOT; set this only to point at a different image.
@@ -276,6 +278,10 @@ const memos = defineCollection({
       // One-line blurb (Relay gate caps at 300): meta description + card/
       // interstitial dek.
       summary: z.string(),
+      // Optional search-only title when the headline runs past 65.
+      seoTitle: z.string().optional(),
+      // Optional search-only description when the summary runs past 165.
+      seoDescription: z.string().optional(),
       tags: z.array(z.string()).default([]),
       difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
       // Relative ref to the per-memo hero SVG in the same folder (signature.svg).

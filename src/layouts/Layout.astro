@@ -6,6 +6,7 @@ import { SITE, ORGANIZATION } from '../data/seo';
 import { META_PIXEL_ID } from '../data/meta';
 import { META_PIXEL_ENABLED, GOOGLE_ADS_ENABLED } from '../data/launch';
 import { GOOGLE_ADS_LEAD_SEND_TO } from '../data/ads';
+import { fitSearchTitle, fitDescription } from '../lib/flow/seo-meta';
 
 interface Props {
   bodyClass?: string;
@@ -30,8 +31,8 @@ interface Props {
 const {
   bodyClass = '',
   design = 'living',
-  title = 'Orionfold · Living Documents for work that continues',
-  description = SITE.description,
+  title: requestedTitle = 'Orionfold · Living Documents for work that continues',
+  description: requestedDescription = SITE.description,
   ogImage = SITE.ogImage,
   ogImageAlt = SITE.ogImageAlt,
   ogType = 'website',
@@ -40,6 +41,10 @@ const {
   jsonLd,
 } = Astro.props;
 
+// Search-result sized: a long title loses its brand and section suffixes, a
+// long description is trimmed to its last whole sentence (src/lib/flow/seo-meta.ts).
+const title = fitSearchTitle(requestedTitle);
+const description = fitDescription(requestedDescription, 165);
 const noindex = SERVICE_MODE === 'production' ? requestedNoindex : true;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 // Global Organization node ships on every page so the whole site reads as one

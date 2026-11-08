@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Trends · AI agents that map your market · Orionfold'
 # P6 software rollout #1 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # repo README (navam-io/trends) + two real screenshots from blog/images/. Trends
 # has a public live demo, so outbound carries BOTH the demo (site) and the repo

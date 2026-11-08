@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Moments · AI news turning points, mapped · Orionfold'
 # P6 software rollout #1 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # repo README (navam-io/moments) + two real screenshots from blog/images/.
 # Sections are data-gated: hero, chips, install, specs, gallery, sponsor, related

@@ -31,8 +31,8 @@ const slugify = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').repla
 <PaperLayout
   ogImage={ogMeta(`/trust/${page.slug}/`).image}
   ogImageAlt={ogMeta(`/trust/${page.slug}/`).alt}
-  title={`${page.title} · Orionfold`}
-  description={page.summary}
+  title={page.seoTitle ?? `${page.title} · Orionfold`}
+  description={page.seoDescription ?? page.summary}
   jsonLd={[
     {
       '@context': 'https://schema.org',

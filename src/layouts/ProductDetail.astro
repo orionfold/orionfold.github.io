@@ -245,7 +245,7 @@ const jsonLd = [productSchema, breadcrumbSchema, ...(fieldEditionSchema ? [field
 ---
 <PaperLayout
   title={detail.seoTitle ?? `${view.title} · Orionfold`}
-  description={view.valueProp}
+  description={detail.seoDescription ?? view.valueProp}
   ogImage={ogImageRel}
   ogImageAlt={detail.heroAlt ?? view.valueProp}
   jsonLd={jsonLd}

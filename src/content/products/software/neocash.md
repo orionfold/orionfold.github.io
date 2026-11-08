@@ -1,4 +1,5 @@
 ---
+seoTitle: 'NeoCash · Private money helper in your browser · Orionfold'
 # P7 software rollout #2 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # repo README + WORKFLOW.md (Developer/neocash) and three real screenshots from
 # docs/screenshots/. Honesty note: NeoCash keeps your DATA local (in the browser),

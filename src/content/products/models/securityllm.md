@@ -1,4 +1,5 @@
 ---
+seoTitle: 'SecurityLLM · Offline AI model for cyber security · Orionfold'
 # P4 model page (spec §3, "Model → SPONSOR"). slug = slugify("SecurityLLM") =
 # securityllm, the same id models.astro/roadmap use, so the listing card routes
 # inward and the Sponsor tiers pre-select model:securityllm. Facts are the real

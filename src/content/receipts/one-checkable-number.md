@@ -2,7 +2,7 @@
 title: "One number you can actually check"
 metric: "38 of 44 checked"
 claim: "Kepler returns one clear number for a space-math problem, the kind a small program can mark right or wrong. On a frozen test of 44 problems it got 38 right."
-dek: "For math, the right shape of answer is a number you can verify, not prose. Kepler returns the number, a checker compares it to the known answer, and on a locked test it passed 38 of 44. Rerun it yourself."
+dek: "Kepler answers math with a number you can check. A checker compares it to the known answer, and it passed 38 of 44 on a locked test. Rerun it yourself."
 date: 2026-06-28
 tags: ["Reasoning"]
 relatedTo: ["matrix:returns-one-checkable-number:kepler", "headline:checkable-number"]

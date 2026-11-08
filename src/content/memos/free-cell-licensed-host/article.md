@@ -4,6 +4,7 @@ date: 2026-07-19
 stage: review
 series: "Relay Host & Cells"
 summary: "Relay Core, the direct Cell path, and the public Cell image remain free. A Host license pays for managed lifecycle authority within signed capacity; Packs remain a separate content entitlement."
+seoDescription: "Relay Core, the direct Cell path and the public Cell image stay free. A Host license pays for managed control within signed capacity. Packs are sold separately."
 tags: ["relay-host", "relay-cell", "licensing", "pricing", "fulfillment", "open-source"]
 difficulty: beginner
 signature: signature.svg

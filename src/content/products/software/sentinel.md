@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Sentinel · Test AI agents on a drag-and-drop canvas · Orionfold'
 # P6 software rollout #1 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # repo README (navam-io/sentinel) + one real canvas screenshot (the repo's only
 # product shot, from blogs/visual-first-design/). Sentinel's "usage" is the YAML

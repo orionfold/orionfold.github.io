@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Advisor model · Offline AI that cites your notes · Orionfold'
 # Model detail page for Advisor (slug = slugify("Advisor") = advisor, the id
 # models.astro/roadmap use, so the flagship listing card routes inward and the
 # Sponsor tiers pre-select model:advisor). Facts are the real ones from the HF

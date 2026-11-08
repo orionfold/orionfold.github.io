@@ -1,4 +1,5 @@
 ---
+seoTitle: 'neosignal · Scores for AI models, chips and tools · Orionfold'
 # P7 software rollout #2 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # repo README + rubrics/datasets (Developer/neosignal.io) and three real product
 # screenshots from public/blog. neosignal is a HOSTED web app, not something you

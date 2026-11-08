@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Orionfold Advisor · Local AI that cites its source'
 # New software rollout: Orionfold Advisor (graduated from the roadmap overlay
 # 2026-06-10, the day it shipped publicly upstream). Authored from the canonical
 # product article in the ainative.business GitHub repo

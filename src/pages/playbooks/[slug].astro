@@ -53,7 +53,7 @@ const numbers = sections.find((h) => h.text === (blueprint ? 'The signals' : 'Th
 const dateIso = d.drafted.toISOString().slice(0, 10);
 const canonical = `${SITE.url}${domainArticleHref(entry.id)}`;
 const ogImage = ogPath(domainOgSlug(entry.id));
-const seoTitle = fitTitle(`${d.title} · Flow Playbooks · Orionfold`, blueprint ? `${d.domain}, a Flow Playbook blueprint · Flow Playbooks · Orionfold` : `${d.domain}, built in Flow · Flow Playbooks · Orionfold`);
+const seoTitle = fitTitle(`${d.title} · Flow Playbooks · Orionfold`, blueprint ? `${d.domain}, a Flow Playbook blueprint · Orionfold` : `${d.domain}, a Flow Playbook · Orionfold`);
 const FACTS = blueprint
   ? [
       { label: 'Status', value: 'A blueprint. Not built yet.' },

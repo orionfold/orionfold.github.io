@@ -1,4 +1,5 @@
 ---
+seoTitle: 'OpenVolo · Contacts and posts on your own computer · Orionfold'
 # P7 software rollout #2 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # repo README/AGENTS (Developer/openvolo) and three real app screenshots from the
 # repo root. OpenVolo ships on npm and runs as one command (npx), so install is a

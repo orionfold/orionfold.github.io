@@ -1,4 +1,6 @@
 ---
+seoTitle: 'Patent Strategist · Offline open AI model for patents · Orionfold'
+seoDescription: 'An open AI model that reasons about patents. It runs fully offline on a small desktop, so your ideas and filings never leave the room.'
 # P2 pilot — the model shape (spec §3, "Model → SPONSOR"). The model slug is
 # slugify(title) = patent-strategist, so findRecords returns BOTH NeMo builds
 # (the GGUF files + the LoRA adapter) that share the title; the page speaks for

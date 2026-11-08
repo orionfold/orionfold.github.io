@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Finance Chat · Offline open AI model for finance · Orionfold'
 # P4 model page (spec §3, "Model → SPONSOR"). slug = slugify("Finance Chat") =
 # finance-chat, matching the listing card + roadmap id, so the card routes inward
 # and the Sponsor tiers pre-select model:finance-chat. Facts from the donor

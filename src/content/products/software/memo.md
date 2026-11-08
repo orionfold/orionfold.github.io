@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Memo · Save pages, ask questions with private AI · Orionfold'
 # P6 software rollout #1 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # repo README (navam-io/memo) + two real product screenshots from images/.
 # Sections are data-gated: hero, chips, install (clone + build), usage (go fully

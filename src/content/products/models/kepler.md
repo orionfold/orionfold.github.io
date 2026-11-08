@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Kepler · Open AI model for space math, offline · Orionfold'
 # New model rollout 2026-06-07 (the Kepler release wave). Authored from the
 # Hugging Face model card (Orionfold/Kepler-GGUF) + the methods article "The
 # Gate Before the GPU" (ainative.business/field-notes/the-gate-before-the-gpu/).

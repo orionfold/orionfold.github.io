@@ -4,6 +4,7 @@ date: 2026-07-09
 stage: draft
 series: "Relay Packs"
 summary: "Relay Web Designer turns a table of page sections into a self-contained static site and publishes the exact reviewed artifact to a GitHub Pages repo you own. No egress until you press publish, no vendor holding the keys. Built from four composable primitives, not a plugin."
+seoTitle: "The Web Designer Pack: a landing page built from a table · Relay"
 tags: ["packs", "web-designer", "static-site", "github-pages", "primitives"]
 difficulty: intermediate
 signature: signature.svg

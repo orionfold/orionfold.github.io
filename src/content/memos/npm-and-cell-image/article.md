@@ -4,6 +4,7 @@ date: 2026-07-19
 stage: review
 series: "Relay Host & Cells"
 summary: "npm and the Relay Cell image carry the same product release for different operating jobs: npm supports a direct Cell and installs Host control, while OCI gives a managed Host a sealed, repeatable Cell runtime."
+seoDescription: "npm and the Relay Cell image ship the same release. npm runs a direct Cell and installs Host control. The Cell image gives a managed Host a sealed runtime."
 tags: ["relay-host", "relay-cell", "npm", "oci", "containers", "distribution"]
 difficulty: intermediate
 signature: signature.svg

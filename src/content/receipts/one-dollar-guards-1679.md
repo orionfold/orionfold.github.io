@@ -2,7 +2,7 @@
 title: "A $1 test that guards $1,679"
 metric: "$1 guards $1,679"
 claim: "A $1 test on the desk box gates about $1,679 of expected loss from a wrong cloud booking, by culling 100 candidate designs down to a few before any cloud chip is rented."
-dek: "Before booking a big cloud training run, we test the design on the desk first. The cheap test catches the bad designs, and one wrong booking it stops pays for the whole box. Rerun it yourself."
+dek: "Before a big cloud training run, we test the design on the desk. One bad booking that the cheap test stops pays for the whole box. Rerun it yourself."
 date: 2026-06-28
 tags: ["Cost"]
 relatedTo: ["headline:1-guards-1679"]

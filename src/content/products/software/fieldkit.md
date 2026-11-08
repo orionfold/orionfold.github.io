@@ -1,4 +1,5 @@
 ---
+seoTitle: 'fieldkit · Free Python toolbox for local AI · Orionfold'
 # P7 software rollout #2 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # fieldkit README + module docs (GitHub manavsehgal/ai-field-notes, fieldkit/) and
 # the marketing page (ainative.business/fieldkit/). 2026-06-03 re-sync: fieldkit is

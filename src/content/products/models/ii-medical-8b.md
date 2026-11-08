@@ -1,4 +1,5 @@
 ---
+seoTitle: 'II-Medical 8B · Offline open medical AI model · Orionfold'
 # P4 model page (spec §3, "Model → SPONSOR"). slug = slugify("II-Medical 8B") =
 # ii-medical-8b, matching the listing card + roadmap id, so the card routes inward
 # and the Sponsor tiers pre-select model:ii-medical-8b. Facts from the donor

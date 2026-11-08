@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Command · Private AI in your terminal · Orionfold'
 # P6 software rollout #1 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # repo README (navam-io/command) + two real screenshots from images/. Command is
 # a pip-installed CLI, so it has a rich install + usage flow (unlike the GUI apps).

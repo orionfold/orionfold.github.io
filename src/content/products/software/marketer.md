@@ -1,4 +1,5 @@
 ---
+seoTitle: 'Marketer · One article to posts for every site · Orionfold'
 # P6 software rollout #1 (spec §5.5, "Software -> SPONSOR"). Authored from the
 # repo README (navam-io/marketer). No gallery: the repo no longer ships product
 # screenshots (only test/coverage artifacts), and the spec locks "no net-new asset
