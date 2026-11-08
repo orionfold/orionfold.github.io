@@ -462,7 +462,7 @@ export const productOgSlug = (type: string, slug: string) => `${type}-${slug}`;
 // retitle). Versioning the URL from the card's content and renderer revision
 // gives scrapers a fresh image URL when either changes.
 // Bump when the Paper card renderer or its artwork changes without new page copy.
-const OG_RENDERER_VERSION = 'paper-1';
+const OG_RENDERER_VERSION = 'paper-2'; // 2026-11-07: Paper 0.4 Folds + Flow 4 release, cache-bust X and LinkedIn
 const ogVersion = (p: OgPage): string => {
   const fields = [p.eyebrow, p.title, p.alt, p.screenshot ?? '', p.background ?? '', p.seed, p.fold ?? '', OG_RENDERER_VERSION];
   const src = fields.join('\u0000');
