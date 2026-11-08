@@ -100,3 +100,17 @@
 @media (max-width: 560px) { .ls .fc-not { grid-template-columns: 1fr; } }
 .ls .fp-caveat { max-width: 760px; margin-top: 20px; padding: 14px 18px; border: 1px solid #ecd9a0; border-radius: 10px; background: #fff8e0; font-size: .92rem; line-height: 1.55; color: var(--ink); }
 .fp-caveat b { font-weight: 700; }
+
+/* Flow 4 series (2026-11-07): four walks in a 2 x 2 grid, and a strip on each
+   walk that names the headline beat it shows. Teal is for links only. */
+.ps-grid--pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 640px) { .ps-grid--pair { grid-template-columns: 1fr; } }
+.fp-series ol { list-style: none; margin: 0 0 18px; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; counter-reset: fp-series; }
+.fp-series li { counter-increment: fp-series; }
+.fp-series a, .fp-series span { display: block; height: 100%; padding: 10px 12px; border: 1px solid var(--pp-line); border-radius: 12px; font-size: .82rem; line-height: 1.35; color: var(--pp-ink-2); text-decoration: none; }
+.fp-series b { display: block; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--pp-ink-3); }
+.fp-series b::before { content: counter(fp-series) ". "; }
+.fp-series a { color: var(--pp-teal-ink); }
+.fp-series a:hover, .fp-series a:focus-visible { background: var(--pp-teal-pale); }
+.fp-series span[aria-current] { background: var(--pp-paper-2); color: var(--pp-ink); font-weight: 600; }
+@media (max-width: 760px) { .fp-series ol { grid-template-columns: 1fr 1fr; } }

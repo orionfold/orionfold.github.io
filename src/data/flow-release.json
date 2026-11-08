@@ -3,7 +3,7 @@
     "feed": "https://orionfold.com/flow/appcast.xml",
     "read": "2026-11-07"
   },
-  "version": "3.1",
-  "release": "3.1.0",
-  "build": "4033"
+  "version": "4.0",
+  "release": "4.0.0",
+  "build": "4383"
 }

@@ -12,7 +12,7 @@ import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
 import PaperCta from '../../../components/ui/PaperCta.astro';
 import PathShowcase from '../../../components/flow/mocks/PathShowcase.astro';
-import { publishedPaths, pathHref, EVIDENCE_NOTE, type PathEntry } from '../../../lib/flow/paths';
+import { publishedPaths, pathHref, seriesPaths, EVIDENCE_NOTE, type PathEntry } from '../../../lib/flow/paths';
 import { flowPathOgSlug, ogPath } from '../../../data/og';
 import { SITE, PERSON, PUBLISHER } from '../../../data/seo';
 import '../../../styles/living-base.css';
@@ -27,6 +27,8 @@ export async function getStaticPaths() {
 }
 
 const { entry, others } = Astro.props as { entry: PathEntry; others: PathEntry[] };
+// A Flow 4 series walk links its siblings in reading order.
+const series = entry.data.beat ? seriesPaths([entry, ...others]) : [];
 const { Content, headings } = await render(entry);
 const d = entry.data;
 const sections = headings.filter((h) => h.depth === 2);
@@ -66,11 +68,22 @@ const schema = [
   <main id="main" class="pp-page">
     <PaperLongform
       crumb={{ href: '/flow/paths/', label: 'All paths' }}
-      kicker={`${flowName(release)} path / ${d.chip}${d.persona !== d.chip ? ` · ${d.persona}` : ''}`}
+      kicker={`${flowName(release)} path / ${d.beat ?? `${d.chip}${d.persona !== d.chip ? ` · ${d.persona}` : ''}`}`}
       title={d.title} dek={d.dek} published={d.drafted} minutes={minutes} headings={sections}
       magnet={false} bodyClass="ed-page ed-article-page fp-page fp-longform">
       <div slot="lead" class="pp-long-lead">
         {d.caveat && <p class="pp-article-note fp-caveat"><b>On the released build:</b> {d.caveat}</p>}
+        {series.length > 1 && (
+          <nav class="fp-series" aria-label={`New in ${flowName(release)}, ${series.length} walks`}>
+            <ol>
+              {series.map((p) => (
+                <li>{p.id === entry.id
+                  ? <span aria-current="page"><b>{p.data.beat}</b>{p.data.path}</span>
+                  : <a href={pathHref(p.id)}><b>{p.data.beat}</b>{p.data.path}</a>}</li>
+              ))}
+            </ol>
+          </nav>
+        )}
         <p><a class="pp-btn pp-btn--ghost" href="#try-this-path">Try this path ↓</a></p>
       </div>
       <figure slot="figure" class="ls-article-figure fp-heroshot"><Image src={d.hero} alt={d.heroAlt} widths={[800, 1200, 1600, 2400]} sizes="(max-width: 940px) 100vw, 900px" loading="eager" fetchpriority="high" /></figure>
@@ -104,7 +117,7 @@ const schema = [
       {others.length > 0 && (
         <section slot="after" class="fp-section fp-after ls ls-in-paper" aria-labelledby="more-paths">
           <div class="fp-head"><div class="fp-heading"><p class="ls-eyebrow">MORE PATHS</p><h2 id="more-paths">Another job,<br /><span class="ls-stroke">walked the same way.</span></h2></div><a class="fp-all" href="/flow/paths/">All paths →</a></div>
-          <div class="ps-grid">{others.slice(0, 3).map((p) => <PathShowcase entry={p} />)}</div>
+          <div class="ps-grid">{others.filter((p) => !series.includes(p)).slice(0, 3).map((p) => <PathShowcase entry={p} />)}</div>
         </section>
       )}
     </PaperLongform>

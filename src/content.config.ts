@@ -376,6 +376,10 @@ const paths = defineCollection({
       // The release a reader needs, when it is newer than the site's version file.
       release: z.string().optional(),
       // False when the walk starts from an empty folder, not a path on Flow's Home.
+      // The Flow 4 series (2026-11-07): the home headline beat this walk shows
+      // ("Teach your expertise", "Every client gets it", "You sign off"). A path
+      // with a beat is grouped as a series on /flow/paths/ and gets a series strip.
+      beat: z.string().optional(),
       onHome: z.boolean().default(true),
       // Feature walks can start from the Guide or an existing document.
       startInstructions: z.string().optional(),

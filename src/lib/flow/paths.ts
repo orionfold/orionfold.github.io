@@ -23,6 +23,9 @@ export async function publishedCompare(): Promise<CompareEntry[]> {
 }
 
 export const pathHref = (id: string) => `/flow/paths/${id}/`;
+
+/** The Flow 4 series: paths that carry a headline beat, in reading order. */
+export const seriesPaths = (paths: PathEntry[]) => paths.filter((p) => p.data.beat).sort((a, b) => a.data.order - b.data.order);
 export const compareHref = (id: string) => `/flow/compare/${id}/`;
 
 // Card shots are named in front matter, so resolve them through a glob rather
