@@ -140,10 +140,16 @@ const plans = [
         <p>Show Flow your steps once. Type them, say them, or drop in the files you already use. <span class="pp-dim">Flow’s AI follows them for each client. You catch the exception and sign off.</span></p>
         <small>Plain Markdown files on your Mac. The AI waits for your yes.</small>
       </Statement>
+      {/* Boardy review 2026-11-07: the Dec 11 deadline is the strongest hook for an expert with a GPT, so it sits under the opening statement, not at the foot of the Playbooks panel. */}
+      <div class="pp-why-now-wrap">
+        <WhyNow href="/flow/compare/custom-gpts/" cta="Move a GPT to Flow"><b>Custom GPTs retire December 11.</b> Give your playbook a home you own.</WhyNow>
+      </div>
     </section>
 
-    <!-- Order (operator 2026-10-31): panels and open sections alternate. Playbooks, the
-         Fold that runs each one, clients, proof, Elements, trust, Paths, the essay, price. -->
+    <!-- Order (operator 2026-10-31): panels and open sections alternate. Playbooks, proof,
+         clients, the Fold that runs each one, Elements, trust, Paths, the essay, price.
+         Proof moved above the Folds after Boardy's review (2026-11-07): a real customer
+         case is worth more than the mascots. -->
     <Panel id="domains" seam="Flow Playbooks" fold="tally" title="Share your Playbook.<br />Clients work through it." lede={`Your clients bring it into their own Flow and work through your method on their own case. When you improve a step, they get the change to review. Start from one of ${blueprintCount} free blueprints, or make your own.`}>
       <div class="pp-dm-tabs" role="tablist" aria-label="Pick a Flow Playbook">
         {mocks.map(({ fold, d }, i) => (
@@ -156,23 +162,6 @@ const plans = [
           <p class="pp-dm-cap">{fold.name} the {fold.kind} runs the {d.data.domain} blueprint on a client job. <a class="pp-link" href={domainArticleHref(d.id)}>See the blueprint →</a></p>
         </div>
       ))}
-      <WhyNow href="/flow/compare/custom-gpts/" cta="Move a GPT to Flow"><b>Custom GPTs retire December 11.</b> Give your playbook a home you own.</WhyNow>
-    </Panel>
-
-    <section class="pp-meet" id="meet">
-      <h2>Meet your Fold</h2>
-      <p>Every Flow Playbook comes with a Fold, a small paper helper that knows the method. Each one links to its Flow Playbook.</p>
-      <Roster faces={emo} />
-      <p class="pp-panel-link"><a href="/flow/paths/remember-how-you-work/">New in Flow 4. Your own Fold remembers how you work <span aria-hidden="true">→</span></a></p>
-    </section>
-
-    <Panel id="clients" seam="Flow for clients" fold="ember" tinted title="Useful between<br />your meetings" lede="Publish your Flow Playbook to GitHub. Each client brings it into their own Flow and keeps working with your method after the workshop. When you improve it, they see the change and choose to take it.">
-      <!-- The live home's client round trip (operator 2026-10-30): write, a skill draws, publish, the client brings it in, the update arrives. -->
-      <div class="pp-client-mock"><HomeHeroDomainMock /></div>
-      <div class="pp-clients-copy">
-        <p>Every client gets their own copy, not one shared folder. Each copy knows that client's work, and your updates fill the gaps.</p>
-        <p>Need a file instead? Send the same work as a website, a PDF, an Office file or a book.</p>
-      </div>
     </Panel>
 
     <section class="pp-built-wrap" aria-labelledby="home-built-with-heading">
@@ -189,6 +178,22 @@ const plans = [
           </li>
         ))}
       </ul>
+    </section>
+
+    <Panel id="clients" seam="Flow for clients" fold="ember" tinted title="Useful between<br />your meetings" lede="Publish your Flow Playbook to GitHub. Each client brings it into their own Flow and keeps working with your method after the workshop. When you improve it, they see the change and choose to take it.">
+      <!-- The live home's client round trip (operator 2026-10-30): write, a skill draws, publish, the client brings it in, the update arrives. -->
+      <div class="pp-client-mock"><HomeHeroDomainMock /></div>
+      <div class="pp-clients-copy">
+        <p>Every client gets their own copy, not one shared folder. Each copy knows that client's work, and your updates fill the gaps.</p>
+        <p>Need a file instead? Send the same work as a website, a PDF, an Office file or a book.</p>
+      </div>
+    </Panel>
+
+    <section class="pp-meet" id="meet">
+      <h2>Meet your Fold</h2>
+      <p>Every Flow Playbook comes with a Fold, a small paper helper that knows the method. Each one links to its Flow Playbook.</p>
+      <Roster faces={emo} />
+      <p class="pp-panel-link"><a href="/flow/paths/remember-how-you-work/">New in Flow 4. Your own Fold remembers how you work <span aria-hidden="true">→</span></a></p>
     </section>
 
     <Panel id="elements" seam="Elements" fold="atlas" title="Ask for a chart.<br />It lands in your document." lede="Ask in plain words. Your Fold draws charts, sign-offs and timelines right into the page, and you approve each one.">

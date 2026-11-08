@@ -497,7 +497,9 @@ assert.match(read('src/components/paper/FlowWindow.astro'), /named \? `\$\{f\.na
 assert.doesNotMatch(homePageSource, /FlowShot|FlowLaunchHomeHero|HomeRaceCapabilityAct|FlowIdeasPitStop|<Ecosystem|<HomeProof|<Founder/, 'Practice, measurements and builder bands were removed from the homepage 2026-09-29');
 assert.doesNotMatch(homePageSource, /<CapabilityRibbon/, 'the capability ribbon left the homepage 2026-10-05 (operator)');
 // Operator 2026-10-31 ("accept"): panels and open sections alternate.
-const homeOrder = ['<TalkPageHero','<Panel id="domains"','class="pp-meet"','<Panel id="clients"','class="pp-built-wrap"','<Rail label="Elements"','<TrustBand','<Panel id="paths"','class="pp-essay"','<Panel id="pricing"','id="waitlist"'].map(marker => homePageSource.indexOf(marker));
+// Operator 2026-11-07 ("do the layout moves", from Boardy's review): the Dec 11
+// deadline sits under the opening statement, and proof swaps above the Folds.
+const homeOrder = ['<TalkPageHero','<WhyNow href="/flow/compare/custom-gpts/"','<Panel id="domains"','class="pp-built-wrap"','<Panel id="clients"','class="pp-meet"','<Rail label="Elements"','<TrustBand','<Panel id="paths"','class="pp-essay"','<Panel id="pricing"','id="waitlist"'].map(marker => homePageSource.indexOf(marker));
 assert.match(home, /id="waitlist"/, 'old campaign landing anchor survives');
 assert.match(read('src/components/living/EmailInvitation.astro'), /<LivingDocumentsForm \/>/, 'the new offer has a dedicated signup component');
 assert.match(read('src/components/living/LivingDocumentsForm.astro'), /data-consent=\{FLOW_LIVING_DOCUMENTS_CONSENT_TEXT\}/, 'new consent is imported rather than retyped');
