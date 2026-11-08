@@ -5,7 +5,7 @@
 > arrive for review; Night Shift runs within authority you set in advance.
 > A Morning Briefing shows the results, changes and receipts to keep or revert.
 > Base is free forever. Pro is $10/month or $96/year, with 10 Pro days included
-> and no credit card to use. Flow 1.7 brings Jobs into the Workbench beside your document.
+> and no credit card to use. Jobs sit in the Workbench beside your document.
 > Relay provides repeatable agent work with cost receipts. Arena evaluates local
 > AI. Orionfold is a member of NVIDIA Inception.
 
@@ -18,8 +18,8 @@
 - [Research notes for The Work We Want to Keep](https://orionfold.com/essays/the-work-we-want-to-keep/notes/): Supporting studies, source links, Flow development observations and their limits. A companion to the flagship essay, not a separate essay.
 
 ## Flow (flagship, released for Mac)
-- [Flow](https://orionfold.com/flow/): Flow 3.0 Living Documents for Mac. Home opens on 12 paths (ready folders for real jobs) and 28 Living Documents; inspect saved Jobs in Edit, Run and Relations, run them and review each changed part. Flow Pro is $10 a month or $96 a year; Flow Import and Flow Publish are add-ons to Pro at the same price each. Interactive product illustrations explain the workflow. Pricing, FAQ, technical specifications and the direct download remain linked.
-- [Flow product tour](https://orionfold.com/flow/tour/): Explore Flow 1.7 through real product captures. Start with Night Shift, Living Documents and the six Settings screens, then explore writing, files, models and receipts.
+- [Flow](https://orionfold.com/flow/): Flow 3.1 Living Documents for Mac. Home opens on 12 paths (ready folders for real jobs) and 28 Living Documents; inspect saved Jobs in Edit, Run and Relations, run them and review each changed part. Flow Pro is $10 a month or $96 a year; Flow Import and Flow Publish are add-ons to Pro at the same price each. Interactive product illustrations explain the workflow. Pricing, FAQ, technical specifications and the direct download remain linked.
+- [Flow product tour](https://orionfold.com/flow/tour/): Tour Flow through real product captures. Start with Night Shift, Living Documents and the six Settings screens, then explore writing, files, models and receipts.
 - [Flow: Night Shift](https://orionfold.com/flow/night-shift/): Schedule work while your Mac is plugged in and idle. Flow can be open or quit. Review a Morning Briefing and keep or revert changes. Base includes deterministic jobs; Pro adds local model-powered Overnight notes.
 - [Flow intro video, 1:18](https://www.youtube.com/watch?v=Wj4V5GORr2k): "Use Flow to give your documents jobs to do while you sleep." A short reel shown on /flow/ and /flow/night-shift/. It plays only when a visitor presses play.
 - [Flow: Living Documents](https://orionfold.com/flow/living-documents/): Start with useful work offers 28 documents in four categories, with five featured choices. The website also presents seven curated document previews. File-bound charts and tables refresh from their sources; Jobs and collecting definitions stay with the document. Completed Jobs apply changes before review; Keep records a decision, Revert restores the selected output part, and Later leaves applied changes pending.
@@ -32,8 +32,8 @@
 - [Flow for enterprise AI owners](https://orionfold.com/flow/enterprise/): All nine adoption patterns, each tagged Today (shipped in the app) or Direction. How document-native evidence, approvals, and receipts answer enterprise questions about allocation, data classification, attribution, guardrails, evidence, routing, curation, system of record, and capturing expert judgment with consent.
 - [Flow press kit](https://orionfold.com/flow/#press): Quotable facts for journalists and analysts. Status, patent-pending statement, measured numbers with dates, and the press contact.
 
-## Flow Paths (Flow 3.0 walkthroughs, walked on Flow)
-- [Flow Paths](https://orionfold.com/flow/paths/): Real jobs you can do in Flow 3.0 on a Mac, one step at a time, most starting from a path on Flow's Home screen and one from an empty folder and Flow Chat. Every page names the build it was walked on and labels each number verified, derived, assumed or unknown.
+## Flow Paths (Flow 3.1 walkthroughs, walked on Flow)
+- [Flow Paths](https://orionfold.com/flow/paths/): Real jobs you can do in Flow 3.1 on a Mac, one step at a time, most starting from a path on Flow's Home screen and one from an empty folder and Flow Chat. Every page names the build it was walked on and labels each number verified, derived, assumed or unknown.
 - [Write a book by chatting with Flow: one idea to a finished ebook in 54 minutes](https://orionfold.com/flow/paths/write-a-book-in-flow-chat/): In Flow 2.2, an idea typed into Flow Chat becomes a researched three-chapter EPUB of about 7,800 words, every claim footnoted. Writing and research ran on a Claude subscription the author already pays for, the pictures and the cover through OpenRouter for $0.17, and every change waited for review or carried Undo. The page lists the nine issues the walk found.
 - [The investor update that reads the market for you](https://orionfold.com/flow/paths/investor-update/): A founder's monthly update. Metrics workbook and last deck imported, a saved Job watches the market, Expand with Sources drafts a cited market section (79 s, $0.00 on a local model), published as a PowerPoint deck.
 - [The brief that writes its own second month](https://orionfold.com/flow/paths/recurring-client-brief/): A monthly client brief with a source on every sentence, drafted on the Mac from a PDF, deck and workbook. Month two starts from month one.
@@ -95,10 +95,15 @@
 ## Buy
 - [Arena Field Edition](https://orionfold.com/arena/): The paid edition of the free Orionfold Arena. One installer turns an NVIDIA DGX Spark into a private AI lab with an AI research teammate (agents, domain models, and tests). It proves itself on first boot with a verifiable receipt and stays proven for a year, every update re-gated and re-receipted. The software stays free and open; what you buy is the assembled, proven team delivered turnkey. $349 founding for the first 25 licenses, then $499 one time with a 12-month kept-proven window; $149/yr renewal after year one.
 - [Relay](https://orionfold.com/relay/): A licensed product that runs your AI agents for real client work, all on your own machine. It shows what each client costs you, and none of your data leaves your computer. $349 founding for the first 25 licenses, then $499 one time; $149/yr renewal after year one.
+- [Proposal](https://orionfold.com/proposal/): Put Flow seats and other Orionfold products on one itemized, non-binding proposal request, then print it or send it for review.
+- [Training](https://orionfold.com/training/): Focused, self-serve workshops that help you build one working system, verify it, and keep the result.
+- [Relay Operator Workshop](https://orionfold.com/training/relay-operator-workshop/): Bring one real operating process. Leave with a governed Relay workflow you can run, inspect and improve, with no call to schedule.
+- [Sponsor](https://orionfold.com/sponsor/): Sponsor Orionfold from $10 a month. Bronze to Platinum tiers prioritize your feature, fix and support requests, with a roadmap badge for Gold and Platinum.
 
 ## Flagship paths
 - [Flow](https://orionfold.com/flow/): Orionfold's lead flagship. Living Documents keep recurring work, sources and receipts with files you own. Review daytime edits; authorize a bounded Night Shift in advance and inspect its Morning Briefing. Native Mac, patent pending, released as a closed-source app. Base is free forever and includes deterministic Living Document jobs, Morning Briefing and Review. Pro adds model-powered Overnight notes and other AI actions.
 - [Relay](https://orionfold.com/relay/): The operations layer for repeatable agent work. Run agents and client workflows from one place, keep approval in the loop, and see cost per client.
+- [Arena for DGX Spark](https://orionfold.com/cockpit/): Arena as the cockpit for private AI on an NVIDIA DGX Spark. Compare, remember, evaluate and ship local AI work; Arena Field Edition delivers the whole stack as a turnkey, proven lab.
 - [Arena](https://orionfold.com/arena/): Orionfold Arena is the cockpit for local AI. Run, compare, score, and train models on your own desktop. Arena Field Edition delivers the whole stack on an NVIDIA DGX Spark as a turnkey, proven lab; Cortex memory and the fieldkit toolkit are the stack around it.
 - [Workflows](https://orionfold.com/workflows/): One job you repeat, run as a Flow Playbook. Flow runs its Jobs on your Mac, even overnight; you keep or undo each change, and every run leaves a receipt.
 - [Experts](https://orionfold.com/experts/): Offline domain models with benchmarks and playbooks for sensitive work. Patent Strategist is the live flagship pack.
@@ -115,6 +120,7 @@
 ## Proof libraries
 - [Proof](https://orionfold.com/proof/): The receipts wall. Every capability claim links to a test you can run yourself and get the same result. It shows where the small local models already win, and where the big cloud models still lead.
 - [Receipts](https://orionfold.com/receipts/): Every receipt on its own page. Each holds a frozen test you can rerun, the run itself, and what we found. The proof, not the pitch.
+- [Our promise](https://orionfold.com/promise/): The Orionfold promise across Flow, Relay and Arena. What is free stays free, what you own keeps working on your own machine, and you pay for the AI, the content or the upkeep, never for the right to use what is yours.
 - [Trust](https://orionfold.com/trust/): How Orionfold products are built to be trusted. Where your data flows (and where it does not), the license terms, the supply chain behind the software, and how you stay covered over time. Plain answers to the questions a careful buyer asks.
 - [Software](https://orionfold.com/software/): Flow leads the catalog, with Relay and Arena beside it. Proof, Advisor, Cortex, the API, apps, and developer tools provide the evidence and building blocks behind them.
 - [Models](https://orionfold.com/models/): Open-weight AI models tuned for patents, security, law, finance, medicine, and space math. Free to download and run offline.
