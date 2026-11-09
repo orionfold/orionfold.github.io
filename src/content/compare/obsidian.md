@@ -7,6 +7,9 @@ dek: "A brief you redo every month? Keep your Markdown files and your vault. Flo
 line: "Keep your Markdown files. Add documents that redo their own routine work."
 updated: 2026-10-27
 startWith: recurring-client-brief
+quickStart:
+  title: "Try one Markdown workflow"
+  description: "Copy a small folder with one document you update, like a monthly brief. In Flow, choose Add Folder and open the copy. Try one update and review the proposed changes before you save. Your original stays in Obsidian."
 rows:
   - topic: "Where your notes live"
     them: "Obsidian stores notes as Markdown plain text files in a vault. A vault is a folder on your own computer, with its subfolders."

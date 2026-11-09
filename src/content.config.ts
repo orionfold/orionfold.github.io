@@ -401,6 +401,7 @@ const compare = defineCollection({
       dek: z.string(),
       line: z.string(), // one-line pitch for nav and cards
       updated: z.coerce.date(),
+      quickStart: z.object({ title: z.string(), description: z.string() }).optional(),
       rows: z.array(
         z.object({
           topic: z.string(),

@@ -22,6 +22,8 @@ import '../../../styles/flow-paths.css';
 import '../../../styles/living-in-paper.css';
 import '../../../styles/paper-bridge-catalog.css';
 import { flowTermsHtml } from '../../../lib/flow/flow-terms.mjs';
+import { FLOW_DMG_URL, FLOW_SYSTEM_REQUIREMENT } from '../../../data/flow-pricing';
+import { ORIONFOLD_FLOW_LIVE } from '../../../data/launch';
 
 export async function getStaticPaths() {
   const pages = await publishedCompare();
@@ -42,6 +44,7 @@ const ogImage = ogPath(compareOgSlug(entry.id));
 const seoTitle = fitTitle(`${d.title} · Orionfold`, `Flow ${d.kind === 'switch' ? 'vs' : 'with'} ${d.tool} · Compare · Orionfold`);
 const seoDescription = fitDescription(d.dek);
 const sections = [
+  ...(d.quickStart ? [{ slug: 'quick-start', text: d.quickStart.title, depth: 2 }] : []),
   { slug: 'side-by-side', text: 'Side by side', depth: 2 },
   ...headings.filter((h) => h.depth === 2),
   { slug: 'what-flow-is-not', text: 'What Flow is not', depth: 2 },
@@ -75,7 +78,16 @@ const schema = [
       kicker={`${d.tool} · ${d.kind === 'switch' ? 'Switch' : 'Pair'} · Sources checked`}
       title={d.title} dek={d.dek} updated={d.updated} minutes={minutes} headings={sections}
       magnet={false} bodyClass="ed-page ed-article-page fp-page fp-longform">
-      <p slot="lead" class="pp-long-lead"><a class="pp-btn pp-btn--ghost" href="#try-flow">Try Flow ↓</a></p>
+      <p slot="lead" class="pp-long-lead"><a class="pp-btn pp-btn--ghost" href={d.quickStart ? '#quick-start' : '#try-flow'}>Try Flow ↓</a></p>
+
+      {d.quickStart && (
+        <section id="quick-start" class="compare-quick-start" aria-labelledby="compare-quick-start-title">
+          <h2 id="compare-quick-start-title">{d.quickStart.title}</h2>
+          <p>{d.quickStart.description}</p>
+          <p>{FLOW_SYSTEM_REQUIREMENT}. Markdown editing stays free. Try the AI features with 10 Pro Days. Flow Pro costs $10 a month or $96 a year.</p>
+          {ORIONFOLD_FLOW_LIVE && <a class="pp-btn" href={FLOW_DMG_URL} data-flow-download={`flow-compare-${entry.id}-example`}>Download Flow for Mac</a>}
+        </section>
+      )}
 
       <h2 id="side-by-side">Side by side</h2>
       <CompareTable entry={entry} />
@@ -95,3 +107,17 @@ const schema = [
   </main>
   <Footer showDownload={false} />
 </PaperLayout>
+
+<style>
+  .compare-quick-start {
+    padding: clamp(16px, 4vw, 28px);
+    border: 1px solid var(--pp-line);
+    border-radius: var(--pp-r-2);
+    background: var(--pp-paper-2);
+    scroll-margin-top: calc(var(--of-nav-height, 102px) + 16px);
+  }
+  .compare-quick-start h2 { margin-top: 0; }
+  .compare-quick-start a.pp-btn { margin-top: 12px; }
+  .compare-quick-start a.pp-btn,
+  .compare-quick-start a.pp-btn:hover { color: var(--pp-white); }
+</style>

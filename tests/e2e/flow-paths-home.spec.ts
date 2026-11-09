@@ -51,6 +51,16 @@ for (const slug of ['notion', 'obsidian', 'custom-gpts', 'claude-code', 'codex',
     const response = await page.goto(`/flow/compare/${slug}/`);
     expect(response?.status()).toBe(200);
     for (const lead of ['The job.', 'The moment.', 'Your choices.', 'What breaks.']) await expect(page.locator('main strong', { hasText: lead })).toHaveCount(1);
+    if (slug === 'obsidian') {
+      const example = page.getByRole('region', { name: 'Try one Markdown workflow' });
+      await expect(example).toContainText('macOS 26 or later');
+      await expect(example).toContainText('10 Pro Days');
+      const download = example.getByRole('link', { name: 'Download Flow for Mac' });
+      await expect(download).toHaveAttribute('data-flow-download', 'flow-compare-obsidian-example');
+      expect(await download.evaluate(link => getComputedStyle(link).color)).toBe('rgb(255, 255, 255)');
+      await expect(page.getByRole('link', { name: 'Try Flow ↓' })).toHaveAttribute('href', '#quick-start');
+      await expect(example.getByRole('checkbox')).toHaveCount(0);
+    }
     const over = await page.evaluate(() => [...document.querySelectorAll('main *')].filter((el) => {
       if (el.closest('table, .fp-compare, .living-origami')) return false; // the CTA's paper art bleeds by design
       const b = el.getBoundingClientRect();
