@@ -3,7 +3,7 @@ tool: Obsidian
 kind: switch
 order: 2
 title: "Flow for Obsidian users: same Markdown files, documents that do work"
-dek: "A brief you redo every month? Keep your Markdown files and your vault. Flow adds Jobs that redo the routine part, and every AI change waits for your yes."
+dek: "A brief you redo every month? Keep your Markdown files and your vault. Flow adds Jobs that redo the routine part, and you can review the proposed update before keeping it."
 line: "Keep your Markdown files. Add documents that redo their own routine work."
 updated: 2026-10-27
 startWith: recurring-client-brief
@@ -27,7 +27,7 @@ rows:
     source: { label: "Obsidian Help: Link notes", href: "https://obsidian.md/help/link-notes", checked: "2026-09-28" }
   - topic: "Adding new abilities"
     them: "Community plugins, built by other users, add features. Obsidian starts in Restricted Mode, so no plugin code runs until you turn it off. It scans every plugin version for malware and security problems."
-    flow: "Jobs, drafting with sources, import and publish are built into Flow. When AI changes a document, the change shows line by line and waits for you to keep or revert it."
+    flow: "Jobs, drafting with sources, import and publish are built into Flow. Run a Job by hand and review the proposed change line by line before keeping it."
     path: campaign-with-proof
     source: { label: "Obsidian Help: Plugin security", href: "https://obsidian.md/help/plugin-security", checked: "2026-10-27" }
   - topic: "Where you can use it"
@@ -64,9 +64,9 @@ sources:
 
 In Flow, a document can carry Jobs. A Job is a short, plain-text instruction at the top of the file, like "collect the figures from these files" or "draft this section from these sources." You press Run and the Jobs redo the routine part. In our walk, the steps that need no AI finished in under half a second. The draft ran on an open model on the Mac through Flow Runtime, for $0.00.
 
-Nothing the AI writes goes straight into your file. It arrives as a proposal. You see the exact lines that would change, with a footnote on each claim, and you keep it or throw it away. Flow also keeps a History of each saved version and who wrote it, whether you, a Job, or another app.
+In the manual run shown here, the draft arrives as a proposal. You see the exact lines that would change, with a footnote on each claim, and you keep it or throw it away. Flow also keeps a History of each saved version and who wrote it, whether you, a Job, or another app.
 
-Owning your files is not the difference. Obsidian already gives you that, and Flow agrees. Plugins are not the difference either. Obsidian [starts in Restricted Mode](https://obsidian.md/help/plugin-security), so no plugin code runs until you allow it, and it scans every plugin version. The difference is the redo. A document does its own routine work again, then waits for your yes.
+Owning your files is not the difference. Obsidian already gives you that, and Flow agrees. Plugins are not the difference either. Obsidian [starts in Restricted Mode](https://obsidian.md/help/plugin-security), so no plugin code runs until you allow it, and it scans every plugin version. The difference is the redo. A document does its routine work again and gives you the proposed update to review.
 
 ## Moving your work
 

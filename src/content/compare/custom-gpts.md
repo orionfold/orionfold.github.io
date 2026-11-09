@@ -7,6 +7,9 @@ dek: "You put your method into a custom GPT or a Claude Project so clients could
 line: "Keep your method as files you own, and publish each update as a change to review."
 updated: 2026-10-27
 startWith: ai-consulting
+quickStart:
+  title: "Start one Flow Playbook"
+  description: "Start with a folder for your method, its sources, and a worked example. Use the AI Consulting Playbook below as a guide. To publish your folder to GitHub from Flow, you need Flow Pro and the Publish add-on."
 rows:
   - topic: "What it is for"
     them: "A custom GPT is a version of ChatGPT with its own instructions and files. A Claude Project is a workspace with its own chats and a knowledge base of files you upload."

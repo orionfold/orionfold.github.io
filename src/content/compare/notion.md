@@ -7,6 +7,9 @@ dek: "An investor update you redo every month? Keep Notion for the team and move
 line: "Keep your pages as files you own, with AI that can run on your Mac."
 updated: 2026-10-27
 startWith: investor-update
+quickStart:
+  title: "Move one Notion page"
+  description: "Export a page you can edit as Markdown & CSV and unzip it on your Mac. In Flow, use Add Folder to open the export. Draft one update from the Markdown page, then review what changed before you keep it."
 rows:
   - topic: "Where your work lives"
     them: "Notion stores everything in the cloud. Notion is hosted by AWS, and it keeps backups of your pages on its servers. In the desktop and phone apps, you can download pages to use offline."
@@ -81,7 +84,7 @@ The third change is how AI is paid for. On [Notion's pricing page](https://www.n
 
 Flow has no Notion importer. The way over is to export and then open the folder.
 
-1. In Notion, a workspace owner can go to Settings, then Workspace, then General, and choose **Export all workspace content**. Pick Markdown & CSV. Notion [exports pages as Markdown and databases as CSV files](https://www.notion.com/help/export-your-content). It emails you a download link that lasts 7 days, and a big export can take up to 30 hours.
+1. Open one Notion page, choose **Export** in its page menu, and pick **Markdown & CSV**. Notion [exports pages as Markdown and databases as CSV files](https://www.notion.com/help/export-your-content).
 2. Unzip the download into a folder on your Mac.
 3. In Flow, click **Add Folder** in the sidebar and choose that folder. Flow opens it where it sits. Nothing is copied into a private format.
 

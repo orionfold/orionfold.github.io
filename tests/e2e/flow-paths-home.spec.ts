@@ -45,18 +45,25 @@ test('Compare pages are linked from the nav and each row cites a source', async 
 
 // Every Compare page opens on the job, the moment, the choices and what
 // breaks, and fits a phone without any box running past the screen edge.
+const campaignExamples = new Map([
+  ['obsidian', 'Try one Markdown workflow'],
+  ['notion', 'Move one Notion page'],
+  ['codex', 'Review one Codex edit'],
+  ['custom-gpts', 'Start one Flow Playbook'],
+]);
 for (const slug of ['notion', 'obsidian', 'custom-gpts', 'claude-code', 'codex', 'hermes-openclaw', 'word', 'canva']) {
   test(`Compare ${slug} leads with the job and fits a phone`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     const response = await page.goto(`/flow/compare/${slug}/`);
     expect(response?.status()).toBe(200);
     for (const lead of ['The job.', 'The moment.', 'Your choices.', 'What breaks.']) await expect(page.locator('main strong', { hasText: lead })).toHaveCount(1);
-    if (slug === 'obsidian') {
-      const example = page.getByRole('region', { name: 'Try one Markdown workflow' });
+    const exampleTitle = campaignExamples.get(slug);
+    if (exampleTitle) {
+      const example = page.getByRole('region', { name: exampleTitle });
       await expect(example).toContainText('macOS 26 or later');
       await expect(example).toContainText('10 Pro Days');
       const download = example.getByRole('link', { name: 'Download Flow for Mac' });
-      await expect(download).toHaveAttribute('data-flow-download', 'flow-compare-obsidian-example');
+      await expect(download).toHaveAttribute('data-flow-download', `flow-compare-${slug}-example`);
       expect(await download.evaluate(link => getComputedStyle(link).color)).toBe('rgb(255, 255, 255)');
       await expect(page.getByRole('link', { name: 'Try Flow ↓' })).toHaveAttribute('href', '#quick-start');
       await expect(example.getByRole('checkbox')).toHaveCount(0);

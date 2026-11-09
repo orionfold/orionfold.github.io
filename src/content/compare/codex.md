@@ -7,6 +7,9 @@ dek: "Hand Codex a pricing page or a memo, and see exactly what it changed befor
 line: "Run Codex on your plan. Review its edits in Flow before they touch the file."
 updated: 2026-10-27
 startWith: review-agents
+quickStart:
+  title: "Review one Codex edit"
+  description: "Open a Markdown draft in Flow and choose the connected Codex route. Ask for one small edit, open Review Changes, and read the exact lines before you decide what to keep. On this route, Codex runs under your own ChatGPT plan."
 rows:
   - topic: "What it is for"
     them: "Codex reads, edits and runs code. It works in the ChatGPT desktop app, a command line tool, a code editor extension, on the web and in the cloud."
